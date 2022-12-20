@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanupOrphanedRoutes, :migration do
+RSpec.describe CleanupOrphanedRoutes, :migration, feature_category: :projects do
   let(:migration) { described_class::MIGRATION }
 
   describe '#up' do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ConfirmSupportBotUser, :migration do
+RSpec.describe ConfirmSupportBotUser, :migration, feature_category: :users do
   let(:users) { table(:users) }
 
   context 'when support bot user is currently unconfirmed' do
@@ -72,7 +72,7 @@ RSpec.describe ConfirmSupportBotUser, :migration do
 
   private
 
-  def create_user!(name: 'GitLab Support Bot', email: 'support@example.com', user_type:, created_at: Time.now, confirmed_at: nil, record_timestamps: true)
+  def create_user!(user_type:, name: 'GitLab Support Bot', email: 'support@example.com', created_at: Time.now, confirmed_at: nil, record_timestamps: true)
     users.create!(
       name: name,
       email: email,

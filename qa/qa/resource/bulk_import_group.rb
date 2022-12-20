@@ -11,7 +11,7 @@ module QA
         api_client.personal_access_token
       end
 
-      attribute :gitlab_address do
+      attribute :source_gitlab_address do
         QA::Runtime::Scenario.gitlab_address
       end
 
@@ -28,7 +28,7 @@ module QA
 
         Page::Group::New.perform do |group|
           group.switch_to_import_tab
-          group.connect_gitlab_instance(gitlab_address, import_access_token)
+          group.connect_gitlab_instance(source_gitlab_address, import_access_token)
         end
 
         Page::Group::BulkImport.perform do |import_page|
@@ -50,7 +50,7 @@ module QA
       def api_post_body
         {
           configuration: {
-            url: gitlab_address,
+            url: source_gitlab_address,
             access_token: import_access_token
           },
           entities: [
@@ -93,7 +93,7 @@ module QA
 
         # override transformation only for /bulk_imports endpoint which doesn't have web_url in response and
         # ignore others so import_id is not overwritten incorrectly
-        api_resource[:web_url] = "#{gitlab_address}/#{full_path}"
+        api_resource[:web_url] = "#{QA::Runtime::Scenario.gitlab_address}/#{full_path}"
         api_resource[:import_id] = api_resource[:id]
         api_resource
       end

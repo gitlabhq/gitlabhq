@@ -1,6 +1,3 @@
-- project_tab_filter = local_assigns.fetch(:project_tab_filter, "")
-- feature_project_list_filter_bar = Feature.enabled?(:project_list_filter_bar)
-
 = content_for :flash_message do
   = render 'shared/project_limit'
 
@@ -9,17 +6,13 @@
 
   - if current_user.can_create_project?
     .page-title-controls
-      = link_to _("New project"), new_project_path, class: "gl-button btn btn-confirm", data: { qa_selector: 'new_project_button' }
+      = render Pajamas::ButtonComponent.new(href: new_project_path, variant: :confirm, button_options: { data: { qa_selector: 'new_project_button' } }) do
+        = _("New project")
 
 .top-area
-  .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0.gl-w-full
+  .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0
     .fade-left= sprite_icon('chevron-lg-left', size: 12)
     .fade-right= sprite_icon('chevron-lg-right', size: 12)
     = render 'dashboard/projects_nav'
-  - unless feature_project_list_filter_bar
-    .nav-controls
-      = render 'shared/projects/search_form'
-      = render 'shared/projects/dropdown'
-- if feature_project_list_filter_bar
-  .project-filters
-    = render 'shared/projects/search_bar', project_tab_filter: project_tab_filter
+  .nav-controls
+    = render 'shared/projects/search_form'

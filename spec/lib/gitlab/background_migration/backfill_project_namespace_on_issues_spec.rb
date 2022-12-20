@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-# todo: this will need to specify schema version once we introduce the not null constraint on issues#namespace_id
-# https://gitlab.com/gitlab-org/gitlab/-/issues/367835
-RSpec.describe Gitlab::BackgroundMigration::BackfillProjectNamespaceOnIssues do
+
+RSpec.describe Gitlab::BackgroundMigration::BackfillProjectNamespaceOnIssues,
+  :migration, schema: 20221118103352, feature_category: :team_planning do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:issues) { table(:issues) }
+  let(:issue_base_type_enum_value) { 0 }
+  let(:issue_type) { table(:work_item_types).find_by!(namespace_id: nil, base_type: issue_base_type_enum_value) }
 
   let(:namespace1) { namespaces.create!(name: 'batchtest1', type: 'Group', path: 'space1') }
   let(:namespace2) { namespaces.create!(name: 'batchtest2', type: 'Group', parent_id: namespace1.id, path: 'space2') }
@@ -18,12 +20,12 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectNamespaceOnIssues do
   let(:proj1) { projects.create!(name: 'proj1', path: 'proj1', namespace_id: namespace1.id, project_namespace_id: proj_namespace1.id) }
   let(:proj2) { projects.create!(name: 'proj2', path: 'proj2', namespace_id: namespace2.id, project_namespace_id: proj_namespace2.id) }
 
-  let!(:proj1_issue_with_namespace) { issues.create!(title: 'issue1', project_id: proj1.id, namespace_id: proj_namespace1.id) }
-  let!(:proj1_issue_without_namespace1) { issues.create!(title: 'issue2', project_id: proj1.id) }
-  let!(:proj1_issue_without_namespace2) { issues.create!(title: 'issue3', project_id: proj1.id) }
-  let!(:proj2_issue_with_namespace) { issues.create!(title: 'issue4', project_id: proj2.id, namespace_id: proj_namespace2.id) }
-  let!(:proj2_issue_without_namespace1) { issues.create!(title: 'issue5', project_id: proj2.id) }
-  let!(:proj2_issue_without_namespace2) { issues.create!(title: 'issue6', project_id: proj2.id) }
+  let!(:proj1_issue_with_namespace) { issues.create!(title: 'issue1', project_id: proj1.id, namespace_id: proj_namespace1.id, work_item_type_id: issue_type.id) }
+  let!(:proj1_issue_without_namespace1) { issues.create!(title: 'issue2', project_id: proj1.id, work_item_type_id: issue_type.id) }
+  let!(:proj1_issue_without_namespace2) { issues.create!(title: 'issue3', project_id: proj1.id, work_item_type_id: issue_type.id) }
+  let!(:proj2_issue_with_namespace) { issues.create!(title: 'issue4', project_id: proj2.id, namespace_id: proj_namespace2.id, work_item_type_id: issue_type.id) }
+  let!(:proj2_issue_without_namespace1) { issues.create!(title: 'issue5', project_id: proj2.id, work_item_type_id: issue_type.id) }
+  let!(:proj2_issue_without_namespace2) { issues.create!(title: 'issue6', project_id: proj2.id, work_item_type_id: issue_type.id) }
   # rubocop:enable Layout/LineLength
 
   let(:migration) do

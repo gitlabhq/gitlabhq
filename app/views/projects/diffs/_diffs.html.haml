@@ -34,7 +34,7 @@
   - if load_diff_files_async
     - url = url_for(safe_params.merge(action: 'diff_files'))
     .js-diffs-batch{ data: { diff_files_path: url } }
-      = gl_loading_icon( size: "md", css_class: "gl-mt-4" )
+      = gl_loading_icon(size: "md", css_class: "gl-mt-4")
   - else
     = render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment, diff_page_context: diff_page_context }
 

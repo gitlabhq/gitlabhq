@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ResetTooManyTagsSkippedRegistryImports, :aggregate_failures do
+RSpec.describe ResetTooManyTagsSkippedRegistryImports, :aggregate_failures, feature_category: :container_registry do
   let(:migration) { described_class::MIGRATION }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

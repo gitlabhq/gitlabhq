@@ -21,10 +21,11 @@ def create_background_migration_jobs(ids, status, created_at)
   )
 end
 
-RSpec.describe RemoveOldPendingJobsForRecalculateVulnerabilitiesOccurrencesUuid, :migration do
-  let_it_be(:background_migration_jobs) { table(:background_migration_jobs) }
-  let_it_be(:before_target_date) { -Float::INFINITY..(DateTime.new(2021, 8, 17, 23, 59, 59)) }
-  let_it_be(:after_target_date) { (DateTime.new(2021, 8, 18, 0, 0, 0))..Float::INFINITY }
+RSpec.describe RemoveOldPendingJobsForRecalculateVulnerabilitiesOccurrencesUuid, :migration,
+feature_category: :vulnerability_management do
+  let!(:background_migration_jobs) { table(:background_migration_jobs) }
+  let!(:before_target_date) { -Float::INFINITY..(DateTime.new(2021, 8, 17, 23, 59, 59)) }
+  let!(:after_target_date) { (DateTime.new(2021, 8, 18, 0, 0, 0))..Float::INFINITY }
 
   context 'when old RecalculateVulnerabilitiesOccurrencesUuid jobs are pending' do
     before do

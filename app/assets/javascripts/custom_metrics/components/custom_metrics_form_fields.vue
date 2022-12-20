@@ -185,7 +185,6 @@ export default {
         name="prometheus_metric[title]"
         class="form-control"
         :placeholder="s__('Metrics|e.g. Throughput')"
-        data-qa-selector="custom_metric_prometheus_title_field"
         required
       />
       <span class="form-text text-muted">{{ s__('Metrics|Used as a title for the chart') }}</span>
@@ -209,7 +208,6 @@ export default {
       <gl-form-input
         id="prometheus_metric_query"
         v-model.trim="query"
-        data-qa-selector="custom_metric_prometheus_query_field"
         name="prometheus_metric[query]"
         class="form-control"
         :placeholder="s__('Metrics|e.g. rate(http_requests_total[5m])')"
@@ -247,7 +245,6 @@ export default {
       <gl-form-input
         id="prometheus_metric_y_label"
         v-model="yLabel"
-        data-qa-selector="custom_metric_prometheus_y_label_field"
         name="prometheus_metric[y_label]"
         class="form-control"
         :placeholder="s__('Metrics|e.g. Requests/second')"
@@ -267,7 +264,6 @@ export default {
       <gl-form-input
         id="prometheus_metric_unit"
         v-model="unit"
-        data-qa-selector="custom_metric_prometheus_unit_label_field"
         name="prometheus_metric[unit]"
         class="form-control"
         :placeholder="s__('Metrics|e.g. req/sec')"
@@ -282,7 +278,6 @@ export default {
       <gl-form-input
         id="prometheus_metric_legend"
         v-model="legend"
-        data-qa-selector="custom_metric_prometheus_legend_label_field"
         name="prometheus_metric[legend]"
         class="form-control"
         :placeholder="s__('Metrics|e.g. HTTP requests')"

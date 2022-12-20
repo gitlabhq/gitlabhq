@@ -324,6 +324,18 @@ This is the list of known affected features with the proposed solutions.
 - [Pods: GraphQL](pods-feature-graphql.md)
 - [Pods: Organizations](pods-feature-organizations.md)
 - [Pods: Router Endpoints Classification](pods-feature-router-endpoints-classification.md)
+- [Pods: Schema changes (Postgres and Elasticsearch migrations)](pods-feature-schema-changes.md)
+- [Pods: Global Search](pods-feature-global-search.md)
+- [Pods: CI Runners](pods-feature-ci-runners.md)
+- [Pods: Admin Area](pods-feature-admin-area.md)
+- [Pods: Container Registry](pods-feature-container-registry.md)
+- [Pods: Contributions: Forks](pods-feature-contributions-forks.md)
+- [Pods: Personal Namespaces](pods-feature-personal-namespaces.md)
+- [Pods: Dashboard: Projects, Todos, Issues, Merge Requests, Activity, ...](pods-feature-dashboard.md)
+- [Pods: Snippets](pods-feature-snippets.md)
+- [Pods: Uploads](pods-feature-uploads.md)
+- [Pods: GitLab Pages](pods-feature-gitlab-pages.md)
+- [Pods: Agent for Kubernetes](pods-feature-agent-for-kubernetes.md)
 
 ## Links
 

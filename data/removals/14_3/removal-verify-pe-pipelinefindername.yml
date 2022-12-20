@@ -1,4 +1,4 @@
-- name: "List project pipelines API endpoint removes `name` support in 14.3"
+- title: "List project pipelines API endpoint removes `name` support in 14.3"
   removal_date: September 22, 2021  # day the removal was released
   removal_milestone: "14.3"
   reporter: jreporter  # GitLab username of the person reporting the removal

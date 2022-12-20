@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitHub import **(FREE SELF)**
+# GitHub import Rake task **(FREE SELF)**
 
 To retrieve and import GitHub repositories, you need a [GitHub personal access token](https://github.com/settings/tokens).
 A username should be passed as the second argument to the Rake task,

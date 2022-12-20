@@ -182,7 +182,7 @@ granting them push access:
 1. [Create a new group](../../../group/manage.md#create-a-group).
 1. [Add the user to the group](../../../group/manage.md#add-users-to-a-group),
    and select the Reporter role for the user.
-1. [Share the project with your group](../../members/share_project_with_groups.md#share-a-project-with-a-group-of-users),
+1. [Share the project with your group](../../members/share_project_with_groups.md#share-a-project-with-a-group),
    based on the Reporter role.
 1. Go to your project and select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval rules**, and either:

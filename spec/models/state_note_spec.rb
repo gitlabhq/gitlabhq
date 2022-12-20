@@ -19,6 +19,7 @@ RSpec.describe StateNote do
         it 'contains the expected values' do
           expect(subject.author).to eq(author)
           expect(subject.created_at).to eq(event.created_at)
+          expect(subject.updated_at).to eq(event.created_at)
           expect(subject.note).to eq(state)
         end
       end
@@ -33,7 +34,8 @@ RSpec.describe StateNote do
 
         it 'contains the expected values' do
           expect(subject.author).to eq(author)
-          expect(subject.created_at).to eq(subject.created_at)
+          expect(subject.created_at).to eq(event.created_at)
+          expect(subject.updated_at).to eq(event.created_at)
           expect(subject.note).to eq("closed via commit #{commit.id}")
         end
       end
@@ -45,6 +47,7 @@ RSpec.describe StateNote do
         it 'contains the expected values' do
           expect(subject.author).to eq(author)
           expect(subject.created_at).to eq(event.created_at)
+          expect(subject.updated_at).to eq(event.created_at)
           expect(subject.note).to eq("closed via merge request !#{merge_request.iid}")
         end
       end
@@ -55,6 +58,7 @@ RSpec.describe StateNote do
         it 'contains the expected values' do
           expect(subject.author).to eq(author)
           expect(subject.created_at).to eq(event.created_at)
+          expect(subject.updated_at).to eq(event.created_at)
           expect(subject.note).to eq('resolved the corresponding error and closed the issue')
         end
       end
@@ -65,6 +69,7 @@ RSpec.describe StateNote do
         it 'contains the expected values' do
           expect(subject.author).to eq(author)
           expect(subject.created_at).to eq(event.created_at)
+          expect(subject.updated_at).to eq(event.created_at)
           expect(subject.note).to eq('automatically closed this incident because the alert resolved')
         end
       end

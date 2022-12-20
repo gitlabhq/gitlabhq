@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project Tree RSS' do
+RSpec.describe 'Project Tree RSS', feature_category: :projects do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let(:path) { project_tree_path(project, :master) }

@@ -2,14 +2,13 @@
 
 require "spec_helper"
 
-RSpec.describe API::MergeRequests do
+RSpec.describe API::MergeRequests, feature_category: :source_code_management do
   include ProjectForksHelper
 
   let_it_be(:base_time) { Time.now }
   let_it_be(:user)  { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
-  let_it_be(:bot) { create(:user, :project_bot) }
   let_it_be(:project) { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
 
   let(:milestone1) { create(:milestone, title: '0.9', project: project) }
@@ -1788,6 +1787,58 @@ RSpec.describe API::MergeRequests do
     end
   end
 
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/diffs' do
+    let_it_be(:merge_request) do
+      create(
+        :merge_request,
+        :simple,
+        author: user,
+        assignees: [user],
+        source_project: project,
+        target_project: project,
+        source_branch: 'markdown',
+        title: "Test",
+        created_at: base_time
+      )
+    end
+
+    it 'returns a 404 when merge_request_iid not found' do
+      get api("/projects/#{project.id}/merge_requests/0/diffs", user)
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns a 404 when merge_request id is used instead of iid' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/diffs", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs" }
+      end
+    end
+
+    it 'returns the diffs of the merge_request' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.size).to eq(merge_request.diffs.size)
+    end
+
+    context 'when pagination params are present' do
+      it 'returns limited diffs' do
+        get(
+          api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user),
+          params: { page: 1, per_page: 1 }
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.size).to eq(1)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/pipelines' do
     let_it_be(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
 
@@ -3557,71 +3608,6 @@ RSpec.describe API::MergeRequests do
 
       expect(response).to have_gitlab_http_status(:conflict)
       expect(json_response['message']).to eq('Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.')
-    end
-  end
-
-  describe 'PUT :id/merge_requests/:merge_request_iid/reset_approvals' do
-    before do
-      merge_request.approvals.create!(user: user2)
-      create(:project_member, :maintainer, user: bot, source: project)
-    end
-
-    context 'when reset_approvals can be performed' do
-      it 'clears approvals of the merge_request' do
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
-
-        merge_request.reload
-        expect(response).to have_gitlab_http_status(:accepted)
-        expect(merge_request.approvals).to be_empty
-      end
-
-      it 'for users with bot role' do
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
-
-        expect(response).to have_gitlab_http_status(:accepted)
-      end
-
-      context 'for users with non-bot roles' do
-        let(:human_user) { create(:user) }
-
-        [:add_owner, :add_maintainer, :add_developer, :add_guest].each do |role_method|
-          it 'returns 401' do
-            project.send(role_method, human_user)
-
-            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", human_user)
-
-            expect(response).to have_gitlab_http_status(:unauthorized)
-          end
-        end
-      end
-
-      context 'for bot-users from external namespaces' do
-        let_it_be(:external_bot) { create(:user, :project_bot) }
-
-        context 'external group bot-user' do
-          before do
-            create(:group_member, :maintainer, user: external_bot, source: create(:group))
-          end
-
-          it 'returns 401' do
-            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", external_bot)
-
-            expect(response).to have_gitlab_http_status(:unauthorized)
-          end
-        end
-
-        context 'external project bot-user' do
-          before do
-            create(:project_member, :maintainer, user: external_bot, source: create(:project))
-          end
-
-          it 'returns 401' do
-            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", external_bot)
-
-            expect(response).to have_gitlab_http_status(:unauthorized)
-          end
-        end
-      end
     end
   end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DropInt4ColumnForCiSourcesPipelines do
+RSpec.describe DropInt4ColumnForCiSourcesPipelines, feature_category: :pipeline_authoring do
   let(:ci_sources_pipelines) { table(:ci_sources_pipelines) }
 
   it 'correctly migrates up and down' do

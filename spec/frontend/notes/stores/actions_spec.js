@@ -3,7 +3,7 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import Api from '~/api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import toast from '~/vue_shared/plugins/global_toast';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
@@ -13,8 +13,8 @@ import * as actions from '~/notes/stores/actions';
 import * as mutationTypes from '~/notes/stores/mutation_types';
 import mutations from '~/notes/stores/mutations';
 import * as utils from '~/notes/stores/utils';
-import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
-import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
+import updateIssueLockMutation from '~/sidebar/queries/update_issue_lock.mutation.graphql';
+import updateMergeRequestLockMutation from '~/sidebar/queries/update_merge_request_lock.mutation.graphql';
 import promoteTimelineEvent from '~/notes/graphql/promote_timeline_event.mutation.graphql';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import notesEventHub from '~/notes/event_hub';
@@ -30,16 +30,12 @@ import {
 } from '../mock_data';
 
 const TEST_ERROR_MESSAGE = 'Test error message';
-const mockFlashClose = jest.fn();
-jest.mock('~/flash', () => {
-  const flash = jest.fn().mockImplementation(() => {
-    return {
-      close: mockFlashClose,
-    };
-  });
-
-  return flash;
-});
+const mockAlertDismiss = jest.fn();
+jest.mock('~/flash', () => ({
+  createAlert: jest.fn().mockImplementation(() => ({
+    dismiss: mockAlertDismiss,
+  })),
+}));
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
@@ -331,13 +327,13 @@ describe('Actions Notes Store', () => {
         await startPolling();
 
         expect(axiosMock.history.get).toHaveLength(1);
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
 
         await advanceXMoreIntervals(1);
 
         expect(axiosMock.history.get).toHaveLength(2);
-        expect(createFlash).toHaveBeenCalled();
-        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalled();
+        expect(createAlert).toHaveBeenCalledTimes(1);
       });
 
       it('resets the failure counter on success', async () => {
@@ -358,14 +354,13 @@ describe('Actions Notes Store', () => {
         await advanceXMoreIntervals(1); // Failure #2
 
         // That was the first failure AFTER a success, so we should NOT see the error displayed
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
 
         // Now we'll allow another failure
         await advanceXMoreIntervals(1); // Failure #3
 
         // Since this is the second failure in a row, the error should happen
-        expect(createFlash).toHaveBeenCalled();
-        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledTimes(1);
       });
 
       it('hides the error display if it exists on success', async () => {
@@ -375,16 +370,14 @@ describe('Actions Notes Store', () => {
         await advanceXMoreIntervals(2);
 
         // After two errors, the error should be displayed
-        expect(createFlash).toHaveBeenCalled();
-        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledTimes(1);
 
         axiosMock.reset();
         successMock();
 
         await advanceXMoreIntervals(1);
 
-        expect(mockFlashClose).toHaveBeenCalled();
-        expect(mockFlashClose).toHaveBeenCalledTimes(1);
+        expect(mockAlertDismiss).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -869,7 +862,7 @@ describe('Actions Notes Store', () => {
             payload,
           ),
         ).rejects.toEqual(error);
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
     });
 
@@ -885,8 +878,8 @@ describe('Actions Notes Store', () => {
           },
           { ...payload, flashContainer },
         );
-        expect(resp.hasFlash).toBe(true);
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(resp.hasAlert).toBe(true);
+        expect(createAlert).toHaveBeenCalledWith({
           message: 'Your comment could not be submitted because something went wrong',
           parent: flashContainer,
         });
@@ -905,7 +898,7 @@ describe('Actions Notes Store', () => {
           payload,
         );
         expect(data).toBe(res);
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
     });
   });
@@ -943,7 +936,7 @@ describe('Actions Notes Store', () => {
           ['resolveDiscussion', { discussionId }],
           ['restartPolling'],
         ]);
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
     });
 
@@ -958,7 +951,7 @@ describe('Actions Notes Store', () => {
           [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
         expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: TEST_ERROR_MESSAGE,
           parent: flashContainer,
         });
@@ -976,7 +969,7 @@ describe('Actions Notes Store', () => {
           [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
         expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: 'Something went wrong while applying the suggestion. Please try again.',
           parent: flashContainer,
         });
@@ -987,7 +980,7 @@ describe('Actions Notes Store', () => {
       dispatch.mockReturnValue(Promise.reject());
 
       return testSubmitSuggestion(() => {
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
     });
   });
@@ -1029,7 +1022,7 @@ describe('Actions Notes Store', () => {
           ['restartPolling'],
         ]);
 
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
     });
 
@@ -1047,7 +1040,7 @@ describe('Actions Notes Store', () => {
         ]);
 
         expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: TEST_ERROR_MESSAGE,
           parent: flashContainer,
         });
@@ -1068,7 +1061,7 @@ describe('Actions Notes Store', () => {
         ]);
 
         expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message:
             'Something went wrong while applying the batch of suggestions. Please try again.',
           parent: flashContainer,
@@ -1088,7 +1081,7 @@ describe('Actions Notes Store', () => {
           [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
 
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
     });
   });
@@ -1234,7 +1227,7 @@ describe('Actions Notes Store', () => {
           ),
         ).rejects.toEqual(new Error());
 
-        expect(createFlash).toHaveBeenCalled();
+        expect(createAlert).toHaveBeenCalled();
       });
     });
   });
@@ -1414,7 +1407,7 @@ describe('Actions Notes Store', () => {
           return actions
             .promoteCommentToTimelineEvent({ commit: commitSpy }, actionArgs)
             .then(() => {
-              expect(createFlash).toHaveBeenCalledWith(expectedAlertArgs);
+              expect(createAlert).toHaveBeenCalledWith(expectedAlertArgs);
               expect(commitSpy).toHaveBeenCalledWith(
                 mutationTypes.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS,
                 false,

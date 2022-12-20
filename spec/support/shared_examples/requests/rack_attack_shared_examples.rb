@@ -68,6 +68,7 @@ RSpec.shared_examples 'rate-limited token requests' do
     # Set low limits
     settings_to_set[:"#{throttle_setting_prefix}_requests_per_period"] = requests_per_period
     settings_to_set[:"#{throttle_setting_prefix}_period_in_seconds"] = period_in_seconds
+    travel_back
   end
 
   after do
@@ -220,6 +221,7 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
     # Set low limits
     settings_to_set[:"#{throttle_setting_prefix}_requests_per_period"] = requests_per_period
     settings_to_set[:"#{throttle_setting_prefix}_period_in_seconds"] = period_in_seconds
+    travel_back
   end
 
   after do
@@ -436,6 +438,7 @@ RSpec.shared_examples 'rate-limited unauthenticated requests' do
     # Set low limits
     settings_to_set[:"#{throttle_setting_prefix}_requests_per_period"] = requests_per_period
     settings_to_set[:"#{throttle_setting_prefix}_period_in_seconds"] = period_in_seconds
+    travel_back
   end
 
   context 'when the throttle is enabled' do

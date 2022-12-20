@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe EncryptIntegrationProperties, :migration, schema: 20220204193000 do
+RSpec.describe EncryptIntegrationProperties, :migration, schema: 20220204193000, feature_category: :integrations do
   subject(:migration) { described_class.new }
 
   let(:integrations) { table(:integrations) }

@@ -62,7 +62,7 @@ module Sidebars
 
         def releases_menu_item
           if !can?(context.current_user, :read_release, context.project) ||
-            context.project.empty_repo?
+              context.project.empty_repo?
             return ::Sidebars::NilMenuItem.new(item_id: :releases)
           end
 

@@ -187,7 +187,7 @@ Only feature flags that have a YAML definition file can be used when running the
 ```shell
 $ bin/feature-flag my_feature_flag
 >> Specify the group introducing the feature flag, like `group::apm`:
-?> group::memory
+?> group::application performance
 
 >> URL of the MR introducing the feature flag (enter to skip):
 ?> https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
@@ -202,7 +202,7 @@ create config/feature_flags/development/my_feature_flag.yml
 name: my_feature_flag
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/232533
-group: group::memory
+group: group::application performance
 type: development
 default_enabled: false
 ```
@@ -398,44 +398,8 @@ Feature.enabled?(:feature_flag, group)
 Feature.enabled?(:feature_flag, user)
 ```
 
-Please see [Feature flag controls](controls.md#process) for more details on working with feature flags.
-
-#### Selectively disable by actor
-
-By default you cannot selectively disable a feature flag by actor.
-
-```shell
-# This will not work how you would expect.
-/chatops run feature set some_feature true
-/chatops run feature set --project=gitlab-org/gitlab some_feature false
-```
-
-However, if you add two feature flags, you can write your conditional statement in such a way that the equivalent selective disable is possible.
-
-```ruby
-Feature.enabled?(:a_feature, project) && Feature.disabled?(:a_feature_override, project)
-```
-
-```shell
-# This will enable a feature flag globally, except for gitlab-org/gitlab
-/chatops run feature set a_feature true
-/chatops run feature set --project=gitlab-org/gitlab a_feature_override true
-```
-
-#### Percentage-based actor selection
-
-When using the percentage rollout of actors on multiple feature flags, the actors for each feature flag are selected separately.
-
-For example, the following feature flags are enabled for a certain percentage of actors:
-
-```plaintext
-/chatops run feature set feature-set-1 25 --actors
-/chatops run feature set feature-set-2 25 --actors
-```
-
-If a project A has `:feature-set-1` enabled, there is no guarantee that project A also has `:feature-set-2` enabled.
-
-For more detail, see [This is how percentages work in Flipper](https://www.hackwithpassion.com/this-is-how-percentages-work-in-flipper/).
+See [Feature flags in the development of GitLab](controls.md#process) for details on how to use ChatOps
+to selectively enable or disable feature flags in GitLab-provided environments, like staging and production.
 
 #### Use actors for verifying in production
 

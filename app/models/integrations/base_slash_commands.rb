@@ -60,7 +60,7 @@ module Integrations
 
     # rubocop: disable CodeReuse/ServiceClass
     def find_chat_user(params)
-      ChatNames::FindUserService.new(self, params).execute
+      ChatNames::FindUserService.new(params[:team_id], params[:user_id]).execute
     end
     # rubocop: enable CodeReuse/ServiceClass
 

@@ -23,6 +23,7 @@ RSpec.describe CommitSignatures::GpgSignature do
 
   it_behaves_like 'having unique enum values'
   it_behaves_like 'commit signature'
+  it_behaves_like 'signature with type checking', :gpg
 
   describe 'associations' do
     it { is_expected.to belong_to(:gpg_key) }
@@ -86,9 +87,9 @@ RSpec.describe CommitSignatures::GpgSignature do
     end
   end
 
-  describe '#user' do
+  describe '#signed_by_user' do
     it 'retrieves the gpg_key user' do
-      expect(signature.user).to eq(gpg_key.user)
+      expect(signature.signed_by_user).to eq(gpg_key.user)
     end
   end
 end

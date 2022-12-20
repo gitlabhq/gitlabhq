@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Getting starredProjects of the user' do
+RSpec.describe 'Getting starredProjects of the user', feature_category: :projects do
   include GraphqlHelpers
 
   let(:query) do

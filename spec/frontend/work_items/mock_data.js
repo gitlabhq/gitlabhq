@@ -36,6 +36,16 @@ export const mockLabels = [
   },
 ];
 
+export const mockMilestone = {
+  __typename: 'Milestone',
+  id: 'gid://gitlab/Milestone/30',
+  title: 'v4.0',
+  state: 'active',
+  expired: false,
+  startDate: '2022-10-17',
+  dueDate: '2022-10-24',
+};
+
 export const workItemQueryResponse = {
   data: {
     workItem: {
@@ -85,11 +95,18 @@ export const workItemQueryResponse = {
         {
           __typename: 'WorkItemWidgetHierarchy',
           type: 'HIERARCHY',
+          hasChildren: true,
           parent: {
             id: 'gid://gitlab/Issue/1',
             iid: '5',
             title: 'Parent title',
             confidential: false,
+            webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/1',
+              name: 'Issue',
+              iconName: 'issue-type-issue',
+            },
           },
           children: {
             nodes: [
@@ -97,6 +114,20 @@ export const workItemQueryResponse = {
                 id: 'gid://gitlab/WorkItem/444',
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
+                confidential: false,
+                title: '123',
+                state: 'OPEN',
+                workItemType: {
+                  id: '1',
+                  name: 'Task',
+                  iconName: 'issue-type-task',
+                },
+                widgets: [
+                  {
+                    type: 'HIERARCHY',
+                    hasChildren: false,
+                  },
+                ],
               },
             ],
           },
@@ -138,13 +169,25 @@ export const updateWorkItemMutationResponse = {
         },
         widgets: [
           {
+            type: 'HIERARCHY',
             children: {
               nodes: [
                 {
                   id: 'gid://gitlab/WorkItem/444',
+                  createdAt: '2022-08-03T12:41:54Z',
+                  closedAt: null,
+                  confidential: false,
+                  title: '123',
+                  state: 'OPEN',
+                  workItemType: {
+                    id: '1',
+                    name: 'Task',
+                    iconName: 'issue-type-task',
+                  },
                 },
               ],
             },
+            __typename: 'WorkItemConnection',
           },
           {
             __typename: 'WorkItemWidgetAssignees',
@@ -177,6 +220,12 @@ export const mockParent = {
     iid: '5',
     title: 'Parent title',
     confidential: false,
+    webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/1',
+      name: 'Issue',
+      iconName: 'issue-type-issue',
+    },
   },
 };
 
@@ -193,6 +242,20 @@ export const descriptionHtmlWithCheckboxes = `
   </ul>
 `;
 
+const taskType = {
+  __typename: 'WorkItemType',
+  id: 'gid://gitlab/WorkItems::Type/5',
+  name: 'Task',
+  iconName: 'issue-type-task',
+};
+
+export const objectiveType = {
+  __typename: 'WorkItemType',
+  id: 'gid://gitlab/WorkItems::Type/2411',
+  name: 'Objective',
+  iconName: 'issue-type-objective',
+};
+
 export const workItemResponseFactory = ({
   canUpdate = false,
   canDelete = false,
@@ -201,8 +264,10 @@ export const workItemResponseFactory = ({
   datesWidgetPresent = true,
   labelsWidgetPresent = true,
   weightWidgetPresent = true,
+  progressWidgetPresent = true,
   milestoneWidgetPresent = true,
   iterationWidgetPresent = true,
+  healthStatusWidgetPresent = true,
   confidential = false,
   canInviteMembers = false,
   allowsScopedLabels = false,
@@ -210,6 +275,7 @@ export const workItemResponseFactory = ({
   lastEditedBy = null,
   withCheckboxes = false,
   parent = mockParent.parent,
+  workItemType = taskType,
 } = {}) => ({
   data: {
     workItem: {
@@ -227,12 +293,7 @@ export const workItemResponseFactory = ({
         id: '1',
         fullPath: 'test-project-path',
       },
-      workItemType: {
-        __typename: 'WorkItemType',
-        id: 'gid://gitlab/WorkItems::Type/5',
-        name: 'Task',
-        iconName: 'issue-type-task',
-      },
+      workItemType,
       userPermissions: {
         deleteWorkItem: canDelete,
         updateWorkItem: canUpdate,
@@ -298,26 +359,51 @@ export const workItemResponseFactory = ({
               },
             }
           : { type: 'MOCK TYPE' },
+        progressWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetProgress',
+              type: 'PROGRESS',
+              progress: 0,
+            }
+          : { type: 'MOCK TYPE' },
         milestoneWidgetPresent
           ? {
               __typename: 'WorkItemWidgetMilestone',
               type: 'MILESTONE',
-              milestone: {
-                expired: false,
-                id: 'gid://gitlab/Milestone/30',
-                title: 'v4.0',
-              },
+              milestone: mockMilestone,
+            }
+          : { type: 'MOCK TYPE' },
+        healthStatusWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetHealthStatus',
+              type: 'HEALTH_STATUS',
+              healthStatus: 'onTrack',
             }
           : { type: 'MOCK TYPE' },
         {
           __typename: 'WorkItemWidgetHierarchy',
           type: 'HIERARCHY',
+          hasChildren: true,
           children: {
             nodes: [
               {
                 id: 'gid://gitlab/WorkItem/444',
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
+                confidential: false,
+                title: '123',
+                state: 'OPEN',
+                workItemType: {
+                  id: '1',
+                  name: 'Task',
+                  iconName: 'issue-type-task',
+                },
+                widgets: [
+                  {
+                    type: 'HIERARCHY',
+                    hasChildren: false,
+                  },
+                ],
               },
             ],
           },
@@ -637,6 +723,8 @@ export const workItemHierarchyEmptyResponse = {
       id: 'gid://gitlab/WorkItem/1',
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
+        name: 'Issue',
+        iconName: 'issue-type-issue',
         __typename: 'WorkItemType',
       },
       title: 'New title',
@@ -660,6 +748,7 @@ export const workItemHierarchyEmptyResponse = {
         {
           type: 'HIERARCHY',
           parent: null,
+          hasChildren: false,
           children: {
             nodes: [],
             __typename: 'WorkItemConnection',
@@ -678,6 +767,8 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       id: 'gid://gitlab/WorkItem/1',
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
+        name: 'Issue',
+        iconName: 'issue-type-issue',
         __typename: 'WorkItemType',
       },
       title: 'New title',
@@ -699,12 +790,16 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         {
           type: 'HIERARCHY',
           parent: null,
+          hasChildren: true,
           children: {
             nodes: [
               {
                 id: 'gid://gitlab/WorkItem/2',
+                iid: '2',
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/5',
+                  name: 'Task',
+                  iconName: 'issue-type-task',
                   __typename: 'WorkItemType',
                 },
                 title: 'xyz',
@@ -712,6 +807,12 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
                 confidential: false,
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
+                widgets: [
+                  {
+                    type: 'HIERARCHY',
+                    hasChildren: false,
+                  },
+                ],
                 __typename: 'WorkItem',
               },
             ],
@@ -727,8 +828,11 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
 
 export const workItemTask = {
   id: 'gid://gitlab/WorkItem/4',
+  iid: '4',
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Task',
+    iconName: 'issue-type-task',
     __typename: 'WorkItemType',
   },
   title: 'bar',
@@ -741,8 +845,11 @@ export const workItemTask = {
 
 export const confidentialWorkItemTask = {
   id: 'gid://gitlab/WorkItem/2',
+  iid: '2',
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Task',
+    iconName: 'issue-type-task',
     __typename: 'WorkItemType',
   },
   title: 'xyz',
@@ -755,8 +862,11 @@ export const confidentialWorkItemTask = {
 
 export const closedWorkItemTask = {
   id: 'gid://gitlab/WorkItem/3',
+  iid: '3',
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Task',
+    iconName: 'issue-type-task',
     __typename: 'WorkItemType',
   },
   title: 'abc',
@@ -767,12 +877,37 @@ export const closedWorkItemTask = {
   __typename: 'WorkItem',
 };
 
+export const childrenWorkItems = [
+  confidentialWorkItemTask,
+  closedWorkItemTask,
+  workItemTask,
+  {
+    id: 'gid://gitlab/WorkItem/5',
+    iid: '5',
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/5',
+      name: 'Task',
+      iconName: 'issue-type-task',
+      __typename: 'WorkItemType',
+    },
+    title: 'foobar',
+    state: 'OPEN',
+    confidential: false,
+    createdAt: '2022-08-03T12:41:54Z',
+    closedAt: null,
+    __typename: 'WorkItem',
+  },
+];
+
 export const workItemHierarchyResponse = {
   data: {
     workItem: {
       id: 'gid://gitlab/WorkItem/1',
+      iid: '1',
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
+        name: 'Objective',
+        iconName: 'issue-type-objective',
         __typename: 'WorkItemType',
       },
       title: 'New title',
@@ -794,22 +929,146 @@ export const workItemHierarchyResponse = {
         {
           type: 'HIERARCHY',
           parent: null,
+          hasChildren: true,
+          children: {
+            nodes: childrenWorkItems,
+            __typename: 'WorkItemConnection',
+          },
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+      ],
+      __typename: 'WorkItem',
+    },
+  },
+};
+
+export const workItemObjectiveWithChild = {
+  id: 'gid://gitlab/WorkItem/12',
+  iid: '12',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/2411',
+    name: 'Objective',
+    iconName: 'issue-type-objective',
+    __typename: 'WorkItemType',
+  },
+  project: {
+    __typename: 'Project',
+    id: '1',
+    fullPath: 'test-project-path',
+  },
+  userPermissions: {
+    deleteWorkItem: true,
+    updateWorkItem: true,
+  },
+  title: 'Objective',
+  description: 'Objective description',
+  state: 'OPEN',
+  confidential: false,
+  createdAt: '2022-08-03T12:41:54Z',
+  closedAt: null,
+  widgets: [
+    {
+      type: 'HIERARCHY',
+      hasChildren: true,
+      parent: null,
+      children: {
+        nodes: [],
+      },
+      __typename: 'WorkItemWidgetHierarchy',
+    },
+    {
+      type: 'MILESTONE',
+      __typename: 'WorkItemWidgetMilestone',
+      milestone: mockMilestone,
+    },
+    {
+      type: 'ASSIGNEES',
+      __typename: 'WorkItemWidgetAssignees',
+      canInviteMembers: true,
+      allowsMultipleAssignees: true,
+      assignees: {
+        __typename: 'UserCoreConnection',
+        nodes: mockAssignees,
+      },
+    },
+    {
+      type: 'LABELS',
+      __typename: 'WorkItemWidgetLabels',
+      allowsScopedLabels: true,
+      labels: {
+        __typename: 'LabelConnection',
+        nodes: mockLabels,
+      },
+    },
+  ],
+  __typename: 'WorkItem',
+};
+
+export const workItemObjectiveNoMetadata = {
+  ...workItemObjectiveWithChild,
+  widgets: [
+    {
+      type: 'HIERARCHY',
+      hasChildren: true,
+      __typename: 'WorkItemWidgetHierarchy',
+    },
+  ],
+};
+
+export const workItemHierarchyTreeResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/2',
+      iid: '2',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/2411',
+        name: 'Objective',
+        iconName: 'issue-type-objective',
+        __typename: 'WorkItemType',
+      },
+      title: 'New title',
+      userPermissions: {
+        deleteWorkItem: true,
+        updateWorkItem: true,
+      },
+      confidential: false,
+      project: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+      },
+      widgets: [
+        {
+          type: 'DESCRIPTION',
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          type: 'HIERARCHY',
+          parent: null,
+          hasChildren: true,
           children: {
             nodes: [
-              confidentialWorkItemTask,
-              closedWorkItemTask,
-              workItemTask,
               {
-                id: 'gid://gitlab/WorkItem/5',
+                id: 'gid://gitlab/WorkItem/13',
+                iid: '13',
                 workItemType: {
-                  id: 'gid://gitlab/WorkItems::Type/5',
+                  id: 'gid://gitlab/WorkItems::Type/2411',
+                  name: 'Objective',
+                  iconName: 'issue-type-objective',
                   __typename: 'WorkItemType',
                 },
-                title: 'foobar',
+                title: 'Objective 2',
                 state: 'OPEN',
                 confidential: false,
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
+                widgets: [
+                  {
+                    type: 'HIERARCHY',
+                    hasChildren: true,
+                    __typename: 'WorkItemWidgetHierarchy',
+                  },
+                ],
                 __typename: 'WorkItem',
               },
             ],
@@ -821,6 +1080,15 @@ export const workItemHierarchyResponse = {
       __typename: 'WorkItem',
     },
   },
+};
+
+export const workItemHierarchyTreeFailureResponse = {
+  data: {},
+  errors: [
+    {
+      message: 'Something went wrong',
+    },
+  ],
 };
 
 export const changeWorkItemParentMutationResponse = {
@@ -856,6 +1124,7 @@ export const changeWorkItemParentMutationResponse = {
             __typename: 'WorkItemWidgetHierarchy',
             type: 'HIERARCHY',
             parent: null,
+            hasChildren: false,
             children: {
               nodes: [],
             },
@@ -1193,6 +1462,291 @@ export const projectWorkItemResponse = {
       workItems: {
         nodes: [workItemQueryResponse.data.workItem],
       },
+    },
+  },
+};
+
+export const mockWorkItemNotesResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/600',
+      iid: '60',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetIteration',
+        },
+        {
+          __typename: 'WorkItemWidgetWeight',
+        },
+        {
+          __typename: 'WorkItemWidgetAssignees',
+        },
+        {
+          __typename: 'WorkItemWidgetLabels',
+        },
+        {
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+        {
+          __typename: 'WorkItemWidgetStartAndDueDate',
+        },
+        {
+          __typename: 'WorkItemWidgetMilestone',
+        },
+        {
+          type: 'NOTES',
+          discussions: {
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: null,
+              endCursor: null,
+              __typename: 'PageInfo',
+            },
+            nodes: [
+              {
+                id:
+                  'gid://gitlab/IndividualNoteDiscussion/8bbc4890b6ff0f2cde93a5a0947cd2b8a13d3b6e',
+                notes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/Note/2428',
+                      body: 'added #31 as parent issue',
+                      bodyHtml:
+                        '<p data-sourcepos="1:1-1:25" dir="auto">added <a href="/flightjs/Flight/-/issues/31" data-reference-type="issue" data-original="#31" data-link="false" data-link-reference="false" data-project="6" data-issue="224" data-project-path="flightjs/Flight" data-iid="31" data-issue-type="issue" data-container=body data-placement="top" title="Perferendis est quae totam quia laborum tempore ut voluptatem." class="gfm gfm-issue">#31</a> as parent issue</p>',
+                      systemNoteIconName: 'link',
+                      createdAt: '2022-11-14T04:18:59Z',
+                      author: {
+                        avatarUrl:
+                          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                        id: 'gid://gitlab/User/1',
+                        name: 'Administrator',
+                        username: 'root',
+                        webUrl: 'http://127.0.0.1:3000/root',
+                        __typename: 'UserCore',
+                      },
+                      __typename: 'Note',
+                    },
+                  ],
+                  __typename: 'NoteConnection',
+                },
+                __typename: 'Discussion',
+              },
+              {
+                id:
+                  'gid://gitlab/IndividualNoteDiscussion/7b08b89a728a5ceb7de8334246837ba1d07270dc',
+                notes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/MilestoneNote/not-persisted',
+                      body: 'changed milestone to %5',
+                      bodyHtml:
+                        '<p data-sourcepos="1:1-1:23" dir="auto">changed milestone to <a href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container=body data-placement="top" title="" class="gfm gfm-milestone has-tooltip">%v4.0</a></p>',
+                      systemNoteIconName: 'clock',
+                      createdAt: '2022-11-14T04:18:59Z',
+                      author: {
+                        avatarUrl:
+                          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                        id: 'gid://gitlab/User/1',
+                        name: 'Administrator',
+                        username: 'root',
+                        webUrl: 'http://127.0.0.1:3000/root',
+                        __typename: 'UserCore',
+                      },
+                      __typename: 'Note',
+                    },
+                  ],
+                  __typename: 'NoteConnection',
+                },
+                __typename: 'Discussion',
+              },
+              {
+                id:
+                  'gid://gitlab/IndividualNoteDiscussion/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83864',
+                notes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WeightNote/not-persisted',
+                      body: 'changed weight to 89',
+                      bodyHtml: '<p dir="auto">changed weight to <strong>89</strong></p>',
+                      systemNoteIconName: 'weight',
+                      createdAt: '2022-11-25T07:16:20Z',
+                      author: {
+                        avatarUrl:
+                          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                        id: 'gid://gitlab/User/1',
+                        name: 'Administrator',
+                        username: 'root',
+                        webUrl: 'http://127.0.0.1:3000/root',
+                        __typename: 'UserCore',
+                      },
+                      __typename: 'Note',
+                    },
+                  ],
+                  __typename: 'NoteConnection',
+                },
+                __typename: 'Discussion',
+              },
+            ],
+            __typename: 'DiscussionConnection',
+          },
+          __typename: 'WorkItemWidgetNotes',
+        },
+      ],
+      __typename: 'WorkItem',
+    },
+  },
+};
+export const mockWorkItemNotesByIidResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/6',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/600',
+            iid: '51',
+            widgets: [
+              {
+                __typename: 'WorkItemWidgetIteration',
+              },
+              {
+                __typename: 'WorkItemWidgetWeight',
+              },
+              {
+                __typename: 'WorkItemWidgetHealthStatus',
+              },
+              {
+                __typename: 'WorkItemWidgetAssignees',
+              },
+              {
+                __typename: 'WorkItemWidgetLabels',
+              },
+              {
+                __typename: 'WorkItemWidgetDescription',
+              },
+              {
+                __typename: 'WorkItemWidgetHierarchy',
+              },
+              {
+                __typename: 'WorkItemWidgetStartAndDueDate',
+              },
+              {
+                __typename: 'WorkItemWidgetMilestone',
+              },
+              {
+                type: 'NOTES',
+                discussions: {
+                  pageInfo: {
+                    hasNextPage: true,
+                    hasPreviousPage: false,
+                    startCursor: null,
+                    endCursor:
+                      'eyJjcmVhdGVkX2F0IjoiMjAyMi0xMS0xNCAwNDoxOTowMC4wOTkxMTcwMDAgKzAwMDAiLCJpZCI6IjQyNyIsIl9rZCI6Im4ifQ==',
+                    __typename: 'PageInfo',
+                  },
+                  nodes: [
+                    {
+                      id:
+                        'gid://gitlab/IndividualNoteDiscussion/8bbc4890b6ff0f2cde93a5a0947cd2b8a13d3b6e',
+                      notes: {
+                        nodes: [
+                          {
+                            id: 'gid://gitlab/Note/2428',
+                            body: 'added #31 as parent issue',
+                            bodyHtml:
+                              '\u003cp data-sourcepos="1:1-1:25" dir="auto"\u003eadded \u003ca href="/flightjs/Flight/-/issues/31" data-reference-type="issue" data-original="#31" data-link="false" data-link-reference="false" data-project="6" data-issue="224" data-project-path="flightjs/Flight" data-iid="31" data-issue-type="issue" data-container="body" data-placement="top" title="Perferendis est quae totam quia laborum tempore ut voluptatem." class="gfm gfm-issue"\u003e#31\u003c/a\u003e as parent issue\u003c/p\u003e',
+                            systemNoteIconName: 'link',
+                            createdAt: '2022-11-14T04:18:59Z',
+                            author: {
+                              id: 'gid://gitlab/User/1',
+                              avatarUrl:
+                                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+                              name: 'Administrator',
+                              username: 'root',
+                              webUrl: 'http://127.0.0.1:3000/root',
+                              __typename: 'UserCore',
+                            },
+                            __typename: 'Note',
+                          },
+                        ],
+                        __typename: 'NoteConnection',
+                      },
+                      __typename: 'Discussion',
+                    },
+                    {
+                      id:
+                        'gid://gitlab/IndividualNoteDiscussion/7b08b89a728a5ceb7de8334246837ba1d07270dc',
+                      notes: {
+                        nodes: [
+                          {
+                            id:
+                              'gid://gitlab/MilestoneNote/7b08b89a728a5ceb7de8334246837ba1d07270dc',
+                            body: 'changed milestone to %5',
+                            bodyHtml:
+                              '\u003cp data-sourcepos="1:1-1:23" dir="auto"\u003echanged milestone to \u003ca href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container="body" data-placement="top" title="" class="gfm gfm-milestone has-tooltip"\u003e%v4.0\u003c/a\u003e\u003c/p\u003e',
+                            systemNoteIconName: 'clock',
+                            createdAt: '2022-11-14T04:18:59Z',
+                            author: {
+                              id: 'gid://gitlab/User/1',
+                              avatarUrl:
+                                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+                              name: 'Administrator',
+                              username: 'root',
+                              webUrl: 'http://127.0.0.1:3000/root',
+                              __typename: 'UserCore',
+                            },
+                            __typename: 'Note',
+                          },
+                        ],
+                        __typename: 'NoteConnection',
+                      },
+                      __typename: 'Discussion',
+                    },
+                    {
+                      id:
+                        'gid://gitlab/IndividualNoteDiscussion/addbc177f7664699a135130ab05ffb78c57e4db3',
+                      notes: {
+                        nodes: [
+                          {
+                            id:
+                              'gid://gitlab/IterationNote/addbc177f7664699a135130ab05ffb78c57e4db3',
+                            body: 'changed iteration to *iteration:5352',
+                            bodyHtml:
+                              '\u003cp data-sourcepos="1:1-1:36" dir="auto"\u003echanged iteration to \u003ca href="/groups/flightjs/-/iterations/5352" data-reference-type="iteration" data-original="*iteration:5352" data-link="false" data-link-reference="false" data-project="6" data-iteration="5352" data-container="body" data-placement="top" title="Iteration" class="gfm gfm-iteration has-tooltip"\u003eEt autem debitis nam suscipit eos ut. Jul 13, 2022 - Jul 19, 2022\u003c/a\u003e\u003c/p\u003e',
+                            systemNoteIconName: 'iteration',
+                            createdAt: '2022-11-14T04:19:00Z',
+                            author: {
+                              id: 'gid://gitlab/User/1',
+                              avatarUrl:
+                                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+                              name: 'Administrator',
+                              username: 'root',
+                              webUrl: 'http://127.0.0.1:3000/root',
+                              __typename: 'UserCore',
+                            },
+                            __typename: 'Note',
+                          },
+                        ],
+                        __typename: 'NoteConnection',
+                      },
+                      __typename: 'Discussion',
+                    },
+                  ],
+                  __typename: 'DiscussionConnection',
+                },
+                __typename: 'WorkItemWidgetNotes',
+              },
+            ],
+            __typename: 'WorkItem',
+          },
+        ],
+        __typename: 'WorkItemConnection',
+      },
+      __typename: 'Project',
     },
   },
 };

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddIndexToProjectsOnMarkedForDeletionAt do
+RSpec.describe AddIndexToProjectsOnMarkedForDeletionAt, feature_category: :projects do
   it 'correctly migrates up and down' do
     reversible_migration do |migration|
       migration.before -> {

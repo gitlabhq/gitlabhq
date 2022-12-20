@@ -538,7 +538,12 @@ class GfmAutoComplete {
   setupLabels($input) {
     const instance = this;
     const fetchData = this.fetchData.bind(this);
-    const LABEL_COMMAND = { LABEL: '/label', UNLABEL: '/unlabel', RELABEL: '/relabel' };
+    const LABEL_COMMAND = {
+      LABEL: '/label',
+      LABELS: '/labels',
+      UNLABEL: '/unlabel',
+      RELABEL: '/relabel',
+    };
     let command = '';
 
     $input.atwho({
@@ -570,13 +575,9 @@ class GfmAutoComplete {
         matcher(flag, subtext) {
           const subtextNodes = subtext.split(/\n+/g).pop().split(GfmAutoComplete.regexSubtext);
 
-          // Check if ~ is followed by '/label', '/relabel' or '/unlabel' commands.
+          // Check if ~ is followed by '/label', '/labels', '/relabel' or '/unlabel' commands.
           command = subtextNodes.find((node) => {
-            if (
-              node === LABEL_COMMAND.LABEL ||
-              node === LABEL_COMMAND.RELABEL ||
-              node === LABEL_COMMAND.UNLABEL
-            ) {
+            if (Object.values(LABEL_COMMAND).includes(node)) {
               return node;
             }
             return null;
@@ -621,7 +622,7 @@ class GfmAutoComplete {
 
           // The `LABEL_COMMAND.RELABEL` is intentionally skipped
           // because we want to return all the labels (unfiltered) for that command.
-          if (command === LABEL_COMMAND.LABEL) {
+          if (command === LABEL_COMMAND.LABEL || command === LABEL_COMMAND.LABELS) {
             // Return labels with set: undefined.
             return data.filter((label) => !label.set);
           } else if (command === LABEL_COMMAND.UNLABEL) {
@@ -996,7 +997,7 @@ GfmAutoComplete.Issues = {
     return value.reference || '${atwho-at}${id}';
   },
   templateFunction({ id, title, reference }) {
-    return `<li><small>${reference || id}</small> ${escape(title)}</li>`;
+    return `<li><small>${escape(reference || id)}</small> ${escape(title)}</li>`;
   },
 };
 // Milestones

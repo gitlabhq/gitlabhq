@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Rails/RedundantForeignKey:
   Exclude:
     - 'app/models/alert_management/metric_image.rb'

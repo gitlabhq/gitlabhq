@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe UnsetEscalationPoliciesForAlertIncidents do
+RSpec.describe UnsetEscalationPoliciesForAlertIncidents, feature_category: :incident_management do
   let(:namespaces)          { table(:namespaces) }
   let(:projects)            { table(:projects) }
   let(:issues)              { table(:issues) }
@@ -45,7 +45,7 @@ RSpec.describe UnsetEscalationPoliciesForAlertIncidents do
   private
 
   def create_issue
-    issues.create!(project_id: project.id)
+    issues.create!(project_id: project.id, namespace_id: project.project_namespace_id)
   end
 
   def create_status(issue, policy = nil, escalations_started_at = nil)

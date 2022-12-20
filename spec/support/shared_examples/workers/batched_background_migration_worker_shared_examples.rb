@@ -125,10 +125,28 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         end
 
         context 'when no active migrations exist' do
-          it 'does nothing' do
-            expect(worker).not_to receive(:run_active_migration)
+          context 'when parallel execution is disabled' do
+            before do
+              stub_feature_flags(batched_migrations_parallel_execution: false)
+            end
 
-            worker.perform
+            it 'does nothing' do
+              expect(worker).not_to receive(:run_active_migration)
+
+              worker.perform
+            end
+          end
+
+          context 'when parallel execution is enabled' do
+            before do
+              stub_feature_flags(batched_migrations_parallel_execution: true)
+            end
+
+            it 'does nothing' do
+              expect(worker).not_to receive(:queue_migrations_for_execution)
+
+              worker.perform
+            end
           end
         end
 
@@ -136,7 +154,6 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
           let(:job_interval) { 5.minutes }
           let(:lease_timeout) { 15.minutes }
           let(:lease_key) { described_class.name.demodulize.underscore }
-          let(:interval_variance) { described_class::INTERVAL_VARIANCE }
           let(:migration_id) { 123 }
           let(:migration) do
             build(
@@ -145,52 +162,86 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
             )
           end
 
+          let(:execution_worker_class) do
+            case tracking_database
+            when :main
+              Database::BatchedBackgroundMigration::MainExecutionWorker
+            when :ci
+              Database::BatchedBackgroundMigration::CiExecutionWorker
+            end
+          end
+
           before do
             allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
               .with(connection: base_model.connection)
               .and_return(migration)
-
-            allow(migration).to receive(:interval_elapsed?).with(variance: interval_variance).and_return(true)
-            allow(migration).to receive(:reload)
           end
 
-          context 'when the calculated timeout is less than the minimum allowed' do
-            let(:minimum_timeout) { described_class::MINIMUM_LEASE_TIMEOUT }
-            let(:job_interval) { 2.minutes }
+          context 'when parallel execution is disabled' do
+            before do
+              stub_feature_flags(batched_migrations_parallel_execution: false)
+            end
 
-            it 'sets the lease timeout to the minimum value' do
-              expect_to_obtain_exclusive_lease(lease_key, timeout: minimum_timeout)
+            let(:execution_worker) { instance_double(execution_worker_class) }
 
-              expect_next_instance_of(Database::BatchedBackgroundMigration::ExecutionWorker) do |worker|
-                expect(worker).to receive(:perform).with(tracking_database, migration_id)
+            context 'when the calculated timeout is less than the minimum allowed' do
+              let(:minimum_timeout) { described_class::MINIMUM_LEASE_TIMEOUT }
+              let(:job_interval) { 2.minutes }
+
+              it 'sets the lease timeout to the minimum value' do
+                expect_to_obtain_exclusive_lease(lease_key, timeout: minimum_timeout)
+
+                expect(execution_worker_class).to receive(:new).and_return(execution_worker)
+                expect(execution_worker).to receive(:perform_work).with(tracking_database, migration_id)
+
+                expect(worker).to receive(:run_active_migration).and_call_original
+
+                worker.perform
               end
+            end
 
-              expect(worker).to receive(:run_active_migration).and_call_original
+            it 'always cleans up the exclusive lease' do
+              lease = stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
+
+              expect(lease).to receive(:try_obtain).and_return(true)
+
+              expect(worker).to receive(:run_active_migration).and_raise(RuntimeError, 'I broke')
+              expect(lease).to receive(:cancel)
+
+              expect { worker.perform }.to raise_error(RuntimeError, 'I broke')
+            end
+
+            it 'delegetes the execution to ExecutionWorker' do
+              base_model = Gitlab::Database.database_base_models[tracking_database]
+
+              expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(base_model.connection).and_yield
+              expect(execution_worker_class).to receive(:new).and_return(execution_worker)
+              expect(execution_worker).to receive(:perform_work).with(tracking_database, migration_id)
 
               worker.perform
             end
           end
 
-          it 'always cleans up the exclusive lease' do
-            lease = stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
-
-            expect(lease).to receive(:try_obtain).and_return(true)
-
-            expect(worker).to receive(:run_active_migration).and_raise(RuntimeError, 'I broke')
-            expect(lease).to receive(:cancel)
-
-            expect { worker.perform }.to raise_error(RuntimeError, 'I broke')
-          end
-
-          it 'delegetes the execution to ExecutionWorker' do
-            base_model = Gitlab::Database.database_base_models[tracking_database]
-
-            expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(base_model.connection).and_yield
-            expect_next_instance_of(Database::BatchedBackgroundMigration::ExecutionWorker) do |worker|
-              expect(worker).to receive(:perform).with(tracking_database, migration_id)
+          context 'when parallel execution is enabled' do
+            before do
+              stub_feature_flags(batched_migrations_parallel_execution: true)
             end
 
-            worker.perform
+            it 'delegetes the execution to ExecutionWorker' do
+              expect(Gitlab::Database::BackgroundMigration::BatchedMigration)
+                .to receive(:active_migrations_distinct_on_table).with(
+                  connection: base_model.connection,
+                  limit: execution_worker_class.max_running_jobs
+                ).and_return([migration])
+
+              expected_arguments = [
+                [tracking_database.to_s, migration_id]
+              ]
+
+              expect(execution_worker_class).to receive(:perform_with_capacity).with(expected_arguments)
+
+              worker.perform
+            end
           end
         end
       end
@@ -249,6 +300,8 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
     end
 
     before do
+      stub_feature_flags(execute_batched_migrations_on_schedule: true)
+
       # Create example table populated with test data to migrate.
       #
       # Test data should have two records that won't be updated:
@@ -269,80 +322,96 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         WHERE some_column = #{migration_records - 5};
       SQL
 
-      stub_feature_flags(execute_batched_migrations_on_schedule: true)
-
       stub_const('Gitlab::BackgroundMigration::ExampleDataMigration', migration_class)
     end
 
-    subject(:full_migration_run) do
-      # process all batches, then do an extra execution to mark the job as finished
-      (number_of_batches + 1).times do
-        described_class.new.perform
+    shared_examples 'batched background migration execution' do
+      subject(:full_migration_run) do
+        # process all batches, then do an extra execution to mark the job as finished
+        (number_of_batches + 1).times do
+          described_class.new.perform
 
-        travel_to((migration.interval + described_class::INTERVAL_VARIANCE).seconds.from_now)
+          travel_to((migration.interval + described_class::INTERVAL_VARIANCE).seconds.from_now)
+        end
+      end
+
+      it 'marks the migration record as finished' do
+        expect { full_migration_run }.to change { migration.reload.status }.from(1).to(3) # active -> finished
+      end
+
+      it 'creates job records for each processed batch', :aggregate_failures do
+        expect { full_migration_run }.to change { migration.reload.batched_jobs.count }.from(0)
+
+        final_min_value = migration.batched_jobs.order(id: :asc).reduce(1) do |next_min_value, batched_job|
+          expect(batched_job.min_value).to eq(next_min_value)
+
+          batched_job.max_value + 1
+        end
+
+        final_max_value = final_min_value - 1
+        expect(final_max_value).to eq(migration_records)
+      end
+
+      it 'marks all job records as succeeded', :aggregate_failures do
+        expect { full_migration_run }.to change { migration.reload.batched_jobs.count }.from(0)
+
+        expect(migration.batched_jobs).to all(be_succeeded)
+      end
+
+      it 'updates matching records in the range', :aggregate_failures do
+        expect { full_migration_run }
+          .to change { example_data.where('status = 1 AND some_column <> 0').count }
+          .from(migration_records).to(1)
+
+        record_outside_range = example_data.last
+
+        expect(record_outside_range.status).to eq(1)
+        expect(record_outside_range.some_column).not_to eq(0)
+      end
+
+      it 'does not update non-matching records in the range' do
+        expect { full_migration_run }.not_to change { example_data.where('status <> 1 AND some_column <> 0').count }
+      end
+
+      context 'health status' do
+        subject(:migration_run) { described_class.new.perform }
+
+        it 'puts migration on hold when there is autovaccum activity on related tables' do
+          swapout_view_for_table(:postgres_autovacuum_activity, connection: connection)
+          create(
+            :postgres_autovacuum_activity,
+            table: migration.table_name,
+            table_identifier: "public.#{migration.table_name}"
+          )
+
+          expect { migration_run }.to change { migration.reload.on_hold? }.from(false).to(true)
+        end
+
+        it 'puts migration on hold when the pending WAL count is above the limit' do
+          sql = Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::WriteAheadLog::PENDING_WAL_COUNT_SQL
+          limit = Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::WriteAheadLog::LIMIT
+
+          expect(connection).to receive(:execute).with(sql).and_return([{ 'pending_wal_count' => limit + 1 }])
+
+          expect { migration_run }.to change { migration.reload.on_hold? }.from(false).to(true)
+        end
       end
     end
 
-    it 'marks the migration record as finished' do
-      expect { full_migration_run }.to change { migration.reload.status }.from(1).to(3) # active -> finished
-    end
-
-    it 'creates job records for each processed batch', :aggregate_failures do
-      expect { full_migration_run }.to change { migration.reload.batched_jobs.count }.from(0)
-
-      final_min_value = migration.batched_jobs.reduce(1) do |next_min_value, batched_job|
-        expect(batched_job.min_value).to eq(next_min_value)
-
-        batched_job.max_value + 1
+    context 'when parallel execution is disabled' do
+      before do
+        stub_feature_flags(batched_migrations_parallel_execution: false)
       end
 
-      final_max_value = final_min_value - 1
-      expect(final_max_value).to eq(migration_records)
+      it_behaves_like 'batched background migration execution'
     end
 
-    it 'marks all job records as succeeded', :aggregate_failures do
-      expect { full_migration_run }.to change { migration.reload.batched_jobs.count }.from(0)
-
-      expect(migration.batched_jobs).to all(be_succeeded)
-    end
-
-    it 'updates matching records in the range', :aggregate_failures do
-      expect { full_migration_run }
-        .to change { example_data.where('status = 1 AND some_column <> 0').count }
-        .from(migration_records).to(1)
-
-      record_outside_range = example_data.last
-
-      expect(record_outside_range.status).to eq(1)
-      expect(record_outside_range.some_column).not_to eq(0)
-    end
-
-    it 'does not update non-matching records in the range' do
-      expect { full_migration_run }.not_to change { example_data.where('status <> 1 AND some_column <> 0').count }
-    end
-
-    context 'health status' do
-      subject(:migration_run) { described_class.new.perform }
-
-      it 'puts migration on hold when there is autovaccum activity on related tables' do
-        swapout_view_for_table(:postgres_autovacuum_activity, connection: connection)
-        create(
-          :postgres_autovacuum_activity,
-          table: migration.table_name,
-          table_identifier: "public.#{migration.table_name}"
-        )
-
-        expect { migration_run }.to change { migration.reload.on_hold? }.from(false).to(true)
+    context 'when parallel execution is enabled', :sidekiq_inline do
+      before do
+        stub_feature_flags(batched_migrations_parallel_execution: true)
       end
 
-      it 'puts migration on hold when the pending WAL count is above the limit' do
-        sql = Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::WriteAheadLog::PENDING_WAL_COUNT_SQL
-        limit = Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::WriteAheadLog::LIMIT
-
-        expect(connection).to receive(:execute).with(sql).and_return([{ 'pending_wal_count' => limit + 1 }])
-
-        expect { migration_run }.to change { migration.reload.on_hold? }.from(false).to(true)
-      end
+      it_behaves_like 'batched background migration execution'
     end
   end
 end

@@ -1,0 +1,39 @@
+fragment ReadyToMergeMergeRequest on MergeRequest {
+  id
+  detailedMergeStatus
+  autoMergeEnabled
+  shouldRemoveSourceBranch
+  forceRemoveSourceBranch
+  defaultMergeCommitMessage
+  defaultSquashCommitMessage
+  squash
+  squashOnMerge
+  availableAutoMergeStrategies
+  hasCi
+  mergeable
+  mergeWhenPipelineSucceeds
+  commitCount
+  diffHeadSha
+  userPermissions {
+    canMerge
+    removeSourceBranch
+    updateMergeRequest
+  }
+  targetBranch
+  mergeError
+  commitsWithoutMergeCommits {
+    nodes {
+      id
+      sha
+      shortId
+      title
+      message
+    }
+  }
+  headPipeline {
+    id
+    status
+    path
+    active
+  }
+}

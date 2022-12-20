@@ -4,6 +4,7 @@ classes:
 - DeploymentCluster
 feature_categories:
 - kubernetes_management
-description: (Deprecated) Join table between `deployments` and `clusters`
+description: "(Deprecated) Join table between `deployments` and `clusters`"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24235
 milestone: '12.8'
+gitlab_schema: gitlab_main

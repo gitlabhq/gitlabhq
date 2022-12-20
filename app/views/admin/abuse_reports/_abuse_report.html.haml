@@ -24,11 +24,13 @@
       = markdown_field(abuse_report, :message)
   %td
     - if user
-      = link_to _('Remove user & report'), admin_abuse_report_path(abuse_report, remove_user: true),
-        data: { confirm: _("USER %{user} WILL BE REMOVED! Are you sure?") % { user: user.name }, confirm_btn_variant: "danger" }, aria: { label: _('Remove user & report') }, remote: true, method: :delete, class: "gl-button btn btn-block btn-danger js-remove-tr"
+      = render Pajamas::ButtonComponent.new(href: admin_abuse_report_path(abuse_report, remove_user: true), variant: :danger, block: true, button_options: { data: { confirm: _("USER %{user} WILL BE REMOVED! Are you sure?") % { user: user.name }, confirm_btn_variant: "danger", remote: true, method: :delete }, class: "js-remove-tr gl-mb-5" }) do
+        = _('Remove user & report')
     - if user && !user.blocked?
-      = link_to _('Block user'), block_admin_user_path(user), data: { confirm: _('USER WILL BE BLOCKED! Are you sure?') }, aria: { label: _('Block user') }, method: :put, class: "gl-button btn btn-default btn-block"
+      = render Pajamas::ButtonComponent.new(href: block_admin_user_path(user), block: true, button_options: { data: { confirm: _('USER WILL BE BLOCKED! Are you sure?'), method: :put }, class: "gl-mb-5" }) do
+        = _('Block user')
     - else
-      .gl-button.btn.btn-default.disabled.btn-block
+      = render Pajamas::ButtonComponent.new(href: block_admin_user_path(user), block: true, disabled: true, button_options: { data: { confirm: _('USER WILL BE BLOCKED! Are you sure?'), method: :put }, class: "gl-mb-5" }) do
         = _('Already blocked')
-    = link_to _('Remove report'), [:admin, abuse_report], remote: true, method: :delete, class: "gl-button btn btn-default btn-block btn-close js-remove-tr"
+    = render Pajamas::ButtonComponent.new(href: [:admin, abuse_report], block: true, button_options: { data: { remote: true, method: :delete }, class: "js-remove-tr" }) do
+      = _('Remove report')

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'rendering project pipeline statistics' do
+RSpec.describe 'rendering project pipeline statistics', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

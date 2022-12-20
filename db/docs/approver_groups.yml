@@ -8,3 +8,4 @@ feature_categories:
 description: Group approvers of given merge request
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/743
 milestone: '8.13'
+gitlab_schema: gitlab_main

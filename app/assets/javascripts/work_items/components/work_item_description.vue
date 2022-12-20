@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlFormGroup } from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormGroup } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
@@ -19,6 +19,7 @@ import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
 export default {
   components: {
     EditedAt,
+    GlAlert,
     GlButton,
     GlFormGroup,
     MarkdownEditor,
@@ -54,6 +55,7 @@ export default {
       isSubmittingWithKeydown: false,
       descriptionText: '',
       descriptionHtml: '',
+      conflictedDescription: '',
     };
   },
   apollo: {
@@ -68,11 +70,17 @@ export default {
         return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
       },
       skip() {
-        return !this.workItemId;
+        return !this.queryVariables.id && !this.queryVariables.iid;
       },
       result() {
-        this.descriptionText = this.workItemDescription?.description;
-        this.descriptionHtml = this.workItemDescription?.descriptionHtml;
+        if (this.isEditing) {
+          if (this.descriptionText !== this.workItemDescription?.description) {
+            this.conflictedDescription = this.workItemDescription?.description;
+          }
+        } else {
+          this.descriptionText = this.workItemDescription?.description;
+          this.descriptionHtml = this.workItemDescription?.descriptionHtml;
+        }
       },
       error() {
         this.$emit('error', i18n.fetchError);
@@ -93,6 +101,9 @@ export default {
     },
     canEdit() {
       return this.workItem?.userPermissions?.updateWorkItem || false;
+    },
+    hasConflicts() {
+      return Boolean(this.conflictedDescription);
     },
     tracking() {
       return {
@@ -196,6 +207,7 @@ export default {
 
         this.isEditing = false;
         clearDraft(this.autosaveKey);
+        this.conflictedDescription = '';
       } catch (error) {
         this.$emit('error', error.message);
         Sentry.captureException(error);
@@ -224,7 +236,7 @@ export default {
       label-for="work-item-description"
     >
       <markdown-editor
-        v-if="glFeatures.workItemsMvc2"
+        v-if="glFeatures.workItemsMvc"
         class="gl-my-3 common-note-form"
         :value="descriptionText"
         :render-markdown-path="markdownPreviewPath"
@@ -235,6 +247,7 @@ export default {
         form-field-name="work-item-description"
         enable-autocomplete
         init-on-autofocus
+        use-bottom-toolbar
         @input="setDescriptionText"
         @keydown.meta.enter="updateWorkItem"
         @keydown.ctrl.enter="updateWorkItem"
@@ -246,7 +259,7 @@ export default {
         :is-submitting="isSubmitting"
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="$options.markdownDocsPath"
-        class="gl-p-3 bordered-box gl-mt-5"
+        class="gl-px-3 bordered-box gl-mt-5"
       >
         <template #textarea>
           <textarea
@@ -267,17 +280,59 @@ export default {
         </template>
       </markdown-field>
       <div class="gl-display-flex">
-        <gl-button
-          category="primary"
-          variant="confirm"
-          :loading="isSubmitting"
-          data-testid="save-description"
-          @click="updateWorkItem"
-          >{{ __('Save') }}
-        </gl-button>
-        <gl-button category="tertiary" class="gl-ml-3" data-testid="cancel" @click="cancelEditing"
-          >{{ __('Cancel') }}
-        </gl-button>
+        <gl-alert
+          v-if="hasConflicts"
+          :dismissible="false"
+          variant="danger"
+          class="gl-w-full"
+          data-testid="work-item-description-conflicts"
+        >
+          <p>
+            {{
+              s__(
+                "WorkItem|Someone edited the description at the same time you did. If you save it will overwrite their changes. Please confirm you'd like to save your edits.",
+              )
+            }}
+          </p>
+          <details class="gl-mb-5">
+            <summary class="gl-text-blue-500">{{ s__('WorkItem|View current version') }}</summary>
+            <textarea
+              class="note-textarea js-gfm-input js-autosize markdown-area gl-p-3"
+              readonly
+              :value="conflictedDescription"
+            ></textarea>
+          </details>
+          <template #actions>
+            <gl-button
+              category="primary"
+              variant="confirm"
+              :loading="isSubmitting"
+              data-testid="save-description"
+              @click="updateWorkItem"
+              >{{ s__('WorkItem|Save and overwrite') }}
+            </gl-button>
+            <gl-button
+              category="secondary"
+              class="gl-ml-3"
+              data-testid="cancel"
+              @click="cancelEditing"
+              >{{ s__('WorkItem|Discard changes') }}
+            </gl-button>
+          </template>
+        </gl-alert>
+        <template v-else>
+          <gl-button
+            category="primary"
+            variant="confirm"
+            :loading="isSubmitting"
+            data-testid="save-description"
+            @click="updateWorkItem"
+            >{{ __('Save') }}
+          </gl-button>
+          <gl-button category="tertiary" class="gl-ml-3" data-testid="cancel" @click="cancelEditing"
+            >{{ __('Cancel') }}
+          </gl-button>
+        </template>
       </div>
     </gl-form-group>
     <work-item-description-rendered

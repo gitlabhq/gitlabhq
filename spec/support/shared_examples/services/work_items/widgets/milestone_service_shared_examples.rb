@@ -23,7 +23,7 @@ RSpec.shared_examples "setting work item's milestone" do
 
     it "sets the work item's milestone" do
       expect { execute_callback }
-        .to change(work_item, :milestone)
+        .to change { work_item.milestone }
         .from(nil)
         .to(group_milestone)
     end
@@ -34,7 +34,7 @@ RSpec.shared_examples "setting work item's milestone" do
 
     it "sets the work item's milestone" do
       expect { execute_callback }
-        .to change(work_item, :milestone)
+        .to change { work_item.milestone }
         .from(nil)
         .to(project_milestone)
     end

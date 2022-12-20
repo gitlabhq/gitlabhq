@@ -6,7 +6,7 @@ module API
 
     before { check_snippets_enabled }
 
-    feature_category :snippets
+    feature_category :source_code_management
 
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'

@@ -7,3 +7,4 @@ feature_categories:
 description: Represents a Terraform state file at a point in time, with a corresponding file stored in object storage
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35211
 milestone: '13.4'
+gitlab_schema: gitlab_main

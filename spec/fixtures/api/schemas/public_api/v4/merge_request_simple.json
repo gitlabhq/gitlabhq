@@ -1,26 +1,59 @@
 {
   "type": "object",
-  "properties" : {
-    "properties" : {
-      "id": { "type": "integer" },
-      "iid": { "type": "integer" },
-      "project_id": { "type": "integer" },
-      "title": { "type": "string" },
-      "description": { "type": ["string", "null"] },
-      "state": { "type": "string" },
-      "created_at": { "type": "string", "format": "date-time" },
-      "updated_at": { "type": "string", "format": "date-time" },
-      "web_url": { "type": "uri" }
+  "properties": {
+    "id": {
+      "type": "integer"
     },
-    "required": [
-      "id", "iid", "project_id", "title", "description",
-      "state", "created_at", "updated_at", "web_url"
-    ],
+    "iid": {
+      "type": "integer"
+    },
+    "project_id": {
+      "type": "integer"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "state": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "web_url": {
+      "type": "string",
+      "format": "uri"
+    },
     "head_pipeline": {
       "oneOf": [
-        { "type": "null" },
-        { "$ref": "pipeline/detail.json" }
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "pipeline/detail.json"
+        }
       ]
     }
-  }
+  },
+  "required": [
+    "id",
+    "iid",
+    "project_id",
+    "title",
+    "description",
+    "state",
+    "created_at",
+    "updated_at",
+    "web_url"
+  ]
 }

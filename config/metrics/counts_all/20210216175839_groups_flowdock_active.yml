@@ -7,7 +7,9 @@ product_stage: manage
 product_group: integrations
 product_category: integrations
 value_type: number
-status: active
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102394
+milestone_removed: '15.7'
 time_frame: all
 data_source: database
 distribution:

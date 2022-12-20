@@ -25,11 +25,7 @@ module BlobViewer
     private
 
     def parse_blob_data
-      if Feature.enabled?(:metrics_dashboard_exhaustive_validations, project)
-        exhaustive_metrics_dashboard_validation
-      else
-        old_metrics_dashboard_validation
-      end
+      old_metrics_dashboard_validation
     end
 
     def old_metrics_dashboard_validation
@@ -40,15 +36,6 @@ module BlobViewer
       ["YAML syntax: #{e.message}"]
     rescue ActiveModel::ValidationError => e
       e.model.errors.messages.map { |messages| messages.join(': ') }
-    end
-
-    def exhaustive_metrics_dashboard_validation
-      yaml = ::Gitlab::Config::Loader::Yaml.new(blob.data).load_raw!
-      Gitlab::Metrics::Dashboard::Validator
-        .errors(yaml, dashboard_path: blob.path, project: project)
-        .map(&:message)
-    rescue Gitlab::Config::Loader::FormatError => e
-      [e.message]
     end
   end
 end

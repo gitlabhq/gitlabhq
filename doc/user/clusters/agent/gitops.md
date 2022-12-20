@@ -9,6 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0, the `resource_inclusions` and `resource_exclusions` attributes were removed and `reconcile_timeout`, `dry_run_strategy`, `prune`, `prune_timeout`, `prune_propagation_policy`, and `inventory_policy` attributes were added.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/346567) from GitLab Premium to GitLab Free in 15.3.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346585) to make the `id` attribute optional in GitLab 15.7.
+> - Specifying a branch, tag, or commit reference to fetch the Kubernetes manifest files [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4516) in GitLab 15.7.
 
 With GitOps, you can manage containerized clusters and applications from a Git repository that:
 
@@ -64,6 +66,10 @@ The following snippet shows an example of the possible keys and values for the G
 gitops:
   manifest_projects:
   - id: gitlab-org/cluster-integration/gitlab-agent
+    ref: # either `branch`, `tag` or `commit` can be specified
+      branch: production
+      # commit: <mysha>
+      # tag: v1.0
     default_namespace: my-ns
     paths:
       # Read all YAML files from this directory.
@@ -83,7 +89,11 @@ gitops:
 | Keyword | Description |
 |--|--|
 | `manifest_projects` | Projects where your Kubernetes manifests are stored. The agent monitors the files in the repositories in these projects. When manifest files change, the agent deploys the changes to the cluster. |
-| `id` | Required. Path to a Git repository that has Kubernetes manifests in YAML or JSON format. No authentication mechanisms are currently supported. |
+| `id` | Path to a Git repository that has Kubernetes manifests in YAML or JSON format. No authentication mechanisms are supported. Default is the agent configuration repository. |
+| `ref` | Optional. Git reference in the configured Git repository to fetch the Kubernetes manifest files from. If not specified or empty, the default branch is used. If specified, it must contain either `branch`, `tag`, or `commit`. |
+| `ref.branch` | Branch name in the configured Git repository to fetch the Kubernetes manifest files from. |
+| `ref.tag` | Tag name in the configured Git repository to fetch the Kubernetes manifest files from. |
+| `ref.commit` | Commit SHA in the configured Git repository to fetch the Kubernetes manifest files from. |
 | `default_namespace` | Namespace to use if not set explicitly in object manifest. Also used for inventory `ConfigMap` objects. |
 | `paths` | Repository paths to scan for manifest files. Directories with names that start with a dot `(.)` are ignored. |
 | `paths[].glob` | Required. See [doublestar](https://github.com/bmatcuk/doublestar#about) and [the match function](https://pkg.go.dev/github.com/bmatcuk/doublestar/v2#Match) for globbing rules. |

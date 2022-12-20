@@ -117,7 +117,7 @@ This template should be used in a new, empty project, with a `.gitlab-ci.yml` fi
 
 ```yaml
 include:
-  - template: Secure-Binaries.gitlab-ci.yml
+  - template: Security/Secure-Binaries.gitlab-ci.yml
 ```
 
 The pipeline downloads the Docker images needed for the Security Scanners and saves them as

@@ -7,3 +7,4 @@ feature_categories:
 description: Stores a subset of the Finding data which is used to optimize the pipeline security tab
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40368
 milestone: '13.4'
+gitlab_schema: gitlab_main

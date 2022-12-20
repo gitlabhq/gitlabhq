@@ -26,7 +26,7 @@ require 'erb'
 #
 # See the MarkdownFeature class for setup details.
 
-RSpec.describe 'GitLab Markdown', :aggregate_failures do
+RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :team_planning do
   include Capybara::Node::Matchers
   include MarkupHelper
   include MarkdownMatchers
@@ -289,6 +289,13 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures do
 
       aggregate_failures 'KrokiFilter' do
         expect(doc).to parse_kroki
+      end
+
+      aggregate_failures 'AttributeFilter' do
+        img = doc.at_css('img[alt="Sized Image"]')
+
+        expect(img.attr('width')).to eq('75%')
+        expect(img.attr('height')).to eq('100')
       end
     end
   end

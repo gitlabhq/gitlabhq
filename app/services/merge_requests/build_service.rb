@@ -224,6 +224,7 @@ module MergeRequests
     #
     def assign_title_and_description
       assign_description_from_repository_template
+      replace_variables_in_description
       assign_title_and_description_from_commits
       merge_request.title ||= title_from_issue if target_project.issues_enabled? || target_project.external_issue_tracker
       merge_request.title ||= source_branch.titleize.humanize
@@ -316,6 +317,15 @@ module MergeRequests
       return unless repository_template.present?
 
       merge_request.description = repository_template.content
+    end
+
+    def replace_variables_in_description
+      return unless merge_request.description.present?
+
+      merge_request.description = ::Gitlab::MergeRequests::MessageGenerator.new(
+        merge_request: merge_request,
+        current_user: current_user
+      ).new_mr_description
     end
 
     def issue_iid

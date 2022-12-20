@@ -68,8 +68,8 @@ RSpec.shared_examples 'processes one firing and one resolved prometheus alerts' 
     expect(Gitlab::AppLogger).not_to receive(:warn)
 
     expect { subject }
-      .to change(AlertManagement::Alert, :count).by(1)
-      .and change(Note, :count).by(1)
+      .to change { AlertManagement::Alert.count }.by(1)
+      .and change { Note.count }.by(1)
 
     expect(subject).to be_success
     expect(subject.payload).to eq({})

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe UpdateStartDateForIterationsCadences, :freeze_time do
+RSpec.describe UpdateStartDateForIterationsCadences, :freeze_time, feature_category: :team_planning do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:sprints) { table(:sprints) }

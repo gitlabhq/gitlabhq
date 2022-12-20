@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User views incident" do
+RSpec.describe "User views incident", feature_category: :incident_management do
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:developer) { create(:user) }
@@ -57,7 +57,7 @@ RSpec.describe "User views incident" do
         it 'shows incident actions', :js do
           click_button 'Incident actions'
 
-          expect(page).to have_link 'Report abuse'
+          expect(page).to have_link 'Report abuse to administrator'
         end
       end
     end

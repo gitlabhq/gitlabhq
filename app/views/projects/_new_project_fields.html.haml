@@ -10,6 +10,7 @@
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
     = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { qa_selector: 'project_name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
+    #project_name_error.gl-field-error.hidden
   .form-group.project-path.col-sm-6.gl-pr-0
     = f.label :namespace_id, class: 'label-bold' do
       %span= _('Project URL')
@@ -18,6 +19,8 @@
         - namespace_id = namespace_id_from(params)
         .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path || @current_user_group&.full_path,
           namespace_id: namespace_id || @current_user_group&.id,
+          input_id: 'project_namespace_id',
+          input_name: 'project[namespace_id]',
           root_url: root_url,
           track_label: track_label,
           user_namespace_id: current_user.namespace.id } }

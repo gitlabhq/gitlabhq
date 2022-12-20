@@ -6,7 +6,6 @@ module API
     class Kubernetes < ::API::Base
       include Gitlab::Utils::StrongMemoize
 
-      feature_category :kubernetes_management
       before do
         check_feature_enabled
         authenticate_gitlab_kas_request!
@@ -86,7 +85,7 @@ module API
             detail 'Retrieves agent info for the given token'
           end
           route_setting :authentication, cluster_agent_token_allowed: true
-          get '/agent_info', urgency: :low do
+          get '/agent_info', feature_category: :kubernetes_management, urgency: :low do
             project = agent.project
 
             status 200
@@ -104,7 +103,7 @@ module API
             detail 'Retrieves project info (if authorized)'
           end
           route_setting :authentication, cluster_agent_token_allowed: true
-          get '/project_info', urgency: :low do
+          get '/project_info', feature_category: :kubernetes_management, urgency: :low do
             project = find_project(params[:id])
 
             not_found! unless agent_has_access_to_project?(project)
@@ -127,7 +126,7 @@ module API
             requires :agent_id, type: Integer, desc: 'ID of the configured Agent'
             requires :agent_config, type: JSON, desc: 'Configuration for the Agent'
           end
-          post '/' do
+          post '/', feature_category: :kubernetes_management do
             agent = ::Clusters::Agent.find(params[:agent_id])
 
             ::Clusters::Agents::RefreshAuthorizationService.new(agent, config: params[:agent_config]).execute
@@ -147,10 +146,10 @@ module API
             end
 
             optional :unique_counters, type: Hash do
-              optional :agent_users_using_ci_tunnel, type: Set[Integer], desc: 'A set of user ids that have interacted a CI Tunnel to'
+              optional :agent_users_using_ci_tunnel, type: Array[Integer], desc: 'An array of user ids that have interacted with CI Tunnel'
             end
           end
-          post '/' do
+          post '/', feature_category: :kubernetes_management do
             increment_count_events
             increment_unique_events
 

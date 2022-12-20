@@ -192,7 +192,7 @@ module Gitlab
         auto_submitted = mail.header['Auto-Submitted']&.value
 
         # Mail::Field#value would strip leading and trailing whitespace
-        # See also https://tools.ietf.org/html/rfc3834
+        # See also https://www.rfc-editor.org/rfc/rfc3834
         auto_submitted && auto_submitted != 'no'
       end
 

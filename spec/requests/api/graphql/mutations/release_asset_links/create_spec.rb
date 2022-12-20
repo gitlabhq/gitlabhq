@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Creation of a new release asset link' do
+RSpec.describe 'Creation of a new release asset link', feature_category: :release_orchestration do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :private, :repository) }

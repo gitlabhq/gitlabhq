@@ -221,7 +221,7 @@ Settings.gitlab['issue_closing_pattern'] = '\b((?:[Cc]los(?:e[sd]?|ing)|\b[Ff]ix
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['graphql_timeout'] ||= 30
-Settings.gitlab['max_attachment_size'] ||= 10
+Settings.gitlab['max_attachment_size'] ||= 100
 Settings.gitlab['session_expire_delay'] ||= 10080
 Settings.gitlab['unauthenticated_session_expire_delay'] ||= 2.hours.to_i
 Settings.gitlab.default_projects_features['issues']             = true if Settings.gitlab.default_projects_features['issues'].nil?
@@ -440,6 +440,17 @@ Settings.mattermost['enabled'] = false if Settings.mattermost['enabled'].nil?
 Settings.mattermost['host'] = nil unless Settings.mattermost.enabled
 
 #
+# Jira Connect (GitLab.com for Jira Cloud App)
+#
+Settings['jira_connect'] ||= Settingslogic.new({})
+
+Settings.jira_connect['atlassian_js_url'] ||= 'https://connect-cdn.atl-paas.net/all.js'
+Settings.jira_connect['enable_public_keys_storage'] ||= false
+Settings.jira_connect['enable_public_keys_storage'] = true if Gitlab.com?
+Settings.jira_connect['enforce_jira_base_url_https'] = true if Settings.jira_connect['enforce_jira_base_url_https'].nil?
+Settings.jira_connect['additional_iframe_ancestors'] ||= []
+
+#
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})
@@ -515,6 +526,9 @@ Settings.cron_jobs['remove_unaccepted_member_invites_worker']['job_class'] = 'Re
 Settings.cron_jobs['prune_old_events_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['prune_old_events_worker']['cron'] ||= '0 */6 * * *'
 Settings.cron_jobs['prune_old_events_worker']['job_class'] = 'PruneOldEventsWorker'
+Settings.cron_jobs['gitlab_export_prune_project_export_jobs_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['gitlab_export_prune_project_export_jobs_worker']['cron'] ||= '30 3 * * */7'
+Settings.cron_jobs['gitlab_export_prune_project_export_jobs_worker']['job_class'] = 'Gitlab::Export::PruneProjectExportJobsWorker'
 Settings.cron_jobs['trending_projects_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['trending_projects_worker']['cron'] = '0 1 * * *'
 Settings.cron_jobs['trending_projects_worker']['job_class'] = 'TrendingProjectsWorker'
@@ -718,9 +732,6 @@ Gitlab.ee do
   Settings.cron_jobs['geo_repository_verification_secondary_scheduler_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['geo_repository_verification_secondary_scheduler_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['geo_repository_verification_secondary_scheduler_worker']['job_class'] ||= 'Geo::RepositoryVerification::Secondary::SchedulerWorker'
-  Settings.cron_jobs['geo_container_repository_sync_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['geo_container_repository_sync_worker']['cron'] ||= '*/1 * * * *'
-  Settings.cron_jobs['geo_container_repository_sync_worker']['job_class'] ||= 'Geo::ContainerRepositorySyncDispatchWorker'
   Settings.cron_jobs['historical_data_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['historical_data_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['historical_data_worker']['job_class'] = 'HistoricalDataWorker'
@@ -809,6 +820,9 @@ Gitlab.ee do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= Settingslogic.new({})
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['cron'] ||= "30 5 * * 0"
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['job_class'] = 'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker'
+    Settings.cron_jobs['notify_seats_exceeded_batch_worker'] ||= Settingslogic.new({})
+    Settings.cron_jobs['notify_seats_exceeded_batch_worker']['cron'] ||= '0 3 * * *'
+    Settings.cron_jobs['notify_seats_exceeded_batch_worker']['job_class'] ||= 'GitlabSubscriptions::NotifySeatsExceededBatchWorker'
   end
 end
 
@@ -1039,6 +1053,12 @@ Settings.monitoring.web_exporter['tls_key_path'] ||= nil
 Settings['prometheus'] ||= Settingslogic.new({})
 Settings.prometheus['enabled'] ||= false
 Settings.prometheus['server_address'] ||= nil
+
+#
+# Bullet settings
+#
+Settings['bullet'] ||= Settingslogic.new({})
+Settings.bullet['enabled'] ||= Rails.env.development?
 
 #
 # Shutdown settings

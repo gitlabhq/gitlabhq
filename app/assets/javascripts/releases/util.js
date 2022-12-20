@@ -15,7 +15,8 @@ const convertScalarProperties = (graphQLRelease) =>
     'historicalRelease',
   ]);
 
-const convertDateProperties = ({ releasedAt }) => ({
+const convertDateProperties = ({ createdAt, releasedAt }) => ({
+  createdAt: new Date(createdAt),
   releasedAt: new Date(releasedAt),
 });
 

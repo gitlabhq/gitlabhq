@@ -7,3 +7,4 @@ feature_categories:
 description: Mirrors some data from the `main` database into the `ci` database so that we can join directly in a single query
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75621
 milestone: '14.6'
+gitlab_schema: gitlab_ci

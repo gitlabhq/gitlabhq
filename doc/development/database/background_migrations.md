@@ -236,7 +236,7 @@ Next we need a post-deployment migration that schedules the migration for
 existing data.
 
 ```ruby
-class ScheduleExtractIntegrationsUrl < Gitlab::Database::Migration[2.0]
+class ScheduleExtractIntegrationsUrl < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   MIGRATION = 'ExtractIntegrationsUrl'
@@ -263,7 +263,7 @@ jobs and manually run on any un-migrated rows. Such a migration would look like
 this:
 
 ```ruby
-class ConsumeRemainingExtractIntegrationsUrlJobs < Gitlab::Database::Migration[2.0]
+class ConsumeRemainingExtractIntegrationsUrlJobs < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up
@@ -412,7 +412,7 @@ When looking at the batch execution time versus the delay time, the execution ti
 should fit comfortably within the delay time for a few reasons:
 
 - To allow for a variance in query times.
-- To allow autovacuum to catch up after periods of high churn.
+- To allow `autovacuum` to catch up after periods of high churn.
 
 Never try to optimize by fully filling the delay window even if you are confident
 the queries themselves have no timing variance.

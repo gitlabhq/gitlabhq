@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue rebalancing' do
+RSpec.describe 'Issue rebalancing', feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:user) { create(:user) }
@@ -41,13 +41,13 @@ RSpec.describe 'Issue rebalancing' do
     it 'shows an alert in project issues list with manual sort', :js do
       visit project_issues_path(project, sort: 'relative_position')
 
-      expect(page).to have_selector('.flash-notice', text: alert_message_regex, count: 1)
+      expect(page).to have_selector('.gl-alert-info', text: alert_message_regex, count: 1)
     end
 
     it 'shows an alert in group issues list with manual sort', :js do
       visit issues_group_path(group, sort: 'relative_position')
 
-      expect(page).to have_selector('.flash-notice', text: alert_message_regex, count: 1)
+      expect(page).to have_selector('.gl-alert-info', text: alert_message_regex, count: 1)
     end
 
     it 'does not show an alert in project issues list with other sorts' do

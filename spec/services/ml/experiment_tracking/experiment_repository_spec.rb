@@ -59,10 +59,11 @@ RSpec.describe ::Ml::ExperimentTracking::ExperimentRepository do
 
   describe '#create!' do
     let(:name) { 'hello' }
+    let(:tags) { nil }
 
-    subject { repository.create!(name) }
+    subject { repository.create!(name, tags) }
 
-    it 'creates the candidate' do
+    it 'creates the experiment' do
       expect { subject }.to change { repository.all.size }.by(1)
     end
 
@@ -74,11 +75,45 @@ RSpec.describe ::Ml::ExperimentTracking::ExperimentRepository do
       end
     end
 
+    context 'when has tags' do
+      let(:tags) { [{ key: 'hello', value: 'world' }] }
+
+      it 'creates the experiment with tag' do
+        expect(subject.metadata.length).to eq(1)
+      end
+    end
+
     context 'when name is missing' do
       let(:name) { nil }
 
       it 'throws error' do
         expect { subject }.to raise_error(ActiveRecord::ActiveRecordError)
+      end
+    end
+  end
+
+  describe '#add_tag!' do
+    let(:props) { { name: 'abc', value: 'def' } }
+
+    subject { repository.add_tag!(experiment, props[:name], props[:value]) }
+
+    it 'adds a new tag' do
+      expect { subject }.to change { experiment.reload.metadata.size }.by(1)
+    end
+
+    context 'when name missing' do
+      let(:props) { { value: 1234 } }
+
+      it 'throws RecordInvalid' do
+        expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'when tag was already added' do
+      it 'throws RecordInvalid' do
+        repository.add_tag!(experiment, 'new', props[:value])
+
+        expect { repository.add_tag!(experiment, 'new', props[:value]) }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end

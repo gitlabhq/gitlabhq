@@ -75,25 +75,6 @@ RSpec.describe Markup::RenderingService do
 
         is_expected.to eq(expected_html)
       end
-
-      context 'when renderer returns an error' do
-        before do
-          allow(Banzai).to receive(:render).and_raise(StandardError, "An error")
-        end
-
-        it 'returns html (rendered by ActionView:TextHelper)' do
-          is_expected.to eq('<p>Noël</p>')
-        end
-
-        it 'logs the error' do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-            instance_of(StandardError),
-            project_id: context[:project].id, file_name: 'foo.md'
-          )
-
-          subject
-        end
-      end
     end
 
     context 'when file is asciidoc file' do
@@ -128,38 +109,6 @@ RSpec.describe Markup::RenderingService do
         expect(Gitlab::OtherMarkup).to receive(:render).with(file_name, text, context) { expected_html }
 
         is_expected.to eq(expected_html)
-      end
-    end
-
-    context 'when rendering takes too long' do
-      let(:file_name) { 'foo.bar' }
-
-      before do
-        stub_const("Markup::RenderingService::RENDER_TIMEOUT", 0.1)
-        allow(Gitlab::OtherMarkup).to receive(:render) do
-          sleep(0.2)
-          text
-        end
-      end
-
-      it 'times out' do
-        expect(Gitlab::RenderTimeout).to receive(:timeout).and_call_original
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-          instance_of(Timeout::Error),
-          project_id: context[:project].id, file_name: file_name
-        )
-
-        is_expected.to eq("<p>#{text}</p>")
-      end
-
-      context 'when markup_rendering_timeout is disabled' do
-        it 'waits until the execution completes' do
-          stub_feature_flags(markup_rendering_timeout: false)
-
-          expect(Gitlab::RenderTimeout).not_to receive(:timeout)
-
-          is_expected.to eq(text)
-        end
       end
     end
   end

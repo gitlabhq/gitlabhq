@@ -21,6 +21,9 @@ module Timelogs
           }, 404)
       end
 
+      return error(_("Spent at can't be a future date and time."), 404) if spent_at.future?
+      return error(_("Time spent can't be zero."), 404) if time_spent == 0
+
       issue = issuable if issuable.is_a?(Issue)
       merge_request = issuable if issuable.is_a?(MergeRequest)
 

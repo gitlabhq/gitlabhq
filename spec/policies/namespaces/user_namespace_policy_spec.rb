@@ -35,6 +35,13 @@ RSpec.describe Namespaces::UserNamespacePolicy do
       it { is_expected.to be_disallowed(:create_projects) }
       it { is_expected.to be_disallowed(:transfer_projects) }
     end
+
+    context 'bot user' do
+      let(:owner) { create(:user, :project_bot) }
+
+      it { is_expected.to be_disallowed(:create_projects) }
+      it { is_expected.to be_disallowed(:transfer_projects) }
+    end
   end
 
   context 'admin' do

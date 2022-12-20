@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project > Tags', :js do
+RSpec.describe 'Project > Tags', :js, feature_category: :source_code_management do
   include DropzoneHelper
 
   let_it_be(:user) { create(:user) }

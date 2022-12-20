@@ -287,8 +287,7 @@ table {
 
 .discussion-reply-holder {
   .reply-placeholder-text-field {
-    font-family: $monospace-font;
-    font-size: $gl-font-size-monospace;
+    @include gl-font-monospace;
     border-radius: $gl-border-radius-base;
     width: 100%;
     resize: none;

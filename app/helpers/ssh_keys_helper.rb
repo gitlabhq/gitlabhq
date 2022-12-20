@@ -2,10 +2,14 @@
 
 module SshKeysHelper
   def ssh_key_delete_modal_data(key, path)
+    title = _('Delete Key')
+
     {
         path: path,
         method: 'delete',
         qa_selector: 'delete_ssh_key_button',
+        title: title,
+        aria_label: title,
         modal_attributes: {
             'data-qa-selector': 'ssh_key_delete_modal',
             title: _('Are you sure you want to delete this SSH key?'),

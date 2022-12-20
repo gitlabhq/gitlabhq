@@ -2,16 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerVersion do
-  it_behaves_like 'having unique enum values'
+RSpec.describe Ci::RunnerVersion, feature_category: :runner_fleet do
+  let_it_be(:runner_version_recommended) do
+    create(:ci_runner_version, version: 'abc234', status: :recommended)
+  end
 
   let_it_be(:runner_version_not_available) do
     create(:ci_runner_version, version: 'abc123', status: :not_available)
   end
 
-  let_it_be(:runner_version_recommended) do
-    create(:ci_runner_version, version: 'abc234', status: :recommended)
-  end
+  it_behaves_like 'having unique enum values'
 
   describe '.not_available' do
     subject { described_class.not_available }
@@ -28,11 +28,9 @@ RSpec.describe Ci::RunnerVersion do
     end
 
     it 'contains any valid or unprocessed runner version that is not already recommended' do
-      is_expected.to match_array([
-        runner_version_nil,
-        runner_version_not_available,
-        runner_version_available
-      ])
+      is_expected.to match_array(
+        [runner_version_nil, runner_version_not_available, runner_version_available]
+      )
     end
   end
 

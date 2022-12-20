@@ -190,22 +190,50 @@ RSpec.describe 'projects/_home_panel' do
     end
 
     context 'user can read fork source' do
-      it 'shows the forked-from project' do
+      before do
         allow(view).to receive(:can?).with(user, :read_project, source_project).and_return(true)
+      end
 
+      it 'does not show the forked-from project' do
         render
 
-        expect(rendered).to have_content("Forked from #{source_project.full_name}")
+        expect(rendered).not_to have_content("Forked from #{source_project.full_name}")
+      end
+
+      context 'when fork_divergence_counts is disabled' do
+        before do
+          stub_feature_flags(fork_divergence_counts: false)
+        end
+
+        it 'shows the forked-from project' do
+          render
+
+          expect(rendered).to have_content("Forked from #{source_project.full_name}")
+        end
       end
     end
 
     context 'user cannot read fork source' do
-      it 'does not show the forked-from project' do
+      before do
         allow(view).to receive(:can?).with(user, :read_project, source_project).and_return(false)
+      end
 
+      it 'shows the message that forked project is inaccessible' do
         render
 
-        expect(rendered).to have_content("Forked from an inaccessible project")
+        expect(rendered).not_to have_content("Forked from an inaccessible project")
+      end
+
+      context 'when fork_divergence_counts is disabled' do
+        before do
+          stub_feature_flags(fork_divergence_counts: false)
+        end
+
+        it 'shows the message that forked project is inaccessible' do
+          render
+
+          expect(rendered).to have_content("Forked from an inaccessible project")
+        end
       end
     end
   end

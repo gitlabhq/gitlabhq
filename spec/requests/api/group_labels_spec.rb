@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GroupLabels do
+RSpec.describe API::GroupLabels, feature_category: :team_planning do
   let_it_be(:valid_group_label_title_1) { 'Label foo & bar:subgroup::v.1' }
   let_it_be(:valid_group_label_title_1_esc) { ERB::Util.url_encode(valid_group_label_title_1) }
   let_it_be(:valid_group_label_title_2) { 'Bar & foo:subgroup::v.2' }

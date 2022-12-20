@@ -15,9 +15,11 @@ function retry() {
 
 function test_url() {
   local url="${1}"
+  local curl_args="${2}"
   local status
+  local cmd="curl ${curl_args} --output /dev/null -L -s -w ''%{http_code}'' \"${url}\""
 
-  status=$(curl --output /dev/null -L -s -w ''%{http_code}'' "${url}")
+  status=$(eval "${cmd}")
 
   if [[ $status == "200" ]]; then
     return 0
@@ -103,6 +105,27 @@ function install_tff_gem() {
 
 function install_junit_merge_gem() {
   run_timed_command "gem install junit_merge --no-document --version 0.1.2"
+}
+
+function fail_on_warnings() {
+  local cmd="$*"
+  local warnings
+  warnings="$(mktemp)"
+
+  eval "$cmd 2>$warnings"
+  local ret=$?
+
+  if test -s "$warnings";
+  then
+    echoerr "There were warnings:"
+    cat "$warnings"
+    rm "$warnings"
+    return 1
+  fi
+
+  rm "$warnings"
+
+  return $ret
 }
 
 function run_timed_command() {
@@ -202,4 +225,22 @@ function danger_as_local() {
   unset GITLAB_CI
   # We need to base SHA to help danger determine the base commit for this shallow clone.
   bundle exec danger dry_run --fail-on-errors=true --verbose --base="${CI_MERGE_REQUEST_DIFF_BASE_SHA}" --head="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}" --dangerfile="${DANGER_DANGERFILE:-Dangerfile}"
+}
+
+# We're inlining this function in `.gitlab/ci/package-and-test/main.gitlab-ci.yml` so make sure to reflect any changes there
+function assets_image_tag() {
+  local cache_assets_hash_file="cached-assets-hash.txt"
+
+  if [[ -n "${CI_COMMIT_TAG}" ]]; then
+    echo -n "${CI_COMMIT_REF_NAME}"
+  elif [[ -f "${cache_assets_hash_file}" ]]; then
+    echo -n "assets-hash-$(cat ${cache_assets_hash_file} | cut -c1-10)"
+  else
+    echo -n "${CI_COMMIT_SHA}"
+  fi
+}
+
+function setup_gcloud() {
+  gcloud auth activate-service-account --key-file="${REVIEW_APPS_GCP_CREDENTIALS}"
+  gcloud config set project "${REVIEW_APPS_GCP_PROJECT}"
 }

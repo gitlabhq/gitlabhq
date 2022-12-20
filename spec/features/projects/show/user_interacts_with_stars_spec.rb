@@ -2,13 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Show > User interacts with project stars' do
+RSpec.describe 'Projects > Show > User interacts with project stars', feature_category: :projects do
   let(:project) { create(:project, :public, :repository) }
 
   context 'when user is signed in', :js do
     let(:user) { create(:user) }
 
     before do
+      stub_feature_flags(vscode_web_ide: false)
       sign_in(user)
       visit(project_path(project))
     end

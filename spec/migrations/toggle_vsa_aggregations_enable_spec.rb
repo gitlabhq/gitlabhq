@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ToggleVsaAggregationsEnable, :migration do
+RSpec.describe ToggleVsaAggregationsEnable, :migration, feature_category: :value_stream_management do
   let(:aggregations) { table(:analytics_cycle_analytics_aggregations) }
   let(:groups) { table(:namespaces) }
 

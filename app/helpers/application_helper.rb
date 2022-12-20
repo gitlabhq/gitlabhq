@@ -124,7 +124,7 @@ module ApplicationHelper
   end
 
   def simple_sanitize(str)
-    sanitize(str, tags: %w(a span))
+    sanitize(str, tags: %w[a span])
   end
 
   def body_data
@@ -187,14 +187,14 @@ module ApplicationHelper
     css_classes << html_class unless html_class.blank?
 
     content_tag :time, l(time, format: "%b %d, %Y"),
-      class: css_classes.join(' '),
-      title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
-      datetime: time.to_time.getutc.iso8601,
-      data: {
-        toggle: 'tooltip',
-        placement: placement,
-        container: 'body'
-      }
+                class: css_classes.join(' '),
+                title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
+                datetime: time.to_time.getutc.iso8601,
+                data: {
+                  toggle: 'tooltip',
+                  placement: placement,
+                  container: 'body'
+                }
   end
 
   def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', exclude_author: false)
@@ -234,11 +234,11 @@ module ApplicationHelper
   end
 
   def promo_url
-    'https://' + promo_host
+    "https://#{promo_host}"
   end
 
   def support_url
-    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
+    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || "#{promo_url}/getting-help/"
   end
 
   def instance_review_permitted?
@@ -279,7 +279,19 @@ module ApplicationHelper
   end
 
   def stylesheet_link_tag_defer(path)
-    stylesheet_link_tag(path, media: "print", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
+    if startup_css_enabled?
+      stylesheet_link_tag(path, media: "print", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
+    else
+      stylesheet_link_tag(path, crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
+    end
+  end
+
+  def startup_css_enabled?
+    !params.has_key?(:no_startup_css)
+  end
+
+  def use_new_fonts?
+    Feature.enabled?(:new_fonts, current_user) || request.params.has_key?(:new_fonts)
   end
 
   def outdated_browser?

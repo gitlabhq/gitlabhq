@@ -1,10 +1,11 @@
 <script>
-import { GlSafeHtmlDirective, GlLink } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
-import ActionButtons from '../action_buttons.vue';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { EXTENSION_ICONS } from '../../constants';
 import { generateText } from '../extensions/utils';
+import ActionButtons from './action_buttons.vue';
 import StatusIcon from './status_icon.vue';
 
 export default {
@@ -15,7 +16,7 @@ export default {
     ActionButtons,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     level: {
@@ -67,6 +68,9 @@ export default {
     shouldShowHeaderActions() {
       return Boolean(this.helpPopover) || this.actionButtons?.length > 0;
     },
+    hasActionButtons() {
+      return this.actionButtons.length > 0;
+    },
   },
   i18n: {
     learnMore: __('Learn more'),
@@ -75,10 +79,15 @@ export default {
 </script>
 <template>
   <div
-    class="gl-w-full gl-display-flex mr-widget-content-row gl-align-items-baseline"
+    class="gl-w-full gl-display-flex gl-align-items-baseline"
     :class="{ 'gl-border-t gl-py-3 gl-pl-7': level === 2 }"
   >
-    <status-icon v-if="statusIconName" :level="2" :name="widgetName" :icon-name="statusIconName" />
+    <status-icon
+      v-if="statusIconName && !header"
+      :level="2"
+      :name="widgetName"
+      :icon-name="statusIconName"
+    />
     <div class="gl-w-full">
       <div class="gl-display-flex">
         <slot name="header">
@@ -95,7 +104,12 @@ export default {
           v-if="shouldShowHeaderActions"
           class="gl-ml-auto gl-display-flex gl-align-items-baseline"
         >
-          <help-popover v-if="helpPopover" :options="helpPopover.options">
+          <help-popover
+            v-if="helpPopover"
+            :options="helpPopover.options"
+            :class="{ 'gl-mr-3': hasActionButtons }"
+            icon="information-o"
+          >
             <template v-if="helpPopover.content">
               <p
                 v-if="helpPopover.content.text"
@@ -112,14 +126,19 @@ export default {
             </template>
           </help-popover>
           <action-buttons
-            v-if="actionButtons.length > 0"
+            v-if="hasActionButtons"
             :widget="widgetName"
             :tertiary-buttons="actionButtons"
-            :class="{ 'gl-ml-2': helpPopover }"
           />
         </div>
       </div>
       <div class="gl-display-flex gl-align-items-baseline gl-w-full">
+        <status-icon
+          v-if="statusIconName && header"
+          :level="2"
+          :name="widgetName"
+          :icon-name="statusIconName"
+        />
         <slot name="body"></slot>
       </div>
     </div>

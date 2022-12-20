@@ -3,6 +3,8 @@
 module QA
   module Resource
     class Issuable < Base
+      using Rainbow
+
       # Commentes (notes) path
       #
       # @return [String]
@@ -14,6 +16,7 @@ module QA
       #
       # @return [Array]
       def comments(auto_paginate: false, attempts: 0)
+        Runtime::Logger.debug("Fetching comments for #{self.class.name.black.bg(:white)} with path '#{api_get_path}'")
         return parse_body(api_get_from(api_comments_path)) unless auto_paginate
 
         auto_paginated_response(

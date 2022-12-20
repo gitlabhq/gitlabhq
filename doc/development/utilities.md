@@ -181,20 +181,6 @@ Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/maste
     include Gitlab::Utils::StrongMemoize
 
     def result
-      strong_memoize(:result) do
-        search
-      end
-    end
-  end
-  ```
-
-  Alternatively, use the `strong_memoize_attr` helper to memoize the method for you:
-
-  ```ruby
-  class Find
-    include Gitlab::Utils::StrongMemoize
-
-    def result
       search
     end
     strong_memoize_attr :result
@@ -203,6 +189,26 @@ Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/maste
       Feature.enabled?(:some_feature)
     end
     strong_memoize_attr :enabled?, :enabled
+  end
+  ```
+
+  Using `strong_memoize_attr` on methods with parameters is not supported.
+  It does not work when combined with [`override`](#override) and might memoize wrong results.
+
+  Use `strong_memoize_with` instead.
+
+  ```ruby
+  # bad
+  def expensive_method(arg)
+    # ...
+  end
+  strong_memoize_attr :expensive_method
+
+  # good
+  def expensive_method(arg)
+    strong_memoize_with(:expensive_method, arg)
+      # ...
+    end
   end
   ```
 

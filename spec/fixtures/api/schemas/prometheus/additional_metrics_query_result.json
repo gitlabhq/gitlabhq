@@ -1,13 +1,29 @@
 {
+  "type": "array",
   "items": {
+    "type": "object",
+    "required": [
+      "group",
+      "metrics",
+      "priority"
+    ],
     "properties": {
       "group": {
         "type": "string"
       },
       "metrics": {
+        "type": "array",
         "items": {
+          "type": "object",
+          "required": [
+            "queries",
+            "title",
+            "weight"
+          ],
           "properties": {
             "queries": {
+              "type": "array",
+              "required": [],
               "items": {
                 "properties": {
                   "query_range": {
@@ -16,13 +32,33 @@
                   "query": {
                     "type": "string"
                   },
+                  "label": {
+                    "type": "string"
+                  },
+                  "unit": {
+                    "type": "string"
+                  },
                   "result": {
-                    "type": "any"
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "metric",
+                        "values"
+                      ],
+                      "properties": {
+                        "metric": {
+                          "type": "object"
+                        },
+                        "values": {
+                          "type": "array"
+                        }
+                      }
+                    }
                   }
                 },
                 "type": "object"
-              },
-              "type": "array"
+              }
             },
             "title": {
               "type": "string"
@@ -33,26 +69,12 @@
             "y_label": {
               "type": "string"
             }
-          },
-          "type": "object"
-        },
-        "required": [
-          "metrics",
-          "title",
-          "weight"
-        ],
-        "type": "array"
+          }
+        }
       },
       "priority": {
         "type": "integer"
       }
-    },
-    "type": "object"
-  },
-  "required": [
-    "group",
-    "priority",
-    "metrics"
-  ],
-  "type": "array"
+    }
+  }
 }

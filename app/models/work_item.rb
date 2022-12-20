@@ -38,6 +38,18 @@ class WorkItem < Issue
     end
   end
 
+  def ancestors
+    hierarchy.ancestors(hierarchy_order: :asc)
+  end
+
+  def same_type_base_and_ancestors
+    hierarchy(same_type: true).base_and_ancestors(hierarchy_order: :asc)
+  end
+
+  def same_type_descendants_depth
+    hierarchy(same_type: true).max_descendants_depth.to_i
+  end
+
   private
 
   override :parent_link_confidentiality
@@ -55,6 +67,13 @@ class WorkItem < Issue
     super
 
     Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter.track_work_item_created_action(author: author)
+  end
+
+  def hierarchy(options = {})
+    base = self.class.where(id: id)
+    base = base.where(work_item_type_id: work_item_type_id) if options[:same_type]
+
+    ::Gitlab::WorkItems::WorkItemHierarchy.new(base, options: options)
   end
 end
 

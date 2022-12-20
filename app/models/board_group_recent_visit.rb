@@ -12,7 +12,7 @@ class BoardGroupRecentVisit < ApplicationRecord
   validates :group, presence: true
   validates :board, presence: true
 
-  scope :by_user_parent, -> (user, group) { where(user: user, group: group) }
+  scope :by_user_parent, ->(user, group) { where(user: user, group: group) }
 
   def self.board_parent_relation
     :group

@@ -163,7 +163,7 @@ You can impersonate a user in the following ways:
   1. Select **Impersonate**.
 - With the API, using [impersonation tokens](../../api/index.md#impersonation-tokens).
 
-All impersonation activities are [captured with audit events](../../administration/audit_events.md#impersonation-data).
+All impersonation activities are [captured with audit events](../../administration/audit_events.md#user-impersonation).
 
 By default, impersonation is enabled. GitLab can be configured to [disable impersonation](../../api/index.md#disable-impersonation).
 

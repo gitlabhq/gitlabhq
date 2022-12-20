@@ -5,7 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import labelSearchQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/project_labels.query.graphql';
+import labelSearchQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemLabelsSubscription from 'ee_else_ce/work_items/graphql/work_item_labels.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -49,6 +49,7 @@ describe('WorkItemLabels component', () => {
     searchQueryHandler = successSearchQueryHandler,
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
     fetchByIid = false,
+    queryVariables = { id: workItemId },
   } = {}) => {
     const apolloProvider = createMockApollo([
       [workItemQuery, workItemQueryHandler],
@@ -63,9 +64,7 @@ describe('WorkItemLabels component', () => {
         workItemId,
         canUpdate,
         fullPath: 'test-project-path',
-        queryVariables: {
-          id: workItemId,
-        },
+        queryVariables,
         fetchByIid,
       },
       attachTo: document.body,
@@ -250,5 +249,12 @@ describe('WorkItemLabels component', () => {
 
     expect(workItemQuerySuccess).not.toHaveBeenCalled();
     expect(workItemByIidResponseHandler).toHaveBeenCalled();
+  });
+
+  it('skips calling the handlers when missing the needed queryVariables', async () => {
+    createComponent({ queryVariables: {}, fetchByIid: false });
+    await waitForPromises();
+
+    expect(workItemQuerySuccess).not.toHaveBeenCalled();
   });
 });

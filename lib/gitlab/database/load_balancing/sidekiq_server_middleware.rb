@@ -97,14 +97,8 @@ module Gitlab
         end
 
         def databases_in_sync?(wal_locations)
-          locations = if Feature.enabled?(:indifferent_wal_location_keys)
-                        wal_locations.with_indifferent_access
-                      else
-                        wal_locations
-                      end
-
           ::Gitlab::Database::LoadBalancing.each_load_balancer.all? do |lb|
-            if (location = locations[lb.name])
+            if (location = wal_locations.with_indifferent_access[lb.name])
               lb.select_up_to_date_host(location)
             else
               # If there's no entry for a load balancer it means the Sidekiq

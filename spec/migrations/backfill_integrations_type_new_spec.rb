@@ -3,9 +3,9 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillIntegrationsTypeNew do
-  let_it_be(:migration) { described_class::MIGRATION }
-  let_it_be(:integrations) { table(:integrations) }
+RSpec.describe BackfillIntegrationsTypeNew, feature_category: :integrations do
+  let!(:migration) { described_class::MIGRATION }
+  let!(:integrations) { table(:integrations) }
 
   before do
     integrations.create!(id: 1)

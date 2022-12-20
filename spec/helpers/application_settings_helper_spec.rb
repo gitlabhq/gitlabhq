@@ -273,14 +273,8 @@ RSpec.describe ApplicationSettingsHelper do
     end
   end
 
-  describe '.registration_features_can_be_prompted?' do
+  describe '.registration_features_can_be_prompted?', :without_license do
     subject { helper.registration_features_can_be_prompted? }
-
-    before do
-      if Gitlab.ee?
-        allow(License).to receive(:current).and_return(nil)
-      end
-    end
 
     context 'when service ping is enabled' do
       before do

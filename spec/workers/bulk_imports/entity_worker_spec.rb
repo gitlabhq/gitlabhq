@@ -114,6 +114,8 @@ RSpec.describe BulkImports::EntityWorker do
               )
 
       subject
+
+      expect(entity.reload.failed?).to eq(true)
     end
 
     context 'in first stage' do

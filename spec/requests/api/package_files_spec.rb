@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::PackageFiles do
+RSpec.describe API::PackageFiles, feature_category: :package_registry do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:package) { create(:maven_package, project: project) }

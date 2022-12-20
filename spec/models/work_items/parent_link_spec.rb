@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::ParentLink do
+RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
+  let_it_be(:project) { create(:project) }
+
   describe 'associations' do
     it { is_expected.to belong_to(:work_item) }
     it { is_expected.to belong_to(:work_item_parent).class_name('WorkItem') }
@@ -16,7 +18,6 @@ RSpec.describe WorkItems::ParentLink do
     it { is_expected.to validate_uniqueness_of(:work_item) }
 
     describe 'hierarchy' do
-      let_it_be(:project) { create(:project) }
       let_it_be(:issue) { build(:work_item, project: project) }
       let_it_be(:incident) { build(:work_item, :incident, project: project) }
       let_it_be(:task1) { build(:work_item, :task, project: project) }
@@ -30,18 +31,82 @@ RSpec.describe WorkItems::ParentLink do
         expect(build(:parent_link, work_item: task1, work_item_parent: incident)).to be_valid
       end
 
-      it 'is not valid if child is not task' do
-        link = build(:parent_link, work_item: issue)
+      context 'when assigning to various parent types' do
+        using RSpec::Parameterized::TableSyntax
 
-        expect(link).not_to be_valid
-        expect(link.errors[:work_item]).to include('only Task can be assigned as a child in hierarchy.')
+        where(:parent_type_sym, :child_type_sym, :is_valid) do
+          :issue      | :task       | true
+          :incident   | :task       | true
+          :task       | :issue      | false
+          :issue      | :issue      | false
+          :objective  | :objective  | true
+          :objective  | :key_result | true
+          :key_result | :objective  | false
+          :key_result | :key_result | false
+          :objective  | :issue      | false
+          :task       | :objective  | false
+        end
+
+        with_them do
+          it 'validates if child can be added to the parent' do
+            parent_type = WorkItems::Type.default_by_type(parent_type_sym)
+            child_type = WorkItems::Type.default_by_type(child_type_sym)
+            parent = build(:work_item, issue_type: parent_type_sym, work_item_type: parent_type, project: project)
+            child = build(:work_item, issue_type: child_type_sym, work_item_type: child_type, project: project)
+            link = build(:parent_link, work_item: child, work_item_parent: parent)
+
+            expect(link.valid?).to eq(is_valid)
+          end
+        end
       end
 
-      it 'is not valid if parent is task' do
-        link = build(:parent_link, work_item_parent: task1)
+      context 'with nested ancestors' do
+        let_it_be(:type1) { create(:work_item_type, namespace: project.namespace) }
+        let_it_be(:type2) { create(:work_item_type, namespace: project.namespace) }
+        let_it_be(:item1) { create(:work_item, work_item_type: type1, project: project) }
+        let_it_be(:item2) { create(:work_item, work_item_type: type2, project: project) }
+        let_it_be(:item3) { create(:work_item, work_item_type: type2, project: project) }
+        let_it_be(:item4) { create(:work_item, work_item_type: type2, project: project) }
+        let_it_be(:hierarchy_restriction1) { create(:hierarchy_restriction, parent_type: type1, child_type: type2) }
+        let_it_be(:hierarchy_restriction2) { create(:hierarchy_restriction, parent_type: type2, child_type: type1) }
 
-        expect(link).not_to be_valid
-        expect(link.errors[:work_item_parent]).to include('only Issue and Incident can be parent of Task.')
+        let_it_be(:hierarchy_restriction3) do
+          create(:hierarchy_restriction, parent_type: type2, child_type: type2, maximum_depth: 2)
+        end
+
+        let_it_be(:link1) { create(:parent_link, work_item_parent: item1, work_item: item2) }
+        let_it_be(:link2) { create(:parent_link, work_item_parent: item3, work_item: item4) }
+
+        describe '#validate_depth' do
+          it 'is valid if depth is in limit' do
+            link = build(:parent_link, work_item_parent: item1, work_item: item3)
+
+            expect(link).to be_valid
+          end
+
+          it 'is not valid when maximum depth is reached' do
+            link = build(:parent_link, work_item_parent: item2, work_item: item3)
+
+            expect(link).not_to be_valid
+            expect(link.errors[:work_item]).to include('reached maximum depth')
+          end
+        end
+
+        describe '#validate_cyclic_reference' do
+          it 'is not valid if parent and child are same' do
+            link1.work_item_parent = item2
+
+            expect(link1).not_to be_valid
+            expect(link1.errors[:work_item]).to include('is not allowed to point to itself')
+          end
+
+          it 'is not valid if child is already in ancestors' do
+            link = build(:parent_link, work_item_parent: item4, work_item: item3)
+
+            expect(link).not_to be_valid
+            expect(link.errors[:work_item]).to include('is already present in ancestors')
+          end
+        end
       end
 
       it 'is not valid if parent is in other project' do
@@ -96,8 +161,26 @@ RSpec.describe WorkItems::ParentLink do
     end
   end
 
-  context 'with confidential work items' do
+  describe 'scopes' do
     let_it_be(:project) { create(:project) }
+    let_it_be(:issue1) { build(:work_item, project: project) }
+    let_it_be(:issue2) { build(:work_item, project: project) }
+    let_it_be(:issue3) { build(:work_item, project: project) }
+    let_it_be(:task1) { build(:work_item, :task, project: project) }
+    let_it_be(:task2) { build(:work_item, :task, project: project) }
+    let_it_be(:link1) { create(:parent_link, work_item_parent: issue1, work_item: task1) }
+    let_it_be(:link2) { create(:parent_link, work_item_parent: issue2, work_item: task2) }
+
+    describe 'for_parents' do
+      it 'includes the correct records' do
+        result = described_class.for_parents([issue1.id, issue2.id, issue3.id])
+
+        expect(result).to include(link1, link2)
+      end
+    end
+  end
+
+  context 'with confidential work items' do
     let_it_be(:confidential_child) { create(:work_item, :task, confidential: true, project: project) }
     let_it_be(:putlic_child) { create(:work_item, :task, project: project) }
     let_it_be(:confidential_parent) { create(:work_item, confidential: true, project: project) }

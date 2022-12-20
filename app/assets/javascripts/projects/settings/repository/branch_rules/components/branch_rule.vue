@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlButton } from '@gitlab/ui';
 import { s__, sprintf, n__ } from '~/locale';
+import { getAccessLevels } from '../../../utils';
 
 export const i18n = {
   defaultLabel: s__('BranchRules|default'),
@@ -9,6 +10,9 @@ export const i18n = {
   codeOwnerApprovalRequired: s__('BranchRules|Requires CODEOWNERS approval'),
   statusChecks: s__('BranchRules|%{total} status %{subject}'),
   approvalRules: s__('BranchRules|%{total} approval %{subject}'),
+  matchingBranches: s__('BranchRules|%{total} matching %{subject}'),
+  pushAccessLevels: s__('BranchRules|Allowed to merge'),
+  mergeAccessLevels: s__('BranchRules|Allowed to push'),
 };
 
 export default {
@@ -48,8 +52,16 @@ export default {
       required: false,
       default: 0,
     },
+    matchingBranchesCount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   computed: {
+    isWildcard() {
+      return this.name.includes('*');
+    },
     hasApprovalDetails() {
       return this.approvalDetails.length;
     },
@@ -68,8 +80,31 @@ export default {
         subject: n__('rule', 'rules', this.approvalRulesTotal),
       });
     },
+    matchingBranchesText() {
+      return sprintf(this.$options.i18n.matchingBranches, {
+        total: this.matchingBranchesCount,
+        subject: n__('branch', 'branches', this.matchingBranchesCount),
+      });
+    },
+    mergeAccessLevels() {
+      const { mergeAccessLevels } = this.branchProtection || {};
+      return this.getAccessLevels(mergeAccessLevels);
+    },
+    pushAccessLevels() {
+      const { pushAccessLevels } = this.branchProtection || {};
+      return this.getAccessLevels(pushAccessLevels);
+    },
+    pushAccessLevelsText() {
+      return this.getAccessLevelsText(this.$options.i18n.pushAccessLevels, this.pushAccessLevels);
+    },
+    mergeAccessLevelsText() {
+      return this.getAccessLevelsText(this.$options.i18n.mergeAccessLevels, this.mergeAccessLevels);
+    },
     approvalDetails() {
       const approvalDetails = [];
+      if (this.isWildcard) {
+        approvalDetails.push(this.matchingBranchesText);
+      }
       if (this.branchProtection.allowForcePush) {
         approvalDetails.push(this.$options.i18n.allowForcePush);
       }
@@ -82,7 +117,29 @@ export default {
       if (this.approvalRulesTotal) {
         approvalDetails.push(this.approvalRulesText);
       }
+      if (this.mergeAccessLevels.total > 0) {
+        approvalDetails.push(this.mergeAccessLevelsText);
+      }
+      if (this.pushAccessLevels.total > 0) {
+        approvalDetails.push(this.pushAccessLevelsText);
+      }
       return approvalDetails;
+    },
+  },
+  methods: {
+    getAccessLevels,
+    getAccessLevelsText(beginString = '', accessLevels) {
+      const textParts = [];
+      if (accessLevels.roles.length) {
+        textParts.push(n__('1 role', '%d roles', accessLevels.roles.length));
+      }
+      if (accessLevels.groups.length) {
+        textParts.push(n__('1 group', '%d groups', accessLevels.groups.length));
+      }
+      if (accessLevels.users.length) {
+        textParts.push(n__('1 user', '%d users', accessLevels.users.length));
+      }
+      return `${beginString}: ${textParts.join(', ')}`;
     },
   },
 };

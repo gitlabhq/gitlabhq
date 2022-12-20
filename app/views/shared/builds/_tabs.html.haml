@@ -1,6 +1,6 @@
 - count_badge_classes = 'gl-display-none gl-sm-display-inline-flex'
 
-= gl_tabs_nav( {class: 'scrolling-tabs nav-links gl-display-flex gl-flex-grow-1 gl-w-full nav gl-border-b-0', data: { testid: 'jobs-tabs' } } ) do
+= gl_tabs_nav({class: 'scrolling-tabs nav-links gl-display-flex gl-flex-grow-1 gl-w-full nav gl-border-b-0', data: { testid: 'jobs-tabs' } }) do
   = gl_tab_link_to build_path_proc.call(nil), { item_active: scope.nil? } do
     = _('All')
     = gl_tab_counter_badge(limited_counter_with_delimiter(all_builds), { class: count_badge_classes })

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::CommitStatuses do
+RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:commit) { project.repository.commit }
   let_it_be(:guest) { create_user(:guest) }
@@ -167,7 +167,7 @@ RSpec.describe API::CommitStatuses do
           let!(:pipeline) { create(:ci_pipeline, project: project, sha: sha, ref: 'ref') }
           let(:params) { { state: 'pending' } }
 
-          shared_examples_for 'creates a commit status for the existing pipeline' do
+          shared_examples_for 'creates a commit status for the existing pipeline with an external stage' do
             it do
               expect do
                 post api(post_url, developer), params: params
@@ -176,19 +176,73 @@ RSpec.describe API::CommitStatuses do
               job = pipeline.statuses.find_by_name(json_response['name'])
 
               expect(response).to have_gitlab_http_status(:created)
+              expect(job.ci_stage.name).to eq('external')
+              expect(job.ci_stage.position).to eq(GenericCommitStatus::EXTERNAL_STAGE_IDX)
+              expect(job.ci_stage.pipeline).to eq(pipeline)
               expect(job.status).to eq('pending')
               expect(job.stage_idx).to eq(GenericCommitStatus::EXTERNAL_STAGE_IDX)
             end
           end
 
-          it_behaves_like 'creates a commit status for the existing pipeline'
+          shared_examples_for 'updates the commit status with an external stage' do
+            before do
+              post api(post_url, developer), params: { state: 'pending' }
+            end
+
+            it 'updates the commit status with the external stage' do
+              post api(post_url, developer), params: { state: 'running' }
+              job = pipeline.statuses.find_by_name(json_response['name'])
+
+              expect(job.ci_stage.name).to eq('external')
+              expect(job.ci_stage.position).to eq(GenericCommitStatus::EXTERNAL_STAGE_IDX)
+              expect(job.ci_stage.pipeline).to eq(pipeline)
+              expect(job.status).to eq('running')
+              expect(job.stage_idx).to eq(GenericCommitStatus::EXTERNAL_STAGE_IDX)
+            end
+          end
 
           context 'with pipeline for merge request' do
             let!(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
             let!(:pipeline) { merge_request.all_pipelines.last }
             let(:sha) { pipeline.sha }
 
-            it_behaves_like 'creates a commit status for the existing pipeline'
+            it_behaves_like 'creates a commit status for the existing pipeline with an external stage'
+          end
+
+          context 'when an external stage does not exist' do
+            context 'when the commit status does not exist' do
+              it_behaves_like 'creates a commit status for the existing pipeline with an external stage'
+            end
+
+            context 'when the commit status exists' do
+              it_behaves_like 'updates the commit status with an external stage'
+            end
+          end
+
+          context 'when an external stage already exists' do
+            let(:stage) { create(:ci_stage, name: 'external', pipeline: pipeline, position: 1_000_000) }
+
+            context 'when the commit status exists' do
+              it_behaves_like 'updates the commit status with an external stage'
+            end
+
+            context 'when the commit status does not exist' do
+              it_behaves_like 'creates a commit status for the existing pipeline with an external stage'
+            end
+          end
+        end
+
+        context 'when the pipeline does not exist' do
+          it 'creates a commit status and a stage' do
+            expect do
+              post api(post_url, developer), params: { state: 'pending' }
+            end.to change { Ci::Pipeline.count }.by(1)
+            job = Ci::Pipeline.last.statuses.find_by_name(json_response['name'])
+
+            expect(job.ci_stage.name).to eq('external')
+            expect(job.ci_stage.position).to eq(GenericCommitStatus::EXTERNAL_STAGE_IDX)
+            expect(job.status).to eq('pending')
+            expect(job.stage_idx).to eq(GenericCommitStatus::EXTERNAL_STAGE_IDX)
           end
         end
       end

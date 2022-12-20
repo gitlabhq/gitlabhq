@@ -68,7 +68,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
     user_view = current_user.project_view
 
-    if can?(current_user, :download_code, project)
+    if can?(current_user, :read_code, project)
       user_view
     elsif user_view == 'activity'
       'activity'
@@ -179,7 +179,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     return if releases_count < 1
 
     AnchorData.new(true,
-                   statistic_icon('rocket') +
+                   statistic_icon('deployments') +
                    n_('%{strong_start}%{release_count}%{strong_end} Release', '%{strong_start}%{release_count}%{strong_end} Releases', releases_count).html_safe % {
                      release_count: number_with_delimiter(releases_count),
                      strong_start: '<strong class="project-stat-value">'.html_safe,
@@ -290,16 +290,10 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                      'btn-default',
                      nil,
                      'license')
-    else
-      if can_current_user_push_to_default_branch?
-        AnchorData.new(false,
+    elsif can_current_user_push_to_default_branch?
+      AnchorData.new(false,
                        content_tag(:span, statistic_icon + _('Add LICENSE'), class: 'add-license-link d-flex'),
                        empty_repo? ? add_license_ide_path : add_license_path)
-      else
-        AnchorData.new(false,
-                       icon + content_tag(:span, _('No license. All rights reserved'), class: 'project-stat-value'),
-                       nil)
-      end
     end
   end
 
@@ -423,7 +417,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def anonymous_project_view
-    if !project.empty_repo? && can?(current_user, :download_code, project)
+    if !project.empty_repo? && can?(current_user, :read_code, project)
       'files'
     elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
       'wiki'

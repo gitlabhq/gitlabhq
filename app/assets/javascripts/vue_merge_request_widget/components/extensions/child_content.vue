@@ -1,6 +1,7 @@
 <script>
-import { GlBadge, GlLink, GlSafeHtmlDirective, GlModalDirective } from '@gitlab/ui';
+import { GlBadge, GlLink, GlModalDirective } from '@gitlab/ui';
 import { isArray } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import Actions from '../action_buttons.vue';
 import StatusIcon from './status_icon.vue';
 import { generateText } from './utils';
@@ -14,7 +15,7 @@ export default {
     Actions,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
     GlModal: GlModalDirective,
   },
   props: {
@@ -97,7 +98,12 @@ export default {
             <div v-if="data.supportingText">
               <p v-safe-html="generateText(data.supportingText)" class="gl-m-0"></p>
             </div>
-            <gl-badge v-if="data.badge" :variant="data.badge.variant || 'info'">
+            <gl-badge
+              v-if="data.badge"
+              :variant="data.badge.variant || 'info'"
+              size="sm"
+              class="gl-ml-2"
+            >
               {{ data.badge.text }}
             </gl-badge>
           </div>

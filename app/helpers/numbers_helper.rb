@@ -6,7 +6,7 @@ module NumbersHelper
     count = resource.page.total_count_with_limit(:all, limit: limit)
 
     if count > limit
-      number_with_delimiter(count - 1, options) + '+'
+      "#{number_with_delimiter(count - 1, options)}+"
     else
       number_with_delimiter(count, options)
     end

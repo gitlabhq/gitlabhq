@@ -1,4 +1,4 @@
-import { GlListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -31,7 +31,7 @@ export function initListbox(el, { onChange } = {}) {
       },
     },
     render(h) {
-      return h(GlListbox, {
+      return h(GlCollapsibleListbox, {
         props: {
           items,
           right,

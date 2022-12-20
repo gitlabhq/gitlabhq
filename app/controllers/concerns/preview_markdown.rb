@@ -45,7 +45,13 @@ module PreviewMarkdown
     when 'projects'        then projects_filter_params
     when 'timeline_events' then timeline_events_filter_params
     else {}
-    end.merge(requested_path: params[:path], ref: params[:ref])
+    end.merge(
+      requested_path: params[:path],
+      ref: params[:ref],
+      # Disable comments in markdown for IE browsers because comments in IE
+      # could allow script execution.
+      allow_comments: !browser.ie?
+    )
   end
 
   # rubocop:enable Gitlab/ModuleWithInstanceVariables

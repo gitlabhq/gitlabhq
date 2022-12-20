@@ -47,7 +47,8 @@ This needs to be done for any new, or updated gems.
 
 We do not allow gems that are fetched from Git repositories. All gems have
 to be available in the RubyGems index. We want to minimize external build
-dependencies and build times.
+dependencies and build times. It's enforced by the RuboCop rule
+[`Cop/GemFetcher`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/blob/master/lib/rubocop/cop/gem_fetcher.rb).
 
 ## Review the new dependency for quality
 
@@ -56,7 +57,7 @@ This means that new dependencies should, at a minimum, meet the following criter
 
 - They have an active developer community. At the minimum a maintainer should still be active
   to merge change requests in case of emergencies.
-- There are no issues open that we know may impact the availablity or performance of GitLab.
+- There are no issues open that we know may impact the availability or performance of GitLab.
 - The project is tested using some form of test automation. The test suite must be passing
   using the Ruby version currently used by GitLab.
 - If the project uses a C extension, consider requesting an additional review from a C or MRI

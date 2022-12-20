@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "required" : [
+  "required": [
     "name",
     "commit",
     "merged",
@@ -10,16 +10,35 @@
     "developers_can_merge",
     "web_url"
   ],
-  "properties" : {
-    "name": { "type": "string" },
-    "commit": { "$ref": "commit/basic.json" },
-    "merged": { "type": "boolean" },
-    "protected": { "type": "boolean" },
-    "default": { "type": "boolean" },
-    "developers_can_push": { "type": "boolean" },
-    "developers_can_merge": { "type": "boolean" },
-    "can_push": { "type": "boolean" },
-    "web_url": { "type": "uri" }
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "commit": {
+      "$ref": "commit/basic.json"
+    },
+    "merged": {
+      "type": "boolean"
+    },
+    "protected": {
+      "type": "boolean"
+    },
+    "default": {
+      "type": "boolean"
+    },
+    "developers_can_push": {
+      "type": "boolean"
+    },
+    "developers_can_merge": {
+      "type": "boolean"
+    },
+    "can_push": {
+      "type": "boolean"
+    },
+    "web_url": {
+      "type": "string",
+      "format": "uri"
+    }
   },
   "additionalProperties": false
 }

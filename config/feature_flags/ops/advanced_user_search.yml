@@ -1,0 +1,8 @@
+---
+name: advanced_user_search
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102724
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382542
+milestone: '15.7'
+type: ops
+group: group::global search
+default_enabled: false

@@ -32,6 +32,11 @@ RSpec.describe 'profiles/keys/_form.html.haml' do
       expect(rendered).to have_text('Key titles are publicly visible.')
     end
 
+    it 'has the usage type field', :aggregate_failures do
+      expect(page).to have_select _('Usage type'),
+        selected: 'Authentication & Signing', options: ['Authentication & Signing', 'Authentication', 'Signing']
+    end
+
     it 'has the expires at field', :aggregate_failures do
       expect(rendered).to have_field('Expiration date', type: 'text')
       expect(page.find_field('Expiration date')['min']).to eq(l(1.day.from_now, format: "%Y-%m-%d"))

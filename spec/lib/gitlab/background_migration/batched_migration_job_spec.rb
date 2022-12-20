@@ -158,6 +158,28 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
     end
   end
 
+  describe '.feature_category' do
+    context 'when jobs does not have feature_category attribute set' do
+      let(:job_class) { Class.new(described_class) }
+
+      it 'returns :database as default' do
+        expect(job_class.feature_category).to eq(:database)
+      end
+    end
+
+    context 'when jobs have feature_category attribute set' do
+      let(:job_class) do
+        Class.new(described_class) do
+          feature_category :delivery
+        end
+      end
+
+      it 'returns the provided value' do
+        expect(job_class.feature_category).to eq(:delivery)
+      end
+    end
+  end
+
   describe 'descendants', :eager_load do
     it 'have the same method signature for #perform' do
       expected_arity = described_class.instance_method(:perform).arity

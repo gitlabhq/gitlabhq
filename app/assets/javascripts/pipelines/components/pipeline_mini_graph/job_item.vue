@@ -137,9 +137,6 @@ export default {
     hideTooltips() {
       this.$root.$emit(BV_HIDE_TOOLTIP);
     },
-    pipelineActionRequestComplete() {
-      this.$emit('pipelineActionRequestComplete');
-    },
   },
 };
 </script>
@@ -163,7 +160,7 @@ export default {
       @click.stop="hideTooltips"
       @mouseout="hideTooltips"
     >
-      <job-name-component :name="job.name" :status="job.status" :icon-size="24" />
+      <job-name-component :name="job.name" :status="job.status" />
     </gl-link>
 
     <div
@@ -175,7 +172,7 @@ export default {
       data-testid="job-without-link"
       @mouseout="hideTooltips"
     >
-      <job-name-component :name="job.name" :status="job.status" :icon-size="24" />
+      <job-name-component :name="job.name" :status="job.status" />
     </div>
 
     <action-component
@@ -184,7 +181,6 @@ export default {
       :link="status.action.path"
       :action-icon="status.action.icon"
       data-qa-selector="action_button"
-      @pipelineActionRequestComplete="pipelineActionRequestComplete"
     />
   </div>
 </template>

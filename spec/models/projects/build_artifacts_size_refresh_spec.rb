@@ -67,6 +67,8 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
 
         let!(:last_job_artifact_id_on_refresh_start) { create(:ci_job_artifact, project: refresh.project) }
 
+        let(:statistics) { refresh.project.statistics }
+
         before do
           stats = create(:project_statistics, project: refresh.project, build_artifacts_size: 120)
           stats.increment_counter(:build_artifacts_size, 30)
@@ -89,11 +91,11 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         end
 
         it 'resets the build artifacts size stats' do
-          expect { refresh.process! }.to change { refresh.project.statistics.build_artifacts_size }.to(0)
+          expect { refresh.process! }.to change { statistics.build_artifacts_size }.to(0)
         end
 
         it 'resets the counter attribute to zero' do
-          expect { refresh.process! }.to change { refresh.project.statistics.get_counter_value(:build_artifacts_size) }.to(0)
+          expect { refresh.process! }.to change { statistics.counter(:build_artifacts_size).get }.to(0)
         end
       end
 

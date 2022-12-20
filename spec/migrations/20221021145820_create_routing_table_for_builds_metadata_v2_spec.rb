@@ -3,8 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CreateRoutingTableForBuildsMetadataV2, :migration do
-  let_it_be(:migration) { described_class.new }
+RSpec.describe CreateRoutingTableForBuildsMetadataV2, :migration, feature_category: :continuous_integration do
+  let!(:migration) { described_class.new }
 
   describe '#up' do
     context 'when the table is already partitioned' do

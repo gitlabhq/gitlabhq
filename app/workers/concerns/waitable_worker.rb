@@ -6,32 +6,7 @@ module WaitableWorker
   class_methods do
     # Schedules multiple jobs and waits for them to be completed.
     def bulk_perform_and_wait(args_list)
-      # Short-circuit: it's more efficient to do small numbers of jobs inline
-      if args_list.size == 1 && !always_async_project_authorizations_refresh?
-        return bulk_perform_inline(args_list)
-      end
-
       bulk_perform_async(args_list)
-    end
-
-    # Performs multiple jobs directly. Failed jobs will be put into sidekiq so
-    # they can benefit from retries
-    def bulk_perform_inline(args_list)
-      failed = []
-
-      args_list.each do |args|
-        worker = new
-        Gitlab::AppJsonLogger.info(worker.structured_payload(message: 'running inline'))
-        worker.perform(*args)
-      rescue StandardError
-        failed << args
-      end
-
-      bulk_perform_async(failed) if failed.present?
-    end
-
-    def always_async_project_authorizations_refresh?
-      Feature.enabled?(:always_async_project_authorizations_refresh)
     end
   end
 

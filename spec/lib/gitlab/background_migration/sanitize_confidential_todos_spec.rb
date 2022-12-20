@@ -27,8 +27,15 @@ RSpec.describe Gitlab::BackgroundMigration::SanitizeConfidentialTodos, :migratio
                      project_namespace_id: project_namespace2.id)
   end
 
-  let(:issue1) { issues.create!(project_id: project1.id, issue_type: 1, title: 'issue1', author_id: user.id) }
-  let(:issue2) { issues.create!(project_id: project2.id, issue_type: 1, title: 'issue2') }
+  let(:issue1) do
+    issues.create!(
+      project_id: project1.id, namespace_id: project_namespace1.id, issue_type: 1, title: 'issue1', author_id: user.id
+    )
+  end
+
+  let(:issue2) do
+    issues.create!(project_id: project2.id, namespace_id: project_namespace2.id, issue_type: 1, title: 'issue2')
+  end
 
   let(:public_note) { notes.create!(note: 'text', project_id: project1.id) }
 

@@ -4,8 +4,8 @@
 - no_issuable_templates = issuable_templates(ref_project, issuable.to_ability_name).empty?
 - toggle_wip_link_start = '<a href="" class="js-toggle-wip">'
 - toggle_wip_link_end = '</a>'
-- add_wip_text = (_('%{link_start}Start the title with %{draft_snippet}%{link_end} to prevent a merge request draft from merging before it\'s ready.') % { link_start: toggle_wip_link_start, link_end: toggle_wip_link_end, draft_snippet: '<code>Draft:</code>'.html_safe } ).html_safe
-- remove_wip_text = (_('%{link_start}Remove the %{draft_snippet} prefix%{link_end} from the title to allow this merge request to be merged when it\'s ready.' ) % { link_start: toggle_wip_link_start, link_end: toggle_wip_link_end, draft_snippet: '<code>Draft</code>'.html_safe } ).html_safe
+- add_wip_text = (_('%{link_start}Start the title with %{draft_snippet}%{link_end} to prevent a merge request draft from merging before it\'s ready.') % { link_start: toggle_wip_link_start, link_end: toggle_wip_link_end, draft_snippet: '<code>Draft:</code>'.html_safe }).html_safe
+- remove_wip_text = (_('%{link_start}Remove the %{draft_snippet} prefix%{link_end} from the title to allow this merge request to be merged when it\'s ready.') % { link_start: toggle_wip_link_start, link_end: toggle_wip_link_end, draft_snippet: '<code>Draft</code>'.html_safe }).html_safe
 
 %div{ data: { testid: 'issue-title-input-field' } }
   = form.text_field :title, required: true, aria: { required: true }, maxlength: 255, autofocus: true,

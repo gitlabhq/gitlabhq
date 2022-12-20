@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'rubocop_spec_helper'
 require 'rspec-parameterized'
-require 'rubocop'
-require 'rubocop/rspec/support'
 require 'stringio'
 
 require_relative '../../../rubocop/formatter/graceful_formatter'

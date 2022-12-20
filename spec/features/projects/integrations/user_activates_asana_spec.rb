@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User activates Asana' do
+RSpec.describe 'User activates Asana', feature_category: :integrations do
   include_context 'project integration activation'
 
   it 'activates integration', :js do

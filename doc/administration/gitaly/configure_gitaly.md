@@ -49,6 +49,9 @@ NOTE:
 When configured to run on their own servers, Gitaly servers must be
 [upgraded](../../update/package/index.md) before Gitaly clients in your cluster.
 
+NOTE:
+[Disk requirements](index.md#disk-requirements) apply to Gitaly nodes.
+
 The process for setting up Gitaly on its own server is:
 
 1. [Install Gitaly](#install-gitaly).
@@ -750,14 +753,25 @@ settings:
 
 ## Limit RPC concurrency
 
-Clone traffic can put a large strain on your Gitaly service. The bulk of the work gets done in the
-either of the following RPCs:
+WARNING:
+Enabling limits on your environment should be done with caution and only
+in select circumstances, such as to protect against unexpected traffic.
+When reached, limits _do_ result in disconnects that negatively impact users.
+For consistent and stable performance, you should first explore other options such as
+adjusting node specifications, and [reviewing large repositories](../../user/project/repository/managing_large_repositories.md) or workloads.
+
+When cloning or pulling repositories, various RPCs run in the background. In particular, the Git pack RPCs:
 
 - `SSHUploadPackWithSidechannel` (for Git SSH).
 - `PostUploadPackWithSidechannel` (for Git HTTP).
 
-To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in
-Gitaly's configuration file. For example:
+These RPCs can consume a large amount of resources, which can have a significant impact in situations such as:
+
+- Unexpectedly high traffic.
+- Running against [large repositories](../../user/project/repository/managing_large_repositories.md) that don't follow best practices.
+
+You can limit these processes from overwhelming your Gitaly server in these scenarios using the concurrency limits in Gitaly's configuration file. For
+example:
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
@@ -795,30 +809,40 @@ repository. In the example above:
 - If a request waits in the queue for more than 1 second, it is rejected with an error.
 - If the queue grows beyond 10, subsequent requests are rejected with an error.
 
+NOTE:
+When these limits are reached, users are disconnected.
+
 You can observe the behavior of this queue using the Gitaly logs and Prometheus. For more
 information, see the [relevant documentation](monitoring.md#monitor-gitaly-concurrency-limiting).
 
 ## Control groups
 
+WARNING:
+Enabling limits on your environment should be done with caution and only
+in select circumstances, such as to protect against unexpected traffic.
+When reached, limits _do_ result in disconnects that negatively impact users.
+For consistent and stable performance, you should first explore other options such as
+adjusting node specifications, and [reviewing large repositories](../../user/project/repository/managing_large_repositories.md) or workloads.
+
 FLAG:
 On self-managed GitLab, by default repository cgroups are not available. To make it available, ask an administrator to
 [enable the feature flag](../feature_flags.md) named `gitaly_run_cmds_in_cgroup`.
 
-Control groups (cgroups) in Linux allow limits to be imposed on how much memory and CPU can be consumed.
+When enabling cgroups for memory, you should ensure that no swap is configured on the Gitaly nodes as
+processes may switch to using that instead of being terminated. This situation could lead to notably compromised
+performance.
+
+You can use control groups (cgroups) in Linux to impose limits on how much memory and CPU can be consumed by Gitaly processes.
 See the [`cgroups` Linux man page](https://man7.org/linux/man-pages/man7/cgroups.7.html) for more information.
-cgroups can be useful for protecting the system against resource exhaustion because of over consumption of memory and CPU.
+cgroups can be useful for protecting the system against unexpected resource exhaustion because of over consumption of memory and CPU.
 
-Some Git operations are expensive by nature. `git clone`, for instance,
-spawns a `git-upload-pack` process on the server that can consume a lot of memory
-for large repositories. For example, a client that keeps on cloning a
-large repository over and over again. This situation could potentially use up all of the
-memory on a server, causing other operations to fail for other users.
+Some Git operations can consume notable resources up to the point of exhaustion in situations such as:
 
-A repository can consume large amounts of memory for many reasons when cloned or downloaded.
-Using cgroups allows the kernel to kill these operations before they hog up all system resources.
+- Unexpectedly high traffic.
+- Operations running against large repositories that don't follow best practices.
 
-Gitaly shells out to Git for many of its operations. Git can consume a lot of resources for certain operations,
-especially for large repositories.
+As a hard protection, it's possible to use cgroups that configure the kernel to terminate these operations before they hog up all system resources
+and cause instability.
 
 Gitaly has built-in cgroups control. When configured, Gitaly assigns Git processes to a cgroup based on the repository
 the Git command is operating in. These cgroups are called repository cgroups. Each repository cgroup:
@@ -832,8 +856,8 @@ When a repository cgroup reaches its:
 - Memory limit, the kernel looks through the processes for a candidate to kill.
 - CPU limit, processes are not killed, but the processes are prevented from consuming more CPU than allowed.
 
-You configure repository cgroups for your GitLab installation to protect against system resource starvation from a few
-large repositories or bad actors.
+NOTE:
+When these limits are reached, performance may be reduced and users may be disconnected.
 
 ### Configure repository cgroups (new method)
 
@@ -913,8 +937,8 @@ gitaly['cgroups_cpu_enabled'] = true
 
 In the previous example using the new configuration method:
 
-- The top level memory limit is capped at 60gb.
-- Each of the 1000 cgroups in the repositories pool is capped at 20gb.
+- The top level memory limit is capped at 60 GB.
+- Each of the 1000 cgroups in the repositories pool is capped at 20 GB.
 
 This configuration leads to "oversubscription". Each cgroup in the pool has a much larger capacity than 1/1000th
 of the top-level memory limit.

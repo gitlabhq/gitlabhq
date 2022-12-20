@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publisher do
   include ProjectForksHelper
+  include BatchDestroyDependentAssociationsHelper
 
   let_it_be(:user) { create(:user) }
 
@@ -331,8 +332,8 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       context 'when image repository deletion succeeds' do
         it 'removes tags' do
-          expect_any_instance_of(ContainerRepository)
-            .to receive(:delete_tags!).and_return(true)
+          expect_any_instance_of(Projects::ContainerRepository::CleanupTagsService)
+            .to receive(:execute).and_return({ status: :success })
 
           destroy_project(project, user)
         end
@@ -340,8 +341,8 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       context 'when image repository deletion fails' do
         it 'raises an exception' do
-          expect_any_instance_of(ContainerRepository)
-            .to receive(:delete_tags!).and_raise(RuntimeError)
+          expect_any_instance_of(Projects::ContainerRepository::CleanupTagsService)
+            .to receive(:execute).and_raise(RuntimeError)
 
           expect(destroy_project(project, user)).to be false
         end
@@ -545,6 +546,30 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
       expect(project.all_pipelines).to be_empty
       expect(project.builds).to be_empty
+    end
+  end
+
+  context 'associations destoyed in batches' do
+    let!(:merge_request) { create(:merge_request, source_project: project) }
+    let!(:issue) { create(:issue, project: project) }
+    let!(:label) { create(:label, project: project) }
+
+    it 'destroys the associations marked as `dependent: :destroy`, in batches' do
+      query_recorder = ActiveRecord::QueryRecorder.new do
+        destroy_project(project, user, {})
+      end
+
+      expect(project.merge_requests).to be_empty
+      expect(project.issues).to be_empty
+      expect(project.labels).to be_empty
+
+      expected_queries = [
+        delete_in_batches_regexps(:merge_requests, :target_project_id, project, [merge_request]),
+        delete_in_batches_regexps(:issues, :project_id, project, [issue]),
+        delete_in_batches_regexps(:labels, :project_id, project, [label])
+      ].flatten
+
+      expect(query_recorder.log).to include(*expected_queries)
     end
   end
 

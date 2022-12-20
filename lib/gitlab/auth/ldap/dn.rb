@@ -51,7 +51,7 @@ module Gitlab
 
         ##
         # Parse a DN into key value pairs using ASN from
-        # http://tools.ietf.org/html/rfc2253 section 3.
+        # https://www.rfc-editor.org/rfc/rfc2253 section 3.
         # rubocop:disable Metrics/AbcSize
         # rubocop:disable Metrics/CyclomaticComplexity
         # rubocop:disable Metrics/PerceivedComplexity
@@ -231,7 +231,7 @@ module Gitlab
           self.class.new(*to_a).to_s.downcase
         end
 
-        # https://tools.ietf.org/html/rfc4514 section 2.4 lists these exceptions
+        # https://www.rfc-editor.org/rfc/rfc4514 section 2.4 lists these exceptions
         # for DN values. All of the following must be escaped in any normal string
         # using a single backslash ('\') as escape. The space character is left
         # out here because in a "normalized" string, spaces should only be escaped

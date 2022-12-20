@@ -11,6 +11,7 @@ module Gitlab
         UnknownAggregationOperator = Class.new(AggregatedMetricError)
         UnknownAggregationSource = Class.new(AggregatedMetricError)
         DisallowedAggregationTimeFrame = Class.new(AggregatedMetricError)
+        UndefinedEvents = Class.new(AggregatedMetricError)
 
         DATABASE_SOURCE = 'database'
         REDIS_SOURCE = 'redis_hll'

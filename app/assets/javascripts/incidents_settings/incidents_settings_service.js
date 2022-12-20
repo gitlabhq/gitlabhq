@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { ERROR_MSG } from './constants';
@@ -22,7 +22,7 @@ export default class IncidentsSettingsService {
       .catch(({ response }) => {
         const message = response?.data?.message || '';
 
-        createFlash({
+        createAlert({
           message: `${ERROR_MSG} ${message}`,
         });
       });

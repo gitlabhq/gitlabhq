@@ -29,6 +29,6 @@ class FlushCounterIncrementsWorker
     model = model_class.find_by_id(model_id)
     return unless model
 
-    model.flush_increments_to_database!(attribute)
+    Gitlab::Counters::BufferedCounter.new(model, attribute).commit_increment!
   end
 end

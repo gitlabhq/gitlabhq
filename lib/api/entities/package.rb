@@ -26,7 +26,7 @@ module API
       expose :status, documentation: { type: 'string', example: 'default' }
 
       expose :_links do
-        expose :web_path do |package|
+        expose :web_path, if: ->(package) { package.default? } do |package|
           package_path(package)
         end
 

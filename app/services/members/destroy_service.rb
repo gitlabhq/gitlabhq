@@ -15,15 +15,15 @@ module Members
       @skip_auth = skip_authorization
       last_owner = true
 
-      in_lock("delete_members:#{member.source.class}:#{member.source.id}") do
+      in_lock("delete_members:#{member.source.class}:#{member.source.id}", sleep_sec: 0.1.seconds) do
         break if member.is_a?(GroupMember) && member.source.last_owner?(member.user)
 
         last_owner = false
         member.destroy
-        member.user&.invalidate_cache_counts
       end
 
       unless last_owner
+        member.user&.invalidate_cache_counts
         delete_member_associations(member, skip_subresources, unassign_issuables)
       end
 

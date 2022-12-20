@@ -8,7 +8,7 @@ class Snippets::NotesController < ApplicationController
   before_action :authorize_read_snippet!, only: [:show, :index]
   before_action :authorize_create_note!, only: [:create]
 
-  feature_category :snippets
+  feature_category :source_code_management
 
   private
 

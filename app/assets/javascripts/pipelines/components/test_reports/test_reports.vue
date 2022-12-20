@@ -1,8 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import createTestReportsStore from '../../stores/test_reports';
 import EmptyState from './empty_state.vue';
 import TestSuiteTable from './test_suite_table.vue';
 import TestSummary from './test_summary.vue';
@@ -17,7 +15,6 @@ export default {
     TestSummary,
     TestSummaryTable,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['blobPath', 'summaryEndpoint', 'suiteEndpoint'],
   computed: {
     ...mapState('testReports', ['isLoading', 'selectedSuiteIndex', 'testReports']),
@@ -31,17 +28,6 @@ export default {
     },
   },
   created() {
-    if (!this.glFeatures.pipelineTabsVue) {
-      this.$store.registerModule(
-        'testReports',
-        createTestReportsStore({
-          blobPath: this.blobPath,
-          summaryEndpoint: this.summaryEndpoint,
-          suiteEndpoint: this.suiteEndpoint,
-        }),
-      );
-    }
-
     this.fetchSummary();
   },
   methods: {

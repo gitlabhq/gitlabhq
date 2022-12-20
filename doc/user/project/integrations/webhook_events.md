@@ -1019,7 +1019,7 @@ Payload example:
 ```
 
 NOTE:
-The fields `assignee_id`, `state`, `merge_status` are deprecated.
+The fields `assignee_id`, `state`, `merge_status` are [deprecated](../../../api/merge_requests.md).
 
 ## Wiki page events
 
@@ -1171,7 +1171,7 @@ Payload example:
       "project":{
         "id": 41,
         "web_url": "https://gitlab.example.com/gitlab-org/upstream-project",
-        "path_with_namespace": "gitlab-org/upstream-project",
+        "path_with_namespace": "gitlab-org/upstream-project"
       },
       "pipeline_id": 30,
       "job_id": 3401
@@ -1475,6 +1475,8 @@ Payload example:
   "deployable_id": 796,
   "deployable_url": "http://10.126.0.2:3000/root/test-deployment-webhooks/-/jobs/796",
   "environment": "staging",
+  "environment_slug": "staging",
+  "environment_external_url": "https://staging.example.com",
   "project": {
     "id": 30,
     "name": "test-deployment-webhooks",

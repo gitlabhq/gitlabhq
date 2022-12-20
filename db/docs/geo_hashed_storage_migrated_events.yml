@@ -7,3 +7,4 @@ feature_categories:
 description: Used to replicate repository migration paths on Geo secondaries from regular to hashed storage.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3066
 milestone: '10.2'
+gitlab_schema: gitlab_main

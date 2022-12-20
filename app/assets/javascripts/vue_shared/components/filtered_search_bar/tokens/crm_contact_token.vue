@@ -8,7 +8,7 @@ import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
 import searchCrmContactsQuery from '../queries/search_crm_contacts.query.graphql';
 
-import { DEFAULT_NONE_ANY } from '../constants';
+import { OPTIONS_NONE_ANY } from '../constants';
 
 import BaseToken from './base_token.vue';
 
@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     defaultContacts() {
-      return this.config.defaultContacts || DEFAULT_NONE_ANY;
+      return this.config.defaultContacts || OPTIONS_NONE_ANY;
     },
     namespace() {
       return this.config.isProject ? ITEM_TYPE.PROJECT : ITEM_TYPE.GROUP;

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Container Registry', :js do
+RSpec.describe 'Container Registry', :js, feature_category: :container_registry do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
@@ -97,8 +97,6 @@ RSpec.describe 'Container Registry', :js do
         expect(find('.modal .modal-title')).to have_content _('Remove tag')
         find('.modal .modal-footer .btn-danger').click
       end
-
-      it_behaves_like 'rejecting tags destruction for an importing repository on', tags: ['latest']
     end
   end
 

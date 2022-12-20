@@ -356,7 +356,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).and_return(double(execute: project))
 
-          expect { post :create, params: { target_namespace: provider_repo[:name] }, format: :json }.to change(Namespace, :count).by(1)
+          expect { post :create, params: { target_namespace: provider_repo[:name] }, format: :json }.to change { Namespace.count }.by(1)
         end
 
         it "takes the new namespace" do
@@ -377,7 +377,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).and_return(double(execute: project))
 
-          expect { post :create, format: :json }.not_to change(Namespace, :count)
+          expect { post :create, format: :json }.not_to change { Namespace.count }
         end
 
         it "takes the current user's namespace" do

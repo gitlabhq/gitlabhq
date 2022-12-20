@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'When a user searches for Sentry errors', :js, :use_clean_rails_memory_store_caching, :sidekiq_inline do
+RSpec.describe 'When a user searches for Sentry errors', :js, :use_clean_rails_memory_store_caching, :sidekiq_inline,
+feature_category: :error_tracking do
   include_context 'sentry error tracking context feature'
 
   let_it_be(:issues_response_body) { fixture_file('sentry/issues_sample_response.json') }

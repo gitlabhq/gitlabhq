@@ -72,10 +72,12 @@ To use a Terraform template:
    include:
     # To fetch the latest template, use:
      - template: Terraform.latest.gitlab-ci.yml
+    # To fetch the advanced latest template, use:
+     - template: Terraform/Base.latest.gitlab-ci.yml 
     # To fetch the stable template, use:
+     - template: Terraform.gitlab-ci.yml
+    # To fetch the advanced stable template, use:
      - template: Terraform/Base.gitlab-ci.yml
-    # To fetch the advanced template, use:
-     - template: Terraform/Base.latest.gitlab-ci.yml
    ```
 
 1. Add the variables as described below:
@@ -90,6 +92,10 @@ To use a Terraform template:
 
 1. Optional. Override in your `.gitlab-ci.yml` file the attributes present
 in the template you fetched to customize your configuration.
+
+### Terraform template recipes
+
+For GitLab-curated template recipes, see [Terraform template recipes](terraform_template_recipes.md).
 
 ## Related topics
 

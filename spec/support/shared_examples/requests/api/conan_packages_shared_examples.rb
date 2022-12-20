@@ -593,7 +593,7 @@ RSpec.shared_examples 'delete package endpoint' do
       project.add_maintainer(user)
     end
 
-    it_behaves_like 'a gitlab tracking event', 'API::ConanPackages', 'delete_package'
+    it_behaves_like 'a package tracking event', 'API::ConanPackages', 'delete_package'
 
     it 'deletes a package' do
       expect { subject }.to change { Packages::Package.count }.from(2).to(1)
@@ -708,7 +708,7 @@ RSpec.shared_examples 'package file download endpoint' do
   context 'tracking the conan_package.tgz download' do
     let(:package_file) { package.package_files.find_by(file_name: ::Packages::Conan::FileMetadatum::PACKAGE_BINARY) }
 
-    it_behaves_like 'a gitlab tracking event', 'API::ConanPackages', 'pull_package'
+    it_behaves_like 'a package tracking event', 'API::ConanPackages', 'pull_package'
   end
 end
 
@@ -781,7 +781,7 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do
   context 'tracking the conan_package.tgz upload' do
     let(:file_name) { ::Packages::Conan::FileMetadatum::PACKAGE_BINARY }
 
-    it_behaves_like 'a gitlab tracking event', 'API::ConanPackages', 'push_package'
+    it_behaves_like 'a package tracking event', 'API::ConanPackages', 'push_package'
   end
 end
 
@@ -847,12 +847,6 @@ RSpec.shared_examples 'uploads a package file' do
 
         package_file = project.packages.last.package_files.reload.last
         expect(package_file.file_name).to eq(params[:file].original_filename)
-      end
-
-      it "doesn't attempt to migrate file to object storage" do
-        expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
-
-        subject
       end
 
       context 'with existing package' do
@@ -936,8 +930,6 @@ RSpec.shared_examples 'uploads a package file' do
         end
       end
     end
-
-    it_behaves_like 'background upload schedules a file migration'
   end
 end
 

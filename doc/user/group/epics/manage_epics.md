@@ -494,7 +494,8 @@ The maximum number of direct child epics is 100.
 
 ### Child epics from other groups
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8502) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8502) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`. Disabled by default.
+> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`.
@@ -504,16 +505,18 @@ You can add a child epic that belongs to a group that is different from the pare
 
 Prerequisites:
 
-- You must have at least the Reporter role for both the child and parent epics' groups.
+- You must have at least the Guest role for both the child and parent epics' groups.
 - Multi-level child epics must be available for both the child and parent epics' groups.
 
 To add a child epic from another group, paste the epic's URL when [adding an existing epic](#add-a-child-epic-to-an-epic).
 
 ### Add a child epic to an epic
 
+> Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+
 Prerequisites:
 
-- You must have at least the Reporter role for the parent epic's group.
+- You must have at least the Guest role for the parent epic's group.
 
 To add a new epic as child epic:
 
@@ -534,7 +537,8 @@ To add an existing epic as child epic:
 
 ### Move child epics between epics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
+> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
 
 New child epics appear at the top of the list in the **Epics and Issues** tab.
 You can move child epics from one epic to another.
@@ -543,7 +547,7 @@ Issues and child epics cannot be intermingled.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the parent epic's group.
+- You must have at least the Guest role for the parent epic's group.
 
 To move child epics to another epic:
 
@@ -552,14 +556,15 @@ To move child epics to another epic:
 
 ### Reorder child epics assigned to an epic
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9367) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9367) in GitLab 12.5.
+> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
 
 New child epics appear at the top of the list in the **Epics and Issues** tab.
 You can reorder the list of child epics.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the parent epic's group.
+- You must have at least the Guest role for the parent epic's group.
 
 To reorder child epics assigned to an epic:
 
@@ -568,9 +573,11 @@ To reorder child epics assigned to an epic:
 
 ### Remove a child epic from a parent epic
 
+> Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+
 Prerequisites:
 
-- You must have at least the Reporter role for the parent epic's group.
+- You must have at least the Guest role for the parent epic's group.
 
 To remove a child epic from a parent epic:
 

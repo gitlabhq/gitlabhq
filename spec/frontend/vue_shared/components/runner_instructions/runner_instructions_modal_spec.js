@@ -113,10 +113,7 @@ describe('RunnerInstructionsModal component', () => {
     });
 
     describe('should display default instructions', () => {
-      const {
-        installInstructions,
-        registerInstructions,
-      } = mockGraphqlInstructions.data.runnerSetup;
+      const { installInstructions } = mockGraphqlInstructions.data.runnerSetup;
 
       it('runner instructions are requested', () => {
         expect(runnerSetupInstructionsHandler).toHaveBeenCalledWith({
@@ -128,52 +125,15 @@ describe('RunnerInstructionsModal component', () => {
       it('binary instructions are shown', async () => {
         const instructions = findBinaryInstructions().text();
 
-        expect(instructions).toBe(installInstructions);
+        expect(instructions).toBe(installInstructions.trim());
       });
 
       it('register command is shown with a replaced token', async () => {
         const command = findRegisterCommand().text();
 
         expect(command).toBe(
-          'sudo gitlab-runner register --url http://gdk.test:3000/ --registration-token MY_TOKEN',
+          'sudo gitlab-runner register --url http://localhost/ --registration-token MY_TOKEN',
         );
-      });
-
-      describe('when a register token is not shown', () => {
-        beforeEach(async () => {
-          createComponent({ props: { registrationToken: undefined } });
-          await waitForPromises();
-        });
-
-        it('register command is shown without a defined registration token', () => {
-          const instructions = findRegisterCommand().text();
-
-          expect(instructions).toBe(registerInstructions);
-        });
-      });
-
-      describe('when providing a defaultPlatformName', () => {
-        beforeEach(async () => {
-          createComponent({ props: { defaultPlatformName: 'osx' } });
-          await waitForPromises();
-        });
-
-        it('runner instructions for the default selected platform are requested', () => {
-          expect(runnerSetupInstructionsHandler).toHaveBeenCalledWith({
-            platform: 'osx',
-            architecture: 'amd64',
-          });
-        });
-
-        it('sets the focus on the default selected platform', () => {
-          const findOsxPlatformButton = () => wrapper.findComponent({ ref: 'osx' });
-
-          findOsxPlatformButton().element.focus = jest.fn();
-
-          findModal().vm.$emit('shown');
-
-          expect(findOsxPlatformButton().element.focus).toHaveBeenCalled();
-        });
       });
     });
 
@@ -207,14 +167,14 @@ describe('RunnerInstructionsModal component', () => {
       it('other binary instructions are shown', () => {
         const instructions = findBinaryInstructions().text();
 
-        expect(instructions).toBe(installInstructions);
+        expect(instructions).toBe(installInstructions.trim());
       });
 
       it('register command is shown', () => {
         const command = findRegisterCommand().text();
 
         expect(command).toBe(
-          './gitlab-runner.exe register --url http://gdk.test:3000/ --registration-token MY_TOKEN',
+          './gitlab-runner.exe register --url http://localhost/ --registration-token MY_TOKEN',
         );
       });
 
@@ -243,6 +203,43 @@ describe('RunnerInstructionsModal component', () => {
 
         expect(findPlatformButtonGroup().props('vertical')).toBeUndefined();
       });
+    });
+  });
+
+  describe('when a register token is not known', () => {
+    beforeEach(async () => {
+      createComponent({ props: { registrationToken: undefined } });
+      await waitForPromises();
+    });
+
+    it('register command is shown without a defined registration token', () => {
+      const instructions = findRegisterCommand().text();
+
+      expect(instructions).toBe(mockGraphqlInstructions.data.runnerSetup.registerInstructions);
+    });
+  });
+
+  describe('with a defaultPlatformName', () => {
+    beforeEach(async () => {
+      createComponent({ props: { defaultPlatformName: 'osx' } });
+      await waitForPromises();
+    });
+
+    it('runner instructions for the default selected platform are requested', () => {
+      expect(runnerSetupInstructionsHandler).toHaveBeenLastCalledWith({
+        platform: 'osx',
+        architecture: 'amd64',
+      });
+    });
+
+    it('sets the focus on the default selected platform', () => {
+      const findOsxPlatformButton = () => wrapper.findComponent({ ref: 'osx' });
+
+      findOsxPlatformButton().element.focus = jest.fn();
+
+      findModal().vm.$emit('shown');
+
+      expect(findOsxPlatformButton().element.focus).toHaveBeenCalled();
     });
   });
 

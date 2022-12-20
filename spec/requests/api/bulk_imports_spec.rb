@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::BulkImports do
+RSpec.describe API::BulkImports, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:import_1) { create(:bulk_import, user: user) }
   let_it_be(:import_2) { create(:bulk_import, user: user) }
@@ -50,6 +50,9 @@ RSpec.describe API::BulkImports do
           .to receive(:instance_version)
           .and_return(
             Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION, ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT))
+        allow(instance)
+          .to receive(:instance_enterprise)
+          .and_return(false)
       end
     end
 

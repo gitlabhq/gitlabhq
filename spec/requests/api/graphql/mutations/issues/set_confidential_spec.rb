@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Setting an issue as confidential' do
+RSpec.describe 'Setting an issue as confidential', feature_category: :team_planning do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SandboxController do
+RSpec.describe SandboxController, feature_category: :not_owned do
   describe 'GET #mermaid' do
     it 'renders page without template' do
       get sandbox_mermaid_path

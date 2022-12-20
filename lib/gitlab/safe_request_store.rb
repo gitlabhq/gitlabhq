@@ -40,7 +40,7 @@ module Gitlab
     def self.delete_if(&block)
       return unless RequestStore.active?
 
-      storage.delete_if { |k, v| block.call(k) }
+      storage.delete_if { |k, v| yield(k) }
     end
   end
 end

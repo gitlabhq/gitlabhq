@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge Requests Feed' do
+RSpec.describe 'Merge Requests Feed', feature_category: :devops_reports do
   describe 'GET /merge_requests' do
     let_it_be_with_reload(:user) { create(:user, email: 'private1@example.com') }
     let_it_be(:assignee) { create(:user, email: 'private2@example.com') }

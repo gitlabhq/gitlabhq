@@ -83,8 +83,8 @@ module Gitlab
               message
               cve
               solution
-            ].each_with_object({}) do |key, hash|
-              hash[key] = public_send(key) # rubocop:disable GitlabSecurity/PublicSend
+            ].index_with do |key|
+              public_send(key) # rubocop:disable GitlabSecurity/PublicSend
             end
           end
 
@@ -98,7 +98,7 @@ module Gitlab
           end
 
           def unsafe?(severity_levels, report_types)
-            severity.to_s.in?(severity_levels) && (report_types.blank? || report_type.to_s.in?(report_types) )
+            severity.to_s.in?(severity_levels) && (report_types.blank? || report_type.to_s.in?(report_types))
           end
 
           def eql?(other)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin Broadcast Messages' do
+RSpec.describe 'Admin Broadcast Messages', feature_category: :onboarding do
   before do
     admin = create(:admin)
     sign_in(admin)

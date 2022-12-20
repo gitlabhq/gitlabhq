@@ -82,9 +82,16 @@ RSpec.describe Import::GithubService do
       end
 
       context 'when there is no repository size limit defined' do
-        it 'skips the check and succeeds' do
+        it 'skips the check, succeeds, and tracks an access level' do
           expect(subject.execute(access_params, :github)).to include(status: :success)
           expect(settings).to have_received(:write).with(nil)
+          expect_snowplow_event(
+            category: 'Import::GithubService',
+            action: 'create',
+            label: 'import_access_level',
+            user: user,
+            extra: { import_type: 'github', user_role: 'Owner' }
+          )
         end
       end
 
@@ -98,6 +105,13 @@ RSpec.describe Import::GithubService do
         it 'succeeds when the repository is smaller than the limit' do
           expect(subject.execute(access_params, :github)).to include(status: :success)
           expect(settings).to have_received(:write).with(nil)
+          expect_snowplow_event(
+            category: 'Import::GithubService',
+            action: 'create',
+            label: 'import_access_level',
+            user: user,
+            extra: { import_type: 'github', user_role: 'Not a member' }
+          )
         end
 
         it 'returns error when the repository is larger than the limit' do
@@ -118,6 +132,13 @@ RSpec.describe Import::GithubService do
           it 'succeeds when the repository is smaller than the limit' do
             expect(subject.execute(access_params, :github)).to include(status: :success)
             expect(settings).to have_received(:write).with(nil)
+            expect_snowplow_event(
+              category: 'Import::GithubService',
+              action: 'create',
+              label: 'import_access_level',
+              user: user,
+              extra: { import_type: 'github', user_role: 'Owner' }
+            )
           end
 
           it 'returns error when the repository is larger than the limit' do

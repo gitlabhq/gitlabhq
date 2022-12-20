@@ -92,16 +92,12 @@ module QA
           end
         end
 
-        def within_sidebar
-          within_element(:admin_sidebar_content) do
-            yield
-          end
+        def within_sidebar(&block)
+          within_element(:admin_sidebar_content, &block)
         end
 
-        def within_submenu(element)
-          within_element(element) do
-            yield
-          end
+        def within_submenu(element, &block)
+          within_element(element, &block)
         end
       end
     end

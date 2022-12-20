@@ -1,0 +1,9 @@
+{
+  "kind": "PodTemplateList",
+  "apiVersion": "v1",
+  "metadata": {
+    "selfLink": "/api/v1/podtemplates",
+    "resourceVersion": "672"
+  },
+  "items": []
+}

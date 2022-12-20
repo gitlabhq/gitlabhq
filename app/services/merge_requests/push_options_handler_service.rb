@@ -7,7 +7,7 @@ module MergeRequests
     attr_reader :errors, :changes,
                 :push_options, :target_project
 
-    def initialize(project:, current_user:, params: {}, changes:, push_options:)
+    def initialize(project:, current_user:, changes:, push_options:, params: {})
       super(project: project, current_user: current_user, params: params)
 
       @target_project = @project.default_merge_request_target

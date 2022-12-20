@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User Snippets' do
+RSpec.describe 'User Snippets', feature_category: :source_code_management do
   let(:author) { create(:user) }
   let!(:public_snippet) { create(:personal_snippet, :public, author: author, title: "This is a public snippet") }
   let!(:internal_snippet) { create(:personal_snippet, :internal, author: author, title: "This is an internal snippet") }

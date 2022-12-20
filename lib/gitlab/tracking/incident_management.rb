@@ -17,7 +17,7 @@ module Gitlab
 
             details = label ? { label: label, property: v } : {}
 
-            ::Gitlab::Tracking.event('IncidentManagement::Settings', "#{prefix}_#{key}", **details )
+            ::Gitlab::Tracking.event('IncidentManagement::Settings', "#{prefix}_#{key}", **details)
           end
         end
 

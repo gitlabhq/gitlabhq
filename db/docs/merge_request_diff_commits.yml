@@ -7,3 +7,4 @@ feature_categories:
 description: Store commit related information within a merge request diff
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12527
 milestone: '9.4'
+gitlab_schema: gitlab_main

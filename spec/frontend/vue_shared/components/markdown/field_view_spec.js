@@ -1,10 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
-import $ from 'jquery';
 
 import MarkdownFieldView from '~/vue_shared/components/markdown/field_view.vue';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('Markdown Field View component', () => {
-  let renderGFMSpy;
   let wrapper;
 
   function createComponent() {
@@ -12,7 +13,6 @@ describe('Markdown Field View component', () => {
   }
 
   beforeEach(() => {
-    renderGFMSpy = jest.spyOn($.fn, 'renderGFM');
     createComponent();
   });
 
@@ -21,6 +21,6 @@ describe('Markdown Field View component', () => {
   });
 
   it('processes rendering with GFM', () => {
-    expect(renderGFMSpy).toHaveBeenCalledTimes(1);
+    expect(renderGFM).toHaveBeenCalledTimes(1);
   });
 });

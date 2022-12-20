@@ -14,6 +14,7 @@ RSpec.describe Types::Ci::PipelineScheduleType do
       description
       owner
       active
+      project
       lastPipeline
       refForDisplay
       refPath
@@ -23,6 +24,13 @@ RSpec.describe Types::Ci::PipelineScheduleType do
       cron
       cronTimezone
       userPermissions
+      editPath
+      cron
+      cronTimezone
+      ref
+      variables
+      createdAt
+      updatedAt
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

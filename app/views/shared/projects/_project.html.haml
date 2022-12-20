@@ -52,7 +52,7 @@
           %span.user-access-role.gl-display-block.gl-m-0{ data: { qa_selector: 'user_role_content' } }= Gitlab::Access.human_access(access)
 
         - if !explore_projects_tab?
-          = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project
+          = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project, additional_classes: 'gl-ml-3!'
 
       - if show_last_commit_as_description
         .description.gl-display-none.gl-sm-display-block.gl-overflow-hidden.gl-mr-3.gl-mt-2

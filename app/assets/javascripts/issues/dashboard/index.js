@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import IssuesDashboardApp from './components/issues_dashboard_app.vue';
 
@@ -9,14 +11,36 @@ export function mountIssuesDashboardApp() {
     return null;
   }
 
-  const { calendarPath, emptyStateSvgPath, isSignedIn, rssPath } = el.dataset;
+  Vue.use(VueApollo);
+
+  const {
+    calendarPath,
+    emptyStateSvgPath,
+    hasBlockedIssuesFeature,
+    hasIssuableHealthStatusFeature,
+    hasIssueWeightsFeature,
+    hasScopedLabelsFeature,
+    initialSort,
+    isPublicVisibilityRestricted,
+    isSignedIn,
+    rssPath,
+  } = el.dataset;
 
   return new Vue({
     el,
     name: 'IssuesDashboardRoot',
+    apolloProvider: new VueApollo({
+      defaultClient: createDefaultClient(),
+    }),
     provide: {
       calendarPath,
       emptyStateSvgPath,
+      hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
+      hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
+      hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
+      hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
+      initialSort,
+      isPublicVisibilityRestricted: parseBoolean(isPublicVisibilityRestricted),
       isSignedIn: parseBoolean(isSignedIn),
       rssPath,
     },

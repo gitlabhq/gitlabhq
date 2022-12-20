@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Deployments do
+RSpec.describe API::Deployments, feature_category: :continuous_delivery do
   let_it_be(:user)        { create(:user) }
   let_it_be(:non_member)  { create(:user) }
 
@@ -16,8 +16,8 @@ RSpec.describe API::Deployments do
     let_it_be(:staging) { create(:environment, :staging, project: project) }
     let_it_be(:build) { create(:ci_build, :success, project: project) }
     let_it_be(:deployment_1) { create(:deployment, :success, project: project, environment: production, deployable: build, ref: 'master', created_at: Time.now, updated_at: Time.now) }
-    let_it_be(:deployment_2) { create(:deployment, :success, project: project, environment: staging, deployable: build, ref: 'master', created_at: 1.day.ago, updated_at: 2.hours.ago) }
-    let_it_be(:deployment_3) { create(:deployment, :success, project: project, environment: staging, deployable: build, ref: 'master', created_at: 2.days.ago, updated_at: 1.hour.ago) }
+    let_it_be(:deployment_2) { create(:deployment, :success, project: project, environment: staging, deployable: build, ref: 'master', created_at: 1.day.ago, finished_at: 2.hours.ago, updated_at: 2.hours.ago) }
+    let_it_be(:deployment_3) { create(:deployment, :success, project: project, environment: staging, deployable: build, ref: 'master', created_at: 2.days.ago, finished_at: 1.hour.ago, updated_at: 1.hour.ago) }
 
     def perform_request(params = {})
       get api("/projects/#{project.id}/deployments", user), params: params
@@ -47,11 +47,49 @@ RSpec.describe API::Deployments do
         end
 
         context 'when forbidden order_by is specified' do
-          it 'returns projects deployments with last update in specified datetime range' do
+          it 'returns an error' do
             perform_request({ updated_before: 30.minutes.ago, updated_after: 90.minutes.ago, order_by: :id })
 
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']).to include('`updated_at` filter and `updated_at` sorting must be paired')
+          end
+        end
+      end
+
+      context 'with finished after and before filters specified' do
+        context 'for successful deployments' do
+          it 'returns projects deployments finished before the specified datetime range' do
+            perform_request({ status: :success, finished_before: 90.minutes.ago, order_by: :finished_at, environment: 'staging' })
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.first['id']).to eq(deployment_2.id)
+          end
+
+          it 'returns projects deployments finished after the specified datetime range' do
+            perform_request({ status: :success, finished_after: 90.minutes.ago, order_by: :finished_at, environment: 'staging' })
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.first['id']).to eq(deployment_3.id)
+          end
+        end
+
+        context 'for unsuccessful deployments' do
+          it 'returns an error' do
+            perform_request({ status: :failed, finished_before: 30.minutes.ago, order_by: :finished_at })
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to include('`finished_at` filter must be combined with `success` status filter.')
+          end
+        end
+
+        context 'when a forbidden order_by is specified' do
+          it 'returns an error' do
+            perform_request({ status: :success, finished_before: 30.minutes.ago, order_by: :id })
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to include('`finished_at` filter requires `finished_at` sort.')
           end
         end
       end

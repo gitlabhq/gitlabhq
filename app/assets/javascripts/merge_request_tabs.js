@@ -5,6 +5,7 @@ import { createAlert } from '~/flash';
 import { getCookie, isMetaClick, parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
 import { parseUrlPathname } from '~/lib/utils/url_utility';
 import createEventHub from '~/helpers/event_hub_factory';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import Diff from './diff';
 import { initDiffStatsDropdown } from './init_diff_stats_dropdown';
@@ -161,6 +162,23 @@ function toggleLoader(state) {
   $('.mr-loading-status .loading').toggleClass('hide', !state);
 }
 
+function getActionFromHref(href) {
+  let action = new URL(href).pathname.match(/\/(commits|diffs|pipelines).*$/);
+
+  if (action) {
+    action = action[0].replace(/(^\/|\.html)/g, '');
+  } else {
+    action = 'show';
+  }
+
+  return action;
+}
+
+const pageBundles = {
+  show: () => import(/* webpackPrefetch: true */ '~/mr_notes/init_notes'),
+  diffs: () => import(/* webpackPrefetch: true */ '~/diffs'),
+};
+
 export default class MergeRequestTabs {
   constructor({ action, setUrl, stubLocation } = {}) {
     this.mergeRequestTabs = document.querySelector('.merge-request-tabs-container');
@@ -186,10 +204,10 @@ export default class MergeRequestTabs {
 
     this.currentTab = null;
     this.diffsLoaded = false;
-    this.pipelinesLoaded = false;
     this.commitsLoaded = false;
     this.fixedLayoutPref = null;
     this.eventHub = createEventHub();
+    this.loadedPages = { [action]: true };
 
     this.setUrl = setUrl !== undefined ? setUrl : true;
     this.setCurrentAction = this.setCurrentAction.bind(this);
@@ -206,12 +224,11 @@ export default class MergeRequestTabs {
 
   bindEvents() {
     $('.merge-request-tabs a[data-toggle="tabvue"]').on('click', this.clickTab);
-    window.addEventListener('popstate', (event) => {
-      if (event.state && event.state.action) {
-        this.tabShown(event.state.action, event.target.location);
-        this.currentAction = event.state.action;
-        this.eventHub.$emit('MergeRequestTabChange', this.getCurrentAction());
-      }
+    window.addEventListener('popstate', () => {
+      const action = getActionFromHref(location.href);
+
+      this.tabShown(action, location.href);
+      this.eventHub.$emit('MergeRequestTabChange', action);
     });
   }
 
@@ -252,17 +269,18 @@ export default class MergeRequestTabs {
       } else if (action) {
         const href = e.currentTarget.getAttribute('href');
         this.tabShown(action, href);
-
-        if (this.setUrl) {
-          this.setCurrentAction(action);
-        }
       }
     }
   }
 
   tabShown(action, href, shouldScroll = true) {
+    toggleLoader(false);
+
     if (action !== this.currentTab && this.mergeRequestTabs) {
       this.currentTab = action;
+      if (this.setUrl) {
+        this.setCurrentAction(action);
+      }
 
       if (this.mergeRequestTabPanesAll) {
         this.mergeRequestTabPanesAll.forEach((el) => {
@@ -281,6 +299,20 @@ export default class MergeRequestTabs {
       if (tabPane) tabPane.style.display = 'block';
       const tab = this.mergeRequestTabs.querySelector(`.${action}-tab`);
       if (tab) tab.classList.add('active');
+
+      if (!this.loadedPages[action] && action in pageBundles) {
+        toggleLoader(true);
+        pageBundles[action]()
+          .then(({ default: init }) => {
+            toggleLoader(false);
+            init();
+            this.loadedPages[action] = true;
+          })
+          .catch(() => {
+            toggleLoader(false);
+            createAlert({ message: __('MergeRequest|Failed to load the page') });
+          });
+      }
 
       if (window.gon?.features?.movedMrSidebar) {
         this.expandSidebar?.forEach((el) =>
@@ -334,7 +366,7 @@ export default class MergeRequestTabs {
         this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
       }
 
-      $('.detail-page-description').renderGFM();
+      renderGFM(document.querySelector('.detail-page-description'));
 
       if (shouldScroll) this.recallScroll(action);
     } else if (action === this.currentAction) {
@@ -398,7 +430,7 @@ export default class MergeRequestTabs {
     // Ensure parameters and hash come along for the ride
     newState += location.search + location.hash;
 
-    if (window.history.state && window.history.state.url && window.location.pathname !== newState) {
+    if (window.location.pathname !== newState) {
       window.history.pushState(
         {
           url: newState,
@@ -477,8 +509,6 @@ export default class MergeRequestTabs {
       return;
     }
 
-    toggleLoader(true);
-
     loadDiffs({
       // We extract pathname for the current Changes tab anchor href
       // some pages like MergeRequestsController#new has query parameters on that anchor
@@ -496,9 +526,6 @@ export default class MergeRequestTabs {
         createAlert({
           message: __('An error occurred while fetching this tab.'),
         });
-      })
-      .finally(() => {
-        toggleLoader(false);
       });
   }
 

@@ -6,9 +6,9 @@ import {
   GlAvatar,
   GlAlert,
   GlLoadingIcon,
-  GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import { mapState, mapGetters } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
 import highlight from '~/lib/utils/highlight';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';

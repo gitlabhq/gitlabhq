@@ -25,6 +25,7 @@ import RunnerStats from '~/ci/runner/components/stat/runner_stats.vue';
 import RunnerActionsCell from '~/ci/runner/components/cells/runner_actions_cell.vue';
 import RegistrationDropdown from '~/ci/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
+import RunnerJobStatusBadge from '~/ci/runner/components/runner_job_status_badge.vue';
 
 import {
   ADMIN_FILTERED_SEARCH_NAMESPACE,
@@ -77,7 +78,9 @@ jest.mock('~/lib/utils/url_utility', () => ({
 Vue.use(VueApollo);
 Vue.use(GlToast);
 
-const COUNT_QUERIES = 7; // 4 tabs + 3 status queries
+const STATUS_COUNT_QUERIES = 3;
+const TAB_COUNT_QUERIES = 4;
+const COUNT_QUERIES = TAB_COUNT_QUERIES + STATUS_COUNT_QUERIES;
 
 describe('AdminRunnersApp', () => {
   let wrapper;
@@ -170,6 +173,29 @@ describe('AdminRunnersApp', () => {
     });
   });
 
+  describe('does not show total runner counts when total is 0', () => {
+    beforeEach(async () => {
+      mockRunnersCountHandler.mockResolvedValue({
+        data: {
+          runners: {
+            count: 0,
+            ...runnersCountData.runners,
+          },
+        },
+      });
+
+      await createComponent({ mountFn: mountExtended });
+    });
+
+    it('fetches only tab counts', () => {
+      expect(mockRunnersCountHandler).toHaveBeenCalledTimes(TAB_COUNT_QUERIES);
+    });
+
+    it('does not shows counters', () => {
+      expect(findRunnerStats().text()).toBe('');
+    });
+  });
+
   it('shows the runners list', async () => {
     await createComponent();
 
@@ -250,6 +276,15 @@ describe('AdminRunnersApp', () => {
 
       expect(runnerLink.text()).toBe(`#${id} (${shortSha})`);
       expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${id}`);
+    });
+
+    it('Shows job status and links to jobs', () => {
+      const badge = wrapper
+        .find('tr [data-testid="td-summary"]')
+        .findComponent(RunnerJobStatusBadge);
+
+      expect(badge.props('jobStatus')).toBe(mockRunners[0].jobExecutionStatus);
+      expect(badge.attributes('href')).toBe(`http://localhost/admin/runners/${id}#/jobs`);
     });
 
     it('When runner is paused or unpaused, some data is refetched', async () => {

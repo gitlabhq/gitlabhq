@@ -70,6 +70,8 @@ module API
         optional :terraform_module_max_file_size, type: Integer,
                                                   desc: 'Maximum Terraform Module package file size in bytes'
         optional :storage_size_limit, type: Integer, desc: 'Maximum storage size for the root namespace in megabytes'
+        optional :pipeline_hierarchy_size, type: Integer,
+                                           desc: "Maximum number of downstream pipelines in a pipeline's hierarchy tree"
       end
       put "application/plan_limits" do
         params = declared_params(include_missing: false)

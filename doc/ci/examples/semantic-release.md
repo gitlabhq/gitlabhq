@@ -13,7 +13,7 @@ You can also view or fork the complete [example source](https://gitlab.com/gitla
 ## Initialize the module
 
 1. Open a terminal and navigate to the project's repository.
-1. Run `npm init`. Name the module according to [the Package Registry's naming conventions](../../user/packages/npm_registry/index.md#package-naming-convention). For example, if the project's path is `gitlab-examples/semantic-release-npm`, name the module `@gitlab-examples/semantic-release-npm`.
+1. Run `npm init`. Name the module according to [the Package Registry's naming conventions](../../user/packages/npm_registry/index.md#naming-convention). For example, if the project's path is `gitlab-examples/semantic-release-npm`, name the module `@gitlab-examples/semantic-release-npm`.
 
 1. Install the following npm packages:
 
@@ -89,6 +89,7 @@ The default `before_script` generates a temporary `.npmrc` that is used to authe
 As part of publishing a package, semantic-release increases the version number in `package.json`. For semantic-release to commit this change and push it back to GitLab, the pipeline requires a custom CI/CD variable named `GITLAB_TOKEN`. To create this variable:
 
 <!-- markdownlint-disable MD044 -->
+
 1. On the top bar, on the top right, select your avatar.
 1. On the left sidebar, select **Access Tokens**.
 1. In the **Token name** box, enter a token name.

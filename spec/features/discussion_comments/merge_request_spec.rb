@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Thread Comments Merge Request', :js do
+RSpec.describe 'Thread Comments Merge Request', :js, feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }

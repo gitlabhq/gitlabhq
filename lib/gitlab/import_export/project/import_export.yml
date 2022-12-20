@@ -763,6 +763,19 @@ excluded_attributes:
     - :import_type
     - :import_source
     - :integrations
+    - :push_hooks_integrations
+    - :tag_push_hooks_integrations
+    - :issue_hooks_integrations
+    - :confidential_issue_hooks_integrations
+    - :merge_request_hooks_integrations
+    - :note_hooks_integrations
+    - :confidential_note_hooks_integrations
+    - :job_hooks_integrations
+    - :archive_trace_hooks_integrations
+    - :pipeline_hooks_integrations
+    - :wiki_page_hooks_integrations
+    - :deployment_hooks_integrations
+    - :alert_hooks_integrations
     - :mirror
     - :runners_token
     - :runners_token_encrypted
@@ -1209,7 +1222,9 @@ ee:
       - :description
     iterations_cadence:
       - :title
-
+  excluded_attributes:
+    project:
+      - :vulnerability_hooks_integrations
   preloads:
     issues:
       epic:

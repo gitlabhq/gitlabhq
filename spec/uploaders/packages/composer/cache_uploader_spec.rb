@@ -33,8 +33,6 @@ RSpec.describe Packages::Composer::CacheUploader do
       end
 
       it 'can store file remotely' do
-        allow(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async)
-
         cache_file
 
         expect(cache_file.file_store).to eq(described_class::Store::REMOTE)

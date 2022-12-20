@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Developer views tags' do
+RSpec.describe 'Developer views tags', feature_category: :source_code_management do
   include RepoHelpers
 
   let(:user) { create(:user) }

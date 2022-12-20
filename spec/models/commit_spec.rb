@@ -828,12 +828,14 @@ eos
   describe 'signed commits' do
     let(:gpg_signed_commit) { project.commit_by(oid: '0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
     let(:x509_signed_commit) { project.commit_by(oid: '189a6c924013fc3fe40d6f1ec1dc20214183bc97') }
+    let(:ssh_signed_commit) { project.commit_by(oid: '7b5160f9bb23a3d58a0accdbe89da13b96b1ece9') }
     let(:unsigned_commit) { project.commit_by(oid: '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51') }
     let!(:commit) { create(:commit, project: project) }
 
     it 'returns signature_type properly' do
       expect(gpg_signed_commit.signature_type).to eq(:PGP)
       expect(x509_signed_commit.signature_type).to eq(:X509)
+      expect(ssh_signed_commit.signature_type).to eq(:SSH)
       expect(unsigned_commit.signature_type).to eq(:NONE)
       expect(commit.signature_type).to eq(:NONE)
     end
@@ -841,8 +843,23 @@ eos
     it 'returns has_signature? properly' do
       expect(gpg_signed_commit.has_signature?).to be_truthy
       expect(x509_signed_commit.has_signature?).to be_truthy
+      expect(ssh_signed_commit.has_signature?).to be_truthy
       expect(unsigned_commit.has_signature?).to be_falsey
       expect(commit.has_signature?).to be_falsey
+    end
+
+    context 'when feature flag "ssh_commit_signatures" is disabled' do
+      before do
+        stub_feature_flags(ssh_commit_signatures: false)
+      end
+
+      it 'reports no signature' do
+        expect(ssh_signed_commit).not_to have_signature
+      end
+
+      it 'does not return signature data' do
+        expect(ssh_signed_commit.signature).to be_nil
+      end
     end
   end
 

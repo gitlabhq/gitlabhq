@@ -6,7 +6,7 @@ type: reference, concepts
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/status_checks.html'
 ---
 
-# External Status Checks **(ULTIMATE)**
+# External status checks **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab 14.0, disabled behind the `:ff_external_status_checks` feature flag.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320783) in GitLab 14.1.

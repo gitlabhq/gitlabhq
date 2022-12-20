@@ -235,7 +235,7 @@ export default {
 
       this.saveNote(replyData)
         .then((res) => {
-          if (res.hasFlash !== true) {
+          if (res.hasAlert !== true) {
             this.isReplying = false;
             clearDraft(this.autosaveKey);
           }
@@ -307,7 +307,7 @@ export default {
                   :draft="draftForDiscussion(discussion.reply_id)"
                   :line="line"
                 />
-                <div
+                <li
                   v-else-if="canShowReplyActions && showReplies"
                   :class="{ 'is-replying': isReplying }"
                   class="discussion-reply-holder gl-border-t-0! clearfix"
@@ -334,7 +334,7 @@ export default {
                     @cancelForm="cancelReplyForm"
                   />
                   <note-signed-out-widget v-if="!isLoggedIn" />
-                </div>
+                </li>
               </template>
             </discussion-notes>
           </component>

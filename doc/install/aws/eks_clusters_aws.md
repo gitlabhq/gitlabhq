@@ -33,7 +33,7 @@ Using `eksctl` enables the following when building an EKS Cluster:
 
 Read more about Amazon EKS architecture quick start guide:
 
-- [Landing page](https://aws.amazon.com/quickstart/architecture/amazon-eks/)
+- [Landing page](https://aws.amazon.com/solutions/implementations/amazon-eks/)
 - [Reference guide](https://aws-quickstart.github.io/quickstart-amazon-eks/)
 - [Reference guide deployment steps](https://aws-quickstart.github.io/quickstart-amazon-eks/#_deployment_steps)
 - [Reference guide parameter reference](https://aws-quickstart.github.io/quickstart-amazon-eks/#_parameter_reference)

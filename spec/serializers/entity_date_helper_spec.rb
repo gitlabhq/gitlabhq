@@ -48,7 +48,7 @@ RSpec.describe EntityDateHelper do
 
   describe '#remaining_days_in_words' do
     around do |example|
-      Timecop.freeze(Time.utc(2017, 3, 17)) { example.run }
+      travel_to(Time.utc(2017, 3, 17)) { example.run }
     end
 
     context 'when less than 31 days remaining' do
@@ -75,7 +75,9 @@ RSpec.describe EntityDateHelper do
       end
 
       it 'returns 1 day remaining when queried mid-day' do
-        Timecop.freeze(Time.utc(2017, 3, 17, 13, 10)) do
+        travel_back
+
+        travel_to(Time.utc(2017, 3, 17, 13, 10)) do
           expect(milestone_remaining).to eq("<strong>1</strong> day remaining")
         end
       end

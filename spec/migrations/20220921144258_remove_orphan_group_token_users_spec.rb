@@ -4,7 +4,8 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RemoveOrphanGroupTokenUsers, :migration, :sidekiq_inline do
+RSpec.describe RemoveOrphanGroupTokenUsers, :migration, :sidekiq_inline,
+feature_category: :authentication_and_authorization do
   subject(:migration) { described_class.new }
 
   let(:users) { table(:users) }

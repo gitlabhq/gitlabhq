@@ -62,7 +62,7 @@ How this feature works:
 With some [runner executors](https://docs.gitlab.com/runner/executors/),
 if you can run a job on the runner, you can get full access to the file system,
 and thus any code it runs as well as the token of the runner. With shared runners, this means that anyone
-that runs jobs on the runner, can access anyone else's code that runs on the
+that runs jobs on the runner, can access another user's code that runs on the
 runner.
 
 In addition, because you can get access to the runner token, it is possible
@@ -292,12 +292,12 @@ variables:
 
 A runner can have one of the following statuses.
 
-| Status | Description |
-|--------|-------------|
-| **online** | The runner has contacted GitLab within the last 2 hours and is available to run jobs. |
-| **offline** | The runner has not contacted GitLab in more than 2 hours and is not available to run jobs. Check the runner to see if you can bring it online. |
-| **stale** | The runner has not contacted GitLab in more than 3 months. If the runner was created more than 3 months ago, but it never contacted the instance, it is also considered **stale**. |
-| **never_contacted** | The runner has never contacted GitLab. To make the runner contact GitLab, run `gitlab-runner run`. |
+| Status  | Description |
+|---------|-------------|
+| `online`  | The runner has contacted GitLab within the last 2 hours and is available to run jobs. |
+| `offline` | The runner has not contacted GitLab in more than 2 hours and is not available to run jobs. Check the runner to see if you can bring it online. |
+| `stale`   | The runner has not contacted GitLab in more than 3 months. If the runner was created more than 3 months ago, but it never contacted the instance, it is also considered **stale**. |
+| `never_contacted` | The runner has never contacted GitLab. To make the runner contact GitLab, run `gitlab-runner run`. |
 
 ## Configure runner behavior with variables
 
@@ -306,11 +306,9 @@ globally or for individual jobs:
 
 - [`GIT_STRATEGY`](#git-strategy)
 - [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy)
-- [`GIT_SUBMODULE_PATHS`](#sync-or-exclude-specific-submodules-from-ci-jobs)
 - [`GIT_CHECKOUT`](#git-checkout)
 - [`GIT_CLEAN_FLAGS`](#git-clean-flags)
 - [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
-- [`GIT_SUBMODULE_PATHS`](#git-submodule-paths)
 - [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags)
 - [`GIT_DEPTH`](#shallow-cloning) (shallow cloning)
 - [`GIT_SUBMODULE_DEPTH`](#git-submodule-depth)
@@ -498,15 +496,12 @@ git fetch origin $REFSPECS --depth 50  --prune
 
 Where `$REFSPECS` is a value provided to the runner internally by GitLab.
 
-### Git submodule paths
+### Sync or exclude specific submodules from CI jobs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/2249) in GitLab Runner 14.0.
 
 Use the `GIT_SUBMODULE_PATHS` variable to control which submodules have to be synced or updated.
 You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
-
-This variable can be very useful for projects which have a large number of submodules which not all of them
-need to be synced or updated in all CI jobs.
 
 The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-ltpathgt82308203):
 
@@ -523,6 +518,12 @@ The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-su
    variables:
       GIT_SUBMODULE_PATHS: :(exclude)submoduleA :(exclude)submoduleB
    ```
+
+WARNING:
+Git ignores nested paths. To ignore a nested submodule, exclude
+the parent submodule and then manually clone it in the job's scripts. For example,
+ `git clone <repo> --recurse-submodules=':(exclude)nested-submodule'`. Make sure
+to wrap the string in single quotes so the YAML can be parsed successfully.
 
 ### Git submodule update flags
 
@@ -564,34 +565,6 @@ WARNING:
 You should be aware of the implications for the security, stability, and reproducibility of
 your builds when using the `--remote` flag. In most cases, it is better to explicitly track
 submodule commits as designed, and update them using an auto-remediation/dependency bot.
-
-### Sync or exclude specific submodules from CI jobs
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/26495) in GitLab Runner 14.0.
-
-Some projects have a large number of submodules, and not all of them need to be
-synced or updated in all CI jobs. Use the `GIT_SUBMODULE_PATHS` variable to control this behavior.
-The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-ltpathgt82308203):
-
-- To sync and update specific paths:
-
-  ```yaml
-  variables:
-     GIT_SUBMODULE_PATHS: 'submoduleA'
-  ```
-
-- To exclude specific paths:
-
-  ```yaml
-  variables:
-     GIT_SUBMODULE_PATHS: ':(exclude)submoduleA'
-  ```
-
-WARNING:
-Git ignores nested and multiple submodule paths. To ignore a nested submodule, exclude
-the parent submodule and then manually clone it in the job's scripts. For example,
- `git clone <repo> --recurse-submodules=':(exclude)nested-submodule'`. Make sure
-to wrap the string in single quotes so the YAML can be parsed successfully.
 
 ### Shallow cloning
 
@@ -930,7 +903,7 @@ The default is the number of CPUs available, but given the memory ramifications,
 setting.
 
 `FASTZIP_EXTRACTOR_CONCURRENCY` controls how many files are decompressed at once. Files from a zip archive can natively
-be read from concurrency, so no additional memory is allocated in additional to what the decompressor requires. This
+be read from concurrency, so no additional memory is allocated in addition to what the decompressor requires. This
 defaults to the number of CPUs available.
 
 ## Clean up stale runners **(ULTIMATE)**

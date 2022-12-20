@@ -166,6 +166,10 @@ clusters_applications_runners:
   - table: ci_runners
     column: runner_id
     on_delete: async_nullify
+dast_pre_scan_verifications:
+  - table: ci_pipelines
+    column: ci_pipeline_id
+    on_delete: async_delete
 dast_profiles_pipelines:
   - table: ci_pipelines
     column: ci_pipeline_id
@@ -173,6 +177,10 @@ dast_profiles_pipelines:
 dast_scanner_profiles_builds:
   - table: ci_builds
     column: ci_build_id
+    on_delete: async_delete
+dast_scanner_profiles_tags:
+  - table: tags
+    column: tag_id
     on_delete: async_delete
 dast_site_profiles_builds:
   - table: ci_builds

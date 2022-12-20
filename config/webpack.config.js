@@ -160,6 +160,7 @@ function generateEntries() {
    */
   const manualEntries = {
     default: defaultEntries,
+    legacy_sentry: './sentry/legacy_index.js',
     sentry: './sentry/index.js',
     performance_bar: './performance_bar/index.js',
     jira_connect_app: './jira_connect/subscriptions/index.js',
@@ -174,6 +175,11 @@ function generateEntries() {
 const alias = {
   // Map Apollo client to apollo/client/core to prevent react related imports from being loaded
   '@apollo/client$': '@apollo/client/core',
+  // Map Sentry calls to use local wrapper
+  '@sentry/browser$': path.join(
+    ROOT_PATH,
+    'app/assets/javascripts/sentry/sentry_browser_wrapper.js',
+  ),
   '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
   emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
   empty_states: path.join(ROOT_PATH, 'app/views/shared/empty_states'),
@@ -378,6 +384,7 @@ module.exports = {
       },
       {
         test: /_worker\.js$/,
+        resourceQuery: /worker/,
         use: [
           {
             loader: 'worker-loader',
@@ -429,6 +436,7 @@ module.exports = {
       },
       {
         test: /\.(yml|yaml)$/,
+        resourceQuery: /raw/,
         loader: 'raw-loader',
       },
     ].filter(Boolean),

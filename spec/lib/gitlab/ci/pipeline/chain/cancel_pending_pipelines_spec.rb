@@ -173,21 +173,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines do
           expect(build_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')
           expect(build_statuses(parent_pipeline)).to contain_exactly('running', 'running')
         end
-
-        context 'when feature flag ci_skip_auto_cancelation_on_child_pipelines is disabled' do
-          before do
-            stub_feature_flags(ci_skip_auto_cancelation_on_child_pipelines: false)
-          end
-
-          it 'does not cancel the parent pipeline' do
-            expect(build_statuses(parent_pipeline)).to contain_exactly('running', 'running')
-
-            perform
-
-            expect(build_statuses(prev_pipeline)).to contain_exactly('success', 'canceled', 'canceled')
-            expect(build_statuses(parent_pipeline)).to contain_exactly('running', 'running')
-          end
-        end
       end
 
       context 'when the previous pipeline source is webide' do

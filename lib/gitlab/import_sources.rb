@@ -15,7 +15,6 @@ module Gitlab
       ImportSource.new('bitbucket',        'Bitbucket Cloud',   Gitlab::BitbucketImport::Importer),
       ImportSource.new('bitbucket_server', 'Bitbucket Server',  Gitlab::BitbucketServerImport::Importer),
       ImportSource.new('gitlab',           'GitLab.com',        Gitlab::GitlabImport::Importer),
-      ImportSource.new('google_code',      'Google Code',       nil),
       ImportSource.new('fogbugz',          'FogBugz',           Gitlab::FogbugzImport::Importer),
       ImportSource.new('git',              'Repository by URL', nil),
       ImportSource.new('gitlab_project',   'GitLab export',     Gitlab::ImportExport::Importer),

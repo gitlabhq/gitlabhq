@@ -541,7 +541,7 @@ Usually this is not a cause for concern.
 
 If you think a particular user should already exist in GitLab, but you're seeing
 this entry, it could be due to a mismatched DN stored in GitLab. See
-[User DN and/or email have changed](#user-dn-orand-email-have-changed) to update the user's LDAP identity.
+[User DN and email have changed](#user-dn-and-email-have-changed) to update the user's LDAP identity.
 
 ```shell
 User with DN `uid=john0,ou=people,dc=example,dc=com` should have access
@@ -624,26 +624,16 @@ does not do this:
 1. Wait until LDAP group synchronization has finished running.
 1. Remove the user from the LDAP group.
 
-### User DN or/and email have changed
+### User DN and email have changed
 
-When an LDAP user is created in GitLab, their LDAP DN is stored for later reference.
+If both the primary email **and** the DN change in LDAP, GitLab cannot identify the correct LDAP record of a user. As a
+result, GitLab blocks that user. So that GitLab can find the LDAP record, update the user's existing GitLab profile with
+at least either:
 
-If GitLab cannot find a user by their DN, it falls back
-to finding the user by their email. If the lookup is successful, GitLab
-updates the stored DN to the new value so both values now match what's in
-LDAP.
+- The new primary email.
+- DN values.
 
-If the email has changed and the DN has not, GitLab finds the user with
-the DN and updates its own record of the user's email to match the one in LDAP.
-
-However, if the primary email _and_ the DN change in LDAP, then GitLab
-has no way of identifying the correct LDAP record of the user and, as a
-result, the user is blocked. To rectify this, the user's existing
-profile must be updated with at least one of the new values (primary
-email or DN) so the LDAP record can be found.
-
-The following script updates the emails for all provided users so they
-aren't blocked or unable to access their accounts.
+The following script updates the emails for all provided users so they aren't blocked or unable to access their accounts.
 
 NOTE:
 The following script requires that any new accounts with the new
@@ -669,7 +659,7 @@ end
 You can then [run a UserSync](#sync-all-users) **(PREMIUM SELF)** to sync the latest DN
 for each of these users.
 
-## Could not authenticate you from ldapmain because "Unknown provider"
+## `Could not authenticate you from Ldapmain because "Unknown provider"`
 
 You can receive the following error when authenticating with an LDAP server:
 
@@ -830,6 +820,38 @@ ldapsearch -D "cn=admin,dc=ldap-testing,dc=example,dc=com" \
 
 The `bind_dn`, `password`, `port`, `host`, and `base` are all
 identical to what's configured in the `gitlab.rb`.
+
+#### Use ldapsearch with `start_tls` encryption
+
+The previous example performs an LDAP test in plaintext to port 389. If you are using [`start_tls` encryption](index.md#basic-configuration-settings), in
+the `ldapsearch` command include:
+
+- The `-Z` flag.
+- The FQDN of the LDAP server.
+
+You must include these because, during TLS negotiation, the FQDN of the LDAP server is evaluated against its certificate:
+
+```shell
+ldapsearch -D "cn=admin,dc=ldap-testing,dc=example,dc=com" \
+  -w Password1 \
+  -p 389 \
+  -h "testing.ldap.com" \
+  -b "dc=ldap-testing,dc=example,dc=com" -Z
+```
+
+#### Use ldapsearch with `simple_tls` encryption
+
+If you are using [`simple_tls` encryption](index.md#basic-configuration-settings) (usually on port 636), include the following in the `ldapsearch` command:
+
+- The LDAP server FQDN with the `-H` flag and the port.
+- The full constructed URI.
+
+```shell
+ldapsearch -D "cn=admin,dc=ldap-testing,dc=example,dc=com" \
+  -w Password1 \
+  -H "ldaps://testing.ldap.com:636" \
+  -b "dc=ldap-testing,dc=example,dc=com"
+```
 
 For more information, see the [official `ldapsearch` documentation](https://linux.die.net/man/1/ldapsearch).
 

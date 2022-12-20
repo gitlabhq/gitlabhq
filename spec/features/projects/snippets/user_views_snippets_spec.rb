@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Snippets > User views snippets' do
+RSpec.describe 'Projects > Snippets > User views snippets', feature_category: :snippets do
   let_it_be(:project) { create(:project) }
 
   let(:user) { create(:user) }

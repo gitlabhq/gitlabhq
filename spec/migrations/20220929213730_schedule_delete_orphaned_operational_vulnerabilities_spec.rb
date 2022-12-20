@@ -3,9 +3,9 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleDeleteOrphanedOperationalVulnerabilities do
-  let_it_be(:migration) { described_class.new }
-  let_it_be(:post_migration) { described_class::MIGRATION }
+RSpec.describe ScheduleDeleteOrphanedOperationalVulnerabilities, feature_category: :vulnerability_management do
+  let!(:migration) { described_class.new }
+  let!(:post_migration) { described_class::MIGRATION }
 
   describe '#up' do
     it 'schedules background jobs for each batch of vulnerabilities' do

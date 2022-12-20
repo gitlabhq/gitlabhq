@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all.query.graphql';
 
@@ -59,7 +59,7 @@ describe('fogbugz user select component', () => {
 
     const id = 8;
 
-    wrapper.findComponent(GlListbox).vm.$emit('select', `gid://gitlab/User/${id}`);
+    wrapper.findComponent(GlCollapsibleListbox).vm.$emit('select', `gid://gitlab/User/${id}`);
     await nextTick();
 
     expect(wrapper.get('input').attributes('value')).toBe(id.toString());
@@ -69,7 +69,7 @@ describe('fogbugz user select component', () => {
     createComponent();
     jest.runOnlyPendingTimers();
 
-    wrapper.findComponent(GlListbox).vm.$emit('search', 'test');
+    wrapper.findComponent(GlCollapsibleListbox).vm.$emit('search', 'test');
     await nextTick();
     jest.runOnlyPendingTimers();
 

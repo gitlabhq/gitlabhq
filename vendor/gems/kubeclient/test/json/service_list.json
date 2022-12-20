@@ -1,0 +1,97 @@
+{
+    "kind": "ServiceList",
+    "apiVersion": "v1",
+    "metadata": {
+        "selfLink": "/api/v1/services",
+        "resourceVersion": "36727"
+    },
+    "items": [
+        {
+            "metadata": {
+                "name": "kubernetes",
+                "namespace": "default",
+                "selfLink": "/api/v1/namespaces/default/services/kubernetes",
+                "uid": "b6606490-db86-11e4-b293-f8b156af4ae1",
+                "resourceVersion": "6",
+                "creationTimestamp": "2015-04-05T11:27:15Z",
+                "labels": {
+                    "component": "apiserver",
+                    "provider": "kubernetes"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "",
+                        "protocol": "TCP",
+                        "port": 443,
+                        "targetPort": 443
+                    }
+                ],
+                "selector": null,
+                "clusterIP": "10.0.0.2",
+                "sessionAffinity": "None"
+            },
+            "status": {}
+        },
+        {
+            "metadata": {
+                "name": "kubernetes-ro",
+                "namespace": "default",
+                "selfLink": "/api/v1/namespaces/default/services/kubernetes-ro",
+                "uid": "b6606694-db86-11e4-b293-f8b156af4ae1",
+                "resourceVersion": "5",
+                "creationTimestamp": "2015-04-05T11:27:15Z",
+                "labels": {
+                    "component": "apiserver",
+                    "provider": "kubernetes"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "",
+                        "protocol": "TCP",
+                        "port": 80,
+                        "targetPort": 80
+                    }
+                ],
+                "selector": null,
+                "clusterIP": "10.0.0.1",
+                "sessionAffinity": "None"
+            },
+            "status": {}
+        },
+        {
+            "metadata": {
+                "name": "redis-slave",
+                "namespace": "development",
+                "selfLink": "/api/v1/namespaces/development/services/redis-slave",
+                "uid": "bdb80a8f-db93-11e4-b293-f8b156af4ae1",
+                "resourceVersion": "2815",
+                "creationTimestamp": "2015-04-05T13:00:31Z",
+                "labels": {
+                    "name": "redis",
+                    "role": "slave"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "",
+                        "protocol": "TCP",
+                        "port": 6379,
+                        "targetPort": "redis-server"
+                    }
+                ],
+                "selector": {
+                    "name": "redis",
+                    "role": "slave"
+                },
+                "clusterIP": "10.0.0.140",
+                "sessionAffinity": "None"
+            },
+            "status": {}
+        }
+    ]
+}

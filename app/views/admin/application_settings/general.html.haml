@@ -1,5 +1,6 @@
 - breadcrumb_title _("General")
 - page_title _("General")
+- add_page_specific_style 'page_bundles/settings'
 - @content_class = "limit-container-width" unless fluid_layout
 
 %section.settings.as-visibility-access.no-animate#js-visibility-settings{ class: ('expanded' if expanded_by_default?) }
@@ -124,4 +125,4 @@
 = render 'admin/application_settings/eks'
 = render 'admin/application_settings/floc'
 = render_if_exists 'admin/application_settings/add_license'
-= render 'admin/application_settings/jira_connect' if Feature.enabled?(:jira_connect_oauth_self_managed_setting, current_user)
+= render 'admin/application_settings/jira_connect'

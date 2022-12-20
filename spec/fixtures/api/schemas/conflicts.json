@@ -8,16 +8,29 @@
     "files"
   ],
   "properties": {
-    "commit_message": {"type": "string"},
-    "commit_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
-    "source_branch": {"type": "string"},
-    "target_branch": {"type": "string"},
+    "commit_message": {
+      "type": "string"
+    },
+    "commit_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "source_branch": {
+      "type": "string"
+    },
+    "target_branch": {
+      "type": "string"
+    },
     "files": {
       "type": "array",
       "items": {
         "oneOf": [
-          { "$ref": "#/definitions/conflict-text-with-sections" },
-          { "$ref": "#/definitions/conflict-text-for-editor" }
+          {
+            "$ref": "#/definitions/conflict-text-with-sections"
+          },
+          {
+            "$ref": "#/definitions/conflict-text-for-editor"
+          }
         ]
       }
     }
@@ -32,15 +45,25 @@
         "blob_path"
       ],
       "properties": {
-        "old_path": {"type": "string"},
-        "new_path": {"type": "string"},
-        "blob_icon": {"type": "string"},
-        "blob_path": {"type": "string"}
+        "old_path": {
+          "type": "string"
+        },
+        "new_path": {
+          "type": "string"
+        },
+        "blob_icon": {
+          "type": "string"
+        },
+        "blob_path": {
+          "type": "string"
+        }
       }
     },
     "conflict-text-for-editor": {
       "allOf": [
-        {"$ref": "#/definitions/conflict-base"},
+        {
+          "$ref": "#/definitions/conflict-base"
+        },
         {
           "type": "object",
           "required": [
@@ -48,15 +71,25 @@
             "content_path"
           ],
           "properties": {
-            "type": {"type": {"enum": ["text-editor"]}},
-            "content_path": {"type": "string"}
+            "type": {
+              "type": "string",
+              "enum": [
+                "text",
+                "text-editor"
+              ]
+            },
+            "content_path": {
+              "type": "string"
+            }
           }
         }
       ]
     },
     "conflict-text-with-sections": {
       "allOf": [
-        {"$ref": "#/definitions/conflict-base"},
+        {
+          "$ref": "#/definitions/conflict-base"
+        },
         {
           "type": "object",
           "required": [
@@ -65,14 +98,25 @@
             "sections"
           ],
           "properties": {
-            "type": {"type": {"enum": ["text"]}},
-            "content_path": {"type": "string"},
+            "type": {
+              "type": "string",
+              "enum": [
+                "text"
+              ]
+            },
+            "content_path": {
+              "type": "string"
+            },
             "sections": {
               "type": "array",
               "items": {
                 "oneOf": [
-                  { "$ref": "#/definitions/section-context" },
-                  { "$ref": "#/definitions/section-conflict" }
+                  {
+                    "$ref": "#/definitions/section-context"
+                  },
+                  {
+                    "$ref": "#/definitions/section-conflict"
+                  }
                 ]
               }
             }
@@ -87,7 +131,9 @@
         "lines"
       ],
       "properties": {
-        "conflict": {"type": "boolean"},
+        "conflict": {
+          "type": "boolean"
+        },
         "lines": {
           "type": "array",
           "items": {
@@ -99,11 +145,21 @@
               "rich_text"
             ],
             "properties": {
-              "type": {"type": "string"},
-              "old_line": {"type": "string"},
-              "new_line": {"type": "string"},
-              "text": {"type": "string"},
-              "rich_text": {"type": "string"}
+              "type": {
+                "type": "string"
+              },
+              "old_line": {
+                "type": "string"
+              },
+              "new_line": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "rich_text": {
+                "type": "string"
+              }
             }
           }
         }
@@ -111,24 +167,36 @@
     },
     "section-context": {
       "allOf": [
-        {"$ref": "#/definitions/section-base"},
+        {
+          "$ref": "#/definitions/section-base"
+        },
         {
           "type": "object",
           "properties": {
-            "conflict": {"enum": [false]}
+            "conflict": {
+              "type": "boolean"
+            }
           }
         }
       ]
     },
     "section-conflict": {
       "allOf": [
-        {"$ref": "#/definitions/section-base"},
+        {
+          "$ref": "#/definitions/section-base"
+        },
         {
           "type": "object",
-          "required": ["id"],
+          "required": [
+            "id"
+          ],
           "properties": {
-            "conflict": {"enum": [true]},
-            "id": {"type": "string"}
+            "conflict": {
+              "type": "boolean"
+            },
+            "id": {
+              "type": "string"
+            }
           }
         }
       ]

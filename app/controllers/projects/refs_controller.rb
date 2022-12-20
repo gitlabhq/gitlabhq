@@ -9,7 +9,7 @@ class Projects::RefsController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :validate_ref_id
   before_action :assign_ref_vars
-  before_action :authorize_download_code!
+  before_action :authorize_read_code!
 
   feature_category :source_code_management
   urgency :low, [:switch, :logs_tree]
@@ -24,9 +24,17 @@ class Projects::RefsController < Projects::ApplicationController
           when "blob"
             project_blob_path(@project, @id)
           when "graph"
-            project_network_path(@project, @id, @options)
+            if Feature.enabled?(:use_ref_type_parameter, @project)
+              project_network_path(@project, @id, ref_type: ref_type)
+            else
+              project_network_path(@project, @id, @options)
+            end
           when "graphs"
-            project_graph_path(@project, @id)
+            if Feature.enabled?(:use_ref_type_parameter, @project)
+              project_graph_path(@project, @id, ref_type: ref_type)
+            else
+              project_graph_path(@project, @id)
+            end
           when "find_file"
             project_find_file_path(@project, @id)
           when "graphs_commits"
@@ -34,7 +42,11 @@ class Projects::RefsController < Projects::ApplicationController
           when "badges"
             project_settings_ci_cd_path(@project, ref: @id)
           else
-            project_commits_path(@project, @id)
+            if Feature.enabled?(:use_ref_type_parameter, @project)
+              project_commits_path(@project, @id, ref_type: ref_type)
+            else
+              project_commits_path(@project, @id)
+            end
           end
 
         redirect_to new_path

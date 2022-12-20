@@ -15,7 +15,7 @@ we can document the reasons for not choosing this approach.
 # Pods: Git Access
 
 This document describes impact of Pods architecture on all Git access (over HTTPS and SSH)
-patterns providing explanantion of how potentially those features should be changed
+patterns providing explanation of how potentially those features should be changed
 to work well with Pods.
 
 ## 1. Definition
@@ -130,7 +130,7 @@ sequenceDiagram
 
 ## 3. Proposal
 
-The Pods stateless router proposal requires that any ambigious path (that is not routable)
+The Pods stateless router proposal requires that any ambiguous path (that is not routable)
 will be made to be routable. It means that at least the following paths will have to be updated
 do introduce a routable entity (project, group, or organization).
 

@@ -3,6 +3,7 @@ import { GlTooltipDirective, GlLink, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { RELEASED_AT_ASC, RELEASED_AT_DESC } from '~/releases/constants';
 
 export default {
   name: 'ReleaseBlockFooter',
@@ -46,10 +47,26 @@ export default {
       required: false,
       default: null,
     },
+    createdAt: {
+      type: Date,
+      required: false,
+      default: null,
+    },
+    sort: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
-    releasedAtTimeAgo() {
-      return this.timeFormatted(this.releasedAt);
+    isSortedByReleaseDate() {
+      return this.sort === RELEASED_AT_ASC || this.sort === RELEASED_AT_DESC;
+    },
+    timeAt() {
+      return this.isSortedByReleaseDate ? this.releasedAt : this.createdAt;
+    },
+    atTimeAgo() {
+      return this.timeFormatted(this.timeAt);
     },
     userImageAltDescription() {
       return this.author && this.author.username
@@ -58,7 +75,10 @@ export default {
     },
     createdTime() {
       const now = new Date();
-      const isFuture = now < new Date(this.releasedAt);
+      const isFuture = now < new Date(this.timeAt);
+      if (this.isSortedByReleaseDate) {
+        return isFuture ? __('Will be released') : __('Released');
+      }
       return isFuture ? __('Will be created') : __('Created');
     },
   },
@@ -93,17 +113,17 @@ export default {
     </div>
 
     <div
-      v-if="releasedAt || author"
+      v-if="timeAt || author"
       class="gl-float-left gl-display-flex gl-align-items-center js-author-date-info"
     >
       <span class="gl-text-secondary">{{ createdTime }}&nbsp;</span>
-      <template v-if="releasedAt">
+      <template v-if="timeAt">
         <span
           v-gl-tooltip.bottom
-          :title="tooltipTitle(releasedAt)"
+          :title="tooltipTitle(timeAt)"
           class="gl-text-secondary gl-flex-shrink-0"
         >
-          {{ releasedAtTimeAgo }}&nbsp;
+          {{ atTimeAgo }}&nbsp;
         </span>
       </template>
 

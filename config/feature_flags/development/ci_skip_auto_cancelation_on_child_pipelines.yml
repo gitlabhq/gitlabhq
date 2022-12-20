@@ -1,8 +1,0 @@
----
-name: ci_skip_auto_cancelation_on_child_pipelines
-introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100854"
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/377712
-milestone: '15.5'
-type: development
-group: group::pipeline execution
-default_enabled: false

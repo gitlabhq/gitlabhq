@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillCadenceIdForBoardsScopedToIteration, :migration do
+RSpec.describe BackfillCadenceIdForBoardsScopedToIteration, :migration, feature_category: :team_planning do
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
   let(:iterations_cadences) { table(:iterations_cadences) }

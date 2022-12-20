@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > User tags a project', :js do
+RSpec.describe 'Projects > Settings > User tags a project', :js, feature_category: :projects do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let!(:topic) { create(:topic, name: 'topic1') }

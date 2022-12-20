@@ -41,12 +41,9 @@ class WebHook < ApplicationRecord
   after_initialize :initialize_url_variables
 
   before_validation :reset_token
-  before_validation :set_branch_filter_nil, \
-    if: -> { branch_filter_strategy_all_branches? && enhanced_webhook_support_regex? }
-  validates :push_events_branch_filter, \
-    untrusted_regexp: true, if: -> { branch_filter_strategy_regex? && enhanced_webhook_support_regex? }
-  validates :push_events_branch_filter, \
-    "web_hooks/wildcard_branch_filter": true, if: -> { branch_filter_strategy_wildcard? }
+  before_validation :set_branch_filter_nil, if: :branch_filter_strategy_all_branches?
+  validates :push_events_branch_filter, untrusted_regexp: true, if: :branch_filter_strategy_regex?
+  validates :push_events_branch_filter, "web_hooks/wildcard_branch_filter": true, if: :branch_filter_strategy_wildcard?
 
   validates :url_variables, json_schema: { filename: 'web_hooks_url_variables' }
   validate :no_missing_url_variables
@@ -59,8 +56,6 @@ class WebHook < ApplicationRecord
   }, _prefix: true
 
   scope :executable, -> do
-    next all unless Feature.enabled?(:web_hooks_disable_failed)
-
     where('recent_failures <= ? AND (disabled_until IS NULL OR disabled_until < ?)', FAILURE_THRESHOLD, Time.current)
   end
 
@@ -69,23 +64,17 @@ class WebHook < ApplicationRecord
     where('recent_failures > ? OR disabled_until >= ?', FAILURE_THRESHOLD, Time.current)
   end
 
-  def self.web_hooks_disable_failed?(hook)
-    Feature.enabled?(:web_hooks_disable_failed, hook.parent)
-  end
-
   def executable?
     !temporarily_disabled? && !permanently_disabled?
   end
 
   def temporarily_disabled?
-    return false unless web_hooks_disable_failed?
     return false if recent_failures <= FAILURE_THRESHOLD
 
     disabled_until.present? && disabled_until >= Time.current
   end
 
   def permanently_disabled?
-    return false unless web_hooks_disable_failed?
     return false if disabled_until.present?
 
     recent_failures > FAILURE_THRESHOLD
@@ -197,7 +186,7 @@ class WebHook < ApplicationRecord
   end
 
   # See app/validators/json_schemas/web_hooks_url_variables.json
-  VARIABLE_REFERENCE_RE = /\{([A-Za-z_][A-Za-z0-9_]+)\}/.freeze
+  VARIABLE_REFERENCE_RE = /\{([A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*)\}/.freeze
 
   def interpolated_url
     return url unless url.include?('{')
@@ -232,10 +221,6 @@ class WebHook < ApplicationRecord
     backoff_count.succ.clamp(1, MAX_FAILURES)
   end
 
-  def web_hooks_disable_failed?
-    self.class.web_hooks_disable_failed?(self)
-  end
-
   def initialize_url_variables
     self.url_variables = {} if encrypted_url_variables.nil?
   end
@@ -255,10 +240,6 @@ class WebHook < ApplicationRecord
     return if missing.empty?
 
     errors.add(:url, "Invalid URL template. Missing keys: #{missing}")
-  end
-
-  def enhanced_webhook_support_regex?
-    Feature.enabled?(:enhanced_webhook_support_regex)
   end
 
   def set_branch_filter_nil

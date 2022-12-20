@@ -4,18 +4,15 @@ module Gitlab
   module GithubImport
     module Representation
       class DiffNote
-        include Gitlab::Utils::StrongMemoize
         include ToHash
         include ExposeAttribute
 
-        NOTEABLE_TYPE = 'MergeRequest'
         NOTEABLE_ID_REGEX = %r{/pull/(?<iid>\d+)}i.freeze
-        DISCUSSION_CACHE_KEY = 'github-importer/discussion-id-map/%{project_id}/%{noteable_id}/%{original_note_id}'
 
         expose_attribute :noteable_id, :commit_id, :file_path,
           :diff_hunk, :author, :created_at, :updated_at,
           :original_commit_id, :note_id, :end_line, :start_line,
-          :side, :in_reply_to_id
+          :side, :in_reply_to_id, :discussion_id
 
         # Builds a diff note from a GitHub API response.
         #
@@ -45,7 +42,8 @@ module Gitlab
             end_line: note[:line],
             start_line: note[:start_line],
             side: note[:side],
-            in_reply_to_id: note[:in_reply_to_id]
+            in_reply_to_id: note[:in_reply_to_id],
+            discussion_id: DiffNotes::DiscussionId.new(note).find_or_generate
           }
 
           new(hash)
@@ -59,7 +57,7 @@ module Gitlab
           new(hash)
         end
 
-        attr_accessor :merge_request, :project
+        attr_accessor :merge_request
 
         # attributes - A Hash containing the raw note details. The keys of this
         #              Hash must be Symbols.
@@ -74,7 +72,7 @@ module Gitlab
         end
 
         def noteable_type
-          NOTEABLE_TYPE
+          DiffNotes::DiscussionId::NOTEABLE_TYPE
         end
 
         def contains_suggestion?
@@ -127,12 +125,6 @@ module Gitlab
           }
         end
 
-        def discussion_id
-          strong_memoize(:discussion_id) do
-            (in_reply_to_id.present? && current_discussion_id) || generate_discussion_id
-          end
-        end
-
         private
 
         # Required by ExposeAttribute
@@ -148,32 +140,6 @@ module Gitlab
 
         def addition?
           side == 'RIGHT'
-        end
-
-        def generate_discussion_id
-          Discussion.discussion_id(
-            Struct
-            .new(:noteable_id, :noteable_type)
-            .new(merge_request.id, NOTEABLE_TYPE)
-          ).tap do |discussion_id|
-            cache_discussion_id(discussion_id)
-          end
-        end
-
-        def cache_discussion_id(discussion_id)
-          Gitlab::Cache::Import::Caching.write(discussion_id_cache_key(note_id), discussion_id)
-        end
-
-        def current_discussion_id
-          Gitlab::Cache::Import::Caching.read(discussion_id_cache_key(in_reply_to_id))
-        end
-
-        def discussion_id_cache_key(id)
-          DISCUSSION_CACHE_KEY % {
-            project_id: project.id,
-            noteable_id: merge_request.id,
-            original_note_id: id
-          }
         end
       end
     end

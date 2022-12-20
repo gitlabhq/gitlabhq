@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'sanitizable' do |factory, fields|
-  let(:attributes) { fields.to_h { |field| [field, input] } }
+  let(:attributes) { fields.index_with { input } }
 
   it 'includes Sanitizable' do
     expect(described_class).to include(Sanitizable)

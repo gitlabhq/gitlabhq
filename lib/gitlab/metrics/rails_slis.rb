@@ -6,11 +6,16 @@ module Gitlab
       class << self
         def initialize_request_slis!
           Gitlab::Metrics::Sli::Apdex.initialize_sli(:rails_request, possible_request_labels)
+          initialize_rails_request_error_rate
           Gitlab::Metrics::Sli::Apdex.initialize_sli(:graphql_query, possible_graphql_query_labels)
         end
 
         def request_apdex
           Gitlab::Metrics::Sli::Apdex[:rails_request]
+        end
+
+        def request_error_rate
+          Gitlab::Metrics::Sli::ErrorRate[:rails_request]
         end
 
         def graphql_query_apdex
@@ -57,6 +62,12 @@ module Gitlab
               request_urgency: controller.urgency_for_action(action).name
             }
           end
+        end
+
+        def initialize_rails_request_error_rate
+          return unless Feature.enabled?(:gitlab_metrics_error_rate_sli, type: :development)
+
+          Gitlab::Metrics::Sli::ErrorRate.initialize_sli(:rails_request, possible_request_labels)
         end
       end
     end

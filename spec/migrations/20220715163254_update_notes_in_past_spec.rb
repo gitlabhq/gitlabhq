@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe UpdateNotesInPast, :migration do
+RSpec.describe UpdateNotesInPast, :migration, feature_category: :team_planning do
   let(:notes) { table(:notes) }
 
   it 'updates created_at when it is too much in the past' do

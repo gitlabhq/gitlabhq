@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Update a work item' do
+RSpec.describe 'Update a work item', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
@@ -339,7 +339,7 @@ RSpec.describe 'Update a work item' do
         let_it_be(:invalid_parent) { create(:work_item, :task, project: project) }
 
         context 'when parent work item type is invalid' do
-          let(:error) { "#{work_item.to_reference} cannot be added: only Issue and Incident can be parent of Task." }
+          let(:error) { "#{work_item.to_reference} cannot be added: is not allowed to add this type of parent" }
           let(:input) do
             { 'hierarchyWidget' => { 'parentId' => invalid_parent.to_global_id.to_s }, 'title' => 'new title' }
           end
@@ -450,7 +450,7 @@ RSpec.describe 'Update a work item' do
 
         let(:input) { { 'hierarchyWidget' => { 'childrenIds' => children_ids } } }
         let(:error) do
-          "#{invalid_child.to_reference} cannot be added: only Task can be assigned as a child in hierarchy."
+          "#{invalid_child.to_reference} cannot be added: is not allowed to add this type of parent"
         end
 
         context 'when child work item type is invalid' do
@@ -632,7 +632,7 @@ RSpec.describe 'Update a work item' do
     end
 
     context 'when unsupported widget input is sent' do
-      let_it_be(:test_case) { create(:work_item_type, :default, :test_case, name: 'some_test_case_name') }
+      let_it_be(:test_case) { create(:work_item_type, :default, :test_case) }
       let_it_be(:work_item) { create(:work_item, work_item_type: test_case, project: project) }
 
       let(:input) do
@@ -642,7 +642,7 @@ RSpec.describe 'Update a work item' do
       end
 
       it_behaves_like 'a mutation that returns top-level errors',
-        errors: ["Following widget keys are not supported by some_test_case_name type: [:hierarchy_widget]"]
+        errors: ["Following widget keys are not supported by Test Case type: [:hierarchy_widget]"]
     end
   end
 end

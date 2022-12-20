@@ -4,12 +4,12 @@
       - toggle_text = should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : 'Select a template type'
       = dropdown_tag(_(toggle_text), options: { toggle_class: 'js-template-type-selector', dropdown_class: 'dropdown-menu-selectable', data: { qa_selector: 'template_type_dropdown' } })
     .license-selector.js-license-selector-wrap.js-template-selector-wrap.hidden
-      = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-license-selector', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: licenses_for_select(@project), project: @project.name, fullname: @project.namespace.human_name, qa_selector: 'license_dropdown' } } )
+      = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-license-selector', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: licenses_for_select(@project), project: @project.name, fullname: @project.namespace.human_name, qa_selector: 'license_dropdown' } })
     .gitignore-selector.js-gitignore-selector-wrap.js-template-selector-wrap.hidden
-      = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-gitignore-selector', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: gitignore_names(@project), qa_selector: 'gitignore_dropdown' } } )
+      = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-gitignore-selector', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: gitignore_names(@project), qa_selector: 'gitignore_dropdown' } })
     .metrics-dashboard-selector.js-metrics-dashboard-selector-wrap.js-template-selector-wrap.hidden
-      = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-metrics-dashboard-selector', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: metrics_dashboard_ymls(@project), qa_selector: 'metrics_dashboard_dropdown' } } )
+      = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-metrics-dashboard-selector', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: metrics_dashboard_ymls(@project), qa_selector: 'metrics_dashboard_dropdown' } })
     #gitlab-ci-yml-selector.gitlab-ci-yml-selector.js-gitlab-ci-yml-selector-wrap.js-template-selector-wrap.hidden
-      = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-gitlab-ci-yml-selector', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: gitlab_ci_ymls(@project), selected: params[:template], qa_selector: 'gitlab_ci_yml_dropdown' } } )
+      = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-gitlab-ci-yml-selector', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: gitlab_ci_ymls(@project), selected: params[:template], qa_selector: 'gitlab_ci_yml_dropdown' } })
     .dockerfile-selector.js-dockerfile-selector-wrap.js-template-selector-wrap.hidden
-      = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-dockerfile-selector', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: dockerfile_names(@project), qa_selector: 'dockerfile_dropdown' } } )
+      = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-dockerfile-selector', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: dockerfile_names(@project), qa_selector: 'dockerfile_dropdown' } })

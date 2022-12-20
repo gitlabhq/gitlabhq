@@ -6,7 +6,7 @@ module Gitlab
 
     delegate :current_size, :limit, :exceeded_size, :additional_repo_storage_available?, to: :@checker
 
-    # @param checher [RepositorySizeChecker]
+    # @param checker [RepositorySizeChecker]
     def initialize(checker)
       @checker = checker
     end

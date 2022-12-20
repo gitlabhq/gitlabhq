@@ -20,7 +20,7 @@ func TestBlocker(t *testing.T) {
 		{
 			desc:        "blocked",
 			contentType: ResponseContentType,
-			out:         "Internal server error\n",
+			out:         "Internal Server Error\n",
 		},
 		{
 			desc:        "pass",

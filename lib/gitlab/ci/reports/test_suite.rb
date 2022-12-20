@@ -96,8 +96,8 @@ module Gitlab
         end
 
         def sort_by_execution_time_desc
-          @test_cases = @test_cases.keys.each_with_object({}) do |key, hash|
-            hash[key] = @test_cases[key].sort_by { |_key, test_case| -test_case.execution_time }.to_h
+          @test_cases = @test_cases.keys.index_with do |key|
+            @test_cases[key].sort_by { |_key, test_case| -test_case.execution_time }.to_h
           end
         end
       end

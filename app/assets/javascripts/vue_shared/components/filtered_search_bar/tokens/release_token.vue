@@ -3,7 +3,7 @@ import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
-import { DEFAULT_NONE_ANY } from '../constants';
+import { OPTIONS_NONE_ANY } from '../constants';
 
 export default {
   components: {
@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     defaultReleases() {
-      return this.config.defaultReleases || DEFAULT_NONE_ANY;
+      return this.config.defaultReleases || OPTIONS_NONE_ANY;
     },
   },
   methods: {

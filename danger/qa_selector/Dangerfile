@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+def filter_changed_lines(files)
+  lines = []
+  files.each do |file|
+    qa_selector_changed_lines = helper.changed_lines(file).select { |line| line =~ /qa_selector|data-qa-selector/ }
+    next unless qa_selector_changed_lines.any?
+
+    lines += ["file `#{file}`:", qa_selector_changed_lines]
+  end
+  lines
+end
+
+changed_code_files = helper.changed_files(/\.(vue|haml|js|rb)$/)
+
+return if changed_code_files.empty?
+
+lines_with_qa_selectors = filter_changed_lines(changed_code_files)
+
+return if lines_with_qa_selectors.empty?
+
+markdown(<<~MARKDOWN)
+  ## QA Selectors
+
+MARKDOWN
+
+if lines_with_qa_selectors.any?
+  markdown(<<~MARKDOWN)
+    The following changed lines in this MR contain QA selectors:
+
+    * #{lines_with_qa_selectors.join("\n* ")}
+
+    Please ensure `e2e:package-and-test` job is run and the tests are passing.
+
+    For the list of known failures please refer to [the latest pipeline triage issue](https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues).
+
+    If your changes are under a feature flag, please check our [Testing with feature flags](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/feature_flags.html#automatic-test-execution-when-a-feature-flag-definition-changes) documentation for instructions.
+
+  MARKDOWN
+
+  warn "This merge request contains lines with QA selectors. Please ensure `e2e:package-and-test` job is run."
+end

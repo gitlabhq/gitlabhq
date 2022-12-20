@@ -40,5 +40,13 @@ describe('Edit Timeline events', () => {
 
       expect(wrapper.emitted()).toEqual(cancelEvent);
     });
+
+    it('should emit the delete event', async () => {
+      const deleteEvent = { delete: [[]] };
+
+      await findTimelineEventsForm().vm.$emit('delete');
+
+      expect(wrapper.emitted()).toEqual(deleteEvent);
+    });
   });
 });

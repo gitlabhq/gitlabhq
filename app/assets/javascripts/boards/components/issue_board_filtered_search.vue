@@ -12,8 +12,8 @@ import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import {
-  OPERATOR_IS_AND_IS_NOT,
-  OPERATOR_IS_ONLY,
+  OPERATORS_IS_NOT,
+  OPERATORS_IS,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CONFIDENTIAL,
@@ -31,7 +31,7 @@ import {
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
@@ -60,7 +60,7 @@ export default {
     tokensCE() {
       const { issue, incident } = this.$options.i18n;
       const { types } = this.$options;
-      const { fetchAuthors, fetchLabels } = issueBoardFilters(
+      const { fetchUsers, fetchLabels } = issueBoardFilters(
         this.$apollo,
         this.fullPath,
         this.boardType,
@@ -71,28 +71,28 @@ export default {
           icon: 'user',
           title: TOKEN_TITLE_ASSIGNEE,
           type: TOKEN_TYPE_ASSIGNEE,
-          operators: OPERATOR_IS_AND_IS_NOT,
-          token: AuthorToken,
+          operators: OPERATORS_IS_NOT,
+          token: UserToken,
           unique: true,
-          fetchAuthors,
-          preloadedAuthors: this.preloadedAuthors(),
+          fetchUsers,
+          preloadedUsers: this.preloadedUsers(),
         },
         {
           icon: 'pencil',
           title: TOKEN_TITLE_AUTHOR,
           type: TOKEN_TYPE_AUTHOR,
-          operators: OPERATOR_IS_AND_IS_NOT,
+          operators: OPERATORS_IS_NOT,
           symbol: '@',
-          token: AuthorToken,
+          token: UserToken,
           unique: true,
-          fetchAuthors,
-          preloadedAuthors: this.preloadedAuthors(),
+          fetchUsers,
+          preloadedUsers: this.preloadedUsers(),
         },
         {
           icon: 'labels',
           title: TOKEN_TITLE_LABEL,
           type: TOKEN_TYPE_LABEL,
-          operators: OPERATOR_IS_AND_IS_NOT,
+          operators: OPERATORS_IS_NOT,
           token: LabelToken,
           unique: false,
           symbol: '~',
@@ -128,7 +128,7 @@ export default {
                 title: TOKEN_TITLE_CONFIDENTIAL,
                 unique: true,
                 token: GlFilteredSearchToken,
-                operators: OPERATOR_IS_ONLY,
+                operators: OPERATORS_IS,
                 options: [
                   { icon: 'eye-slash', value: 'yes', title: __('Yes') },
                   { icon: 'eye', value: 'no', title: __('No') },
@@ -186,7 +186,7 @@ export default {
   },
   methods: {
     ...mapActions(['fetchMilestones']),
-    preloadedAuthors() {
+    preloadedUsers() {
       return gon?.current_user_id
         ? [
             {

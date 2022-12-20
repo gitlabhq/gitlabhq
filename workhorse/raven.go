@@ -6,7 +6,7 @@ import (
 
 	raven "github.com/getsentry/raven-go"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/exception"
 )
 
 func wrapRaven(h http.Handler) http.Handler {
@@ -30,7 +30,7 @@ func wrapRaven(h http.Handler) http.Handler {
 		func(w http.ResponseWriter, r *http.Request) {
 			defer func() {
 				if p := recover(); p != nil {
-					helper.CleanHeadersForRaven(r)
+					exception.CleanHeaders(r)
 					panic(p)
 				}
 			}()

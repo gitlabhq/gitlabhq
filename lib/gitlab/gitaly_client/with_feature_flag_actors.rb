@@ -16,8 +16,6 @@ module Gitlab
       # gitaly_client_call performs Gitaly calls including collected feature flag actors. The actors are retrieved
       # from repository actor and memoized. The service must set `self.repository_actor = a_repository` beforehand.
       def gitaly_client_call(*args, **kargs)
-        return GitalyClient.call(*args, **kargs) unless actors_aware_gitaly_calls?
-
         unless repository_actor
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
             Feature::InvalidFeatureFlagError.new("gitaly_client_call called without setting repository_actor")
@@ -34,11 +32,8 @@ module Gitlab
         end
       end
 
-      # gitaly_feature_flag_actors returns a hash of actors implied from input repository. If actors_aware_gitaly_calls
-      # flag is not on, this method returns an empty hash.
+      # gitaly_feature_flag_actors returns a hash of actors implied from input repository.
       def gitaly_feature_flag_actors(repository)
-        return {} unless actors_aware_gitaly_calls?
-
         container = find_repository_container(repository)
         {
           repository: repository,
@@ -91,10 +86,6 @@ module Gitlab
         else
           repository.container
         end
-      end
-
-      def actors_aware_gitaly_calls?
-        Feature.enabled?(:actors_aware_gitaly_calls)
       end
     end
   end

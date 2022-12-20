@@ -35,7 +35,7 @@ module QA
 
         # During normal operations we avoid create a replication event
         # https://gitlab.com/groups/gitlab-org/-/epics/7741
-        praefect_manager.stop_secondary_node
+        praefect_manager.stop_node(praefect_manager.secondary_node)
         Git::Repository.perform do |repository|
           repository.uri = project.repository_http_location.uri
           repository.use_default_credentials
@@ -47,7 +47,7 @@ module QA
           end
           repository.push_all_branches
         end
-        praefect_manager.start_secondary_node
+        praefect_manager.start_node(praefect_manager.secondary_node)
 
         Support::Retrier.retry_until(max_duration: 60) do
           count = praefect_manager.replication_queue_lock_count

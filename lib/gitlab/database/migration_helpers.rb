@@ -10,6 +10,7 @@ module Gitlab
       include Migrations::TimeoutHelpers
       include Migrations::ConstraintsHelpers
       include Migrations::ExtensionHelpers
+      include Migrations::SidekiqHelpers
       include DynamicModelHelpers
       include RenameTableHelpers
       include AsyncIndexes::MigrationHelpers
@@ -495,17 +496,6 @@ module Gitlab
           # There are no more rows left to update.
           break unless stop_row
         end
-      end
-
-      # Adds a column with a default value without locking an entire table.
-      #
-      # @deprecated With PostgreSQL 11, adding columns with a default does not lead to a table rewrite anymore.
-      #             As such, this method is not needed anymore and the default `add_column` helper should be used.
-      #             This helper is subject to be removed in a >13.0 release.
-      def add_column_with_default(table, column, type, default:, limit: nil, allow_null: false)
-        raise 'Deprecated: add_column_with_default does not support being passed blocks anymore' if block_given?
-
-        add_column(table, column, type, default: default, limit: limit, null: allow_null)
       end
 
       # Renames a column without requiring downtime.
@@ -1025,38 +1015,6 @@ module Gitlab
       def remove_foreign_key_without_error(*args, **kwargs)
         remove_foreign_key(*args, **kwargs)
       rescue ArgumentError
-      end
-
-      # Remove any instances of deprecated job classes lingering in queues.
-      #
-      # rubocop:disable Cop/SidekiqApiUsage
-      def sidekiq_remove_jobs(job_klass:)
-        Sidekiq::Queue.new(job_klass.queue).each do |job|
-          job.delete if job.klass == job_klass.to_s
-        end
-
-        Sidekiq::RetrySet.new.each do |retri|
-          retri.delete if retri.klass == job_klass.to_s
-        end
-
-        Sidekiq::ScheduledSet.new.each do |scheduled|
-          scheduled.delete if scheduled.klass == job_klass.to_s
-        end
-      end
-      # rubocop:enable Cop/SidekiqApiUsage
-
-      def sidekiq_queue_migrate(queue_from, to:)
-        while sidekiq_queue_length(queue_from) > 0
-          Sidekiq.redis do |conn|
-            conn.rpoplpush "queue:#{queue_from}", "queue:#{to}"
-          end
-        end
-      end
-
-      def sidekiq_queue_length(queue_name)
-        Sidekiq.redis do |conn|
-          conn.llen("queue:#{queue_name}")
-        end
       end
 
       def check_trigger_permissions!(table)

@@ -27,7 +27,7 @@ module Gitlab
           end
 
           def read_hash
-            Gitlab::Json.parse(IO.read(@path))
+            Gitlab::Json.parse(::File.read(@path))
           rescue StandardError => e
             Gitlab::ErrorTracking.log_exception(e)
             raise Gitlab::ImportExport::Error, 'Incorrect JSON format'

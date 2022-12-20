@@ -3,11 +3,11 @@
 module ProtectedBranches
   class ApiService < ProtectedBranches::BaseService
     def create
-      ::ProtectedBranches::CreateService.new(@project, @current_user, protected_branch_params).execute
+      ::ProtectedBranches::CreateService.new(project_or_group, @current_user, protected_branch_params).execute
     end
 
     def update(protected_branch)
-      ::ProtectedBranches::UpdateService.new(@project, @current_user,
+      ::ProtectedBranches::UpdateService.new(project_or_group, @current_user,
 protected_branch_params(with_defaults: false)).execute(protected_branch)
     end
 
@@ -36,4 +36,4 @@ protected_branch_params(with_defaults: false)).execute(protected_branch)
   end
 end
 
-ProtectedBranches::ApiService.prepend_mod_with('ProtectedBranches::ApiService')
+ProtectedBranches::ApiService.prepend_mod

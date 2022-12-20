@@ -1,8 +1,7 @@
 .nav-block.activities
   = render 'shared/event_filter', show_group_events: @group.supports_events?
   .controls
-    = link_to group_path(@group, rss_url_options), class: 'btn gl-button btn-default btn-icon d-none d-sm-inline-flex has-tooltip' , title: _('Subscribe') do
-      = sprite_icon('rss', css_class: 'gl-icon')
+    = render Pajamas::ButtonComponent.new(href: group_path(@group, rss_url_options), icon: 'rss', button_options: { class: 'd-none d-sm-inline-flex has-tooltip', title: _('Subscribe') })
 
 .content_list
 .loading

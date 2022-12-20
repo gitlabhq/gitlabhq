@@ -41,8 +41,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Server do
 
       include Sidekiq::Worker
 
-      def perform
-      end
+      def perform; end
     end
   end
 

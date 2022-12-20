@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'query Jira service' do
+RSpec.describe 'query Jira service', feature_category: :authentication_and_authorization do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

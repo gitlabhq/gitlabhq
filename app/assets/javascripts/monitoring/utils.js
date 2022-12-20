@@ -39,7 +39,6 @@ export const stateAndPropsFromDataset = (dataset = {}) => {
   // HTML attributes are always strings, parse other types.
   dataProps.hasMetrics = parseBoolean(dataProps.hasMetrics);
   dataProps.customMetricsAvailable = parseBoolean(dataProps.customMetricsAvailable);
-  dataProps.prometheusAlertsAvailable = parseBoolean(dataProps.prometheusAlertsAvailable);
 
   return {
     initState: {

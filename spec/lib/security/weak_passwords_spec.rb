@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Security::WeakPasswords do
+RSpec.describe Security::WeakPasswords, feature_category: :authentication_and_authorization do
   describe "#weak_for_user?" do
     using RSpec::Parameterized::TableSyntax
 
@@ -34,6 +34,7 @@ RSpec.describe Security::WeakPasswords do
       "!@mCwEaKy" | true
       "A1B2pass"  | true
       "A1B2C3jr"  | false # jr is too short
+      "3e18a7f60a908e329958396d68131d39e1b66a03ea420725e2a0fce7cb17pass" | false # Password is >= 64 chars
 
       # Predictable username substrings
       "56d4ab689a"      | true

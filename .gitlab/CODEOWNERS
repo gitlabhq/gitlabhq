@@ -18,7 +18,7 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /doc/**/*.md
 /doc/**/*.png
 /data/deprecations/*.yml
-/data/removals/*.yml
+/data/removals/**/*.yml
 
 ## Technical writing files that do need approval
 /data/deprecations/templates/ @marcel.amirault @gitlab-org/tw-leadership @sarahgerman
@@ -107,6 +107,9 @@ Dangerfile @gl-quality/eng-prod
 ^[Project Alias]
 /ee/app/models/project_alias.rb @patrickbajao
 /ee/lib/api/project_aliases.rb @patrickbajao
+
+^[Distribution]
+/lib/support/ @gitlab-org/distribution
 
 # Secure & Threat Management ownership delineation
 # https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
@@ -339,11 +342,30 @@ Dangerfile @gl-quality/eng-prod
 /spec/models/onboarding/ @gitlab-org/growth/engineers
 /app/services/onboarding/ @gitlab-org/growth/engineers
 /spec/services/onboarding/ @gitlab-org/growth/engineers
-/ee/app/controllers/registrations/ @gitlab-org/growth/engineers
 /ee/app/components/namespaces/free_user_cap/ @gitlab-org/growth/engineers
 /ee/spec/components/namespaces/free_user_cap/ @gitlab-org/growth/engineers
 /ee/app/models/namespaces/free_user_cap/ @gitlab-org/growth/engineers
 /ee/spec/models/namespaces/free_user_cap/ @gitlab-org/growth/engineers
+/app/controllers/registrations_controller.rb @gitlab-org/growth/engineers
+/spec/controllers/registrations_controller_spec.rb @gitlab-org/growth/engineers
+/app/controllers/registrations/ @gitlab-org/growth/engineers
+/spec/controllers/registrations/ @gitlab-org/growth/engineers
+/app/controllers/confirmations_controller.rb @gitlab-org/growth/engineers
+/spec/controllers/confirmations_controller_spec.rb @gitlab-org/growth/engineers
+/ee/app/controllers/trial_registrations_controller.rb @gitlab-org/growth/engineers
+/ee/spec/controllers/trial_registrations_controller_spec.rb @gitlab-org/growth/engineers
+/ee/spec/requests/trial_registrations_controller_spec.rb @gitlab-org/growth/engineers
+/ee/app/controllers/registrations/ @gitlab-org/growth/engineers
+/ee/spec/controllers/registrations/ @gitlab-org/growth/engineers
+/ee/spec/requests/registrations/ @gitlab-org/growth/engineers
+/ee/app/controllers/ee/registrations_controller.rb @gitlab-org/growth/engineers
+/ee/spec/controllers/ee/registrations_controller_spec.rb @gitlab-org/growth/engineers
+/ee/app/controllers/ee/registrations/ @gitlab-org/growth/engineers
+/ee/app/controllers/ee/confirmations_controller.rb @gitlab-org/growth/engineers
+/ee/app/controllers/subscriptions_controller.rb @gitlab-org/growth/engineers
+/ee/spec/controllers/subscriptions_controller_spec.rb @gitlab-org/growth/engineers
+/ee/app/controllers/subscriptions/ @gitlab-org/growth/engineers
+/ee/spec/controllers/subscriptions/ @gitlab-org/growth/engineers
 /app/services/users/in_product_marketing_email_records.rb @gitlab-org/growth/engineers
 /spec/services/users/in_product_marketing_email_records_spec.rb @gitlab-org/growth/engineers
 /app/workers/namespaces/in_product_marketing_emails_worker.rb @gitlab-org/growth/engineers
@@ -922,6 +944,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/free_user_limit.md @phillipwells
 /doc/user/group/ @lciutacu
 /doc/user/group/clusters/ @phillipwells
+/doc/user/group/compliance_frameworks.md @eread
 /doc/user/group/contribution_analytics/ @lciutacu
 /doc/user/group/custom_project_templates.md @eread
 /doc/user/group/devops_adoption/ @lciutacu
@@ -931,6 +954,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/group/issues_analytics/ @msedlakjakubowski
 /doc/user/group/iterations/ @msedlakjakubowski
 /doc/user/group/planning_hierarchy/ @msedlakjakubowski
+/doc/user/group/reporting/ @phillipwells
 /doc/user/group/repositories_analytics/ @marcel.amirault
 /doc/user/group/roadmap/ @msedlakjakubowski
 /doc/user/group/saml_sso/ @jglassman1
@@ -1017,6 +1041,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk.md @msedlakjakubowski
 /doc/user/project/settings/import_export.md @eread
+/doc/user/project/settings/import_export_troubleshooting.md @eread
 /doc/user/project/settings/index.md @lciutacu
 /doc/user/project/settings/project_access_tokens.md @jglassman1
 /doc/user/project/time_tracking.md @msedlakjakubowski
@@ -1026,7 +1051,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/public_access.md @lciutacu
 /doc/user/reserved_names.md @lciutacu
 /doc/user/search/ @ashrafkhamis
-/doc/user/search/global_search/ @ashrafkhamis
 /doc/user/shortcuts.md @ashrafkhamis
 /doc/user/snippets.md @ashrafkhamis
 /doc/user/ssh.md @jglassman1
@@ -1041,7 +1065,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/assets/javascripts/alerts_settings/graphql/mutations/reset_http_token.mutation.graphql @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/authentication/ @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/ide/components/shared/tokened_input.vue @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/invite_members/components/members_token_select.vue @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/packages_and_registries/package_registry/components/list/tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/pages/admin/impersonation_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/pages/groups/settings/access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1117,7 +1140,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/services/users/email_verification/validate_token_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /app/services/users/refresh_authorized_projects_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /app/services/webauthn/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/validators/json_schemas/build_metadata_id_tokens.json @gitlab-org/manage/authentication-and-authorization/approvers
 /app/validators/json_schemas/cluster_agent_authorization_configuration.json @gitlab-org/manage/authentication-and-authorization/approvers
 /app/views/admin/application_settings/_external_authorization_service_form.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
 /app/views/admin/impersonation_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1211,6 +1233,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /ee/app/services/ee/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/services/ee/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/services/ee/resource_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
+/ee/app/services/ee/users/authorized_build_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/services/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/services/security/token_revocation_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/validators/password/ @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1297,7 +1320,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/controllers/projects/runner_projects_controller.rb @gitlab-org/maintainers/cicd-verify
 /app/controllers/projects/runners_controller.rb @gitlab-org/maintainers/cicd-verify
 /app/controllers/projects/triggers_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/usage_quotas_controller.rb @gitlab-org/maintainers/cicd-verify
 /app/controllers/projects/variables_controller.rb @gitlab-org/maintainers/cicd-verify
 /app/models/commit_status.rb @gitlab-org/maintainers/cicd-verify
 /app/models/external_pull_request.rb @gitlab-org/maintainers/cicd-verify
@@ -1306,6 +1328,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/models/project_ci_cd_setting.rb @gitlab-org/maintainers/cicd-verify
 /app/presenters/commit_status_presenter.rb @gitlab-org/maintainers/cicd-verify
 /app/presenters/generic_commit_status_presenter.rb @gitlab-org/maintainers/cicd-verify
+/app/validators/json_schemas/build_metadata_id_tokens.json @gitlab-org/maintainers/cicd-verify
 /app/views/projects/artifacts/ @gitlab-org/maintainers/cicd-verify
 /app/views/projects/generic_commit_statuses/ @gitlab-org/maintainers/cicd-verify
 /app/views/projects/jobs/ @gitlab-org/maintainers/cicd-verify
@@ -1347,17 +1370,64 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /ee/app/workers/clear_shared_runners_minutes_worker.rb @gitlab-org/maintainers/cicd-verify
 /ee/lib/**/ci/ @gitlab-org/maintainers/cicd-verify
 /ee/lib/ee/api/entities/merge_train.rb @gitlab-org/maintainers/cicd-verify
+/spec/**/ci @gitlab-org/maintainers/cicd-verify
+/spec/controllers/admin/jobs_controller_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/controllers/admin/runner_projects_controller_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/controllers/admin/runners_controller_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/controllers/projects/artifacts_controller_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/controllers/projects/jobs_controller_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/requests/runner_setup_controller_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/controllers/projects/pipeline_schedules_controller_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/requests/projects/pipelines_controller_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/controllers/projects/pipelines_settings_controller_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/controllers/projects/runners_controller_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/controllers/groups/variables_controller_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/models/commit_status_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/models/external_pull_request_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/models/generic_commit_status_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/models/namespace_ci_cd_setting_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/models/project_ci_cd_setting_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/presenters/commit_status_presenter_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/views/projects/jobs/ @gitlab-org/maintainers/cicd-verify
+/spec/views/projects/pipeline_schedules/ @gitlab-org/maintainers/cicd-verify
+/spec/views/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
+/spec/workers/build_hooks_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/build_queue_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/build_success_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/ci_platform_metrics_update_cron_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/create_pipeline_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/expire_build_artifacts_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/pipeline_hooks_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/pipeline_metrics_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/pipeline_notification_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/pipeline_process_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/pipeline_schedule_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/run_pipeline_schedule_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/stuck_ci_jobs_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/spec/workers/update_external_pull_requests_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/ee/spec/**/ci @gitlab-org/maintainers/cicd-verify
+/ee/spec/**/merge_trains @gitlab-org/maintainers/cicd-verify
+/ee/spec/models/merge_train_spec.rb @gitlab-org/maintainers/cicd-verify
+/ee/spec/finders/merge_trains_finder_spec.rb @gitlab-org/maintainers/cicd-verify
+/ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb @gitlab-org/maintainers/cicd-verify
+/ee/spec/services/auto_merge/merge_train_service_spec.rb @gitlab-org/maintainers/cicd-verify
+/ee/spec/services/system_notes/merge_train_service_spec.rb @gitlab-org/maintainers/cicd-verify
+/ee/spec/controllers/projects/subscriptions_controller_spec.rb @gitlab-org/maintainers/cicd-verify
+/ee/spec/helpers/ee/projects/pipeline_helper_spec.rb @gitlab-org/maintainers/cicd-verify
+/ee/spec/views/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
+/ee/spec/views/projects/settings/ci_cd/ @gitlab-org/maintainers/cicd-verify
+/ee/spec/workers/clear_shared_runners_minutes_worker_spec.rb @gitlab-org/maintainers/cicd-verify
+/ee/spec/lib/**/ci/ @gitlab-org/maintainers/cicd-verify
+/ee/spec/lib/ee/api/entities/merge_train_spec.rb @gitlab-org/maintainers/cicd-verify
 /**/javascripts/jobs/ @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/pipelines/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/pipeline_new/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/ci_lint/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci_variable_list/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci/pipeline_schedules/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/pipeline_editor/ @gitlab-org/ci-cd/verify/frontend
 /ee/app/assets/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
-/ee/app/assets/javascripts/reports/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/token_access/ @gitlab-org/ci-cd/verify/frontend
+/app/assets/javascripts/admin/application_settings/runner_token_expiration/ @gitlab-org/ci-cd/verify/frontend
 
 [Manage::Workspace]
 lib/api/entities/basic_project_details.rb @gitlab-org/manage/manage-workspace/backend-approvers

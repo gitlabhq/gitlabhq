@@ -4,7 +4,6 @@ import {
   GlOutsideDirective as Outside,
   GlIcon,
   GlToken,
-  GlSafeHtmlDirective as SafeHtml,
   GlTooltipDirective,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
@@ -56,7 +55,7 @@ export default {
       false,
     ),
   },
-  directives: { SafeHtml, Outside, GlTooltip: GlTooltipDirective, GlResizeObserverDirective },
+  directives: { Outside, GlTooltip: GlTooltipDirective, GlResizeObserverDirective },
   components: {
     GlSearchBoxByType,
     HeaderSearchDefaultItems,

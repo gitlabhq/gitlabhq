@@ -421,6 +421,12 @@ RSpec.describe SearchController do
         expect(json_response.count).to eq(1)
         expect(json_response.first['label']).to match(/User settings/)
       end
+
+      it 'makes a call to search_autocomplete_opts' do
+        expect(controller).to receive(:search_autocomplete_opts).once
+
+        get :autocomplete, params: { term: 'setting', filter: 'generic' }
+      end
     end
 
     describe '#append_info_to_payload' do

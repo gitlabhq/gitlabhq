@@ -76,13 +76,11 @@ module DiffHelper
   def diff_line_content(line)
     if line.blank?
       "&nbsp;".html_safe
-    else
+    elsif line.start_with?('+', '-', ' ')
       # `sub` and substring-ing would destroy HTML-safeness of `line`
-      if line.start_with?('+', '-', ' ')
-        line[1, line.length]
-      else
-        line
-      end
+      line[1, line.length]
+    else
+      line
     end
   end
 
@@ -227,7 +225,7 @@ module DiffHelper
   end
 
   def conflicts(allow_tree_conflicts: false)
-    return unless merge_request.cannot_be_merged?
+    return unless merge_request.cannot_be_merged? && merge_request.source_branch_exists? && merge_request.target_branch_exists?
 
     conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: allow_tree_conflicts) # rubocop:disable CodeReuse/ServiceClass
 

@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { confidentialFilterData } from '../constants/confidential_filter_data';
 import RadioFilter from './radio_filter.vue';
 
@@ -8,10 +8,10 @@ export default {
   components: {
     RadioFilter,
   },
+  mixins: [glFeatureFlagsMixin()],
   computed: {
-    ...mapState(['query']),
-    showDropdown() {
-      return Object.values(confidentialFilterData.scopes).includes(this.query.scope);
+    ffBasedXPadding() {
+      return this.glFeatures.searchPageVerticalNav ? 'gl-px-5' : 'gl-px-0';
     },
   },
   confidentialFilterData,
@@ -19,8 +19,8 @@ export default {
 </script>
 
 <template>
-  <div v-if="showDropdown">
-    <radio-filter :filter-data="$options.confidentialFilterData" />
+  <div>
+    <radio-filter :class="ffBasedXPadding" :filter-data="$options.confidentialFilterData" />
     <hr class="gl-my-5 gl-border-gray-100" />
   </div>
 </template>

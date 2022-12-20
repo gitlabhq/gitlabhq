@@ -160,6 +160,8 @@ can start signing your tags:
 ## Related topics
 
 - [Rake task for X.509 signatures](../../../../raketasks/x509_signatures.md)
+- [Sign commits with GPG](../gpg_signed_commits/index.md)
+- [Sign commits with SSH keys](../ssh_signed_commits/index.md)
 
 ## Troubleshooting
 

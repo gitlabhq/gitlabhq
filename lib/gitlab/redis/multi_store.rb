@@ -10,6 +10,7 @@ module Gitlab
           'Value not found on the redis primary store. Read from the redis secondary store successful.'
         end
       end
+
       class PipelinedDiffError < StandardError
         def initialize(result_primary, result_secondary)
           @result_primary = result_primary
@@ -22,6 +23,7 @@ module Gitlab
             "Result from the secondary: #{@result_secondary.inspect}."
         end
       end
+
       class MethodMissingError < StandardError
         def message
           'Method missing. Falling back to execute method on the redis secondary store.'

@@ -82,19 +82,6 @@
   <<: *node-modules-cache
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
-.assets-cache: &assets-cache
-  key: "assets-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v5"
-  # This list should match GITLAB_ASSETS_PATHS_LIST from scripts/gitlab_component_helpers.sh
-  paths:
-    - cached-assets-hash.txt
-    - app/assets/javascripts/locale/**/app.js
-    - public/assets/
-  policy: pull
-
-.assets-cache-push: &assets-cache-push
-  <<: *assets-cache
-  policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
-
 .assets-tmp-cache: &assets-tmp-cache
   key: "assets-tmp-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v1"
   paths:
@@ -214,11 +201,6 @@
   cache:
     - *node-modules-cache
 
-.qa-frontend-node-cache:
-  cache:
-    - *node-modules-cache
-    - *assets-tmp-cache
-
 .assets-compile-cache:
   cache:
     - *ruby-gems-cache
@@ -306,7 +288,7 @@
     - name: postgres:12
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:6.0-alpine
-    - name: elasticsearch:8.4.1
+    - name: elasticsearch:8.5.2
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "12"
@@ -378,3 +360,8 @@
         docker run --rm --privileged ${QEMU_IMAGE} --install all;
       fi
     - docker buildx create --use # creates and set's to active buildkit builder
+
+.use-kube-context:
+  before_script:
+    - export KUBE_CONTEXT="gitlab-org/gitlab:review-apps"
+    - kubectl config use-context ${KUBE_CONTEXT}

@@ -1,4 +1,4 @@
-- name: "Support for legacy format of `config/database.yml`"
+- title: "Support for legacy format of `config/database.yml`"
   announcement_milestone: "14.3"
   announcement_date: "2021-09-22"
   removal_milestone: "15.0"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'test coverage badge' do
+RSpec.describe 'test coverage badge', feature_category: :code_testing do
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :private) }
 

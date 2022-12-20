@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Sandboxed Mermaid rendering', :js do
+RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:description) do
     <<~MERMAID

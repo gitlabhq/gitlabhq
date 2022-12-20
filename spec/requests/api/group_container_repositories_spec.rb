@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GroupContainerRepositories do
+RSpec.describe API::GroupContainerRepositories, feature_category: :container_registry do
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:project) { create(:project, :private, group: group) }
   let_it_be(:reporter) { create(:user) }
@@ -35,7 +35,9 @@ RSpec.describe API::GroupContainerRepositories do
 
   describe 'GET /groups/:id/registry/repositories' do
     let(:url) { "/groups/#{group.id}/registry/repositories" }
-    let(:snowplow_gitlab_standard_context) { { user: api_user, namespace: group } }
+    let(:snowplow_gitlab_standard_context) do
+      { user: api_user, namespace: group, property: 'i_package_container_user' }
+    end
 
     subject { get api(url, api_user) }
 

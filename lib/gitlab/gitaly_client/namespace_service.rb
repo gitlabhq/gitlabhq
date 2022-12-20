@@ -40,6 +40,13 @@ module Gitlab
         gitaly_client_call(:rename_namespace, request, timeout: GitalyClient.fast_timeout)
       end
 
+      def exists?(name)
+        request = Gitaly::NamespaceExistsRequest.new(storage_name: @storage, name: name)
+
+        response = gitaly_client_call(:namespace_exists, request, timeout: GitalyClient.fast_timeout)
+        response.exists
+      end
+
       private
 
       def gitaly_client_call(type, request, timeout: nil)

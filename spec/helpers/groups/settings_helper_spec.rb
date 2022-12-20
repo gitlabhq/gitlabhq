@@ -11,8 +11,7 @@ RSpec.describe Groups::SettingsHelper do
     using RSpec::Parameterized::TableSyntax
 
     fake_form_id = "fake_form_id"
-
-    where(:is_paid, :is_button_disabled, :form_value_id) do
+    where(:prevent_delete_response, :is_button_disabled, :form_value_id) do
       true      | "true"      | nil
       true      | "true"      | fake_form_id
       false     | "false"     | nil
@@ -21,7 +20,7 @@ RSpec.describe Groups::SettingsHelper do
 
     with_them do
       it "returns expected parameters" do
-        allow(group).to receive(:paid?).and_return(is_paid)
+        allow(group).to receive(:prevent_delete?).and_return(prevent_delete_response)
 
         expected = helper.group_settings_confirm_modal_data(group, form_value_id)
         expect(expected).to eq({

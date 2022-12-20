@@ -3,70 +3,75 @@
 require 'spec_helper'
 
 RSpec.describe ProtectedBranches::CreateService do
-  let_it_be_with_reload(:project) { create(:project) }
-
-  let(:user) { project.first_owner }
-  let(:params) do
-    {
-      name: name,
-      merge_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }],
-      push_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }]
-    }
-  end
-
-  subject(:service) { described_class.new(project, user, params) }
-
-  describe '#execute' do
-    let(:name) { 'master' }
-
-    it 'creates a new protected branch' do
-      expect { service.execute }.to change(ProtectedBranch, :count).by(1)
-      expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
-      expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
+  shared_examples 'execute with entity' do
+    let(:params) do
+      {
+        name: name,
+        merge_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }],
+        push_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }]
+      }
     end
 
-    it 'refreshes the cache' do
-      expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
-        expect(cache_service).to receive(:refresh)
-      end
+    subject(:service) { described_class.new(entity, user, params) }
 
-      service.execute
-    end
-
-    context 'when protecting a branch with a name that contains HTML tags' do
-      let(:name) { 'foo<b>bar<\b>' }
+    describe '#execute' do
+      let(:name) { 'master' }
 
       it 'creates a new protected branch' do
         expect { service.execute }.to change(ProtectedBranch, :count).by(1)
-        expect(project.protected_branches.last.name).to eq(name)
+        expect(entity.protected_branches.last.push_access_levels.map(&:access_level)).to match_array([Gitlab::Access::MAINTAINER])
+        expect(entity.protected_branches.last.merge_access_levels.map(&:access_level)).to match_array([Gitlab::Access::MAINTAINER])
+      end
+
+      it 'refreshes the cache' do
+        expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
+          expect(cache_service).to receive(:refresh)
+        end
+
+        service.execute
+      end
+
+      context 'when protecting a branch with a name that contains HTML tags' do
+        let(:name) { 'foo<b>bar<\b>' }
+
+        it 'creates a new protected branch' do
+          expect { service.execute }.to change(ProtectedBranch, :count).by(1)
+          expect(entity.protected_branches.last.name).to eq(name)
+        end
+      end
+
+      context 'when a policy restricts rule creation' do
+        it "prevents creation of the protected branch rule" do
+          disallow(:create_protected_branch, an_instance_of(ProtectedBranch))
+
+          expect do
+            service.execute
+          end.to raise_error(Gitlab::Access::AccessDeniedError)
+        end
+
+        it 'creates a new protected branch if we skip authorization step' do
+          expect { service.execute(skip_authorization: true) }.to change(ProtectedBranch, :count).by(1)
+        end
       end
     end
+  end
 
-    context 'when user does not have permission' do
-      let(:user) { create(:user) }
+  context 'with entity project' do
+    let_it_be_with_reload(:entity) { create(:project) }
+    let(:user) { entity.first_owner }
 
-      before do
-        project.add_developer(user)
-      end
+    it_behaves_like 'execute with entity'
+  end
 
-      it 'creates a new protected branch if we skip authorization step' do
-        expect { service.execute(skip_authorization: true) }.to change(ProtectedBranch, :count).by(1)
-      end
+  context 'with entity group' do
+    let_it_be_with_reload(:entity) { create(:group) }
+    let_it_be_with_reload(:user) { create(:user) }
 
-      it 'raises Gitlab::Access:AccessDeniedError' do
-        expect { service.execute }.to raise_error(Gitlab::Access::AccessDeniedError)
-      end
+    before do
+      allow(Ability).to receive(:allowed?).with(user, :create_protected_branch, instance_of(ProtectedBranch)).and_return(true)
     end
 
-    context 'when a policy restricts rule creation' do
-      it "prevents creation of the protected branch rule" do
-        disallow(:create_protected_branch, an_instance_of(ProtectedBranch))
-
-        expect do
-          service.execute
-        end.to raise_error(Gitlab::Access::AccessDeniedError)
-      end
-    end
+    it_behaves_like 'execute with entity'
   end
 
   def disallow(ability, protected_branch)

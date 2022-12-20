@@ -7,3 +7,4 @@ feature_categories:
 description: Persists error event data for the Error Tracking's GitLab backend
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64712
 milestone: '14.1'
+gitlab_schema: gitlab_main

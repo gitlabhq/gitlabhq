@@ -3,7 +3,7 @@ import ClipboardJS from 'clipboard';
 import Mousetrap from 'mousetrap';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { isElementVisible } from '~/lib/utils/dom_utils';
-import { DEBOUNCE_DROPDOWN_DELAY } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
+import { DEBOUNCE_DROPDOWN_DELAY } from '~/sidebar/components/labels/labels_select_widget/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 import { s__ } from '~/locale';
 import Sidebar from '~/right_sidebar';

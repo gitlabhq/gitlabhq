@@ -23,6 +23,7 @@ RSpec.describe CommitSignatures::X509CommitSignature do
 
   it_behaves_like 'having unique enum values'
   it_behaves_like 'commit signature'
+  it_behaves_like 'signature with type checking', :x509
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:x509_certificate_id) }
@@ -37,12 +38,12 @@ RSpec.describe CommitSignatures::X509CommitSignature do
       let!(:user) { create(:user, email: X509Helpers::User1.certificate_email) }
 
       it 'returns user' do
-        expect(described_class.safe_create!(attributes).user).to eq(user)
+        expect(described_class.safe_create!(attributes).signed_by_user).to eq(user)
       end
     end
 
     it 'if email is not assigned to a user, return nil' do
-      expect(described_class.safe_create!(attributes).user).to be_nil
+      expect(described_class.safe_create!(attributes).signed_by_user).to be_nil
     end
   end
 end

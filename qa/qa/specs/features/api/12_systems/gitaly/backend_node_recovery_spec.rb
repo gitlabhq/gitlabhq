@@ -27,8 +27,8 @@ module QA
 
         # Stop the primary node to trigger failover, and then wait
         # for Gitaly to be ready for writes again
-        praefect_manager.stop_primary_node
-        praefect_manager.wait_for_primary_node_health_check_failure
+        praefect_manager.stop_node(praefect_manager.primary_node)
+        praefect_manager.wait_for_health_check_failure(praefect_manager.primary_node)
 
         # Push a commit to the new primary
         Resource::Repository::ProjectPush.fabricate! do |push|
@@ -43,7 +43,7 @@ module QA
         expect(praefect_manager).to be_replication_pending
 
         # Start the old primary node again
-        praefect_manager.start_primary_node
+        praefect_manager.start_node(praefect_manager.primary_node)
         praefect_manager.wait_for_health_check_all_nodes
 
         # Wait for automatic replication
@@ -51,8 +51,8 @@ module QA
 
         # Force switch to the old primary node
         # This ensures that the commit was replicated
-        praefect_manager.stop_secondary_node
-        praefect_manager.stop_tertiary_node
+        praefect_manager.stop_node(praefect_manager.secondary_node)
+        praefect_manager.stop_node(praefect_manager.tertiary_node)
 
         # Confirm that both commits are available
         expect(project.commits.map { |commit| commit[:message].chomp })

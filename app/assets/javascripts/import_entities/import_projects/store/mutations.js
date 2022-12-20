@@ -36,7 +36,12 @@ export default {
   [types.SET_FILTER](state, filter) {
     state.filter = filter;
     state.repositories = [];
-    state.pageInfo.page = 0;
+    state.pageInfo = {
+      page: 0,
+      startCursor: null,
+      endCursor: null,
+      hasNextPage: true,
+    };
   },
 
   [types.REQUEST_REPOS](state) {
@@ -51,7 +56,9 @@ export default {
       // https://gitlab.com/gitlab-org/gitlab/-/issues/27370#note_379034091
 
       const newImportedProjects = processLegacyEntries({
-        newRepositories: repositories.importedProjects,
+        newRepositories: repositories.importedProjects.filter(
+          (p) => p.importStatus !== STATUSES.CANCELED,
+        ),
         existingRepositories: state.repositories,
         factory: makeNewImportedProject,
       });
@@ -122,17 +129,9 @@ export default {
     });
   },
 
-  [types.REQUEST_NAMESPACES](state) {
-    state.isLoadingNamespaces = true;
-  },
-
-  [types.RECEIVE_NAMESPACES_SUCCESS](state, namespaces) {
-    state.isLoadingNamespaces = false;
-    state.namespaces = namespaces;
-  },
-
-  [types.RECEIVE_NAMESPACES_ERROR](state) {
-    state.isLoadingNamespaces = false;
+  [types.CANCEL_IMPORT_SUCCESS](state, { repoId }) {
+    const existingRepo = state.repositories.find((r) => r.importSource.id === repoId);
+    existingRepo.importedProject.importStatus = STATUSES.CANCELED;
   },
 
   [types.SET_IMPORT_TARGET](state, { repoId, importTarget }) {
@@ -150,5 +149,10 @@ export default {
 
   [types.SET_PAGE](state, page) {
     state.pageInfo.page = page;
+  },
+
+  [types.SET_PAGE_CURSORS](state, pageInfo) {
+    const { startCursor, endCursor, hasNextPage } = pageInfo;
+    state.pageInfo = { ...state.pageInfo, startCursor, endCursor, hasNextPage };
   },
 };

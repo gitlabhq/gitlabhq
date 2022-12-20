@@ -22,14 +22,14 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessIncidentWorker do
           'assignees' => [{
             'summary' => 'Laura Haley', 'url' => 'https://webdemo.pagerduty.com/users/P553OPV'
           }],
-          'impacted_services' => [{
+          'impacted_service' => {
             'summary' => 'Production XDB Cluster', 'url' => 'https://webdemo.pagerduty.com/services/PN49J75'
-          }]
+          }
         }
       end
 
       it 'creates a GitLab issue' do
-        expect { perform }.to change(Issue, :count).by(1)
+        expect { perform }.to change { Issue.count }.by(1)
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessIncidentWorker do
       end
 
       it 'does not create a GitLab issue' do
-        expect { perform }.not_to change(Issue, :count)
+        expect { perform }.not_to change { Issue.count }
       end
 
       it 'logs a warning' do

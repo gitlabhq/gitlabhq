@@ -9,7 +9,7 @@ require 'gitlab/dangerfiles/spec_helper'
 require_relative '../../../tooling/danger/specs'
 require_relative '../../../tooling/danger/project_helper'
 
-RSpec.describe Tooling::Danger::Specs do
+RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
   include_context "with dangerfile"
 
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
@@ -215,6 +215,70 @@ RSpec.describe Tooling::Danger::Specs do
       end
 
       specs.add_suggestions_for_project_factory_usage(filename)
+    end
+  end
+
+  describe '#add_suggestions_for_feature_category' do
+    let(:template) do
+      <<~SUGGESTION_MARKDOWN
+      ```suggestion
+      %<suggested_line>s
+      ```
+
+      Consider adding `feature_category: <feature_category_name>` for this example if it is not set already.
+      See [testing best practices](https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata).
+      SUGGESTION_MARKDOWN
+    end
+
+    let(:file_lines) do
+      [
+        " require 'spec_helper'",
+        " \n",
+        " RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController, feature_category: :planning_analytics do",
+        " end",
+        "RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do",
+        "  let_it_be(:user) { create(:user) }",
+        " end",
+        " describe 'GET \"time_summary\"' do",
+        " end",
+        " RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do",
+        "  let_it_be(:user) { create(:user) }",
+        " end",
+        " describe 'GET \"time_summary\"' do",
+        " end"
+      ]
+    end
+
+    let(:matching_lines) do
+      [
+        "+ RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController, feature_category: :planning_analytics do",
+        "+RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do",
+        "+ RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do"
+      ]
+    end
+
+    let(:changed_lines) do
+      [
+        "+ RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController, feature_category: :planning_analytics do",
+        "+RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do",
+        "+ let_it_be(:user) { create(:user) }",
+        "- end",
+        "+ describe 'GET \"time_summary\"' do",
+        "+ RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do"
+      ]
+    end
+
+    it 'adds suggestions at the correct lines', :aggregate_failures do
+      [
+        { suggested_line: "RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do", number: 5 },
+        { suggested_line: " RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do", number: 10 }
+
+      ].each do |test_case|
+        comment = format(template, suggested_line: test_case[:suggested_line])
+        expect(specs).to receive(:markdown).with(comment, file: filename, line: test_case[:number])
+      end
+
+      specs.add_suggestions_for_feature_category(filename)
     end
   end
 end

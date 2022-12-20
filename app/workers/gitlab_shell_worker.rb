@@ -14,7 +14,7 @@ class GitlabShellWorker # rubocop:disable Scalability/IdempotentWorker
   loggable_arguments 0
 
   def perform(action, *arg)
-    if ::Feature.enabled?(:verify_gitlab_shell_worker_method_names) && Gitlab::Shell::PERMITTED_ACTIONS.exclude?(action)
+    if Gitlab::Shell::PERMITTED_ACTIONS.exclude?(action)
       raise(ArgumentError, "#{action} not allowed for #{self.class.name}")
     end
 

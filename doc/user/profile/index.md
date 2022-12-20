@@ -328,7 +328,7 @@ To view a user's activity in a top-level Activity view:
 
 ## Troubleshooting
 
-### Why do I keep getting signed out?
+### Why do you keep getting signed out?
 
 When you sign in to the main GitLab application, a `_gitlab_session` cookie is
 set. When you close your browser, the cookie is cleared client-side
@@ -368,7 +368,7 @@ GitLab uses both session and persistent cookies:
 
 - Session cookie: Session cookies are normally removed at the end of the browser session when
   the browser is closed. The `_gitlab_session` cookie has no fixed expiration date. However,
-  it expires based on its [`session_expire_delay`](#why-do-i-keep-getting-signed-out).
+  it expires based on its [`session_expire_delay`](#why-do-you-keep-getting-signed-out).
 - Persistent cookie: The `remember_user_token` is a cookie with an expiration date of two weeks.
   GitLab activates this cookie if you select **Remember Me** when you sign in.
 

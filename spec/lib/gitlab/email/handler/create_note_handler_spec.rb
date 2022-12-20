@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
-  include_context :email_shared_context
+  include_context 'email shared context'
 
   let_it_be(:user)      { create(:user, email: 'jake@adventuretime.ooo') }
   let_it_be(:project)   { create(:project, :public, :repository) }
@@ -15,20 +15,20 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
     SentNotification.record_note(note, user.id, mail_key)
   end
 
-  it_behaves_like :reply_processing_shared_examples
+  before do
+    stub_incoming_email_setting(enabled: true, address: "reply+%{key}@appmail.adventuretime.ooo")
+    stub_config_setting(host: 'localhost')
+  end
 
-  it_behaves_like :note_handler_shared_examples do
+  it_behaves_like 'reply processing shared examples'
+
+  it_behaves_like 'note handler shared examples' do
     let(:recipient) { sent_notification.recipient }
 
     let(:update_commands_only) { fixture_file('emails/update_commands_only_reply.eml') }
     let(:no_content)           { fixture_file('emails/no_content_reply.eml') }
     let(:commands_in_reply)    { fixture_file('emails/commands_in_reply.eml') }
     let(:with_quick_actions)   { fixture_file('emails/valid_reply_with_quick_actions.eml') }
-  end
-
-  before do
-    stub_incoming_email_setting(enabled: true, address: "reply+%{key}@appmail.adventuretime.ooo")
-    stub_config_setting(host: 'localhost')
   end
 
   context 'when the recipient address does not include a mail key' do
@@ -92,7 +92,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
       issue.update_attribute(:confidential, true)
     end
 
-    it_behaves_like :checks_permissions_on_noteable_examples
+    it_behaves_like 'checks permissions on noteable examples'
   end
 
   shared_examples 'a reply to existing comment' do

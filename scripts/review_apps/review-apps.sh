@@ -196,9 +196,9 @@ function create_application_secret() {
 
   if [ -z "${REVIEW_APPS_EE_LICENSE_FILE}" ]; then echo "License not found" && return; fi
 
-  gitlab_license_shared_secret=$(kubectl get secret --namespace ${namespace} --no-headers -o=custom-columns=NAME:.metadata.name shared-gitlab-license 2> /dev/null | tail -n 1)
+  gitlab_license_shared_secret=$(kubectl get secret --namespace "${namespace}" --no-headers -o=custom-columns=NAME:.metadata.name shared-gitlab-license 2> /dev/null | tail -n 1)
   if [[ "${gitlab_license_shared_secret}" == "" ]]; then
-    echoinfo "Creating the 'shared-gitlab-license' secret in the ${namespace} namespace..." true
+    echoinfo "Creating the 'shared-gitlab-license' secret in the "${namespace}" namespace..." true
     kubectl create secret generic --namespace "${namespace}" \
       "shared-gitlab-license" \
       --from-file=license="${REVIEW_APPS_EE_LICENSE_FILE}" \
@@ -262,7 +262,7 @@ function deploy() {
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-ee"
   sentry_enabled="false"
 
-  if [ -n ${REVIEW_APPS_SENTRY_DSN} ]; then
+  if [ -n "${REVIEW_APPS_SENTRY_DSN}" ]; then
     echo "REVIEW_APPS_SENTRY_DSN detected, enabling Sentry"
     sentry_enabled="true"
   fi
@@ -342,11 +342,25 @@ EOF
 }
 
 function verify_deploy() {
-  local namespace="${CI_ENVIRONMENT_SLUG}"
+  local deployed="false"
 
-  echoinfo "[$(date '+%H:%M:%S')] Verifying deployment at ${CI_ENVIRONMENT_URL}"
+  mkdir -p curl-logs/
 
-  if retry "test_url \"${CI_ENVIRONMENT_URL}\""; then
+  for i in {1..60}; do # try for 5 minutes
+    local now=$(date '+%H:%M:%S')
+    echo "[${now}] Verifying deployment at ${CI_ENVIRONMENT_URL}/users/sign_in"
+    log_name="curl-logs/${now}.log"
+    curl --connect-timeout 3 -o "${log_name}" -s "${CI_ENVIRONMENT_URL}/users/sign_in"
+
+    if grep "Remember me" "${log_name}" &> /dev/null; then
+      deployed="true"
+      break
+    fi
+
+    sleep 5
+  done
+
+  if [[ "${deployed}" == "true" ]]; then
     echoinfo "[$(date '+%H:%M:%S')] Review app is deployed to ${CI_ENVIRONMENT_URL}"
     return 0
   else
@@ -358,6 +372,26 @@ function verify_deploy() {
 function display_deployment_debug() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
 
-  echoinfo "Environment debugging data:"
-  kubectl get svc,pods,jobs --namespace "${namespace}"
+  # Install dig to inspect DNS entries
+  #
+  # Silent install: see https://stackoverflow.com/a/52642167/1620195
+  apt-get -qq update && apt-get -qq install -y dnsutils < /dev/null > /dev/null
+
+  echoinfo "[debugging data] Check review-app webservice DNS entry:"
+  dig +short $(echo "${CI_ENVIRONMENT_URL}" | sed 's~http[s]*://~~g')
+
+  echoinfo "[debugging data] Check external IP for nginx-ingress-controller service (should be THE SAME AS the DNS entry IP above):"
+  kubectl -n "${namespace}" get svc "${namespace}-nginx-ingress-controller" -o jsonpath='{.status.loadBalancer.ingress[].ip}'
+
+  echoinfo "[debugging data] k8s resources:"
+  kubectl -n "${namespace}" get pods
+
+  echoinfo "[debugging data] PostgreSQL logs:"
+  kubectl -n "${namespace}" logs -l app=postgresql --all-containers
+
+  echoinfo "[debugging data] DB migrations logs:"
+  kubectl -n "${namespace}" logs -l app=migrations --all-containers
+
+  echoinfo "[debugging data] Webservice logs:"
+  kubectl -n "${namespace}" logs -l app=webservice -c webservice
 }

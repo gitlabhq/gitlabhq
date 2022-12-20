@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User password' do
+RSpec.describe 'User password', feature_category: :system_access do
   describe 'send password reset' do
     context 'when recaptcha is enabled' do
       before do

@@ -45,15 +45,20 @@ Deployments show up in this list only after a deployment job has created them.
 
 ## Search environments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10754) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10754) in GitLab 15.5.
+> - [Searching environments within a folder](https://gitlab.com/gitlab-org/gitlab/-/issues/373850) was introduced in GitLab 15.7 with [Feature flag `enable_environments_search_within_folder`](https://gitlab.com/gitlab-org/gitlab/-/issues/382108). Enabled by default.
 
 To search environments by name:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
-1. In the search bar, enter your search term. Matching applies from the
-   beginning of the environment name. For example, `devel` matches the
-   environment name `development`, but `elop` does not.
+1. In the search bar, enter your search term.
+   - The length of your **search term should be 3 or more characters**.
+   - Matching applies from the beginning of the environment name.
+     - For example, `devel` matches the environment name `development`, but `elop` does not.
+   - For environments with a folder name format, matching applies after the base folder name.
+     - For example when the name is `review/test-app`, search term `test` matches `review/test-app`.
+     - Also searching with the folder name prefixed like `review/test` matches `review/test-app`.
 
 ## Types of environments
 
@@ -340,7 +345,7 @@ and displayed at a post-merge pipeline in [merge request pages](../../user/proje
 
 To activate this tracking, your environment must be configured in the following:
 
-- [Environment name](../yaml/index.md#environmentname) is not foldered with `/` (that is, top-level/long-lived environments), _OR_
+- [Environment name](../yaml/index.md#environmentname) is not using folders with `/` (that is, top-level/long-lived environments), _OR_
 - [Environment tier](#deployment-tier-of-environments) is either `production` or `staging`.
 
 Here are the example setups of [`environment` keyword](../yaml/index.md#environment) in `.gitlab-ci.yml`:
@@ -608,6 +613,20 @@ re-initiating Review App.
 Because `stop_review_app` is set to `auto_stop_in: 1 week`,
 if a merge request is inactive for more than a week,
 GitLab automatically triggers the `stop_review_app` job to stop the environment.
+
+#### Stop an environment through the UI
+
+NOTE:
+To trigger an `on_stop` action and manually stop an environment from the
+Environments view, the stop and deploy jobs must be in the same
+[`resource_group`](../yaml/index.md#resource_group).
+
+To stop an environment in the GitLab UI:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
+1. Next to the environment you want to stop, select **Stop**.
+1. On the confirmation dialog box, select **Stop environment**.
 
 #### Multiple stop actions for an environment
 
@@ -977,6 +996,7 @@ Instead, you need to delete the old environment and create a new one:
 - [Environments Dashboard](../environments/environments_dashboard.md): View a summary of each
   environment's operational health. **(PREMIUM)**
 - [Deployment safety](deployment_safety.md#restrict-write-access-to-a-critical-environment): Secure your deployments.
+- [Track deployments of an external deployment tool](external_deployment_tools.md): Use an external deployment tool instead of built-in deployment solution.
 
 ## Troubleshooting
 

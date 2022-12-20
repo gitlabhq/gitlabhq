@@ -13,6 +13,11 @@ module Types
 
       authorize :read_alert_management_alert
 
+      field :id,
+            GraphQL::Types::ID,
+            null: false,
+            description: 'ID of the alert.'
+
       field :iid,
             GraphQL::Types::ID,
             null: false,
@@ -116,7 +121,10 @@ module Types
             null: true,
             description: 'Runbook for the alert as defined in alert details.'
 
-      field :todos, description: 'To-do items of the current user for the alert.', resolver: Resolvers::TodosResolver
+      field :todos,
+            Types::TodoType.connection_type,
+            description: 'To-do items of the current user for the alert.',
+            resolver: Resolvers::TodosResolver
 
       field :details_url,
             GraphQL::Types::String,

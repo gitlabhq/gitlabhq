@@ -33,8 +33,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
 
           data_consistency data_consistency, feature_flag: feature_flag
 
-          def perform(*args)
-          end
+          def perform(*args); end
         end
       end
 
@@ -331,28 +330,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
 
         expect(middleware.send(:databases_in_sync?, locations))
           .to eq(false)
-      end
-
-      context 'when "indifferent_wal_location_keys" FF is off' do
-        before do
-          stub_feature_flags(indifferent_wal_location_keys: false)
-        end
-
-        it 'returns true when the load balancers are not in sync' do
-          locations = {}
-
-          Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-            locations[lb.name.to_s] = 'foo'
-
-            allow(lb)
-              .to receive(:select_up_to_date_host)
-                    .with('foo')
-                    .and_return(false)
-          end
-
-          expect(middleware.send(:databases_in_sync?, locations))
-            .to eq(true)
-        end
       end
     end
   end

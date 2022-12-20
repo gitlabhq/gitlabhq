@@ -34,6 +34,9 @@ In each release, GitLab announces features that are deprecated and no longer rec
 Each deprecated feature will be removed in a future release.
 Some features cause breaking changes when they are removed.
 
+**{rss}** **To be notified of upcoming breaking changes**,
+add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
+
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.
 It is important to note that the information presented is for informational purposes only.
@@ -42,6 +45,234 @@ As with all projects, the items mentioned on this page are subject to change or 
 The development, release, and timing of any products, features, or functionality remain at the
 sole discretion of GitLab Inc.
 <div class="js-deprecation-filters"></div>
+
+<div class="announcement-milestone">
+
+## Announced in 15.7
+
+<div class="deprecation removal-160 breaking-change">
+
+### DAST API scans using DAST template is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+With the move to the new DAST API analyzer and the `DAST-API.gitlab-ci.yml` template for DAST API scans, we will be removing the ability to scan APIs with the DAST analyzer. Use of the `DAST.gitlab-ci.yml` or `DAST-latest.gitlab-ci.yml` templates for API scans is deprecated as of GitLab 15.7 and will no longer work in GitLab 16.0. Please use `DAST-API.gitlab-ci.yml` template and refer to the [DAST API analyzer](https://docs.gitlab.com/ee/user/application_security/dast_api/#configure-dast-api-with-an-openapi-specification) documentation for configuration details.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### DAST API variables
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+With the switch to the new DAST API analyzer in GitLab 15.6, two legacy DAST API variables are being deprecated. The variables `DAST_API_HOST_OVERRIDE` and `DAST_API_SPECIFICATION` will no longer be used for DAST API scans.
+
+`DAST_API_HOST_OVERRIDE` has been deprecated in favor of using the `DAST_API_TARGET_URL` to automatically override the host in the OpenAPI specification.
+
+`DAST_API_SPECIFICATION` has been deprecated in favor of `DAST_API_OPENAPI`. To continue using an OpenAPI specification to guide the test, users must replace the `DAST_API_SPECIFICATION` variable with the `DAST_API_OPENAPI` variable. The value can remain the same, but the variable name must be replaced.
+
+These two variables will be removed in GitLab 16.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### DAST ZAP advanced configuration variables deprecation
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+With the new browser-based DAST analyzer GA in GitLab 15.7, we are working towards making it the default DAST analyzer at some point in the future. In preparation for this, the following legacy DAST variables are being deprecated and scheduled for removal in GitLab 16.0: `DAST_ZAP_CLI_OPTIONS` and `DAST_ZAP_LOG_CONFIGURATION`. These variables allowed for advanced configuration of the legacy DAST analyzer, which was based on OWASP ZAP. The new browser-based analyzer will not include the same functionality, as these were specific to how ZAP worked.
+
+These three variables will be removed in GitLab 16.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### DAST report variables deprecation
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+With the new browser-based DAST analyzer GA in GitLab 15.7, we are working towards making it the default DAST analyzer at some point in the future. In preparation for this, the following legacy DAST variables are being deprecated and scheduled for removal in GitLab 16.0: `DAST_HTML_REPORT`, `DAST_XML_REPORT`, and `DAST_MARKDOWN_REPORT`. These reports relied on the legacy DAST analyzer and we do not plan to implement them in the new browser-based analyzer. As of GitLab 16.0, these report artifacts will no longer be generated.
+
+These three variables will be removed in GitLab 16.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### KAS Metrics Port in GitLab Helm Chart
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `gitlab.kas.metrics.port` has been deprecated in favor of the new `gitlab.kas.observability.port` configuration field for the [GitLab Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2839).
+This port is used for much more than just metrics, which warranted this change to avoid confusion in configuration.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Shimo integration
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [Shimo Workspace integration](https://docs.gitlab.com/ee/user/project/integrations/shimo.html) has been deprecated
+and will be moved to the JiHu GitLab codebase.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Single merge request changes API endpoint
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The endpoint to get [changes from a single merge request](https://docs.gitlab.com/ee/api/merge_requests.html#get-single-merge-request-changes) has been deprecated in favor the [list merge request diffs](https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-request-diffs) endpoint. API users are encouraged to switch to the new diffs endpoint instead. The `changes from a single merge request` endpoint will be removed in v5 of the GitLab REST API.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Support for REST API endpoints that reset runner registration tokens
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The support for runner registration tokens is deprecated. As a consequence, the REST API endpoints to reset a registration token are also deprecated and will
+be removed in GitLab 16.0.
+The deprecated endpoints are:
+
+- `POST /runners/reset_registration_token`
+- `POST /projects/:id/runners/reset_registration_token`
+- `POST /groups/:id/runners/reset_registration_token`
+
+In GitLab 15.8, we plan to implement a new method to bind runners to a GitLab instance,
+as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
+This new architecture introduces a new method for registering runners and will eliminate the legacy
+[runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
+From GitLab 16.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Support for periods (`.`) in Terraform state names might break existing states
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Previously, Terraform state names containing periods were not supported. However, you could still use state names with periods via a workaround.
+
+GitLab 15.7 [adds full support](https://docs.gitlab.com/ee/user/infrastructure/iac/troubleshooting.html#state-not-found-if-the-state-name-contains-a-period) for state names that contain periods. If you used a workaround to handle these state names, your jobs might fail, or it might look like you've run Terraform for the first time.
+
+To resolve the issue:
+
+  1. Change any references to the state file by excluding the period and any characters that follow.
+     - For example, if your state name is `state.name`, change all references to `state`.
+  1. Run your Terraform commands.
+
+To use the full state name, including the period, [migrate to the full state file](https://docs.gitlab.com/ee/user/infrastructure/iac/terraform_state.html#migrate-to-a-gitlab-managed-terraform-state).
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### The Phabricator task importer is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [Phabricator task importer](https://docs.gitlab.com/ee/user/project/import/phabricator.html) is being deprecated. Phabricator itself as a project is no longer actively maintained since June 1, 2021. We haven't observed imports using this tool. There has been no activity on the open related issues on GitLab.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### The `gitlab-runner exec` command is deprecated
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [`gitlab-runner exec`](https://docs.gitlab.com/runner/commands/#gitlab-runner-exec) command is deprecated and will be fully removed from GitLab Runner in 16.0. The `gitlab-runner exec` feature was initially developed to provide the ability to validate a GitLab CI pipeline on a local system without needing to commit the updates to a GitLab instance. However, with the continued evolution of GitLab CI, replicating all GitLab CI features into `gitlab-runner exec` was no longer viable. Pipeline syntax and validation [simulation](https://docs.gitlab.com/ee/ci/pipeline_editor/#simulate-a-cicd-pipeline) are available in the GitLab pipeline editor.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### ZenTao integration
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [ZenTao product integration](https://docs.gitlab.com/ee/user/project/integrations/zentao.html) has been deprecated
+and will be moved to the JiHu GitLab codebase.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### `POST ci/lint` API endpoint deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `POST ci/lint` API endpoint is deprecated in 15.7, and will be removed in 16.0. This endpoint does not validate the full range of CI/CD configuration options. Instead, use [`POST /projects/:id/ci/lint`](https://docs.gitlab.com/15.5/ee/api/lint.html#validate-a-ci-yaml-configuration-with-a-namespace), which properly validates CI/CD configuration.
+
+</div>
+</div>
 
 <div class="announcement-milestone">
 
@@ -62,12 +293,12 @@ From GitLab 13.6, users can [specify any runner configuration in the GitLab Runn
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
 ### GitLab Runner registration token in Runner Operator
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -77,56 +308,57 @@ The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operato
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
-### `POST /api/v4/runners` method to register runners
+### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
-This endpoint and method [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
-with a GitLab instance at the instance, group, or project level through the API. We plan to remove this endpoint
-and method in GitLab 16.0.
+The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
+This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
+with a GitLab instance at the instance, group, or project level through the API. We plan to remove the support for
+registration tokens and certain configuration arguments in this endpoint in GitLab 17.0.
 
 In GitLab 15.8, we plan to implement a new method to bind runners to a GitLab instance,
 as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
 This new architecture introduces a new method for registering runners and will eliminate the legacy
 [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
-From GitLab 16.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
+From GitLab 17.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
-### `gitlab-runner register` command
+### Registration tokens and server-side runner arguments in `gitlab-runner register` command
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The command to [register](https://docs.gitlab.com/runner/register/) a runner, `gitlab-runner register` is deprecated.
+The support for registration tokens and certain configuration arguments in the command to [register](https://docs.gitlab.com/runner/register/) a runner, `gitlab-runner register` is deprecated.
 GitLab plans to introduce a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/) in GitLab 15.8,
 which introduces a new method for registering runners and eliminates the legacy
 [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
-The new method will involve passing a [runner authentication token](https://docs.gitlab.com/ee/security/token_overview.html#runner-authentication-tokens-also-called-runner-tokens)
-to a new `gitlab-runner deploy` command.
+The new method will involve creating the runner in the GitLab UI and passing the
+[runner authentication token](https://docs.gitlab.com/ee/security/token_overview.html#runner-authentication-tokens-also-called-runner-tokens)
+to the `gitlab-runner register` command.
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
 ### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -136,9 +368,9 @@ The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernete
 
 As part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/), in GitLab 15.8 we plan to introduce:
 
-- A new method to bind runners to a GitLab instance.
+- A new method to bind runners to a GitLab instance leveraging `runnerToken`.
 - A unique system ID saved to the `config.toml`, which will ensure traceability between jobs and runners.
-From GitLab 16.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
+From GitLab 17.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
 
 </div>
 
@@ -165,7 +397,7 @@ The `merge_status` field in the [merge request API](https://docs.gitlab.com/ee/a
 
 ### File Type variable expansion in `.gitlab-ci.yml`
 
-Planned removal: GitLab <span class="removal-milestone">15.7</span> ()
+Planned removal: GitLab <span class="removal-milestone">15.7</span> (2022-12-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -269,7 +501,7 @@ GitLab's operational container scanning capabilities no longer require starboard
 
 ### Toggle behavior of `/draft` quick action in merge requests
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2022-05-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -904,7 +1136,7 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The feature flag `PUSH_RULES_SUPERSEDE_CODE_OWNERS` is being removed in GitLab 15.0. Upon its removal, push rules will supersede CODEOWNERS. The CODEOWNERS feature will no longer be available for access control.
+The feature flag `PUSH_RULES_SUPERSEDE_CODE_OWNERS` is being removed in GitLab 15.0. Upon its removal, push rules will supersede Code Owners. Even if Code Owner approval is required, a push rule that explicitly allows a specific user to push code supersedes the Code Owners setting.
 
 </div>
 
@@ -976,7 +1208,7 @@ To align with this change, API calls to list external status checks will also re
 
 ### GraphQL API Runner will not accept `status` filter values of `active` or `paused`
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -999,7 +1231,7 @@ status value can be used in place of `active` since GitLab 14.8.
 
 ### GraphQL ID and GlobalID compatibility
 
-Planned removal: GitLab <span class="removal-milestone">15.0</span> (2022-04-22)
+Planned removal: GitLab <span class="removal-milestone">15.0</span> (2022-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -1156,7 +1388,7 @@ The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTren
 
 ### REST and GraphQL API Runner usage of `active` replaced by `paused`
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -1481,7 +1713,7 @@ The new security approvals feature is similar to vulnerability check. For exampl
 
 ### `CI_BUILD_*` predefined variables
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -1945,7 +2177,7 @@ Administrators who need to add runners for multiple projects can register a runn
 
 ### GraphQL API Runner status will not return `paused`
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).

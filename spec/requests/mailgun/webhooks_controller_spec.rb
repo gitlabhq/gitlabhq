@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mailgun::WebhooksController do
+RSpec.describe Mailgun::WebhooksController, feature_category: :team_planning do
   let(:mailgun_signing_key) { 'abc123' }
   let(:valid_signature) do
     {

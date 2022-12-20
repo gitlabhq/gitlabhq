@@ -260,12 +260,7 @@ S-->>C: return Git response from primary
 
 ## Git push
 
-### Unified URLs
-
-With unified URLs, a push will redirect to a local path formatted as `/-/push_from_secondary/$SECONDARY_ID/*`. Further
-requests through this path will be proxied to the primary, which will handle the push.
-
-#### Git push over SSH
+### Git push over SSH
 
 As SSH operations go through GitLab Shell instead of Workhorse, they are not proxied through the mechanism used for
 Workhorse requests. With SSH operations, they are proxied as Git HTTP requests to the primary site by the secondary
@@ -293,7 +288,12 @@ I-->>S: <response>
 S-->>C: return Git response from primary
 ```
 
-#### Git push over HTTP(s)
+### Git push over HTTP(S)
+
+#### Git push over HTTP(S) unified URLs
+
+With unified URLs, a push redirects to a local path formatted as `/-/push_from_secondary/$SECONDARY_ID/*`. Further
+requests through this path are proxied to the primary, which will handle the push.
 
 ```mermaid
 sequenceDiagram
@@ -326,7 +326,7 @@ W-->>Wsec: Pipe messages to the Git client
 Wsec-->>C: Return piped messages from Git
 ```
 
-### Git push over HTTP with Separate URLs
+#### Git push over HTTP(S) with separate URLs
 
 With separate URLs, the secondary will redirect to a URL formatted like `$PRIMARY/-/push_from_secondary/$SECONDARY_ID/*`.
 

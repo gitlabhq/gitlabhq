@@ -52,4 +52,48 @@ RSpec.describe Admin::GroupsController do
       post :create, params: { group: { path: 'test', name: 'test' } }
     end
   end
+
+  describe 'PUT #update' do
+    subject(:update!) do
+      put :update, params: { id: group.to_param, group: { runner_registration_enabled: new_value } }
+    end
+
+    context 'with runner registration disabled' do
+      let(:runner_registration_enabled) { false }
+      let(:new_value) { '1' }
+
+      it 'updates the setting successfully' do
+        update!
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(group.reload.runner_registration_enabled).to eq(true)
+      end
+
+      it 'does not change the registration token' do
+        expect do
+          update!
+          group.reload
+        end.not_to change(group, :runners_token)
+      end
+    end
+
+    context 'with runner registration enabled' do
+      let(:runner_registration_enabled) { true }
+      let(:new_value) { '0' }
+
+      it 'updates the setting successfully' do
+        update!
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(group.reload.runner_registration_enabled).to eq(false)
+      end
+
+      it 'changes the registration token' do
+        expect do
+          update!
+          group.reload
+        end.to change(group, :runners_token)
+      end
+    end
+  end
 end

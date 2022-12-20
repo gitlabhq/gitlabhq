@@ -358,4 +358,22 @@ RSpec.describe Gitlab::Ci::CronParser do
       end
     end
   end
+
+  describe '#match?' do
+    let(:run_date) { Time.zone.local(2021, 3, 2, 1, 0) }
+
+    subject(:matched) { described_class.new(cron, Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE).match?(run_date) }
+
+    context 'when cron matches up' do
+      let(:cron) { '0 1 2 3 *' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when cron does not match' do
+      let(:cron) { '5 4 3 2 1' }
+
+      it { is_expected.to eq(false) }
+    end
+  end
 end

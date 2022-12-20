@@ -94,7 +94,7 @@ Use CI/CD environment variables to configure your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. Set the variable `BASE64_GOOGLE_CREDENTIALS` to the `base64` encoded JSON file you just created.
-1. Set the variable `TF_VAR_gcp_project` to your GCP's `project` name.
+1. Set the variable `TF_VAR_gcp_project` to your GCP `project` name.
 1. Set the variable `TF_VAR_agent_token` to the agent token displayed in the previous task.
 1. Set the variable `TF_VAR_kas_address` to the agent server address displayed in the previous task.
 

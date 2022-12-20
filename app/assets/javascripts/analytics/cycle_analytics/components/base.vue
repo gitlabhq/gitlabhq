@@ -1,0 +1,192 @@
+<script>
+import { GlLoadingIcon } from '@gitlab/ui';
+import { mapActions, mapState, mapGetters } from 'vuex';
+import { getCookie, setCookie } from '~/lib/utils/common_utils';
+import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
+import { VSA_METRICS_GROUPS } from '~/analytics/shared/constants';
+import { toYmd } from '~/analytics/shared/utils';
+import PathNavigation from '~/analytics/cycle_analytics/components/path_navigation.vue';
+import StageTable from '~/analytics/cycle_analytics/components/stage_table.vue';
+import ValueStreamFilters from '~/analytics/cycle_analytics/components/value_stream_filters.vue';
+import UrlSync from '~/vue_shared/components/url_sync.vue';
+import { __ } from '~/locale';
+import { SUMMARY_METRICS_REQUEST, METRICS_REQUESTS } from '../constants';
+
+const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
+
+export default {
+  name: 'CycleAnalytics',
+  components: {
+    GlLoadingIcon,
+    PathNavigation,
+    StageTable,
+    ValueStreamFilters,
+    ValueStreamMetrics,
+    UrlSync,
+  },
+  props: {
+    noDataSvgPath: {
+      type: String,
+      required: true,
+    },
+    noAccessSvgPath: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      isOverviewDialogDismissed: getCookie(OVERVIEW_DIALOG_COOKIE),
+    };
+  },
+  computed: {
+    ...mapState([
+      'isLoading',
+      'isLoadingStage',
+      'isEmptyStage',
+      'selectedStage',
+      'selectedStageEvents',
+      'selectedStageError',
+      'stageCounts',
+      'endpoints',
+      'features',
+      'createdBefore',
+      'createdAfter',
+      'pagination',
+      'hasNoAccessError',
+    ]),
+    ...mapGetters(['pathNavigationData', 'filterParams']),
+    isLoaded() {
+      return !this.isLoading && !this.isLoadingStage;
+    },
+    displayStageEvents() {
+      const { selectedStageEvents, isLoadingStage, isEmptyStage } = this;
+      return selectedStageEvents.length && !isLoadingStage && !isEmptyStage;
+    },
+    displayNotEnoughData() {
+      return !this.isLoadingStage && this.isEmptyStage;
+    },
+    displayNoAccess() {
+      return !this.isLoadingStage && this.hasNoAccessError;
+    },
+    displayPathNavigation() {
+      return this.isLoading || (this.selectedStage && this.pathNavigationData.length);
+    },
+    emptyStageTitle() {
+      if (this.displayNoAccess) {
+        return __('You need permission.');
+      }
+      return this.selectedStageError
+        ? this.selectedStageError
+        : __("We don't have enough data to show this stage.");
+    },
+    emptyStageText() {
+      if (this.displayNoAccess) {
+        return __('Want to see the data? Please ask an administrator for access.');
+      }
+      return !this.selectedStageError && this.selectedStage?.emptyStageText
+        ? this.selectedStage?.emptyStageText
+        : '';
+    },
+    selectedStageCount() {
+      if (this.selectedStage) {
+        const {
+          stageCounts,
+          selectedStage: { id },
+        } = this;
+        return stageCounts[id];
+      }
+      return 0;
+    },
+    metricsRequests() {
+      return this.features?.cycleAnalyticsForGroups ? METRICS_REQUESTS : SUMMARY_METRICS_REQUEST;
+    },
+    query() {
+      return {
+        created_after: toYmd(this.createdAfter),
+        created_before: toYmd(this.createdBefore),
+        stage_id: this.selectedStage?.id || null,
+        sort: this.pagination?.sort || null,
+        direction: this.pagination?.direction || null,
+        page: this.pagination?.page || null,
+      };
+    },
+  },
+  methods: {
+    ...mapActions([
+      'fetchStageData',
+      'setSelectedStage',
+      'setDateRange',
+      'updateStageTablePagination',
+    ]),
+    onSetDateRange({ startDate, endDate }) {
+      this.setDateRange({
+        createdAfter: new Date(startDate),
+        createdBefore: new Date(endDate),
+      });
+    },
+    onSelectStage(stage) {
+      this.setSelectedStage(stage);
+      this.updateStageTablePagination({ ...this.pagination, page: 1 });
+    },
+    dismissOverviewDialog() {
+      this.isOverviewDialogDismissed = true;
+      setCookie(OVERVIEW_DIALOG_COOKIE, '1');
+    },
+    onHandleUpdatePagination(data) {
+      this.updateStageTablePagination(data);
+    },
+  },
+  dayRangeOptions: [7, 30, 90],
+  i18n: {
+    dropdownText: __('Last %{days} days'),
+    pageTitle: __('Value Stream Analytics'),
+    recentActivity: __('Recent Project Activity'),
+  },
+  VSA_METRICS_GROUPS,
+};
+</script>
+<template>
+  <div>
+    <h3>{{ $options.i18n.pageTitle }}</h3>
+    <value-stream-filters
+      :group-id="endpoints.groupId"
+      :group-path="endpoints.groupPath"
+      :has-project-filter="false"
+      :start-date="createdAfter"
+      :end-date="createdBefore"
+      @setDateRange="onSetDateRange"
+    />
+    <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row">
+      <path-navigation
+        v-if="displayPathNavigation"
+        data-testid="vsa-path-navigation"
+        class="gl-w-full gl-mt-4"
+        :loading="isLoading || isLoadingStage"
+        :stages="pathNavigationData"
+        :selected-stage="selectedStage"
+        @selected="onSelectStage"
+      />
+    </div>
+    <value-stream-metrics
+      :request-path="endpoints.fullPath"
+      :request-params="filterParams"
+      :requests="metricsRequests"
+      :group-by="$options.VSA_METRICS_GROUPS"
+    />
+    <gl-loading-icon v-if="isLoading" size="lg" />
+    <stage-table
+      v-else
+      :is-loading="isLoading || isLoadingStage"
+      :stage-events="selectedStageEvents"
+      :selected-stage="selectedStage"
+      :stage-count="selectedStageCount"
+      :empty-state-title="emptyStageTitle"
+      :empty-state-message="emptyStageText"
+      :no-data-svg-path="noDataSvgPath"
+      :pagination="pagination"
+      @handleUpdatePagination="onHandleUpdatePagination"
+    />
+    <url-sync v-if="isLoaded" :query="query" />
+  </div>
+</template>

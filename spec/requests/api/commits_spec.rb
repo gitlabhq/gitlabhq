@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-RSpec.describe API::Commits do
+RSpec.describe API::Commits, feature_category: :source_code_management do
   include ProjectForksHelper
   include SessionHelpers
 
@@ -492,11 +492,31 @@ RSpec.describe API::Commits do
           subject
         end
 
-        it_behaves_like 'Snowplow event tracking' do
-          let(:namespace) { project.namespace }
-          let(:category) { 'ide_edit' }
-          let(:action) { 'g_edit_by_web_ide' }
+        it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+          let(:namespace) { project.namespace.reload }
+          let(:category) { 'Gitlab::UsageDataCounters::EditorUniqueCounter' }
+          let(:action) { 'ide_edit' }
+          let(:property) { 'g_edit_by_web_ide' }
+          let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit' }
+          let(:context) { [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context] }
           let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        end
+
+        context 'counts.web_ide_commits Snowplow event tracking' do
+          before do
+            allow(::Gitlab::UsageDataCounters::EditorUniqueCounter).to receive(:track_web_ide_edit_action)
+          end
+
+          it_behaves_like 'Snowplow event tracking' do
+            let(:action) { :commit }
+            let(:category) { described_class.to_s }
+            let(:namespace) { project.namespace.reload }
+            let(:label) { 'counts.web_ide_commits' }
+            let(:feature_flag_name) { 'route_hll_to_snowplow_phase3' }
+            let(:context) do
+              [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: 'counts.web_ide_commits').to_context.to_json]
+            end
+          end
         end
       end
 
@@ -2206,7 +2226,7 @@ RSpec.describe API::Commits do
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/signature' do
-    let!(:project) { create(:project, :repository, :public) }
+    let_it_be(:project) { create(:project, :repository, :public) }
     let(:project_id) { project.id }
     let(:commit_id) { project.repository.commit.id }
     let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/signature" }
@@ -2228,7 +2248,7 @@ RSpec.describe API::Commits do
     end
 
     context 'gpg signed commit' do
-      let(:commit) { project.repository.commit(GpgHelpers::SIGNED_COMMIT_SHA) }
+      let!(:commit) { project.commit(GpgHelpers::SIGNED_COMMIT_SHA) }
       let(:commit_id) { commit.id }
 
       it 'returns correct JSON' do
@@ -2244,8 +2264,8 @@ RSpec.describe API::Commits do
     end
 
     context 'x509 signed commit' do
-      let(:commit) { project.repository.commit_by(oid: '189a6c924013fc3fe40d6f1ec1dc20214183bc97') }
-      let(:commit_id) { commit.id }
+      let(:commit_id) { '189a6c924013fc3fe40d6f1ec1dc20214183bc97' }
+      let!(:commit) { project.commit(commit_id) }
 
       it 'returns correct JSON' do
         get api(route, current_user)
@@ -2273,6 +2293,60 @@ RSpec.describe API::Commits do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['signature_type']).to eq('PGP')
           expect(json_response['commit_source']).to eq('rugged')
+        end
+      end
+    end
+
+    context 'with ssh signed commit' do
+      let(:commit_id) { '7b5160f9bb23a3d58a0accdbe89da13b96b1ece9' }
+      let!(:commit) { project.commit(commit_id) }
+
+      context 'when key belonging to author does not exist' do
+        it 'returns data without key' do
+          get api(route, current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['signature_type']).to eq('SSH')
+          expect(json_response['verification_status']).to eq(commit.signature.verification_status)
+          expect(json_response['key']).to be_nil
+          expect(json_response['commit_source']).to eq('gitaly')
+        end
+      end
+
+      context 'when key belonging to author exists' do
+        let(:user) { create(:user, email: commit.committer_email) }
+        let!(:key) { create(:key, user: user, key: extract_public_key_from_commit(commit), expires_at: 2.days.from_now) }
+
+        def extract_public_key_from_commit(commit)
+          ssh_commit = Gitlab::Ssh::Commit.new(commit)
+          signature_data = ::SSHData::Signature.parse_pem(ssh_commit.signature_text)
+          signature_data.public_key.openssh
+        end
+
+        it 'returns data including key' do
+          get api(route, current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['signature_type']).to eq('SSH')
+          expect(json_response['verification_status']).to eq(commit.signature.verification_status)
+          expect(json_response['key']['id']).to eq(key.id)
+          expect(json_response['key']['title']).to eq(key.title)
+          expect(json_response['key']['key']).to eq(key.publishable_key)
+          expect(Time.parse(json_response['key']['created_at'])).to be_like_time(key.created_at)
+          expect(Time.parse(json_response['key']['expires_at'])).to be_like_time(key.expires_at)
+          expect(json_response['commit_source']).to eq('gitaly')
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(ssh_commit_signatures: false)
+        end
+
+        it 'returns 404' do
+          get api(route, current_user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

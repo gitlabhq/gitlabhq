@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Promotions', :js do
+RSpec.describe 'Promotions', :js, feature_category: :service_desk do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project_empty_repo) }
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GitRefsFinder
+  include Gitlab::Utils::StrongMemoize
+
   def initialize(repository, params = {})
     @repository = repository
     @params = params
@@ -10,44 +12,28 @@ class GitRefsFinder
 
   attr_reader :repository, :params
 
+  def by_search(refs)
+    return refs unless search
+
+    matches = filter_refs(refs, search)
+    return matches if regex_search?
+
+    set_exact_match_as_first_result(matches, search)
+  end
+
   def search
     @params[:search].to_s.presence
   end
+  strong_memoize_attr :search
 
   def sort
     @params[:sort].to_s.presence || 'name'
   end
 
-  def by_search(refs)
-    return refs unless search
-
-    case search
-    when ->(v) { v.starts_with?('^') }
-      filter_refs_with_prefix(refs, search.slice(1..-1))
-    when ->(v) { v.ends_with?('$') }
-      filter_refs_with_suffix(refs, search.chop)
-    else
-      matches = filter_refs_by_name(refs, search)
-      set_exact_match_as_first_result(matches, search)
-    end
-  end
-
-  def filter_refs_with_prefix(refs, prefix)
-    prefix = prefix.downcase
-
-    refs.select { |ref| ref.name.downcase.starts_with?(prefix) }
-  end
-
-  def filter_refs_with_suffix(refs, suffix)
-    suffix = suffix.downcase
-
-    refs.select { |ref| ref.name.downcase.ends_with?(suffix) }
-  end
-
-  def filter_refs_by_name(refs, term)
-    term = term.downcase
-
-    refs.select { |ref| ref.name.downcase.include?(term) }
+  def filter_refs(refs, term)
+    regex_string = Regexp.quote(term.downcase)
+    regex_string = unescape_regex_operators(regex_string) if regex_search?
+    refs.select { |ref| /#{regex_string}/ === ref.name.downcase }
   end
 
   def set_exact_match_as_first_result(matches, term)
@@ -58,5 +44,14 @@ class GitRefsFinder
 
   def find_exact_match_index(matches, term)
     matches.index { |ref| ref.name.casecmp(term) == 0 }
+  end
+
+  def regex_search?
+    Regexp.union('^', '$', '*') === search
+  end
+  strong_memoize_attr :regex_search?, :regex_search
+
+  def unescape_regex_operators(regex_string)
+    regex_string.sub('\^', '^').gsub('\*', '.*?').sub('\$', '$')
   end
 end

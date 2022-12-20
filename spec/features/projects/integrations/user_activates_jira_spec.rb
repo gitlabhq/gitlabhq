@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User activates Jira', :js do
+RSpec.describe 'User activates Jira', :js, feature_category: :integrations do
   include_context 'project integration activation'
   include_context 'project integration Jira context'
 

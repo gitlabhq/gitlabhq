@@ -27,7 +27,6 @@ class ObjectStoreSettings
     )
 
     object_store['direct_upload'] = true
-    object_store['background_upload'] = false
 
     object_store['proxy_download'] = false if object_store['proxy_download'].nil?
     object_store['storage_options'] ||= {}
@@ -97,7 +96,6 @@ class ObjectStoreSettings
   #     "server_side_encryption" => "AES256"
   #   },
   #   "direct_upload" => true,
-  #   "background_upload" => false,
   #   "proxy_download" => false,
   #   "remote_directory" => "artifacts"
   # }
@@ -116,7 +114,6 @@ class ObjectStoreSettings
   #     "server_side_encryption" => "AES256"
   #   },
   #   "direct_upload" => true,
-  #   "background_upload" => false,
   #   "proxy_download" => true,
   #   "remote_directory" => "lfs-objects"
   # }
@@ -128,7 +125,7 @@ class ObjectStoreSettings
   # 2. However, a bucket has to be specified for each object
   #    type. Reusing buckets is not really supported, but we don't
   #    enforce that yet.
-  # 3. direct_upload and background_upload cannot be configured anymore.
+  # 3. direct_upload cannot be configured anymore.
   def parse!
     return unless use_consolidated_settings?
 
@@ -138,7 +135,6 @@ class ObjectStoreSettings
     common_config['connection']&.deep_stringify_keys!
     # These are no longer configurable if common config is used
     common_config['direct_upload'] = true
-    common_config['background_upload'] = false
     common_config['storage_options'] ||= {}
 
     SUPPORTED_TYPES.each do |store_type|

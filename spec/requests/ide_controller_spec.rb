@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IdeController do
+RSpec.describe IdeController, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:reporter) { create(:user) }
@@ -21,7 +21,20 @@ RSpec.describe IdeController do
   let(:user) { creator }
   let(:branch) { '' }
 
+  def find_csp_frame_src
+    csp = response.headers['Content-Security-Policy']
+
+    # Transform "frame-src foo bar; connect-src foo bar; script-src ..."
+    # into array of connect-src values
+    csp.split(';')
+      .map(&:strip)
+      .find { |entry| entry.starts_with?('frame-src') }
+      .split(' ')
+      .drop(1)
+  end
+
   before do
+    stub_feature_flags(vscode_web_ide: true)
     sign_in(user)
   end
 
@@ -263,6 +276,18 @@ RSpec.describe IdeController do
             end
           end
         end
+      end
+    end
+
+    describe 'frame-src content security policy' do
+      let(:route) { '/-/ide' }
+
+      before do
+        subject
+      end
+
+      it 'adds https://*.vscode-cdn.net in frame-src CSP policy' do
+        expect(find_csp_frame_src).to include("https://*.vscode-cdn.net/")
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upload a design through graphQL', :js do
+RSpec.describe 'Upload a design through graphQL', :js, feature_category: :design_management do
   include_context 'file upload requests helpers'
 
   let_it_be(:query) do

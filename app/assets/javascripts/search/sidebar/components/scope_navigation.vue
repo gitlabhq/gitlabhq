@@ -1,15 +1,23 @@
 <script>
-import { GlNav, GlNavItem } from '@gitlab/ui';
+import { GlNav, GlNavItem, GlIcon } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
-import { formatNumber } from '~/locale';
+import { formatNumber, s__ } from '~/locale';
 import Tracking from '~/tracking';
-import { NAV_LINK_DEFAULT_CLASSES, NUMBER_FORMATING_OPTIONS } from '../constants';
+import {
+  NAV_LINK_DEFAULT_CLASSES,
+  NUMBER_FORMATING_OPTIONS,
+  NAV_LINK_COUNT_DEFAULT_CLASSES,
+} from '../constants';
 
 export default {
   name: 'ScopeNavigation',
+  i18n: {
+    countOverLimitLabel: s__('GlobalSearch|Result count is over limit.'),
+  },
   components: {
     GlNav,
     GlNavItem,
+    GlIcon,
   },
   mixins: [Tracking.mixin()],
   computed: {
@@ -20,9 +28,6 @@ export default {
   },
   methods: {
     ...mapActions(['fetchSidebarCount']),
-    activeClasses(currentScope) {
-      return currentScope === this.urlQuery.scope ? 'gl-font-weight-bold' : '';
-    },
     showFormatedCount(count) {
       if (!count) {
         return '0';
@@ -30,17 +35,27 @@ export default {
       const countNumber = parseInt(count.replace(/,/g, ''), 10);
       return formatNumber(countNumber, NUMBER_FORMATING_OPTIONS);
     },
+    isCountOverLimit(count) {
+      return count.includes('+');
+    },
     handleClick(scope) {
       this.track('click_menu_item', { label: `vertical_navigation_${scope}` });
     },
-    linkClasses(scope) {
+    linkClasses(isHighlighted) {
+      return [...this.$options.NAV_LINK_DEFAULT_CLASSES, { 'gl-font-weight-bold': isHighlighted }];
+    },
+    countClasses(isHighlighted) {
       return [
-        { 'gl-font-weight-bold': scope === this.urlQuery.scope },
-        ...this.$options.NAV_LINK_DEFAULT_CLASSES,
+        ...this.$options.NAV_LINK_COUNT_DEFAULT_CLASSES,
+        isHighlighted ? 'gl-text-gray-900' : 'gl-text-gray-500',
       ];
+    },
+    isActive(scope, index) {
+      return this.urlQuery.scope ? this.urlQuery.scope === scope : index === 0;
     },
   },
   NAV_LINK_DEFAULT_CLASSES,
+  NAV_LINK_COUNT_DEFAULT_CLASSES,
 };
 </script>
 
@@ -50,14 +65,20 @@ export default {
       <gl-nav-item
         v-for="(item, scope, index) in navigation"
         :key="scope"
-        :link-classes="linkClasses(scope)"
+        :link-classes="linkClasses(isActive(scope, index))"
         class="gl-mb-1"
         :href="item.link"
-        :active="urlQuery.scope ? urlQuery.scope === scope : index === 0"
+        :active="isActive(scope, index)"
         @click="handleClick(scope)"
         ><span>{{ item.label }}</span
-        ><span v-if="item.count" class="gl-font-sm gl-font-weight-normal">
-          {{ showFormatedCount(item.count) }}
+        ><span v-if="item.count" :class="countClasses(isActive(scope, index))">
+          {{ showFormatedCount(item.count)
+          }}<gl-icon
+            v-if="isCountOverLimit(item.count)"
+            name="plus"
+            :aria-label="$options.i18n.countOverLimitLabel"
+            :size="8"
+          />
         </span>
       </gl-nav-item>
     </gl-nav>

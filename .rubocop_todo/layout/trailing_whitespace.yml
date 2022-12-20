@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Layout/TrailingWhitespace:
   Exclude:
     - 'app/models/concerns/analytics/cycle_analytics/stage_event_model.rb'
@@ -9,7 +9,6 @@ Layout/TrailingWhitespace:
     - 'lib/gitlab/background_migration/fix_duplicate_project_name_and_path.rb'
     - 'lib/gitlab/background_migration/populate_topics_non_private_projects_count.rb'
     - 'lib/gitlab/pagination/keyset/sql_type_missing_error.rb'
-    - 'qa/qa/specs/features/browser_ui/7_configure/auto_devops/create_project_with_auto_devops_spec.rb'
     - 'spec/lib/banzai/filter/front_matter_filter_spec.rb'
     - 'spec/services/suggestions/apply_service_spec.rb'
     - 'spec/support/helpers/x509_helpers.rb'

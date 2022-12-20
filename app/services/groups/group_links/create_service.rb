@@ -2,7 +2,7 @@
 
 module Groups
   module GroupLinks
-    class CreateService < Groups::BaseService
+    class CreateService < ::Groups::BaseService
       include GroupLinkable
 
       def initialize(group, shared_with_group, user, params)

@@ -8,6 +8,7 @@ class SearchController < ApplicationController
   include SearchRateLimitable
 
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete, :aggregations].freeze
+  CODE_SEARCH_LITERALS = %w[blob: extension: path: filename:].freeze
 
   track_custom_event :show,
               name: 'i_search_total',
@@ -32,7 +33,10 @@ class SearchController < ApplicationController
   before_action only: :show do
     push_frontend_feature_flag(:search_page_vertical_nav, current_user)
   end
-
+  before_action only: :show do
+    update_scope_for_code_search
+  end
+  before_action :elasticsearch_in_use, only: :show
   rescue_from ActiveRecord::QueryCanceled, with: :render_timeout
 
   layout 'search'
@@ -43,6 +47,7 @@ class SearchController < ApplicationController
   def show
     @project = search_service.project
     @group = search_service.group
+    @search_service = Gitlab::View::Presenter::Factory.new(search_service, current_user: current_user).fabricate!
 
     return unless search_term_valid?
 
@@ -51,15 +56,11 @@ class SearchController < ApplicationController
     @search_term = params[:search]
     @sort = params[:sort] || default_sort
 
-    @search_service = Gitlab::View::Presenter::Factory.new(search_service, current_user: current_user).fabricate!
-
     @search_level = @search_service.level
     @search_type = search_type
 
     @global_search_duration_s = Benchmark.realtime do
       @scope = @search_service.scope
-      @without_count = @search_service.without_count?
-      @show_snippets = @search_service.show_snippets?
       @search_results = @search_service.search_results
       @search_objects = @search_service.search_objects
       @search_highlight = @search_service.search_highlight
@@ -118,7 +119,21 @@ class SearchController < ApplicationController
   def opensearch
   end
 
+  def elasticsearch_in_use
+    search_service.respond_to?(:use_elasticsearch?) && search_service.use_elasticsearch?
+  end
+  strong_memoize_attr :elasticsearch_in_use
+
   private
+
+  def update_scope_for_code_search
+    return if params[:scope] == 'blobs'
+    return unless params[:search].present?
+
+    if CODE_SEARCH_LITERALS.any? { |literal| literal.in? params[:search] }
+      redirect_to search_path(safe_params.except(:controller, :action).merge(scope: 'blobs'))
+    end
+  end
 
   # overridden in EE
   def default_sort

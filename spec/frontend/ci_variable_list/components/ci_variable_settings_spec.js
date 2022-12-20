@@ -17,26 +17,25 @@ describe('Ci variable table', () => {
 
   const defaultProps = {
     areScopedVariablesAvailable: true,
+    entity: 'project',
     environments: mapEnvironmentNames(mockEnvs),
     hideEnvironmentScope: false,
     isLoading: false,
+    maxVariableLimit: 5,
     variables: mockVariablesWithScopes(projectString),
   };
 
   const findCiVariableTable = () => wrapper.findComponent(ciVariableTable);
   const findCiVariableModal = () => wrapper.findComponent(ciVariableModal);
 
-  const createComponent = () => {
+  const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMount(CiVariableSettings, {
       propsData: {
         ...defaultProps,
+        ...props,
       },
     });
   };
-
-  beforeEach(() => {
-    createComponent();
-  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -44,13 +43,19 @@ describe('Ci variable table', () => {
 
   describe('props passing', () => {
     it('passes props down correctly to the ci table', () => {
+      createComponent();
+
       expect(findCiVariableTable().props()).toEqual({
+        entity: 'project',
         isLoading: defaultProps.isLoading,
+        maxVariableLimit: defaultProps.maxVariableLimit,
         variables: defaultProps.variables,
       });
     });
 
     it('passes props down correctly to the ci modal', async () => {
+      createComponent();
+
       findCiVariableTable().vm.$emit('set-selected-variable');
       await nextTick();
 
@@ -66,6 +71,10 @@ describe('Ci variable table', () => {
   });
 
   describe('modal mode', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('passes down ADD mode when receiving an empty variable', async () => {
       findCiVariableTable().vm.$emit('set-selected-variable');
       await nextTick();
@@ -82,6 +91,10 @@ describe('Ci variable table', () => {
   });
 
   describe('variable modal', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('is hidden by default', () => {
       expect(findCiVariableModal().exists()).toBe(false);
     });
@@ -112,6 +125,10 @@ describe('Ci variable table', () => {
   });
 
   describe('variable events', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it.each`
       eventName
       ${'add-variable'}

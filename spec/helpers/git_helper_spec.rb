@@ -15,11 +15,13 @@ RSpec.describe GitHelper do
 
       it { expect(strip_signature).to eq("Version 1.69.0\n\n") }
     end
+
     context 'strips PGP MESSAGE' do
       let(:strip_signature) { helper.strip_signature( pgp_message_tag ) }
 
       it { expect(strip_signature).to eq("Version 1.69.0\n\n") }
     end
+
     context 'strips SIGNED MESSAGE' do
       let(:strip_signature) { helper.strip_signature( x509_message_tag ) }
 

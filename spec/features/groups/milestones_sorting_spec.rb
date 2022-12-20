@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Milestones sorting', :js do
+RSpec.describe 'Milestones sorting', :js, feature_category: :team_planning do
   let(:group) { create(:group) }
   let!(:project) { create(:project_empty_repo, group: group) }
   let!(:other_project) { create(:project_empty_repo, group: group) }

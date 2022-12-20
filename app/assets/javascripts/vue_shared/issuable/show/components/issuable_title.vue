@@ -1,12 +1,6 @@
 <script>
-import {
-  GlIcon,
-  GlBadge,
-  GlButton,
-  GlIntersectionObserver,
-  GlTooltipDirective,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlIcon, GlBadge, GlButton, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
 import { IssuableStates } from '~/vue_shared/issuable/list/constants';
 

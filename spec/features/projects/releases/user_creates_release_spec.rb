@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User creates release', :js do
+RSpec.describe 'User creates release', :js, feature_category: :continuous_delivery do
   include Spec::Support::Helpers::Features::ReleasesHelpers
 
   let_it_be(:project) { create(:project, :repository) }

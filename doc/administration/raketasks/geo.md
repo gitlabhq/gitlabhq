@@ -4,7 +4,7 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo Rake Tasks **(PREMIUM SELF)**
+# Geo Rake tasks **(PREMIUM SELF)**
 
 The following Rake tasks are for [Geo installations](../geo/index.md).
 See also [troubleshooting Geo](../geo/replication/troubleshooting.md) for additional Geo Rake tasks.

@@ -49,6 +49,8 @@ health check manually to get this information and a few more details.
 
 #### Health check Rake task
 
+> The use of a custom NTP server was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105514) in GitLab 15.7.
+
 This Rake task can be run on a **Rails** node in the **primary** or **secondary**
 Geo sites:
 
@@ -79,6 +81,22 @@ All projects are in hashed storage? ... yes
 
 Checking Geo ... Finished
 ```
+
+You can also specify a custom NTP server using environment variables. For example:
+
+```shell
+export NTP_HOST="ntp.ubuntu.com"
+export NTP_TIMEOUT="30"
+sudo gitlab-rake gitlab:geo:check
+```
+
+The following environment variables are supported.
+
+| Variable    | Description | Default value |
+| ----------- | ----------- | ------------- |
+|`NTP_HOST`   | The NTP host. | `pool.ntp.org` |
+|`NTP_PORT`   | The NTP port the host listens on. |`ntp`|
+|`NTP_TIMEOUT`| The NTP timeout in seconds. | The value defined in the `net-ntp` Ruby library ([60 seconds](https://github.com/zencoder/net-ntp/blob/3d0990214f439a5127782e0f50faeaf2c8ca7023/lib/net/ntp/ntp.rb#L6)). |
 
 #### Sync status Rake task
 
@@ -204,7 +222,7 @@ Commands that change data can cause damage if not run correctly or under the rig
    ```
 
 1. This will cause the primary to start checksumming all Uploads.
-1. When a primary successfully checksums a record, then all secondaries rechecksum as well, and they compare the values.
+1. When a primary successfully checksums a record, then all secondaries recalculate the checksum as well, and they compare the values.
 
 A similar thing can be done for all Models handled by the [Geo Self-Service Framework](../../../development/geo/framework.md) which have implemented verification:
 
@@ -1335,7 +1353,7 @@ status
    ```
 
 1. This will cause the primary to start checksumming all Uploads.
-1. When a primary successfully checksums a record, then all secondaries rechecksum as well, and they compare the values.
+1. When a primary successfully checksums a record, then all secondaries recalculate the checksum as well, and they compare the values.
 
 For other SSF data types replace `Upload` in the command above with the desired model class.
 
@@ -1476,7 +1494,7 @@ Failed to contact primary https://primary.domain.com/namespace/push_test.git\\nE
 
 The partial failover to a secondary Geo *site* may be the result of a temporary/transient issue. Therefore, first attempt to run the promote command again.
 
-1. SSH into every Sidekiq, PostgresSQL, Gitaly, and Rails node in the **secondary** site and run one of the following commands:
+1. SSH into every Sidekiq, PostgreSQL, Gitaly, and Rails node in the **secondary** site and run one of the following commands:
 
    - To promote the secondary site to primary:
 
@@ -1495,7 +1513,7 @@ The partial failover to a secondary Geo *site* may be the result of a temporary/
 
 If the above steps are **not successful**, proceed through the next steps:
 
-1. SSH to every Sidekiq, PostgresSQL, Gitaly and Rails node in the **secondary** site and perform the following operations:
+1. SSH to every Sidekiq, PostgreSQL, Gitaly and Rails node in the **secondary** site and perform the following operations:
 
    - Create a `/etc/gitlab/gitlab-cluster.json` file with the following content:
 

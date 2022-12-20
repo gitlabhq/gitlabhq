@@ -1,6 +1,7 @@
 <script>
-import { GlSkeletonLoader, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import { getDiffMode } from '~/diffs/store/utils';

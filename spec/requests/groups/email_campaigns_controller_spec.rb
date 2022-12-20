@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::EmailCampaignsController do
+RSpec.describe Groups::EmailCampaignsController, feature_category: :navigation do
   using RSpec::Parameterized::TableSyntax
 
   describe 'GET #index', :snowplow do

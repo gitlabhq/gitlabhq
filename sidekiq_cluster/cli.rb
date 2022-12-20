@@ -31,8 +31,9 @@ module Gitlab
       CommandError = Class.new(StandardError)
 
       def initialize(log_output = $stderr)
-        # As recommended by https://github.com/mperham/sidekiq/wiki/Advanced-Options#concurrency
-        @max_concurrency = 50
+        # https://github.com/mperham/sidekiq/wiki/Advanced-Options#concurrency
+        # https://ruby.social/@getajobmike/109326475545816363
+        @max_concurrency = 20
         @min_concurrency = 0
         @environment = ENV['RAILS_ENV'] || 'development'
         @metrics_dir = ENV["prometheus_multiproc_dir"] || File.absolute_path("tmp/prometheus_multiproc_dir/sidekiq")
@@ -111,7 +112,7 @@ module Gitlab
       end
 
       def start_and_supervise_workers(queue_groups)
-        worker_pids = SidekiqCluster.start(
+        wait_threads = SidekiqCluster.start(
           queue_groups,
           env: @environment,
           directory: @rails_path,
@@ -134,6 +135,7 @@ module Gitlab
         )
 
         metrics_server_pid = start_metrics_server
+        worker_pids = wait_threads.map(&:pid)
         supervisor.supervise(worker_pids + Array(metrics_server_pid)) do |dead_pids|
           # If we're not in the process of shutting down the cluster,
           # and the metrics server died, restart it.
@@ -148,6 +150,13 @@ module Gitlab
             []
           end
         end
+
+        exit_statuses = wait_threads.map do |thread|
+          thread.join
+          thread.value
+        end
+
+        exit 1 unless exit_statuses.compact.all?(&:success?)
       end
 
       def start_metrics_server

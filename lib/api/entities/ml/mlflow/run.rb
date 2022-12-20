@@ -9,7 +9,8 @@ module API
             expose :itself, using: RunInfo, as: :info
             expose :data do
               expose :metrics, using: Metric
-              expose :params, using: RunParam
+              expose :params, using: KeyValue
+              expose :metadata, as: :tags, using: KeyValue
             end
           end
         end

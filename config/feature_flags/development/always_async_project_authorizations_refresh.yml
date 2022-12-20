@@ -1,8 +1,0 @@
----
-name: always_async_project_authorizations_refresh
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92333
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/367683
-milestone: '15.3'
-type: development
-group: group::workspace
-default_enabled: true

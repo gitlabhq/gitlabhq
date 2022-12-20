@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting namespace package settings in a namespace' do
+RSpec.describe 'getting namespace package settings in a namespace', feature_category: :package_registry do
   include GraphqlHelpers
 
   let_it_be(:package_settings) { create(:namespace_package_setting) }

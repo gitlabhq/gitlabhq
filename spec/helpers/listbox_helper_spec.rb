@@ -30,7 +30,7 @@ RSpec.describe ListboxHelper do
         *%w[
           dropdown
           b-dropdown
-          gl-new-dropdown
+          gl-dropdown
           btn-group
           js-redirect-listbox
         ])

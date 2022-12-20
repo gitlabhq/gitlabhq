@@ -44,7 +44,7 @@ module CommitSignature
     project.commit(commit_sha)
   end
 
-  def user
-    commit.committer
+  def signed_by_user
+    raise NoMethodError, 'must implement `signed_by_user` method'
   end
 end

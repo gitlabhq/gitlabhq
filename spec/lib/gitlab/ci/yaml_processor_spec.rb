@@ -870,6 +870,69 @@ module Gitlab
             end
           end
         end
+
+        describe "hooks" do
+          context 'when it is a simple script' do
+            let(:config) do
+              {
+                test: { script: ["script"],
+                        hooks: { pre_get_sources_script: ["echo 1", "echo 2", "pwd"] } }
+              }
+            end
+
+            it "returns hooks in options" do
+              expect(subject[:options][:hooks]).to eq(
+                { pre_get_sources_script: ["echo 1", "echo 2", "pwd"] }
+              )
+            end
+          end
+
+          context 'when it is nested arrays of strings' do
+            let(:config) do
+              {
+                test: { script: ["script"],
+                        hooks: { pre_get_sources_script: [[["global script"], "echo 1"], "echo 2", ["ls"], "pwd"] } }
+              }
+            end
+
+            it "returns hooks in options" do
+              expect(subject[:options][:hooks]).to eq(
+                { pre_get_sources_script: ["global script", "echo 1", "echo 2", "ls", "pwd"] }
+              )
+            end
+          end
+
+          context 'when receiving from the default' do
+            let(:config) do
+              {
+                default: { hooks: { pre_get_sources_script: ["echo 1", "echo 2", "pwd"] } },
+                test: { script: ["script"] }
+              }
+            end
+
+            it "inherits hooks" do
+              expect(subject[:options][:hooks]).to eq(
+                { pre_get_sources_script: ["echo 1", "echo 2", "pwd"] }
+              )
+            end
+          end
+
+          context 'when overriding the default' do
+            let(:config) do
+              {
+                default: { hooks: { pre_get_sources_script: ["echo 1", "echo 2", "pwd"] } },
+                test: { script: ["script"],
+                        hooks: { pre_get_sources_script: ["echo 3", "echo 4", "pwd"] } }
+              }
+            end
+
+            it "overrides hooks" do
+              expect(subject[:options][:hooks]).to eq(
+                { pre_get_sources_script: ["echo 3", "echo 4", "pwd"] }
+              )
+            end
+          end
+        end
       end
 
       describe "Image and service handling" do
@@ -2883,7 +2946,7 @@ module Gitlab
         context 'returns errors if job artifacts:when is not an a predefined value' do
           let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", artifacts: { when: 1 } } }) }
 
-          it_behaves_like 'returns errors', 'jobs:rspec:artifacts when should be on_success, on_failure or always'
+          it_behaves_like 'returns errors', 'jobs:rspec:artifacts when should be one of: on_success, on_failure, always'
         end
 
         context 'returns errors if job artifacts:expire_in is not an a string' do

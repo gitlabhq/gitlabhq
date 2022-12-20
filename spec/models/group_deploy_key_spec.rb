@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe GroupDeployKey do
+  let_it_be(:group) { create(:group) }
+  let_it_be(:group_deploy_key) { create(:group_deploy_key) }
+
   it { is_expected.to validate_presence_of(:user) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to have_many(:groups) }
-
-  let_it_be(:group_deploy_key) { create(:group_deploy_key) }
-  let_it_be(:group) { create(:group) }
 
   it 'is of type DeployKey' do
     expect(build(:group_deploy_key).type).to eq('DeployKey')
@@ -27,6 +27,12 @@ RSpec.describe GroupDeployKey do
 
     context 'when this group deploy key is not linked to a given group' do
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '.defined_enums' do
+    it 'excludes the inherited enum' do
+      expect(described_class.defined_enums).to eq({})
     end
   end
 

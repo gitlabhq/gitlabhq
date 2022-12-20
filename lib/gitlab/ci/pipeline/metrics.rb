@@ -9,7 +9,8 @@ module Gitlab
         def self.pipeline_creation_duration_histogram
           name = :gitlab_ci_pipeline_creation_duration_seconds
           comment = 'Pipeline creation duration'
-          labels = {}
+          # @gitlab: boolean value - if project is gitlab-org/gitlab
+          labels = { gitlab: false }
           buckets = [0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 20.0, 50.0, 240.0]
 
           ::Gitlab::Metrics.histogram(name, comment, labels, buckets)

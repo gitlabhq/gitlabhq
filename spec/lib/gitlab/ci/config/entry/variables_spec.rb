@@ -116,8 +116,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variables do
       it_behaves_like 'invalid config', /variable_1 config must be a string/
     end
 
-    context 'when metadata has allow_array_value and allowed_value_data' do
-      let(:metadata) { { allowed_value_data: %i[value description], allow_array_value: true } }
+    context 'when metadata has the allowed_value_data key' do
+      let(:metadata) { { allowed_value_data: %i[value description options] } }
 
       let(:result) do
         { 'VARIABLE_1' => 'value' }
@@ -143,17 +143,15 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variables do
     end
   end
 
-  context 'when entry config value has key-value pair and value is an array' do
+  context 'when entry config value has options' do
     let(:config) do
-      { 'VARIABLE_1' => { value: %w[value1 value2], description: 'variable 1' } }
+      { 'VARIABLE_1' => {
+        value: 'value1', options: %w[value1 value2], description: 'variable 1'
+      } }
     end
 
-    context 'when there is no allowed_value_data metadata' do
-      it_behaves_like 'invalid config', /variable_1 config value must be an alphanumeric string/
-    end
-
-    context 'when metadata has allow_array_value and allowed_value_data' do
-      let(:metadata) { { allowed_value_data: %i[value description], allow_array_value: true } }
+    context 'when metadata has allowed_value_data' do
+      let(:metadata) { { allowed_value_data: %i[value description options] } }
 
       let(:result) do
         { 'VARIABLE_1' => 'value1' }
@@ -172,7 +170,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variables do
       describe '#value_with_prefill_data' do
         it 'returns variable with prefill data' do
           expect(entry.value_with_prefill_data).to eq(
-            'VARIABLE_1' => { value: 'value1', value_options: %w[value1 value2], description: 'variable 1' }
+            'VARIABLE_1' => { value: 'value1', options: %w[value1 value2], description: 'variable 1' }
           )
         end
       end
@@ -232,14 +230,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variables do
       end
 
       it_behaves_like 'invalid config', /variable_1 config uses invalid data keys: hello/
-    end
-
-    context 'when entry config value has hash with nil description' do
-      let(:config) do
-        { 'VARIABLE_1' => { value: 'value 1', description: nil } }
-      end
-
-      it_behaves_like 'invalid config', /variable_1 config description must be an alphanumeric string/
     end
 
     context 'when entry config value has hash without description' do

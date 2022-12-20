@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Setting subscribed status of a merge request' do
+RSpec.describe 'Setting subscribed status of a merge request', feature_category: :code_review do
   include GraphqlHelpers
 
   it_behaves_like 'a subscribable resource api' do

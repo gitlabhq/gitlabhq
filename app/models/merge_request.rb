@@ -121,6 +121,7 @@ class MergeRequest < ApplicationRecord
 
   has_many :draft_notes
   has_many :reviews, inverse_of: :merge_request
+  has_many :reviewed_by_users, -> { distinct }, through: :reviews, source: :author
   has_many :created_environments, class_name: 'Environment', foreign_key: :merge_request_id, inverse_of: :merge_request
 
   KNOWN_MERGE_PARAMS = [
@@ -139,6 +140,7 @@ class MergeRequest < ApplicationRecord
   after_create :ensure_merge_request_diff, unless: :skip_ensure_merge_request_diff
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
+  after_save :keep_around_commit, unless: :importing?
   after_commit :ensure_metrics, on: [:create, :update], unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
 
@@ -246,7 +248,9 @@ class MergeRequest < ApplicationRecord
     end
 
     after_transition any => [:unchecked, :cannot_be_merged_recheck, :checking, :cannot_be_merged_rechecking, :can_be_merged, :cannot_be_merged] do |merge_request, transition|
-      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+      merge_request.run_after_commit do
+        GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+      end
     end
 
     # rubocop: disable CodeReuse/ServiceClass
@@ -437,8 +441,6 @@ class MergeRequest < ApplicationRecord
       .merge(MergeRequest::Metrics.with_valid_time_to_merge)
       .pick(MergeRequest::Metrics.time_to_merge_expression)
   end
-
-  after_save :keep_around_commit, unless: :importing?
 
   alias_attribute :project, :target_project
   alias_attribute :project_id, :target_project_id
@@ -1270,7 +1272,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def mergeable_discussions_state?
-    return true unless project.only_allow_merge_if_all_discussions_are_resolved?
+    return true unless project.only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: true)
 
     unresolved_notes.none?(&:to_be_resolved?)
   end
@@ -1382,7 +1384,7 @@ class MergeRequest < ApplicationRecord
 
   def default_merge_commit_message(include_description: false, user: nil)
     if self.target_project.merge_commit_template.present? && !include_description
-      return ::Gitlab::MergeRequests::CommitMessageGenerator.new(merge_request: self, current_user: user).merge_message
+      return ::Gitlab::MergeRequests::MessageGenerator.new(merge_request: self, current_user: user).merge_commit_message
     end
 
     closes_issues_references = visible_closing_issues_for.map do |issue|
@@ -1398,7 +1400,7 @@ class MergeRequest < ApplicationRecord
       message << "Closes #{closes_issues_references.to_sentence}"
     end
 
-    message << "#{description}" if include_description && description.present?
+    message << description if include_description && description.present?
     message << "See merge request #{to_reference(full: true)}"
 
     message.join("\n\n")
@@ -1406,7 +1408,7 @@ class MergeRequest < ApplicationRecord
 
   def default_squash_commit_message(user: nil)
     if self.target_project.squash_commit_template.present?
-      return ::Gitlab::MergeRequests::CommitMessageGenerator.new(merge_request: self, current_user: user).squash_message
+      return ::Gitlab::MergeRequests::MessageGenerator.new(merge_request: self, current_user: user).squash_commit_message
     end
 
     title
@@ -1451,9 +1453,9 @@ class MergeRequest < ApplicationRecord
   end
 
   def mergeable_ci_state?
-    return true unless project.only_allow_merge_if_pipeline_succeeds?
+    return true unless project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
     return false unless actual_head_pipeline
-    return true if project.allow_merge_on_skipped_pipeline? && actual_head_pipeline.skipped?
+    return true if project.allow_merge_on_skipped_pipeline?(inherit_group_setting: true) && actual_head_pipeline.skipped?
 
     actual_head_pipeline.success?
   end

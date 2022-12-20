@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin::Projects" do
+RSpec.describe "Admin::Projects", feature_category: :permissions do
   include AccessMatchers
 
   describe "GET /admin/projects" do

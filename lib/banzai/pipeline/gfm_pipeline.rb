@@ -22,6 +22,7 @@ module Banzai
           Filter::MermaidFilter,
           Filter::VideoLinkFilter,
           Filter::AudioLinkFilter,
+          Filter::AttributesFilter,
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
           *metrics_filters,
@@ -36,8 +37,9 @@ module Banzai
           Filter::CustomEmojiFilter,
           Filter::TaskListFilter,
           Filter::InlineDiffFilter,
+          Filter::InlineObservabilityFilter,
           Filter::SetDirectionFilter,
-          Filter::SyntaxHighlightFilter
+          Filter::SyntaxHighlightFilter # this filter should remain at the end
         ]
       end
 

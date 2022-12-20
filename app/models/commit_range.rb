@@ -148,7 +148,7 @@ class CommitRange
   def sha_start
     return unless sha_from
 
-    exclude_start? ? sha_from + '^' : sha_from
+    exclude_start? ? "#{sha_from}^" : sha_from
   end
 
   def commit_start

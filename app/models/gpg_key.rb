@@ -40,8 +40,8 @@ class GpgKey < ApplicationRecord
     unless: -> { errors.has_key?(:key) }
 
   before_validation :extract_fingerprint, :extract_primary_keyid
-  after_commit :update_invalid_gpg_signatures, on: :create
   after_create :generate_subkeys
+  after_commit :update_invalid_gpg_signatures, on: :create
 
   def primary_keyid
     super&.upcase

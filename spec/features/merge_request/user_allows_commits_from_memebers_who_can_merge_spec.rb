@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'create a merge request, allowing commits from members who can merge to the target branch', :js do
+RSpec.describe 'create a merge request, allowing commits from members who can merge to the target branch', :js,
+feature_category: :code_review do
   include ProjectForksHelper
   let(:user) { create(:user) }
   let(:target_project) { create(:project, :public, :repository) }

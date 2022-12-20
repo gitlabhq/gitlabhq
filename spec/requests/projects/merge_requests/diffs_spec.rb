@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge Requests Diffs' do
+RSpec.describe 'Merge Requests Diffs', feature_category: :code_review do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
@@ -78,20 +78,6 @@ RSpec.describe 'Merge Requests Diffs' do
         go(headers: headers, page: 0, per_page: 5)
 
         expect(response).to have_gitlab_http_status(:not_modified)
-      end
-
-      context 'with check_etags_diffs_batch_before_write_cache flag turned off' do
-        before do
-          stub_feature_flags(check_etags_diffs_batch_before_write_cache: false)
-        end
-
-        it 'does not serialize diffs' do
-          expect(PaginatedDiffSerializer).not_to receive(:new)
-
-          go(headers: headers, page: 0, per_page: 5)
-
-          expect(response).to have_gitlab_http_status(:not_modified)
-        end
       end
 
       context 'with the different user' do

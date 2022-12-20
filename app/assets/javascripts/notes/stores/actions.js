@@ -2,14 +2,14 @@ import $ from 'jquery';
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
 import Api from '~/api';
-import createFlash from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/flash';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import { confidentialWidget } from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
-import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
-import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
+import updateIssueLockMutation from '~/sidebar/queries/update_issue_lock.mutation.graphql';
+import updateMergeRequestLockMutation from '~/sidebar/queries/update_merge_request_lock.mutation.graphql';
 import loadAwardsHandler from '~/awards_handler';
 import { isInViewport, scrollToElement, isInMRPage } from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
@@ -112,6 +112,39 @@ export const fetchDiscussions = (
 
     dispatch('updateResolvableDiscussionsCounts');
   });
+};
+
+export const fetchNotes = ({ dispatch, getters }) => {
+  if (getters.isFetching) return null;
+
+  dispatch('setFetchingState', true);
+
+  return dispatch('fetchDiscussions', getters.getFetchDiscussionsConfig)
+    .then(() => dispatch('initPolling'))
+    .then(() => {
+      dispatch('setLoadingState', false);
+      dispatch('setNotesFetchedState', true);
+      notesEventHub.$emit('fetchedNotesData');
+      dispatch('setFetchingState', false);
+    })
+    .catch(() => {
+      dispatch('setLoadingState', false);
+      dispatch('setNotesFetchedState', true);
+      createAlert({
+        message: __('Something went wrong while fetching comments. Please try again.'),
+      });
+    });
+};
+
+export const initPolling = ({ state, dispatch, getters, commit }) => {
+  if (state.isPollingInitialized) {
+    return;
+  }
+
+  dispatch('setLastFetchedAt', getters.getNotesDataByProp('lastFetchedAt'));
+
+  dispatch('poll');
+  commit(types.SET_IS_POLLING_INITIALIZED, true);
 };
 
 export const fetchDiscussionsBatch = ({ commit, dispatch }, { path, config, cursor, perPage }) => {
@@ -270,7 +303,7 @@ export const promoteCommentToTimelineEvent = (
         errorObj = error;
       }
 
-      createFlash({
+      createAlert({
         message,
         captureError,
         error: errorObj,
@@ -465,9 +498,9 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 
       $('.js-gfm-input').trigger('clear-commands-cache.atwho');
 
-      createFlash({
+      createAlert({
         message: message || __('Commands applied'),
-        type: 'notice',
+        variant: VARIANT_INFO,
         parent: noteData.flashContainer,
       });
     }
@@ -490,7 +523,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
         awardsHandler.scrollToAwards();
       })
       .catch(() => {
-        createFlash({
+        createAlert({
           message: __('Something went wrong while adding your award. Please try again.'),
           parent: noteData.flashContainer,
         });
@@ -529,11 +562,11 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
         const errorMsg = sprintf(__('Your comment could not be submitted because %{error}'), {
           error: base[0].toLowerCase(),
         });
-        createFlash({
+        createAlert({
           message: errorMsg,
           parent: noteData.flashContainer,
         });
-        return { ...data, hasFlash: true };
+        return { ...data, hasAlert: true };
       }
     }
 
@@ -580,7 +613,7 @@ const getFetchDataParams = (state) => {
 
 export const poll = ({ commit, state, getters, dispatch }) => {
   const notePollOccurrenceTracking = create();
-  let flashContainer;
+  let alert;
 
   notePollOccurrenceTracking.handle(1, () => {
     // Since polling halts internally after 1 failure, we manually try one more time
@@ -588,7 +621,7 @@ export const poll = ({ commit, state, getters, dispatch }) => {
   });
   notePollOccurrenceTracking.handle(2, () => {
     // On the second failure in a row, show the alert and try one more time (hoping to succeed and clear the error)
-    flashContainer = createFlash({
+    alert = createAlert({
       message: __('Something went wrong while fetching latest comments.'),
     });
     setTimeout(() => eTagPoll.restart(), NOTES_POLLING_INTERVAL);
@@ -608,7 +641,7 @@ export const poll = ({ commit, state, getters, dispatch }) => {
       if (notePollOccurrenceTracking.count) {
         notePollOccurrenceTracking.reset();
       }
-      flashContainer?.close();
+      alert?.dismiss();
     },
     errorCallback: () => notePollOccurrenceTracking.occur(),
   });
@@ -681,7 +714,7 @@ export const filterDiscussion = ({ commit, dispatch }, { path, filter, persistFi
     .catch(() => {
       dispatch('setLoadingState', false);
       dispatch('setNotesFetchedState', true);
-      createFlash({
+      createAlert({
         message: __('Something went wrong while fetching comments. Please try again.'),
       });
     });
@@ -726,7 +759,7 @@ export const submitSuggestion = (
 
       const flashMessage = errorMessage || defaultMessage;
 
-      createFlash({
+      createAlert({
         message: flashMessage,
         parent: flashContainer,
       });
@@ -762,7 +795,7 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { message, fl
 
       const flashMessage = errorMessage || defaultMessage;
 
-      createFlash({
+      createAlert({
         message: flashMessage,
         parent: flashContainer,
       });
@@ -804,7 +837,7 @@ export const fetchDescriptionVersion = ({ dispatch }, { endpoint, startingVersio
     })
     .catch((error) => {
       dispatch('receiveDescriptionVersionError', error);
-      createFlash({
+      createAlert({
         message: __('Something went wrong while fetching description changes. Please try again.'),
       });
     });
@@ -838,7 +871,7 @@ export const softDeleteDescriptionVersion = (
     })
     .catch((error) => {
       dispatch('receiveDeleteDescriptionVersionError', error);
-      createFlash({
+      createAlert({
         message: __('Something went wrong while deleting description changes. Please try again.'),
       });
 

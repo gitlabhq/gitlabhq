@@ -52,15 +52,14 @@ this document for an [overview on DNS records](dns_concepts.md).
 
 #### 1. Add a custom domain
 
-Navigate to your project's **Setting > Pages** and select **+ New domain**
-to add your custom domain to GitLab Pages. You can choose whether to:
+To add your custom domain to GitLab Pages:
 
-- Add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages).
-- Leave it blank (it can be added later).
-
-Select **Create New Domain**.
-
-![Add new domain](img/add_certificate_to_pages.png)
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Pages**.
+1. In the top right, select **New Domain**.
+1. In **Domain**, enter your domain.
+1. Optional. In **Certificate**, turn off the **Automatic certificate management using Let's Encrypt** toggle to add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages). You can also add the certificate and key later.
+1. Select **Create New Domain**.
 
 #### 2. Get the verification code
 
@@ -291,8 +290,6 @@ meet these requirements.
   project's **Settings > Pages > New Domain**, add the domain name and the certificate.
 - To add the certificate to a domain previously added, go to your
   project's **Settings > Pages**, locate your domain name, select **Details** and **Edit** to add the certificate.
-
-![Pages project - adding certificates](img/add_certificate_to_pages.png)
 
 1. Add the PEM certificate to its corresponding field.
 1. If your certificate is missing its intermediate, copy

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > User manages merge request settings' do
+RSpec.describe 'Projects > Settings > User manages merge request settings', feature_category: :projects do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

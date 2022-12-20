@@ -12,6 +12,20 @@ module Gitlab
         let(:ci_config) { Gitlab::Ci::Config.new(config_content, user: user) }
         let(:result) { described_class.new(ci_config: ci_config, warnings: ci_config&.warnings) }
 
+        describe '#builds' do
+          context 'when a job has ID tokens' do
+            let(:config_content) do
+              YAML.dump(
+                test: { stage: 'test', script: 'echo', id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } } }
+              )
+            end
+
+            it 'includes `id_tokens`' do
+              expect(result.builds.first[:id_tokens]).to eq({ TEST_ID_TOKEN: { aud: 'https://gitlab.com' } })
+            end
+          end
+        end
+
         describe '#config_metadata' do
           subject(:config_metadata) { result.config_metadata }
 

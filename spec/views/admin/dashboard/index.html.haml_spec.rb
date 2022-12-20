@@ -7,9 +7,7 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
   include StubVersion
 
   before do
-    counts = Admin::DashboardController::COUNTED_ITEMS.each_with_object({}) do |item, hash|
-      hash[item] = 100
-    end
+    counts = Admin::DashboardController::COUNTED_ITEMS.index_with { 100 }
 
     assign(:counts, counts)
     assign(:projects, create_list(:project, 1))

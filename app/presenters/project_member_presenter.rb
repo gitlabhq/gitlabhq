@@ -21,6 +21,12 @@ class ProjectMemberPresenter < MemberPresenter
     super
   end
 
+  def last_owner?
+    # all owners of a project in a group are removable.
+    # but in personal projects, the namespace holder is not removable.
+    member.holder_of_the_personal_namespace?
+  end
+
   private
 
   def admin_member_permission

@@ -1,14 +1,14 @@
 <script>
-import { s__ } from '~/locale';
 import { sortableFields } from '~/packages_and_registries/package_registry/utils';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  FILTERED_SEARCH_TERM,
+  OPERATORS_IS,
+  TOKEN_TITLE_TYPE,
+  TOKEN_TYPE_TYPE,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
-import {
-  FILTERED_SEARCH_TERM,
-  FILTERED_SEARCH_TYPE,
-} from '~/packages_and_registries/shared/constants';
 import { LIST_KEY_CREATED_AT } from '~/packages_and_registries/package_registry/constants';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PackageTypeToken from './tokens/package_type_token.vue';
@@ -16,12 +16,12 @@ import PackageTypeToken from './tokens/package_type_token.vue';
 export default {
   tokens: [
     {
-      type: 'type',
+      type: TOKEN_TYPE_TYPE,
       icon: 'package',
-      title: s__('PackageRegistry|Type'),
+      title: TOKEN_TITLE_TYPE,
       unique: true,
       token: PackageTypeToken,
-      operators: OPERATOR_IS_ONLY,
+      operators: OPERATORS_IS,
     },
   ],
   components: { RegistrySearch, UrlSync, LocalStorageSync },
@@ -51,7 +51,7 @@ export default {
       };
 
       return this.filters.reduce((acc, filter) => {
-        if (filter.type === FILTERED_SEARCH_TYPE && filter.value?.data) {
+        if (filter.type === TOKEN_TYPE_TYPE && filter.value?.data) {
           return {
             ...acc,
             packageType: filter.value.data.toUpperCase(),

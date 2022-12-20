@@ -66,7 +66,7 @@ export default () => {
       })
       .catch((e) =>
         createAlert({
-          message: e,
+          message: e.message,
         }),
       );
 

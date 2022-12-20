@@ -43,7 +43,7 @@ RSpec.describe WorkItems::Type do
     end
 
     it 'does not delete type when there are related issues' do
-      type = create(:work_item_type, work_items: [work_item])
+      type = work_item.work_item_type
 
       expect { type.destroy! }.to raise_error(ActiveRecord::InvalidForeignKey)
       expect(Issue.count).to eq(1)
@@ -70,8 +70,35 @@ RSpec.describe WorkItems::Type do
         ::WorkItems::Widgets::Labels,
         ::WorkItems::Widgets::Assignees,
         ::WorkItems::Widgets::StartAndDueDate,
-        ::WorkItems::Widgets::Milestone
+        ::WorkItems::Widgets::Milestone,
+        ::WorkItems::Widgets::Notes
       )
+    end
+  end
+
+  describe '.default_by_type' do
+    let(:default_issue_type) { described_class.find_by(namespace_id: nil, base_type: :issue) }
+
+    subject { described_class.default_by_type(:issue) }
+
+    it 'returns default work item type by base type without calling importer' do
+      expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).not_to receive(:upsert_types)
+      expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).not_to receive(:upsert_restrictions)
+
+      expect(subject).to eq(default_issue_type)
+    end
+
+    context 'when default types are missing' do
+      before do
+        described_class.delete_all
+      end
+
+      it 'creates types and restrictions and returns default work item type by base type' do
+        expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_types)
+        expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).to receive(:upsert_restrictions)
+
+        expect(subject).to eq(default_issue_type)
+      end
     end
   end
 

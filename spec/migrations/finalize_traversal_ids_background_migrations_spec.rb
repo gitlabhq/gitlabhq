@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!('finalize_traversal_ids_background_migrations')
 
-RSpec.describe FinalizeTraversalIdsBackgroundMigrations, :migration do
+RSpec.describe FinalizeTraversalIdsBackgroundMigrations, :migration, feature_category: :database do
   shared_context 'incomplete background migration' do
     before do
       # Jobs enqueued in Sidekiq.

@@ -1,8 +1,0 @@
----
-name: subgroups_approval_rules
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91598
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366741
-milestone: '15.2'
-type: development
-group: group::source code
-default_enabled: true

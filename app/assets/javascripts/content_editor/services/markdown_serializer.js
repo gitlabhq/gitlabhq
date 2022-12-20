@@ -12,6 +12,7 @@ import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
 import DetailsContent from '../extensions/details_content';
+import Comment from '../extensions/comment';
 import Diagram from '../extensions/diagram';
 import Emoji from '../extensions/emoji';
 import Figure from '../extensions/figure';
@@ -50,6 +51,7 @@ import Text from '../extensions/text';
 import Video from '../extensions/video';
 import WordBreak from '../extensions/word_break';
 import {
+  renderComment,
   renderCodeBlock,
   renderHardBreak,
   renderTable,
@@ -130,6 +132,7 @@ const defaultSerializerConfig = {
     }),
     [BulletList.name]: preserveUnchanged(renderBulletList),
     [CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
+    [Comment.name]: renderComment,
     [Diagram.name]: preserveUnchanged(renderCodeBlock),
     [DescriptionList.name]: renderHTMLNode('dl', true),
     [DescriptionItem.name]: (state, node, parent, index) => {

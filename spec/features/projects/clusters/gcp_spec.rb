@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Gcp Cluster', :js do
+RSpec.describe 'Gcp Cluster', :js, feature_category: :kubernetes_management do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }

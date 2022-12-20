@@ -1,8 +1,0 @@
----
-name: purge_stale_security_findings
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81423
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/356464
-milestone: '14.9'
-type: ops
-group: group::threat insights
-default_enabled: true

@@ -40,8 +40,8 @@ Note the following properties:
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| type | string | no | Type of panel to be rendered. Optional for area panel types |
-| query_range | string | required | For area panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
+| `type` | string | no | Type of panel to be rendered. Optional for area panel types |
+| `query_range` | string | required | For area panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
 
 ![area panel chart](img/prometheus_dashboard_area_panel_type_v12_8.png)
 
@@ -82,8 +82,8 @@ Note the following properties:
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| type | string | required | Must be `anomaly-chart` for anomaly panel types |
-| query_range | yes | required | For anomaly panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) in every metric. |
+| `type` | string | required | Must be `anomaly-chart` for anomaly panel types |
+| `query_range` | yes | required | For anomaly panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) in every metric. |
 
 ![anomaly panel type](img/prometheus_dashboard_anomaly_panel_type.png)
 
@@ -138,8 +138,8 @@ Note the following properties:
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| type | string | yes | Type of panel to be rendered. For column panel types, set to `column` |
-| query_range | yes | yes | For column panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
+| `type` | string | yes | Type of panel to be rendered. For column panel types, set to `column` |
+| `query_range` | yes | yes | For column panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
 
 ![anomaly panel type](img/prometheus_dashboard_column_panel_type.png)
 
@@ -201,10 +201,10 @@ panel_groups:
 Note the following properties:
 
 | Property | Type | Required | Description |
-| ------ | ------ | ------ | ------ |
-| type | string | yes | Type of panel to be rendered. For single stat panel types, set to `single-stat` |
-| field | string | no | Panels display the value of a metric. For a panel to display the value of a label instead, put the name of the label in this key. |
-| query | string | yes | For single stat panel types, you must use an [instant query](https://prometheus.io/docs/prometheus/latest/querying/api/#instant-queries) |
+| ------- | ------ | ------ | ------ |
+| `type`  | string | yes | Type of panel to be rendered. For single stat panel types, set to `single-stat` |
+| `field` | string | no | Panels display the value of a metric. For a panel to display the value of a label instead, put the name of the label in this key. |
+| `query` | string | yes | For single stat panel types, you must use an [instant query](https://prometheus.io/docs/prometheus/latest/querying/api/#instant-queries). |
 
 ![single stat panel type](img/prometheus_dashboard_single_stat_panel_type.png)
 
@@ -263,15 +263,15 @@ panel_groups:
 
 Note the following properties:
 
-| Property | Type | Required | Description |
-| ------ | ------ | ------ | ------ |
-| type | string | yes | Type of panel to be rendered. For gauge panel types, set to `gauge`. |
-| min_value | number | no, defaults to `0`  | The minimum value of the gauge chart axis. If either of `min_value` or `max_value` are not set, they both get their default values.  |
-| max_value | number | no, defaults to `100` | The maximum value of the gauge chart axis. If either of `min_value` or `max_value` are not set, they both get their default values. |
-| split | number | no, defaults to `10` | The amount of split segments on the gauge chart axis.  |
-| thresholds | object | no | Thresholds configuration for the gauge chart axis.  |
-| format | string | no, defaults to `engineering` | Unit format used. See the [full list of units](yaml_number_format.md). |
-| query | string | yes | For gauge panel types, you must use an [instant query](https://prometheus.io/docs/prometheus/latest/querying/api/#instant-queries). |
+| Property     | Type | Required | Description |
+| ------------ | ------ | ------ | ------ |
+| `type`       | string | yes | Type of panel to be rendered. For gauge panel types, set to `gauge`. |
+| `min_value`  | number | no, defaults to `0` | The minimum value of the gauge chart axis. If either of `min_value` or `max_value` are not set, they both get their default values. |
+| `max_value`  | number | no, defaults to `100` | The maximum value of the gauge chart axis. If either of `min_value` or `max_value` are not set, they both get their default values. |
+| `split`      | number | no, defaults to `10` | The amount of split segments on the gauge chart axis. |
+| `thresholds` | object | no | Thresholds configuration for the gauge chart axis. |
+| `format`     | string | no, defaults to `engineering` | Unit format used. See the [full list of units](yaml_number_format.md). |
+| `query`      | string | yes | For gauge panel types, you must use an [instant query](https://prometheus.io/docs/prometheus/latest/querying/api/#instant-queries). |
 
 ### Thresholds properties
 
@@ -306,12 +306,12 @@ Note the following properties:
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| type | string | yes | Type of panel to be rendered. For heatmap panel types, set to `heatmap` |
-| query_range | yes | yes | For area panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
+| `type` | string | yes | Type of panel to be rendered. For heatmap panel types, set to `heatmap` |
+| `query_range` | yes | yes | For area panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
 
 ![heatmap panel type](img/heatmap_panel_type.png)
 
 WARNING:
 When a query returns too many data points, the heatmap data bucket dimensions tend downwards to 0, making the chart's data invisible, as shown in the image below. To fix this problem, limit the amount of data returned by changing the time range filter on the metrics dashboard UI, or adding the **step** property to your dashboard's YAML file.
 
-![heatmap chart_too_much_data](img/heatmap_chart_too_much_data_v_13_2.png)
+![heatmap chart with too much data](img/heatmap_chart_too_much_data_v_13_2.png)

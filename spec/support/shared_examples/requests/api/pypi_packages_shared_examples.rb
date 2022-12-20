@@ -95,25 +95,13 @@ RSpec.shared_examples 'PyPI package creation' do |user_type, status, add_member 
       end
 
       context 'and direct upload disabled' do
-        context 'and background upload disabled' do
-          let(:fog_connection) do
-            stub_package_file_object_storage(direct_upload: false, background_upload: false)
-          end
-
-          it_behaves_like 'creating pypi package files'
+        let(:fog_connection) do
+          stub_package_file_object_storage(direct_upload: false)
         end
 
-        context 'and background upload enabled' do
-          let(:fog_connection) do
-            stub_package_file_object_storage(direct_upload: false, background_upload: true)
-          end
-
-          it_behaves_like 'creating pypi package files'
-        end
+        it_behaves_like 'creating pypi package files'
       end
     end
-
-    it_behaves_like 'background upload schedules a file migration'
   end
 end
 
@@ -285,7 +273,7 @@ RSpec.shared_examples 'pypi simple API endpoint' do
 
     let(:url) { "/projects/#{project.id}/packages/pypi/simple/my-package" }
     let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
-    let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
+    let(:snowplow_gitlab_standard_context) { { project: project, namespace: group, property: 'i_package_pypi_user' } }
 
     it_behaves_like 'PyPI package versions', :developer, :success
   end

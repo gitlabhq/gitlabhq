@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/366839',
-    type: :test_environment,
-    only: { job: 'review-qa-*' }
-  } do
+  RSpec.describe 'Plan', product_group: :product_planning do
     describe 'Design Management' do
       let(:design) do
         Resource::Design.fabricate_via_browser_ui! do |design|

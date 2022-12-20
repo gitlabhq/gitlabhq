@@ -1,8 +1,0 @@
----
-# Cop supports --auto-correct.
-Layout/EmptyLineBetweenDefs:
-  Exclude:
-    - 'db/post_migrate/20220202105733_delete_service_template_records.rb'
-    - 'ee/lib/ee/gitlab/background_migration/populate_resolved_on_default_branch_column.rb'
-    - 'lib/gitlab/import_export/remote_stream_upload.rb'
-    - 'lib/gitlab/redis/multi_store.rb'

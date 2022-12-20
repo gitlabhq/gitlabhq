@@ -156,7 +156,7 @@ describe('ProjectSelect component', () => {
       });
 
       it('renders the name of the selected project', () => {
-        expect(findGlDropdown().find('.gl-new-dropdown-button-text').text()).toBe(
+        expect(findGlDropdown().find('.gl-dropdown-button-text').text()).toBe(
           mockProjectsList1[0].name,
         );
       });

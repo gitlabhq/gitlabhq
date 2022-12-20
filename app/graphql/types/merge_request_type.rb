@@ -200,10 +200,10 @@ module Types
                                                                       description: 'Array of available auto merge strategies.'
     field :commits, Types::CommitType.connection_type, null: true,
                                                        calls_gitaly: true, description: 'Merge request commits.'
-    field :committers, Types::UserType.connection_type, null: true, complexity: 5,
-                                                        calls_gitaly: true, description: 'Users who have added commits to the merge request.'
     field :commits_without_merge_commits, Types::CommitType.connection_type, null: true,
                                                                              calls_gitaly: true, description: 'Merge request commits excluding merge commits.'
+    field :committers, Types::UserType.connection_type, null: true, complexity: 5,
+                                                        calls_gitaly: true, description: 'Users who have added commits to the merge request.'
     field :has_ci, GraphQL::Types::Boolean, null: false, method: :has_ci?,
                                             description: 'Indicates if the merge request has CI.'
     field :merge_user, Types::UserType, null: true,

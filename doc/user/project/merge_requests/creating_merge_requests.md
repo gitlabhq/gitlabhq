@@ -102,7 +102,7 @@ You can create a merge request from your fork to contribute back to the main pro
    change the default target branch (which can be useful if you are working in a
    forked project).
 1. Select **Compare branches and continue**.
-1. Select **Submit merge request**.
+1. Select **Create merge request**.
 
 After your work is merged, if you don't intend to
 make any other contributions to the upstream project, you can unlink your

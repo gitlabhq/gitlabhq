@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative './daemon'
+
 module Gitlab
   # Given a set of process IDs, the supervisor can monitor processes
   # for being alive and invoke a callback if some or all should go away.

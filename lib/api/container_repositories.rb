@@ -14,12 +14,17 @@ module API
 
     namespace 'registry' do
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'The ID of the repository'
       end
       resource :repositories, requirements: { id: /[0-9]*/ } do
         desc 'Get a container repository' do
           detail 'This feature was introduced in GitLab 13.6.'
           success Entities::ContainerRegistry::Repository
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Repository Not Found' }
+          ]
+          tags %w[container_registry]
         end
         params do
           optional :tags, type: Boolean, default: false, desc: 'Determines if tags should be included'

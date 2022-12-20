@@ -37,6 +37,7 @@ import initBroadcastNotifications from './broadcast_notification';
 import { initTopNav } from './nav';
 import { initCopyCodeButton } from './behaviors/copy_code';
 import initHeaderSearch from './header_search/init';
+import initGitlabVersionCheck from './gitlab_version_check';
 
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
@@ -100,21 +101,7 @@ function deferredInitialisation() {
   initDefaultTrackers();
   initFeatureHighlight();
   initCopyCodeButton();
-
-  const helpToggle = document.querySelector('.header-help-dropdown-toggle');
-  if (helpToggle) {
-    helpToggle.addEventListener(
-      'click',
-      () => {
-        import(/* webpackChunkName: 'versionCheck' */ './gitlab_version_check')
-          .then(({ default: initGitlabVersionCheck }) => {
-            initGitlabVersionCheck();
-          })
-          .catch(() => {});
-      },
-      { once: true },
-    );
-  }
+  initGitlabVersionCheck();
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 

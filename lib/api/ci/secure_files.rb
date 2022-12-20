@@ -7,7 +7,6 @@ module API
 
       before do
         authenticate!
-        feature_flag_enabled?
         authorize! :read_secure_files, user_project
       end
 
@@ -16,11 +15,15 @@ module API
       default_format :json
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the
+        authenticated user'
       end
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'List all Secure Files for a Project'
+        desc 'Get list of secure files in a project' do
+          success Entities::Ci::SecureFile
+          tags %w[secure_files]
+        end
         params do
           use :pagination
         end
@@ -30,9 +33,13 @@ module API
           present paginate(secure_files), with: Entities::Ci::SecureFile
         end
 
-        desc 'Get an individual Secure File'
+        desc 'Get the details of a specific secure file in a project' do
+          success Entities::Ci::SecureFile
+          tags %w[secure_files]
+          failure [{ code: 404, message: '404 Not found' }]
+        end
         params do
-          requires :id, type: Integer, desc: 'The Secure File ID'
+          requires :id, type: Integer, desc: 'The ID of a secure file'
         end
 
         route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
@@ -41,7 +48,10 @@ module API
           present secure_file, with: Entities::Ci::SecureFile
         end
 
-        desc 'Download a Secure File'
+        desc 'Download secure file' do
+          failure [{ code: 404, message: '404 Not found' }]
+          tags %w[secure_files]
+        end
         route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
         get ':id/secure_files/:secure_file_id/download' do
           secure_file = user_project.secure_files.find(params[:secure_file_id])
@@ -58,10 +68,15 @@ module API
             authorize! :admin_secure_files, user_project
           end
 
-          desc 'Upload a Secure File'
+          desc 'Create a secure file' do
+            success Entities::Ci::SecureFile
+            tags %w[secure_files]
+            failure [{ code: 400, message: '400 Bad Request' }]
+          end
           params do
-            requires :name, type: String, desc: 'The name of the file'
-            requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The secure file to be uploaded', documentation: { type: 'file' }
+            requires :name, type: String, desc: 'The name of the file being uploaded. The filename must be unique within
+            the project'
+            requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The secure file being uploaded', documentation: { type: 'file' }
           end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
           post ':id/secure_files' do
@@ -74,17 +89,17 @@ module API
             file_too_large! unless secure_file.file.size < ::Ci::SecureFile::FILE_SIZE_LIMIT.to_i
 
             if secure_file.save
-              if Feature.enabled?(:secure_files_metadata_parsers, user_project)
-                ::Ci::ParseSecureFileMetadataWorker.perform_async(secure_file.id) # rubocop:disable CodeReuse/Worker
-              end
-
+              ::Ci::ParseSecureFileMetadataWorker.perform_async(secure_file.id) # rubocop:disable CodeReuse/Worker
               present secure_file, with: Entities::Ci::SecureFile
             else
               render_validation_error!(secure_file)
             end
           end
 
-          desc 'Delete an individual Secure File'
+          desc 'Remove a secure file' do
+            tags %w[secure_files]
+            failure [{ code: 404, message: '404 Not found' }]
+          end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
           delete ':id/secure_files/:secure_file_id' do
             secure_file = user_project.secure_files.find(params[:secure_file_id])
@@ -97,10 +112,6 @@ module API
       end
 
       helpers do
-        def feature_flag_enabled?
-          service_unavailable! unless Feature.enabled?(:ci_secure_files, user_project)
-        end
-
         def read_only_feature_flag_enabled?
           service_unavailable! if Feature.enabled?(:ci_secure_files_read_only, user_project, type: :ops)
         end

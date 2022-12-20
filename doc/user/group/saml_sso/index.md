@@ -53,7 +53,6 @@ GitLab.com uses the SAML NameID to identify users. The NameID element:
   also case-insensitive, which can result in users being unable to sign in.
 
 The relevant field name and recommended value for supported providers are in the [provider specific notes](#providers).
-appropriate corresponding field.
 
 WARNING:
 Once users have signed into GitLab using the SSO SAML setup, changing the `NameID` breaks the configuration and potentially locks users out of the GitLab group.
@@ -72,7 +71,7 @@ must be specified as an attribute named `email` or `mail`.
 You can configure the following attributes with GitLab.com Group SAML:
 
 - `username` or `nickname`. We recommend you configure only one of these.
-- The [attributes available](../../../integration/saml.md#assertions) to self-managed GitLab instances.
+- The [attributes available](../../../integration/saml.md#configure-assertions) to self-managed GitLab instances.
 
 ### Metadata configuration
 
@@ -98,7 +97,7 @@ After you set up your identity provider to work with GitLab, you must configure 
 ![Group SAML Settings for GitLab.com](img/group_saml_settings_v13_12.png)
 
 NOTE:
-The certificate [fingerprint algorithm](../../../integration/saml.md#notes-on-configuring-your-identity-provider) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#google-workspace-setup-notes)), use a secure signature algorithm.
+The certificate [fingerprint algorithm](../../../integration/saml.md#configure-saml-on-your-idp) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#google-workspace-setup-notes)), use a secure signature algorithm.
 
 ### Additional configuration information
 
@@ -124,7 +123,7 @@ It can also help to compare the XML response from your provider with our [exampl
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/215155) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `transparent_sso_enforcement` to include transparent enforcement even when SSO enforcement is not enabled. Disabled on GitLab.com.
 
 FLAG:
-On self-managed GitLab, transparent SSO enforcement is unavailable. On GitLab.com, transparent SSO enforcement is unavailable and can be configured by GitLab.com administrators only.
+On self-managed GitLab, transparent SSO enforcement is unavailable. On GitLab.com, see the [Transparent SSO rollout](https://gitlab.com/gitlab-org/gitlab/-/issues/375788) issue for the current status.
 
 SSO is enforced when users access groups and projects in the organization's group hierarchy. Users can view other groups and projects without SSO sign in.
 
@@ -178,13 +177,24 @@ When SSO is enforced, users are not immediately revoked. If the user:
 - Has an active session, they can continue accessing the group for up to 24 hours until the identity
   provider session times out.
 
+### Selectively enable and disable transparent SSO enforcement
+
+There are two feature flags associated with this feature to allow precise control. If a customer has a problem with transparent SSO on GitLab.com, GitLab can help troubleshoot and override the feature flag as necessary.
+
+**`transparent_sso_enforcement`:** This feature flag should only be enabled or disabled by the Authentication and Authorization group
+or in the case of a serious and widespread issue affecting many groups or users. See [issue 375788](https://gitlab.com/gitlab-org/gitlab/-/issues/375788) for the current GitLab.com rollout status.
+
+**`transparent_sso_enforcement_override`:** When the `transparent_sso_enforcement` feature flag is enabled, support or production teams can
+turn off transparent SSO by enabling this feature flag for a specific customer group. **Enabling** this feature flag
+disables transparent SSO enforcement.
+
 ## Providers
 
 The SAML standard means that you can use a wide range of identity providers with GitLab. Your identity provider might have relevant documentation. It can be generic SAML documentation or specifically targeted for GitLab.
 
 When [configuring your identity provider](#configure-your-identity-provider), consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
 
-For providers not listed below, you can refer to the [instance SAML notes on configuring an identity provider](../../../integration/saml.md#notes-on-configuring-your-identity-provider)
+For providers not listed below, you can refer to the [instance SAML notes on configuring an identity provider](../../../integration/saml.md#configure-saml-on-your-idp)
 for additional guidance on information your identity provider may require.
 
 GitLab provides the following information for guidance only.
@@ -338,10 +348,14 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 
 ### Linking SAML to your existing GitLab.com account
 
+> **Remember me** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/121569) in GitLab 15.7.
+
 To link SAML to your existing GitLab.com account:
 
 1. Sign in to your GitLab.com account. [Reset your password](https://gitlab.com/users/password/new) if necessary.
 1. Locate and visit the **GitLab single sign-on URL** for the group you're signing in to. A group owner can find this on the group's **Settings > SAML SSO** page. If the sign-in URL is configured, users can connect to the GitLab app from the identity provider.
+1. Optional. Select the **Remember me** checkbox to stay signed in to GitLab for 2 weeks. You may still be asked to re-authenticate with your SAML provider
+   more frequently.
 1. Select **Authorize**.
 1. Enter your credentials on the identity provider if prompted.
 1. You are then redirected back to GitLab.com and should now have access to the group. In the future, you can use SAML to sign in to GitLab.com.

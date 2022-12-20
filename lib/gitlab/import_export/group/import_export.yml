@@ -132,3 +132,23 @@ ee:
               - :push_event_payload
       - iterations_cadences:
         - :iterations
+
+# When associated resources are from outside the group, you might need to
+# validate that a user who is exporting the group can access these
+# associations. `include_if_exportable` accepts an array of associations for a
+# resource. During export, the `exportable_association?` method on the
+# resource is called with the association's name and user to validate if
+# associated resource can be included in the export.
+#
+# This definition will call epic's `exportable_association?(:parent,
+# current_user: current_user)` method and include epic's parent association
+# for each epic only if the method returns true:
+#
+# include_if_exportable:
+#  group:
+#    epics:
+#      - :parent
+include_if_exportable:
+  group:
+    epics:
+      - :parent

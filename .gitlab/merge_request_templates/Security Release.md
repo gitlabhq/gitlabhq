@@ -25,6 +25,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 - [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`).
   - [ ] Milestone is set to the version this backport applies to. A closed milestone can be assigned via [quick actions].
   - [ ] Ensure it's approved by a maintainer.
+- [ ] Ensure this merge request and the related security issue have a `~severity::x` label
 
 **Note:** Reviewer/maintainer should not be a Release Manager.
 
@@ -32,6 +33,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 
 - [ ] Correct milestone is applied and the title is matching across all backports.
 - [ ] Assigned (_not_ as reviewer) to `@gitlab-release-tools-bot` with passing CI pipelines.
+- [ ] Correct `~severity::x` label is applied to this merge request and the related security issue.
 
 /label ~security
 

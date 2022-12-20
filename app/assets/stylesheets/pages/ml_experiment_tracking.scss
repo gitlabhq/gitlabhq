@@ -14,3 +14,9 @@
     color: $gl-text-color;
   }
 }
+
+table.candidate-details {
+  td {
+    padding: $gl-spacing-scale-3;
+  }
+}

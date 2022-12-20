@@ -10,7 +10,9 @@ module JiraConnect
     skip_before_action :authenticate_user!
 
     def show
-      return render_404 if Feature.disabled?(:jira_connect_oauth_self_managed) || !Gitlab.com?
+      if Feature.disabled?(:jira_connect_oauth_self_managed) || !Gitlab.config.jira_connect.enable_public_keys_storage
+        return render_404
+      end
 
       render plain: public_key.key
     end

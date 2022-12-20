@@ -9,6 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab uses the [Asciidoctor](https://asciidoctor.org) gem to convert AsciiDoc content to HTML5.
 Consult the [Asciidoctor User Manual](https://asciidoctor.org/docs/user-manual/) for a complete Asciidoctor reference.
 
+You can use AsciiDoc in the following areas:
+
+- Wiki pages
+- AsciiDoc documents (`.adoc` or `.asciidoc`) inside repositories
+
 ## Syntax
 
 Here's a brief reference of the most commonly used AsciiDoc syntax.

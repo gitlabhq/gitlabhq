@@ -133,7 +133,7 @@ This check is being exempt from Rack Attack.
 
 ## Sidekiq
 
-Learn how to configure the [Sidekiq health checks](../../../administration/sidekiq_health_check.md).
+Learn how to configure the [Sidekiq health checks](../../../administration/sidekiq/sidekiq_health_check.md).
 
 <!-- ## Troubleshooting
 

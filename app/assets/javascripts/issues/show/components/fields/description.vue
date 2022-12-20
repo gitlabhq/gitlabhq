@@ -67,6 +67,7 @@ export default {
       :quick-actions-docs-path="quickActionsDocsPath"
       :enable-autocomplete="enableAutocomplete"
       supports-quick-actions
+      use-bottom-toolbar
       autofocus
       @input="$emit('input', $event)"
       @keydown.meta.enter="updateIssuable"

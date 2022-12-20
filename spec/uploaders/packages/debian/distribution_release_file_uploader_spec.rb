@@ -38,8 +38,6 @@ RSpec.describe Packages::Debian::DistributionReleaseFileUploader do
           end
 
           it 'can store file remotely' do
-            allow(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async)
-
             distribution
 
             expect(distribution.file_store).to eq(described_class::Store::REMOTE)

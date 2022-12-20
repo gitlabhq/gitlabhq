@@ -83,8 +83,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   with_scope :subject
   condition(:crm_enabled, score: 0, scope: :subject) { @subject.crm_enabled? }
 
-  condition(:group_runner_registration_allowed, scope: :global) do
-    Gitlab::CurrentSettings.valid_runner_registrars.include?('group')
+  condition(:group_runner_registration_allowed, scope: :subject) do
+    Gitlab::CurrentSettings.valid_runner_registrars.include?('group') && @subject.runner_registration_enabled?
   end
 
   rule { can?(:read_group) & design_management_enabled }.policy do
@@ -193,6 +193,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_group_member
     enable :change_visibility_level
 
+    enable :read_usage_quotas
     enable :read_group_runners
     enable :admin_group_runners
     enable :register_group_runners

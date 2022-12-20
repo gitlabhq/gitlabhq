@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'query Jira service' do
+RSpec.describe 'query Jira service', feature_category: :integrations do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

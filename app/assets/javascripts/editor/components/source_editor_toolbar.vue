@@ -57,13 +57,12 @@ export default {
   >
     <div v-for="group in $options.groups" :key="group">
       <gl-button-group v-if="hasGroupItems(group)">
-        <template v-for="item in getGroupItems(group)">
-          <source-editor-toolbar-button
-            :key="item.id"
-            :button="item"
-            @click="$emit('click', item)"
-          />
-        </template>
+        <source-editor-toolbar-button
+          v-for="item in getGroupItems(group)"
+          :key="item.id"
+          :button="item"
+          @click="$emit('click', item)"
+        />
       </gl-button-group>
     </div>
   </section>

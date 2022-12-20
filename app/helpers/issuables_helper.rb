@@ -138,15 +138,15 @@ module IssuablesHelper
   def issuable_meta_author_status(author)
     return "" unless author&.status&.customized? && status = user_status(author)
 
-    "#{status}".html_safe
+    status.to_s.html_safe
   end
 
   def issuable_meta(issuable, project)
     output = []
 
     if issuable.respond_to?(:work_item_type) && WorkItems::Type::WI_TYPES_WITH_CREATED_HEADER.include?(issuable.work_item_type.base_type)
-      output << content_tag(:span, sprite_icon("#{issuable.work_item_type.icon_name}", css_class: 'gl-icon gl-vertical-align-middle gl-text-gray-500'), class: 'gl-mr-2', aria: { hidden: 'true' })
-      output << content_tag(:span, s_('IssuableStatus|%{wi_type} created %{created_at} by ').html_safe % { wi_type: issuable.issue_type.capitalize, created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2')
+      output << content_tag(:span, sprite_icon(issuable.work_item_type.icon_name.to_s, css_class: 'gl-icon gl-vertical-align-middle gl-text-gray-500'), class: 'gl-mr-2', aria: { hidden: 'true' })
+      output << content_tag(:span, s_('IssuableStatus|%{wi_type} created %{created_at} by ').html_safe % { wi_type: IntegrationsHelper.integration_issue_type(issuable.issue_type), created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2')
     else
       output << content_tag(:span, s_('IssuableStatus|Created %{created_at} by').html_safe % { created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2')
     end
@@ -207,11 +207,28 @@ module IssuablesHelper
   def assigned_issuables_count(issuable_type)
     case issuable_type
     when :issues
-      current_user.assigned_open_issues_count
+      if Feature.enabled?(:limit_assigned_issues_count)
+        ::Users::AssignedIssuesCountService.new(
+          current_user: current_user,
+          max_limit: User::MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT
+        ).count
+      else
+        current_user.assigned_open_issues_count
+      end
     when :merge_requests
       current_user.assigned_open_merge_requests_count
     else
       raise ArgumentError, "invalid issuable `#{issuable_type}`"
+    end
+  end
+
+  def assigned_open_issues_count_text
+    count = assigned_issuables_count(:issues)
+
+    if Feature.enabled?(:limit_assigned_issues_count) && count > User::MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT - 1
+      "#{count - 1}+"
+    else
+      count.to_s
     end
   end
 
@@ -348,12 +365,10 @@ module IssuablesHelper
       else
         [_("Closed"), "merge-request-close"]
       end
+    elsif issuable.open?
+      [_("Open"), "issues"]
     else
-      if issuable.open?
-        [_("Open"), "issues"]
-      else
-        [_("Closed"), "issue-closed"]
-      end
+      [_("Closed"), "issue-closed"]
     end
   end
 
@@ -414,6 +429,7 @@ module IssuablesHelper
       id: issuable[:id],
       severity: issuable[:severity],
       timeTrackingLimitToHours: Gitlab::CurrentSettings.time_tracking_limit_to_hours,
+      canCreateTimelogs: issuable.dig(:current_user, :can_create_timelogs),
       createNoteEmail: issuable[:create_note_email],
       issuableType: issuable[:type]
     }

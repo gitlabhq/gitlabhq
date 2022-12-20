@@ -51,8 +51,8 @@ module Sidebars
 
         def harbor_registry_menu_item
           if Feature.disabled?(:harbor_registry_integration) ||
-            context.group.harbor_integration.nil? ||
-            !context.group.harbor_integration.activated?
+              context.group.harbor_integration.nil? ||
+              !context.group.harbor_integration.activated?
             return nil_menu_item(:harbor_registry)
           end
 
@@ -66,7 +66,7 @@ module Sidebars
 
         def dependency_proxy_menu_item
           setting_does_not_exist_or_is_enabled = !context.group.dependency_proxy_setting ||
-                                                  context.group.dependency_proxy_setting.enabled
+            context.group.dependency_proxy_setting.enabled
 
           return nil_menu_item(:dependency_proxy) unless can?(context.current_user, :read_dependency_proxy, context.group)
           return nil_menu_item(:dependency_proxy) unless setting_does_not_exist_or_is_enabled

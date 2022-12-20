@@ -37,6 +37,10 @@ class MemberPresenter < Gitlab::View::Presenter::Delegated
     false
   end
 
+  def last_owner?
+    raise NotImplementedError
+  end
+
   private
 
   def admin_member_permission

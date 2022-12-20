@@ -20,7 +20,7 @@
             - weights_link_url = help_page_path('administration/repository_storage_paths.md', anchor: 'configure-where-new-repositories-are-stored')
             - weights_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: weights_link_url }
             = html_escape(s_('Enter %{weights_link_start}weights%{weights_link_end} for storages for new repositories. Configured storages appear below.')) % { weights_link_start: weights_link_start, weights_link_end: '</a>'.html_safe }
-            = link_to s_('Learn more.'), help_page_path('administration/repository_storage_paths.md'), target: '_blank', rel: 'noopener noreferrer'
+            = link_to _('Learn more.'), help_page_path('administration/repository_storage_paths.md'), target: '_blank', rel: 'noopener noreferrer'
         .form-check
           = f.fields_for :repository_storages_weighted, storage_weights do |storage_form|
             - Gitlab.config.repositories.storages.each_key do |storage|

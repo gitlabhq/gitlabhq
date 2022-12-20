@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project Usage Quotas' do
+RSpec.describe 'Project Usage Quotas', feature_category: :subscription_cost_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:role) { :maintainer }
   let_it_be(:user) { create(:user) }

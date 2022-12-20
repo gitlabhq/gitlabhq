@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User creates confidential merge request on issue page', :js do
+RSpec.describe 'User creates confidential merge request on issue page', :js, feature_category: :team_planning do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

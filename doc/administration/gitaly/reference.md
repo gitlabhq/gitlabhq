@@ -57,7 +57,7 @@ an empty string.
 It is possible to temporarily disable authentication with the `transitioning`
 setting. This allows you to monitor if all clients are
 authenticating correctly without causing a service outage for clients
-that are not configured correctly yet:
+that are still to be configured correctly:
 
 ```toml
 [auth]
@@ -159,7 +159,7 @@ sum(rate(gitaly_catfile_cache_total{type="hit"}[5m])) / sum(rate(gitaly_catfile_
 ### `gitaly-ruby`
 
 A Gitaly process uses one or more `gitaly-ruby` helper processes to
-execute RPC's implemented in Ruby instead of Go. The `[gitaly-ruby]`
+execute RPCs implemented in Ruby instead of Go. The `[gitaly-ruby]`
 section of the configuration file contains settings for these helper processes.
 
 These processes are known to occasionally suffer from memory leaks.
@@ -169,7 +169,7 @@ Gitaly restarts its `gitaly-ruby` helpers when their memory exceeds the
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
 | `dir` | string | yes | Path to where `gitaly-ruby` is installed (needed to boot the process).|
-| `max_rss` | integer | no | Resident set size limit that triggers a `gitaly-ruby` restart, in bytes. Default is `200000000` (200MB). |
+| `max_rss` | integer | no | Resident set size limit that triggers a `gitaly-ruby` restart, in bytes. Default is `200000000` (200 MB). |
 | `graceful_restart_timeout` | string | no | Grace period before a `gitaly-ruby` process is forcibly terminated after exceeding `max_rss`. Default is `10m` (10 minutes).|
 | `restart_delay` | string | no |Time that `gitaly-ruby` memory must remain high before a restart. Default is `5m` (5 minutes).|
 | `num_workers` | integer | no |Number of `gitaly-ruby` worker processes. Try increasing this number in case of `ResourceExhausted` errors. Default is `2`, minimum is `2`.|

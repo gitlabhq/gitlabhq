@@ -1,11 +1,11 @@
 <script>
-import { GlSafeHtmlDirective } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getPageParamValue, getPageSearchString } from '~/blob/utils';
 
 export default {
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [glFeatureFlagMixin()],
   props: {

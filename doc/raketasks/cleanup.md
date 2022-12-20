@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Clean up **(FREE SELF)**
+# Clean up Rake tasks **(FREE SELF)**
 
 GitLab provides Rake tasks for cleaning up GitLab instances.
 
@@ -35,7 +35,8 @@ You can also specify the project with `PROJECT_ID` instead of `PROJECT_PATH`.
 For example:
 
 ```shell
-$ sudo gitlab-rake gitlab:cleanup:orphan_lfs_file_references PROJECT_PATH="gitlab-org/gitlab-foss"
+$ sudo gitlab-rake gitlab:cleanup:orphan_lfs_file_references PROJECT_ID="13083"
+
 I, [2019-12-13T16:35:31.764962 #82356]  INFO -- :  Looking for orphan LFS files for project GitLab Org / GitLab Foss
 I, [2019-12-13T16:35:31.923659 #82356]  INFO -- :  Removed invalid references: 12
 ```

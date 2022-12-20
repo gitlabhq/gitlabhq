@@ -1,4 +1,4 @@
-- name: "`type` and `types` keyword from CI/CD configuration"
+- title: "`type` and `types` keyword from CI/CD configuration"
   announcement_milestone: "14.6"
   announcement_date: "2021-12-22"
   removal_milestone: "15.0"

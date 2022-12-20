@@ -1,0 +1,29 @@
+{
+    "kind": "Node",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "127.0.0.1",
+        "selfLink": "/api/v1/nodes/127.0.0.1",
+        "uid": "041143c5-ce39-11e4-ac24-3c970e4a436a",
+        "resourceVersion": "1724",
+        "creationTimestamp": "2015-03-19T15:08:20+02:00"
+    },
+    "spec": {
+        "capacity": {
+            "cpu": "1",
+            "memory": "3Gi"
+        }
+    },
+    "status": {
+        "hostIP": "127.0.0.1",
+        "conditions": [
+            {
+                "kind": "Ready",
+                "status": "None",
+                "lastProbeTime": "2015-03-20T14:16:52+02:00",
+                "lastTransitionTime": "2015-03-19T15:08:20+02:00",
+                "reason": "Node health check failed: kubelet /healthz endpoint returns not ok"
+            }
+        ]
+    }
+}

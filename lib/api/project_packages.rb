@@ -17,9 +17,15 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get all project packages' do
+      desc 'Get a list of project packages' do
         detail 'This feature was introduced in GitLab 11.8'
-        success ::API::Entities::Package
+        success code: 200, model: ::API::Entities::Package
+        failure [
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Project Not Found' }
+        ]
+        is_array true
+        tags %w[project_packages]
       end
       params do
         use :pagination
@@ -48,7 +54,12 @@ module API
 
       desc 'Get a single project package' do
         detail 'This feature was introduced in GitLab 11.9'
-        success ::API::Entities::Package
+        success code: 200, model: ::API::Entities::Package
+        failure [
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[project_packages]
       end
       params do
         requires :package_id, type: Integer, desc: 'The ID of a package'
@@ -58,11 +69,19 @@ module API
         package = ::Packages::PackageFinder
           .new(user_project, params[:package_id]).execute
 
+        render_api_error!('Package not found', 404) unless package.default?
+
         present package, with: ::API::Entities::Package, user: current_user, namespace: user_project.namespace
       end
 
-      desc 'Remove a package' do
+      desc 'Delete a project package' do
         detail 'This feature was introduced in GitLab 11.9'
+        success code: 204
+        failure [
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[project_packages]
       end
       params do
         requires :package_id, type: Integer, desc: 'The ID of a package'

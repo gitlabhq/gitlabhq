@@ -4,8 +4,8 @@ module CachedCommit
   extend ActiveSupport::Concern
 
   def to_hash
-    Gitlab::Git::Commit::SERIALIZE_KEYS.each_with_object({}) do |key, hash|
-      hash[key] = public_send(key) # rubocop:disable GitlabSecurity/PublicSend
+    Gitlab::Git::Commit::SERIALIZE_KEYS.index_with do |key|
+      public_send(key) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 

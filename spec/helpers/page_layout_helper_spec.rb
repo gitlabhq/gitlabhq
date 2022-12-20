@@ -108,8 +108,8 @@ RSpec.describe PageLayoutHelper do
       tags = helper.page_card_meta_tags
 
       aggregate_failures do
-        expect(tags).to include %q(<meta property="twitter:label1" content="foo" />)
-        expect(tags).to include %q(<meta property="twitter:data1" content="bar" />)
+        expect(tags).to include %q(<meta property="twitter:label1" content="foo">)
+        expect(tags).to include %q(<meta property="twitter:data1" content="bar">)
       end
     end
 

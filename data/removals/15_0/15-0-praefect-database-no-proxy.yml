@@ -1,4 +1,4 @@
-- name: "Move Gitaly Cluster Praefect `database_host_no_proxy` and `database_port_no_proxy configs`"
+- title: "Move Gitaly Cluster Praefect `database_host_no_proxy` and `database_port_no_proxy configs`"
   announcement_milestone: "14.0"
   announcement_date: "2021-05-22"
   removal_milestone: "15.0"

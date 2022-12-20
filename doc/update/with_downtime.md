@@ -6,10 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Multi-node upgrades with downtime **(FREE SELF)**
 
-NOTE:
-This process is a work in progress. You're welcome to provide feedback by either raising a ticket to support,
-or [commenting on this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6244).
-
 While you can upgrade a multi-node GitLab deployment [with zero downtime](zero_downtime.md),
 there are a number of constraints. In particular, you can upgrade to only one minor release
 at a time, for example, from 14.6 to 14.7, then to 14.8, etc.
@@ -37,9 +33,6 @@ At a high level, the process is:
      substitute the instructions for Omnibus GitLab with your cloud provider's instructions.
 1. Upgrade the GitLab application (Sidekiq, Puma) and start the application up.
 
-If you are a Community Edition user, replace `gitlab-ee` with
-`gitlab-ce` in the following commands.
-
 ## Stop writes to the database
 
 Shut down Puma and Sidekiq on all servers running these processes:
@@ -56,16 +49,7 @@ sudo gitlab-ctl stop puma
 In summary:
 
 1. Check the Consul nodes are all healthy.
-1. Upgrade the GitLab package on all your Consul servers:
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
-
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories) on all your Consul servers.
 1. Restart all GitLab services **one node at a time**:
 
    ```shell
@@ -106,15 +90,7 @@ The Praefect nodes, however, can be upgraded via an AMI redeployment process:
 
 ## Upgrade the Gitaly nodes not part of Gitaly cluster
 
-For Gitaly servers which are not part of Gitaly cluster, update the GitLab package:
-
-```shell
-# Debian/Ubuntu
-sudo apt-get update && sudo apt-get install gitlab-ee
-
-# Centos/RHEL
-sudo yum install gitlab-ee
-```
+For Gitaly servers which are not part of Gitaly cluster, [upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 If you have multiple Gitaly shards or have multiple load-balanced Gitaly nodes
 using NFS, it doesn't matter in which order you upgrade the Gitaly servers.
@@ -123,15 +99,7 @@ using NFS, it doesn't matter in which order you upgrade the Gitaly servers.
 
 For unclustered PostgreSQL servers:
 
-1. Upgrade the GitLab package:
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 1. The upgrade process does not restart PostgreSQL when the binaries are upgraded.
    Restart to load the new version:
@@ -161,15 +129,7 @@ Follow the following process:
    sudo gitlab-ctl patroni members
    ```
 
-1. Upgrade the GitLab package on one of the replica nodes:
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories) on one of the replica nodes.
 
 1. Restart to load the new version:
 
@@ -194,27 +154,11 @@ Follow the following process:
 If you run PgBouncer on your Rails (application) nodes, then
 PgBouncer are upgraded as part of the application server upgrade.
 
-Upgrade the PgBouncer nodes:
-
-```shell
-# Debian/Ubuntu
-sudo apt-get update && sudo apt-get install gitlab-ee
-
-# Centos/RHEL
-sudo yum install gitlab-ee
-```
+[Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories) on the PgBouncer nodes.
 
 ## Upgrade the Redis node
 
-Upgrade a standalone Redis server by updating the GitLab package:
-
-```shell
-# Debian/Ubuntu
-sudo apt-get update && sudo apt-get install gitlab-ee
-
-# Centos/RHEL
-sudo yum install gitlab-ee
-```
+Upgrade a standalone Redis server by [upgrading the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 ## Upgrade Redis HA (using Sentinel) **(PREMIUM SELF)**
 
@@ -269,15 +213,7 @@ running all database migrations. On the deploy node:
       sudo gitlab-ctl reconfigure
       ```
 
-1. Upgrade the GitLab package:
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 1. If you modified `gitlab.rb` on the deploy node to bypass PgBouncer:
    1. Update `gitlab.rb` on the deploy node. Change `gitlab_rails['db_host']`
@@ -300,15 +236,7 @@ set to anything in `gitlab.rb` on these nodes.
 
 They can be upgraded in parallel:
 
-1. Upgrade the GitLab package:
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 1. Ensure all services are restarted:
 
@@ -318,12 +246,4 @@ They can be upgraded in parallel:
 
 ## Upgrade the Monitor node
 
-Upgrade the GitLab package:
-
-```shell
-# Debian/Ubuntu
-sudo apt-get update && sudo apt-get install gitlab-ee
-
-# Centos/RHEL
-sudo yum install gitlab-ee
-```
+[Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).

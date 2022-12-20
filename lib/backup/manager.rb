@@ -218,7 +218,7 @@ module Backup
 
       build_backup_information
 
-      definitions.keys.each do |task_name|
+      definitions.each_key do |task_name|
         run_create_task(task_name)
       end
 
@@ -239,7 +239,7 @@ module Backup
       read_backup_information
       verify_backup_version
 
-      definitions.keys.each do |task_name|
+      definitions.each_key do |task_name|
         if !skipped?(task_name) && enabled_task?(task_name)
           run_restore_task(task_name)
         end
@@ -263,7 +263,7 @@ module Backup
 
     def write_backup_information
       # Make sure there is a connection
-      ::Gitlab::Database.database_base_models.values.each do |base_model|
+      ::Gitlab::Database.database_base_models.each_value do |base_model|
         base_model.connection.reconnect!
       end
 
@@ -277,7 +277,7 @@ module Backup
     def build_backup_information
       @backup_information ||= {
         db_version: ActiveRecord::Migrator.current_version.to_s,
-        backup_created_at: Time.now,
+        backup_created_at: Time.current,
         gitlab_version: Gitlab::VERSION,
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
@@ -291,7 +291,7 @@ module Backup
       @backup_information.merge!(
         full_backup_id: full_backup_id,
         db_version: ActiveRecord::Migrator.current_version.to_s,
-        backup_created_at: Time.zone.now,
+        backup_created_at: Time.current,
         gitlab_version: Gitlab::VERSION,
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
@@ -396,7 +396,7 @@ module Backup
 
           timestamp = matched[1].to_i
 
-          next unless Time.at(timestamp) < (Time.now - keep_time)
+          next unless Time.zone.at(timestamp) < (Time.current - keep_time)
 
           begin
             FileUtils.rm(file)
@@ -523,9 +523,7 @@ module Backup
     end
 
     def object_storage_config
-      @object_storage_config ||= begin
-        ObjectStorage::Config.new(Gitlab.config.backup.upload)
-      end
+      @object_storage_config ||= ObjectStorage::Config.new(Gitlab.config.backup.upload)
     end
 
     def connect_to_remote_directory
@@ -613,7 +611,7 @@ module Backup
     end
 
     def puts_time(msg)
-      progress.puts "#{Time.now} -- #{msg}"
+      progress.puts "#{Time.current} -- #{msg}"
       Gitlab::BackupLogger.info(message: "#{Rainbow.uncolor(msg)}")
     end
   end

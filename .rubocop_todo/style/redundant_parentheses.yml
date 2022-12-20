@@ -1,6 +1,0 @@
----
-# Cop supports --auto-correct.
-Style/RedundantParentheses:
-  Exclude:
-    - 'lib/gitlab/database/tables_truncate.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/11_fulfillment/utilization/billing_seats_usage_data_spec.rb'

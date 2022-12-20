@@ -17,7 +17,7 @@ RSpec.describe HamlLint::Linter::DocumentationLinks do
     end
 
     context 'when link_to points to the existing file with valid anchor' do
-      let(:haml) { "= link_to 'Description', #{link_pattern}('index.md', anchor: 'overview'), target: '_blank'" }
+      let(:haml) { "= link_to 'Description', #{link_pattern}('index.md', anchor: 'user-account'), target: '_blank'" }
 
       it { is_expected.not_to report_lint }
     end

@@ -2,7 +2,7 @@
 
 require_relative '../../../lib/gitlab/process_supervisor'
 
-RSpec.describe Gitlab::ProcessSupervisor do
+RSpec.describe Gitlab::ProcessSupervisor, feature_category: :application_performance do
   let(:health_check_interval_seconds) { 0.1 }
   let(:check_terminate_interval_seconds) { 1 }
   let(:forwarded_signals) { [] }

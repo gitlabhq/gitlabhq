@@ -7,7 +7,7 @@ browser_performance:
   variables:
     DOCKER_TLS_CERTDIR: ""
     SITESPEED_IMAGE: sitespeedio/sitespeed.io
-    SITESPEED_VERSION: 14.1.0
+    SITESPEED_VERSION: 26.1.0
     SITESPEED_OPTIONS: ''
   services:
     - name: 'docker:20.10.12-dind'

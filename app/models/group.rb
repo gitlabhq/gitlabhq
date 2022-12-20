@@ -20,6 +20,7 @@ class Group < Namespace
   include BulkUsersByEmailLoad
   include ChronicDurationAttribute
   include RunnerTokenExpirationInterval
+  include Todoable
 
   extend ::Gitlab::Utils::Override
 
@@ -119,7 +120,7 @@ class Group < Namespace
 
   has_many :group_callouts, class_name: 'Users::GroupCallout', foreign_key: :group_id
 
-  has_many :protected_branches, inverse_of: :group
+  has_many :protected_branches, inverse_of: :group, foreign_key: :namespace_id
 
   has_one :group_feature, inverse_of: :group, class_name: 'Groups::FeatureSetting'
 
@@ -154,10 +155,10 @@ class Group < Namespace
                                  prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
 
   after_create :post_create_hook
+  after_create -> { create_or_load_association(:group_feature) }
+  after_update :path_changed_hook, if: :saved_change_to_path?
   after_destroy :post_destroy_hook
   after_commit :update_two_factor_requirement
-  after_update :path_changed_hook, if: :saved_change_to_path?
-  after_create -> { create_or_load_association(:group_feature) }
 
   scope :with_users, -> { includes(:users) }
 
@@ -165,7 +166,16 @@ class Group < Namespace
 
   scope :by_id, ->(groups) { where(id: groups) }
 
-  scope :by_ids_or_paths, -> (ids, paths) { by_id(ids).or(where(path: paths)) }
+  scope :by_ids_or_paths, -> (ids, paths) do
+    return by_id(ids) unless paths.present?
+
+    ids_by_full_path = Route
+      .for_routable_type(Namespace.name)
+      .where('LOWER(routes.path) IN (?)', paths.map(&:downcase))
+      .select(:namespace_id)
+
+    Group.from_union([by_id(ids), by_id(ids_by_full_path), where('LOWER(path) IN (?)', paths.map(&:downcase))])
+  end
 
   scope :for_authorized_group_members, -> (user_ids) do
     joins(:group_members)
@@ -550,6 +560,11 @@ class Group < Namespace
     members_with_parents.pluck(Arel.sql('DISTINCT members.user_id'))
   end
 
+  def self_and_hierarchy_intersecting_with_user_groups(user)
+    user_groups = GroupsFinder.new(user).execute.unscope(:order)
+    self_and_hierarchy.unscope(:order).where(id: user_groups)
+  end
+
   def self_and_ancestors_ids
     strong_memoize(:self_and_ancestors_ids) do
       self_and_ancestors.pluck(:id)
@@ -831,6 +846,7 @@ class Group < Namespace
   def has_project_with_service_desk_enabled?
     Gitlab::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
   end
+  strong_memoize_attr :has_project_with_service_desk_enabled?, :has_project_with_service_desk_enabled
 
   def activity_path
     Gitlab::Routing.url_helpers.activity_group_path(self)
@@ -885,6 +901,10 @@ class Group < Namespace
 
   def work_items_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:work_items)
+  end
+
+  def work_items_mvc_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_mvc)
   end
 
   def work_items_mvc_2_feature_flag_enabled?

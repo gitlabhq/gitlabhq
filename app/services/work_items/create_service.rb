@@ -4,7 +4,7 @@ module WorkItems
   class CreateService < Issues::CreateService
     include WidgetableService
 
-    def initialize(project:, current_user: nil, params: {}, spam_params:, widget_params: {})
+    def initialize(project:, spam_params:, current_user: nil, params: {}, widget_params: {})
       super(
         project: project,
         current_user: current_user,

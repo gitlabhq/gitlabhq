@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Creation of a new branch' do
+RSpec.describe 'Creation of a new branch', feature_category: :source_code_management do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group, :public) }

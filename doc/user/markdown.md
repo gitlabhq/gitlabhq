@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Source Code
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -211,7 +211,7 @@ You can use it to point out a :bug: or warn about :speak_no_evil: patches. And i
 
 If you're new to this, don't be :fearful:. You can join the emoji :family:. Just look up one of the supported codes.
 
-Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
+Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. :thumbsup:
 ```
 
 Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/monkey.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/star2.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> to your <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">. Well we have a gift for you:
@@ -374,12 +374,12 @@ a^2+b^2=c^2
 
 #### LaTeX-compatible fencing
 
-> Introduced in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `markdown_dollar_math`. Disabled by default.
+> Introduced in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `markdown_dollar_math`. Disabled by default. Enabled on GitLab.com.
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#latex-compatible-fencing).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
+On self-managed GitLab, by default this feature is not available. To make it available per group,
 ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `markdown_dollar_math`.
 On GitLab.com, this feature is available.
 The feature is not ready for production use.
@@ -1017,8 +1017,25 @@ Do not change to a reference style link.
 
 ![alt text](img/markdown_logo.png "Title Text")
 
-In the rare case where you must set a specific height or width for an image,
-you can use the `img` HTML tag instead of Markdown and set its `height` and
+#### Change the image dimensions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28118) in GitLab 15.7.
+
+You can control the width and height of an image by following the image with
+an attribute list.
+The value must an integer with a unit of either `px` (default) or `%`.
+
+For example
+
+```markdown
+![alt text](img/markdown_logo.png "Title Text"){width=100 height=100px}
+
+![alt text](img/markdown_logo.png "Title Text"){width=75%}
+```
+
+![alt text](img/markdown_logo.png "Title Text"){width=100 height=100px}
+
+You can also use the `img` HTML tag instead of Markdown and set its `height` and
 `width` parameters.
 
 #### Videos
@@ -1283,7 +1300,7 @@ Some text to show that the reference links can follow later.
 
 Using header ID anchors:
 
-- This line links to [a section on a different Markdown page, using a "#" and the header ID](permissions.md#project-features-permissions)
+- This line links to [a section on a different Markdown page, using a "#" and the header ID](permissions.md#project-members-permissions)
 - This line links to [a different section on the same page, using a "#" and the header ID](#header-ids-and-links)
 
 Using references:
@@ -1530,6 +1547,7 @@ Tables are not part of the core Markdown specification, but are part of GitLab F
      by pipes (`|`).
    - You **can** have blank cells.
 1. Column widths are calculated dynamically based on the content of the cells.
+1. To use the pipe character (`|`) in the text and not as table delimiter, you must escape it with a backslash (`\|`).
 
 Example:
 
@@ -1581,13 +1599,39 @@ use `<br>` tags to force a cell to have multiple lines:
 | Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
 
 You can use HTML formatting in GitLab itself to add [task lists](#task-lists) with checkboxes,
-but they do not render properly on `docs.gitlab.com`:
+but they do not render properly on `docs.gitlab.com`. Note that these tasks will not save their
+state when selected, like regular GitLab task lists.
 
 ```markdown
 | header 1 | header 2 |
 | ---      | ---      |
 | cell 1   | cell 2   |
 | cell 3   | <ul><li> - [ ] Task one </li><li> - [ ] Task two </li></ul> |
+```
+
+To have fully functioning task lists in a table, create an HTML table with Markdown in the cells:
+
+```html
+<table>
+<thead>
+<tr><th>header 1</th><th>header 2</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>cell 1</td>
+<td>cell 2</td>
+</tr>
+<tr>
+<td>cell 3</td>
+<td>
+
+- [ ] Task one
+- [ ] Task two
+
+</td>
+</tr>
+</tbody>
+</table>
 ```
 
 ##### Copy and paste from a spreadsheet

@@ -8,7 +8,7 @@ module API
         # extend it.
         {
           Issue => :team_planning,
-          Snippet => :snippets,
+          Snippet => :source_code_management,
           MergeRequest => :code_review,
           Commit => :code_review
         }

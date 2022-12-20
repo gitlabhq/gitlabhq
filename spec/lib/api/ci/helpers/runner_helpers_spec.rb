@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Helpers::Runner do
+RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
   let(:ip_address) { '1.2.3.4' }
   let(:runner_class) do
     Class.new do

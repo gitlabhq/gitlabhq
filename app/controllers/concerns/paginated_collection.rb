@@ -10,9 +10,7 @@ module PaginatedCollection
 
     out_of_range = collection.current_page > total_pages
 
-    if out_of_range
-      redirect_to(url_for(safe_params.merge(page: total_pages, only_path: true)))
-    end
+    redirect_to(url_for(safe_params.merge(page: total_pages, only_path: true))) if out_of_range
 
     out_of_range
   end

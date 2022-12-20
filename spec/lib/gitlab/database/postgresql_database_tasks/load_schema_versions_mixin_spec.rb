@@ -9,8 +9,7 @@ RSpec.describe Gitlab::Database::PostgresqlDatabaseTasks::LoadSchemaVersionsMixi
         original_structure_load
       end
 
-      def original_structure_load
-      end
+      def original_structure_load; end
     end
 
     klass.prepend(described_class)

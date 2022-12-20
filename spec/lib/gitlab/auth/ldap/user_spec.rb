@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
 
     context 'when user confirmation email is enabled' do
       before do
-        stub_application_setting send_user_confirmation_email: true
+        stub_application_setting_enum('email_confirmation_setting', 'hard')
       end
 
       it 'creates and confirms the user anyway' do

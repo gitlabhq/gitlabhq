@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group' do
+RSpec.describe 'Group', feature_category: :subgroups do
   let(:user) { create(:user) }
 
   before do
@@ -350,10 +350,10 @@ RSpec.describe 'Group' do
       visit path
     end
 
-    it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="group[name]"]' },
-                                          { form: '.js-general-settings-form', input: '#group_visibility_level_0' },
-                                          { form: '.js-general-permissions-form', input: '#group_request_access_enabled' },
-                                          { form: '.js-general-permissions-form', input: 'input[name="group[two_factor_grace_period]"]' }]
+    it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="group[name]"]', submit: 'button[type="submit"]' },
+                                          { form: '.js-general-settings-form', input: '#group_visibility_level_0', submit: 'button[type="submit"]' },
+                                          { form: '.js-general-permissions-form', input: '#group_request_access_enabled', submit: 'button[type="submit"]' },
+                                          { form: '.js-general-permissions-form', input: 'input[name="group[two_factor_grace_period]"]', submit: 'button[type="submit"]' }]
 
     it 'saves new settings' do
       page.within('.gs-general') do

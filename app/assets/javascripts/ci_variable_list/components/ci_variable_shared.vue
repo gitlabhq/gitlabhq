@@ -26,6 +26,11 @@ export default {
       required: true,
       type: String,
     },
+    entity: {
+      required: false,
+      type: String,
+      default: '',
+    },
     fullPath: {
       required: false,
       type: String,
@@ -90,6 +95,7 @@ export default {
       isInitialLoading: true,
       isLoadingMoreItems: false,
       loadingCounter: 0,
+      maxVariableLimit: 0,
       pageInfo: {},
     };
   },
@@ -107,6 +113,8 @@ export default {
         return this.queryData.ciVariables.lookup(data)?.nodes || [];
       },
       result({ data }) {
+        this.maxVariableLimit = this.queryData.ciVariables.lookup(data)?.limit || 0;
+
         this.pageInfo = this.queryData.ciVariables.lookup(data)?.pageInfo || this.pageInfo;
         this.hasNextPage = this.pageInfo?.hasNextPage || false;
 
@@ -221,9 +229,11 @@ export default {
 <template>
   <ci-variable-settings
     :are-scoped-variables-available="areScopedVariablesAvailable"
+    :entity="entity"
     :hide-environment-scope="hideEnvironmentScope"
     :is-loading="isLoading"
     :variables="ciVariables"
+    :max-variable-limit="maxVariableLimit"
     :environments="environments"
     @add-variable="addVariable"
     @delete-variable="deleteVariable"

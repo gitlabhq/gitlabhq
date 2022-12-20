@@ -233,7 +233,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         end
 
         it_behaves_like 'a successful manifest pull'
-        it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest'
+        it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest', false
 
         context 'with workhorse response' do
           let(:pull_response) { { status: :success, manifest: nil, from_cache: false } }
@@ -303,7 +303,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         end
 
         it_behaves_like 'a successful blob pull'
-        it_behaves_like 'a package tracking event', described_class.name, 'pull_blob_from_cache'
+        it_behaves_like 'a package tracking event', described_class.name, 'pull_blob_from_cache', false
 
         context 'when cache entry does not exist' do
           let(:blob_sha) { 'a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4' }
@@ -387,7 +387,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         group.add_guest(user)
       end
 
-      it_behaves_like 'a package tracking event', described_class.name, 'pull_blob'
+      it_behaves_like 'a package tracking event', described_class.name, 'pull_blob', false
 
       it 'creates a blob' do
         expect { subject }.to change { group.dependency_proxy_blobs.count }.by(1)
@@ -445,7 +445,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         group.add_guest(user)
       end
 
-      it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest'
+      it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest', false
       it_behaves_like 'with invalid path'
 
       context 'with no existing manifest' do

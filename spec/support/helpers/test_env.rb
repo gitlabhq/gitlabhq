@@ -91,7 +91,8 @@ module TestEnv
     'utf-16' => 'f05a987',
     'gitaly-rename-test' => '94bb47c',
     'smime-signed-commits' => 'ed775cc',
-    'Ääh-test-utf-8' => '7975be0'
+    'Ääh-test-utf-8' => '7975be0',
+    'ssh-signed-commit' => '7b5160f'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -312,12 +313,6 @@ module TestEnv
     end
   end
 
-  def storage_dir_exists?(storage, dir)
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      File.exist?(File.join(GitalySetup.repos_path(storage), dir))
-    end
-  end
-
   def repos_path
     @repos_path ||= GitalySetup.repos_path
   end
@@ -375,6 +370,7 @@ module TestEnv
 
   def seed_db
     Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
+    Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter.upsert_restrictions
   end
 
   private
@@ -427,6 +423,8 @@ module TestEnv
     return if File.exist?(install_dir) && ci?
 
     if component_needs_update?(install_dir, version)
+      puts "==> Starting #{component} set up...\n"
+
       # Cleanup the component entirely to ensure we start fresh
       FileUtils.rm_rf(install_dir) if fresh_install
 
@@ -486,12 +484,14 @@ module TestEnv
     # The HEAD of the component_folder will be used as heuristic for the version
     # of the binaries, allowing to use Git to determine if HEAD is later than
     # the expected version. Note: Git considers HEAD to be an anchestor of HEAD.
-    _out, exit_status = Gitlab::Popen.popen(%W[
-      #{Gitlab.config.git.bin_path}
-      -C #{component_folder}
-      merge-base --is-ancestor
-      #{expected_version} HEAD
-])
+    _out, exit_status = Gitlab::Popen.popen(
+      %W[
+        #{Gitlab.config.git.bin_path}
+        -C #{component_folder}
+        merge-base --is-ancestor
+        #{expected_version} HEAD
+      ]
+    )
 
     exit_status == 0
   end

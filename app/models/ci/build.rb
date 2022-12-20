@@ -7,7 +7,6 @@ module Ci
     include Ci::Contextable
     include TokenAuthenticatable
     include AfterCommitQueue
-    include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
     include Ci::HasRef
@@ -47,7 +46,7 @@ module Ci
     # DELETE queries when the Ci::Build is destroyed. The next step is to remove `dependent: :destroy`.
     # Details: https://gitlab.com/gitlab-org/gitlab/-/issues/24644#note_689472685
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
-    has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id
+    has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id, inverse_of: :job
     has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id
 
     has_many :pages_deployments, inverse_of: :ci_build
@@ -71,6 +70,7 @@ module Ci
     delegate :harbor_integration, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
     delegate :ensure_persistent_ref, to: :pipeline
+    delegate :enable_debug_trace!, to: :metadata
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
@@ -90,7 +90,7 @@ module Ci
     scope :with_downloadable_artifacts, -> do
       where('EXISTS (?)',
         Ci::JobArtifact.select(1)
-          .where('ci_builds.id = ci_job_artifacts.job_id')
+          .where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id")
           .where(file_type: Ci::JobArtifact::DOWNLOADABLE_TYPES)
       )
     end
@@ -98,7 +98,7 @@ module Ci
     scope :with_erasable_artifacts, -> do
       where('EXISTS (?)',
         Ci::JobArtifact.select(1)
-          .where('ci_builds.id = ci_job_artifacts.job_id')
+          .where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id")
         .where(file_type: Ci::JobArtifact.erasable_file_types)
       )
     end
@@ -108,11 +108,11 @@ module Ci
     end
 
     scope :with_existing_job_artifacts, ->(query) do
-      where('EXISTS (?)', ::Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').merge(query))
+      where('EXISTS (?)', ::Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id").merge(query))
     end
 
     scope :without_archived_trace, -> do
-      where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
+      where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id").trace)
     end
 
     scope :with_artifacts, ->(artifact_scope) do
@@ -155,7 +155,7 @@ module Ci
     scope :manual_actions, -> { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
     scope :scheduled_actions, -> { where(when: :delayed, status: COMPLETED_STATUSES + %i[scheduled]) }
     scope :ref_protected, -> { where(protected: true) }
-    scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where('ci_builds.id = ci_build_trace_chunks.build_id').select(1)) }
+    scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where("#{quoted_table_name}.id = #{Ci::BuildTraceChunk.quoted_table_name}.build_id").select(1)) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, -> (date) { finished.where('finished_at < ?', date) }
     scope :license_management_jobs, -> { where(name: %i(license_management license_scanning)) } # handle license rename https://gitlab.com/gitlab-org/gitlab/issues/8911
@@ -171,8 +171,6 @@ module Ci
     acts_as_taggable
 
     add_authentication_token_field :token, encrypted: :required
-
-    before_save :ensure_token, unless: :assign_token_on_scheduling?
 
     after_save :stick_build_if_status_changed
 
@@ -247,11 +245,8 @@ module Ci
         !build.waiting_for_deployment_approval? # If false is returned, it stops the transition
       end
 
-      before_transition any => [:pending] do |build, transition|
-        if build.assign_token_on_scheduling?
-          build.ensure_token
-        end
-
+      before_transition any => [:pending] do |build|
+        build.ensure_token
         true
       end
 
@@ -419,12 +414,12 @@ module Ci
     end
 
     def waiting_for_deployment_approval?
-      manual? && starts_environment? && deployment&.blocked?
+      manual? && deployment_job? && deployment&.blocked?
     end
 
     def outdated_deployment?
       strong_memoize(:outdated_deployment) do
-        starts_environment? &&
+        deployment_job? &&
           incomplete? &&
           project.ci_forward_deployment_enabled? &&
           deployment&.older_than_last_successful_deployment?
@@ -528,7 +523,7 @@ module Ci
       environment.present?
     end
 
-    def starts_environment?
+    def deployment_job?
       has_environment_keyword? && self.environment_action == 'start'
     end
 
@@ -722,7 +717,7 @@ module Ci
     end
 
     def ensure_trace_metadata!
-      Ci::BuildTraceMetadata.find_or_upsert_for!(id)
+      Ci::BuildTraceMetadata.find_or_upsert_for!(id, partition_id)
     end
 
     def artifacts_expose_as
@@ -866,6 +861,10 @@ module Ci
        Gitlab::Ci::Build::Step.from_after_script(self)].compact
     end
 
+    def runtime_hooks
+      Gitlab::Ci::Build::Hook.from_hooks(self)
+    end
+
     def image
       Gitlab::Ci::Build::Image.from_image(self)
     end
@@ -995,7 +994,7 @@ module Ci
 
     # Virtual deployment status depending on the environment status.
     def deployment_status
-      return unless starts_environment?
+      return unless deployment_job?
 
       if success?
         return successful_deployment_status
@@ -1136,8 +1135,15 @@ module Ci
       end
     end
 
-    def assign_token_on_scheduling?
-      ::Feature.enabled?(:ci_assign_job_token_on_scheduling, project)
+    def partition_id_token_prefix
+      partition_id.to_s(16) if Feature.enabled?(:ci_build_partition_id_token_prefix, project)
+    end
+
+    override :format_token
+    def format_token(token)
+      return token if partition_id_token_prefix.nil?
+
+      "#{partition_id_token_prefix}_#{token}"
     end
 
     protected
@@ -1208,11 +1214,11 @@ module Ci
       if project.ci_cd_settings.opt_in_jwt?
         id_tokens_variables
       else
-        legacy_jwt_variables.concat(id_tokens_variables)
+        predefined_jwt_variables.concat(id_tokens_variables)
       end
     end
 
-    def legacy_jwt_variables
+    def predefined_jwt_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         jwt = Gitlab::Ci::Jwt.for_build(self)
         jwt_v2 = Gitlab::Ci::JwtV2.for_build(self)
@@ -1229,7 +1235,7 @@ module Ci
 
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         id_tokens.each do |var_name, token_data|
-          token = Gitlab::Ci::JwtV2.for_build(self, aud: token_data['id_token']['aud'])
+          token = Gitlab::Ci::JwtV2.for_build(self, aud: token_data['aud'])
 
           variables.append(key: var_name, value: token, public: false, masked: true)
         end

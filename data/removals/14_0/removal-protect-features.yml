@@ -1,4 +1,4 @@
-- name: Container Scanning Engine Clair
+- title: Container Scanning Engine Clair
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: sam.white
@@ -6,7 +6,7 @@
   body: |
     Clair, the default container scanning engine, was deprecated in GitLab 13.9 and is removed from GitLab 14.0 and replaced by Trivy. We advise customers who are customizing variables for their container scanning job to [follow these instructions](https://docs.gitlab.com/ee/user/application_security/container_scanning/#change-scanners) to ensure that their container scanning jobs continue to work.
 
-- name: Web Application Firewall (WAF)
+- title: Web Application Firewall (WAF)
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: sam.white

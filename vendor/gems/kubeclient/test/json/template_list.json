@@ -1,0 +1,35 @@
+{
+  "kind": "TemplateList",
+  "apiVersion": "template.openshift.io/v1",
+  "metadata": {
+    "selfLink": "/apis/template.openshift.io/v1/namespaces/default/templates",
+    "resourceVersion": "22758"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "my-template",
+        "namespace": "default",
+        "selfLink": "/apis/template.openshift.io/v1/namespaces/default/templates/my-template",
+        "uid": "6e03e3e6-0216-11e9-b1e0-68f728fac3ab",
+        "resourceVersion": "21954",
+        "creationTimestamp": "2018-12-17T16:11:36Z"
+      },
+      "objects": [
+        {
+          "apiVersion": "v1",
+          "kind": "Service",
+          "metadata": {
+            "name": "${NAME_PREFIX}my-service"
+          }
+        }
+      ],
+      "parameters": [
+        {
+          "name": "NAME_PREFIX",
+          "description": "Prefix for names"
+        }
+      ]
+    }
+  ]
+}

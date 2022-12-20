@@ -6,7 +6,14 @@ import { createRouter } from './router';
 
 export const initWorkItemsRoot = () => {
   const el = document.querySelector('#js-work-items');
-  const { fullPath, hasIssueWeightsFeature, issuesListPath, hasIterationsFeature } = el.dataset;
+  const {
+    fullPath,
+    hasIssueWeightsFeature,
+    issuesListPath,
+    hasIterationsFeature,
+    hasOkrsFeature,
+    hasIssuableHealthStatusFeature,
+  } = el.dataset;
 
   return new Vue({
     el,
@@ -15,9 +22,12 @@ export const initWorkItemsRoot = () => {
     apolloProvider,
     provide: {
       fullPath,
+      projectPath: fullPath,
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
+      hasOkrsFeature: parseBoolean(hasOkrsFeature),
       issuesListPath,
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
+      hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
     },
     render(createElement) {
       return createElement(App);

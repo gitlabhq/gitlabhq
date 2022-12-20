@@ -20,6 +20,14 @@ RSpec.configure do |config|
     Gitlab::CurrentSettings.clear_in_memory_application_settings!
   end
 
+  config.prepend_before(:all, :migration) do
+    TestProf::BeforeAll.adapter = ::TestProfBeforeAllAdapter.no_transaction_adapter
+  end
+
+  config.append_after(:all, :migration) do
+    TestProf::BeforeAll.adapter = ::TestProfBeforeAllAdapter.default_adapter
+  end
+
   config.append_after(:context, :migration) do
     recreate_databases_and_seed_if_needed || ensure_schema_and_empty_tables
   end

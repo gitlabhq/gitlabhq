@@ -43,6 +43,7 @@ itself: # project
     - storage_version
     - topic_list
     - updated_at
+    - mirror_branch_regex
   remapped_attributes:
     avatar: avatar_url
     build_allow_git_fetch: build_git_strategy
@@ -124,10 +125,6 @@ project_feature:
     - created_at
     - metrics_dashboard_access_level
     - package_registry_access_level
-    - monitor_access_level
-    - infrastructure_access_level
-    - feature_flags_access_level
-    - environments_access_level
     - project_id
     - updated_at
   computed_attributes:
@@ -163,6 +160,7 @@ project_setting:
     - suggested_reviewers_enabled
     - jitsu_key
     - mirror_branch_regex
+    - allow_pipeline_trigger_approve_deployment
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

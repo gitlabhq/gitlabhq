@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project issue boards sidebar assignee', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332230' do
+RSpec.describe 'Project issue boards sidebar assignee', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332230',
+                                                             feature_category: :team_planning do
   include BoardHelpers
 
   let_it_be(:user)        { create(:user) }
@@ -112,7 +113,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js, quarantine: 'https:
       page.within(assignees_widget) do
         click_button('Edit')
 
-        expect(find('.dropdown-menu')).to have_selector('.gl-new-dropdown-item-check-icon')
+        expect(find('.dropdown-menu')).to have_selector('.gl-dropdown-item-check-icon')
       end
     end
   end

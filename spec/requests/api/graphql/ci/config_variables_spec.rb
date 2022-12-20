@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.project(fullPath).ciConfigVariables(sha)' do
+RSpec.describe 'Query.project(fullPath).ciConfigVariables(sha)', feature_category: :pipeline_authoring do
   include GraphqlHelpers
   include ReactiveCachingHelpers
 

@@ -7,7 +7,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -26,7 +27,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -45,7 +47,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -119,7 +122,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -148,7 +152,8 @@
             "type": "codeBlock",
             "attrs": {
               "language": null,
-              "class": "code highlight"
+              "class": "code highlight",
+              "langParams": null
             },
             "content": [
               {
@@ -181,7 +186,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -204,7 +210,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -439,7 +446,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -993,7 +1001,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -1441,7 +1450,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -1706,6 +1716,7 @@
         "attrs": {
           "language": "yaml",
           "class": "code highlight",
+          "langParams": null,
           "isFrontmatter": true
         },
         "content": [
@@ -1762,6 +1773,7 @@
         "attrs": {
           "language": "yaml",
           "class": "code highlight",
+          "langParams": null,
           "isFrontmatter": true
         }
       }
@@ -1806,7 +1818,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -1977,7 +1990,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2084,7 +2098,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2103,7 +2118,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2122,7 +2138,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2156,7 +2173,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2196,7 +2214,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2221,7 +2240,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2243,7 +2263,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2262,7 +2283,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2281,7 +2303,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2300,7 +2323,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2319,7 +2343,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2358,7 +2383,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2377,7 +2403,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2396,7 +2423,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2415,7 +2443,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2434,7 +2463,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         }
       }
     ]
@@ -2447,7 +2477,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2472,7 +2503,8 @@
             "type": "codeBlock",
             "attrs": {
               "language": null,
-              "class": "code highlight"
+              "class": "code highlight",
+              "langParams": null
             },
             "content": [
               {
@@ -2502,7 +2534,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         }
       }
     ]
@@ -2515,7 +2548,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         }
       }
     ]
@@ -2528,7 +2562,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2547,7 +2582,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2566,7 +2602,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2585,7 +2622,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2604,7 +2642,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2623,7 +2662,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2642,7 +2682,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2676,7 +2717,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2704,7 +2746,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2744,7 +2787,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2775,7 +2819,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": "ruby",
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2794,7 +2839,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": "ruby",
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2813,7 +2859,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": ";",
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         }
       }
     ]
@@ -2850,7 +2897,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": "aa",
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -2869,7 +2917,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -3641,7 +3690,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -3663,7 +3713,8 @@
             "type": "codeBlock",
             "attrs": {
               "language": null,
-              "class": "code highlight"
+              "class": "code highlight",
+              "langParams": null
             },
             "content": [
               {
@@ -3861,7 +3912,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -4583,7 +4635,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -4611,7 +4664,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -5124,7 +5178,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -6090,7 +6145,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -6257,7 +6313,8 @@
             "type": "codeBlock",
             "attrs": {
               "language": null,
-              "class": "code highlight"
+              "class": "code highlight",
+              "langParams": null
             },
             "content": [
               {
@@ -6272,7 +6329,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -6297,7 +6355,8 @@
             "type": "codeBlock",
             "attrs": {
               "language": null,
-              "class": "code highlight"
+              "class": "code highlight",
+              "langParams": null
             }
           }
         ]
@@ -6315,7 +6374,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         }
       }
     ]
@@ -6749,7 +6809,8 @@
             "type": "codeBlock",
             "attrs": {
               "language": null,
-              "class": "code highlight"
+              "class": "code highlight",
+              "langParams": null
             },
             "content": [
               {
@@ -6796,7 +6857,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -6851,7 +6913,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -6987,7 +7050,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -7230,7 +7294,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -7297,7 +7362,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -7455,7 +7521,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -7497,7 +7564,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -7520,7 +7588,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -7542,7 +7611,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -7574,7 +7644,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -7596,7 +7667,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -7632,7 +7704,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -7654,7 +7727,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -7801,7 +7875,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -7822,7 +7897,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -8120,7 +8196,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -8179,7 +8256,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -8238,7 +8316,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -8278,7 +8357,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -8316,7 +8396,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -9410,7 +9491,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -9705,7 +9787,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -9991,7 +10074,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -10195,7 +10279,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -10323,7 +10408,8 @@
                 "type": "codeBlock",
                 "attrs": {
                   "language": null,
-                  "class": "code highlight"
+                  "class": "code highlight",
+                  "langParams": null
                 },
                 "content": [
                   {
@@ -10663,7 +10749,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -10682,7 +10769,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -10808,7 +10896,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": "foo+bar",
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -10996,7 +11085,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": "föö",
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -11035,7 +11125,8 @@
         "type": "codeBlock",
         "attrs": {
           "language": null,
-          "class": "code highlight"
+          "class": "code highlight",
+          "langParams": null
         },
         "content": [
           {
@@ -14577,6 +14668,8 @@
               "title": "*",
               "uploading": false,
               "canonicalSrc": "foo",
+              "width": null,
+              "height": null,
               "isReference": false
             }
           }
@@ -15723,6 +15816,8 @@
               "title": null,
               "uploading": false,
               "canonicalSrc": "moon.jpg",
+              "width": null,
+              "height": null,
               "isReference": false
             },
             "marks": [
@@ -15851,6 +15946,8 @@
               "title": null,
               "uploading": false,
               "canonicalSrc": "uri3",
+              "width": null,
+              "height": null,
               "isReference": false
             }
           }
@@ -16265,6 +16362,8 @@
               "title": null,
               "uploading": false,
               "canonicalSrc": "moon.jpg",
+              "width": null,
+              "height": null,
               "isReference": false
             },
             "marks": [
@@ -18112,6 +18211,8 @@
               "title": "title",
               "uploading": false,
               "canonicalSrc": "/url",
+              "width": null,
+              "height": null,
               "isReference": false
             }
           }
@@ -18134,6 +18235,8 @@
               "title": "train & tracks",
               "uploading": false,
               "canonicalSrc": "foo *bar*",
+              "width": null,
+              "height": null,
               "isReference": true
             }
           }
@@ -18170,6 +18273,8 @@
               "title": null,
               "uploading": false,
               "canonicalSrc": "/url2",
+              "width": null,
+              "height": null,
               "isReference": false
             }
           }
@@ -18192,6 +18297,8 @@
               "title": null,
               "uploading": false,
               "canonicalSrc": "/url2",
+              "width": null,
+              "height": null,
               "isReference": false
             }
           }
@@ -18214,6 +18321,8 @@
               "title": "train & tracks",
               "uploading": false,
               "canonicalSrc": "foo *bar*",
+              "width": null,
+              "height": null,
               "isReference": true
             }
           }
@@ -18250,6 +18359,8 @@
               "title": "train & tracks",
               "uploading": false,
               "canonicalSrc": "foobar",
+              "width": null,
+              "height": null,
               "isReference": true
             }
           }
@@ -18286,6 +18397,8 @@
               "title": null,
               "uploading": false,
               "canonicalSrc": "train.jpg",
+              "width": null,
+              "height": null,
               "isReference": false
             }
           }
@@ -18312,6 +18425,8 @@
               "title": "title",
               "uploading": false,
               "canonicalSrc": "/path/to/train.jpg",
+              "width": null,
+              "height": null,
               "isReference": false
             }
           }
@@ -18334,6 +18449,8 @@
               "title": null,
               "uploading": false,
               "canonicalSrc": "url",
+              "width": null,
+              "height": null,
               "isReference": false
             }
           }
@@ -18356,6 +18473,8 @@
               "title": null,
               "uploading": false,
               "canonicalSrc": "/url",
+              "width": null,
+              "height": null,
               "isReference": false
             }
           }
@@ -18378,6 +18497,8 @@
               "title": null,
               "uploading": false,
               "canonicalSrc": "bar",
+              "width": null,
+              "height": null,
               "isReference": true
             }
           }
@@ -18414,6 +18535,8 @@
               "title": null,
               "uploading": false,
               "canonicalSrc": "bar",
+              "width": null,
+              "height": null,
               "isReference": true
             }
           }
@@ -18450,6 +18573,8 @@
               "title": "title",
               "uploading": false,
               "canonicalSrc": "foo",
+              "width": null,
+              "height": null,
               "isReference": true
             }
           }
@@ -18486,6 +18611,8 @@
               "title": "title",
               "uploading": false,
               "canonicalSrc": "*foo* bar",
+              "width": null,
+              "height": null,
               "isReference": true
             }
           }
@@ -18522,6 +18649,8 @@
               "title": "title",
               "uploading": false,
               "canonicalSrc": "foo",
+              "width": null,
+              "height": null,
               "isReference": true
             }
           }
@@ -18558,6 +18687,8 @@
               "title": "title",
               "uploading": false,
               "canonicalSrc": "foo",
+              "width": null,
+              "height": null,
               "isReference": true
             }
           },
@@ -18598,6 +18729,8 @@
               "title": "title",
               "uploading": false,
               "canonicalSrc": "foo",
+              "width": null,
+              "height": null,
               "isReference": true
             }
           }
@@ -18634,6 +18767,8 @@
               "title": "title",
               "uploading": false,
               "canonicalSrc": "*foo* bar",
+              "width": null,
+              "height": null,
               "isReference": true
             }
           }
@@ -18694,6 +18829,8 @@
               "title": "title",
               "uploading": false,
               "canonicalSrc": "foo",
+              "width": null,
+              "height": null,
               "isReference": true
             }
           }
@@ -20676,6 +20813,7 @@
         "attrs": {
           "language": "yaml",
           "class": "code highlight",
+          "langParams": null,
           "isFrontmatter": true
         },
         "content": [
@@ -20696,6 +20834,7 @@
         "attrs": {
           "language": "toml",
           "class": "code highlight",
+          "langParams": null,
           "isFrontmatter": true
         },
         "content": [
@@ -20716,6 +20855,7 @@
         "attrs": {
           "language": "json",
           "class": "code highlight",
+          "langParams": null,
           "isFrontmatter": true
         },
         "content": [
@@ -21005,6 +21145,2437 @@
               "canonicalSrc": "video",
               "alt": "video"
             }
+          }
+        ]
+      }
+    ]
+  }
+08_04_01__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_group__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "image",
+            "attrs": {
+              "src": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png",
+              "alt": "test-file",
+              "title": null,
+              "uploading": false,
+              "canonicalSrc": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png",
+              "width": null,
+              "height": null,
+              "isReference": false
+            }
+          }
+        ]
+      }
+    ]
+  }
+08_04_02__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_project__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "image",
+            "attrs": {
+              "src": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png",
+              "alt": "test-file",
+              "title": null,
+              "uploading": false,
+              "canonicalSrc": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png",
+              "width": null,
+              "height": null,
+              "isReference": false
+            }
+          }
+        ]
+      }
+    ]
+  }
+08_04_03__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_project_wiki__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "image",
+            "attrs": {
+              "src": "test-file.png",
+              "alt": "test-file",
+              "title": null,
+              "uploading": false,
+              "canonicalSrc": "test-file.png",
+              "width": null,
+              "height": null,
+              "isReference": false
+            }
+          }
+        ]
+      }
+    ]
+  }
+08_04_04__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_group__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip",
+                  "isReference": false
+                }
+              }
+            ],
+            "text": "test-file"
+          }
+        ]
+      }
+    ]
+  }
+08_04_05__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_project__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip",
+                  "isReference": false
+                }
+              }
+            ],
+            "text": "test-file"
+          }
+        ]
+      }
+    ]
+  }
+08_04_06__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_project_wiki__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "test-file.zip",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": "test-file.zip",
+                  "isReference": false
+                }
+              }
+            ],
+            "text": "test-file"
+          }
+        ]
+      }
+    ]
+  }
+08_04_07__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_group_wiki__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "test-file.zip",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": "test-file.zip",
+                  "isReference": false
+                }
+              }
+            ],
+            "text": "test-file"
+          }
+        ]
+      }
+    ]
+  }
+08_04_08__gitlab_internal_extension_markdown__migrated_golden_master_examples__audio__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "audio",
+            "attrs": {
+              "uploading": false,
+              "src": "https://gitlab.com/gitlab.mp3",
+              "canonicalSrc": "https://gitlab.com/gitlab.mp3",
+              "alt": "Sample Audio"
+            }
+          }
+        ]
+      }
+    ]
+  }
+08_04_09__gitlab_internal_extension_markdown__migrated_golden_master_examples__audio_and_video_in_lists__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "bullet": "*"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "audio",
+                    "attrs": {
+                      "uploading": false,
+                      "src": "https://gitlab.com/1.mp3",
+                      "canonicalSrc": "https://gitlab.com/1.mp3",
+                      "alt": "Sample Audio"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "video",
+                    "attrs": {
+                      "uploading": false,
+                      "src": "https://gitlab.com/2.mp4",
+                      "canonicalSrc": "https://gitlab.com/2.mp4",
+                      "alt": "Sample Video"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "orderedList",
+        "attrs": {
+          "start": 1,
+          "parens": false
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "video",
+                    "attrs": {
+                      "uploading": false,
+                      "src": "https://gitlab.com/1.mp4",
+                      "canonicalSrc": "https://gitlab.com/1.mp4",
+                      "alt": "Sample Video"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "audio",
+                    "attrs": {
+                      "uploading": false,
+                      "src": "https://gitlab.com/2.mp3",
+                      "canonicalSrc": "https://gitlab.com/2.mp3",
+                      "alt": "Sample Audio"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "taskList",
+        "attrs": {
+          "numeric": false,
+          "start": 1,
+          "parens": false
+        },
+        "content": [
+          {
+            "type": "taskItem",
+            "attrs": {
+              "checked": true
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "audio",
+                    "attrs": {
+                      "uploading": false,
+                      "src": "https://gitlab.com/1.mp3",
+                      "canonicalSrc": "https://gitlab.com/1.mp3",
+                      "alt": "Sample Audio"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "taskItem",
+            "attrs": {
+              "checked": true
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "audio",
+                    "attrs": {
+                      "uploading": false,
+                      "src": "https://gitlab.com/2.mp3",
+                      "canonicalSrc": "https://gitlab.com/2.mp3",
+                      "alt": "Sample Audio"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "taskItem",
+            "attrs": {
+              "checked": true
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "video",
+                    "attrs": {
+                      "uploading": false,
+                      "src": "https://gitlab.com/3.mp4",
+                      "canonicalSrc": "https://gitlab.com/3.mp4",
+                      "alt": "Sample Video"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_10__gitlab_internal_extension_markdown__migrated_golden_master_examples__blockquote__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "blockquote",
+        "attrs": {
+          "multiline": false
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "This is a blockquote"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "This is another one"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_11__gitlab_internal_extension_markdown__migrated_golden_master_examples__bold__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ],
+            "text": "bold"
+          }
+        ]
+      }
+    ]
+  }
+08_04_12__gitlab_internal_extension_markdown__migrated_golden_master_examples__bullet_list_style_1__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "bullet": "*"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "list item 1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "list item 2"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "attrs": {
+                  "bullet": "*"
+                },
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "embedded list item 3"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_13__gitlab_internal_extension_markdown__migrated_golden_master_examples__bullet_list_style_2__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "bullet": "*"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "list item 1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "list item 2"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "attrs": {
+                  "bullet": "*"
+                },
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "embedded list item 3"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_14__gitlab_internal_extension_markdown__migrated_golden_master_examples__bullet_list_style_3__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "bullet": "*"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "list item 1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "list item 2"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "attrs": {
+                  "bullet": "*"
+                },
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "embedded list item 3"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_15__gitlab_internal_extension_markdown__migrated_golden_master_examples__code_block_javascript__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "codeBlock",
+        "attrs": {
+          "language": "javascript",
+          "class": "code highlight",
+          "langParams": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "  console.log('hello world')"
+          }
+        ]
+      }
+    ]
+  }
+08_04_16__gitlab_internal_extension_markdown__migrated_golden_master_examples__code_block_plaintext__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "codeBlock",
+        "attrs": {
+          "language": null,
+          "class": "code highlight",
+          "langParams": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "  plaintext"
+          }
+        ]
+      }
+    ]
+  }
+08_04_17__gitlab_internal_extension_markdown__migrated_golden_master_examples__code_block_unknown__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "codeBlock",
+        "attrs": {
+          "language": "foobar",
+          "class": "code highlight",
+          "langParams": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "  custom_language = >> this <<"
+          }
+        ]
+      }
+    ]
+  }
+08_04_18__gitlab_internal_extension_markdown__migrated_golden_master_examples__color_chips__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "bullet": "*"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "code"
+                      }
+                    ],
+                    "text": "#F00"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "code"
+                      }
+                    ],
+                    "text": "#F00A"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "code"
+                      }
+                    ],
+                    "text": "#FF0000"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "code"
+                      }
+                    ],
+                    "text": "#FF0000AA"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "code"
+                      }
+                    ],
+                    "text": "RGB(0,255,0)"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "code"
+                      }
+                    ],
+                    "text": "RGB(0%,100%,0%)"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "code"
+                      }
+                    ],
+                    "text": "RGBA(0,255,0,0.3)"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "code"
+                      }
+                    ],
+                    "text": "HSL(540,70%,50%)"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "code"
+                      }
+                    ],
+                    "text": "HSLA(540,70%,50%,0.3)"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_19__gitlab_internal_extension_markdown__migrated_golden_master_examples__description_list__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph"
+      }
+    ]
+  }
+08_04_20__gitlab_internal_extension_markdown__migrated_golden_master_examples__details__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph"
+      }
+    ]
+  }
+08_04_21__gitlab_internal_extension_markdown__migrated_golden_master_examples__diagram_kroki_nomnoml__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "codeBlock",
+        "attrs": {
+          "language": "nomnoml",
+          "class": "code highlight",
+          "langParams": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "  #stroke: #a86128\n  [<frame>Decorator pattern|\n    [<abstract>Component||+ operation()]\n    [Client] depends --> [Component]\n    [Decorator|- next: Component]\n    [Decorator] decorates -- [ConcreteComponent]\n    [Component] <:- [Decorator]\n    [Component] <:- [ConcreteComponent]\n  ]"
+          }
+        ]
+      }
+    ]
+  }
+08_04_22__gitlab_internal_extension_markdown__migrated_golden_master_examples__diagram_plantuml__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "diagram",
+        "attrs": {
+          "language": "plantuml",
+          "isDiagram": true,
+          "showPreview": true
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "  Alice -> Bob: Authentication Request\n  Bob --> Alice: Authentication Response\n\n  Alice -> Bob: Another authentication Request\n  Alice <-- Bob: Another authentication Response"
+          }
+        ]
+      }
+    ]
+  }
+08_04_23__gitlab_internal_extension_markdown__migrated_golden_master_examples__diagram_plantuml_unicode__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "diagram",
+        "attrs": {
+          "language": "plantuml",
+          "isDiagram": true,
+          "showPreview": true
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "A -> B : Text with norwegian characters: æøå"
+          }
+        ]
+      }
+    ]
+  }
+08_04_24__gitlab_internal_extension_markdown__migrated_golden_master_examples__div__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "div",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "plain text"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "div",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "just a plain ol' div, not much to "
+              },
+              {
+                "type": "text",
+                "marks": [
+                  {
+                    "type": "italic"
+                  }
+                ],
+                "text": "expect"
+              },
+              {
+                "type": "text",
+                "text": "!"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_25__gitlab_internal_extension_markdown__migrated_golden_master_examples__emoji__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": ":sparkles: :heart: :100:"
+          }
+        ]
+      }
+    ]
+  }
+08_04_26__gitlab_internal_extension_markdown__migrated_golden_master_examples__emphasis__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
+            "text": "emphasized text"
+          }
+        ]
+      }
+    ]
+  }
+08_04_27__gitlab_internal_extension_markdown__migrated_golden_master_examples__figure__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph"
+      }
+    ]
+  }
+08_04_28__gitlab_internal_extension_markdown__migrated_golden_master_examples__footnotes__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A footnote reference tag looks like this: "
+          },
+          {
+            "type": "footnoteReference",
+            "attrs": {
+              "identifier": "1",
+              "label": "1"
+            }
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "This reference tag is a mix of letters and numbers. "
+          },
+          {
+            "type": "footnoteReference",
+            "attrs": {
+              "identifier": "footnote",
+              "label": "footnote"
+            }
+          }
+        ]
+      },
+      {
+        "type": "footnoteDefinition",
+        "attrs": {
+          "identifier": "1",
+          "label": "1"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "This is the text inside a footnote."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "footnoteDefinition",
+        "attrs": {
+          "identifier": "footnote",
+          "label": "footnote"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "This is another footnote."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_29__gitlab_internal_extension_markdown__migrated_golden_master_examples__frontmatter_json__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "frontmatter",
+        "attrs": {
+          "language": "json",
+          "class": "code highlight",
+          "langParams": null,
+          "isFrontmatter": true
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"title\": \"Page title\"\n}"
+          }
+        ]
+      }
+    ]
+  }
+08_04_30__gitlab_internal_extension_markdown__migrated_golden_master_examples__frontmatter_toml__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "frontmatter",
+        "attrs": {
+          "language": "toml",
+          "class": "code highlight",
+          "langParams": null,
+          "isFrontmatter": true
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "title = \"Page title\""
+          }
+        ]
+      }
+    ]
+  }
+08_04_31__gitlab_internal_extension_markdown__migrated_golden_master_examples__frontmatter_yaml__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "frontmatter",
+        "attrs": {
+          "language": "yaml",
+          "class": "code highlight",
+          "langParams": null,
+          "isFrontmatter": true
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "title: Page title"
+          }
+        ]
+      }
+    ]
+  }
+08_04_32__gitlab_internal_extension_markdown__migrated_golden_master_examples__hard_break__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "This is a line after a"
+          },
+          {
+            "type": "hardBreak"
+          },
+          {
+            "type": "text",
+            "text": "\nhard break"
+          }
+        ]
+      }
+    ]
+  }
+08_04_33__gitlab_internal_extension_markdown__migrated_golden_master_examples__headings__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Heading 1"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Heading 2"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 3
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Heading 3"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 4
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Heading 4"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 5
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Heading 5"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 6
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Heading 6"
+          }
+        ]
+      }
+    ]
+  }
+08_04_34__gitlab_internal_extension_markdown__migrated_golden_master_examples__horizontal_rule__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "horizontalRule"
+      }
+    ]
+  }
+08_04_35__gitlab_internal_extension_markdown__migrated_golden_master_examples__html_marks__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "bullet": "*"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Content editor is"
+                  },
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "strike"
+                      }
+                    ],
+                    "text": "great"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "If the changes"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": ", please"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The English song"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " looks like this in Hebrew:"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": ". In the computer's memory, this is stored as"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " by Edvard Munch. Painted in 1893."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " is the standard markup language for creating web pages."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Do not forget to buy"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " today."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "This is a paragraph and"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The concert starts at"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " and you'll be able to enjoy the band for at least"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Press"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " +"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " to copy text (Windows)."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "WWF's goal is to:"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " We hope they succeed."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The error occurred was:"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The area of a triangle is: 1/2 x"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " x"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": ", where"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " is the base, and"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " is the vertical height."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph"
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "C"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "H"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " + O"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " \t CO"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " + H"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "O"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The"
+                  },
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ],
+                    "text": "Pythagorean theorem"
+                  },
+                  {
+                    "type": "text",
+                    "text": " is often expressed as"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " +"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " ="
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_36__gitlab_internal_extension_markdown__migrated_golden_master_examples__image__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "image",
+            "attrs": {
+              "src": "https://gitlab.com/logo.png",
+              "alt": "alt text",
+              "title": null,
+              "uploading": false,
+              "canonicalSrc": "https://gitlab.com/logo.png",
+              "width": null,
+              "height": null,
+              "isReference": false
+            }
+          }
+        ]
+      }
+    ]
+  }
+08_04_37__gitlab_internal_extension_markdown__migrated_golden_master_examples__inline_code__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "code"
+              }
+            ],
+            "text": "code"
+          }
+        ]
+      }
+    ]
+  }
+08_04_38__gitlab_internal_extension_markdown__migrated_golden_master_examples__inline_diff__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "bullet": "*"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{-deleted-}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{+added+}"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_39__gitlab_internal_extension_markdown__migrated_golden_master_examples__label__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "~bug"
+          }
+        ]
+      }
+    ]
+  }
+08_04_40__gitlab_internal_extension_markdown__migrated_golden_master_examples__link__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "https://gitlab.com",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": "https://gitlab.com",
+                  "isReference": false
+                }
+              }
+            ],
+            "text": "GitLab"
+          }
+        ]
+      }
+    ]
+  }
+08_04_41__gitlab_internal_extension_markdown__migrated_golden_master_examples__math__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "This math is inline $"
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "code"
+              }
+            ],
+            "text": "a^2+b^2=c^2"
+          },
+          {
+            "type": "text",
+            "text": "$."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "This is on a separate line:"
+          }
+        ]
+      },
+      {
+        "type": "codeBlock",
+        "attrs": {
+          "language": "math",
+          "class": "code highlight",
+          "langParams": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "a^2+b^2=c^2"
+          }
+        ]
+      }
+    ]
+  }
+08_04_42__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_list__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "orderedList",
+        "attrs": {
+          "start": 1,
+          "parens": false
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "list item 1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "list item 2"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "list item 3"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_43__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_list_with_start_order__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "orderedList",
+        "attrs": {
+          "start": 1,
+          "parens": false
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "list item 1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "list item 2"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "list item 3"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_45__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_task_list_with_order__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "taskList",
+        "attrs": {
+          "numeric": true,
+          "start": 1,
+          "parens": false
+        },
+        "content": [
+          {
+            "type": "taskItem",
+            "attrs": {
+              "checked": true
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "hello"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "taskItem",
+            "attrs": {
+              "checked": true
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "world"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "taskItem",
+            "attrs": {
+              "checked": false
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "example"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+08_04_46__gitlab_internal_extension_markdown__migrated_golden_master_examples__reference_for_project_wiki__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Hi @gfm_user - thank you for reporting this ~\"UX bug\" (#1) we hope to fix it in %1.1 as part of !1"
+          }
+        ]
+      }
+    ]
+  }
+08_04_47__gitlab_internal_extension_markdown__migrated_golden_master_examples__strike__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "strike"
+              }
+            ],
+            "text": "del"
+          }
+        ]
+      }
+    ]
+  }
+08_04_48__gitlab_internal_extension_markdown__migrated_golden_master_examples__table__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "header"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "header"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "marks": [
+                          {
+                            "type": "code"
+                          }
+                        ],
+                        "text": "code"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "cell with "
+                      },
+                      {
+                        "type": "text",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ],
+                        "text": "bold"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "marks": [
+                          {
+                            "type": "strike"
+                          }
+                        ],
+                        "text": "strike"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "cell with "
+                      },
+                      {
+                        "type": "text",
+                        "marks": [
+                          {
+                            "type": "italic"
+                          }
+                        ],
+                        "text": "italic"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "content after table"
+          }
+        ]
+      }
+    ]
+  }
+08_04_49__gitlab_internal_extension_markdown__migrated_golden_master_examples__table_of_contents__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "tableOfContents"
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Lorem"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Well, that's just like... your opinion.. man."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Ipsum"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 3
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Dolar"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 1
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Sit amit"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 3
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "I don't know"
+          }
+        ]
+      }
+    ]
+  }
+08_04_51__gitlab_internal_extension_markdown__migrated_golden_master_examples__video__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "video",
+            "attrs": {
+              "uploading": false,
+              "src": "https://gitlab.com/gitlab.mp4",
+              "canonicalSrc": "https://gitlab.com/gitlab.mp4",
+              "alt": "Sample Video"
+            }
+          }
+        ]
+      }
+    ]
+  }
+08_04_52__gitlab_internal_extension_markdown__migrated_golden_master_examples__word_break__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Fernstraßenbauprivatfinanzierungsgesetz"
           }
         ]
       }

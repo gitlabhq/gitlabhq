@@ -15,52 +15,120 @@
     "can_stop"
   ],
   "properties": {
-    "id": { "type": "integer" },
-    "global_id": { "type": "string" },
-    "name": { "type": "string" },
-    "state": { "type": "string" },
-    "external_url": { "$ref": "types/nullable_string.json" },
-    "environment_type": { "$ref": "types/nullable_string.json" },
-    "name_without_type": { "type": "string" },
-    "has_stop_action": { "type": "boolean" },
-    "environment_path": { "type": "string" },
-    "stop_path": { "type": "string" },
-    "cancel_auto_stop_path": { "type": "string" },
-    "folder_path": { "type": "string" },
-    "logs_path": { "type": "string" },
-    "logs_api_path": { "type": "string" },
-    "enable_advanced_logs_querying": { "type": "boolean" },
-    "created_at": { "type": "string", "format": "date-time" },
-    "updated_at": { "type": "string", "format": "date-time" },
-    "auto_stop_at": { "type": "string", "format": "date-time" },
-    "can_stop": { "type": "boolean" },
-    "has_opened_alert": { "type": "boolean" },
-    "tier": { "type": "string" },
-    "required_approval_count": { "type": "integer" },
-    "cluster_type": { "type": "types/nullable_string.json" },
-    "terminal_path": { "type": "types/nullable_string.json" },
+    "id": {
+      "type": "integer"
+    },
+    "global_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "external_url": {
+      "$ref": "types/nullable_string.json",
+      "format": "uri"
+    },
+    "environment_type": {
+      "$ref": "types/nullable_string.json",
+      "format": "uri"
+    },
+    "name_without_type": {
+      "type": "string"
+    },
+    "has_stop_action": {
+      "type": "boolean"
+    },
+    "environment_path": {
+      "type": "string"
+    },
+    "stop_path": {
+      "type": "string"
+    },
+    "cancel_auto_stop_path": {
+      "type": "string"
+    },
+    "folder_path": {
+      "type": "string"
+    },
+    "logs_path": {
+      "type": "string"
+    },
+    "logs_api_path": {
+      "type": "string"
+    },
+    "enable_advanced_logs_querying": {
+      "type": "boolean"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "auto_stop_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "can_stop": {
+      "type": "boolean"
+    },
+    "has_opened_alert": {
+      "type": "boolean"
+    },
+    "tier": {
+      "type": "string"
+    },
+    "required_approval_count": {
+      "type": "integer"
+    },
+    "cluster_type": {
+      "ref": "types/nullable_string.json"
+    },
+    "terminal_path": {
+      "ref": "types/nullable_string.json"
+    },
     "rollout_status": {
       "oneOf": [
-        { "type": "null" },
-        { "$ref": "rollout_status.json" }
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "rollout_status.json"
+        }
       ]
     },
     "last_deployment": {
       "oneOf": [
-        { "type": "null" },
-        { "$ref": "deployment.json" },
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "deployment.json"
+        },
         {
           "type": "object",
-          "properties" : {
-            "name": { "type": "string" },
-            "build_path": { "type": "string" }
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "build_path": {
+              "type": "string"
+            }
           }
         }
       ]
     },
-    "can_delete": { "type": "boolean" }
-    ,
-    "delete_path": { "type": "string" }
+    "can_delete": {
+      "type": "boolean"
+    },
+    "delete_path": {
+      "type": "string"
+    }
   },
   "additionalProperties": false
 }

@@ -1,4 +1,4 @@
-import { GlAlert, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlAlert, GlListbox, GlListboxItem } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
@@ -22,9 +22,10 @@ describe('Code Coverage', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findAreaChart = () => wrapper.findComponent(GlAreaChart);
-  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findFirstDropdownItem = () => findAllDropdownItems().at(0);
-  const findSecondDropdownItem = () => findAllDropdownItems().at(1);
+  const findListBox = () => wrapper.findComponent(GlListbox);
+  const findListBoxItems = () => wrapper.findAllComponents(GlListboxItem);
+  const findFirstListBoxItem = () => findListBoxItems().at(0);
+  const findSecondListBoxItem = () => findListBoxItems().at(1);
   const findDownloadButton = () => wrapper.find('[data-testid="download-button"]');
 
   const createComponent = () => {
@@ -36,6 +37,7 @@ describe('Code Coverage', () => {
         graphRef,
         graphCsvPath,
       },
+      stubs: { GlListbox },
     });
   };
 
@@ -142,9 +144,9 @@ describe('Code Coverage', () => {
     });
 
     it('renders the dropdown with all custom names as options', () => {
-      expect(wrapper.findComponent(GlDropdown).exists()).toBeDefined();
-      expect(findAllDropdownItems()).toHaveLength(codeCoverageMockData.length);
-      expect(findFirstDropdownItem().text()).toBe(codeCoverageMockData[0].group_name);
+      expect(findListBox().exists()).toBe(true);
+      expect(findListBoxItems()).toHaveLength(codeCoverageMockData.length);
+      expect(findFirstListBoxItem().text()).toBe(codeCoverageMockData[0].group_name);
     });
   });
 
@@ -159,19 +161,19 @@ describe('Code Coverage', () => {
     });
 
     it('updates the selected dropdown option with an icon', async () => {
-      findSecondDropdownItem().vm.$emit('click');
+      findListBox().vm.$emit('select', '1');
 
       await nextTick();
 
-      expect(findFirstDropdownItem().attributes('ischecked')).toBe(undefined);
-      expect(findSecondDropdownItem().attributes('ischecked')).toBe('true');
+      expect(findFirstListBoxItem().attributes('isselected')).toBeUndefined();
+      expect(findSecondListBoxItem().attributes('isselected')).toBe('true');
     });
 
     it('updates the graph data when selecting a different option in dropdown', async () => {
       const originalSelectedData = wrapper.vm.selectedDailyCoverage;
       const expectedData = codeCoverageMockData[1];
 
-      findSecondDropdownItem().vm.$emit('click');
+      findListBox().vm.$emit('select', '1');
 
       await nextTick();
 

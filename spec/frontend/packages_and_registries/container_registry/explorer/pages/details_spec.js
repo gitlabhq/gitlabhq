@@ -18,7 +18,6 @@ import {
   UNFINISHED_STATUS,
   DELETE_SCHEDULED,
   ALERT_DANGER_IMAGE,
-  ALERT_DANGER_IMPORTING,
   MISSING_OR_DELETED_IMAGE_BREADCRUMB,
   MISSING_OR_DELETED_IMAGE_TITLE,
   MISSING_OR_DELETED_IMAGE_MESSAGE,
@@ -34,7 +33,6 @@ import Tracking from '~/tracking';
 import {
   graphQLImageDetailsMock,
   graphQLDeleteImageRepositoryTagsMock,
-  graphQLDeleteImageRepositoryTagImportingErrorMock,
   graphQLProjectImageRepositoriesDetailsMock,
   containerRepositoryMock,
   graphQLEmptyImageDetailsMock,
@@ -341,7 +339,6 @@ describe('Details Page', () => {
     const config = {
       isAdmin: true,
       garbageCollectionHelpPagePath: 'baz',
-      containerRegistryImportingHelpPagePath: 'https://foobar',
     };
     const deleteAlertType = 'success_tag';
 
@@ -365,38 +362,6 @@ describe('Details Page', () => {
       await waitForApolloRequestRender();
 
       expect(findDeleteAlert().props()).toEqual({ ...config, deleteAlertType });
-    });
-
-    describe('importing repository error', () => {
-      let mutationResolver;
-      let tagsResolver;
-      let detailsResolver;
-
-      beforeEach(async () => {
-        mutationResolver = jest
-          .fn()
-          .mockResolvedValue(graphQLDeleteImageRepositoryTagImportingErrorMock);
-        tagsResolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock(imageTagsMock()));
-        detailsResolver = jest.fn().mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
-
-        mountComponent({ mutationResolver, tagsResolver, detailsResolver });
-        await waitForApolloRequestRender();
-      });
-
-      it('displays the proper alert', async () => {
-        findTagsList().vm.$emit('delete', [cleanTags[0]]);
-        await nextTick();
-
-        findDeleteModal().vm.$emit('confirmDelete');
-        await waitForPromises();
-
-        expect(tagsResolver).toHaveBeenCalled();
-        expect(detailsResolver).toHaveBeenCalled();
-
-        const deleteAlert = findDeleteAlert();
-        expect(deleteAlert.exists()).toBe(true);
-        expect(deleteAlert.props('deleteAlertType')).toBe(ALERT_DANGER_IMPORTING);
-      });
     });
   });
 

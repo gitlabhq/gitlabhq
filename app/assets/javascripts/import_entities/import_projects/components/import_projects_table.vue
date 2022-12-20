@@ -37,6 +37,11 @@ export default {
       required: false,
       default: false,
     },
+    cancelable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     optionalStages: {
       type: Array,
       required: false,
@@ -58,9 +63,8 @@ export default {
   },
 
   computed: {
-    ...mapState(['filter', 'repositories', 'namespaces', 'defaultTargetNamespace', 'pageInfo']),
+    ...mapState(['filter', 'repositories', 'defaultTargetNamespace', 'pageInfo', 'isLoadingRepos']),
     ...mapGetters([
-      'isLoading',
       'isImportingAnyRepo',
       'importingRepoCount',
       'hasImportableRepos',
@@ -98,7 +102,6 @@ export default {
   },
 
   mounted() {
-    this.fetchNamespaces();
     this.fetchJobs();
 
     if (!this.paginatable) {
@@ -115,7 +118,6 @@ export default {
     ...mapActions([
       'fetchRepos',
       'fetchJobs',
-      'fetchNamespaces',
       'stopJobsPolling',
       'clearJobsEtagPoll',
       'setFilter',
@@ -196,22 +198,22 @@ export default {
             <provider-repo-table-row
               :key="repo.importSource.providerLink"
               :repo="repo"
-              :available-namespaces="namespaces"
               :user-namespace="defaultTargetNamespace"
               :optional-stages="optionalStagesSelection"
+              :cancelable="cancelable"
             />
           </template>
         </tbody>
       </table>
     </div>
     <gl-intersection-observer
-      v-if="paginatable"
+      v-if="paginatable && pageInfo.hasNextPage"
       :key="pagePaginationStateKey"
       @appear="fetchRepos"
     />
-    <gl-loading-icon v-if="isLoading" class="gl-mt-7" size="lg" />
+    <gl-loading-icon v-if="isLoadingRepos" class="gl-mt-7" size="lg" />
 
-    <div v-if="!isLoading && repositories.length === 0" class="gl-text-center">
+    <div v-if="!isLoadingRepos && repositories.length === 0" class="gl-text-center">
       <strong>{{ emptyStateText }}</strong>
     </div>
   </div>

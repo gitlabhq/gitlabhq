@@ -1,13 +1,6 @@
 = form_errors(hook)
 
-- if Feature.enabled?(:webhook_form_mask_url)
-  .js-vue-webhook-form{ data: webhook_form_data(hook) }
-- else
-  .form-group
-    = form.label :url, s_('Webhooks|URL'), class: 'label-bold'
-    = form.text_field :url, class: 'form-control gl-form-input', placeholder: 'http://example.com/trigger-ci.json'
-    %p.form-text.text-muted
-      = s_('Webhooks|URL must be percent-encoded if it contains one or more special characters.')
+.js-vue-webhook-form{ data: webhook_form_data(hook) }
 .form-group
   = form.label :token, s_('Webhooks|Secret token'), class: 'label-bold'
   = form.password_field :token, value: hook.masked_token, autocomplete: 'new-password', class: 'form-control gl-form-input'
@@ -19,66 +12,57 @@
   = form.label :url, s_('Webhooks|Trigger'), class: 'label-bold'
   %ul.list-unstyled
     %li.gl-pb-5
-      - if Feature.enabled?(:enhanced_webhook_support_regex)
-        - is_new_hook = hook.id.nil?
-        .js-vue-push-events{ data: { push_events: hook.push_events.to_s, strategy: hook.branch_filter_strategy, is_new_hook: is_new_hook.to_s, push_events_branch_filter: hook.push_events_branch_filter } }
-      - else
-        = form.gitlab_ui_checkbox_component :push_events, s_('Webhooks|Push events')
-        .gl-pl-6
-          = form.text_field :push_events_branch_filter, class: 'form-control gl-form-input',
-            placeholder: 'Branch name or wildcard pattern to trigger on (leave blank for all)'
-        %p.form-text.text-muted.custom-control
-          = s_('Webhooks|Push to the repository.')
+      .js-vue-push-events{ data: { push_events: hook.push_events.to_s, strategy: hook.branch_filter_strategy, is_new_hook: hook.new_record?.to_s, push_events_branch_filter: hook.push_events_branch_filter } }
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :tag_push_events,
-          s_('Webhooks|Tag push events'),
+          integration_webhook_event_human_name(:tag_push_events),
           help_text: s_('Webhooks|A new tag is pushed to the repository.')
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :note_events,
-          s_('Webhooks|Comments'),
+          integration_webhook_event_human_name(:note_events),
           help_text: s_('Webhooks|A comment is added to an issue or merge request.')
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :confidential_note_events,
-          s_('Webhooks|Confidential comments'),
+          integration_webhook_event_human_name(:confidential_note_events),
           help_text: s_('Webhooks|A comment is added to a confidential issue.')
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :issues_events,
-          s_('Webhooks|Issues events'),
+          integration_webhook_event_human_name(:issues_events),
           help_text: s_('Webhooks|An issue is created, updated, closed, or reopened.')
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :confidential_issues_events,
-          s_('Webhooks|Confidential issues events'),
+          integration_webhook_event_human_name(:confidential_issues_events),
           help_text: s_('Webhooks|A confidential issue is created, updated, closed, or reopened.')
     - if @group
       = render_if_exists 'groups/hooks/member_events', form: form
       = render_if_exists 'groups/hooks/subgroup_events', form: form
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :merge_requests_events,
-          s_('Webhooks|Merge request events'),
+          integration_webhook_event_human_name(:merge_requests_events),
           help_text: s_('Webhooks|A merge request is created, updated, or merged.')
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :job_events,
-          s_('Webhooks|Job events'),
+          integration_webhook_event_human_name(:job_events),
           help_text: s_("Webhooks|A job's status changes.")
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :pipeline_events,
-          s_('Webhooks|Pipeline events'),
+          integration_webhook_event_human_name(:pipeline_events),
           help_text: s_("Webhooks|A pipeline's status changes.")
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :wiki_page_events,
-          s_('Webhooks|Wiki page events'),
+          integration_webhook_event_human_name(:wiki_page_events),
           help_text: s_('Webhooks|A wiki page is created or updated.')
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :deployment_events,
-          s_('Webhooks|Deployment events'),
+          integration_webhook_event_human_name(:deployment_events),
           help_text: s_('Webhooks|A deployment starts, finishes, fails, or is canceled.')
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :feature_flag_events,
-          s_('Webhooks|Feature flag events'),
+          integration_webhook_event_human_name(:feature_flag_events),
           help_text: s_('Webhooks|A feature flag is turned on or off.')
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :releases_events,
-          s_('Webhooks|Releases events'),
+          integration_webhook_event_human_name(:releases_events),
           help_text: s_('Webhooks|A release is created or updated.')
 .form-group
   = form.label :enable_ssl_verification, s_('Webhooks|SSL verification'), class: 'label-bold checkbox'

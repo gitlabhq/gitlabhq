@@ -1,6 +1,6 @@
 <script>
 import { debounce } from 'lodash';
-import { GlListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import Api from '~/api';
 import { __ } from '~/locale';
@@ -18,7 +18,7 @@ const MINIMUM_QUERY_LENGTH = 3;
 
 export default {
   components: {
-    GlListbox,
+    GlCollapsibleListbox,
   },
   props: {
     inputName: {
@@ -167,7 +167,7 @@ export default {
 
 <template>
   <div>
-    <gl-listbox
+    <gl-collapsible-listbox
       ref="listbox"
       v-model="selected"
       :header-text="$options.i18n.selectGroup"
@@ -188,7 +188,7 @@ export default {
         </div>
         <div class="gl-text-gray-300">{{ item.full_path }}</div>
       </template>
-    </gl-listbox>
+    </gl-collapsible-listbox>
     <div class="flash-container"></div>
     <input :id="inputId" data-testid="input" type="hidden" :name="inputName" :value="inputValue" />
   </div>

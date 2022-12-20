@@ -160,15 +160,14 @@ module QA
 
         # From https://github.com/mattheworiordan/capybara-screenshot/issues/84#issuecomment-41219326
         Capybara::Screenshot.register_driver(QA::Runtime::Env.browser) do |driver, path|
+          QA::Runtime::Logger.info("Saving screenshot..")
           driver.browser.save_screenshot(path)
         end
-
-        Capybara::Screenshot.append_timestamp = false
 
         Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
           ::File.join(
             QA::Runtime::Namespace.name(reset_cache: false),
-            example.full_description.downcase.parameterize(separator: "_")[0..99]
+            example.full_description.downcase.parameterize(separator: "_")[0..79]
           )
         end
 

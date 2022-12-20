@@ -10,7 +10,7 @@ module Gitlab
     alias_method :extra_logging_enabled?, :enabled?
 
     def configure_bullet?
-      defined?(::Bullet) && (enabled? || Rails.env.development?)
+      defined?(::Bullet) && (enabled? || Gitlab.config.bullet.enabled)
     end
   end
 end

@@ -1,5 +1,5 @@
 import { normalizeHeaders } from './common_utils';
-import httpStatusCodes, { successCodes } from './http_status';
+import { HTTP_STATUS_ABORTED, successCodes } from './http_status';
 
 /**
  * Polling utility for handling realtime updates.
@@ -108,7 +108,7 @@ export default class Poll {
       })
       .catch((error) => {
         notificationCallback(false);
-        if (error.status === httpStatusCodes.ABORTED) {
+        if (error.status === HTTP_STATUS_ABORTED) {
           return;
         }
         errorCallback(error);

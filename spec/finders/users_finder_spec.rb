@@ -8,9 +8,7 @@ RSpec.describe UsersFinder do
 
     let_it_be(:project_bot) { create(:user, :project_bot) }
 
-    context 'with a normal user' do
-      let_it_be(:user) { create(:user) }
-
+    shared_examples 'executes users finder as normal user' do
       it 'returns searchable users' do
         users = described_class.new(user).execute
 
@@ -97,37 +95,35 @@ RSpec.describe UsersFinder do
       end
     end
 
-    context 'with an admin user', :enable_admin_mode do
-      let_it_be(:admin) { create(:admin) }
-
+    shared_examples 'executes users finder as admin' do
       it 'filters by external users' do
-        users = described_class.new(admin, external: true).execute
+        users = described_class.new(user, external: true).execute
 
         expect(users).to contain_exactly(external_user)
       end
 
       it 'returns all users' do
-        users = described_class.new(admin).execute
+        users = described_class.new(user).execute
 
-        expect(users).to contain_exactly(admin, normal_user, blocked_user, unconfirmed_user, banned_user, external_user, omniauth_user, internal_user, admin_user, project_bot)
+        expect(users).to contain_exactly(user, normal_user, blocked_user, unconfirmed_user, banned_user, external_user, omniauth_user, internal_user, admin_user, project_bot)
       end
 
       it 'filters by blocked users' do
-        users = described_class.new(admin, blocked: true).execute
+        users = described_class.new(user, blocked: true).execute
 
         expect(users).to contain_exactly(blocked_user)
       end
 
       it 'filters by active users' do
-        users = described_class.new(admin, active: true).execute
+        users = described_class.new(user, active: true).execute
 
-        expect(users).to contain_exactly(admin, normal_user, unconfirmed_user, external_user, omniauth_user, admin_user, project_bot)
+        expect(users).to contain_exactly(user, normal_user, unconfirmed_user, external_user, omniauth_user, admin_user, project_bot)
       end
 
       it 'returns only admins' do
-        users = described_class.new(admin, admins: true).execute
+        users = described_class.new(user, admins: true).execute
 
-        expect(users).to contain_exactly(admin, admin_user)
+        expect(users).to contain_exactly(user, admin_user)
       end
 
       it 'filters by custom attributes' do
@@ -137,7 +133,7 @@ RSpec.describe UsersFinder do
         create :user_custom_attribute, user: internal_user, key: 'foo', value: 'foo'
 
         users = described_class.new(
-          admin,
+          user,
           custom_attributes: { foo: 'foo', bar: 'bar' }
         ).execute
 
@@ -145,9 +141,33 @@ RSpec.describe UsersFinder do
       end
 
       it 'filters by private emails search' do
-        users = described_class.new(admin, search: normal_user.email).execute
+        users = described_class.new(user, search: normal_user.email).execute
 
         expect(users).to contain_exactly(normal_user)
+      end
+    end
+
+    context 'with a normal user' do
+      let_it_be(:user) { create(:user) }
+
+      it_behaves_like 'executes users finder as normal user'
+    end
+
+    context 'with an admin user' do
+      let_it_be(:user) { create(:admin) }
+
+      context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+        it_behaves_like 'executes users finder as admin'
+      end
+
+      context 'when admin mode setting is enabled' do
+        context 'when in admin mode', :enable_admin_mode do
+          it_behaves_like 'executes users finder as admin'
+        end
+
+        context 'when not in admin mode' do
+          it_behaves_like 'executes users finder as normal user'
+        end
       end
     end
   end

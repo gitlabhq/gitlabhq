@@ -51,6 +51,10 @@ module Gitlab
         include Gitlab::Database::MigrationHelpers::RestrictGitlabSchema
       end
 
+      class V2_1 < V2_0 # rubocop:disable Naming/ClassAndModuleCamelCase
+        include Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables
+      end
+
       def self.[](version)
         version = version.to_s
         name = "V#{version.tr('.', '_')}"
@@ -61,7 +65,7 @@ module Gitlab
 
       # The current version to be used in new migrations
       def self.current_version
-        2.0
+        2.1
       end
     end
   end

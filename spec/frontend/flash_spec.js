@@ -12,6 +12,9 @@ import createFlash, {
 jest.mock('@sentry/browser');
 
 describe('Flash', () => {
+  const findTextContent = (containerSelector = '.flash-container') =>
+    document.querySelector(containerSelector).textContent.replace(/\s+/g, ' ').trim();
+
   describe('hideFlash', () => {
     let el;
 
@@ -99,7 +102,7 @@ describe('Flash', () => {
       it('adds alert element into the document by default', () => {
         alert = createAlert({ message: mockMessage });
 
-        expect(document.querySelector('.flash-container').textContent.trim()).toBe(mockMessage);
+        expect(findTextContent()).toBe(mockMessage);
         expect(document.querySelector('.flash-container .gl-alert')).not.toBeNull();
       });
 
@@ -202,8 +205,7 @@ describe('Flash', () => {
             message: mockMessage,
           });
 
-          const text = document.querySelector('.flash-container').textContent.trim();
-          expect(text).toBe(`${mockTitle} ${mockMessage}`);
+          expect(findTextContent()).toBe(`${mockTitle} ${mockMessage}`);
         });
       });
 
@@ -317,6 +319,22 @@ describe('Flash', () => {
 
             expect(dismissHandler).toHaveBeenCalledTimes(1);
           });
+        });
+      });
+
+      describe('when called multiple times', () => {
+        it('clears previous alerts', () => {
+          createAlert({ message: 'message 1' });
+          createAlert({ message: 'message 2' });
+
+          expect(findTextContent()).toBe('message 2');
+        });
+
+        it('preserves alerts when `preservePrevious` is true', () => {
+          createAlert({ message: 'message 1' });
+          createAlert({ message: 'message 2', preservePrevious: true });
+
+          expect(findTextContent()).toBe('message 1 message 2');
         });
       });
     });

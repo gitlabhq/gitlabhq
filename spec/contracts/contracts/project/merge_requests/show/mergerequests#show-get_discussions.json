@@ -1,0 +1,236 @@
+{
+  "consumer": {
+    "name": "MergeRequests#show"
+  },
+  "provider": {
+    "name": "GET discussions"
+  },
+  "interactions": [
+    {
+      "description": "a request for discussions",
+      "providerState": "a merge request with discussions exists",
+      "request": {
+        "method": "GET",
+        "path": "/gitlab-org/gitlab-qa/-/merge_requests/1/discussions.json",
+        "headers": {
+          "Accept": "*/*"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": [
+          {
+            "id": "fd73763cbcbf7b29eb8765d969a38f7d735e222a",
+            "reply_id": "fd73763cbcbf7b29eb8765d969a38f7d735e222a",
+            "project_id": 6954442,
+            "confidential": false,
+            "diff_discussion": false,
+            "expanded": false,
+            "for_commit": false,
+            "individual_note": true,
+            "resolvable": false,
+            "resolved_by_push": false,
+            "notes": [
+              {
+                "id": "76489845",
+                "author": {
+                  "id": 1675733,
+                  "username": "gitlab-qa-bot",
+                  "name": "gitlab-qa-bot",
+                  "state": "active",
+                  "avatar_url": "https://secure.gravatar.com/avatar/8355ad0f2761367fae6b9c4fe80994b9?s=80&d=identicon",
+                  "show_status": false,
+                  "path": "/gitlab-qa-bot"
+                },
+                "created_at": "2022-02-22T07:06:55.038Z",
+                "updated_at": "2022-02-22T07:06:55.038Z",
+                "system": false,
+                "noteable_id": 8333422,
+                "noteable_type": "MergeRequest",
+                "resolvable": false,
+                "resolved": true,
+                "confidential": false,
+                "noteable_iid": 1,
+                "note": "This is a test comment",
+                "note_html": "<p data-sourcepos=\"1:1-1:22\" dir=\"auto\">This is a test comment</p>",
+                "current_user": {
+                  "can_edit": true,
+                  "can_award_emoji": true,
+                  "can_resolve": false,
+                  "can_resolve_discussion": false
+                },
+                "is_noteable_author": true,
+                "discussion_id": "fd73763cbcbf7b29eb8765d969a38f7d735e222a",
+                "emoji_awardable": true,
+                "report_abuse_path": "/gitlab-qa-bot/...",
+                "noteable_note_url": "https://staging.gitlab.com/gitlab-qa-bot/...",
+                "cached_markdown_version": 1900552,
+                "human_access": "Maintainer",
+                "is_contributor": false,
+                "project_name": "contract-testing",
+                "path": "/gitlab-qa-bot/..."
+              }
+            ],
+            "resolved": true
+          }
+        ],
+        "matchingRules": {
+          "$.body": {
+            "min": 1
+          },
+          "$.body[*].*": {
+            "match": "type"
+          },
+          "$.body[*].id": {
+            "match": "type"
+          },
+          "$.body[*].reply_id": {
+            "match": "type"
+          },
+          "$.body[*].project_id": {
+            "match": "type"
+          },
+          "$.body[*].confidential": {
+            "match": "type"
+          },
+          "$.body[*].diff_discussion": {
+            "match": "type"
+          },
+          "$.body[*].expanded": {
+            "match": "type"
+          },
+          "$.body[*].for_commit": {
+            "match": "type"
+          },
+          "$.body[*].individual_note": {
+            "match": "type"
+          },
+          "$.body[*].resolvable": {
+            "match": "type"
+          },
+          "$.body[*].resolved_by_push": {
+            "match": "type"
+          },
+          "$.body[*].notes": {
+            "min": 1
+          },
+          "$.body[*].notes[*].*": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].id": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].author.id": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].author.username": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].author.name": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].author.state": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].author.avatar_url": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].author.show_status": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].author.path": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].created_at": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
+          },
+          "$.body[*].notes[*].updated_at": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
+          },
+          "$.body[*].notes[*].system": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].noteable_id": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].noteable_type": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].resolvable": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].resolved": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].confidential": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].noteable_iid": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].note": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].note_html": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].current_user.can_edit": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].current_user.can_award_emoji": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].current_user.can_resolve": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].current_user.can_resolve_discussion": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].is_noteable_author": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].discussion_id": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].emoji_awardable": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].report_abuse_path": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].noteable_note_url": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].cached_markdown_version": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].human_access": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].is_contributor": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].project_name": {
+            "match": "type"
+          },
+          "$.body[*].notes[*].path": {
+            "match": "type"
+          },
+          "$.body[*].resolved": {
+            "match": "type"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

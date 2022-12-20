@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'json'
 require 'tempfile'
 
-RSpec.describe Gitlab::Git::RuggedImpl::UseRugged do
+RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, feature_category: :gitlay do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:feature_flag_name) { wrapper.rugged_feature_keys.first }
@@ -18,8 +18,7 @@ RSpec.describe Gitlab::Git::RuggedImpl::UseRugged do
     klazz = Class.new do
       include Gitlab::Git::RuggedImpl::UseRugged
 
-      def rugged_test(ref, test_number)
-      end
+      def rugged_test(ref, test_number); end
     end
 
     klazz.new

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleRecalculateUuidOnVulnerabilitiesOccurrences4 do
+RSpec.describe ScheduleRecalculateUuidOnVulnerabilitiesOccurrences4, feature_category: :vulnerability_management do
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let(:users) { table(:users) }
   let(:user) { create_user! }

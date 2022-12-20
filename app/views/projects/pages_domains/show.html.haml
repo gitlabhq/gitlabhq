@@ -15,8 +15,8 @@
   = _('Pages Domain')
 = render 'projects/pages_domains/helper_text'
 %div
-  = form_for [@project, domain_presenter], html: { class: 'fieldset-form' } do |f|
+  = gitlab_ui_form_for [@project, domain_presenter], html: { class: 'fieldset-form' } do |f|
     = render 'form', { f: f }
-    .form-actions.d-flex.justify-content-between
-      = f.submit _('Save Changes'), class: "gl-button btn btn-confirm"
+    .form-actions.gl-display-flex
+      = f.submit _('Save Changes'), class: 'gl-mr-3', pajamas_button: true
       = link_to _('Cancel'), project_pages_path(@project), class: 'gl-button btn btn-default btn-inverse'

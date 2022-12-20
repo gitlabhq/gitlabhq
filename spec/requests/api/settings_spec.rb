@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
+RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, feature_category: :not_owned do
   let(:user) { create(:user) }
 
   let_it_be(:admin) { create(:admin) }
@@ -25,6 +25,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['secret_detection_token_revocation_url']).to be_nil
       expect(json_response['secret_detection_revocation_token_types_url']).to be_nil
       expect(json_response['sourcegraph_public_only']).to be_truthy
+      expect(json_response['default_preferred_language']).to be_a String
       expect(json_response['default_project_visibility']).to be_a String
       expect(json_response['default_snippet_visibility']).to be_a String
       expect(json_response['default_group_visibility']).to be_a String
@@ -55,12 +56,15 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['group_runner_token_expiration_interval']).to be_nil
       expect(json_response['project_runner_token_expiration_interval']).to be_nil
       expect(json_response['max_export_size']).to eq(0)
+      expect(json_response['max_terraform_state_size_bytes']).to eq(0)
       expect(json_response['pipeline_limit_per_project_user_sha']).to eq(0)
       expect(json_response['delete_inactive_projects']).to be(false)
       expect(json_response['inactive_projects_delete_after_months']).to eq(2)
       expect(json_response['inactive_projects_min_size_mb']).to eq(0)
       expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(1)
       expect(json_response['can_create_group']).to eq(true)
+      expect(json_response['jira_connect_application_key']).to eq(nil)
+      expect(json_response['jira_connect_proxy_url']).to eq(nil)
     end
   end
 
@@ -146,6 +150,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             mailgun_events_enabled: true,
             mailgun_signing_key: 'MAILGUN_SIGNING_KEY',
             max_export_size: 6,
+            max_terraform_state_size_bytes: 1_000,
             disabled_oauth_sign_in_sources: 'unknown',
             import_sources: 'github,bitbucket',
             wiki_page_max_content_bytes: 12345,
@@ -158,7 +163,10 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             inactive_projects_delete_after_months: 24,
             inactive_projects_min_size_mb: 10,
             inactive_projects_send_warning_email_after_months: 12,
-            can_create_group: false
+            can_create_group: false,
+            jira_connect_application_key: '123',
+            jira_connect_proxy_url: 'http://example.com',
+            bulk_import_enabled: false
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -207,6 +215,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['mailgun_events_enabled']).to be(true)
         expect(json_response['mailgun_signing_key']).to eq('MAILGUN_SIGNING_KEY')
         expect(json_response['max_export_size']).to eq(6)
+        expect(json_response['max_terraform_state_size_bytes']).to eq(1_000)
         expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
         expect(json_response['import_sources']).to match_array(%w(github bitbucket))
         expect(json_response['wiki_page_max_content_bytes']).to eq(12345)
@@ -220,6 +229,9 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['inactive_projects_min_size_mb']).to eq(10)
         expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(12)
         expect(json_response['can_create_group']).to eq(false)
+        expect(json_response['jira_connect_application_key']).to eq('123')
+        expect(json_response['jira_connect_proxy_url']).to eq('http://example.com')
+        expect(json_response['bulk_import_enabled']).to be(false)
       end
     end
 

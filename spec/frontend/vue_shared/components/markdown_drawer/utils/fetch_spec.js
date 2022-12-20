@@ -20,9 +20,9 @@ describe('utils/fetch', () => {
   });
 
   describe.each`
-    axiosMock                                  | type         | toExpect
-    ${{ code: 200, res: { html: MOCK_HTML } }} | ${'success'} | ${MOCK_DRAWER_DATA}
-    ${{ code: 500, res: null }}                | ${'error'}   | ${MOCK_DRAWER_DATA_ERROR}
+    axiosMock                        | type         | toExpect
+    ${{ code: 200, res: MOCK_HTML }} | ${'success'} | ${MOCK_DRAWER_DATA}
+    ${{ code: 500, res: null }}      | ${'error'}   | ${MOCK_DRAWER_DATA_ERROR}
   `('process markdown data', ({ axiosMock, type, toExpect }) => {
     describe(`if api fetch responds with ${type}`, () => {
       beforeEach(() => {

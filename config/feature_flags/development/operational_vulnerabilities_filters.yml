@@ -1,8 +1,0 @@
----
-name: operational_vulnerabilities_filters
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90845
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365986
-milestone: '15.2'
-type: development
-group: group::container security
-default_enabled: true

@@ -69,6 +69,7 @@ listed here that also do not work properly in FIPS mode:
   when operating in FIPS-compliant mode.
 - Advanced Search is currently not included in FIPS mode. It must not be enabled to be FIPS-compliant.
 - [Gravatar or Libravatar-based profile images](../administration/libravatar.md) are not FIPS-compliant.
+- [Personal Access Tokens](../user/profile/personal_access_tokens.md) are not available for use or creation.
 
 Additionally, these package repositories are disabled in FIPS mode:
 
@@ -441,12 +442,26 @@ def default_min_key_size(name)
 end
 ```
 
-## Nightly Omnibus FIPS builds
+## Omnibus FIPS packages
 
-The Distribution team has created [nightly FIPS Omnibus builds](https://packages.gitlab.com/gitlab/nightly-fips-builds). These
-GitLab builds are compiled to use the system OpenSSL instead of the Omnibus-embedded version of OpenSSL.
+GitLab has a dedicated repository
+([`gitlab/gitlab-fips`](https://packages.gitlab.com/gitlab/gitlab-fips))
+for builds of the Omnibus GitLab which are built with FIPS compliance.
+These GitLab builds are compiled to use the system OpenSSL, instead of
+the Omnibus-embedded version of OpenSSL. These packages are built for:
+
+- RHEL 8 (and compatible)
+- AmazonLinux 2
+- Ubuntu
+
+These are [consumed by the GitLab Environment Toolkit](#install-gitlab-with-fips-compliance) (GET).
 
 See [the section on how FIPS builds are created](#how-fips-builds-are-created).
+
+### Nightly Omnibus FIPS builds
+
+The Distribution team has created [nightly FIPS Omnibus builds](https://packages.gitlab.com/gitlab/nightly-fips-builds),
+which can be used for *testing* purposes. These should never be used for production environments.
 
 ## Runner
 

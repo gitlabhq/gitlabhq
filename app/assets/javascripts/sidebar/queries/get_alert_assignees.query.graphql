@@ -1,0 +1,22 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+
+query alertAssignees(
+  $domain: AlertManagementDomainFilter = threat_monitoring
+  $fullPath: ID!
+  $iid: String!
+) {
+  workspace: project(fullPath: $fullPath) {
+    id
+    issuable: alertManagementAlert(domain: $domain, iid: $iid) {
+      id
+      iid
+      assignees {
+        nodes {
+          ...User
+          ...UserAvailability
+        }
+      }
+    }
+  }
+}

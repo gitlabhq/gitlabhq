@@ -7,3 +7,4 @@ feature_categories:
 description: Information relating epic boards to labels used to scope the boards
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48658
 milestone: '13.7'
+gitlab_schema: gitlab_main

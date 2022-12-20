@@ -1,24 +1,61 @@
 {
   "type": "object",
   "properties": {
-    "domain": { "type": "string" },
-    "url": { "type": "uri" },
-    "verified": { "type": "boolean" },
-    "verification_code": { "type": ["string", "null"] },
-    "enabled_until": { "type": ["string", "null"] },
-    "auto_ssl_enabled": { "type": "boolean" },
+    "domain": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "verified": {
+      "type": "boolean"
+    },
+    "verification_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "enabled_until": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "auto_ssl_enabled": {
+      "type": "boolean"
+    },
     "certificate": {
       "type": "object",
       "properties": {
-        "subject": { "type": "string" },
-        "expired": { "type": "boolean" },
-        "certificate": { "type": "string" },
-        "certificate_text": { "type": "string" }
+        "subject": {
+          "type": "string"
+        },
+        "expired": {
+          "type": "boolean"
+        },
+        "certificate": {
+          "type": "string"
+        },
+        "certificate_text": {
+          "type": "string"
+        }
       },
-      "required": ["subject", "expired"],
+      "required": [
+        "subject",
+        "expired"
+      ],
       "additionalProperties": false
     }
   },
-  "required": ["domain", "url", "verified", "verification_code", "enabled_until", "auto_ssl_enabled"],
+  "required": [
+    "domain",
+    "url",
+    "verified",
+    "verification_code",
+    "enabled_until",
+    "auto_ssl_enabled"
+  ],
   "additionalProperties": false
 }

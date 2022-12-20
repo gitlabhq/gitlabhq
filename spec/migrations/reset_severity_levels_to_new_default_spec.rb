@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe ResetSeverityLevelsToNewDefault do
+RSpec.describe ResetSeverityLevelsToNewDefault, feature_category: :source_code_management do
   let(:approval_project_rules) { table(:approval_project_rules) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }

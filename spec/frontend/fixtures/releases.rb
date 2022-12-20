@@ -6,9 +6,9 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
   include ApiHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:admin) { create(:admin, username: 'administrator', email: 'admin@example.gitlab.com') }
   let_it_be(:namespace) { create(:namespace, path: 'releases-namespace') }
   let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'releases-project') }
+  let_it_be(:user) { create(:user, email: 'user@example.gitlab.com', username: 'user1') }
 
   let_it_be(:milestone_12_3) do
     create(:milestone,
@@ -52,7 +52,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
            project: project,
            tag: 'v1.1',
            name: 'The first release',
-           author: admin,
+           author: user,
            description: 'Best. Release. **Ever.** :rocket:',
            created_at: Time.zone.parse('2018-12-3'),
            released_at: Time.zone.parse('2018-12-10'))
@@ -105,10 +105,14 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
            project: project,
            tag: 'v1.2',
            name: 'The second release',
-           author: admin,
+           author: user,
            description: 'An okay release :shrug:',
            created_at: Time.zone.parse('2019-01-03'),
            released_at: Time.zone.parse('2019-01-10'))
+  end
+
+  before do
+    project.add_owner(user)
   end
 
   after(:all) do
@@ -117,7 +121,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
 
   describe API::Releases, type: :request do
     it 'api/releases/release.json' do
-      get api("/projects/#{project.id}/releases/#{release.tag}", admin)
+      get api("/projects/#{project.id}/releases/#{release.tag}", user)
 
       expect(response).to be_successful
     end
@@ -133,7 +137,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
     it "graphql/#{all_releases_query_path}.json" do
       query = get_graphql_query_as_string(all_releases_query_path)
 
-      post_graphql(query, current_user: admin, variables: { fullPath: project.full_path })
+      post_graphql(query, current_user: user, variables: { fullPath: project.full_path })
 
       expect_graphql_errors_to_be_empty
       expect(graphql_data_at(:project, :releases)).to be_present
@@ -142,7 +146,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
     it "graphql/#{one_release_query_path}.json" do
       query = get_graphql_query_as_string(one_release_query_path)
 
-      post_graphql(query, current_user: admin, variables: { fullPath: project.full_path, tagName: release.tag })
+      post_graphql(query, current_user: user, variables: { fullPath: project.full_path, tagName: release.tag })
 
       expect_graphql_errors_to_be_empty
       expect(graphql_data_at(:project, :release)).to be_present
@@ -151,7 +155,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
     it "graphql/#{one_release_for_editing_query_path}.json" do
       query = get_graphql_query_as_string(one_release_for_editing_query_path)
 
-      post_graphql(query, current_user: admin, variables: { fullPath: project.full_path, tagName: release.tag })
+      post_graphql(query, current_user: user, variables: { fullPath: project.full_path, tagName: release.tag })
 
       expect_graphql_errors_to_be_empty
       expect(graphql_data_at(:project, :release)).to be_present

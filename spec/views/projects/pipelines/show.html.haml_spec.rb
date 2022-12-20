@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/pipelines/show' do
+RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_authoring do
   include Devise::Test::ControllerHelpers
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
@@ -13,7 +13,6 @@ RSpec.describe 'projects/pipelines/show' do
   before do
     assign(:project, project)
     assign(:pipeline, presented_pipeline)
-    stub_feature_flags(pipeline_tabs_vue: false)
   end
 
   context 'when pipeline has errors' do
@@ -24,14 +23,14 @@ RSpec.describe 'projects/pipelines/show' do
     it 'shows errors' do
       render
 
-      expect(rendered).to have_content('Found errors in your .gitlab-ci.yml')
+      expect(rendered).to have_content('Unable to create pipeline')
       expect(rendered).to have_content('some errors')
     end
 
     it 'does not render the pipeline tabs' do
       render
 
-      expect(rendered).not_to have_css('ul.pipelines-tabs')
+      expect(rendered).not_to have_selector('#js-pipeline-tabs')
     end
   end
 
@@ -39,13 +38,13 @@ RSpec.describe 'projects/pipelines/show' do
     it 'does not show errors' do
       render
 
-      expect(rendered).not_to have_content('Found errors in your .gitlab-ci.yml')
+      expect(rendered).not_to have_content('Unable to create pipeline')
     end
 
     it 'renders the pipeline tabs' do
       render
 
-      expect(rendered).to have_css('ul.pipelines-tabs')
+      expect(rendered).to have_selector('#js-pipeline-tabs')
     end
   end
 end

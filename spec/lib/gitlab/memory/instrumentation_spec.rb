@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Memory::Instrumentation do
+RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :application_performance do
   include MemoryInstrumentationHelper
 
   before do
-    skip_memory_instrumentation!
+    verify_memory_instrumentation_available!
   end
 
   describe '.available?' do

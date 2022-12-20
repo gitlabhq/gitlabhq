@@ -17,7 +17,8 @@ module Types
         ::Types::WorkItems::Widgets::LabelsType,
         ::Types::WorkItems::Widgets::AssigneesType,
         ::Types::WorkItems::Widgets::StartAndDueDateType,
-        ::Types::WorkItems::Widgets::MilestoneType
+        ::Types::WorkItems::Widgets::MilestoneType,
+        ::Types::WorkItems::Widgets::NotesType
       ].freeze
 
       def self.ce_orphan_types
@@ -41,6 +42,8 @@ module Types
           ::Types::WorkItems::Widgets::StartAndDueDateType
         when ::WorkItems::Widgets::Milestone
           ::Types::WorkItems::Widgets::MilestoneType
+        when ::WorkItems::Widgets::Notes
+          ::Types::WorkItems::Widgets::NotesType
         else
           raise "Unknown GraphQL type for widget #{object}"
         end

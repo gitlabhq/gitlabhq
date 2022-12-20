@@ -3,11 +3,6 @@
 class JiraConnect::ApplicationController < ApplicationController
   include Gitlab::Utils::StrongMemoize
 
-  CORS_ALLOWED_METHODS = {
-    '/-/jira_connect/oauth_application_id' => %i[GET OPTIONS],
-    '/-/jira_connect/subscriptions/*' => %i[DELETE OPTIONS]
-  }.freeze
-
   skip_before_action :authenticate_user!
   skip_before_action :verify_authenticity_token
   before_action :verify_atlassian_jwt!
@@ -64,26 +59,5 @@ class JiraConnect::ApplicationController < ApplicationController
 
   def auth_token
     params[:jwt] || request.headers['Authorization']&.split(' ', 2)&.last
-  end
-
-  def cors_allowed_methods
-    CORS_ALLOWED_METHODS[resource]
-  end
-
-  def resource
-    request.path.gsub(%r{/\d+$}, '/*')
-  end
-
-  def set_cors_headers
-    return unless allow_cors_request?
-
-    response.set_header('Access-Control-Allow-Origin', Gitlab::CurrentSettings.jira_connect_proxy_url)
-    response.set_header('Access-Control-Allow-Methods', cors_allowed_methods.join(', '))
-  end
-
-  def allow_cors_request?
-    return false if cors_allowed_methods.nil?
-
-    !Gitlab.com? && Gitlab::CurrentSettings.jira_connect_proxy_url.present?
   end
 end

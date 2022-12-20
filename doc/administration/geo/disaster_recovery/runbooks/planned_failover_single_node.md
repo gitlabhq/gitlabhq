@@ -147,7 +147,7 @@ follow these steps to avoid unnecessary data loss:
 
          - All replication meters reach 100% replicated, 0% failures.
          - All verification meters reach 100% verified, 0% failures.
-         - Database replication lag is 0ms.
+         - Database replication lag is 0 ms.
          - The Geo log cursor is up to date (0 events behind).
 
    1. On the **secondary** site:

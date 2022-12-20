@@ -7,3 +7,4 @@ feature_categories:
 description: Stores information about vulnerable SBoM components
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95622
 milestone: '15.4'
+gitlab_schema: gitlab_main

@@ -125,6 +125,8 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to validate_numericality_of(:max_yaml_depth).only_integer.is_greater_than(0) }
     it { is_expected.to validate_presence_of(:max_pages_size) }
     it { is_expected.to validate_presence_of(:max_pages_custom_domains_per_project) }
+    it { is_expected.to validate_presence_of(:max_terraform_state_size_bytes) }
+    it { is_expected.to validate_numericality_of(:max_terraform_state_size_bytes).only_integer.is_greater_than_or_equal_to(0) }
 
     it 'ensures max_pages_size is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
       is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than_or_equal_to(0)
@@ -213,6 +215,10 @@ RSpec.describe ApplicationSetting do
 
     it { is_expected.to allow_value(http).for(:jira_connect_proxy_url) }
     it { is_expected.to allow_value(https).for(:jira_connect_proxy_url) }
+
+    it { is_expected.to allow_value(true).for(:bulk_import_enabled) }
+    it { is_expected.to allow_value(false).for(:bulk_import_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:bulk_import_enabled) }
 
     context 'when deactivate_dormant_users is enabled' do
       before do
@@ -1283,11 +1289,10 @@ RSpec.describe ApplicationSetting do
     end
   end
 
-  describe '#instance_review_permitted?', :request_store, :use_clean_rails_memory_store_caching do
+  describe '#instance_review_permitted?', :request_store, :use_clean_rails_memory_store_caching, :without_license do
     subject { setting.instance_review_permitted? }
 
     before do
-      allow(License).to receive(:current).and_return(nil) if Gitlab.ee?
       allow(Rails.cache).to receive(:fetch).and_call_original
       expect(Rails.cache).to receive(:fetch).with('limited_users_count', anything).and_return(
         ::ApplicationSetting::INSTANCE_REVIEW_MIN_USERS + users_over_minimum

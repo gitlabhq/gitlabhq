@@ -5,21 +5,21 @@ module QA
     module Project
       module PipelineEditor
         class Show < QA::Page::Base
-          view 'app/assets/javascripts/pipeline_editor/pipeline_editor_app.vue' do
+          view 'app/assets/javascripts/ci/pipeline_editor/pipeline_editor_app.vue' do
             element :pipeline_editor_app, required: true
           end
 
-          view 'app/assets/javascripts/pipeline_editor/components/file_nav/branch_switcher.vue' do
+          view 'app/assets/javascripts/ci/pipeline_editor/components/file_nav/branch_switcher.vue' do
             element :branch_selector_button, required: true
             element :branch_menu_item_button
             element :branch_menu_container
           end
 
-          view 'app/assets/javascripts/pipeline_editor/components/commit/commit_form.vue' do
+          view 'app/assets/javascripts/ci/pipeline_editor/components/commit/commit_form.vue' do
             element :source_branch_field, required: true
           end
 
-          view 'app/assets/javascripts/pipeline_editor/components/editor/ci_editor_header.vue' do
+          view 'app/assets/javascripts/ci/pipeline_editor/components/editor/ci_editor_header.vue' do
             element :drawer_toggle, required: true
             element :template_repo_link, required: true
           end
@@ -28,16 +28,16 @@ module QA
             element :source_editor_container, required: true
           end
 
-          view 'app/assets/javascripts/pipeline_editor/components/header/pipeline_status.vue' do
+          view 'app/assets/javascripts/ci/pipeline_editor/components/header/pipeline_status.vue' do
             element :pipeline_id_content
           end
 
-          view 'app/assets/javascripts/pipeline_editor/components/commit/commit_form.vue' do
+          view 'app/assets/javascripts/ci/pipeline_editor/components/commit/commit_form.vue' do
             element :commit_changes_button
             element :new_mr_checkbox
           end
 
-          view 'app/assets/javascripts/pipeline_editor/components/header/validation_segment.vue' do
+          view 'app/assets/javascripts/ci/pipeline_editor/components/header/validation_segment.vue' do
             element :validation_message_content
           end
 
@@ -46,15 +46,15 @@ module QA
             element :job_container
           end
 
-          view 'app/assets/javascripts/pipeline_editor/components/pipeline_editor_tabs.vue' do
+          view 'app/assets/javascripts/ci/pipeline_editor/components/pipeline_editor_tabs.vue' do
             element :file_editor_container
           end
 
-          view 'app/assets/javascripts/pipeline_editor/components/popovers/file_tree_popover.vue' do
+          view 'app/assets/javascripts/ci/pipeline_editor/components/popovers/file_tree_popover.vue' do
             element :file_tree_popover
           end
 
-          view 'app/assets/javascripts/pipeline_editor/components/validate/ci_validate.vue' do
+          view 'app/assets/javascripts/ci/pipeline_editor/components/validate/ci_validate.vue' do
             element :simulate_pipeline_button
           end
 

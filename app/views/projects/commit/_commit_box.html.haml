@@ -53,9 +53,7 @@
       = ci_label_for_status(@last_pipeline.status)
       - if @last_pipeline.stages_count.nonzero?
         #{ n_(s_('Pipeline|with stage'), s_('Pipeline|with stages'), @last_pipeline.stages_count) }
-        .mr-widget-pipeline-graph
-          .stage-cell
-            .js-commit-pipeline-mini-graph{ data: { stages: @last_pipeline_stages.to_json.html_safe, full_path: @project.full_path, iid: @last_pipeline.iid, graphql_resource_etag: graphql_etag_pipeline_path(@last_pipeline) } }
+        .js-commit-pipeline-mini-graph{ data: { stages: @last_pipeline_stages.to_json.html_safe, full_path: @project.full_path, iid: @last_pipeline.iid, graphql_resource_etag: graphql_etag_pipeline_path(@last_pipeline) } }
       - if @last_pipeline.duration
         in
         = time_interval_in_words @last_pipeline.duration

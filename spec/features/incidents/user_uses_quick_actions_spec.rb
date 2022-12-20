@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Incidents > User uses quick actions', :js do
+RSpec.describe 'Incidents > User uses quick actions', :js, feature_category: :incident_management do
   include Spec::Support::Helpers::Features::NotesHelpers
 
   describe 'incident-only commands' do

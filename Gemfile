@@ -15,11 +15,11 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', requir
 # https://gitlab.com/gitlab-org/gitlab/-/issues/375713
 gem 'rails', '~> 6.1.6.1'
 
-gem 'bootsnap', '~> 1.13.0', require: false
+gem 'bootsnap', '~> 1.15.0', require: false
 
 # Pin openssl to match the version bundled with our supported Rubies.
 # See https://stdgems.org/openssl/#gem-version.
-gem 'openssl', '2.2.1'
+gem 'openssl', '2.2.2'
 # This gem was originally bundled with Ruby 2.7, but is unbundled as of Ruby 3.
 # Since the latest version caused problems with GitLab, we pin this to an older
 # version for now.
@@ -52,8 +52,8 @@ gem 'declarative_policy', '~> 1.1.0'
 gem 'devise', '~> 4.8.1'
 gem 'devise-pbkdf2-encryptable', '~> 0.0.0', path: 'vendor/gems/devise-pbkdf2-encryptable'
 gem 'bcrypt', '~> 3.1', '>= 3.1.14'
-gem 'doorkeeper', '~> 5.5.0.rc2'
-gem 'doorkeeper-openid_connect', '~> 1.7.5'
+gem 'doorkeeper', '~> 5.5'
+gem 'doorkeeper-openid_connect', '~> 1.8'
 gem 'rexml', '~> 3.2.5'
 gem 'ruby-saml', '~> 1.13.0'
 gem 'omniauth', '~> 2.1.0'
@@ -107,7 +107,7 @@ gem 'browser', '~> 5.3.1'
 gem 'ohai', '~> 16.10'
 
 # GPG
-gem 'gpgme', '~> 2.0.19'
+gem 'gpgme', '~> 2.0.22'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -166,9 +166,9 @@ gem 'seed-fu', '~> 2.3.7'
 gem 'elasticsearch-model', '~> 7.2'
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation'
 gem 'elasticsearch-api',   '7.13.3'
-gem 'aws-sdk-core', '~> 3.167.0'
+gem 'aws-sdk-core', '~> 3.168.4'
 gem 'aws-sdk-cloudformation', '~> 1'
-gem 'aws-sdk-s3', '~> 1.117.1'
+gem 'aws-sdk-s3', '~> 1.117.2'
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
 gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive connections
 
@@ -190,7 +190,7 @@ gem 'asciidoctor-kroki', '~> 0.7.0', require: false
 gem 'rouge', '~> 3.30.0'
 gem 'truncato', '~> 0.7.12'
 gem 'bootstrap_form', '~> 4.2.0'
-gem 'nokogiri', '~> 1.13.9'
+gem 'nokogiri', '~> 1.13.10'
 
 # Calendar rendering
 gem 'icalendar'
@@ -242,7 +242,7 @@ gem 're2', '~> 1.6.0'
 
 # Misc
 
-gem 'version_sorter', '~> 2.2.4'
+gem 'version_sorter', '~> 2.3'
 
 # Export Ruby Regex to Javascript
 gem 'js_regex', '~> 3.8'
@@ -264,9 +264,6 @@ gem 'discordrb-webhooks', '~> 3.4', require: false
 gem 'jira-ruby', '~> 2.1.4'
 gem 'atlassian-jwt', '~> 0.2.0'
 
-# Flowdock integration
-gem 'flowdock', '~> 0.7'
-
 # Slack integration
 gem 'slack-messenger', '~> 2.3.4'
 
@@ -280,14 +277,14 @@ gem 'asana', '~> 0.10.13'
 gem 'ruby-fogbugz', '~> 0.3.0'
 
 # Kubernetes integration
-gem 'kubeclient', '~> 4.9.3'
+gem 'kubeclient', '~> 4.9.3', path: 'vendor/gems/kubeclient'
 
 # Sanitize user input
 gem 'sanitize', '~> 6.0'
 gem 'babosa', '~> 1.0.4'
 
 # Sanitizes SVG input
-gem 'loofah', '~> 2.19.0'
+gem 'loofah', '~> 2.19.1'
 
 # Working with license
 # Detects the open source license the repository includes
@@ -352,16 +349,16 @@ gem 'batch-loader', '~> 2.0.1'
 gem 'peek', '~> 1.1'
 
 # Snowplow events tracking
-gem 'snowplow-tracker', '~> 0.6.1'
+gem 'snowplow-tracker', '~> 0.8.0'
 
 # Metrics
 gem 'webrick', '~> 1.6.1', require: false
-gem 'prometheus-client-mmap', '~> 0.16', require: 'prometheus/client'
+gem 'prometheus-client-mmap', '~> 0.17', require: 'prometheus/client'
 
 gem 'warning', '~> 1.3.0'
 
 group :development do
-  gem 'lefthook', '~> 1.2.0', require: false
+  gem 'lefthook', '~> 1.2.6', require: false
   gem 'rubocop'
   gem 'solargraph', '~> 0.47.2', require: false
 
@@ -372,6 +369,8 @@ group :development do
   gem 'better_errors', '~> 2.9.1'
 
   gem 'sprite-factory', '~> 1.7'
+
+  gem "listen", "~> 3.7"
 end
 
 group :development, :test do
@@ -393,10 +392,10 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.10'
 
-  gem 'spring', '~> 2.1.0'
+  gem 'spring', '~> 4.1.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 9.0.0', require: false
+  gem 'gitlab-styles', '~> 9.1.0', require: false
 
   gem 'haml_lint', '~> 0.40.0', require: false
   gem 'bundler-audit', '~> 0.7.0.1', require: false
@@ -410,8 +409,6 @@ group :development, :test do
 
   gem 'simple_po_parser', '~> 1.1.6', require: false
 
-  gem 'timecop', '~> 0.9.1'
-
   gem 'png_quantizator', '~> 0.2.1', require: false
 
   gem 'parallel', '~> 1.19', require: false
@@ -424,7 +421,7 @@ group :development, :test do
 end
 
 group :development, :test, :danger do
-  gem 'gitlab-dangerfiles', '~> 3.6.2', require: false
+  gem 'gitlab-dangerfiles', '~> 3.6.4', require: false
 end
 
 group :development, :test, :coverage do
@@ -506,7 +503,7 @@ gem 'kas-grpc', '~> 0.0.2'
 
 gem 'grpc', '~> 1.42.0'
 
-gem 'google-protobuf', '~> 3.21', '>= 3.21.9'
+gem 'google-protobuf', '~> 3.21', '>= 3.21.12'
 
 gem 'toml-rb', '~> 2.2.0'
 
@@ -525,7 +522,7 @@ gem 'grape_logging', '~> 1.8'
 gem 'gitlab-net-dns', '~> 0.9.1'
 
 # Countries list
-gem 'countries', '~> 3.0'
+gem 'countries', '~> 4.0.0'
 
 gem 'retriable', '~> 3.1.2'
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting notes for an issue' do
+RSpec.describe 'getting notes for an issue', feature_category: :team_planning do
   include GraphqlHelpers
 
   let(:noteable) { create(:issue) }

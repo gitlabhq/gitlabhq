@@ -19,9 +19,9 @@ Setting up your integrations requires minimal changes to existing code.
 GitLab plays the role of proxy server, both for artifact storage and tracking data. It reflects the
 MLFlow [Scenario 5](https://www.mlflow.org/docs/latest/tracking.html#scenario-5-mlflow-tracking-server-enabled-with-proxied-artifact-storage-access).
 
-## Enable MFlow Client Integration
+## Enable MLFlow Client Integration
 
-Complete this task to enable MFlow Client Integration.
+Complete this task to enable MLFlow Client Integration.
 
 Prerequisites:
 
@@ -49,17 +49,17 @@ that can be explored by selecting an experiment.
 
 - The API GitLab supports is the one defined at MLFlow version 1.28.0.
 - API endpoints not listed above are not supported.
-- During creation of experiments and runs, tags are ExperimentTags and RunTags are ignored.
-- MLFLow Model Registry is not supported.
+- During creation of experiments and runs, tags are ExperimentTags and RunTags are stored, even though they are not displayed.
+- MLFlow Model Registry is not supported.
 
 ## Supported methods and caveats
 
 This is a list of methods we support from the MLFlow client. Other methods might be supported but were not
 tested. More information can be found in the [MLFlow Documentation](https://www.mlflow.org/docs/1.28.0/python_api/mlflow.html).
 
-### `set_experiment`
+### `set_experiment()`
 
-Accepts both experiment_name and experiment_id
+Accepts both `experiment_name` and `experiment_id`
 
 ### `start_run()`
 

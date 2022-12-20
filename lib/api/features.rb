@@ -9,6 +9,8 @@ module API
     feature_category :feature_flags
     urgency :low
 
+    BadValueError = Class.new(StandardError)
+
     # TODO: remove these helpers with feature flag set_feature_flag_service
     helpers do
       def gate_value(params)
@@ -18,6 +20,8 @@ module API
         when '0', 'false'
           false
         else
+          raise BadValueError unless params[:value].match? /^\d+(\.\d+)?$/
+
           # https://github.com/jnunemaker/flipper/blob/master/lib/flipper/typecast.rb#L47
           if params[:value].to_s.include?('.')
             params[:value].to_f
@@ -153,7 +157,9 @@ module API
           present Feature.get(params[:name]), # rubocop:disable Gitlab/AvoidFeatureGet
             with: Entities::Feature, current_user: current_user
         end
-      rescue Feature::Target::UnknowTargetError => e
+      rescue BadValueError
+        bad_request!("Value must be boolean or numeric, got #{params[:value]}")
+      rescue Feature::Target::UnknownTargetError => e
         bad_request!(e.message)
       end
 

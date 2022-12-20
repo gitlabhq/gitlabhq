@@ -5,7 +5,7 @@ require 'spec_helper'
 require_migration!
 require_migration!('add_not_valid_foreign_key_to_group_hooks')
 
-RSpec.describe RemoveRecordsWithoutGroupFromWebhooksTable, schema: 20210330091751 do
+RSpec.describe RemoveRecordsWithoutGroupFromWebhooksTable, schema: 20210330091751, feature_category: :integrations do
   let(:web_hooks) { table(:web_hooks) }
   let(:groups) { table(:namespaces) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'JobPlay' do
+RSpec.describe 'JobPlay', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

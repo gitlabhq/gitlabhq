@@ -73,6 +73,7 @@ RSpec.describe Ci::Processable do
            job_artifacts_network_referee job_artifacts_dotenv
            job_artifacts_cobertura needs job_artifacts_accessibility
            job_artifacts_requirements job_artifacts_coverage_fuzzing
+           job_artifacts_requirements_v2
            job_artifacts_api_fuzzing terraform_state_versions job_artifacts_cyclonedx].freeze
       end
 
@@ -423,8 +424,8 @@ RSpec.describe Ci::Processable do
 
       it 'returns all needs attributes' do
         is_expected.to contain_exactly(
-          { 'artifacts' => true, 'name' => 'test1', 'optional' => false },
-          { 'artifacts' => true, 'name' => 'test2', 'optional' => false }
+          { 'artifacts' => true, 'name' => 'test1', 'optional' => false, 'partition_id' => build.partition_id },
+          { 'artifacts' => true, 'name' => 'test2', 'optional' => false, 'partition_id' => build.partition_id }
         )
       end
     end

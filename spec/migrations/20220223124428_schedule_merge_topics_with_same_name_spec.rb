@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleMergeTopicsWithSameName do
+RSpec.describe ScheduleMergeTopicsWithSameName, feature_category: :projects do
   let(:topics) { table(:topics) }
 
   describe '#up' do

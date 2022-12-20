@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectMilestones do
+RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
   let_it_be(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }

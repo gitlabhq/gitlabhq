@@ -1,5 +1,5 @@
 <script>
-import { GlSafeHtmlDirective, GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import LineHighlighter from '~/blob/line_highlighter';
 import eventHub from '~/notes/event_hub';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
@@ -27,9 +27,6 @@ export default {
   components: {
     GlLoadingIcon,
     Chunk,
-  },
-  directives: {
-    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [Tracking.mixin()],
   props: {

@@ -3,8 +3,8 @@ import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
-import { INCIDENT_SEVERITY, ISSUABLE_TYPES } from '~/sidebar/components/severity/constants';
-import updateIssuableSeverity from '~/sidebar/components/severity/graphql/mutations/update_issuable_severity.mutation.graphql';
+import { INCIDENT_SEVERITY, ISSUABLE_TYPES } from '~/sidebar/constants';
+import updateIssuableSeverity from '~/sidebar/queries/update_issuable_severity.mutation.graphql';
 import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import SidebarSeverity from '~/sidebar/components/severity/sidebar_severity.vue';
 

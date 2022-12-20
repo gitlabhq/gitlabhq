@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'issue header', :js do
+RSpec.describe 'issue header', :js, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
@@ -27,7 +27,7 @@ RSpec.describe 'issue header', :js do
 
       it 'shows the "New related issue", "Report abuse", and "Delete issue" items', :aggregate_failures do
         expect(page).to have_link 'New related issue'
-        expect(page).to have_link 'Report abuse'
+        expect(page).to have_link 'Report abuse to administrator'
         expect(page).to have_button 'Delete issue'
         expect(page).not_to have_link 'Submit as spam'
       end
@@ -71,7 +71,7 @@ RSpec.describe 'issue header', :js do
       it 'does not show "Report abuse" link in dropdown' do
         click_button 'Issue actions'
 
-        expect(page).not_to have_link 'Report abuse'
+        expect(page).not_to have_link 'Report abuse to administrator'
       end
     end
   end
@@ -116,7 +116,7 @@ RSpec.describe 'issue header', :js do
 
       it 'only shows the "New related issue" and "Report abuse" items', :aggregate_failures do
         expect(page).to have_link 'New related issue'
-        expect(page).to have_link 'Report abuse'
+        expect(page).to have_link 'Report abuse to administrator'
         expect(page).not_to have_link 'Submit as spam'
         expect(page).not_to have_button 'Delete issue'
       end
@@ -160,7 +160,7 @@ RSpec.describe 'issue header', :js do
       it 'does not show "Report abuse" link in dropdown' do
         click_button 'Issue actions'
 
-        expect(page).not_to have_link 'Report abuse'
+        expect(page).not_to have_link 'Report abuse to administrator'
       end
     end
   end

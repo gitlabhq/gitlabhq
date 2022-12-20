@@ -1,7 +1,7 @@
 <script>
 import { GlSorting, GlSortingItem, GlFilteredSearch } from '@gitlab/ui';
-import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import { SORT_DIRECTION_UI } from '~/search/sort/constants';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 const ASCENDING_ORDER = 'asc';
 const DESCENDING_ORDER = 'desc';

@@ -1,0 +1,160 @@
+{
+  "type": "ADDED",
+  "object": {
+    "apiVersion": "v1",
+    "kind": "Node",
+    "metadata": {
+      "annotations": {
+        "volumes.kubernetes.io/controller-managed-attach-detach": "true"
+      },
+      "creationTimestamp": "2017-12-11T12:00:13Z",
+      "labels": {
+        "beta.kubernetes.io/arch": "amd64",
+        "beta.kubernetes.io/os": "linux",
+        "kubernetes.io/hostname": "openshift.local",
+        "openshift-infra": "apiserver"
+      },
+      "name": "openshift.local",
+      "resourceVersion": "367410",
+      "selfLink": "/api/v1/nodes/openshift.local",
+      "uid": "d88c7af6-de6a-11e7-8725-52540080f1d2"
+    },
+    "spec": {
+      "externalID": "openshift.local"
+    },
+    "status": {
+      "addresses": [
+        {
+          "address": "192.168.122.40",
+          "type": "InternalIP"
+        },
+        {
+          "address": "openshift.local",
+          "type": "Hostname"
+        }
+      ],
+      "allocatable": {
+        "cpu": "2",
+        "memory": "8072896Ki",
+        "pods": "20"
+      },
+      "capacity": {
+        "cpu": "2",
+        "memory": "8175296Ki",
+        "pods": "20"
+      },
+      "conditions": [
+        {
+          "lastHeartbeatTime": "2017-12-15T00:36:13Z",
+          "lastTransitionTime": "2017-12-11T12:00:13Z",
+          "message": "kubelet has sufficient disk space available",
+          "reason": "KubeletHasSufficientDisk",
+          "status": "False",
+          "type": "OutOfDisk"
+        },
+        {
+          "lastHeartbeatTime": "2017-12-15T00:36:13Z",
+          "lastTransitionTime": "2017-12-11T12:00:13Z",
+          "message": "kubelet has sufficient memory available",
+          "reason": "KubeletHasSufficientMemory",
+          "status": "False",
+          "type": "MemoryPressure"
+        },
+        {
+          "lastHeartbeatTime": "2017-12-15T00:36:13Z",
+          "lastTransitionTime": "2017-12-11T12:00:13Z",
+          "message": "kubelet has no disk pressure",
+          "reason": "KubeletHasNoDiskPressure",
+          "status": "False",
+          "type": "DiskPressure"
+        },
+        {
+          "lastHeartbeatTime": "2017-12-15T00:36:13Z",
+          "lastTransitionTime": "2017-12-14T15:43:39Z",
+          "message": "kubelet is posting ready status",
+          "reason": "KubeletReady",
+          "status": "True",
+          "type": "Ready"
+        }
+      ],
+      "daemonEndpoints": {
+        "kubeletEndpoint": {
+          "Port": 10250
+        }
+      },
+      "images": [
+        {
+          "names": [
+            "docker.io/openshift/origin@sha256:908c6c9ccf0e0feefe2658899656c6e73d2854777fa340738fb903f0a40c328d",
+            "docker.io/openshift/origin:latest"
+          ],
+          "sizeBytes": 1222636603
+        },
+        {
+          "names": [
+            "docker.io/openshift/origin-deployer@sha256:3d324bce1870047edc418041cefdec88e0a5bbb5b3b9f6fd35b43f14919a656c",
+            "docker.io/openshift/origin-deployer:v3.7.0"
+          ],
+          "sizeBytes": 1098951248
+        },
+        {
+          "names": [
+            "docker.io/cockpit/kubernetes@sha256:a8e58cd5e6f5a4d12d1e2dfd339686b74f3c22586952ca7aa184dc254ab49714",
+            "docker.io/cockpit/kubernetes:latest"
+          ],
+          "sizeBytes": 375926556
+        },
+        {
+          "names": [
+            "docker.io/cockpit/kubernetes@sha256:0745b3823efc57e03a5ef378614dfcb6c2b1e3964220bbf908fb3046a91cef70"
+          ],
+          "sizeBytes": 350062743
+        },
+        {
+          "names": [
+            "docker.io/openshift/origin-service-catalog@sha256:ef851e06276af96838a93320d0e4be51cc8de6e5afb2fb0efd4e56cec114b937"
+          ],
+          "sizeBytes": 284732029
+        },
+        {
+          "names": [
+            "docker.io/openshift/origin-service-catalog@sha256:8addfd742d92d8da819b091d6bda40edc45e88d1446ffd1ad658b6d21b3c36fd"
+          ],
+          "sizeBytes": 284731998
+        },
+        {
+          "names": [
+            "docker.io/openshift/origin-service-catalog@sha256:b3a737cc346b3cae85ef2f5d020b607781a1cac38fe70678cb78fee2c2a3bf8a"
+          ],
+          "sizeBytes": 284731943
+        },
+        {
+          "names": [
+            "docker.io/openshift/origin-service-catalog@sha256:957934537721da33362693d4f1590dc79dc5da7438799bf14d645165768e53ef",
+            "docker.io/openshift/origin-service-catalog:latest"
+          ],
+          "sizeBytes": 283929631
+        },
+        {
+          "names": [
+            "docker.io/openshift/origin-pod@sha256:2c257d83a01607b229ef5e3dca09f52c3a2a2788c09dc33f0444ec4e572a9e1d",
+            "docker.io/openshift/origin-pod:v3.7.0"
+          ],
+          "sizeBytes": 218423400
+        }
+      ],
+      "nodeInfo": {
+        "architecture": "amd64",
+        "bootID": "75be791d-88a2-4f56-a588-c071a80bf7cf",
+        "containerRuntimeVersion": "docker://1.12.6",
+        "kernelVersion": "3.10.0-693.11.1.el7.x86_64",
+        "kubeProxyVersion": "v1.7.6+a08f5eeb62",
+        "kubeletVersion": "v1.7.6+a08f5eeb62",
+        "machineID": "adf09ffc2de2624aa5ed335727c7400d",
+        "operatingSystem": "linux",
+        "osImage": "CentOS Linux 7 (Core)",
+        "systemUUID": "FC9FF0AD-E22D-4A62-A5ED-335727C7400D"
+      }
+    }
+  }
+}

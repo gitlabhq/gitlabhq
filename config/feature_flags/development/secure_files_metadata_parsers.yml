@@ -1,8 +1,0 @@
----
-name: secure_files_metadata_parsers
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99046
-rollout_issue_url:
-milestone: '15.5'
-type: development
-group: group::incubation
-default_enabled: false

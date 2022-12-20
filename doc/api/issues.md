@@ -2010,7 +2010,7 @@ POST /projects/:id/issues/:issue_iid/time_estimate
 
 | Attribute   | Type    | Required | Description                              |
 |-------------|---------|----------|------------------------------------------|
-| `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
+| `duration`  | string  | yes      | The duration in human format. e.g: `3h30m` |
 | `id`        | integer/string | yes      | The global ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue     |
 
@@ -2067,7 +2067,7 @@ POST /projects/:id/issues/:issue_iid/add_spent_time
 
 | Attribute   | Type    | Required | Description                              |
 |-------------|---------|----------|------------------------------------------|
-| `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
+| `duration`  | string  | yes      | The duration in human format. e.g: `3h30m` |
 | `id`        | integer/string | yes      | The global ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue     |
 | `summary`   | string  | no       | A summary of how the time was spent  |

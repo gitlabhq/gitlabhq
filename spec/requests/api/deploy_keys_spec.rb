@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::DeployKeys do
+RSpec.describe API::DeployKeys, feature_category: :continuous_delivery do
   let_it_be(:user)        { create(:user) }
   let_it_be(:maintainer)  { create(:user) }
   let_it_be(:admin)       { create(:admin) }

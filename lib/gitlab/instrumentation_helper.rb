@@ -35,6 +35,7 @@ module Gitlab
       instrument_uploads(payload)
       instrument_rate_limiting_gates(payload)
       instrument_global_search_api(payload)
+      instrument_ldap(payload)
     end
 
     def instrument_gitaly(payload)
@@ -134,6 +135,14 @@ module Gitlab
 
     def instrument_global_search_api(payload)
       payload.merge!(::Gitlab::Instrumentation::GlobalSearchApi.payload)
+    end
+
+    def instrument_ldap(payload)
+      ldap_count = Gitlab::Metrics::Subscribers::Ldap.count
+
+      return if ldap_count == 0
+
+      payload.merge! Gitlab::Metrics::Subscribers::Ldap.payload
     end
 
     # Returns the queuing duration for a Sidekiq job in seconds, as a float, if the

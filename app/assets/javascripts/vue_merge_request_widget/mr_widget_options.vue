@@ -1,10 +1,10 @@
 <script>
-import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import {
   registerExtension,
   registeredExtensions,
 } from '~/vue_merge_request_widget/components/extensions';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
@@ -15,6 +15,7 @@ import notify from '~/lib/utils/notify';
 import { sprintf, s__, __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { setFaviconOverlay } from '../lib/utils/favicon';
 import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
@@ -46,18 +47,20 @@ import { STATE_MACHINE, stateToComponentMap } from './constants';
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
+import getStateSubscription from './queries/get_state.subscription.graphql';
 import terraformExtension from './extensions/terraform';
 import accessibilityExtension from './extensions/accessibility';
 import codeQualityExtension from './extensions/code_quality';
 import testReportExtension from './extensions/test_report';
 import ReportWidgetContainer from './components/report_widget_container.vue';
+import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
 
 export default {
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
   // eslint-disable-next-line @gitlab/require-i18n-strings
   name: 'MRWidget',
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   components: {
     Loading,
@@ -76,7 +79,7 @@ export default {
     MrWidgetNothingToMerge: NothingToMergeState,
     MrWidgetNotAllowed: NotAllowedState,
     MrWidgetMissingBranch: MissingBranchState,
-    MrWidgetReadyToMerge: () => import('./components/states/new_ready_to_merge.vue'),
+    MrWidgetReadyToMerge,
     ShaMismatch,
     MrWidgetChecking: CheckingState,
     MrWidgetUnresolvedDiscussions: UnresolvedDiscussionsState,
@@ -108,6 +111,31 @@ export default {
           this.loading = false;
         }
       },
+      subscribeToMore: {
+        document() {
+          return getStateSubscription;
+        },
+        skip() {
+          return !this.mr?.id || this.loading || !window.gon?.features?.realtimeMrStatusChange;
+        },
+        variables() {
+          return {
+            issuableId: convertToGraphQLId('MergeRequest', this.mr?.id),
+          };
+        },
+        updateQuery(
+          _,
+          {
+            subscriptionData: {
+              data: { mergeRequestMergeStatusUpdated },
+            },
+          },
+        ) {
+          if (mergeRequestMergeStatusUpdated) {
+            this.mr.setGraphqlSubscriptionData(mergeRequestMergeStatusUpdated);
+          }
+        },
+      },
     },
   },
   mixins: [mergeRequestQueryVariablesMixin],
@@ -128,6 +156,7 @@ export default {
       machineState: store?.machineValue || STATE_MACHINE.definition.initial,
       loading: true,
       recomputeComponentName: 0,
+      issuableId: false,
     };
   },
   computed: {
@@ -545,6 +574,7 @@ export default {
     <mr-widget-approvals v-if="shouldRenderApprovals" :mr="mr" :service="service" />
     <report-widget-container>
       <extensions-container v-if="hasExtensions" :mr="mr" />
+      <widget-container v-if="mr && shouldShowSecurityExtension" :mr="mr" />
       <security-reports-app
         v-if="shouldRenderSecurityReport && !shouldShowSecurityExtension"
         :pipeline-id="mr.pipeline.id"
@@ -579,8 +609,6 @@ export default {
           </template>
         </mr-widget-alert-message>
       </div>
-
-      <widget-container v-if="mr" :mr="mr" />
 
       <div class="mr-widget-section" data-qa-selector="mr_widget_content">
         <component :is="componentName" :mr="mr" :service="service" />

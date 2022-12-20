@@ -1,4 +1,4 @@
-- name: "Non-expiring access tokens"
+- title: "Non-expiring access tokens"
   announcement_milestone: "15.4"
   announcement_date: "2022-09-22"
   removal_milestone: "16.0"

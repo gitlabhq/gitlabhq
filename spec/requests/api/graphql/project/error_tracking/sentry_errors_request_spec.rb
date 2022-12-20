@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'sentry errors requests' do
+RSpec.describe 'sentry errors requests', feature_category: :error_tracking do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }

@@ -46,13 +46,7 @@ If you are using a compatible version and after connecting to OpenSearch, you ge
 Elasticsearch requires additional resources to those documented in the
 [GitLab system requirements](../../install/requirements.md).
 
-Memory, CPU, and storage resource amounts vary depending on the amount of data you index into the Elasticsearch cluster. Heavily used Elasticsearch clusters may require more resources. According to
-[Elasticsearch official guidelines](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_memory),
-each node should have:
-
-- [Memory](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_memory): 8 GiB (minimum).
-- [CPU](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_cpus): Modern processor with multiple cores. GitLab has minimal CPU requirements for Elasticsearch. Multiple cores provide extra concurrency, which is more beneficial than faster CPUs.
-- [Storage](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_disks): Use SSD storage. The total storage size of all Elasticsearch nodes is about 50% of the total size of your Git repositories. It includes one primary and one replica. The [`estimate_cluster_size`](#gitlab-advanced-search-rake-tasks) Rake task ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221177) in GitLab 13.10) uses total repository size to estimate the Advanced Search storage requirements.
+Memory, CPU, and storage resource amounts vary depending on the amount of data you index into the Elasticsearch cluster. Heavily used Elasticsearch clusters may require more resources. The [`estimate_cluster_size`](#gitlab-advanced-search-rake-tasks) Rake task ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221177) in GitLab 13.10) uses the total repository size to estimate the Advanced Search storage requirements.
 
 ## Install Elasticsearch
 
@@ -238,6 +232,85 @@ Increasing the values of `Maximum bulk request size (MiB)` and `Bulk request con
 Sidekiq performance. Return them to their default values if you see increased `scheduling_latency_s` durations
 in your Sidekiq logs. For more information, see
 [issue 322147](https://gitlab.com/gitlab-org/gitlab/-/issues/322147).
+
+### Access requirements for self-managed AWS OpenSearch Service using fine-grained access control
+
+To use the self-managed AWS OpenSearch Service with GitLab using fine-grained access control, try one of the
+[recommended configurations](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-recommendations).
+
+Configure your instance's domain access policies to allow `es:ESHttp*` actions. You can customize
+the following example configuration to limit principals or resources.
+See [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details.
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "*"
+        ]
+      },
+      "Action": [
+        "es:ESHttp*"
+      ],
+      "Resource": "domain-arn/*"
+    }
+  ]
+}
+```
+
+#### Connecting with a master user in the internal database
+
+When using fine-grained access control with a user in the internal database, you should use HTTP basic
+authentication to connect to OpenSearch. You can provide the master username and password as part of the
+OpenSearch URL or in the **Username** and **Password** text boxes in the Advanced Search settings. See
+[Tutorial: Internal user database and HTTP basic authentication](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac-walkthrough-basic.html) for details.
+
+#### Connecting with an IAM user
+
+When using fine-grained access control with IAM credentials, you can provide the credentials in the **AWS OpenSearch IAM credentials** section in the Advanced Search settings.
+
+#### Permissions for fine-grained access control
+
+The following permissions are required for Advanced Search. See [Creating roles](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-roles) for details.
+
+```json
+{
+  "cluster_permissions": [
+    "cluster_composite_ops",
+    "cluster_monitor"
+  ],
+  "index_permissions": [
+    {
+      "index_patterns": [
+        "gitlab*"
+      ],
+      "allowed_actions": [
+        "data_access",
+        "manage_aliases",
+        "search",
+        "create_index",
+        "delete",
+        "manage"
+      ]
+    },
+    {
+      "index_patterns": [
+        "*"
+      ],
+      "allowed_actions": [
+        "indices:admin/aliases/get",
+        "indices:monitor/stats"
+      ]
+    }
+  ]
+}
+```
+
+The index pattern `*` requires a few permissions for Advanced Search to work.
 
 ### Limit the number of namespaces and projects that can be indexed
 
@@ -486,7 +559,7 @@ The following are some available Rake tasks:
 
 | Task                                                                                                                                                    | Description                                                                                                                                                                               |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`sudo gitlab-rake gitlab:elastic:info`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Outputs debugging information for the Advanced Search intergation. |
+| [`sudo gitlab-rake gitlab:elastic:info`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Outputs debugging information for the Advanced Search integration. |
 | [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Enables Elasticsearch indexing and run `gitlab:elastic:create_empty_index`, `gitlab:elastic:clear_index_status`, `gitlab:elastic:index_projects`, and `gitlab:elastic:index_snippets`.                          |
 | [`sudo gitlab-rake gitlab:elastic:pause_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Pauses Elasticsearch indexing. Changes are still tracked. Useful for cluster/index migrations. |
 | [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Resumes Elasticsearch indexing. |
@@ -783,8 +856,8 @@ additional process dedicated to indexing a set of queues (or queue group). This 
 ensure that indexing queues always have a dedicated worker, while the rest of the queues have
 another dedicated worker to avoid contention.
 
-For this purpose, use the [queue selector](../../administration/sidekiq/extra_sidekiq_processes.md#queue-selector)
-option that allows a more general selection of queue groups using a [worker matching query](../../administration/sidekiq/extra_sidekiq_routing.md#worker-matching-query).
+For this purpose, use the [queue selectors](../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors)
+option that allows a more general selection of queue groups using a [worker matching query](../../administration/sidekiq/processing_specific_job_classes.md#worker-matching-query).
 
 To handle these two queue groups, we generally recommend one of the following two options. You can either:
 
@@ -804,8 +877,8 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
 
    ```ruby
    sidekiq['enable'] = true
-    sidekiq['queue_selector'] = true
-    sidekiq['queue_groups'] = [
+   sidekiq['queue_selector'] = true
+   sidekiq['queue_groups'] = [
       "feature_category=global_search",
       "feature_category!=global_search"
     ]

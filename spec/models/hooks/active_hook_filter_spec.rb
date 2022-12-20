@@ -85,23 +85,5 @@ RSpec.describe ActiveHookFilter do
         it { expect(filter.matches?(:push_hooks, { ref: 'refs/heads/feature1' })).to be true }
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(enhanced_webhook_support_regex: false)
-      end
-
-      let(:hook) do
-        build(
-          :project_hook,
-          push_events: true,
-          push_events_branch_filter: '(master)',
-          branch_filter_strategy: 'regex'
-        )
-      end
-
-      it { expect(filter.matches?(:push_hooks, { ref: 'refs/heads/master' })).to be false }
-      it { expect(filter.matches?(:push_hooks, { ref: 'refs/heads/(master)' })).to be true }
-    end
   end
 end

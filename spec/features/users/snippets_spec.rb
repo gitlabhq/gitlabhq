@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Snippets tab on a user profile', :js do
+RSpec.describe 'Snippets tab on a user profile', :js, feature_category: :snippets do
   context 'when the user has snippets' do
     let(:user) { create(:user) }
 

@@ -3,8 +3,9 @@ import PreviewItem from '~/batch_comments/components/preview_item.vue';
 import { createStore } from '~/batch_comments/stores';
 import diffsModule from '~/diffs/store/modules';
 import notesModule from '~/notes/stores/modules';
-import '~/behaviors/markdown/render_gfm';
 import { createDraft } from '../mock_data';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('Batch comments draft preview item component', () => {
   let wrapper;

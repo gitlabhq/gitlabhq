@@ -258,8 +258,11 @@ module Types
     field :environments,
           Types::EnvironmentType.connection_type,
           null: true,
-          description: 'Environments of the project.',
-          resolver: Resolvers::EnvironmentsResolver
+          description: 'Environments of the project. ' \
+                       'This field can only be resolved for one project in any single request.',
+          resolver: Resolvers::EnvironmentsResolver do
+            extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+          end
 
     field :environment,
           Types::EnvironmentType,
@@ -267,8 +270,18 @@ module Types
           description: 'A single environment of the project.',
           resolver: Resolvers::EnvironmentsResolver.single
 
+    field :nested_environments,
+          Types::NestedEnvironmentType.connection_type,
+          null: true,
+          calls_gitaly: true,
+          description: 'Environments for this project with nested folders, ' \
+                       'can only be resolved for one project in any single request',
+          resolver: Resolvers::Environments::NestedEnvironmentsResolver do
+            extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+          end
+
     field :deployment,
-          Types::DeploymentDetailsType,
+          Types::DeploymentType,
           null: true,
           description: 'Details of the deployment of the project.',
           resolver: Resolvers::DeploymentResolver.single
@@ -526,6 +539,13 @@ module Types
           resolver: Resolvers::Projects::ForkTargetsResolver,
           description: 'Namespaces in which the current user can fork the project into.'
 
+    field :fork_details, Types::Projects::ForkDetailsType,
+          calls_gitaly: true,
+          alpha: { milestone: '15.7' },
+          authorize: :read_code,
+          resolver: Resolvers::Projects::ForkDetailsResolver,
+          description: 'Details of the fork project compared to its upstream project.'
+
     field :branch_rules,
           Types::Projects::BranchRuleType.connection_type,
           null: true,
@@ -536,6 +556,11 @@ module Types
           null: true,
           description: "Programming languages used in the project.",
           calls_gitaly: true
+
+    field :runners, Types::Ci::RunnerType.connection_type,
+          null: true,
+          resolver: ::Resolvers::Ci::ProjectRunnersResolver,
+          description: "Find runners visible to the current user."
 
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)

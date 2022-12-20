@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Issues' do
+RSpec.describe 'Dashboard Issues', feature_category: :team_planning do
   include FilteredSearchHelpers
 
   let(:current_user) { create :user }

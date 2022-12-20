@@ -33,7 +33,7 @@ module Gitlab
           GitalyServer: {
             address: Gitlab::GitalyClient.address(repository.storage),
             token: Gitlab::GitalyClient.token(repository.storage),
-            features: Feature::Gitaly.server_feature_flags(
+            call_metadata: Feature::Gitaly.server_feature_flags(
               user: ::Feature::Gitaly.user_actor(user),
               repository: repository,
               project: ::Feature::Gitaly.project_actor(repository.container),
@@ -47,6 +47,12 @@ module Gitlab
         if receive_max_input_size > 0
           attrs[:GitConfigOptions] << "receive.maxInputSize=#{receive_max_input_size.megabytes}"
         end
+
+        attrs[:GitalyServer][:call_metadata].merge!(
+          'user_id' => attrs[:GL_ID].presence,
+          'username' => attrs[:GL_USERNAME].presence,
+          'remote_ip' => Gitlab::ApplicationContext.current_context_attribute(:remote_ip).presence
+        ).compact!
 
         attrs
       end
@@ -257,7 +263,7 @@ module Gitlab
         {
           address: Gitlab::GitalyClient.address(repository.shard),
           token: Gitlab::GitalyClient.token(repository.shard),
-          features: Feature::Gitaly.server_feature_flags(
+          call_metadata: Feature::Gitaly.server_feature_flags(
             user: ::Feature::Gitaly.user_actor,
             repository: repository,
             project: ::Feature::Gitaly.project_actor(repository.container),

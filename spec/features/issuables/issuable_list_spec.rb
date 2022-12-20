@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'issuable list', :js do
+RSpec.describe 'issuable list', :js, feature_category: :team_planning do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
 
@@ -26,9 +26,9 @@ RSpec.describe 'issuable list', :js do
     it "counts upvotes, downvotes and notes count for each #{issuable_type.to_s.humanize}" do
       visit_issuable_list(issuable_type)
 
-      expect(first('.issuable-upvotes')).to have_content(1)
-      expect(first('.issuable-downvotes')).to have_content(1)
-      expect(first('.issuable-comments')).to have_content(2)
+      expect(first('[data-testid="issuable-upvotes"]')).to have_content(1)
+      expect(first('[data-testid="issuable-downvotes"]')).to have_content(1)
+      expect(first('[data-testid="issuable-comments"]')).to have_content(2)
     end
 
     it 'sorts labels alphabetically' do

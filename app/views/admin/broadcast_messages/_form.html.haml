@@ -17,14 +17,14 @@
       = f.label :broadcast_type, _('Type')
     .col-sm-10
       = f.select :broadcast_type, broadcast_type_options, {}, class: 'form-control js-broadcast-message-type'
-  .form-group.row.js-broadcast-message-background-color-form-group{ class: ('hidden' unless @broadcast_message.banner? ) }
+  .form-group.row.js-broadcast-message-background-color-form-group{ class: ('hidden' unless @broadcast_message.banner?) }
     .col-sm-2.col-form-label
       = f.label :theme, _("Theme")
     .col-sm-10
       .input-group
         = f.select :theme, broadcast_theme_options, {}, class: 'form-control js-broadcast-message-theme'
 
-  .form-group.row.js-broadcast-message-dismissable-form-group{ class: ('hidden' unless @broadcast_message.banner? ) }
+  .form-group.row.js-broadcast-message-dismissable-form-group{ class: ('hidden' unless @broadcast_message.banner?) }
     .col-sm-2.col-form-label.pt-0
       = f.label :starts_at, _("Dismissable")
     .col-sm-10
@@ -62,6 +62,6 @@
       = f.datetime_select :ends_at, {}, class: 'form-control form-control-inline'
   .form-actions
     - if @broadcast_message.persisted?
-      = f.submit _("Update broadcast message"), class: "btn gl-button btn-confirm"
+      = f.submit _("Update broadcast message"), pajamas_button: true
     - else
-      = f.submit _("Add broadcast message"), class: "btn gl-button btn-confirm"
+      = f.submit _("Add broadcast message"), pajamas_button: true

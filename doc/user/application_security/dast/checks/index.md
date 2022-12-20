@@ -69,7 +69,7 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [798.30](798.30.md) | Exposure of confidential secret or token Dropbox API secret | High | Passive |
 | [798.31](798.31.md) | Exposure of confidential secret or token Dropbox long lived API token | High | Passive |
 | [798.32](798.32.md) | Exposure of confidential secret or token Dropbox short lived API token | High | Passive |
-| [798.33](798.33.md) | Exposure of confidential secret or token Droneci Access Token | High | Passive |
+| [798.33](798.33.md) | Exposure of confidential secret or token Drone CI Access Token | High | Passive |
 | [798.34](798.34.md) | Exposure of confidential secret or token Duffel API token | High | Passive |
 | [798.35](798.35.md) | Exposure of confidential secret or token Dynatrace API token | High | Passive |
 | [798.36](798.36.md) | Exposure of confidential secret or token EasyPost API token | High | Passive |
@@ -84,7 +84,7 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [798.46](798.46.md) | Exposure of confidential secret or token Flutterwave Secret Key | High | Passive |
 | [798.47](798.47.md) | Exposure of confidential secret or token Flutterwave Encryption Key | High | Passive |
 | [798.48](798.48.md) | Exposure of confidential secret or token Frame.io API token | High | Passive |
-| [798.49](798.49.md) | Exposure of confidential secret or token Freshbooks Access Token | High | Passive |
+| [798.49](798.49.md) | Exposure of confidential secret or token FreshBooks Access Token | High | Passive |
 | [798.50](798.50.md) | Exposure of confidential secret or token GoCardless API token | High | Passive |
 | [798.52](798.52.md) | Exposure of confidential secret or token GitHub Personal Access Token | High | Passive |
 | [798.53](798.53.md) | Exposure of confidential secret or token GitHub OAuth Access Token | High | Passive |
@@ -99,7 +99,7 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [798.62](798.62.md) | Exposure of confidential secret or token Kraken Access Token | High | Passive |
 | [798.63](798.63.md) | Exposure of confidential secret or token Kucoin Access Token | High | Passive |
 | [798.64](798.64.md) | Exposure of confidential secret or token Kucoin Secret Key | High | Passive |
-| [798.65](798.65.md) | Exposure of confidential secret or token Launchdarkly Access Token | High | Passive |
+| [798.65](798.65.md) | Exposure of confidential secret or token LaunchDarkly Access Token | High | Passive |
 | [798.66](798.66.md) | Exposure of confidential secret or token Linear API Token | High | Passive |
 | [798.67](798.67.md) | Exposure of confidential secret or token Linear Client Secret | High | Passive |
 | [798.68](798.68.md) | Exposure of confidential secret or token LinkedIn Client ID | High | Passive |
@@ -126,7 +126,7 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [798.94](798.94.md) | Exposure of confidential secret or token Private Key | High | Passive |
 | [798.95](798.95.md) | Exposure of confidential secret or token Pulumi API token | High | Passive |
 | [798.96](798.96.md) | Exposure of confidential secret or token PyPI upload token | High | Passive |
-| [798.97](798.97.md) | Exposure of confidential secret or token Rubygem API token | High | Passive |
+| [798.97](798.97.md) | Exposure of confidential secret or token RubyGem API token | High | Passive |
 | [798.98](798.98.md) | Exposure of confidential secret or token RapidAPI Access Token | High | Passive |
 | [798.99](798.99.md) | Exposure of confidential secret or token Sendbird Access ID | High | Passive |
 | [798.100](798.100.md) | Exposure of confidential secret or token Sendbird Access Token | High | Passive |

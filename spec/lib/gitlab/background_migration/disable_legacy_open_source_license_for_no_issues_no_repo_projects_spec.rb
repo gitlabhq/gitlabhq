@@ -50,7 +50,7 @@ RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenseForNoI
                 )
 
     project_statistics_table.create!(project_id: project.id, namespace_id: namespace.id, repository_size: repo_size)
-    issues_table.create!(project_id: project.id) if with_issue
+    issues_table.create!(project_id: project.id, namespace_id: project.project_namespace_id) if with_issue
     project_settings_table.create!(project_id: project.id, legacy_open_source_license_available: true)
 
     project

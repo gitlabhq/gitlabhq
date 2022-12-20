@@ -40,9 +40,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   feature_category :pages, [:lets_encrypt_terms_of_service]
   feature_category :error_tracking, [:reset_error_tracking_access_token]
 
-  VALID_SETTING_PANELS = %w(general repository
+  VALID_SETTING_PANELS = %w[general repository
                             ci_cd reporting metrics_and_profiling
-                            network preferences).freeze
+                            network preferences].freeze
 
   # The current size of a sidekiq job's jid is 24 characters. The size of the
   # jid is an internal detail of Sidekiq, and they do not guarantee that it'll
@@ -150,9 +150,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       }
     end
 
-    if @application_setting.self_monitoring_project_id.present?
-      return render status: :ok, json: self_monitoring_data
-    end
+    return render status: :ok, json: self_monitoring_data if @application_setting.self_monitoring_project_id.present?
 
     render status: :bad_request, json: {
       message: _('Self-monitoring project does not exist. Please check logs ' \
@@ -236,7 +234,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params[:application_setting][:restricted_visibility_levels]&.delete("")
 
     if params[:application_setting].key?(:required_instance_ci_template)
-      params[:application_setting][:required_instance_ci_template] = nil if params[:application_setting][:required_instance_ci_template].empty?
+      if params[:application_setting][:required_instance_ci_template].empty?
+        params[:application_setting][:required_instance_ci_template] = nil
+      end
     end
 
     remove_blank_params_for!(:elasticsearch_aws_secret_access_key, :eks_secret_access_key)
@@ -290,9 +290,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       .new(@application_setting, current_user, application_setting_params)
       .execute
 
-    if recheck_user_consent?
-      session[:ask_for_usage_stats_consent] = current_user.requires_usage_stats_consent?
-    end
+    session[:ask_for_usage_stats_consent] = current_user.requires_usage_stats_consent? if recheck_user_consent?
 
     redirect_path = referer_path(request) || general_admin_application_settings_path
 

@@ -237,7 +237,7 @@ export default {
         :text="board.name"
         @show="loadBoards"
       >
-        <p class="gl-new-dropdown-header-top" @mousedown.prevent>
+        <p class="gl-dropdown-header-top" @mousedown.prevent>
           {{ s__('IssueBoards|Switch board') }}
         </p>
         <gl-search-box-by-type ref="searchBox" v-model="filterTerm" class="m-2" />

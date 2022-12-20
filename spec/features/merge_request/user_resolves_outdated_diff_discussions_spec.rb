@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User resolves outdated diff discussions', :js do
+RSpec.describe 'Merge request > User resolves outdated diff discussions', :js, feature_category: :code_review do
   let(:project) { create(:project, :repository, :public) }
 
   let(:merge_request) do

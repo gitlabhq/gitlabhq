@@ -44,3 +44,5 @@ This checklist encourages us to confirm any changes have been analyzed to reduce
 * [ ] I have evaluated the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist) for this MR.
 
 <!-- template sourced from https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Default.md -->
+
+/assign me

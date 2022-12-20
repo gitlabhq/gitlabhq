@@ -1,91 +1,87 @@
-import { shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import SidebarHeader from '~/jobs/components/job/sidebar/sidebar_header.vue';
 import JobRetryButton from '~/jobs/components/job/sidebar/job_sidebar_retry_button.vue';
-import LegacySidebarHeader from '~/jobs/components/job/sidebar/legacy_sidebar_header.vue';
-import createStore from '~/jobs/store';
-import job from '../../mock_data';
+import getJobQuery from '~/jobs/components/job/graphql/queries/get_job.query.graphql';
+import { mockFullPath, mockId, mockJobResponse } from './mock_data';
 
-describe('Legacy Sidebar Header', () => {
-  let store;
+Vue.use(VueApollo);
+
+const defaultProvide = {
+  projectPath: mockFullPath,
+};
+
+describe('Sidebar Header', () => {
   let wrapper;
 
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
-  const findRetryButton = () => wrapper.findComponent(JobRetryButton);
-  const findEraseLink = () => wrapper.findByTestId('job-log-erase-link');
-
-  const createWrapper = (props) => {
-    store = createStore();
-
-    wrapper = extendedWrapper(
-      shallowMount(LegacySidebarHeader, {
-        propsData: {
-          job,
-          ...props,
-        },
-        store,
-      }),
-    );
+  const createComponent = ({ options = {}, props = {}, restJob = {} } = {}) => {
+    wrapper = shallowMountExtended(SidebarHeader, {
+      propsData: {
+        ...props,
+        jobId: mockId,
+        restJob,
+      },
+      provide: {
+        ...defaultProvide,
+      },
+      ...options,
+    });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
+  const createComponentWithApollo = async ({ props = {}, restJob = {} } = {}) => {
+    const getJobQueryResponse = jest.fn().mockResolvedValue(mockJobResponse);
 
-  describe('when job log is erasable', () => {
-    const path = '/root/ci-project/-/jobs/1447/erase';
+    const requestHandlers = [[getJobQuery, getJobQueryResponse]];
 
-    beforeEach(() => {
-      createWrapper({
-        erasePath: path,
-      });
+    const apolloProvider = createMockApollo(requestHandlers);
+
+    const options = {
+      apolloProvider,
+    };
+
+    createComponent({
+      props,
+      restJob,
+      options,
     });
 
-    it('renders erase job link', () => {
-      expect(findEraseLink().exists()).toBe(true);
+    return waitForPromises();
+  };
+
+  const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findEraseButton = () => wrapper.findByTestId('job-log-erase-link');
+  const findJobName = () => wrapper.findByTestId('job-name');
+  const findRetryButton = () => wrapper.findComponent(JobRetryButton);
+
+  describe('when rendering contents', () => {
+    it('renders the correct job name', async () => {
+      await createComponentWithApollo();
+      expect(findJobName().text()).toBe(mockJobResponse.data.project.job.name);
     });
 
-    it('erase job link has correct path', () => {
-      expect(findEraseLink().attributes('href')).toBe(path);
-    });
-  });
-
-  describe('when job log is not erasable', () => {
-    beforeEach(() => {
-      createWrapper();
-    });
-
-    it('does not render erase button', () => {
-      expect(findEraseLink().exists()).toBe(false);
-    });
-  });
-
-  describe('when the job is retryable', () => {
-    beforeEach(() => {
-      createWrapper();
-    });
-
-    it('should render the retry button', () => {
-      expect(findRetryButton().props('href')).toBe(job.retry_path);
-    });
-  });
-
-  describe('when there is no retry path', () => {
-    it('should not render a retry button', async () => {
-      const copy = { ...job, retry_path: null };
-      createWrapper({ job: copy });
-
+    it('does not render buttons with no paths', async () => {
+      await createComponentWithApollo();
+      expect(findCancelButton().exists()).toBe(false);
+      expect(findEraseButton().exists()).toBe(false);
       expect(findRetryButton().exists()).toBe(false);
     });
-  });
 
-  describe('when the job is cancelable', () => {
-    beforeEach(() => {
-      createWrapper();
+    it('renders a retry button with a path', async () => {
+      await createComponentWithApollo({ restJob: { retry_path: 'retry/path' } });
+      expect(findRetryButton().exists()).toBe(true);
     });
 
-    it('should render link to cancel job', () => {
-      expect(findCancelButton().props('icon')).toBe('cancel');
-      expect(findCancelButton().attributes('href')).toBe(job.cancel_path);
+    it('renders a cancel button with a path', async () => {
+      await createComponentWithApollo({ restJob: { cancel_path: 'cancel/path' } });
+      expect(findCancelButton().exists()).toBe(true);
+    });
+
+    it('renders an erase button with a path', async () => {
+      await createComponentWithApollo({ restJob: { erase_path: 'erase/path' } });
+      expect(findEraseButton().exists()).toBe(true);
     });
   });
 });

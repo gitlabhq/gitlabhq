@@ -7,7 +7,7 @@ import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.grap
 import { formatJobCount, tableField } from '../utils';
 import RunnerBulkDelete from './runner_bulk_delete.vue';
 import RunnerBulkDeleteCheckbox from './runner_bulk_delete_checkbox.vue';
-import RunnerStackedSummaryCell from './cells/runner_stacked_summary_cell.vue';
+import RunnerSummaryCell from './cells/runner_summary_cell.vue';
 import RunnerStatusPopover from './runner_status_popover.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
 import RunnerOwnerCell from './cells/runner_owner_cell.vue';
@@ -28,7 +28,7 @@ export default {
     RunnerBulkDelete,
     RunnerBulkDeleteCheckbox,
     RunnerStatusPopover,
-    RunnerStackedSummaryCell,
+    RunnerSummaryCell,
     RunnerStatusCell,
     RunnerOwnerCell,
   },
@@ -154,11 +154,14 @@ export default {
       </template>
 
       <template #cell(summary)="{ item, index }">
-        <runner-stacked-summary-cell :runner="item">
+        <runner-summary-cell :runner="item">
           <template #runner-name="{ runner }">
             <slot name="runner-name" :runner="runner" :index="index"></slot>
           </template>
-        </runner-stacked-summary-cell>
+          <template #runner-job-status-badge="{ runner }">
+            <slot name="runner-job-status-badge" :runner="runner" :index="index"></slot>
+          </template>
+        </runner-summary-cell>
       </template>
 
       <template #head(owner)="{ label }">

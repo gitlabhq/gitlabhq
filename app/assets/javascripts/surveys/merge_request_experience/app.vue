@@ -1,6 +1,7 @@
 <script>
-import { GlButton, GlSprintf, GlSafeHtmlDirective, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import gitlabLogo from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, __ } from '~/locale';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import SatisfactionRate from '~/surveys/components/satisfaction_rate.vue';
@@ -30,7 +31,7 @@ export default {
     SatisfactionRate,
   },
   directives: {
-    safeHtml: GlSafeHtmlDirective,
+    SafeHtml,
     tooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],

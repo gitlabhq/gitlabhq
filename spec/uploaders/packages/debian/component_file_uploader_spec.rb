@@ -38,8 +38,6 @@ RSpec.describe Packages::Debian::ComponentFileUploader do
           end
 
           it 'can store file remotely' do
-            allow(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async)
-
             component_file
 
             expect(component_file.file_store).to eq(described_class::Store::REMOTE)

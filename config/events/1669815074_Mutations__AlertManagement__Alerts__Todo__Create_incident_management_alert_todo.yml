@@ -1,0 +1,26 @@
+---
+description: Migrated Service Ping metric. Count of unique users adding alerts to the TODO list
+category: Mutations::AlertManagement::Alerts::Todo::Create
+action: incident_management_alert_todo
+label_description: "Mirrored Service Ping total metric key_path: redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly"
+property_description:
+value_description:
+extra_properties:
+identifiers:
+- project
+- user
+- namespace
+product_section: ops
+product_stage: monitor
+product_group: monitor
+product_category:
+milestone: "15.7"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105223/diffs
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+

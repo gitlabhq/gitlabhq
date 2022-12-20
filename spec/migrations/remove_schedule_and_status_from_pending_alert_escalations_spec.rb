@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RemoveScheduleAndStatusFromPendingAlertEscalations do
+RSpec.describe RemoveScheduleAndStatusFromPendingAlertEscalations, feature_category: :incident_management do
   let(:escalations) { table(:incident_management_pending_alert_escalations) }
   let(:schedule_index) { 'index_incident_management_pending_alert_escalations_on_schedule' }
   let(:schedule_foreign_key) { 'fk_rails_fcbfd9338b' }

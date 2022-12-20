@@ -697,7 +697,7 @@ module Gitlab
           end
         end
 
-        shared_examples :invalid_include do
+        shared_examples 'invalid include' do
           let(:include_path) { 'dk.png' }
 
           before do
@@ -716,7 +716,7 @@ module Gitlab
         context 'with path to a binary file' do
           let(:blob) { fake_blob(path: 'dk.png', binary: true) }
 
-          include_examples :invalid_include
+          include_examples 'invalid include'
         end
 
         context 'with path to file in external storage' do
@@ -727,7 +727,7 @@ module Gitlab
             project.update_attribute(:lfs_enabled, true)
           end
 
-          include_examples :invalid_include
+          include_examples 'invalid include'
         end
 
         context 'with path to a textual file' do
@@ -737,7 +737,7 @@ module Gitlab
             create_file(file_path, "Content from #{include_path}")
           end
 
-          shared_examples :valid_include do
+          shared_examples 'valid include' do
             [
               ['/doc/sample.adoc',  'doc/sample.adoc',     'absolute path'],
               ['sample.adoc',       'doc/api/sample.adoc', 'relative path'],
@@ -760,24 +760,24 @@ module Gitlab
           context 'when requested path is a file in the repo' do
             let(:requested_path) { 'doc/api/README.adoc' }
 
-            include_examples :valid_include
+            include_examples 'valid include'
 
             context 'without a commit (only ref)' do
               let(:commit) { nil }
 
-              include_examples :valid_include
+              include_examples 'valid include'
             end
           end
 
           context 'when requested path is a directory in the repo' do
             let(:requested_path) { 'doc/api/' }
 
-            include_examples :valid_include
+            include_examples 'valid include'
 
             context 'without a commit (only ref)' do
               let(:commit) { nil }
 
-              include_examples :valid_include
+              include_examples 'valid include'
             end
           end
         end

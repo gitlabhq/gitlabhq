@@ -33,7 +33,10 @@ module Integrations
 
     boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
 
-    validates :webhook, presence: true, public_url: true, if: :activated?
+    validates :webhook,
+              presence: true,
+              public_url: true,
+              if: -> (integration) { integration.activated? && integration.requires_webhook? }
     validates :labels_to_be_notified_behavior, inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS }, allow_blank: true
 
     def initialize_properties
@@ -73,8 +76,6 @@ module Integrations
 
     def default_fields
       [
-        { type: 'text', name: 'webhook', help: "#{webhook_help}", required: true }.freeze,
-        { type: 'text', name: 'username', placeholder: 'GitLab-integration' }.freeze,
         { type: 'checkbox', name: 'notify_only_broken_pipelines', help: 'Do not send notifications for successful pipelines.' }.freeze,
         {
           type: 'select',
@@ -96,19 +97,24 @@ module Integrations
             ['Match all of the labels', MATCH_ALL_LABELS]
           ]
         }.freeze
-      ].freeze
+      ].tap do |fields|
+        next unless requires_webhook?
+
+        fields.unshift(
+          { type: 'text', name: 'webhook', help: webhook_help, required: true }.freeze,
+          { type: 'text', name: 'username', placeholder: 'GitLab-integration' }.freeze
+        )
+      end.freeze
     end
 
     def execute(data)
-      return unless supported_events.include?(data[:object_kind])
-
-      return unless webhook.present?
-
       object_kind = data[:object_kind]
+
+      return false unless should_execute?(object_kind)
 
       data = custom_data(data)
 
-      return unless notify_label?(data)
+      return false unless notify_label?(data)
 
       # WebHook events often have an 'update' event that follows a 'open' or
       # 'close' action. Ignore update events for now to prevent duplicate
@@ -168,7 +174,16 @@ module Integrations
       self.public_send(field_name) # rubocop:disable GitlabSecurity/PublicSend
     end
 
+    def requires_webhook?
+      true
+    end
+
     private
+
+    def should_execute?(object_kind)
+      supported_events.include?(object_kind) &&
+        (!requires_webhook? || webhook.present?)
+    end
 
     def log_usage(_, _)
       # Implement in child class

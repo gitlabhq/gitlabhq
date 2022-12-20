@@ -53,7 +53,7 @@ class BulkImports::Entity < ApplicationRecord
   scope :by_user_id, ->(user_id) { joins(:bulk_import).where(bulk_imports: { user_id: user_id }) }
   scope :stale, -> { where('created_at < ?', 8.hours.ago).where(status: [0, 1]) }
   scope :by_bulk_import_id, ->(bulk_import_id) { where(bulk_import_id: bulk_import_id) }
-  scope :order_by_created_at, -> (direction) { order(created_at: direction) }
+  scope :order_by_created_at, ->(direction) { order(created_at: direction) }
 
   alias_attribute :destination_slug, :destination_name
 

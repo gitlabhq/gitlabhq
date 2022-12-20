@@ -3,17 +3,18 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe SchedulePurgingStaleSecurityScans do
-  let_it_be(:namespaces) { table(:namespaces) }
-  let_it_be(:projects) { table(:projects) }
-  let_it_be(:pipelines) { table(:ci_pipelines) }
-  let_it_be(:builds) { table(:ci_builds) }
-  let_it_be(:security_scans) { table(:security_scans) }
+RSpec.describe SchedulePurgingStaleSecurityScans, :suppress_gitlab_schemas_validate_connection,
+feature_category: :vulnerability_management do
+  let!(:namespaces) { table(:namespaces) }
+  let!(:projects) { table(:projects) }
+  let!(:pipelines) { table(:ci_pipelines) }
+  let!(:builds) { table(:ci_builds) }
+  let!(:security_scans) { table(:security_scans) }
 
-  let_it_be(:namespace) { namespaces.create!(name: "foo", path: "bar") }
-  let_it_be(:project) { projects.create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
-  let_it_be(:pipeline) { pipelines.create!(project_id: project.id, ref: 'master', sha: 'adf43c3a', status: 'success') }
-  let_it_be(:ci_build) { builds.create!(commit_id: pipeline.id, retried: false, type: 'Ci::Build') }
+  let!(:namespace) { namespaces.create!(name: "foo", path: "bar") }
+  let!(:project) { projects.create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
+  let!(:pipeline) { pipelines.create!(project_id: project.id, ref: 'master', sha: 'adf43c3a', status: 'success') }
+  let!(:ci_build) { builds.create!(commit_id: pipeline.id, retried: false, type: 'Ci::Build') }
 
   let!(:security_scan_1) { security_scans.create!(build_id: ci_build.id, scan_type: 1, created_at: 92.days.ago) }
   let!(:security_scan_2) { security_scans.create!(build_id: ci_build.id, scan_type: 2, created_at: 91.days.ago) }

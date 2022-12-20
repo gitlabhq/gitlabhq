@@ -108,15 +108,13 @@ module Ci
     def each_build(params, &blk)
       queue = ::Ci::Queue::BuildQueueService.new(runner)
 
-      builds = begin
-        if runner.instance_type?
-          queue.builds_for_shared_runner
-        elsif runner.group_type?
-          queue.builds_for_group_runner
-        else
-          queue.builds_for_project_runner
-        end
-      end
+      builds = if runner.instance_type?
+                 queue.builds_for_shared_runner
+               elsif runner.group_type?
+                 queue.builds_for_group_runner
+               else
+                 queue.builds_for_project_runner
+               end
 
       if runner.ref_protected?
         builds = queue.builds_for_protected_runner(builds)

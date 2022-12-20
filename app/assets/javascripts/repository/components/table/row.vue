@@ -7,10 +7,10 @@ import {
   GlLoadingIcon,
   GlIcon,
   GlHoverLoadDirective,
-  GlSafeHtmlDirective,
   GlIntersectionObserver,
 } from '@gitlab/ui';
 import { escapeRegExp } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import { TREE_PAGE_SIZE, ROW_APPEAR_DELAY } from '~/repository/constants';
@@ -19,7 +19,6 @@ import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import getRefMixin from '../../mixins/get_ref';
-import commitQuery from '../../queries/commit.query.graphql';
 
 export default {
   components: {
@@ -35,23 +34,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
     GlHoverLoad: GlHoverLoadDirective,
-    SafeHtml: GlSafeHtmlDirective,
-  },
-  apollo: {
-    commit: {
-      query: commitQuery,
-      variables() {
-        return {
-          fileName: this.name,
-          path: this.currentPath,
-          projectPath: this.projectPath,
-          maxOffset: this.totalEntries,
-        };
-      },
-      skip() {
-        return this.glFeatures.lazyLoadCommits;
-      },
-    },
+    SafeHtml,
   },
   mixins: [getRefMixin, glFeatureFlagMixin()],
   props: {
@@ -125,14 +108,13 @@ export default {
   },
   data() {
     return {
-      commit: null,
       hasRowAppeared: false,
       delayedRowAppear: null,
     };
   },
   computed: {
     commitData() {
-      return this.glFeatures.lazyLoadCommits ? this.commitInfo : this.commit;
+      return this.commitInfo;
     },
     routerLinkTo() {
       const blobRouteConfig = { path: `/-/blob/${this.escapedRef}/${escapeFileUrl(this.path)}` };
@@ -200,12 +182,10 @@ export default {
         return;
       }
 
-      if (this.glFeatures.lazyLoadCommits) {
-        this.delayedRowAppear = setTimeout(
-          () => this.$emit('row-appear', this.rowNumber),
-          ROW_APPEAR_DELAY,
-        );
-      }
+      this.delayedRowAppear = setTimeout(
+        () => this.$emit('row-appear', this.rowNumber),
+        ROW_APPEAR_DELAY,
+      );
     },
     rowDisappeared() {
       clearTimeout(this.delayedRowAppear);

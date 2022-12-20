@@ -5,6 +5,7 @@ class DeleteServiceTemplateRecords < Gitlab::Database::Migration[1.0]
     # Disable single-table inheritance
     self.inheritance_column = :_type_disabled
   end
+
   def up
     Integration.where(template: true).delete_all
   end

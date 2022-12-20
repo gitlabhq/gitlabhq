@@ -86,6 +86,7 @@ class Namespace < ApplicationRecord
   has_many :issues, inverse_of: :namespace
 
   has_many :timelog_categories, class_name: 'TimeTracking::TimelogCategory'
+  has_many :achievements, class_name: 'Achievements::Achievement'
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
@@ -131,26 +132,28 @@ class Namespace < ApplicationRecord
            to: :namespace_settings, allow_nil: true
   delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=,
            to: :namespace_settings
+  delegate :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
+           to: :namespace_settings
   delegate :maven_package_requests_forwarding,
            :pypi_package_requests_forwarding,
            :npm_package_requests_forwarding,
            to: :package_settings
 
-  after_save :reload_namespace_details
-
-  after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
-
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
   after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
+  after_update :move_dir, if: :saved_change_to_path_or_parent?, unless: -> { is_a?(Namespaces::ProjectNamespace) }
+  after_destroy :rm_dir
+  after_save :reload_namespace_details
+
+  after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
+
   after_sync_traversal_ids :schedule_sync_event_worker # custom callback defined in Namespaces::Traversal::Linear
 
   # Legacy Storage specific hooks
 
-  after_update :move_dir, if: :saved_change_to_path_or_parent?, unless: -> { is_a?(Namespaces::ProjectNamespace) }
   before_destroy(prepend: true) { prepare_for_destroy }
-  after_destroy :rm_dir
   after_commit :expire_child_caches, on: :update, if: -> {
     Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
       saved_change_to_name? || saved_change_to_path? || saved_change_to_parent_id?
@@ -330,6 +333,13 @@ class Namespace < ApplicationRecord
     type.nil? || type == Namespaces::UserNamespace.sti_name || !(group_namespace? || project_namespace?)
   end
 
+  def bot_user_namespace?
+    return false unless user_namespace?
+    return false unless owner && owner.bot?
+
+    true
+  end
+
   def owner_required?
     user_namespace?
   end
@@ -507,6 +517,10 @@ class Namespace < ApplicationRecord
     root? && actual_plan.paid?
   end
 
+  def prevent_delete?
+    paid?
+  end
+
   def actual_limits
     # We default to PlanLimits.new otherwise a lot of specs would fail
     # On production each plan should already have associated limits record
@@ -541,12 +555,10 @@ class Namespace < ApplicationRecord
   def shared_runners_setting
     if shared_runners_enabled
       SR_ENABLED
+    elsif allow_descendants_override_disabled_shared_runners
+      SR_DISABLED_WITH_OVERRIDE
     else
-      if allow_descendants_override_disabled_shared_runners
-        SR_DISABLED_WITH_OVERRIDE
-      else
-        SR_DISABLED_AND_UNOVERRIDABLE
-      end
+      SR_DISABLED_AND_UNOVERRIDABLE
     end
   end
 
@@ -595,6 +607,10 @@ class Namespace < ApplicationRecord
 
     # Otherwise we use the stored setting on the group
     namespace_settings&.enabled_git_access_protocol
+  end
+
+  def all_ancestors_have_runner_registration_enabled?
+    namespace_settings&.all_ancestors_have_runner_registration_enabled?
   end
 
   private

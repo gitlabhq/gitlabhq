@@ -18,7 +18,7 @@ module IncidentManagement
         if timeline_event.destroy
           add_system_note(incident, user)
 
-          track_usage_event(:incident_management_timeline_event_deleted, user.id)
+          track_timeline_event('incident_management_timeline_event_deleted', project)
           success(timeline_event)
         else
           error_in_save(timeline_event)

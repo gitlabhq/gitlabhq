@@ -42,6 +42,7 @@ module Users
       migrate_award_emoji
       migrate_snippets
       migrate_reviews
+      migrate_releases
     end
 
     def post_migrate_records
@@ -94,6 +95,10 @@ module Users
 
     def migrate_reviews
       batched_migrate(Review, :author_id)
+    end
+
+    def migrate_releases
+      batched_migrate(Release, :author_id)
     end
 
     # rubocop:disable CodeReuse/ActiveRecord

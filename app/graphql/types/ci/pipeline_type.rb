@@ -78,7 +78,7 @@ module Types
             resolver: Resolvers::Ci::PipelineStagesResolver
 
       field :user,
-            type: Types::UserType,
+            type: 'Types::UserType',
             null: true,
             description: 'Pipeline user.'
 

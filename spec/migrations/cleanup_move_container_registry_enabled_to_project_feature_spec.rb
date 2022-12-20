@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanupMoveContainerRegistryEnabledToProjectFeature, :migration do
+RSpec.describe CleanupMoveContainerRegistryEnabledToProjectFeature, :migration, feature_category: :navigation do
   let(:namespace) { table(:namespaces).create!(name: 'gitlab', path: 'gitlab-org') }
   let(:non_null_project_features) { { pages_access_level: 20 } }
   let(:bg_class_name) { 'MoveContainerRegistryEnabledToProjectFeature' }

@@ -31,7 +31,7 @@ RSpec.describe Namespaces::ProcessSyncEventsWorker do
       expect(described_class).to receive(:perform_async).at_least(:twice).and_call_original
       expect do
         described_class.perform_async
-      end.to change(Namespaces::SyncEvent, :count).from(3).to(0)
+      end.to change { Namespaces::SyncEvent.count }.from(3).to(0)
     end
   end
 
@@ -44,11 +44,11 @@ RSpec.describe Namespaces::ProcessSyncEventsWorker do
     end
 
     it 'consumes all sync events' do
-      expect { perform }.to change(Namespaces::SyncEvent, :count).from(5).to(0)
+      expect { perform }.to change { Namespaces::SyncEvent.count }.from(5).to(0)
     end
 
     it 'syncs namespace hierarchy traversal ids' do
-      expect { perform }.to change(Ci::NamespaceMirror, :all).to contain_exactly(
+      expect { perform }.to change { Ci::NamespaceMirror.all }.to contain_exactly(
         an_object_having_attributes(namespace_id: group1.id, traversal_ids: [group1.id]),
         an_object_having_attributes(namespace_id: group2.id, traversal_ids: [group1.id, group2.id]),
         an_object_having_attributes(namespace_id: group3.id, traversal_ids: [group1.id, group2.id, group3.id])

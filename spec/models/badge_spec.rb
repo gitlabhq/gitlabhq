@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Badge do
-  let(:placeholder_url) { 'http://www.example.com/%{project_path}/%{project_id}/%{default_branch}/%{commit_sha}' }
+  let(:placeholder_url) { 'http://www.example.com/%{project_path}/%{project_id}/%{project_name}/%{default_branch}/%{commit_sha}/%{project_title}' }
 
   describe 'validations' do
     # Requires the let variable url_sym
@@ -64,7 +64,7 @@ RSpec.describe Badge do
     it 'uses the project information to populate the url placeholders' do
       stub_project_commit_info(project)
 
-      expect(badge.public_send("rendered_#{method}", project)).to eq "http://www.example.com/#{project.full_path}/#{project.id}/master/whatever"
+      expect(badge.public_send("rendered_#{method}", project)).to eq "http://www.example.com/#{project.full_path}/#{project.id}/#{project.path}/master/whatever/#{project.title}"
     end
 
     it 'returns the url if the project used is nil' do

@@ -1,6 +1,7 @@
 <script>
-import { GlIcon, GlButton, GlTooltipDirective, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { groupBy } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -17,7 +18,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -158,10 +159,7 @@ export default {
         return;
       }
 
-      // 100 and 1234 emoji are a number. Callback for v-for click sends it as a string
-      const parsedName = /^[0-9]+$/.test(awardName) ? Number(awardName) : awardName;
-
-      this.$emit('award', parsedName);
+      this.$emit('award', awardName);
 
       if (document.activeElement) document.activeElement.blur();
     },

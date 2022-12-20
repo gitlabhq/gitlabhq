@@ -77,7 +77,7 @@ RSpec.describe Schedulable do
       end.new
     end
 
-    it 'works' do
+    it 'raises a NotImplementedError' do
       expect { schedulable_instance.set_next_run_at }.to raise_error(NotImplementedError)
     end
   end

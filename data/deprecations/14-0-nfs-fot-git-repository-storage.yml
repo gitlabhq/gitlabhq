@@ -1,4 +1,4 @@
-- name: "NFS for Git repository storage"  # The name of the feature to be deprecated
+- title: "NFS for Git repository storage"  # The name of the feature to be deprecated
   announcement_milestone: "14.0"  # The milestone when this feature was first announced as deprecated.
   announcement_date: "2021-06-22"  # The date of the milestone release when this feature was first announced as deprecated
   removal_milestone: "15.6"  # The milestone when this feature is planned to be removed

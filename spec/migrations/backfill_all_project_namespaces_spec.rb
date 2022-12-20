@@ -3,8 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillAllProjectNamespaces, :migration do
-  let_it_be(:migration) { described_class::MIGRATION }
+RSpec.describe BackfillAllProjectNamespaces, :migration, feature_category: :subgroups do
+  let!(:migration) { described_class::MIGRATION }
 
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }

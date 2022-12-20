@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanupAttentionRequestRelatedSystemNotes, :migration do
+RSpec.describe CleanupAttentionRequestRelatedSystemNotes, :migration, feature_category: :team_planning do
   let(:notes) { table(:notes) }
   let(:system_note_metadata) { table(:system_note_metadata) }
 

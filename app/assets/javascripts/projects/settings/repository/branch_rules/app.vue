@@ -1,7 +1,7 @@
 <script>
 import { s__ } from '~/locale';
 import { createAlert } from '~/flash';
-import branchRulesQuery from './graphql/queries/branch_rules.query.graphql';
+import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import BranchRule from './components/branch_rule.vue';
 
 export const i18n = {
@@ -51,13 +51,14 @@ export default {
 <template>
   <div class="settings-content">
     <branch-rule
-      v-for="rule in branchRules"
-      :key="rule.name"
+      v-for="(rule, index) in branchRules"
+      :key="`${rule.name}-${index}`"
       :name="rule.name"
       :is-default="rule.isDefault"
       :branch-protection="rule.branchProtection"
-      :status-checks-total="rule.externalStatusChecks.nodes.length"
-      :approval-rules-total="rule.approvalRules.nodes.length"
+      :status-checks-total="rule.externalStatusChecks ? rule.externalStatusChecks.nodes.length : 0"
+      :approval-rules-total="rule.approvalRules ? rule.approvalRules.nodes.length : 0"
+      :matching-branches-count="rule.matchingBranchesCount"
     />
 
     <span v-if="!branchRules.length" data-testid="empty">{{ $options.i18n.emptyState }}</span>

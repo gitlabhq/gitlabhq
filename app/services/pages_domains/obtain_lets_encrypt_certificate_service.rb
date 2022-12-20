@@ -28,7 +28,7 @@ module PagesDomains
 
       api_order = ::Gitlab::LetsEncrypt::Client.new.load_order(acme_order.url)
 
-      # https://tools.ietf.org/html/rfc8555#section-7.1.6 - statuses diagram
+      # https://www.rfc-editor.org/rfc/rfc8555#section-7.1.6 - statuses diagram
       case api_order.status
       when 'ready'
         api_order.request_certificate(private_key: acme_order.private_key, domain: pages_domain.domain)

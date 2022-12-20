@@ -5,8 +5,11 @@
 %hr
 
 - if @hook_log.oversize?
-  = button_tag _("Resend Request"), class: "btn gl-button btn-default float-right gl-ml-3 has-tooltip", disabled: true, title: _("Request data is too large")
+  - tooltip = _("Request data is too large")
+  = render Pajamas::ButtonComponent.new(disabled: true, button_options: { class: 'gl-float-right gl-ml-3 has-tooltip', title: tooltip }) do
+    = _("Resend Request")
 - else
-  = link_to _("Resend Request"), retry_admin_hook_hook_log_path(@hook, @hook_log), method: :post, class: "btn gl-button btn-default float-right gl-ml-3"
+  = render Pajamas::ButtonComponent.new(href: retry_admin_hook_hook_log_path(@hook, @hook_log), method: :post, button_options: { class: 'gl-float-right gl-ml-3' }) do
+    = _("Resend Request")
 
 = render partial: 'shared/hook_logs/content', locals: { hook_log: @hook_log }

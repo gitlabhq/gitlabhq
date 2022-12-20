@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe API::Markdown do
+RSpec.describe API::Markdown, feature_category: :team_planning do
   describe "POST /markdown" do
     let(:user) {} # No-op. It gets overwritten in the contexts below.
     let(:disable_authenticate_markdown_api) { false }

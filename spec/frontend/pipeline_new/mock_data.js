@@ -83,7 +83,7 @@ export const mockYamlVariables = [
   {
     description: 'This is a variable with predefined values.',
     key: 'VAR_WITH_OPTIONS',
-    value: 'development',
+    value: 'staging',
     valueOptions: ['development', 'staging', 'production'],
   },
 ];
@@ -105,7 +105,7 @@ export const mockYamlVariablesWithoutDesc = [
   {
     description: null,
     key: 'VAR_WITH_OPTIONS',
-    value: 'development',
+    value: 'staging',
     valueOptions: ['development', 'staging', 'production'],
   },
 ];

@@ -1,0 +1,25 @@
+- page_title @protected_ref.name, _("Protected Branches")
+
+.row.gl-mt-3.gl-mb-3
+  .col-lg-3
+    %h4.gl-mt-0.ref-name
+      = @protected_ref.name
+
+  .col-lg-9
+    %h5 Matching Branches
+    - if @matching_refs.present?
+      .table-responsive
+        %table.table.protected-branches-list
+          %colgroup
+            %col{ width: "30%" }
+            %col{ width: "30%" }
+          %thead
+            %tr
+              %th Branch
+              %th Last commit
+          %tbody
+            - @matching_refs.each do |matching_branch|
+              = render partial: "protected_branches/shared/matching_branch", object: matching_branch
+    - else
+      %p.settings-message.text-center
+        Couldn't find any matching branches.

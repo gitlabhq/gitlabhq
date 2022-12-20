@@ -304,7 +304,7 @@ export default {
     deleteFileModalContent: s__(
       `PackageRegistry|You are about to delete %{filename}. This is a destructive action that may render your package unusable. Are you sure?`,
     ),
-    otherVersionsTabTitle: __('Other versions'),
+    otherVersionsTabTitle: s__('PackageRegistry|Other versions'),
   },
   modal: {
     packageDeletePrimaryAction: {
@@ -380,7 +380,9 @@ export default {
       <gl-tab v-if="showDependencies">
         <template #title>
           <span>{{ __('Dependencies') }}</span>
-          <gl-badge size="sm">{{ packageDependencies.length }}</gl-badge>
+          <gl-badge size="sm" data-testid="dependencies-badge">{{
+            packageDependencies.length
+          }}</gl-badge>
         </template>
 
         <template v-if="packageDependencies.length > 0">
@@ -392,7 +394,14 @@ export default {
         </p>
       </gl-tab>
 
-      <gl-tab :title="$options.i18n.otherVersionsTabTitle" title-item-class="js-versions-tab" lazy>
+      <gl-tab title-item-class="js-versions-tab" lazy>
+        <template #title>
+          <span>{{ $options.i18n.otherVersionsTabTitle }}</span>
+          <gl-badge size="sm" class="gl-tab-counter-badge" data-testid="other-versions-badge">{{
+            packageEntity.versions.count
+          }}</gl-badge>
+        </template>
+
         <package-versions-list
           :is-loading="isLoading"
           :page-info="versionPageInfo"

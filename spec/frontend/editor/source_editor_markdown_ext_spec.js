@@ -1,7 +1,9 @@
 import MockAdapter from 'axios-mock-adapter';
 import { Range, Position } from 'monaco-editor';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { EXTENSION_MARKDOWN_BUTTONS } from '~/editor/constants';
 import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
+import { ToolbarExtension } from '~/editor/extensions/source_editor_toolbar_ext';
 import SourceEditor from '~/editor/source_editor';
 import axios from '~/lib/utils/axios_utils';
 
@@ -36,7 +38,7 @@ describe('Markdown Extension for Source Editor', () => {
       blobPath: markdownPath,
       blobContent: text,
     });
-    instance.use({ definition: EditorMarkdownExtension });
+    instance.use([{ definition: ToolbarExtension }, { definition: EditorMarkdownExtension }]);
   });
 
   afterEach(() => {
@@ -45,6 +47,16 @@ describe('Markdown Extension for Source Editor', () => {
     mockAxios.restore();
 
     resetHTMLFixture();
+  });
+
+  describe('toolbar', () => {
+    it('renders all the buttons', () => {
+      const btns = instance.toolbar.getAllItems();
+      expect(btns).toHaveLength(EXTENSION_MARKDOWN_BUTTONS.length);
+      EXTENSION_MARKDOWN_BUTTONS.forEach((btn, i) => {
+        expect(btns[i].id).toBe(btn.id);
+      });
+    });
   });
 
   describe('getSelectedText', () => {

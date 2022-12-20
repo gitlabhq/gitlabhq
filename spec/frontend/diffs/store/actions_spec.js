@@ -606,6 +606,50 @@ describe('DiffsStoreActions', () => {
         params: { commit_id: '123', w: '0' },
       });
     });
+
+    describe('version parameters', () => {
+      const diffId = '4';
+      const startSha = 'abc';
+      const pathRoot = 'a/a/-/merge_requests/1';
+      let file;
+      let getters;
+
+      beforeAll(() => {
+        file = { load_collapsed_diff_url: '/load/collapsed/diff/url' };
+        getters = {};
+      });
+
+      beforeEach(() => {
+        jest.spyOn(axios, 'get').mockReturnValue(Promise.resolve({ data: {} }));
+      });
+
+      it('fetches the data when there is no mergeRequestDiff', () => {
+        diffActions.loadCollapsedDiff({ commit() {}, getters, state }, file);
+
+        expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
+          params: expect.any(Object),
+        });
+      });
+
+      it.each`
+        desc                                   | versionPath                                              | start_sha    | diff_id
+        ${'no additional version information'} | ${`${pathRoot}?search=terms`}                            | ${undefined} | ${undefined}
+        ${'the diff_id'}                       | ${`${pathRoot}?diff_id=${diffId}`}                       | ${undefined} | ${diffId}
+        ${'the start_sha'}                     | ${`${pathRoot}?start_sha=${startSha}`}                   | ${startSha}  | ${undefined}
+        ${'all available version information'} | ${`${pathRoot}?diff_id=${diffId}&start_sha=${startSha}`} | ${startSha}  | ${diffId}
+      `('fetches the data and includes $desc', ({ versionPath, start_sha, diff_id }) => {
+        jest.spyOn(axios, 'get').mockReturnValue(Promise.resolve({ data: {} }));
+
+        diffActions.loadCollapsedDiff(
+          { commit() {}, getters, state: { mergeRequestDiff: { version_path: versionPath } } },
+          file,
+        );
+
+        expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
+          params: expect.objectContaining({ start_sha, diff_id }),
+        });
+      });
+    });
   });
 
   describe('toggleFileDiscussions', () => {

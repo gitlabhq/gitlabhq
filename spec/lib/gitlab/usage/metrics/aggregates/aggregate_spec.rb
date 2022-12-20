@@ -12,6 +12,12 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
   describe '.calculate_count_for_aggregation' do
     using RSpec::Parameterized::TableSyntax
 
+    before do
+      %w[event1 event2].each do |event_name|
+        allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:known_event?).with(event_name).and_return(true)
+      end
+    end
+
     context 'with valid configuration' do
       where(:number_of_days, :operator, :datasource, :expected_method) do
         28 | 'AND' | 'redis_hll' | :calculate_metrics_intersections

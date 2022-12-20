@@ -180,15 +180,6 @@ RSpec.describe Gitlab::Tracking do
 
       it_behaves_like 'delegates to destination', Gitlab::Tracking::Destinations::SnowplowMicro
     end
-
-    it 'tracks errors' do
-      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
-        an_instance_of(ContractError),
-        snowplow_category: nil, snowplow_action: 'some_action'
-      )
-
-      described_class.event(nil, 'some_action')
-    end
   end
 
   describe '.definition' do

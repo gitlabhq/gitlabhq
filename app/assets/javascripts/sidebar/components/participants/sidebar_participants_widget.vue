@@ -1,6 +1,6 @@
 <script>
 import { __ } from '~/locale';
-import { participantsQueries } from '~/sidebar/constants';
+import { participantsQueries } from '../../constants';
 import Participants from './participants.vue';
 
 export default {

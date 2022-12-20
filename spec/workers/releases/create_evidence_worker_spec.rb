@@ -13,7 +13,7 @@ RSpec.describe Releases::CreateEvidenceWorker do
       expect(service).to receive(:execute).and_call_original
     end
 
-    expect { described_class.new.perform(release.id) }.to change(Releases::Evidence, :count).by(1)
+    expect { described_class.new.perform(release.id) }.to change { Releases::Evidence.count }.by(1)
   end
 
   it 'creates a new Evidence record with pipeline' do
@@ -21,6 +21,6 @@ RSpec.describe Releases::CreateEvidenceWorker do
       expect(service).to receive(:execute).and_call_original
     end
 
-    expect { described_class.new.perform(release.id, pipeline.id) }.to change(Releases::Evidence, :count).by(1)
+    expect { described_class.new.perform(release.id, pipeline.id) }.to change { Releases::Evidence.count }.by(1)
   end
 end

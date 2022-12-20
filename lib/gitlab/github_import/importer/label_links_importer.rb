@@ -22,7 +22,7 @@ module Gitlab
 
         def create_labels
           time = Time.zone.now
-          rows = []
+          items = []
           target_id = find_target_id
 
           issue.label_names.each do |label_name|
@@ -31,16 +31,16 @@ module Gitlab
             # the project's labels.
             next unless (label_id = label_finder.id_for(label_name))
 
-            rows << {
+            items << LabelLink.new(
               label_id: label_id,
               target_id: target_id,
               target_type: issue.issuable_type,
               created_at: time,
               updated_at: time
-            }
+            )
           end
 
-          ApplicationRecord.legacy_bulk_insert(LabelLink.table_name, rows) # rubocop:disable Gitlab/BulkInsert
+          LabelLink.bulk_insert!(items)
         end
 
         def find_target_id

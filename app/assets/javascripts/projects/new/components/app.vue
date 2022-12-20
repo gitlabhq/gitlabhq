@@ -3,7 +3,7 @@ import createFromTemplateIllustration from '@gitlab/svgs/dist/illustrations/proj
 import blankProjectIllustration from '@gitlab/svgs/dist/illustrations/project-create-new-sm.svg';
 import importProjectIllustration from '@gitlab/svgs/dist/illustrations/project-import-sm.svg';
 import ciCdProjectIllustration from '@gitlab/svgs/dist/illustrations/project-run-CICD-pipelines-sm.svg';
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
 import NewProjectPushTipPopover from './new_project_push_tip_popover.vue';

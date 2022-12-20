@@ -1,4 +1,4 @@
-- name: "End of support for Python 3.6 in Dependency Scanning"
+- title: "End of support for Python 3.6 in Dependency Scanning"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
   removal_milestone: "15.0"

@@ -1,5 +1,5 @@
 import { GlDrawer, GlAlert, GlSkeletonLoader } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import MarkdownDrawer, { cache } from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
 import { getRenderedMarkdown } from '~/vue_shared/components/markdown_drawer/utils/fetch';
@@ -82,7 +82,10 @@ describe('MarkdownDrawer', () => {
       contentTop.mockClear();
     });
 
-    it(`computes offsetTop ${hasNavbar ? 'with' : 'without'} .navbar-gitlab`, () => {
+    it(`computes offsetTop ${hasNavbar ? 'with' : 'without'} .navbar-gitlab`, async () => {
+      wrapper.vm.getDrawerTop();
+      await Vue.nextTick();
+
       expect(findDrawer().attributes('headerheight')).toBe(`${navbarHeight}px`);
     });
   });
@@ -95,11 +98,11 @@ describe('MarkdownDrawer', () => {
       renderGLFMSpy = jest.spyOn(MarkdownDrawer.methods, 'renderGLFM');
       fetchMarkdownSpy = jest.spyOn(MarkdownDrawer.methods, 'fetchMarkdown');
       global.document.querySelector = jest.fn(() => ({
-        getBoundingClientRect: jest.fn(() => ({ bottom: 100 })),
         dataset: {
           page: 'test',
         },
       }));
+      contentTop.mockReturnValue(100);
       createComponent();
       await nextTick();
     });
@@ -118,11 +121,27 @@ describe('MarkdownDrawer', () => {
       expect(fetchMarkdownSpy).toHaveBeenCalledTimes(2);
     });
 
-    it('for open triggers renderGLFM', async () => {
+    it('triggers renderGLFM in openDrawer', async () => {
       wrapper.vm.fetchMarkdown();
       wrapper.vm.openDrawer();
       await nextTick();
       expect(renderGLFMSpy).toHaveBeenCalled();
+    });
+
+    it('triggers height calculation in openDrawer', async () => {
+      expect(findDrawer().attributes('headerheight')).toBe(`${0}px`);
+      wrapper.vm.fetchMarkdown();
+      wrapper.vm.openDrawer();
+      await nextTick();
+      expect(findDrawer().attributes('headerheight')).toBe(`${100}px`);
+    });
+
+    it('triggers height calculation in toggleDrawer', async () => {
+      expect(findDrawer().attributes('headerheight')).toBe(`${0}px`);
+      wrapper.vm.fetchMarkdown();
+      wrapper.vm.toggleDrawer();
+      await nextTick();
+      expect(findDrawer().attributes('headerheight')).toBe(`${100}px`);
     });
   });
 

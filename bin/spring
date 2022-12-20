@@ -11,7 +11,11 @@ unless (defined?(Spring) || ENV['ENABLE_SPRING'] != '1') && File.basename($0) !=
   spring = lockfile.specs.detect { |spec| spec.name == 'spring' }
   if spring
     Gem.use_paths Gem.dir, Bundler.bundle_path.to_s, *Gem.path
-    gem 'spring', spring.version
-    require 'spring/binstub'
+    begin
+      gem 'spring', spring.version
+      require 'spring/binstub'
+    rescue Gem::MissingSpecError => e
+      $stderr.puts 'INFO: Spring not available.'
+    end
   end
 end

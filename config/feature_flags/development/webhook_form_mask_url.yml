@@ -1,8 +1,0 @@
----
-name: webhook_form_mask_url
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99995
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/376106
-milestone: '15.5'
-type: development
-group: group::integrations
-default_enabled: false

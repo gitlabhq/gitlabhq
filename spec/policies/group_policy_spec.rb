@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe GroupPolicy do
+  include AdminModeHelper
   include_context 'GroupPolicy context'
 
   context 'public group with no user' do
@@ -1190,12 +1191,28 @@ RSpec.describe GroupPolicy do
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:register_group_runners) }
 
+        context 'with specific group runner registration disabled' do
+          before do
+            group.runner_registration_enabled = false
+          end
+
+          it { is_expected.to be_allowed(:register_group_runners) }
+        end
+
         context 'with group runner registration disabled' do
           before do
             stub_application_setting(valid_runner_registrars: ['project'])
           end
 
           it { is_expected.to be_allowed(:register_group_runners) }
+
+          context 'with specific group runner registration disabled' do
+            before do
+              group.runner_registration_enabled = false
+            end
+
+            it { is_expected.to be_allowed(:register_group_runners) }
+          end
         end
       end
 
@@ -1212,6 +1229,14 @@ RSpec.describe GroupPolicy do
       context 'with group runner registration disabled' do
         before do
           stub_application_setting(valid_runner_registrars: ['project'])
+        end
+
+        it { is_expected.to be_disallowed(:register_group_runners) }
+      end
+
+      context 'with specific group runner registration disabled' do
+        before do
+          group.runner_registration_enabled = false
         end
 
         it { is_expected.to be_disallowed(:register_group_runners) }
@@ -1343,5 +1368,33 @@ RSpec.describe GroupPolicy do
     let(:users_container) { group }
 
     subject { described_class.new(current_user, group) }
+  end
+
+  describe 'read_usage_quotas policy' do
+    context 'reading usage quotas' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:policy) { :read_usage_quotas }
+
+      where(:role, :admin_mode, :allowed) do
+        :owner      | nil   | true
+        :admin      | true  | true
+        :admin      | false | false
+        :maintainer | nil   | false
+        :developer  | nil   | false
+        :reporter   | nil   | false
+        :guest      | nil   | false
+      end
+
+      with_them do
+        let(:current_user) { public_send(role) }
+
+        before do
+          enable_admin_mode!(current_user) if admin_mode
+        end
+
+        it { is_expected.to(allowed ? be_allowed(policy) : be_disallowed(policy)) }
+      end
+    end
   end
 end

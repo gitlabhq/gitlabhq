@@ -1,15 +1,22 @@
 {
   "type": "object",
-  "properties": {
-    "allOf": [
-      { "$ref": "label.json" },
-      {
-        "type": "object",
-        "properties": {
-          "priority": { "type": ["integer", "null"] },
-          "is_project_label": { "type": "boolean" }
+  "allOf": [
+    {
+      "$ref": "label.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "priority": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "is_project_label": {
+          "type": "boolean"
         }
       }
-    ]
-  }
+    }
+  ]
 }

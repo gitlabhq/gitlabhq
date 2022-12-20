@@ -238,6 +238,8 @@ semgrep-sast:
         - '**/*.java'
         - '**/*.cs'
         - '**/*.html'
+        - '**/*.scala'
+        - '**/*.sc'
 
 sobelow-sast:
   extends: .sast-analyzer

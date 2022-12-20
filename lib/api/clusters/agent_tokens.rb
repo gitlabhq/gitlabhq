@@ -27,7 +27,8 @@ module API
               use :pagination
             end
             get do
-              agent_tokens = ::Clusters::AgentTokensFinder.new(user_project, current_user, params[:agent_id]).execute
+              agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
+              agent_tokens = ::Clusters::AgentTokensFinder.new(agent, current_user).execute
 
               present paginate(agent_tokens), with: Entities::Clusters::AgentTokenBasic
             end
@@ -42,8 +43,7 @@ module API
             end
             get ':token_id' do
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
-
-              token = agent.agent_tokens.find(params[:token_id])
+              token = ::Clusters::AgentTokensFinder.new(agent, current_user).find(params[:token_id])
 
               present token, with: Entities::Clusters::AgentToken
             end
@@ -84,8 +84,7 @@ module API
               authorize! :admin_cluster, user_project
 
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
-
-              token = agent.agent_tokens.find(params[:token_id])
+              token = ::Clusters::AgentTokensFinder.new(agent, current_user).find(params[:token_id])
 
               # Skipping explicit error handling and relying on exceptions
               token.revoked!

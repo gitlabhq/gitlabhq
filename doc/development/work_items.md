@@ -54,7 +54,7 @@ To avoid confusion and ensure communication is efficient, we will use the follow
 | work item view    | The new frontend view that renders work items of any type |  | |
 | legacy issue view | The existing view used to render issues and incidents | | |
 | issue             | The existing issue model | | |
-| issuable          | Any model currently using the issueable module (issues, epics and MRs) | _Incidents are an **issuable**_ | _Incidents are a **work item type**_ |
+| issuable          | Any model currently using the issuable module (issues, epics and MRs) | _Incidents are an **issuable**_ | _Incidents are a **work item type**_ |
 | widget            | A UI element to present or allow interaction with specific work item data | | |
 
 Some terms have been used in the past but have since become confusing and are now discouraged.
@@ -92,7 +92,7 @@ NOTE:
 At first, defining a WIT will only be possible at the root-level group, which would then be inherited by subgroups.
 We will investigate the possibility of defining new WITs at subgroup levels at a later iteration.
 
-### Introducing work_item_types table
+### Introducing `work_item_types` table
 
 For example, suppose there are three root-level groups with IDs: `11`, `12`, and `13`. Also,
 assume the following base types: `issue: 0`, `incident: 1`, `test_case: 2`.
@@ -228,7 +228,7 @@ So, migrating epics to a work item type requires providing feature parity betwee
 
 The main missing features are:
 
-- Get WIs to the group level. This is dependent on [Consolidate Groups and Projects](https://gitlab.com/gitlab-org/architecture/tasks/-/issues/7)
+- Get work items to the group level. This is dependent on [Consolidate Groups and Projects](https://gitlab.com/gitlab-org/architecture/tasks/-/issues/7)
   initiative.
 - A hierarchy widget: the ability to structure work items into hierarchies.
 - Inherited date widget.

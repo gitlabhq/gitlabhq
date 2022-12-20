@@ -20,8 +20,29 @@ module Types
           null: true, complexity: 5,
           description: 'Child work items.'
 
+        field :has_children, GraphQL::Types::Boolean,
+              null: false, description: 'Indicates if the work item has children.'
+
+        # rubocop: disable CodeReuse/ActiveRecord
+        def has_children?
+          BatchLoader::GraphQL.for(object.work_item.id).batch(default_value: false) do |ids, loader|
+            links_for_parents = ::WorkItems::ParentLink.for_parents(ids)
+                                           .select(:work_item_parent_id)
+                                           .group(:work_item_parent_id)
+                                           .reorder(nil)
+
+            links_for_parents.each { |link| loader.call(link.work_item_parent_id, true) }
+          end
+        end
+        # rubocop: enable CodeReuse/ActiveRecord
+
+        alias_method :has_children, :has_children?
+
         def children
-          object.children.inc_relations_for_permission_check
+          relation = object.children
+          relation = relation.inc_relations_for_permission_check unless object.children.loaded?
+
+          relation
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes

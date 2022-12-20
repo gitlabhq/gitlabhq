@@ -138,15 +138,46 @@ RSpec.describe Ci::SecureFile do
   end
 
   describe '#update_metadata!' do
-    it 'assigns the expected metadata when a parsable file is supplied' do
+    it 'assigns the expected metadata when a parsable .cer file is supplied' do
       file = create(:ci_secure_file, name: 'file1.cer',
                                      file: CarrierWaveStringFile.new(fixture_file('ci_secure_files/sample.cer')))
       file.update_metadata!
+
+      file.reload
 
       expect(file.expires_at).to eq(DateTime.parse('2022-04-26 19:20:40'))
       expect(file.metadata['id']).to eq('33669367788748363528491290218354043267')
       expect(file.metadata['issuer']['CN']).to eq('Apple Worldwide Developer Relations Certification Authority')
       expect(file.metadata['subject']['OU']).to eq('N7SYAN8PX8')
+    end
+
+    it 'assigns the expected metadata when a parsable .p12 file is supplied' do
+      file = create(:ci_secure_file, name: 'file1.p12',
+                                     file: CarrierWaveStringFile.new(fixture_file('ci_secure_files/sample.p12')))
+      file.update_metadata!
+
+      file.reload
+
+      expect(file.expires_at).to eq(DateTime.parse('2022-09-21 14:56:00'))
+      expect(file.metadata['id']).to eq('75949910542696343243264405377658443914')
+      expect(file.metadata['issuer']['CN']).to eq('Apple Worldwide Developer Relations Certification Authority')
+      expect(file.metadata['subject']['OU']).to eq('N7SYAN8PX8')
+    end
+
+    it 'assigns the expected metadata when a parsable .mobileprovision file is supplied' do
+      file = create(:ci_secure_file, name: 'file1.mobileprovision',
+                                     file: CarrierWaveStringFile.new(
+                                       fixture_file('ci_secure_files/sample.mobileprovision')
+                                     ))
+      file.update_metadata!
+
+      file.reload
+
+      expect(file.expires_at).to eq(DateTime.parse('2023-08-01 23:15:13'))
+      expect(file.metadata['id']).to eq('6b9fcce1-b9a9-4b37-b2ce-ec4da2044abf')
+      expect(file.metadata['platforms'].first).to eq('iOS')
+      expect(file.metadata['app_name']).to eq('iOS Demo')
+      expect(file.metadata['app_id']).to eq('match Development com.gitlab.ios-demo')
     end
 
     it 'logs an error when something goes wrong with the file parsing' do

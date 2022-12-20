@@ -7,8 +7,6 @@ import RunnerPausedBadge from '../runner_paused_badge.vue';
 export default {
   components: {
     RunnerStatusBadge,
-    RunnerUpgradeStatusBadge: () =>
-      import('ee_component/ci/runner/components/runner_upgrade_status_badge.vue'),
     RunnerPausedBadge,
   },
   directives: {
@@ -31,10 +29,6 @@ export default {
 <template>
   <div>
     <runner-status-badge
-      :runner="runner"
-      class="gl-display-inline-block gl-max-w-full gl-text-truncate"
-    />
-    <runner-upgrade-status-badge
       :runner="runner"
       class="gl-display-inline-block gl-max-w-full gl-text-truncate"
     />

@@ -184,19 +184,19 @@ is not available.
 
 ## Edit a release
 
-Only users with at least the Developer role can edit releases.
-Read more about [Release permissions](#release-permissions).
+To edit the details of a release after it's created, you can use the
+[Update a release API](../../../api/releases/index.md#update-a-release) or the UI.
 
-To edit the details of a release:
+Prerequisites:
+
+- You must have at least the Developer role.
+
+In the UI:
 
 1. On the left sidebar, select **Deployments > Releases**.
 1. In the top-right corner of the release you want to modify, select **Edit this release** (the pencil icon).
 1. On the **Edit Release** page, change the release's details.
 1. Select **Save changes**.
-
-You can edit the release title, notes, associated milestones, and asset links.
-To change the release date use the
-[Releases API](../../../api/releases/index.md#update-a-release).
 
 ## Delete a release
 
@@ -209,11 +209,15 @@ Prerequisites:
 
 - You must have at least the Developer role. Read more about [Release permissions](#release-permissions).
 
-To delete a release in the UI:
+To delete a release, use either the
+[Delete a release API](../../../api/releases/index.md#delete-a-release) or the UI.
+
+In the UI:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Releases**.
-1. In the top-right corner of the release you want to delete, select **Edit this release** (**{pencil}**).
+1. In the top-right corner of the release you want to delete, select **Edit this release**
+   (**{pencil}**).
 1. On the **Edit Release** page, select **Delete**.
 1. Select **Delete release**.
 
@@ -449,11 +453,11 @@ In the API:
 
 ## Release permissions
 
-> [The permission model for create, update and delete actions was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
+> Fixes to the permission model for create, update and delete actions [were introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
 
 ### View a release and download assets
 
-> [Changes were made to the Guest role access](https://gitlab.com/gitlab-org/gitlab/-/issues/335209) in GitLab 14.5.
+> Changes to the Guest role [were introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335209) in GitLab 14.5.
 
 - Users with at least the Reporter role
   have read and download access to the project releases.

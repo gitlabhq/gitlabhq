@@ -22,8 +22,8 @@ module Gitlab
       # rubocop:disable Metrics/ParameterLists
       def validate!(
         url,
+        schemes:,
         ports: [],
-        schemes: [],
         allow_localhost: false,
         allow_local_network: true,
         allow_object_storage: false,
@@ -34,6 +34,8 @@ module Gitlab
         # rubocop:enable Metrics/ParameterLists
 
         return [nil, nil] if url.nil?
+
+        raise ArgumentError, 'The schemes is a required argument' if schemes.blank?
 
         # Param url can be a string, URI or Addressable::URI
         uri = parse_url(url)
@@ -204,7 +206,7 @@ module Gitlab
       end
 
       def validate_scheme(scheme, schemes)
-        if scheme.blank? || (schemes.any? && !schemes.include?(scheme))
+        if scheme.blank? || (schemes.any? && schemes.exclude?(scheme))
           raise BlockedUrlError, "Only allowed schemes are #{schemes.join(', ')}"
         end
       end

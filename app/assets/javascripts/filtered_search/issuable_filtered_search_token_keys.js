@@ -7,13 +7,20 @@ import {
   TOKEN_TITLE_MILESTONE,
   TOKEN_TITLE_MY_REACTION,
   TOKEN_TITLE_RELEASE,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_REVIEWER,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchTokenKeys from './filtered_search_token_keys';
 
 export const tokenKeys = [
   {
     formattedKey: TOKEN_TITLE_AUTHOR,
-    key: 'author',
+    key: TOKEN_TYPE_AUTHOR,
     type: 'string',
     param: 'username',
     symbol: '@',
@@ -22,7 +29,7 @@ export const tokenKeys = [
   },
   {
     formattedKey: TOKEN_TITLE_ASSIGNEE,
-    key: 'assignee',
+    key: TOKEN_TYPE_ASSIGNEE,
     type: 'string',
     param: 'username',
     symbol: '@',
@@ -31,7 +38,7 @@ export const tokenKeys = [
   },
   {
     formattedKey: TOKEN_TITLE_MILESTONE,
-    key: 'milestone',
+    key: TOKEN_TYPE_MILESTONE,
     type: 'string',
     param: 'title',
     symbol: '%',
@@ -40,7 +47,7 @@ export const tokenKeys = [
   },
   {
     formattedKey: TOKEN_TITLE_RELEASE,
-    key: 'release',
+    key: TOKEN_TYPE_RELEASE,
     type: 'string',
     param: 'tag',
     symbol: '',
@@ -49,7 +56,7 @@ export const tokenKeys = [
   },
   {
     formattedKey: TOKEN_TITLE_LABEL,
-    key: 'label',
+    key: TOKEN_TYPE_LABEL,
     type: 'array',
     param: 'name[]',
     symbol: '~',
@@ -62,7 +69,7 @@ if (gon.current_user_id) {
   // Appending tokenkeys only logged-in
   tokenKeys.push({
     formattedKey: TOKEN_TITLE_MY_REACTION,
-    key: 'my-reaction',
+    key: TOKEN_TYPE_MY_REACTION,
     type: 'string',
     param: 'emoji',
     symbol: '',
@@ -74,7 +81,7 @@ if (gon.current_user_id) {
 export const alternativeTokenKeys = [
   {
     formattedKey: TOKEN_TITLE_LABEL,
-    key: 'label',
+    key: TOKEN_TYPE_LABEL,
     type: 'string',
     param: 'name',
     symbol: '~',
@@ -85,77 +92,77 @@ export const conditions = flattenDeep(
   [
     {
       url: 'assignee_id=None',
-      tokenKey: 'assignee',
+      tokenKey: TOKEN_TYPE_ASSIGNEE,
       value: __('None'),
     },
     {
       url: 'assignee_id=Any',
-      tokenKey: 'assignee',
+      tokenKey: TOKEN_TYPE_ASSIGNEE,
       value: __('Any'),
     },
     {
       url: 'reviewer_id=None',
-      tokenKey: 'reviewer',
+      tokenKey: TOKEN_TYPE_REVIEWER,
       value: __('None'),
     },
     {
       url: 'reviewer_id=Any',
-      tokenKey: 'reviewer',
+      tokenKey: TOKEN_TYPE_REVIEWER,
       value: __('Any'),
     },
     {
       url: 'author_username=support-bot',
-      tokenKey: 'author',
+      tokenKey: TOKEN_TYPE_AUTHOR,
       value: 'support-bot',
     },
     {
       url: 'milestone_title=None',
-      tokenKey: 'milestone',
+      tokenKey: TOKEN_TYPE_MILESTONE,
       value: __('None'),
     },
     {
       url: 'milestone_title=Any',
-      tokenKey: 'milestone',
+      tokenKey: TOKEN_TYPE_MILESTONE,
       value: __('Any'),
     },
     {
       url: 'milestone_title=%23upcoming',
-      tokenKey: 'milestone',
+      tokenKey: TOKEN_TYPE_MILESTONE,
       value: __('Upcoming'),
     },
     {
       url: 'milestone_title=%23started',
-      tokenKey: 'milestone',
+      tokenKey: TOKEN_TYPE_MILESTONE,
       value: __('Started'),
     },
     {
       url: 'release_tag=None',
-      tokenKey: 'release',
+      tokenKey: TOKEN_TYPE_RELEASE,
       value: __('None'),
     },
     {
       url: 'release_tag=Any',
-      tokenKey: 'release',
+      tokenKey: TOKEN_TYPE_RELEASE,
       value: __('Any'),
     },
     {
       url: 'label_name[]=None',
-      tokenKey: 'label',
+      tokenKey: TOKEN_TYPE_LABEL,
       value: __('None'),
     },
     {
       url: 'label_name[]=Any',
-      tokenKey: 'label',
+      tokenKey: TOKEN_TYPE_LABEL,
       value: __('Any'),
     },
     {
       url: 'my_reaction_emoji=None',
-      tokenKey: 'my-reaction',
+      tokenKey: TOKEN_TYPE_MY_REACTION,
       value: __('None'),
     },
     {
       url: 'my_reaction_emoji=Any',
-      tokenKey: 'my-reaction',
+      tokenKey: TOKEN_TYPE_MY_REACTION,
       value: __('Any'),
     },
   ].map((condition) => {

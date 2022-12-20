@@ -3,8 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueuePopulateProjectsStarCount do
-  let_it_be(:batched_migration) { described_class::MIGRATION }
+RSpec.describe QueuePopulateProjectsStarCount, feature_category: :users do
+  let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do
     reversible_migration do |migration|

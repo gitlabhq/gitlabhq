@@ -11,20 +11,20 @@ module Types
         abilities.each { |ability| ability_field(ability) }
       end
 
-      def self.ability_field(ability, **kword_args)
+      def self.ability_field(ability, **kword_args, &block)
         define_field_resolver_method(ability) unless resolving_keywords?(kword_args)
 
-        permission_field(ability, **kword_args)
+        permission_field(ability, **kword_args, &block)
       end
 
-      def self.permission_field(name, **kword_args)
+      def self.permission_field(name, **kword_args, &block)
         kword_args = kword_args.reverse_merge(
           name: name,
           type: GraphQL::Types::Boolean,
           description: "Indicates the user can perform `#{name}` on this resource",
           null: false)
 
-        field(**kword_args) # rubocop:disable Graphql/Descriptions
+        field(**kword_args, &block) # rubocop:disable Graphql/Descriptions
       end
 
       def self.define_field_resolver_method(ability)

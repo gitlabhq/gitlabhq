@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe BackfillNugetTemporaryPackagesToProcessingStatus, :migration do
+RSpec.describe BackfillNugetTemporaryPackagesToProcessingStatus, :migration, feature_category: :package_registry do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:packages) { table(:packages_packages) }

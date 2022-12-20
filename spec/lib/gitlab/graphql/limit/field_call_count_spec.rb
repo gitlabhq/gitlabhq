@@ -36,6 +36,15 @@ RSpec.describe Gitlab::Graphql::Limit::FieldCallCount do
     expect(resolve_value).to be_an_instance_of(Gitlab::Graphql::Errors::LimitError)
   end
 
+  it 'does not return an error when the field is called multiple times in separte queries' do
+    query_1 = GraphQL::Query.new(GitlabSchema)
+    query_2 = GraphQL::Query.new(GitlabSchema)
+
+    resolve_field(field, { value: 'foo' }, object_type: owner, query: query_1)
+
+    expect { resolve_field(field, { value: 'foo' }, object_type: owner, query: query_2) }.not_to raise_error
+  end
+
   context 'when limit is not specified' do
     let(:field) do
       ::Types::BaseField.new(name: 'value', type: GraphQL::Types::String, null: true, owner: owner) do

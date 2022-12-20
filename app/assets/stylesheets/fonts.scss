@@ -1,0 +1,32 @@
+/* -------------------------------------------------------
+Inter variable font.
+
+Usage:
+  html { font-family: 'GitLab Sans', sans-serif; }
+*/
+@font-face {
+  font-family: 'GitLab Sans';
+  font-weight: 100 900;
+  font-display: optional;
+  font-style: normal;
+  font-named-instance: 'Regular'; /* stylelint-disable property-no-unknown */
+  src: font-url('gitlab-sans/GitLabSans.woff2') format('woff2');
+}
+
+/* -------------------------------------------------------
+Monospaced font: JetBrains Mono.
+
+Usage:
+  html { font-family: 'JetBrains Mono', sans-serif; }
+*/
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-display: optional;
+  font-style: normal;
+  src: font-url('jetbrains-mono/JetBrainsMono.woff2') format('woff2');
+}
+
+:root {
+  --default-mono-font: 'JetBrains Mono', 'Menlo';
+  --default-regular-font: 'GitLab Sans', -apple-system;
+}

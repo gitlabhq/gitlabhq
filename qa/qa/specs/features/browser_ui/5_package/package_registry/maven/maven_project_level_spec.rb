@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :skip_live_env, :orchestrated, :packages, :object_storage, :reliable,
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable,
   feature_flag: {
     name: 'maven_central_request_forwarding',
     scope: :global
   } do
     describe 'Maven project level endpoint', product_group: :package_registry do
       include Runtime::Fixtures
+      include Support::Helpers::MaskToken
 
       let(:group_id) { 'com.gitlab.qa' }
       let(:artifact_id) { "maven-#{SecureRandom.hex(8)}" }
@@ -92,11 +93,11 @@ module QA
         let(:token) do
           case authentication_token_type
           when :personal_access_token
-            personal_access_token
+            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: package_project)
           when :ci_job_token
-            '${env.CI_JOB_TOKEN}'
+            '${CI_JOB_TOKEN}'
           when :project_deploy_token
-            project_deploy_token.token
+            use_ci_variable(name: 'PROJECT_DEPLOY_TOKEN', value: project_deploy_token.token, project: package_project)
           end
         end
 

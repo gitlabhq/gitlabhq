@@ -30,9 +30,6 @@ function factory(propsData = {}) {
     directives: {
       GlHoverLoad: createMockDirective(),
     },
-    provide: {
-      glFeatures: { lazyLoadCommits: true },
-    },
     mocks: {
       $router,
     },

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User creates issue" do
+RSpec.describe "User creates issue", feature_category: :team_planning do
   include DropzoneHelper
 
   let_it_be(:project) { create(:project_empty_repo, :public) }

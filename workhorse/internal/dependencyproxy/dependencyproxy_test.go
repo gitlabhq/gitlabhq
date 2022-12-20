@@ -153,14 +153,14 @@ func TestIncorrectSendData(t *testing.T) {
 	response := makeRequest(NewInjector(), "")
 
 	require.Equal(t, 500, response.Code)
-	require.Equal(t, "Internal server error\n", response.Body.String())
+	require.Equal(t, "Internal Server Error\n", response.Body.String())
 }
 
 func TestIncorrectSendDataUrl(t *testing.T) {
 	response := makeRequest(NewInjector(), `{"Token": "token", "Url": "url"}`)
 
 	require.Equal(t, 500, response.Code)
-	require.Equal(t, "Internal server error\n", response.Body.String())
+	require.Equal(t, "Internal Server Error\n", response.Body.String())
 }
 
 func TestFailedOriginServer(t *testing.T) {

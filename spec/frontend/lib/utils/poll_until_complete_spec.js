@@ -1,7 +1,7 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import pollUntilComplete from '~/lib/utils/poll_until_complete';
 
 const endpoint = `${TEST_HOST}/foo`;
@@ -37,7 +37,7 @@ describe('pollUntilComplete', () => {
     beforeEach(() => {
       mock
         .onGet(endpoint)
-        .replyOnce(httpStatusCodes.NO_CONTENT, undefined, pollIntervalHeader)
+        .replyOnce(HTTP_STATUS_NO_CONTENT, undefined, pollIntervalHeader)
         .onGet(endpoint)
         .replyOnce(httpStatusCodes.OK, mockData);
     });

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleBackfillTopicsTitle do
+RSpec.describe ScheduleBackfillTopicsTitle, feature_category: :projects do
   let(:topics) { table(:topics) }
 
   let!(:topic1) { topics.create!(name: 'topic1') }

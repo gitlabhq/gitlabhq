@@ -1,0 +1,25 @@
+---
+key_path: redis_hll_counters.ci_templates.p_ci_templates_jobs_container_scanning_latest_monthly
+description: Monthly counts for Container Scanning CI Latest template (Jobs folder)
+product_section: sec
+product_stage: secure
+product_group: composition_analysis
+product_category: container_scanning
+value_type: number
+status: active
+milestone: '15.6'
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103262"
+time_frame: 28d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+options:
+  events:
+  - p_ci_templates_jobs_container_scanning_latest

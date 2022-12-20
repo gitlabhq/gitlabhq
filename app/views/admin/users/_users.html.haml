@@ -1,3 +1,5 @@
+- add_page_specific_style 'page_bundles/search'
+
 - if registration_features_can_be_prompted?
   = render Pajamas::AlertComponent.new(variant: :tip,
     alert_options: { class: 'gl-my-5' },

@@ -1,4 +1,4 @@
-import { STATUS_TRIGGERED, STATUS_ACKNOWLEDGED } from '~/sidebar/components/incidents/constants';
+import { STATUS_TRIGGERED, STATUS_ACKNOWLEDGED } from '~/sidebar/constants';
 
 export const fetchData = {
   workspace: {

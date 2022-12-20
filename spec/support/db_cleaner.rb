@@ -2,7 +2,7 @@
 
 module DbCleaner
   def all_connection_classes
-    ::BeforeAllAdapter.all_connection_classes
+    ::TestProfBeforeAllAdapter::MultipleDatabaseAdapter.all_connection_classes
   end
 
   def delete_from_all_tables!(except: [])
@@ -12,7 +12,7 @@ module DbCleaner
   end
 
   def deletion_except_tables
-    ['work_item_types']
+    %w[work_item_types work_item_hierarchy_restrictions]
   end
 
   def setup_database_cleaner

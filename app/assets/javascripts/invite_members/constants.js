@@ -9,6 +9,7 @@ export const INVITE_MEMBERS_FOR_TASK = {
   view: 'modal_opened_from_email',
   submit: 'submit',
 };
+export const TOAST_MESSAGE_LOCALSTORAGE_KEY = 'members_invited_successfully';
 
 export const GROUP_FILTERS = {
   ALL: 'all',
@@ -57,6 +58,10 @@ export const GROUP_MODAL_TO_PROJECT_DEFAULT_INTRO_TEXT = s__(
   "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} project.",
 );
 
+export const GROUP_MODAL_ALERT_BODY = s__(
+  'InviteMembersModal| Inviting a group %{linkStart}adds its members to your group%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit.',
+);
+
 export const GROUP_SEARCH_FIELD = s__('InviteMembersModal|Select a group to invite');
 export const GROUP_PLACEHOLDER = s__('InviteMembersModal|Search for a group to invite');
 
@@ -77,9 +82,7 @@ export const MEMBER_ERROR_LIST_TEXT = s__(
 );
 export const COLLAPSED_ERRORS = s__('InviteMembersModal|Show more (%{count})');
 export const EXPANDED_ERRORS = s__('InviteMembersModal|Show less');
-export const EMPTY_INVITES_ERROR_TEXT = s__(
-  'InviteMembersModal|Please select members or type email addresses to invite',
-);
+export const EMPTY_INVITES_ALERT_TEXT = s__('InviteMembersModal|Please add members to invite');
 
 export const MEMBER_MODAL_LABELS = {
   modal: {
@@ -117,7 +120,7 @@ export const MEMBER_MODAL_LABELS = {
   memberErrorListText: MEMBER_ERROR_LIST_TEXT,
   collapsedErrors: COLLAPSED_ERRORS,
   expandedErrors: EXPANDED_ERRORS,
-  emptyInvitesErrorText: EMPTY_INVITES_ERROR_TEXT,
+  emptyInvitesAlertText: EMPTY_INVITES_ALERT_TEXT,
 };
 
 export const GROUP_MODAL_LABELS = {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Show > Schema Markup' do
+RSpec.describe 'Projects > Show > Schema Markup', feature_category: :projects do
   let_it_be(:project) { create(:project, :repository, :public, :with_avatar, description: 'foobar', topic_list: 'topic1, topic2') }
 
   it 'shows SoftwareSourceCode structured markup', :js do

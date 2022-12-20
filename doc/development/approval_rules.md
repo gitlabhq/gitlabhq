@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Source Code
+group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -221,7 +221,7 @@ It is responsible for parsing `approval_rules_attributes` parameter to:
 - Filter the group IDs whether they are visible to user.
 - Identify the `any_approver` rule.
 - Append hidden groups to it when specified.
-- Append user defined inapplicable (rules that does not apply to MR's target
+- Append user defined inapplicable (rules that do not apply to the merge request's target
   branch) approval rules.
 
 ## Flow

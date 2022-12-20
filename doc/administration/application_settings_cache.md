@@ -20,7 +20,7 @@ To change the expiry value:
 
 ::Tabs
 
-:::TabTitle Omnibus package
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -36,7 +36,7 @@ To change the expiry value:
    gitlab-ctl restart
    ```
 
-:::TabTitle Source
+:::TabTitle Self-compiled (Source)
 
 1. Edit `config/gitlab.yml`:
 

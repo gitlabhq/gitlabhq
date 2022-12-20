@@ -86,6 +86,7 @@ of the listed keywords use the value defined in the `default` section.
 - [`artifacts`](#artifacts)
 - [`before_script`](#before_script)
 - [`cache`](#cache)
+- [`hooks`](#hooks)
 - [`image`](#image)
 - [`interruptible`](#interruptible)
 - [`retry`](#retry)
@@ -394,12 +395,12 @@ Use [`workflow`](workflow.md) to control pipeline behavior.
 
 #### `workflow:name`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372538) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `pipeline_name`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372538) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `pipeline_name`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/376095) in GitLab 15.7.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `pipeline_name`.
-The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature,
+ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `pipeline_name`.
 
 You can use `name` in `workflow:` to define a name for pipelines.
 
@@ -424,7 +425,7 @@ A configuration with different pipeline names depending on the pipeline conditio
 
 ```yaml
 variables:
-  PIPELINE_NAME: 'Default pipeline name'
+  PIPELINE_NAME: 'Default pipeline name'  # A default is not required.
 
 workflow:
   name: '$PIPELINE_NAME'
@@ -436,6 +437,11 @@ workflow:
       variables:
         PIPELINE_NAME: 'Ruby 3 pipeline'
 ```
+
+**Additional details**:
+
+- If the name is an empty string, the pipeline is not assigned a name. A name consisting
+  of only CI/CD variables could evaluate to an empty string if all the variables are also empty.
 
 #### `workflow:rules`
 
@@ -1766,8 +1772,8 @@ deploy:
 
 **Additional details**:
 
-- Enviroments created from this job definition are assigned a [tier](../environments/index.md#deployment-tier-of-environments) based on this value.
-- Existing environments don't have their tier updated if this value is added later. Existing enviroments must have their tier updated via the [Environments API](../../api/environments.md#update-an-existing-environment).
+- Environments created from this job definition are assigned a [tier](../environments/index.md#deployment-tier-of-environments) based on this value.
+- Existing environments don't have their tier updated if this value is added later. Existing environments must have their tier updated via the [Environments API](../../api/environments.md#update-an-existing-environment).
 
 **Related topics**:
 
@@ -1861,6 +1867,74 @@ rspec:
 
 - [Reuse configuration sections by using `extends`](yaml_optimization.md#use-extends-to-reuse-configuration-sections).
 - Use `extends` to reuse configuration from [included configuration files](yaml_optimization.md#use-extends-and-include-together).
+
+### `hooks`
+
+> Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`.
+The feature is not ready for production use.
+
+Use `hooks` to specify lists of commands to execute on the runner
+at certain stages of job execution, like before retrieving the Git repository.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+- A hash of hooks and their commands. Available hooks: `pre_get_sources_script`.
+
+#### `hooks:pre_get_sources_script`
+
+> Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+
+Use `hooks:pre_get_sources_script` to specify a list of commands to execute on the runner
+before retrieving the Git repository and any submodules. You can use it
+to adjust the Git client configuration first, for example.
+
+**Related topics**:
+
+- [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+
+**Example of `hooks:pre_get_sources_script`**:
+
+```yaml
+job1:
+  hooks:
+    pre_get_sources_script:
+      - echo 'hello job1 pre_get_sources_script'
+  script: echo 'hello job1 script'
+```
+
+### `id_tokens`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
+
+Use `id_tokens` to create [JSON web tokens (JWT)](https://www.rfc-editor.org/rfc/rfc7519) to authenticate with third party services. All
+JWTs created this way support OIDC authentication. The required `aud` sub-keyword is used to configure the `aud` claim for the JWT.
+
+**Possible inputs**:
+
+- Token names with their `aud` claims. `aud` can be a single string or as an array of strings.
+
+**Example of `id_tokens`**:
+
+```yaml
+job_with_id_tokens:
+  id_tokens:
+    ID_TOKEN_1:
+      aud: https://gitlab.com
+    ID_TOKEN_2:
+      aud:
+        - https://gcp.com
+        - https://aws.com
+  script:
+    - command_to_authenticate_with_gitlab $ID_TOKEN_1
+    - command_to_authenticate_with_aws $ID_TOKEN_2
+```
 
 ### `image`
 
@@ -2210,6 +2284,9 @@ This example creates four paths of execution:
   in a job's `needs` section.
 - In GitLab 13.9 and older, if `needs` refers to a job that might not be added to
   a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create. In GitLab 13.10 and later, use the [`needs:optional`](#needsoptional) keyword to resolve a failed pipeline creation.
+- If a pipeline has jobs with `needs: []` and jobs in the [`.pre`](#stage-pre) stage, they will
+  all start as soon as the pipeline is created. Jobs with `needs: []` start immediately,
+  and jobs in the `.pre` stage also start immediately.
 
 #### `needs:artifacts`
 
@@ -2268,12 +2345,12 @@ In this example:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.7.
 
 Use `needs:project` to download artifacts from up to five jobs in other pipelines.
-The artifacts are downloaded from the latest successful pipeline for the specified ref.
+The artifacts are downloaded from the latest successful specified job for the specified ref.
 To specify multiple jobs, add each as separate array items under the `needs` keyword.
 
-If there is a pipeline running for the specified ref, a job with `needs:project`
-does not wait for the pipeline to complete. Instead, the job downloads the artifact
-from the latest pipeline that completed successfully.
+If there is a pipeline running for the ref, a job with `needs:project`
+does not wait for the pipeline to complete. Instead, the artifacts are downloaded
+from the latest successful run of the specified job.
 
 `needs:project` must be used with `job`, `ref`, and `artifacts`.
 
@@ -2963,7 +3040,7 @@ job:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363024) in GitLab 15.3. Supported by `release-cli` v0.12.0 or later.
 
-If the tag does not exist, the newly created tag is annotated with the message specifed by `tag_message`.
+If the tag does not exist, the newly created tag is annotated with the message specified by `tag_message`.
 If omitted, a lightweight tag is created.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
@@ -3670,7 +3747,7 @@ job:
 
 ### `services`
 
-Use `services` to specify an additional Docker image to run scripts in. The [`services` image](../services/index.md) is linked
+Use `services` to specify any additional Docker images that your scripts require to run successfully. The [`services` image](../services/index.md) is linked
 to the image specified in the [`image`](#image) keyword.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
@@ -3706,9 +3783,11 @@ test:
     - bundle exec rake spec
 ```
 
-In this example, the job launches a Ruby container. Then, from that container, the job launches
-another container that's running PostgreSQL. Then the job then runs scripts
-in that container.
+In this example, GitLab launches two containers for the job:
+
+- A Ruby container that runs the `script` commands.
+- A PostgreSQL container. The `script` commands in the Ruby container can connect to
+  the PostgreSQL database at the `db-postgrest` hostname.
 
 **Related topics**:
 
@@ -3881,6 +3960,12 @@ job2:
   script:
     - echo "This job runs in the test stage."
 ```
+
+**Additional details:**
+
+- If a pipeline has jobs with [`needs: []`](#needs) and jobs in the `.pre` stage, they will
+  all start as soon as the pipeline is created. Jobs with `needs: []` start immediately,
+  ignoring any stage configuration.
 
 ### `tags`
 
@@ -4228,7 +4313,8 @@ deploy_review_job:
 
 #### `variables:description`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5, `variables:value` can contain an array of values.
 
 Use the `description` keyword to define a [pipeline-level (global) variable that is prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 when [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
@@ -4240,6 +4326,7 @@ If used with `value`, the variable value is also prefilled when running a pipeli
 **Possible inputs**:
 
 - A string.
+- An array of strings.
 
 **Example of `variables:description`**:
 
@@ -4254,10 +4341,17 @@ variables:
 
 - A global variable defined with `value` but no `description` behaves the same as
   [`variables`](#variables).
+- `variables:value` can [contain an array of selectable values](../pipelines/index.md#configure-a-list-of-selectable-values-for-a-prefilled-variable).
 
 #### `variables:expand`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353991) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353991) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.6.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.7.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per project,
+ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`.
 
 Use the `expand` keyword to configure a variable to be expandable or not.
 

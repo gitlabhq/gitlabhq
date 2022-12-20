@@ -157,7 +157,7 @@ official specifications, but are part of the GitHub and GitLab internal Markdown
 implementations. These internal extensions are often dependent upon the GitHub or GitLab
 implementations or environments, and may depend upon metadata which is only available via
 interacting with those environments. For example,
-[GitHub supports GitHub-specific autolinked references](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls),
+[GitHub supports GitHub-specific automatically linked references](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls),
 and
 [GitLab also supports GitLab-specific references](../../../user/markdown.md#gitlab-specific-references).
 These may also be implemented by third-party Markdown rendering engines which integrate with
@@ -458,7 +458,7 @@ You can see the RSpec shared context containing these fixtures in
 
 In some cases, fixtures may not be usable, because they do not provide control over the varying
 values. In these cases, we can introduce support for a environment variable into the production
-code, which allows us to override the randommness in our test environment when we are
+code, which allows us to override the randomness in our test environment when we are
 generating the HTML for footnote examples. Even though it is in the production code path, it has
 no effect unless it is explicitly set, therefore it is innocuous. It allows us to avoid
 the more-complex regex-based normalization described below.
@@ -1056,7 +1056,7 @@ allows control over other aspects of the snapshot example generation process.
   the example will only be run by `ee/spec/requests/api/markdown_snapshot_spec.rb`, not by
   `spec/requests/api/markdown_snapshot_spec.rb`.
 - The `api_request_override_path` field overrides the API endpoint path which is used to
-  generate the `static` HTML for the specifed example. Different endpoints can generate different
+  generate the `static` HTML for the specified example. Different endpoints can generate different
   HTML in some cases, so we want to be able to exercise different API endpoints for the same
   Markdown. By default, the `/markdown` endpoint is used.
 
@@ -1149,7 +1149,7 @@ These files are Markdown specification files containing examples generated based
 similar to the `output_spec/spec.txt` and `output_spec/spec.html`, with the following differences:
 
 1. They contain a superset of _all_ examples from
-   the Commonmark, GitHub Flavored Markdown, and GitLab Flavored Markdown specifications, whereas
+   the CommonMark, GitHub Flavored Markdown, and GitLab Flavored Markdown specifications, whereas
    `spec.*` only contains the GLFM specification. This is to provide a single place to refer to
    all examples when working with [snapshot testing](#markdown-snapshot-testing).
 1. They contain _only_ header sections which contain examples. They do not contain any prose-only

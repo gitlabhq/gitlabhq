@@ -7,23 +7,22 @@ FactoryBot.define do
     stage { 0 }
     has_next_page { false }
     sequence(:pipeline_name) { |n| "pipeline_name_#{n}" }
+    sequence(:jid) { |n| "bulk_import_entity_#{n}" }
 
     trait :started do
       status { 1 }
-
-      sequence(:jid) { |n| "bulk_import_entity_#{n}" }
     end
 
     trait :finished do
       status { 2 }
-
-      sequence(:jid) { |n| "bulk_import_entity_#{n}" }
     end
 
     trait :failed do
       status { -1 }
+    end
 
-      sequence(:jid) { |n| "bulk_import_entity_#{n}" }
+    trait :skipped do
+      status { -2 }
     end
   end
 end

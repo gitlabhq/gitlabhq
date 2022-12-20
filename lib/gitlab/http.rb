@@ -59,7 +59,7 @@ module Gitlab
           raise ReadTotalTimeout, "Request timed out after #{elapsed} seconds"
         end
 
-        block.call fragment if block
+        yield fragment if block
       end
     rescue HTTParty::RedirectionTooDeep
       raise RedirectionTooDeep

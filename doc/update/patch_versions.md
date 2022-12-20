@@ -136,5 +136,5 @@ If all items are green, then congratulations upgrade complete!
 
 ### 11. Make sure background migrations are finished
 
-[Check the status of background migrations](../user/admin_area/monitoring/background_migrations.md#check-the-status-of-background-migrations)
+[Check the status of background migrations](../update/background_migrations.md)
 and make sure they are finished.

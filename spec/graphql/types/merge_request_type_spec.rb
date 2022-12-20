@@ -116,11 +116,11 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
   describe 'merge_status_enum' do
     let(:type) { GitlabSchema.types['MergeStatus'] }
 
+    let_it_be(:project) { create(:project, :public) }
+
     it 'has the type MergeStatus' do
       expect(described_class.fields['mergeStatusEnum']).to have_graphql_type(type)
     end
-
-    let_it_be(:project) { create(:project, :public) }
 
     %i[preparing unchecked cannot_be_merged_recheck checking cannot_be_merged_rechecking can_be_merged cannot_be_merged].each do |state|
       context "when the the DB value is #{state}" do

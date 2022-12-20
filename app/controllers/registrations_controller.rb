@@ -15,10 +15,10 @@ class RegistrationsController < Devise::RegistrationsController
   layout 'devise'
 
   prepend_before_action :check_captcha, only: :create
+  before_action :ensure_first_name_and_last_name_not_empty, only: :create
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
   before_action :init_preferred_language, only: :new
   before_action :load_recaptcha, only: :new
-  before_action :set_invite_params, only: :new
   before_action only: [:create] do
     check_rate_limit!(:user_sign_up, scope: request.ip)
   end
@@ -32,11 +32,11 @@ class RegistrationsController < Devise::RegistrationsController
 
   def new
     @resource = build_resource
+    set_invite_params
   end
 
   def create
-    set_user_state
-    set_custom_confirmation_token
+    set_resource_fields
 
     super do |new_user|
       accept_pending_invitations if new_user.persisted?
@@ -111,8 +111,11 @@ class RegistrationsController < Devise::RegistrationsController
     super
   end
 
+  # overridden by EE module
   def after_request_hook(user)
-    # overridden by EE module
+    return unless user.persisted?
+
+    Gitlab::Tracking.event(self.class.name, 'successfully_submitted_form', user: user)
   end
 
   def after_sign_up_path_for(user)
@@ -132,6 +135,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     return identity_verification_redirect_path if custom_confirmation_enabled?
 
+    Gitlab::Tracking.event(self.class.name, 'render', user: resource)
     users_almost_there_path(email: resource.email)
   end
 
@@ -169,6 +173,21 @@ class RegistrationsController < Devise::RegistrationsController
     flash[:alert] = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
     flash.delete :recaptcha_error
     add_gon_variables
+    render action: 'new'
+  end
+
+  def ensure_first_name_and_last_name_not_empty
+    # The key here will be affected by feature flag 'arkose_labs_signup_challenge'
+    # When flag is disabled, the key will be 'user' because #check_captcha will remove 'new_' prefix
+    # When flag is enabled, #check_captcha will be skipped, so the key will have 'new_' prefix
+    first_name = params.dig(resource_name, :first_name) || params.dig("new_#{resource_name}", :first_name)
+    last_name = params.dig(resource_name, :last_name) || params.dig("new_#{resource_name}", :last_name)
+
+    return if first_name.present? && last_name.present?
+
+    resource.errors.add(_('First name'), _("cannot be blank")) if first_name.blank?
+    resource.errors.add(_('Last name'), _("cannot be blank")) if last_name.blank?
+
     render action: 'new'
   end
 
@@ -211,18 +230,22 @@ class RegistrationsController < Devise::RegistrationsController
     Gitlab::Recaptcha.load_configurations!
   end
 
-  def set_user_state
+  # overridden by EE module
+  def set_resource_fields
     return unless set_blocked_pending_approval?
 
     resource.state = User::BLOCKED_PENDING_APPROVAL_STATE
   end
 
+  # overridden by EE module
   def set_blocked_pending_approval?
     Gitlab::CurrentSettings.require_admin_approval_after_user_signup
   end
 
   def set_invite_params
-    @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
+    if resource.email.blank? && params[:invite_email].present?
+      resource.email = @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
+    end
   end
 
   def after_pending_invitations_hook
@@ -248,10 +271,6 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def custom_confirmation_enabled?
-    # overridden by EE module
-  end
-
-  def set_custom_confirmation_token
     # overridden by EE module
   end
 

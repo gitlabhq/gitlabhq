@@ -63,10 +63,13 @@ RSpec.shared_examples 'shows and resets runner registration token' do
 end
 
 RSpec.shared_examples 'shows no runners registered' do
-  it 'shows counts with 0' do
-    expect(page).to have_text "#{s_('Runners|Online')} 0"
-    expect(page).to have_text "#{s_('Runners|Offline')} 0"
-    expect(page).to have_text "#{s_('Runners|Stale')} 0"
+  it 'shows total count with 0' do
+    expect(find('[data-testid="runner-type-tabs"]')).to have_text "#{s_('Runners|All')} 0"
+
+    # No stats are shown
+    expect(page).not_to have_text s_('Runners|Online')
+    expect(page).not_to have_text s_('Runners|Offline')
+    expect(page).not_to have_text s_('Runners|Stale')
   end
 
   it 'shows "no runners" message' do

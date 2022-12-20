@@ -24,10 +24,11 @@ namespace :gitlab do
       raise "This rake task is not meant for production instances"
     end
 
-    admin = User.find_by(admin: true)
+    # Find an admin user with an SSH key
+    admin = User.where(admin: true).joins(:keys).where.not(keys: { id: nil }).take
 
     unless admin
-      raise "No admin user could be found"
+      raise "No admin user with SSH key could be found"
     end
 
     tmp_namespace_path = "tmp-project-import-#{Time.now.to_i}"
@@ -73,6 +74,8 @@ namespace :gitlab do
         Commit SHA: #{commit_sha}
       MSG
 
+      local_remote = project.ssh_url_to_repo
+
       Dir.mktmpdir do |tmpdir|
         Dir.chdir(tmpdir) do
           Gitlab::TaskHelpers.run_command!(['wget', project_archive_uri, '-O', 'archive.tar.gz'])
@@ -80,13 +83,9 @@ namespace :gitlab do
           extracted_project_basename = Dir['*/'].first
           Dir.chdir(extracted_project_basename) do
             Gitlab::TaskHelpers.run_command!(%w(git init --initial-branch=master))
+            Gitlab::TaskHelpers.run_command!(%W(git remote add origin #{local_remote}))
             Gitlab::TaskHelpers.run_command!(%w(git add .))
             Gitlab::TaskHelpers.run_command!(['git', 'commit', '--author', 'GitLab <root@localhost>', '--message', commit_message])
-
-            # Hacky workaround to push to the project in a way that works with both GDK and the test environment
-            Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-              Gitlab::TaskHelpers.run_command!(['git', 'remote', 'add', 'origin', "file://#{project.repository.raw.path}"])
-            end
             Gitlab::TaskHelpers.run_command!(['git', 'push', '-u', 'origin', 'master'])
           end
         end

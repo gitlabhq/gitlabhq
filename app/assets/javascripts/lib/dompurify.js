@@ -18,7 +18,7 @@ export const defaultConfig = {
     'data-disable',
     'data-turbo',
   ],
-  FORBID_TAGS: ['style', 'mstyle'],
+  FORBID_TAGS: ['style', 'mstyle', 'form'],
   ALLOW_UNKNOWN_PROTOCOLS: true,
 };
 

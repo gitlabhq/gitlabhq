@@ -3,6 +3,10 @@
 class GroupMemberPresenter < MemberPresenter
   presents ::GroupMember
 
+  def last_owner?
+    member.last_owner_of_the_group?
+  end
+
   private
 
   def admin_member_permission

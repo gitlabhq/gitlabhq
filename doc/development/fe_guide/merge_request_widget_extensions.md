@@ -355,7 +355,12 @@ To generate these known events for a single widget:
     1. `redis_slot` = `code_review`
     1. `category` = `code_review`
     1. `aggregation` = `weekly`
-1. Add each event to the appropriate aggregates in `config/metrics/aggregates/code_review.yml`
+1. Add each event (those listed in the command in step 7, replacing `test_reports`
+   with the appropriate name slug) to the aggregate files:
+    1. `config/metrics/counts_7d/{timestamp}_code_review_category_monthly_active_users.yml`
+    1. `config/metrics/counts_7d/{timestamp}_code_review_group_monthly_active_users.yml`
+    1. `config/metrics/counts_28d/{timestamp}_code_review_category_monthly_active_users.yml`
+    1. `config/metrics/counts_28d/{timestamp}_code_review_group_monthly_active_users.yml`
 
 ### Add new events
 

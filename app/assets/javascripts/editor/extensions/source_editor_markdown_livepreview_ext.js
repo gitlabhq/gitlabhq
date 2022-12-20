@@ -120,6 +120,9 @@ export class EditorMarkdownPreviewExtension {
         category: 'primary',
         selectedLabel: EXTENSION_MARKDOWN_HIDE_PREVIEW_LABEL,
         onClick: () => instance.togglePreview(),
+        data: {
+          qaSelector: 'editor_toolbar_button',
+        },
       },
     ];
     instance.toolbar.addItems(this.toolbarButtons);

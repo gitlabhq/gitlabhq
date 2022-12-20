@@ -1,8 +1,0 @@
----
-name: check_etags_diffs_batch_before_write_cache
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101421
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378333
-milestone: '15.6'
-type: development
-group: group::code review
-default_enabled: false

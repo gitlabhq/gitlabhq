@@ -69,8 +69,8 @@ gitlab:
         cpu: 400m
         memory: 920Mi
       limits:
-        cpu: 600m
-        memory: 1100Mi
+        cpu: 800m
+        memory: 1380Mi
 
   sidekiq:
     resources:
@@ -99,7 +99,7 @@ gitlab:
         cpu: 746m
         memory: 2809Mi
       limits:
-        cpu: 1119m
+        cpu: 1300m
         memory: 4214Mi
     minReplicas: 1
     maxReplicas: 1

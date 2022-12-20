@@ -1,5 +1,17 @@
 import { sortMilestonesByDueDate } from '~/milestones/utils';
-import { mergeUrlParams } from '../lib/utils/url_utility';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
+import {
+  TOKEN_TYPE_APPROVED_BY,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_REVIEWER,
+  TOKEN_TYPE_TARGET_BRANCH,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import DropdownEmoji from './dropdown_emoji';
 import DropdownHint from './dropdown_hint';
 import DropdownNonUser from './dropdown_non_user';
@@ -58,17 +70,17 @@ export default class AvailableDropdownMappings {
 
   getMappings() {
     return {
-      author: {
+      [TOKEN_TYPE_AUTHOR]: {
         reference: null,
         gl: DropdownUser,
         element: this.container.querySelector('#js-dropdown-author'),
       },
-      assignee: {
+      [TOKEN_TYPE_ASSIGNEE]: {
         reference: null,
         gl: DropdownUser,
         element: this.container.querySelector('#js-dropdown-assignee'),
       },
-      reviewer: {
+      [TOKEN_TYPE_REVIEWER]: {
         reference: null,
         gl: DropdownUser,
         element: this.container.querySelector('#js-dropdown-reviewer'),
@@ -78,12 +90,12 @@ export default class AvailableDropdownMappings {
         gl: DropdownUser,
         element: this.container.getElementById('js-dropdown-attention-requested'),
       },
-      'approved-by': {
+      [TOKEN_TYPE_APPROVED_BY]: {
         reference: null,
         gl: DropdownUser,
         element: this.container.querySelector('#js-dropdown-approved-by'),
       },
-      milestone: {
+      [TOKEN_TYPE_MILESTONE]: {
         reference: null,
         gl: DropdownNonUser,
         extraArguments: {
@@ -93,7 +105,7 @@ export default class AvailableDropdownMappings {
         },
         element: this.container.querySelector('#js-dropdown-milestone'),
       },
-      release: {
+      [TOKEN_TYPE_RELEASE]: {
         reference: null,
         gl: DropdownNonUser,
         extraArguments: {
@@ -106,7 +118,7 @@ export default class AvailableDropdownMappings {
         },
         element: this.container.querySelector('#js-dropdown-release'),
       },
-      label: {
+      [TOKEN_TYPE_LABEL]: {
         reference: null,
         gl: DropdownNonUser,
         extraArguments: {
@@ -116,7 +128,7 @@ export default class AvailableDropdownMappings {
         },
         element: this.container.querySelector('#js-dropdown-label'),
       },
-      'my-reaction': {
+      [TOKEN_TYPE_MY_REACTION]: {
         reference: null,
         gl: DropdownEmoji,
         element: this.container.querySelector('#js-dropdown-my-reaction'),
@@ -126,12 +138,12 @@ export default class AvailableDropdownMappings {
         gl: DropdownNonUser,
         element: this.container.querySelector('#js-dropdown-wip'),
       },
-      confidential: {
+      [TOKEN_TYPE_CONFIDENTIAL]: {
         reference: null,
         gl: DropdownNonUser,
         element: this.container.querySelector('#js-dropdown-confidential'),
       },
-      'target-branch': {
+      [TOKEN_TYPE_TARGET_BRANCH]: {
         reference: null,
         gl: DropdownNonUser,
         extraArguments: {

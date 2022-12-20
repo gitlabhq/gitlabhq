@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 )
 
@@ -19,20 +19,20 @@ func RequestBody(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 	return rails.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
 		opts, err := p.Prepare(a)
 		if err != nil {
-			helper.Fail500(w, r, fmt.Errorf("RequestBody: preparation failed: %v", err))
+			fail.Request(w, r, fmt.Errorf("RequestBody: preparation failed: %v", err))
 			return
 		}
 
 		fh, err := destination.Upload(r.Context(), r.Body, r.ContentLength, "upload", opts)
 		if err != nil {
-			helper.Fail500(w, r, fmt.Errorf("RequestBody: upload failed: %v", err))
+			fail.Request(w, r, fmt.Errorf("RequestBody: upload failed: %v", err))
 			return
 		}
 
 		data := url.Values{}
 		fields, err := fh.GitLabFinalizeFields("file")
 		if err != nil {
-			helper.Fail500(w, r, fmt.Errorf("RequestBody: finalize fields failed: %v", err))
+			fail.Request(w, r, fmt.Errorf("RequestBody: finalize fields failed: %v", err))
 			return
 		}
 
@@ -49,7 +49,7 @@ func RequestBody(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 		sft := SavedFileTracker{Request: r}
 		sft.Track("file", fh.LocalPath)
 		if err := sft.Finalize(r.Context()); err != nil {
-			helper.Fail500(w, r, fmt.Errorf("RequestBody: finalize failed: %v", err))
+			fail.Request(w, r, fmt.Errorf("RequestBody: finalize failed: %v", err))
 			return
 		}
 

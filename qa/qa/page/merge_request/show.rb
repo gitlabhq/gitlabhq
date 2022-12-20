@@ -126,7 +126,7 @@ module QA
           element :title_content, required: true
         end
 
-        view 'app/views/projects/merge_requests/show.html.haml' do
+        view 'app/views/projects/merge_requests/_page.html.haml' do
           element :notes_tab, required: true
           element :commits_tab, required: true
           element :diffs_tab, required: true
@@ -366,7 +366,7 @@ module QA
           # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
           # To remove page refresh logic if possible
           wait_until_ready_to_merge
-          wait_until { !find_element(:merge_button).text.include?('when pipeline succeeds') }
+          wait_until { !find_element(:merge_button).text.include?('when pipeline succeeds') } # rubocop:disable Rails/NegateInclude
 
           click_element(:merge_button)
         end
@@ -390,6 +390,7 @@ module QA
         def click_open_in_web_ide
           click_element(:mr_code_dropdown)
           click_element(:open_in_web_ide_button)
+          page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
           wait_for_requests
         end
 
@@ -433,7 +434,11 @@ module QA
         end
 
         def revert_change!
-          click_element(:revert_button, Page::Component::CommitModal)
+          # retry when the modal doesn't appear for large MRs as the onClick listener is initialized after the click
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/366336
+          retry_on_exception do
+            click_element(:revert_button, Page::Component::CommitModal)
+          end
           click_element(:submit_commit_button)
         end
 

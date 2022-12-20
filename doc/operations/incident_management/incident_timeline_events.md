@@ -78,12 +78,14 @@ The comment is shown on the incident timeline as a timeline event.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375280) in GitLab 15.6.
 
-A new timeline event is created when someone [changes the severity](incidents.md#change-severity)
+A new timeline event is created when someone [changes the severity](manage_incidents.md#change-severity)
 of an incident.
 
 ![Incident timeline event for severity change](img/timeline_event_for_severity_change_v15_6.png)
 
 ## Delete an event
+
+> Ability to delete an event when editing it [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372265) in GitLab 15.7.
 
 You can also delete timeline events.
 
@@ -99,3 +101,9 @@ To delete a timeline event:
 1. Select the **Timeline** tab.
 1. On the right of a timeline event, select **More actions** (**{ellipsis_v}**) and then select **Delete**.
 1. To confirm, select **Delete Event**.
+
+Alternatively:
+
+1. On the right of a timeline event, select **More actions** (**{ellipsis_v}**) and then select **Edit**.
+1. Select **Delete**.
+1. To confirm, select **Delete event**.

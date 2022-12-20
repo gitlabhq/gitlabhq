@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanUpPendingBuildsTable, :suppress_gitlab_schemas_validate_connection do
+RSpec.describe CleanUpPendingBuildsTable, :suppress_gitlab_schemas_validate_connection,
+feature_category: :continuous_integration do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:queue) { table(:ci_pending_builds) }

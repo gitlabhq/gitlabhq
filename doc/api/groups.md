@@ -30,7 +30,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (administrators only) |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md#valid-access-levels) |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
 | `top_level_only`         | boolean           | no       | Limit to top level groups, excluding all subgroups |
 
 ```plaintext
@@ -148,7 +148,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (administrators only) |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md#valid-access-levels) |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
 
 ```plaintext
 GET /groups/:id/subgroups
@@ -206,7 +206,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (administrators only) |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md#valid-access-levels) |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
 
 ```plaintext
 GET /groups/:id/descendant_groups
@@ -294,7 +294,7 @@ Parameters:
 | `with_merge_requests_enabled`          | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
 | `with_shared`                          | boolean        | no       | Include projects shared to this group. Default is `true` |
 | `include_subgroups`                    | boolean        | no       | Include projects in subgroups of this group. Default is `false`   |
-| `min_access_level`                     | integer        | no       | Limit to projects where current user has at least this [access level](members.md#valid-access-levels) |
+| `min_access_level`                     | integer        | no       | Limit to projects where current user has at least this [role (`access_level`)](members.md#roles) |
 | `with_custom_attributes`               | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `with_security_reports` **(ULTIMATE)** | boolean        | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
 
@@ -374,7 +374,7 @@ Parameters:
 | `starred`                     | boolean        | no       | Limit by projects starred by the current user |
 | `with_issues_enabled`         | boolean        | no       | Limit by projects with issues feature enabled. Default is `false` |
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
-| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md#valid-access-levels) |
+| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [role (`access_level`)](members.md#roles) |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 
 Example response:
@@ -487,7 +487,7 @@ Example response:
 
 ## Details of a group
 
-> The `membership_lock` field was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82271) in GitLab 14.10.
+> The `membership_lock` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82271) in GitLab 14.10.
 
 Get all details of a group. This endpoint can be accessed without authentication
 if the group is publicly accessible. In case the user that requests is an administrator
@@ -1158,7 +1158,7 @@ Parameters:
 The response is `202 Accepted` if the user has authorization.
 
 NOTE:
-A GitLab.com group can't be removed if it is linked to a subscription. To remove such a group, first [link the subscription](../subscriptions/index.md#change-the-linked-namespace) with a different group.
+A GitLab.com group can't be removed if it is linked to a subscription. To remove such a group, first [link the subscription](../subscriptions/gitlab_com/index.md#change-the-linked-namespace) with a different group.
 
 ## Restore group marked for deletion **(PREMIUM)**
 
@@ -1361,25 +1361,25 @@ PUT /groups/:id/hooks/:hook_id
 
 | Attribute                    | Type           | Required | Description |
 | ---------------------------- | -------------- | -------- | ----------- |
-| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
-| `hook_id`                    | integer        | yes      | The ID of the group hook |
-| `url`                        | string         | yes      | The hook URL |
-| `push_events`                | boolean        | no       | Trigger hook on push events |
+| `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding). |
+| `hook_id`                    | integer        | yes      | The ID of the group hook. |
+| `url`                        | string         | yes      | The hook URL. |
+| `push_events`                | boolean        | no       | Trigger hook on push events. |
 | `push_events_branch_filter`  | string         | No       | Trigger hook on push events for matching branches only. |
-| `issues_events`              | boolean        | no       | Trigger hook on issues events |
-| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events |
-| `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events |
-| `tag_push_events`            | boolean        | no       | Trigger hook on tag push events |
-| `note_events`                | boolean        | no       | Trigger hook on note events |
-| `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events |
-| `job_events`                 | boolean        | no       | Trigger hook on job events |
-| `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
-| `wiki_page_events`           | boolean        | no       | Trigger hook on wiki page events |
-| `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
-| `releases_events`            | boolean        | no       | Trigger hook on release events |
-| `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events |
-| `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
-| `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
+| `issues_events`              | boolean        | no       | Trigger hook on issues events. |
+| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events. |
+| `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events. |
+| `tag_push_events`            | boolean        | no       | Trigger hook on tag push events. |
+| `note_events`                | boolean        | no       | Trigger hook on note events. |
+| `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events. |
+| `job_events`                 | boolean        | no       | Trigger hook on job events. |
+| `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events. |
+| `wiki_page_events`           | boolean        | no       | Trigger hook on wiki page events. |
+| `deployment_events`          | boolean        | no       | Trigger hook on deployment events. |
+| `releases_events`            | boolean        | no       | Trigger hook on release events. |
+| `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
+| `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook. |
+| `token`                      | string         | no       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 
 ### Delete group hook
 
@@ -1444,7 +1444,7 @@ POST /groups/:id/ldap_group_links
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `cn`      | string         | no       | The CN of an LDAP group |
 | `filter`  | string         | no       | The LDAP filter for the group |
-| `group_access` | integer   | yes      | [Access level](members.md#valid-access-levels) for members of the LDAP group |
+| `group_access` | integer   | yes      | [Role (`access_level`)](members.md#roles) for members of the LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
 NOTE:
@@ -1519,7 +1519,7 @@ If successful, returns [`200`](index.md#status-codes) and the following response
 | Attribute          | Type    | Description                                                                  |
 |:-------------------|:--------|:-----------------------------------------------------------------------------|
 | `[].name`          | string  | Name of the SAML group                                                       |
-| `[].access_level`  | integer | [Access level](members.md#valid-access-levels) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
+| `[].access_level`  | integer | [Role (`access_level`)](members.md#roles) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
 
 Example request:
 
@@ -1562,7 +1562,7 @@ If successful, returns [`200`](index.md#status-codes) and the following response
 | Attribute      | Type    | Description                                                                  |
 |:---------------|:--------|:-----------------------------------------------------------------------------|
 | `name`         | string  | Name of the SAML group                                                       |
-| `access_level` | integer | [Access level](members.md#valid-access-levels) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
+| `access_level` | integer | [Role (`access_level`)](members.md#roles) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
 
 Example request:
 
@@ -1593,14 +1593,14 @@ Supported attributes:
 |:-------------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`               | integer or string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)     |
 | `saml_group_name`  | string         | yes      | Name of a SAML group                                                         |
-| `access_level`     | integer        | yes      | [Access level](members.md#valid-access-levels) for members of the SAML group |
+| `access_level`     | integer        | yes      | [Role (`access_level`)](members.md#roles) for members of the SAML group |
 
 If successful, returns [`201`](index.md#status-codes) and the following response attributes:
 
 | Attribute      | Type    | Description                                                                  |
 |:---------------|:--------|:-----------------------------------------------------------------------------|
 | `name`         | string  | Name of the SAML group                                                       |
-| `access_level` | integer | [Access level](members.md#valid-access-levels) for members of the for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
+| `access_level` | integer | [Role (`access_level`)](members.md#roles) for members of the for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
 
 Example request:
 
@@ -1682,7 +1682,7 @@ POST /groups/:id/share
 | --------- | -------------- | -------- | ----------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
-| `group_access` | integer | yes | The [access level](members.md#valid-access-levels) to grant the group |
+| `group_access` | integer | yes | The [role (`access_level`)](members.md#roles) to grant the group |
 | `expires_at` | string | no | Share expiration date in ISO 8601 format: 2016-09-26 |
 
 ### Delete link sharing group with another group

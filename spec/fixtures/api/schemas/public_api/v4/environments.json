@@ -1,9 +1,6 @@
 {
   "type": "array",
   "items": {
-    "type": "object",
-    "properties": {
-      "$ref": "./environment.json"
-    }
+    "$ref": "./environment.json"
   }
 }

@@ -98,6 +98,8 @@ class ContainerRepository < ApplicationRecord
     )
   end
 
+  before_update :set_status_updated_at_to_now, if: :status_changed?
+
   state_machine :migration_state, initial: :default, use_transactions: false do
     state :pre_importing do
       validates :migration_pre_import_started_at, presence: true
@@ -521,11 +523,20 @@ class ContainerRepository < ApplicationRecord
   end
 
   def set_delete_ongoing_status
-    update_columns(status: :delete_ongoing, delete_started_at: Time.zone.now)
+    now = Time.zone.now
+    update_columns(
+      status: :delete_ongoing,
+      delete_started_at: now,
+      status_updated_at: now
+    )
   end
 
   def set_delete_scheduled_status
-    update_columns(status: :delete_scheduled, delete_started_at: nil)
+    update_columns(
+      status: :delete_scheduled,
+      delete_started_at: nil,
+      status_updated_at: Time.zone.now
+    )
   end
 
   def migration_in_active_state?
@@ -622,6 +633,10 @@ class ContainerRepository < ApplicationRecord
       tag.updated_at = raw_tag['updated_at']
       tag
     end
+  end
+
+  def set_status_updated_at_to_now
+    self.status_updated_at = Time.zone.now
   end
 end
 

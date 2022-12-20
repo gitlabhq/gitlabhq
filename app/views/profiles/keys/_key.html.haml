@@ -25,7 +25,10 @@
         %span.expires.gl-mr-3
           = key.expired? ? s_('Profiles|Expired:') : s_('Profiles|Expires:')
           = key.expires_at ? key.expires_at.to_date : _('Never')
+        %span.last-used-at.gl-mr-3
+          = s_('Profiles|Usage type:')
+          = ssh_key_usage_types.invert[key.usage_type]
     %span.key-created-at.gl-display-flex.gl-align-items-center
       - if key.can_delete?
         .gl-ml-3
-          = render 'shared/ssh_keys/key_delete', html_class: "btn gl-button btn-icon btn-default js-confirm-modal-button", button_data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin))
+          = render 'shared/ssh_keys/key_delete', icon: true, button_data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin))

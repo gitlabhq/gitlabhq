@@ -68,8 +68,8 @@ Page titles are hardcoded as `GitLab` for the same reason.
 | `doc_charset`              | **{dotted-circle}** | string    | Web page's character encoding                                                                                                    |
 | `doc_height`               | **{dotted-circle}** | string    | Web page height                                                                                                                  |
 | `doc_width`                | **{dotted-circle}** | string    | Web page width                                                                                                                   |
-| `domain_sessionid`         | **{dotted-circle}** | string    | Unique identifier (UUID) for this visit of this user_id to this domain                                                           |
-| `domain_sessionidx`        | **{dotted-circle}** | integer   | Index of number of visits that this user_id has made to this domain (The first visit is `1`)                                        |
+| `domain_sessionid`         | **{dotted-circle}** | string    | Unique identifier (UUID) for this visit of this `user_id` to this domain                                                         |
+| `domain_sessionidx`        | **{dotted-circle}** | integer   | Index of number of visits that this `user_id` has made to this domain (The first visit is `1`)                                   |
 | `domain_userid`            | **{dotted-circle}** | string    | Unique identifier for a user, based on a first party cookie (so domain specific)                                                 |
 | `dvce_created_tstamp`      | **{dotted-circle}** | timestamp | Timestamp when event occurred, as recorded by client device                                                                      |
 | `dvce_ismobile`            | **{dotted-circle}** | boolean   | Indicates whether device is mobile                                                                                               |

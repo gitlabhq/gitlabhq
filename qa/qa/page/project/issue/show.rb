@@ -67,10 +67,6 @@ module QA
             click_element :close_issue_button
           end
 
-          def has_metrics_unfurled?
-            has_element?(:prometheus_graph_widgets, wait: 30)
-          end
-
           def has_reopen_issue_button?
             has_element?(:reopen_issue_button)
           end

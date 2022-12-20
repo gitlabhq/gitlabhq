@@ -71,7 +71,7 @@ which are always available to the end-users regardless of the subscription.
 ### Value streams
 
 Value streams are container objects for the stages. There can be multiple value streams per group
-focusing on different aspects of the Dev Ops lifecycle.
+focusing on different aspects of the DevOps lifecycle.
 
 ### Events
 
@@ -89,7 +89,8 @@ They're responsible for defining a timestamp expression that is used in the calc
 
 #### Implementing an `Event` class
 
-There are a few methods that are required to be implemented, the `StageEvent` base class describes them in great detail. The most important ones are:
+You must implement a few methods, as described in the `StageEvent` base class.
+The most important methods are:
 
 - `object_type`
 - `timestamp_projection`

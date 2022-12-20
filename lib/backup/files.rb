@@ -157,7 +157,7 @@ module Backup
     end
 
     def backup_files_realpath
-      @backup_files_realpath ||= File.join(Gitlab.config.backup.path, File.basename(@app_files_dir) )
+      @backup_files_realpath ||= File.join(Gitlab.config.backup.path, File.basename(@app_files_dir))
     end
   end
 end

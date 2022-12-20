@@ -4,10 +4,7 @@ module Gitlab
   module Memory
     class Watchdog
       module Monitor
-        # A monitor that observes Ruby heap fragmentation and calls
-        # memory_violation_callback when the Ruby heap has been fragmented for an extended
-        # period of time.
-        #
+        # A monitor that observes Ruby heap fragmentation.
         # See Gitlab::Metrics::Memory for how heap fragmentation is defined.
         class HeapFragmentation
           attr_reader :max_heap_fragmentation

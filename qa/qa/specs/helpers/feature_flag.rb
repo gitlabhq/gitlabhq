@@ -20,11 +20,11 @@ module QA
               # This is to avoid flakiness with other tests running in parallel on the same environment
               # as well as interfering with feature flag experimentation done by development groups.
               example.metadata[:skip] = global_feature_flag_message if ContextSelector.dot_com?
-            else
+            elsif skip_env_for_scoped_feature_flag
               # Tests using a feature flag scoped to an actor (ex: :project, :user, :group), or
               # with no scope defined (such as in the case of a low risk global feature flag),
               # will only be skipped on environments without an admin account
-              example.metadata[:skip] = feature_flag_message if skip_env_for_scoped_feature_flag
+              example.metadata[:skip] = feature_flag_message
             end
           end
         end

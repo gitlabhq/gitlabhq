@@ -1,8 +1,0 @@
----
-name: actors_aware_gitaly_calls
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101218
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381516
-milestone: '15.6'
-type: development
-group: group::gitaly
-default_enabled: false

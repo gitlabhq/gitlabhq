@@ -8,3 +8,4 @@ feature_categories:
 description: Store various metrics for merge requests.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5986
 milestone: '8.12'
+gitlab_schema: gitlab_main

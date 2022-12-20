@@ -93,10 +93,6 @@ export const DETAILS_DELETE_IMAGE_ERROR_MESSAGE = s__(
   'ContainerRegistry|Something went wrong while scheduling the image for deletion.',
 );
 
-export const DETAILS_IMPORTING_ERROR_MESSAGE = s__(
-  'ContainerRegistry|Tags temporarily cannot be marked for deletion. Please try again in a few minutes. %{docLinkStart}More details%{docLinkEnd}.',
-);
-
 export const DELETE_IMAGE_CONFIRMATION_TITLE = s__('ContainerRegistry|Delete image repository?');
 export const DELETE_IMAGE_CONFIRMATION_TEXT = s__(
   'ContainerRegistry|Deleting the image repository will delete all images and tags inside. This action cannot be undone. Please type the following to confirm: %{code}',
@@ -137,7 +133,6 @@ export const ALERT_DANGER_TAG = 'danger_tag';
 export const ALERT_SUCCESS_TAGS = 'success_tags';
 export const ALERT_DANGER_TAGS = 'danger_tags';
 export const ALERT_DANGER_IMAGE = 'danger_image';
-export const ALERT_DANGER_IMPORTING = 'danger_importing';
 
 export const DELETE_SCHEDULED = 'DELETE_SCHEDULED';
 export const DELETE_FAILED = 'DELETE_FAILED';
@@ -148,7 +143,6 @@ export const ALERT_MESSAGES = {
   [ALERT_SUCCESS_TAGS]: DELETE_TAGS_SUCCESS_MESSAGE,
   [ALERT_DANGER_TAGS]: DELETE_TAGS_ERROR_MESSAGE,
   [ALERT_DANGER_IMAGE]: DETAILS_DELETE_IMAGE_ERROR_MESSAGE,
-  [ALERT_DANGER_IMPORTING]: DETAILS_IMPORTING_ERROR_MESSAGE,
 };
 
 export const UNFINISHED_STATUS = 'UNFINISHED';

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectsController do
+RSpec.describe ProjectsController, feature_category: :projects do
   context 'token authentication' do
     context 'when public project' do
       let_it_be(:public_project) { create(:project, :public) }

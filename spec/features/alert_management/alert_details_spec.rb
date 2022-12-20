@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Alert details', :js do
+RSpec.describe 'Alert details', :js, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:alert) { create(:alert_management_alert, project: project, status: 'triggered', title: 'Alert') }
@@ -30,6 +30,8 @@ RSpec.describe 'Alert details', :js do
         alert_tabs = find('[data-testid="alertDetailsTabs"]')
 
         expect(alert_tabs).to have_content('Alert details')
+        expect(alert_tabs).to have_content('Metrics')
+        expect(alert_tabs).to have_content('Activity feed')
       end
     end
 
@@ -61,7 +63,7 @@ RSpec.describe 'Alert details', :js do
         expect(alert_status).to have_content('Triggered')
 
         find('.gl-button').click
-        find('.gl-new-dropdown-item', text: 'Acknowledged').click
+        find('.gl-dropdown-item', text: 'Acknowledged').click
 
         wait_for_requests
 

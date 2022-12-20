@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DropTemporaryColumnsAndTriggersForTaggings do
+RSpec.describe DropTemporaryColumnsAndTriggersForTaggings, feature_category: :continuous_integration do
   let(:taggings_table) { table(:taggings) }
 
   it 'correctly migrates up and down' do

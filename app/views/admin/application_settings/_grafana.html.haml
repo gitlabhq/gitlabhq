@@ -11,4 +11,4 @@
       = f.text_field :grafana_url, class: 'form-control gl-form-input', placeholder: '/-/grafana'
       %span.form-text.text-muted#support_help_block= _('URL of the Grafana instance to link to from the Metrics Dashboard menu item.')
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), pajamas_button: true

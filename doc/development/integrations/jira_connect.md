@@ -59,6 +59,19 @@ To install the app in Jira:
 
    _Note that any changes to the app descriptor requires you to uninstall then reinstall the app._
 
+## Simple setup
+
+To avoid external dependencies like Gitpod and a Jira Cloud instance, use the [Jira connect test tool](https://gitlab.com/gitlab-org/manage/integrations/jira-connect-test-tool) and your local GDK:
+
+1. Clone the [**Jira-connect-test-tool**](https://gitlab.com/gitlab-org/manage/integrations/jira-connect-test-tool) `git clone git@gitlab.com:gitlab-org/manage/integrations/jira-connect-test-tool.git`.
+1. Start the app `bundle exec rackup`. (The app requires your GDK GitLab to be available on `http://127.0.0.1:3000`.).
+1. Open `config/gitlab.yml` and uncomment the `jira_connect` config.
+1. Restart GDK.
+1. Go to `http://127.0.0.1:3000/-/profile/personal_access_tokens`.
+1. Create a new token with the `api` scope and copy the token.
+1. Go to `http://localhost:9292`.
+1. Paste the token and select **Install GitLab.com Jira Cloud app**.
+
 ### Troubleshooting
 
 If the app install failed, you might need to delete `jira_connect_installations` from your database.
@@ -68,7 +81,7 @@ If the app install failed, you might need to delete `jira_connect_installations`
 
 #### Not authorized to access the file
 
-If you use Gitpod and you get an error about Jira not being able to access the descriptor file, you might need to make the GDK's port public by following these steps:
+If you use Gitpod and you get an error about Jira not being able to access the descriptor file, you might need to make the GDK port public by following these steps:
 
 1. Open your GitLab workspace in Gitpod.
 1. When the GDK is running, select **Ports** in the bottom-right corner.

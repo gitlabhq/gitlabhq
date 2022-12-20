@@ -326,7 +326,7 @@ module QA
       def test_runs(reliable:)
         puts("Fetching data on #{reliable ? 'reliable ' : ''}test execution for past #{range} days\n".colorize(:green))
 
-        all_runs = query_api.query(query: query(reliable)).values
+        all_runs = query_api.query(query: query(reliable))
         all_runs.each_with_object(Hash.new { |hsh, key| hsh[key] = {} }) do |table, result|
           records = table.records.sort_by { |record| record.values["_time"] }
           # skip specs that executed less time than defined by range or stopped executing before report date
@@ -341,7 +341,7 @@ module QA
 
           runs = records.count
           failed = records.count { |r| r.values["status"] == "failed" }
-          failure_rate = (failed.to_f / runs.to_f) * 100
+          failure_rate = (failed.to_f / runs) * 100
 
           result[stage][name] = {
             file: file,
@@ -358,7 +358,7 @@ module QA
       # @return [String]
       def query(reliable)
         <<~QUERY
-          from(bucket: "#{Support::InfluxdbTools::INFLUX_TEST_METRICS_BUCKET}")
+          from(bucket: "#{Support::InfluxdbTools::INFLUX_MAIN_TEST_METRICS_BUCKET}")
             |> range(start: -#{range}d)
             |> filter(fn: (r) => r._measurement == "test-stats")
             |> filter(fn: (r) => r.run_type == "staging-full" or

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'Query.project.pipeline.stages' do
+RSpec.describe 'Query.project.pipeline.stages', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   subject(:post_query) { post_graphql(query, current_user: user) }

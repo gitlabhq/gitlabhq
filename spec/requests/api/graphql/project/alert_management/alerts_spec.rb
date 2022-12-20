@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'getting Alert Management Alerts' do
+RSpec.describe 'getting Alert Management Alerts', feature_category: :incident_management do
   include GraphqlHelpers
 
   let_it_be(:payload) { { 'custom' => { 'alert' => 'payload' }, 'runbook' => 'runbook' } }
@@ -59,6 +59,7 @@ RSpec.describe 'getting Alert Management Alerts' do
 
       it 'returns the correct properties of the alerts' do
         expect(first_alert).to include(
+          'id' => triggered_alert.to_global_id.to_s,
           'iid' => triggered_alert.iid.to_s,
           'title' => triggered_alert.title,
           'description' => triggered_alert.description,
@@ -80,6 +81,7 @@ RSpec.describe 'getting Alert Management Alerts' do
         )
 
         expect(second_alert).to include(
+          'id' => resolved_alert.to_global_id.to_s,
           'iid' => resolved_alert.iid.to_s,
           'status' => 'RESOLVED',
           'endedAt' => resolved_alert.ended_at.strftime('%Y-%m-%dT%H:%M:%SZ')

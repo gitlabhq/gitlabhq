@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::MilestonesController do
+RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
   context 'N+1 DB queries' do
     let_it_be(:user) { create(:user) }
     let_it_be(:public_group) { create(:group, :public) }

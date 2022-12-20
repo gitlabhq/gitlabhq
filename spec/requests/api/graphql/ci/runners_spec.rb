@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'Query.runners' do
+RSpec.describe 'Query.runners', feature_category: :runner_fleet do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create_default(:user, :admin) }
@@ -48,7 +48,7 @@ RSpec.describe 'Query.runners' do
       it_behaves_like 'a working graphql query'
 
       it 'returns expected runner' do
-        expect(runners_graphql_data['nodes'].map { |n| n['id'] }).to contain_exactly(expected_runner.to_global_id.to_s)
+        expect(runners_graphql_data['nodes']).to contain_exactly(a_graphql_entity_for(expected_runner))
       end
     end
 

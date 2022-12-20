@@ -5,7 +5,7 @@ class ProjectMemberPolicy < BasePolicy
   delegate { @subject.project }
 
   condition(:target_is_holder_of_the_personal_namespace, scope: :subject) do
-    @subject.project.personal_namespace_holder?(@subject.user)
+    @subject.holder_of_the_personal_namespace?
   end
 
   desc "Membership is users' own access request"

@@ -23,14 +23,12 @@ module API
         end
 
         def load_issuable
-          @issuable ||= begin
-            case issuable_name
-            when 'issue'
-              find_project_issue(params.delete(issuable_key))
-            when 'merge_request'
-              find_project_merge_request(params.delete(issuable_key))
-            end
-          end
+          @issuable ||= case issuable_name
+                        when 'issue'
+                          find_project_issue(params.delete(issuable_key))
+                        when 'merge_request'
+                          find_project_merge_request(params.delete(issuable_key))
+                        end
         end
 
         def update_issuable(attrs)
@@ -54,10 +52,18 @@ module API
       issuable_collection_name = issuable_name.pluralize
       issuable_key             = "#{issuable_name}_iid".to_sym
 
-      desc "Set a time estimate for a project #{issuable_name}"
+      desc "Set a time estimate for a #{issuable_name}" do
+        detail " Sets an estimated time of work for this #{issuable_name}."
+        success Entities::IssuableTimeStats
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags [issuable_collection_name]
+      end
       params do
-        requires issuable_key, type: Integer, desc: "The ID of a project #{issuable_name}"
-        requires :duration, type: String, desc: 'The duration to be parsed'
+        requires issuable_key, type: Integer, desc: "The internal ID of the #{issuable_name}."
+        requires :duration, type: String, desc: 'The duration in human format.', documentation: { example: '3h30m' }
       end
       post ":id/#{issuable_collection_name}/:#{issuable_key}/time_estimate" do
         authorize! admin_issuable_key, load_issuable
@@ -66,9 +72,17 @@ module API
         update_issuable(time_estimate: Gitlab::TimeTrackingFormatter.parse(params.delete(:duration)))
       end
 
-      desc "Reset the time estimate for a project #{issuable_name}"
+      desc "Reset the time estimate for a project #{issuable_name}" do
+        detail "Resets the estimated time for this #{issuable_name} to 0 seconds."
+        success Entities::IssuableTimeStats
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags [issuable_collection_name]
+      end
       params do
-        requires issuable_key, type: Integer, desc: "The ID of a project #{issuable_name}"
+        requires issuable_key, type: Integer, desc: "The internal ID of the #{issuable_name}."
       end
       post ":id/#{issuable_collection_name}/:#{issuable_key}/reset_time_estimate" do
         authorize! admin_issuable_key, load_issuable
@@ -77,10 +91,18 @@ module API
         update_issuable(time_estimate: 0)
       end
 
-      desc "Add spent time for a project #{issuable_name}"
+      desc "Add spent time for a #{issuable_name}" do
+        detail "Adds spent time for this #{issuable_name}."
+        success Entities::IssuableTimeStats
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags [issuable_collection_name]
+      end
       params do
-        requires issuable_key, type: Integer, desc: "The ID of a project #{issuable_name}"
-        requires :duration, type: String, desc: 'The duration to be parsed'
+        requires issuable_key, type: Integer, desc: "The internal ID of the #{issuable_name}."
+        requires :duration, type: String, desc: 'The duration in human format.'
       end
       post ":id/#{issuable_collection_name}/:#{issuable_key}/add_spent_time" do
         authorize! admin_issuable_key, load_issuable
@@ -97,9 +119,17 @@ module API
         update_issuable(update_params)
       end
 
-      desc "Reset spent time for a project #{issuable_name}"
+      desc "Reset spent time for a #{issuable_name}" do
+        detail "Resets the total spent time for this #{issuable_name} to 0 seconds."
+        success Entities::IssuableTimeStats
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags [issuable_collection_name]
+      end
       params do
-        requires issuable_key, type: Integer, desc: "The ID of a project #{issuable_name}"
+        requires issuable_key, type: Integer, desc: "The internal ID of the #{issuable_name}"
       end
       post ":id/#{issuable_collection_name}/:#{issuable_key}/reset_spent_time" do
         authorize! admin_issuable_key, load_issuable
@@ -108,9 +138,17 @@ module API
         update_issuable(spend_time: { duration: :reset, user_id: current_user.id })
       end
 
-      desc "Show time stats for a project #{issuable_name}"
+      desc "Get time tracking stats" do
+        detail "Get time tracking stats"
+        success Entities::IssuableTimeStats
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags [issuable_collection_name]
+      end
       params do
-        requires issuable_key, type: Integer, desc: "The ID of a project #{issuable_name}"
+        requires issuable_key, type: Integer, desc: "The internal ID of the #{issuable_name}"
       end
       get ":id/#{issuable_collection_name}/:#{issuable_key}/time_stats" do
         authorize! read_issuable_key, load_issuable

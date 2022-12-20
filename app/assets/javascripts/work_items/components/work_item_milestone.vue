@@ -13,6 +13,7 @@ import { debounce } from 'lodash';
 import Tracking from '~/tracking';
 import { s__, __ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { MILESTONE_STATE } from '~/sidebar/constants';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import {
@@ -118,6 +119,7 @@ export default {
       return {
         'gl-text-gray-500!': this.canUpdate && this.isNoMilestone,
         'is-not-focused': !this.isFocused,
+        'gl-min-w-20': true,
       };
     },
   },
@@ -139,6 +141,7 @@ export default {
         return {
           fullPath: this.fullPath,
           title: this.searchTerm,
+          state: MILESTONE_STATE.ACTIVE,
           first: 20,
         };
       },
@@ -214,9 +217,10 @@ export default {
 
 <template>
   <gl-form-group
-    class="work-item-dropdown"
+    class="work-item-dropdown gl-flex-nowrap"
     :label="$options.i18n.MILESTONE"
-    label-class="gl-pb-0! gl-overflow-wrap-break gl-mt-3"
+    label-for="milestone-value"
+    label-class="gl-pb-0! gl-mt-3 gl-overflow-wrap-break"
     label-cols="3"
     label-cols-lg="2"
   >
@@ -229,6 +233,8 @@ export default {
     </span>
     <gl-dropdown
       v-else
+      id="milestone-value"
+      class="gl-pl-0 gl-max-w-full"
       :toggle-class="dropdownClasses"
       :text="dropdownText"
       :loading="updateInProgress"

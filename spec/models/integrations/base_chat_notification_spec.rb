@@ -34,7 +34,7 @@ RSpec.describe Integrations::BaseChatNotification do
         webhook: webhook_url
       )
 
-      WebMock.stub_request(:post, webhook_url)
+      WebMock.stub_request(:post, webhook_url) if webhook_url.present?
 
       subject.active = true
     end
@@ -52,6 +52,33 @@ RSpec.describe Integrations::BaseChatNotification do
 
         expect(chat_integration).to receive(:notify).and_return(true)
         expect(chat_integration.execute(data)).to be true
+      end
+    end
+
+    context 'when webhook is blank' do
+      let(:webhook_url) { '' }
+
+      it 'returns false' do
+        expect(chat_integration).not_to receive(:notify)
+        expect(chat_integration.execute(data)).to be false
+      end
+
+      context 'when webhook is not required' do
+        it 'returns true' do
+          allow(chat_integration).to receive(:requires_webhook?).and_return(false)
+
+          expect(chat_integration).to receive(:notify).and_return(true)
+          expect(chat_integration.execute(data)).to be true
+        end
+      end
+    end
+
+    context 'when event is not supported' do
+      it 'returns false' do
+        allow(chat_integration).to receive(:supported_events).and_return(['foo'])
+
+        expect(chat_integration).not_to receive(:notify)
+        expect(chat_integration.execute(data)).to be false
       end
     end
 

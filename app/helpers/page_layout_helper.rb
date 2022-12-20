@@ -80,8 +80,8 @@ module PageLayoutHelper
     tags = []
 
     page_card_attributes.each_with_index do |pair, i|
-      tags << tag(:meta, property: "twitter:label#{i + 1}", content: pair[0])
-      tags << tag(:meta, property: "twitter:data#{i + 1}",  content: pair[1])
+      tags << tag.meta(property: "twitter:label#{i + 1}", content: pair[0])
+      tags << tag.meta(property: "twitter:data#{i + 1}",  content: pair[1])
     end
 
     tags.join.html_safe

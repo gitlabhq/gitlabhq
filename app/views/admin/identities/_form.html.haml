@@ -1,4 +1,4 @@
-= form_for [:admin, @user, @identity], html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for [:admin, @user, @identity], html: { class: 'fieldset-form' } do |f|
   = form_errors(@identity)
 
   .form-group.row
@@ -14,5 +14,5 @@
       = f.text_field :extern_uid, class: 'form-control', required: true
 
   .form-actions
-    = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+    = f.submit _('Save changes'), pajamas_button: true
 

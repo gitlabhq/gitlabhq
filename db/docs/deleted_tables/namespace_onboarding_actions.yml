@@ -1,0 +1,9 @@
+---
+table_name: namespace_onboarding_actions
+gitlab_schema: gitlab_main
+feature_categories: []
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48018
+milestone: '13.7'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53488
+removed_in_milestone: '13.9'

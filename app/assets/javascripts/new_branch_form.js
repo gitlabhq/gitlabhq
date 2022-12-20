@@ -1,15 +1,9 @@
 /* eslint-disable func-names, no-return-assign, @gitlab/require-i18n-strings */
-
-import $ from 'jquery';
-import RefSelectDropdown from './ref_select_dropdown';
-
 export default class NewBranchForm {
-  constructor(form, availableRefs) {
+  constructor(form) {
     this.validate = this.validate.bind(this);
     this.branchNameError = form.querySelector('.js-branch-name-error');
     this.name = form.querySelector('.js-branch-name');
-    this.ref = form.querySelector('#ref');
-    new RefSelectDropdown($('.js-branch-select'), availableRefs); // eslint-disable-line no-new
     this.setupRestrictions();
     this.addBinding();
     this.init();

@@ -16,7 +16,7 @@ module API
 
       def self.from_params(params)
         if params[:key_id]
-          new(key: Key.find_by_id(params[:key_id]))
+          new(key: Key.auth.find_by_id(params[:key_id]))
         elsif params[:user_id]
           new(user: UserFinder.new(params[:user_id]).find_by_id)
         elsif params[:username]

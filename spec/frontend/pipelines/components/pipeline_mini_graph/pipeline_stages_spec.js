@@ -26,26 +26,11 @@ describe('Pipeline Stages', () => {
     expect(findPipelineStages()).toHaveLength(mockStages.length);
   });
 
-  it('renders stages with a custom class', () => {
-    createComponent({ stagesClass: 'my-class' });
-
-    expect(wrapper.findAll('.my-class')).toHaveLength(mockStages.length);
-  });
-
   it('does not fail when stages are empty', () => {
     createComponent({ stages: [] });
 
     expect(wrapper.exists()).toBe(true);
     expect(findPipelineStages()).toHaveLength(0);
-  });
-
-  it('triggers events in "action request complete" in stages', () => {
-    createComponent();
-
-    findPipelineStagesAt(0).vm.$emit('pipelineActionRequestComplete');
-    findPipelineStagesAt(1).vm.$emit('pipelineActionRequestComplete');
-
-    expect(wrapper.emitted('pipelineActionRequestComplete')).toHaveLength(2);
   });
 
   it('update dropdown is false by default', () => {

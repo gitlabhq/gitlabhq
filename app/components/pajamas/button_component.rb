@@ -65,7 +65,7 @@ module Pajamas
       classes.push(VARIANT_CLASSES[@variant])
 
       unless NON_CATEGORY_VARIANTS.include?(@variant) || @category == :primary
-        classes.push(VARIANT_CLASSES[@variant] + '-' + CATEGORY_CLASSES[@category])
+        classes.push("#{VARIANT_CLASSES[@variant]}-#{CATEGORY_CLASSES[@category]}")
       end
 
       classes.push(@button_options[:class])

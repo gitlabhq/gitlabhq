@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ResourceMilestoneEvents do
+RSpec.describe API::ResourceMilestoneEvents, feature_category: :team_planning do
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :public, namespace: user.namespace) }
   let!(:milestone) { create(:milestone, project: project) }

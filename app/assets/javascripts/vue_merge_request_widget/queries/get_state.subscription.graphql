@@ -1,0 +1,7 @@
+subscription getStateSubscription($issuableId: IssuableID!) {
+  mergeRequestMergeStatusUpdated(issuableId: $issuableId) {
+    ... on MergeRequest {
+      detailedMergeStatus
+    }
+  }
+}

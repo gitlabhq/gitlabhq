@@ -84,7 +84,7 @@ them to disable Maintenance Mode after it's been enabled.
 
 All users can sign in and out of the GitLab instance but no new users can be created.
 
-If there are [LDAP syncs](../auth/ldap/index.md) scheduled for that time, they fail since user creation is disabled. Similarly, [user creations based on SAML](../../integration/saml.md#general-setup) fail.
+If there are [LDAP syncs](../auth/ldap/index.md) scheduled for that time, they fail since user creation is disabled. Similarly, [user creations based on SAML](../../integration/saml.md#configure-saml-support-in-gitlab) fail.
 
 ### Git actions
 
@@ -178,7 +178,7 @@ To monitor queues and disable jobs:
 
 ### Incident management
 
-[Incident management](../../operations/incident_management/index.md) functions are limited. The creation of [alerts](../../operations/incident_management/alerts.md) and [incidents](../../operations/incident_management/incidents.md#incident-creation) are paused entirely. Notifications and paging on alerts and incidents are therefore disabled.
+[Incident management](../../operations/incident_management/index.md) functions are limited. The creation of [alerts](../../operations/incident_management/alerts.md) and [incidents](../../operations/incident_management/manage_incidents.md#create-an-incident) are paused entirely. Notifications and paging on alerts and incidents are therefore disabled.
 
 ### Feature flags
 

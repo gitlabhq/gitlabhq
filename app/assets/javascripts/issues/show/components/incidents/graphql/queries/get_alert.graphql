@@ -4,6 +4,7 @@ query getAlert($iid: String!, $fullPath: ID!) {
     issue(iid: $iid) {
       id
       alertManagementAlert {
+        id
         iid
         title
         detailsUrl

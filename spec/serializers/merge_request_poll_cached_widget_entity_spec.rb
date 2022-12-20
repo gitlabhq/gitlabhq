@@ -152,10 +152,10 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
             .to eq(closed_event.author_id)
 
           expect(subject.dig(:metrics, :merged_at).to_s)
-            .to eq(merge_event.updated_at.to_s)
+            .to eq(merge_event.updated_at.iso8601)
 
           expect(subject.dig(:metrics, :closed_at).to_s)
-            .to eq(closed_event.updated_at.to_s)
+            .to eq(closed_event.updated_at.iso8601)
         end
       end
 

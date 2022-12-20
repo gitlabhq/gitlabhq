@@ -12,6 +12,11 @@ class GroupDeployKey < Key
     joins(:group_deploy_keys_groups).where(group_deploy_keys_groups: { group_id: group_ids }).uniq
   end
 
+  # Remove usage_type because it defined in Key class but doesn't have a column in group_deploy_keys table
+  def self.defined_enums
+    super.without('usage_type')
+  end
+
   def type
     'DeployKey'
   end

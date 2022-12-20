@@ -10,7 +10,7 @@ RSpec.shared_examples 'a retryable job' do
   describe '#set_enqueue_immediately!' do
     it 'changes #enqueue_immediately? to true' do
       expect { subject.set_enqueue_immediately! }
-        .to change(subject, :enqueue_immediately?).from(false).to(true)
+        .to change { subject.enqueue_immediately? }.from(false).to(true)
     end
   end
 end

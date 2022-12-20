@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Usage::Metrics::NameSuggestion do
           let(:operation) { :count }
           let(:relation) { Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot) }
           let(:column) { nil }
-          let(:name_suggestion) { /count_<adjective describing\: '\(issues\.author_id != \d+\)'>_issues_<with>_alert_management_alerts/ }
+          let(:name_suggestion) { /count_<adjective describing: '\(issues\.author_id != \d+\)'>_issues_<with>_alert_management_alerts/ }
         end
       end
     end
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Usage::Metrics::NameSuggestion do
         let(:operation) { :distinct_count }
         let(:relation) { ::Clusters::Cluster.aws_installed.enabled.where(created_at: 30.days.ago..2.days.ago ) }
         let(:column) { :user_id }
-        let(:constraints) { /<adjective describing\: '\(clusters.provider_type = \d+ AND \(cluster_providers_aws\.status IN \(\d+\)\) AND clusters\.enabled = TRUE\)'>/ }
+        let(:constraints) { /<adjective describing: '\(clusters.provider_type = \d+ AND \(cluster_providers_aws\.status IN \(\d+\)\) AND clusters\.enabled = TRUE\)'>/ }
         let(:name_suggestion) { /count_distinct_user_id_from_#{constraints}_clusters_<with>_#{constraints}_cluster_providers_aws/ }
       end
     end
@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Usage::Metrics::NameSuggestion do
         let(:operation) { :sum }
         let(:relation) { JiraImportState.finished }
         let(:column) { :imported_issues_count }
-        let(:name_suggestion) { /sum_imported_issues_count_from_<adjective describing\: '\(jira_imports\.status = \d+\)'>_jira_imports/ }
+        let(:name_suggestion) { /sum_imported_issues_count_from_<adjective describing: '\(jira_imports\.status = \d+\)'>_jira_imports/ }
       end
     end
 

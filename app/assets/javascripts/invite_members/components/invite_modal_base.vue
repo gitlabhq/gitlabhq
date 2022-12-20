@@ -1,14 +1,5 @@
 <script>
-import {
-  GlFormGroup,
-  GlModal,
-  GlDropdown,
-  GlDropdownItem,
-  GlDatepicker,
-  GlLink,
-  GlSprintf,
-  GlFormInput,
-} from '@gitlab/ui';
+import { GlFormGroup, GlFormSelect, GlModal, GlDatepicker, GlLink, GlSprintf } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import { sprintf } from '~/locale';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
@@ -37,13 +28,11 @@ const DEFAULT_SLOTS = [
 export default {
   components: {
     GlFormGroup,
+    GlFormSelect,
     GlDatepicker,
     GlLink,
     GlModal,
-    GlDropdown,
-    GlDropdownItem,
     GlSprintf,
-    GlFormInput,
     ContentTransition,
   },
   mixins: [Tracking.mixin()],
@@ -141,14 +130,23 @@ export default {
     };
   },
   computed: {
+    accessLevelsOptions() {
+      return Object.entries(this.accessLevels).map(([text, value]) => ({ text, value }));
+    },
     introText() {
       return sprintf(this.labelIntroText, { name: this.name });
     },
     exceptionState() {
       return this.invalidFeedbackMessage ? false : null;
     },
-    selectLabelId() {
-      return `${this.modalId}_select`;
+    selectId() {
+      return `${this.modalId}_search`;
+    },
+    dropdownId() {
+      return `${this.modalId}_dropdown`;
+    },
+    datepickerId() {
+      return `${this.modalId}_expires_at`;
     },
     selectedRoleName() {
       return Object.keys(this.accessLevels).find(
@@ -218,9 +216,6 @@ export default {
 
       this.$emit('cancel');
     },
-    changeSelectedItem(item) {
-      this.selectedAccessLevel = item;
-    },
     onSubmit(e) {
       // We never want to hide when submitting
       e.preventDefault();
@@ -279,64 +274,50 @@ export default {
         <slot name="alert"></slot>
 
         <gl-form-group
+          :label="labelSearchField"
+          :label-for="selectId"
           :invalid-feedback="invalidFeedbackMessage"
           :state="exceptionState"
           :description="formGroupDescription"
           data-testid="members-form-group"
         >
-          <label :id="selectLabelId" class="col-form-label">{{ labelSearchField }}</label>
-          <slot name="select" v-bind="{ exceptionState, labelId: selectLabelId }"></slot>
+          <slot name="select" v-bind="{ exceptionState, inputId: selectId }"></slot>
         </gl-form-group>
 
-        <label class="gl-font-weight-bold">{{ $options.ACCESS_LEVEL }}</label>
-        <div class="gl-mt-2 gl-w-half gl-xs-w-full">
-          <gl-dropdown
-            class="gl-shadow-none gl-w-full"
+        <gl-form-group
+          class="gl-w-half gl-xs-w-full"
+          :label="$options.ACCESS_LEVEL"
+          :label-for="dropdownId"
+        >
+          <template #description>
+            <gl-sprintf :message="$options.READ_MORE_TEXT">
+              <template #link="{ content }">
+                <gl-link :href="helpLink" target="_blank">{{ content }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </template>
+          <gl-form-select
+            :id="dropdownId"
+            v-model="selectedAccessLevel"
             data-qa-selector="access_level_dropdown"
-            v-bind="$attrs"
-            :text="selectedRoleName"
-          >
-            <template v-for="(key, item) in accessLevels">
-              <gl-dropdown-item
-                :key="key"
-                active-class="is-active"
-                is-check-item
-                :is-checked="key === selectedAccessLevel"
-                @click="changeSelectedItem(key)"
-              >
-                <div>{{ item }}</div>
-              </gl-dropdown-item>
-            </template>
-          </gl-dropdown>
-        </div>
+            :options="accessLevelsOptions"
+          />
+        </gl-form-group>
 
-        <div class="gl-mt-2 gl-w-half gl-xs-w-full">
-          <gl-sprintf :message="$options.READ_MORE_TEXT">
-            <template #link="{ content }">
-              <gl-link :href="helpLink" target="_blank">{{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </div>
-
-        <label class="gl-mt-5 gl-display-block" for="expires_at">{{
-          $options.ACCESS_EXPIRE_DATE
-        }}</label>
-        <div class="gl-mt-2 gl-w-half gl-xs-w-full gl-display-inline-block">
+        <gl-form-group
+          class="gl-w-half gl-xs-w-full"
+          :label="$options.ACCESS_EXPIRE_DATE"
+          :label-for="datepickerId"
+        >
           <gl-datepicker
             v-model="selectedDate"
-            class="gl-display-inline!"
+            :input-id="datepickerId"
+            class="gl-display-block!"
             :min-date="minDate"
             :target="null"
-          >
-            <template #default="{ formattedDate }">
-              <gl-form-input
-                class="gl-w-full"
-                :value="formattedDate"
-                :placeholder="__(`YYYY-MM-DD`)"
-              />
-            </template>
-          </gl-datepicker>
-        </div>
+          />
+        </gl-form-group>
+
         <slot name="form-after"></slot>
       </template>
 

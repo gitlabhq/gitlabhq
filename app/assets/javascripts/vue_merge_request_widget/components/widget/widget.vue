@@ -1,22 +1,18 @@
 <script>
-import {
-  GlButton,
-  GlLink,
-  GlTooltipDirective,
-  GlLoadingIcon,
-  GlSafeHtmlDirective,
-} from '@gitlab/ui';
+import { GlButton, GlLink, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
-import ActionButtons from '../action_buttons.vue';
+import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import { EXTENSION_ICONS } from '../../constants';
 import { createTelemetryHub } from '../extensions/telemetry';
 import ContentRow from './widget_content_row.vue';
 import DynamicContent from './dynamic_content.vue';
 import StatusIcon from './status_icon.vue';
+import ActionButtons from './action_buttons.vue';
 
 const FETCH_TYPE_COLLAPSED = 'collapsed';
 const FETCH_TYPE_EXPANDED = 'expanded';
@@ -31,11 +27,13 @@ export default {
     GlLoadingIcon,
     ContentRow,
     DynamicContent,
+    DynamicScroller,
+    DynamicScrollerItem,
     HelpPopover,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     /**
@@ -258,6 +256,7 @@ export default {
         <div class="gl-display-flex">
           <help-popover
             v-if="helpPopover"
+            icon="information-o"
             :options="helpPopover.options"
             :class="{ 'gl-mr-3': actionButtons.length > 0 }"
           >
@@ -309,7 +308,7 @@ export default {
       <div v-if="isLoadingExpandedContent" class="report-block-container gl-text-center">
         <gl-loading-icon size="sm" inline /> {{ loadingText }}
       </div>
-      <div v-else class="gl-px-5 gl-display-flex">
+      <div v-else class="gl-pl-5 gl-display-flex" :class="{ 'gl-pr-5': $scopedSlots.content }">
         <content-row
           v-if="contentError"
           :level="2"
@@ -322,12 +321,25 @@ export default {
         </content-row>
         <div v-else class="gl-w-full">
           <slot name="content">
-            <dynamic-content
-              v-for="(data, index) in content"
-              :key="data.id || index"
-              :data="data"
-              :widget-name="widgetName"
-            />
+            <dynamic-scroller
+              v-if="content"
+              :items="content"
+              :min-item-size="32"
+              :style="{ maxHeight: '170px' }"
+              data-testid="dynamic-content-scroller"
+              class="gl-pr-5"
+            >
+              <template #default="{ item, index, active }">
+                <dynamic-scroller-item :item="item" :active="active">
+                  <dynamic-content
+                    :key="item.id || index"
+                    :data="item"
+                    :widget-name="widgetName"
+                    :level="2"
+                  />
+                </dynamic-scroller-item>
+              </template>
+            </dynamic-scroller>
           </slot>
         </div>
       </div>

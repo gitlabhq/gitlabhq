@@ -17,7 +17,7 @@ A hand-raise PQL is a user who requests to speak to sales from within the produc
 
 1. Set up CustomersDot using the [normal install instructions](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/staging/doc/setup/installation_steps.md).
 1. Set the `CUSTOMER_PORTAL_URL` environment variable to your local (or ngrok) URL of your CustomersDot instance.
-1. Place `export CUSTOMER_PORTAL_URL='https://XXX.ngrok.io/'` in your shell rc script (`~/.zshrc` or `~/.bash_profile` or `~/.bashrc`) and restart GDK.
+1. Place `export CUSTOMER_PORTAL_URL='https://XXX.ngrok.io/'` in your shell `rc` script (`~/.zshrc` or `~/.bash_profile` or `~/.bashrc`) and restart GDK.
 1. Enter the credentials on CustomersDot development to Platypus in your `/config/secrets.yml` and restart. Credentials for the Platypus Staging are in the 1Password Growth vault. The URL for staging is `https://staging.ci.nexus.gitlabenvironment.cloud`.
 
 ```yaml
@@ -95,16 +95,16 @@ The `ctaTracking` parameters follow [the `data-track` attributes](../snowplow/im
 
 When embedding a new hand raise form, use a unique `glmContent` or `glm_content` field that is different to any existing values.
 
-We currently use the following `glm content` values:
+We currently use the following `glm_content` values:
 
-| glm_content value | Notes |
-| ------ | ------ |
-| discover-group-security | This value is used in the group security feature discovery page. |
-| discover-group-security-pqltest | This value is used in the group security feature discovery page [experiment with 3 CTAs](https://gitlab.com/gitlab-org/gitlab/-/issues/349799). |
-| discover-project-security | This value is used in the project security feature discovery page. |
-| discover-project-security-pqltest | This value is used in the project security feature discovery page [experiment with 3 CTAs](https://gitlab.com/gitlab-org/gitlab/-/issues/349799). |
-| group-billing | This value is used in the group billing page. |
-| trial-status-show-group | This value is used in the top left nav when a namespace has an active trial. |
+| `glm_content` value                 | Notes |
+|-------------------------------------|-------|
+| `discover-group-security`           | This value is used in the group security feature discovery page. |
+| `discover-group-security-pqltest`   | This value is used in the group security feature discovery page [experiment with 3 CTAs](https://gitlab.com/gitlab-org/gitlab/-/issues/349799). |
+| `discover-project-security`         | This value is used in the project security feature discovery page. |
+| `discover-project-security-pqltest` | This value is used in the project security feature discovery page [experiment with 3 CTAs](https://gitlab.com/gitlab-org/gitlab/-/issues/349799). |
+| `group-billing`                     | This value is used in the group billing page. |
+| `trial-status-show-group`           | This value is used in the top left nav when a namespace has an active trial. |
 
 ### Test the component
 
@@ -144,7 +144,7 @@ sequenceDiagram
 
 ```
 
-#### Trial lead flow on CustomersDot (sync_to_gl)
+#### Trial lead flow on CustomersDot (`sync_to_gl`)
 
 ```mermaid
 sequenceDiagram

@@ -1,0 +1,8 @@
+---
+name: pipeline_name_search
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107086
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385864
+milestone: '15.7'
+type: development
+group: group::delivery
+default_enabled: false

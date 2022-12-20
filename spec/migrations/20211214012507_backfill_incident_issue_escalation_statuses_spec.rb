@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillIncidentIssueEscalationStatuses do
+RSpec.describe BackfillIncidentIssueEscalationStatuses, feature_category: :incident_management do
   let(:namespaces)  { table(:namespaces) }
   let(:projects)    { table(:projects) }
   let(:issues)      { table(:issues) }

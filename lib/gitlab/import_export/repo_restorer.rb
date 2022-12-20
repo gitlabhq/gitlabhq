@@ -46,6 +46,11 @@ module Gitlab
           )
 
           Repositories::DestroyService.new(repository).execute
+
+          # Because Gitlab::Git::Repository#remove happens inside a run_after_commit
+          # callback in the Repositories::DestroyService#execute we need to trigger
+          # the callback.
+          repository.project.touch
         end
       end
     end

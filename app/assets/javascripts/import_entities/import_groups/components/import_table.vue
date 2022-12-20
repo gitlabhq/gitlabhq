@@ -21,12 +21,13 @@ import { getGroupPathAvailability } from '~/rest_api';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import { STATUSES } from '../../constants';
 import ImportStatusCell from '../../components/import_status.vue';
 import importGroupsMutation from '../graphql/mutations/import_groups.mutation.graphql';
 import updateImportStatusMutation from '../graphql/mutations/update_import_status.mutation.graphql';
-import availableNamespacesQuery from '../graphql/queries/available_namespaces.query.graphql';
 import bulkImportSourceGroupsQuery from '../graphql/queries/bulk_import_source_groups.query.graphql';
 import { NEW_NAME_FIELD, ROOT_NAMESPACE, i18n } from '../constants';
 import { StatusPoller } from '../services/status_poller';
@@ -107,7 +108,12 @@ export default {
         return { page: this.page, filter: this.filter, perPage: this.perPage };
       },
     },
-    availableNamespaces: availableNamespacesQuery,
+    availableNamespaces: {
+      query: searchNamespacesWhereUserCanCreateProjectsQuery,
+      update(data) {
+        return data.currentUser.groups.nodes;
+      },
+    },
   },
 
   fields: [
@@ -158,7 +164,7 @@ export default {
       }
 
       return this.groups.map((group) => {
-        const importTarget = this.getImportTarget(group);
+        const importTarget = this.importTargets[group.id];
         const status = this.getStatus(group);
 
         const flags = {
@@ -250,10 +256,14 @@ export default {
       this.page = 1;
     },
 
-    groupsTableData() {
+    groups() {
       const table = this.getTableRef();
       const matches = new Set();
-      this.groupsTableData.forEach((g, idx) => {
+      this.groups.forEach((g, idx) => {
+        if (!this.importGroups[g.id]) {
+          this.setDefaultImportTarget(g);
+        }
+
         if (this.selectedGroupsIds.includes(g.id)) {
           matches.add(g.id);
           this.$nextTick(() => {
@@ -421,7 +431,7 @@ export default {
             data: { exists },
           } = await getGroupPathAvailability(
             importTarget.newName,
-            importTarget.targetNamespace.id,
+            getIdFromGraphQLId(importTarget.targetNamespace.id),
             {
               cancelToken: importTarget.cancellationToken?.token,
             },
@@ -444,11 +454,7 @@ export default {
       importTarget.validationErrors = newValidationErrors;
     }, VALIDATION_DEBOUNCE_TIME),
 
-    getImportTarget(group) {
-      if (this.importTargets[group.id]) {
-        return this.importTargets[group.id];
-      }
-
+    setDefaultImportTarget(group) {
       // If we've reached this Vue application we have at least one potential import destination
       const defaultTargetNamespace =
         // first option: namespace id was explicitly provided
@@ -482,9 +488,13 @@ export default {
         validationErrors: [],
       });
 
-      getGroupPathAvailability(importTarget.newName, importTarget.targetNamespace.id, {
-        cancelToken: cancellationToken.token,
-      })
+      getGroupPathAvailability(
+        importTarget.newName,
+        getIdFromGraphQLId(importTarget.targetNamespace.id),
+        {
+          cancelToken: cancellationToken.token,
+        },
+      )
         .then(({ data: { exists, suggests: suggestions } }) => {
           if (!exists) return;
 
@@ -505,7 +515,6 @@ export default {
         .catch(() => {
           // empty catch intended
         });
-      return this.importTargets[group.id];
     },
   },
 
@@ -692,7 +701,6 @@ export default {
           <template #cell(importTarget)="{ item: group }">
             <import-target-cell
               :group="group"
-              :available-namespaces="availableNamespaces"
               :group-path-regex="groupPathRegex"
               @update-target-namespace="updateImportTarget(group, { targetNamespace: $event })"
               @update-new-name="updateImportTarget(group, { newName: $event })"

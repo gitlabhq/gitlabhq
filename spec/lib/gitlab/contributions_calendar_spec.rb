@@ -2,24 +2,24 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ContributionsCalendar do
-  let(:contributor) { create(:user) }
-  let(:user) { create(:user) }
+RSpec.describe Gitlab::ContributionsCalendar, feature_category: :users do
+  let_it_be_with_reload(:contributor) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let(:travel_time) { nil }
 
-  let(:private_project) do
+  let_it_be_with_reload(:private_project) do
     create(:project, :private) do |project|
       create(:project_member, user: contributor, project: project)
     end
   end
 
-  let(:public_project) do
+  let_it_be(:public_project) do
     create(:project, :public, :repository) do |project|
       create(:project_member, user: contributor, project: project)
     end
   end
 
-  let(:feature_project) do
+  let_it_be(:feature_project) do
     create(:project, :public, :issues_private) do |project|
       create(:project_member, user: contributor, project: project).project
     end
@@ -30,6 +30,7 @@ RSpec.describe Gitlab::ContributionsCalendar do
   let(:tomorrow)  { today + 1.day }
   let(:last_week) { today - 7.days }
   let(:last_year) { today - 1.year }
+  let(:targets) { {} }
 
   before do
     travel_to travel_time || Time.now.utc.end_of_day
@@ -44,26 +45,28 @@ RSpec.describe Gitlab::ContributionsCalendar do
   end
 
   def create_event(project, day, hour = 0, action = :created, target_symbol = :issue)
-    @targets ||= {}
-    @targets[project] ||= create(target_symbol, project: project, author: contributor)
+    targets[project] ||= create(target_symbol, project: project, author: contributor)
 
     Event.create!(
       project: project,
       action: action,
-      target_type: @targets[project].class.name,
-      target_id: @targets[project].id,
+      target_type: targets[project].class.name,
+      target_id: targets[project].id,
       author: contributor,
       created_at: DateTime.new(day.year, day.month, day.day, hour)
     )
   end
 
-  describe '#activity_dates' do
+  describe '#activity_dates', :aggregate_failures do
     it "returns a hash of date => count" do
       create_event(public_project, last_week)
       create_event(public_project, last_week)
       create_event(public_project, today)
+      work_item_event = create_event(private_project, today, 0, :created, :work_item)
 
-      expect(calendar.activity_dates).to eq(last_week => 2, today => 1)
+      # make sure the target is a work item as we want to include those in the count
+      expect(work_item_event.target_type).to eq('WorkItem')
+      expect(calendar(contributor).activity_dates).to eq(last_week => 2, today => 2)
     end
 
     context "when the user has opted-in for private contributions" do
@@ -176,9 +179,11 @@ RSpec.describe Gitlab::ContributionsCalendar do
     it "returns all events for a given date" do
       e1 = create_event(public_project, today)
       e2 = create_event(public_project, today)
+      e3 = create_event(private_project, today, 0, :created, :work_item)
       create_event(public_project, last_week)
 
-      expect(calendar.events_by_date(today)).to contain_exactly(e1, e2)
+      expect([e1, e2, e3].map(&:target_type)).to contain_exactly('WorkItem', 'Issue', 'Issue')
+      expect(calendar(contributor).events_by_date(today)).to contain_exactly(e1, e2, e3)
     end
 
     it "only shows private events to authorized users" do

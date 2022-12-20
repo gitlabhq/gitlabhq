@@ -398,8 +398,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
     end
 
     def cleanup_service_response(
-      status: :finished,
-      repository:,
+      repository:, status: :finished,
       cleanup_tags_service_original_size: 100,
       cleanup_tags_service_before_truncate_size: 80,
       cleanup_tags_service_after_truncate_size: 80,

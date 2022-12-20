@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { getAllByRole, getByTestId } from '@testing-library/dom';
-import { GlListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { createWrapper } from '@vue/test-utils';
 import { initListbox, parseAttributes } from '~/listbox';
 import { getFixture, setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
@@ -41,7 +41,7 @@ describe('initListbox', () => {
   describe('given a valid element', () => {
     let onChangeSpy;
 
-    const listbox = () => createWrapper(instance).findComponent(GlListbox);
+    const listbox = () => createWrapper(instance).findComponent(GlCollapsibleListbox);
     const findToggleButton = () => getByTestId(document.body, 'base-dropdown-toggle');
     const findSelectedItems = () => getAllByRole(document.body, 'option', { selected: true });
 

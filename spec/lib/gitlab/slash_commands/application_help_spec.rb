@@ -4,13 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SlashCommands::ApplicationHelp do
   let(:params) { { command: '/gitlab', text: 'help' } }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:chat_user) { create(:chat_name, user: user) }
   let(:project) { build(:project) }
 
   describe '#execute' do
     subject do
-      described_class.new(project, chat_user, params).execute
+      described_class.new(project, params).execute
     end
 
     it 'displays the help section' do

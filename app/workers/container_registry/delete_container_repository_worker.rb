@@ -17,6 +17,7 @@ module ContainerRegistry
     MAX_CAPACITY = 2
     CLEANUP_TAGS_SERVICE_PARAMS = {
       'name_regex_delete' => '.*',
+      'keep_latest' => false,
       'container_expiration_policy' => true # to avoid permissions checks
     }.freeze
 

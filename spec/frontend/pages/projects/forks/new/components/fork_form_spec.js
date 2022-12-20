@@ -1,5 +1,5 @@
 import { GlFormInputGroup, GlFormInput, GlForm, GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
-import { getByRole, getAllByRole } from '@testing-library/dom';
+import { getByRole } from '@testing-library/dom';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -133,10 +133,15 @@ describe('ForkForm component', () => {
     expect(cancelButton.attributes('href')).toBe(projectFullPath);
   });
 
-  const selectedMockNamespace = { name: 'two', full_name: 'two-group/two', id: 2 };
+  const selectedMockNamespace = {
+    name: 'two',
+    full_name: 'two-group/two',
+    id: 2,
+    visibility: 'public',
+  };
 
-  const fillForm = () => {
-    findForkUrlInput().vm.$emit('select', selectedMockNamespace);
+  const fillForm = (namespace = selectedMockNamespace) => {
+    findForkUrlInput().vm.$emit('select', namespace);
   };
 
   it('has input with csrf token', () => {
@@ -226,66 +231,139 @@ describe('ForkForm component', () => {
         },
       ];
 
-      it('resets the visibility to default "private"', async () => {
+      it('resets the visibility to max allowed below current level', async () => {
         createFullComponent({ projectVisibility: 'public' }, { namespaces });
 
         expect(wrapper.vm.form.fields.visibility.value).toBe('public');
 
-        fillForm();
+        fillForm({
+          name: 'one',
+          id: 1,
+          visibility: 'internal',
+        });
+        await nextTick();
+
+        expect(getByRole(wrapper.element, 'radio', { name: /internal/i }).checked).toBe(true);
+      });
+
+      it('does not reset the visibility when current level is allowed', async () => {
+        createFullComponent({ projectVisibility: 'public' }, { namespaces });
+
+        expect(wrapper.vm.form.fields.visibility.value).toBe('public');
+
+        fillForm({
+          name: 'two',
+          id: 2,
+          visibility: 'public',
+        });
+        await nextTick();
+
+        expect(getByRole(wrapper.element, 'radio', { name: /public/i }).checked).toBe(true);
+      });
+
+      it('does not reset the visibility when visibility cap is increased', async () => {
+        createFullComponent({ projectVisibility: 'public' }, { namespaces });
+
+        expect(wrapper.vm.form.fields.visibility.value).toBe('public');
+
+        fillForm({
+          name: 'three',
+          id: 3,
+          visibility: 'internal',
+        });
+        await nextTick();
+
+        fillForm({
+          name: 'four',
+          id: 4,
+          visibility: 'public',
+        });
+        await nextTick();
+
+        expect(getByRole(wrapper.element, 'radio', { name: /internal/i }).checked).toBe(true);
+      });
+
+      it('sets the visibility to be next highest from current when restrictedVisibilityLevels is set', async () => {
+        createFullComponent(
+          { projectVisibility: 'public', restrictedVisibilityLevels: [10] },
+          { namespaces },
+        );
+
+        wrapper.vm.form.fields.visibility.value = 'internal';
+        fillForm({
+          name: 'five',
+          id: 5,
+          visibility: 'public',
+        });
         await nextTick();
 
         expect(getByRole(wrapper.element, 'radio', { name: /private/i }).checked).toBe(true);
       });
 
-      it('sets the visibility to be null when restrictedVisibilityLevels is set', async () => {
-        createFullComponent({ restrictedVisibilityLevels: [10] }, { namespaces });
+      it('sets the visibility to be next lowest from current when nothing lower is allowed', async () => {
+        createFullComponent(
+          { projectVisibility: 'public', restrictedVisibilityLevels: [0] },
+          { namespaces },
+        );
 
-        fillForm();
+        fillForm({
+          name: 'six',
+          id: 6,
+          visibility: 'private',
+        });
         await nextTick();
 
-        const container = getByRole(wrapper.element, 'radiogroup', { name: /visibility/i });
-        const visibilityRadios = getAllByRole(container, 'radio');
-        expect(visibilityRadios.filter((e) => e.checked)).toHaveLength(0);
+        expect(getByRole(wrapper.element, 'radio', { name: /private/i }).checked).toBe(true);
+
+        fillForm({
+          name: 'six',
+          id: 6,
+          visibility: 'public',
+        });
+        await nextTick();
+
+        expect(getByRole(wrapper.element, 'radio', { name: /internal/i }).checked).toBe(true);
       });
     });
 
     it.each`
-      project       | restrictedVisibilityLevels
-      ${'private'}  | ${[]}
-      ${'internal'} | ${[]}
-      ${'public'}   | ${[]}
-      ${'private'}  | ${[0]}
-      ${'private'}  | ${[10]}
-      ${'private'}  | ${[20]}
-      ${'private'}  | ${[0, 10]}
-      ${'private'}  | ${[0, 20]}
-      ${'private'}  | ${[10, 20]}
-      ${'private'}  | ${[0, 10, 20]}
-      ${'internal'} | ${[0]}
-      ${'internal'} | ${[10]}
-      ${'internal'} | ${[20]}
-      ${'internal'} | ${[0, 10]}
-      ${'internal'} | ${[0, 20]}
-      ${'internal'} | ${[10, 20]}
-      ${'internal'} | ${[0, 10, 20]}
-      ${'public'}   | ${[0]}
-      ${'public'}   | ${[10]}
-      ${'public'}   | ${[0, 10]}
-      ${'public'}   | ${[0, 20]}
-      ${'public'}   | ${[10, 20]}
-      ${'public'}   | ${[0, 10, 20]}
-    `('checks the correct radio button', ({ project, restrictedVisibilityLevels }) => {
-      createFullComponent({
-        projectVisibility: project,
-        restrictedVisibilityLevels,
-      });
+      project       | restrictedVisibilityLevels | computedVisibilityLevel
+      ${'private'}  | ${[]}                      | ${'private'}
+      ${'internal'} | ${[]}                      | ${'internal'}
+      ${'public'}   | ${[]}                      | ${'public'}
+      ${'private'}  | ${[0]}                     | ${'private'}
+      ${'private'}  | ${[10]}                    | ${'private'}
+      ${'private'}  | ${[20]}                    | ${'private'}
+      ${'private'}  | ${[0, 10]}                 | ${'private'}
+      ${'private'}  | ${[0, 20]}                 | ${'private'}
+      ${'private'}  | ${[10, 20]}                | ${'private'}
+      ${'private'}  | ${[0, 10, 20]}             | ${'private'}
+      ${'internal'} | ${[0]}                     | ${'internal'}
+      ${'internal'} | ${[10]}                    | ${'private'}
+      ${'internal'} | ${[20]}                    | ${'internal'}
+      ${'internal'} | ${[0, 10]}                 | ${'private'}
+      ${'internal'} | ${[0, 20]}                 | ${'internal'}
+      ${'internal'} | ${[10, 20]}                | ${'private'}
+      ${'internal'} | ${[0, 10, 20]}             | ${'private'}
+      ${'public'}   | ${[0]}                     | ${'public'}
+      ${'public'}   | ${[10]}                    | ${'public'}
+      ${'public'}   | ${[0, 10]}                 | ${'public'}
+      ${'public'}   | ${[0, 20]}                 | ${'internal'}
+      ${'public'}   | ${[10, 20]}                | ${'private'}
+      ${'public'}   | ${[0, 10, 20]}             | ${'private'}
+    `(
+      'checks the correct radio button',
+      ({ project, restrictedVisibilityLevels, computedVisibilityLevel }) => {
+        createFullComponent({
+          projectVisibility: project,
+          restrictedVisibilityLevels,
+        });
 
-      if (restrictedVisibilityLevels.length === 0) {
-        expect(wrapper.find('[name="visibility"]:checked').attributes('value')).toBe(project);
-      } else {
-        expect(wrapper.find('[name="visibility"]:checked').exists()).toBe(false);
-      }
-    });
+        expect(wrapper.find('[name="visibility"]:checked').attributes('value')).toBe(
+          computedVisibilityLevel,
+        );
+      },
+    );
 
     it.each`
       project       | namespace     | privateIsDisabled | internalIsDisabled | publicIsDisabled | restrictedVisibilityLevels

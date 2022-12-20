@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects::MetricsDashboardController' do
+RSpec.describe 'Projects::MetricsDashboardController', feature_category: :metrics do
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:environment2) { create(:environment, project: project) }

@@ -12,7 +12,7 @@
               - if verification_enabled
                 - tooltip, status = domain.unverified? ? [s_('GitLabPages|Unverified'), 'failed'] : [s_('GitLabPages|Verified'), 'success']
                 .domain-status.ci-status-icon.has-tooltip{ class: "gl-mr-5 ci-status-icon-#{status}", title: tooltip }
-                  = sprite_icon("status_#{status}" )
+                  = sprite_icon("status_#{status}")
               .domain-name
                 = external_link(domain.url, domain.url)
                 - if domain.certificate

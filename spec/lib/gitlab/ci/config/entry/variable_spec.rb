@@ -306,48 +306,48 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
         end
       end
     end
-  end
 
-  describe 'ComplexArrayVariable' do
-    context 'when allow_array_value metadata is false' do
-      let(:config) { { value: %w[value value2], description: 'description' } }
-      let(:metadata) { { allow_array_value: false } }
+    context 'when config is a hash with options' do
+      context 'when there is no metadata' do
+        let(:config) { { value: 'value', options: %w[value value2] } }
+        let(:metadata) { {} }
 
-      describe '#valid?' do
-        it { is_expected.not_to be_valid }
+        describe '#valid?' do
+          it { is_expected.not_to be_valid }
+        end
+
+        describe '#errors' do
+          subject(:errors) { entry.errors }
+
+          it { is_expected.to include 'var1 config must be a string' }
+        end
       end
 
-      describe '#errors' do
-        subject(:errors) { entry.errors }
+      context 'when options are allowed' do
+        let(:config) { { value: 'value', options: %w[value value2] } }
+        let(:metadata) { { allowed_value_data: %i[value options] } }
 
-        it { is_expected.to include 'var1 config value must be an alphanumeric string' }
-      end
-    end
+        describe '#valid?' do
+          it { is_expected.to be_valid }
+        end
 
-    context 'when allow_array_value metadata is true' do
-      let(:config) { { value: %w[value value2], description: 'description' } }
-      let(:metadata) { { allowed_value_data: %i[value description], allow_array_value: true } }
+        describe '#value' do
+          subject(:value) { entry.value }
 
-      describe '#valid?' do
-        it { is_expected.to be_valid }
-      end
+          it { is_expected.to eq('value') }
+        end
 
-      describe '#value' do
-        subject(:value) { entry.value }
+        describe '#value_with_data' do
+          subject(:value_with_data) { entry.value_with_data }
 
-        it { is_expected.to eq('value') }
-      end
+          it { is_expected.to eq(value: 'value') }
+        end
 
-      describe '#value_with_data' do
-        subject(:value_with_data) { entry.value_with_data }
+        describe '#value_with_prefill_data' do
+          subject(:value_with_prefill_data) { entry.value_with_prefill_data }
 
-        it { is_expected.to eq(value: 'value') }
-      end
-
-      describe '#value_with_prefill_data' do
-        subject(:value_with_prefill_data) { entry.value_with_prefill_data }
-
-        it { is_expected.to eq(value: 'value', description: 'description', value_options: %w[value value2]) }
+          it { is_expected.to eq(value: 'value', options: %w[value value2]) }
+        end
       end
     end
   end

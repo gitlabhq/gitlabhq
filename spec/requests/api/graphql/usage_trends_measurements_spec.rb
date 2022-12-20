@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'UsageTrendsMeasurements' do
+RSpec.describe 'UsageTrendsMeasurements', feature_category: :devops_reports do
   include GraphqlHelpers
 
   let(:current_user) { create(:user, :admin) }

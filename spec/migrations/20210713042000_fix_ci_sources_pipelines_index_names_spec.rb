@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe FixCiSourcesPipelinesIndexNames, :migration do
+RSpec.describe FixCiSourcesPipelinesIndexNames, :migration, feature_category: :continuous_integration do
   def validate_foreign_keys_and_index!
     aggregate_failures do
       expect(subject.foreign_key_exists?(:ci_sources_pipelines, :ci_builds, column: :source_job_id, name: 'fk_be5624bf37')).to be_truthy

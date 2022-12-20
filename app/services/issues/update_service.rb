@@ -146,7 +146,7 @@ module Issues
         # don't enqueue immediately to prevent todos removal in case of a mistake
         TodosDestroyer::ConfidentialIssueWorker.perform_in(Todo::WAIT_FOR_DELETE, issue.id) if issue.confidential?
         create_confidentiality_note(issue)
-        track_usage_event(:incident_management_incident_change_confidential, current_user.id)
+        track_incident_action(current_user, issue, :incident_change_confidential)
       end
     end
 

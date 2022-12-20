@@ -1,5 +1,4 @@
 import { GlKeysetPagination } from '@gitlab/ui';
-import { stripTypenames } from 'helpers/graphql_helpers';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ManifestRow from '~/packages_and_registries/dependency_proxy/components/manifest_row.vue';
 
@@ -14,7 +13,7 @@ describe('Manifests List', () => {
 
   const defaultProps = {
     manifests: proxyManifests(),
-    pagination: stripTypenames(pagination()),
+    pagination: pagination(),
   };
 
   const createComponent = (propsData = defaultProps) => {
@@ -60,9 +59,8 @@ describe('Manifests List', () => {
     it('has the correct props', () => {
       createComponent();
 
-      expect(findPagination().props()).toMatchObject({
-        ...defaultProps.pagination,
-      });
+      const { __typename, ...paginationProps } = defaultProps.pagination;
+      expect(findPagination().props()).toMatchObject(paginationProps);
     });
 
     it('emits the next-page event', () => {

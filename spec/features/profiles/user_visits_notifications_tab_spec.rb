@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User visits the notifications tab', :js do
+RSpec.describe 'User visits the notifications tab', :js, feature_category: :users do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

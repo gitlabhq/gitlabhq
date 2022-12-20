@@ -1,0 +1,31 @@
+{
+  "kind": "LimitRangeList",
+  "apiVersion": "v1",
+  "metadata": {
+    "selfLink": "/api/v1/namespaces/quota-example/limitranges/",
+    "resourceVersion": "103421"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "limits",
+        "namespace": "quota-example",
+        "selfLink": "/api/v1/namespaces/quota-example/limitranges/limits",
+        "uid": "7a76a44c-3e9d-11e5-8214-0aaeec44370e",
+        "resourceVersion": "103384",
+        "creationTimestamp": "2015-08-09T13:49:39Z"
+      },
+      "spec": {
+        "limits": [
+          {
+            "type": "Container",
+            "default": {
+              "cpu": "100m",
+              "memory": "512Mi"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

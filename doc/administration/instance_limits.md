@@ -378,7 +378,7 @@ and to limit memory consumption.
 
 When using offset-based pagination in the REST API, there is a limit to the maximum
 requested offset into the set of results. This limit is only applied to endpoints that
-support keyset-based pagination. More information about pagination options can be
+also support keyset-based pagination. More information about pagination options can be
 found in the [API documentation section on pagination](../api/index.md#pagination).
 
 To set this limit for a self-managed installation, run the following in the
@@ -581,7 +581,8 @@ limit value. For example, for a maximum frequency of:
 - Once per 10 minutes, the limit must be `144`.
 - Once per 60 minutes, the limit must be `24`
 
-There is no limit for self-managed instances by default.
+The minimum value is `24`, or one pipeline per 60 minutes.
+There is no maximum value.
 
 To set this limit to `1440` on a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -672,6 +673,7 @@ setting is used:
 | `ci_max_artifact_size_network_referee`            | 0             |
 | `ci_max_artifact_size_performance`                | 0             |
 | `ci_max_artifact_size_requirements`               | 0             |
+| `ci_max_artifact_size_requirements_v2`            | 0             |
 | `ci_max_artifact_size_sast`                       | 0             |
 | `ci_max_artifact_size_secret_detection`           | 0             |
 | `ci_max_artifact_size_terraform`                  | 5 MB ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37018) in GitLab 13.3) |
@@ -818,9 +820,9 @@ This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
 You can set a limit on the maximum size of a dotenv artifact. This limit is checked
 every time a dotenv file is exported as an artifact.
 
-Set the limit to `0` to disable it. Defaults to 5KB.
+Set the limit to `0` to disable it. Defaults to 5 KB.
 
-To set this limit to 5KB on a self-managed installation, run the following in the
+To set this limit to 5 KB on a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby

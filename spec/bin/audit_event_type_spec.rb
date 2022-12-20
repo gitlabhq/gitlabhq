@@ -9,7 +9,7 @@ RSpec.describe 'bin/audit-event-type' do
   using RSpec::Parameterized::TableSyntax
 
   describe AuditEventTypeCreator do
-    let(:argv) { %w[test_audit_event -d test -g govern::compliance -s -t -i https://url -m http://url] }
+    let(:argv) { %w[test_audit_event -d test -c compliance_management -s -t -i https://url -m http://url] }
     let(:options) { AuditEventTypeOptionParser.parse(argv) }
     let(:creator) { described_class.new(options) }
     let(:existing_audit_event_types) do
@@ -71,8 +71,8 @@ RSpec.describe 'bin/audit-event-type' do
         :force               | %w[foo --force]                           | true
         :description         | %w[foo -d desc]                           | 'desc'
         :description         | %w[foo --description desc]                | 'desc'
-        :group               | %w[foo -g govern::compliance]             | 'govern::compliance'
-        :group               | %w[foo --group govern::compliance]        | 'govern::compliance'
+        :feature_category    | %w[foo -c audit_events]                   | 'audit_events'
+        :feature_category    | %w[foo --feature-category audit_events]   | 'audit_events'
         :milestone           | %w[foo -M 15.6]                           | '15.6'
         :milestone           | %w[foo --milestone 15.6]                  | '15.6'
         :saved_to_database   | %w[foo -s]                                | true
@@ -141,27 +141,27 @@ RSpec.describe 'bin/audit-event-type' do
       end
     end
 
-    describe '.read_group' do
-      let(:group) { 'govern::compliance' }
+    describe '.read_feature_category' do
+      let(:feature_category) { 'compliance_management' }
 
-      it 'reads group from stdin' do
-        expect(Readline).to receive(:readline).and_return(group)
+      it 'reads feature_category from stdin' do
+        expect(Readline).to receive(:readline).and_return(feature_category)
         expect do
-          expect(described_class.read_group).to eq('govern::compliance')
-        end.to output(/Specify the group introducing the audit event type, like `govern::compliance`:/).to_stdout
+          expect(described_class.read_feature_category).to eq('compliance_management')
+        end.to output(/Specify the feature category of this audit event, like `compliance_management`:/).to_stdout
       end
 
-      context 'when group is empty' do
-        let(:group) { '' }
+      context 'when feature category is empty' do
+        let(:feature_category) { '' }
 
         it 'shows error message and retries' do
-          expect(Readline).to receive(:readline).and_return(group)
+          expect(Readline).to receive(:readline).and_return(feature_category)
           expect(Readline).to receive(:readline).and_raise('EOF')
 
           expect do
-            expect { described_class.read_group }.to raise_error(/EOF/)
-          end.to output(/Specify the group introducing the audit event type, like `govern::compliance`:/)
-                   .to_stdout.and output(/group is a required field/).to_stderr
+            expect { described_class.read_feature_category }.to raise_error(/EOF/)
+          end.to output(/Specify the feature category of this audit event, like `compliance_management`:/)
+                   .to_stdout.and output(/feature_category is a required field/).to_stderr
         end
       end
     end
@@ -281,11 +281,11 @@ RSpec.describe 'bin/audit-event-type' do
 
     describe '.read_milestone' do
       before do
-        allow(File).to receive(:read).with('VERSION').and_return('15.6.0-pre')
         allow(File).to receive(:read).and_call_original
       end
 
       it 'returns the correct milestone from the VERSION file' do
+        expect(File).to receive(:read).with('VERSION').and_return('15.6.0-pre')
         expect(described_class.read_milestone).to eq('15.6')
       end
     end

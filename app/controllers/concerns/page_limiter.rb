@@ -44,10 +44,11 @@ module PageLimiter
     raise PageLimitNotANumberError unless max_page_number.is_a?(Integer)
     raise PageLimitNotSensibleError unless max_page_number > 0
 
-    if params[:page].present? && params[:page].to_i > max_page_number
-      record_page_limit_interception
-      raise PageOutOfBoundsError, max_page_number
-    end
+    return if params[:page].blank?
+    return if params[:page].to_i <= max_page_number
+
+    record_page_limit_interception
+    raise PageOutOfBoundsError, max_page_number
   end
 
   # By default just return a HTTP status code and an empty response

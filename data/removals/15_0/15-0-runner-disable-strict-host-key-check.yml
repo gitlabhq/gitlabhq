@@ -1,4 +1,4 @@
-- name: "Known host required for GitLab Runner SSH executor"
+- title: "Known host required for GitLab Runner SSH executor"
   announcement_milestone: "14.5"  # The milestone when this feature was first announced as deprecated.
   removal_milestone: "15.0"  # the milestone when this feature is planned to be removed
   removal_date: "2022-05-22"

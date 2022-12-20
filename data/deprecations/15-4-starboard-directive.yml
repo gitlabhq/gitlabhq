@@ -1,4 +1,4 @@
-- name: "Starboard directive in the config for the GitLab Agent for Kubernetes"
+- title: "Starboard directive in the config for the GitLab Agent for Kubernetes"
   announcement_milestone: "15.4"
   announcement_date: "2022-09-22"
   removal_milestone: "16.0"

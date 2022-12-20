@@ -52,7 +52,7 @@ import { isCollapsed } from '../utils/diff_file';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
 import { getDerivedMergeRequestInformation } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
-import TreeWorker from '../workers/tree_worker';
+import TreeWorker from '../workers/tree_worker?worker';
 import * as types from './mutation_types';
 import {
   getDiffPositionByLineCode,
@@ -444,20 +444,27 @@ export const scrollToLineIfNeededParallel = (_, line) => {
   }
 };
 
-export const loadCollapsedDiff = ({ commit, getters, state }, file) =>
-  axios
-    .get(file.load_collapsed_diff_url, {
-      params: {
-        commit_id: getters.commitId,
-        w: state.showWhitespace ? '0' : '1',
-      },
-    })
-    .then((res) => {
-      commit(types.ADD_COLLAPSED_DIFFS, {
-        file,
-        data: res.data,
-      });
+export const loadCollapsedDiff = ({ commit, getters, state }, file) => {
+  const versionPath = state.mergeRequestDiff?.version_path;
+  const loadParams = {
+    commit_id: getters.commitId,
+    w: state.showWhitespace ? '0' : '1',
+  };
+
+  if (versionPath) {
+    const { diffId, startSha } = getDerivedMergeRequestInformation({ endpoint: versionPath });
+
+    loadParams.diff_id = diffId;
+    loadParams.start_sha = startSha;
+  }
+
+  return axios.get(file.load_collapsed_diff_url, { params: loadParams }).then((res) => {
+    commit(types.ADD_COLLAPSED_DIFFS, {
+      file,
+      data: res.data,
     });
+  });
+};
 
 /**
  * Toggles the file discussions after user clicked on the toggle discussions button.

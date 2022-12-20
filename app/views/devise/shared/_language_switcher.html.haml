@@ -1,0 +1,3 @@
+- return unless ::Feature.enabled?(:preferred_language_switcher)
+
+.js-language-switcher{ data: { locales: ordered_selectable_locales.to_json } }

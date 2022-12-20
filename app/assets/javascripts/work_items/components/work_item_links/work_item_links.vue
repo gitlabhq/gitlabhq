@@ -9,13 +9,15 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { produce } from 'immer';
+import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
-import { isMetaKey } from '~/lib/utils/common_utils';
-import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import { isMetaKey, parseBoolean } from '~/lib/utils/common_utils';
+import { setUrlParams, updateHistory, getParameterByName } from '~/lib/utils/url_utility';
 
 import {
   FORM_TYPES,
@@ -26,6 +28,7 @@ import {
 import getWorkItemLinksQuery from '../../graphql/work_item_links.query.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import workItemQuery from '../../graphql/work_item.query.graphql';
+import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
 import WorkItemLinkChild from './work_item_link_child.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
@@ -45,6 +48,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['projectPath', 'iid'],
   props: {
     workItemId: {
@@ -72,6 +76,18 @@ export default {
       error(e) {
         this.error = e.message || this.$options.i18n.fetchError;
       },
+      async result() {
+        const { id, iid } = this.childUrlParams;
+        this.activeChild = this.fetchByIid
+          ? this.children.find((child) => child.iid === iid) ?? {}
+          : this.children.find((child) => child.id === id) ?? {};
+        await this.$nextTick();
+        if (!isEmpty(this.activeChild)) {
+          this.$refs.modal.show();
+          return;
+        }
+        this.updateWorkItemIdUrlQuery();
+      },
     },
     parentIssue: {
       query: getIssueDetailsQuery,
@@ -90,7 +106,7 @@ export default {
     return {
       isShownAddForm: false,
       isOpen: true,
-      activeChildId: null,
+      activeChild: {},
       activeToast: null,
       prefetchedWorkItem: null,
       error: undefined,
@@ -139,6 +155,29 @@ export default {
     childrenCountLabel() {
       return this.isLoading && this.children.length === 0 ? '...' : this.children.length;
     },
+    fetchByIid() {
+      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
+    },
+    childUrlParams() {
+      const params = {};
+      if (this.fetchByIid) {
+        const iid = getParameterByName('work_item_iid');
+        if (iid) {
+          params.iid = iid;
+        }
+      } else {
+        const workItemId = getParameterByName('work_item_id');
+        if (workItemId) {
+          params.id = convertToGraphQLId(TYPE_WORK_ITEM, workItemId);
+        }
+      }
+      return params;
+    },
+  },
+  mounted() {
+    if (!isEmpty(this.childUrlParams)) {
+      this.addWorkItemQuery(this.childUrlParams);
+    }
   },
   methods: {
     toggle() {
@@ -159,29 +198,29 @@ export default {
       const { defaultClient: client } = this.$apollo.provider.clients;
       this.toggleChildFromCache(child, child.id, client);
     },
-    openChild(childItemId, e) {
+    openChild(child, e) {
       if (isMetaKey(e)) {
         return;
       }
       e.preventDefault();
-      this.activeChildId = childItemId;
+      this.activeChild = child;
       this.$refs.modal.show();
-      this.updateWorkItemIdUrlQuery(childItemId);
+      this.updateWorkItemIdUrlQuery(child);
     },
-    closeModal() {
-      this.activeChildId = null;
-      this.updateWorkItemIdUrlQuery(undefined);
+    async closeModal() {
+      this.activeChild = {};
+      this.updateWorkItemIdUrlQuery();
     },
     handleWorkItemDeleted(childId) {
       const { defaultClient: client } = this.$apollo.provider.clients;
       this.toggleChildFromCache(null, childId, client);
       this.activeToast = this.$toast.show(s__('WorkItem|Task deleted'));
     },
-    updateWorkItemIdUrlQuery(childItemId) {
-      updateHistory({
-        url: setUrlParams({ work_item_id: getIdFromGraphQLId(childItemId) }),
-        replace: true,
-      });
+    updateWorkItemIdUrlQuery({ id, iid } = {}) {
+      const params = this.fetchByIid
+        ? { work_item_iid: iid }
+        : { work_item_id: getIdFromGraphQLId(id) };
+      updateHistory({ url: setUrlParams(params), replace: true });
     },
     toggleChildFromCache(workItem, childId, store) {
       const sourceData = store.readQuery({
@@ -235,16 +274,31 @@ export default {
         });
       }
     },
-    prefetchWorkItem(id) {
+    addWorkItemQuery({ id, iid }) {
+      const variables = this.fetchByIid
+        ? {
+            fullPath: this.projectPath,
+            iid,
+          }
+        : {
+            id,
+          };
+      this.$apollo.addSmartQuery('prefetchedWorkItem', {
+        query() {
+          return this.fetchByIid ? workItemByIidQuery : workItemQuery;
+        },
+        variables,
+        update(data) {
+          return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+        },
+        context: {
+          isSingleRequest: true,
+        },
+      });
+    },
+    prefetchWorkItem({ id, iid }) {
       this.prefetch = setTimeout(
-        () =>
-          this.$apollo.addSmartQuery('prefetchedWorkItem', {
-            query: workItemQuery,
-            variables: {
-              id,
-            },
-            update: (data) => data.workItem,
-          }),
+        () => this.addWorkItemQuery({ id, iid }),
         DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
       );
     },
@@ -355,16 +409,17 @@ export default {
           :can-update="canUpdate"
           :issuable-gid="issuableGid"
           :child-item="child"
-          @click="openChild"
-          @mouseover="prefetchWorkItem"
+          @click="openChild(child, $event)"
+          @mouseover="prefetchWorkItem(child)"
           @mouseout="clearPrefetching"
-          @remove="removeChild"
+          @removeChild="removeChild"
         />
         <work-item-detail-modal
           ref="modal"
-          :work-item-id="activeChildId"
+          :work-item-id="activeChild.id"
+          :work-item-iid="activeChild.iid"
           @close="closeModal"
-          @workItemDeleted="handleWorkItemDeleted(activeChildId)"
+          @workItemDeleted="handleWorkItemDeleted(activeChild.id)"
         />
       </template>
     </div>

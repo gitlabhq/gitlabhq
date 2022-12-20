@@ -32,12 +32,12 @@ module API
 
     helpers do
       params :package_download do
-        requires :file_identifier, type: String, desc: 'The PyPi package file identifier', file_path: true
-        requires :sha256, type: String, desc: 'The PyPi package sha256 check sum'
+        requires :file_identifier, type: String, desc: 'The PyPi package file identifier', file_path: true, documentation: { example: 'my.pypi.package-0.0.1.tar.gz' }
+        requires :sha256, type: String, desc: 'The PyPi package sha256 check sum', documentation: { example: '5y57017232013c8ac80647f4ca153k3726f6cba62d055cd747844ed95b3c65ff' }
       end
 
       params :package_name do
-        requires :package_name, type: String, file_path: true, desc: 'The PyPi package name'
+        requires :package_name, type: String, file_path: true, desc: 'The PyPi package name', documentation: { example: 'my.pypi.package' }
       end
 
       def present_simple_index(group_or_project)
@@ -102,7 +102,7 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, types: [Integer, String], desc: 'The ID or full path of the group.'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       after_validation do
@@ -110,6 +110,16 @@ module API
       end
 
       namespace ':id/-/packages/pypi' do
+        desc 'Download a package file from a group' do
+          detail 'This feature was introduced in GitLab 13.12'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[pypi_packages]
+        end
         params do
           use :package_download
         end
@@ -123,13 +133,20 @@ module API
           package = Packages::Pypi::PackageFinder.new(current_user, group, { filename: filename, sha256: params[:sha256] }).execute
           package_file = ::Packages::PackageFileFinder.new(package, filename, with_file_name_like: false).execute
 
-          track_package_event('pull_package', :pypi)
+          track_package_event('pull_package', :pypi, namespace: group, project: package.project)
 
           present_package_file!(package_file, supports_direct_download: true)
         end
 
         desc 'The PyPi Simple Group Index Endpoint' do
           detail 'This feature was introduced in GitLab 15.1'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[pypi_packages]
         end
 
         # An API entry point but returns an HTML file instead of JSON.
@@ -141,6 +158,13 @@ module API
 
         desc 'The PyPi Simple Group Package Endpoint' do
           detail 'This feature was introduced in GitLab 12.10'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[pypi_packages]
         end
 
         params do
@@ -164,6 +188,13 @@ module API
       namespace ':id/packages/pypi' do
         desc 'The PyPi package download endpoint' do
           detail 'This feature was introduced in GitLab 12.10'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[pypi_packages]
         end
 
         params do
@@ -185,6 +216,13 @@ module API
 
         desc 'The PyPi Simple Project Index Endpoint' do
           detail 'This feature was introduced in GitLab 15.1'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[pypi_packages]
         end
 
         # An API entry point but returns an HTML file instead of JSON.
@@ -196,6 +234,13 @@ module API
 
         desc 'The PyPi Simple Project Package Endpoint' do
           detail 'This feature was introduced in GitLab 12.10'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[pypi_packages]
         end
 
         params do
@@ -211,15 +256,24 @@ module API
 
         desc 'The PyPi Package upload endpoint' do
           detail 'This feature was introduced in GitLab 12.10'
+          success code: 201
+          failure [
+            { code: 400, message: 'Bad Request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' },
+            { code: 422, message: 'Unprocessable Entity' }
+          ]
+          tags %w[pypi_packages]
         end
 
         params do
           requires :content, type: ::API::Validations::Types::WorkhorseFile, desc: 'The package file to be published (generated by Multipart middleware)', documentation: { type: 'file' }
-          requires :name, type: String
-          requires :version, type: String
-          optional :requires_python, type: String
-          optional :md5_digest, type: String
-          optional :sha256_digest, type: String, regexp: Gitlab::Regex.sha256_regex
+          requires :name, type: String, documentation: { example: 'my.pypi.package' }
+          requires :version, type: String, documentation: { example: '1.3.7' }
+          optional :requires_python, type: String, documentation: { example: '>=3.7' }
+          optional :md5_digest, type: String, documentation: { example: '900150983cd24fb0d6963f7d28e17f72' }
+          optional :sha256_digest, type: String, regexp: Gitlab::Regex.sha256_regex, documentation: { example: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad' }
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
@@ -241,6 +295,17 @@ module API
           Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:name], project_id: authorized_user_project.id })
 
           forbidden!
+        end
+
+        desc 'Authorize the PyPi package upload from workhorse' do
+          detail 'This feature was introduced in GitLab 12.10'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[pypi_packages]
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth

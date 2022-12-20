@@ -1,0 +1,16 @@
+mutation retryJobWithVariables($id: CiBuildID!, $variables: [CiVariableInput!]) {
+  jobRetry(input: { id: $id, variables: $variables }) {
+    job {
+      id
+      manualVariables {
+        nodes {
+          id
+          key
+          value
+        }
+      }
+      webPath
+    }
+    errors
+  }
+}

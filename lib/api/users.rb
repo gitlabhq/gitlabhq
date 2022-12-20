@@ -133,7 +133,7 @@ module API
       get feature_category: :users, urgency: :low do
         authenticated_as_admin! if params[:extern_uid].present? && params[:provider].present?
 
-        unless current_user&.admin?
+        unless current_user&.can_read_all_resources?
           params.except!(:created_after, :created_before, :order_by, :sort, :two_factor, :without_projects)
         end
 
@@ -151,7 +151,7 @@ module API
         users = UsersFinder.new(current_user, params).execute
         users = reorder_users(users)
 
-        entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
+        entity = current_user&.can_read_all_resources? ? Entities::UserWithAdmin : Entities::UserBasic
 
         if entity == Entities::UserWithAdmin
           users = users.preload(:identities, :u2f_registrations, :webauthn_registrations, :namespace, :followers, :followees, :user_preference)
@@ -177,7 +177,7 @@ module API
       get ":id", feature_category: :users, urgency: :low do
         forbidden!('Not authorized!') unless current_user
 
-        unless current_user.admin?
+        unless current_user.can_read_all_resources?
           check_rate_limit!(:users_get_by_id,
             scope: current_user,
             users_allowlist: Gitlab::CurrentSettings.current_application_settings.users_get_by_id_limit_allowlist
@@ -188,7 +188,7 @@ module API
 
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        opts = { with: current_user.admin? ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
+        opts = { with: current_user.can_read_all_resources? ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
         user, opts = with_custom_attributes(user, opts)
 
         present user, opts
@@ -333,12 +333,12 @@ module API
         not_found!('User') unless user
 
         conflict!('Email has already been taken') if params[:email] &&
-            User.by_any_email(params[:email].downcase)
-                .where.not(id: user.id).exists?
+          User.by_any_email(params[:email].downcase)
+              .where.not(id: user.id).exists?
 
         conflict!('Username has already been taken') if params[:username] &&
-            User.by_username(params[:username])
-                .where.not(id: user.id).exists?
+          User.by_username(params[:username])
+              .where.not(id: user.id).exists?
 
         user_params = declared_params(include_missing: false)
         admin_making_changes_for_another_user = (current_user != user)
@@ -373,7 +373,8 @@ module API
         user = User.find_by_id(params[:id])
         not_found!('User') unless user
 
-        forbidden!('Two-factor authentication for admins cannot be disabled via the API. Use the Rails console') if user.admin?
+        # We're disabling Cop/UserAdmin because it checks if the given user (not the current user) is an admin.
+        forbidden!('Two-factor authentication for admins cannot be disabled via the API. Use the Rails console') if user.admin? # rubocop:disable Cop/UserAdmin
 
         result = TwoFactor::DestroyService.new(current_user, user: user).execute
 
@@ -437,6 +438,8 @@ module API
         requires :key, type: String, desc: 'The new SSH key'
         requires :title, type: String, desc: 'The title of the new SSH key'
         optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
+        optional :usage_type, type: String, values: Key.usage_types.keys, default: 'auth_and_signing',
+                              desc: 'Scope of usage for the SSH key'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ":user_id/keys", feature_category: :authentication_and_authorization do
@@ -1006,7 +1009,8 @@ module API
         end
         get feature_category: :users, urgency: :low do
           entity =
-            if current_user.admin?
+            # We're disabling Cop/UserAdmin because it checks if the given user is an admin.
+            if current_user.admin? # rubocop:disable Cop/UserAdmin
               Entities::UserWithAdmin
             else
               Entities::UserPublic
@@ -1050,6 +1054,8 @@ module API
         requires :key, type: String, desc: 'The new SSH key'
         requires :title, type: String, desc: 'The title of the new SSH key'
         optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
+        optional :usage_type, type: String, values: Key.usage_types.keys, default: 'auth_and_signing',
+                              desc: 'Scope of usage for the SSH key'
       end
       post "keys", feature_category: :authentication_and_authorization do
         key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false)).execute

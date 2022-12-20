@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Users do
+RSpec.describe API::Users, feature_category: :users do
   let_it_be(:user) { create(:user) }
 
   describe 'PUT /user/preferences/' do

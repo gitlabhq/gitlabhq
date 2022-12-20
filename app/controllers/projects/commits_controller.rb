@@ -12,7 +12,7 @@ class Projects::CommitsController < Projects::ApplicationController
   around_action :allow_gitaly_ref_name_caching
   before_action :require_non_empty_project
   before_action :assign_ref_vars, except: :commits_root
-  before_action :authorize_download_code!
+  before_action :authorize_read_code!
   before_action :validate_ref!, except: :commits_root
   before_action :set_commits, except: :commits_root
 
@@ -27,6 +27,8 @@ class Projects::CommitsController < Projects::ApplicationController
   def show
     @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
       .find_by(source_project: @project, source_branch: @ref, target_branch: @repository.root_ref)
+
+    @ref_type = ref_type
 
     respond_to do |format|
       format.html
@@ -73,18 +75,20 @@ class Projects::CommitsController < Projects::ApplicationController
     search = permitted_params[:search]
     author = permitted_params[:author]
 
+    # fully_qualified_ref is available in some situations when the use_ref_type_parameter FF is enabled
+    ref = @fully_qualified_ref || @ref
     @commits =
       if search.present?
-        @repository.find_commits_by_message(search, @ref, @path, @limit, @offset)
+        @repository.find_commits_by_message(search, ref, @path, @limit, @offset)
       elsif author.present?
-        @repository.commits(@ref, author: author, path: @path, limit: @limit, offset: @offset)
+        @repository.commits(ref, author: author, path: @path, limit: @limit, offset: @offset)
       else
-        @repository.commits(@ref, path: @path, limit: @limit, offset: @offset)
+        @repository.commits(ref, path: @path, limit: @limit, offset: @offset)
       end
 
     @commits.each(&:lazy_author) # preload authors
 
-    @commits = @commits.with_markdown_cache.with_latest_pipeline(@ref)
+    @commits = @commits.with_markdown_cache.with_latest_pipeline(ref)
     @commits = set_commits_for_rendering(@commits)
   end
 

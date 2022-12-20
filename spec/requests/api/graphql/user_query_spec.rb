@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting user information' do
+RSpec.describe 'getting user information', feature_category: :user_management do
   include GraphqlHelpers
 
   let(:query) do

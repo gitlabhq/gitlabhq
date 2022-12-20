@@ -9,6 +9,7 @@ import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import { insertFinalNewline } from '~/lib/utils/text_utility';
 import TemplateSelectorMediator from '../blob/file_template_mediator';
 import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR } from './constants';
+import '~/behaviors/markdown/init_gfm';
 
 export default class EditBlob {
   // The options object has:

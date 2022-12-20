@@ -78,7 +78,7 @@ If you don't want to wait, you can remove a group immediately.
 
 Prerequisites:
 
-- You must have at least the Owner role for a group.
+- You must have the Owner role for a group.
 - You have [marked the group for deletion](#remove-a-group).
 
 To immediately remove a group marked for deletion:
@@ -172,7 +172,7 @@ Prerequisite:
 1. On the left sidebar, select **Group information > Members**.
 1. Select **Invite members**.
 1. Fill in the fields.
-   - The role applies to all projects in the group. [Learn more about permissions](../permissions.md).
+   - The role applies to all projects in the group. For more information, see [permissions](../permissions.md).
    - On the **Access expiration date**, the user can no longer access projects in the group.
 1. Select **Invite**.
 
@@ -530,10 +530,10 @@ in a subgroup has access to the templates for that subgroup and
 any immediate parent groups.
 
 To learn how to create templates for issues and merge requests, see
-[Description templates](../project/description_templates.md).
+[description templates](../project/description_templates.md).
 
 Define project templates at a group level by setting a group as the template source.
-[Learn more about group-level project templates](custom_project_templates.md).
+For more information, see [group-level project templates](custom_project_templates.md).
 
 ### Enable group file template **(PREMIUM)**
 

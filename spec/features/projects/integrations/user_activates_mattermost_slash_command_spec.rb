@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Set up Mattermost slash commands', :js do
+RSpec.describe 'Set up Mattermost slash commands', :js, feature_category: :integrations do
   describe 'user visits the mattermost slash command config page' do
     include_context 'project integration activation'
 

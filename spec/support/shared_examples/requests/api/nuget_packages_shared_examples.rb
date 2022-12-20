@@ -224,25 +224,13 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
       end
 
       context 'and direct upload disabled' do
-        context 'and background upload disabled' do
-          let(:fog_connection) do
-            stub_package_file_object_storage(direct_upload: false, background_upload: false)
-          end
-
-          it_behaves_like 'creates nuget package files'
+        let(:fog_connection) do
+          stub_package_file_object_storage(direct_upload: false)
         end
 
-        context 'and background upload enabled' do
-          let(:fog_connection) do
-            stub_package_file_object_storage(direct_upload: false, background_upload: true)
-          end
-
-          it_behaves_like 'creates nuget package files'
-        end
+        it_behaves_like 'creates nuget package files'
       end
     end
-
-    it_behaves_like 'background upload schedules a file migration'
   end
 end
 
@@ -507,7 +495,7 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
       let(:token) { user_token ? personal_access_token.token : 'wrong' }
       let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
       let(:headers) { user_headers.merge(workhorse_headers) }
-      let(:snowplow_gitlab_standard_context) { { project: project, user: user, namespace: project.namespace } }
+      let(:snowplow_gitlab_standard_context) { { project: project, user: user, namespace: project.namespace, property: 'i_package_nuget_user' } }
 
       before do
         update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))

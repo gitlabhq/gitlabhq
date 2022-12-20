@@ -4,7 +4,7 @@ import { ApolloMutation } from 'vue-apollo';
 import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
-import { updateGlobalTodoCount } from '~/vue_shared/components/sidebar/todo_toggle/utils';
+import { updateGlobalTodoCount } from '~/sidebar/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';

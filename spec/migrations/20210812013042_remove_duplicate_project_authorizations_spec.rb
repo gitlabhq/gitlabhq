@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!('remove_duplicate_project_authorizations')
 
-RSpec.describe RemoveDuplicateProjectAuthorizations, :migration do
+RSpec.describe RemoveDuplicateProjectAuthorizations, :migration, feature_category: :authentication_and_authorization do
   let(:users) { table(:users) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

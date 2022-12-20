@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::UsageDataNonSqlMetrics do
+RSpec.describe API::UsageDataNonSqlMetrics, feature_category: :service_ping do
   include UsageDataHelpers
 
   let_it_be(:admin) { create(:user, admin: true) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Projects' do
+RSpec.describe 'Dashboard Projects', feature_category: :projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :repository) }
   let_it_be(:project2) { create(:project, :public) }
@@ -100,14 +100,6 @@ RSpec.describe 'Dashboard Projects' do
       visit dashboard_projects_path(sort: :stars_desc)
 
       expect(first('.project-row')).to have_content(project_with_most_stars.title)
-    end
-
-    it 'shows tabs to filter by all projects or personal' do
-      visit dashboard_projects_path
-      segmented_button = page.find('.filtered-search-nav .button-filter-group')
-
-      expect(segmented_button).to have_content 'All'
-      expect(segmented_button).to have_content 'Personal'
     end
   end
 

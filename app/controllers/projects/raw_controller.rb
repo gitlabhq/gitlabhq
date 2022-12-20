@@ -12,7 +12,7 @@ class Projects::RawController < Projects::ApplicationController
 
   before_action :set_ref_and_path
   before_action :require_non_empty_project
-  before_action :authorize_download_code!
+  before_action :authorize_read_code!
   before_action :check_show_rate_limit!, only: [:show], unless: :external_storage_request?
   before_action :redirect_to_external_storage, only: :show, if: :static_objects_external_storage_enabled?
 
@@ -21,7 +21,7 @@ class Projects::RawController < Projects::ApplicationController
   def show
     @blob = @repository.blob_at(@ref, @path, limit: Gitlab::Git::Blob::LFS_POINTER_MAX_SIZE)
 
-    send_blob(@repository, @blob, inline: (params[:inline] != 'false'), allow_caching: Guest.can?(:download_code, @project))
+    send_blob(@repository, @blob, inline: (params[:inline] != 'false'), allow_caching: Guest.can?(:read_code, @project))
   end
 
   private

@@ -6,6 +6,7 @@ class Environment < ApplicationRecord
   include FastDestroyAll::Helpers
   include Presentable
   include NullifyIfBlank
+  include FromUnion
 
   self.reactive_cache_refresh_interval = 1.minute
   self.reactive_cache_lifetime = 55.seconds
@@ -27,27 +28,29 @@ class Environment < ApplicationRecord
   has_many :self_managed_prometheus_alert_events, inverse_of: :environment
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
-  # NOTE: If you preload multiple last deployments of environments, use Preloaders::Environments::DeploymentPreloader.
-  has_one :last_deployment, -> { success.ordered }, class_name: 'Deployment', inverse_of: :environment
-  has_one :last_visible_deployment, -> { visible.order(id: :desc) }, inverse_of: :environment, class_name: 'Deployment'
+  # NOTE:
+  # 1) no-op arguments is to prevent accidental legacy preloading. See: https://gitlab.com/gitlab-org/gitlab/-/issues/369240
+  # 2) If you preload multiple last deployments of environments, use Preloaders::Environments::DeploymentPreloader.
+  has_one :last_deployment, -> (_env) { success.ordered }, class_name: 'Deployment', inverse_of: :environment
+  has_one :last_visible_deployment, -> (_env) { visible.order(id: :desc) }, inverse_of: :environment, class_name: 'Deployment'
+  has_one :upcoming_deployment, -> (_env) { upcoming.order(id: :desc) }, class_name: 'Deployment', inverse_of: :environment
 
   Deployment::FINISHED_STATUSES.each do |status|
-    has_one :"last_#{status}_deployment", -> { where(status: status).ordered },
+    has_one :"last_#{status}_deployment", -> (_env) { where(status: status).ordered },
             class_name: 'Deployment', inverse_of: :environment
   end
 
   Deployment::UPCOMING_STATUSES.each do |status|
-    has_one :"last_#{status}_deployment", -> { where(status: status).ordered_as_upcoming },
+    has_one :"last_#{status}_deployment", -> (_env) { where(status: status).ordered_as_upcoming },
             class_name: 'Deployment', inverse_of: :environment
   end
 
-  has_one :upcoming_deployment, -> { upcoming.order(id: :desc) }, class_name: 'Deployment', inverse_of: :environment
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
+  before_validation :ensure_environment_tier
 
   before_save :set_environment_type
-  before_save :ensure_environment_tier
   after_save :clear_reactive_cache!
 
   validates :name,
@@ -68,6 +71,10 @@ class Environment < ApplicationRecord
             length: { maximum: 255 },
             allow_nil: true
 
+  # Currently, the tier presence is validaed for newly created environments.
+  # After the `BackfillEnvironmentTiers` background migration has been completed, we should remove `on: :create`.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/385253.
+  validates :tier, presence: true, on: :create
   validate :safe_external_url
   validate :merge_request_not_changed
 
@@ -87,7 +94,6 @@ class Environment < ApplicationRecord
 
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
-  scope :preload_cluster, -> { preload(last_deployment: :cluster) }
   scope :preload_project, -> { preload(:project) }
   scope :auto_stoppable, -> (limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
   scope :auto_deletable, -> (limit) { stopped.where('auto_delete_at < ?', Time.zone.now).limit(limit) }
@@ -96,7 +102,16 @@ class Environment < ApplicationRecord
   # Search environments which have names like the given query.
   # Do not set a large limit unless you've confirmed that it works on gitlab.com scale.
   scope :for_name_like, -> (query, limit: 5) do
-    where('LOWER(environments.name) LIKE LOWER(?) || \'%\'', sanitize_sql_like(query)).limit(limit)
+    top_level = 'LOWER(environments.name) LIKE LOWER(?) || \'%\''
+
+    where(top_level, sanitize_sql_like(query)).limit(limit)
+  end
+
+  scope :for_name_like_within_folder, -> (query, limit: 5) do
+    within_folder = 'LOWER(ltrim(environments.name, environments.environment_type'\
+      ' || \'/\')) LIKE LOWER(?) || \'%\''
+
+    where(within_folder, sanitize_sql_like(query)).limit(limit)
   end
 
   scope :for_project, -> (project) { where(project_id: project) }
@@ -106,7 +121,6 @@ class Environment < ApplicationRecord
   scope :with_rank, -> do
     select('environments.*, rank() OVER (PARTITION BY project_id ORDER BY id DESC)')
   end
-  scope :for_id, -> (id) { where(id: id) }
 
   scope :with_deployment, -> (sha, status: nil) do
     deployments = Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)
@@ -197,12 +211,19 @@ class Environment < ApplicationRecord
     update_all(auto_delete_at: at_time)
   end
 
+  def self.nested
+    group('COALESCE(environment_type, id::text)', 'COALESCE(environment_type, name)')
+      .select('COALESCE(environment_type, id::text), COALESCE(environment_type, name) AS name',
+              'COUNT(*) AS size', 'MAX(id) AS last_id')
+      .order('name ASC')
+  end
+
   class << self
     def count_by_state
       environments_count_by_state = group(:state).count
 
-      valid_states.each_with_object({}) do |state, count_hash|
-        count_hash[state] = environments_count_by_state[state.to_s] || 0
+      valid_states.index_with do |state|
+        environments_count_by_state[state.to_s] || 0
       end
     end
   end
@@ -488,6 +509,12 @@ class Environment < ApplicationRecord
 
   def unfoldered?
     environment_type.nil?
+  end
+
+  def deploy_freezes
+    Gitlab::SafeRequestStore.fetch("project:#{project_id}:freeze_periods_for_environments") do
+      project.freeze_periods
+    end
   end
 
   private

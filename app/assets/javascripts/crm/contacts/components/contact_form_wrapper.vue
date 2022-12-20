@@ -2,7 +2,7 @@
 import { s__, __ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_CRM_CONTACT, TYPE_GROUP } from '~/graphql_shared/constants';
-import ContactForm from '../../components/form.vue';
+import CrmForm from '../../components/crm_form.vue';
 import getGroupOrganizationsQuery from '../../organizations/components/graphql/get_group_organizations.query.graphql';
 import getGroupContactsQuery from './graphql/get_group_contacts.query.graphql';
 import createContactMutation from './graphql/create_contact.mutation.graphql';
@@ -10,7 +10,7 @@ import updateContactMutation from './graphql/update_contact.mutation.graphql';
 
 export default {
   components: {
-    ContactForm,
+    CrmForm,
   },
   inject: ['groupFullPath', 'groupId'],
   props: {
@@ -111,7 +111,7 @@ export default {
 </script>
 
 <template>
-  <contact-form
+  <crm-form
     :drawer-open="true"
     :get-query="getQuery"
     get-query-node-path="group.contacts"

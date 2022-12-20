@@ -8,17 +8,17 @@ RSpec.describe Gitlab::ImportExport::Project::ExportedRelationsMerger do
   let(:shared) { Gitlab::ImportExport::Shared.new(export_job.project) }
 
   before do
-    create(:project_relation_export_upload,
+    create(:relation_export_upload,
       relation_export: create(:project_relation_export, relation: 'project', project_export_job: export_job),
       export_file: fixture_file_upload("spec/fixtures/gitlab/import_export/project.tar.gz")
     )
 
-    create(:project_relation_export_upload,
+    create(:relation_export_upload,
       relation_export: create(:project_relation_export, relation: 'labels', project_export_job: export_job),
       export_file: fixture_file_upload("spec/fixtures/gitlab/import_export/labels.tar.gz")
     )
 
-    create(:project_relation_export_upload,
+    create(:relation_export_upload,
       relation_export: create(:project_relation_export, relation: 'uploads', project_export_job: export_job),
       export_file: fixture_file_upload("spec/fixtures/gitlab/import_export/uploads.tar.gz")
     )

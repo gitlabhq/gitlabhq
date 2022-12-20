@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue board filters', :js do
+RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:board) { create(:board, project: project) }
@@ -191,7 +191,7 @@ RSpec.describe 'Issue board filters', :js do
   end
 
   def expect_filtered_search_dropdown_results(filter_dropdown, count)
-    expect(filter_dropdown).to have_selector('.gl-new-dropdown-item', count: count)
+    expect(filter_dropdown).to have_selector('.gl-dropdown-item', count: count)
   end
 
   def visit_project_board

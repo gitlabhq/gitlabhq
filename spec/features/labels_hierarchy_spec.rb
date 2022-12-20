@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Labels Hierarchy', :js do
+RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
 
   let!(:user) { create(:user) }
@@ -17,6 +17,7 @@ RSpec.describe 'Labels Hierarchy', :js do
   let!(:project_label_1) { create(:label, project: project_1, title: 'Label_4') }
 
   before do
+    stub_feature_flags(or_issuable_queries: false)
     grandparent.add_owner(user)
 
     sign_in(user)

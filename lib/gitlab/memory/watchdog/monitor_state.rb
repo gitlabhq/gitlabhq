@@ -5,12 +5,12 @@ module Gitlab
     class Watchdog
       class MonitorState
         class Result
-          attr_reader :payload
+          attr_reader :payload, :monitor_name
 
-          def initialize(strikes_exceeded:, threshold_violated:, monitor_class:, payload: )
+          def initialize(strikes_exceeded:, threshold_violated:, monitor_name:, payload:)
             @strikes_exceeded = strikes_exceeded
             @threshold_violated = threshold_violated
-            @monitor_class = monitor_class
+            @monitor_name = monitor_name.to_s.to_sym
             @payload = payload
           end
 
@@ -21,15 +21,12 @@ module Gitlab
           def threshold_violated?
             @threshold_violated
           end
-
-          def monitor_name
-            @monitor_class.name.demodulize.underscore.to_sym
-          end
         end
 
-        def initialize(monitor, max_strikes:)
+        def initialize(monitor, max_strikes:, monitor_name:)
           @monitor = monitor
           @max_strikes = max_strikes
+          @monitor_name = monitor_name
           @strikes = 0
         end
 
@@ -47,16 +44,12 @@ module Gitlab
           build_result(monitor_result)
         end
 
-        def monitor_class
-          @monitor.class
-        end
-
         private
 
         def build_result(monitor_result)
           Result.new(
             strikes_exceeded: strikes_exceeded?,
-            monitor_class: monitor_class,
+            monitor_name: @monitor_name,
             threshold_violated: monitor_result[:threshold_violated],
             payload: payload.merge(monitor_result[:payload]))
         end

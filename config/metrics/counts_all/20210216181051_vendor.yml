@@ -10,7 +10,7 @@ product_category: container registry
 value_type: number
 status: active
 time_frame: all
-data_source: database
+data_source: system
 distribution:
 - ee
 - ce

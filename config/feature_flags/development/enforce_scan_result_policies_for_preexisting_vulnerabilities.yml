@@ -1,0 +1,8 @@
+---
+name: enforce_scan_result_policies_for_preexisting_vulnerabilities
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105248
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/384260
+milestone: '15.7'
+type: development
+group: group::security policies
+default_enabled: false

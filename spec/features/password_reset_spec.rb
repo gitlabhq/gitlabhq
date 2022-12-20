@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Password reset' do
+RSpec.describe 'Password reset', feature_category: :system_access do
   describe 'throttling' do
     it 'sends reset instructions when not previously sent' do
       user = create(:user)

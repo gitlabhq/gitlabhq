@@ -477,6 +477,22 @@ RSpec.describe SessionsController do
         expect { authenticate_2fa(login: user.username, otp_attempt: user.current_otp) }.to change { AuthenticationEvent.count }.by(1)
         expect(AuthenticationEvent.last.provider).to eq("two-factor")
       end
+
+      context 'when rendering devise two factor' do
+        render_views
+
+        before do
+          Gon.clear
+        end
+
+        it "adds gon variables" do
+          authenticate_2fa(login: user.username, password: user.password)
+
+          expect(response).to render_template('devise/sessions/two_factor')
+          expect(Gon.all_variables).not_to be_empty
+          expect(response.body).to match('gon.api_version')
+        end
+      end
     end
 
     context 'when using two-factor authentication via U2F device' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'ClusterAgents', :js do
+RSpec.describe 'ClusterAgents', :js, feature_category: :projects do
   let_it_be(:token) { create(:cluster_agent_token, description: 'feature test token') }
 
   let(:agent) { token.agent }

@@ -28,6 +28,11 @@ export default {
       required: false,
       default: '',
     },
+    blanked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   i18n: {
     noResultsMessage: I18N_NO_RESULTS_MESSAGE,
@@ -36,7 +41,7 @@ export default {
   },
   data() {
     return {
-      searchTerm: this.value,
+      searchTerm: this.blanked ? '' : this.value,
     };
   },
   computed: {

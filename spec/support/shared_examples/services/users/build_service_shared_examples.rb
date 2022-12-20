@@ -84,9 +84,10 @@ RSpec.shared_examples_for 'current user not admin build items' do
     end
   end
 
-  context 'when "send_user_confirmation_email" application setting is true' do
+  context 'when "email_confirmation_setting" application setting is set to `hard`' do
     before do
-      stub_application_setting(send_user_confirmation_email: true, signup_enabled?: true)
+      stub_application_setting_enum('email_confirmation_setting', 'hard')
+      stub_application_setting(signup_enabled?: true)
     end
 
     it 'does not confirm the user' do
@@ -94,9 +95,10 @@ RSpec.shared_examples_for 'current user not admin build items' do
     end
   end
 
-  context 'when "send_user_confirmation_email" application setting is false' do
+  context 'when "email_confirmation_setting" application setting is set to `off`' do
     before do
-      stub_application_setting(send_user_confirmation_email: false, signup_enabled?: true)
+      stub_application_setting_enum('email_confirmation_setting', 'off')
+      stub_application_setting(signup_enabled?: true)
     end
 
     it 'confirms the user' do

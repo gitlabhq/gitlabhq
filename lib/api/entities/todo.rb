@@ -32,6 +32,7 @@ module API
 
       def todo_target_url(todo)
         return design_todo_target_url(todo) if todo.for_design?
+        return todo.access_request_url if todo.member_access_requested?
 
         target_type = todo.target_type.gsub('::', '_').underscore
         target_url = "#{todo.resource_parent.class.to_s.underscore}_#{target_type}_url"

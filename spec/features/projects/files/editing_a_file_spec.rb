@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User wants to edit a file' do
+RSpec.describe 'Projects > Files > User wants to edit a file', feature_category: :projects do
   let(:project) { create(:project, :repository) }
   let(:user) { project.first_owner }
   let(:commit_params) do

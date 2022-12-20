@@ -7,8 +7,8 @@ import {
   GlSprintf,
   GlTooltip,
   GlTooltipDirective,
-  GlSafeHtmlDirective,
 } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
@@ -33,7 +33,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     pipeline: {
@@ -190,7 +190,7 @@ export default {
     </template>
     <template v-else-if="hasPipeline">
       <a :href="status.details_path" class="gl-align-self-center gl-mr-3">
-        <ci-icon :status="status" :size="24" />
+        <ci-icon :status="status" :size="24" class="gl-display-flex" />
       </a>
       <div class="ci-widget-container d-flex">
         <div class="ci-widget-content">
@@ -277,9 +277,9 @@ export default {
               v-if="pipeline.details.stages"
               :downstream-pipelines="pipeline.triggered"
               :is-merge-train="isMergeTrain"
+              :pipeline-path="pipeline.path"
               :stages="pipeline.details.stages"
               :upstream-pipeline="pipeline.triggered_by"
-              stages-class="mr-widget-pipeline-stages"
             />
             <pipeline-artifacts :pipeline-id="pipeline.id" :artifacts="artifacts" class="gl-ml-3" />
           </span>

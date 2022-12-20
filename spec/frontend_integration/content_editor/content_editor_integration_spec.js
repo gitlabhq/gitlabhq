@@ -114,8 +114,6 @@ This reference tag is a mix of letters and numbers [^footnote].
   });
 
   it('renders table of contents', async () => {
-    jest.useFakeTimers();
-
     renderMarkdown.mockResolvedValueOnce(`
 <ul class="section-nav">
 </ul>

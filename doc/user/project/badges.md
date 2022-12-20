@@ -89,6 +89,8 @@ which are evaluated when displaying the badge. The following placeholders
 are available:
 
 - `%{project_path}`: Path of a project including the parent groups
+- `%{project_title}`: Title of a project
+- `%{project_name}`: Name of a project
 - `%{project_id}`: Database ID associated with a project
 - `%{default_branch}`: Default branch name configured for a project's repository
 - `%{commit_sha}`: ID of the most recent commit to the default branch of a

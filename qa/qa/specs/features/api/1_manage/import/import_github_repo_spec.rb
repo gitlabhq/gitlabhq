@@ -4,7 +4,7 @@ module QA
   # https://github.com/gitlab-qa-github/import-test <- project under test
   #
   RSpec.describe 'Manage', product_group: :import do
-    describe 'GitHub import', :reliable do
+    describe 'GitHub import' do
       include_context 'with github import'
 
       context 'when imported via api' do

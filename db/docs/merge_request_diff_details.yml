@@ -7,3 +7,4 @@ feature_categories:
 description: External MR diff replication detail
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34248
 milestone: '13.4'
+gitlab_schema: gitlab_main

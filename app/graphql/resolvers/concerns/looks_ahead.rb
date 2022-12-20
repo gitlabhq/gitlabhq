@@ -39,7 +39,7 @@ module LooksAhead
   def filtered_preloads
     nodes = node_selection
 
-    return [] unless nodes
+    return [] unless nodes&.selected?
 
     selected_fields = nodes.selections.map(&:name)
     root_level_preloads = preloads_from_node_selection(selected_fields, preloads)
@@ -65,13 +65,13 @@ module LooksAhead
     end.flatten
   end
 
-  def node_selection
-    return unless lookahead
+  def node_selection(selection = lookahead)
+    return selection unless selection&.selected?
+    return selection.selection(:edges).selection(:node) if selection.selects?(:edges)
 
-    if lookahead.selects?(:nodes)
-      lookahead.selection(:nodes)
-    elsif lookahead.selects?(:edges)
-      lookahead.selection(:edges).selection(:node)
-    end
+    # Will return a NullSelection object if :nodes is not a selection. This
+    # is better than returning nil as we can continue chaining selections on
+    # without raising errors.
+    selection.selection(:nodes)
   end
 end

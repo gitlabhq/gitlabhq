@@ -1,5 +1,7 @@
 pre-push:
   parallel: true
+  skip:
+    - ref: master
   commands:
     danger:
       run: bundle exec rake danger_local
@@ -17,7 +19,7 @@ pre-push:
       tags: view haml style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.html.haml'
-      run: REVEAL_RUBOCOP_TODO=0 bundle exec haml-lint --config .haml-lint.yml {files}
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec haml-lint --parallel --config .haml-lint.yml {files}
     markdownlint:
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -26,7 +28,7 @@ pre-push:
     yamllint:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '*.{yml,yaml}'
+      glob: '*.{yml,yaml}{,.*}'
       run: scripts/lint-yaml.sh {files}
     stylelint:
       tags: stylesheet css style
@@ -43,23 +45,28 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{rb,rake}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion {files}
+    sidekiq-queues:
+      tags: backend
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '{,ee/}app/workers/*.rb'
+      run: bundle exec rake gitlab:sidekiq:queues:check
     graphql_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{app/graphql/**/*.rb,ee/app/graphql/**/*.rb}'
       run: bundle exec rake gitlab:graphql:check_docs
-    vale:  # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing.html#install-linters
+    vale: # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing.html#install-linters
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'doc/*.md'
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://docs.errata.ai/vale/install."; exit 1; fi'
     gettext:
-      skip: true  # This is disabled by default. You can enable this check by adding skip: false in lefhook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
+      skip: true # This is disabled by default. You can enable this check by adding skip: false in lefhook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
       tags: backend frontend view haml
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
-      glob: "*.{haml,rb,js,vue}"
+      glob: '*.{haml,rb,js,vue}'
       run: bin/rake gettext:updated_check
-    docs-metadata:  # See https://docs.gitlab.com/ee/development/documentation/#metadata
+    docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/#metadata
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'doc/*.md'
@@ -79,7 +86,14 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'data/removals/*.yml'
       run: echo "Changes to removals files detected. Checking removals..\n"; bundle exec rake gitlab:docs:check_removals
+  scripts:
+    "merge_conflicts":
+      skip: true # This is disabled by default. You can enable this check by adding skip: false in lefhook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
+      runner: bash
+pre-commit:
+  parallel: true
+  commands:
     secrets-detection:
       tags: secrets
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      run: 'if command -v ripsecrets > /dev/null 2>&1; then ripsecrets --strict-ignore {files}; else echo "WARNING: ripsecrets is not installed. Please install it."; fi'
+      files: git diff --name-only --diff-filter=d --staged
+      run: 'if command -v gitleaks > /dev/null 2>&1; then gitleaks protect --no-banner --staged --redact --verbose; else echo "WARNING: gitleaks is not installed. Please install it. See https://github.com/zricethezav/gitleaks#installing."; fi'

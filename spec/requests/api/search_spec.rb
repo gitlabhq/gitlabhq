@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Search do
+RSpec.describe API::Search, feature_category: :global_search do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project, reload: true) { create(:project, :wiki_repo, :public, name: 'awesome project', group: group) }

@@ -102,15 +102,15 @@ After being [merged](../integrations/secure.md#tracking-and-merging-vulnerabilit
 
 ### Analyzer vulnerability translation
 
-In the case of SAST's semgrep analyzer, there is a secondary identifier of particular importance: the identifier linking the report’s vulnerability
-to the legacy analyzer (that is, bandit or eslint).
+In the case of the SAST Semgrep analyzer, there is a secondary identifier of particular importance: the identifier linking the report’s vulnerability
+to the legacy analyzer (that is, bandit or ESLint).
 
 To [enable vulnerability translation](../../user/application_security/sast/analyzers.md#vulnerability-translation)
-the semgrep analyzer relies on a secondary identifier exactly matching the primary identifier of the legacy analyzer.
+the Semgrep analyzer relies on a secondary identifier exactly matching the primary identifier of the legacy analyzer.
 
 For example, when [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) was previously used to generate vulnerability records,
 the [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) analyzer must produce an identifier collection containing the
-original eslint primary identifier.
+original ESLint primary identifier.
 
 Given the original `eslint` report:
 
@@ -131,7 +131,7 @@ Given the original `eslint` report:
 }
 ```
 
-The corresponding semgrep report must contain the `eslint_rule_id`:
+The corresponding Semgrep report must contain the `eslint_rule_id`:
 
 ```json
 {

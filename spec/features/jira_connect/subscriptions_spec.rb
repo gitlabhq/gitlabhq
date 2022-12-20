@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Subscriptions Content Security Policy' do
+RSpec.describe 'Subscriptions Content Security Policy', feature_category: :integrations do
   include ContentSecurityPolicyHelpers
 
   let(:installation) { create(:jira_connect_installation) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge Requests > Filters generic behavior', :js do
+RSpec.describe 'Merge Requests > Filters generic behavior', :js, feature_category: :code_review do
   include FilteredSearchHelpers
 
   let(:project) { create(:project, :public, :repository) }

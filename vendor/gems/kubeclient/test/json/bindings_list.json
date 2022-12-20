@@ -1,0 +1,10 @@
+{
+  "kind": "Status",
+  "apiVersion": "v1",
+  "metadata": {},
+  "status": "Failure",
+  "message": "the server could not find the requested resource",
+  "reason": "NotFound",
+  "details": {},
+  "code": 404
+}

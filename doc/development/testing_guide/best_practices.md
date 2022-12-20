@@ -425,11 +425,10 @@ results are available, and not just the first failure.
   when you need an ID/IID/access level that doesn't actually exists. Using 123, 1234,
   or even 999 is brittle as these IDs could actually exist in the database in the
   context of a CI run.
-- All top-level `RSpec.describe` blocks should have [`feature_category`](https://about.gitlab.com/categories.json) metadata set.
-  Consider splitting the file in the case there are identified multiple feature categories in same file.
-  If no `feature_category` is identified then use `not_owned`. This information is used in flaky test
-  issues created in order to identify the group owning the feature.
-  Eg: `RSpec.describe Admin::Geo::SettingsController, :geo, feature_category: :geo_replication do`.
+
+### Feature category metadata
+
+You must [set feature category metadata for each RSpec example](../feature_categorization/index.md#rspec-examples).
 
 ### Coverage
 
@@ -845,6 +844,8 @@ it 'is overdue' do
   travel_to(3.days.from_now) do
     expect(issue).to be_overdue
   end
+
+  travel_back # Returns the current time back to its original state
 end
 ```
 
@@ -922,6 +923,21 @@ This means that specs should **never** rely on the value of an ID, or any other
 sequence-generated column. To avoid accidental conflicts, specs should also
 avoid manually specifying any values in these kinds of columns. Instead, leave
 them unspecified, and look up the value after the row is created.
+
+##### TestProf in migration specs
+
+Because of what is described above, migration specs can't be run inside
+a database transaction. Our test suite uses
+[TestProf](https://github.com/test-prof/test-prof) to improve the runtime of the
+test suite, but `TestProf` uses database transactions to perform these optimizations.
+For this reason, we can't use `TestProf` methods in our migration specs.
+These are the methods that should not be used and should be replaced with
+default RSpec methods instead:
+
+- `let_it_be`: use `let` or `let!` instead.
+- `let_it_be_with_reload`: use `let` or `let!` instead.
+- `let_it_be_with_refind`: use `let` or `let!` instead.
+- `before_all`: use `before` or `before(:all)` instead.
 
 #### Redis
 
@@ -1327,7 +1343,7 @@ Testing query performance allows us to:
 `QueryRecorder` allows profiling and testing of the number of database queries
 performed in a given block of code.
 
-See the [`QueryRecorder`](../query_recorder.md) section for more details.
+See the [`QueryRecorder`](../database/query_recorder.md) section for more details.
 
 #### GitalyClient
 
@@ -1439,7 +1455,7 @@ or [cause the universe to implode](../contributing/verify/index.md#do-not-cause-
 
 ### Factories
 
-GitLab uses [factory_bot](https://github.com/thoughtbot/factory_bot) as a test fixture replacement.
+GitLab uses [`factory_bot`](https://github.com/thoughtbot/factory_bot) as a test fixture replacement.
 
 - Factory definitions live in `spec/factories/`, named using the pluralization
   of their corresponding model (`User` factories are defined in `users.rb`).
@@ -1451,11 +1467,51 @@ GitLab uses [factory_bot](https://github.com/thoughtbot/factory_bot) as a test f
   resulting record to pass validation.
 - When instantiating from a factory, don't supply attributes that aren't
   required by the test.
-- Prefer [implicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#implicit-definition),
+- Use [implicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#implicit-definition),
   [explicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#explicit-definition), or
   [inline](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#inline-definition) associations
-  over `create` / `build` for association setup in callbacks.
+  instead of `create` / `build` for association setup in callbacks.
   See [issue #262624](https://gitlab.com/gitlab-org/gitlab/-/issues/262624) for further context.
+
+  When creating factories with a [`has_many`](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#has_many-associations) and `belongs_to` association, use the `instance` method to refer to the object being built.
+  This prevents [creation of unnecessary records](https://gitlab.com/gitlab-org/gitlab/-/issues/378183) by using [interconnected associations](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#interconnected-associations).
+
+  For example, if we have the following classes:
+
+  ```ruby
+  class Car < ApplicationRecord
+    has_many :wheels, inverse_of: :car, foreign_key: :car_id
+  end
+
+  class Wheel < ApplicationRecord
+    belongs_to :car, foreign_key: :car_id, inverse_of: :wheel, optional: false
+  end
+  ```
+
+  We can create the following factories:
+
+  ```ruby
+  FactoryBot.define do
+    factory :car do
+      transient do
+        wheels_count { 2 }
+      end
+
+      wheels do
+        Array.new(wheels_count) do
+          association(:wheel, car: instance)
+        end
+      end
+    end
+  end
+
+  FactoryBot.define do
+    factory :wheel do
+      car { association :car }
+    end
+  end
+  ```
+
 - Factories don't have to be limited to `ActiveRecord` objects.
   [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
 - Factories and their traits should produce valid objects that are [verified by specs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/models/factories_spec.rb).

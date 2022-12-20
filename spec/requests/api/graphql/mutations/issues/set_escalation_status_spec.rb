@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Setting the escalation status of an incident' do
+RSpec.describe 'Setting the escalation status of an incident', feature_category: :incident_management do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

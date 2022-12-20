@@ -20,15 +20,15 @@ RSpec.shared_examples 'milestone sidebar widget' do
 
     it 'shows milestones list in the dropdown' do
       # 5 milestones + "No milestone" = 6 items
-      expect(milestone_widget.find('.gl-new-dropdown-contents')).to have_selector('li.gl-new-dropdown-item', count: 6)
+      expect(milestone_widget.find('.gl-dropdown-contents')).to have_selector('li.gl-dropdown-item', count: 6)
     end
 
     it 'shows expired milestone at the bottom of the list and milestone due earliest at the top of the list', :aggregate_failures do
-      within(milestone_widget, '.gl-new-dropdown-contents') do
+      within(milestone_widget, '.gl-dropdown-contents') do
         expect(page.find('li:last-child')).to have_content milestone_expired.title
 
         [milestone3, milestone2, milestone1, milestone_no_duedate].each_with_index do |m, i|
-          expect(page.all('li.gl-new-dropdown-item')[i + 1]).to have_content m.title
+          expect(page.all('li.gl-dropdown-item')[i + 1]).to have_content m.title
         end
       end
     end

@@ -20,16 +20,16 @@
     %table.table.ci-table.builds-page
       %thead
         %tr
-          %th Status
-          %th Name
-          %th Job
-          %th Pipeline
+          %th= _('Status')
+          %th= _('Name')
+          %th= _('Job')
+          %th= _('Pipeline')
           - if admin
-            %th Project
-            %th Runner
-          %th Stage
-          %th Duration
-          %th Coverage
+            %th= _('Project')
+            %th= _('Runner')
+          %th= _('Stage')
+          %th= _('Duration')
+          %th= _('Coverage')
           %th
 
       = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: { commit_sha: true, ref: true, pipeline_link: true, stage: true, allow_retry: true, admin: admin }

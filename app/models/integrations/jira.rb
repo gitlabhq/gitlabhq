@@ -132,11 +132,9 @@ module Integrations
     end
 
     def client
-      @client ||= begin
-        JIRA::Client.new(options).tap do |client|
-          # Replaces JIRA default http client with our implementation
-          client.request_client = Gitlab::Jira::HttpClient.new(client.options)
-        end
+      @client ||= JIRA::Client.new(options).tap do |client|
+        # Replaces JIRA default http client with our implementation
+        client.request_client = Gitlab::Jira::HttpClient.new(client.options)
       end
     end
 
@@ -406,6 +404,7 @@ module Integrations
         label: Integration::SNOWPLOW_EVENT_LABEL,
         property: key,
         user: user,
+        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: key).to_context],
         **optional_arguments
       )
     end

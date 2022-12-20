@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Users do
+RSpec.describe API::Users, feature_category: :users do
   include WorkhorseHelpers
 
   let_it_be(:admin) { create(:admin) }
@@ -1988,11 +1988,19 @@ RSpec.describe API::Users do
       expect(json_response['error']).to eq('title is missing')
     end
 
-    it "creates ssh key" do
-      key_attrs = attributes_for :key
+    it "creates ssh key", :aggregate_failures do
+      key_attrs = attributes_for(:key, usage_type: :signing)
+
       expect do
         post api("/users/#{user.id}/keys", admin), params: key_attrs
       end.to change { user.keys.count }.by(1)
+
+      expect(response).to have_gitlab_http_status(:created)
+
+      key = user.keys.last
+      expect(key.title).to eq(key_attrs[:title])
+      expect(key.key).to eq(key_attrs[:key])
+      expect(key.usage_type).to eq(key_attrs[:usage_type].to_s)
     end
 
     it 'creates SSH key with `expires_at` attribute' do
@@ -2848,12 +2856,19 @@ RSpec.describe API::Users do
   end
 
   describe "POST /user/keys" do
-    it "creates ssh key" do
-      key_attrs = attributes_for :key
+    it "creates ssh key", :aggregate_failures do
+      key_attrs = attributes_for(:key, usage_type: :signing)
+
       expect do
         post api("/user/keys", user), params: key_attrs
       end.to change { user.keys.count }.by(1)
+
       expect(response).to have_gitlab_http_status(:created)
+
+      key = user.keys.last
+      expect(key.title).to eq(key_attrs[:title])
+      expect(key.key).to eq(key_attrs[:key])
+      expect(key.usage_type).to eq(key_attrs[:usage_type].to_s)
     end
 
     it 'creates SSH key with `expires_at` attribute' do

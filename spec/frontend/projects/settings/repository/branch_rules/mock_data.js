@@ -1,3 +1,22 @@
+export const accessLevelsMockResponse = [
+  {
+    __typename: 'PushAccessLevelEdge',
+    node: {
+      __typename: 'PushAccessLevel',
+      accessLevel: 40,
+      accessLevelDescription: 'Developers',
+    },
+  },
+  {
+    __typename: 'PushAccessLevelEdge',
+    node: {
+      __typename: 'PushAccessLevel',
+      accessLevel: 40,
+      accessLevelDescription: 'Maintainers',
+    },
+  },
+];
+
 export const branchRulesMockResponse = {
   data: {
     project: {
@@ -9,34 +28,34 @@ export const branchRulesMockResponse = {
           {
             name: 'main',
             isDefault: true,
+            matchingBranchesCount: 1,
             branchProtection: {
               allowForcePush: true,
-              codeOwnerApprovalRequired: true,
-            },
-            approvalRules: {
-              nodes: [{ id: 1 }],
-              __typename: 'ApprovalProjectRuleConnection',
-            },
-            externalStatusChecks: {
-              nodes: [{ id: 1 }, { id: 2 }],
-              __typename: 'BranchRule',
+              mergeAccessLevels: {
+                edges: [],
+                __typename: 'MergeAccessLevelConnection',
+              },
+              pushAccessLevels: {
+                edges: accessLevelsMockResponse,
+                __typename: 'PushAccessLevelConnection',
+              },
             },
             __typename: 'BranchRule',
           },
           {
             name: 'test-*',
             isDefault: false,
+            matchingBranchesCount: 2,
             branchProtection: {
               allowForcePush: false,
-              codeOwnerApprovalRequired: false,
-            },
-            approvalRules: {
-              nodes: [],
-              __typename: 'ApprovalProjectRuleConnection',
-            },
-            externalStatusChecks: {
-              nodes: [],
-              __typename: 'BranchRule',
+              mergeAccessLevels: {
+                edges: [],
+                __typename: 'MergeAccessLevelConnection',
+              },
+              pushAccessLevels: {
+                edges: [],
+                __typename: 'PushAccessLevelConnection',
+              },
             },
             __typename: 'BranchRule',
           },
@@ -57,17 +76,22 @@ export const branchRuleProvideMock = {
 export const branchRulePropsMock = {
   name: 'main',
   isDefault: true,
+  matchingBranchesCount: 1,
   branchProtection: {
     allowForcePush: true,
-    codeOwnerApprovalRequired: true,
+    codeOwnerApprovalRequired: false,
+    pushAccessLevels: {
+      edges: accessLevelsMockResponse,
+    },
   },
-  approvalRulesTotal: 1,
-  statusChecksTotal: 2,
+  approvalRulesTotal: 0,
+  statusChecksTotal: 0,
 };
 
 export const branchRuleWithoutDetailsPropsMock = {
-  name: 'main',
+  name: 'branch-1',
   isDefault: false,
+  matchingBranchesCount: 1,
   branchProtection: {
     allowForcePush: false,
     codeOwnerApprovalRequired: false,

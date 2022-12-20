@@ -95,7 +95,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
     context 'when all files under schema path are explicitly listed' do
       # We only care about the part that comes before report-format.json
       # https://rubular.com/r/N8Juz7r8hYDYgD
-      filename_regex = /(?<report_type>[-\w]*)\-report-format.json/
+      filename_regex = /(?<report_type>[-\w]*)-report-format.json/
 
       versions = Dir.glob(File.join(schema_path, "*", File::SEPARATOR)).map { |path| path.split("/").last }
 

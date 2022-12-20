@@ -8,7 +8,7 @@ RSpec.describe IncidentManagement::PagerDuty::CreateIncidentIssueService do
 
   let(:webhook_payload) { Gitlab::Json.parse(fixture_file('pager_duty/webhook_incident_trigger.json')) }
   let(:parsed_payload) { ::PagerDuty::WebhookPayloadParser.call(webhook_payload) }
-  let(:incident_payload) { parsed_payload.first['incident'] }
+  let(:incident_payload) { parsed_payload['incident'] }
 
   subject(:execute) { described_class.new(project, incident_payload).execute }
 
@@ -41,14 +41,14 @@ RSpec.describe IncidentManagement::PagerDuty::CreateIncidentIssueService do
 
           expect(execute.payload[:issue].description).to eq(
             <<~MARKDOWN.chomp
-              **Incident:** [My new incident](https://webdemo.pagerduty.com/incidents/PRORDTY)#{markdown_line_break}
-              **Incident number:** 33#{markdown_line_break}
+              **Incident:** [[FILTERED]](https://gitlab-1.pagerduty.com/incidents/Q1XZUF87W1HB5A)#{markdown_line_break}
+              **Incident number:** 2#{markdown_line_break}
               **Urgency:** high#{markdown_line_break}
               **Status:** triggered#{markdown_line_break}
-              **Incident key:** #{markdown_line_break}
-              **Created at:** 26 September 2017, 3:14PM (UTC)#{markdown_line_break}
-              **Assignees:** [Laura Haley](https://webdemo.pagerduty.com/users/P553OPV)#{markdown_line_break}
-              **Impacted services:** [Production XDB Cluster](https://webdemo.pagerduty.com/services/PN49J75)
+              **Incident key:** [FILTERED]#{markdown_line_break}
+              **Created at:** 30 November 2022, 8:46AM (UTC)#{markdown_line_break}
+              **Assignees:** [Rajendra Kadam](https://gitlab-1.pagerduty.com/users/PIN0B5C)#{markdown_line_break}
+              **Impacted service:** [Test service](https://gitlab-1.pagerduty.com/services/PK6IKMT)
             MARKDOWN
           )
         end

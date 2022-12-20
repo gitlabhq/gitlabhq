@@ -123,7 +123,7 @@ To install the agent on your cluster using Helm:
 1. In your computer, open a terminal and [connect to your cluster](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/).
 1. Run the command you copied when you [registered your agent with GitLab](#register-the-agent-with-gitlab).
 
-Optionally, you can [customize the Helm installation](#customize-the-helm-installation).
+Optionally, you can [customize the Helm installation](#customize-the-helm-installation). If you install the agent on a production system, you should customize the Helm installation to skip creating the service account.
 
 ##### Customize the Helm installation
 

@@ -7,3 +7,4 @@ feature_categories:
 description: Product analytic events, experimental feature.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/fc6c53e6f7b47dc22c8619a5a6fe491d29778d3f
 milestone: '13.2'
+gitlab_schema: gitlab_main

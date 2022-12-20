@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe PopulateDismissalInformationForVulnerabilities do
+RSpec.describe PopulateDismissalInformationForVulnerabilities, feature_category: :vulnerability_management do
   let(:users) { table(:users) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

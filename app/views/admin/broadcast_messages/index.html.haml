@@ -10,6 +10,7 @@
 - if vue_app_enabled
   #js-broadcast-messages{ data: {
     page: params[:page] || 1,
+    target_access_level_options: target_access_level_options.to_json,
     messages_count: @broadcast_messages.total_count,
     messages: @broadcast_messages.map { |message| {
       id: message.id,

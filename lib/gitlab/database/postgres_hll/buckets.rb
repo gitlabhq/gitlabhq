@@ -61,7 +61,7 @@ module Gitlab
 
           num_uniques = (
             ((TOTAL_BUCKETS**2) * (0.7213 / (1 + 1.079 / TOTAL_BUCKETS))) /
-            (num_zero_buckets + buckets.values.sum { |bucket_hash| 2**(-1 * bucket_hash) } )
+            (num_zero_buckets + buckets.values.sum { |bucket_hash| 2**(-1 * bucket_hash) })
           ).to_i
 
           if num_zero_buckets > 0 && num_uniques < 2.5 * TOTAL_BUCKETS

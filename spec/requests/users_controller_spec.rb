@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UsersController do
+RSpec.describe UsersController, feature_category: :user_management do
   # This user should have the same e-mail address associated with the GPG key prepared for tests
   let(:user) { create(:user, email: GpgHelpers::User1.emails[0]) }
   let(:private_user) { create(:user, private_profile: true) }

@@ -745,6 +745,11 @@ For **MB** and **GB**, follow the [Microsoft guidance](https://learn.microsoft.c
 
 Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale](../testing.md#vale) rule: [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml))
 
+## member
+
+When you add a [user account](#user-account) to a group or project,
+the user account becomes a **member**.
+
 ## merge requests
 
 Use lowercase for **merge requests**. If you use **MR** as the acronym, spell it out on first use.
@@ -767,20 +772,41 @@ Do not use **navigate**. Use **go** instead. For example:
 
 ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
-## need to, should
+## need to
 
-Try to avoid **needs to**, because it's wordy. If something is recommended, use **should** instead. If something is required, use **must**.
+Try to avoid **need to**, because it's wordy.
+
+For example, when a variable is **required**,
+instead of **You need to set the variable**, use:
+
+- Set the variable.
+- You must set the variable.
+
+When the variable is **recommended**:
+
+- You should set the variable.
+
+When the variable is **optional**:
+
+- You can set the variable.
+
+## normal, normally
+
+Don't use **normal** to mean the usual, typical, or standard way of doing something.
+Use those terms instead.
 
 Use:
 
-- You should set the variable. (recommended)
-- You must set the variable. (required)
-- Set the variable. (required)
+- Typically, you specify a certificate.
+- Usually, you specify a certificate.
+- Follow the standard Git workflow.
 
 Instead of:
 
-- You need to set the variable.
-- We recommend that you set the variable.
+- Normally, you specify a certificate.
+- Follow the normal Git workflow.
+
+([Vale](../testing.md#vale) rule: [`Normal.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Normal.yml))
 
 ## note that
 
@@ -897,6 +923,15 @@ For example, you might write something like:
 ## push rules
 
 Use lowercase for **push rules**.
+
+## recommend, we recommend
+
+Instead of **we recommend**, use **you should**. We want to talk to the user the way
+we would talk to a colleague, and to avoid differentiation between `we` and `them`.
+
+- You should set the variable. (It's recommended.)
+- Set the variable. (It's required.)
+- You can set the variable. (It's optional.)
 
 ## register
 
@@ -1068,6 +1103,21 @@ Do not use **slave**. Another option is **secondary**. ([Vale](../testing.md#val
 
 Use **subgroup** (no hyphen) instead of **sub-group**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
+## subscription tier
+
+Do not confuse **subscription** or **subscription tier** with **[license](#license)**.
+A user purchases a **subscription**. That subscription has a **tier**.
+
+To describe tiers:
+
+| Instead of                      | Use                                    |
+|---------------------------------|----------------------------------------|
+| In the Free tier or greater     | In all tiers                           |
+| In the Free tier or higher      | In all tiers                           |
+| In the Premium tier or greater  | In the Premium and Ultimate tier       |
+| In the Premium tier or higher   | In the Premium and Ultimate tier       |
+| In the Premium tier or lower    | In the Free and Premium tier           |
+
 ## that
 
 Do not use **that** when describing a noun. For example:
@@ -1126,6 +1176,11 @@ Always follow these words with a noun. For example:
 
 - Use: **Those settings** need to be configured. (Or even better, **Configure those settings.**)
 - Instead of: **Those** need to be configured.
+
+## to which, of which
+
+Try to avoid **to which** and **of which**, and let the preposition dangle at the end of the sentence instead.
+For examples, see [Prepositions](index.md#prepositions).
 
 ## to-do item
 
@@ -1198,18 +1253,10 @@ See also [downgrade](#downgrade) and [roll back](#roll-back).
 
 Do not use **useful**. If the user doesn't find the process to be useful, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
 
-## user, users
+## user account
 
-When possible, address the reader directly, instead of calling them **users**.
-Use the [second person](#you-your-yours), **you**, instead.
-
-Use:
-
-- You can configure a pipeline.
-
-Instead of:
-
-- Users can configure a pipeline.
+You create a **user account**. The user account has an [access level](#access-level).
+When you add a **user account** to a group or project, the user account becomes a **member**.
 
 ## utilize
 
@@ -1270,7 +1317,7 @@ in present tense, active voice.
 
 ## you, your, yours
 
-Use **you**, **your**, and **yours** instead of [**the user** and **the user's**](#user-users).
+Use **you**, **your**, and **yours** instead of **the user** and **the user's**.
 Documentation should be from the [point of view](https://design.gitlab.com/content/voice-tone/#point-of-view) of the reader.
 
 Use:

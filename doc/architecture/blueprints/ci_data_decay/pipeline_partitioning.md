@@ -75,7 +75,7 @@ incidents, over the last couple of months, for example:
 - S2: 2022-04-12 [Transactions detected that have been running for more than 10m](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6821)
 - S2: 2022-04-06 [Database contention plausibly caused by excessive `ci_builds` reads](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6773)
 - S2: 2022-03-18 [Unable to remove a foreign key on `ci_builds`](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6642)
-- S2: 2022-10-10 [The queuing_queries_duration SLI apdex violating SLO](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/7852#note_1130123525)
+- S2: 2022-10-10 [The `queuing_queries_duration` SLI apdex violating SLO](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/7852#note_1130123525)
 
 We have approximately 50 `ci_*` prefixed database tables, and some of them
 would benefit from partitioning.
@@ -180,6 +180,49 @@ respective database tables. Using `RANGE` partitioning works similarly to using
 of `partition_id` values, using `RANGE` partitioning might be a better
 strategy.
 
+### Multi-project pipelines
+
+Parent-child pipeline will always be part of the same partition because child
+pipelines are considered a resource of the parent pipeline. They can't be
+viewed individually in the project pipeline list page.
+
+On the other hand, multi-project pipelines can be viewed in the pipeline list page.
+They can also be accessed from the pipeline graph as downstream/upstream links
+when created via the `trigger` token or the API using a job token.
+They can also be created from other pipelines by using trigger tokens, but in this
+case we don't store the source pipeline.
+
+While partitioning `ci_builds` we need to update the foreign keys to the
+`ci_sources_pipelines` table:
+
+```plain
+Foreign-key constraints:
+    "fk_be5624bf37" FOREIGN KEY (source_job_id) REFERENCES ci_builds(id) ON DELETE CASCADE
+    "fk_d4e29af7d7" FOREIGN KEY (source_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE
+    "fk_e1bad85861" FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE
+```
+
+A `ci_sources_pipelines` record references two `ci_pipelines` rows (parent and
+the child). Our usual strategy has been to add a `partition_id` to the
+table, but if we do it here we will force all multi-project
+pipelines to be part of the same partition.
+
+We should add two `partition_id` columns for this table, a
+`partition_id` and a `source_partition_id`:
+
+```plain
+Foreign-key constraints:
+    "fk_be5624bf37" FOREIGN KEY (source_job_id, source_partition_id) REFERENCES ci_builds(id, source_partition_id) ON DELETE CASCADE
+    "fk_d4e29af7d7" FOREIGN KEY (source_pipeline_id, source_partition_id) REFERENCES ci_pipelines(id, source_partition_id) ON DELETE CASCADE
+    "fk_e1bad85861" FOREIGN KEY (pipeline_id, partition_id) REFERENCES ci_pipelines(id, partition_id) ON DELETE CASCADE
+```
+
+This solution is the closest to a two way door decision because:
+
+- We retain the ability to reference pipelines in different partitions.
+- If we later decide that we want to force multi-project pipelines in the same partition
+  we could add a constraint to validate that both columns have the same value.
+
 ## Why do we want to use explicit logical partition ids?
 
 Partitioning CI/CD data using a logical `partition_id` has several benefits. We
@@ -248,10 +291,9 @@ smart enough to move rows between partitions on its own.
 A partitioned table is called a **routing** table and it will use the `p_`
 prefix which should help us with building automated tooling for query analysis.
 
-A table partition will be called **partition** and it can use the a
-physical partition ID as suffix, leaded by a `p` letter, for example
-`ci_builds_p101`. Existing CI tables will become **zero partitions** of the
-new routing tables. Depending on the chosen
+A table partition will be called **partition** and it can use the a physical
+partition ID as suffix, for example `ci_builds_101`. Existing CI tables will
+become **zero partitions** of the new routing tables. Depending on the chosen
 [partitioning strategy](#how-do-we-want-to-partition-cicd-data) for a given
 table, it is possible to have many logical partitions per one physical partition.
 
@@ -272,6 +314,37 @@ With this strategy, we successfully acquired a lock on `ci_builds` table after 1
 during a low traffic period([after `00:00 UTC`](https://dashboards.gitlab.net/d/web-main/web-overview?orgId=1&viewPanel=537181794&from=now-2d&to=now)).
 
 See an example of this strategy in our [partition tooling](../../../development/database/table_partitioning.md#step-6---create-parent-table-and-attach-existing-table-as-the-initial-partition)).
+
+### Partitioning steps
+
+The database [partition tooling](../../../development/database/table_partitioning.md#partitioning-a-table-list)
+docs contain a list of steps to partition a table, but the steps are not enough
+for our iterative strategy. As our dataset continues to grow we want to take
+advantage of partitioning performance right away and not wait until all tables
+are partitioned. For example, after partitioning the `ci_builds_metadata` table
+we want to start writing and reading data to/from a new partition. This means
+that we will increase the `partition_id` value from `100`, the default value,
+to `101`. Now all of the new resources for the pipeline hierarchy will be
+persisted with `partition_id = 101`. We can continue following the database
+tooling instructions for the next table that will be partitioned, but we require
+a few extra steps:
+
+- add `partition_id` column for the FK references with default value of `100`
+  since the majority of records should have that value.
+- change application logic to cascade the `partition_id` value
+- correct `partition_id` values for recent records with a post deploy/background
+  migration, similar to this:
+
+  ```sql
+  UPDATE ci_pipeline_metadata
+         SET partition_id = ci_pipelines.partition_id
+         FROM ci_pipelines
+              WHERE ci_pipelines.id = ci_pipeline_metadata.pipeline_id
+                AND ci_pipelines.partition_id in (101, 102);
+  ```
+
+- change the foreign key definitions
+- ...
 
 ## Storing partitions metadata in the database
 
@@ -297,7 +370,7 @@ system - any letter from `g` to `z` in Latin alphabet, for example `x`. In that
 case an example of an URI would look like `1e240x5ba0`. If we decide to update
 the primary identifier of a partitioned resource (today it is just a big
 integer) it is important to design a system that is resilient to migrating data
-between partitions, to avoid changing idenfiers when rebalancing happens.
+between partitions, to avoid changing identifiers when rebalancing happens.
 
 `ci_partitions` table will store information about a partition identifier,
 pipeline ids range it is valid for and whether the partitions have been

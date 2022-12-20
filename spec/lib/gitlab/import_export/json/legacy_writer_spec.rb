@@ -96,6 +96,6 @@ RSpec.describe Gitlab::ImportExport::Json::LegacyWriter do
   def subject_json
     subject.close
 
-    ::JSON.parse(IO.read(subject.path))
+    ::JSON.parse(File.read(subject.path))
   end
 end

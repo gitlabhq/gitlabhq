@@ -92,9 +92,15 @@ module Projects
       end
 
       def fetch_file(&block)
+        attempts ||= 1
         response = Gitlab::HTTP.get(lfs_sanitized_url, download_options, &block)
 
         raise ResponseError, "Received error code #{response.code}" unless response.success?
+      rescue Net::OpenTimeout
+        raise if attempts >= 3
+
+        attempts += 1
+        retry
       end
 
       def with_tmp_file

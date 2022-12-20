@@ -150,7 +150,7 @@ Include in the MR description:
 
 - Write the raw SQL in the MR description. Preferably formatted
   nicely with [pgFormatter](https://sqlformat.darold.net) or
-  [paste.depesz.com](https://paste.depesz.com) and using regular quotes
+  <https://paste.depesz.com> and using regular quotes
 <!-- vale gitlab.NonStandardQuotes = NO -->
   (for example, `"projects"."id"`) and avoiding smart quotes (for example, `“projects”.“id”`).
 <!-- vale gitlab.NonStandardQuotes = YES -->

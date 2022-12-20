@@ -39,7 +39,7 @@ module QA
         end
 
         def group_id
-          find_element(:group_id_content).text.delete('Group ID: ')
+          find_element(:group_id_content).text.delete('Group ID: ').sub(/\n.*/, '')
         end
 
         def leave_group

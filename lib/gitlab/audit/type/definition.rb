@@ -59,17 +59,34 @@ module Gitlab
         end
 
         class << self
+          include ::Gitlab::Utils::StrongMemoize
+
           def paths
             @paths ||= [Rails.root.join('config', 'audit_events', 'types', '*.yml')]
           end
 
           def definitions
-            # We lazily load all definitions
-            @definitions ||= load_all!
+            load_all!
           end
+          strong_memoize_attr :definitions
 
           def get(key)
             definitions[key.to_sym]
+          end
+
+          def event_names
+            definitions.keys.map(&:to_s)
+          end
+
+          def defined?(key)
+            get(key).present?
+          end
+
+          def stream_only?(key)
+            event_definition = get(key)
+            return false unless event_definition
+
+            event_definition.streamed && !event_definition.saved_to_database
           end
 
           private

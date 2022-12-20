@@ -16,13 +16,13 @@ import { INSTANCE_TYPE, GROUP_TYPE } from '../../constants';
  * <strong/> tag.
  *
  * ```vue
- * <runner-count-stat
+ * <runner-count
  *   #default="{ count }"
  *   :scope="INSTANCE_TYPE"
  *   :variables="{ status: 'ONLINE' }"
  * >
  *   <strong>{{ count }}</strong>
- * </runner-count-stat>
+ * </runner-count>
  * ```
  *
  * Use `:skip="true"` to prevent data from being fetched and

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::UsageData do
+RSpec.describe API::UsageData, feature_category: :service_ping do
   let_it_be(:user) { create(:user) }
 
   describe 'POST /usage_data/increment_counter' do

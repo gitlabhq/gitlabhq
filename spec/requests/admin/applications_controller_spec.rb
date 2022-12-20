@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::ApplicationsController, :enable_admin_mode do
+RSpec.describe Admin::ApplicationsController, :enable_admin_mode,
+feature_category: :authentication_and_authorization do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:application) { create(:oauth_application, owner_id: nil, owner_type: nil) }
   let_it_be(:show_path) { admin_application_path(application) }

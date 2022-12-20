@@ -263,6 +263,7 @@ export default {
       v-for="(release, index) in releases"
       :key="getReleaseKey(release, index)"
       :release="release"
+      :sort="sort"
       :class="{ 'linked-card': releases.length > 1 && index !== releases.length - 1 }"
     />
 

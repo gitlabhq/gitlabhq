@@ -15,7 +15,7 @@ describe('IncubationAlert', () => {
 
   it('displays link to issue', () => {
     expect(findButton().attributes().href).toBe(
-      'https://gitlab.com/groups/gitlab-org/-/epics/8560',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/381660',
     );
   });
 

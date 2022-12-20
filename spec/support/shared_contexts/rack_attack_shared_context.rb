@@ -6,7 +6,7 @@ RSpec.shared_context 'rack attack cache store' do
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
 
     # Make time-dependent tests deterministic
-    Timecop.freeze { example.run }
+    freeze_time { example.run }
 
     Rack::Attack.cache.store = Rails.cache
   end

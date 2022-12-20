@@ -13,9 +13,10 @@ Bundler.require(:default)
 
 require 'securerandom'
 require 'pathname'
+require 'rainbow/refinement'
 require 'active_support/core_ext/hash'
 require 'active_support/core_ext/object/blank'
-require 'rainbow/refinement'
+require 'active_support/core_ext/module/delegation'
 
 module QA
   root = "#{__dir__}/qa"

@@ -80,7 +80,7 @@ indicates we have plenty of headroom.
    - Generic data can be cached for everyone.
    - You must keep this in mind when building new features.
 1. Try to preserve cache data as much as possible:
-   - Use nested caches to maintain as much cached data as possible across expiries.
+   - Use nested caches to maintain as much cached data as possible across expires.
 1. Perform as few requests to the cache as possible:
    - This reduces variable latency caused by network issues.
    - Lower overhead for each read on the cache.
@@ -166,7 +166,7 @@ Is the cache being added "worthy"? This can be hard to measure, but you can cons
    - Calling the same method multiple times but only calculating the value once.
    - Stored in Ruby memory.
    - `@article ||= Article.find(params[:id])`
-   - `strong_memoize { Article.find(params[:id]) }`
+   - `strong_memoize_attr :method_name`
 1. Request caching:
    - Return the same value for a key for the duration of a web request.
    - `Gitlab::SafeRequestStore.fetch`
@@ -252,7 +252,7 @@ All the time!
 
 ### When to use method caching
 
-- Using instance variables, or [strong_memoize](utilities.md#strongmemoize) is something we all tend to do anyway.
+- Use instance variables, or [`StrongMemoize`](utilities.md#strongmemoize).
 - Useful when the same value is needed multiple times in a request.
 - Can be used to prevent multiple cache calls for the same key.
 - Can cause issues with ActiveRecord objects where a value doesn't change until you call

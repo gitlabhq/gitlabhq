@@ -135,15 +135,13 @@ module Gitlab
           # it is important to reset the ban counter once the client has proven
           # they are not a 'bad guy'.
           rate_limiter.reset!
-        else
+        elsif rate_limiter.register_fail!
           # Register a login failure so that Rack::Attack can block the next
           # request from this IP if needed.
           # This returns true when the failures are over the threshold and the IP
           # is banned.
-          if rate_limiter.register_fail!
-            Gitlab::AppLogger.info "IP #{rate_limiter.ip} failed to login " \
+          Gitlab::AppLogger.info "IP #{rate_limiter.ip} failed to login " \
               "as #{login} but has been temporarily banned from Git auth"
-          end
         end
       end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddGitlabSchemaToBatchedBackgroundMigrations do
+RSpec.describe AddGitlabSchemaToBatchedBackgroundMigrations, feature_category: :database do
   it 'sets gitlab_schema for existing methods to "gitlab_main" and default to NULL' do
     batched_migrations = table(:batched_background_migrations)
     batched_migration = batched_migrations.create!(

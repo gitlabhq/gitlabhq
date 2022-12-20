@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Slack slash commands', :js do
+RSpec.describe 'Slack slash commands', :js, feature_category: :integrations do
   include_context 'project integration activation'
 
   before do

@@ -39,6 +39,7 @@ describe('Ci Group Variable wrapper', () => {
         id: convertToGraphQLId(GRAPHQL_GROUP_TYPE, mockProvide.groupId),
         areScopedVariablesAvailable: false,
         componentName: 'GroupVariables',
+        entity: 'group',
         fullPath: mockProvide.groupPath,
         hideEnvironmentScope: false,
         mutationData: wrapper.vm.$options.mutationData,

@@ -8,7 +8,6 @@ import { parseBoolean } from '../lib/utils/common_utils';
 import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
 import ide from './components/ide.vue';
 import { createRouter } from './ide_router';
-import { initGitlabWebIDE } from './init_gitlab_web_ide';
 import { DEFAULT_THEME } from './lib/themes';
 import { createStore } from './stores';
 
@@ -74,7 +73,6 @@ export const initLegacyWebIDE = (el, options = {}) => {
         codesandboxBundlerUrl: el.dataset.codesandboxBundlerUrl,
         environmentsGuidanceAlertDismissed: !parseBoolean(el.dataset.enableEnvironmentsGuidance),
         previewMarkdownPath: el.dataset.previewMarkdownPath,
-        canUseNewWebIde: parseBoolean(el.dataset.canUseNewWebIde),
         userPreferencesPath: el.dataset.userPreferencesPath,
       });
     },
@@ -96,7 +94,7 @@ export const initLegacyWebIDE = (el, options = {}) => {
  *
  * @param {Objects} options - Extra options for the IDE (Used by EE).
  */
-export function startIde(options) {
+export async function startIde(options) {
   const ideElement = document.getElementById('ide');
 
   if (!ideElement) {
@@ -106,6 +104,7 @@ export function startIde(options) {
   const useNewWebIde = parseBoolean(ideElement.dataset.useNewWebIde);
 
   if (useNewWebIde) {
+    const { initGitlabWebIDE } = await import('./init_gitlab_web_ide');
     initGitlabWebIDE(ideElement);
   } else {
     resetServiceWorkersPublicPath();

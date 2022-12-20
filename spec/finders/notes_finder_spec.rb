@@ -328,6 +328,16 @@ RSpec.describe NotesFinder do
       it 'returns the commit' do
         expect(subject.target).to eq(commit)
       end
+
+      context 'user does not have permission to read_code' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_code, project).and_return false
+        end
+
+        it 'returns nil' do
+          expect(subject.target).to be_nil
+        end
+      end
     end
 
     context 'target_iid' do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ChangePublicProjectsCostFactor, migration: :gitlab_ci do
+RSpec.describe ChangePublicProjectsCostFactor, migration: :gitlab_ci, feature_category: :runner do
   let(:runners) { table(:ci_runners) }
 
   let!(:shared_1) { runners.create!(runner_type: 1, public_projects_minutes_cost_factor: 0) }

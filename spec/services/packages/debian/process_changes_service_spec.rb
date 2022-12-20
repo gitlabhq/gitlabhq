@@ -42,7 +42,7 @@ RSpec.describe Packages::Debian::ProcessChangesService do
         end
 
         context 'marked as pending_destruction' do
-          it 'creates a package' do
+          it 'does not re-use the existing package' do
             existing_package.pending_destruction!
 
             expect { subject.execute }
@@ -73,7 +73,7 @@ RSpec.describe Packages::Debian::ProcessChangesService do
         end
       end
 
-      it 'remove the package file', :aggregate_failures do
+      it 're-raise error', :aggregate_failures do
         expect(::Packages::Debian::GenerateDistributionWorker).not_to receive(:perform_async)
         expect { subject.execute }
           .to not_change { Packages::Package.count }

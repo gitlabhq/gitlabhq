@@ -1,9 +1,6 @@
 {
   "type": "array",
   "items": {
-    "type": "object",
-    "properties": {
-      "$ref": "./feature_flag_scope.json"
-    }
+    "$ref": "./feature_flag_scope.json"
   }
 }

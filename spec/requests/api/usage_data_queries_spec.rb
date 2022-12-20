@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rake_helper'
 
-RSpec.describe API::UsageDataQueries do
+RSpec.describe API::UsageDataQueries, feature_category: :service_ping do
   include UsageDataHelpers
 
   let_it_be(:admin) { create(:user, admin: true) }
@@ -80,7 +80,7 @@ RSpec.describe API::UsageDataQueries do
       end
 
       it 'matches the generated query' do
-        Timecop.freeze(2021, 1, 1) do
+        travel_to(Time.utc(2021, 1, 1)) do
           get api(endpoint, admin)
         end
 

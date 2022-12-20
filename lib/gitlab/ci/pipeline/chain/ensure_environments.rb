@@ -16,7 +16,7 @@ module Gitlab
           private
 
           def ensure_environment(build)
-            ::Environments::CreateForBuildService.new.execute(build, merge_request: @command.merge_request)
+            ::Environments::CreateForBuildService.new.execute(build)
           end
         end
       end

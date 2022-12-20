@@ -17,6 +17,7 @@ module API
       expose :maven_max_file_size, documentation: { type: 'integer', example: 3221225472 }
       expose :npm_max_file_size, documentation: { type: 'integer', example: 524288000 }
       expose :nuget_max_file_size, documentation: { type: 'integer', example: 524288000 }
+      expose :pipeline_hierarchy_size, documentation: { type: 'integer', example: 1000 }
       expose :pypi_max_file_size, documentation: { type: 'integer', example: 3221225472 }
       expose :terraform_module_max_file_size, documentation: { type: 'integer', example: 1073741824 }
       expose :storage_size_limit, documentation: { type: 'integer', example: 15000 }

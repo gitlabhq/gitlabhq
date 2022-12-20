@@ -1,0 +1,27 @@
+{
+  "kind": "Template",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "my-templtae",
+    "namespace": "default",
+    "selfLink": "/oapi/v1/namespaces/default/processedtemplates/my-templtae",
+    "uid": "2240c61c-8f70-11e5-a806-001a4a231290",
+    "resourceVersion": "1399",
+    "creationTimestamp": "2015-11-20T10:19:07Z"
+  },
+  "objects": [
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "test/my-service"
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "name": "NAME_PREFIX",
+      "value": "test/"
+    }
+  ]
+}

@@ -7,3 +7,4 @@ feature_categories:
 description: Store allocated assignees for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26496
 milestone: '11.10'
+gitlab_schema: gitlab_main

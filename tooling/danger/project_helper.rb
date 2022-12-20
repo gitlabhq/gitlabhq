@@ -98,14 +98,14 @@ module Tooling
 
         %r{\A((ee|jh)/)?db/(geo/)?(migrate|post_migrate)/} => [:database, :migration],
         %r{\A((ee|jh)/)?db/(?!fixtures)[^/]+} => [:database],
-        %r{\A((ee|jh)/)?lib/gitlab/(database|background_migration|sql|github_import)(/|\.rb)} => [:database, :backend],
+        %r{\A((ee|jh)/)?lib/gitlab/(database|background_migration|sql)(/|\.rb)} => [:database, :backend],
         %r{\A(app/services/authorized_project_update/find_records_due_for_refresh_service)(/|\.rb)} => [:database, :backend],
         %r{\A(app/models/project_authorization|app/services/users/refresh_authorized_projects_service)(/|\.rb)} => [:database, :backend],
         %r{\A((ee|jh)/)?app/finders/} => [:database, :backend],
         %r{\Arubocop/cop/migration(/|\.rb)} => :database,
 
         %r{\A(\.ruby-version\z|\.nvmrc\z|\.tool-versions\z)} => :tooling,
-        %r{\A(\.gitlab-ci\.yml\z|\.gitlab\/ci)} => :tooling,
+        %r{\A(\.gitlab-ci\.yml\z|\.gitlab/ci)} => :tooling,
         %r{\A\.codeclimate\.yml\z} => :tooling,
         %r{\Alefthook.yml\z} => :tooling,
         %r{\A\.editorconfig\z} => :tooling,

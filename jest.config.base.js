@@ -1,6 +1,7 @@
 const IS_EE = require('./config/helpers/is_ee_env');
 const isESLint = require('./config/helpers/is_eslint');
 const IS_JH = require('./config/helpers/is_jh_env');
+const { TEST_HOST } = require('./spec/frontend/__helpers__/test_constants');
 
 module.exports = (path, options = {}) => {
   const {
@@ -25,7 +26,7 @@ module.exports = (path, options = {}) => {
     ]);
   }
 
-  const glob = `${path}/**/*_spec.js`;
+  const glob = `${path}/**/*@([._])spec.js`;
   let testMatch = [`<rootDir>/${glob}`];
   if (IS_EE) {
     testMatch.push(`<rootDir>/ee/${glob}`);
@@ -43,6 +44,8 @@ module.exports = (path, options = {}) => {
   const TEST_FIXTURES_PATTERN = 'test_fixtures(/.*)$';
 
   const moduleNameMapper = {
+    '^~(/.*)\\?(worker|raw)$': '<rootDir>/app/assets/javascripts$1',
+    '^(.*)\\?(worker|raw)$': '$1',
     '^~(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^ee_component(/.*)$':
       '<rootDir>/app/assets/javascripts/vue_shared/components/empty_component.js',
@@ -63,6 +66,7 @@ module.exports = (path, options = {}) => {
     '^jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^ee_else_ce_jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^jquery$': '<rootDir>/node_modules/jquery/dist/jquery.slim.js',
+    '^@sentry/browser$': '<rootDir>/app/assets/javascripts/sentry/sentry_browser_wrapper.js',
     ...extModuleNameMapper,
   };
 
@@ -153,6 +157,7 @@ module.exports = (path, options = {}) => {
     'dateformat',
     'lowlight',
     'vscode-languageserver-types',
+    'yaml',
     ...gfmParserDependencies,
   ];
 
@@ -183,11 +188,16 @@ module.exports = (path, options = {}) => {
       '^.+\\.(md|zip|png|yml|yaml)$': './spec/frontend/__helpers__/raw_transformer.js',
     },
     transformIgnorePatterns: [`node_modules/(?!(${transformIgnoreNodeModules.join('|')}))`],
-    timers: 'legacy',
+    fakeTimers: {
+      enableGlobally: true,
+      doNotFake: ['nextTick', 'setImmediate'],
+      legacyFakeTimers: true,
+    },
     testEnvironment: '<rootDir>/spec/frontend/environment.js',
     testEnvironmentOptions: {
       IS_EE,
       IS_JH,
+      url: TEST_HOST,
     },
     testRunner: 'jest-jasmine2',
   };

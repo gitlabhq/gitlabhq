@@ -316,6 +316,7 @@ namespace :gitlab do
         all_databases.each do |db|
           desc "Run migrations on #{db} with instrumentation"
           task db => :environment do
+            Gitlab::Database::Migrations::Runner.batched_migrations_last_id(db).store
             Gitlab::Database::Migrations::Runner.up(database: db).run
           end
         end
@@ -406,7 +407,7 @@ namespace :gitlab do
         Rails.application.eager_load!
 
         tables = Gitlab::Database.database_base_models.flat_map { |_, m| m.connection.tables }
-        classes = tables.to_h { |t| [t, []] }
+        classes = tables.index_with { [] }
 
         Gitlab::Database.database_base_models.each do |_, model_class|
           model_class

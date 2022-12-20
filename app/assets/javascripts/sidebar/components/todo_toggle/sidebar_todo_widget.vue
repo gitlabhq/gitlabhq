@@ -3,11 +3,11 @@ import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { produce } from 'immer';
 import { createAlert } from '~/flash';
 import { __, sprintf } from '~/locale';
-import { todoQueries, TodoMutationTypes, todoMutations } from '~/sidebar/constants';
-import { todoLabel } from '~/vue_shared/components/sidebar/todo_toggle//utils';
-import TodoButton from '~/vue_shared/components/sidebar/todo_toggle/todo_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import Tracking from '~/tracking';
+import { todoQueries, TodoMutationTypes, todoMutations } from '../../constants';
+import { todoLabel } from '../../utils';
+import TodoButton from './todo_button.vue';
 
 const trackingMixin = Tracking.mixin();
 

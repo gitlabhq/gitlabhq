@@ -134,11 +134,10 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateVulnerabilitiesFindin
 
   # rubocop:disable Metrics/ParameterLists
   def create_finding!(
-    id: nil,
-    vulnerability_id:, project_id:, scanner_id:, primary_identifier_id:,
+    vulnerability_id:, project_id:, scanner_id:, primary_identifier_id:, id: nil,
                       name: "test", severity: 7, confidence: 7, report_type: 0,
                       project_fingerprint: '123qweasdzxc', location_fingerprint: 'test',
-                      metadata_version: 'test', raw_metadata: 'test', uuid: 'test')
+                      metadata_version: 'test', raw_metadata: 'test', uuid: SecureRandom.uuid)
     params = {
       vulnerability_id: vulnerability_id,
       project_id: project_id,

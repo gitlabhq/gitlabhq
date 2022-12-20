@@ -94,11 +94,19 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
 
 - [ ] If deviating from the above example, then be sure to order columns according to [our guidelines](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ordering_table_columns.md).
 
-- [ ] Add the new table to the GitLab Schema defined in [`ee/lib/ee/gitlab/database/gitlab_schemas.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/database/gitlab_schemas.yml).
+- [ ] Add the new table to the [database dictionary](database_dictionary.md) defined in [`ee/db/docs/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/db/docs):
 
-   ```yaml
-   cool_widget_registry: :gitlab_geo
-   ```
+  ```yaml
+  table_name: cool_widget_registry
+  description: Description example
+  introduced_by_url: Merge request link
+  milestone: Milestone example
+  feature_categories:
+   - Feature category example
+  classes:
+   - Class example
+  gitlab_schema: gitlab_geo
+  ```
 
 - [ ] Run Geo tracking database migrations:
 
@@ -157,11 +165,19 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
 
 - [ ] If deviating from the above example, then be sure to order columns according to [our guidelines](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ordering_table_columns.md).
 
-- [ ] Add the new table to the GitLab Schema defined in [`lib/gitlab/database/gitlab_schemas.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/gitlab_schemas.yml) with the databases they need to be added to.
+- [ ] Add the new table to the [database dictionary](database_dictionary.md) defined in [`db/docs/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/docs):
 
-   ```yaml
-   cool_widget_states: :gitlab_main
-   ```
+  ```yaml
+  table_name: cool_widget_states
+  description: Description example
+  introduced_by_url: Merge request link
+  milestone: Milestone example
+  feature_categories:
+   - Feature category example
+  classes:
+   - Class example
+  gitlab_schema: gitlab_main
+  ```
 
 - [ ] Run database migrations:
 
@@ -316,6 +332,15 @@ That's all of the required database changes.
         true
       end
 
+      override :housekeeping_enabled?
+      def self.housekeeping_enabled?
+        # Remove this method if the new Git repository type supports git
+        # repository housekeeping and the ::CoolWidget#git_garbage_collect_worker_klass
+        # is implemented. If the data type requires any action to be performed
+        # before running the housekeeping override the `before_housekeeping` method
+        # (see `RepositoryReplicatorStrategy#before_housekeeping`)
+        false
+      end
     end
   end
   ```

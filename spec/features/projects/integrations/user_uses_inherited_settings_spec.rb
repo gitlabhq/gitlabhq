@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User uses inherited settings', :js do
+RSpec.describe 'User uses inherited settings', :js, feature_category: :integrations do
   include JiraIntegrationHelpers
 
   include_context 'project integration activation'

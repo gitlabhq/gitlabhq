@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe BackfillStageEventHash, schema: 20210730103808 do
+RSpec.describe BackfillStageEventHash, schema: 20210730103808, feature_category: :value_stream_management do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:labels) { table(:labels) }

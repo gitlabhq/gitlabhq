@@ -21,7 +21,6 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
-    it { is_expected.to have_many(:integrations) }
     it { is_expected.to have_many(:events) }
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:merge_request_metrics).class_name('MergeRequest::Metrics') }
@@ -58,7 +57,6 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_one(:pipelines_email_integration) }
     it { is_expected.to have_one(:irker_integration) }
     it { is_expected.to have_one(:pivotaltracker_integration) }
-    it { is_expected.to have_one(:flowdock_integration) }
     it { is_expected.to have_one(:assembla_integration) }
     it { is_expected.to have_one(:slack_slash_commands_integration) }
     it { is_expected.to have_one(:mattermost_slash_commands_integration) }
@@ -151,6 +149,20 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout').with_foreign_key(:project_id) }
     it { is_expected.to have_many(:pipeline_metadata).class_name('Ci::PipelineMetadata') }
     it { is_expected.to have_many(:incident_management_timeline_event_tags).class_name('IncidentManagement::TimelineEventTag') }
+    it { is_expected.to have_many(:integrations) }
+    it { is_expected.to have_many(:push_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:tag_push_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:issue_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:confidential_issue_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:merge_request_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:note_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:confidential_note_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:job_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:archive_trace_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:pipeline_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:wiki_page_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:deployment_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:alert_hooks_integrations).class_name('Integration') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -354,6 +366,33 @@ RSpec.describe Project, factory_default: :keep do
         expect(Ci::Pipeline).to receive(:ci_sources).and_call_original
 
         subject.ci_pipelines
+      end
+    end
+
+    context 'order of the `has_many :notes` association' do
+      let(:associations_having_dependent_destroy) do
+        described_class.reflect_on_all_associations(:has_many).select do |assoc|
+          assoc.options[:dependent] == :destroy
+        end
+      end
+
+      let(:associations_having_dependent_destroy_with_issuable_included) do
+        associations_having_dependent_destroy.select do |association|
+          association.klass.include?(Issuable)
+        end
+      end
+
+      it 'has `has_many :notes` as the first association among all the other associations that'\
+         'includes the `Issuable` module' do
+        names_of_associations_having_dependent_destroy = associations_having_dependent_destroy.map(&:name)
+        index_of_has_many_notes_association = names_of_associations_having_dependent_destroy.find_index(:notes)
+
+        associations_having_dependent_destroy_with_issuable_included.each do |issuable_included_association|
+          index_of_issuable_included_association =
+            names_of_associations_having_dependent_destroy.find_index(issuable_included_association.name)
+
+          expect(index_of_has_many_notes_association).to be < index_of_issuable_included_association
+        end
       end
     end
   end
@@ -5759,6 +5798,32 @@ RSpec.describe Project, factory_default: :keep do
 
       integration.project.execute_integrations(anything, :merge_request_hooks)
     end
+
+    it 'does not trigger extra queries when called multiple times' do
+      integration.project.execute_integrations({}, :push_hooks)
+
+      recorder = ActiveRecord::QueryRecorder.new do
+        integration.project.execute_integrations({}, :push_hooks)
+      end
+
+      expect(recorder.count).to be_zero
+    end
+
+    context 'with cache_project_integrations disabled' do
+      before do
+        stub_feature_flags(cache_project_integrations: false)
+      end
+
+      it 'triggers extra queries when called multiple times' do
+        integration.project.execute_integrations({}, :push_hooks)
+
+        recorder = ActiveRecord::QueryRecorder.new do
+          integration.project.execute_integrations({}, :push_hooks)
+        end
+
+        expect(recorder.count).not_to be_zero
+      end
+    end
   end
 
   describe '#has_active_hooks?' do
@@ -8156,6 +8221,16 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#work_items_mvc_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group feature flag' do
+      let(:feature_flag_method) { :work_items_mvc_feature_flag_enabled? }
+      let(:feature_flag) { :work_items_mvc }
+      let(:subject_project) { group_project }
+    end
+  end
+
   describe '#work_items_mvc_2_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
@@ -8368,6 +8443,105 @@ RSpec.describe Project, factory_default: :keep do
     subject(:suggested_reviewers_available) { project.suggested_reviewers_available? }
 
     it { is_expected.to be(false) }
+  end
+
+  describe '.cascading_with_parent_namespace' do
+    let_it_be_with_reload(:group) { create(:group, :with_root_storage_statistics) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+    let_it_be_with_reload(:project) { create(:project, group: subgroup) }
+    let_it_be_with_reload(:project_without_group) { create(:project) }
+
+    shared_examples 'cascading settings' do |attribute|
+      it 'return self value when no parent' do
+        expect(project_without_group.group).to be_nil
+
+        project_without_group.update!(attribute => true)
+        expect(project_without_group.public_send("#{attribute}?", inherit_group_setting: true)).to be_truthy
+        expect(project_without_group.public_send("#{attribute}_locked?")).to be_falsey
+
+        project_without_group.update!(attribute => false)
+        expect(project_without_group.public_send("#{attribute}?", inherit_group_setting: true)).to be_falsey
+        expect(project_without_group.public_send("#{attribute}_locked?")).to be_falsey
+      end
+
+      it 'return self value when unlocked' do
+        subgroup.namespace_settings.update!(attribute => false)
+        group.namespace_settings.update!(attribute => false)
+
+        project.update!(attribute => true)
+        expect(project.public_send("#{attribute}?", inherit_group_setting: true)).to be_truthy
+        expect(project.public_send("#{attribute}_locked?")).to be_falsey
+
+        project.update!(attribute => false)
+        expect(project.public_send("#{attribute}?", inherit_group_setting: true)).to be_falsey
+        expect(project.public_send("#{attribute}_locked?")).to be_falsey
+      end
+
+      it 'still return self value when locked subgroup' do
+        subgroup.namespace_settings.update!(attribute => true)
+        group.namespace_settings.update!(attribute => false)
+
+        project.update!(attribute => true)
+        expect(project.public_send("#{attribute}?", inherit_group_setting: true)).to be_truthy
+        expect(project.public_send("#{attribute}_locked?")).to be_falsey
+
+        project.update!(attribute => false)
+        expect(project.public_send("#{attribute}?", inherit_group_setting: true)).to be_falsey
+        expect(project.public_send("#{attribute}_locked?")).to be_falsey
+      end
+
+      it 'still return unlocked value when locked group' do
+        subgroup.namespace_settings.update!(attribute => false)
+        group.namespace_settings.update!(attribute => true)
+
+        project.update!(attribute => true)
+        expect(project.public_send("#{attribute}?", inherit_group_setting: true)).to be_truthy
+        expect(project.public_send("#{attribute}_locked?")).to be_falsey
+
+        project.update!(attribute => false)
+        expect(project.public_send("#{attribute}?", inherit_group_setting: true)).to be_falsey
+        expect(project.public_send("#{attribute}_locked?")).to be_falsey
+      end
+    end
+
+    it_behaves_like 'cascading settings', :only_allow_merge_if_pipeline_succeeds
+    it_behaves_like 'cascading settings', :allow_merge_on_skipped_pipeline
+    it_behaves_like 'cascading settings', :only_allow_merge_if_all_discussions_are_resolved
+  end
+
+  describe '#archived' do
+    it { expect(subject.archived).to be_falsey }
+    it { expect(described_class.new(archived: true).archived).to be_truthy }
+  end
+
+  describe '#resolve_outdated_diff_discussions' do
+    it { expect(subject.resolve_outdated_diff_discussions).to be_falsey }
+
+    context 'when set explicitly' do
+      subject { described_class.new(resolve_outdated_diff_discussions: true) }
+
+      it { expect(subject.resolve_outdated_diff_discussions).to be_truthy }
+    end
+  end
+
+  describe '#only_allow_merge_if_all_discussions_are_resolved' do
+    it { expect(subject.only_allow_merge_if_all_discussions_are_resolved).to be_falsey }
+
+    context 'when set explicitly' do
+      subject { described_class.new(only_allow_merge_if_all_discussions_are_resolved: true) }
+
+      it { expect(subject.only_allow_merge_if_all_discussions_are_resolved).to be_truthy }
+    end
+  end
+
+  describe '#remove_source_branch_after_merge' do
+    it { expect(subject.remove_source_branch_after_merge).to be_truthy }
+
+    context 'when set explicitly' do
+      subject { described_class.new(remove_source_branch_after_merge: false) }
+
+      it { expect(subject.remove_source_branch_after_merge).to be_falsey }
+    end
   end
 
   private

@@ -772,6 +772,7 @@ describe('GfmAutoComplete', () => {
         input           | output
         ${'~'}          | ${unassignedLabels}
         ${'/label ~'}   | ${unassignedLabels}
+        ${'/labels ~'}  | ${unassignedLabels}
         ${'/relabel ~'} | ${unassignedLabels}
         ${'/unlabel ~'} | ${[]}
       `('$input shows $output.length labels', expectLabels);
@@ -786,6 +787,7 @@ describe('GfmAutoComplete', () => {
         input           | output
         ${'~'}          | ${allLabels}
         ${'/label ~'}   | ${unassignedLabels}
+        ${'/labels ~'}  | ${unassignedLabels}
         ${'/relabel ~'} | ${allLabels}
         ${'/unlabel ~'} | ${assignedLabels}
       `('$input shows $output.length labels', expectLabels);
@@ -800,6 +802,7 @@ describe('GfmAutoComplete', () => {
         input           | output
         ${'~'}          | ${assignedLabels}
         ${'/label ~'}   | ${[]}
+        ${'/labels ~'}  | ${[]}
         ${'/relabel ~'} | ${assignedLabels}
         ${'/unlabel ~'} | ${assignedLabels}
       `('$input shows $output.length labels', expectLabels);

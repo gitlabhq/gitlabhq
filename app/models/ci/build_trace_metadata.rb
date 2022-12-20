@@ -2,6 +2,8 @@
 
 module Ci
   class BuildTraceMetadata < Ci::ApplicationRecord
+    include Ci::Partitionable
+
     MAX_ATTEMPTS = 5
     self.table_name = 'ci_build_trace_metadata'
     self.primary_key = :build_id
@@ -9,15 +11,17 @@ module Ci
     belongs_to :build, class_name: 'Ci::Build'
     belongs_to :trace_artifact, class_name: 'Ci::JobArtifact'
 
+    partitionable scope: :build
+
     validates :build, presence: true
     validates :archival_attempts, presence: true
 
-    def self.find_or_upsert_for!(build_id)
-      record = find_by(build_id: build_id)
+    def self.find_or_upsert_for!(build_id, partition_id)
+      record = find_by(build_id: build_id, partition_id: partition_id)
       return record if record
 
-      upsert({ build_id: build_id }, unique_by: :build_id)
-      find_by!(build_id: build_id)
+      upsert({ build_id: build_id, partition_id: partition_id }, unique_by: :build_id)
+      find_by!(build_id: build_id, partition_id: partition_id)
     end
 
     # The job is retried around 5 times during the 7 days retention period for

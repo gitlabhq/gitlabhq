@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User wants to add a Dockerfile file', :js do
+RSpec.describe 'Projects > Files > User wants to add a Dockerfile file', :js, feature_category: :projects do
   include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
 
   before do

@@ -51,4 +51,25 @@ RSpec.describe Types::PermissionTypes::BasePermissionType do
       expect(test_type).to have_graphql_field(:admin_issue)
     end
   end
+
+  describe 'extensions' do
+    subject(:test_type) do
+      Class.new(described_class) do
+        graphql_name 'TestClass'
+
+        permission_field :read_entity_a do
+          extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+        end
+
+        ability_field(:read_entity_b) do
+          extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+        end
+      end
+    end
+
+    it 'has the extension' do
+      expect(test_type.fields['readEntityA'].extensions).to include(a_kind_of(::Gitlab::Graphql::Limit::FieldCallCount))
+      expect(test_type.fields['readEntityB'].extensions).to include(a_kind_of(::Gitlab::Graphql::Limit::FieldCallCount))
+    end
+  end
 end

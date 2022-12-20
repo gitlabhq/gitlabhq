@@ -10,6 +10,9 @@
             %span.light= _('Title:')
             %strong= @key.title
           %li
+            %span.light= s_('Profiles|Usage type:')
+            %strong= ssh_key_usage_types.invert[@key.usage_type]
+          %li
             %span.light= _('Created on:')
             %strong= @key.created_at.to_s(:medium)
           %li
@@ -39,4 +42,4 @@
   .col-md-12
     .float-right
       - if @key.can_delete?
-        = render 'shared/ssh_keys/key_delete', text: _('Delete'), html_class: "btn btn-danger gl-button delete-key js-confirm-modal-button", button_data: ssh_key_delete_modal_data(@key, path_to_key(@key, is_admin))
+        = render 'shared/ssh_keys/key_delete', button_data: ssh_key_delete_modal_data(@key, path_to_key(@key, is_admin))

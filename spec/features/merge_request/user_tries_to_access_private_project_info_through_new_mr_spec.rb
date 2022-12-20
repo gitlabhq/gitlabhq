@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge Request > User tries to access private project information through the new mr page' do
+RSpec.describe 'Merge Request > User tries to access private project information through the new mr page',
+feature_category: :code_review do
   let(:current_user) { create(:user) }
   let(:private_project) do
     create(:project, :public, :repository,

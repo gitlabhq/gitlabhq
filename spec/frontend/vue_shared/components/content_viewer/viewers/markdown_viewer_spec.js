@@ -1,10 +1,11 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import $ from 'jquery';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import MarkdownViewer from '~/vue_shared/components/content_viewer/viewers/markdown_viewer.vue';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('MarkdownViewer', () => {
   let wrapper;
@@ -26,7 +27,6 @@ describe('MarkdownViewer', () => {
     mock = new MockAdapter(axios);
 
     jest.spyOn(axios, 'post');
-    jest.spyOn($.fn, 'renderGFM');
   });
 
   afterEach(() => {

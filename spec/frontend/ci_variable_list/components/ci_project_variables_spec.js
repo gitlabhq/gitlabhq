@@ -35,6 +35,7 @@ describe('Ci Project Variable wrapper', () => {
       id: convertToGraphQLId(GRAPHQL_PROJECT_TYPE, mockProvide.projectId),
       areScopedVariablesAvailable: true,
       componentName: 'ProjectVariables',
+      entity: 'project',
       fullPath: mockProvide.projectFullPath,
       hideEnvironmentScope: false,
       mutationData: wrapper.vm.$options.mutationData,

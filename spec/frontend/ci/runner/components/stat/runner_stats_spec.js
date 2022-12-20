@@ -16,12 +16,32 @@ describe('RunnerStats', () => {
 
   const findSingleStats = () => wrapper.findAllComponents(RunnerSingleStat);
 
+  const RunnerCountStub = {
+    props: ['variables'],
+    render() {
+      // return a count for each status
+      const mockCounts = {
+        undefined: 6, // no status returns "all"
+        [STATUS_ONLINE]: 3,
+        [STATUS_OFFLINE]: 2,
+        [STATUS_STALE]: 1,
+      };
+
+      return this.$scopedSlots.default({
+        count: mockCounts[this.variables.status],
+      });
+    },
+  };
+
   const createComponent = ({ props = {}, mountFn = shallowMount, ...options } = {}) => {
     wrapper = mountFn(RunnerStats, {
       propsData: {
         scope: INSTANCE_TYPE,
         variables: {},
         ...props,
+      },
+      stubs: {
+        RunnerCount: RunnerCountStub,
       },
       ...options,
     });
@@ -32,24 +52,8 @@ describe('RunnerStats', () => {
   });
 
   it('Displays all the stats', () => {
-    const mockCounts = {
-      [STATUS_ONLINE]: 3,
-      [STATUS_OFFLINE]: 2,
-      [STATUS_STALE]: 1,
-    };
-
     createComponent({
       mountFn: mount,
-      stubs: {
-        RunnerCount: {
-          props: ['variables'],
-          render() {
-            return this.$scopedSlots.default({
-              count: mockCounts[this.variables.status],
-            });
-          },
-        },
-      },
     });
 
     const text = wrapper.text();
@@ -77,5 +81,22 @@ describe('RunnerStats', () => {
     findSingleStats().wrappers.forEach((stat) => {
       expect(stat.props('variables')).toMatchObject(mockVariables);
     });
+  });
+
+  it('Does not display counts when total is 0', () => {
+    createComponent({
+      mountFn: mount,
+      stubs: {
+        RunnerCount: {
+          render() {
+            return this.$scopedSlots.default({
+              count: 0,
+            });
+          },
+        },
+      },
+    });
+
+    expect(wrapper.html()).toBe('');
   });
 });

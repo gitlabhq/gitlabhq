@@ -5,6 +5,7 @@ query alertDetails($fullPath: ID!, $alertId: String) {
     id
     alertManagementAlerts(iid: $alertId) {
       nodes {
+        id
         ...AlertDetailItem
       }
     }

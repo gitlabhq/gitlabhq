@@ -61,6 +61,7 @@ class Member < ApplicationRecord
   validate :access_level_inclusion
   validate :validate_member_role_access_level
   validate :validate_access_level_locked_for_member_role, on: :update
+  validate :validate_member_role_belongs_to_same_root_namespace
 
   scope :with_invited_user_state, -> do
     joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
@@ -515,12 +516,22 @@ class Member < ApplicationRecord
     end
   end
 
+  def validate_member_role_belongs_to_same_root_namespace
+    return unless member_role_id
+
+    return if member_namespace.id == member_role.namespace_id
+    return if member_namespace.root_ancestor.id == member_role.namespace_id
+
+    errors.add(:member_namespace, _("must be in same hierarchy as custom role's namespace"))
+  end
+
   def send_invite
     # override in subclass
   end
 
   def send_request
     notification_service.new_access_request(self)
+    todo_service.create_member_access_request(self) if source_type != 'Project'
   end
 
   def post_create_hook
@@ -576,6 +587,12 @@ class Member < ApplicationRecord
   # rubocop: disable CodeReuse/ServiceClass
   def notification_service
     NotificationService.new
+  end
+  # rubocop: enable CodeReuse/ServiceClass
+
+  # rubocop: disable CodeReuse/ServiceClass
+  def todo_service
+    TodoService.new
   end
   # rubocop: enable CodeReuse/ServiceClass
 

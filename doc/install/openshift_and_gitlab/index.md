@@ -29,11 +29,11 @@ The GitLab Operator does not include the GitLab Runner. To install and manage a 
 
 ## Unsupported GitLab features
 
-### Secure and Protect
+### Secure
 
-- License Compliance
-- Code Quality scanning
-- Cluster Image Scanning
+- [License Compliance](../../user/compliance/license_compliance/index.md)
+- [Code Quality scanning](../../ci/testing/code_quality.md)
+- [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md) (Note: Pipeline [Container Scanning](../../user/application_security/container_scanning/index.md) is supported)
 
 ### Docker-in-Docker
 

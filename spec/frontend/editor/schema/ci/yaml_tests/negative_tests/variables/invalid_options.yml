@@ -1,0 +1,4 @@
+variables:
+  INVALID_OPTIONS:
+    value: "staging"
+    options: "staging" # must be an array

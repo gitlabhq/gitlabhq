@@ -73,7 +73,7 @@
       .form-group
         = f.label :layout, class: 'label-bold' do
           = s_('Preferences|Layout width')
-        = f.select :layout, layout_choices, {}, class: 'select2'
+        = f.select :layout, layout_choices, {}, class: 'gl-form-select custom-select'
         .form-text.text-muted
           = s_('Preferences|Choose between fixed (max. 1280px) and fluid (%{percentage}) application layout.').html_safe % { percentage: '100%' }
       .form-group
@@ -88,7 +88,7 @@
       .form-group
         = f.label :project_view, class: 'label-bold' do
           = s_('Preferences|Project overview content')
-        = f.select :project_view, project_view_choices, {}, class: 'select2'
+        = f.select :project_view, project_view_choices, {}, class: 'gl-form-select custom-select'
         .form-text.text-muted
           = s_('Preferences|Choose what content you want to see on a project’s overview page.')
       .form-group
@@ -103,7 +103,7 @@
         - supported_characters = %w(" ' ` &#40; [ { < * _).map { |char| "<code>#{char}</code>" }.join(', ')
         = f.gitlab_ui_checkbox_component :markdown_surround_selection,
           s_('Preferences|Surround text selection when typing quotes or brackets'),
-          help_text: sprintf(s_( "Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."), { supported_characters: supported_characters }).html_safe
+          help_text: sprintf(s_("Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."), { supported_characters: supported_characters }).html_safe
       .form-group
         = f.gitlab_ui_checkbox_component :markdown_automatic_lists,
           s_('Preferences|Automatically add new list items'),
@@ -144,9 +144,24 @@
       .form-group
         = f.label :first_day_of_week, class: 'label-bold' do
           = _('First day of the week')
-        = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'select2'
+        = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'gl-form-select custom-select'
     .col-sm-12
       %hr
+  - if Feature.enabled?(:vscode_web_ide, current_user)
+    .row.js-preferences-form.js-search-settings-section
+      .col-lg-4.profile-settings-sidebar#web-ide
+        %h4.gl-mt-0
+          = s_('Preferences|Web IDE')
+        %p
+          = s_('Preferences|The Web IDE Beta is the default Web IDE experience.')
+          = link_to _('Learn more'), help_page_path('user/project/web_ide_beta/index.md'), target: '_blank', rel: 'noopener noreferrer'
+      .col-lg-8
+        .form-group
+          = f.gitlab_ui_checkbox_component :use_legacy_web_ide,
+            s_('Preferences|Opt out of the Web IDE Beta'),
+            help_text: s_('Preferences|The Web IDE remains available alongside the Beta.')
+      .col-sm-12
+        %hr
   .row.js-preferences-form.js-search-settings-section
     .col-lg-4.profile-settings-sidebar#time-preferences
       %h4.gl-mt-0

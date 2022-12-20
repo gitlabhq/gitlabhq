@@ -16,7 +16,7 @@ RSpec.describe Docs::DeprecationHandling do
     # Create dummy YAML data based on file name
     allow(YAML).to receive(:load_file) do |file_name|
       {
-        'name' => file_name[/[a-z]*\.yml/],
+        'title' => file_name[/[a-z]*\.yml/],
         'announcement_milestone' => file_name[/\d+-\d+/].tr('-', '.')
       }
     end
@@ -29,7 +29,7 @@ RSpec.describe Docs::DeprecationHandling do
         entries = arguments[:entries]
 
         expect(milestones).to eq(['14.10', '14.2'])
-        expect(entries.map { |e| e['name'] }).to eq(['a.yml', 'b.yml', 'c.yml'])
+        expect(entries.map { |e| e['title'] }).to eq(['a.yml', 'b.yml', 'c.yml'])
       end
     end
 

@@ -20,12 +20,11 @@ class RemoteMirror < ApplicationRecord
 
   belongs_to :project, inverse_of: :remote_mirrors
 
-  validates :url, presence: true, public_url: { schemes: %w(ssh git http https), allow_blank: true, enforce_user: true }
-
-  after_save :set_override_remote_mirror_available, unless: -> { Gitlab::CurrentSettings.current_application_settings.mirror_available }
-  after_update :reset_fields, if: :saved_change_to_mirror_url?
+  validates :url, presence: true, public_url: { schemes: Project::VALID_MIRROR_PROTOCOLS, allow_blank: true, enforce_user: true }
 
   before_validation :store_credentials
+  after_update :reset_fields, if: :saved_change_to_mirror_url?
+  after_save :set_override_remote_mirror_available, unless: -> { Gitlab::CurrentSettings.current_application_settings.mirror_available }
 
   scope :enabled, -> { where(enabled: true) }
   scope :started, -> { with_update_status(:started) }

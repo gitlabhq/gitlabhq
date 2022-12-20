@@ -1,6 +1,7 @@
 <script>
-import { GlButton, GlSafeHtmlDirective, GlBadge } from '@gitlab/ui';
+import { GlButton, GlBadge } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import PublishButton from './publish_button.vue';
@@ -13,7 +14,7 @@ export default {
     GlBadge,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -84,32 +85,25 @@ export default {
 };
 </script>
 <template>
-  <article
-    class="draft-note-component note-wrapper"
-    @mouseenter="handleMouseEnter(draft)"
-    @mouseleave="handleMouseLeave(draft)"
+  <noteable-note
+    :note="draft"
+    :line="line"
+    :discussion-root="true"
+    :class="{ 'gl-mb-0!': glFeatures.mrReviewSubmitComment }"
+    class="draft-note-component draft-note"
+    @handleEdit="handleEditing"
+    @cancelForm="handleNotEditing"
+    @updateSuccess="handleNotEditing"
+    @handleDeleteNote="deleteDraft"
+    @handleUpdateNote="update"
+    @toggleResolveStatus="toggleResolveDiscussion(draft.id)"
+    @mouseenter.native="handleMouseEnter(draft)"
+    @mouseleave.native="handleMouseLeave(draft)"
   >
-    <ul class="notes draft-notes">
-      <noteable-note
-        :note="draft"
-        :line="line"
-        :discussion-root="true"
-        :class="{ 'gl-mb-0!': glFeatures.mrReviewSubmitComment }"
-        class="draft-note"
-        @handleEdit="handleEditing"
-        @cancelForm="handleNotEditing"
-        @updateSuccess="handleNotEditing"
-        @handleDeleteNote="deleteDraft"
-        @handleUpdateNote="update"
-        @toggleResolveStatus="toggleResolveDiscussion(draft.id)"
-      >
-        <template #note-header-info>
-          <gl-badge variant="warning" class="gl-mr-2">{{ __('Pending') }}</gl-badge>
-        </template>
-      </noteable-note>
-    </ul>
-
-    <template v-if="!isEditingDraft">
+    <template #note-header-info>
+      <gl-badge variant="warning" class="gl-mr-2">{{ __('Pending') }}</gl-badge>
+    </template>
+    <template v-if="!isEditingDraft" #after-note-body>
       <div
         v-if="draftCommands"
         v-safe-html:[$options.safeHtmlConfig]="draftCommands"
@@ -133,5 +127,5 @@ export default {
         </gl-button>
       </p>
     </template>
-  </article>
+  </noteable-note>
 </template>

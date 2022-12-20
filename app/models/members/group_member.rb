@@ -55,6 +55,12 @@ class GroupMember < Member
     { group: group }
   end
 
+  def last_owner_of_the_group?
+    return false unless access_level == Gitlab::Access::OWNER
+
+    group.member_last_owner?(self) || group.member_last_blocked_owner?(self)
+  end
+
   private
 
   override :refresh_member_authorized_projects

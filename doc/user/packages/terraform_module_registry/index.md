@@ -50,7 +50,7 @@ error `{"error":"404 Not Found"}`.
 Example request using a personal access token:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --fail-with-body --header "PRIVATE-TOKEN: <your_access_token>" \
      --upload-file path/to/file.tgz \
      "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/terraform/modules/my-module/my-system/0.0.1/file"
 ```
@@ -66,7 +66,7 @@ Example response:
 Example request using a deploy token:
 
 ```shell
-curl --header "DEPLOY-TOKEN: <deploy_token>" \
+curl --fail-with-body --header "DEPLOY-TOKEN: <deploy_token>" \
      --upload-file path/to/file.tgz \
      "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/terraform/modules/my-module/my-system/0.0.1/file"
 ```
@@ -127,14 +127,14 @@ upload:
   script:
     - TERRAFORM_MODULE_NAME=$(echo "${TERRAFORM_MODULE_NAME}" | tr " _" -) # module-name must not have spaces or underscores, so translate them to hyphens
     - tar -vczf ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz -C ${TERRAFORM_MODULE_DIR} --exclude=./.git .
-    - 'curl --location --header "JOB-TOKEN: ${CI_JOB_TOKEN}"
+    - 'curl --fail-with-body --location --header "JOB-TOKEN: ${CI_JOB_TOKEN}"
          --upload-file ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz
          ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/terraform/modules/${TERRAFORM_MODULE_NAME}/${TERRAFORM_MODULE_SYSTEM}/${TERRAFORM_MODULE_VERSION}/file'
   rules:
     - if: $CI_COMMIT_TAG
 ```
 
-To trigger this upload job, add a Git tag to your commit. Ensure the tag follows the [Semantic Versioning Specification](https://semver.org/) that Terraform requires. The `rules:if: $CI_COMMIT_TAG` ensures that only tagged commits to your repo trigger the module upload job.
+To trigger this upload job, add a Git tag to your commit. Ensure the tag follows the [Semantic Versioning Specification](https://semver.org/) that Terraform requires. The `rules:if: $CI_COMMIT_TAG` ensures that only tagged commits to your repository trigger the module upload job.
 For other ways to control jobs in your CI/CD pipeline, refer to the [`.gitlab-ci.yml`](../../../ci/yaml/index.md) keyword reference.
 
 ## Example projects

@@ -237,8 +237,8 @@ module GoogleApi
       end
 
       def make_addons_config(enable_addons)
-        enable_addons.each_with_object({}) do |addon, hash|
-          hash[addon] = { disabled: false }
+        enable_addons.index_with do |addon|
+          { disabled: false }
         end
       end
 

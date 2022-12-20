@@ -24,7 +24,6 @@ class FileMover
 
     if update_markdown
       update_upload_model
-      uploader.schedule_background_upload
     end
   end
 

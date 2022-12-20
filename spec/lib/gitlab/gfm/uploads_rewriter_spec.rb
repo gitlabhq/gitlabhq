@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
       referenced_files.compact.select(&:exists?)
     end
 
-    shared_examples "files are accessible" do
+    shared_examples 'files are accessible' do
       describe '#rewrite' do
         subject(:rewrite) { new_text }
 
@@ -82,6 +82,18 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
           rewrite
 
           expect(new_files).to be_empty
+          expect(new_text).to eq(text)
+        end
+
+        it 'skips non-existant files' do
+          allow_next_instance_of(FileUploader) do |file|
+            allow(file).to receive(:exists?).and_return(false)
+          end
+
+          rewrite
+
+          expect(new_files).to be_empty
+          expect(new_text).to eq(text)
         end
       end
     end
@@ -107,11 +119,11 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
       end
     end
 
-    context "file are stored locally" do
-      include_examples "files are accessible"
+    context 'file are stored locally' do
+      include_examples 'files are accessible'
     end
 
-    context "files are stored remotely" do
+    context 'files are stored remotely' do
       before do
         stub_uploads_object_storage(FileUploader)
 
@@ -120,7 +132,7 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
         end
       end
 
-      include_examples "files are accessible"
+      include_examples 'files are accessible'
     end
 
     describe '#needs_rewrite?' do

@@ -39,7 +39,7 @@ The alert list displays the following information:
 
 NOTE:
 Check out a live example available from the
-[`tanuki-inc` project page](https://gitlab-examples-ops-incident-setup-everyone-tanuki-inc.34.69.64.147.nip.io/)
+[`tanuki-inc` project page](https://gitlab.com/gitlab-examples/ops/incident-setup/everyone/tanuki-inc)
 in GitLab to examine alerts in action.
 
 ## Alert severity
@@ -113,7 +113,7 @@ timeline of the alert's investigation and assignment history.
 The following actions result in a system note:
 
 - [Updating the status of an alert](#change-an-alerts-status)
-- [Creating an incident based on an alert](#create-an-incident-from-an-alert)
+- [Creating an incident based on an alert](manage_incidents.md#from-an-alert)
 - [Assignment of an alert to a user](#assign-an-alert)
 - [Escalation of an alert to on-call responders](paging.md#escalating-an-alert)
 
@@ -149,7 +149,7 @@ To change an alert's status:
   1. On the right sidebar, select **Edit**.
   1. Select a status.
 
-To stop email notifications for alert reoccurrences in projects with [email notifications enabled](paging.md#email-notifications-for-alerts),
+To stop email notifications for alert recurrences in projects with [email notifications enabled](paging.md#email-notifications-for-alerts),
 change the alert's status away from **Triggered**.
 
 #### Resolve an alert by closing the linked incident
@@ -158,8 +158,8 @@ Prerequisites:
 
 - You must have at least the Reporter role.
 
-When you close an [incident](incidents.md) that is linked to an alert,
-the linked alert's status changes to **Resolved**.
+When you [close an incident](manage_incidents.md#close-an-incident) that is linked to an alert,
+GitLab [changes the alert's status](#change-an-alerts-status) to **Resolved**.
 You are then credited with the alert's status change.
 
 #### As an on-call responder **(PREMIUM)**
@@ -173,24 +173,9 @@ Changing the status has the following effects:
 - To **Resolved**: silences all on-call pages for the alert.
 - From **Resolved** to **Triggered**: restarts the alert escalating.
 
-In GitLab 15.1 and earlier, updating the status of an [alert with an associated incident](alerts.md#create-an-incident-from-an-alert)
+In GitLab 15.1 and earlier, updating the status of an [alert with an associated incident](manage_incidents.md#from-an-alert)
 also updates the incident status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
 the incident status is independent and does not update when the alert status changes.
-
-### Create an incident from an alert
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217745) in GitLab 13.1.
-
-The Alert detail view enables you to create an issue with a
-description populated from an alert. To create the issue,
-select the **Create Issue** button. You can then view the issue from the
-alert by selecting the **View Issue** button.
-
-You can also [create incidents for alerts automatically](incidents.md#create-incidents-automatically).
-
-Closing a GitLab issue associated with an alert [changes the alert's status](#change-an-alerts-status) to
-**Resolved**. See [Alert List](#alert-list) for more details
-about alert statuses.
 
 ### Assign an alert
 
@@ -225,18 +210,7 @@ and clear the user from the list of assignees, or select **Unassigned**.
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
 
-You can manually create [To-Do list items](../../user/todos.md) for yourself
-from the Alert details screen, and view them later on your **To-Do List**. To
-add a to-do item:
+You can manually create a [to-do item](../../user/todos.md) for yourself
+from an alert, and view it later on your **To-Do List**.
 
-1. Display the list of current alerts:
-
-   1. On the top bar, select **Main menu > Projects** and find your project.
-   1. On the left sidebar, select **Monitor > Alerts**.
-
-1. Select your desired alert to display its **Alert Management Details View**.
-1. On the right sidebar, select **Add a to do**:
-
-   ![Alert Details Add a to do](img/alert_detail_add_todo_v13_9.png)
-
-To view your To-Do List, on the top bar, select **To-Do List** (**{todo-done}**).
+To add a to-do item, on the right sidebar, select **Add a to do**.

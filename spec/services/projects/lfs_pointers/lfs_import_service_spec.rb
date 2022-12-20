@@ -5,7 +5,12 @@ RSpec.describe Projects::LfsPointers::LfsImportService do
   let(:project) { create(:project) }
   let(:user) { project.creator }
   let(:import_url) { 'http://www.gitlab.com/demo/repo.git' }
-  let(:oid_download_links) { { 'oid1' => "#{import_url}/gitlab-lfs/objects/oid1", 'oid2' => "#{import_url}/gitlab-lfs/objects/oid2" } }
+  let(:oid_download_links) do
+    [
+      { 'oid1' => "#{import_url}/gitlab-lfs/objects/oid1" },
+      { 'oid2' => "#{import_url}/gitlab-lfs/objects/oid2" }
+    ]
+  end
 
   subject { described_class.new(project, user) }
 
@@ -17,7 +22,8 @@ RSpec.describe Projects::LfsPointers::LfsImportService do
     it 'downloads lfs objects' do
       service = double
       expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |instance|
-        expect(instance).to receive(:execute).and_return(oid_download_links)
+        expect(instance).to receive(:each_list_item)
+          .and_yield(oid_download_links[0]).and_yield(oid_download_links[1])
       end
       expect(Projects::LfsPointers::LfsDownloadService).to receive(:new).and_return(service).twice
       expect(service).to receive(:execute).twice
@@ -30,7 +36,7 @@ RSpec.describe Projects::LfsPointers::LfsImportService do
     context 'when no downloadable lfs object links' do
       it 'does not call LfsDownloadService' do
         expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |instance|
-          expect(instance).to receive(:execute).and_return({})
+          expect(instance).to receive(:each_list_item)
         end
         expect(Projects::LfsPointers::LfsDownloadService).not_to receive(:new)
 
@@ -44,7 +50,7 @@ RSpec.describe Projects::LfsPointers::LfsImportService do
       it 'returns error' do
         error_message = "error message"
         expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |instance|
-          expect(instance).to receive(:execute).and_raise(StandardError, error_message)
+          expect(instance).to receive(:each_list_item).and_raise(StandardError, error_message)
         end
 
         result = subject.execute

@@ -23,9 +23,9 @@ instead. See the [GraphQL examples](#replace-vulnerability-rest-api-with-graphql
 
 Every API call to vulnerabilities must be [authenticated](index.md#authentication).
 
-Vulnerability permissions inherit permissions from their project. If a project is
-private, and a user isn't a member of the project to which the vulnerability
-belongs, requests to that project returns a `404 Not Found` status code.
+If an authenticated user does not have permission to
+[view vulnerabilities](../user/permissions.md#project-members-permissions),
+this request returns a `403 Forbidden` status code.
 
 ## Single vulnerability
 

@@ -11,7 +11,10 @@
     = s_('JiraService|You can now close this window and%{br}return to the GitLab for Jira application.').html_safe % { br: '<br>'.html_safe }
 
   - if @jira_app_link
-    %p= link_to s_('Integrations|Return to GitLab for Jira'), @jira_app_link, class: 'gl-button btn btn-confirm'
+    %p
+      = render Pajamas::ButtonComponent.new(href: @jira_app_link, variant: :confirm) do
+        = s_('Integrations|Return to GitLab for Jira')
+
 
   %p= link_to _('Sign out'), destroy_user_session_path, method: :post
 

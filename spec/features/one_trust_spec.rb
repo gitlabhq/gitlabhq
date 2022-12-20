@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'OneTrust' do
+RSpec.describe 'OneTrust', feature_category: :system_access do
   context 'almost there page' do
     context 'when OneTrust is enabled' do
       let_it_be(:onetrust_url) { 'https://*.onetrust.com' }

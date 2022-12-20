@@ -3,19 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::UpdateTimelogsNullSpentAt, schema: 20211215090620 do
-  let_it_be(:previous_time) { 10.days.ago }
-  let_it_be(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }
-  let_it_be(:project) { table(:projects).create!(namespace_id: namespace.id) }
-  let_it_be(:issue) { table(:issues).create!(project_id: project.id) }
-  let_it_be(:merge_request) { table(:merge_requests).create!(target_project_id: project.id, source_branch: 'master', target_branch: 'feature') }
-  let_it_be(:timelog1) { create_timelog!(issue_id: issue.id) }
-  let_it_be(:timelog2) { create_timelog!(merge_request_id: merge_request.id) }
-  let_it_be(:timelog3) { create_timelog!(issue_id: issue.id, spent_at: previous_time) }
-  let_it_be(:timelog4) { create_timelog!(merge_request_id: merge_request.id, spent_at: previous_time) }
+  let!(:previous_time) { 10.days.ago }
+  let!(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }
+  let!(:project) { table(:projects).create!(namespace_id: namespace.id) }
+  let!(:issue) { table(:issues).create!(project_id: project.id) }
+  let!(:merge_request) { table(:merge_requests).create!(target_project_id: project.id, source_branch: 'master', target_branch: 'feature') }
+  let!(:timelog1) { create_timelog!(issue_id: issue.id) }
+  let!(:timelog2) { create_timelog!(merge_request_id: merge_request.id) }
+  let!(:timelog3) { create_timelog!(issue_id: issue.id, spent_at: previous_time) }
+  let!(:timelog4) { create_timelog!(merge_request_id: merge_request.id, spent_at: previous_time) }
 
   subject(:background_migration) { described_class.new }
 
-  before_all do
+  before do
     table(:timelogs).where.not(id: [timelog3.id, timelog4.id]).update_all(spent_at: nil)
   end
 

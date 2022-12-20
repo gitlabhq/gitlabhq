@@ -3,13 +3,13 @@ import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import WikiContent from '~/pages/shared/wikis/components/wiki_content.vue';
-import { renderGFM } from '~/pages/shared/wikis/render_gfm_facade';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 
-jest.mock('~/pages/shared/wikis/render_gfm_facade');
+jest.mock('~/behaviors/markdown/render_gfm');
 jest.mock('~/lib/utils/common_utils');
 
 describe('pages/shared/wikis/components/wiki_content', () => {

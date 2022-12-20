@@ -49,13 +49,15 @@ module API
         end
         # rubocop: disable CodeReuse/ActiveRecord
         get ':id/jobs', urgency: :low, feature_category: :continuous_integration do
+          check_rate_limit!(:jobs_index, scope: current_user) if enforce_jobs_api_rate_limits(@project)
+
           authorize_read_builds!
 
           builds = user_project.builds.order('id DESC')
           builds = filter_builds(builds, params[:scope])
-
           builds = builds.preload(:user, :job_artifacts_archive, :job_artifacts, :runner, :tags, pipeline: :project)
-          present paginate(builds), with: Entities::Ci::Job
+
+          present paginate(builds, without_count: true), with: Entities::Ci::Job
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
@@ -255,16 +257,19 @@ module API
 
           pipeline = current_authenticated_job.pipeline
           project = current_authenticated_job.project
-          agent_authorizations = ::Clusters::AgentAuthorizationsFinder.new(project).execute
           project_groups = project.group&.self_and_ancestor_ids&.map { |id| { id: id } } || []
           user_access_level = project.team.max_member_access(current_user.id)
           roles_in_project = Gitlab::Access.sym_options_with_owner
             .select { |_role, role_access_level| role_access_level <= user_access_level }
             .map(&:first)
 
-          environment = if persisted_environment = current_authenticated_job.actual_persisted_environment
-                          { tier: persisted_environment.tier, slug: persisted_environment.slug }
-                        end
+          persisted_environment = current_authenticated_job.actual_persisted_environment
+          environment = { tier: persisted_environment.tier, slug: persisted_environment.slug } if persisted_environment
+
+          agent_authorizations = ::Clusters::Agents::FilterAuthorizationsService.new(
+            ::Clusters::AgentAuthorizationsFinder.new(project).execute,
+            environment: persisted_environment&.name
+          ).execute
 
           # See https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md#apiv4joballowed_agents-api
           {

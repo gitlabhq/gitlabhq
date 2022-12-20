@@ -132,13 +132,13 @@ they have the following privileges:
 
 Users granted access to a protected environment, but not push or merge access
 to the branch deployed to it, are only granted access to deploy the environment.
-[Invited groups](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group-of-users) added
+[Invited groups](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group) added
 to the project with [Reporter role](../../user/permissions.md#project-members-permissions), appear in the dropdown list for deployment-only access.
 
 To add deployment-only access:
 
 1. Create a group with members who are granted to access to the protected environment, if it doesn't exist yet.
-1. [Invite the group](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group-of-users) to the project with the Reporter role.
+1. [Invite the group](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group) to the project with the Reporter role.
 1. Follow the steps in [Protecting Environments](#protecting-environments).
 
 ## Modifying and unprotecting environments
@@ -200,7 +200,7 @@ To maximize the effectiveness of group-level protected environments,
 [group-level memberships](../../user/group/index.md) must be correctly
 configured:
 
-- Operators should be given at least the Owner role
+- Operators should be given the Owner role
   for the top-level group. They can maintain CI/CD configurations for
   the higher environments (such as production) in the group-level settings page,
   which includes group-level protected environments,

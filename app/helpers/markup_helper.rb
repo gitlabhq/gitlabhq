@@ -59,12 +59,20 @@ module MarkupHelper
   # as Markdown.  HTML tags in the parsed output are not counted toward the
   # +max_chars+ limit.  If the length limit falls within a tag's contents, then
   # the tag contents are truncated without removing the closing tag.
-  def first_line_in_markdown(object, attribute, max_chars = nil, options = {})
+  def first_line_in_markdown(object, attribute, max_chars = nil, is_todo: false, **options)
     md = markdown_field(object, attribute, options.merge(post_process: false))
     return unless md.present?
 
+    includes_code = false
+
     tags = %w(a gl-emoji b strong i em pre code p span)
-    tags << 'img' if options[:allow_images]
+
+    if is_todo
+      fragment = Nokogiri::HTML.fragment(md)
+      includes_code = fragment.css('code').any?
+
+      md = fragment
+    end
 
     context = markdown_field_render_context(object, attribute, options)
     context.reverse_merge!(truncate_visible_max_chars: max_chars || md.length)
@@ -77,12 +85,19 @@ module MarkupHelper
         %w(
           style data-src data-name data-unicode-version data-html
           data-reference-type data-project-path data-iid data-mr-title
+          data-user
         )
     )
 
+    # Extra span with relative positioning relative due to system font being behind
+    # background color when username is first word of mention
+    if is_todo && !includes_code
+      text = "<span class=\"gl-relative\">\"</span>#{text}<span class=\"gl-relative\">\"</span>"
+    end
+
     # since <img> tags are stripped, this can leave empty <a> tags hanging around
     # (as our markdown wraps images in links)
-    options[:allow_images] ? text : strip_empty_link_tags(text).html_safe
+    strip_empty_link_tags(text).html_safe
   end
 
   def markdown(text, context = {})

@@ -8,9 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > `created_by` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28789) in GitLab 14.10.
 
-## Valid access levels
+## Roles
 
-The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
+The [role](../user/permissions.md) assigned to a user or group is defined
+in the `Gitlab::Access` module as `access_level`.
 
 - No access (`0`)
 - Minimal access (`5`) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220203) in GitLab 13.5.)
@@ -28,7 +29,8 @@ In GitLab 14.8 and earlier, projects in personal namespaces have an `access_leve
 
 The `group_saml_identity` attribute is only visible to a group owner for [SSO enabled groups](../user/group/saml_sso/index.md).
 
-The `email` attribute is only visible for users with public emails.
+The `email` attribute is only visible to group owners when the user was provisioned by the group.
+Users are provisioned by the group when the account was created via [SCIM](../user/group/saml_sso/scim_setup.md) or by first sign-in with [SAML SSO for GitLab.com groups](../user/group/saml_sso/index.md).
 
 ## List all members of a group or project
 

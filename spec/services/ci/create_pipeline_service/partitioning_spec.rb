@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, :aggregate_failures,
-:ci_partitionable do
+:ci_partitionable, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user)    { project.first_owner }
 
@@ -15,8 +15,13 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       - test
       - deploy
 
+    needs:build:
+      stage: build
+      script: echo "needs..."
+
     build:
       stage: build
+      needs: ["needs:build"]
       script: make build
 
     test:
@@ -95,6 +100,12 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       expect(pipeline.variables.size).to eq(2)
       expect(variables_partition_ids).to eq([current_partition_id])
     end
+
+    it 'assigns partition_id to needs' do
+      needs = find_need('build')
+
+      expect(needs.partition_id).to eq(current_partition_id)
+    end
   end
 
   context 'with parent child pipelines' do
@@ -143,5 +154,13 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       .processables
       .find { |job| job.name == name }
       .metadata
+  end
+
+  def find_need(name)
+    pipeline
+      .processables
+      .find { |job| job.name == name }
+      .needs
+      .first
   end
 end

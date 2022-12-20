@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue Detail', :js do
+RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
   let_it_be_with_refind(:project) { create(:project, :public) }
 
   let(:user)     { create(:user) }

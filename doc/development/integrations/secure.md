@@ -102,7 +102,7 @@ it's declared under the `reports:sast` key in the job definition, not because of
 
 ### Policies
 
-Certain GitLab workflows, such as [AutoDevOps](../../topics/autodevops/customize.md#disable-jobs),
+Certain GitLab workflows, such as [AutoDevOps](../../topics/autodevops/cicd_variables.md#job-disabling-variables),
 define CI/CD variables to indicate that given scans should be disabled. You can check for this by looking
 for variables such as:
 
@@ -327,21 +327,6 @@ You can find the schemas for these scanners here:
 - [Dependency Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json)
 - [SAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json)
 - [Secret Detection](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json)
-
-### Retention period for vulnerabilities
-
-GitLab has the following retention policies for vulnerabilities on non-default branches. Vulnerabilities are no longer available:
-
-- When the related CI job artifact expires.
-- 90 days after the pipeline is created, even if the related CI job artifacts are locked.
-
-To view vulnerabilities, either:
-
-- Run a new pipeline.
-- Download the related CI job artifacts if they are available.
-
-NOTE:
-This does not apply for the vulnerabilities existing on the default branch.
 
 ### Report validation
 

@@ -110,7 +110,7 @@ const csvData = (metricHeaders, metricValues) => {
   // "If double-quotes are used to enclose fields, then a double-quote
   // appearing inside a field must be escaped by preceding it with
   // another double quote."
-  // https://tools.ietf.org/html/rfc4180#page-2
+  // https://www.rfc-editor.org/rfc/rfc4180#page-2
   const headers = metricHeaders.map((header) => `"${header.replace(/"/g, '""')}"`);
 
   return {

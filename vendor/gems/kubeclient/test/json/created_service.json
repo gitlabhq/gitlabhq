@@ -1,0 +1,31 @@
+{
+    "kind": "Service",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "guestbook",
+        "namespace": "staging",
+        "selfLink": "/api/v1/namespaces/staging/services/guestbook",
+        "uid": "29885239-df58-11e4-bd42-f8b156af4ae1",
+        "resourceVersion": "1908",
+        "creationTimestamp": "2015-04-10T08:04:07Z",
+        "labels": {
+            "name": "guestbook"
+        }
+    },
+    "spec": {
+        "ports": [
+            {
+                "name": "",
+                "protocol": "TCP",
+                "port": 3000,
+                "targetPort": "http-server"
+            }
+        ],
+        "selector": {
+            "name": "guestbook"
+        },
+        "clusterIP": "10.0.0.99",
+        "sessionAffinity": "None"
+    },
+    "status": {}
+}

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Discussion Lock', :js do
+RSpec.describe 'Discussion Lock', :js, feature_category: :team_planning do
   let(:user) { create(:user) }
   let(:issue) { create(:issue, project: project, author: user) }
   let(:project) { create(:project, :public) }

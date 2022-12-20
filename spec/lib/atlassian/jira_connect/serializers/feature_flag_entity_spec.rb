@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Atlassian::JiraConnect::Serializers::FeatureFlagEntity do
+RSpec.describe Atlassian::JiraConnect::Serializers::FeatureFlagEntity, feature_category: :integrations do
   let_it_be(:user) { create_default(:user) }
   let_it_be(:project) { create_default(:project) }
 

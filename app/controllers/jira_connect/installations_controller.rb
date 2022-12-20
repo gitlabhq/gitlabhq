@@ -6,17 +6,25 @@ class JiraConnect::InstallationsController < JiraConnect::ApplicationController
   end
 
   def update
-    if current_jira_installation.update(installation_params)
+    result = update_installation
+    if result.success?
       render json: installation_json(current_jira_installation)
     else
       render(
-        json: { errors: current_jira_installation.errors },
+        json: { errors: result.message },
         status: :unprocessable_entity
       )
     end
   end
 
   private
+
+  def update_installation
+    JiraConnectInstallations::UpdateService.execute(
+      current_jira_installation,
+      installation_params
+    )
+  end
 
   def installation_json(installation)
     {

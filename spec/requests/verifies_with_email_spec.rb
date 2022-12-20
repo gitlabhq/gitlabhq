@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_redis_rate_limiting do
+RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_redis_rate_limiting,
+feature_category: :user_management do
   include SessionHelpers
   include EmailHelpers
 
@@ -78,15 +79,25 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
     end
 
     context 'when the user is signing in from an unknown ip address' do
+      let(:ip_check_enabled) { true }
+
       before do
+        stub_feature_flags(check_ip_address_for_email_verification: ip_check_enabled)
         allow(AuthenticationEvent)
           .to receive(:initial_login_or_known_ip_address?)
           .and_return(false)
+
         perform_enqueued_jobs { sign_in }
       end
 
       it_behaves_like 'send verification instructions'
       it_behaves_like 'prompt for email verification'
+
+      context 'when the check_ip_address_for_email_verification feature flag is disabled' do
+        let(:ip_check_enabled) { false }
+
+        it_behaves_like 'not verifying with email'
+      end
     end
   end
 
@@ -185,6 +196,18 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
         it 'redirects to the successful verification path' do
           expect(response).to redirect_to(users_successful_verification_path)
+        end
+      end
+
+      context 'when not completing identity verification and logging in with another account' do
+        let(:another_user) { create(:user) }
+
+        before do
+          post user_session_path, params: { user: { login: another_user.username, password: another_user.password } }
+        end
+
+        it 'does not redirect to the successful verification path' do
+          expect(response).not_to redirect_to(users_successful_verification_path)
         end
       end
     end

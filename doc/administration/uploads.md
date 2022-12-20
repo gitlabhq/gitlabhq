@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Uploads administration **(FREE SELF)**
 
-Uploads represent all user data that may be sent to GitLab as a single file. As an example, avatars and notes' attachments are uploads. Uploads are integral to GitLab functionality, and therefore cannot be disabled.
+Uploads represent all user data that may be sent to GitLab as a single file. For example, avatars and note attachments are uploads. Uploads are integral to GitLab functionality and therefore cannot be disabled.
 
 ## Using local storage
 
@@ -14,15 +14,15 @@ This is the default configuration. To change the location where the uploads are
 stored locally, use the steps in this section based on your installation method:
 
 NOTE:
-For historical reasons, instance level uploads (for example the [favicon](../user/admin_area/appearance.md#favicon)) are stored into a base directory,
-which by default is `uploads/-/system`. It is strongly discouraged to change the base
-directory on an existing GitLab installation.
+For historical reasons, uploads for the whole instance (for example the [favicon](../user/admin_area/appearance.md#favicon)) are stored in a base directory,
+which by default is `uploads/-/system`. Changing the base
+directory on an existing GitLab installation is strongly discouraged.
 
 **In Omnibus GitLab installations:**
 
 _The uploads are stored by default in `/var/opt/gitlab/gitlab-rails/uploads`._
 
-1. To change the storage path for example to `/mnt/storage/uploads`, edit
+1. To change the storage path, for example to `/mnt/storage/uploads`, edit
    `/etc/gitlab/gitlab.rb` and add the following line:
 
    ```ruby
@@ -38,7 +38,7 @@ _The uploads are stored by default in `/var/opt/gitlab/gitlab-rails/uploads`._
 _The uploads are stored by default in
 `/home/git/gitlab/public/uploads`._
 
-1. To change the storage path for example to `/mnt/storage/uploads`, edit
+1. To change the storage path, for example to `/mnt/storage/uploads`, edit
    `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
 
    ```yaml
@@ -57,9 +57,11 @@ This configuration relies on valid AWS credentials to be configured already.
 
 [Read more about using object storage with GitLab](object_storage.md).
 
-We recommend using the [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration). The following instructions apply to the original configuration format.
-
 ### Object Storage Settings
+
+In GitLab 13.2 and later, you should use the
+[consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
+This section describes the earlier configuration format.
 
 For source installations the following settings are nested under `uploads:` and then `object_store:`. On Omnibus GitLab installs they are prefixed by `uploads_object_store_`.
 
@@ -104,7 +106,7 @@ _The uploads are stored by default in
    ```
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).
+1. Migrate any existing local uploads to the object storage with the [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).
 
 **In installations from source:**
 
@@ -127,4 +129,4 @@ _The uploads are stored by default in
    ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
-1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).
+1. Migrate any existing local uploads to the object storage with the [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).

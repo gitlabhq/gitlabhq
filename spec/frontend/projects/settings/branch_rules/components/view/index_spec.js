@@ -16,10 +16,12 @@ import {
   branchProtectionsMockResponse,
   approvalRulesMock,
   statusChecksRulesMock,
+  matchingBranchesCount,
 } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   getParameterByName: jest.fn().mockReturnValue('main'),
+  mergeUrlParams: jest.fn().mockReturnValue('/branches?state=all&search=main'),
   joinPaths: jest.fn(),
 }));
 
@@ -65,6 +67,13 @@ describe('View branch rules', () => {
   const findForcePushTitle = () => wrapper.findByText(I18N.allowForcePushDescription);
   const findApprovalsTitle = () => wrapper.findByText(I18N.approvalsTitle);
   const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
+  const findMatchingBranchesLink = () =>
+    wrapper.findByText(
+      sprintf(I18N.matchingBranchesLinkTitle, {
+        total: matchingBranchesCount,
+        subject: 'branches',
+      }),
+    );
 
   it('gets the branch param from url and renders it in the view', () => {
     expect(util.getParameterByName).toHaveBeenCalledWith('branch');
@@ -83,6 +92,12 @@ describe('View branch rules', () => {
 
   it('renders the correct branch title', () => {
     expect(findBranchTitle().exists()).toBe(true);
+  });
+
+  it('renders matching branches link', () => {
+    const matchingBranchesLink = findMatchingBranchesLink();
+    expect(matchingBranchesLink.exists()).toBe(true);
+    expect(matchingBranchesLink.attributes().href).toBe('/branches?state=all&search=main');
   });
 
   it('renders a branch protection title', () => {

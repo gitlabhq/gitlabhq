@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Redis::MultiStore do
+RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:redis_store_class) do

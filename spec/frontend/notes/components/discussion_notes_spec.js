@@ -1,6 +1,5 @@
 import { getByRole } from '@testing-library/dom';
 import { shallowMount, mount } from '@vue/test-utils';
-import '~/behaviors/markdown/render_gfm';
 import { nextTick } from 'vue';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteableNote from '~/notes/components/noteable_note.vue';
@@ -10,6 +9,8 @@ import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue'
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 const LINE_RANGE = {};
 const DISCUSSION_WITH_LINE_RANGE = {

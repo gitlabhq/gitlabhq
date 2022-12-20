@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'List issue resource label events', :js do
+RSpec.describe 'List issue resource label events', :js, feature_category: :team_planning do
   let(:user)     { create(:user) }
   let(:project)  { create(:project, :public) }
   let(:issue)    { create(:issue, project: project, author: user) }

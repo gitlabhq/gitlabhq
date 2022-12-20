@@ -12,7 +12,7 @@ RSpec.describe 'gitlab:lfs namespace rake task', :silence_stdout do
     let(:remote) { ObjectStorage::Store::REMOTE }
 
     before do
-      stub_lfs_object_storage(background_upload: false, direct_upload: false)
+      stub_lfs_object_storage(direct_upload: false)
     end
 
     describe 'migrate' do
@@ -43,7 +43,7 @@ RSpec.describe 'gitlab:lfs namespace rake task', :silence_stdout do
       let(:lfs_object) { create(:lfs_object, :with_file, :object_storage) }
 
       before do
-        stub_lfs_object_storage(background_upload: false, direct_upload: true)
+        stub_lfs_object_storage(direct_upload: true)
       end
 
       context 'object storage enabled' do

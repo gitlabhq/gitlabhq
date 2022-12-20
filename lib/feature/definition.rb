@@ -7,6 +7,8 @@ module Feature
     attr_reader :path
     attr_reader :attributes
 
+    VALID_FEATURE_NAME = %r{^#{Gitlab::Regex.sep_by_1('_', /[a-z0-9]+/)}$}.freeze
+
     PARAMS.each do |param|
       define_method(param) do
         attributes[param]
@@ -36,6 +38,10 @@ module Feature
     def validate!
       unless name.present?
         raise Feature::InvalidFeatureFlagError, "Feature flag is missing name"
+      end
+
+      unless VALID_FEATURE_NAME =~ name
+        raise Feature::InvalidFeatureFlagError, "Feature flag '#{name}' is invalid"
       end
 
       unless path.present?

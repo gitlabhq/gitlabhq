@@ -31,9 +31,9 @@ module Mutations
           end
 
           super(noteable, args).merge({
-            in_reply_to_discussion_id: discussion_id,
-            merge_request_diff_head_sha: args[:merge_request_diff_head_sha]
-          })
+                                        in_reply_to_discussion_id: discussion_id,
+                                        merge_request_diff_head_sha: args[:merge_request_diff_head_sha]
+                                      })
         end
 
         def authorize_discussion!(discussion)

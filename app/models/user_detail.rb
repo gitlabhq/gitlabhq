@@ -19,7 +19,7 @@ class UserDetail < ApplicationRecord
   validates :skype, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validates :location, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validates :organization, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
-  validates :website_url, length: { maximum: DEFAULT_FIELD_LENGTH }, url: true, allow_blank: true
+  validates :website_url, length: { maximum: DEFAULT_FIELD_LENGTH }, url: true, allow_blank: true, if: :website_url_changed?
 
   before_validation :sanitize_attrs
   before_save :prevent_nil_bio

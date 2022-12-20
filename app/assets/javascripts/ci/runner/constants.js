@@ -32,6 +32,10 @@ export const I18N_STATUS_NEVER_CONTACTED = s__('Runners|Never contacted');
 export const I18N_STATUS_OFFLINE = s__('Runners|Offline');
 export const I18N_STATUS_STALE = s__('Runners|Stale');
 
+// Executor Status
+export const I18N_JOB_STATUS_RUNNING = s__('Runners|Running');
+export const I18N_JOB_STATUS_IDLE = s__('Runners|Idle');
+
 // Status help popover
 export const I18N_STATUS_POPOVER_TITLE = s__('Runners|Runner statuses');
 
@@ -82,6 +86,7 @@ export const I18N_DELETE_RUNNER = s__('Runners|Delete runner');
 export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
 // List
+export const I18N_NO_DESCRIPTION = s__('Runners|No description');
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
   'Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.',
 );
@@ -94,6 +99,7 @@ export const I18N_ADMIN = s__('Runners|Administrator');
 // Runner details
 
 export const I18N_DETAILS = s__('Runners|Details');
+export const I18N_JOBS = s__('Runners|Jobs');
 export const I18N_ASSIGNED_PROJECTS = s__('Runners|Assigned Projects (%{projectCount})');
 export const I18N_FILTER_PROJECTS = s__('Runners|Filter projects');
 export const I18N_CLEAR_FILTER_PROJECTS = __('Clear');
@@ -133,6 +139,11 @@ export const STATUS_ONLINE = 'ONLINE';
 export const STATUS_NEVER_CONTACTED = 'NEVER_CONTACTED';
 export const STATUS_OFFLINE = 'OFFLINE';
 export const STATUS_STALE = 'STALE';
+
+// CiRunnerJobExecutionStatus
+
+export const JOB_STATUS_RUNNING = 'RUNNING';
+export const JOB_STATUS_IDLE = 'IDLE';
 
 // CiRunnerAccessLevel
 

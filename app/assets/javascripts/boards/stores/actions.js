@@ -928,4 +928,5 @@ export default {
 
   // EE action needs CE empty equivalent
   setActiveItemWeight: () => {},
+  setActiveItemHealthStatus: () => {},
 };

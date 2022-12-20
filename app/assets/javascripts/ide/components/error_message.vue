@@ -1,6 +1,7 @@
 <script>
-import { GlAlert, GlLoadingIcon, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { mapActions } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
   components: {
@@ -8,7 +9,7 @@ export default {
     GlLoadingIcon,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     message: {

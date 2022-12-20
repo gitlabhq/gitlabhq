@@ -1,4 +1,4 @@
-- name: "Required pipeline configurations in Premium tier"
+- title: "Required pipeline configurations in Premium tier"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
   removal_milestone: "15.0"

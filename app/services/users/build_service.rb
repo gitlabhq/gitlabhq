@@ -117,7 +117,7 @@ module Users
     end
 
     def skip_user_confirmation_email_from_setting
-      !Gitlab::CurrentSettings.send_user_confirmation_email
+      Gitlab::CurrentSettings.email_confirmation_setting_off?
     end
 
     def use_fallback_name?

@@ -21,18 +21,31 @@ const useMockLocation = (fn) => {
   afterEach(() => {
     currentWindowLocation = origWindowLocation;
   });
+
+  return () => {
+    beforeEach(() => {
+      currentWindowLocation = origWindowLocation;
+    });
+  };
 };
 
 /**
  * Create an object with the location interface but `jest.fn()` implementations.
  */
 export const createWindowLocationSpy = () => {
-  return {
+  const { origin, href } = window.location;
+
+  const mockLocation = {
     assign: jest.fn(),
     reload: jest.fn(),
     replace: jest.fn(),
     toString: jest.fn(),
+    origin,
+    // TODO: Do we need to update `origin` if `href` is changed?
+    href,
   };
+
+  return mockLocation;
 };
 
 /**

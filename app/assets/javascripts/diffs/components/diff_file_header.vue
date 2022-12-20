@@ -1,7 +1,6 @@
 <script>
 import {
   GlTooltipDirective,
-  GlSafeHtmlDirective,
   GlIcon,
   GlBadge,
   GlButton,
@@ -14,6 +13,7 @@ import {
 } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { IdState } from 'vendor/vue-virtual-scroller';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -44,7 +44,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [IdState({ idProp: (vm) => vm.diffFile.file_hash }), glFeatureFlagsMixin()],
   i18n: {

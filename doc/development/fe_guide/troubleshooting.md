@@ -10,13 +10,13 @@ Running into a problem? Maybe this will help ¯\＿(ツ)＿/¯.
 
 ## Troubleshooting issues
 
-### This guide doesn't contain the issue I ran into
+### This guide doesn't contain the issue you ran into
 
 If you run into a Frontend development issue that is not in this guide, consider updating this guide with your issue and possible remedies. This way future adventurers can face these dragons with more success, being armed with your experience and knowledge.
 
 ## Testing issues
 
-### ``Property or method `nodeType` is not defined`` but I'm not using `nodeType` anywhere
+### ``Property or method `nodeType` is not defined`` but you're not using `nodeType` anywhere
 
 This issue can happen in Vue component tests, when an expectation fails, but there is an error thrown when
 Jest tries to pretty print the diff in the console. It's been noted that using `toEqual` with an array as a

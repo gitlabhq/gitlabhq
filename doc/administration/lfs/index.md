@@ -7,7 +7,8 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs_administration.h
 
 # GitLab Git Large File Storage (LFS) Administration **(FREE SELF)**
 
-Documentation about how to use Git LFS are under [Managing large binary files with Git LFS doc](../../topics/git/lfs/index.md).
+This page contains information about configuring Git LFS in self-managed GitLab instances.
+For user documentation about Git LFS, see [Git Large File Storage](../../topics/git/lfs/index.md).
 
 LFS is enabled in GitLab self-managed instances by default.
 
@@ -62,26 +63,16 @@ to check which storage services can be integrated with GitLab.
 You can also use external object storage in a private local network. For example,
 [MinIO](https://min.io/) is a standalone object storage service that works with GitLab instances.
 
-GitLab provides two different options for the uploading mechanism: "Direct upload" and "Background upload".
-
 [Read more about using object storage with GitLab](../object_storage.md).
 
 NOTE:
-In GitLab 13.2 and later, we recommend using the
+In GitLab 13.2 and later, you should use the
 [consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
-This section describes the earlier configuration format.
-
-**Option 1. Direct upload**
+This section describes the earlier configuration format. [Migration steps still apply](#migrating-to-object-storage).
 
 1. User pushes an `lfs` file to the GitLab instance.
 1. GitLab-workhorse uploads the file directly to the external object storage.
 1. GitLab-workhorse notifies GitLab-rails that the upload process is complete.
-
-**Option 2. Background upload**
-
-1. User pushes an `lfs` file to the GitLab instance.
-1. GitLab-rails stores the file in the local file storage.
-1. GitLab-rails then uploads the file to the external object storage asynchronously.
 
 The following general settings are supported.
 
@@ -119,9 +110,7 @@ On Omnibus GitLab installations, the settings are prefixed by `lfs_object_store_
 
 1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. [Migrate any existing local LFS objects to the object storage](#migrating-to-object-storage).
-   New LFS objects
-   are forwarded to object storage unless
-   `gitlab_rails['lfs_object_store_background_upload']` and `gitlab_rails['lfs_object_store_direct_upload']` is set to `false`.
+   New LFS objects are forwarded to object storage.
 
 ### S3 for installations from source
 
@@ -150,9 +139,7 @@ For source installations the settings are nested under `lfs:` and then
 
 1. Save the file, and then [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. [Migrate any existing local LFS objects to the object storage](#migrating-to-object-storage).
-   New LFS objects
-   are forwarded to object storage unless
-   `background_upload` and `direct_upload` is set to `false`.
+   New LFS objects are forwarded to object storage.
 
 ### Migrating to object storage
 
@@ -231,6 +218,12 @@ You can see the total storage used for LFS objects on groups and projects:
 - In the administration area.
 - In the [groups](../../api/groups.md) and [projects APIs](../../api/projects.md).
 
+## Related topics
+
+- Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
+- User documentation: [Git Large File Storage (LFS)](../../topics/git/lfs/index.md)
+- [Git LFS developer information](../../development/lfs.md)
+
 ## Troubleshooting
 
 ### Missing LFS objects
@@ -276,39 +269,6 @@ To delete these references:
    lfs_object.destroy
    ```
 
-### `Google::Apis::TransmissionError: execution expired`
-
-If LFS integration is configured with Google Cloud Storage and background uploads (`background_upload: true` and `direct_upload: false`),
-Sidekiq workers may encounter this error. This is because the uploading timed out with very large files.
-LFS files up to 6 GB can be uploaded without any extra steps, otherwise you need to use the following workaround.
-
-Sign in to Rails console:
-
-```shell
-sudo gitlab-rails console
-```
-
-Set up timeouts:
-
-- These settings are only in effect for the same session. For example, they are not effective for Sidekiq workers.
-- 20 minutes (1200 sec) is enough to upload 30GB LFS files:
-
-```ruby
-::Google::Apis::ClientOptions.default.open_timeout_sec = 1200
-::Google::Apis::ClientOptions.default.read_timeout_sec = 1200
-::Google::Apis::ClientOptions.default.send_timeout_sec = 1200
-```
-
-Upload LFS files manually (this process does not use Sidekiq at all):
-
-```ruby
-LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
-  lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
-end
-```
-
-See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19581)
-
 ### LFS commands fail on TLS v1.3 server
 
 If you configure GitLab to [disable TLS v1.2](https://docs.gitlab.com/omnibus/settings/nginx.html)
@@ -331,6 +291,28 @@ To check an installed Git LFS client's version, run this command:
 ```shell
 git lfs version
 ```
+
+## Error viewing a PDF file
+
+When LFS has been configured with object storage and `proxy_download` set to
+`false`, [you may see an error when previewing a PDF file from the Web browser](https://gitlab.com/gitlab-org/gitlab/-/issues/248100):
+
+```plaintext
+An error occurred while loading the file. Please try again later.
+```
+
+This occurs due to Cross-Origin Resource Sharing (CORS) restrictions:
+the browser attempts to load the PDF from object storage, but the object
+storage provider rejects the request because the GitLab domain differs
+from the object storage domain.
+
+To fix this issue, configure your object storage provider's CORS
+settings to allow the GitLab domain. See the following documentation
+for more details:
+
+1. [AWS S3](https://aws.amazon.com/premiumsupport/knowledge-center/s3-configure-cors/)
+1. [Google Cloud Storage](https://cloud.google.com/storage/docs/configuring-cors)
+1. [Azure Storage](https://learn.microsoft.com/en-us/rest/api/storageservices/cross-origin-resource-sharing--cors--support-for-the-azure-storage-services).
 
 ## Known limitations
 

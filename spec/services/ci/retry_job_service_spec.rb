@@ -48,12 +48,6 @@ RSpec.describe Ci::RetryJobService do
     end
   end
 
-  shared_context 'with ci_retry_job_fix disabled' do
-    before do
-      stub_feature_flags(ci_retry_job_fix: false)
-    end
-  end
-
   shared_examples_for 'clones the job' do
     let(:job) { job_to_clone }
 
@@ -284,14 +278,6 @@ RSpec.describe Ci::RetryJobService do
 
       with_them do
         it_behaves_like 'checks enqueue_immediately?'
-
-        context 'when feature flag is disabled' do
-          include_context 'with ci_retry_job_fix disabled'
-
-          it_behaves_like 'checks enqueue_immediately?' do
-            let(:enqueue_immediately) { false }
-          end
-        end
       end
     end
   end
@@ -384,15 +370,6 @@ RSpec.describe Ci::RetryJobService do
           expect(subject).to be_success
           expect(new_job.status).to eq after_status
         end
-
-        context 'when feature flag is disabled' do
-          include_context 'with ci_retry_job_fix disabled'
-
-          it 'enqueues the new job' do
-            expect(subject).to be_success
-            expect(new_job).to be_pending
-          end
-        end
       end
     end
 
@@ -434,15 +411,6 @@ RSpec.describe Ci::RetryJobService do
         it 'updates the new job status to after_status' do
           expect(subject).to be_success
           expect(new_job.status).to eq after_status
-        end
-
-        context 'when feature flag is disabled' do
-          include_context 'with ci_retry_job_fix disabled'
-
-          it 'enqueues the new job' do
-            expect(subject).to be_success
-            expect(new_job).to be_pending
-          end
         end
       end
     end
@@ -487,19 +455,6 @@ RSpec.describe Ci::RetryJobService do
         end
 
         it_behaves_like 'checks enqueue_immediately?'
-
-        context 'when feature flag is disabled' do
-          include_context 'with ci_retry_job_fix disabled'
-
-          it 'enqueues the new job' do
-            expect(subject).to be_success
-            expect(new_job).to be_pending
-          end
-
-          it_behaves_like 'checks enqueue_immediately?' do
-            let(:enqueue_immediately) { false }
-          end
-        end
       end
     end
   end

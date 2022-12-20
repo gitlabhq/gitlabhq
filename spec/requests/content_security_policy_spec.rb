@@ -5,7 +5,7 @@ require 'spec_helper'
 # The AnonymousController doesn't support setting the CSP
 # This is why an arbitrary test request was chosen instead
 # of testing in application_controller_spec.
-RSpec.describe 'Content Security Policy' do
+RSpec.describe 'Content Security Policy', feature_category: :application_instrumentation do
   let(:snowplow_host) { 'snowplow.example.com' }
 
   shared_examples 'snowplow is not in the CSP' do

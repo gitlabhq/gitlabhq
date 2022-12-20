@@ -118,3 +118,24 @@ export const getContentWrapperHeight = (contentWrapperClass) => {
   const wrapperEl = document.querySelector(contentWrapperClass);
   return wrapperEl ? `${wrapperEl.offsetTop}px` : '';
 };
+
+/**
+ * Replaces comment nodes in a DOM tree with a different element
+ * containing the text of the comment.
+ *
+ * @param {*} el
+ * @param {*} tagName
+ */
+export const replaceCommentsWith = (el, tagName) => {
+  const iterator = document.createNodeIterator(el, NodeFilter.SHOW_COMMENT);
+  let commentNode = iterator.nextNode();
+
+  while (commentNode) {
+    const newNode = document.createElement(tagName);
+    newNode.textContent = commentNode.textContent;
+
+    commentNode.parentNode.replaceChild(newNode, commentNode);
+
+    commentNode = iterator.nextNode();
+  }
+};

@@ -32,7 +32,7 @@ To change the visibility of your pipelines and related features:
    When it is selected, pipelines and related features are visible:
 
    - For [**Public**](../../user/public_access.md) projects, to everyone.
-   - For **Internal** projects, to all logged-in users except [external users](../../user/permissions.md#external-users).
+   - For **Internal** projects, to all logged-in users except [external users](../../user/admin_area/external_users.md).
    - For **Private** projects, to all project members (Guest or higher).
 
    When it is cleared:
@@ -41,7 +41,7 @@ To change the visibility of your pipelines and related features:
      and the **CI/CD** menu items are visible only to project members (Reporter or higher).
      Other users, including guest users, can only view the status of pipelines and jobs, and only
      when viewing merge requests or commits.
-   - For **Internal** projects, pipelines are visible to all logged in users except [external users](../../user/permissions.md#external-users).
+   - For **Internal** projects, pipelines are visible to all logged in users except [external users](../../user/admin_area/external_users.md).
      Related features are visible only to project members (Reporter or higher).
    - For **Private** projects, pipelines and related features are visible to project members (Reporter or higher) only.
 
@@ -284,9 +284,8 @@ when merging a merge request would cause the project's test coverage to decline.
 Follow these steps to enable the `Coverage-Check` MR approval rule:
 
 1. Set up a [`coverage`](../yaml/index.md#coverage) regular expression for all jobs you want to include in the overall coverage value.
-1. Go to your project and select **Settings > General**.
-1. Expand **Merge request approvals**.
-1. Select **Enable** next to the `Coverage-Check` approval rule.
+1. Go to your project and select **Settings > Merge requests**.
+1. Under **Merge request approvals**, select **Enable** next to the `Coverage-Check` approval rule.
 1. Select the **Target branch**.
 1. Set the number of **Approvals required** to greater than zero.
 1. Select the users or groups to provide approval.

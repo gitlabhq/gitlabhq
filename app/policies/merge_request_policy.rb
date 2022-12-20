@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MergeRequestPolicy < IssuablePolicy
+  condition(:can_approve) { can_approve? }
+
   rule { locked }.policy do
     prevent :reopen_merge_request
   end
@@ -14,8 +16,12 @@ class MergeRequestPolicy < IssuablePolicy
     prevent :accept_merge_request
   end
 
-  rule { can?(:update_merge_request) & is_project_member }.policy do
+  rule { can_approve }.policy do
     enable :approve_merge_request
+  end
+
+  rule { can?(:approve_merge_request) & bot }.policy do
+    enable :reset_merge_request_approvals
   end
 
   rule { ~anonymous & can?(:read_merge_request) }.policy do
@@ -31,6 +37,12 @@ class MergeRequestPolicy < IssuablePolicy
 
   rule { can?(:admin_merge_request) }.policy do
     enable :set_merge_request_metadata
+  end
+
+  private
+
+  def can_approve?
+    can?(:update_merge_request) && is_project_member?
   end
 end
 

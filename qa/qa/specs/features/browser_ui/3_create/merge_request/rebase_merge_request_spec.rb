@@ -27,7 +27,7 @@ module QA
         merge_request.visit!
 
         Page::MergeRequest::Show.perform do |mr_page|
-          expect(mr_page).to have_content('Merge blocked: the source branch must be rebased onto the target branch.')
+          expect(mr_page).to have_content('Merge blocked: the source branch must be rebased onto the target branch.', wait: 20)
           expect(mr_page).to be_fast_forward_not_possible
           expect(mr_page).not_to have_merge_button
           expect(merge_request.project.commits.size).to eq(2)

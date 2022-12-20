@@ -2,12 +2,6 @@
 
 module Markup
   class RenderingService
-    # Let's increase the render timeout
-    # For a smaller one, a test that renders the blob content statically fails
-    # We can consider removing this custom timeout when markup_rendering_timeout FF is removed:
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/365358
-    RENDER_TIMEOUT = 5.seconds
-
     def initialize(text, file_name: nil, context: {}, postprocess_context: {})
       @text = text
       @file_name = file_name
@@ -19,7 +13,7 @@ module Markup
       return '' unless text.present?
       return context.delete(:rendered) if context.has_key?(:rendered)
 
-      html = file_name ? markup_unsafe : markdown_unsafe
+      html = markup_unsafe
 
       return '' unless html.present?
 
@@ -29,27 +23,17 @@ module Markup
     private
 
     def markup_unsafe
-      markup = proc do
-        if Gitlab::MarkupHelper.gitlab_markdown?(file_name)
-          markdown_unsafe
-        elsif Gitlab::MarkupHelper.asciidoc?(file_name)
-          asciidoc_unsafe
-        elsif Gitlab::MarkupHelper.plain?(file_name)
-          plain_unsafe
-        else
-          other_markup_unsafe
-        end
-      end
+      return markdown_unsafe unless file_name
 
-      if Feature.enabled?(:markup_rendering_timeout, context[:project])
-        Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT, &markup)
+      if Gitlab::MarkupHelper.gitlab_markdown?(file_name)
+        markdown_unsafe
+      elsif Gitlab::MarkupHelper.asciidoc?(file_name)
+        asciidoc_unsafe
+      elsif Gitlab::MarkupHelper.plain?(file_name)
+        plain_unsafe
       else
-        markup.call
+        other_markup_unsafe
       end
-    rescue StandardError => e
-      Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, file_name: file_name)
-
-      ActionController::Base.helpers.simple_format(text)
     end
 
     def markdown_unsafe

@@ -1,0 +1,87 @@
+- name: "Group and subgroup-level scan result policies"
+  description: |
+    GitLab now supports managing scan result policies at both the group and subgroup levels.
+    These policies automatically flow down and apply to all projects inside the group. This
+    makes it considerably easier to enforce these policies uniformly for large organizations
+    that have large numbers of projects. To get started, have a group or subgroup Owner link
+    an associated security policy project on the **Security & Compliance > Policies** page.
+  stage: Govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/policies/scan-result-policies.html'
+  image_url: 'https://img.youtube.com/vi/jfbNo5IE-2s/hqdefault.jpg'
+  published_at: 2022-11-22
+  release: 15.6
+- name: "Git abuse rate limiting"
+  description: |
+    In GitLab 15.6, we're introducing [Git abuse rate limiting](https://docs.gitlab.com/ee/user/group/reporting/git_abuse_rate_limit.html).
+      Enable this feature to automatically notify administrators when a user downloads
+      or clones more than a specified number of repositories in a group or any of its
+      subgroups within a given time frame.
+
+      You can also automatically ban users who exceed the rate limit.
+      Banned users cannot access the main group or any of its non-public subgroups.
+      Access to unrelated groups is unaffected. Bans are permanent by default, but
+      group administrators can always unban a banned user.
+  stage: anti-abuse
+  self-managed: true
+  gitlab-com: false
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/group/reporting/git_abuse_rate_limit.html'
+  image_url: 'https://about.gitlab.com/images/15_6/git-abuse-rate-limiting.png'
+  published_at: 2022-11-22
+  release: 15.6
+- name: "DAST API analyzer for on-demand DAST API scans"
+  description: |
+    With GitLab 15.6, the DAST API analyzer is now being used for GitLab on-demand DAST API scans.
+    In previous versions of GitLab, the analyzer used in these on-demand scans was our legacy DAST
+    analyzer. Our internal benchmarking shows that our DAST API analyzer finds more vulnerabilities,
+    with a lower false-positive rate than our legacy analyzer. The DAST API analyzer also introduces
+    new functionality such as GraphQL scans, support for authentication tokens that expire, scans using
+    Postman collections, and scans using HAR files. With the switch to the DAST API analyzer, some of
+    that functionality is already available in the on-demand site profile.
+
+    In addition to using an OpenAPI specification in the site profile to define an API test, you can now
+    use a Postman collection or HAR file to make sure that your test gets the API coverage that you expect.
+    Also, we've added basic authentication as an option for on-demand API scans, adding to the previous
+    functionality of using token authentication in authorization headers.
+
+    Next, we will be working next on adding GraphQL support for on-demand API scans. Look for more improvements
+    over the next few releases as we incorporate more of the advanced functionality of the DAST API analyzer.
+  stage: secure
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/dast_api/'
+  image_url: 'https://about.gitlab.com/images/15_6/on_demand_api_security.png'
+  published_at: 2022-11-22
+  release: 15.6
+- name: "Support for special characters in CI/CD variables"
+  description: |
+    Previously, it was difficult to use the $ character in a CI/CD variable because $ normally signifies the
+    start of another variable. GitLab would interpret it as a variable and try to expand it. In this release,
+    we are introducing the variable: expand: keyword which will allow you to mark a variable as “raw”. A raw
+    variable can contain any special characters and is not expanded when passed to the GitLab runner.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/yaml/#variablesexpand'
+  image_url: 'https://about.gitlab.com/images/15_6/special_character_support.png'
+  published_at: 2022-11-22
+  release: 15.6
+- name: "CI/CD variable support in rules:exists configuration"
+  description: |
+    The more complex your .gitlab-ci.yml configuration is, the more difficult it is to maintain and scale. By
+    adding support for CI/CD variables with the rules: exists keyword, you can now use variables for paths
+    or filenames. Having a single source of truth by storing frequently used values in variables ensures
+    consistent behavior and makes your configuration easier to manage.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/yaml/#rulesexists'
+  image_url: 'https://about.gitlab.com/images/15_6/variable_support_rule_exists.png'
+  published_at: 2022-11-22
+  release: 15.6

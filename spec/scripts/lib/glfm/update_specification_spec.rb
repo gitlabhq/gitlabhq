@@ -53,9 +53,9 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
 
   let(:ghfm_spec_txt_examples) do
     <<~MARKDOWN
-      # Section with Examples
+      # Section with examples
 
-      ## Emphasis and Strong
+      ## Emphasis and strong
 
       ```````````````````````````````` example
       _EMPHASIS LINE 1_
@@ -101,20 +101,24 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     <<~MARKDOWN
       # Official Specification Section with Examples
 
-      Some examples.
+      ```````````````````````````````` example
+      official example
+      .
+      <p>official example</p>
+      ````````````````````````````````
+
     MARKDOWN
   end
 
   let(:glfm_official_specification_md_contents) do
     <<~MARKDOWN
-      # GLFM Introduction
+      GLFM official text before examples
 
-      GLFM intro text.
-
-      <!-- BEGIN TESTS -->
+      #{described_class::BEGIN_TESTS_COMMENT_LINE_TEXT}
       #{glfm_official_specification_md_examples}
-      <!-- END TESTS -->
-      # Non-example official content
+      #{described_class::END_TESTS_COMMENT_LINE_TEXT}
+
+      GLFM official text after examples
     MARKDOWN
   end
 
@@ -122,17 +126,19 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     <<~MARKDOWN
       # Internal Extension Section with Examples
 
-      Some examples.
+      ```````````````````````````````` example
+      internal example
+      .
+      <p>internal extension example</p>
+      ````````````````````````````````
     MARKDOWN
   end
 
   let(:glfm_internal_extensions_md_contents) do
     <<~MARKDOWN
-      # Non-example internal content
-      <!-- BEGIN TESTS -->
+      #{described_class::BEGIN_TESTS_COMMENT_LINE_TEXT}
       #{glfm_internal_extensions_md_examples}
-      <!-- END TESTS -->
-      # More non-example internal content
+      #{described_class::END_TESTS_COMMENT_LINE_TEXT}
     MARKDOWN
   end
 
@@ -258,29 +264,46 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
   describe 'writing output_example_snapshots/snapshot_spec.md' do
     let(:es_snapshot_spec_md_contents) { reread_io(es_snapshot_spec_md_io) }
 
-    before do
-      subject.process(skip_spec_html_generation: true)
+    context 'with valid glfm_internal_extensions.md' do
+      before do
+        subject.process(skip_spec_html_generation: true)
+      end
+
+      it 'replaces the header text with the GitLab version' do
+        expect(es_snapshot_spec_md_contents).not_to match(/GitHub Flavored Markdown Spec/m)
+        expect(es_snapshot_spec_md_contents).not_to match(/^version: \d\.\d/m)
+        expect(es_snapshot_spec_md_contents).not_to match(/^date: /m)
+
+        expect(es_snapshot_spec_md_contents).to match(/#{Regexp.escape(described_class::ES_SNAPSHOT_SPEC_MD_HEADER)}/mo)
+      end
+
+      it 'includes header and all examples', :unlimited_max_formatted_output_length do
+        # rubocop:disable Style/StringConcatenation (string contatenation is more readable)
+        expected = described_class::ES_SNAPSHOT_SPEC_MD_HEADER +
+          ghfm_spec_txt_examples +
+          "\n" +
+          glfm_official_specification_md_examples +
+          "\n\n" + # NOTE: We want a blank line between the official and internal examples
+          glfm_internal_extensions_md_examples +
+          "\n"
+        # rubocop:enable Style/StringConcatenation
+        expect(es_snapshot_spec_md_contents).to eq(expected)
+      end
     end
 
-    it 'replaces the header text with the GitLab version' do
-      expect(es_snapshot_spec_md_contents).not_to match(/GitHub Flavored Markdown Spec/m)
-      expect(es_snapshot_spec_md_contents).not_to match(/^version: \d\.\d/m)
-      expect(es_snapshot_spec_md_contents).not_to match(/^date: /m)
+    context 'with invalid non-example content in glfm_internal_extensions.md' do
+      let(:glfm_internal_extensions_md_contents) do
+        <<~MARKDOWN
+          THIS TEXT IS NOT ALLOWED IN THIS FILE, ONLY EXAMPLES IN BEGIN/END TEST BLOCK ARE ALLOWED
+          #{described_class::BEGIN_TESTS_COMMENT_LINE_TEXT}
+          #{glfm_internal_extensions_md_examples}
+          #{described_class::END_TESTS_COMMENT_LINE_TEXT}
+        MARKDOWN
+      end
 
-      expect(es_snapshot_spec_md_contents).to match(/#{Regexp.escape(described_class::GLFM_SPEC_TXT_HEADER)}/mo)
-    end
-
-    it 'includes header and all examples', :unlimited_max_formatted_output_length do
-      # rubocop:disable Style/StringConcatenation (string contatenation is more readable)
-      expected = described_class::GLFM_SPEC_TXT_HEADER +
-        ghfm_spec_txt_examples +
-        "\n" +
-        glfm_official_specification_md_examples +
-        "\n\n" + # NOTE: We want a blank line between the official and internal examples
-        glfm_internal_extensions_md_examples +
-        "\n"
-      # rubocop:enable Style/StringConcatenation
-      expect(es_snapshot_spec_md_contents).to eq(expected)
+      it 'raises an error' do
+        expect { subject.process(skip_spec_html_generation: true) }.to raise_error /no content is allowed outside/i
+      end
     end
   end
 
@@ -294,66 +317,56 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     end
 
     it 'renders expected HTML', :unlimited_max_formatted_output_length do
-      # NOTE: We do assertions for both output HTML files in this same `it` example block,
+      # NOTE: We do all assertions for both output HTML files in this same `it` example block,
       #       because calling a full `subject.process` without `skip_spec_html_generation: true`
-      #       is very slow, and want to avoid doing it twice.
+      #       is very slow, and want to avoid doing it multiple times
+      #
+      #       We also do fairly loose and minimal assertions around the basic structure of the files.
+      #       Otherwise, if we asserted the complete exact structure of the HTML, this would be a
+      #       brittle test which would breaks every time that something minor changed around the
+      #       GLFM rendering. E.g. classes, ids, attribute ordering, etc. All of this behavior
+      #       should be thoroughly covered elsewhere by other testing. If there are regressions
+      #       in the update specification logic in the future which are not caught by this example,
+      #       additional test coverage can be added as necessary.
 
-      expected_spec_html = <<~RENDERED_HTML
-        <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="1:1-4:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
-        <span id="LC2" class="line" lang="yaml"><span class="na">version</span><span class="pi">:</span> <span class="s">alpha</span></span></code></pre>
-        <copy-code></copy-code>
-        </div>
-        <h1 data-sourcepos="5:1-5:19" dir="auto">
-        <a id="user-content-glfm-introduction" class="anchor" href="#glfm-introduction" aria-hidden="true"></a>GLFM Introduction</h1>
-        <p data-sourcepos="7:1-7:16" dir="auto">GLFM intro text.</p>
+      # --------------------
+      # spec.html assertions
+      # --------------------
 
-        <h1 data-sourcepos="10:1-10:46" dir="auto">
-        <a id="user-content-official-specification-section-with-examples" class="anchor" href="#official-specification-section-with-examples" aria-hidden="true"></a>Official Specification Section with Examples</h1>
-        <p data-sourcepos="12:1-12:14" dir="auto">Some examples.</p>
+      # correct title should in a header
+      expect(spec_html_contents).to match(%r{<h1.*#{described_class::GLFM_SPEC_TXT_TITLE}</h1>}o)
 
-        <h1 data-sourcepos="15:1-15:30" dir="auto">
-        <a id="user-content-non-example-official-content" class="anchor" href="#non-example-official-content" aria-hidden="true"></a>Non-example official content</h1>
-      RENDERED_HTML
-      expect(spec_html_contents).to be == expected_spec_html
+      # correct text should be included with correct ordering
+      expect(spec_html_contents)
+        .to match(%r{official text before.*official example.*official text after}m)
 
-      expected_snapshot_spec_html = <<~RENDERED_HTML
-        <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="1:1-4:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
-        <span id="LC2" class="line" lang="yaml"><span class="na">version</span><span class="pi">:</span> <span class="s">alpha</span></span></code></pre>
-        <copy-code></copy-code>
-        </div>
-        <h1 data-sourcepos="5:1-5:23" dir="auto">
-        <a id="user-content-section-with-examples" class="anchor" href="#section-with-examples" aria-hidden="true"></a>Section with Examples</h1>
-        <h2 data-sourcepos="7:1-7:22" dir="auto">
-        <a id="user-content-emphasis-and-strong" class="anchor" href="#emphasis-and-strong" aria-hidden="true"></a>Emphasis and Strong</h2>
-        <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="9:1-12:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">_EMPHASIS LINE 1_</span>
-        <span id="LC2" class="line" lang="plaintext">_EMPHASIS LINE 2_</span></code></pre>
-        <copy-code></copy-code>
-        </div>
-        <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="14:1-17:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;em&gt;EMPHASIS LINE 1&lt;/em&gt;</span>
-        <span id="LC2" class="line" lang="plaintext">&lt;em&gt;EMPHASIS LINE 2&lt;/em&gt;&lt;/p&gt;</span></code></pre>
-        <copy-code></copy-code>
-        </div>
-        <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="19:1-21:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">__STRONG!__</span></code></pre>
-        <copy-code></copy-code>
-        </div>
-        <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="23:1-25:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;strong&gt;STRONG!&lt;/strong&gt;&lt;/p&gt;</span></code></pre>
-        <copy-code></copy-code>
-        </div>
-        <p data-sourcepos="27:1-27:36" dir="auto">End of last GitHub examples section.</p>
-        <h1 data-sourcepos="29:1-29:46" dir="auto">
-        <a id="user-content-official-specification-section-with-examples" class="anchor" href="#official-specification-section-with-examples" aria-hidden="true"></a>Official Specification Section with Examples</h1>
-        <p data-sourcepos="31:1-31:14" dir="auto">Some examples.</p>
-        <h1 data-sourcepos="34:1-34:42" dir="auto">
-        <a id="user-content-internal-extension-section-with-examples" class="anchor" href="#internal-extension-section-with-examples" aria-hidden="true"></a>Internal Extension Section with Examples</h1>
-        <p data-sourcepos="36:1-36:14" dir="auto">Some examples.</p>
-      RENDERED_HTML
-      expect(snapshot_spec_html_contents).to be == expected_snapshot_spec_html
+      # -----------------------------
+      # snapshot_spec.html assertions
+      # -----------------------------
+
+      # correct title should in a header
+      expect(snapshot_spec_html_contents).to match(%r{<h1.*#{described_class::ES_SNAPSHOT_SPEC_TITLE}</h1>}o)
+
+      # correct example text should be included
+      expect(snapshot_spec_html_contents)
+        .to match(%r{internal example}m)
+
+      # -----------------------------
+      # general formatting assertions
+      # -----------------------------
+
+      md = '_EMPHASIS LINE 1_'
+      html = '&lt;em&gt;EMPHASIS LINE 1&lt;/em&gt;'
+
+      # examples should have markdown and HTML in separate pre+code blocks
+      expected_example_1_regex = "<pre.*<code.*#{md}.*</code></pre>.*<pre.*<code.*#{html}.*</code></pre>"
+      expect(snapshot_spec_html_contents).to match(%r{#{expected_example_1_regex}}m)
+
+      # examples should have proper divs prepended for numbering, links, and styling
+      empty_div_for_example_class = '<div>'
+      examplenum_div = '<div><a href="#example-1">Example 1</a></div>'
+      expect(snapshot_spec_html_contents)
+        .to match(%r{#{empty_div_for_example_class}\n#{examplenum_div}.*#{expected_example_1_regex}.*}m)
     end
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers

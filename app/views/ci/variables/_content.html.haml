@@ -1,10 +1,12 @@
-= _('Variables store information, like passwords and secret keys, that you can use in job scripts.')
-= link_to s_('Learn more.'), help_page_path('ci/variables/index'), target: '_blank', rel: 'noopener noreferrer'
+= format(s_('CiVariables|Variables store information, like passwords and secret keys, that you can use in job scripts. Each %{entity} can define a maximum of %{limit} variables.'), entity: entity, limit: variable_limit).html_safe
+= link_to _('Learn more.'), help_page_path('ci/variables/index'), target: '_blank', rel: 'noopener noreferrer'
 %p
-  = _('Variables can be:')
+  = _('Variables can have several attributes.')
+  = link_to _('Learn more.'), help_page_path('ci/variables/index', anchor: 'add-a-cicd-variable-to-an-instance'), target: '_blank', rel: 'noopener noreferrer'
 %ul
   %li
     = html_escape(_('%{code_open}Protected:%{code_close} Only exposed to protected branches or protected tags.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
   %li
     = html_escape(_('%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-    = link_to _('Learn more.'), help_page_path('ci/variables/index', anchor: 'mask-a-cicd-variable'), target: '_blank', rel: 'noopener noreferrer'
+  %li
+    = html_escape(_('%{code_open}Expanded:%{code_close} Variables with %{code_open}$%{code_close} will be treated as the start of a reference to another variable.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }

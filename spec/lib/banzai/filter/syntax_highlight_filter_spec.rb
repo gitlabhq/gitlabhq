@@ -12,7 +12,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
       result = filter(%{<pre lang="#{lang}"><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>})
 
       # `(1)` symbols are wrapped by lexer tags.
-      expect(result.to_html).not_to match(%r{<script>alert.*<\/script>})
+      expect(result.to_html).not_to match(%r{<script>alert.*</script>})
 
       # `<>` stands for lexer tags like <span ...>, not &lt;s above.
       expect(result.to_html).to match(%r{alert(<.*>)?\((<.*>)?1(<.*>)?\)})
@@ -191,5 +191,9 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
     end
 
     include_examples "XSS prevention", "ruby"
+  end
+
+  it_behaves_like "filter timeout" do
+    let(:text) { '<pre lang="ruby"><code>def fun end</code></pre>' }
   end
 end

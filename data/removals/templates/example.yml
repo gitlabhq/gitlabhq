@@ -12,7 +12,7 @@
 #
 # REQUIRED FIELDS
 #
-- name: "Feature name"  # (required) the name of the feature being removed. Avoid the words `deprecation`, `deprecate`, `removal`, and `remove` in this field because these are implied.
+- title: "X is removed. Do Y instead."  # (required) Actionable title. e.g., The `confidential` field for a `Note` is deprecated. Use `internal` instead.
   announcement_milestone: "XX.YY"  # (required) The milestone when this feature was deprecated.
   announcement_date: "YYYY-MM-DD"  # (required) The date of the milestone release when this feature was deprecated. This should almost always be the 22nd of a month (YYYY-MM-DD), unless you did an out of band blog post.
   removal_milestone: "XX.YY"  # (required) The milestone when this feature is being removed.
@@ -25,6 +25,16 @@
     <!-- START OF BODY COMMENT
 
     This area supports markdown.  Delete this entire comment and replace it with your markdown content.
+
+    Removals must be actionable.
+
+    Use terms such as "removed in favor of" or "use X instead." If no replacement is available, the action would be, "Discontinue use of foo immediately."
+
+    For example:
+
+    - The `confidential` field for a `Note` is removed. Use `internal` instead.
+    - The `merge_status` field in the merge request API has been removed in favor of `detailed_merge_status`.
+    - The `notable` endpoint has been removed. Discontinue use of `notable` immediately.
 
     When ready, assign to your tech writer for review. When ready, they will run `bin/rake gitlab:docs:compile_removals` to update the removals doc, then merge.
 

@@ -35,12 +35,6 @@ module Gitlab
         request_params[:base_uri] = uri.to_s
         request_params.merge!(auth_params)
 
-        if Feature.enabled?(:jira_raise_timeouts, type: :ops)
-          request_params[:open_timeout] = 2.minutes
-          request_params[:read_timeout] = 2.minutes
-          request_params[:write_timeout] = 2.minutes
-        end
-
         result = Gitlab::HTTP.public_send(http_method, path, **request_params) # rubocop:disable GitlabSecurity/PublicSend
         @authenticated = result.response.is_a?(Net::HTTPOK)
         store_cookies(result) if options[:use_cookies]

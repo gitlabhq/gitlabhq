@@ -60,7 +60,7 @@ module WikiHelper
   end
 
   def wiki_sort_controls(wiki, direction)
-    link_class = 'gl-button btn btn-default btn-icon has-tooltip reverse-sort-btn qa-reverse-sort rspec-reverse-sort'
+    link_class = 'gl-button btn btn-default btn-icon has-tooltip reverse-sort-btn rspec-reverse-sort'
     reversed_direction = direction == 'desc' ? 'asc' : 'desc'
     icon_class = direction == 'desc' ? 'highest' : 'lowest'
     title = direction == 'desc' ? _('Sort direction: Descending') : _('Sort direction: Ascending')

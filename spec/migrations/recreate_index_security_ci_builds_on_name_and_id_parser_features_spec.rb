@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RecreateIndexSecurityCiBuildsOnNameAndIdParserFeatures, :migration do
+RSpec.describe RecreateIndexSecurityCiBuildsOnNameAndIdParserFeatures, :migration, feature_category: :database do
   let(:db) { described_class.new }
   let(:pg_class) { table(:pg_class) }
   let(:pg_index) { table(:pg_index) }

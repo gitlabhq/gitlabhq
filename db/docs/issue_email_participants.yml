@@ -7,3 +7,4 @@ feature_categories:
 description: Email addresses for non-GitLab users added to issues as participants
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42943
 milestone: '13.5'
+gitlab_schema: gitlab_main

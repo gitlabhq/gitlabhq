@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Admin::BatchedBackgroundMigrations do
+RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :database do
   let(:admin) { create(:admin) }
   let(:unauthorized_user) { create(:user) }
 

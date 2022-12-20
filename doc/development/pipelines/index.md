@@ -68,8 +68,8 @@ Later on in [the `rspec fail-fast` job](#fail-fast-job-in-merge-request-pipeline
 
 In addition, there are a few circumstances where we would always run the full RSpec tests:
 
-- when the `pipeline:run-all-rspec` label is set on the merge request
-- when the `pipeline:run-full-rspec` label is set on the merge request, this label is assigned by triage automation when the merge request is approved by any reviewer
+- when the `pipeline:run-all-rspec` label is set on the merge request. This label will trigger all RSpec tests including those run in the `as-if-foss` jobs.
+- when the `pipeline:mr-approved` label is set on the merge request, and if the code changes satisfy the `backend-patterns` rule. Note that this label is assigned by triage automation when the merge request is approved by any reviewer. It is not recommended to apply this label manually.
 - when the merge request is created by an automation (for example, Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
 - when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
@@ -88,10 +88,12 @@ In addition, there are a few circumstances where we would always run the full Je
 - when the `pipeline:run-all-jest` label is set on the merge request
 - when the merge request is created by an automation (for example, Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
-- when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
-- when any frontend "core" file is changed (for example, `package.json`, `yarn.lock`, `babel.config.js`, `jest.config.*.js`, `config/helpers/**/*.js`)
+- when relevant CI configuration file is changed (`.gitlab/ci/rules.gitlab-ci.yml`, `.gitlab/ci/frontend.gitlab-ci.yml`)
+- when any frontend dependency file is changed (for example, `package.json`, `yarn.lock`, `config/webpack.config.js`, `config/helpers/**/*.js`)
 - when any vendored JavaScript file is changed (for example, `vendor/assets/javascripts/**/*`)
-- when any backend file is changed ([see the patterns list for details](https://gitlab.com/gitlab-org/gitlab/-/blob/3616946936c1adbd9e754c1bd06f86ba670796d8/.gitlab/ci/rules.gitlab-ci.yml#L205-216))
+
+The `rules` definitions for full Jest tests are defined at `.frontend:rules:jest` in
+[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/42321b18b946c64d2f6f788c38844499a5ae9141/.gitlab/ci/rules.gitlab-ci.yml#L938-955).
 
 ### Fork pipelines
 
@@ -146,9 +148,37 @@ merge request. This prevents `rspec fail-fast` duration from exceeding the avera
 
 This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST_TEST_FILE_COUNT_THRESHOLD`.
 
+## Re-run previously failed tests in merge request pipelines
+
+In order to reduce the feedback time after resolving failed tests for a merge request, the `rspec rspec-pg12-rerun-previous-failed-tests`
+and `rspec rspec-ee-pg12-rerun-previous-failed-tests` jobs run the failed tests from the previous MR pipeline.
+
+This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69053>.
+
+### How it works?
+
+1. The `detect-previous-failed-tests` job (`prepare` stage) detects the test files associated with failed RSpec
+   jobs from the previous MR pipeline.
+1. The `rspec rspec-pg12-rerun-previous-failed-tests` and `rspec rspec-ee-pg12-rerun-previous-failed-tests` jobs
+   will run the test files gathered by the `detect-previous-failed-tests` job.
+
+```mermaid
+graph LR
+    subgraph "prepare stage";
+        A["detect-previous-failed-tests"]
+    end
+
+    subgraph "test stage";
+        B["rspec rspec-pg12-rerun-previous-failed-tests"];
+        C["rspec rspec-ee-pg12-rerun-previous-failed-tests"];
+    end
+
+    A --"artifact: list of test files"--> B & C
+```
+
 ## Faster feedback for merge requests that fix a broken `master`
 
-When you need to [fix a broken `master`](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline:expedite-master-fixing` label to expedite the pipelines that run on the merge request.
+When you need to [fix a broken `master`](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline:expedite` label to expedite the pipelines that run on the merge request.
 
 When this label is assigned, the following steps of the CI/CD pipeline are skipped:
 

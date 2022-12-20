@@ -13,10 +13,9 @@ Keep your GitLab instance up and running smoothly.
   and more.
 - [Moving repositories](moving_repositories.md): Moving all repositories managed
   by GitLab to another file system or another server.
-- [Sidekiq MemoryKiller](sidekiq_memory_killer.md): Configure Sidekiq MemoryKiller
+- [Sidekiq MemoryKiller](../sidekiq/sidekiq_memory_killer.md): Configure Sidekiq MemoryKiller
   to restart Sidekiq.
-- [Multiple Sidekiq processes](extra_sidekiq_processes.md): Configure multiple Sidekiq processes to ensure certain queues always have dedicated workers, no matter the number of jobs that must be processed. **(FREE SELF)**
-- [Sidekiq routing rules](extra_sidekiq_routing.md): Configure the routing rules to route a job from a worker to a desirable queue. **(FREE SELF)**
+- [Multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md): Configure multiple Sidekiq processes to ensure certain queues always have dedicated workers, no matter the number of jobs that must be processed. **(FREE SELF)**
 - [Puma](puma.md): Understand Puma and puma-worker-killer.
 - Speed up SSH operations by
   [Authorizing SSH users via a fast, indexed lookup to the GitLab database](fast_ssh_key_lookup.md), and/or

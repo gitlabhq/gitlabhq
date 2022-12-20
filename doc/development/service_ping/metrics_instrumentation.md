@@ -464,3 +464,15 @@ This guide describes how to migrate a Service Ping metric from [`lib/gitlab/usag
 1. Remove the code from [`lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb) or [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb).
 
 1. Remove the tests from [`spec/lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/usage_data_spec.rb) or [`ee/spec/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/lib/ee/gitlab/usage_data_spec.rb).
+
+## Troubleshoot metrics
+
+Sometimes metrics fail for reasons that are not immediately clear. The failures can be related to performance issues or other problems.
+The following pairing session video gives you an example of an investigation in to a real-world failing metric.
+
+<div class="video-fallback">
+  See the video from: <a href="https://www.youtube.com/watch?v=y_6m2POx2ug">Product Intelligence Office Hours Oct 27th</a> to learn more about the metrics troubleshooting process.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/y_6m2POx2ug" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>

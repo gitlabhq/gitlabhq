@@ -5,7 +5,7 @@ require 'rspec-parameterized'
 
 require_relative '../../../support/shared_contexts/lib/sbom/package_url_shared_contexts'
 
-RSpec.describe Sbom::PackageUrl::Normalizer do
+RSpec.describe Sbom::PackageUrl::Normalizer, feature_category: :dependency_management do
   shared_examples 'name normalization' do
     context 'with bitbucket url' do
       let(:type) { 'bitbucket' }

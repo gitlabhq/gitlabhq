@@ -126,7 +126,7 @@ to your instance and then upgrade it for any relevant features you're using.
   - Account for any [version-specific changes](package/index.md#version-specific-changes).
   - Check the [OS compatibility with the target GitLab version](../administration/package_information/supported_os.md).
 - Due to background migrations, plan to pause before any further upgrades.
-  [All migrations must finish running](index.md#checking-for-background-migrations-before-upgrading)
+  [All migrations must finish running](background_migrations.md)
   before the next upgrade.
 - If available in your starting version, consider
   [turning on maintenance mode](../administration/maintenance_mode/index.md) during the
@@ -173,7 +173,7 @@ If you have Kubernetes clusters connected with GitLab, [upgrade your GitLab agen
 #### Elasticsearch
 
 Before updating GitLab, confirm Advanced Search migrations are complete by
-[checking for pending advanced search migrations](index.md#checking-for-pending-advanced-search-migrations).
+[checking for pending advanced search migrations](background_migrations.md).
 
 After updating GitLab, you may have to upgrade
 [Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-requirements).

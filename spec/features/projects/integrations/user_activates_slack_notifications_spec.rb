@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User activates Slack notifications', :js do
+RSpec.describe 'User activates Slack notifications', :js, feature_category: :integrations do
   include_context 'project integration activation'
 
   context 'when integration is not configured yet' do

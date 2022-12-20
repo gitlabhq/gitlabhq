@@ -1,17 +1,7 @@
 @import 'page_bundles/mixins_and_variables_and_functions';
 
-$status-box-line-height: 26px;
-
-.issues-sortable-list .str-truncated {
-  max-width: 90%;
-}
-
 .milestones {
   .milestone {
-    h4 {
-      font-weight: $gl-font-weight-bold;
-    }
-
     .progress {
       width: 100%;
       height: 6px;

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Settings::PackagesAndRegistriesController do
+RSpec.describe Projects::Settings::PackagesAndRegistriesController, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, namespace: user.namespace) }
 

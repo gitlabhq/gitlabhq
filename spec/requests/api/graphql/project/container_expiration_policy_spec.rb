@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'getting a repository in a project' do
+RSpec.describe 'getting a repository in a project', feature_category: :container_registry do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

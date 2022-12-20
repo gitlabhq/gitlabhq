@@ -3,15 +3,13 @@
 module MergeRequests
   class AssignIssuesService < BaseProjectService
     def assignable_issues
-      @assignable_issues ||= begin
-        if current_user == merge_request.author
-          closes_issues.select do |issue|
-            !issue.is_a?(ExternalIssue) && !issue.assignees.present? && can?(current_user, :admin_issue, issue)
-          end
-        else
-          []
-        end
-      end
+      @assignable_issues ||= if current_user == merge_request.author
+                               closes_issues.select do |issue|
+                                 !issue.is_a?(ExternalIssue) && !issue.assignees.present? && can?(current_user, :admin_issue, issue)
+                               end
+                             else
+                               []
+                             end
     end
 
     def execute

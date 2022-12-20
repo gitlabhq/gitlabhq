@@ -75,6 +75,8 @@ rules:
         - sibling
         - index
       pathGroups:
+        - pattern: '@sentry/browser'
+          group: external
         - pattern: ~/**
           group: internal
         - pattern: emojis/**
@@ -113,6 +115,8 @@ rules:
     - error
     - selector: ImportSpecifier[imported.name='GlSkeletonLoading']
       message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
+    - selector: ImportSpecifier[imported.name='GlSafeHtmlDirective']
+      message: 'Use directive at ~/vue_shared/directives/safe_html.js instead.'
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/360551
   vue/multi-word-component-names: off
   unicorn/prefer-dom-node-dataset:
@@ -189,6 +193,6 @@ overrides:
       '@graphql-eslint/no-unused-fragments': error
       '@graphql-eslint/no-duplicate-fields': error
   - files:
-    - 'spec/contracts/consumer/**/*'
+    - '{,ee/}spec/contracts/consumer/**/*'
     rules:
       '@gitlab/require-i18n-strings': off

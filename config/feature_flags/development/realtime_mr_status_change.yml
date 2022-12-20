@@ -1,0 +1,8 @@
+---
+name: realtime_mr_status_change
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103011
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385077
+milestone: '15.7'
+type: development
+group: group::code review
+default_enabled: false

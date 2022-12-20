@@ -76,7 +76,7 @@ For each project and group you can select one of the following levels:
 | Participate | Receive notifications for threads you have participated in. |
 | On mention  | Receive notifications when you are [mentioned](../discussions/index.md#mentions) in a comment. |
 | Disabled    | Receive no notifications.                                   |
-| Custom      | Receive notifications for selected events.                  |
+| Custom      | Receive notifications for selected events and threads you have participated in.                  |
 
 ### Global notification settings
 

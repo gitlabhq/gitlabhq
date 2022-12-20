@@ -3,8 +3,6 @@
 module Projects
   module ImportExport
     class ExportService < BaseService
-      prepend Measurable
-
       def initialize(*args)
         super
 

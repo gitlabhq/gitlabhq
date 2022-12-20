@@ -33,7 +33,10 @@ module Gitlab
       def instrument_call(commands)
         start = Gitlab::Metrics::System.monotonic_time # must come first so that 'start' is always defined
         instrumentation_class.instance_count_request(commands.size)
-        instrumentation_class.redis_cluster_validate!(commands)
+
+        if !instrumentation_class.redis_cluster_validate!(commands) && ::RequestStore.active?
+          instrumentation_class.increment_cross_slot_request_count
+        end
 
         yield
       rescue ::Redis::BaseError => ex
@@ -62,13 +65,11 @@ module Gitlab
         # This count is an approximation that omits the Redis protocol overhead
         # of type prefixes, length prefixes and line endings.
         command.each do |x|
-          size += begin
-            if x.is_a? Array
-              x.inject(0) { |sum, y| sum + y.to_s.bytesize }
-            else
-              x.to_s.bytesize
-            end
-          end
+          size += if x.is_a? Array
+                    x.inject(0) { |sum, y| sum + y.to_s.bytesize }
+                  else
+                    x.to_s.bytesize
+                  end
         end
 
         instrumentation_class.increment_write_bytes(size)

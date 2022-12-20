@@ -28,6 +28,7 @@ module Pages
       paths.sort_by(&:prefix).reverse
     end
 
+    # cache_key is required by #present_cached in ::API::Internal::Pages
     def cache_key
       @cache_key ||= cache&.cache_key
     end

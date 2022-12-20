@@ -19,6 +19,7 @@ module Quality
         bin
         channels
         config
+        contracts
         db
         dependencies
         elastic

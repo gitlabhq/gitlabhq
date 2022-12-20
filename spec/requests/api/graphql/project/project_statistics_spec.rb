@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'rendering project statistics' do
+RSpec.describe 'rendering project statistics', feature_category: :project_statistics do
   include GraphqlHelpers
 
   let(:project) { create(:project) }

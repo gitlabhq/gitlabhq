@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'getting Alert Management Integrations' do
+RSpec.describe 'getting Alert Management Integrations', feature_category: :integrations do
   include ::Gitlab::Routing
   include GraphqlHelpers
 

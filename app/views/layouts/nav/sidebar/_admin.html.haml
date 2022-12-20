@@ -14,7 +14,7 @@
           %span.nav-item-name
             = _('Overview')
         %ul.sidebar-sub-level-items
-          = nav_link(controller: %w[dashboard admin admin/projects users groups jobs runners gitaly_servers cohorts], html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: %w[dashboard admin admin/projects users groups jobs runners gitaly_servers cohorts], html_options: { class: "fly-out-top-item" }) do
             = link_to admin_root_path do
               %strong.fly-out-top-item-name
                 = _('Overview')
@@ -82,7 +82,7 @@
             = _('Monitoring')
 
         %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_monitoring_submenu_content' } }
-          = nav_link(controller: admin_monitoring_nav_links, html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: admin_monitoring_nav_links, html_options: { class: "fly-out-top-item" }) do
             = link_to admin_system_info_path do
               %strong.fly-out-top-item-name
                 = _('Monitoring')
@@ -117,7 +117,7 @@
           %span.nav-item-name
             = _('Messages')
         %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(controller: :broadcast_messages, html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: :broadcast_messages, html_options: { class: "fly-out-top-item" }) do
             = link_to admin_broadcast_messages_path do
               %strong.fly-out-top-item-name
                 = _('Messages')
@@ -129,7 +129,7 @@
           %span.nav-item-name
             = _('System Hooks')
         %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(controller: [:hooks, :hook_logs], html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: [:hooks, :hook_logs], html_options: { class: "fly-out-top-item" }) do
             = link_to admin_hooks_path do
               %strong.fly-out-top-item-name
                 = _('System Hooks')
@@ -141,7 +141,7 @@
           %span.nav-item-name
             = _('Applications')
         %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(controller: :applications, html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: :applications, html_options: { class: "fly-out-top-item" }) do
             = link_to admin_applications_path do
               %strong.fly-out-top-item-name
                 = _('Applications')
@@ -154,7 +154,7 @@
             = _('Abuse Reports')
           = gl_badge_tag number_with_delimiter(AbuseReport.count(:all)), variant: :info, size: :sm
         %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(controller: :abuse_reports, html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: :abuse_reports, html_options: { class: "fly-out-top-item" }) do
             = link_to admin_abuse_reports_path do
               %strong.fly-out-top-item-name
                 = _('Abuse Reports')
@@ -170,7 +170,7 @@
             %span.nav-item-name
               = _('Kubernetes')
           %ul.sidebar-sub-level-items.is-fly-out-only
-            = nav_link(controller: :clusters, html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(controller: :clusters, html_options: { class: "fly-out-top-item" }) do
               = link_to admin_clusters_path do
                 %strong.fly-out-top-item-name
                   = _('Kubernetes')
@@ -183,7 +183,7 @@
             %span.nav-item-name
               = _('Spam Logs')
           %ul.sidebar-sub-level-items.is-fly-out-only
-            = nav_link(controller: :spam_logs, html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(controller: :spam_logs, html_options: { class: "fly-out-top-item" }) do
               = link_to admin_spam_logs_path do
                 %strong.fly-out-top-item-name
                   = _('Spam Logs')
@@ -199,7 +199,7 @@
           %span.nav-item-name
             = _('Deploy Keys')
         %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(controller: :deploy_keys, html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: :deploy_keys, html_options: { class: "fly-out-top-item" }) do
             = link_to admin_deploy_keys_path do
               %strong.fly-out-top-item-name
                 = _('Deploy Keys')
@@ -213,7 +213,7 @@
           %span.nav-item-name
             = _('Labels')
         %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(controller: :labels, html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: :labels, html_options: { class: "fly-out-top-item" }) do
             = link_to admin_labels_path do
               %strong.fly-out-top-item-name
                 = _('Labels')
@@ -227,7 +227,7 @@
 
         %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_settings_submenu_content' } }
           -# This active_nav_link check is also used in `app/views/layouts/admin.html.haml`
-          = nav_link(controller: [:application_settings, :integrations, :appearances], html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: [:application_settings, :integrations, :appearances], html_options: { class: "fly-out-top-item" }) do
             = link_to general_admin_application_settings_path do
               %strong.fly-out-top-item-name
                 = _('Settings')
@@ -273,7 +273,7 @@
               = link_to network_admin_application_settings_path, title: _('Network'), data: { qa_selector: 'admin_settings_network_link' } do
                 %span
                   = _('Network')
-            = nav_link(controller: :appearances ) do
+            = nav_link(controller: :appearances) do
               = link_to admin_application_settings_appearances_path do
                 %span
                   = _('Appearance')

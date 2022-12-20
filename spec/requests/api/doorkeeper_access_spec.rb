@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'doorkeeper access' do
+RSpec.describe 'doorkeeper access', feature_category: :authentication_and_authorization do
   let!(:user) { create(:user) }
   let!(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
   let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "api" }

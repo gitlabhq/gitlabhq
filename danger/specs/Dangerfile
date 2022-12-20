@@ -2,6 +2,7 @@
 
 NO_SPECS_LABELS = [
   'maintenance::pipelines',
+  'maintenance::refactor',
   'maintenance::workflow',
   'documentation',
   'QA'
@@ -56,4 +57,5 @@ end
 specs.changed_specs_files.each do |filename|
   specs.add_suggestions_for_match_with_array(filename)
   specs.add_suggestions_for_project_factory_usage(filename)
+  specs.add_suggestions_for_feature_category(filename)
 end

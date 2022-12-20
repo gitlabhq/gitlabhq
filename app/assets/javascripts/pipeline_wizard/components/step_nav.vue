@@ -27,12 +27,13 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-display-flex">
     <slot name="before"></slot>
     <gl-button
       v-if="showBackButton"
       category="secondary"
       data-testid="back-button"
+      class="gl-mr-3"
       @click="$emit('back')"
     >
       {{ __('Back') }}

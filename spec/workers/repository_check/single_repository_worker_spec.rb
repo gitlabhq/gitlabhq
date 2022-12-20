@@ -98,16 +98,6 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
     expect(project.reload.last_repository_check_failed).to eq(false)
   end
 
-  it 'does not create a wiki if the main repo does not exist at all' do
-    project = create(:project, :repository)
-    project.repository.raw.remove
-    project.wiki.repository.raw.remove
-
-    subject.perform(project.id)
-
-    expect(TestEnv.storage_dir_exists?(project.repository_storage, project.wiki.path)).to eq(false)
-  end
-
   def create_push_event(project)
     project.events.create!(action: :pushed, author_id: create(:user).id)
   end

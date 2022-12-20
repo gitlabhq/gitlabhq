@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Deletion of custom emoji' do
+RSpec.describe 'Deletion of custom emoji', feature_category: :not_owned do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }

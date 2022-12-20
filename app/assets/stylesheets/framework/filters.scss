@@ -252,7 +252,7 @@
     z-index: 1;
 
     &:hover .clear-search-icon {
-      color: $common-gray-dark;
+      color: $gray-800;
     }
   }
 }
@@ -433,8 +433,7 @@
 
 .search-token-target-branch {
   .value {
-    font-family: $monospace-font;
-    font-size: $gl-font-size-monospace;
+    @include gl-font-monospace;
   }
 }
 

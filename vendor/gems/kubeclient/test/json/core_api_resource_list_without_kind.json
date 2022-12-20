@@ -1,0 +1,129 @@
+{
+  "groupVersion": "v1",
+  "resources": [
+    {
+      "name": "bindings",
+      "namespaced": true
+    },
+    {
+      "name": "componentstatuses",
+      "namespaced": true
+    },
+    {
+      "name": "endpoints",
+      "namespaced": true
+    },
+    {
+      "name": "events",
+      "namespaced": true
+    },
+    {
+      "name": "limitranges",
+      "namespaced": true
+    },
+    {
+      "name": "namespaces",
+      "namespaced": false
+    },
+    {
+      "name": "namespaces/finalize",
+      "namespaced": false
+    },
+    {
+      "name": "namespaces/status",
+      "namespaced": false
+    },
+    {
+      "name": "nodes",
+      "namespaced": false
+    },
+    {
+      "name": "nodes/status",
+      "namespaced": false
+    },
+    {
+      "name": "persistentvolumeclaims",
+      "namespaced": true
+    },
+    {
+      "name": "persistentvolumeclaims/status",
+      "namespaced": true
+    },
+    {
+      "name": "persistentvolumes",
+      "namespaced": false
+    },
+    {
+      "name": "persistentvolumes/status",
+      "namespaced": false
+    },
+    {
+      "name": "pods",
+      "namespaced": true
+    },
+    {
+      "name": "pods/attach",
+      "namespaced": true
+    },
+    {
+      "name": "pods/binding",
+      "namespaced": true
+    },
+    {
+      "name": "pods/exec",
+      "namespaced": true
+    },
+    {
+      "name": "pods/log",
+      "namespaced": true
+    },
+    {
+      "name": "pods/portforward",
+      "namespaced": true
+    },
+    {
+      "name": "pods/proxy",
+      "namespaced": true
+    },
+    {
+      "name": "pods/status",
+      "namespaced": true
+    },
+    {
+      "name": "podtemplates",
+      "namespaced": true
+    },
+    {
+      "name": "replicationcontrollers",
+      "namespaced": true
+    },
+    {
+      "name": "replicationcontrollers/status",
+      "namespaced": true
+    },
+    {
+      "name": "resourcequotas",
+      "namespaced": true
+    },
+    {
+      "name": "resourcequotas/status",
+      "namespaced": true
+    },
+    {
+      "name": "secrets",
+      "namespaced": true
+    },
+    {
+      "name": "securitycontextconstraints",
+      "namespaced": false
+    },
+    {
+      "name": "serviceaccounts",
+      "namespaced": true
+    },
+    {
+      "name": "services",
+      "namespaced": true
+    }
+  ]
+}

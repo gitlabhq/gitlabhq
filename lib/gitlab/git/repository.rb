@@ -116,9 +116,9 @@ module Gitlab
       # Returns an Array of branch names
       # sorted by name ASC
       def branch_names
-        wrapped_gitaly_errors do
-          gitaly_ref_client.branch_names
-        end
+        refs = list_refs([Gitlab::Git::BRANCH_REF_PREFIX])
+
+        refs.map { |ref| Gitlab::Git.branch_name(ref.name) }
       end
 
       # Returns an Array of Branches
@@ -134,6 +134,10 @@ module Gitlab
         wrapped_gitaly_errors do
           gitaly_ref_client.find_branch(name)
         end
+      rescue Gitlab::Git::AmbiguousRef
+        # Gitaly returns "reference is ambiguous" error in case when users request
+        # branch "my-branch", when another branch "my-branch/branch" exists.
+        # We handle this error here and return nil for this case.
       end
 
       def find_tag(name)
@@ -158,9 +162,7 @@ module Gitlab
 
       # Returns the number of valid branches
       def branch_count
-        wrapped_gitaly_errors do
-          gitaly_ref_client.count_branch_names
-        end
+        branch_names.count
       end
 
       def rename(new_relative_path)
@@ -202,16 +204,14 @@ module Gitlab
 
       # Returns the number of valid tags
       def tag_count
-        wrapped_gitaly_errors do
-          gitaly_ref_client.count_tag_names
-        end
+        tag_names.count
       end
 
       # Returns an Array of tag names
       def tag_names
-        wrapped_gitaly_errors do
-          gitaly_ref_client.tag_names
-        end
+        refs = list_refs([Gitlab::Git::TAG_REF_PREFIX])
+
+        refs.map { |ref| Gitlab::Git.tag_name(ref.name) }
       end
 
       # Returns an Array of Tags
@@ -382,6 +382,12 @@ module Gitlab
       def new_commits(newrevs)
         wrapped_gitaly_errors do
           gitaly_commit_client.list_new_commits(Array.wrap(newrevs))
+        end
+      end
+
+      def check_objects_exist(refs)
+        wrapped_gitaly_errors do
+          gitaly_commit_client.object_existence_map(Array.wrap(refs))
         end
       end
 
@@ -823,9 +829,14 @@ module Gitlab
       end
 
       def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
-        CrossRepoComparer
-          .new(source_repository, self)
-          .compare(source_branch_name, target_branch_name, straight: straight)
+        CrossRepo.new(source_repository, self).execute(target_branch_name) do |target_commit_id|
+          Gitlab::Git::Compare.new(
+            source_repository,
+            target_commit_id,
+            source_branch_name,
+            straight: straight
+          )
+        end
       end
 
       def write_ref(ref_path, ref, old_ref: nil)

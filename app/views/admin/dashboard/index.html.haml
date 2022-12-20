@@ -32,7 +32,8 @@
               = sprite_icon('project', size: 16, css_class: 'gl-text-gray-700')
               %h3.gl-m-0.gl-ml-3= approximate_count_with_delimiters(@counts, Project)
             .gl-mt-3.text-uppercase= s_('AdminArea|Projects')
-          = link_to(s_('AdminArea|New project'), new_project_path, class: "btn gl-button btn-default")
+          = render Pajamas::ButtonComponent.new(href: new_project_path) do
+            = s_('AdminArea|New project')
         = c.footer do
           .d-flex.align-items-center
             = link_to(s_('AdminArea|View latest projects'), admin_projects_path(sort: 'created_desc'))
@@ -55,7 +56,8 @@
             .gl-mt-3.text-uppercase
               = s_('AdminArea|Users')
               = link_to(s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: "text-capitalize gl-ml-2")
-          = link_to(s_('AdminArea|New user'), new_admin_user_path, class: "btn gl-button btn-default")
+          = render Pajamas::ButtonComponent.new(href: new_admin_user_path) do
+            = s_('AdminArea|New user')
         = c.footer do
           .d-flex.align-items-center
             = link_to(s_('AdminArea|View latest users'), admin_users_path({ sort: 'created_desc' }))
@@ -68,7 +70,8 @@
               = sprite_icon('group', size: 16, css_class: 'gl-text-gray-700')
               %h3.gl-m-0.gl-ml-3= approximate_count_with_delimiters(@counts, Group)
             .gl-mt-3.text-uppercase= s_('AdminArea|Groups')
-          = link_to(s_('AdminArea|New group'), new_admin_group_path, class: "btn gl-button btn-default")
+          = render Pajamas::ButtonComponent.new(href: new_admin_group_path) do
+            = s_('AdminArea|New group')
         = c.footer do
           .d-flex.align-items-center
             = link_to(s_('AdminArea|View latest groups'), admin_groups_path(sort: 'created_desc'))
@@ -122,7 +125,7 @@
             = s_('AdminArea|Components')
             - if show_version_check?
               .float-right
-                .js-gitlab-version-check-badge{ data: { "size": "lg", "actionable": "true" } }
+                .js-gitlab-version-check-badge{ data: { "size": "lg", "actionable": "true", "version": gitlab_version_check.to_json } }
                 = link_to(sprite_icon('question'), "https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md", class: 'gl-ml-2', target: '_blank', rel: 'noopener noreferrer')
           %p
             = link_to _('GitLab'), general_admin_application_settings_path

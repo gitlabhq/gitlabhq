@@ -154,7 +154,7 @@ factors:
 The perfect partitioning scheme keeps **all queries over a dataset almost always over a single partition**,
 with some cases going over two partitions and seldom over multiple partitions being
 an acceptable balance. We should also target for **partitions that are as small as possible**, below
-5-10M records and/or 10GB each maximum.
+5-10M records and/or 10 GB each maximum.
 
 Partitioning can be combined with other strategies to either prune (drop) old partitions, move them
 to cheaper storage inside the database or move them outside of the database (archive or use of other
@@ -241,7 +241,7 @@ Related epic: [Partitioning: `web_hook_logs` table](https://gitlab.com/groups/gi
 The important characteristics of `web_hook_logs` are the following:
 
 1. Size of the dataset: it is a really large table. At the moment we decided to
-   partition it (`2021-03-01`), it had roughly 527M records and a total size of roughly 1TB
+   partition it (`2021-03-01`), it had roughly 527M records and a total size of roughly 1 TB
 
    - Table: `web_hook_logs`
    - Rows: approximately 527M
@@ -261,7 +261,7 @@ As a result, on March 2021 there were still not deleted records since July 2020 
 increasing in size by more than 2 million records per day instead of staying at a more or less
 stable size.
 
-Finally, the rate of inserts has grown to more than 170GB of data per month by March 2021 and keeps
+Finally, the rate of inserts has grown to more than 170 GB of data per month by March 2021 and keeps
 on growing, so the only viable solution to pruning old data was through partitioning.
 
 Our approach was to partition the table per month as it aligned with the 90 days retention policy.

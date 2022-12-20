@@ -4,35 +4,29 @@ group: Tutorials
 info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Move your personal project to a group **(FREE SAAS)**
+# Tutorial: Move your personal project to a group **(FREE SAAS)**
 
-This tutorial will show you how to move a personal project to a group.
+If you created a project under a [personal namespace](../user/namespace/index.md),
+you can perform common tasks, like managing issue and merge requests,
+and using source control and CI/CD.
 
-## Why is a group important?
+However, at some point you might outgrow your personal project and
+want to move your project to a group namespace instead. With a group namespace, you can:
 
-In GitLab, you use [groups](../user/group/index.md)
-to manage one or more related projects at the same time.
-A group gives you some great benefits. For example, you can:
-
-- Manage permissions for your projects.
-- View all of the issues and merge requests for the projects in the group.
-- View all unique users in your namespace, across all projects.
+- Give a group of users access to your project, rather than adding users one-by-one.
+- View all issues and merge requests for all projects in the group.
+- View all unique users in the group namespace, across all projects.
 - Manage usage quotas.
-- Start a trial or upgrade to a paid tier. This option is important if you're
+- Start a trial or upgrade to a paid subscription tier. This option is important if you're
   impacted by the [changes to user limits](https://about.gitlab.com/blog/2022/03/24/efficient-free-tier/),
   and need more users.
 
-However, if you're working in a [personal project](../user/project/working_with_projects.md#view-personal-projects),
-you can't use these features. Personal projects are created under your
-[personal namespace](../user/namespace/index.md). They're not part of a group,
-so you can't get any of the benefits and features of a group.
-
-But don't worry! You can move your existing personal project to a group.
-The next steps show you how.
+This tutorial shows you how to move your project from a personal namespace
+to a group namespace.
 
 ## Steps
 
-Here's an overview of what we're going to do:
+Here's an overview of the steps:
 
 1. [Create a group](#create-a-group).
 1. [Move your project to a group](#move-your-project-to-a-group).
@@ -59,8 +53,8 @@ If you don't have a group, create one:
 Before you move your project to a group:
 
 - You must have the Owner role for the project.
-- Remove any [container images](../user/packages/container_registry/index.md#limitations)
-  and [NPM packages](../user/packages/npm_registry/index.md#limitations).
+- Remove any [container images](../user/packages/container_registry/index.md#known-issues)
+- Remove any npm packages. If you transfer a project to a different root namespace, the project must not contain any npm packages. When you update the path of a user or group, or transfer a subgroup or project, you must remove any npm packages first. You cannot update the root namespace of a project with npm packages. Make sure you update your .npmrc files to follow the naming convention and run npm publish if necessary.
 
 Now you're ready to move your project:
 

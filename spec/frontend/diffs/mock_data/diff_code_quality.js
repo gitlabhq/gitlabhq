@@ -1,25 +1,39 @@
 export const multipleFindingsArr = [
   {
     severity: 'minor',
-    description: 'Unexpected Debugger Statement.',
+    description: 'mocked minor Issue',
     line: 2,
   },
   {
     severity: 'major',
-    description:
-      'Function `aVeryLongFunction` has 52 lines of code (exceeds 25 allowed). Consider refactoring.',
+    description: 'mocked major Issue',
     line: 3,
   },
   {
-    severity: 'minor',
-    description: 'Arrow function has too many statements (52). Maximum allowed is 30.',
+    severity: 'info',
+    description: 'mocked info Issue',
+    line: 3,
+  },
+  {
+    severity: 'critical',
+    description: 'mocked critical Issue',
+    line: 3,
+  },
+  {
+    severity: 'blocker',
+    description: 'mocked blocker Issue',
     line: 3,
   },
 ];
 
-export const multipleFindings = {
+export const fiveFindings = {
   filePath: 'index.js',
-  codequality: multipleFindingsArr,
+  codequality: multipleFindingsArr.slice(0, 5),
+};
+
+export const threeFindings = {
+  filePath: 'index.js',
+  codequality: multipleFindingsArr.slice(0, 3),
 };
 
 export const singularFinding = {

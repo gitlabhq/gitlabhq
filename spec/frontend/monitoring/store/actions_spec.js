@@ -4,7 +4,10 @@ import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
-import statusCodes from '~/lib/utils/http_status';
+import statusCodes, {
+  HTTP_STATUS_CREATED,
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+} from '~/lib/utils/http_status';
 import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
 
 import getAnnotations from '~/monitoring/queries/get_annotations.query.graphql';
@@ -944,7 +947,7 @@ describe('Monitoring store actions', () => {
     });
 
     it('Succesful POST request resolves', async () => {
-      mock.onPost(state.dashboardsEndpoint).reply(statusCodes.CREATED, {
+      mock.onPost(state.dashboardsEndpoint).reply(HTTP_STATUS_CREATED, {
         dashboard: dashboardGitResponse[1],
       });
 
@@ -969,7 +972,7 @@ describe('Monitoring store actions', () => {
         commit_message: 'A new commit message',
       });
 
-      mock.onPost(state.dashboardsEndpoint).reply(statusCodes.CREATED, {
+      mock.onPost(state.dashboardsEndpoint).reply(HTTP_STATUS_CREATED, {
         dashboard: mockCreatedDashboard,
       });
 
@@ -1133,7 +1136,7 @@ describe('Monitoring store actions', () => {
 
       mock
         .onPost(panelPreviewEndpoint, { panel_yaml: mockYmlContent })
-        .reply(statusCodes.UNPROCESSABLE_ENTITY, {
+        .reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, {
           message: mockErrorMsg,
         });
 

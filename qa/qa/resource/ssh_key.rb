@@ -3,14 +3,12 @@
 module QA
   module Resource
     class SSHKey < Base
-      extend Forwardable
-
       attr_reader :title
       attr_accessor :expires_at
 
       attribute :id
 
-      def_delegators :key, :private_key, :public_key, :md5_fingerprint, :sha256_fingerprint
+      delegate :private_key, :public_key, :md5_fingerprint, :sha256_fingerprint, to: :key
 
       def initialize
         self.title = Time.now.to_f

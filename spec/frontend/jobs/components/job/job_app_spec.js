@@ -1,14 +1,15 @@
-import { GlLoadingIcon } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
-import MockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
-import delayedJobFixture from 'test_fixtures/jobs/delayed.json';
+import { GlLoadingIcon } from '@gitlab/ui';
+import MockAdapter from 'axios-mock-adapter';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import EmptyState from '~/jobs/components/job/empty_state.vue';
 import EnvironmentsBlock from '~/jobs/components/job/environments_block.vue';
 import ErasedBlock from '~/jobs/components/job/erased_block.vue';
 import JobApp from '~/jobs/components/job/job_app.vue';
+import JobLog from '~/jobs/components/log/log.vue';
+import JobLogTopBar from '~/jobs/components/job/job_log_controllers.vue';
 import Sidebar from '~/jobs/components/job/sidebar/sidebar.vue';
 import StuckBlock from '~/jobs/components/job/stuck_block.vue';
 import UnmetPrerequisitesBlock from '~/jobs/components/job/unmet_prerequisites_block.vue';
@@ -40,7 +41,10 @@ describe('Job App', () => {
   };
 
   const createComponent = () => {
-    wrapper = mount(JobApp, { propsData: { ...props }, store });
+    wrapper = shallowMountExtended(JobApp, {
+      propsData: { ...props },
+      store,
+    });
   };
 
   const setupAndMount = async ({ jobData = {}, jobLogData = {} } = {}) => {
@@ -59,22 +63,16 @@ describe('Job App', () => {
 
   const findLoadingComponent = () => wrapper.findComponent(GlLoadingIcon);
   const findSidebar = () => wrapper.findComponent(Sidebar);
-  const findJobContent = () => wrapper.find('[data-testid="job-content"');
   const findStuckBlockComponent = () => wrapper.findComponent(StuckBlock);
-  const findStuckBlockWithTags = () => wrapper.find('[data-testid="job-stuck-with-tags"');
-  const findStuckBlockNoActiveRunners = () =>
-    wrapper.find('[data-testid="job-stuck-no-active-runners"');
   const findFailedJobComponent = () => wrapper.findComponent(UnmetPrerequisitesBlock);
   const findEnvironmentsBlockComponent = () => wrapper.findComponent(EnvironmentsBlock);
   const findErasedBlock = () => wrapper.findComponent(ErasedBlock);
-  const findArchivedJob = () => wrapper.find('[data-testid="archived-job"]');
   const findEmptyState = () => wrapper.findComponent(EmptyState);
-  const findJobNewIssueLink = () => wrapper.find('[data-testid="job-new-issue"]');
-  const findJobEmptyStateTitle = () => wrapper.find('[data-testid="job-empty-state-title"]');
-  const findJobLogScrollTop = () => wrapper.find('[data-testid="job-controller-scroll-top"]');
-  const findJobLogScrollBottom = () => wrapper.find('[data-testid="job-controller-scroll-bottom"]');
-  const findJobLogController = () => wrapper.find('[data-testid="job-raw-link-controller"]');
-  const findJobLogEraseLink = () => wrapper.find('[data-testid="job-log-erase-link"]');
+  const findJobLog = () => wrapper.findComponent(JobLog);
+  const findJobLogTopBar = () => wrapper.findComponent(JobLogTopBar);
+
+  const findJobContent = () => wrapper.findByTestId('job-content');
+  const findArchivedJob = () => wrapper.findByTestId('archived-job');
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -116,36 +114,6 @@ describe('Job App', () => {
             expect(wrapper.vm.shouldRenderCalloutMessage).toBe(true);
           }));
       });
-
-      describe('triggered job', () => {
-        beforeEach(() => {
-          const aYearAgo = new Date();
-          aYearAgo.setFullYear(aYearAgo.getFullYear() - 1);
-
-          return setupAndMount({
-            jobData: { started: aYearAgo.toISOString(), started_at: aYearAgo.toISOString() },
-          });
-        });
-
-        it('should render provided job information', () => {
-          expect(wrapper.find('.header-main-content').text().replace(/\s+/g, ' ').trim()).toContain(
-            'passed Job test triggered 1 year ago by Root',
-          );
-        });
-
-        it('should render new issue link', () => {
-          expect(findJobNewIssueLink().attributes('href')).toEqual(job.new_issue_path);
-        });
-      });
-
-      describe('created job', () => {
-        it('should render created key', () =>
-          setupAndMount().then(() => {
-            expect(
-              wrapper.find('.header-main-content').text().replace(/\s+/g, ' ').trim(),
-            ).toContain('passed Job test created 3 weeks ago by Root');
-          }));
-      });
     });
 
     describe('stuck block', () => {
@@ -169,57 +137,10 @@ describe('Job App', () => {
             },
           }).then(() => {
             expect(findStuckBlockComponent().exists()).toBe(true);
-            expect(findStuckBlockNoActiveRunners().exists()).toBe(true);
           }));
       });
 
-      describe('when available runners can not run specified tag', () => {
-        it('renders tags in stuck block when there are no runners', () =>
-          setupAndMount({
-            jobData: {
-              status: {
-                group: 'pending',
-                icon: 'status_pending',
-                label: 'pending',
-                text: 'pending',
-                details_path: 'path',
-              },
-              stuck: true,
-              runners: {
-                available: false,
-                online: false,
-              },
-            },
-          }).then(() => {
-            expect(findStuckBlockComponent().text()).toContain(job.tags[0]);
-            expect(findStuckBlockWithTags().exists()).toBe(true);
-          }));
-      });
-
-      describe('when runners are offline and build has tags', () => {
-        it('renders message about job being stuck because of no runners with the specified tags', () =>
-          setupAndMount({
-            jobData: {
-              status: {
-                group: 'pending',
-                icon: 'status_pending',
-                label: 'pending',
-                text: 'pending',
-                details_path: 'path',
-              },
-              stuck: true,
-              runners: {
-                available: true,
-                online: true,
-              },
-            },
-          }).then(() => {
-            expect(findStuckBlockComponent().text()).toContain(job.tags[0]);
-            expect(findStuckBlockWithTags().exists()).toBe(true);
-          }));
-      });
-
-      it('does not renders stuck block when there are no runners', () =>
+      it('does not render stuck block when there are runners', () =>
         setupAndMount({
           jobData: {
             runners: { available: true },
@@ -351,45 +272,13 @@ describe('Job App', () => {
         setupAndMount({ jobData: { has_trace: true } }).then(() => {
           expect(findEmptyState().exists()).toBe(false);
         }));
-
-      it('displays remaining time for a delayed job', () => {
-        const oneHourInMilliseconds = 3600000;
-        jest
-          .spyOn(Date, 'now')
-          .mockImplementation(
-            () => new Date(delayedJobFixture.scheduled_at).getTime() - oneHourInMilliseconds,
-          );
-        return setupAndMount({ jobData: delayedJobFixture }).then(() => {
-          expect(findEmptyState().exists()).toBe(true);
-
-          const title = findJobEmptyStateTitle().text();
-
-          expect(title).toEqual('This is a delayed job to run in 01:00:00');
-        });
-      });
     });
 
     describe('sidebar', () => {
-      it('has no blank blocks', async () => {
-        await setupAndMount({
-          jobData: {
-            duration: null,
-            finished_at: null,
-            erased_at: null,
-            queued: null,
-            runner: null,
-            coverage: null,
-            tags: [],
-            cancel_path: null,
-          },
-        });
+      it('renders sidebar', async () => {
+        await setupAndMount();
 
-        const blocks = wrapper.findAll('.blocks-container > *').wrappers;
-        expect(blocks.length).toBeGreaterThan(0);
-
-        blocks.forEach((block) => {
-          expect(block.text().trim()).not.toBe('');
-        });
+        expect(findSidebar().exists()).toBe(true);
       });
     });
   });
@@ -410,31 +299,15 @@ describe('Job App', () => {
     });
   });
 
-  describe('job log controls', () => {
-    beforeEach(() =>
-      setupAndMount({
-        jobLogData: {
-          html: '<span>Update</span>',
-          status: 'success',
-          append: false,
-          size: 50,
-          total: 100,
-          complete: true,
-        },
-      }),
-    );
+  describe('job log', () => {
+    beforeEach(() => setupAndMount());
 
-    it('should render scroll buttons', () => {
-      expect(findJobLogScrollTop().exists()).toBe(true);
-      expect(findJobLogScrollBottom().exists()).toBe(true);
+    it('should render job log header', () => {
+      expect(findJobLogTopBar().exists()).toBe(true);
     });
 
-    it('should render link to raw ouput', () => {
-      expect(findJobLogController().exists()).toBe(true);
-    });
-
-    it('should render link to erase job', () => {
-      expect(findJobLogEraseLink().exists()).toBe(true);
+    it('should render job log', () => {
+      expect(findJobLog().exists()).toBe(true);
     });
   });
 });

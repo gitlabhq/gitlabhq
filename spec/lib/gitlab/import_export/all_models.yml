@@ -157,6 +157,7 @@ merge_requests:
 - author
 - assignee
 - reviewers
+- reviewed_by_users
 - updated_by
 - milestone
 - iteration
@@ -408,6 +409,20 @@ project:
 - boards
 - last_event
 - integrations
+- push_hooks_integrations
+- tag_push_hooks_integrations
+- issue_hooks_integrations
+- confidential_issue_hooks_integrations
+- merge_request_hooks_integrations
+- note_hooks_integrations
+- confidential_note_hooks_integrations
+- job_hooks_integrations
+- archive_trace_hooks_integrations
+- pipeline_hooks_integrations
+- wiki_page_hooks_integrations
+- deployment_hooks_integrations
+- alert_hooks_integrations
+- vulnerability_hooks_integrations
 - campfire_integration
 - confluence_integration
 - datadog_integration
@@ -423,7 +438,6 @@ project:
 - packagist_integration
 - pivotaltracker_integration
 - prometheus_integration
-- flowdock_integration
 - assembla_integration
 - asana_integration
 - slack_integration
@@ -649,6 +663,7 @@ project:
 - project_callouts
 - pipeline_metadata
 - disable_download_button
+- dependency_list_exports
 award_emoji:
 - awardable
 - user

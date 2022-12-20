@@ -54,12 +54,10 @@ module QA
 
           private
 
-          def within_new_project_deploy_token
+          def within_new_project_deploy_token(&block)
             has_element?(:created_deploy_token_container, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
 
-            within_element(:created_deploy_token_container) do
-              yield
-            end
+            within_element(:created_deploy_token_container, &block)
           end
         end
       end

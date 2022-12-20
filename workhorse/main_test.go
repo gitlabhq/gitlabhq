@@ -29,6 +29,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream"
@@ -491,9 +492,9 @@ func TestSendURLForArtifacts(t *testing.T) {
 		transferEncoding []string
 		contentLength    int
 	}{
-		{"No content-length, chunked TE", chunkedHandler, []string{"chunked"}, -1},    // Case 3 in https://tools.ietf.org/html/rfc7230#section-3.3.2
-		{"Known content-length, identity TE", regularHandler, nil, len(expectedBody)}, // Case 5 in https://tools.ietf.org/html/rfc7230#section-3.3.2
-		{"No content-length, identity TE", rawHandler, []string{"chunked"}, -1},       // Case 7 in https://tools.ietf.org/html/rfc7230#section-3.3.2
+		{"No content-length, chunked TE", chunkedHandler, []string{"chunked"}, -1},    // Case 3 in https://www.rfc-editor.org/rfc/rfc7230#section-3.3.2
+		{"Known content-length, identity TE", regularHandler, nil, len(expectedBody)}, // Case 5 in https://www.rfc-editor.org/rfc/rfc7230#section-3.3.2
+		{"No content-length, identity TE", rawHandler, []string{"chunked"}, -1},       // Case 7 in https://www.rfc-editor.org/rfc/rfc7230#section-3.3.2
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			server := httptest.NewServer(tc.handler)
@@ -853,7 +854,7 @@ func httpPost(t *testing.T, url string, headers map[string]string, reqBody io.Re
 }
 
 func requireNginxResponseBuffering(t *testing.T, expected string, resp *http.Response, msgAndArgs ...interface{}) {
-	actual := resp.Header.Get(helper.NginxResponseBufferHeader)
+	actual := resp.Header.Get(nginx.ResponseBufferHeader)
 	require.Equal(t, expected, actual, msgAndArgs...)
 }
 

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { merge } from 'lodash';
 import { GlIntersectionObserver } from '@gitlab/ui';
 import { nextTick } from 'vue';
@@ -7,13 +6,14 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { FLASH_TYPES, FLASH_CLOSED_EVENT } from '~/flash';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import TermsApp from '~/terms/components/app.vue';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 jest.mock('~/lib/utils/common_utils');
+jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('TermsApp', () => {
   let wrapper;
-  let renderGFMSpy;
 
   const defaultProvide = {
     terms: 'foo bar',
@@ -35,7 +35,6 @@ describe('TermsApp', () => {
   };
 
   beforeEach(() => {
-    renderGFMSpy = jest.spyOn($.fn, 'renderGFM');
     isLoggedIn.mockReturnValue(true);
   });
 
@@ -65,7 +64,7 @@ describe('TermsApp', () => {
     createComponent();
 
     expect(wrapper.findByText(defaultProvide.terms).exists()).toBe(true);
-    expect(renderGFMSpy).toHaveBeenCalled();
+    expect(renderGFM).toHaveBeenCalled();
   });
 
   describe('accept button', () => {

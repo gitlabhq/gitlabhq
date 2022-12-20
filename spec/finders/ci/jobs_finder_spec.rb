@@ -14,52 +14,55 @@ RSpec.describe Ci::JobsFinder, '#execute' do
   let(:params) { {} }
 
   context 'no project' do
-    subject { described_class.new(current_user: admin, params: params).execute }
+    subject { described_class.new(current_user: current_user, params: params).execute }
 
-    it 'returns all jobs' do
-      expect(subject).to match_array([pending_job, running_job, successful_job])
+    context 'with admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+        it { is_expected.to match_array([pending_job, running_job, successful_job]) }
+      end
+
+      context 'when admin mode setting is enabled' do
+        context 'when in admin mode', :enable_admin_mode do
+          it { is_expected.to match_array([pending_job, running_job, successful_job]) }
+        end
+
+        context 'when not in admin mode' do
+          it { is_expected.to be_empty }
+        end
+      end
     end
 
-    context 'non admin user' do
-      let(:admin) { user }
+    context 'with normal user' do
+      let(:current_user) { user }
 
-      it 'returns no jobs' do
-        expect(subject).to be_empty
-      end
+      it { is_expected.to be_empty }
     end
 
     context 'without user' do
-      let(:admin) { nil }
+      let(:current_user) { nil }
 
-      it 'returns no jobs' do
-        expect(subject).to be_empty
-      end
+      it { is_expected.to be_empty }
     end
 
-    context 'scope is present' do
+    context 'with scope', :enable_admin_mode do
+      let(:current_user) { admin }
       let(:jobs) { [pending_job, running_job, successful_job] }
 
-      where(:scope, :index) do
-        [
-          ['pending',  0],
-          ['running',  1],
-          ['finished', 2]
-        ]
+      using RSpec::Parameterized::TableSyntax
+
+      where(:scope, :expected_jobs) do
+        'pending'           | lazy { [pending_job] }
+        'running'           | lazy { [running_job] }
+        'finished'          | lazy { [successful_job] }
+        %w[running success] | lazy { [running_job, successful_job] }
       end
 
       with_them do
         let(:params) { { scope: scope } }
 
-        it { expect(subject).to match_array([jobs[index]]) }
-      end
-    end
-
-    context 'scope is an array' do
-      let(:jobs) { [pending_job, running_job, successful_job, canceled_job] }
-      let(:params) { { scope: %w'running success' } }
-
-      it 'filters by the job statuses in the scope' do
-        expect(subject).to contain_exactly(running_job, successful_job)
+        it { is_expected.to match_array(expected_jobs) }
       end
     end
   end
@@ -92,6 +95,33 @@ RSpec.describe Ci::JobsFinder, '#execute' do
 
       it 'returns no jobs' do
         expect(subject).to be_empty
+      end
+    end
+  end
+
+  context 'when artifacts are present for some jobs' do
+    let_it_be(:job_with_artifacts) { create(:ci_build, :success, pipeline: pipeline, name: 'test') }
+    let_it_be(:artifact) { create(:ci_job_artifact, job: job_with_artifacts) }
+
+    subject { described_class.new(current_user: user, project: project, params: params).execute }
+
+    before do
+      project.add_maintainer(user)
+    end
+
+    context 'when with_artifacts is true' do
+      let(:params) { { with_artifacts: true } }
+
+      it 'returns only jobs with artifacts' do
+        expect(subject).to match_array([job_with_artifacts])
+      end
+    end
+
+    context 'when with_artifacts is false' do
+      let(:params) { { with_artifacts: false } }
+
+      it 'returns all jobs' do
+        expect(subject).to match_array([successful_job, job_with_artifacts])
       end
     end
   end

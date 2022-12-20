@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!('fix_approval_rules_code_owners_rule_type_index')
 
-RSpec.describe FixApprovalRulesCodeOwnersRuleTypeIndex, :migration do
+RSpec.describe FixApprovalRulesCodeOwnersRuleTypeIndex, :migration, feature_category: :source_code_management do
   let(:table_name) { :approval_merge_request_rules }
   let(:index_name) { 'index_approval_rules_code_owners_rule_type' }
 

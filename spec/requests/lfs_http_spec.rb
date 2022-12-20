@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'Git LFS API and storage' do
+RSpec.describe 'Git LFS API and storage', feature_category: :source_code_management do
   using RSpec::Parameterized::TableSyntax
 
   include LfsHttpHelpers
@@ -376,6 +376,21 @@ RSpec.describe 'Git LFS API and storage' do
               let(:deploy_token) { create(:deploy_token, projects: [other_project]) }
 
               it_behaves_like 'LFS http 401 response'
+            end
+
+            context 'when deploy token is from an unrelated group to the project' do
+              let(:group) { create(:group) }
+              let(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
+
+              it_behaves_like 'LFS http 401 response'
+            end
+
+            context 'when deploy token is from a parent group of the project and valid' do
+              let(:group) { create(:group) }
+              let(:project) { create(:project, group: group) }
+              let(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
+
+              it_behaves_like 'an authorized request', renew_authorization: false
             end
 
             # TODO: We should fix this test case that causes flakyness by alternating the result of the above test cases.
@@ -842,14 +857,6 @@ RSpec.describe 'Git LFS API and storage' do
                   lfs_object.destroy!
                 end
 
-                context 'with object storage disabled' do
-                  it "doesn't attempt to migrate file to object storage" do
-                    expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
-
-                    put_finalize(with_tempfile: true)
-                  end
-                end
-
                 context 'with object storage enabled' do
                   context 'and direct upload enabled' do
                     let!(:fog_connection) do
@@ -909,18 +916,6 @@ RSpec.describe 'Git LFS API and storage' do
                         expect(LfsObject.last.file_store).to eq(ObjectStorage::Store::REMOTE)
                         expect(LfsObject.last.file).to be_exists
                       end
-                    end
-                  end
-
-                  context 'and background upload enabled' do
-                    before do
-                      stub_lfs_object_storage(background_upload: true)
-                    end
-
-                    it 'schedules migration of file to object storage' do
-                      expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with('LfsObjectUploader', 'LfsObject', :file, kind_of(Numeric))
-
-                      put_finalize(with_tempfile: true)
                     end
                   end
                 end
@@ -1036,7 +1031,7 @@ RSpec.describe 'Git LFS API and storage' do
         end
 
         describe 'to a forked project' do
-          let_it_be(:upstream_project) { create(:project, :public) }
+          let_it_be_with_reload(:upstream_project) { create(:project, :public) }
           let_it_be(:project_owner) { create(:user) }
 
           let(:project) { fork_project(upstream_project, project_owner) }
@@ -1070,6 +1065,56 @@ RSpec.describe 'Git LFS API and storage' do
 
                 it 'LFS object is linked to the forked project' do
                   expect(lfs_object.projects.pluck(:id)).to include(project.id)
+                end
+              end
+            end
+
+            describe 'when user has push access to upstream project' do
+              before do
+                upstream_project.add_maintainer(user)
+              end
+
+              context 'an MR exists on target forked project' do
+                let(:allow_collaboration) { true }
+                let(:merge_request) do
+                  create(:merge_request,
+                         target_project: upstream_project,
+                         source_project: project,
+                         allow_collaboration: allow_collaboration)
+                end
+
+                before do
+                  merge_request
+                end
+
+                context 'with allow_collaboration option set to true' do
+                  context 'and request is sent by gitlab-workhorse to authorize the request' do
+                    before do
+                      put_authorize
+                    end
+
+                    it_behaves_like 'LFS http 200 workhorse response'
+                  end
+
+                  context 'and request is sent by gitlab-workhorse to finalize the upload' do
+                    before do
+                      put_finalize
+                    end
+
+                    it_behaves_like 'LFS http 200 response'
+                  end
+                end
+
+                context 'with allow_collaboration option set to false' do
+                  context 'request is sent by gitlab-workhorse to authorize the request' do
+                    let(:allow_collaboration) { false }
+
+                    before do
+                      put_authorize
+                    end
+
+                    it_behaves_like 'forbidden'
+                  end
                 end
               end
             end

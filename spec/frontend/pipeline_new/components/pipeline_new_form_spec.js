@@ -295,11 +295,11 @@ describe('Pipeline New Form', () => {
         expect(dropdownItems.at(2).text()).toBe(valueOptions[2]);
       });
 
-      it('variables with multiple predefined values sets the first option as the default', () => {
+      it('variable with multiple predefined values sets value as the default', () => {
         const dropdown = findValueDropdowns().at(0);
         const { valueOptions } = mockYamlVariables[2];
 
-        expect(dropdown.props('text')).toBe(valueOptions[0]);
+        expect(dropdown.props('text')).toBe(valueOptions[1]);
       });
     });
 

@@ -23,70 +23,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     described_class.clear_memoization(:known_events)
   end
 
-  context 'migration to instrumentation classes data collection' do
-    let_it_be(:instrumented_events) do
-      instrumentation_classes = %w[AggregatedMetric RedisHLLMetric]
-      ::Gitlab::Usage::MetricDefinition.all.map do |definition|
-        next unless definition.available?
-        next unless instrumentation_classes.include?(definition.attributes[:instrumentation_class])
-
-        definition.attributes.dig(:options, :events)&.sort
-      end.compact.to_set
-    end
-
-    def not_instrumented_events(category)
-      described_class
-        .events_for_category(category)
-        .sort
-        .reject do |event|
-          instrumented_events.include?([event])
-        end
-    end
-
-    def not_instrumented_aggregate(category)
-      events = described_class.events_for_category(category).sort
-
-      return unless described_class::CATEGORIES_FOR_TOTALS.include?(category)
-      return unless described_class.send(:eligible_for_totals?, events)
-      return if instrumented_events.include?(events)
-
-      events
-    end
-
-    describe 'Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS' do
-      it 'includes only fully migrated categories' do
-        wrong_skipped_events = described_class::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS.map do |category|
-          next if not_instrumented_events(category).empty? && not_instrumented_aggregate(category).nil?
-
-          [category, [not_instrumented_events(category), not_instrumented_aggregate(category)].compact]
-        end.compact.to_h
-
-        expect(wrong_skipped_events).to be_empty
-      end
-
-      context 'with not instrumented category' do
-        let(:instrumented_events) { [] }
-
-        it 'can detect not migrated category' do
-          wrong_skipped_events = described_class::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS.map do |category|
-            next if not_instrumented_events(category).empty? && not_instrumented_aggregate(category).nil?
-
-            [category, [not_instrumented_events(category), not_instrumented_aggregate(category)].compact]
-          end.compact.to_h
-
-          expect(wrong_skipped_events).not_to be_empty
-        end
-      end
-    end
-
-    describe '.unique_events_data' do
-      it 'does not include instrumented categories' do
-        expect(described_class.unique_events_data.keys)
-          .not_to include(*described_class.categories_collected_from_metrics_definitions)
-      end
-    end
-  end
-
   describe '.categories' do
     it 'gets CE unique category names' do
       expect(described_class.categories).to include(
@@ -138,13 +74,13 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       File.open(ce_temp_file.path, "w+b") { |f| f.write [ce_event].to_yaml }
     end
 
-    it 'returns ce events' do
-      expect(described_class.known_events).to include(ce_event)
-    end
-
     after do
       ce_temp_file.unlink
       FileUtils.remove_entry(ce_temp_dir) if Dir.exist?(ce_temp_dir)
+    end
+
+    it 'returns ce events' do
+      expect(described_class.known_events).to include(ce_event)
     end
   end
 
@@ -273,6 +209,22 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           expect { described_class.track_event('unknown', values: entity1, time: Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
         end
 
+        context 'when Rails environment is production' do
+          before do
+            allow(Rails.env).to receive(:development?).and_return(false)
+            allow(Rails.env).to receive(:test?).and_return(false)
+          end
+
+          it 'reports only UnknownEvent exception' do
+            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+                                               .with(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
+                                               .once
+                                               .and_call_original
+
+            expect { described_class.track_event('unknown', values: entity1, time: Date.current) }.not_to raise_error
+          end
+        end
+
         it 'reports an error if Feature.enabled raise an error' do
           expect(Feature).to receive(:enabled?).and_raise(StandardError.new)
           expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
@@ -342,7 +294,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       context 'with valid contex' do
         it 'increments context event counter' do
           expect(Gitlab::Redis::HLL).to receive(:add) do |kwargs|
-            expect(kwargs[:key]).to match(/^#{default_context}\_.*/)
+            expect(kwargs[:key]).to match(/^#{default_context}_.*/)
           end
 
           described_class.track_event_in_context(context_event, values: entity1, context: default_context)
@@ -541,53 +493,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       it 'raise error' do
         expect { described_class.unique_events(event_names: 'event_name_1', start_date: 4.weeks.ago, end_date: Date.current, context: invalid_context) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::InvalidContext)
       end
-    end
-  end
-
-  describe 'unique_events_data' do
-    let(:known_events) do
-      [
-        { name: 'event1_slot', redis_slot: "slot", category: 'category1', aggregation: "weekly" },
-        { name: 'event2_slot', redis_slot: "slot", category: 'category1', aggregation: "weekly" },
-        { name: 'event3', category: 'category2', aggregation: "weekly" },
-        { name: 'event4', category: 'category2', aggregation: "weekly" }
-      ].map(&:with_indifferent_access)
-    end
-
-    before do
-      allow(described_class).to receive(:known_events).and_return(known_events)
-      allow(described_class).to receive(:categories).and_return(%w(category1 category2))
-
-      stub_const('Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_FOR_TOTALS', %w(category1 category2))
-
-      described_class.track_event('event1_slot', values: entity1, time: 2.days.ago)
-      described_class.track_event('event2_slot', values: entity2, time: 2.days.ago)
-      described_class.track_event('event2_slot', values: entity3, time: 2.weeks.ago)
-
-      # events in different slots
-      described_class.track_event('event3', values: entity2, time: 2.days.ago)
-      described_class.track_event('event4', values: entity2, time: 2.days.ago)
-    end
-
-    it 'returns the number of unique events for all known events' do
-      results = {
-        "category1" => {
-          "event1_slot_weekly" => 1,
-          "event1_slot_monthly" => 1,
-          "event2_slot_weekly" => 1,
-          "event2_slot_monthly" => 2,
-          "category1_total_unique_counts_weekly" => 2,
-          "category1_total_unique_counts_monthly" => 3
-        },
-        "category2" => {
-          "event3_weekly" => 1,
-          "event3_monthly" => 1,
-          "event4_weekly" => 1,
-          "event4_monthly" => 1
-        }
-      }
-
-      expect(subject.unique_events_data).to eq(results)
     end
   end
 

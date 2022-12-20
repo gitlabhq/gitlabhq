@@ -64,6 +64,34 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe 'preloading deployment associations' do
+    let!(:environment) { create(:environment, project: project) }
+
+    associations = [:last_deployment, :last_visible_deployment, :upcoming_deployment]
+    associations.concat Deployment::FINISHED_STATUSES.map { |status| "last_#{status}_deployment".to_sym }
+    associations.concat Deployment::UPCOMING_STATUSES.map { |status| "last_#{status}_deployment".to_sym }
+
+    context 'raises error for legacy approach' do
+      let!(:error_pattern) { /Preloading instance dependent scopes is not supported/ }
+
+      subject { described_class.preload(association_name).find_by(id: environment) }
+
+      shared_examples 'raises error' do
+        it do
+          expect { subject }.to raise_error(error_pattern)
+        end
+      end
+
+      associations.each do |association|
+        context association.to_s do
+          let!(:association_name) { association }
+
+          include_examples "raises error"
+        end
+      end
+    end
+  end
+
   describe 'validate and sanitize external url' do
     let_it_be_with_refind(:environment) { create(:environment) }
 
@@ -184,7 +212,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
 
     describe ".schedule_to_delete" do
-      subject { described_class.for_id(deletable_environment).schedule_to_delete }
+      subject { described_class.id_in(deletable_environment).schedule_to_delete }
 
       it "schedules the record for deletion" do
         freeze_time do
@@ -275,6 +303,72 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     context 'when query contains a wildcard character' do
       let(:query) { 'produc%' }
+
+      it 'prevents wildcard injection' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '.for_name_like_within_folder' do
+    subject { project.environments.for_name_like_within_folder(query, limit: limit) }
+
+    let!(:environment) { create(:environment, name: 'review/test-app', project: project) }
+    let!(:environment_a) { create(:environment, name: 'test-app', project: project) }
+    let(:query) { 'test' }
+    let(:limit) { 5 }
+
+    it 'returns a found name' do
+      is_expected.to contain_exactly(environment)
+    end
+
+    it 'does not return environment without folder' do
+      is_expected.not_to include(environment_a)
+    end
+
+    context 'when query is test-app' do
+      let(:query) { 'test-app' }
+
+      it 'returns a found name' do
+        is_expected.to include(environment)
+      end
+    end
+
+    context 'when query is test-app-a' do
+      let(:query) { 'test-app-a' }
+
+      it 'returns empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when query is empty string' do
+      let(:query) { '' }
+      let!(:environment_b) { create(:environment, name: 'review/test-app-1', project: project) }
+
+      it 'returns only the foldered environments' do
+        is_expected.to contain_exactly(environment, environment_b)
+      end
+    end
+
+    context 'when query is nil' do
+      let(:query) {}
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(NoMethodError)
+      end
+    end
+
+    context 'when query is partially matched in the middle of environment name' do
+      let(:query) { 'app' }
+
+      it 'returns empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when query contains a wildcard character' do
+      let(:query) { 'test%' }
 
       it 'prevents wildcard injection' do
         is_expected.to be_empty
@@ -1914,6 +2008,25 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
         it { is_expected.to eq(true) }
       end
+    end
+  end
+
+  describe '#deploy_freezes' do
+    let(:environment) { create(:environment, project: project, name: 'staging') }
+    let(:freeze_period) { create(:ci_freeze_period, project: project) }
+
+    subject { environment.deploy_freezes }
+
+    it 'returns the freeze periods of the associated project' do
+      expect(subject).to contain_exactly(freeze_period)
+    end
+
+    it 'caches the freeze periods' do
+      expect(Gitlab::SafeRequestStore).to receive(:fetch)
+        .at_least(:once)
+        .and_return([freeze_period])
+
+      subject
     end
   end
 end

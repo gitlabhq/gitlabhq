@@ -1,12 +1,6 @@
 <script>
-import {
-  GlTooltipDirective,
-  GlButton,
-  GlSafeHtmlDirective,
-  GlAvatarLink,
-  GlAvatarLabeled,
-  GlTooltip,
-} from '@gitlab/ui';
+import { GlTooltipDirective, GlButton, GlAvatarLink, GlAvatarLabeled, GlTooltip } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { glEmojiTag } from '~/emoji';
 import { __, sprintf } from '~/locale';
@@ -31,7 +25,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   EMOJI_REF: 'EMOJI_REF',
   props: {

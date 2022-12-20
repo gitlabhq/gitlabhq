@@ -2,40 +2,39 @@
 description: 'Learn how to configure the build output folder for the most
 common static site generators'
 stage: Create
-group: Incubation
+group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure the public files folder **(FREE)**
 
-GitLab Pages requires all files you intend to be available in the published website to
-be in a root-level folder called `public`. This page describe how
-to set this up for some common static site generators.
+All the files that should be accessible by the browser must be in a root-level folder called `public`.
 
-## Guide by framework
+Follow these instructions to configure the `public` folder
+for the following frameworks.
 
-### Eleventy
+## Eleventy
 
-For Eleventy, you should either:
+For Eleventy, you should do one of the following:
 
-1. Add the `--output=public` flag in Eleventy's build commands, for example:
+- Add the `--output=public` flag in Eleventy's build commands, for example:
 
-   `npx @11ty/eleventy --input=path/to/sourcefiles --output=public`
+  `npx @11ty/eleventy --input=path/to/sourcefiles --output=public`
 
-1. Add the following to your `.eleventy.js` file:
+- Add the following to your `.eleventy.js` file:
 
-   ```javascript
-   // .eleventy.js
-   module.exports = function(eleventyConfig) {
-     return {
-       dir: {
-         output: "public"
-       }
-     }
-   };
-   ```
+  ```javascript
+  // .eleventy.js
+  module.exports = function(eleventyConfig) {
+    return {
+      dir: {
+        output: "public"
+      }
+    }
+  };
+  ```
 
-### Astro
+## Astro
 
 By default, Astro uses the `public` folder to store static assets. For GitLab Pages,
 rename that folder to a collision-free alternative first:
@@ -65,11 +64,11 @@ rename that folder to a collision-free alternative first:
    });
    ```
 
-### SvelteKit
+## SvelteKit
 
 NOTE:
 GitLab Pages supports only static sites. For SvelteKit,
-we recommend using [`adapter-static`](https://kit.svelte.dev/docs/adapters#supported-environments-static-sites).
+you can use [`adapter-static`](https://kit.svelte.dev/docs/adapters#supported-environments-static-sites).
 
 When using `adapter-static`, add the following to your `svelte.config.js`:
 
@@ -86,11 +85,11 @@ export default {
 };
 ```
 
-### Next.js
+## Next.js
 
 NOTE:
-GitLab Pages supports only static sites. For Next.js, we
-recommend using Next's [Static HTML export functionality](https://nextjs.org/docs/advanced-features/static-html-export)
+GitLab Pages supports only static sites. For Next.js, you can use
+Next's [Static HTML export functionality](https://nextjs.org/docs/advanced-features/static-html-export).
 
 Use the `-o public` flag after `next export` as the build command, for
 example:
@@ -118,7 +117,7 @@ GitLab Pages supports only static sites.
 1. Configure your Nuxt.js application for
    [Static Site Generation](https://nuxtjs.org/docs/features/deployment-targets/#static-hosting).
 
-### Vite
+## Vite
 
 Update your `vite.config.js` to include the following:
 
@@ -131,7 +130,7 @@ export default {
 }
 ```
 
-### Webpack
+## Webpack
 
 Update your `webpack.config.js` to include the following:
 
@@ -147,9 +146,9 @@ module.exports = {
 ## Should you commit the `public` folder?
 
 Not necessarily. However, when the GitLab Pages deploy pipeline runs, it looks
-for an [artifact](../../../ci/pipelines/job_artifacts.md) of that name. So
+for an [artifact](../../../ci/pipelines/job_artifacts.md) of that name.
 If you set up a job that creates the `public` folder before deploy, such as by
 running `npm run build`, committing the folder isn't required.
 
 If you prefer to build your site locally, you can commit the `public` folder and
-omit the build step during the job, instead.
+omit the build step during the job instead.

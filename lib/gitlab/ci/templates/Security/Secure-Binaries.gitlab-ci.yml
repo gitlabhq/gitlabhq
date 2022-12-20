@@ -9,9 +9,9 @@
 # Usage:
 #
 # include:
-#   - template: Secure-Binaries.gitlab-ci.yml
+#   - template: Security/Secure-Binaries.gitlab-ci.yml
 #
-# Docs: https://docs.gitlab.com/ee/topics/airgap/
+# Docs: https://docs.gitlab.com/ee/user/application_security/offline_deployments/
 
 variables:
   # Setting this variable will affect all Security templates
@@ -38,7 +38,7 @@ variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
   services:
-    - docker:stable-dind
+    - docker:dind
   script:
     - docker info
     - env

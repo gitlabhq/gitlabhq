@@ -47,6 +47,9 @@ module Gitlab
         # Representation is created but the developer forgot to add a
         # `:github_identifiers` field.
         track_and_raise_exception(project, e, fail_import: true)
+      rescue ActiveRecord::RecordInvalid => e
+        # We do not raise exception to prevent job retry
+        track_exception(project, e)
       rescue StandardError => e
         track_and_raise_exception(project, e)
       end
@@ -86,13 +89,17 @@ module Gitlab
         )
       end
 
-      def track_and_raise_exception(project, exception, fail_import: false)
+      def track_exception(project, exception, fail_import: false)
         Gitlab::Import::ImportFailureService.track(
           project_id: project.id,
           error_source: importer_class.name,
           exception: exception,
           fail_import: fail_import
         )
+      end
+
+      def track_and_raise_exception(project, exception, fail_import: false)
+        track_exception(project, exception, fail_import: fail_import)
 
         raise(exception)
       end

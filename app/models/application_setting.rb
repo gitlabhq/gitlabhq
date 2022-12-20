@@ -11,6 +11,7 @@ class ApplicationSetting < ApplicationRecord
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
   ignore_column :user_email_lookup_limit, remove_with: '15.0', remove_after: '2022-04-18'
+  ignore_column :send_user_confirmation_email, remove_with: '15.8', remove_after: '2022-12-18'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -20,7 +21,7 @@ class ApplicationSetting < ApplicationRecord
     'Admin Area > Settings > General > Kroki'
 
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
-  enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }
+  enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
 
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
@@ -87,7 +88,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :grafana_url,
             system_hook_url: {
-              blocked_message: "is blocked: %{exception_message}. " + GRAFANA_URL_ERROR_MESSAGE
+              blocked_message: "is blocked: %{exception_message}. #{GRAFANA_URL_ERROR_MESSAGE}"
             },
             if: :grafana_url_absolute?
 
@@ -223,6 +224,10 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :jobs_per_stage_page_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :max_terraform_state_size_bytes,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
@@ -412,12 +417,10 @@ class ApplicationSetting < ApplicationRecord
             allow_nil: false,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  # rubocop:disable Cop/StaticTranslationDefinition
   validates :deactivate_dormant_users_period,
             presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 90, message: _("'%{value}' days of inactivity must be greater than or equal to 90") },
+            numericality: { only_integer: true, greater_than_or_equal_to: 90, message: N_("'%{value}' days of inactivity must be greater than or equal to 90") },
             if: :deactivate_dormant_users?
-  # rubocop:enable Cop/StaticTranslationDefinition
 
   Gitlab::SSHPublicKey.supported_types.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
@@ -466,7 +469,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :external_auth_client_key,
             presence: true,
-            if: -> (setting) { setting.external_auth_client_cert.present? }
+            if: ->(setting) { setting.external_auth_client_cert.present? }
 
   validates :lets_encrypt_notification_email,
             devise_email: true,
@@ -488,17 +491,17 @@ class ApplicationSetting < ApplicationRecord
 
   validates :eks_access_key_id,
             length: { in: 16..128 },
-            if: -> (setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
+            if: ->(setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
 
   validates :eks_secret_access_key,
             presence: true,
-            if: -> (setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
+            if: ->(setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
 
   validates_with X509CertificateCredentialsValidator,
                  certificate: :external_auth_client_cert,
                  pkey: :external_auth_client_key,
                  pass: :external_auth_client_key_pass,
-                 if: -> (setting) { setting.external_auth_client_cert.present? }
+                 if: ->(setting) { setting.external_auth_client_cert.present? }
 
   validates :default_ci_config_path,
     format: { without: %r{(\.{2}|\A/)},
@@ -685,6 +688,10 @@ class ApplicationSetting < ApplicationRecord
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :disable_admin_oauth_scopes,
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates :bulk_import_enabled,
+            allow_nil: false,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   before_validation :ensure_uuid!

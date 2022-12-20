@@ -12,11 +12,11 @@ import {
   GlLink,
   GlSprintf,
   GlLoadingIcon,
-  GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { uniqueId } from 'lodash';
 import Vue from 'vue';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
 import { VARIABLE_TYPE, FILE_TYPE, CC_VALIDATION_REQUIRED_ERROR } from '../constants';
@@ -400,11 +400,13 @@ export default {
             :class="$options.formElementClasses"
             class="gl-flex-grow-1 gl-mr-0!"
             data-testid="pipeline-form-ci-variable-value-dropdown"
+            data-qa-selector="ci_variable_value_dropdown"
           >
             <gl-dropdown-item
               v-for="value in predefinedValueOptions[variable.key]"
               :key="value"
               data-testid="pipeline-form-ci-variable-value-dropdown-items"
+              data-qa-selector="ci_variable_value_dropdown_item"
               @click="setVariableAttribute(variable.key, 'value', value)"
             >
               {{ value }}

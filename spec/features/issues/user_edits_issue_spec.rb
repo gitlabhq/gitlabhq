@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "Issues > User edits issue", :js do
+RSpec.describe "Issues > User edits issue", :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:project_with_milestones) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
@@ -416,7 +416,7 @@ RSpec.describe "Issues > User edits issue", :js do
               find('.gl-form-input', visible: true).send_keys "\"#{milestones[0].title}\""
               wait_for_requests
 
-              page.within '.gl-new-dropdown-contents' do
+              page.within '.gl-dropdown-contents' do
                 expect(page).to have_content milestones[0].title
               end
             end

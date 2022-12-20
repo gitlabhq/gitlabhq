@@ -4,9 +4,9 @@
 
 import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
-import { isFunction, defer } from 'lodash';
+import { isFunction, defer, escape } from 'lodash';
 import Cookies from '~/lib/utils/cookies';
-import { SCOPED_LABEL_DELIMITER } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
+import { SCOPED_LABEL_DELIMITER } from '~/sidebar/components/labels/labels_select_widget/constants';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
 import { isObject } from './type_utility';
 import { getLocationHash } from './url_utility';
@@ -28,15 +28,11 @@ export const checkPageAndAction = (page, action) => {
 export const isInIncidentPage = () => checkPageAndAction('incidents', 'show');
 export const isInIssuePage = () => checkPageAndAction('issues', 'show');
 export const isInDesignPage = () => checkPageAndAction('issues', 'designs');
-export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
+export const isInMRPage = () =>
+  checkPageAndAction('merge_requests', 'show') || checkPageAndAction('merge_requests', 'diffs');
 export const isInEpicPage = () => checkPageAndAction('epics', 'show');
 
 export const getDashPath = (path = window.location.pathname) => path.split('/-/')[1] || null;
-
-export const getCspNonceValue = () => {
-  const metaTag = document.querySelector('meta[name=csp-nonce]');
-  return metaTag && metaTag.content;
-};
 
 export const rstrip = (val) => {
   if (val) {
@@ -469,7 +465,7 @@ export const backOff = (fn, timeout = 60000) => {
 export const spriteIcon = (icon, className = '') => {
   const classAttribute = className.length > 0 ? `class="${className}"` : '';
 
-  return `<svg ${classAttribute}><use xlink:href="${gon.sprite_icons}#${icon}" /></svg>`;
+  return `<svg ${classAttribute}><use xlink:href="${gon.sprite_icons}#${escape(icon)}" /></svg>`;
 };
 
 /**
@@ -714,4 +710,17 @@ export const getFirstPropertyValue = (data) => {
   if (!key) return null;
 
   return data[key];
+};
+
+// TODO: remove when FF `new_fonts` is removed https://gitlab.com/gitlab-org/gitlab/-/issues/379147
+/**
+ * This method checks the FF `new_fonts`
+ * as well as a query parameter `new_fonts`.
+ * If either of them is enabled, new fonts will be applied.
+ *
+ * @returns Boolean Whether to apply new fonts
+ */
+export const useNewFonts = () => {
+  const hasQueryParam = new URLSearchParams(window.location.search).has('new_fonts');
+  return window?.gon.features?.newFonts || hasQueryParam;
 };

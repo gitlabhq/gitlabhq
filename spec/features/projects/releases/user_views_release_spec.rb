@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User views Release', :js do
+RSpec.describe 'User views Release', :js, feature_category: :continuous_delivery do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

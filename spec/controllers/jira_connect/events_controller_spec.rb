@@ -101,6 +101,14 @@ RSpec.describe JiraConnect::EventsController do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      it 'uses the JiraConnectInstallations::UpdateService' do
+        expect_next_instance_of(JiraConnectInstallations::UpdateService, installation, anything) do |update_service|
+          expect(update_service).to receive(:execute).and_call_original
+        end
+
+        subject
+      end
+
       context 'when parameters include a new shared secret and base_url' do
         let(:shared_secret) { 'new_secret' }
         let(:base_url) { 'https://new_test.atlassian.net' }
@@ -124,6 +132,36 @@ RSpec.describe JiraConnect::EventsController do
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
         end
       end
+    end
+
+    shared_examples 'generates JWT validation claims' do
+      specify do
+        expect_next_instance_of(Atlassian::JiraConnect::Jwt::Asymmetric, anything, expected_claims) do |asymmetric_jwt|
+          allow(asymmetric_jwt).to receive(:valid?).and_return(true)
+        end
+
+        subject
+      end
+    end
+
+    context 'when enforce_jira_base_url_https' do
+      before do
+        allow(Gitlab.config.jira_connect).to receive(:enforce_jira_base_url_https).and_return(true)
+      end
+
+      let(:expected_claims) { { aud: "https://test.host/-/jira_connect", iss: anything, qsh: anything } }
+
+      it_behaves_like 'generates JWT validation claims'
+    end
+
+    context 'when not enforce_jira_base_url_https' do
+      before do
+        allow(Gitlab.config.jira_connect).to receive(:enforce_jira_base_url_https).and_return(false)
+      end
+
+      let(:expected_claims) { { aud: "http://test.host/-/jira_connect", iss: anything, qsh: anything } }
+
+      it_behaves_like 'generates JWT validation claims'
     end
   end
 

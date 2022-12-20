@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import ImportProjectMembersModal from '~/invite_members/components/import_project_members_modal.vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default function initImportProjectMembersModal() {
   const el = document.querySelector('.js-import-project-members-modal');
@@ -8,7 +9,7 @@ export default function initImportProjectMembersModal() {
     return false;
   }
 
-  const { projectId, projectName } = el.dataset;
+  const { projectId, projectName, reloadPageOnSubmit } = el.dataset;
 
   return new Vue({
     el,
@@ -17,6 +18,7 @@ export default function initImportProjectMembersModal() {
         props: {
           projectId,
           projectName,
+          reloadPageOnSubmit: parseBoolean(reloadPageOnSubmit),
         },
       }),
   });

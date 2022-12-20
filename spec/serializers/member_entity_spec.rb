@@ -90,6 +90,28 @@ RSpec.describe MemberEntity do
       it_behaves_like 'is_direct_member'
     end
 
+    context 'is_last_owner' do
+      context 'when member is last owner' do
+        before do
+          allow(member).to receive(:last_owner?).and_return(true)
+        end
+
+        it 'exposes `is_last_owner` as `true`' do
+          expect(entity_hash[:is_last_owner]).to be(true)
+        end
+      end
+
+      context 'when owner is not last owner' do
+        before do
+          allow(member).to receive(:last_owner?).and_return(false)
+        end
+
+        it 'exposes `is_last_owner` as `false`' do
+          expect(entity_hash[:is_last_owner]).to be(false)
+        end
+      end
+    end
+
     context 'new member user state is blocked_pending_approval' do
       let(:user) { create(:user, :blocked_pending_approval) }
       let(:group_member) { create(:group_member, :invited, group: group, invite_email: user.email) }

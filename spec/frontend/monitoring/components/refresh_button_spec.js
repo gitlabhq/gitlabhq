@@ -52,20 +52,6 @@ describe('RefreshButton', () => {
     expect(findDropdown().props('text')).toBe('Off');
   });
 
-  describe('when feature flag disable_metric_dashboard_refresh_rate is on', () => {
-    beforeEach(() => {
-      createWrapper({
-        provide: {
-          glFeatures: { disableMetricDashboardRefreshRate: true },
-        },
-      });
-    });
-
-    it('refresh rate is not available', () => {
-      expect(findDropdown().exists()).toBe(false);
-    });
-  });
-
   describe('refresh rate options', () => {
     it('presents multiple options', () => {
       expect(findOptions().length).toBeGreaterThan(1);

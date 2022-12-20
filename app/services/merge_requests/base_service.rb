@@ -59,6 +59,8 @@ module MergeRequests
       merge_request_activity_counter.track_users_review_requested(users: new_reviewers)
       merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
       trigger_merge_request_reviewers_updated(merge_request)
+
+      capture_suggested_reviewers_accepted(merge_request)
     end
 
     def cleanup_environments(merge_request)
@@ -137,6 +139,7 @@ module MergeRequests
       end
 
       filter_reviewer(merge_request)
+      filter_suggested_reviewers
     end
 
     def filter_reviewer(merge_request)
@@ -161,6 +164,10 @@ module MergeRequests
       else
         params.delete(:reviewer_ids)
       end
+    end
+
+    def filter_suggested_reviewers
+      # Implemented in EE
     end
 
     def merge_request_metrics_service(merge_request)
@@ -252,6 +259,14 @@ module MergeRequests
 
     def trigger_merge_request_merge_status_updated(merge_request)
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+    end
+
+    def trigger_merge_request_approval_state_updated(merge_request)
+      GraphqlTriggers.merge_request_approval_state_updated(merge_request)
+    end
+
+    def capture_suggested_reviewers_accepted(merge_request)
+      # Implemented in EE
     end
   end
 end

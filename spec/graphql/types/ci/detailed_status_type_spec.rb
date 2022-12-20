@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Types::Ci::DetailedStatusType do
   include GraphqlHelpers
 
+  let_it_be(:stage) { create(:ci_stage, status: :skipped) }
+
   specify { expect(described_class.graphql_name).to eq('DetailedStatus') }
 
   it 'has all fields' do
@@ -12,8 +14,6 @@ RSpec.describe Types::Ci::DetailedStatusType do
                                                    :details_path, :has_details,
                                                    :label, :text, :tooltip, :action)
   end
-
-  let_it_be(:stage) { create(:ci_stage, status: :skipped) }
 
   describe 'id field' do
     it 'correctly renders the field' do

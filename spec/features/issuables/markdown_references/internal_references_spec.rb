@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Internal references", :js do
+RSpec.describe "Internal references", :js, feature_category: :team_planning do
   include Spec::Support::Helpers::Features::NotesHelpers
 
   let(:private_project_user) { private_project.first_owner }

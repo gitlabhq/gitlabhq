@@ -85,6 +85,27 @@ RSpec.describe ProjectMember do
     end
   end
 
+  describe '#holder_of_the_personal_namespace?' do
+    let_it_be(:project_member) { build(:project_member) }
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:personal_namespace_holder?, :expected) do
+      false | false
+      true  | true
+    end
+
+    with_them do
+      it "returns expected" do
+        allow(project_member.project).to receive(:personal_namespace_holder?)
+          .with(project_member.user)
+          .and_return(personal_namespace_holder?)
+
+        expect(project_member.holder_of_the_personal_namespace?).to be(expected)
+      end
+    end
+  end
+
   describe '.import_team' do
     before do
       @project_1 = create(:project)

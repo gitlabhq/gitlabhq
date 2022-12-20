@@ -11,29 +11,46 @@ RSpec.describe Resolvers::Ci::AllJobsResolver do
   let_it_be(:pending_job) { create(:ci_build, :pending, name: 'Job Three') }
 
   let(:args) { {} }
-  let(:current_user) { create(:admin) }
 
   subject { resolve_jobs(args) }
 
   describe '#resolve' do
-    context 'with authorized user' do
-      context 'with statuses argument' do
-        let(:args) { { statuses: [Types::Ci::JobStatusEnum.coerce_isolated_input('SUCCESS')] } }
+    context 'with admin' do
+      let(:current_user) { create(:admin) }
 
-        it { is_expected.to contain_exactly(successful_job, successful_job_two) }
-      end
+      shared_examples 'executes as admin' do
+        context 'with statuses argument' do
+          let(:args) { { statuses: [Types::Ci::JobStatusEnum.coerce_isolated_input('SUCCESS')] } }
 
-      context 'with multiple statuses' do
-        let(:args) do
-          { statuses: [Types::Ci::JobStatusEnum.coerce_isolated_input('SUCCESS'),
-                       Types::Ci::JobStatusEnum.coerce_isolated_input('FAILED')] }
+          it { is_expected.to contain_exactly(successful_job, successful_job_two) }
         end
 
-        it { is_expected.to contain_exactly(successful_job, successful_job_two, failed_job) }
+        context 'with multiple statuses' do
+          let(:args) do
+            { statuses: [Types::Ci::JobStatusEnum.coerce_isolated_input('SUCCESS'),
+                         Types::Ci::JobStatusEnum.coerce_isolated_input('FAILED')] }
+          end
+
+          it { is_expected.to contain_exactly(successful_job, successful_job_two, failed_job) }
+        end
+
+        context 'without statuses argument' do
+          it { is_expected.to contain_exactly(successful_job, successful_job_two, failed_job, pending_job) }
+        end
       end
 
-      context 'without statuses argument' do
-        it { is_expected.to contain_exactly(successful_job, successful_job_two, failed_job, pending_job) }
+      context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+        it_behaves_like 'executes as admin'
+      end
+
+      context 'when admin mode setting is enabled' do
+        context 'when in admin mode', :enable_admin_mode do
+          it_behaves_like 'executes as admin'
+        end
+
+        context 'when not in admin mode' do
+          it { is_expected.to be_empty }
+        end
       end
     end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::APIGuard::AdminModeMiddleware, :request_store do
+RSpec.describe API::APIGuard::AdminModeMiddleware, :request_store, feature_category: :not_owned do
   let(:user) { create(:admin) }
 
   it 'is loaded' do

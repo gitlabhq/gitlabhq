@@ -53,13 +53,11 @@ namespace :gitlab do
         path_to_repo = project.repository.path_to_repo
         if File.exist?(path_to_repo)
           print '-'
-        else
-          if Gitlab::Shell.new.create_repository(project.repository_storage,
+        elsif Gitlab::Shell.new.create_repository(project.repository_storage,
                                               project.disk_path)
-            print '.'
-          else
-            print 'F'
-          end
+          print '.'
+        else
+          print 'F'
         end
       end
     end
@@ -81,7 +79,7 @@ namespace :gitlab do
 
     authorized_keys.clear
 
-    Key.find_in_batches(batch_size: 1000) do |keys|
+    Key.auth.find_in_batches(batch_size: 1000) do |keys|
       unless authorized_keys.batch_add_keys(keys)
         puts "Failed to add keys...".color(:red)
         exit 1

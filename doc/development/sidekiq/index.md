@@ -14,7 +14,7 @@ information on administering GitLab, see [configuring Sidekiq](../../administrat
 There are pages with additional detail on the following topics:
 
 1. [Compatibility across updates](compatibility_across_updates.md)
-1. [Job idempotency and job deduplication](idempotent_jobs.md)
+1. [Job idempotence and job deduplication](idempotent_jobs.md)
 1. [Limited capacity worker: continuously performing work with a specified concurrency](limited_capacity_worker.md)
 1. [Logging](logging.md)
 1. [Worker attributes](worker_attributes.md)
@@ -27,7 +27,7 @@ There are pages with additional detail on the following topics:
 
 All workers should include `ApplicationWorker` instead of `Sidekiq::Worker`,
 which adds some convenience methods and automatically sets the queue based on
-the [routing rules](../../administration/sidekiq/extra_sidekiq_routing.md#queue-routing-rules).
+the [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 
 ## Retries
 
@@ -88,7 +88,7 @@ error rate.
 Previously, each worker had its own queue, which was automatically set based on the
 worker class name. For a worker named `ProcessSomethingWorker`, the queue name
 would be `process_something`. You can now route workers to a specific queue using
-[queue routing rules](../../administration/sidekiq/extra_sidekiq_routing.md#queue-routing-rules).
+[queue routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 In GDK, new workers are routed to a queue named `default`.
 
 If you're not sure what queue a worker uses,

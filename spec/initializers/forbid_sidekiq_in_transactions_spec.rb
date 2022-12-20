@@ -34,8 +34,7 @@ RSpec.describe 'Sidekiq::Worker' do
       Class.new do
         include Sidekiq::Worker
 
-        def perform
-        end
+        def perform; end
       end
     end
 
@@ -47,8 +46,7 @@ RSpec.describe 'Sidekiq::Worker' do
   context 'for mailers' do
     let(:mailer_class) do
       Class.new(ApplicationMailer) do
-        def test_mail
-        end
+        def test_mail; end
       end
     end
 

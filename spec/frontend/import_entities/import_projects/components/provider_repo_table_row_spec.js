@@ -10,13 +10,13 @@ import ProviderRepoTableRow from '~/import_entities/import_projects/components/p
 describe('ProviderRepoTableRow', () => {
   let wrapper;
   const fetchImport = jest.fn();
+  const cancelImport = jest.fn();
   const setImportTarget = jest.fn();
   const fakeImportTarget = {
     targetNamespace: 'target',
     newName: 'newName',
   };
 
-  const availableNamespaces = ['test'];
   const userNamespace = 'root';
 
   function initStore(initialState) {
@@ -25,7 +25,7 @@ describe('ProviderRepoTableRow', () => {
       getters: {
         getImportTarget: () => () => fakeImportTarget,
       },
-      actions: { fetchImport, setImportTarget },
+      actions: { fetchImport, cancelImport, setImportTarget },
     });
 
     return store;
@@ -37,6 +37,14 @@ describe('ProviderRepoTableRow', () => {
     return buttons.length ? buttons.at(0) : buttons;
   };
 
+  const findCancelButton = () => {
+    const buttons = wrapper
+      .findAllComponents(GlButton)
+      .filter((node) => node.attributes('aria-label') === 'Cancel');
+
+    return buttons.length ? buttons.at(0) : buttons;
+  };
+
   function mountComponent(props) {
     Vue.use(Vuex);
 
@@ -44,7 +52,7 @@ describe('ProviderRepoTableRow', () => {
 
     wrapper = shallowMount(ProviderRepoTableRow, {
       store,
-      propsData: { availableNamespaces, userNamespace, optionalStages: {}, ...props },
+      propsData: { userNamespace, optionalStages: {}, ...props },
     });
   }
 
@@ -78,9 +86,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('renders a group namespace select', () => {
-      expect(wrapper.findComponent(ImportGroupDropdown).props().namespaces).toBe(
-        availableNamespaces,
-      );
+      expect(wrapper.findComponent(ImportGroupDropdown).exists()).toBe(true);
     });
 
     it('renders import button', () => {
@@ -109,6 +115,52 @@ describe('ProviderRepoTableRow', () => {
       expect(fetchImport).toHaveBeenCalledWith(expect.anything(), {
         repoId: repo.importSource.id,
         optionalStages: OPTIONAL_STAGES,
+      });
+    });
+  });
+
+  describe('when rendering importing project', () => {
+    const repo = {
+      importSource: {
+        id: 'remote-1',
+        fullName: 'fullName',
+        providerLink: 'providerLink',
+      },
+      importedProject: {
+        id: 1,
+        fullPath: 'fullPath',
+        importSource: 'importSource',
+        importStatus: STATUSES.STARTED,
+      },
+    };
+
+    describe('when cancelable is true', () => {
+      beforeEach(() => {
+        mountComponent({ repo, cancelable: true });
+      });
+
+      it('shows cancel button', () => {
+        expect(findCancelButton().isVisible()).toBe(true);
+      });
+
+      it('cancels import when clicking cancel button', async () => {
+        findCancelButton().vm.$emit('click');
+
+        await nextTick();
+
+        expect(cancelImport).toHaveBeenCalledWith(expect.anything(), {
+          repoId: repo.importSource.id,
+        });
+      });
+    });
+
+    describe('when cancelable is false', () => {
+      beforeEach(() => {
+        mountComponent({ repo, cancelable: false });
+      });
+
+      it('hides cancel button', () => {
+        expect(findCancelButton().isVisible()).toBe(false);
       });
     });
   });

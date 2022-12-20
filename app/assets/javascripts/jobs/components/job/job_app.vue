@@ -1,8 +1,9 @@
 <script>
-import { GlLoadingIcon, GlIcon, GlSafeHtmlDirective as SafeHtml, GlAlert } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { throttle, isEmpty } from 'lodash';
 import { mapGetters, mapState, mapActions } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { __, sprintf } from '~/locale';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
@@ -71,6 +72,7 @@ export default {
   data() {
     return {
       searchResults: [],
+      showUpdateVariablesState: false,
     };
   },
   computed: {
@@ -121,6 +123,10 @@ export default {
       return this.shouldRenderCalloutMessage && !this.hasUnmetPrerequisitesFailure;
     },
 
+    isJobRetryable() {
+      return Boolean(this.job.retry_path);
+    },
+
     itemName() {
       return sprintf(__('Job %{jobName}'), { jobName: this.job.name });
     },
@@ -168,9 +174,15 @@ export default {
       'toggleScrollButtons',
       'toggleScrollAnimation',
     ]),
+    onHideManualVariablesForm() {
+      this.showUpdateVariablesState = false;
+    },
     onResize() {
       this.updateSidebar();
       this.updateScroll();
+    },
+    onUpdateVariables() {
+      this.showUpdateVariablesState = true;
     },
     updateSidebar() {
       const breakpoint = bp.getBreakpointSize();
@@ -271,14 +283,12 @@ export default {
         </div>
         <!-- job log -->
         <div
-          v-if="hasJobLog"
+          v-if="hasJobLog && !showUpdateVariablesState"
           class="build-log-container gl-relative"
           :class="{ 'gl-mt-3': !job.archived }"
         >
           <log-top-bar
             :class="{
-              'sidebar-expanded': isSidebarOpen,
-              'sidebar-collapsed': !isSidebarOpen,
               'has-archived-block': job.archived,
             }"
             :size="jobLogSize"
@@ -299,14 +309,17 @@ export default {
 
         <!-- empty state -->
         <empty-state
-          v-if="!hasJobLog"
+          v-if="!hasJobLog || showUpdateVariablesState"
           :illustration-path="emptyStateIllustration.image"
           :illustration-size-class="emptyStateIllustration.size"
+          :is-retryable="isJobRetryable"
+          :job-id="job.id"
           :title="emptyStateTitle"
           :content="emptyStateIllustration.content"
           :action="emptyStateAction"
           :playable="job.playable"
           :scheduled="job.scheduled"
+          @hideManualVariablesForm="onHideManualVariablesForm()"
         />
         <!-- EO empty state -->
 
@@ -320,9 +333,9 @@ export default {
         'right-sidebar-expanded': isSidebarOpen,
         'right-sidebar-collapsed': !isSidebarOpen,
       }"
-      :erase-path="job.erase_path"
       :artifact-help-url="artifactHelpUrl"
       data-testid="job-sidebar"
+      @updateVariables="onUpdateVariables()"
     />
   </div>
 </template>

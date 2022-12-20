@@ -219,6 +219,29 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.for_name' do
+    subject { described_class.for_name(name) }
+
+    let_it_be(:pipeline1) { create(:ci_pipeline, name: 'Build pipeline') }
+    let_it_be(:pipeline2) { create(:ci_pipeline, name: 'Chatops pipeline') }
+
+    context 'when name exists' do
+      let(:name) { 'build Pipeline' }
+
+      it 'performs case insensitive compare' do
+        is_expected.to contain_exactly(pipeline1)
+      end
+    end
+
+    context 'when name does not exist' do
+      let(:name) { 'absent-name' }
+
+      it 'returns empty' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.created_after' do
     let_it_be(:old_pipeline) { create(:ci_pipeline, created_at: 1.week.ago) }
     let_it_be(:pipeline) { create(:ci_pipeline) }
@@ -5287,6 +5310,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
             end
           end
         end
+
+        context 'when the current user is not the bridge user' do
+          let(:current_user) { create(:user) }
+
+          before do
+            project.add_maintainer(current_user)
+          end
+
+          it 'changes bridge user to current user' do
+            expect { reset_bridge }
+              .to change { bridge.reload.user }
+              .from(owner).to(current_user)
+          end
+        end
       end
 
       context 'when the user does not have permissions for the processable' do
@@ -5303,6 +5340,15 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           it 'does not change job statuses' do
             expect { reset_bridge }.to not_change { after_bridge_job.reload.status }
               .and not_change { bridge_dependant_dag_job.reload.status }
+          end
+        end
+
+        context 'when the current user is not the bridge user' do
+          let(:current_user) { create(:user) }
+
+          it 'does not change bridge user' do
+            expect { reset_bridge }
+              .to not_change { bridge.reload.user }
           end
         end
       end

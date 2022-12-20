@@ -74,6 +74,8 @@ e2e:package-and-test:
     - build-qa-image
     - e2e-test-pipeline-generate
   variables:
+    # This is needed by `trigger-omnibus-env` (`.gitlab/ci/package-and-test/main.gitlab-ci.yml`).
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
     SKIP_MESSAGE: Skipping package-and-test due to mr containing only quarantine changes!
     RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}"
     GITLAB_QA_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_COMMIT_SHA}"

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DropDeployTokensTokenColumn do
+RSpec.describe DropDeployTokensTokenColumn, feature_category: :continuous_delivery do
   let(:deploy_tokens) { table(:deploy_tokens) }
 
   it 'correctly migrates up and down' do

@@ -33,6 +33,9 @@ module Gitlab
             updated_at: note.updated_at
           }
 
+          note = Note.new(attributes.merge(importing: true))
+          note.validate!
+
           # We're using bulk_insert here so we can bypass any validations and
           # callbacks. Running these would result in a lot of unnecessary SQL
           # queries being executed when importing large projects.

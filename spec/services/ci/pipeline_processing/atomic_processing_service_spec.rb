@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineProcessing::AtomicProcessingService do
+RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category: :continuous_integration do
   describe 'Pipeline Processing Service Tests With Yaml' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user)    { project.first_owner }

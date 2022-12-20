@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Pipeline Schedules', :js do
+RSpec.describe 'Pipeline Schedules', :js, feature_category: :projects do
   include Spec::Support::Helpers::ModalHelpers
 
   let!(:project) { create(:project, :repository) }
@@ -64,7 +64,7 @@ RSpec.describe 'Pipeline Schedules', :js do
 
         it 'shows the pipeline schedule with default ref' do
           page.within('[data-testid="schedule-target-ref"]') do
-            expect(first('.gl-new-dropdown-button-text').text).to eq('master')
+            expect(first('.gl-dropdown-button-text').text).to eq('master')
           end
         end
       end
@@ -77,7 +77,7 @@ RSpec.describe 'Pipeline Schedules', :js do
 
         it 'shows the pipeline schedule with default ref' do
           page.within('[data-testid="schedule-target-ref"]') do
-            expect(first('.gl-new-dropdown-button-text').text).to eq('master')
+            expect(first('.gl-dropdown-button-text').text).to eq('master')
           end
         end
       end

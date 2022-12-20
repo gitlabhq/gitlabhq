@@ -48,9 +48,9 @@ export default {
     :class="{
       [iconClassNameText]: !isLoading,
       [`mr-widget-status-icon-level-${level}`]: !isLoading,
-      'gl-mr-3': level === 1,
+      'gl-w-6 gl-h-6 gl--flex-center': level === 1,
     }"
-    class="gl-relative gl-w-6 gl-h-6 gl-rounded-full gl--flex-center"
+    class="gl-relative gl-rounded-full gl-mr-3"
   >
     <gl-loading-icon v-if="isLoading" size="md" inline />
     <gl-icon

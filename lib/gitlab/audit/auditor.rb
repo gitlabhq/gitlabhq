@@ -59,7 +59,8 @@ module Gitlab
         @context = context
 
         @name = @context.fetch(:name, 'audit_operation')
-        @stream_only = @context.fetch(:stream_only, false)
+        @is_audit_event_yaml_defined = Gitlab::Audit::Type::Definition.defined?(@name)
+        @stream_only = stream_only?
         @author = @context.fetch(:author)
         @scope = @context.fetch(:scope)
         @target = @context.fetch(:target)
@@ -70,6 +71,14 @@ module Gitlab
         @target_details = @context[:target_details]
         @authentication_event = @context.fetch(:authentication_event, false)
         @authentication_provider = @context[:authentication_provider]
+
+        # TODO: Remove this code once we close https://gitlab.com/gitlab-org/gitlab/-/issues/367870
+        return unless @is_audit_event_yaml_defined
+
+        # rubocop:disable Gitlab/RailsLogger
+        Rails.logger.warn('WARNING: Logging audit events without an event type definition will be deprecated soon.')
+        Rails.logger.warn('See https://docs.gitlab.com/ee/development/audit_event_guide/#event-type-definitions')
+        # rubocop:enable Gitlab/RailsLogger
       end
 
       def single_audit
@@ -84,14 +93,23 @@ module Gitlab
       end
 
       def record(events)
-        log_events(events) unless @stream_only
-        send_to_stream(events)
+        @stream_only ? send_to_stream(events) : log_events_and_stream(events)
       end
 
-      def log_events(events)
+      def log_events_and_stream(events)
         log_authentication_event
-        log_to_database(events)
+        saved_events = log_to_database(events)
+
+        # we only want to override events with saved_events when it successfully saves into database.
+        # we are doing so to ensure events in memory reflects events saved in database and have id column.
+        events = saved_events if saved_events.present?
+
+        log_to_file_and_stream(events)
+      end
+
+      def log_to_file_and_stream(events)
         log_to_file(events)
+        send_to_stream(events)
       end
 
       def audit_enabled?
@@ -100,6 +118,14 @@ module Gitlab
 
       def authentication_event?
         @authentication_event
+      end
+
+      def stream_only?
+        if @is_audit_event_yaml_defined
+          Gitlab::Audit::Type::Definition.stream_only?(@name)
+        else
+          @context.fetch(:stream_only, false)
+        end
       end
 
       def log_authentication_event
@@ -145,7 +171,13 @@ module Gitlab
       end
 
       def log_to_database(events)
-        AuditEvent.bulk_insert!(events)
+        if events.one?
+          events.first.save!
+          events
+        else
+          event_ids = AuditEvent.bulk_insert!(events, returns: :ids)
+          AuditEvent.id_in(event_ids)
+        end
       rescue ActiveRecord::RecordInvalid => e
         ::Gitlab::ErrorTracking.track_exception(e, audit_operation: @name)
       end

@@ -22,7 +22,7 @@ module Gitlab
 
       def self.available?(cursor_based_request_context, relation)
         available_for_type?(relation) &&
-        order_satisfied?(relation, cursor_based_request_context)
+          order_satisfied?(relation, cursor_based_request_context)
       end
 
       def self.enforced_for_type?(relation)

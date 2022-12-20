@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'updating the namespace package setting attributes' do |from: {}, to:|
+RSpec.shared_examples 'updating the namespace package setting attributes' do |to:, from: {}|
   it_behaves_like 'not creating the namespace package setting'
 
   it 'updates the namespace package setting' do

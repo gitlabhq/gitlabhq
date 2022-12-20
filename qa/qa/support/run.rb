@@ -13,7 +13,7 @@ module QA
         alias_method :to_s, :response
 
         def success?
-          exitstatus == 0 && !response.include?('Error encountered')
+          exitstatus == 0 && !response.include?('Error encountered') # rubocop:disable Rails/NegateInclude
         end
 
         def to_i
@@ -45,3 +45,5 @@ module QA
     end
   end
 end
+
+QA::Support::Run.prepend_mod_with("Support::Run", namespace: QA)

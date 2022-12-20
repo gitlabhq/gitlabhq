@@ -15,6 +15,8 @@ module Groups
       urgency :low
 
       def show
+        @entity = :group
+        @variable_limit = ::Plan.default.actual_limits.group_ci_variables
       end
 
       def update

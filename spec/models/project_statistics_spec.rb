@@ -467,6 +467,13 @@ RSpec.describe ProjectStatistics do
           .to change { statistics.reload.storage_size }
           .by(20)
       end
+
+      it 'schedules a namespace aggregation worker' do
+        expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async)
+         .with(statistics.project.namespace.id)
+
+        described_class.increment_statistic(project, stat, 20)
+      end
     end
 
     shared_examples 'a statistic that increases storage_size asynchronously' do
@@ -474,7 +481,8 @@ RSpec.describe ProjectStatistics do
         described_class.increment_statistic(project, stat, 13)
 
         Gitlab::Redis::SharedState.with do |redis|
-          increment = redis.get(statistics.counter_key(stat))
+          key = statistics.counter(stat).key
+          increment = redis.get(key)
           expect(increment.to_i).to eq(13)
         end
       end
@@ -482,7 +490,7 @@ RSpec.describe ProjectStatistics do
       it 'schedules a worker to update the statistic and storage_size async', :sidekiq_inline do
         expect(FlushCounterIncrementsWorker)
           .to receive(:perform_in)
-          .with(CounterAttribute::WORKER_DELAY, described_class.name, statistics.id, stat)
+          .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, described_class.name, statistics.id, stat)
           .and_call_original
 
         expect { described_class.increment_statistic(project, stat, 20) }
@@ -506,20 +514,20 @@ RSpec.describe ProjectStatistics do
     context 'when adjusting :packages_size' do
       let(:stat) { :packages_size }
 
-      it_behaves_like 'a statistic that increases storage_size'
+      it_behaves_like 'a statistic that increases storage_size asynchronously'
     end
 
     context 'when the amount is 0' do
       it 'does not execute a query' do
         project
-        expect { described_class.increment_statistic(project.id, :build_artifacts_size, 0) }
+        expect { described_class.increment_statistic(project, :build_artifacts_size, 0) }
           .not_to exceed_query_limit(0)
       end
     end
 
     context 'when using an invalid column' do
       it 'raises an error' do
-        expect { described_class.increment_statistic(project.id, :id, 13) }
+        expect { described_class.increment_statistic(project, :id, 13) }
           .to raise_error(ArgumentError, "Cannot increment attribute: id")
       end
     end

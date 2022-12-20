@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'list of badges' do
+RSpec.describe 'list of badges', feature_category: :continuous_integration do
   before do
     user = create(:user)
     project = create(:project, :repository)

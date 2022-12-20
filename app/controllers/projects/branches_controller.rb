@@ -6,7 +6,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
   # Authorize
   before_action :require_non_empty_project, except: :create
-  before_action :authorize_download_code!
+  before_action :authorize_read_code!
   before_action :authorize_push_code!, only: [:new, :create, :destroy, :destroy_all_merged]
 
   # Support legacy URLs

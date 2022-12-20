@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::VersionCheckController, :enable_admin_mode do
+RSpec.describe Admin::VersionCheckController, :enable_admin_mode, feature_category: :not_owned do
   let(:admin) { create(:admin) }
 
   before do

@@ -1,5 +1,6 @@
 <script>
-import { GlPopover, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlPopover } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { glEmojiTag } from '~/emoji';
 
 export default {
@@ -7,7 +8,7 @@ export default {
     GlPopover,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     htmlId: {

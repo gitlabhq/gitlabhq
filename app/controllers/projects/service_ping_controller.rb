@@ -10,7 +10,7 @@ class Projects::ServicePingController < Projects::ApplicationController
 
     Gitlab::UsageDataCounters::WebIdeCounter.increment_previews_count
 
-    head(200)
+    head(:ok)
   end
 
   def web_ide_clientside_preview_success
@@ -20,12 +20,12 @@ class Projects::ServicePingController < Projects::ApplicationController
     Gitlab::UsageDataCounters::EditorUniqueCounter.track_live_preview_edit_action(author: current_user,
                                                                                   project: project)
 
-    head(200)
+    head(:ok)
   end
 
   def web_ide_pipelines_count
     Gitlab::UsageDataCounters::WebIdeCounter.increment_pipelines_count
 
-    head(200)
+    head(:ok)
   end
 end

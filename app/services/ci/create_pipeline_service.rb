@@ -4,8 +4,6 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline, :logger
 
-    CreateError = Class.new(StandardError)
-
     LOG_MAX_DURATION_THRESHOLD = 3.seconds
     LOG_MAX_PIPELINE_SIZE = 2_000
     LOG_MAX_CREATION_THRESHOLD = 20.seconds
@@ -140,25 +138,24 @@ module Ci
     def build_logger
       Gitlab::Ci::Pipeline::Logger.new(project: project) do |l|
         l.log_when do |observations|
-          observations.any? do |name, values|
-            values.any? &&
+          observations.any? do |name, observation|
             name.to_s.end_with?('duration_s') &&
-            values.max >= LOG_MAX_DURATION_THRESHOLD
+              Array(observation).max >= LOG_MAX_DURATION_THRESHOLD
           end
         end
 
         l.log_when do |observations|
-          values = observations['pipeline_size_count']
-          next false if values.empty?
+          count = observations['pipeline_size_count']
+          next false unless count
 
-          values.max >= LOG_MAX_PIPELINE_SIZE
+          count >= LOG_MAX_PIPELINE_SIZE
         end
 
         l.log_when do |observations|
-          values = observations['pipeline_creation_duration_s']
-          next false if values.empty?
+          duration = observations['pipeline_creation_duration_s']
+          next false unless duration
 
-          values.max >= LOG_MAX_CREATION_THRESHOLD
+          duration >= LOG_MAX_CREATION_THRESHOLD
         end
       end
     end

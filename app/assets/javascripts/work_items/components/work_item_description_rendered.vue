@@ -1,13 +1,14 @@
 <script>
-import { GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
-import $ from 'jquery';
-import '~/behaviors/markdown/render_gfm';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
 export default {
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     GlButton,
@@ -45,7 +46,7 @@ export default {
     async renderGFM() {
       await this.$nextTick();
 
-      $(this.$refs['gfm-content']).renderGFM();
+      renderGFM(this.$refs['gfm-content']);
 
       if (this.canEdit) {
         this.checkboxes = this.$el.querySelectorAll('.task-list-item-checkbox');
@@ -93,14 +94,16 @@ export default {
 
 <template>
   <div class="gl-mb-5 gl-border-t gl-pt-5">
-    <div class="gl-display-inline-flex gl-align-items-center gl-mb-5">
+    <div class="gl-display-inline-flex gl-align-items-center gl-mb-3">
       <label class="d-block col-form-label gl-mr-5">{{ __('Description') }}</label>
       <gl-button
         v-if="canEdit"
+        v-gl-tooltip
         class="gl-ml-auto"
         icon="pencil"
         data-testid="edit-description"
         :aria-label="__('Edit description')"
+        :title="__('Edit description')"
         @click="$emit('startEditing')"
       />
     </div>
@@ -111,6 +114,7 @@ export default {
       ref="gfm-content"
       v-safe-html="descriptionHtml"
       class="md gl-mb-5 gl-min-h-8"
+      data-testid="work-item-description"
       @change="toggleCheckboxes"
     ></div>
   </div>

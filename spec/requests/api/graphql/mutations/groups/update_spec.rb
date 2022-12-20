@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'GroupUpdate' do
+RSpec.describe 'GroupUpdate', feature_category: :subgroups do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

@@ -45,7 +45,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillWorkItemTypeIdForIssues, :mi
   it 'sets work_item_type_id only for the given type' do
     expect(all_issues).to all(have_attributes(work_item_type_id: nil))
 
-    expect { migrate }.to make_queries_matching(/UPDATE \"issues\" SET "work_item_type_id"/, 2)
+    expect { migrate }.to make_queries_matching(/UPDATE "issues" SET "work_item_type_id"/, 2)
     all_issues.each(&:reload)
 
     expect([issue1, issue2, issue3]).to all(have_attributes(work_item_type_id: issue_type.id))

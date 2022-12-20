@@ -8,6 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - Group-level security policies were [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2.
 > - Group-level security policies were [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/356258) in GitLab 15.4.
+> - Operational container scanning [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3410) in GitLab 15.5
 
 Group, subgroup, or project owners can use scan execution policies to require that security scans run on a specified
 schedule or with the project (or multiple projects if the policy is defined at a group or subgroup level) pipeline. Required scans are injected into the CI pipeline as new jobs
@@ -86,16 +87,20 @@ This rule enforces the defined actions and schedules a scan on the provided date
 | Field      | Type | Possible values | Description |
 |------------|------|-----------------|-------------|
 | `type`     | `string` | `schedule` | The rule's type. |
-| `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
+| `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). This field is required if the `agents` field is not set. |
 | `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
-| `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [cluster image scanning](../../clusters/agent/vulnerabilities.md) will run. The object key is the name of the Kubernetes cluster configured for your project in GitLab. You can use the optional value of the object to select and scan specific Kubernetes resources. |
+| `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [cluster image scanning](../../clusters/agent/vulnerabilities.md) will run. The object key is the name of the Kubernetes agent configured for your project in GitLab. This field is required if the `branches` field is not set. |
 
 GitLab supports the following types of CRON syntax for the `cadence` field:
 
 - A daily cadence of once per hour at a specified hour, for example: `0 18 * * *`
 - A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
 
-Other elements of the CRON syntax may work in the cadence field, however, GitLab does not officially test or support them. The CRON expression is evaluated in UTC by default. If you have a self-managed GitLab instance and have [changed the server timezone](../../../administration/timezone.md), the CRON expression is evaluated with the new timezone.
+NOTE:
+Other elements of the [CRON syntax]((https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm)) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
+
+NOTE:
+If using the `agents` field, required for `Operational Container Scanning`, the CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod. If not using the `agents` field, the CRON expression is evaluated in standard [UTC](https://www.timeanddate.com/worldclock/timezone/utc) time from GitLab.com. If you have a self-managed GitLab instance and have [changed the server timezone](../../../administration/timezone.md), the CRON expression is evaluated with the new timezone.
 
 ### `agent` schema
 
@@ -108,19 +113,25 @@ Use this schema to define `agents` objects in the [`schedule` rule type](#schedu
 #### Policy example
 
 ```yaml
-- name: Enforce Container Scanning in cluster connected through gitlab-agent for production and staging namespaces
+- name: Enforce Container Scanning in cluster connected through my-gitlab-agent for default and kube-system namespaces
   enabled: true
   rules:
   - type: schedule
     cadence: '0 10 * * *'
     agents:
-      gitlab-agent:
+      <agent-name>:
         namespaces:
-        - 'production'
-        - 'staging'
+        - 'default'
+        - 'kube-system'
   actions:
   - scan: container_scanning
 ```
+
+The keys for a schedule rule are:
+
+- `cadence` (required): a [CRON expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) for when the scans will be run
+- `agents:<agent-name>` (required): The name of the agent to use for scanning
+- `agents:<agent-name>:namespaces` (optional): The Kubernetes namespaces to scan. If omitted, all namespaces will be scanned.
 
 ## `scan` action type
 
@@ -133,6 +144,7 @@ rule in the defined policy are met.
 | `site_profile` | `string` | Name of the selected [DAST site profile](../dast/proxy-based.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/proxy-based.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
+| `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs will be run by runner with the specified tags. |
 
 Note the following:
 
@@ -152,7 +164,6 @@ Note the following:
   mode when executed as part of a scheduled scan.
 - A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the project.
-- The Dependency Scanning and SAST scans use the default templates and run in a [child pipeline](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 
 ## Example security policies project
 

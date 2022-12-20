@@ -54,10 +54,14 @@ include:
     RECORD_DEPRECATIONS: "true"
     GEO_SECONDARY_PROXY: 0
     RSPEC_TESTS_FILTER_FILE: "${RSPEC_MATCHING_TESTS_PATH}"
+    SUCCESSFULLY_RETRIED_TEST_EXIT_CODE: 137
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - !reference [.base-script, script]
     - rspec_paralellized_job "--tag ~quarantine --tag ~level:migration"
+  allow_failure:
+    # the exit code listed here must match the one defined for the variable SUCCESSFULLY_RETRIED_TEST_EXIT_CODE
+    exit_codes: 137
 
 .base-artifacts:
   artifacts:
@@ -68,6 +72,7 @@ include:
       - crystalball/
       - deprecations/
       - knapsack/
+      - query_recorder/
       - rspec/
       - tmp/capybara/
       - log/*.log

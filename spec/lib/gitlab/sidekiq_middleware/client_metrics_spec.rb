@@ -40,8 +40,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ClientMetrics do
       TestWorker.class_eval do
         include Sidekiq::Worker
 
-        def perform(*args)
-        end
+        def perform(*args); end
       end
 
       allow(Gitlab::Metrics).to receive(:counter).and_return(Gitlab::Metrics::NullMetric.instance)

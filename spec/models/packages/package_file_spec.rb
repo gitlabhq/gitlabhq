@@ -104,15 +104,9 @@ RSpec.describe Packages::PackageFile, type: :model do
     let_it_be(:package, reload: true) { create(:package) }
 
     context 'when the package file has an explicit size' do
-      it_behaves_like 'UpdateProjectStatistics' do
-        subject { build(:package_file, :jar, package: package, size: 42) }
-      end
-    end
+      subject { build(:package_file, :jar, package: package, size: 42) }
 
-    context 'when the package file does not have a size' do
-      it_behaves_like 'UpdateProjectStatistics' do
-        subject { build(:package_file, package: package, size: nil) }
-      end
+      it_behaves_like 'UpdateProjectStatistics', :packages_size
     end
   end
 

@@ -9,9 +9,9 @@ RSpec.shared_examples 'model with Debian distributions' do
   it 'removes distribution files on removal' do
     distribution_file_paths = distributions.map do |distribution|
       [distribution.file.path] +
-      distribution.component_files.map do |component_file|
-        component_file.file.path
-      end
+        distribution.component_files.map do |component_file|
+          component_file.file.path
+        end
     end.flatten
 
     expect { subject.destroy! }

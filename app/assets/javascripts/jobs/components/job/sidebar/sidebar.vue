@@ -2,14 +2,12 @@
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { JOB_SIDEBAR_COPY, forwardDeploymentFailureModalId } from '~/jobs/constants';
+import ArtifactsBlock from './artifacts_block.vue';
 import CommitBlock from './commit_block.vue';
 import JobsContainer from './jobs_container.vue';
 import JobRetryForwardDeploymentModal from './job_retry_forward_deployment_modal.vue';
 import JobSidebarDetailsContainer from './sidebar_job_details_container.vue';
-import ArtifactsBlock from './artifacts_block.vue';
-import LegacySidebarHeader from './legacy_sidebar_header.vue';
 import SidebarHeader from './sidebar_header.vue';
 import StagesDropdown from './stages_dropdown.vue';
 import TriggerBlock from './trigger_block.vue';
@@ -29,22 +27,15 @@ export default {
     JobsContainer,
     JobRetryForwardDeploymentModal,
     JobSidebarDetailsContainer,
-    LegacySidebarHeader,
     SidebarHeader,
     StagesDropdown,
     TriggerBlock,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     artifactHelpUrl: {
       type: String,
       required: false,
       default: '',
-    },
-    erasePath: {
-      type: String,
-      required: false,
-      default: null,
     },
   },
   computed: {
@@ -56,9 +47,6 @@ export default {
     },
     hasTriggers() {
       return !isEmpty(this.job.trigger);
-    },
-    isGraphQL() {
-      return this.glFeatures?.graphqlJobApp;
     },
     commit() {
       return this.job?.pipeline?.commit || {};
@@ -89,8 +77,11 @@ export default {
   <aside class="right-sidebar build-sidebar" data-offset-top="101" data-spy="affix">
     <div class="sidebar-container">
       <div class="blocks-container">
-        <sidebar-header v-if="isGraphQL" :erase-path="erasePath" :job="job" />
-        <legacy-sidebar-header v-else :erase-path="erasePath" :job="job" />
+        <sidebar-header
+          :rest-job="job"
+          :job-id="job.id"
+          @updateVariables="$emit('updateVariables')"
+        />
         <div
           v-if="job.terminal_path || job.new_issue_path"
           class="gl-py-5"

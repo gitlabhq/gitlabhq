@@ -33,7 +33,7 @@ export default {
 
 <template>
   <div>
-    <gl-form-checkbox v-model="pushEventsData">{{ s__('Webhooks|Push events') }}</gl-form-checkbox>
+    <gl-form-checkbox v-model="pushEventsData">{{ __('Push events') }}</gl-form-checkbox>
     <input type="hidden" :value="pushEventsData" name="hook[push_events]" />
 
     <div v-if="pushEventsData" class="gl-pl-6">

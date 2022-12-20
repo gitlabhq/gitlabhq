@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin Runners" do
+RSpec.describe "Admin Runners", feature_category: :runner_fleet do
   include Spec::Support::Helpers::Features::RunnersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
@@ -88,6 +88,22 @@ RSpec.describe "Admin Runners" do
         within_runner_row(runner.id) do
           expect(find("[data-testid='job-count']")).to have_content '2'
         end
+      end
+
+      it 'shows a running status badge that links to jobs tab' do
+        runner = create(:ci_runner, :project, projects: [project])
+        job = create(:ci_build, :running, runner: runner)
+
+        visit admin_runners_path
+
+        within_runner_row(runner.id) do
+          click_on(s_('Runners|Running'))
+        end
+
+        expect(current_url).to match(admin_runner_path(runner))
+
+        expect(find("[data-testid='td-status']")).to have_content "running"
+        expect(find("[data-testid='td-job']")).to have_content "##{job.id}"
       end
 
       describe 'search' do

@@ -16,6 +16,10 @@ module QA
           raw[:object_kind]&.to_sym
         end
 
+        def event_name
+          raw[:event_name]&.to_sym
+        end
+
         def project_name
           raw.dig(:project, :name)
         end
@@ -42,6 +46,14 @@ module QA
 
         def wiki?
           event == :wiki_page
+        end
+
+        def subgroup_create?
+          event_name == :subgroup_create
+        end
+
+        def subgroup_destroy?
+          event_name == :subgroup_destroy
         end
       end
     end

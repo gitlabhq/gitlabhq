@@ -1,4 +1,4 @@
-- name: "Ubuntu 19.10 (Eoan Ermine) package"
+- title: "Ubuntu 19.10 (Eoan Ermine) package"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: deastman

@@ -23,13 +23,12 @@ module GemExtensions
 
       def association_scope
         if klass
-          @association_scope ||= begin # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          @association_scope ||= # rubocop:disable Gitlab/ModuleWithInstanceVariables
             if disable_joins
               ::GemExtensions::ActiveRecord::DisableJoins::Associations::AssociationScope.scope(self)
             else
               super
             end
-          end
         end
       end
     end

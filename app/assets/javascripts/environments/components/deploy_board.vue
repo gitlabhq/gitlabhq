@@ -15,10 +15,10 @@ import {
   GlLink,
   GlTooltip,
   GlTooltipDirective,
-  GlSafeHtmlDirective as SafeHtml,
   GlSprintf,
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 import InstanceComponent from '~/vue_shared/components/deployment_instance.vue';
 import { STATUS_MAP, CANARY_STATUS } from '../constants';

@@ -3,6 +3,7 @@ import Bold from '~/content_editor/extensions/bold';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import Code from '~/content_editor/extensions/code';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import Comment from '~/content_editor/extensions/comment';
 import DescriptionItem from '~/content_editor/extensions/description_item';
 import DescriptionList from '~/content_editor/extensions/description_list';
 import Details from '~/content_editor/extensions/details';
@@ -50,6 +51,7 @@ const {
     bulletList,
     code,
     codeBlock,
+    comment,
     details,
     detailsContent,
     div,
@@ -89,6 +91,7 @@ const {
     bulletList: { nodeType: BulletList.name },
     code: { markType: Code.name },
     codeBlock: { nodeType: CodeBlockHighlight.name },
+    comment: { nodeType: Comment.name },
     details: { nodeType: Details.name },
     detailsContent: { nodeType: DetailsContent.name },
     descriptionItem: { nodeType: DescriptionItem.name },
@@ -166,6 +169,17 @@ describe('markdownSerializer', () => {
   it('correctly serializes highlight', () => {
     expect(serialize(paragraph('this is some ', highlight('highlighted'), ' text'))).toBe(
       'this is some <mark>highlighted</mark> text',
+    );
+  });
+
+  it('correctly serializes a comment node', () => {
+    expect(serialize(paragraph('hi'), comment(' this is a\ncomment '))).toBe(
+      `
+hi
+
+<!-- this is a
+comment -->
+    `.trim(),
     );
   });
 
@@ -304,7 +318,7 @@ var y = 10;
     expect(
       serialize(
         codeBlock(
-          { language: 'json' },
+          { language: 'json', langParams: '' },
           'this is not really json but just trying out whether this case works or not',
         ),
       ),
@@ -312,6 +326,23 @@ var y = 10;
       `
 \`\`\`json
 this is not really json but just trying out whether this case works or not
+\`\`\`
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes a code block with language parameters', () => {
+    expect(
+      serialize(
+        codeBlock(
+          { language: 'json', langParams: 'table' },
+          'this is not really json:table but just trying out whether this case works or not',
+        ),
+      ),
+    ).toBe(
+      `
+\`\`\`json:table
+this is not really json:table but just trying out whether this case works or not
 \`\`\`
       `.trim(),
     );
@@ -365,6 +396,26 @@ this is not really json but just trying out whether this case works or not
       '![foo bar](img.jpg)',
     );
   });
+
+  it.each`
+    width        | height       | outputAttributes
+    ${300}       | ${undefined} | ${'width=300'}
+    ${undefined} | ${300}       | ${'height=300'}
+    ${300}       | ${300}       | ${'width=300 height=300'}
+    ${'300%'}    | ${'300px'}   | ${'width="300%" height="300px"'}
+  `(
+    'correctly serializes an image with width and height attributes',
+    ({ width, height, outputAttributes }) => {
+      const imageAttrs = { src: 'img.jpg', alt: 'foo bar' };
+
+      if (width) imageAttrs.width = width;
+      if (height) imageAttrs.height = height;
+
+      expect(serialize(paragraph(image(imageAttrs)))).toBe(
+        `![foo bar](img.jpg){${outputAttributes}}`,
+      );
+    },
+  );
 
   it('does not serialize an image when src and canonicalSrc are empty', () => {
     expect(serialize(paragraph(image({})))).toBe('');

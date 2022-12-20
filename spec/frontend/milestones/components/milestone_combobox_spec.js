@@ -346,7 +346,7 @@ describe('Milestone combobox component', () => {
           expect(
             findFirstProjectMilestonesDropdownItem()
               .find('svg')
-              .classes('gl-new-dropdown-item-check-icon'),
+              .classes('gl-dropdown-item-check-icon'),
           ).toBe(true);
 
           selectFirstProjectMilestone();
@@ -473,7 +473,7 @@ describe('Milestone combobox component', () => {
           expect(
             findFirstGroupMilestonesDropdownItem()
               .find('svg')
-              .classes('gl-new-dropdown-item-check-icon'),
+              .classes('gl-dropdown-item-check-icon'),
           ).toBe(true);
 
           selectFirstGroupMilestone();

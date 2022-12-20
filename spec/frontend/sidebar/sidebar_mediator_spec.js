@@ -24,7 +24,8 @@ describe('Sidebar mediator', () => {
     SidebarService.singleton = null;
     SidebarStore.singleton = null;
     SidebarMediator.singleton = null;
-    mock.restore();
+
+    jest.clearAllMocks();
   });
 
   it('assigns yourself', () => {
@@ -42,6 +43,52 @@ describe('Sidebar mediator', () => {
     });
   });
 
+  it('assigns yourself as a reviewer', () => {
+    mediator.addSelfReview();
+
+    expect(mediator.store.currentUser).toEqual(mediatorMockData.currentUser);
+    expect(mediator.store.reviewers[0]).toEqual(mediatorMockData.currentUser);
+  });
+
+  describe('saves reviewers', () => {
+    const mockUpdateResponseData = {
+      reviewers: [1, 2],
+      assignees: [3, 4],
+    };
+    const field = 'merge_request[reviewers_ids]';
+    const reviewers = [
+      { id: 1, suggested: true },
+      { id: 2, suggested: false },
+    ];
+
+    let serviceSpy;
+
+    beforeEach(() => {
+      mediator.store.reviewers = reviewers;
+      serviceSpy = jest
+        .spyOn(mediator.service, 'update')
+        .mockReturnValue(Promise.resolve({ data: mockUpdateResponseData }));
+    });
+
+    it('sends correct data to service', () => {
+      const data = {
+        reviewer_ids: [1, 2],
+        suggested_reviewer_ids: [1],
+      };
+
+      mediator.saveReviewers(field);
+
+      expect(serviceSpy).toHaveBeenCalledWith(field, data);
+    });
+
+    it('saves reviewers', () => {
+      return mediator.saveReviewers(field).then(() => {
+        expect(mediator.store.assignees).toEqual(mockUpdateResponseData.assignees);
+        expect(mediator.store.reviewers).toEqual(mockUpdateResponseData.reviewers);
+      });
+    });
+  });
+
   it('fetches the data', async () => {
     const mockData = Mock.responseMap.GET[mediatorMockData.endpoint];
     mock.onGet(mediatorMockData.endpoint).reply(200, mockData);
@@ -49,7 +96,6 @@ describe('Sidebar mediator', () => {
     await mediator.fetch();
 
     expect(spy).toHaveBeenCalledWith(mockData);
-    spy.mockRestore();
   });
 
   it('processes fetched data', () => {
@@ -70,8 +116,6 @@ describe('Sidebar mediator', () => {
     mediator.setMoveToProjectId(projectId);
 
     expect(spy).toHaveBeenCalledWith(projectId);
-
-    spy.mockRestore();
   });
 
   it('fetches autocomplete projects', () => {
@@ -87,9 +131,6 @@ describe('Sidebar mediator', () => {
     return mediator.fetchAutocompleteProjects(searchTerm).then(() => {
       expect(getterSpy).toHaveBeenCalledWith(searchTerm);
       expect(setterSpy).toHaveBeenCalled();
-
-      getterSpy.mockRestore();
-      setterSpy.mockRestore();
     });
   });
 
@@ -106,9 +147,6 @@ describe('Sidebar mediator', () => {
     return mediator.moveIssue().then(() => {
       expect(moveIssueSpy).toHaveBeenCalledWith(moveToProjectId);
       expect(urlSpy).toHaveBeenCalledWith(mockData.web_url);
-
-      moveIssueSpy.mockRestore();
-      urlSpy.mockRestore();
     });
   });
 });

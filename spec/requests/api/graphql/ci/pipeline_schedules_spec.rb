@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.project.pipelineSchedules' do
+RSpec.describe 'Query.project.pipelineSchedules', feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, :public, creator: user, namespace: user.namespace) }
   let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
 
   let(:pipeline_schedule_graphql_data) { graphql_data_at(:project, :pipeline_schedules, :nodes, 0) }
@@ -29,6 +29,8 @@ RSpec.describe 'Query.project.pipelineSchedules' do
         forTag
         cron
         cronTimezone
+        editPath
+        variables { nodes { #{all_graphql_fields_for('PipelineScheduleVariable')} } }
       }
     QUERY
   end
@@ -60,6 +62,58 @@ RSpec.describe 'Query.project.pipelineSchedules' do
       expect(ref_for_display).to eq('master')
       expect(pipeline_schedule_graphql_data['refPath']).to eq("/#{project.full_path}/-/commits/#{ref_for_display}")
       expect(pipeline_schedule_graphql_data['forTag']).to be(false)
+    end
+
+    it 'returns the edit_path for a pipeline schedule' do
+      edit_path = pipeline_schedule_graphql_data['editPath']
+
+      expect(edit_path).to eq("/#{project.full_path}/-/pipeline_schedules/#{pipeline_schedule.id}/edit")
+    end
+  end
+
+  describe 'variables' do
+    let!(:env_vars) { create_list(:ci_pipeline_schedule_variable, 5, pipeline_schedule: pipeline_schedule) }
+
+    it 'returns all variables' do
+      post_graphql(query, current_user: user)
+
+      variables = pipeline_schedule_graphql_data['variables']['nodes']
+      expected = env_vars.map do |var|
+        a_graphql_entity_for(var, :key, :value, variable_type: var.variable_type.upcase)
+      end
+
+      expect(variables).to match_array(expected)
+    end
+
+    it 'is N+1 safe on the variables level' do
+      baseline = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: user) }
+
+      create_list(:ci_pipeline_schedule_variable, 2, pipeline_schedule: pipeline_schedule)
+
+      expect { post_graphql(query, current_user: user) }.not_to exceed_query_limit(baseline)
+    end
+
+    it 'is N+1 safe on the schedules level' do
+      baseline = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: user) }
+
+      pipeline_schedule_2 = create(:ci_pipeline_schedule, project: project, owner: user)
+      create_list(:ci_pipeline_schedule_variable, 2, pipeline_schedule: pipeline_schedule_2)
+
+      expect { post_graphql(query, current_user: user) }.not_to exceed_query_limit(baseline)
+    end
+  end
+
+  describe 'permissions' do
+    let_it_be(:another_user) { create(:user) }
+
+    before do
+      post_graphql(query, current_user: another_user)
+    end
+
+    it 'does not return the edit_path for a pipeline schedule for a user that does not have permissions' do
+      edit_path = pipeline_schedule_graphql_data['editPath']
+
+      expect(edit_path).to be nil
     end
   end
 

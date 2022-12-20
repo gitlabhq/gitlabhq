@@ -16,22 +16,17 @@
  *    }"
  *   />
  */
-import {
-  GlButton,
-  GlSkeletonLoader,
-  GlTooltipDirective,
-  GlIcon,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlButton, GlSkeletonLoader, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
 import { mapGetters, mapActions, mapState } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
-import '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import NoteHeader from '~/notes/components/note_header.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { spriteIcon } from '~/lib/utils/common_utils';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import TimelineEntryItem from './timeline_entry_item.vue';
 
 const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
@@ -94,7 +89,7 @@ export default {
     },
   },
   mounted() {
-    $(this.$refs['gfm-content']).renderGFM();
+    renderGFM(this.$refs['gfm-content']);
   },
   methods: {
     ...mapActions(['fetchDescriptionVersion', 'softDeleteDescriptionVersion']),
@@ -205,7 +200,7 @@ export default {
             <tr v-for="line in lines" v-once :key="line.line_code" class="line_holder">
               <td
                 :class="line.type"
-                class="diff-line-num old_line gl-border-bottom-0! gl-border-top-0!"
+                class="diff-line-num old_line gl-border-bottom-0! gl-border-top-0! gl-border-0! gl-rounded-0!"
               >
                 {{ line.old_line }}
               </td>
@@ -217,7 +212,7 @@ export default {
               </td>
               <td
                 :class="line.type"
-                class="line_content gl-display-table-cell!"
+                class="line_content gl-display-table-cell! gl-border-0! gl-rounded-0!"
                 v-html="line.rich_text /* eslint-disable-line vue/no-v-html */"
               ></td>
             </tr>

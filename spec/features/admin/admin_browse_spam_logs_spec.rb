@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin browse spam logs' do
+RSpec.describe 'Admin browse spam logs', feature_category: :not_owned do
   let!(:spam_log) { create(:spam_log, description: 'abcde ' * 20) }
 
   before do
@@ -22,5 +22,12 @@ RSpec.describe 'Admin browse spam logs' do
     expect(page).to have_content("#{spam_log.description[0...97]}...")
     expect(page).to have_link('Remove user')
     expect(page).to have_link('Block user')
+  end
+
+  it 'does not perform N+1 queries' do
+    control_queries = ActiveRecord::QueryRecorder.new { visit admin_spam_logs_path }
+    create(:spam_log)
+
+    expect { visit admin_spam_logs_path }.not_to exceed_query_limit(control_queries)
   end
 end

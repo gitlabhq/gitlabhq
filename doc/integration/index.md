@@ -11,7 +11,7 @@ You can integrate GitLab with external services for enhanced functionality.
 
 ## Services
 
-Services such as Campfire, Flowdock, Jira, Pivotal Tracker, and Slack
+Services such as Campfire, Jira, Pivotal Tracker, and Slack
 are available as [integrations](../user/project/integrations/index.md).
 
 ## Issue trackers

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe DisableExpirationPoliciesLinkedToNoContainerImages do
+RSpec.describe DisableExpirationPoliciesLinkedToNoContainerImages, feature_category: :container_registry do
   let(:projects) { table(:projects) }
   let(:container_expiration_policies) { table(:container_expiration_policies) }
   let(:container_repositories) { table(:container_repositories) }

@@ -15,8 +15,15 @@ module API
       desc "List currently authenticated user's events" do
         detail 'This feature was introduced in GitLab 9.3.'
         success Entities::Event
+        is_array true
+        failure [
+          { code: 401, message: 'Unauthorized' }
+        ]
       end
       params do
+        optional :scope, type: String,
+                         desc: 'Include all events across a user’s projects',
+                         documentation: { example: 'all' }
         use :pagination
         use :event_filter_params
         use :sort_params
@@ -32,12 +39,17 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID or Username of the user'
+      requires :id, type: String, desc: 'The ID or username of the user'
     end
     resource :users do
       desc 'Get the contribution events of a specified user' do
         detail 'This feature was introduced in GitLab 8.13.'
         success Entities::Event
+        tags %w[events]
+        is_array true
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
       end
       params do
         use :pagination

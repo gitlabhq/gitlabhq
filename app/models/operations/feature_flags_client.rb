@@ -19,11 +19,11 @@ module Operations
 
     before_validation :ensure_token!
 
-    def self.find_for_project_and_token(project, token)
-      return unless project
+    def self.find_for_project_and_token(project_id, token)
+      return unless project_id
       return unless token
 
-      where(project_id: project).find_by_token(token)
+      where(project_id: project_id).find_by_token(token)
     end
 
     def self.update_last_feature_flag_updated_at!(project)

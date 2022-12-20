@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query' do
+RSpec.describe 'Query', feature_category: :not_owned do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

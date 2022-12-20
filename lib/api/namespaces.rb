@@ -6,6 +6,8 @@ module API
 
     before { authenticate! }
 
+    NAMESPACES_TAGS = %w[namespaces].freeze
+
     helpers do
       params :optional_list_params_ee do
         # EE::API::Namespaces would override this helper
@@ -20,12 +22,18 @@ module API
     prepend_mod_with('API::Namespaces') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
     resource :namespaces do
-      desc 'Get a namespaces list' do
+      desc 'List namespaces' do
+        detail 'Get a list of the namespaces of the authenticated user. If the user is an administrator, a list of all namespaces in the GitLab instance is shown.'
         success Entities::Namespace
+        failure [
+          { code: 401, message: 'Unauthorized' }
+        ]
+        is_array true
+        tags NAMESPACES_TAGS
       end
       params do
-        optional :search, type: String, desc: "Search query for namespaces"
-        optional :owned_only, type: Boolean, desc: "Owned namespaces only"
+        optional :search, type: String, desc: 'Returns a list of namespaces the user is authorized to view based on the search criteria'
+        optional :owned_only, type: Boolean, desc: 'In GitLab 14.2 and later, returns a list of owned namespaces only'
 
         use :pagination
         use :optional_list_params_ee
@@ -46,11 +54,17 @@ module API
         present paginate(namespaces), options.reverse_merge(custom_namespace_present_options)
       end
 
-      desc 'Get a namespace by ID' do
+      desc 'Get namespace by ID' do
+        detail 'Get a namespace by ID'
         success Entities::Namespace
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags NAMESPACES_TAGS
       end
       params do
-        requires :id, type: String, desc: "Namespace's ID or path"
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the namespace'
       end
       get ':id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :subgroups, urgency: :low do
         user_namespace = find_namespace!(params[:id])
@@ -58,12 +72,17 @@ module API
         present user_namespace, with: Entities::Namespace, current_user: current_user
       end
 
-      desc 'Get existence of a namespace including alternative suggestions' do
+      desc 'Get existence of a namespace' do
+        detail 'Get existence of a namespace by path. Suggests a new namespace path that does not already exist.'
         success Entities::NamespaceExistence
+        failure [
+          { code: 401, message: 'Unauthorized' }
+        ]
+        tags NAMESPACES_TAGS
       end
       params do
-        requires :namespace, type: String, desc: "Namespace's path"
-        optional :parent_id, type: Integer, desc: "The ID of the parent namespace. If no ID is specified, only top-level namespaces are considered."
+        requires :namespace, type: String, desc: "Namespace’s path"
+        optional :parent_id, type: Integer, desc: 'The ID of the parent namespace. If no ID is specified, only top-level namespaces are considered.'
       end
       get ':namespace/exists', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :subgroups, urgency: :low do
         check_rate_limit!(:namespace_exists, scope: current_user)

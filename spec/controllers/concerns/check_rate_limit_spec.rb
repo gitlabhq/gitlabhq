@@ -19,11 +19,9 @@ RSpec.describe CheckRateLimit do
         @current_user = current_user
       end
 
-      def redirect_back_or_default(**args)
-      end
+      def redirect_back_or_default(**args); end
 
-      def render(**args)
-      end
+      def render(**args); end
     end
   end
 

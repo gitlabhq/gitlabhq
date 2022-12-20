@@ -74,7 +74,13 @@ To add a suggestion that includes a
 [fenced code block](../../../markdown.md#code-spans-and-blocks), wrap your suggestion
 in four backticks instead of three:
 
-![A comment editor with a suggestion with a fenced code block](img/suggestion_code_block_editor_v12_8.png)
+~~~markdown
+````suggestion:-0+2
+```shell
+git config --global receive.advertisepushoptions true
+```
+````
+~~~
 
 ![Output of a comment with a suggestion with a fenced code block](img/suggestion_code_block_output_v12_8.png)
 

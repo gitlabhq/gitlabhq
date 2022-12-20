@@ -14,11 +14,11 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
     authorize_metrics_dashboard!
-
-    push_frontend_feature_flag(:prometheus_computed_alerts)
-    push_frontend_feature_flag(:disable_metric_dashboard_refresh_rate)
   end
 
+  before_action only: [:show] do
+    push_frontend_feature_flag(:environment_details_vue, @project)
+  end
   before_action :authorize_read_environment!, except: [:metrics, :additional_metrics, :metrics_dashboard, :metrics_redirect]
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]

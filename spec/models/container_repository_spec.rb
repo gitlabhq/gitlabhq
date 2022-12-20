@@ -879,10 +879,11 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     it 'updates deletion status attributes' do
       expect { subject }.to change(repository, :status).from(nil).to('delete_ongoing')
                               .and change(repository, :delete_started_at).from(nil).to(Time.zone.now)
+                              .and change(repository, :status_updated_at).from(nil).to(Time.zone.now)
     end
   end
 
-  describe '#set_delete_scheduled_status' do
+  describe '#set_delete_scheduled_status', :freeze_time do
     let_it_be(:repository) { create(:container_repository, :status_delete_ongoing, delete_started_at: 3.minutes.ago) }
 
     subject { repository.set_delete_scheduled_status }
@@ -890,6 +891,27 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     it 'updates delete attributes' do
       expect { subject }.to change(repository, :status).from('delete_ongoing').to('delete_scheduled')
                               .and change(repository, :delete_started_at).to(nil)
+                              .and change(repository, :status_updated_at).to(Time.zone.now)
+    end
+  end
+
+  describe '#status_updated_at', :freeze_time do
+    let_it_be_with_reload(:repository) { create(:container_repository) }
+
+    %i[delete_scheduled delete_ongoing delete_failed].each do |status|
+      context "when status is updated to #{status}" do
+        it 'updates status_changed_at' do
+          expect { repository.update!(status: status) }.to change(repository, :status_updated_at).from(nil).to(Time.zone.now)
+        end
+      end
+    end
+
+    context 'when status is not changed' do
+      it 'does not update status_changed_at' do
+        repository.name = 'different-image'
+
+        expect { repository.save! }.not_to change(repository, :status_updated_at)
+      end
     end
   end
 
@@ -1632,7 +1654,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         stub_application_setting(container_registry_import_target_plan: valid_container_repository.migration_plan)
       end
 
-      it 'works' do
+      it 'returns valid container repositories' do
         expect(subject).to contain_exactly(valid_container_repository, valid_container_repository2)
       end
     end

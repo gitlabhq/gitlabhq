@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'getting a tree in a project' do
+RSpec.describe 'getting a tree in a project', feature_category: :source_code_management do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -163,6 +163,54 @@ RSpec.describe 'getting a tree in a project' do
       expect(certificate['subjectKeyIdentifier']).to eq(X509Helpers::User1.certificate_subject_key_identifier)
       expect(certificate['createdAt']).to be_present
       expect(certificate['updatedAt']).to be_present
+    end
+  end
+
+  context 'when the ref points to a SSH-signed commit' do
+    let_it_be(:ref) { 'ssh-signed-commit' }
+    let_it_be(:commit) { project.commit(ref) }
+    let_it_be(:current_user) { create(:user, email: commit.committer_email).tap { |user| project.add_owner(user) } }
+
+    let(:fields) do
+      <<~QUERY
+        tree(path:"#{path}", ref:"#{ref}") {
+          lastCommit {
+            signature {
+              ... on SshSignature {
+                #{all_graphql_fields_for('SshSignature'.classify, max_depth: 2)}
+              }
+            }
+          }
+        }
+      QUERY
+    end
+
+    let_it_be(:key) do
+      create(:key, user: current_user, key: extract_public_key_from_commit(commit), expires_at: 2.days.from_now)
+    end
+
+    def extract_public_key_from_commit(commit)
+      ssh_commit = Gitlab::Ssh::Commit.new(commit)
+      signature_data = ::SSHData::Signature.parse_pem(ssh_commit.signature_text)
+      signature_data.public_key.openssh
+    end
+
+    before do
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns the expected signature data' do
+      signature = graphql_data['project']['repository']['tree']['lastCommit']['signature']
+
+      expect(signature['commitSha']).to eq(commit.id)
+      expect(signature['verificationStatus']).to eq('VERIFIED')
+      expect(signature['project']['id']).to eq("gid://gitlab/Project/#{project.id}")
+      expect(signature['user']['id']).to eq("gid://gitlab/User/#{current_user.id}")
+      expect(signature['key']['id']).to eq("gid://gitlab/Key/#{key.id}")
+      expect(signature['key']['title']).to eq(key.title)
+      expect(signature['key']['createdAt']).to be_present
+      expect(signature['key']['expiresAt']).to be_present
+      expect(signature['key']['key']).to match(key.key)
     end
   end
 

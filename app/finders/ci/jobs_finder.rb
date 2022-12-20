@@ -16,6 +16,7 @@ module Ci
 
     def execute
       builds = init_collection.order_id_desc
+      builds = filter_by_with_artifacts(builds)
       filter_by_scope(builds)
     rescue Gitlab::Access::AccessDeniedError
       type.none
@@ -30,7 +31,7 @@ module Ci
     end
 
     def all_jobs
-      raise Gitlab::Access::AccessDeniedError unless current_user&.admin?
+      raise Gitlab::Access::AccessDeniedError unless current_user&.can_admin_all_resources?
 
       type.all
     end
@@ -67,6 +68,14 @@ module Ci
         builds.running.reverse_order
       when 'finished'
         builds.finished
+      else
+        builds
+      end
+    end
+
+    def filter_by_with_artifacts(builds)
+      if params[:with_artifacts]
+        builds.with_erasable_artifacts
       else
         builds
       end

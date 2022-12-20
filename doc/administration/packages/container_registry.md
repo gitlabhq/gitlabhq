@@ -343,6 +343,9 @@ these deleted temporary upload artifacts are kept as non-current versions, there
 storage bucket size. To ensure that non-current versions are deleted after a given amount of time,
 you should configure an object lifecycle policy with your storage provider.
 
+WARNING:
+Do not directly modify the files or objects stored by the container registry. Anything other than the registry writing or deleting these entries can lead to instance-wide data consistency and instability issues from which recovery may not be possible.
+
 You can configure the Container Registry to use various storage backends by
 configuring a storage driver. By default the GitLab Container Registry
 is configured to use the [file system driver](#use-file-system)
@@ -584,6 +587,38 @@ you can pull from the Container Registry, but you cannot push.
    `_uploads` directories and sub-directories.
 1. Configure your registry to [use the S3 bucket for storage](#use-object-storage).
 1. For the changes to take effect, set the Registry back to `read-write` mode and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+#### Moving to Azure Object Storage
+
+When moving from an existing file system or another object storage provider to Azure Object Storage, you must configure the registry to use the standard root directory.
+This configuration is done by setting [`trimlegacyrootprefix: true]`](https://gitlab.com/gitlab-org/container-registry/-/blob/a3f64464c3ec1c5a599c0a2daa99ebcbc0100b9a/docs-gitlab/README.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
+Without this configuration, the Azure storage driver uses `//` instead of `/` as the first section of the root path, rendering the migrated images inaccessible.
+
+**Omnibus GitLab installations**
+
+```ruby
+registry['storage'] = {
+  'azure' => {
+    'accountname' => 'accountname',
+    'accesskey' => 'base64encodedaccountkey',
+    'container' => 'containername',
+    'rootdirectory' => '/azure/virtual/container',
+    'trimlegacyrootprefix' => 'true'
+  }
+}
+```
+
+**Installations from source**
+
+```yaml
+storage:
+  azure:
+    accountname: accountname
+    accountkey: base64encodedaccountkey
+    container: containername
+    rootdirectory: /azure/virtual/container
+    trimlegacyrootprefix: true
+```
 
 ### Disable redirect for storage driver
 
@@ -882,7 +917,7 @@ WARNING:
 If you're using a distributed architecture and Sidekiq is running on a different node, the cleanup
 policies don't work. To fix this, you must configure the `gitlab.rb` file on the Sidekiq nodes to
 point to the correct registry URL and copy the `registry.key` file to each Sidekiq node. For more
-information, see the [Sidekiq configuration](../sidekiq.md)
+information, see the [Sidekiq configuration](../sidekiq/index.md)
 page.
 
 To reduce the amount of [Container Registry disk space used by a given project](#registry-disk-space-usage-by-project),
@@ -1090,6 +1125,9 @@ To enable the read-only mode:
    This command sets the Container Registry into the read-only mode.
 
 1. Next, trigger one of the garbage collect commands:
+
+   WARNING:
+   You must use `/opt/gitlab/embedded/bin/registry` to recycle unused tags. If you use `gitlab-ctl registry-garbage-collect`, you **will bring the container registry down**.
 
    ```shell
    # Recycling unused tags
@@ -1348,7 +1386,7 @@ level=error msg="response completed with error" err.code=unknown err.detail="une
 ```
 
 To resolve the error specify a `chunksize` value in the Registry configuration.
-Start with a value between `25000000` (25MB) and `50000000` (50MB).
+Start with a value between `25000000` (25 MB) and `50000000` (50 MB).
 
 **For Omnibus installations**
 

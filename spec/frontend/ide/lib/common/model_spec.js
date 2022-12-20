@@ -149,7 +149,6 @@ describe('Multi-file editor library model', () => {
       model.updateOptions({ insertSpaces: true, someOption: 'some value' });
 
       expect(model.options).toEqual({
-        endOfLine: 0,
         insertFinalNewline: true,
         insertSpaces: true,
         someOption: 'some value',
@@ -181,16 +180,12 @@ describe('Multi-file editor library model', () => {
   describe('applyCustomOptions', () => {
     it.each`
       option                      | value    | contentBefore                   | contentAfter
-      ${'endOfLine'}              | ${0}     | ${'hello\nworld\n'}             | ${'hello\nworld\n'}
-      ${'endOfLine'}              | ${0}     | ${'hello\r\nworld\r\n'}         | ${'hello\nworld\n'}
-      ${'endOfLine'}              | ${1}     | ${'hello\nworld\n'}             | ${'hello\r\nworld\r\n'}
-      ${'endOfLine'}              | ${1}     | ${'hello\r\nworld\r\n'}         | ${'hello\r\nworld\r\n'}
       ${'insertFinalNewline'}     | ${true}  | ${'hello\nworld'}               | ${'hello\nworld\n'}
       ${'insertFinalNewline'}     | ${true}  | ${'hello\nworld\n'}             | ${'hello\nworld\n'}
       ${'insertFinalNewline'}     | ${false} | ${'hello\nworld'}               | ${'hello\nworld'}
       ${'trimTrailingWhitespace'} | ${true}  | ${'hello  \t\nworld  \t\n'}     | ${'hello\nworld\n'}
-      ${'trimTrailingWhitespace'} | ${true}  | ${'hello  \t\r\nworld  \t\r\n'} | ${'hello\nworld\n'}
-      ${'trimTrailingWhitespace'} | ${false} | ${'hello  \t\r\nworld  \t\r\n'} | ${'hello  \t\nworld  \t\n'}
+      ${'trimTrailingWhitespace'} | ${true}  | ${'hello  \t\r\nworld  \t\r\n'} | ${'hello\r\nworld\r\n'}
+      ${'trimTrailingWhitespace'} | ${false} | ${'hello  \t\r\nworld  \t\r\n'} | ${'hello  \t\r\nworld  \t\r\n'}
     `(
       'correctly applies custom option $option=$value to content',
       ({ option, value, contentBefore, contentAfter }) => {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'snippets' do
+RSpec.describe 'snippets', feature_category: :source_code_management do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

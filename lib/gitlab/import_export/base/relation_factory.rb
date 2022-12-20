@@ -211,23 +211,21 @@ module Gitlab
         def existing_or_new_object
           # Only find existing records to avoid mapping tables such as milestones
           # Otherwise always create the record, skipping the extra SELECT clause.
-          @existing_or_new_object ||= begin
-            if existing_object?
-              attribute_hash = attribute_hash_for(['events'])
+          @existing_or_new_object ||= if existing_object?
+                                        attribute_hash = attribute_hash_for(['events'])
 
-              existing_object.assign_attributes(attribute_hash) if attribute_hash.any?
+                                        existing_object.assign_attributes(attribute_hash) if attribute_hash.any?
 
-              existing_object
-            else
-              # Because of single-type inheritance, we need to be careful to use the `type` field
-              # See https://gitlab.com/gitlab-org/gitlab/issues/34860#note_235321497
-              inheritance_column = relation_class.try(:inheritance_column)
-              inheritance_attributes = parsed_relation_hash.slice(inheritance_column)
-              object = relation_class.new(inheritance_attributes)
-              object.assign_attributes(parsed_relation_hash)
-              object
-            end
-          end
+                                        existing_object
+                                      else
+                                        # Because of single-type inheritance, we need to be careful to use the `type` field
+                                        # See https://gitlab.com/gitlab-org/gitlab/issues/34860#note_235321497
+                                        inheritance_column = relation_class.try(:inheritance_column)
+                                        inheritance_attributes = parsed_relation_hash.slice(inheritance_column)
+                                        object = relation_class.new(inheritance_attributes)
+                                        object.assign_attributes(parsed_relation_hash)
+                                        object
+                                      end
         end
 
         def attribute_hash_for(attributes)

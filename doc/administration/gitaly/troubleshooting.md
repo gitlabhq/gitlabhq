@@ -245,6 +245,28 @@ the application might be fetching this secret from a different file. Your Gitaly
 If that setting is missing, GitLab defaults to using `.gitlab_shell_secret` under
 `/opt/gitlab/embedded/service/gitlab-rails/.gitlab_shell_secret`.
 
+### Repository pushes fail
+
+When attempting `git push`, you can see:
+
+- `401 Unauthorized` errors.
+- The following in server logs:
+
+  ```json
+  {
+    ...
+    "exception.class":"JWT::VerificationError",
+    "exception.message":"Signature verification raised",
+    ...
+  }
+  ```
+
+This error occurs when the GitLab server has been upgraded to GitLab 15.5 or later but Gitaly has not yet been upgraded.
+
+From GitLab 15.5, GitLab [authenticates with GitLab Shell using a JWT token instead of a shared secret](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86148).
+You should follow the [recommendations on upgrading external Gitaly](../../update/plan_your_upgrade.md#external-gitaly) and upgrade Gitaly before the GitLab
+server.
+
 ### Repository pushes fail with a `deny updating a hidden ref` error
 
 Due to [a change](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3426)
@@ -456,6 +478,20 @@ in sync so the token check succeeds.
 This check helps identify the root cause of `permission denied`
 [errors being logged by Praefect](#permission-denied-errors-appearing-in-gitaly-or-praefect-logs-when-accessing-repositories).
 
+For offline environments where access to public [`pool.ntp.org`](https://pool.ntp.org) servers is not possible, the Praefect `check` sub-command fails this
+check with an error message similar to:
+
+```plaintext
+checking with NTP service at  and allowed clock drift 60000ms [correlation_id: <XXX>]
+Failed (fatal) error: gitaly node at tcp://[gitlab.example-instance.com]:8075: rpc error: code = DeadlineExceeded desc = context deadline exceeded
+```
+
+To resolve this issue, set an environment variable on all Praefect servers to point to an accessible internal NTP server. For example:
+
+```shell
+export NTP_HOST=ntp.example.com
+```
+
 ### Praefect errors in logs
 
 If you receive an error, check `/var/log/gitlab/gitlab-rails/production.log`.
@@ -608,7 +644,7 @@ Is [some cases](index.md#known-issues) the Praefect database can get out of sync
 a given repository is fully synced on all nodes, run the [`gitlab:praefect:replicas` Rake task](../raketasks/praefect.md#replica-checksums)
 that checksums the repository on all Gitaly nodes.
 
-The [Praefect dataloss](recovery.md#check-for-data-loss) command only checks the state of the repository in the Praefect database, and cannot
+The [Praefect `dataloss`](recovery.md#check-for-data-loss) command only checks the state of the repository in the Praefect database, and cannot
 be relied to detect sync problems in this scenario.
 
 ### Relation does not exist errors

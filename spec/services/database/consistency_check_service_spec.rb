@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Database::ConsistencyCheckService do
+RSpec.describe Database::ConsistencyCheckService, feature_category: :database do
   let(:batch_size) { 5 }
   let(:max_batches) { 2 }
 

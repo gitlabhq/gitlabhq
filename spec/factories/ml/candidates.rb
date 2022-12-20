@@ -10,5 +10,11 @@ FactoryBot.define do
         candidate.params = FactoryBot.create_list(:ml_candidate_params, 2, candidate: candidate )
       end
     end
+
+    trait :with_metadata do
+      after(:create) do |candidate|
+        candidate.metadata = FactoryBot.create_list(:ml_candidate_metadata, 2, candidate: candidate )
+      end
+    end
   end
 end

@@ -54,9 +54,9 @@ module Repositories
 
     def error_payload(message, custom_attrs = {})
       custom_attrs.merge({
-        message: message,
-        documentation_url: help_url
-      })
+                           message: message,
+                           documentation_url: help_url
+                         })
     end
 
     def split_by_owner(locks)
@@ -72,7 +72,7 @@ module Repositories
     end
 
     def upload_request?
-      %w(create unlock verify).include?(params[:action])
+      %w[create unlock verify].include?(params[:action])
     end
 
     def lfs_params

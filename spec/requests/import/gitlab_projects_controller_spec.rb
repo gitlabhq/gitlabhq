@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::GitlabProjectsController do
+RSpec.describe Import::GitlabProjectsController, feature_category: :importers do
   include WorkhorseHelpers
 
   include_context 'workhorse headers'

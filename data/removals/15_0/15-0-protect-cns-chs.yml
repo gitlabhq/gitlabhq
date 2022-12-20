@@ -1,4 +1,4 @@
-- name: "Container Network and Host Security"
+- title: "Container Network and Host Security"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
   removal_milestone: "15.0"

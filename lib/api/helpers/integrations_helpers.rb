@@ -415,14 +415,6 @@ module API
               desc: 'The URL of the external wiki'
             }
           ],
-          'flowdock' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'Flowdock token'
-            }
-          ],
           'hangouts-chat' => [
             {
               required: true,
@@ -893,7 +885,6 @@ module API
           ::Integrations::EmailsOnPush,
           ::Integrations::Ewm,
           ::Integrations::ExternalWiki,
-          ::Integrations::Flowdock,
           ::Integrations::HangoutsChat,
           ::Integrations::Harbor,
           ::Integrations::Irker,

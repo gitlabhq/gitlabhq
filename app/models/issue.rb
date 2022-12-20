@@ -91,7 +91,7 @@ class Issue < ApplicationRecord
   has_one :incident_management_issuable_escalation_status, class_name: 'IncidentManagement::IssuableEscalationStatus'
   has_and_belongs_to_many :self_managed_prometheus_alert_events, join_table: :issues_self_managed_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :prometheus_alert_events, join_table: :issues_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
-  has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :issue
+  has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :issue, validate: false
   has_many :prometheus_alerts, through: :prometheus_alert_events
   has_many :issue_customer_relations_contacts, class_name: 'CustomerRelations::IssueContact', inverse_of: :issue
   has_many :customer_relations_contacts, through: :issue_customer_relations_contacts, source: :contact, class_name: 'CustomerRelations::Contact', inverse_of: :issues
@@ -105,9 +105,10 @@ class Issue < ApplicationRecord
 
   validates :project, presence: true
   validates :issue_type, presence: true
-  validates :namespace, presence: true, if: -> { project.present? }
+  validates :namespace, presence: true
   validates :work_item_type, presence: true
 
+  validate :allowed_work_item_type_change, on: :update, if: :work_item_type_id_changed?
   validate :due_date_after_start_date
   validate :parent_link_confidentiality
 
@@ -180,7 +181,7 @@ class Issue < ApplicationRecord
 
   scope :without_hidden, -> {
     if Feature.enabled?(:ban_user_feature_flag)
-      where.not(author_id: Users::BannedUser.all.select(:user_id))
+      where('NOT EXISTS (?)', Users::BannedUser.select(1).where('issues.author_id = banned_users.user_id'))
     else
       all
     end
@@ -216,8 +217,8 @@ class Issue < ApplicationRecord
 
   before_validation :ensure_namespace_id, :ensure_work_item_type
 
-  after_commit :expire_etag_cache, unless: :importing?
   after_save :ensure_metrics, unless: :importing?
+  after_commit :expire_etag_cache, unless: :importing?
   after_create_commit :record_create_action, unless: :importing?
 
   attr_spammable :title, spam_title: true
@@ -742,6 +743,17 @@ class Issue < ApplicationRecord
     return if work_item_type_id.present? || work_item_type_id_change&.last.present?
 
     self.work_item_type = WorkItems::Type.default_by_type(issue_type)
+  end
+
+  def allowed_work_item_type_change
+    return unless changes[:work_item_type_id]
+
+    involved_types = WorkItems::Type.where(id: changes[:work_item_type_id].compact).pluck(:base_type).uniq
+    disallowed_types = involved_types - WorkItems::Type::CHANGEABLE_BASE_TYPES
+
+    return if disallowed_types.empty?
+
+    errors.add(:work_item_type_id, format(_('can not be changed to %{new_type}'), new_type: work_item_type&.name))
   end
 end
 

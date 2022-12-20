@@ -68,7 +68,7 @@ Here's an example setup flow from scratch:
    If it isn't, follow the documentation to specify the image version.
 1. [Run a new Auto DevOps pipeline](../../ci/pipelines/index.md#run-a-pipeline-manually)
    and make sure that the `production` job succeeds and creates a production environment.
-1. Configure a [`canary` deployment job for Auto DevOps pipelines](../../topics/autodevops/customize.md#deploy-policy-for-canary-environments).
+1. Configure a [`canary` deployment job for Auto DevOps pipelines](../../topics/autodevops/cicd_variables.md#deploy-policy-for-canary-environments).
 1. [Run a new Auto DevOps pipeline](../../ci/pipelines/index.md#run-a-pipeline-manually)
    and make sure that the `canary` job succeeds and creates a canary deployment with Canary Ingress.
 

@@ -10,9 +10,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363084) for self-managed instances in GitLab 15.1.
 
 WARNING:
-Changing Group Sync configuration can remove users from the mapped GitLab group.
+Adding or changing Group Sync configuration can remove users from the mapped GitLab group.
 Removal happens if there is any mismatch between the group names and the list of `groups` in the SAML response.
-If changes must be made, ensure either the SAML response includes the `groups` attribute
+Before making changes, ensure either the SAML response includes the `groups` attribute
 and the `AttributeValue` value matches the **SAML Group Name** in GitLab,
 or that all groups are removed from GitLab to disable Group Sync.
 
@@ -21,17 +21,29 @@ For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.
 
 ## Configure SAML Group Sync
 
+NOTE:
+You must include the SAML configuration block on all Sidekiq nodes in addition to Rails application nodes if you:
+
+- Use SAML Group Sync.
+- Have multiple GitLab nodes, for example in a distributed or highly available architecture.
+
+WARNING:
+To prevent users being accidentally removed from the GitLab group, follow these instructions closely before
+enabling Group Sync in GitLab.
+
 To configure SAML Group Sync:
 
-- For GitLab self-managed:
-  1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
-  1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting.
-- For GitLab.com:
-  1. See [SAML SSO for GitLab.com groups](index.md).
-  1. Ensure your SAML identity provider sends an attribute statement named `Groups` or `groups`.
+1. Configure the identity Provider:
+   - For self-managed GitLab, see the [SAML OmniAuth Provider documentation](../../../integration/saml.md).
+   - For GitLab.com, see the [SAML SSO for GitLab.com groups documentation](index.md).
+
+1. Capture [a SAML response](troubleshooting.md#saml-debugging-tools) during the sign-in process to confirm your SAML identity provider sends an attribute statement:
+   - For self-managed GitLab, with the same name as the value of the `groups_attribute` setting.
+   - For GitLab.com, named `Groups` or `groups`.
 
 NOTE:
-The value for `Groups` or `groups` in the SAML response can be either the group name or the group ID.
+The value for `Groups` or `groups` in the SAML response may be either the group name or an ID.
+For example, Azure AD sends the Azure Group Object ID instead of the name. Use the ID value when configuring [SAML Group Links](#configure-saml-group-links).
 
 ```xml
 <saml:AttributeStatement>
@@ -55,7 +67,7 @@ a SAML identity provider group name to a GitLab role. This can be done for a top
 
 To link the SAML groups:
 
-1. In **SAML Group Name**, enter the value of the relevant `saml:AttributeValue`.
+1. In **SAML Group Name**, enter the value of the relevant `saml:AttributeValue`. The value entered here must exactly match the value sent in the SAML response. For some IdPs, this may be a group ID or object ID (Azure AD) instead of a friendly group name.
 1. Choose the role in **Access Level**.
 1. Select **Save**.
 1. Repeat to add additional group links if required.
@@ -177,4 +189,4 @@ Because of a [known issue with Azure AD](https://support.esri.com/en/technical-a
 in the user's SAML assertion.
 
 To work around this issue, allow more than 150 group IDs to be sent in SAML token using configuration steps in the
-[Azure AD documentation](https://support.esri.com/en/technical-article/000022190).  
+[Azure AD documentation](https://support.esri.com/en/technical-article/000022190).

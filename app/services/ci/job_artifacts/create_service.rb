@@ -16,7 +16,7 @@ module Ci
       def initialize(job)
         @job = job
         @project = job.project
-        @pipeline = job.pipeline if ::Feature.enabled?(:ci_update_unlocked_job_artifacts, @project)
+        @pipeline = job.pipeline
       end
 
       def authorize(artifact_type:, filesize: nil)
@@ -85,7 +85,7 @@ module Ci
           expire_in: expire_in
         }
 
-        artifact_attributes[:locked] = pipeline.locked if ::Feature.enabled?(:ci_update_unlocked_job_artifacts, project)
+        artifact_attributes[:locked] = pipeline.locked
 
         artifact = Ci::JobArtifact.new(
           artifact_attributes.merge(

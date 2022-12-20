@@ -63,7 +63,7 @@ billable user, with the following exceptions:
   [blocked users](../../user/admin_area/moderate_users.md#block-a-user) don't count as billable users in the current subscription. When they are either deactivated or blocked they release a _billable user_ seat. However, they may
   count toward overages in the subscribed seat count.
 - Users who are [pending approval](../../user/admin_area/moderate_users.md#users-pending-approval).
-- Members with the Guest role on an Ultimate subscription.
+- Members with the [Guest role on an Ultimate subscription](#free-guest-users).
 - Users without project or group memberships on an Ultimate subscription.
 - GitLab-created service accounts:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
@@ -96,6 +96,21 @@ A trial license always displays zero for **Users over license**.
 If you add more users to your GitLab instance than you are licensed for, payment for the additional users is due [at the time of renewal](../quarterly_reconciliation.md).
 
 If you do not add these users during the renewal process, your license key will not work.
+
+#### Free Guest users **(ULTIMATE)**
+
+In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
+The user must not be assigned any other role, anywhere in the instance.
+
+- If your project is private or internal, a user with the Guest role has
+  [a set of permissions](../../user/permissions.md#project-members-permissions).
+- If your project is public, all users, including those with the Guest role
+  can access your project.
+
+NOTE:
+If a user creates a project, they are assigned the Maintainer or Owner role.
+To prevent a user from creating projects, as an administrator, you can mark the user
+as [external](../../user/admin_area/external_users.md).
 
 ### Tips for managing users and subscription seats
 

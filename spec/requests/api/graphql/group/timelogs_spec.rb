@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Timelogs through GroupQuery' do
+RSpec.describe 'Timelogs through GroupQuery', feature_category: :team_planning do
   include GraphqlHelpers
 
   describe 'Get list of timelogs from a group issues' do

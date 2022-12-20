@@ -58,7 +58,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
 
         expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |service|
           expect(service)
-            .to receive(:execute)
+            .to receive(:each_list_item)
             .and_raise(exception)
         end
 
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
 
         expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |service|
           expect(service)
-            .to receive(:execute)
+            .to receive(:each_list_item)
             .and_raise(exception)
         end
 
@@ -94,7 +94,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
       lfs_object_importer = double(:lfs_object_importer)
 
       expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |service|
-        expect(service).to receive(:execute).and_return([lfs_download_object])
+        expect(service).to receive(:each_list_item).and_yield(lfs_download_object)
       end
 
       expect(Gitlab::GithubImport::Importer::LfsObjectImporter)
@@ -115,7 +115,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
       importer = described_class.new(project, client)
 
       expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |service|
-        expect(service).to receive(:execute).and_return([lfs_download_object])
+        expect(service).to receive(:each_list_item).and_yield(lfs_download_object)
       end
 
       expect(Gitlab::GithubImport::ImportLfsObjectWorker).to receive(:bulk_perform_in)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::UserPreferences::Update do
+RSpec.describe Mutations::UserPreferences::Update, feature_category: :users do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

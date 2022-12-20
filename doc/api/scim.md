@@ -8,6 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354) in GitLab 15.5.
 
+GitLab provides an SCIM API that both implements [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644)
+and provides the `/Users` endpoint. The base URL is `/api/scim/v2/groups/:group_path/Users/`.
+
 To use this API, [Group SSO](../user/group/saml_sso/index.md) must be enabled for the group.
 This API is only in use where [SCIM for Group SSO](../user/group/saml_sso/scim_setup.md) is enabled. It's a prerequisite to the creation of SCIM identities.
 
@@ -50,11 +53,10 @@ Example request:
 
 ```shell
 curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/scim/identities" \
---header "PRIVATE-TOKEN: <PRIVATE-TOKEN>" \
---form "extern_uid=<ID_TO_BE_UPDATED>" \
+--header "PRIVATE-TOKEN: <PRIVATE-TOKEN>"
 ```
 
-## Update extern_uid field for a SCIM identity
+## Update `extern_uid` field for a SCIM identity
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
@@ -79,5 +81,5 @@ Example request:
 ```shell
 curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/scim/sydney_jones" \
 --header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
---form "extern_uid=sydney_jones_new" \
+--form "extern_uid=sydney_jones_new"
 ```

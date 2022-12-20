@@ -61,7 +61,7 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
   end
 
   it 'includes db role data and db_config_name name' do
-    Timecop.freeze(2021, 2, 23, 10, 0) do
+    travel_to(Time.utc(2021, 2, 23, 10, 0)) do
       ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 1.second, '1', event_1)
       ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 2.seconds, '2', event_2)
       ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 3.seconds, '3', event_3)

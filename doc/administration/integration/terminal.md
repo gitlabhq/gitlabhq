@@ -41,7 +41,7 @@ In brief:
 - The WebSocket is handled in [Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse),
   rather than the Rails application server.
 - Workhorse queries Rails for connection details and user permissions. Rails
-  queries Kubernetes for them in the background using [Sidekiq](../troubleshooting/sidekiq.md).
+  queries Kubernetes for them in the background using [Sidekiq](../sidekiq/sidekiq_troubleshooting.md).
 - Workhorse acts as a proxy server between the user's browser and the Kubernetes
   API, passing WebSocket frames between the two.
 - Workhorse regularly polls Rails, terminating the WebSocket connection if the
@@ -64,8 +64,8 @@ detail below.
 ## Enabling and disabling terminal support
 
 NOTE:
-AWS Classic Load Balancers (CLBs) do not support web sockets.
-If you want web terminals to work, use AWS Network Load Balancers (NLBs).
+AWS Classic Load Balancers do not support web sockets.
+If you want web terminals to work, use AWS Network Load Balancers.
 Read [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
 for more information.
 

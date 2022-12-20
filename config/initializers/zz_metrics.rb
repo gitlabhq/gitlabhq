@@ -24,6 +24,7 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
   require_dependency 'gitlab/metrics/subscribers/action_view'
   require_dependency 'gitlab/metrics/subscribers/active_record'
   require_dependency 'gitlab/metrics/subscribers/rails_cache'
+  require_dependency 'gitlab/metrics/subscribers/ldap'
 
   Gitlab::Application.configure do |config|
     # We want to track certain metrics during the Load Balancing host resolving process.

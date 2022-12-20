@@ -12,7 +12,7 @@ require 'spec_helper'
 # - maintainer
 # because they are 3 edge cases of using wiki pages.
 
-RSpec.describe API::Wikis do
+RSpec.describe API::Wikis, feature_category: :wiki do
   include WorkhorseHelpers
   include AfterNextHelpers
 

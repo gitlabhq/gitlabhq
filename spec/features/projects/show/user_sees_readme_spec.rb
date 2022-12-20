@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Show > User sees README' do
+RSpec.describe 'Projects > Show > User sees README', feature_category: :projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, :public) }
 

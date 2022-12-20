@@ -15,9 +15,9 @@ you can add linked resources to an incident issue.
 
 Resources you might want link to:
 
-- Zoom meetings
-- Slack channels or threads
-- Google Docs
+- The incident Slack channel
+- Zoom meeting
+- Resources for resolving the incidents
 
 ## View linked resources of an incident
 

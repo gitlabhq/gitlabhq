@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::WorkItemsFinder do
+RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
   include_context 'WorkItemsFinder context'
 

@@ -69,6 +69,7 @@ RSpec.describe Gitlab::Ci::RunnerInstructions do
         'windows' | 'amd64'
         'windows' | '386'
         'osx'     | 'amd64'
+        'osx'     | 'arm64'
       end
 
       with_them do

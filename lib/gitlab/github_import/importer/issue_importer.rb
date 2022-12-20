@@ -60,6 +60,9 @@ module Gitlab
             work_item_type_id: issue.work_item_type_id
           }
 
+          issue = project.issues.new(attributes.merge(importing: true))
+          issue.validate!
+
           insert_and_return_id(attributes, project.issues)
         rescue ActiveRecord::InvalidForeignKey
           # It's possible the project has been deleted since scheduling this

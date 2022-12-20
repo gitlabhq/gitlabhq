@@ -217,8 +217,9 @@ DAST API supports testing GraphQL endpoints multiple ways:
 - Test using a Postman Collection containing GraphQL queries.
 
 This section documents how to test using a GraphQL schema. The GraphQL schema support in
-DAST API is able to query the schema from endpoints that support introspection.
+DAST API is able to query the schema from endpoints that support [introspection](https://graphql.org/learn/introspection/).
 Introspection is enabled by default to allow tools like GraphiQL to work.
+For details on how to enable introspection, see your GraphQL framework documentation.
 
 #### DAST API scanning with a GraphQL endpoint URL
 
@@ -1046,6 +1047,8 @@ can be added, removed, and modified by creating a custom configuration.
 |[`DAST_API_EXCLUDE_URLS`](#exclude-urls)               | Exclude API URL from testing. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357195) in GitLab 14.10. |
 |[`DAST_API_EXCLUDE_PARAMETER_ENV`](#exclude-parameters)       | JSON string containing excluded parameters. |
 |[`DAST_API_EXCLUDE_PARAMETER_FILE`](#exclude-parameters)      | Path to a JSON file containing excluded parameters. |
+|[`DAST_API_REQUEST_HEADERS`](#request-headers)      | A comma-separated (`,`) list of headers to include on each scan request. Consider using `DAST_API_REQUEST_HEADERS_BASE64`  when storing secret header values in a [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable), which has character set restrictions. |
+|[`DAST_API_REQUEST_HEADERS_BASE64`](#request-headers)      | A comma-separated (`,`) list of headers to include on each scan request, Base64-encoded. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378440) in GitLab 15.6. |
 |[`DAST_API_OPENAPI`](#openapi-specification)           | OpenAPI specification file or URL. |
 |[`DAST_API_OPENAPI_RELAXED_VALIDATION`](#openapi-specification) | Relax document validation. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345950) in GitLab 14.7. |
 |[`DAST_API_OPENAPI_ALL_MEDIA_TYPES`](#openapi-specification)  | Use all supported media types instead of one when generating requests. Causes test duration to be longer. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
@@ -1488,6 +1491,61 @@ variables:
 
 In the previous sample, you could use the script `user-pre-scan-set-up.sh` to also install new runtimes or applications that later on you could use in our overrides command.
 
+## Request Headers
+
+The request headers feature lets you specify fixed values for the headers during the scan session. For example, you can use the configuration variable `DAST_API_REQUEST_HEADERS` to set a fixed value in the `Cache-Control` header. If the headers you need to set include sensitive values like the `Authorization` header, use the [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable) feature along with the [variable `DAST_API_REQUEST_HEADERS_BASE64`](#base64).
+
+Note that if the `Authorization` header or any other header needs to get updated while the scan is in progress, consider using the [overrides](#overrides) feature.
+
+The variable `DAST_API_REQUEST_HEADERS` lets you specify a comma-separated (`,`) list of headers. These headers are included on each request that the scanner performs. Each header entry in the list consists of a name followed by a colon (`:`) and then by its value. Whitespace before the key or value is ignored. For example, to declare a header name `Cache-Control` with the value `max-age=604800`, the header entry is `Cache-Control: max-age=604800`. To use two headers, `Cache-Control: max-age=604800` and `Age: 100`, set `DAST_API_REQUEST_HEADERS` variable to `Cache-Control: max-age=604800, Age: 100`.
+
+The order in which the different headers are provided into the variable `DAST_API_REQUEST_HEADERS` does not affect the result. Setting `DAST_API_REQUEST_HEADERS` to `Cache-Control: max-age=604800, Age: 100` produces the same result as setting it to `Age: 100, Cache-Control: max-age=604800`.
+
+### Base64
+
+The `DAST_API_REQUEST_HEADERS_BASE64` variable accepts the same list of headers as `DAST_API_REQUEST_HEADERS`, with the only difference that the entire value of the variable must be Base64-encoded. For example, to set `DAST_API_REQUEST_HEADERS_BASE64` variable to `Authorization: QmVhcmVyIFRPS0VO, Cache-control: bm8tY2FjaGU=`, ensure you convert the list to its Base64 equivalent: `QXV0aG9yaXphdGlvbjogUW1WaGNtVnlJRlJQUzBWTywgQ2FjaGUtY29udHJvbDogYm04dFkyRmphR1U9`, and the Base64-encoded value must be used. This is useful when storing secret header values in a [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable), which has character set restrictions.
+
+WARNING:
+Base64 is used to support the [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable) feature. Base64 encoding is not by itself a security measure, because sensitive values can be easily decoded.
+
+### Example: Adding a list of headers on each request using plain text
+
+In the following example of a `.gitlab-ci.yml`, `DAST_API_REQUEST_HEADERS` configuration variable is set to provide two header values as explained in [request headers](#request-headers).
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_OPENAPI: test-api-specification.json
+  DAST_API_TARGET_URL: http://test-deployment/
+  DAST_API_REQUEST_HEADERS: 'Cache-control: no-cache, Save-Data: on'
+```
+
+### Example: Using a masked CI/CD variable
+
+The following `.gitlab-ci.yml` sample assumes the [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable) `SECRET_REQUEST_HEADERS_BASE64` is defined as a [group or instance level CI/CD variable defined in the UI](../../../ci/variables/index.md#add-a-cicd-variable-to-an-instance). The value of `SECRET_REQUEST_HEADERS_BASE64` is set to `WC1BQ01FLVNlY3JldDogc31jcnt0ISwgWC1BQ01FLVRva2VuOiA3MDVkMTZmNWUzZmI=`, which is the Base64-encoded text version of `X-ACME-Secret: s3cr3t!, X-ACME-Token: 705d16f5e3fb`. Then, it can be used as follows:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_OPENAPI: test-api-specification.json
+  DAST_API_TARGET_URL: http://test-deployment/
+  DAST_API_REQUEST_HEADERS_BASE64: $SECRET_REQUEST_HEADERS_BASE64
+```
+
+Consider using `DAST_API_REQUEST_HEADERS_BASE64`  when storing secret header values in a [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable), which has character set restrictions.
+
 ## Exclude Paths
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211892) in GitLab 14.0.
@@ -1497,13 +1555,13 @@ When testing an API it can be useful to exclude certain paths. For example, you 
 To verify the paths are excluded, review the `Tested Operations` and `Excluded Operations` portion of the job output. You should not see any excluded paths listed under `Tested Operations`.
 
 ```plaintext
-2021-05-27 21:51:08 [INF] API Security: --[ Tested Operations ]-------------------------
-2021-05-27 21:51:08 [INF] API Security: 201 POST http://target:7777/api/users CREATED
-2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
-2021-05-27 21:51:08 [INF] API Security: --[ Excluded Operations ]-----------------------
-2021-05-27 21:51:08 [INF] API Security: GET http://target:7777/api/messages
-2021-05-27 21:51:08 [INF] API Security: POST http://target:7777/api/messages
-2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
+2021-05-27 21:51:08 [INF] DAST API: --[ Tested Operations ]-------------------------
+2021-05-27 21:51:08 [INF] DAST API: 201 POST http://target:7777/api/users CREATED
+2021-05-27 21:51:08 [INF] DAST API: ------------------------------------------------
+2021-05-27 21:51:08 [INF] DAST API: --[ Excluded Operations ]-----------------------
+2021-05-27 21:51:08 [INF] DAST API: GET http://target:7777/api/messages
+2021-05-27 21:51:08 [INF] DAST API: POST http://target:7777/api/messages
+2021-05-27 21:51:08 [INF] DAST API: ------------------------------------------------
 ```
 
 ### Examples
@@ -1548,7 +1606,7 @@ variables:
 
 While testing an API you may might want to exclude a parameter (query string, header, or body element) from testing. This may be needed because a parameter always causes a failure, slows down testing, or for other reasons. To exclude parameters, you can set one of the following variables: `DAST_API_EXCLUDE_PARAMETER_ENV` or `DAST_API_EXCLUDE_PARAMETER_FILE`.
 
-The `DAST_API_EXCLUDE_PARAMETER_ENV` allows providing a JSON string containing excluded parameters. This is a good option if the JSON is short and will not often change. Another option is the variable `DAST_API_EXCLUDE_PARAMETER_FILE`. This variable is set to a file path that can be checked into the repository, created by another job as an artifact, or generated at runtime with a pre script using `DAST_API_PRE_SCRIPT`.
+The `DAST_API_EXCLUDE_PARAMETER_ENV` allows providing a JSON string containing excluded parameters. This is a good option if the JSON is short and will not often change. Another option is the variable `DAST_API_EXCLUDE_PARAMETER_FILE`. This variable is set to a file path that can be checked into the repository, created by another job as an artifact, or generated at runtime with a pre-script using `DAST_API_PRE_SCRIPT`.
 
 #### Exclude parameters using a JSON document
 
@@ -1780,13 +1838,13 @@ As an alternative to excluding by paths, you can filter by any other component i
 In your job output you can check if any URLs matched any provided regular expression from `DAST_API_EXCLUDE_URLS`. Matching operations are listed in the **Excluded Operations** section. Operations listed in the **Excluded Operations** should not be listed in the **Tested Operations** section. For example the following portion of a job output:
 
 ```plaintext
-2021-05-27 21:51:08 [INF] API Security: --[ Tested Operations ]-------------------------
-2021-05-27 21:51:08 [INF] API Security: 201 POST http://target:7777/api/users CREATED
-2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
-2021-05-27 21:51:08 [INF] API Security: --[ Excluded Operations ]-----------------------
-2021-05-27 21:51:08 [INF] API Security: GET http://target:7777/api/messages
-2021-05-27 21:51:08 [INF] API Security: POST http://target:7777/api/messages
-2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
+2021-05-27 21:51:08 [INF] DAST API: --[ Tested Operations ]-------------------------
+2021-05-27 21:51:08 [INF] DAST API: 201 POST http://target:7777/api/users CREATED
+2021-05-27 21:51:08 [INF] DAST API: ------------------------------------------------
+2021-05-27 21:51:08 [INF] DAST API: --[ Excluded Operations ]-----------------------
+2021-05-27 21:51:08 [INF] DAST API: GET http://target:7777/api/messages
+2021-05-27 21:51:08 [INF] DAST API: POST http://target:7777/api/messages
+2021-05-27 21:51:08 [INF] DAST API: ------------------------------------------------
 ```
 
 NOTE:
@@ -2083,18 +2141,18 @@ The first step to resolving performance issues is to understand what is contribu
 The DAST API job output contains helpful information about how fast we are testing, how fast each operation being tested responds, and summary information. Let's take a look at some sample output to see how it can be used in tracking down performance issues:
 
 ```shell
-API Security: Loaded 10 operations from: assets/har-large-response/large_responses.har
-API Security:
-API Security: Testing operation [1/10]: 'GET http://target:7777/api/large_response_json'.
-API Security:  - Parameters: (Headers: 4, Query: 0, Body: 0)
-API Security:  - Request body size: 0 Bytes (0 bytes)
-API Security:
-API Security: Finished testing operation 'GET http://target:7777/api/large_response_json'.
-API Security:  - Excluded Parameters: (Headers: 0, Query: 0, Body: 0)
-API Security:  - Performed 767 requests
-API Security:  - Average response body size: 130 MB
-API Security:  - Average call time: 2 seconds and 82.69 milliseconds (2.082693 seconds)
-API Security:  - Time to complete: 14 minutes, 8 seconds and 788.36 milliseconds (848.788358 seconds)
+DAST API: Loaded 10 operations from: assets/har-large-response/large_responses.har
+DAST API:
+DAST API: Testing operation [1/10]: 'GET http://target:7777/api/large_response_json'.
+DAST API:  - Parameters: (Headers: 4, Query: 0, Body: 0)
+DAST API:  - Request body size: 0 Bytes (0 bytes)
+DAST API:
+DAST API: Finished testing operation 'GET http://target:7777/api/large_response_json'.
+DAST API:  - Excluded Parameters: (Headers: 0, Query: 0, Body: 0)
+DAST API:  - Performed 767 requests
+DAST API:  - Average response body size: 130 MB
+DAST API:  - Average call time: 2 seconds and 82.69 milliseconds (2.082693 seconds)
+DAST API:  - Time to complete: 14 minutes, 8 seconds and 788.36 milliseconds (848.788358 seconds)
 ```
 
 This job console output snippet starts by telling us how many operations were found (10), followed by notifications that testing has started on a specific operation and a summary of the operation has been completed. The summary is the most interesting part of this log output. In the summary, we can see that it took DAST API 767 requests to fully test this operation and its related fields. We can also see that the average response time was 2 seconds and the time to complete was 14 minutes for this one operation.
@@ -2281,7 +2339,7 @@ See the following documentation sections for assistance:
 
 See [Performance Tuning and Testing Speed](#performance-tuning-and-testing-speed)
 
-### Error waiting for API Security 'http://127.0.0.1:5000' to become available
+### Error waiting for DAST API 'http://127.0.0.1:5000' to become available
 
 A bug exists in versions of the DAST API analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the DAST API analyzer.
 
@@ -2293,6 +2351,11 @@ If the issue is occurring with versions v1.6.196 or greater, contact Support and
 1. The full console output of the job.
 1. The `gl-api-security-scanner.log` file available as a job artifact. In the right-hand panel of the job details page, select the **Browse** button.
 1. The `dast_api` job definition from your `.gitlab-ci.yml` file.
+
+**Error message**
+
+- In [GitLab 15.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/376078), `Error waiting for DAST API 'http://127.0.0.1:5000' to become available`
+- In GitLab 15.5 and earlier, `Error waiting for API Security 'http://127.0.0.1:5000' to become available`.
 
 ### `Failed to start scanner session (version header not found)`
 
@@ -2445,6 +2508,50 @@ DAST API uses the specified media types in the OpenAPI document to generate requ
 
 1. Review supported media types in the [OpenAPI Specification](#openapi-specification) section.
 1. Edit your OpenAPI document, allowing at least a given operation to accept any of the supported media types. Alternatively, a supported media type could be set in the OpenAPI document level and get applied to all operations. This step may require changes in your application to ensure the supported media type is accepted by the application.
+
+### ``Error, error occurred trying to download `<URL>`: There was an error when retrieving content from Uri:' <URL>'. Error:The SSL connection could not be established, see inner exception.``
+
+DAST API is compatible with a broad range of TLS configurations, including outdated protocols and ciphers.
+Despite broad support, you might encounter connection errors. This error occurs because DAST API could not establish a secure connection with the server at the given URL.
+
+To resolve the issue:
+
+If the host in the error message supports non-TLS connections, change `https://` to `http://` in your configuration.
+For example, if an error occurs with the following configuration:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_TARGET_URL: https://test-deployment/
+  DAST_API_OPENAPI: https://specs/openapi.json
+```
+
+Change the prefix of `DAST_API_OPENAPI` from `https://` to `http://`:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_TARGET_URL: https://test-deployment/
+  DAST_API_OPENAPI: http://specs/openapi.json
+```
+
+If you cannot use a non-TLS connection to access the URL, contact the Support team for help.
+
+You can expedite the investigation with the [testssl.sh tool](https://testssl.sh/). From a machine with a bash shell and connectivity to the affected server:
+
+1. Download the latest release `zip` or `tar.gz` file and extract from <https://github.com/drwetter/testssl.sh/releases>.
+1. Run `./testssl.sh --log https://specs`.
+1. Attach the log file to your support ticket.
 
 ## Get support or request an improvement
 

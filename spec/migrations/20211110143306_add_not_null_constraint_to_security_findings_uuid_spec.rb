@@ -2,9 +2,9 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddNotNullConstraintToSecurityFindingsUuid do
-  let_it_be(:security_findings) { table(:security_findings) }
-  let_it_be(:migration) { described_class.new }
+RSpec.describe AddNotNullConstraintToSecurityFindingsUuid, feature_category: :vulnerability_management do
+  let!(:security_findings) { table(:security_findings) }
+  let!(:migration) { described_class.new }
 
   before do
     allow(migration).to receive(:transaction_open?).and_return(false)

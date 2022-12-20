@@ -10,6 +10,8 @@ module Banzai
       TABLE_ALIGNMENT_PATTERN = /text-align: (?<alignment>center|left|right)/.freeze
 
       def customize_allowlist(allowlist)
+        allowlist[:allow_comments] = context[:allow_comments]
+
         # Allow table alignment; we allow specific text-align values in a
         # transformer below
         allowlist[:attributes]['th'] = %w[style]

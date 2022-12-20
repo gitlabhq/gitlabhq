@@ -2,124 +2,118 @@
 
 module UsageDataHelpers
   COUNTS_KEYS = %i(
-      assignee_lists
-      ci_builds
-      ci_internal_pipelines
-      ci_external_pipelines
-      ci_pipeline_config_auto_devops
-      ci_pipeline_config_repository
-      ci_runners
-      ci_triggers
-      ci_pipeline_schedules
-      auto_devops_enabled
-      auto_devops_disabled
-      deploy_keys
-      deployments
-      successful_deployments
-      failed_deployments
-      environments
-      clusters
-      clusters_enabled
-      project_clusters_enabled
-      group_clusters_enabled
-      instance_clusters_enabled
-      clusters_disabled
-      project_clusters_disabled
-      group_clusters_disabled
-      instance_clusters_disabled
-      clusters_platforms_eks
-      clusters_platforms_gke
-      clusters_platforms_user
-      clusters_integrations_prometheus
-      clusters_management_project
-      in_review_folder
-      grafana_integrated_projects
-      groups
-      issues
-      issues_created_from_gitlab_error_tracking_ui
-      issues_with_associated_zoom_link
-      issues_using_zoom_quick_actions
-      issues_with_embedded_grafana_charts_approx
-      incident_issues
-      keys
-      label_lists
-      labels
-      lfs_objects
-      merge_requests
-      milestone_lists
-      milestones
-      notes
-      pool_repositories
-      projects
-      projects_imported_from_github
-      projects_asana_active
-      projects_jenkins_active
-      projects_jira_active
-      projects_jira_server_active
-      projects_jira_cloud_active
-      projects_jira_dvcs_cloud_active
-      projects_jira_dvcs_server_active
-      projects_slack_active
-      projects_slack_slash_commands_active
-      projects_custom_issue_tracker_active
-      projects_mattermost_active
-      projects_prometheus_active
-      projects_with_repositories_enabled
-      projects_with_error_tracking_enabled
-      projects_with_enabled_alert_integrations
-      projects_with_expiration_policy_enabled_with_older_than_unset
-      projects_with_expiration_policy_enabled_with_older_than_set_to_7d
-      projects_with_expiration_policy_enabled_with_older_than_set_to_14d
-      projects_with_expiration_policy_enabled_with_older_than_set_to_30d
-      projects_with_expiration_policy_enabled_with_older_than_set_to_60d
-      projects_with_expiration_policy_enabled_with_older_than_set_to_90d
-      projects_with_terraform_reports
-      projects_with_terraform_states
-      pages_domains
-      protected_branches
-      protected_branches_except_default
-      releases
-      remote_mirrors
-      snippets
-      personal_snippets
-      project_snippets
-      suggestions
-      terraform_reports
-      terraform_states
-      todos
-      uploads
-      web_hooks
-      user_preferences_user_gitpod_enabled
-    ).freeze
+    assignee_lists
+    ci_builds
+    ci_internal_pipelines
+    ci_external_pipelines
+    ci_pipeline_config_auto_devops
+    ci_pipeline_config_repository
+    ci_runners
+    ci_triggers
+    ci_pipeline_schedules
+    auto_devops_enabled
+    auto_devops_disabled
+    deploy_keys
+    deployments
+    successful_deployments
+    failed_deployments
+    environments
+    clusters
+    clusters_enabled
+    project_clusters_enabled
+    group_clusters_enabled
+    instance_clusters_enabled
+    clusters_disabled
+    project_clusters_disabled
+    group_clusters_disabled
+    instance_clusters_disabled
+    clusters_platforms_eks
+    clusters_platforms_gke
+    clusters_platforms_user
+    clusters_integrations_prometheus
+    clusters_management_project
+    in_review_folder
+    grafana_integrated_projects
+    groups
+    issues
+    issues_created_from_gitlab_error_tracking_ui
+    issues_with_associated_zoom_link
+    issues_using_zoom_quick_actions
+    issues_with_embedded_grafana_charts_approx
+    incident_issues
+    keys
+    label_lists
+    labels
+    lfs_objects
+    merge_requests
+    milestone_lists
+    milestones
+    notes
+    pool_repositories
+    projects
+    projects_imported_from_github
+    projects_asana_active
+    projects_jenkins_active
+    projects_jira_active
+    projects_jira_server_active
+    projects_jira_cloud_active
+    projects_jira_dvcs_cloud_active
+    projects_jira_dvcs_server_active
+    projects_slack_active
+    projects_slack_slash_commands_active
+    projects_custom_issue_tracker_active
+    projects_mattermost_active
+    projects_prometheus_active
+    projects_with_repositories_enabled
+    projects_with_error_tracking_enabled
+    projects_with_enabled_alert_integrations
+    projects_with_terraform_reports
+    projects_with_terraform_states
+    pages_domains
+    protected_branches
+    protected_branches_except_default
+    releases
+    remote_mirrors
+    snippets
+    personal_snippets
+    project_snippets
+    suggestions
+    terraform_reports
+    terraform_states
+    todos
+    uploads
+    web_hooks
+    user_preferences_user_gitpod_enabled
+  ).freeze
 
   USAGE_DATA_KEYS = %i(
-      active_user_count
-      counts
-      counts_monthly
-      recorded_at
-      edition
-      version
-      installation_type
-      uuid
-      hostname
-      mattermost_enabled
-      signup_enabled
-      ldap_enabled
-      gravatar_enabled
-      omniauth_enabled
-      reply_by_email_enabled
-      container_registry_enabled
-      dependency_proxy_enabled
-      gitlab_shared_runners_enabled
-      gitlab_pages
-      git
-      gitaly
-      database
-      prometheus_metrics_enabled
-      web_ide_clientside_preview_enabled
-      object_store
-      topology
-    ).freeze
+    active_user_count
+    counts
+    counts_monthly
+    recorded_at
+    edition
+    version
+    installation_type
+    uuid
+    hostname
+    mattermost_enabled
+    signup_enabled
+    ldap_enabled
+    gravatar_enabled
+    omniauth_enabled
+    reply_by_email_enabled
+    container_registry_enabled
+    dependency_proxy_enabled
+    gitlab_shared_runners_enabled
+    gitlab_pages
+    git
+    gitaly
+    database
+    prometheus_metrics_enabled
+    web_ide_clientside_preview_enabled
+    object_store
+    topology
+  ).freeze
 
   def stub_usage_data_connections
     allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
@@ -162,7 +156,6 @@ module UsageDataHelpers
            'direct_upload' => true,
            'connection' =>
          { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
-           'background_upload' => false,
            'proxy_download' => false } }
       )
 
@@ -177,7 +170,6 @@ module UsageDataHelpers
            'direct_upload' => true,
            'connection' =>
          { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
-           'background_upload' => false,
            'proxy_download' => false } }
       )
     allow(Settings).to receive(:[]).with('uploads')
@@ -188,7 +180,6 @@ module UsageDataHelpers
             'direct_upload' => true,
             'connection' =>
           { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
-            'background_upload' => false,
             'proxy_download' => false } }
       )
     allow(Settings).to receive(:[]).with('packages')
@@ -200,7 +191,6 @@ module UsageDataHelpers
            'direct_upload' => false,
            'connection' =>
          { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
-           'background_upload' => true,
            'proxy_download' => false } }
       )
   end

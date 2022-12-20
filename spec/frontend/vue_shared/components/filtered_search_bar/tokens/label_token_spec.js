@@ -10,11 +10,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import {
   mockRegularLabel,
   mockLabels,
-} from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
+} from 'jest/sidebar/components/labels/labels_select_vue/mock_data';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
-import { DEFAULT_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPTIONS_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 
@@ -141,7 +141,7 @@ describe('LabelToken', () => {
   });
 
   describe('template', () => {
-    const defaultLabels = DEFAULT_NONE_ANY;
+    const defaultLabels = OPTIONS_NONE_ANY;
 
     beforeEach(async () => {
       wrapper = createComponent({ value: { data: `"${mockRegularLabel.title}"` } });
@@ -209,7 +209,7 @@ describe('LabelToken', () => {
       expect(wrapper.findComponent(GlDropdownDivider).exists()).toBe(false);
     });
 
-    it('renders `DEFAULT_NONE_ANY` as default suggestions', () => {
+    it('renders `OPTIONS_NONE_ANY` as default suggestions', () => {
       wrapper = createComponent({
         active: true,
         config: { ...mockLabelToken },
@@ -221,8 +221,8 @@ describe('LabelToken', () => {
 
       const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
-      expect(suggestions).toHaveLength(DEFAULT_NONE_ANY.length);
-      DEFAULT_NONE_ANY.forEach((label, index) => {
+      expect(suggestions).toHaveLength(OPTIONS_NONE_ANY.length);
+      OPTIONS_NONE_ANY.forEach((label, index) => {
         expect(suggestions.at(index).text()).toBe(label.text);
       });
     });

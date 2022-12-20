@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Copy as GFM', :js do
+RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
   include MarkupHelper
   include RepoHelpers
   include ActionView::Helpers::JavaScriptHelper
@@ -26,7 +26,7 @@ RSpec.describe 'Copy as GFM', :js do
     # by verifying (`html_to_gfm(gfm_to_html(gfm)) == gfm`) for a number of examples of GFM for every filter, using the `verify` helper.
 
     # These are all in a single `it` for performance reasons.
-    it 'works', :aggregate_failures do
+    it 'transforms HTML to GFM', :aggregate_failures do
       verify(
         'nesting',
         '> 1. [x] **[$`2 + 2`$ {-=-}{+=+} 2^2 ~~:thumbsup:~~](http://google.com)**'
@@ -459,25 +459,25 @@ RSpec.describe 'Copy as GFM', :js do
                 </a>
               </div>
               <!---->
-              <button type="button" class="btn qa-apply-btn js-apply-btn">Apply suggestion</button>
+              <button type="button" class="btn js-apply-btn">Apply suggestion</button>
             </div>
             <table class="mb-3 md-suggestion-diff js-syntax-highlight code white">
               <tbody>
                 <tr class="line_holder old">
-                  <td class="diff-line-num old_line qa-old-diff-line-number old">9</td>
+                  <td class="diff-line-num old_line old">9</td>
                   <td class="diff-line-num new_line old"></td>
                   <td class="line_content old"><span>Old
           </span></td>
                 </tr>
                 <tr class="line_holder new">
                   <td class="diff-line-num old_line new"></td>
-                  <td class="diff-line-num new_line qa-new-diff-line-number new">9</td>
+                  <td class="diff-line-num new_line new">9</td>
                   <td class="line_content new"><span>New
           </span></td>
                 </tr>
                 <tr class="line_holder new">
                   <td class="diff-line-num old_line new"></td>
-                  <td class="diff-line-num new_line qa-new-diff-line-number new">10</td>
+                  <td class="diff-line-num new_line new">10</td>
                   <td class="line_content new"><span>  And newer
           </span></td>
                 </tr>

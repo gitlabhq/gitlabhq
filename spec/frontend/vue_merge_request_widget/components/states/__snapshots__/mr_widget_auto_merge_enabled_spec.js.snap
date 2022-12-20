@@ -2,7 +2,7 @@
 
 exports[`MRWidgetAutoMergeEnabled template should have correct elements 1`] = `
 <div
-  class="mr-widget-body media mr-widget-body-line-height-1 gl-line-height-normal"
+  class="mr-widget-body media gl-display-flex gl-align-items-center"
 >
   <div
     class="gl-w-6 gl-h-6 gl-display-flex gl-align-self-start gl-mr-3"
@@ -61,7 +61,7 @@ exports[`MRWidgetAutoMergeEnabled template should have correct elements 1`] = `
           class="gl-display-flex gl-align-items-flex-start"
         >
           <div
-            class="dropdown b-dropdown gl-new-dropdown gl-display-block gl-md-display-none! btn-group"
+            class="dropdown b-dropdown gl-dropdown gl-display-block gl-md-display-none! btn-group"
             lazy=""
             no-caret=""
             title="Options"
@@ -87,7 +87,7 @@ exports[`MRWidgetAutoMergeEnabled template should have correct elements 1`] = `
               </svg>
                
               <span
-                class="gl-new-dropdown-button-text gl-sr-only"
+                class="gl-dropdown-button-text gl-sr-only"
               >
                 
               </span>

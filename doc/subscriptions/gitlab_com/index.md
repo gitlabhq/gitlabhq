@@ -78,7 +78,7 @@ A top-level group can be [changed](../../user/group/manage.md#change-a-groups-pa
 Every user is included in seat usage, with the following exceptions:
 
 - Users who are pending approval.
-- Members with the Guest role on an Ultimate subscription.
+- Members with the [Guest role on an Ultimate subscription](#free-guest-users).
 - GitLab-created service accounts:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
   - Bots such as:
@@ -102,9 +102,16 @@ To view a list of seats being used:
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. On the **Seats** tab, view usage information.
 
-The seat usage listing is updated live, but the usage statistics on the billing page are updated
-only once per day. For this reason there can be a minor difference between the seat usage listing
-and the billing page.
+The data in seat usage listing, **Seats in use**, and **Seats in subscription** are updated live.
+The counts for **Max seats used** and **Seats owed** are updated once per day.
+
+To view your subscription information and a summary of seat counts:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Billing**.
+
+The usage statistics are updated once per day, which may cause
+a difference between the information in the **Usage Quotas** page and the **Billing page**.
 
 ### Search seat usage
 
@@ -152,6 +159,16 @@ For example, if you purchase a subscription for 10 users:
 | Three users leave and their accounts are removed.  | 9                | 12            |
 
 Seats owed = 12 - 10 (Maximum users - users in subscription)
+
+### Free Guest users **(ULTIMATE)**
+
+In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
+The user must not be assigned any other role, anywhere in the instance.
+
+- If your project is private or internal, a user with the Guest role has
+  [a set of permissions](../../user/permissions.md#project-members-permissions).
+- If your project is public, all users, including those with the Guest role
+  can access your project.
 
 ### Add users to your subscription
 
@@ -214,6 +231,37 @@ amounts at which the alert displays.
 | 100-999               | 8% of seats have been used.                                            |
 | 1000+                 | 5% of seats have been used                                             |
 
+## Change the linked account
+
+To change the GitLab.com account linked to your Customers Portal account:
+
+1. Log in to the
+   [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. In a separate browser tab, go to [GitLab SaaS](https://gitlab.com/users/sign_in) and ensure you
+   are not logged in.
+1. On the Customers Portal page, select **My account > Account details**.
+1. Under **Your GitLab.com account**, select **Change linked account**.
+1. Log in to the [GitLab SaaS](https://gitlab.com/users/sign_in) account you want to link to the Customers Portal
+   account.
+
+## Change the linked namespace
+
+To change the namespace linked to a subscription:
+
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
+   [linked](#change-the-linked-account) GitLab SaaS account.
+1. Navigate to the **Manage Purchases** page.
+1. Select **Change linked namespace**.
+1. Select the desired group from the **This subscription is for** dropdown. For a group to appear here, you must have the Owner role for that group.
+1. Select **Proceed to checkout**.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/qAq8pyFP-a0).
+
+Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the [total number of users](#view-seat-usage) exceeds the number of seats in your subscription, your account is charged for the additional users and you need to pay for the overage before you can change the linked namespace.
+
+Only one namespace can be linked to a subscription.
+
 ## Upgrade your GitLab SaaS subscription tier
 
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
@@ -275,10 +323,17 @@ For details on upgrading your subscription tier, see
 
 ### Automatic subscription renewal
 
-When you enable automatic renewal, the subscription automatically renews on the
-expiration date without a gap in available service. An invoice is
-generated for the renewal and available for viewing or download on the
-[View invoices](https://customers.gitlab.com/receipts) page.
+When a subscription is set to auto-renew, it renews automatically on the
+expiration date without a gap in available service. Subscriptions purchased through Customers Portal or GitLab.com are set to auto-renew by default. The number of seats is adjusted to fit the [number of billable users in your group](#view-seat-usage) at the time of renewal. You can view and download your renewal invoice on the
+[View invoices](https://customers.gitlab.com/receipts) page. If your account has a [saved credit card](../index.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription. After that, your access is downgraded.
+
+#### Email notifications
+
+15 days before a subscription automatically renews, an email is sent with information about the renewal.
+
+- If your credit card is expired, the email tells you how to update it.
+- If you have any outstanding overages, the email tells you to contact our Sales team.
+- If there are no issues, the email specifies the names and quantity of the products being renewed. The email also includes the total amount you owe. If your usage increases or decreases before renewal, this amount can change.
 
 #### Enable or disable automatic subscription renewal
 
@@ -335,7 +390,7 @@ locked. Projects can only be unlocked by purchasing more storage subscription un
 
 Prerequisite:
 
-- You must have at least the Owner role.
+- You must have the Owner role.
 
 You can purchase a storage subscription for your personal or group namespace.
 
@@ -408,7 +463,7 @@ and for communicating directly with the relevant GitLab team members.
 
 If your credit card is declined when purchasing a GitLab subscription, possible reasons include:
 
-- The credit card details provided are incorrect.
+- The credit card details provided are incorrect. The most common cause for this is an incomplete or dummy address.
 - The credit card account has insufficient funds.
 - You are using a virtual credit card and it has insufficient funds, or has expired.
 - The transaction exceeds the credit limit.
@@ -417,7 +472,7 @@ If your credit card is declined when purchasing a GitLab subscription, possible 
 Check with your financial institution to confirm if any of these reasons apply. If they don't
 apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
 
-### Unable to link subcription to namespace
+### Unable to link subscription to namespace
 
 If you cannot link a subscription to your namespace, ensure that you have the Owner role
 for that namespace.

@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 func (s *Static) DeployPage(handler http.Handler) http.Handler {
@@ -18,7 +16,7 @@ func (s *Static) DeployPage(handler http.Handler) http.Handler {
 			return
 		}
 
-		helper.SetNoCacheHeaders(w.Header())
+		setNoCacheHeaders(w.Header())
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)

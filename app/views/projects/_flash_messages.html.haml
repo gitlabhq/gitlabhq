@@ -2,11 +2,13 @@
 
 = content_for :flash_message do
   = render partial: 'deletion_failed', locals: { project: project }
-  - if current_user && can?(current_user, :download_code, project)
+  - if current_user && can?(current_user, :read_code, project)
     = render 'shared/no_ssh'
     = render 'shared/no_password'
     - unless project.empty_repo?
       = render 'shared/auto_devops_implicitly_enabled_banner', project: project
+    - if show_auto_devops_callout?(@project)
+      = render 'shared/auto_devops_callout'
     = render_if_exists 'projects/above_size_limit_warning', project: project
     = render_if_exists 'shared/shared_runners_minutes_limit', project: project, classes: [container_class, ("limit-container-width" unless fluid_layout)]
     = render_if_exists 'projects/terraform_banner', project: project

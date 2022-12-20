@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.ciVariables' do
+RSpec.describe 'Query.ciVariables', feature_category: :pipeline_authoring do
   include GraphqlHelpers
 
   let(:query) do

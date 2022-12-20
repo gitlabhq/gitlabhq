@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleUpdateTimelogsProjectId do
+RSpec.describe ScheduleUpdateTimelogsProjectId, feature_category: :team_planning do
   let!(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }
   let!(:project) { table(:projects).create!(namespace_id: namespace.id) }
   let!(:issue) { table(:issues).create!(project_id: project.id) }

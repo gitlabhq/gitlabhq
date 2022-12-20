@@ -567,7 +567,13 @@ RSpec.describe QuickActions::InterpretService do
       it 'returns the duplicate message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq("Marked this issue as a duplicate of #{issue_duplicate.to_reference(project)}.")
+        expect(message).to eq("Closed this issue. Marked as related to, and a duplicate of, #{issue_duplicate.to_reference(project)}.")
+      end
+
+      it 'includes duplicate reference' do
+        _, explanations = service.explain(content, issuable)
+
+        expect(explanations).to eq(["Closes this issue. Marks as related to, and a duplicate of, #{issue_duplicate.to_reference(project)}."])
       end
     end
 
@@ -2489,6 +2495,16 @@ RSpec.describe QuickActions::InterpretService do
 
         expect(updates).to eq(remove_contacts: [existing_contact.email])
         expect(message).to eq('One or more contacts were successfully removed.')
+      end
+    end
+
+    context 'when using an alias' do
+      it 'returns the correct execution message' do
+        content = "/labels ~#{bug.title}"
+
+        _, _, message = service.execute(content, issue)
+
+        expect(message).to eq("Added ~\"Bug\" label.")
       end
     end
   end

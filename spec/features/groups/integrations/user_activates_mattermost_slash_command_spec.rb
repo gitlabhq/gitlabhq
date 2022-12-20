@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User activates the group-level Mattermost Slash Command integration', :js do
+RSpec.describe 'User activates the group-level Mattermost Slash Command integration', :js, feature_category: :build do
   include_context 'group integration activation'
 
   before do

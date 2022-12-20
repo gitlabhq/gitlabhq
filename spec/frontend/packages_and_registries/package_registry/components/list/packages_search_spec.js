@@ -10,6 +10,7 @@ import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { LIST_KEY_CREATED_AT } from '~/packages_and_registries/package_registry/constants';
 
 import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
+import { TOKEN_TYPE_TYPE } from '~/vue_shared/components/filtered_search_bar/constants';
 
 jest.mock('~/packages_and_registries/shared/utils');
 
@@ -92,7 +93,11 @@ describe('Package Search', () => {
 
     expect(findRegistrySearch().props()).toMatchObject({
       tokens: expect.arrayContaining([
-        expect.objectContaining({ token: PackageTypeToken, type: 'type', icon: 'package' }),
+        expect.objectContaining({
+          token: PackageTypeToken,
+          type: TOKEN_TYPE_TYPE,
+          icon: 'package',
+        }),
       ]),
       sortableFields: sortableFields(isGroupPage),
     });

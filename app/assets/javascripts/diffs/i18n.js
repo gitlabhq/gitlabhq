@@ -19,6 +19,7 @@ export const DIFF_FILE = {
   autoCollapsed: __('Files with large changes are collapsed by default.'),
   expand: __('Expand file'),
 };
+export const START_THREAD = __('Start another thread');
 
 export const SETTINGS_DROPDOWN = {
   whitespace: __('Show whitespace changes'),
@@ -49,3 +50,5 @@ export const CONFLICT_TEXT = {
 };
 
 export const HIDE_COMMENTS = __('Hide comments');
+
+export const NEW_CODE_QUALITY_FINDINGS = __('New code quality findings');

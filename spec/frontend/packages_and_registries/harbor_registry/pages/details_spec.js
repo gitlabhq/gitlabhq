@@ -8,7 +8,7 @@ import ArtifactsList from '~/packages_and_registries/harbor_registry/components/
 import waitForPromises from 'helpers/wait_for_promises';
 import DetailsHeader from '~/packages_and_registries/harbor_registry/components/details/details_header.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   NAME_SORT_FIELD,
   TOKEN_TYPE_TAG_NAME,
@@ -137,7 +137,7 @@ describe('Harbor Details Page', () => {
             title: s__('HarborRegistry|Tag'),
             unique: true,
             token: GlFilteredSearchToken,
-            operators: OPERATOR_IS_ONLY,
+            operators: OPERATORS_IS,
           },
         ],
       });

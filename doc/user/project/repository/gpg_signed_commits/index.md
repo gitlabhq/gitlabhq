@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Signing commits with GPG **(FREE)**
+# Sign commits with GPG **(FREE)**
 
 You can sign the commits you make in a GitLab repository with a
 GPG ([GNU Privacy Guard](https://gnupg.org/)) key. When you add a cryptographic
@@ -160,14 +160,6 @@ to use this key:
    git config --global user.signingkey <KEY ID>
    ```
 
-1. Optional. If Git uses `gpg` and you get errors like `secret key not available`
-   or `gpg: signing failed: secret key not available`, run this command to
-   use `gpg2` instead:
-
-   ```shell
-   git config --global gpg.program gpg2
-   ```
-
 ### Sign your Git commits
 
 After you [add your public key to your account](#add-a-gpg-key-to-your-account),
@@ -246,6 +238,7 @@ If you must unverify both future and past commits,
 ## Related topics
 
 - [Sign commits and tags with X.509 certificates](../x509_signed_commits/index.md)
+- [Sign commits with SSH keys](../ssh_signed_commits/index.md)
 - [Commits API](../../../../api/commits.md)
 - GPG resources:
   - [Git Tools - Signing Your Work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
@@ -269,3 +262,27 @@ or a GPG key. The verification process for both methods can fail for multiple re
 | `UNVERIFIED_KEY`            | The key associated with the GPG signature has no verified email address associated with the committer. | Add and verify the email to your GitLab profile, [update the GPG key to include the email address](https://security.stackexchange.com/a/261468), or amend the commit to use a different committer email address. |
 | `UNKNOWN_KEY`               | The GPG key associated with the GPG signature for this commit is unknown to GitLab. | [Add the GPG key](#add-a-gpg-key-to-your-account) to your GitLab profile. |
 | `MULTIPLE_SIGNATURES`       | Multiple GPG or X.509 signatures have been found for the commit. | Amend the commit to use only one GPG or X.509 signature. |
+
+### Secret key not available
+
+If you receive the errors `secret key not available`
+or `gpg: signing failed: secret key not available`, try using `gpg2` instead of `gpg`:
+
+```shell
+git config --global gpg.program gpg2
+```
+
+If your GPG key is password protected and the password entry prompt does not appear,
+add `export GPG_TTY=$(tty)` to your shell's `rc` file (commonly `~/.bashrc` or `~/.zshrc`)
+
+### GPG failed to sign the data
+
+If your GPG key is password protected and you receive the error:
+
+```shell
+error: gpg failed to sign the data
+fatal: failed to write commit object
+```
+
+If the password entry prompt does not appear, add `export GPG_TTY=$(tty)` to your shell's `rc` file
+(commonly `~/.bashrc` or `~/.zshrc`) and restart your terminal.

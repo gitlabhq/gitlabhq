@@ -117,7 +117,7 @@ Manifests are more complicated, partially due to [rate limiting on DockerHub](ht
 A manifest is essentially a recipe for creating an image. It has a list of blobs to create a certain image. So
 `alpine:latest` has a manifest associated with it that specifies the blobs needed to create the `alpine:latest`
 image. The interesting part is that `alpine:latest` can change over time, so we can't just cache the manifest and
-assume it is OK to use forever. Instead, we must check the digest of the manifest, which is an Etag. This gets
+assume it is OK to use forever. Instead, we must check the digest of the manifest, which is an ETag. This gets
 interesting because the requests for manifests often don't include the digest. So how do we know if the manifest
 we have cached is still the most up-to-date `alpine:latest`? DockerHub allows free HEAD requests that don't count
 toward their rate limit. The HEAD request returns the manifest digest so we can tell whether or not the one we
@@ -143,7 +143,7 @@ Management of file uploads and caching happens in [Workhorse](../workhorse/index
 [`POST` routes](https://gitlab.com/gitlab-org/gitlab/-/blob/3f76455ac9cf90a927767e55c837d6b07af818df/config/routes/group.rb#L170-173)
 that we have for the Dependency Proxy.
 
-The [send_dependency](https://gitlab.com/gitlab-org/gitlab/-/blob/7359d23f4e078479969c872924150219c6f1665f/app/helpers/workhorse_helper.rb#L46-53)
+The [`send_dependency`](https://gitlab.com/gitlab-org/gitlab/-/blob/7359d23f4e078479969c872924150219c6f1665f/app/helpers/workhorse_helper.rb#L46-53)
 method makes a request to Workhorse including the previously fetched JWT from the external registry. Workhorse then
 can use that token to request the manifest or blob the user originally requested. The Workhorse code lives in
 [`workhorse/internal/dependencyproxy/dependencyproxy.go`](https://gitlab.com/gitlab-org/gitlab/-/blob/b8f44a8f3c26efe9932c2ada2df75ef7acb8417b/workhorse/internal/dependencyproxy/dependencyproxy.go#L4).

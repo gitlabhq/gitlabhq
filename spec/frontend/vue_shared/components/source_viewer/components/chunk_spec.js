@@ -1,10 +1,16 @@
+import { nextTick } from 'vue';
 import { GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
 import ChunkLine from '~/vue_shared/components/source_viewer/components/chunk_line.vue';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import LineHighlighter from '~/blob/line_highlighter';
 
-jest.mock('~/lib/utils/common_utils');
+const lineHighlighter = new LineHighlighter();
+jest.mock('~/blob/line_highlighter', () =>
+  jest.fn().mockReturnValue({
+    highlightHash: jest.fn(),
+  }),
+);
 
 const DEFAULT_PROPS = {
   chunkIndex: 2,
@@ -104,12 +110,14 @@ describe('Chunk component', () => {
     });
 
     it('does not scroll to route hash if last chunk is not loaded', () => {
-      expect(scrollToElement).not.toHaveBeenCalled();
+      expect(LineHighlighter).not.toHaveBeenCalled();
     });
 
-    it('scrolls to route hash if last chunk is loaded', () => {
+    it('scrolls to route hash if last chunk is loaded', async () => {
       createComponent({ totalChunks: DEFAULT_PROPS.chunkIndex + 1 });
-      expect(scrollToElement).toHaveBeenCalledWith(hash, { behavior: 'auto' });
+      await nextTick();
+      expect(LineHighlighter).toHaveBeenCalledWith({ scrollBehavior: 'auto' });
+      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
     });
   });
 });

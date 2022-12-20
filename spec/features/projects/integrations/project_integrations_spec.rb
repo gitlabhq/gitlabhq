@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project integrations', :js do
+RSpec.describe 'Project integrations', :js, feature_category: :integrations do
   include_context 'project integration activation'
 
   it_behaves_like 'integration settings form' do

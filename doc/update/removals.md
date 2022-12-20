@@ -9,6 +9,9 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 In each release, GitLab removes features that were deprecated in an earlier release.
 Some features cause breaking changes when they are removed.
 
+**{rss}** **To be notified of upcoming breaking changes**,
+add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
+
 <!-- vale off -->
 
 <!--
@@ -42,6 +45,43 @@ Review the details carefully before upgrading.
 To change the approvals required for a merge request, you should no longer use the `/approvals` API endpoint, which was deprecated in GitLab 12.3.
 
 Instead, use the [`/approval_rules` endpoint](https://docs.gitlab.com/ee/api/merge_request_approvals.html#merge-request-level-mr-approvals) to [create](https://docs.gitlab.com/ee/api/merge_request_approvals.html#create-merge-request-level-rule) or [update](https://docs.gitlab.com/ee/api/merge_request_approvals.html#update-merge-request-level-rule) the approval rules for a merge request.
+
+## Removed in 15.8
+
+### CiliumNetworkPolicy within the auto deploy Helm chart is removed
+
+All functionality related to the GitLab Container Network Security and Container Host Security categories was deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. The [CiliumNetworkPolicy definition](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/blob/master/assets/auto-deploy-app/values.yaml#L175) that exists as part of the [GitLab Auto Deploy Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) was not removed as scheduled in GitLab 15.0. This policy is planned to be removed in the GitLab 15.8 release.
+
+If you want to preserve this functionality, you can follow one of these two paths:
+
+1. Fork the [GitLab Auto Deploy Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) into the `chart/` path within your project
+1. Set `AUTO_DEPLOY_IMAGE_VERSION` and `DAST_AUTO_DEPLOY_IMAGE_VERSION` to the most recent version of the image that included the CiliumNetworkPolicy
+
+## Removed in 15.7
+
+### Flowdock integration
+
+As of December 22, 2022, we are removing the Flowdock integration because the service was shut down on August 15, 2022.
+
+## Removed in 15.6
+
+### NFS as Git repository storage is no longer supported
+
+As of November 22, 2022, we have removed support for customers using NFS for Git repository storage. This was
+originally planned for May 22, 2022, but in an effort to allow continued maturity of Gitaly Cluster, we delayed
+our removal of support date until now. Please see our official [Statement of Support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs)
+for further information.
+
+This change in support follows the development deprecation for NFS for Git repository storage that occurred in GitLab 14.0.
+
+Gitaly Cluster offers tremendous benefits for our customers such as:
+
+- [Variable replication factors](https://docs.gitlab.com/ee/administration/gitaly/index.html#replication-factor).
+- [Strong consistency](https://docs.gitlab.com/ee/administration/gitaly/index.html#strong-consistency).
+- [Distributed read capabilities](https://docs.gitlab.com/ee/administration/gitaly/index.html#distributed-reads).
+
+We encourage customers currently using NFS for Git repositories to migrate as soon as possible by reviewing our documentation on
+[migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/index.html#migrate-to-gitaly-cluster).
 
 ## Removed in 15.4
 
@@ -730,7 +770,7 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The `push_rules_supersede_code_owners` feature flag has been removed in GitLab 15.0. From now on, push rules will supersede the `CODEOWNERS` file. The code owners feature is no longer available for access control.
+The `push_rules_supersede_code_owners` feature flag has been removed in GitLab 15.0. From now on, push rules will supersede the `CODEOWNERS` file. Even if Code Owner approval is required, a push rule that explicitly allows a specific user to push code supersedes the Code Owners setting.
 
 ### `type` and `types` keyword from CI/CD configuration
 

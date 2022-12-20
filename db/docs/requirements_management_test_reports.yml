@@ -7,3 +7,4 @@ feature_categories:
 description: Information related to Test Reports, which relate historical test outcomes to Requirements
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31643
 milestone: '13.0'
+gitlab_schema: gitlab_main

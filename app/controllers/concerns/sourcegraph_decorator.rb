@@ -22,8 +22,8 @@ module SourcegraphDecorator
     return unless sourcegraph_enabled?
 
     gon.push({
-      sourcegraph: { url: Gitlab::CurrentSettings.sourcegraph_url }
-    })
+               sourcegraph: { url: Gitlab::CurrentSettings.sourcegraph_url }
+             })
   end
 
   def sourcegraph_enabled?

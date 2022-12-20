@@ -1,3 +1,3 @@
-import { initPipelineEditor } from '~/pipeline_editor';
+import { initPipelineEditor } from '~/ci/pipeline_editor';
 
 initPipelineEditor();

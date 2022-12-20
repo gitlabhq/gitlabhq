@@ -106,8 +106,8 @@ module Gitlab
       end
 
       def enable_admin_mode!(password: nil, skip_password_validation: false)
-        return unless user&.admin?
-        return unless skip_password_validation || user&.valid_password?(password)
+        return false unless user&.admin?
+        return false unless skip_password_validation || user&.valid_password?(password)
 
         raise NotRequestedError unless admin_mode_requested?
 
@@ -115,6 +115,10 @@ module Gitlab
 
         current_session_data[ADMIN_MODE_REQUESTED_TIME_KEY] = nil
         current_session_data[ADMIN_MODE_START_TIME_KEY] = Time.now
+
+        audit_user_enable_admin_mode
+
+        true
       end
 
       def disable_admin_mode!
@@ -175,6 +179,10 @@ module Gitlab
       def privileged_runtime?
         Gitlab::Runtime.rake? || Gitlab::Runtime.rails_runner? || Gitlab::Runtime.console?
       end
+
+      def audit_user_enable_admin_mode; end
     end
   end
 end
+
+Gitlab::Auth::CurrentUserMode.prepend_mod_with('Gitlab::Auth::CurrentUserMode')

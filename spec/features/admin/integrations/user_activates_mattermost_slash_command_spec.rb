@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User activates the instance-level Mattermost Slash Command integration', :js do
+RSpec.describe 'User activates the instance-level Mattermost Slash Command integration', :js,
+feature_category: :integrations do
   include_context 'instance integration activation'
 
   before do

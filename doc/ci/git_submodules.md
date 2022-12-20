@@ -68,7 +68,7 @@ To make submodules work correctly in CI/CD jobs:
    ```
 
 1. You can filter or exclude specific submodules to control which submodules will be synced using
-   [`GIT_SUBMODULE_PATHS`](runners/configure_runners.md#git-submodule-paths).
+   [`GIT_SUBMODULE_PATHS`](runners/configure_runners.md#sync-or-exclude-specific-submodules-from-ci-jobs).
 
    ```yaml
    variables:
@@ -82,14 +82,6 @@ To make submodules work correctly in CI/CD jobs:
    variables:
      GIT_SUBMODULE_STRATEGY: recursive
      GIT_SUBMODULE_UPDATE_FLAGS: --jobs 4
-   ```
-  
-1. You can set the [GIT_SUBMODULE_PATHS](runners/configure_runners.md#sync-or-exclude-specific-submodules-from-ci-jobs) to explicitly ignore submodules during cloning:
-
-   ```yaml
-   variables:
-    GIT_SUBMODULE_STRATEGY: recursive
-    GIT_SUBMODULE_PATHS: ':(exclude)submodule'
    ```
 
 If you use the [`CI_JOB_TOKEN`](jobs/ci_job_token.md) to clone a submodule in a

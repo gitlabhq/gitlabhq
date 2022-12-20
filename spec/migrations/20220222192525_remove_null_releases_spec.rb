@@ -3,7 +3,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RemoveNullReleases do
+RSpec.describe RemoveNullReleases, feature_category: :release_orchestration do
   let(:releases) { table(:releases) }
 
   before do

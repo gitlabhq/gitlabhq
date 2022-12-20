@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerPolicy do
+RSpec.describe Ci::RunnerPolicy, feature_category: :runner do
   describe 'ability :read_runner' do
     let_it_be(:guest) { create(:user) }
     let_it_be(:developer) { create(:user) }

@@ -19,7 +19,7 @@ I/O. The information on this page can be used for either scenario.
 
 ### Benchmarking with `fio`
 
-We recommend using
+You should use
 [Fio](https://fio.readthedocs.io/en/latest/fio_doc.html) to test I/O
 performance. This test should be run both on the NFS server and on the
 application nodes that talk to the NFS server.
@@ -35,8 +35,8 @@ Then run the following:
 fio --randrepeat=1 --ioengine=libaio --direct=1 --gtod_reduce=1 --name=test --bs=4k --iodepth=64 --readwrite=randrw --rwmixread=75 --size=4G --filename=/path/to/git-data/testfile
 ```
 
-This creates a 4GB file in `/path/to/git-data/testfile`. It performs
-4KB reads and writes using a 75%/25% split in the file, with 64
+This creates a 4 GB file in `/path/to/git-data/testfile`. It performs
+4 KB reads and writes using a 75%/25% split in the file, with 64
 operations running at a time. Be sure to delete the file after the test
 completes.
 

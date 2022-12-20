@@ -12,6 +12,7 @@ module API
           example: 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt1256k6Yjz\
       GGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCdd\
       NaP0L+hM7zhFNzjFvpaMgJw0=' }
+      expose :usage_type, documentation: { type: 'string', example: 'auth' }
     end
   end
 end

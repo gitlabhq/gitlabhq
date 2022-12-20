@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Setting issues crm contacts' do
+RSpec.describe 'Setting issues crm contacts', feature_category: :service_desk do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

@@ -1,12 +1,7 @@
 <script>
 import clusterPopover from '@gitlab/svgs/dist/illustrations/cluster_popover.svg';
-import {
-  GlPopover,
-  GlSprintf,
-  GlLink,
-  GlButton,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlPopover, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
 import { POPOVER_TARGET_ID } from './constants';
 import { dismiss } from './feature_highlight_helper';

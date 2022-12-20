@@ -26,6 +26,8 @@ export const GROUPS_CATEGORY = s__('GlobalSearch|Groups');
 
 export const PROJECTS_CATEGORY = s__('GlobalSearch|Projects');
 
+export const USERS_CATEGORY = s__('GlobalSearch|Users');
+
 export const ISSUES_CATEGORY = s__('GlobalSearch|Recent issues');
 
 export const MERGE_REQUEST_CATEGORY = s__('GlobalSearch|Recent merge requests');
@@ -68,6 +70,7 @@ export const DROPDOWN_ORDER = [
   RECENT_EPICS_CATEGORY,
   GROUPS_CATEGORY,
   PROJECTS_CATEGORY,
+  USERS_CATEGORY,
   IN_THIS_PROJECT_CATEGORY,
   SETTINGS_CATEGORY,
   HELP_CATEGORY,

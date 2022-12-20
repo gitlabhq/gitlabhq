@@ -20,11 +20,11 @@ Projections are a way to define relations between files. Every file can have a
 You can find a basic list of projection options in
 [projectionist.txt](https://github.com/tpope/vim-projectionist/blob/master/doc/projectionist.txt)
 
-## Which plugins can I use
+## Which plugins can you use
 
 - vim
   - [vim-projectionist](https://github.com/tpope/vim-projectionist)
-- VSCode
+- VS Code
   - [Alternate File](https://marketplace.visualstudio.com/items?itemName=will-wow.vscode-alternate-file)
   - [projectionist](https://github.com/jarsen/projectionist)
   - [`jumpto`](https://github.com/gmdayley/jumpto)

@@ -70,7 +70,7 @@ must be enabled, only the following providers can be used:
 - [Azure Blob storage](#azure-blob-storage)
 
 When consolidated object storage is used, direct upload is enabled
-automatically. Background upload is not supported. For storage-specific
+automatically. For storage-specific
 configuration, [direct upload may become the default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331)
 because it does not require a shared folder.
 
@@ -482,7 +482,7 @@ To migrate existing local data to object storage see the following guides:
 - [LFS objects](lfs/index.md#migrating-to-object-storage)
 - [Uploads](raketasks/uploads/migrate.md#migrate-to-object-storage)
 - [Merge request diffs](merge_request_diffs.md#using-object-storage)
-- [Packages](packages/index.md#migrating-local-packages-to-object-storage) (optional feature)
+- [Packages](packages/index.md#migrate-local-packages-to-object-storage) (optional feature)
 - [Dependency Proxy](packages/dependency_proxy.md#migrate-local-dependency-proxy-blobs-and-manifests-to-object-storage)
 - [Terraform state files](terraform_state.md#migrate-to-object-storage)
 - [Pages content](pages/index.md#migrate-pages-deployments-to-object-storage)
@@ -536,8 +536,8 @@ supported by consolidated configuration form, refer to the following guides:
 | [Uploads](uploads.md#using-object-storage) | **{check-circle}** Yes |
 | [Container Registry](packages/container_registry.md#use-object-storage) (optional feature) | **{dotted-circle}** No |
 | [Merge request diffs](merge_request_diffs.md#using-object-storage) | **{check-circle}** Yes |
-| [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| **{dotted-circle}** No |
-| [Packages](packages/index.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
+| [Mattermost](https://docs.mattermost.com/configure/file-storage-configuration-settings.html)| **{dotted-circle}** No |
+| [Packages](packages/index.md#use-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | **{dotted-circle}** No |
 | [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
@@ -638,9 +638,15 @@ if this access is not in place include:
    Received status code 403 from server: Forbidden
    ```
 
-Getting a `403 Forbidden` response is specifically called out on the
-[package repository documentation](packages/index.md#using-object-storage)
-as a side effect of how some build tools work.
+- Object storage buckets need to allow Cross-Origin Resource Sharing
+  (CORS) access from the URL of the GitLab instance. Attempting to load
+  a PDF in the repository page may show the following error:
+
+  ```plaintext
+  An error occurred while loading the file. Please try again later.
+  ```
+
+  See [the LFS documentation](lfs/index.md#error-viewing-a-pdf-file) for more details.
 
 Additionally for a short time period users could share pre-signed, time-limited object storage URLs
 with others without authentication. Also bandwidth charges may be incurred

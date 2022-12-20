@@ -28,12 +28,9 @@
     },
     "_links": {
       "type": "object",
-      "required": [
-        "web_path"
-      ],
       "properties": {
-        "details": {
-          "type": "string"
+        "web_path": {
+          "type": ["string", "null"]
         }
       }
     },

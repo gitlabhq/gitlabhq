@@ -2,14 +2,47 @@
 
 module Database
   module BatchedBackgroundMigration
-    class ExecutionWorker # rubocop:disable Scalability/IdempotentWorker
+    module ExecutionWorker
+      extend ActiveSupport::Concern
       include ExclusiveLeaseGuard
       include Gitlab::Utils::StrongMemoize
+      include ApplicationWorker
+      include LimitedCapacity::Worker
 
       INTERVAL_VARIANCE = 5.seconds.freeze
       LEASE_TIMEOUT_MULTIPLIER = 3
+      MAX_RUNNING_MIGRATIONS = 2
 
-      def perform(database_name, migration_id)
+      included do
+        data_consistency :always
+        feature_category :database
+        queue_namespace :batched_background_migrations
+      end
+
+      class_methods do
+        def max_running_jobs
+          MAX_RUNNING_MIGRATIONS
+        end
+
+        # We have to overirde this one, as we want
+        # arguments passed as is, and not duplicated
+        def perform_with_capacity(args)
+          worker = new
+          worker.remove_failed_jobs
+
+          bulk_perform_async(args) # rubocop:disable Scalability/BulkPerformWithContext
+        end
+      end
+
+      def remaining_work_count(*args)
+        0 # the cron worker is the only source of new jobs
+      end
+
+      def max_running_jobs
+        self.class.max_running_jobs
+      end
+
+      def perform_work(database_name, migration_id)
         self.database_name = database_name
 
         return unless enabled?

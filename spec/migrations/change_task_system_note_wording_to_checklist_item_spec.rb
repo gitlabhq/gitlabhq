@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ChangeTaskSystemNoteWordingToChecklistItem, :migration do
+RSpec.describe ChangeTaskSystemNoteWordingToChecklistItem, :migration, feature_category: :team_planning do
   let(:migration) { described_class::MIGRATION }
 
   describe '#up' do

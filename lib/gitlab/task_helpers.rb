@@ -149,18 +149,6 @@ module Gitlab
       end
     end
 
-    def all_repos
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        Gitlab.config.repositories.storages.each_value do |repository_storage|
-          IO.popen(%W(find #{repository_storage.legacy_disk_path} -mindepth 2 -type d -name *.git)) do |find|
-            find.each_line do |path|
-              yield path.chomp
-            end
-          end
-        end
-      end
-    end
-
     def repository_storage_paths_args
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
         Gitlab.config.repositories.storages.values.map { |rs| rs.legacy_disk_path }

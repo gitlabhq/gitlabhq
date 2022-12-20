@@ -55,7 +55,6 @@ export default {
     eventHub.$on('retryPipeline', this.postAction);
     eventHub.$on('clickedDropdown', this.updateTable);
     eventHub.$on('updateTable', this.updateTable);
-    eventHub.$on('refreshPipelinesTable', this.fetchPipelines);
     eventHub.$on('runMergeRequestPipeline', this.runMergeRequestPipeline);
   },
   beforeDestroy() {
@@ -63,7 +62,6 @@ export default {
     eventHub.$off('retryPipeline', this.postAction);
     eventHub.$off('clickedDropdown', this.updateTable);
     eventHub.$off('updateTable', this.updateTable);
-    eventHub.$off('refreshPipelinesTable', this.fetchPipelines);
     eventHub.$off('runMergeRequestPipeline', this.runMergeRequestPipeline);
   },
   destroyed() {

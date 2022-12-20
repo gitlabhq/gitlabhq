@@ -170,9 +170,7 @@ module QA
       end
 
       def api_client
-        @api_client ||= begin
-          Runtime::API::Client.new(:gitlab, is_new_session: !current_url.start_with?('http'), user: api_user)
-        end
+        @api_client ||= Runtime::API::Client.new(:gitlab, is_new_session: !current_url.start_with?('http'), user: api_user)
       end
 
       def process_api_response(parsed_response)

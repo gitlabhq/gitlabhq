@@ -36,11 +36,15 @@ the [Git commands you need](#update-the-default-branch-name-in-your-repository) 
 
 ## Change the default branch name for a project
 
-To update the default branch name for an individual [project](../../index.md):
+Prerequisites:
 
-1. Sign in to GitLab with at least the Maintainer role.
+- You have the Owner or Maintainer role in the project.
+
+To update the default branch for an individual [project](../../index.md):
+
+1. On the top bar, select **Main menu > Projects** and find your project.
 1. In the left navigation menu, go to **Settings > Repository**.
-1. Expand **Default branch**, and select a new default branch.
+1. Expand **Default branch**. For **Initial default branch name**, select a new default branch.
 1. Optional. Select the **Auto-close referenced issues on default branch** checkbox to close
    issues when a merge request
    [uses a closing pattern](../../issues/managing_issues.md#closing-issues-automatically).
@@ -66,8 +70,8 @@ groups and subgroups can override this instance-wide setting for their projects.
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Repository**.
-1. Expand **Default initial branch name**.
-1. Change the default initial branch to a custom name of your choice.
+1. Expand **Default branch**.
+1. For **Initial default branch name**, select a new default branch.
 1. Select **Save changes**.
 
 Projects created on this instance after you change the setting use the
@@ -78,11 +82,12 @@ overrides it.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221014) in GitLab 13.6.
 
-Users with at least the Owner role of groups and subgroups can configure the default branch name for a group:
+Users with the Owner role of groups and subgroups can configure the default branch name for a group:
 
-1. Go to the group **Settings > Repository**.
+1. On the top bar, select **Main menu > Group** and find your group.
+1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Default branch**.
-1. Change the default initial branch to a custom name of your choice.
+1. For **Initial default branch name**, select a new default branch.
 1. Select **Save changes**.
 
 Projects created in this group after you change the setting use the custom branch name,

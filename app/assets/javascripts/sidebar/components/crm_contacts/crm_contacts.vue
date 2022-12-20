@@ -4,8 +4,8 @@ import { __, n__, sprintf } from '~/locale';
 import { createAlert } from '~/flash';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE } from '~/graphql_shared/constants';
-import getIssueCrmContactsQuery from './queries/get_issue_crm_contacts.query.graphql';
-import issueCrmContactsSubscription from './queries/issue_crm_contacts.subscription.graphql';
+import getIssueCrmContactsQuery from '../../queries/get_issue_crm_contacts.query.graphql';
+import issueCrmContactsSubscription from '../../queries/issue_crm_contacts.subscription.graphql';
 
 export default {
   components: {

@@ -1,7 +1,8 @@
 import { mount } from '@vue/test-utils';
 import { GREEN_BOX_IMAGE_URL } from 'spec/test_constants';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
-import '~/behaviors/markdown/render_gfm';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('ContentViewer', () => {
   let wrapper;

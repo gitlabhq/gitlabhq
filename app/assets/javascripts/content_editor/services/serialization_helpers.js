@@ -308,7 +308,7 @@ export function renderHardBreak(state, node, parent, index) {
 }
 
 export function renderImage(state, node) {
-  const { alt, canonicalSrc, src, title, isReference } = node.attrs;
+  const { alt, canonicalSrc, src, title, width, height, isReference } = node.attrs;
 
   if (isString(src) || isString(canonicalSrc)) {
     const quotedTitle = title ? ` ${state.quote(title)}` : '';
@@ -316,7 +316,17 @@ export function renderImage(state, node) {
       ? `[${canonicalSrc}]`
       : `(${state.esc(canonicalSrc || src)}${quotedTitle})`;
 
-    state.write(`![${state.esc(alt || '')}]${sourceExpression}`);
+    const sizeAttributes = [];
+    if (width) {
+      sizeAttributes.push(`width=${JSON.stringify(width)}`);
+    }
+    if (height) {
+      sizeAttributes.push(`height=${JSON.stringify(height)}`);
+    }
+
+    const attributes = sizeAttributes.length ? `{${sizeAttributes.join(' ')}}` : '';
+
+    state.write(`![${state.esc(alt || '')}]${sourceExpression}${attributes}`);
   }
 }
 
@@ -324,8 +334,19 @@ export function renderPlayable(state, node) {
   renderImage(state, node);
 }
 
+export function renderComment(state, node) {
+  state.text('<!--');
+  state.text(node.textContent);
+  state.text('-->');
+  state.closeBlock(node);
+}
+
 export function renderCodeBlock(state, node) {
-  state.write(`\`\`\`${node.attrs.language || ''}\n`);
+  state.write(
+    `\`\`\`${
+      (node.attrs.language || '') + (node.attrs.langParams ? `:${node.attrs.langParams}` : '')
+    }\n`,
+  );
   state.text(node.textContent, false);
   state.ensureNewLine();
   state.write('```');

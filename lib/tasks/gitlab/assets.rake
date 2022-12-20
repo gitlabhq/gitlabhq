@@ -137,7 +137,7 @@ namespace :gitlab do
         File.open(gzip, 'wb+') do |f|
           gz = Zlib::GzipWriter.new(f, Zlib::BEST_COMPRESSION)
           gz.mtime = mtime
-          gz.write IO.binread(file)
+          gz.write File.binread(file)
           gz.close
 
           File.utime(mtime, mtime, f.path)
@@ -154,7 +154,9 @@ namespace :gitlab do
 
     desc 'GitLab | Assets | Check that scss mixins do not introduce any sideffects'
     task :check_page_bundle_mixins_css_for_sideeffects do
-      system('./scripts/frontend/check_page_bundle_mixins_css_for_sideeffects.js')
+      unless system('./scripts/frontend/check_page_bundle_mixins_css_for_sideeffects.js')
+        abort 'Error: At least one CSS changes introduces an unwanted sideeffect'.color(:red)
+      end
     end
   end
 end

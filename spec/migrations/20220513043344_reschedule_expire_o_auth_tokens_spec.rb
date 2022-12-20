@@ -3,8 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RescheduleExpireOAuthTokens do
-  let_it_be(:migration) { described_class::MIGRATION }
+RSpec.describe RescheduleExpireOAuthTokens, feature_category: :authentication_and_authorization do
+  let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do
     it 'schedules background jobs for each batch of oauth tokens' do

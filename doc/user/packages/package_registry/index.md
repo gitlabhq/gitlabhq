@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 
 With the GitLab Package Registry, you can use GitLab as a private or public registry for a variety
-of [supported package managers](#supported-package-managers).
+of [supported package managers](supported_package_managers.md).
 You can publish and share packages, which can be consumed as a dependency in downstream projects.
 
 ## Package workflows
@@ -60,6 +60,9 @@ For most package types, the following credential types are valid:
   allows access to packages in the project running the job for the users running the pipeline.
   Access to other external projects can be configured.
 
+- If your organization uses two factor authentication (2FA), you must use a personal access token with the scope set to `api`.
+- If you are publishing a package via CI/CD pipelines, you must use a CI job token.
+
 NOTE:
 If you have not activated the "Packages" feature for your project at **Settings > General > Project features**, you will receive a 403 Forbidden response.
 Accessing package registry via deploy token is not available when external authorization is enabled.
@@ -78,7 +81,7 @@ Learn more about using the GitLab Package Registry with CI/CD:
 - [Conan](../conan_repository/index.md#publish-a-conan-package-by-using-cicd)
 - [Generic](../generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 - [Maven](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
-- [npm](../npm_registry/index.md#publish-an-npm-package-by-using-cicd)
+- [npm](../npm_registry/index.md#publishing-a-package-via-a-cicd-pipeline)
 - [NuGet](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
 - [PyPI](../pypi_repository/index.md#authenticate-with-a-ci-job-token)
 - [RubyGems](../rubygems_registry/index.md#authenticate-with-a-ci-job-token)
@@ -117,50 +120,40 @@ The **Packages and registries > Package Registry** entry is removed from the sid
 [Project-level permissions](../../permissions.md)
 determine actions such as downloading, pushing, or deleting packages.
 
-The visibility of the Package Registry is independent of the repository and can't be controlled from
+The visibility of the Package Registry is independent of the repository and can be controlled from
 your project's settings. For example, if you have a public project and set the repository visibility
-to **Only Project Members**, the Package Registry is then public. However, disabling the Package
+to **Only Project Members**, the Package Registry is then public. Disabling the Package
 Registry disables all Package Registry operations.
 
-[GitLab-#329253](https://gitlab.com/gitlab-org/gitlab/-/issues/329253)
-proposes adding the ability to control Package Registry visibility from the UI.
+| Project visibility | Action                | [Role](../../permissions.md#roles) required             |
+|--------------------|-----------------------|---------------------------------------------------------|
+| Public             | View Package Registry | `n/a`, everyone on the internet can perform this action |
+| Public             | Publish a package     | Developer or higher                                     |
+| Public             | Pull a package        | `n/a`, everyone on the internet can perform this action |
+| Internal           | View Package Registry | Guest or higher                                         |
+| Internal           | Publish a package     | Developer or higher                                     |
+| Internal           | Pull a package        | Guest or higher(1)                                      |
+| Private            | View Package Registry | Reporter or higher                                      |
+| Private            | Publish a package     | Developer or higher                                     |
+| Private            | Pull a package        | Reporter or higher(1)                                   |
 
-|                      |                       | Anonymous<br/>(everyone on internet) | Guest | Reporter, Developer, Maintainer, Owner |
-| -------------------- | --------------------- | --------- | ----- | ------------------------------------------ |
-| Public project with Package Registry enabled | View Package Registry <br/> and pull packages | Yes       | Yes   | Yes      |
-| Internal project with Package Registry enabled | View Package Registry <br/> and pull packages | No       | Yes   | Yes      |
-| Private project with Package Registry enabled | View Package Registry <br/> and pull packages | No        | No    | Yes      |
-| Any project with Package Registry disabled | All operations on Package Registry | No | No | No |
+### Allow anyone to pull from Package Registry
 
-## Supported package managers
+> Introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `package_registry_access_level`. Enabled by default.
 
-WARNING:
-Not all package manager formats are ready for production use. To view each format's status, see the
-table's **Status** column.
+FLAG:
+On self-managed GitLab, by default this feature is available. To disable it,
+ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `package_registry_access_level`.
 
-The Package Registry supports the following formats:
+If you want to allow anyone (everyone on the internet) to pull from the Package Registry, no matter what the project visibility is, you can use the additional toggle `Allow anyone to pull from Package Registry` that appears when the project visibility is Private or Internal.
 
-| Package type | GitLab version | Status |
-| ------------ | -------------- |------- |
-| [Maven](../maven_repository/index.md) | 11.3+ | GA |
-| [npm](../npm_registry/index.md) | 11.7+ | GA |
-| [NuGet](../nuget_repository/index.md) | 12.8+ | GA |
-| [PyPI](../pypi_repository/index.md) | 12.10+ | GA |
-| [Generic packages](../generic_packages/index.md) | 13.5+ | GA |
-| [Composer](../composer_repository/index.md) | 13.2+ | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6817) |
-| [Conan](../conan_repository/index.md) | 12.6+ | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6816) |
-| [Helm](../helm_repository/index.md) | 14.1+ | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6366) |
-| [Debian](../debian_repository/index.md) | 14.2+ | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/6057) |
-| [Go](../go_proxy/index.md) | 13.1+ | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/3043) |
-| [Ruby gems](../rubygems_registry/index.md) | 13.10+ | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/3200) |
+Several known issues exist when you allow anyone to pull from the Package Registry:
 
-[Status](../../../policy/alpha-beta-support.md):
-
-- Alpha: behind a feature flag and not officially supported.
-- Beta: several known issues that may prevent expected use.
-- GA (Generally Available): ready for production use at any scale.
-
-You can also use the [API](../../../api/packages.md) to administer the Package Registry.
+- Project-level endpoints are supported. Group-level and instance-level endpoints are not supported. Support for group-level endpoints is proposed in [issue 383537](https://gitlab.com/gitlab-org/gitlab/-/issues/383537).
+- It does not work with the [Composer](../composer_repository/index.md#install-a-composer-package), because Composer only has a group endpoint.
+- It does not work with the [Debian](../debian_repository/index.md#install-a-package) repository. Support for the Debian repository is proposed in [issue 385258](https://gitlab.com/gitlab-org/gitlab/-/issues/385258).
+- It does not work with the [Ruby gems](../rubygems_registry/index.md#install-a-ruby-gem) repository. Support for the Ruby gems repository is proposed in [issue 385259](https://gitlab.com/gitlab-org/gitlab/-/issues/385259).
+- It will work with Conan, but using [`conan search`](../conan_repository/index.md#search-for-conan-packages-in-the-package-registry) does not work.
 
 ## Accepting contributions
 
@@ -170,8 +163,8 @@ guides you through the process.
 
 <!-- vale gitlab.Spelling = NO -->
 
-| Format | Status |
-| ------ | ------ |
+| Format    | Status                                                        |
+| --------- | ------------------------------------------------------------- |
 | Chef      | [#36889](https://gitlab.com/gitlab-org/gitlab/-/issues/36889) |
 | CocoaPods | [#36890](https://gitlab.com/gitlab-org/gitlab/-/issues/36890) |
 | Conda     | [#36891](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) |

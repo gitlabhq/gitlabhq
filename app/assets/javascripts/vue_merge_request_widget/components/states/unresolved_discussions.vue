@@ -26,7 +26,7 @@ export default {
 <template>
   <state-container :mr="mr" status="failed">
     <span
-      class="gl-ml-3 gl-font-weight-bold gl-w-100 gl-flex-grow-1 gl-md-mr-3 gl-ml-0! gl-text-body! gl-align-self-start"
+      class="gl-ml-3 gl-font-weight-bold gl-w-100 gl-flex-grow-1 gl-md-mr-3 gl-ml-0! gl-text-body!"
     >
       {{ s__('mrWidget|Merge blocked: all threads must be resolved.') }}
     </span>

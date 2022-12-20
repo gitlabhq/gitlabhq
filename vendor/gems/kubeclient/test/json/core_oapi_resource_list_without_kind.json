@@ -1,0 +1,197 @@
+{
+  "groupVersion": "v1",
+  "resources": [
+    {
+      "name": "buildconfigs",
+      "namespaced": true
+    },
+    {
+      "name": "buildconfigs/instantiate",
+      "namespaced": true
+    },
+    {
+      "name": "buildconfigs/instantiatebinary",
+      "namespaced": true
+    },
+    {
+      "name": "buildconfigs/webhooks",
+      "namespaced": true
+    },
+    {
+      "name": "builds",
+      "namespaced": true
+    },
+    {
+      "name": "builds/clone",
+      "namespaced": true
+    },
+    {
+      "name": "builds/details",
+      "namespaced": true
+    },
+    {
+      "name": "builds/log",
+      "namespaced": true
+    },
+    {
+      "name": "clusternetworks",
+      "namespaced": false
+    },
+    {
+      "name": "clusterpolicies",
+      "namespaced": false
+    },
+    {
+      "name": "clusterpolicybindings",
+      "namespaced": false
+    },
+    {
+      "name": "clusterrolebindings",
+      "namespaced": false
+    },
+    {
+      "name": "clusterroles",
+      "namespaced": false
+    },
+    {
+      "name": "deploymentconfigrollbacks",
+      "namespaced": true
+    },
+    {
+      "name": "deploymentconfigs",
+      "namespaced": true
+    },
+    {
+      "name": "deploymentconfigs/log",
+      "namespaced": true
+    },
+    {
+      "name": "deploymentconfigs/scale",
+      "namespaced": true
+    },
+    {
+      "name": "generatedeploymentconfigs",
+      "namespaced": true
+    },
+    {
+      "name": "groups",
+      "namespaced": false
+    },
+    {
+      "name": "hostsubnets",
+      "namespaced": false
+    },
+    {
+      "name": "identities",
+      "namespaced": false
+    },
+    {
+      "name": "images",
+      "namespaced": false
+    },
+    {
+      "name": "imagestreamimages",
+      "namespaced": true
+    },
+    {
+      "name": "imagestreammappings",
+      "namespaced": true
+    },
+    {
+      "name": "imagestreams",
+      "namespaced": true
+    },
+    {
+      "name": "imagestreams/status",
+      "namespaced": true
+    },
+    {
+      "name": "imagestreamtags",
+      "namespaced": true
+    },
+    {
+      "name": "localresourceaccessreviews",
+      "namespaced": true
+    },
+    {
+      "name": "localsubjectaccessreviews",
+      "namespaced": true
+    },
+    {
+      "name": "netnamespaces",
+      "namespaced": false
+    },
+    {
+      "name": "oauthaccesstokens",
+      "namespaced": false
+    },
+    {
+      "name": "oauthauthorizetokens",
+      "namespaced": false
+    },
+    {
+      "name": "oauthclientauthorizations",
+      "namespaced": false
+    },
+    {
+      "name": "oauthclients",
+      "namespaced": false
+    },
+    {
+      "name": "policies",
+      "namespaced": true
+    },
+    {
+      "name": "policybindings",
+      "namespaced": true
+    },
+    {
+      "name": "processedtemplates",
+      "namespaced": true
+    },
+    {
+      "name": "projectrequests",
+      "namespaced": false
+    },
+    {
+      "name": "projects",
+      "namespaced": false
+    },
+    {
+      "name": "resourceaccessreviews",
+      "namespaced": true
+    },
+    {
+      "name": "rolebindings",
+      "namespaced": true
+    },
+    {
+      "name": "roles",
+      "namespaced": true
+    },
+    {
+      "name": "routes",
+      "namespaced": true
+    },
+    {
+      "name": "routes/status",
+      "namespaced": true
+    },
+    {
+      "name": "subjectaccessreviews",
+      "namespaced": true
+    },
+    {
+      "name": "templates",
+      "namespaced": true
+    },
+    {
+      "name": "useridentitymappings",
+      "namespaced": false
+    },
+    {
+      "name": "users",
+      "namespaced": false
+    }
+  ]
+}

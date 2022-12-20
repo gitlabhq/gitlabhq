@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe BackfillDeploymentsFinishedAt, :migration do
+RSpec.describe BackfillDeploymentsFinishedAt, :migration, feature_category: :continuous_delivery do
   let(:deployments) { table(:deployments) }
   let(:namespaces) { table(:namespaces) }
 

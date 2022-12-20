@@ -29,6 +29,7 @@ import {
   ENVIRONMENT_SCOPE_LINK_TITLE,
   EVENT_LABEL,
   EVENT_ACTION,
+  EXPANDED_VARIABLES_NOTE,
   EDIT_VARIABLE_ACTION,
   VARIABLE_ACTIONS,
   variableOptions,
@@ -46,6 +47,7 @@ export default {
   awsTipMessage: AWS_TIP_MESSAGE,
   containsVariableReferenceMessage: CONTAINS_VARIABLE_REFERENCE_MESSAGE,
   environmentScopeLinkTitle: ENVIRONMENT_SCOPE_LINK_TITLE,
+  expandedVariablesNote: EXPANDED_VARIABLES_NOTE,
   components: {
     CiEnvironmentsDropdown,
     GlAlert,
@@ -127,13 +129,16 @@ export default {
     },
     containsVariableReference() {
       const regex = /\$/;
-      return regex.test(this.variable.value);
+      return regex.test(this.variable.value) && this.isExpanded;
     },
     displayMaskedError() {
       return !this.canMask && this.variable.masked;
     },
     isEditing() {
       return this.mode === EDIT_VARIABLE_ACTION;
+    },
+    isExpanded() {
+      return !this.variable.raw;
     },
     isTipVisible() {
       return !this.isTipDismissed && AWS_TOKEN_CONSTANTS.includes(this.variable.key);
@@ -208,6 +213,9 @@ export default {
     hideModal() {
       this.$refs.modal.hide();
     },
+    onShow() {
+      this.setVariableProtectedByDefault();
+    },
     resetModalHandler() {
       this.resetVariableData();
       this.resetValidationErrorEvents();
@@ -219,6 +227,9 @@ export default {
     },
     setEnvironmentScope(scope) {
       this.variable = { ...this.variable, environmentScope: scope };
+    },
+    setVariableRaw(expanded) {
+      this.variable = { ...this.variable, raw: !expanded };
     },
     setVariableProtected() {
       this.variable = { ...this.variable, protected: true };
@@ -275,7 +286,7 @@ export default {
     static
     lazy
     @hidden="resetModalHandler"
-    @shown="setVariableProtectedByDefault"
+    @shown="onShow"
   >
     <form>
       <gl-form-combobox
@@ -304,6 +315,13 @@ export default {
           class="gl-font-monospace!"
           spellcheck="false"
         />
+        <p
+          v-if="variable.raw"
+          class="gl-mt-2 gl-mb-0 text-secondary"
+          data-testid="raw-variable-tip"
+        >
+          {{ __('Variable value will be evaluated as raw string.') }}
+        </p>
       </gl-form-group>
 
       <div class="gl-display-flex">
@@ -361,7 +379,6 @@ export default {
             {{ __('Export variable to pipelines running on protected branches and tags only.') }}
           </p>
         </gl-form-checkbox>
-
         <gl-form-checkbox
           ref="masked-ci-variable"
           v-model="variable.masked"
@@ -371,7 +388,7 @@ export default {
           <gl-link target="_blank" :href="maskedEnvironmentVariablesLink">
             <gl-icon name="question" :size="12" />
           </gl-link>
-          <p class="gl-mt-2 gl-mb-0 text-secondary">
+          <p class="gl-mt-2 text-secondary">
             {{ __('Variable will be masked in job logs.') }}
             <span
               :class="{
@@ -383,6 +400,24 @@ export default {
             <gl-link target="_blank" :href="maskedEnvironmentVariablesLink">{{
               __('More information')
             }}</gl-link>
+          </p>
+        </gl-form-checkbox>
+        <gl-form-checkbox
+          ref="expanded-ci-variable"
+          :checked="isExpanded"
+          data-testid="ci-variable-expanded-checkbox"
+          @change="setVariableRaw"
+        >
+          {{ __('Expand variable reference') }}
+          <gl-link target="_blank" :href="containsVariableReferenceLink">
+            <gl-icon name="question" :size="12" />
+          </gl-link>
+          <p class="gl-mt-2 gl-mb-0 gl-text-secondary">
+            <gl-sprintf :message="$options.expandedVariablesNote">
+              <template #code="{ content }">
+                <code>{{ content }}</code>
+              </template>
+            </gl-sprintf>
           </p>
         </gl-form-checkbox>
       </gl-form-group>

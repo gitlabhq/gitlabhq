@@ -14,6 +14,7 @@ export const timelineFormI18n = Object.freeze({
   areaPlaceholder: s__('Incident|Timeline text...'),
   save: __('Save'),
   cancel: __('Cancel'),
+  delete: __('Delete'),
   description: __('Description'),
   hint: __('You can enter up to 280 characters'),
   textRemaining: (count) => n__('%d character remaining', '%d characters remaining', count),

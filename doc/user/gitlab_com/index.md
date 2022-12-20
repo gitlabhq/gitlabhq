@@ -189,7 +189,7 @@ the default value [is the same as for self-managed instances](../admin_area/sett
 |-------------------------------|--------------------|
 | [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB |
 | [Maximum import size](../project/settings/import_export.md#maximum-import-file-size)                        | 5 GB  |
-| Maximum attachment size       | 10 MB              |
+| Maximum attachment size       | 100 MB              |
 
 If you are near or over the repository size limit, you can either
 [reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md)
@@ -314,7 +314,7 @@ The list of GitLab.com specific settings (and their defaults) is as follows:
 | `max_wal_senders`                     | 32                                                                  | 0                                     |
 | `max_wal_size`                        | 5GB                                                                 | 1GB                                   |
 | `shared_buffers`                      | 112896MB                                                            | Based on how much memory is available |
-| `shared_preload_libraries`            | pg_stat_statements                                                  | empty                                 |
+| `shared_preload_libraries`            | `pg_stat_statements`                                                | empty                                 |
 | `shmall`                              | 30146560                                                            | Based on the server's capabilities    |
 | `shmmax`                              | 123480309760                                                        | Based on the server's capabilities    |
 | `wal_buffers`                         | 16MB                                                                | -1                                    |
@@ -445,11 +445,18 @@ If more than the maximum number of allowed connections occur concurrently, they
 are dropped and users get
 [an `ssh_exchange_identification` error](../../topics/git/troubleshooting_git.md#ssh_exchange_identification-error).
 
-### Import/export
+### Group and project import by uploading export files
 
-To help avoid abuse, project and group imports, exports, and export downloads
-are rate limited. See [Project import/export rate limits](../../user/project/settings/import_export.md#rate-limits) and [Group import/export rate limits](../../user/group/settings/import_export.md#rate-limits)
-for details.
+To help avoid abuse, the following are rate limited:
+
+- Project and group imports.
+- Group and project exports that use files.
+- Export downloads.
+
+For more information, see:
+
+- [Project import/export rate limits](../../user/project/settings/import_export.md#rate-limits).
+- [Group import/export rate limits](../../user/group/import/index.md#rate-limits).
 
 ### Non-configurable limits
 

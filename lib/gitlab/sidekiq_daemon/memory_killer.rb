@@ -35,6 +35,7 @@ module Gitlab
 
         @enabled = true
         @metrics = init_metrics
+        @sidekiq_daemon_monitor = Gitlab::SidekiqDaemon::Monitor.instance
       end
 
       private
@@ -78,7 +79,7 @@ module Gitlab
           rescue StandardError => e
             log_exception(e, __method__)
           rescue Exception => e # rubocop:disable Lint/RescueException
-            log_exception(e, __method__ )
+            log_exception(e, __method__)
             raise e
           end
         end
@@ -188,22 +189,17 @@ module Gitlab
 
       def increment_worker_counters(running_jobs, deadline_exceeded)
         running_jobs.each do |job|
-          @metrics[:sidekiq_memory_killer_running_jobs].increment( { worker_class: job[:worker_class], deadline_exceeded: deadline_exceeded } )
+          @metrics[:sidekiq_memory_killer_running_jobs].increment({ worker_class: job[:worker_class], deadline_exceeded: deadline_exceeded })
         end
       end
 
       def fetch_running_jobs
-        jobs = []
-        Gitlab::SidekiqDaemon::Monitor.instance.jobs_mutex.synchronize do
-          jobs = Gitlab::SidekiqDaemon::Monitor.instance.jobs.map do |jid, job|
-            {
-              jid: jid,
-              worker_class: job[:worker_class].name
-            }
-          end
+        @sidekiq_daemon_monitor.jobs.map do |jid, job|
+          {
+            jid: jid,
+            worker_class: job[:worker_class].name
+          }
         end
-
-        jobs
       end
 
       def out_of_range_description(rss, hard_limit, soft_limit, deadline_exceeded)
@@ -269,10 +265,8 @@ module Gitlab
       end
 
       def rss_increase_by_jobs
-        Gitlab::SidekiqDaemon::Monitor.instance.jobs_mutex.synchronize do
-          Gitlab::SidekiqDaemon::Monitor.instance.jobs.sum do |job|
-            rss_increase_by_job(job)
-          end
+        @sidekiq_daemon_monitor.jobs.sum do |_, job|
+          rss_increase_by_job(job)
         end
       end
 
@@ -297,7 +291,7 @@ module Gitlab
       end
 
       def any_jobs?
-        Gitlab::SidekiqDaemon::Monitor.instance.jobs.any?
+        @sidekiq_daemon_monitor.jobs.any?
       end
     end
   end

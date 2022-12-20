@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_store_caching, :sidekiq_inline do
+RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_store_caching, :sidekiq_inline, feature_category: :team_planning do
   include PrometheusHelpers
   include KubernetesHelpers
   include GrafanaApiHelpers

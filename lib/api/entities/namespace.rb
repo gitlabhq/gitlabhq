@@ -3,7 +3,7 @@
 module API
   module Entities
     class Namespace < Entities::NamespaceBasic
-      expose :members_count_with_descendants, if: -> (namespace, opts) { expose_members_count_with_descendants?(namespace, opts) } do |namespace, _|
+      expose :members_count_with_descendants, documentation: { type: 'integer', example: 5 }, if: -> (namespace, opts) { expose_members_count_with_descendants?(namespace, opts) } do |namespace, _|
         namespace.users_with_descendants.count
       end
 

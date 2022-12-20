@@ -7,25 +7,21 @@ RSpec.describe Gitlab::Utils::DelegatorOverride do
     Class.new(::SimpleDelegator) do
       extend(::Gitlab::Utils::DelegatorOverride)
 
-      def foo
-      end
+      def foo; end
     end
   end
 
   let(:target_class) do
     Class.new do
-      def foo
-      end
+      def foo; end
 
-      def bar
-      end
+      def bar; end
     end
   end
 
   let(:dummy_module) do
     Module.new do
-      def foobar
-      end
+      def foobar; end
     end
   end
 

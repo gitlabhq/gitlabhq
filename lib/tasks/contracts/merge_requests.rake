@@ -4,29 +4,35 @@ return if Rails.env.production?
 
 require 'pact/tasks/verification_task'
 
-contracts = File.expand_path('../../../spec/contracts/contracts/project/merge_request', __dir__)
 provider = File.expand_path('../../../spec/contracts/provider', __dir__)
 
 namespace :contracts do
+  require_relative "../../../spec/contracts/provider/helpers/contract_source_helper"
+
   namespace :merge_requests do
-    Pact::VerificationTask.new(:diffs_batch) do |pact|
+    Pact::VerificationTask.new(:get_diffs_batch) do |pact|
+      pact_helper_location = "pact_helpers/project/merge_requests/show/get_diffs_batch_helper.rb"
+
       pact.uri(
-        "#{contracts}/show/mergerequest#show-merge_request_diffs_batch_endpoint.json",
-        pact_helper: "#{provider}/pact_helpers/project/merge_request/show/diffs_batch_helper.rb"
+        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
 
-    Pact::VerificationTask.new(:diffs_metadata) do |pact|
+    Pact::VerificationTask.new(:get_diffs_metadata) do |pact|
+      pact_helper_location = "pact_helpers/project/merge_requests/show/get_diffs_metadata_helper.rb"
       pact.uri(
-        "#{contracts}/show/mergerequest#show-merge_request_diffs_metadata_endpoint.json",
-        pact_helper: "#{provider}/pact_helpers/project/merge_request/show/diffs_metadata_helper.rb"
+        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
 
-    Pact::VerificationTask.new(:discussions) do |pact|
+    Pact::VerificationTask.new(:get_discussions) do |pact|
+      pact_helper_location = "pact_helpers/project/merge_requests/show/get_discussions_helper.rb"
+
       pact.uri(
-        "#{contracts}/show/mergerequest#show-merge_request_discussions_endpoint.json",
-        pact_helper: "#{provider}/pact_helpers/project/merge_request/show/discussions_helper.rb"
+        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
 

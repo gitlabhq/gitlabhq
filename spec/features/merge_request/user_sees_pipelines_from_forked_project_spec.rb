@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees pipelines from forked project', :js do
+RSpec.describe 'Merge request > User sees pipelines from forked project', :js,
+feature_category: :continuous_integration do
   include ProjectForksHelper
 
   let(:target_project) { create(:project, :public, :repository) }

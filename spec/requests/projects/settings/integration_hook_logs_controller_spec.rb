@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Settings::IntegrationHookLogsController do
+RSpec.describe Projects::Settings::IntegrationHookLogsController, feature_category: :integrations do
   let_it_be(:user) { create(:user) }
   let_it_be(:integration) { create(:datadog_integration) }
   let_it_be_with_refind(:web_hook) { integration.service_hook }

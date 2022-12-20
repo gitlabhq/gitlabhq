@@ -5,11 +5,15 @@ module Gitlab
     module ExposePermissions
       extend ActiveSupport::Concern
       prepended do
-        def self.expose_permissions(permission_type, description: 'Permissions for the current user on the resource')
+        def self.expose_permissions(
+          permission_type,
+          description: 'Permissions for the current user on the resource',
+          &block)
           field :user_permissions, permission_type,
                 description: description,
                 null: false,
-                method: :itself
+                method: :itself,
+                &block
         end
       end
     end

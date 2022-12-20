@@ -1,14 +1,8 @@
 <script>
-import {
-  GlFormGroup,
-  GlFormCheckbox,
-  GlFormInput,
-  GlFormSelect,
-  GlFormTextarea,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
 import { capitalize, lowerCase, isEmpty } from 'lodash';
 import { mapGetters } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
   name: 'DynamicField',
@@ -80,7 +74,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isInheriting']),
+    ...mapGetters(['isInheriting', 'propsSource']),
     isCheckbox() {
       return this.type === 'checkbox';
     },
@@ -122,10 +116,17 @@ export default {
         name: this.fieldName,
         state: this.valid,
         readonly: this.isInheriting,
+        disabled: this.isDisabled,
       };
     },
     valid() {
       return !this.required || !isEmpty(this.model) || this.isNonEmptyPassword || !this.isValidated;
+    },
+    isInheritingOrDisabled() {
+      return this.isInheriting || this.isDisabled;
+    },
+    isDisabled() {
+      return !this.propsSource.editable;
     },
   },
   created() {
@@ -149,7 +150,7 @@ export default {
 
     <template v-if="isCheckbox">
       <input :name="fieldName" type="hidden" :value="model || false" />
-      <gl-form-checkbox :id="fieldId" v-model="model" :disabled="isInheriting">
+      <gl-form-checkbox :id="fieldId" v-model="model" :disabled="isInheritingOrDisabled">
         {{ checkboxLabel || humanizedTitle }}
         <template #help>
           <span v-safe-html="help"></span>
@@ -158,7 +159,12 @@ export default {
     </template>
     <template v-else-if="isSelect">
       <input type="hidden" :name="fieldName" :value="model" />
-      <gl-form-select :id="fieldId" v-model="model" :options="options" :disabled="isInheriting" />
+      <gl-form-select
+        :id="fieldId"
+        v-model="model"
+        :options="options"
+        :disabled="isInheritingOrDisabled"
+      />
     </template>
     <gl-form-textarea
       v-else-if="isTextarea"

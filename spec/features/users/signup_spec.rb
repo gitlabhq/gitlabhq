@@ -44,7 +44,7 @@ RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
   end
 end
 
-RSpec.describe 'Signup' do
+RSpec.describe 'Signup', feature_category: :users do
   include TermsHelper
 
   let(:new_user) { build_stubbed(:user) }
@@ -197,7 +197,7 @@ RSpec.describe 'Signup' do
     context 'with no errors' do
       context 'when sending confirmation email' do
         before do
-          stub_application_setting(send_user_confirmation_email: true)
+          stub_application_setting_enum('email_confirmation_setting', 'hard')
         end
 
         context 'when soft email confirmation is not enabled' do
@@ -239,7 +239,7 @@ RSpec.describe 'Signup' do
 
       context "when not sending confirmation email" do
         before do
-          stub_application_setting(send_user_confirmation_email: false)
+          stub_application_setting_enum('email_confirmation_setting', 'off')
         end
 
         it 'creates the user account and goes to dashboard' do
@@ -282,7 +282,7 @@ RSpec.describe 'Signup' do
         expect(page).to have_content("Email has already been taken")
       end
 
-      it 'does not redisplay the password' do
+      it 'redisplays all fields except password' do
         create(:user, email: new_user.email)
         visit new_user_registration_path
 
@@ -291,6 +291,11 @@ RSpec.describe 'Signup' do
 
         expect(page).to have_current_path user_registration_path, ignore_query: true
         expect(page.body).not_to match(/#{new_user.password}/)
+
+        expect(find_field('First name').value).to eq(new_user.first_name)
+        expect(find_field('Last name').value).to eq(new_user.last_name)
+        expect(find_field('Username').value).to eq(new_user.username)
+        expect(find_field('Email').value).to eq(new_user.email)
       end
     end
 

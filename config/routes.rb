@@ -55,9 +55,9 @@ InitializerConnections.with_disabled_database_connections do
     match '/oauth/token' => 'oauth/tokens#create', via: :options
     match '/oauth/revoke' => 'oauth/tokens#revoke', via: :options
 
-    match '/-/jira_connect/oauth_application_id' => 'jira_connect/cors_preflight_checks#index', via: :options
-    match '/-/jira_connect/subscriptions/:id' => 'jira_connect/cors_preflight_checks#index', via: :options
-    match '/-/jira_connect/installations' => 'jira_connect/cors_preflight_checks#index', via: :options
+    match '/-/jira_connect/oauth_application_id' => 'jira_connect/oauth_application_ids#show', via: :options
+    match '/-/jira_connect/subscriptions(.:format)' => 'jira_connect/subscriptions#index', via: :options
+    match '/-/jira_connect/subscriptions/:id' => 'jira_connect/subscriptions#delete', via: :options
 
     # Sign up
     scope path: '/users/sign_up', module: :registrations, as: :users_sign_up do
@@ -155,6 +155,12 @@ InitializerConnections.with_disabled_database_connections do
           get '/merge_requests/:merge_request_id', to: 'ide#index', constraints: { merge_request_id: /\d+/ }
           get '/', to: 'ide#index'
         end
+
+        # Remote host can contain "." characters so it needs a constraint
+        post 'remote/:remote_host(/*remote_path)',
+             as: :remote,
+             to: 'web_ide/remote_ide#index',
+             constraints: { remote_host: %r{[^/?]+} }
       end
 
       draw :operations

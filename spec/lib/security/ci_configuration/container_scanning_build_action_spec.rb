@@ -33,7 +33,7 @@ RSpec.describe Security::CiConfiguration::ContainerScanningBuildAction do
             RANDOM: make sure this persists
           include:
           - template: existing.yml
-          - template: Security/Container-Scanning.gitlab-ci.yml
+          - template: Jobs/Container-Scanning.gitlab-ci.yml
         CI_YML
       end
 
@@ -85,7 +85,7 @@ RSpec.describe Security::CiConfiguration::ContainerScanningBuildAction do
           variables:
             RANDOM: make sure this persists
           include:
-          - template: Security/Container-Scanning.gitlab-ci.yml
+          - template: Jobs/Container-Scanning.gitlab-ci.yml
         CI_YML
       end
 
@@ -93,7 +93,7 @@ RSpec.describe Security::CiConfiguration::ContainerScanningBuildAction do
         let(:gitlab_ci_content) do
           { "stages" => %w(test),
             "variables" => { "RANDOM" => "make sure this persists" },
-            "include" => [{ "template" => "Security/Container-Scanning.gitlab-ci.yml" }] }
+            "include" => [{ "template" => "Jobs/Container-Scanning.gitlab-ci.yml" }] }
         end
 
         it 'generates the correct YML' do
@@ -106,7 +106,7 @@ RSpec.describe Security::CiConfiguration::ContainerScanningBuildAction do
         let(:gitlab_ci_content) do
           { "stages" => %w(test),
             "variables" => { "RANDOM" => "make sure this persists" },
-            "include" => { "template" => "Security/Container-Scanning.gitlab-ci.yml" } }
+            "include" => { "template" => "Jobs/Container-Scanning.gitlab-ci.yml" } }
         end
 
         it 'generates the correct YML' do
@@ -138,7 +138,7 @@ RSpec.describe Security::CiConfiguration::ContainerScanningBuildAction do
           #     DOCKER_USER: ...
           #     DOCKER_PASSWORD: ...
           include:
-          - template: Security/Container-Scanning.gitlab-ci.yml
+          - template: Jobs/Container-Scanning.gitlab-ci.yml
         CI_YML
       end
 

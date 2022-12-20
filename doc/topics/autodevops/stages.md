@@ -385,7 +385,7 @@ default, but the
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 contains job definitions for these tasks if you want to enable them.
 
-You can use [CI/CD variables](customize.md#cicd-variables) to automatically
+You can use [CI/CD variables](cicd_variables.md) to automatically
 scale your pod replicas, and to apply custom arguments to the Auto DevOps `helm upgrade`
 commands. This is an easy way to
 [customize the Auto Deploy Helm chart](customize.md#custom-helm-chart).
@@ -620,4 +620,4 @@ for updates.
 
 This stage is enabled by default. You can disable it by adding the
 `CODE_INTELLIGENCE_DISABLED` CI/CD variable. Read more about
-[disabling Auto DevOps jobs](../../topics/autodevops/customize.md#disable-jobs).
+[disabling Auto DevOps jobs](../../topics/autodevops/cicd_variables.md#job-disabling-variables).

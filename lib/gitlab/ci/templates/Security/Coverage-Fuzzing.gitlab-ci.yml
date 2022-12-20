@@ -16,7 +16,7 @@ variables:
   COVFUZZ_VERSION: v3
   # This is for users who have an offline environment and will have to replicate gitlab-cov-fuzz release binaries
   # to their own servers
-  COVFUZZ_URL_PREFIX: "https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw"
+  COVFUZZ_URL_PREFIX: "https://gitlab.com/security-products/gitlab-cov-fuzz/-/raw"
 
 
 coverage_fuzzing_unlicensed:

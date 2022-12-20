@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Creation of a new release' do
+RSpec.describe 'Creation of a new release', feature_category: :release_orchestration do
   include GraphqlHelpers
   include Presentable
 

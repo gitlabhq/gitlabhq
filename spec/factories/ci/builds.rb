@@ -7,6 +7,7 @@ FactoryBot.define do
     created_at { 'Di 29. Okt 09:50:00 CET 2013' }
     scheduling_type { 'stage' }
     pending
+    partition_id { pipeline.partition_id }
 
     options do
       {
@@ -23,6 +24,8 @@ FactoryBot.define do
     end
 
     project { pipeline.project }
+
+    ref { pipeline.ref }
 
     trait :with_token do
       transient do
@@ -545,9 +548,12 @@ FactoryBot.define do
       options do
         {
           image: { name: 'image:1.0', entrypoint: '/bin/sh' },
-          services: ['postgres', { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' }, { name: 'mysql:latest', variables: { MYSQL_ROOT_PASSWORD: 'root123.' } }],
+          services: ['postgres',
+                     { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' },
+                     { name: 'mysql:latest', variables: { MYSQL_ROOT_PASSWORD: 'root123.' } }],
           script: %w(echo),
           after_script: %w(ls date),
+          hooks: { pre_get_sources_script: ["echo 'hello pre_get_sources_script'"] },
           artifacts: {
             name: 'artifacts_file',
             untracked: false,

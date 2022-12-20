@@ -4,7 +4,7 @@ $system-note-svg-size: 1rem;
 @mixin vertical-line($left) {
   &::before {
     content: '';
-    border-left: 2px solid var(--gray-10, $gray-10);
+    border-left: 2px solid var(--gray-50, $gray-50);
     position: absolute;
     top: $gl-padding-6;
     bottom: 0;
@@ -60,6 +60,10 @@ $system-note-svg-size: 1rem;
         padding: $gl-padding-4 $gl-padding-8;
       }
 
+      &.draft-note .timeline-content:not(.flash-container) {
+        border: 0;
+      }
+
       .note-header-info {
         min-height: 2rem;
         display: flex;
@@ -81,7 +85,7 @@ $system-note-svg-size: 1rem;
               margin-top: 5px;
             }
 
-            .timeline-content {
+            .timeline-content:not(.flash-container) {
               margin-left: 2.5rem;
               border-left: 1px solid $border-color;
               border-right: 1px solid $border-color;
@@ -93,14 +97,24 @@ $system-note-svg-size: 1rem;
             }
           }
 
+          &.draft-note .timeline-content:not(.flash-container) {
+            margin-left: 0;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+          }
+
           &:not(:first-of-type) .timeline-entry-inner {
             margin-left: 2.5rem;
             border-left: 1px solid $border-color;
             border-right: 1px solid $border-color;
             background-color: $white;
 
-            .timeline-content {
+            .timeline-content:not(.flash-container) {
               padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
+            }
+
+            .timeline-discussion-body-footer {
+              padding: 0 $gl-padding-8 0;
             }
 
             .timeline-avatar {
@@ -110,6 +124,12 @@ $system-note-svg-size: 1rem;
             .timeline-discussion-body {
               margin-left: 2rem;
             }
+          }
+
+          &:last-of-type .timeline-entry-inner {
+            border-bottom: 1px solid $border-color;
+            border-bottom-left-radius: $gl-border-radius-base;
+            border-bottom-right-radius: $gl-border-radius-base;
           }
         }
 
@@ -416,17 +436,17 @@ $system-note-svg-size: 1rem;
     .timeline-icon {
       display: flex;
       align-items: center;
-      background-color: $gray-10;
+      background-color: $gray-50;
       width: $system-note-icon-size;
       height: $system-note-icon-size;
-      border: 1px solid $gray-10;
+      border: 1px solid $gray-50;
       border-radius: $system-note-icon-size;
       margin: -6px 0 0;
 
       svg {
         width: $system-note-svg-size;
         height: $system-note-svg-size;
-        fill: $gray-400;
+        fill: $gray-600;
         display: block;
         margin: 0 auto;
       }
@@ -1050,7 +1070,7 @@ $system-note-svg-size: 1rem;
       padding-left: 0;
 
       ul.notes li.note-wrapper {
-        .timeline-content {
+        .timeline-content:not(.flash-container) {
           padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
         }
 
@@ -1066,7 +1086,7 @@ $system-note-svg-size: 1rem;
           border-right: 0;
         }
 
-        div.discussion-reply-holder {
+        .discussion-reply-holder {
           margin-left: 0;
         }
       }
@@ -1097,7 +1117,7 @@ $system-note-svg-size: 1rem;
     }
   }
 
-  .draft-note-component .draft-note.timeline-entry {
+  .draft-note-component.draft-note.timeline-entry {
     .timeline-content:not(.flash-container) {
       padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
     }

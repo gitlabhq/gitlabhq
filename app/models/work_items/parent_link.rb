@@ -12,11 +12,13 @@ module WorkItems
 
     validates :work_item_parent, presence: true
     validates :work_item, presence: true, uniqueness: true
-    validate :validate_child_type
-    validate :validate_parent_type
+    validate :validate_hierarchy_restrictions
+    validate :validate_cyclic_reference
     validate :validate_same_project
     validate :validate_max_children
     validate :validate_confidentiality
+
+    scope :for_parents, ->(parent_ids) { where(work_item_parent_id: parent_ids) }
 
     class << self
       def has_public_children?(parent_id)
@@ -32,27 +34,6 @@ module WorkItems
     end
 
     private
-
-    def validate_child_type
-      return unless work_item
-
-      unless work_item.task?
-        errors.add :work_item, _('only Task can be assigned as a child in hierarchy.')
-      end
-    end
-
-    def validate_parent_type
-      return unless work_item_parent
-
-      base_type = work_item_parent.work_item_type.base_type.to_sym
-      unless PARENT_TYPES.include?(base_type)
-        parent_names = WorkItems::Type::BASE_TYPES.slice(*WorkItems::ParentLink::PARENT_TYPES)
-          .values.map { |type| type[:name] }
-
-        errors.add :work_item_parent, _('only %{parent_types} can be parent of Task.') %
-                                        { parent_types: parent_names.to_sentence }
-      end
-    end
 
     def validate_same_project
       return if work_item.nil? || work_item_parent.nil?
@@ -77,6 +58,41 @@ module WorkItems
       if work_item_parent.confidential? && !work_item.confidential?
         errors.add :work_item, _("cannot assign a non-confidential work item to a confidential "\
                                  "parent. Make the work item confidential and try again.")
+      end
+    end
+
+    def validate_hierarchy_restrictions
+      return unless work_item && work_item_parent
+
+      restriction = ::WorkItems::HierarchyRestriction
+        .find_by_parent_type_id_and_child_type_id(work_item_parent.work_item_type_id, work_item.work_item_type_id)
+
+      if restriction.nil?
+        errors.add :work_item, _('is not allowed to add this type of parent')
+        return
+      end
+
+      validate_depth(restriction.maximum_depth)
+    end
+
+    def validate_depth(depth)
+      return unless depth
+      return if work_item.work_item_type_id != work_item_parent.work_item_type_id
+
+      if work_item_parent.same_type_base_and_ancestors.count + work_item.same_type_descendants_depth > depth
+        errors.add :work_item, _('reached maximum depth')
+      end
+    end
+
+    def validate_cyclic_reference
+      return unless work_item_parent&.id && work_item&.id
+
+      if work_item.id == work_item_parent.id
+        errors.add :work_item, _('is not allowed to point to itself')
+      end
+
+      if work_item_parent.ancestors.detect { |ancestor| work_item.id == ancestor.id }
+        errors.add :work_item, _('is already present in ancestors')
       end
     end
   end

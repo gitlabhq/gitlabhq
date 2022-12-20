@@ -21,7 +21,7 @@ The first argument to the profiler is either a full URL
 leading slash.
 
 By default the report dump will be stored in a temporary file, which can be
-interacted with using the [stackprof API](#reading-a-gitlabprofiler-report).
+interacted with using the [Stackprof API](#reading-a-gitlabprofiler-report).
 
 When using the script, command-line documentation is available by passing no
 arguments.
@@ -62,7 +62,7 @@ Pass in a `profiler_options` hash to configure the output file (`out`) of the sa
 Gitlab::Profiler.profile('/gitlab-org/gitlab-test', user: User.first, profiler_options: { out: 'tmp/profile.dump' })
 ```
 
-## Reading a GitLab::Profiler report
+## Reading a `GitLab::Profiler` report
 
 You can get a summary of where time was spent by running Stackprof against the sampling data. For example:
 
@@ -131,25 +131,39 @@ Find more information about different sampling modes in the [Stackprof docs](htt
 
 This is enabled for all users that can access the performance bar.
 
+<!-- vale gitlab.SubstitutionWarning = NO -->
+<!-- Here, "bullet" is a false positive -->
+
 ## Bullet
 
-Bullet is a Gem that can be used to track down N+1 query problems. Bullet section is
-displayed on the [performance-bar](../administration/monitoring/performance/performance_bar.md).
+Bullet is a Gem that can be used to track down N+1 query problems. It logs
+query problems to the Rails log and the browser console. The **Bullet** section is
+displayed on the [performance bar](../administration/monitoring/performance/performance_bar.md).
 
 ![Bullet](img/bullet_v13_0.png)
 
-Because Bullet adds quite a bit of logging noise the logging is disabled by default.
-To enable the logging, set the environment variable `ENABLE_BULLET` to a non-empty value before
-starting GitLab. For example:
+Bullet is enabled only in development mode by default. However, logging is disabled,
+because Bullet logging is noisy. To configure Bullet and its logging:
 
-```shell
-ENABLE_BULLET=true bundle exec rails s
-```
+- To manually enable or disable Bullet on an environment, add these lines to
+  `config/gitlab.yml`, changing the `enabled` value as needed:
 
-Bullet logs query problems to both the Rails log as well as the browser
-console.
+  ```yaml
+  bullet:
+    enabled: false
+  ```
 
-As a follow up to finding `N+1` queries with Bullet, consider writing a [QueryRecoder test](query_recorder.md) to prevent a regression.
+- To enable Bullet logging, set the `ENABLE_BULLET` environment variable to a
+  non-empty value before starting GitLab:
+
+  ```shell
+  ENABLE_BULLET=true bundle exec rails s
+  ```
+
+As a follow-up to finding `N+1` queries with Bullet, consider writing a
+[QueryRecoder test](database/query_recorder.md) to prevent a regression.
+
+<!-- vale gitlab.SubstitutionWarning = YES -->
 
 ## System stats
 

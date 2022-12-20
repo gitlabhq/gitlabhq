@@ -112,7 +112,7 @@ module Integrations
         user: user_key,
         device: device,
         priority: priority,
-        title: "#{project.full_name}",
+        title: project.full_name.to_s,
         message: message,
         url: data[:project][:web_url],
         url_title: s_("PushoverService|See project %{project_full_name}") % { project_full_name: project.full_name }

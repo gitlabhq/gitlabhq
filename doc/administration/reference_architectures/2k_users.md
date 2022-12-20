@@ -29,12 +29,12 @@ For a full list of reference architectures, see
 | GitLab Rails               | 2     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
 | Monitoring node            | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Object storage<sup>4</sup> | -     | -                      | -               | -            | -        |
-| NFS server (non-Gitaly)    | 1     | 4 vCPU, 3.6 GB memory  | `n1-highcpu-4`  | `c5.xlarge`  | `F4s v2` |
 
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
     - [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work.
-    - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB clusters](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) have not been tested and are not recommended. Both solutions are specifically not expected to work with GitLab Geo.
+    - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) have not been tested and are not recommended. Both solutions are specifically not expected to work with GitLab Geo.
+      - Note that [Amazon RDS Multi-AZ DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html) is a separate product and is supported.
     - [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and [Azure Database for PostgreSQL](https://azure.microsoft.com/en-gb/products/postgresql/#overview) is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61).
     - Consul is primarily used for Omnibus PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However, Consul is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
@@ -125,7 +125,7 @@ CI pipelines alike.
 
 As such, large repositories come with notable cost and typically will require more resources to handle,
 significantly so in some cases. It's therefore **strongly** recommended then to review large repositories
-to ensure they maintain good repo health and reduce their size wherever possible.
+to ensure they maintain good health and reduce their size wherever possible.
 
 NOTE:
 If best practices aren't followed and large repositories are present on the environment,
@@ -151,9 +151,6 @@ To set up GitLab and its components to accommodate up to 2,000 users:
    environment.
 1. [Configure the object storage](#configure-the-object-storage) used for
    shared data objects.
-1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
-   to have shared disk storage service as an alternative to Gitaly or object
-   storage.
 1. [Configure Advanced Search](#configure-advanced-search) (optional) for faster,
    more advanced code search across your entire GitLab instance.
 
@@ -700,8 +697,8 @@ On each node perform the following:
    puma['listen'] = '0.0.0.0'
    sidekiq['listen_address'] = "0.0.0.0"
 
-   # Configure Sidekiq with 2 workers and 10 max concurrency
-   sidekiq['max_concurrency'] = 10
+   # Configure Sidekiq with 2 workers and 20 max concurrency
+   sidekiq['max_concurrency'] = 20
    sidekiq['queue_groups'] = ['*'] * 2
 
    # Add the monitoring node's IP address to the monitoring whitelist and allow it to
@@ -780,9 +777,7 @@ On each node perform the following:
    [GitLab Rails post-configuration](#gitlab-rails-post-configuration) section.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-
-1. [Enable incremental logging](#enable-incremental-logging), unless you are using [NFS](#configure-nfs-optional).
-
+1. [Enable incremental logging](#enable-incremental-logging).
 1. Run `sudo gitlab-rake gitlab:gitaly:check` to confirm the node can connect to Gitaly.
 
 1. Tail the logs to see the requests:
@@ -930,9 +925,6 @@ running [Prometheus](../monitoring/prometheus/index.md) and
 ## Configure the object storage
 
 GitLab supports using an object storage service for holding numerous types of data.
-It's recommended over [NFS](#configure-nfs-optional) and in general it's better
-in larger setups as object storage is typically much more performant, reliable,
-and scalable.
 
 GitLab has been tested on a number of object storage providers:
 
@@ -957,7 +949,7 @@ NOTE:
 When using the [storage-specific form](../object_storage.md#storage-specific-configuration)
 in GitLab 14.x and earlier, you should enable [direct upload mode](../../development/uploads/index.md#direct-upload).
 The previous [background upload](../../development/uploads/index.md#direct-upload) mode,
-which was deprecated in 14.9, requires shared storage such as [NFS](#configure-nfs-optional).
+which was deprecated in 14.9, requires shared storage such as NFS.
 
 Using separate buckets for each data type is the recommended approach for GitLab.
 This ensures there are no collisions across the various types of data GitLab stores.
@@ -975,23 +967,6 @@ in the future.
 GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
 
 While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
-
-## Configure NFS (optional)
-
-For improved performance, [object storage](#configure-the-object-storage),
-along with [Gitaly](#configure-gitaly), are recommended over using NFS whenever
-possible.
-
-See how to [configure NFS](../nfs.md).
-
-WARNING:
-Engineering support for NFS for Git repositories is deprecated, and [technical support is scheduled to be unavailable](../nfs.md#gitaly-and-nfs-deprecation)
-after the release of GitLab 15.6. No further enhancements are planned for this feature.
-
-Read:
-
-- [Gitaly and NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation).
-- About the [correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 
 ## Configure Advanced Search **(PREMIUM SELF)**
 
@@ -1046,12 +1021,10 @@ Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more
 The following tables and diagram detail the hybrid environment using the same formats
 as the normal environment above.
 
-First are the components that run in Kubernetes. The recommendation at this time is to
-use Google Cloud's Kubernetes Engine (GKE) or AWS Elastic Kubernetes Service (EKS) and associated machine types, but the memory
-and CPU requirements should translate to most other providers. We hope to update this in the
-future with further specific cloud provider details.
+First are the components that run in Kubernetes. These run across several node groups, although you can change
+the overall makeup as desired as long as the minimum CPU and Memory requirements are observed.
 
-| Service             | Nodes | Configuration          | GCP             | AWS          | Min Allocatable CPUs and Memory |
+| Service Node Group  | Nodes | Configuration          | GCP             | AWS          | Min Allocatable CPUs and Memory |
 |---------------------|-------|------------------------|-----------------|--------------|---------------------------------|
 | Webservice          | 3     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | 23.7 vCPU, 16.9 GB memory       |
 | Sidekiq             | 2     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | 7.8 vCPU, 25.9 GB memory        |
@@ -1060,7 +1033,7 @@ future with further specific cloud provider details.
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
 [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
 - Nodes configuration is shown as it is forced to ensure pod vCPU / memory ratios and avoid scaling during **performance testing**.
-  - In production deployments, there is no need to assign pods to nodes. A minimum of three nodes in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
+  - In production deployments, there is no need to assign pods to specific nodes. A minimum of three nodes per node group in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
 
 Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
 services where applicable):
@@ -1076,7 +1049,8 @@ services where applicable):
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
     - [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work.
-    - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB clusters](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) have not been tested and are not recommended. Both solutions are specifically not expected to work with GitLab Geo.
+    - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) have not been tested and are not recommended. Both solutions are specifically not expected to work with GitLab Geo.
+      - Note that [Amazon RDS Multi-AZ DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html) is a separate product and is supported.
     - [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and [Azure Database for PostgreSQL](https://azure.microsoft.com/en-gb/products/postgresql/#overview) is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61).
     - Consul is primarily used for Omnibus PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However, Consul is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.

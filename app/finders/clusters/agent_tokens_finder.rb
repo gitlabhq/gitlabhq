@@ -2,24 +2,30 @@
 
 module Clusters
   class AgentTokensFinder
-    def initialize(object, current_user, agent_id)
-      @object = object
+    include FinderMethods
+
+    def initialize(agent, current_user, params = {})
+      @agent = agent
       @current_user = current_user
-      @agent_id = agent_id
+      @params = params
     end
 
     def execute
-      raise_not_found_unless_can_read_cluster
+      return ::Clusters::AgentToken.none unless can_read_cluster_agents?
 
-      object.cluster_agents.find(agent_id).agent_tokens
+      agent.agent_tokens.then { |agent_tokens| by_status(agent_tokens) }
     end
 
     private
 
-    attr_reader :object, :current_user, :agent_id
+    attr_reader :agent, :current_user, :params
 
-    def raise_not_found_unless_can_read_cluster
-      raise ActiveRecord::RecordNotFound unless current_user&.can?(:read_cluster, object)
+    def by_status(agent_tokens)
+      params[:status].present? ? agent_tokens.with_status(params[:status]) : agent_tokens
+    end
+
+    def can_read_cluster_agents?
+      current_user&.can?(:read_cluster, agent&.project)
     end
   end
 end

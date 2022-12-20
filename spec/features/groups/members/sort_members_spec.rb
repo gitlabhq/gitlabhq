@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > Members > Sort members', :js do
+RSpec.describe 'Groups > Members > Sort members', :js, feature_category: :subgroups do
   include Spec::Support::Helpers::Features::MembersHelpers
 
   let(:owner)     { create(:user, name: 'John Doe', created_at: 5.days.ago, last_activity_on: Date.today) }

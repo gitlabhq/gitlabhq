@@ -4,11 +4,11 @@ import {
   GlLink,
   GlSkeletonLoader,
   GlIcon,
-  GlSafeHtmlDirective,
   GlSprintf,
   GlButton,
   GlAvatarLabeled,
 } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { glEmojiTag } from '~/emoji';
 import { createAlert } from '~/flash';
 import { followUser, unfollowUser } from '~/rest_api';
@@ -44,7 +44,7 @@ export default {
     GlAvatarLabeled,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [Tracking.mixin()],
   props: {

@@ -5,6 +5,7 @@ require 'capybara/dsl'
 RSpec.describe QA::Support::Page::Logging do
   let(:page) { double.as_null_object }
   let(:logger) { Gitlab::QA::TestLogger.logger(level: ::Logger::DEBUG, source: 'QA Tests') }
+  let(:page_class) { class_double('QA::Page::TestPage') }
 
   before do
     allow(QA::Runtime::Logger).to receive(:logger).and_return(logger)
@@ -64,6 +65,14 @@ RSpec.describe QA::Support::Page::Logging do
   it 'logs click_element' do
     expect { subject.click_element(:element) }
       .to output(/clicking :element/).to_stdout_from_any_process
+  end
+
+  it 'logs click_element with a page' do
+    allow(page_class).to receive(:validate_elements_present!).and_return(true)
+    allow(page_class).to receive(:to_s).and_return('QA::Page::TestPage')
+
+    expect { subject.click_element(:element, page_class) }
+      .to output(/clicking :element and ensuring QA::Page::TestPage is present/).to_stdout_from_any_process
   end
 
   it 'logs fill_element' do

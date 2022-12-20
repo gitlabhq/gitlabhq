@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDropdownItem } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -31,12 +30,8 @@ describe('detailedMetric', () => {
   const findExpandedBacktraceBtnAtIndex = (index) => findExpandBacktraceBtns().at(index);
   const findDetailsLabel = () => wrapper.findByTestId('performance-bar-details-label');
   const findSortOrderDropdown = () => wrapper.findByTestId('performance-bar-sort-order');
-  const clickSortOrderDropdownItem = (sortOrder) =>
-    findSortOrderDropdown()
-      .findAllComponents(GlDropdownItem)
-      .filter((item) => item.text() === sortOrderOptions[sortOrder])
-      .at(0)
-      .vm.$emit('click');
+  const selectSortOrder = (sortOrder) =>
+    findSortOrderDropdown().vm.$emit('select', sortOrderOptions[sortOrder].value);
   const findEmptyDetailNotice = () => wrapper.findByTestId('performance-bar-empty-detail-notice');
   const findAllDetailDurations = () =>
     wrapper.findAllByTestId('performance-item-duration').wrappers.map((w) => w.text());
@@ -334,11 +329,11 @@ describe('detailedMetric', () => {
       });
 
       it('changes sortOrder on select', async () => {
-        clickSortOrderDropdownItem(sortOrders.CHRONOLOGICAL);
+        selectSortOrder(sortOrders.CHRONOLOGICAL);
         await nextTick();
         expect(findAllDetailDurations()).toEqual(['23ms', '100ms', '75ms']);
 
-        clickSortOrderDropdownItem(sortOrders.DURATION);
+        selectSortOrder(sortOrders.DURATION);
         await nextTick();
         expect(findAllDetailDurations()).toEqual(['100ms', '75ms', '23ms']);
       });

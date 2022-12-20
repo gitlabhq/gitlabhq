@@ -492,7 +492,7 @@ RSpec.describe GitlabSchema.types['Project'] do
     subject { described_class.fields['jobs'] }
 
     it { is_expected.to have_graphql_type(Types::Ci::JobType.connection_type) }
-    it { is_expected.to have_graphql_arguments(:statuses) }
+    it { is_expected.to have_graphql_arguments(:statuses, :with_artifacts) }
   end
 
   describe 'ci_template field' do

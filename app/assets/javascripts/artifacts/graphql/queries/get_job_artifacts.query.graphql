@@ -10,6 +10,7 @@ query getJobArtifacts(
   project(fullPath: $projectPath) {
     id
     jobs(
+      withArtifacts: true
       statuses: [SUCCESS, FAILED]
       first: $firstPageSize
       last: $lastPageSize

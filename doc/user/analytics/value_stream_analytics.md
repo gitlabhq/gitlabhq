@@ -204,7 +204,7 @@ Value stream analytics records the following times for each stage:
 - **Review**: 14:00 to 19:00: 5 hrs
 - **Staging**: 19:00 to 19:30: 30 minutes
 
-There are some additional considerations for this example:
+Keep in mind the following observations related to this example:
 
 - Although this example specifies the issue number in a later commit, the process
 still collects analytics data for the issue.

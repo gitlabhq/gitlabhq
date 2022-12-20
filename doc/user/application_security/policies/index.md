@@ -34,6 +34,10 @@ project and the security policy project, this is not recommended. Keeping the se
 project separate from the development project allows for complete separation of duties between
 security/compliance teams and development teams.
 
+You should not link a security policy project to a development project and to the group
+or sub-group the development project belongs to at the same time. Linking this way will result in
+approval rules from the Scan Result Policy not being applied to merge requests in the development project.
+
 All security policies are stored in the `.gitlab/security-policies/policy.yml` YAML file inside the
 linked security policy project. The format for this YAML is specific to the type of policy that is
 stored there. Examples and schema information are available for the following policy types:
@@ -140,10 +144,10 @@ for more information on the product direction of security policies within GitLab
 
 ## Troubleshooting
 
-### `Branch name does not follow the pattern 'update-policy-<timestamp>'`
+### `Branch name 'update-policy-<timestamp>' does not follow the pattern '<branch_name_regex>'`
 
 When you create a new security policy or change an existing policy, a new branch is automatically created with the branch name following the pattern `update-policy-<timestamp>`. For example: `update-policy-1659094451`.
 
-If you have group or instance push rules that do not allow branch name patterns that contain the text `update-policy-<timestamp>`, you will get an error that states `Branch name does not follow the pattern 'update-policy-<timestamp>'`.
+If you have group or instance [push rules that do not allow branch name patterns](../../project/repository/push_rules.md#validate-branch-names) that contain the text `update-policy-<timestamp>`, you will get an error that states `Branch name 'update-policy-<timestamp>' does not follow the pattern '<branch_name_regex>'`.
 
 The workaround is to amend your group or instance push rules to allow branches following the pattern `update-policy-` followed by an integer timestamp.

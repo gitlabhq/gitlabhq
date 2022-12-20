@@ -35,7 +35,7 @@ module Ci
 
       def worker_cron
         strong_memoize(:worker_cron) do
-          Gitlab::Ci::CronParser.new(worker_cron_expression, Time.zone.name)
+          Gitlab::Ci::CronParser.new(@schedule.worker_cron_expression, Time.zone.name)
         end
       end
 
@@ -49,10 +49,6 @@ module Ci
 
           Gitlab::Ci::CronParser.parse_natural("every #{every_x_minutes} minutes", Time.zone.name)
         end
-      end
-
-      def worker_cron_expression
-        Settings.cron_jobs['pipeline_schedule_worker']['cron']
       end
     end
   end

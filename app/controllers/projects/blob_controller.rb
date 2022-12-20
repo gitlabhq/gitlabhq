@@ -18,7 +18,8 @@ class Projects::BlobController < Projects::ApplicationController
   around_action :allow_gitaly_ref_name_caching, only: [:show]
 
   before_action :require_non_empty_project, except: [:new, :create]
-  before_action :authorize_download_code!
+  before_action :authorize_download_code!, except: [:show]
+  before_action :authorize_read_code!, only: [:show]
 
   # We need to assign the blob vars before `authorize_edit_tree!` so we can
   # validate access to a specific ref.

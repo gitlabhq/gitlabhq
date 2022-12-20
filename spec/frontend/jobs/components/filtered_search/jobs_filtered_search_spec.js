@@ -1,6 +1,10 @@
 import { GlFilteredSearch } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  OPERATORS_IS,
+  TOKEN_TITLE_STATUS,
+  TOKEN_TYPE_STATUS,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
 import { mockFailedSearchToken } from '../../mock_data';
 
@@ -37,11 +41,11 @@ describe('Jobs filtered search', () => {
     createComponent();
 
     expect(findStatusToken()).toMatchObject({
-      type: 'status',
+      type: TOKEN_TYPE_STATUS,
       icon: 'status',
-      title: 'Status',
+      title: TOKEN_TITLE_STATUS,
       unique: true,
-      operators: OPERATOR_IS_ONLY,
+      operators: OPERATORS_IS,
     });
   });
 
@@ -65,7 +69,7 @@ describe('Jobs filtered search', () => {
     createComponent({ queryString: { statuses: value } });
 
     expect(findFilteredSearch().props('value')).toEqual([
-      { type: 'status', value: { data: value, operator: '=' } },
+      { type: TOKEN_TYPE_STATUS, value: { data: value, operator: '=' } },
     ]);
   });
 });

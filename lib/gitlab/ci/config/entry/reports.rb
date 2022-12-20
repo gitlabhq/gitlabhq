@@ -16,8 +16,8 @@ module Gitlab
             %i[junit codequality sast secret_detection dependency_scanning container_scanning
                dast performance browser_performance load_performance license_scanning metrics lsif
                dotenv terraform accessibility
-               requirements coverage_fuzzing api_fuzzing cluster_image_scanning
-               coverage_report cyclonedx].freeze
+               coverage_fuzzing api_fuzzing cluster_image_scanning
+               requirements requirements_v2 coverage_report cyclonedx].freeze
 
           attributes ALLOWED_KEYS
 
@@ -48,6 +48,7 @@ module Gitlab
               validates :terraform, array_of_strings_or_string: true
               validates :accessibility, array_of_strings_or_string: true
               validates :requirements, array_of_strings_or_string: true
+              validates :requirements_v2, array_of_strings_or_string: true
               validates :cyclonedx, array_of_strings_or_string: true
             end
           end

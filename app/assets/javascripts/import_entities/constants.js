@@ -9,6 +9,10 @@ export const STATUSES = {
   STARTED: 'started',
   NONE: 'none',
   SCHEDULING: 'scheduling',
-  CANCELLED: 'cancelled',
+  CANCELED: 'canceled',
   TIMEOUT: 'timeout',
+};
+
+export const PROVIDERS = {
+  GITHUB: 'github',
 };

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectTemplates do
+RSpec.describe API::ProjectTemplates, feature_category: :source_code_management do
   let_it_be(:public_project) { create(:project, :public, :repository, create_templates: :merge_request, path: 'path.with.dot') }
   let_it_be(:private_project) { create(:project, :private, :repository, create_templates: :issue) }
   let_it_be(:developer) { create(:user) }

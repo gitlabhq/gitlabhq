@@ -41,16 +41,12 @@ export default {
           // All values are grid row/column numbers up to 12.
           // We use the default 12 column grid https://github.com/gridstack/gridstack.js#change-grid-columns.
           gridAttributes: {
-            size: {
-              height: 4,
-              width: 6,
-              minHeight: 4,
-              minWidth: 6,
-            },
-            position: {
-              xPos: 0,
-              yPos: 0,
-            },
+            height: 4,
+            width: 6,
+            minHeight: 4,
+            minWidth: 6,
+            xPos: 0,
+            yPos: 0,
           },
           // Options that are used to set bespoke values for each widget.
           // Available customizations are determined by the widget itself.

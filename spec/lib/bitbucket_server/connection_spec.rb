@@ -56,6 +56,12 @@ RSpec.describe BitbucketServer::Connection do
 
       expect { subject.post(url, payload) }.to raise_error(described_class::ConnectionError)
     end
+
+    it 'throws an exception if the URI is invalid' do
+      stub_request(:post, url).with(headers: { 'Accept' => 'application/json' }).to_raise(URI::InvalidURIError)
+
+      expect { subject.post(url, payload) }.to raise_error(described_class::ConnectionError)
+    end
   end
 
   describe '#delete' do

@@ -12,9 +12,7 @@ module Metrics::Dashboard::PrometheusApiProxy
     variable_substitution_result =
       proxy_variable_substitution_service.new(proxyable, permit_params).execute
 
-    if variable_substitution_result[:status] == :error
-      return error_response(variable_substitution_result)
-    end
+    return error_response(variable_substitution_result) if variable_substitution_result[:status] == :error
 
     prometheus_result = ::Prometheus::ProxyService.new(
       proxyable,

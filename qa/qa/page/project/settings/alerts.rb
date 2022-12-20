@@ -6,14 +6,27 @@ module QA
       module Settings
         class Alerts < Page::Base
           view 'app/assets/javascripts/alerts_settings/components/alerts_form.vue' do
-            element :create_issue_checkbox
+            element :create_incident_checkbox
             element :incident_templates_dropdown
             element :save_changes_button
             element :incident_templates_item
           end
 
-          def enable_issues_for_incidents
-            check_element(:create_issue_checkbox)
+          view 'app/assets/javascripts/alerts_settings/components/alerts_settings_wrapper.vue' do
+            element :add_integration_button
+          end
+
+          view 'app/assets/javascripts/alerts_settings/components/alerts_settings_form.vue' do
+            element :integration_type_dropdown
+            element :integration_name_field
+            element :active_toggle_container
+            element :save_and_create_alert_button
+            element :test_payload_field
+            element :send_test_alert_button
+          end
+
+          def enable_incident_for_alert
+            check_element(:create_incident_checkbox)
           end
 
           def select_issue_template(template)
@@ -31,6 +44,43 @@ module QA
             within_element :incident_templates_dropdown do
               has_text?(template)
             end
+          end
+
+          def add_new_integration
+            wait_for_requests
+            click_element(:add_integration_button)
+          end
+
+          def select_http_endpoint
+            click_element(:integration_type_dropdown)
+            find("option[value='HTTP']").click
+
+            # Click outside of the list to close it
+            click_element(:integration_name_field)
+          end
+
+          def enter_integration_name(name)
+            fill_element(:integration_name_field, name)
+          end
+
+          def activate_integration
+            within_element(:active_toggle_container) do
+              find('.gl-toggle').click
+            end
+
+            wait_for_requests
+          end
+
+          def save_and_create_alert
+            click_element(:save_and_create_alert_button)
+          end
+
+          def fill_in_test_payload(payload)
+            fill_element(:test_payload_field, payload)
+          end
+
+          def send_test_alert
+            click_element(:send_test_alert_button)
           end
         end
       end

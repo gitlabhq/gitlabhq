@@ -42,9 +42,7 @@ RSpec.shared_examples 'querying a GraphQL type with labels' do
     make_query(
       [
         query_graphql_field(:label, label_params, all_graphql_fields_for(Label)),
-        query_graphql_field(:labels, labels_params, [
-          query_graphql_field(:nodes, nil, all_graphql_fields_for(Label))
-        ])
+        query_graphql_field(:labels, labels_params, [query_graphql_field(:nodes, nil, all_graphql_fields_for(Label))])
       ]
     )
   end

@@ -6,7 +6,6 @@ class MergeRequestDiff < ApplicationRecord
   include ManualInverseAssociation
   include EachBatch
   include Gitlab::Utils::StrongMemoize
-  include ObjectStorage::BackgroundMove
   include BulkInsertableAssociations
 
   # Don't display more than 100 commits at once
@@ -267,7 +266,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   # This method will rely on repository branch sha
-  # in case start_commit_sha is nil. Its necesarry for old merge request diff
+  # in case start_commit_sha is nil. It's necessary for old merge request diff
   # created before version 8.4 to work
   def safe_start_commit_sha
     start_commit_sha || merge_request.target_branch_sha
@@ -410,6 +409,29 @@ class MergeRequestDiff < ApplicationRecord
         comparison.diffs(diff_options)
       else
         diffs_batch
+      end
+    end
+  end
+
+  def paginated_diffs(page, per_page)
+    fetching_repository_diffs({}) do |comparison|
+      reorder_diff_files!
+
+      collection = Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff.new(
+        self,
+        page,
+        per_page
+      )
+
+      if comparison
+        comparison.diffs(
+          paths: collection.diff_paths,
+          page: collection.current_page,
+          per_page: collection.limit_value,
+          count: collection.total_count
+        )
+      else
+        collection
       end
     end
   end

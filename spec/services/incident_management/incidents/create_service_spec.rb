@@ -66,6 +66,26 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
           end
         end
       end
+
+      context 'with an alert' do
+        subject(:create_incident) { described_class.new(project, user, title: title, description: description, alert: alert).execute }
+
+        context 'when the alert is valid' do
+          let(:alert) { create(:alert_management_alert, project: project) }
+
+          it 'associates the alert with the incident' do
+            expect(create_incident[:issue].reload.alert_management_alerts).to match_array([alert])
+          end
+        end
+
+        context 'when the alert is not valid' do
+          let(:alert) { create(:alert_management_alert, :with_validation_errors, project: project) }
+
+          it 'does not associate the alert with the incident' do
+            expect(create_incident[:issue].reload.alert_management_alerts).to be_empty
+          end
+        end
+      end
     end
 
     context 'when incident has no title' do
@@ -88,10 +108,6 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
         let(:alert) { create(:alert_management_alert, project: project) }
 
         subject(:create_incident) { described_class.new(project, user, title: title, description: description, alert: alert).execute }
-
-        it 'associates the alert with the incident' do
-          expect(create_incident[:issue].alert_management_alert).to eq(alert)
-        end
 
         context 'the alert prevents the issue from saving' do
           let(:alert) { create(:alert_management_alert, :with_validation_errors, project: project) }

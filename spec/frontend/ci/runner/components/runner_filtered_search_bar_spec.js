@@ -13,6 +13,7 @@ import {
   DEFAULT_SORT,
   CONTACTED_DESC,
 } from '~/ci/runner/constants';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
@@ -34,7 +35,7 @@ describe('RunnerList', () => {
   const mockOtherSort = CONTACTED_DESC;
   const mockFilters = [
     { type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
-    { type: 'filtered-search-term', value: { data: '' } },
+    { type: FILTERED_SEARCH_TERM, value: { data: '' } },
   ];
 
   const expectToHaveLastEmittedInput = (value) => {

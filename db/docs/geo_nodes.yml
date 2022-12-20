@@ -7,3 +7,4 @@ feature_categories:
 description: Contains Geo sites configuration data and settings.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/5ab12ad02ed753dd933485094ba45512890f0b50
 milestone: '8.5'
+gitlab_schema: gitlab_main

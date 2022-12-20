@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe ConsumeRemainingEncryptIntegrationPropertyJobs, :migration do
+RSpec.describe ConsumeRemainingEncryptIntegrationPropertyJobs, :migration, feature_category: :integrations do
   subject(:migration) { described_class.new }
 
   let(:integrations) { table(:integrations) }

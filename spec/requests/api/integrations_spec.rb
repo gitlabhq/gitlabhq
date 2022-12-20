@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe API::Integrations do
+RSpec.describe API::Integrations, feature_category: :integrations do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
 

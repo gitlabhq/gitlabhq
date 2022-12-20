@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Labels do
+RSpec.describe API::Labels, feature_category: :team_planning do
   def put_labels_api(route_type, user, spec_params, request_params = {})
     if route_type == :deprecated
       put api("/projects/#{project.id}/labels", user),

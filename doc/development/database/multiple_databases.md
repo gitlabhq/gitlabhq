@@ -14,9 +14,9 @@ On GitLab.com we are using two separate databases.
 ## GitLab Schema
 
 For properly discovering allowed patterns between different databases
-the GitLab application implements the `lib/gitlab/database/gitlab_schemas.yml` YAML file.
+the GitLab application implements the [database dictionary](database_dictionary.md).
 
-This file provides a virtual classification of tables into a `gitlab_schema`
+The database dictionary provides a virtual classification of tables into a `gitlab_schema`
 which conceptually is similar to [PostgreSQL Schema](https://www.postgresql.org/docs/current/ddl-schemas.html).
 We decided as part of [using database schemas to better isolated CI decomposed features](https://gitlab.com/gitlab-org/gitlab/-/issues/333415)
 that we cannot use PostgreSQL schema due to complex migration procedures. Instead we implemented

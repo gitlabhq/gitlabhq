@@ -33,8 +33,6 @@ RSpec.describe Packages::PackageFileUploader do
       end
 
       it 'can store file remotely' do
-        allow(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async)
-
         package_file
 
         expect(package_file.file_store).to eq(described_class::Store::REMOTE)

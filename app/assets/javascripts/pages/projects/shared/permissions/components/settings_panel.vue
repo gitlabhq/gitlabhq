@@ -23,6 +23,12 @@ import ProjectSettingRow from './project_setting_row.vue';
 
 const FEATURE_ACCESS_LEVEL_ANONYMOUS = [30, s__('ProjectSettings|Everyone')];
 
+const PACKAGE_REGISTRY_ACCESS_LEVEL_DEFAULT_BY_PROJECT_VISIBILITY = {
+  [VISIBILITY_LEVEL_PRIVATE_INTEGER]: featureAccessLevel.PROJECT_MEMBERS,
+  [VISIBILITY_LEVEL_INTERNAL_INTEGER]: featureAccessLevel.EVERYONE,
+  [VISIBILITY_LEVEL_PUBLIC_INTEGER]: FEATURE_ACCESS_LEVEL_ANONYMOUS[0],
+};
+
 export default {
   i18n: {
     ...CVE_ID_REQUEST_BUTTON_I18N,
@@ -32,7 +38,6 @@ export default {
     issuesLabel: s__('ProjectSettings|Issues'),
     lfsLabel: s__('ProjectSettings|Git Large File Storage (LFS)'),
     mergeRequestsLabel: s__('ProjectSettings|Merge requests'),
-    operationsLabel: s__('ProjectSettings|Operations'),
     environmentsLabel: s__('ProjectSettings|Environments'),
     environmentsHelpText: s__(
       'ProjectSettings|Every project can make deployments to environments either via CI/CD or API calls. Non-project members have read-only access.',
@@ -47,11 +52,15 @@ export default {
     packagesHelpText: s__(
       'ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public.',
     ),
-    packageRegistryHelpText: s__(
-      'ProjectSettings|Every project can have its own space to store its packages.',
+    packageRegistryHelpText: s__('ProjectSettings|Publish, store, and view packages in a project.'),
+    packageRegistryForEveryoneHelpText: s__(
+      'ProjectSettings|Anyone can pull packages with a package manager API.',
     ),
     packagesLabel: s__('ProjectSettings|Packages'),
     packageRegistryLabel: s__('ProjectSettings|Package registry'),
+    packageRegistryForEveryoneLabel: s__(
+      'ProjectSettings|Allow anyone to pull from Package Registry',
+    ),
     pagesLabel: s__('ProjectSettings|Pages'),
     ciCdLabel: __('CI/CD'),
     repositoryLabel: s__('ProjectSettings|Repository'),
@@ -249,7 +258,6 @@ export default {
       analyticsAccessLevel: featureAccessLevel.EVERYONE,
       requirementsAccessLevel: featureAccessLevel.EVERYONE,
       securityAndComplianceAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
-      operationsAccessLevel: featureAccessLevel.EVERYONE,
       environmentsAccessLevel: featureAccessLevel.EVERYONE,
       featureFlagsAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       infrastructureAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
@@ -287,18 +295,6 @@ export default {
       );
     },
 
-    packageRegistryFeatureAccessLevelOptions() {
-      const options = [FEATURE_ACCESS_LEVEL_ANONYMOUS];
-
-      if (this.visibilityLevel === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
-        options.unshift(featureAccessLevelMembers);
-      } else if (this.visibilityLevel === VISIBILITY_LEVEL_INTERNAL_INTEGER) {
-        options.unshift(featureAccessLevelEveryone);
-      }
-
-      return options;
-    },
-
     pagesFeatureAccessLevelOptions() {
       const options = [featureAccessLevelMembers];
 
@@ -316,10 +312,6 @@ export default {
         }
       }
       return options;
-    },
-
-    operationsEnabled() {
-      return this.operationsAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
 
     environmentsEnabled() {
@@ -351,7 +343,7 @@ export default {
       }
 
       return s__(
-        'ProjectSettings|View and edit files in this project. Non-project members have only read access.',
+        'ProjectSettings|View and edit files in this project. When set to **Everyone With Access** non-project members have only read access.',
       );
     },
     cveIdRequestIsDisabled() {
@@ -366,16 +358,17 @@ export default {
     packageRegistryAccessLevelEnabled() {
       return this.glFeatures.packageRegistryAccessLevel;
     },
-    splitOperationsEnabled() {
-      return this.glFeatures.splitOperationsVisibilityPermissions;
+    packageRegistryEnabled() {
+      return this.packageRegistryAccessLevel > featureAccessLevel.NOT_ENABLED;
+    },
+    packageRegistryApiForEveryoneEnabled() {
+      return this.packageRegistryAccessLevel === FEATURE_ACCESS_LEVEL_ANONYMOUS[0];
+    },
+    packageRegistryApiForEveryoneEnabledShown() {
+      return this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER;
     },
     monitorOperationsFeatureAccessLevelOptions() {
-      if (this.splitOperationsEnabled) {
-        return this.featureAccessLevelOptions.filter(([value]) => value <= this.monitorAccessLevel);
-      }
-      return this.featureAccessLevelOptions.filter(
-        ([value]) => value <= this.operationsAccessLevel,
-      );
+      return this.featureAccessLevelOptions.filter(([value]) => value <= this.monitorAccessLevel);
     },
   },
 
@@ -429,10 +422,6 @@ export default {
           featureAccessLevel.PROJECT_MEMBERS,
           this.securityAndComplianceAccessLevel,
         );
-        this.operationsAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.operationsAccessLevel,
-        );
         this.environmentsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
           this.environmentsAccessLevel,
@@ -474,9 +463,8 @@ export default {
           this.packageRegistryAccessLevelEnabled &&
           this.packageRegistryAccessLevel === featureAccessLevel.PROJECT_MEMBERS
         ) {
-          this.packageRegistryAccessLevel = Math.min(
-            ...this.packageRegistryFeatureAccessLevelOptions.map((option) => option[0]),
-          );
+          this.packageRegistryAccessLevel =
+            PACKAGE_REGISTRY_ACCESS_LEVEL_DEFAULT_BY_PROJECT_VISIBILITY[value];
         }
         if (this.buildsAccessLevel > featureAccessLevel.NOT_ENABLED)
           this.buildsAccessLevel = featureAccessLevel.EVERYONE;
@@ -492,8 +480,6 @@ export default {
           this.metricsDashboardAccessLevel = featureAccessLevel.EVERYONE;
         if (this.requirementsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.requirementsAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.operationsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
-          this.operationsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.environmentsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.environmentsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.monitorAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
@@ -532,10 +518,6 @@ export default {
         toggleHiddenClassBySelector('.merge-requests-feature', false);
     },
 
-    operationsAccessLevel(value, oldValue) {
-      this.updateSubFeatureAccessLevel(value, oldValue);
-    },
-
     monitorAccessLevel(value, oldValue) {
       this.updateSubFeatureAccessLevel(value, oldValue);
     },
@@ -560,6 +542,22 @@ export default {
 
     visibilityAllowed(option) {
       return this.allowedVisibilityOptions.includes(option);
+    },
+    onPackageRegistryEnabledToggle(value) {
+      this.packageRegistryAccessLevel = value
+        ? this.packageRegistryAccessLevelDefault()
+        : featureAccessLevel.NOT_ENABLED;
+    },
+    onPackageRegistryApiForEveryoneEnabledToggle(value) {
+      this.packageRegistryAccessLevel = value
+        ? FEATURE_ACCESS_LEVEL_ANONYMOUS[0]
+        : this.packageRegistryAccessLevelDefault();
+    },
+    packageRegistryAccessLevelDefault() {
+      return (
+        PACKAGE_REGISTRY_ACCESS_LEVEL_DEFAULT_BY_PROJECT_VISIBILITY[this.visibilityLevel] ??
+        featureAccessLevel.NOT_ENABLED
+      );
     },
   },
 };
@@ -897,10 +895,36 @@ export default {
         :help-text="$options.i18n.packageRegistryHelpText"
         data-testid="package-registry-access-level"
       >
-        <project-feature-setting
-          v-model="packageRegistryAccessLevel"
+        <gl-toggle
+          class="gl-my-2"
+          :value="packageRegistryEnabled"
           :label="$options.i18n.packageRegistryLabel"
-          :options="packageRegistryFeatureAccessLevelOptions"
+          label-position="hidden"
+          name="package_registry_enabled"
+          @change="onPackageRegistryEnabledToggle"
+        />
+        <div
+          v-if="packageRegistryApiForEveryoneEnabledShown"
+          class="project-feature-setting-group gl-pl-7 gl-sm-pl-5 gl-my-3"
+        >
+          <project-setting-row
+            :label="$options.i18n.packageRegistryForEveryoneLabel"
+            :help-text="$options.i18n.packageRegistryForEveryoneHelpText"
+          >
+            <gl-toggle
+              class="gl-my-2"
+              :value="packageRegistryApiForEveryoneEnabled"
+              :disabled="!packageRegistryEnabled"
+              :label="$options.i18n.packageRegistryForEveryoneLabel"
+              label-position="hidden"
+              name="package_registry_api_for_everyone_enabled"
+              @change="onPackageRegistryApiForEveryoneEnabledToggle"
+            />
+          </project-setting-row>
+        </div>
+        <input
+          :value="packageRegistryAccessLevel"
+          type="hidden"
           name="project[project_feature_attributes][package_registry_access_level]"
         />
       </project-setting-row>
@@ -923,11 +947,10 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        v-if="splitOperationsEnabled"
         ref="monitor-settings"
         :label="$options.i18n.monitorLabel"
         :help-text="
-          s__('ProjectSettings|Configure your project resources and monitor their health.')
+          s__('ProjectSettings|Monitor the health of your project and respond to incidents.')
         "
       >
         <project-feature-setting
@@ -935,21 +958,6 @@ export default {
           :label="$options.i18n.monitorLabel"
           :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][monitor_access_level]"
-        />
-      </project-setting-row>
-      <project-setting-row
-        v-else
-        ref="operations-settings"
-        :label="$options.i18n.operationsLabel"
-        :help-text="
-          s__('ProjectSettings|Configure your project resources and monitor their health.')
-        "
-      >
-        <project-feature-setting
-          v-model="operationsAccessLevel"
-          :label="$options.i18n.operationsLabel"
-          :options="featureAccessLevelOptions"
-          name="project[project_feature_attributes][operations_access_level]"
         />
       </project-setting-row>
       <div class="project-feature-setting-group gl-pl-7 gl-sm-pl-5">
@@ -966,47 +974,45 @@ export default {
           />
         </project-setting-row>
       </div>
-      <template v-if="splitOperationsEnabled">
-        <project-setting-row
-          ref="environments-settings"
+      <project-setting-row
+        ref="environments-settings"
+        :label="$options.i18n.environmentsLabel"
+        :help-text="$options.i18n.environmentsHelpText"
+        :help-path="environmentsHelpPath"
+      >
+        <project-feature-setting
+          v-model="environmentsAccessLevel"
           :label="$options.i18n.environmentsLabel"
-          :help-text="$options.i18n.environmentsHelpText"
-          :help-path="environmentsHelpPath"
-        >
-          <project-feature-setting
-            v-model="environmentsAccessLevel"
-            :label="$options.i18n.environmentsLabel"
-            :options="featureAccessLevelOptions"
-            name="project[project_feature_attributes][environments_access_level]"
-          />
-        </project-setting-row>
-        <project-setting-row
-          ref="feature-flags-settings"
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][environments_access_level]"
+        />
+      </project-setting-row>
+      <project-setting-row
+        ref="feature-flags-settings"
+        :label="$options.i18n.featureFlagsLabel"
+        :help-text="$options.i18n.featureFlagsHelpText"
+        :help-path="featureFlagsHelpPath"
+      >
+        <project-feature-setting
+          v-model="featureFlagsAccessLevel"
           :label="$options.i18n.featureFlagsLabel"
-          :help-text="$options.i18n.featureFlagsHelpText"
-          :help-path="featureFlagsHelpPath"
-        >
-          <project-feature-setting
-            v-model="featureFlagsAccessLevel"
-            :label="$options.i18n.featureFlagsLabel"
-            :options="featureAccessLevelOptions"
-            name="project[project_feature_attributes][feature_flags_access_level]"
-          />
-        </project-setting-row>
-        <project-setting-row
-          ref="infrastructure-settings"
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][feature_flags_access_level]"
+        />
+      </project-setting-row>
+      <project-setting-row
+        ref="infrastructure-settings"
+        :label="$options.i18n.infrastructureLabel"
+        :help-text="$options.i18n.infrastructureHelpText"
+        :help-path="infrastructureHelpPath"
+      >
+        <project-feature-setting
+          v-model="infrastructureAccessLevel"
           :label="$options.i18n.infrastructureLabel"
-          :help-text="$options.i18n.infrastructureHelpText"
-          :help-path="infrastructureHelpPath"
-        >
-          <project-feature-setting
-            v-model="infrastructureAccessLevel"
-            :label="$options.i18n.infrastructureLabel"
-            :options="featureAccessLevelOptions"
-            name="project[project_feature_attributes][infrastructure_access_level]"
-          />
-        </project-setting-row>
-      </template>
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][infrastructure_access_level]"
+        />
+      </project-setting-row>
       <project-setting-row
         ref="releases-settings"
         :label="$options.i18n.releasesLabel"

@@ -15,6 +15,8 @@ class Import::GithubController < Import::BaseController
   rescue_from Octokit::TooManyRequests, with: :provider_rate_limit
   rescue_from Gitlab::GithubImport::RateLimitError, with: :rate_limit_threshold_exceeded
 
+  delegate :client, to: :client_proxy, private: true
+
   PAGE_LENGTH = 25
 
   def new
@@ -46,7 +48,22 @@ class Import::GithubController < Import::BaseController
     # Improving in https://gitlab.com/gitlab-org/gitlab-foss/issues/55585
     client_repos
 
-    super
+    respond_to do |format|
+      format.json do
+        render json: { imported_projects: serialized_imported_projects,
+                       provider_repos: serialized_provider_repos,
+                       incompatible_repos: serialized_incompatible_repos,
+                       page_info: client_repos_response[:page_info] }
+      end
+
+      format.html do
+        if params[:namespace_id].present?
+          @namespace = Namespace.find_by_id(params[:namespace_id])
+
+          render_404 unless current_user.can?(:create_projects, @namespace)
+        end
+      end
+    end
   end
 
   def create
@@ -126,24 +143,18 @@ class Import::GithubController < Import::BaseController
     end
   end
 
-  def client
-    @client ||= if Feature.enabled?(:remove_legacy_github_client)
-                  Gitlab::GithubImport::Client.new(session[access_token_key])
-                else
-                  Gitlab::LegacyGithubImport::Client.new(session[access_token_key], **client_options)
-                end
+  def client_proxy
+    @client_proxy ||= Gitlab::GithubImport::Clients::Proxy.new(
+      session[access_token_key], client_options
+    )
+  end
+
+  def client_repos_response
+    @client_repos_response ||= client_proxy.repos(sanitized_filter_param, pagination_options)
   end
 
   def client_repos
-    @client_repos ||= if Feature.enabled?(:remove_legacy_github_client)
-                        if sanitized_filter_param
-                          client.search_repos_by_name(sanitized_filter_param, pagination_options)[:items]
-                        else
-                          client.repos(pagination_options)
-                        end
-                      else
-                        filtered(client.repos)
-                      end
+    client_repos_response[:repos]
   end
 
   def sanitized_filter_param
@@ -213,6 +224,11 @@ class Import::GithubController < Import::BaseController
 
   def pagination_options
     {
+      before: params[:before].presence,
+      after: params[:after].presence,
+      first: PAGE_LENGTH,
+      # TODO: remove after rollout FF github_client_fetch_repos_via_graphql
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/385649
       page: [1, params[:page].to_i].max,
       per_page: PAGE_LENGTH
     }

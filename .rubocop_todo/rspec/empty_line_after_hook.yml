@@ -1,13 +1,11 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 RSpec/EmptyLineAfterHook:
   Exclude:
     - 'ee/spec/controllers/projects/integrations/zentao/issues_controller_spec.rb'
     - 'ee/spec/controllers/projects/push_rules_controller_spec.rb'
     - 'ee/spec/features/issues/user_bulk_edits_issues_spec.rb'
-    - 'ee/spec/features/profiles/usage_quotas_spec.rb'
     - 'ee/spec/lib/ee/api/entities/user_with_admin_spec.rb'
-    - 'ee/spec/lib/ee/audit/compliance_framework_changes_auditor_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'
     - 'ee/spec/lib/ee/gitlab/scim/provisioning_service_spec.rb'
     - 'ee/spec/lib/gitlab/audit/auditor_spec.rb'
@@ -16,17 +14,13 @@ RSpec/EmptyLineAfterHook:
     - 'ee/spec/models/ee/key_spec.rb'
     - 'ee/spec/models/project_spec.rb'
     - 'ee/spec/requests/api/users_spec.rb'
-    - 'ee/spec/requests/search_controller_spec.rb'
     - 'ee/spec/services/ci/sync_reports_to_approval_rules_service_spec.rb'
     - 'ee/spec/services/ee/gpg_keys/destroy_service_spec.rb'
-    - 'ee/spec/services/ee/two_factor/destroy_service_spec.rb'
     - 'ee/spec/services/external_status_checks/update_service_spec.rb'
     - 'ee/spec/services/group_saml/saml_group_links/destroy_service_spec.rb'
     - 'ee/spec/services/groups/memberships/export_service_spec.rb'
     - 'ee/spec/services/merge_requests/approval_service_spec.rb'
     - 'ee/spec/support/shared_examples/policies/protected_environments_shared_examples.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/1_manage/group/group_audit_logs_1_spec.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/1_manage/project/project_audit_logs_spec.rb'
     - 'qa/spec/specs/helpers/quarantine_spec.rb'
     - 'qa/spec/support/page_error_checker_spec.rb'
     - 'spec/controllers/admin/spam_logs_controller_spec.rb'

@@ -31,7 +31,6 @@ function factory(path, data = () => ({})) {
       glFeatures: {
         increasePageSizeExponentially: true,
         paginatedTreeGraphqlQuery: true,
-        lazyLoadCommits: true,
       },
     },
   });

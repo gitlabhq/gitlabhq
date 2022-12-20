@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SearchHelper do
+RSpec.describe SearchHelper, feature_category: :global_search do
   include MarkupHelper
   include BadgesHelper
 
@@ -58,6 +58,44 @@ RSpec.describe SearchHelper do
       it "includes the user's projects" do
         project = create(:project, namespace: create(:namespace, owner: user))
         expect(search_autocomplete_opts(project.name).size).to eq(1)
+      end
+
+      context 'for users' do
+        let_it_be(:another_user) { create(:user, name: 'Jane Doe') }
+        let(:term) { 'jane' }
+
+        it 'makes a call to SearchService' do
+          params = { search: term, per_page: 5, scope: 'users' }
+          expect(SearchService).to receive(:new).with(current_user, params).and_call_original
+
+          search_autocomplete_opts(term)
+        end
+
+        it 'returns users matching the term' do
+          result = search_autocomplete_opts(term)
+          expect(result.size).to eq(1)
+          expect(result.first[:id]).to eq(another_user.id)
+        end
+
+        context 'when current_user cannot read_users_list' do
+          before do
+            allow(Ability).to receive(:allowed?).and_return(true)
+            allow(Ability).to receive(:allowed?).with(current_user, :read_users_list).and_return(false)
+          end
+
+          it 'returns an empty array' do
+            expect(search_autocomplete_opts(term)).to eq([])
+          end
+        end
+
+        context 'with limiting' do
+          let!(:users) { create_list(:user, 6, name: 'Jane Doe') }
+
+          it 'only returns the first 5 users' do
+            result = search_autocomplete_opts(term)
+            expect(result.size).to eq(5)
+          end
+        end
       end
 
       it "includes the required project attrs" do
@@ -858,17 +896,18 @@ RSpec.describe SearchHelper do
     end
 
     context 'code' do
-      where(:feature_flag_tab_enabled, :show_elasticsearch_tabs, :project_search_tabs, :condition) do
-        false                           | false                   | false                  | false
-        true                            | true                    | true                   | true
-        true                            | false                   | false                  | false
-        false                           | true                    | false                  | false
-        false                           | false                   | true                   | true
-        true                            | false                   | true                   | true
+      where(:feature_flag_tab_enabled, :show_elasticsearch_tabs, :global_project, :project_search_tabs, :condition) do
+        false                           | false                   | nil            | false                | false
+        true                            | true                    | nil            | true                 | true
+        true                            | false                   | nil            | false                | false
+        false                           | true                    | nil            | false                | false
+        false                           | false                   | ref(:project)  | true                 | true
+        true                            | false                   | ref(:project)  | false                | false
       end
 
       with_them do
         it 'data item condition is set correctly' do
+          @project = global_project
           allow(search_service).to receive(:show_elasticsearch_tabs?).and_return(show_elasticsearch_tabs)
           allow(self).to receive(:feature_flag_tab_enabled?).with(:global_search_code_tab).and_return(feature_flag_tab_enabled)
           allow(self).to receive(:project_search_tabs?).with(:blobs).and_return(project_search_tabs)
@@ -879,16 +918,16 @@ RSpec.describe SearchHelper do
     end
 
     context 'issues' do
-      where(:feature_flag_tab_enabled, :project_search_tabs, :condition) do
-        false                           | false                  | false
-        true                            | true                   | true
-        true                            | false                  | true
-        false                           | true                   | true
+      where(:project_search_tabs, :global_search_issues_tab, :condition) do
+        false                     | false                    | false
+        false                     | true                     | true
+        true                      | false                    | true
+        true                      | true                     | true
       end
 
       with_them do
         it 'data item condition is set correctly' do
-          allow(self).to receive(:feature_flag_tab_enabled?).with(:global_search_issues_tab).and_return(feature_flag_tab_enabled)
+          allow(self).to receive(:feature_flag_tab_enabled?).with(:global_search_issues_tab).and_return(global_search_issues_tab)
           allow(self).to receive(:project_search_tabs?).with(:issues).and_return(project_search_tabs)
 
           expect(search_navigation[:issues][:condition]).to eq(condition)
@@ -897,11 +936,11 @@ RSpec.describe SearchHelper do
     end
 
     context 'merge requests' do
-      where(:feature_flag_tab_enabled, :project_search_tabs, :condition) do
-        false                           | false                  | false
-        true                            | true                   | true
-        true                            | false                  | true
-        false                           | true                   | true
+      where(:project_search_tabs, :feature_flag_tab_enabled, :condition) do
+        false                     | false                    | false
+        true                      | false                    | true
+        false                     | true                     | true
+        true                      | true                     | true
       end
 
       with_them do
@@ -915,16 +954,19 @@ RSpec.describe SearchHelper do
     end
 
     context 'wiki' do
-      where(:project_search_tabs, :show_elasticsearch_tabs, :condition) do
-        false                           | false                  | false
-        true                            | true                   | true
-        true                            | false                  | true
-        false                           | true                   | true
+      where(:global_search_wiki_tab, :show_elasticsearch_tabs, :global_project, :project_search_tabs, :condition) do
+        false                         | false                   | nil            | true                | true
+        false                         | false                   | nil            | false               | false
+        false                         | true                    | nil            | false               | false
+        true                          | false                   | nil            | false               | false
+        true                          | true                    | ref(:project)  | false               | false
       end
 
       with_them do
         it 'data item condition is set correctly' do
+          @project = global_project
           allow(search_service).to receive(:show_elasticsearch_tabs?).and_return(show_elasticsearch_tabs)
+          allow(self).to receive(:feature_flag_tab_enabled?).with(:global_search_wiki_tab).and_return(global_search_wiki_tab)
           allow(self).to receive(:project_search_tabs?).with(:wiki).and_return(project_search_tabs)
 
           expect(search_navigation[:wiki_blobs][:condition]).to eq(condition)
@@ -933,17 +975,20 @@ RSpec.describe SearchHelper do
     end
 
     context 'commits' do
-      where(:feature_flag_tab_enabled, :show_elasticsearch_tabs, :project_search_tabs, :condition) do
-        false                           | false                   | false                   | false
-        true                            | true                    | true                    | true
-        true                            | false                   | false                   | false
-        false                           | true                    | true                    | true
+      where(:global_search_commits_tab, :show_elasticsearch_tabs, :global_project, :project_search_tabs, :condition) do
+        false                           | false                   | nil            | true                | true
+        false                           | false                   | nil            | false               | false
+        false                           | true                    | nil            | false               | false
+        true                            | false                   | nil            | false               | false
+        true                            | true                    | ref(:project)  | false               | false
+        true                            | true                    | nil            | false               | true
       end
 
       with_them do
         it 'data item condition is set correctly' do
+          @project = global_project
           allow(search_service).to receive(:show_elasticsearch_tabs?).and_return(show_elasticsearch_tabs)
-          allow(self).to receive(:feature_flag_tab_enabled?).with(:global_search_commits_tab).and_return(feature_flag_tab_enabled)
+          allow(self).to receive(:feature_flag_tab_enabled?).with(:global_search_commits_tab).and_return(global_search_commits_tab)
           allow(self).to receive(:project_search_tabs?).with(:commits).and_return(project_search_tabs)
 
           expect(search_navigation[:commits][:condition]).to eq(condition)
@@ -952,11 +997,11 @@ RSpec.describe SearchHelper do
     end
 
     context 'comments' do
-      where(:show_elasticsearch_tabs, :project_search_tabs, :condition) do
-        true                       | true                | true
-        false                      | false               | false
-        true                       | false               | true
-        false                      | true                | true
+      where(:project_search_tabs, :show_elasticsearch_tabs, :condition) do
+        true                      | true                    | true
+        false                     | false                   | false
+        false                     | true                    | true
+        true                      | false                   | true
       end
 
       with_them do
@@ -1012,7 +1057,7 @@ RSpec.describe SearchHelper do
 
       with_them do
         it 'data item condition is set correctly' do
-          @show_snippets = global_show_snippets
+          allow(search_service).to receive(:show_snippets?).and_return(global_show_snippets)
           @project = global_project
 
           expect(search_navigation[:snippet_titles][:condition]).to eq(condition)
@@ -1063,9 +1108,9 @@ RSpec.describe SearchHelper do
       allow(self).to receive(:can?).and_return(true)
       allow(self).to receive(:project_search_tabs?).and_return(true)
       allow(self).to receive(:feature_flag_tab_enabled?).and_return(true)
-      allow(search_service).to receive(:show_elasticsearch_tabs?).and_return(true)
       allow(self).to receive(:feature_flag_tab_enabled?).and_return(true)
-      @show_snippets = true
+      allow(search_service).to receive(:show_elasticsearch_tabs?).and_return(true)
+      allow(search_service).to receive(:show_snippets?).and_return(true)
       @project = nil
     end
 

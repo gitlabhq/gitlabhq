@@ -110,6 +110,7 @@ You can't use these keywords as job names:
 - `true`
 - `false`
 - `nil`
+- `pages:deploy` configured for a `deploy` stage
 
 Job names must be 255 characters or fewer.
 

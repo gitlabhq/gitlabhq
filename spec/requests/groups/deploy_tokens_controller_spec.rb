@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::DeployTokensController do
+RSpec.describe Groups::DeployTokensController, feature_category: :continuous_delivery do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:deploy_token) { create(:deploy_token, :group, groups: [group]) }

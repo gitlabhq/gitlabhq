@@ -5,12 +5,12 @@ import Vue from 'vue';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
-import eventHub from '~/sidebar/event_hub';
-import Store from '~/sidebar/stores/sidebar_store';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import getMergeRequestReviewersQuery from '~/vue_shared/components/sidebar/queries/get_merge_request_reviewers.query.graphql';
-import mergeRequestReviewersUpdatedSubscription from '~/vue_shared/components/sidebar/queries/merge_request_reviewers.subscription.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import eventHub from '../../event_hub';
+import getMergeRequestReviewersQuery from '../../queries/get_merge_request_reviewers.query.graphql';
+import mergeRequestReviewersUpdatedSubscription from '../../queries/merge_request_reviewers.subscription.graphql';
+import Store from '../../stores/sidebar_store';
 import ReviewerTitle from './reviewer_title.vue';
 import Reviewers from './reviewers.vue';
 
@@ -143,6 +143,13 @@ export default {
     eventHub.$off('sidebar.saveReviewers', this.saveReviewers);
   },
   methods: {
+    reviewBySelf() {
+      // Notify gl dropdown that we are now assigning to current user
+      this.$el.parentElement.dispatchEvent(new Event('assignYourself'));
+
+      this.mediator.addSelfReview();
+      this.saveReviewers();
+    },
     saveReviewers() {
       this.loading = true;
 
@@ -181,6 +188,7 @@ export default {
       :editable="canUpdate"
       :issuable-type="issuableType"
       @request-review="requestReview"
+      @assign-self="reviewBySelf"
     />
   </div>
 </template>

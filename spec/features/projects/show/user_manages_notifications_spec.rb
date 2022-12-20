@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Show > User manages notifications', :js do
+RSpec.describe 'Projects > Show > User manages notifications', :js, feature_category: :projects do
   let(:project) { create(:project, :public, :repository) }
 
   before do
+    stub_feature_flags(vscode_web_ide: false)
     sign_in(project.first_owner)
   end
 
@@ -23,7 +24,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
     click_notifications_button
 
     page.within first('[data-testid="notification-dropdown"]') do
-      expect(page.find('.gl-new-dropdown-item.is-active')).to have_content('On mention')
+      expect(page.find('.gl-dropdown-item.is-active')).to have_content('On mention')
       expect(page).to have_css('[data-testid="notifications-icon"]')
     end
   end

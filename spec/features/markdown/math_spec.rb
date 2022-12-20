@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Math rendering', :js do
+RSpec.describe 'Math rendering', :js, feature_category: :team_planning do
   let!(:project) { create(:project, :public) }
 
   it 'renders inline and display math correctly' do

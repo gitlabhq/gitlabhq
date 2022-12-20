@@ -1,6 +1,6 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapActions } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import syntaxHighlight from '~/syntax_highlight';
 import { SYNTAX_HIGHLIGHT_CLASS } from '../constants';
 import utilsMixin from '../mixins/line_conflict_utils';

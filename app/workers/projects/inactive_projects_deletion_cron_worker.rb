@@ -22,9 +22,9 @@ module Projects
       return unless ::Gitlab::CurrentSettings.delete_inactive_projects?
 
       @start_time ||= ::Gitlab::Metrics::System.monotonic_time
-      admin_user = User.admins.active.first
+      admin_bot = ::User.admin_bot
 
-      return unless admin_user
+      return unless admin_bot
 
       notified_inactive_projects = Gitlab::InactiveProjectsDeletionWarningTracker.notified_projects
 
@@ -39,14 +39,14 @@ module Projects
             raise TimeoutError
           end
 
-          with_context(project: project, user: admin_user) do
+          with_context(project: project, user: admin_bot) do
             deletion_warning_email_sent_on = notified_inactive_projects["project:#{project.id}"]
 
             if send_deletion_warning_email?(deletion_warning_email_sent_on, project)
-              send_notification(project, admin_user)
+              send_notification(project, admin_bot)
             elsif deletion_warning_email_sent_on && delete_due_to_inactivity?(deletion_warning_email_sent_on)
               Gitlab::InactiveProjectsDeletionWarningTracker.new(project.id).reset
-              delete_project(project, admin_user)
+              delete_project(project, admin_bot)
             end
           end
         end

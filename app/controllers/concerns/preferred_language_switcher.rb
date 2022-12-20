@@ -16,3 +16,5 @@ module PreferredLanguageSwitcher
       Gitlab::CurrentSettings.default_preferred_language
   end
 end
+
+PreferredLanguageSwitcher.prepend_mod

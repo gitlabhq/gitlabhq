@@ -81,7 +81,7 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
 
       invite_member(user2.name, role: 'Developer')
 
-      invite_member(user2.name, role: 'Reporter', refresh: false)
+      invite_member(user2.name, role: 'Reporter')
 
       expect(page).not_to have_selector(invite_modal_selector)
 
@@ -101,7 +101,7 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
 
       invite_member(email, role: 'Developer')
 
-      invite_member(email, role: 'Reporter', refresh: false)
+      invite_member(email, role: 'Reporter')
 
       expect(page).not_to have_selector(invite_modal_selector)
 
@@ -127,7 +127,7 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
       it 'adds the user as a member on sub-entity with higher access level', :js do
         visit subentity_members_page_path
 
-        invite_member(user2.name, role: role, refresh: false)
+        invite_member(user2.name, role: role)
 
         expect(page).not_to have_selector(invite_modal_selector)
 
@@ -145,7 +145,7 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
       it 'fails with an error', :js do
         visit subentity_members_page_path
 
-        invite_member(user2.name, role: role, refresh: false)
+        invite_member(user2.name, role: role)
 
         invite_modal = page.find(invite_modal_selector)
         expect(invite_modal).to have_content "#{user2.name}: Access level should be greater than or equal to " \
@@ -177,7 +177,7 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
 
           visit subentity_members_page_path
 
-          invite_member([user2.name, user3.name, user4.name, user6.name, user7.name], role: role, refresh: false)
+          invite_member([user2.name, user3.name, user4.name, user6.name, user7.name], role: role)
 
           # we have more than 2 errors, so one will be hidden
           invite_modal = page.find(invite_modal_selector)
@@ -266,7 +266,7 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
         it 'only shows the error for an invalid formatted email and does not display other member errors', :js do
           visit subentity_members_page_path
 
-          invite_member([user2.name, user3.name, 'bad@email'], role: role, refresh: false)
+          invite_member([user2.name, user3.name, 'bad@email'], role: role)
 
           invite_modal = page.find(invite_modal_selector)
           expect(invite_modal).to have_text('email contains an invalid email address')

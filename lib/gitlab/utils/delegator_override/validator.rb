@@ -67,7 +67,7 @@ module Gitlab
 
           (delegator_class.instance_methods - allowlist).each do |method_name|
             target_classes.each do |target_class|
-              next unless target_class.instance_methods.include?(method_name)
+              next unless target_class.method_defined?(method_name)
 
               errors << generate_error(method_name, target_class, delegator_class)
             end

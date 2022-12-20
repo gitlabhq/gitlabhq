@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Statistics, 'Statistics' do
+RSpec.describe API::Statistics, 'Statistics', feature_category: :devops_reports do
   include ProjectForksHelper
   tables_to_analyze = %w[
     projects

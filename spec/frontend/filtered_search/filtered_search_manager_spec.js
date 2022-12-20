@@ -8,7 +8,7 @@ import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered
 import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { BACKSPACE_KEY_CODE, DELETE_KEY_CODE } from '~/lib/utils/keycodes';
 import { visitUrl, getParameterByName } from '~/lib/utils/url_utility';
 
@@ -130,14 +130,14 @@ describe('Filtered Search Manager', () => {
       manager = new FilteredSearchManager({ page });
     });
 
-    it('should not instantiate Flash if an RecentSearchesServiceError is caught', () => {
+    it('should not show an alert if an RecentSearchesServiceError is caught', () => {
       jest
         .spyOn(RecentSearchesService.prototype, 'fetch')
         .mockImplementation(() => Promise.reject(new RecentSearchesServiceError()));
 
       manager.setup();
 
-      expect(createFlash).not.toHaveBeenCalled();
+      expect(createAlert).not.toHaveBeenCalled();
     });
   });
 

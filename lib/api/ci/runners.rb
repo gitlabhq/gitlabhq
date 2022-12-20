@@ -58,19 +58,19 @@ module API
         end
 
         def authenticate_show_runner!(runner)
-          return if runner.instance_type? || current_user.admin?
+          return if runner.instance_type? || current_user.can_read_all_resources?
 
           forbidden!("No access granted") unless can?(current_user, :read_runner, runner)
         end
 
         def authenticate_update_runner!(runner)
-          return if current_user.admin?
+          return if current_user.can_admin_all_resources?
 
           forbidden!("No access granted") unless can?(current_user, :update_runner, runner)
         end
 
         def authenticate_delete_runner!(runner)
-          return if current_user.admin?
+          return if current_user.can_admin_all_resources?
 
           forbidden!("Runner associated with more than one project") if runner.runner_projects.count > 1
           forbidden!("No access granted") unless can?(current_user, :delete_runner, runner)
@@ -79,14 +79,14 @@ module API
         def authenticate_enable_runner!(runner)
           forbidden!("Runner is a group runner") if runner.group_type?
 
-          return if current_user.admin?
+          return if current_user.can_admin_all_resources?
 
           forbidden!("Runner is locked") if runner.locked?
           forbidden!("No access granted") unless can?(current_user, :assign_runner, runner)
         end
 
         def authenticate_list_runners_jobs!(runner)
-          return if current_user.admin?
+          return if current_user.can_read_all_resources?
 
           forbidden!("No access granted") unless can?(current_user, :read_builds, runner)
         end

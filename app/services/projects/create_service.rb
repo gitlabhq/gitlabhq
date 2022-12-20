@@ -317,6 +317,3 @@ module Projects
 end
 
 Projects::CreateService.prepend_mod_with('Projects::CreateService')
-
-# Measurable should be at the bottom of the ancestor chain, so it will measure execution of EE::Projects::CreateService as well
-Projects::CreateService.prepend(Measurable)

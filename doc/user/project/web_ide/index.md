@@ -10,6 +10,10 @@ The Web Integrated Development Environment (IDE) editor streamlines the process
 to contribute changes to your projects, by providing an advanced editor with
 commit staging.
 
+NOTE:
+The Web IDE is being updated to use VS Code. For details,
+see [Web IDE Beta](../web_ide_beta/index.md).
+
 ## Open the Web IDE
 
 Use the <kbd>.</kbd> [keyboard shortcut](../../shortcuts.md) to open the Web IDE.
@@ -80,7 +84,7 @@ If you are missing Syntax Highlighting support for any language, we prepared a s
 > - Full Solarized Dark Theme [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219228) in GitLab 13.1.
 > - Full [Solarized Light](https://gitlab.com/gitlab-org/gitlab/-/issues/221035) and [Monokai](https://gitlab.com/gitlab-org/gitlab/-/issues/221034) Themes introduced in GitLab 13.6.
 
-All the themes GitLab supports for syntax highlighting are applied to the Web IDE's entire screen.
+All the themes GitLab supports for syntax highlighting are applied to the entire Web IDE screen.
 You can pick a theme from your [profile preferences](../../profile/preferences.md).
 
 | Solarized Dark Theme                                        | Dark Theme                              |
@@ -459,12 +463,3 @@ The Web IDE has a few limitations:
 - If the terminal displays **Connection Failure**, then the terminal could not
   connect to the runner. Try to stop and restart the terminal. If the
   problem persists, double check your runner configuration.
-
-## VSCode Reimplementation
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
-
-As announced in [this blog post](https://about.gitlab.com/blog/2022/05/23/the-future-of-the-gitlab-web-ide/),
-the current implementation of the Web IDE will be replaced with a [VSCode inspired implementation](https://gitlab.com/groups/gitlab-org/-/epics/7683).
-
-This effort is currently under development. Follow [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7683) for updates and more information.

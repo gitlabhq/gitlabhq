@@ -16,7 +16,7 @@ RSpec.describe Groups::Settings::RepositoryController do
     let(:good_deploy_token_params) do
       {
         name: 'name',
-        expires_at: 1.day.from_now.to_s,
+        expires_at: 1.day.from_now.to_datetime.to_s,
         username: 'deployer',
         read_repository: '1',
         deploy_token_type: DeployToken.deploy_token_types[:group_type]

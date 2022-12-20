@@ -118,7 +118,7 @@ RSpec.describe BlobPresenter do
   end
 
   describe '#permalink_path' do
-    it { expect(presenter.permalink_path).to eq("/#{project.full_path}/-/blob/#{project.repository.commit.sha}/files/ruby/regex.rb") }
+    it { expect(presenter.permalink_path).to eq("/#{project.full_path}/-/blob/#{project.repository.commit(blob.commit_id).sha}/files/ruby/regex.rb") }
   end
 
   context 'environment has been deployed' do

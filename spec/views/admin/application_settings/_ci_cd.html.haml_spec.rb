@@ -14,7 +14,8 @@ RSpec.describe 'admin/application_settings/_ci_cd' do
       ci_pipeline_schedules: 40,
       ci_needs_size_limit: 50,
       ci_registered_group_runners: 60,
-      ci_registered_project_runners: 70
+      ci_registered_project_runners: 70,
+      pipeline_hierarchy_size: 300
     }
   end
 
@@ -58,6 +59,11 @@ RSpec.describe 'admin/application_settings/_ci_cd' do
 
       expect(rendered).to have_field('Maximum number of runners registered per project', type: 'number')
       expect(page.find_field('Maximum number of runners registered per project').value).to eq('70')
+
+      expect(rendered).to have_field("Maximum number of downstream pipelines in a pipeline's hierarchy tree",
+type: 'number')
+      expect(page.find_field("Maximum number of downstream pipelines in a pipeline's hierarchy tree").value)
+      .to eq('300')
     end
 
     it 'does not display the plan name when there is only one plan' do

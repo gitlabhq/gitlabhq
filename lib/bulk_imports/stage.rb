@@ -19,6 +19,8 @@ module BulkImports
 
     private
 
+    attr_reader :bulk_import, :bulk_import_entity
+
     def config
       # To be implemented in a sub-class
       NotImplementedError

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module SystemCheck
+  # Helpers used inside a SystemCheck instance to standardize output responses
   module Helpers
     include ::Gitlab::TaskHelpers
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-RSpec.describe API::Ml::Mlflow do
+RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
   include SessionHelpers
   include ApiHelpers
   include HttpBasicAuthHelpers
@@ -12,12 +12,13 @@ RSpec.describe API::Ml::Mlflow do
   let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
   let_it_be(:another_project) { build(:project).tap { |p| p.add_developer(developer) } }
   let_it_be(:experiment) do
-    create(:ml_experiments, user: project.creator, project: project)
+    create(:ml_experiments, :with_metadata, project: project)
   end
 
   let_it_be(:candidate) do
     create(:ml_candidates,
-           :with_metrics_and_params, user: experiment.user, start_time: 1234, experiment: experiment)
+           :with_metrics_and_params, :with_metadata,
+           user: experiment.user, start_time: 1234, experiment: experiment)
   end
 
   let_it_be(:tokens) do
@@ -151,7 +152,17 @@ RSpec.describe API::Ml::Mlflow do
                                            'experiment_id' => experiment_iid,
                                            'name' => experiment.name,
                                            'lifecycle_stage' => 'active',
-                                           'artifact_location' => 'not_implemented'
+                                           'artifact_location' => 'not_implemented',
+                                           'tags' => [
+                                             {
+                                               'key' => experiment.metadata[0].name,
+                                               'value' => experiment.metadata[0].value
+                                             },
+                                             {
+                                               'key' => experiment.metadata[1].name,
+                                               'value' => experiment.metadata[1].value
+                                             }
+                                           ]
                                          }
                                        })
     end
@@ -187,7 +198,17 @@ RSpec.describe API::Ml::Mlflow do
                                            'experiment_id' => experiment.iid.to_s,
                                            'name' => experiment.name,
                                            'lifecycle_stage' => 'active',
-                                           'artifact_location' => 'not_implemented'
+                                           'artifact_location' => 'not_implemented',
+                                           'tags' => [
+                                             {
+                                               'key' => experiment.metadata[0].name,
+                                               'value' => experiment.metadata[0].value
+                                             },
+                                             {
+                                               'key' => experiment.metadata[1].name,
+                                               'value' => experiment.metadata[1].value
+                                             }
+                                           ]
                                          ]
                                        })
     end
@@ -220,7 +241,17 @@ RSpec.describe API::Ml::Mlflow do
                                            'experiment_id' => experiment.iid.to_s,
                                            'name' => experiment_name,
                                            'lifecycle_stage' => 'active',
-                                           'artifact_location' => 'not_implemented'
+                                           'artifact_location' => 'not_implemented',
+                                           'tags' => [
+                                             {
+                                               'key' => experiment.metadata[0].name,
+                                               'value' => experiment.metadata[0].value
+                                             },
+                                             {
+                                               'key' => experiment.metadata[1].name,
+                                               'value' => experiment.metadata[1].value
+                                             }
+                                           ]
                                          }
                                        })
     end
@@ -284,10 +315,44 @@ RSpec.describe API::Ml::Mlflow do
     end
   end
 
+  describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/set-experiment-tag' do
+    let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/set-experiment-tag" }
+    let(:default_params) { { experiment_id: experiment.iid.to_s, key: 'some_key', value: 'value' } }
+    let(:params) { default_params }
+    let(:request) { post api(route), params: params, headers: headers }
+
+    it 'logs the tag', :aggregate_failures do
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_empty
+      expect(experiment.reload.metadata.map(&:name)).to include('some_key')
+    end
+
+    describe 'Error Cases' do
+      context 'when tag was already set' do
+        let(:params) { default_params.merge(key: experiment.metadata[0].name) }
+
+        it_behaves_like 'Bad Request'
+      end
+
+      it_behaves_like 'shared error cases'
+      it_behaves_like 'Requires api scope'
+      it_behaves_like 'Bad Request on missing required', [:key, :value]
+    end
+  end
+
   describe 'Runs' do
     describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/create' do
       let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/create" }
-      let(:params) { { experiment_id: experiment.iid.to_s, start_time: Time.now.to_i } }
+      let(:params) do
+        {
+          experiment_id: experiment.iid.to_s,
+          start_time: Time.now.to_i,
+          tags: [
+            { key: 'hello', value: 'world' }
+          ]
+        }
+      end
+
       let(:request) { post api(route), params: params, headers: headers }
 
       it 'creates the run', :aggregate_failures do
@@ -295,14 +360,18 @@ RSpec.describe API::Ml::Mlflow do
           'experiment_id' => params[:experiment_id],
           'user_id' => current_user.id.to_s,
           'start_time' => params[:start_time],
-          'status' => "RUNNING",
-          'lifecycle_stage' => "active"
+          'status' => 'RUNNING',
+          'lifecycle_stage' => 'active'
         }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('ml/run')
         expect(json_response['run']).to include('info' => hash_including(**expected_properties),
-                                                'data' => { 'metrics' => [], 'params' => [] })
+                                                'data' => {
+                                                  'metrics' => [],
+                                                  'params' => [],
+                                                  'tags' => [{ 'key' => 'hello', 'value' => 'world' }]
+                                                })
       end
 
       describe 'Error States' do
@@ -355,6 +424,10 @@ RSpec.describe API::Ml::Mlflow do
             'params' => [
               { 'key' => candidate.params[0].name, 'value' => candidate.params[0].value },
               { 'key' => candidate.params[1].name, 'value' => candidate.params[1].value }
+            ],
+            'tags' => [
+              { 'key' => 'metadata_1',  'value' => 'value1' },
+              { 'key' => 'metadata_2',  'value' => 'value2' }
             ]
           })
       end
@@ -454,6 +527,31 @@ RSpec.describe API::Ml::Mlflow do
       end
     end
 
+    describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/set-tag' do
+      let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/set-tag" }
+      let(:default_params) { { run_id: candidate.iid.to_s, key: 'some_key', value: 'value' } }
+      let(:request) { post api(route), params: params, headers: headers }
+
+      it 'logs the tag', :aggregate_failures do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
+        expect(candidate.reload.metadata.map(&:name)).to include('some_key')
+      end
+
+      describe 'Error Cases' do
+        context 'when tag was already logged' do
+          let(:params) { default_params.tap { |p| p[:key] = candidate.metadata[0].name } }
+
+          it_behaves_like 'Bad Request'
+        end
+
+        it_behaves_like 'shared error cases'
+        it_behaves_like 'Requires api scope'
+        it_behaves_like 'run_id param error cases'
+        it_behaves_like 'Bad Request on missing required', [:key, :value]
+      end
+    end
+
     describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-batch' do
       let(:candidate2) do
         create(:ml_candidates, user: experiment.user, start_time: 1234, experiment: experiment)
@@ -467,7 +565,8 @@ RSpec.describe API::Ml::Mlflow do
             { key: 'mae', value: 2.5, timestamp: 1552550804 },
             { key: 'rmse', value: 2.7, timestamp: 1552550804 }
           ],
-          params: [{ key: 'model_class', value: 'LogisticRegression' }]
+          params: [{ key: 'model_class', value: 'LogisticRegression' }],
+          tags: [{ key: 'tag1', value: 'tag.value.1' }]
         }
       end
 
@@ -477,6 +576,7 @@ RSpec.describe API::Ml::Mlflow do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_empty
         expect(candidate2.params.size).to eq(1)
+        expect(candidate2.metadata.size).to eq(1)
         expect(candidate2.metrics.size).to eq(2)
       end
 
@@ -490,6 +590,19 @@ RSpec.describe API::Ml::Mlflow do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(candidate2.params.size).to eq(1)
+        end
+      end
+
+      context 'when tag was already logged' do
+        let(:params) do
+          default_params.tap { |p| p[:tags] = [{ key: 'tag1', value: 'a' }, { key: 'tag1', value: 'b' }] }
+        end
+
+        it 'logs only 1', :aggregate_failures do
+          candidate.metadata.reload
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(candidate2.metadata.size).to eq(1)
         end
       end
 

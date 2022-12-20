@@ -435,6 +435,20 @@ describe('WorkItemAssignees component', () => {
 
       expect(findTokenSelector().props('containerClass')).toBe('gl-shadow-none!');
     });
+
+    it('calls the mutation for updating assignees with the correct input', async () => {
+      findTokenSelector().vm.$emit('input', [mockAssignees[1]]);
+      await waitForPromises();
+
+      expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith({
+        input: {
+          assigneesWidget: {
+            assigneeIds: [mockAssignees[1].id],
+          },
+          id: 'gid://gitlab/WorkItem/1',
+        },
+      });
+    });
   });
 
   describe('tracking', () => {

@@ -61,7 +61,7 @@ To add a user to a project:
 1. Select **Invite members**.
 1. Enter an email address and select a [role](../../permissions.md).
 1. Optional. Select an **Access expiration date**.
-   From that date onwards, the user can no longer access the project.
+   From that date onward, the user can no longer access the project.
 1. Select **Invite**.
 
 If the user has a GitLab account, they are added to the members list.
@@ -110,7 +110,7 @@ To add a group to a project:
 1. Select a group.
 1. Select the highest [role](../../permissions.md) for users in the group.
 1. Optional. Select an **Access expiration date**.
-   From that date onwards, the group can no longer access the project.
+   From that date onward, the group can no longer access the project.
 1. Select **Invite**.
 
 The members of the group are not displayed on the **Members** tab.

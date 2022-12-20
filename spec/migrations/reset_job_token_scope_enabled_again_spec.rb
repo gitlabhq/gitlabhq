@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe ResetJobTokenScopeEnabledAgain do
+RSpec.describe ResetJobTokenScopeEnabledAgain, feature_category: :continuous_integration do
   let(:settings) { table(:project_ci_cd_settings) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }

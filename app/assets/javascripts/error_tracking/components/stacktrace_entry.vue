@@ -1,5 +1,6 @@
 <script>
-import { GlTooltip, GlSprintf, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlTooltip, GlSprintf, GlIcon } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 

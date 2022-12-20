@@ -61,7 +61,6 @@ export const leftSidebarViews = {
 };
 
 export const rightSidebarViews = {
-  switchEditors: { name: 'switch-editors', keepAlive: true },
   pipelines: { name: 'pipelines-list', keepAlive: true },
   jobsDetail: { name: 'jobs-detail', keepAlive: false },
   mergeRequestInfo: { name: 'merge-request-info', keepAlive: true },
@@ -119,3 +118,5 @@ export const DEFAULT_BRANCH = 'main';
 // Ping Usage Metrics Keys
 export const PING_USAGE_PREVIEW_KEY = 'web_ide_clientside_preview';
 export const PING_USAGE_PREVIEW_SUCCESS_KEY = 'web_ide_clientside_preview_success';
+
+export const GITLAB_WEB_IDE_FEEDBACK_ISSUE = 'https://gitlab.com/gitlab-org/gitlab/-/issues/377367';

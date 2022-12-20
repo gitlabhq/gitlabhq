@@ -1,4 +1,4 @@
-- name: "Deprecate custom Geo:db:* Rake tasks"
+- title: "Deprecate custom Geo:db:* Rake tasks"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
   removal_milestone: "15.0"

@@ -1,0 +1,56 @@
+{
+    "kind": "ServiceList",
+    "apiVersion": "v1",
+    "metadata": {
+        "selfLink": "/api/v1/services",
+        "resourceVersion": "59"
+    },
+    "items": [
+        {
+            "metadata": {
+                "name": "kubernetes",
+                "namespace": "default",
+                "selfLink": "/api/v1/services/kubernetes?namespace=default",
+                "uid": "016e9dcd-ce39-11e4-ac24-3c970e4a436a",
+                "resourceVersion": "6",
+                "creationTimestamp": "2015-03-19T15:08:16+02:00",
+                "labels": {
+                    "component": "apiserver",
+                    "provider": "kubernetes"
+                }
+            },
+            "spec": {
+                "port": 443,
+                "protocol": "TCP",
+                "selector": null,
+                "clusterIP": "10.0.0.2",
+                "containerPort": 0,
+                "sessionAffinity": "None"
+            },
+            "status": {}
+        },
+        {
+            "metadata": {
+                "name": "kubernetes-ro",
+                "namespace": "default",
+                "selfLink": "/api/v1/services/kubernetes-ro?namespace=default",
+                "uid": "015b78bf-ce39-11e4-ac24-3c970e4a436a",
+                "resourceVersion": "5",
+                "creationTimestamp": "2015-03-19T15:08:15+02:00",
+                "labels": {
+                    "component": "apiserver",
+                    "provider": "kubernetes"
+                }
+            },
+            "spec": {
+                "port": 80,
+                "protocol": "TCP",
+                "selector": null,
+                "clusterIP": "10.0.0.1",
+                "containerPort": 0,
+                "sessionAffinity": "None"
+            },
+            "status": {}
+        }
+    ]
+}

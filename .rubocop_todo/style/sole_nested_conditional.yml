@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/SoleNestedConditional:
   Exclude:
     - 'app/controllers/admin/application_settings_controller.rb'
@@ -24,7 +24,6 @@ Style/SoleNestedConditional:
     - 'app/services/projects/create_service.rb'
     - 'app/services/projects/hashed_storage/migration_service.rb'
     - 'app/services/projects/hashed_storage/rollback_service.rb'
-    - 'app/workers/merge_requests/delete_source_branch_worker.rb'
     - 'ee/app/finders/ee/snippets_finder.rb'
     - 'ee/app/services/ee/issue_links/create_service.rb'
     - 'ee/app/services/ee/lfs/unlock_file_service.rb'
@@ -39,7 +38,6 @@ Style/SoleNestedConditional:
     - 'ee/lib/elastic/latest/application_class_proxy.rb'
     - 'ee/lib/elastic/latest/issue_class_proxy.rb'
     - 'ee/lib/gitlab/code_owners/groups_loader.rb'
-    - 'lib/api/ci/helpers/runner.rb'
     - 'lib/api/deploy_keys.rb'
     - 'lib/api/helpers/label_helpers.rb'
     - 'lib/api/maven_packages.rb'

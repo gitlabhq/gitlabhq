@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Cluster agent registration', :js do
+RSpec.describe 'Cluster agent registration', :js, feature_category: :kubernetes_management do
   let_it_be(:project) { create(:project, :custom_repo, files: { '.gitlab/agents/example-agent-1/config.yaml' => '' }) }
   let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
   let_it_be(:token) { Devise.friendly_token }
@@ -30,8 +30,8 @@ RSpec.describe 'Cluster agent registration', :js do
     click_button('Connect a cluster')
     expect(page).to have_content('Register')
 
-    click_button('Select an agent')
-    click_button('example-agent-2')
+    click_button('Select an agent or enter a name to create new')
+    page.find('li', text: 'example-agent-2').click
     click_button('Register')
 
     expect(page).to have_content('You cannot see this token again after you close this window.')

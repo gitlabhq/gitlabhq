@@ -8,6 +8,8 @@ module QA
       class TestMetricsFormatter < RSpec::Core::Formatters::BaseFormatter
         include Support::InfluxdbTools
 
+        CUSTOM_METRICS_KEY = :custom_test_metrics
+
         RSpec::Core::Formatters.register(self, :stop)
 
         # Finish test execution
@@ -19,15 +21,14 @@ module QA
 
           parse_execution_data(notification.examples)
 
-          if Runtime::Env.export_metrics?
-            push_test_metrics
-            push_fabrication_metrics
-          end
-
-          save_test_metrics if Runtime::Env.save_metrics_json?
+          push_test_metrics
+          push_fabrication_metrics
+          save_test_metrics
         end
 
         private
+
+        delegate :export_metrics?, :save_metrics_json?, :ci_job_url, :ci_job_name, to: "QA::Runtime::Env"
 
         # Save execution data for the run
         #
@@ -42,6 +43,8 @@ module QA
         #
         # @return [void]
         def push_test_metrics
+          return log(:debug, "Metrics export not enabled, skipping test metrics export") unless export_metrics?
+
           write_api.write(data: execution_data)
           log(:debug, "Pushed #{execution_data.length} test execution entries to influxdb")
         rescue StandardError => e
@@ -52,6 +55,8 @@ module QA
         #
         # @return [void]
         def push_fabrication_metrics
+          return log(:debug, "Metrics export not enabled, skipping fabrication metrics export") unless export_metrics?
+
           data = Tools::TestResourceDataProcessor.resources.flat_map do |resource, values|
             values.map { |v| fabrication_stats(resource: resource, **v) }
           end
@@ -67,6 +72,8 @@ module QA
         #
         # @return [void]
         def save_test_metrics
+          return log(:debug, "Saving test metrics json not enabled, skipping") unless save_metrics_json?
+
           File.write("tmp/test-metrics-#{env('CI_JOB_NAME_SLUG') || 'local'}.json", execution_data.to_json)
         rescue StandardError => e
           log(:error, "Failed to save test execution metrics, error: #{e}")
@@ -101,7 +108,8 @@ module QA
               run_type: run_type,
               stage: devops_stage(file_path),
               product_group: example.metadata[:product_group],
-              testcase: example.metadata[:testcase]
+              testcase: example.metadata[:testcase],
+              **custom_metrics_tags(example.metadata)
             },
             fields: {
               id: example.id,
@@ -110,11 +118,12 @@ module QA
               ui_fabrication: ui_fabrication,
               total_fabrication: api_fabrication + ui_fabrication,
               retry_attempts: retry_attempts(example.metadata),
-              job_url: QA::Runtime::Env.ci_job_url,
+              job_url: ci_job_url,
               pipeline_url: env('CI_PIPELINE_URL'),
               pipeline_id: env('CI_PIPELINE_ID'),
               job_id: env('CI_JOB_ID'),
-              merge_request_iid: merge_request_iid
+              merge_request_iid: merge_request_iid,
+              **custom_metrics_fields(example.metadata)
             }
           }
         rescue StandardError => e
@@ -139,13 +148,13 @@ module QA
               resource: resource,
               fabrication_method: fabrication_method,
               http_method: http_method,
-              run_type: env('QA_RUN_TYPE') || run_type,
+              run_type: run_type,
               merge_request: merge_request
             },
             fields: {
               fabrication_time: fabrication_time,
               info: info,
-              job_url: QA::Runtime::Env.ci_job_url,
+              job_url: ci_job_url,
               timestamp: timestamp
             }
           }
@@ -155,7 +164,7 @@ module QA
         #
         # @return [String]
         def job_name
-          @job_name ||= QA::Runtime::Env.ci_job_name&.gsub(%r{ \d{1,2}/\d{1,2}}, '')
+          @job_name ||= ci_job_name&.gsub(%r{ \d{1,2}/\d{1,2}}, '')
         end
 
         # Single common timestamp for all exported example metrics to keep data points consistently grouped
@@ -218,6 +227,40 @@ module QA
         # @return [Integer]
         def retry_attempts(metadata)
           metadata[:retry_attempts] || 0
+        end
+
+        # Additional custom metrics tags
+        #
+        # @param [Hash] metadata
+        # @return [Hash]
+        def custom_metrics_tags(metadata)
+          custom_metrics(metadata, :tags)
+        end
+
+        # Additional custom metrics fields
+        #
+        # @param [Hash] metadata
+        # @return [Hash]
+        def custom_metrics_fields(metadata)
+          custom_metrics(metadata, :fields)
+        end
+
+        # Custom test metrics
+        #
+        # @param [Hash] metadata
+        # @param [Symbol] type type of metric, :fields or :tags
+        # @return [Hash]
+        def custom_metrics(metadata, type)
+          custom_metrics = metadata[CUSTOM_METRICS_KEY]
+          return {} unless custom_metrics
+          return {} unless custom_metrics.is_a?(Hash) && custom_metrics[type].is_a?(Hash)
+
+          custom_metrics[type].to_h do |key, value|
+            k = key.to_sym
+            v = value.is_a?(Numeric) || value.nil? ? value : value.to_s
+
+            [k, v]
+          end
         end
 
         # Print log message

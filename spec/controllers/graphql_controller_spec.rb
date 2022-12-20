@@ -47,6 +47,23 @@ RSpec.describe GraphqlController do
                                              'raisedAt' => /graphql_controller_spec.rb/))
       )
     end
+
+    it 'handles Gitlab::Auth::TooManyIps', :aggregate_failures do
+      allow(controller).to receive(:execute) do
+        raise Gitlab::Auth::TooManyIps.new(150, '123.123.123.123', 10)
+      end
+
+      expect(controller).to receive(:log_exception).and_call_original
+
+      post :execute
+
+      expect(json_response).to include(
+        'errors' => include(
+          a_hash_including('message' => 'User 150 from IP: 123.123.123.123 tried logging from too many ips: 10')
+        )
+      )
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
   end
 
   describe 'POST #execute' do
@@ -191,7 +208,7 @@ RSpec.describe GraphqlController do
 
         expected_message = "Authentication error: " \
         "enable 2FA in your profile settings to continue using GitLab: %{mfa_help_page}" %
-        { mfa_help_page: EnforcesTwoFactorAuthentication::MFA_HELP_PAGE }
+          { mfa_help_page: controller.mfa_help_page_url }
 
         expect(json_response).to eq({ 'errors' => [{ 'message' => expected_message }] })
       end

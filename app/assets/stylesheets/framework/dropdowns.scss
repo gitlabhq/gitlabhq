@@ -5,7 +5,7 @@
   // for Snippets is introduced and Clone button is relocated, we won't
   // need this style.
   // Issue for the refactoring: https://gitlab.com/gitlab-org/gitlab/-/issues/213327
-  &.gl-new-dropdown button.dropdown-toggle {
+  &.gl-dropdown button.dropdown-toggle {
     @include gl-display-inline-flex;
   }
 
@@ -41,7 +41,7 @@
       max-height: $extended-max-height;
 
       // See comment below for explanation
-      .gl-new-dropdown-inner {
+      .gl-dropdown-inner {
         max-height: $extended-max-height - 2px;
       }
     }
@@ -54,12 +54,12 @@
       width: 100%;
     }
 
-    // `GlDropdown` specifies the `max-height` of `.gl-new-dropdown-inner`
+    // `GlDropdown` specifies the `max-height` of `.gl-dropdown-inner`
     // as `$dropdown-max-height`, but the `max-height` rule above forces
     // the parent `.dropdown-menu` to be _slightly_ too small because of
     // the 1px borders. The workaround below overrides the @gitlab/ui style
     // to avoid a double scroll bar.
-    .gl-new-dropdown-inner {
+    .gl-dropdown-inner {
       max-height: $dropdown-max-height - 2px;
     }
   }
@@ -285,7 +285,7 @@
     list-style: none;
 
     > a,
-    button,
+    > button,
     .gl-button.btn-link,
     .menu-item {
       @include dropdown-link;
@@ -1027,7 +1027,7 @@
 
 // This class won't be needed once we can add a prop for this in the GitLab UI component
 // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/966
-.gl-new-dropdown {
+.gl-dropdown {
   .gl-dropdown-menu-wide {
     width: $gl-dropdown-width-wide;
   }
@@ -1035,7 +1035,7 @@
 
 // This class won't be needed once we can add a prop for this in the GitLab UI component
 // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/966
-.gl-new-dropdown.gl-dropdown-menu-full-width {
+.gl-dropdown.gl-dropdown-menu-full-width {
   .dropdown-menu {
     width: 100%;
   }

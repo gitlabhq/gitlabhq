@@ -55,7 +55,7 @@ RSpec.shared_examples 'incident management label service' do
 
     shared_examples 'existing label' do
       it 'returns the existing label' do
-        expect { execute }.not_to change(Label, :count)
+        expect { execute }.not_to change { Label.count }
 
         expect(execute).to be_success
         expect(execute.payload).to eq(label: label)
@@ -64,7 +64,7 @@ RSpec.shared_examples 'incident management label service' do
 
     shared_examples 'new label' do
       it 'creates a new label' do
-        expect { execute }.to change(Label, :count).by(1)
+        expect { execute }.to change { Label.count }.by(1)
 
         label = project.reload.labels.last
         expect(execute).to be_success

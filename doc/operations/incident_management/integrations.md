@@ -164,7 +164,7 @@ curl --request POST \
 The authorization key can be used as the `password`. The `username` is left blank:
 
 - username: `<blank>`
-- password: authorization_key
+- password: `<authorization_key>`
 
 ```shell
 curl --request POST \
@@ -249,7 +249,7 @@ receives a payload with the end time of the alert set. For HTTP Endpoints
 without [custom mappings](#map-fields-in-custom-alerts), the expected
 field is `end_time`. With custom mappings, you can select the expected field.
 
-You can also configure the associated [incident to be closed automatically](../incident_management/incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.
+You can also configure the associated [incident to be closed automatically](../incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.
 
 ## Link to your Opsgenie Alerts **(PREMIUM)**
 

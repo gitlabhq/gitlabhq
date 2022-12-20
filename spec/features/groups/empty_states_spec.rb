@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group empty states' do
+RSpec.describe 'Group empty states', feature_category: :subgroups do
   let(:group) { create(:group) }
   let(:user) { create(:group_member, :developer, user: create(:user), group: group).user }
 

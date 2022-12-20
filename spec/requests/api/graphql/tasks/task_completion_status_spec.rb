@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting task completion status information' do
+RSpec.describe 'getting task completion status information', feature_category: :team_planning do
   include GraphqlHelpers
 
   description_0_done = '- [ ] task 1\n- [ ] task 2'

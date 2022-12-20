@@ -29,7 +29,7 @@ To learn how the GitLab Strategic Marketing department uses GitLab issues with [
 
 ## Related topics
 
-- [Create issues](managing_issues.md#create-an-issue)
+- [Create issues](create_issues.md)
 - [Create an issue from a template](../../project/description_templates.md#use-the-templates)
 - [Edit issues](managing_issues.md#edit-an-issue)
 - [Move issues](managing_issues.md#move-an-issue)

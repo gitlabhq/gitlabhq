@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/AccessorGrouping:
   Exclude:
     - 'app/finders/template_finder.rb'
@@ -57,7 +57,6 @@ Style/AccessorGrouping:
     - 'lib/gitlab/http_io.rb'
     - 'lib/gitlab/import_export/group/legacy_tree_restorer.rb'
     - 'lib/gitlab/import_export/project/tree_restorer.rb'
-    - 'lib/gitlab/merge_requests/commit_message_generator.rb'
     - 'lib/gitlab/sidekiq_daemon/monitor.rb'
     - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job.rb'
     - 'lib/gitlab/suggestions/file_suggestion.rb'

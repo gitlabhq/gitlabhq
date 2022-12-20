@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees diff', :js do
+RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_review do
   include ProjectForksHelper
   include RepoHelpers
   include MergeRequestDiffHelpers

@@ -139,7 +139,7 @@ RSpec.describe Gitlab::Database do
   describe '.db_config_for_connection' do
     context 'when the regular connection is used' do
       it 'returns db_config' do
-        connection = ActiveRecord::Base.retrieve_connection
+        connection = ApplicationRecord.retrieve_connection
 
         expect(described_class.db_config_for_connection(connection)).to eq(connection.pool.db_config)
       end
@@ -147,12 +147,15 @@ RSpec.describe Gitlab::Database do
 
     context 'when the connection is LoadBalancing::ConnectionProxy', :database_replica do
       it 'returns primary db config even if ambiguous queries default to replica' do
-        Gitlab::Database::LoadBalancing::Session.current.use_primary!
-        primary_config = described_class.db_config_for_connection(ActiveRecord::Base.connection)
+        Gitlab::Database.database_base_models_using_load_balancing.each_value do |database_base_model|
+          connection = database_base_model.connection
+          Gitlab::Database::LoadBalancing::Session.current.use_primary!
+          primary_config = described_class.db_config_for_connection(connection)
 
-        Gitlab::Database::LoadBalancing::Session.clear_session
-        Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
-          expect(described_class.db_config_for_connection(ActiveRecord::Base.connection)).to eq(primary_config)
+          Gitlab::Database::LoadBalancing::Session.clear_session
+          Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
+            expect(described_class.db_config_for_connection(connection)).to eq(primary_config)
+          end
         end
       end
     end
@@ -180,10 +183,15 @@ RSpec.describe Gitlab::Database do
     end
 
     context 'when replicas are configured', :database_replica do
-      it 'returns the name for a replica' do
-        replica = ActiveRecord::Base.load_balancer.host
-
+      it 'returns the main_replica for a main database replica' do
+        replica = ApplicationRecord.load_balancer.host
         expect(described_class.db_config_name(replica)).to eq('main_replica')
+      end
+
+      it 'returns the ci_replica for a ci database replica' do
+        skip_if_multiple_databases_not_setup
+        replica = Ci::ApplicationRecord.load_balancer.host
+        expect(described_class.db_config_name(replica)).to eq('ci_replica')
       end
     end
   end
@@ -214,13 +222,17 @@ RSpec.describe Gitlab::Database do
       expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).to include(:gitlab_ci, :gitlab_shared)
     end
 
+    # rubocop:disable Database/MultipleDatabases
     it 'does return gitlab_ci when a ActiveRecord::Base is using CI connection' do
       with_reestablished_active_record_base do
         reconfigure_db_connection(model: ActiveRecord::Base, config_model: Ci::Build)
 
-        expect(described_class.gitlab_schemas_for_connection(ActiveRecord::Base.connection)).to include(:gitlab_ci, :gitlab_shared)
+        expect(
+          described_class.gitlab_schemas_for_connection(ActiveRecord::Base.connection)
+        ).to include(:gitlab_ci, :gitlab_shared)
       end
     end
+    # rubocop:enable Database/MultipleDatabases
 
     it 'does return a valid schema for a replica connection' do
       with_replica_pool_for(ActiveRecord::Base) do |main_replica_pool|
@@ -281,7 +293,8 @@ RSpec.describe Gitlab::Database do
 
     it 'does return empty for non-adopted connections' do
       new_connection = ActiveRecord::Base.postgresql_connection(
-        ActiveRecord::Base.connection_db_config.configuration_hash)
+        ActiveRecord::Base.connection_db_config.configuration_hash # rubocop:disable Database/MultipleDatabases
+      )
 
       expect(described_class.gitlab_schemas_for_connection(new_connection)).to be_nil
     ensure
@@ -405,7 +418,7 @@ RSpec.describe Gitlab::Database do
     context 'within a transaction block' do
       it 'publishes a transaction event' do
         events = subscribe_events do
-          ActiveRecord::Base.transaction do
+          ApplicationRecord.transaction do
             User.first
           end
         end
@@ -424,10 +437,11 @@ RSpec.describe Gitlab::Database do
     context 'within an empty transaction block' do
       it 'publishes a transaction event' do
         events = subscribe_events do
-          ActiveRecord::Base.transaction {}
+          ApplicationRecord.transaction {}
+          Ci::ApplicationRecord.transaction {}
         end
 
-        expect(events.length).to be(1)
+        expect(events.length).to be(2)
 
         event = events.first
         expect(event).not_to be_nil
@@ -441,9 +455,9 @@ RSpec.describe Gitlab::Database do
     context 'within a nested transaction block' do
       it 'publishes multiple transaction events' do
         events = subscribe_events do
-          ActiveRecord::Base.transaction do
-            ActiveRecord::Base.transaction do
-              ActiveRecord::Base.transaction do
+          ApplicationRecord.transaction do
+            ApplicationRecord.transaction do
+              ApplicationRecord.transaction do
                 User.first
               end
             end
@@ -465,7 +479,7 @@ RSpec.describe Gitlab::Database do
     context 'within a cancelled transaction block' do
       it 'publishes multiple transaction events' do
         events = subscribe_events do
-          ActiveRecord::Base.transaction do
+          ApplicationRecord.transaction do
             User.first
             raise ActiveRecord::Rollback
           end

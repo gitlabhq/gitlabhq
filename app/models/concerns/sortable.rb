@@ -72,7 +72,7 @@ module Sortable
 
     private
 
-    def highest_label_priority(target_type_column: nil, target_type: nil, target_column:, project_column:, excluded_labels: [])
+    def highest_label_priority(target_column:, project_column:, target_type_column: nil, target_type: nil, excluded_labels: [])
       query = Label.select(LabelPriority.arel_table[:priority].minimum.as('label_priority'))
         .left_join_priorities
         .joins(:label_links)

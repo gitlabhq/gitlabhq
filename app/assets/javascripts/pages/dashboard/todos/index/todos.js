@@ -6,9 +6,7 @@ import { getProjects } from '~/api/projects_api';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { isMetaClick } from '~/lib/utils/common_utils';
 import { addDelimiter } from '~/lib/utils/text_utility';
-import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import UsersSelect from '~/users_select';
 
@@ -34,10 +32,6 @@ export default class Todos {
     document.querySelectorAll('.js-todos-mark-all, .js-todos-undo-all').forEach((el) => {
       el.removeEventListener('click', this.updateallStateClickedWrapper);
     });
-    document.querySelectorAll('.todo').forEach((el) => {
-      el.removeEventListener('click', this.goToTodoUrl);
-      el.removeEventListener('auxclick', this.goToTodoUrl);
-    });
   }
 
   bindEvents() {
@@ -49,10 +43,6 @@ export default class Todos {
     });
     document.querySelectorAll('.js-todos-mark-all, .js-todos-undo-all').forEach((el) => {
       el.addEventListener('click', this.updateAllStateClickedWrapper);
-    });
-    document.querySelectorAll('.todo').forEach((el) => {
-      el.addEventListener('click', this.goToTodoUrl);
-      el.addEventListener('auxclick', this.goToTodoUrl);
     });
   }
 
@@ -106,19 +96,22 @@ export default class Todos {
     e.stopPropagation();
     e.preventDefault();
 
-    const { target } = e;
-    target.setAttribute('disabled', true);
-    target.classList.add('disabled');
+    let { currentTarget } = e;
+    if (currentTarget.tagName === 'svg' || currentTarget.tagName === 'use') {
+      currentTarget = currentTarget.closest('a');
+    }
+    currentTarget.setAttribute('disabled', true);
+    currentTarget.classList.add('disabled');
 
-    target.querySelector('.gl-spinner-container').classList.add('gl-mr-2');
+    currentTarget.querySelector('.js-todo-button-icon').classList.add('hidden');
 
-    axios[target.dataset.method](target.dataset.href)
+    axios[currentTarget.dataset.method](currentTarget.href)
       .then(({ data }) => {
-        this.updateRowState(target);
+        this.updateRowState(currentTarget);
         this.updateBadges(data);
       })
       .catch(() => {
-        this.updateRowState(target, true);
+        this.updateRowState(currentTarget, true);
         return createAlert({
           message: __('Error updating status of to-do item.'),
         });
@@ -134,7 +127,7 @@ export default class Todos {
     target.removeAttribute('disabled');
     target.classList.remove('disabled');
 
-    target.querySelector('.gl-spinner-container').classList.remove('gl-mr-2');
+    target.querySelector('.js-todo-button-icon').classList.remove('hidden');
 
     if (isInactive === true) {
       restoreBtn.classList.add('hidden');
@@ -208,26 +201,5 @@ export default class Todos {
     document.querySelector('.js-todos-done .js-todos-badge').innerHTML = addDelimiter(
       data.done_count,
     );
-  }
-
-  goToTodoUrl(e) {
-    const todoLink = this.dataset.url;
-
-    if (!todoLink || e.target.closest('a')) {
-      return;
-    }
-
-    e.stopPropagation();
-    e.preventDefault();
-
-    const isPrimaryClick = e.button === 0;
-
-    if (isMetaClick(e)) {
-      const windowTarget = '_blank';
-
-      window.open(todoLink, windowTarget);
-    } else if (isPrimaryClick) {
-      visitUrl(todoLink);
-    }
   }
 }

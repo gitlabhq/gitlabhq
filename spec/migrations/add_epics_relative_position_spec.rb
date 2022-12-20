@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe AddEpicsRelativePosition, :migration do
+RSpec.describe AddEpicsRelativePosition, :migration, feature_category: :portfolio_management do
   let(:groups) { table(:namespaces) }
   let(:epics) { table(:epics) }
   let(:users) { table(:users) }

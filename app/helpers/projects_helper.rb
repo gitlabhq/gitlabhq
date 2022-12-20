@@ -142,6 +142,8 @@ module ProjectsHelper
   end
 
   def project_search_tabs?(tab)
+    return false unless @project.present?
+
     abilities = Array(search_tab_ability_map[tab])
 
     abilities.any? { |ability| can?(current_user, ability, @project) }
@@ -254,11 +256,8 @@ module ProjectsHelper
     end
   end
 
-  # TODO: Remove this method when removing the feature flag
-  # https://gitlab.com/gitlab-org/gitlab/merge_requests/11209#note_162234863
-  # make sure to remove from the EE specific controller as well: ee/app/controllers/ee/dashboard/projects_controller.rb
   def show_projects?(projects, params)
-    Feature.enabled?(:project_list_filter_bar) || !!(params[:personal] || params[:name] || any_projects?(projects))
+    !!(params[:personal] || params[:name] || params[:language] || any_projects?(projects))
   end
 
   def push_to_create_project_command(user = current_user)
@@ -465,9 +464,9 @@ module ProjectsHelper
   def project_coverage_chart_data_attributes(daily_coverage_options, ref)
     {
       graph_endpoint: "#{daily_coverage_options[:graph_api_path]}?#{daily_coverage_options[:base_params].to_query}",
-      graph_start_date: "#{daily_coverage_options[:base_params][:start_date].strftime('%b %d')}",
-      graph_end_date: "#{daily_coverage_options[:base_params][:end_date].strftime('%b %d')}",
-      graph_ref: "#{ref}",
+      graph_start_date: daily_coverage_options[:base_params][:start_date].strftime('%b %d'),
+      graph_end_date: daily_coverage_options[:base_params][:end_date].strftime('%b %d'),
+      graph_ref: ref.to_s,
       graph_csv_path: "#{daily_coverage_options[:download_path]}?#{daily_coverage_options[:base_params].to_query}"
     }
   end
@@ -478,6 +477,32 @@ module ProjectsHelper
 
   def badge_count(number)
     format_cached_count(1000, number)
+  end
+
+  def fork_divergence_message(counts)
+    messages = []
+
+    if counts[:behind].nil? || counts[:ahead].nil?
+      return s_('ForksDivergence|Fork has diverged from upstream repository')
+    end
+
+    if counts[:behind] > 0
+      messages << s_("ForksDivergence|%{behind} %{commit_word} behind") % {
+        behind: counts[:behind], commit_word: n_('commit', 'commits', counts[:behind])
+      }
+    end
+
+    if counts[:ahead] > 0
+      messages << s_("ForksDivergence|%{ahead} %{commit_word} ahead of") % {
+        ahead: counts[:ahead], commit_word: n_('commit', 'commits', counts[:ahead])
+      }
+    end
+
+    if messages.blank?
+      s_('ForksDivergence|Up to date with upstream repository')
+    else
+      s_("ForksDivergence|%{messages} upstream repository") % { messages: messages.join(', ') }
+    end
   end
 
   private
@@ -531,10 +556,10 @@ module ProjectsHelper
 
   def search_tab_ability_map
     @search_tab_ability_map ||= tab_ability_map.merge(
-      blobs: :download_code,
-      commits: :download_code,
+      blobs: :read_code,
+      commits: :read_code,
       merge_requests: :read_merge_request,
-      notes: [:read_merge_request, :download_code, :read_issue, :read_snippet],
+      notes: [:read_merge_request, :read_code, :read_issue, :read_snippet],
       members: :read_project_member
     )
   end
@@ -658,7 +683,6 @@ module ProjectsHelper
       lfsEnabled: !!project.lfs_enabled,
       emailsDisabled: project.emails_disabled?,
       metricsDashboardAccessLevel: feature.metrics_dashboard_access_level,
-      operationsAccessLevel: feature.operations_access_level,
       monitorAccessLevel: feature.monitor_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,
@@ -680,7 +704,7 @@ module ProjectsHelper
 
   def find_file_path
     return unless @project && !@project.empty_repo?
-    return unless can?(current_user, :download_code, @project)
+    return unless can?(current_user, :read_code, @project)
 
     ref = @ref || @project.repository.root_ref
 

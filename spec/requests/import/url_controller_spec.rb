@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::UrlController do
+RSpec.describe Import::UrlController, feature_category: :importers do
   let_it_be(:user) { create(:user) }
 
   before do

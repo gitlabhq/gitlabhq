@@ -236,6 +236,13 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   }
 }
 
+// TODO: Remove once https: //gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/3198 is merged
+.gl-sm-ml-5 {
+  @include gl-media-breakpoint-up(sm) {
+    @include gl-ml-5;
+  }
+}
+
 /* End gitlab-ui#1709 */
 
 /*
@@ -250,4 +257,9 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 
 .gl-flex-flow-row-wrap {
   flex-flow: row wrap;
+}
+
+// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2098
+.gl-max-w-0 {
+  max-width: 0;
 }

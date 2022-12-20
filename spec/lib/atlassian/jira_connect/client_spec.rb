@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Atlassian::JiraConnect::Client do
+RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations do
   include StubRequests
 
   subject(:client) { described_class.new('https://gitlab-test.atlassian.net', 'sample_secret') }
@@ -119,7 +119,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
     let(:errors) { [{ 'message' => 'X' }, { 'message' => 'Y' }] }
     let(:processed) { subject.send(:handle_response, response, 'foo') { |x| [:data, x] } }
 
-    context 'the response is 200 OK' do
+    context 'when the response is 200 OK' do
       let(:response) { double(code: 200, parsed_response: :foo) }
 
       it 'yields to the block' do
@@ -127,7 +127,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       end
     end
 
-    context 'the response is 202 accepted' do
+    context 'when the response is 202 accepted' do
       let(:response) { double(code: 202, parsed_response: :foo) }
 
       it 'yields to the block' do
@@ -135,15 +135,15 @@ RSpec.describe Atlassian::JiraConnect::Client do
       end
     end
 
-    context 'the response is 400 bad request' do
+    context 'when the response is 400 bad request' do
       let(:response) { double(code: 400, parsed_response: errors) }
 
       it 'extracts the errors messages' do
-        expect(processed).to eq('errorMessages' => %w(X Y), 'responseCode' => 400)
+        expect(processed).to eq('errorMessages' => %w[X Y], 'responseCode' => 400)
       end
     end
 
-    context 'the response is 401 forbidden' do
+    context 'when the response is 401 forbidden' do
       let(:response) { double(code: 401, parsed_response: nil) }
 
       it 'reports that our JWT is wrong' do
@@ -151,7 +151,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       end
     end
 
-    context 'the response is 403' do
+    context 'when the response is 403' do
       let(:response) { double(code: 403, parsed_response: nil) }
 
       it 'reports that the App is misconfigured' do
@@ -159,7 +159,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       end
     end
 
-    context 'the response is 413' do
+    context 'when the response is 413' do
       let(:response) { double(code: 413, parsed_response: errors) }
 
       it 'extracts the errors messages' do
@@ -167,7 +167,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       end
     end
 
-    context 'the response is 429' do
+    context 'when the response is 429' do
       let(:response) { double(code: 429, parsed_response: nil) }
 
       it 'reports that we exceeded the rate limit' do
@@ -175,7 +175,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       end
     end
 
-    context 'the response is 503' do
+    context 'when the response is 503' do
       let(:response) { double(code: 503, parsed_response: nil) }
 
       it 'reports that the service is unavailable' do
@@ -183,11 +183,31 @@ RSpec.describe Atlassian::JiraConnect::Client do
       end
     end
 
-    context 'the response is anything else' do
+    context 'when the response is anything else' do
       let(:response) { double(code: 1000, parsed_response: :something) }
 
       it 'reports that this was unanticipated' do
         expect(processed).to eq('errorMessages' => ['Unknown error'], 'responseCode' => 1000, 'response' => :something)
+      end
+    end
+  end
+
+  describe '#request_body_schema' do
+    let(:response) { instance_double(HTTParty::Response, success?: true, code: 200, request: request) }
+
+    context 'with valid JSON request body' do
+      let(:request) { instance_double(HTTParty::Request, raw_body: '{ "foo": 1, "bar": 2 }') }
+
+      it 'returns the request body' do
+        expect(subject.send(:request_body_schema, response)).to eq({ "foo" => nil, "bar" => nil })
+      end
+    end
+
+    context 'with invalid JSON request body' do
+      let(:request) { instance_double(HTTParty::Request, raw_body: 'invalid json') }
+
+      it 'reports the invalid json' do
+        expect(subject.send(:request_body_schema, response)).to eq('Request body includes invalid JSON')
       end
     end
   end
@@ -222,7 +242,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
 
     before do
       path = '/rest/deployments/0.1/bulk'
-      stub_full_request('https://gitlab-test.atlassian.net' + path, method: :post)
+      stub_full_request("https://gitlab-test.atlassian.net#{path}", method: :post)
         .with(body: body, headers: expected_headers(path))
         .to_return(body: response_body, headers: { 'Content-Type': 'application/json' })
     end
@@ -232,7 +252,9 @@ RSpec.describe Atlassian::JiraConnect::Client do
     end
 
     it 'only sends information about relevant MRs' do
-      expect(subject).to receive(:post).with('/rest/deployments/0.1/bulk', { deployments: have_attributes(size: 6) }).and_call_original
+      expect(subject).to receive(:post).with(
+        '/rest/deployments/0.1/bulk', { deployments: have_attributes(size: 6) }
+      ).and_call_original
 
       subject.send(:store_deploy_info, project: project, deployments: deployments)
     end
@@ -243,7 +265,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       subject.send(:store_deploy_info, project: project, deployments: deployments.take(1))
     end
 
-    context 'there are errors' do
+    context 'when there are errors' do
       let(:rejections) do
         [{ errors: [{ message: 'X' }, { message: 'Y' }] }, { errors: [{ message: 'Z' }] }]
       end
@@ -251,7 +273,9 @@ RSpec.describe Atlassian::JiraConnect::Client do
       it 'reports the errors' do
         response = subject.send(:store_deploy_info, project: project, deployments: deployments)
 
-        expect(response['errorMessages']).to eq(%w(X Y Z))
+        expect(response['errorMessages']).to eq(%w[X Y Z])
+        expect(response['responseCode']).to eq(200)
+        expect(response['requestBody']).to be_a(Hash)
       end
     end
   end
@@ -282,7 +306,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       feature_flags.first.update!(description: 'RELEVANT-123')
       feature_flags.second.update!(description: 'RELEVANT-123')
       path = '/rest/featureflags/0.1/bulk'
-      stub_full_request('https://gitlab-test.atlassian.net' + path, method: :post)
+      stub_full_request("https://gitlab-test.atlassian.net#{path}", method: :post)
         .with(body: body, headers: expected_headers(path))
         .to_return(body: response_body, headers: { 'Content-Type': 'application/json' })
     end
@@ -292,9 +316,9 @@ RSpec.describe Atlassian::JiraConnect::Client do
     end
 
     it 'only sends information about relevant MRs' do
-      expect(subject).to receive(:post).with('/rest/featureflags/0.1/bulk', {
-        flags: have_attributes(size: 2), properties: Hash
-      }).and_call_original
+      expect(subject).to receive(:post).with(
+        '/rest/featureflags/0.1/bulk', { flags: have_attributes(size: 2), properties: Hash }
+      ).and_call_original
 
       subject.send(:store_ff_info, project: project, feature_flags: feature_flags)
     end
@@ -305,7 +329,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       subject.send(:store_ff_info, project: project, feature_flags: [feature_flags.last])
     end
 
-    context 'there are errors' do
+    context 'when there are errors' do
       let(:failures) do
         {
           a: [{ message: 'X' }, { message: 'Y' }],
@@ -343,7 +367,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
 
     before do
       path = '/rest/builds/0.1/bulk'
-      stub_full_request('https://gitlab-test.atlassian.net' + path, method: :post)
+      stub_full_request("https://gitlab-test.atlassian.net#{path}", method: :post)
         .with(body: body, headers: expected_headers(path))
         .to_return(body: response_body, headers: { 'Content-Type': 'application/json' })
     end
@@ -366,7 +390,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
       subject.send(:store_build_info, project: project, pipelines: pipelines.take(1))
     end
 
-    context 'there are errors' do
+    context 'when there are errors' do
       let(:failures) do
         [{ errors: [{ message: 'X' }, { message: 'Y' }] }, { errors: [{ message: 'Z' }] }]
       end
@@ -374,7 +398,9 @@ RSpec.describe Atlassian::JiraConnect::Client do
       it 'reports the errors' do
         response = subject.send(:store_build_info, project: project, pipelines: pipelines)
 
-        expect(response['errorMessages']).to eq(%w(X Y Z))
+        expect(response['errorMessages']).to eq(%w[X Y Z])
+        expect(response['responseCode']).to eq(200)
+        expect(response['requestBody']).to be_a(Hash)
       end
     end
 
@@ -385,19 +411,21 @@ RSpec.describe Atlassian::JiraConnect::Client do
         subject.send(:store_build_info, project: project, pipelines: pipelines)
       end
 
-      pipelines << create(:ci_pipeline, head_pipeline_of: create(:merge_request, :jira_branch))
+      pipelines << create(:ci_pipeline, project: project, head_pipeline_of: create(:merge_request, :jira_branch, source_project: project))
 
-      expect { subject.send(:store_build_info, project: project, pipelines: pipelines) }.not_to exceed_query_limit(baseline)
+      expect do
+        subject.send(:store_build_info, project: project, pipelines: pipelines)
+      end.not_to exceed_query_limit(baseline)
     end
   end
 
   describe '#store_dev_info' do
-    let_it_be(:merge_requests) { create_list(:merge_request, 2, :unique_branches) }
+    let_it_be(:merge_requests) { create_list(:merge_request, 2, :unique_branches, source_project: project) }
 
     before do
       path = '/rest/devinfo/0.10/bulk'
 
-      stub_full_request('https://gitlab-test.atlassian.net' + path, method: :post)
+      stub_full_request("https://gitlab-test.atlassian.net#{path}", method: :post)
         .with(headers: expected_headers(path))
     end
 
@@ -406,11 +434,16 @@ RSpec.describe Atlassian::JiraConnect::Client do
     end
 
     it 'avoids N+1 database queries' do
-      control_count = ActiveRecord::QueryRecorder.new { subject.send(:store_dev_info, project: project, merge_requests: merge_requests) }.count
+      control_count = ActiveRecord::QueryRecorder.new do
+        subject.send(:store_dev_info, project: project, merge_requests: merge_requests)
+      end.count
 
-      merge_requests << create(:merge_request, :unique_branches)
+      merge_requests << create(:merge_request, :unique_branches, source_project: project)
 
-      expect { subject.send(:store_dev_info, project: project, merge_requests: merge_requests) }.not_to exceed_query_limit(control_count)
+      expect do
+        subject.send(:store_dev_info, project: project,
+                                      merge_requests: merge_requests)
+      end.not_to exceed_query_limit(control_count)
     end
   end
 

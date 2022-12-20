@@ -126,8 +126,7 @@ Storage types that add to the total namespace storage are:
 - Wiki
 - Snippets
 
-If your total namespace storage exceeds the available namespace storage quota, all projects under the namespace are locked.
-A locked project cannot push to the repository, run pipelines and jobs, or build and push packages.
+If your total namespace storage exceeds the available namespace storage quota, all projects under the namespace become read-only. Your ability to write new data is restricted until the read-only state is removed. For more information, see [Restricted actions](../user/read_only_namespaces.md#restricted-actions).
 
 To prevent exceeding the namespace storage quota, you can:
 

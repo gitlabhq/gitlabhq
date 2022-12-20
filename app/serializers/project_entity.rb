@@ -13,4 +13,8 @@ class ProjectEntity < Grape::Entity
   expose :full_name, documentation: { type: 'string', example: 'GitLab Org / GitLab' } do |project|
     project.full_name
   end
+
+  expose :refs_url do |project|
+    refs_project_path(project)
+  end
 end

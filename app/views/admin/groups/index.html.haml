@@ -1,4 +1,5 @@
 - page_title _("Groups")
+- add_page_specific_style 'page_bundles/search'
 
 .top-area
   .gl-mt-3.gl-mb-3
@@ -9,7 +10,7 @@
           = search_field_tag :name, params[:name].presence, class: "form-control search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: 'Search by name', data: { qa_selector: 'group_search_field' }
           = sprite_icon('search', css_class: 'search-icon')
         = render "shared/groups/dropdown", options_hash: admin_groups_sort_options_hash
-        = link_to new_admin_group_path, class: "gl-button btn btn-confirm" do
+        = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_group_path) do
           = _('New group')
 %ul.content-list
   = render @groups

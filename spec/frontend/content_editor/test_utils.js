@@ -11,10 +11,12 @@ import Bold from '~/content_editor/extensions/bold';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import Code from '~/content_editor/extensions/code';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import Comment from '~/content_editor/extensions/comment';
 import DescriptionItem from '~/content_editor/extensions/description_item';
 import DescriptionList from '~/content_editor/extensions/description_list';
 import Details from '~/content_editor/extensions/details';
 import DetailsContent from '~/content_editor/extensions/details_content';
+import Diagram from '~/content_editor/extensions/diagram';
 import Emoji from '~/content_editor/extensions/emoji';
 import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
 import FootnoteReference from '~/content_editor/extensions/footnote_reference';
@@ -211,10 +213,12 @@ export const createTiptapEditor = (extensions = []) =>
       BulletList,
       Code,
       CodeBlockHighlight,
+      Comment,
       DescriptionItem,
       DescriptionList,
       Details,
       DetailsContent,
+      Diagram,
       Emoji,
       FootnoteDefinition,
       FootnoteReference,

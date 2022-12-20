@@ -3,23 +3,23 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillNamespaceStatisticsWithDependencyProxySize do
-  let_it_be(:groups) { table(:namespaces) }
-  let_it_be(:group1) { groups.create!(id: 10, name: 'test1', path: 'test1', type: 'Group') }
-  let_it_be(:group2) { groups.create!(id: 20, name: 'test2', path: 'test2', type: 'Group') }
-  let_it_be(:group3) { groups.create!(id: 30, name: 'test3', path: 'test3', type: 'Group') }
-  let_it_be(:group4) { groups.create!(id: 40, name: 'test4', path: 'test4', type: 'Group') }
+RSpec.describe BackfillNamespaceStatisticsWithDependencyProxySize, feature_category: :dependency_proxy do
+  let!(:groups) { table(:namespaces) }
+  let!(:group1) { groups.create!(id: 10, name: 'test1', path: 'test1', type: 'Group') }
+  let!(:group2) { groups.create!(id: 20, name: 'test2', path: 'test2', type: 'Group') }
+  let!(:group3) { groups.create!(id: 30, name: 'test3', path: 'test3', type: 'Group') }
+  let!(:group4) { groups.create!(id: 40, name: 'test4', path: 'test4', type: 'Group') }
 
-  let_it_be(:dependency_proxy_blobs) { table(:dependency_proxy_blobs) }
-  let_it_be(:dependency_proxy_manifests) { table(:dependency_proxy_manifests) }
+  let!(:dependency_proxy_blobs) { table(:dependency_proxy_blobs) }
+  let!(:dependency_proxy_manifests) { table(:dependency_proxy_manifests) }
 
-  let_it_be(:group1_manifest) { create_manifest(10, 10) }
-  let_it_be(:group2_manifest) { create_manifest(20, 20) }
-  let_it_be(:group3_manifest) { create_manifest(30, 30) }
+  let!(:group1_manifest) { create_manifest(10, 10) }
+  let!(:group2_manifest) { create_manifest(20, 20) }
+  let!(:group3_manifest) { create_manifest(30, 30) }
 
-  let_it_be(:group1_blob) { create_blob(10, 10) }
-  let_it_be(:group2_blob) { create_blob(20, 20) }
-  let_it_be(:group3_blob) { create_blob(30, 30) }
+  let!(:group1_blob) { create_blob(10, 10) }
+  let!(:group2_blob) { create_blob(20, 20) }
+  let!(:group3_blob) { create_blob(30, 30) }
 
   describe '#up' do
     it 'correctly schedules background migrations' do

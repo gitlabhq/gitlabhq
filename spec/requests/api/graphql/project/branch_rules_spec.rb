@@ -2,21 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting list of branch rules for a project' do
+RSpec.describe 'getting list of branch rules for a project', feature_category: :source_code_management do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:branch_name_a) { TestEnv::BRANCH_SHA.each_key.first }
-  let_it_be(:branch_name_b) { 'diff-*' }
-  let_it_be(:branch_rules) { [branch_rule_a, branch_rule_b] }
-  let_it_be(:branch_rule_a) do
-    create(:protected_branch, project: project, name: branch_name_a)
-  end
-
-  let_it_be(:branch_rule_b) do
-    create(:protected_branch, project: project, name: branch_name_b)
-  end
 
   let(:branch_rules_data) { graphql_data_at('project', 'branchRules', 'edges') }
   let(:variables) { { path: project.full_path } }
@@ -61,39 +51,39 @@ RSpec.describe 'getting list of branch rules for a project' do
     end
 
     describe 'queries' do
+      include_context 'when user tracking is disabled'
+
+      let(:query) do
+        <<~GQL
+            query($path: ID!) {
+              project(fullPath: $path) {
+                branchRules {
+                  nodes {
+                    matchingBranchesCount
+                  }
+                }
+              }
+            }
+        GQL
+      end
+
       before do
-        # rubocop:disable RSpec/AnyInstanceOf
-        allow_any_instance_of(User).to receive(:update_tracked_fields!)
-        allow_any_instance_of(Users::ActivityService).to receive(:execute)
-        # rubocop:enable RSpec/AnyInstanceOf
+        create(:protected_branch, project: project)
         allow_next_instance_of(Resolvers::ProjectResolver) do |resolver|
           allow(resolver).to receive(:resolve)
             .with(full_path: project.full_path)
             .and_return(project)
         end
         allow(project.repository).to receive(:branch_names).and_call_original
-        allow(project.repository.gitaly_ref_client).to receive(:branch_names).and_call_original
       end
 
-      it 'matching_branches_count avoids N+1 queries' do
-        query = <<~GQL
-          query($path: ID!) {
-            project(fullPath: $path) {
-              branchRules {
-                nodes {
-                  matchingBranchesCount
-                }
-              }
-            }
-          }
-        GQL
-
-        control = ActiveRecord::QueryRecorder.new do
+      it 'avoids N+1 queries', :use_sql_query_cache, :aggregate_failures do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           post_graphql(query, current_user: current_user, variables: variables)
         end
 
         # Verify the response includes the field
-        expect_n_matching_branches_count_fields(2)
+        expect_n_matching_branches_count_fields(1)
 
         create(:protected_branch, project: project)
         create(:protected_branch, name: '*', project: project)
@@ -102,10 +92,8 @@ RSpec.describe 'getting list of branch rules for a project' do
           post_graphql(query, current_user: current_user, variables: variables)
         end.not_to exceed_all_query_limit(control)
 
+        expect_n_matching_branches_count_fields(3)
         expect(project.repository).to have_received(:branch_names).at_least(2).times
-        expect(project.repository.gitaly_ref_client).to have_received(:branch_names).once
-
-        expect_n_matching_branches_count_fields(4)
       end
 
       def expect_n_matching_branches_count_fields(count)
@@ -118,21 +106,28 @@ RSpec.describe 'getting list of branch rules for a project' do
     end
 
     describe 'response' do
+      let_it_be(:branch_name_a) { TestEnv::BRANCH_SHA.each_key.first }
+      let_it_be(:branch_name_b) { 'diff-*' }
+      let_it_be(:branch_rules) { [branch_rule_a, branch_rule_b] }
+      let_it_be(:branch_rule_a) do
+        create(:protected_branch, project: project, name: branch_name_a, id: 9999)
+      end
+
+      let_it_be(:branch_rule_b) do
+        create(:protected_branch, project: project, name: branch_name_b, id: 10000)
+      end
+
+      # branchRules are returned in reverse order, newest first, sorted by primary_key.
+      let(:branch_rule_b_data) { branch_rules_data.dig(0, 'node') }
+      let(:branch_rule_a_data) { branch_rules_data.dig(1, 'node') }
+
       before do
         post_graphql(query, current_user: current_user, variables: variables)
       end
 
       it_behaves_like 'a working graphql query'
 
-      it 'includes all fields', :aggregate_failures do
-        # Responses will be sorted alphabetically. Branch names for this spec
-        # come from an external constant so we check which is first
-        br_a_idx = branch_name_a < branch_name_b ? 0 : 1
-        br_b_idx = 1 - br_a_idx
-
-        branch_rule_a_data = branch_rules_data.dig(br_a_idx, 'node')
-        branch_rule_b_data = branch_rules_data.dig(br_b_idx, 'node')
-
+      it 'includes all fields', :use_sql_query_cache, :aggregate_failures do
         expect(branch_rule_a_data['name']).to eq(branch_name_a)
         expect(branch_rule_a_data['isDefault']).to be(true).or be(false)
         expect(branch_rule_a_data['branchProtection']).to be_present

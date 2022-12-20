@@ -3,17 +3,6 @@
 .form-group
   %b= s_('ProjectSettings|Merge checks')
   %p.text-secondary= s_('ProjectSettings|These checks must pass before merge requests can be merged.')
-  .builds-feature
-    = form.gitlab_ui_checkbox_component :only_allow_merge_if_pipeline_succeeds,
-      s_('ProjectSettings|Pipelines must succeed'),
-      help_text: s_("ProjectSettings|Merge requests can't be merged if the latest pipeline did not succeed or is still running.")
-  .gl-pl-6
-    = form.gitlab_ui_checkbox_component :allow_merge_on_skipped_pipeline,
-      s_('ProjectSettings|Skipped pipelines are considered successful'),
-      help_text: s_('ProjectSettings|Introduces the risk of merging changes that do not pass the pipeline.'),
-      checkbox_options: { class: 'gl-pl-6' }
+  = render 'projects/merge_request_pipelines_and_threads_options', form: form, project: @project
   = render_if_exists 'projects/merge_request_merge_checks_status_checks', form: form, project: @project
-  = form.gitlab_ui_checkbox_component :only_allow_merge_if_all_discussions_are_resolved,
-    s_('ProjectSettings|All threads must be resolved'),
-    checkbox_options: { data: { qa_selector: 'allow_merge_if_all_discussions_are_resolved_checkbox' } }
   = render_if_exists 'projects/merge_request_merge_checks_jira_enforcement', form: form, project: @project

@@ -108,7 +108,7 @@ a case-by-case basis. Take the following into account:
    should try to keep as short as possible.
 
 1. Traffic characteristics should also be taken into account. If the
-   traffic to the endpoint is bursty, like CI traffic spinning up a
+   traffic to the endpoint sometimes bursts, like CI traffic spinning up a
    big batch of jobs hitting the same endpoint, then having these
    endpoints take five seconds is unacceptable from an infrastructure point of
    view. We cannot scale up the fleet fast enough to accommodate for

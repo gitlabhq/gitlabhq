@@ -95,6 +95,14 @@ module Projects
 
         @protected_tags_count = @protected_tags.reduce(0) { |sum, tag| sum + tag.matching(@project.repository.tag_names).size }
 
+        if Feature.enabled?(:group_protected_branches)
+          @protected_group_branches = if @project.root_namespace.is_a?(Group)
+                                        @project.root_namespace.protected_branches.order(:name).page(params[:page])
+                                      else
+                                        []
+                                      end
+        end
+
         load_gon_index
       end
       # rubocop: enable CodeReuse/ActiveRecord

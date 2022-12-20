@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { sprintf, s__ } from '~/locale';
 
@@ -9,7 +10,7 @@ export default {
     GlButton,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   computed: {
     href() {

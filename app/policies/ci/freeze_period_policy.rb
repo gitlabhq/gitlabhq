@@ -2,6 +2,6 @@
 
 module Ci
   class FreezePeriodPolicy < BasePolicy
-    delegate { @subject.resource_parent }
+    delegate { @subject.project }
   end
 end

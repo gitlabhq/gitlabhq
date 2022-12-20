@@ -1,4 +1,4 @@
-- name: "Bundled Grafana deprecated"
+- title: "Bundled Grafana deprecated"
   announcement_milestone: "15.3"
   announcement_date: "2022-08-22"
   removal_milestone: "15.4"

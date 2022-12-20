@@ -3,16 +3,15 @@
 - emails_disabled = @group.emails_disabled?
 
 .group-home-panel
-  .row.my-3
-    .home-panel-title-row.col-md-12.col-lg-6.d-flex
+  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-gap-3.gl-my-5
+    .home-panel-title-row.gl-display-flex.gl-align-items-center
       .avatar-container.rect-avatar.s64.home-panel-avatar.gl-flex-shrink-0.float-none{ class: 'gl-mr-3!' }
         = group_icon(@group, class: 'avatar avatar-tile s64', width: 64, height: 64, itemprop: 'logo')
-      .d-flex.flex-column.flex-wrap.align-items-baseline
-        .d-inline-flex.align-items-baseline
-          %h1.home-panel-title.gl-font-size-h1.gl-mt-3.gl-mb-2{ itemprop: 'name' }
-            = @group.name
-            %span.visibility-icon.gl-text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
-              = visibility_level_icon(@group.visibility_level, options: {class: 'icon'})
+      %div
+        %h1.home-panel-title.gl-font-size-h1.gl-mt-3.gl-mb-2.gl-display-flex{ itemprop: 'name' }
+          = @group.name
+          %span.visibility-icon.gl-text-secondary.has-tooltip.gl-ml-2{ data: { container: 'body' }, title: visibility_icon_description(@group) }
+            = visibility_level_icon(@group.visibility_level, options: {class: 'icon'})
         .home-panel-metadata.gl-text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal{ data: { qa_selector: 'group_id_content' }, itemprop: 'identifier' }
           - if can?(current_user, :read_group, @group)
             %span.gl-display-inline-block.gl-vertical-align-middle
@@ -22,24 +21,23 @@
             %span.gl-ml-3.gl-mb-3
               = render 'shared/members/access_request_links', source: @group
 
-    .home-panel-buttons.col-md-12.col-lg-6
-      - if current_user
-        .gl-display-flex.gl-flex-wrap.gl-lg-justify-content-end.gl-mx-n2{ data: { testid: 'group-buttons' } }
-          - if current_user.admin?
-            = link_to [:admin, @group], class: 'btn btn-default gl-button btn-icon gl-mt-3 gl-mr-2', title: _('View group in admin area'),
-              data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-              = sprite_icon('admin')
-          - if @notification_setting
-            .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: @group.id, container_class: 'gl-mx-2 gl-mt-3 gl-vertical-align-top', no_flip: 'true' } }
-          - if can_create_subgroups
-            .gl-px-2.gl-sm-w-auto.gl-w-full
-              = link_to _("New subgroup"),
-                new_group_path(parent_id: @group.id, anchor: 'create-group-pane'),
-                class: "btn btn-default gl-button gl-mt-3 gl-sm-w-auto gl-w-full",
-                data: { qa_selector: 'new_subgroup_button' }
-          - if can_create_projects
-            .gl-px-2.gl-sm-w-auto.gl-w-full
-              = link_to _("New project"), new_project_path(namespace_id: @group.id), class: "btn btn-confirm gl-button gl-mt-3 gl-sm-w-auto gl-w-full", data: { qa_selector: 'new_project_button' }
+    - if current_user
+      .home-panel-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-center.gl-flex-wrap.gl-gap-3{ data: { testid: 'group-buttons' } }
+        - if current_user.admin?
+          = link_to [:admin, @group], class: 'btn btn-default gl-button btn-icon', title: _('View group in admin area'),
+            data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+            = sprite_icon('admin')
+        - if @notification_setting
+          .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: @group.id, container_class: 'gl-vertical-align-top', no_flip: 'true' } }
+        - if can_create_subgroups
+          .gl-sm-w-auto.gl-w-full
+            = link_to _("New subgroup"),
+              new_group_path(parent_id: @group.id, anchor: 'create-group-pane'),
+              class: "btn btn-default gl-button gl-sm-w-auto gl-w-full",
+              data: { qa_selector: 'new_subgroup_button' }
+        - if can_create_projects
+          .gl-sm-w-auto.gl-w-full
+            = link_to _("New project"), new_project_path(namespace_id: @group.id), class: "btn btn-confirm gl-button gl-sm-w-auto gl-w-full", data: { qa_selector: 'new_project_button' }
 
   - if @group.description.present?
     .group-home-desc.mt-1

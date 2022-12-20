@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "active_support/core_ext/module/delegation"
-
 module QA
   module Support
     # Common tools for use with influxdb metrics setup

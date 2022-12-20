@@ -80,7 +80,7 @@ mutation {
 
 ```
 
-### Widget's responsibility and structure
+### Widget responsibility and structure
 
 A widget is responsible for displaying and updating a single attribute, such as
 title, description, or labels. Widgets must support any type of work item.

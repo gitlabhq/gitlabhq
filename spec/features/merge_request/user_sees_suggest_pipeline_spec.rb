@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees suggest pipeline', :js do
+RSpec.describe 'Merge request > User sees suggest pipeline', :js, feature_category: :continuous_integration do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.source_project }
   let(:user) { project.creator }

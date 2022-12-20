@@ -15,8 +15,6 @@ module ContainerRegistry
     BATCH_SIZE = 200
 
     def perform
-      return unless Feature.enabled?(:container_registry_delete_repository_with_cron_worker)
-
       log_counts
 
       reset_stale_deletes

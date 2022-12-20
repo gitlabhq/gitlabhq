@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Profile > Applications' do
+RSpec.describe 'Profile > Applications', feature_category: :users do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:user) { create(:user) }

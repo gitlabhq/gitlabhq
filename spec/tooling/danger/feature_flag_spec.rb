@@ -135,7 +135,7 @@ RSpec.describe Tooling::Danger::FeatureFlag do
       end
 
       context 'when MR labels does not match FF group' do
-        let(:mr_group_label) { 'group::access' }
+        let(:mr_group_label) { 'group::authentication and authorization' }
 
         specify { expect(result).to eq(false) }
       end

@@ -1,10 +1,11 @@
 <script>
-import { GlModal, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlModal } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
 
 export default {
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   components: {
     GlModal,

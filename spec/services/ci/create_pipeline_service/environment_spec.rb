@@ -46,6 +46,24 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       end
     end
 
+    context 'when branch pipeline creates a dynamic environment' do
+      before do
+        config = YAML.dump(
+          review_app: {
+            script: 'echo',
+            environment: { name: "review/$CI_COMMIT_REF_NAME" }
+          })
+
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'does not associate merge request with the environment' do
+        is_expected.to be_created_successfully
+
+        expect(Environment.find_by_name('review/master').merge_request).to be_nil
+      end
+    end
+
     context 'when variables are dependent on stage name' do
       let(:config) do
         <<~YAML

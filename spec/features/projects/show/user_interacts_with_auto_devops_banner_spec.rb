@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project > Show > User interacts with auto devops implicitly enabled banner' do
+RSpec.describe 'Project > Show > User interacts with auto devops implicitly enabled banner',
+feature_category: :projects do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

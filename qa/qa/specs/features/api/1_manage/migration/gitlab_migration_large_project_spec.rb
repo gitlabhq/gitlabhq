@@ -4,113 +4,76 @@
 
 # rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
-  RSpec.describe "Manage", requires_admin: 'creates users', only: { job: 'large-gitlab-import' } do
-    describe "Gitlab migration", product_group: :import do
-      let(:logger) { Runtime::Logger.logger }
-      let(:differ) { RSpec::Support::Differ.new(color: true) }
-      let(:gitlab_group) { ENV['QA_LARGE_IMPORT_GROUP'] || 'gitlab-migration' }
-      let(:gitlab_project) { ENV['QA_LARGE_IMPORT_REPO'] || 'dri' }
-      let(:gitlab_source_address) { ENV['QA_LARGE_IMPORT_SOURCE_URL'] || 'https://staging.gitlab.com' }
+  RSpec.describe "Manage", :skip_live_env, only: { job: "large-gitlab-import" } do
+    describe "Gitlab migration", orchestrated: false, product_group: :import do
+      include_context "with gitlab group migration"
 
-      let(:import_wait_duration) do
-        {
-          max_duration: (ENV['QA_LARGE_IMPORT_DURATION'] || 3600).to_i,
-          sleep_interval: 30
-        }
-      end
+      let!(:logger) { Runtime::Logger.logger }
+      let!(:differ) { RSpec::Support::Differ.new(color: true) }
+      let!(:source_gitlab_address) { ENV["QA_LARGE_IMPORT_SOURCE_URL"] || "https://gitlab.com" }
+      let!(:gitlab_source_group) { ENV["QA_LARGE_IMPORT_GROUP"] || "gitlab-migration-large-import-test" }
+      let!(:gitlab_source_project) { ENV["QA_LARGE_IMPORT_REPO"] || "migration-test-project" }
+      let!(:import_wait_duration) { { max_duration: (ENV["QA_LARGE_IMPORT_DURATION"] || 3600).to_i, sleep_interval: 30 } }
 
-      let(:admin_api_client) { Runtime::API::Client.as_admin }
-
-      # explicitly create PAT via api to not create it via UI in environments where admin token env var is not present
-      let(:target_api_client) do
+      let!(:source_admin_user) { "no-op" }
+      let!(:source_admin_api_client) do
         Runtime::API::Client.new(
-          user: user,
-          personal_access_token: Resource::PersonalAccessToken.fabricate_via_api! do |pat|
-            pat.api_client = admin_api_client
-          end.token
-        )
-      end
-
-      let(:user) do
-        Resource::User.fabricate_via_api! do |usr|
-          usr.api_client = admin_api_client
-        end
-      end
-
-      let(:source_api_client) do
-        Runtime::API::Client.new(
-          gitlab_source_address,
-          personal_access_token: ENV["QA_LARGE_IMPORT_GL_TOKEN"],
+          source_gitlab_address,
+          personal_access_token: ENV["QA_LARGE_IMPORT_GL_TOKEN"] || raise("missing QA_LARGE_IMPORT_GL_TOKEN variable"),
           is_new_session: false
         )
       end
 
-      let(:sandbox) do
-        Resource::Sandbox.fabricate_via_api! do |group|
-          group.api_client = admin_api_client
-        end
-      end
+      # alias api client because for large import test it's not an actual admin user
+      let!(:source_api_client) { source_admin_api_client }
 
-      let(:destination_group) do
-        Resource::Group.fabricate_via_api! do |group|
-          group.api_client = admin_api_client
-          group.sandbox = sandbox
-          group.path = "imported-group-destination-#{SecureRandom.hex(4)}"
-        end
-      end
-
-      # Source group and it's objects
-      #
-      let(:source_group) do
+      let!(:source_group) do
         Resource::Sandbox.fabricate_via_api! do |group|
           group.api_client = source_api_client
-          group.path = gitlab_group
+          group.path = gitlab_source_group
         end
       end
 
-      let(:source_project) { source_group.projects.find { |project| project.name.include?(gitlab_project) }.reload! }
+      # generate unique target group because source group has a static name
+      let!(:target_sandbox) do
+        Resource::Sandbox.fabricate_via_api! do |group|
+          group.api_client = admin_api_client
+          group.path = "qa-sandbox-#{SecureRandom.hex(4)}"
+        end
+      end
+
+      # Source objects
+      #
+      let(:source_project) { source_group.projects.find { |project| project.name == gitlab_source_project }.reload! }
       let(:source_branches) { source_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
       let(:source_commits) { source_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:source_labels) { source_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
       let(:source_milestones) { source_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
       let(:source_pipelines) { source_project.pipelines(auto_paginate: true).map { |pp| pp.except(:id, :web_url, :project_id) } }
-      let(:source_mrs) { fetch_mrs(source_project, source_api_client) }
-      let(:source_issues) { fetch_issues(source_project, source_api_client) }
+      let(:source_mrs) { fetch_mrs(source_project, source_api_client, transform_urls: true) }
+      let(:source_issues) { fetch_issues(source_project, source_api_client, transform_urls: true) }
 
-      # Imported group and it's objects
+      # Imported objects
       #
-      let(:imported_group) do
-        Resource::BulkImportGroup.fabricate_via_api! do |group|
-          group.import_access_token = source_api_client.personal_access_token # token for importing on source instance
-          group.api_client = target_api_client # token used by qa framework to access resources in destination instance
-          group.gitlab_address = gitlab_source_address
-          group.source_group = source_group
-          group.sandbox = destination_group
-        end
-      end
-
-      let(:imported_project) { imported_group.projects.find { |project| project.name.include?(gitlab_project) }.reload! }
+      let(:imported_project) { imported_group.projects.find { |project| project.name == gitlab_source_project }.reload! }
       let(:branches) { imported_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
       let(:commits) { imported_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:labels) { imported_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
       let(:milestones) { imported_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
-      let(:pipelines) { imported_project.pipelines.map { |pp| pp.except(:id, :web_url, :project_id) } }
-      let(:mrs) { fetch_mrs(imported_project, target_api_client) }
-      let(:issues) { fetch_issues(imported_project, target_api_client) }
-
-      let(:import_failures) { imported_group.import_details.sum([]) { |details| details[:failures] } }
+      let(:pipelines) { imported_project.pipelines(auto_paginate: true).map { |pp| pp.except(:id, :web_url, :project_id) } }
+      let(:mrs) { fetch_mrs(imported_project, api_client) }
+      let(:issues) { fetch_issues(imported_project, api_client) }
 
       before do
-        destination_group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
+        Runtime::Feature.enable(:bulk_import_projects) unless Runtime::Feature.enabled?(:bulk_import_projects)
       end
 
       # rubocop:disable RSpec/InstanceVariable
       after do |example|
-        # Log failures for easier debugging
-        Runtime::Logger.error("Import failures: #{import_failures}") if example.exception && !import_failures.empty?
-
         next unless defined?(@import_time)
 
+        # add additional import time metric
+        example.metadata[:custom_test_metrics] = { fields: { import_time: @import_time } }
         # save data for comparison notification creation
         save_json(
           "data",
@@ -121,7 +84,7 @@ module QA
             source: {
               name: "GitLab Source",
               project_name: source_project.path_with_namespace,
-              address: gitlab_source_address,
+              address: source_gitlab_address,
               data: {
                 branches: source_branches.length,
                 commits: source_commits.length,
@@ -163,17 +126,14 @@ module QA
         start = Time.now
 
         # trigger import and log imported group path
-        logger.info("== Importing group '#{gitlab_group}' in to '#{imported_group.full_path}' ==")
+        logger.info("== Importing group '#{gitlab_source_group}' in to '#{imported_group.full_path}' ==")
 
         # fetch all objects right after import has started
         fetch_source_gitlab_objects
 
         # wait for import to finish and save import time
         logger.info("== Waiting for import to be finished ==")
-        expect { imported_group.import_status }.not_to eventually_eq("started").within(import_wait_duration)
-        # finished status actually means success, don't wait for finished status explicitly
-        # because test would wait full duration if returned status is "failed"
-        expect(imported_group.import_status).to eq("finished")
+        expect_group_import_finished_successfully
 
         @import_time = Time.now - start
 
@@ -267,8 +227,8 @@ module QA
         comment_diff = verify_comments(type, actual, expected)
 
         {
-          "missing_#{type}s": (expected.keys - actual.keys).map { |it| actual[it]&.slice(:title, :url) }.compact,
-          "extra_#{type}s": (actual.keys - expected.keys).map { |it| expected[it]&.slice(:title, :url) }.compact,
+          "missing_#{type}s": (expected.keys - actual.keys).map { |it| expected[it]&.slice(:title, :url) }.compact,
+          "extra_#{type}s": (actual.keys - expected.keys).map { |it| actual[it]&.slice(:title, :url) }.compact,
           "#{type}_comments": comment_diff
         }
       end
@@ -336,11 +296,12 @@ module QA
       #
       # @param [QA::Resource::Project]
       # @param [Runtime::API::Client] client
+      # @param [Boolean] transform_urls
       # @return [Hash]
-      def fetch_mrs(project, client)
+      def fetch_mrs(project, client, transform_urls: false)
         imported_mrs = project.merge_requests(auto_paginate: true, attempts: 2)
 
-        Parallel.map(imported_mrs, in_threads: 4) do |mr|
+        Parallel.map(imported_mrs, in_threads: 6) do |mr|
           resource = Resource::MergeRequest.init do |resource|
             resource.project = project
             resource.iid = mr[:iid]
@@ -350,11 +311,11 @@ module QA
           [mr[:iid], {
             url: mr[:web_url],
             title: mr[:title],
-            body: sanitize_description(mr[:description]) || '',
+            body: sanitize_description(mr[:description], transform_urls) || '',
             state: mr[:state],
             comments: resource
               .comments(auto_paginate: true, attempts: 2)
-              .map { |c| sanitize_comment(c[:body]) }
+              .map { |c| sanitize_comment(c[:body], transform_urls) }
           }]
         end.to_h
       end
@@ -363,11 +324,12 @@ module QA
       #
       # @param [QA::Resource::Project]
       # @param [Runtime::API::Client] client
+      # @param [Boolean] transform_urls
       # @return [Hash]
-      def fetch_issues(project, client)
+      def fetch_issues(project, client, transform_urls: false)
         imported_issues = project.issues(auto_paginate: true, attempts: 2)
 
-        Parallel.map(imported_issues, in_threads: 4) do |issue|
+        Parallel.map(imported_issues, in_threads: 6) do |issue|
           resource = Resource::Issue.init do |issue_resource|
             issue_resource.project = project
             issue_resource.iid = issue[:iid]
@@ -378,42 +340,66 @@ module QA
             url: issue[:web_url],
             title: issue[:title],
             state: issue[:state],
-            body: sanitize_description(issue[:description]) || '',
+            body: sanitize_description(issue[:description], transform_urls) || '',
             comments: resource
               .comments(auto_paginate: true, attempts: 2)
-              .map { |c| sanitize_comment(c[:body]) }
+              .map { |c| sanitize_comment(c[:body], transform_urls) }
           }]
         end.to_h
       end
+
+      # Remove added postfixes and transform urls
+      #
+      # Source urls need to be replaced with target urls for comparison to work
+      #
+      # @param [String] body
+      # @param [Boolean] transform_urls
+      # @return [String]
+      def sanitize_comment(body, transform_urls)
+        comment = body&.gsub(created_by_pattern, "")
+        return comment unless transform_urls
+
+        comment&.gsub(source_project_url, imported_project_url)
+      end
+
+      # Remove added postfixes and transform urls
+      #
+      # Source urls need to be replaced with target urls for comparison to work
+      #
+      # @param [String] body
+      # @param [Boolean] transform_urls
+      # @return [String]
+      def sanitize_description(body, transform_urls)
+        description = body&.gsub(created_by_pattern, "")
+        return description unless transform_urls
+
+        description&.gsub(source_project_url, imported_project_url)
+      end
+
+      # Following objects are memoized via instance variables due to Parallel having some type of issue calling
+      # helpers defined via rspec let method
 
       # Importer user mention pattern
       #
       # @return [Regex]
       def created_by_pattern
-        @created_by_pattern ||= /\n\n \*By #{importer_username_pattern} on \S+ \(imported from GitLab\)\*/
+        @created_by_pattern ||= /\n\n \*By .+ on \S+ \(imported from GitLab\)\*/
       end
 
-      # Username of importer user for removal from comments and descriptions
+      # Source project url
       #
       # @return [String]
-      def importer_username_pattern
-        @importer_username_pattern ||= ENV['QA_LARGE_IMPORT_USER_PATTERN'] || "(gitlab-migration|GitLab QA Bot)"
+      def source_project_url
+        @source_group_url ||= "#{source_gitlab_address}/#{source_project.full_path}"
       end
 
-      # Remove added prefixes from comments
+      # Imported project url
       #
-      # @param [String] body
-      # @return [String]
-      def sanitize_comment(body)
-        body&.gsub(created_by_pattern, "")
-      end
-
-      # Remove created by prefix from descripion
+      # This needs to be constructed manually because it is called before project import finishes
       #
-      # @param [String] body
       # @return [String]
-      def sanitize_description(body)
-        body&.gsub(created_by_pattern, "")
+      def imported_project_url
+        @imported_group_url ||= "#{Runtime::Scenario.gitlab_address}/#{imported_group.full_path}/#{source_project.path}"
       end
 
       # Save json as file

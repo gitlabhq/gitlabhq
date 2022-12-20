@@ -1,0 +1,66 @@
+{
+    "kind": "ReplicationControllerList",
+    "apiVersion": "v1",
+    "metadata": {
+        "selfLink": "/api/v1/namespaces/default/replicationcontrollers",
+        "resourceVersion": "1636"
+    },
+    "items": [
+        {
+            "metadata": {
+                "name": "redis-master-controller",
+                "namespace": "default",
+                "selfLink": "/api/v1/namespaces/default/replicationcontrollers/redis-master-controller?namespace=default",
+                "uid": "108eb547-cefa-11e4-ac24-3c970e4a436a",
+                "resourceVersion": "1631",
+                "creationTimestamp": "2015-03-20T14:10:14+02:00",
+                "labels": {
+                    "name": "redis-master"
+                }
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "name": "redis-master"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app": "redis",
+                            "name": "redis-master"
+                        }
+                    },
+                    "spec": {
+                        "volumes": null,
+                        "containers": [
+                            {
+                                "name": "redis-master",
+                                "image": "dockerfile/redis",
+                                "ports": [
+                                    {
+                                        "containerPort": 6379,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "resources": {},
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {}
+                                }
+                            }
+                        ],
+                        "restartPolicy": {
+                            "always": {}
+                        },
+                        "dnsPolicy": "ClusterFirst"
+                    }
+                }
+            },
+            "status": {
+                "replicas": 1
+            }
+        }
+    ]
+}

@@ -1,4 +1,4 @@
-import { GlEmptyState, GlBadge, GlTabs, GlTab, GlSprintf } from '@gitlab/ui';
+import { GlEmptyState, GlTabs, GlTab, GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 
 import VueApollo from 'vue-apollo';
@@ -42,6 +42,7 @@ import {
   packageFiles,
   packageDestroyFilesMutation,
   packageDestroyFilesMutationError,
+  pagination,
 } from '../mock_data';
 
 jest.mock('~/flash');
@@ -122,7 +123,9 @@ describe('PackagesApp', () => {
   const findDeleteFileModal = () => wrapper.findByTestId('delete-file-modal');
   const findDeleteFilesModal = () => wrapper.findByTestId('delete-files-modal');
   const findVersionsList = () => wrapper.findComponent(PackageVersionsList);
-  const findDependenciesCountBadge = () => wrapper.findComponent(GlBadge);
+  const findVersionsCountBadge = () => wrapper.findByTestId('other-versions-badge');
+  const findNoVersionsMessage = () => wrapper.findByTestId('no-versions-message');
+  const findDependenciesCountBadge = () => wrapper.findByTestId('dependencies-badge');
   const findNoDependenciesMessage = () => wrapper.findByTestId('no-dependencies-message');
   const findDependencyRows = () => wrapper.findAllComponents(DependencyRow);
   const findDeletePackage = () => wrapper.findComponent(DeletePackage);
@@ -564,6 +567,30 @@ describe('PackagesApp', () => {
       await waitForPromises();
 
       expect(findVersionsList()).toBeDefined();
+      expect(findVersionsCountBadge().exists()).toBe(true);
+      expect(findVersionsCountBadge().text()).toBe(packageVersions().length.toString());
+    });
+
+    it('displays tab with 0 count when package has no other versions', async () => {
+      createComponent({
+        resolver: jest.fn().mockResolvedValue(
+          packageDetailsQuery({
+            versions: {
+              count: 0,
+              nodes: [],
+              pageInfo: pagination({ hasNextPage: false, hasPreviousPage: false }),
+            },
+          }),
+        ),
+      });
+
+      await waitForPromises();
+
+      expect(findVersionsCountBadge().exists()).toBe(true);
+      expect(findVersionsCountBadge().text()).toBe('0');
+      expect(findNoVersionsMessage().text()).toMatchInterpolatedText(
+        'There are no other versions of this package.',
+      );
     });
 
     it('binds the correct props', async () => {
@@ -576,6 +603,7 @@ describe('PackagesApp', () => {
       });
     });
   });
+
   describe('dependency links', () => {
     it('does not show the dependency links for a non nuget package', async () => {
       createComponent();

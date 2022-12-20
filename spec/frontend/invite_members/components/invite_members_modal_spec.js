@@ -19,13 +19,17 @@ import {
   MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
   LEARN_GITLAB,
   EXPANDED_ERRORS,
-  EMPTY_INVITES_ERROR_TEXT,
+  EMPTY_INVITES_ALERT_TEXT,
 } from '~/invite_members/constants';
 import eventHub from '~/invite_members/event_hub';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_CREATED } from '~/lib/utils/http_status';
 import { getParameterValues } from '~/lib/utils/url_utility';
+import {
+  displaySuccessfulInvitationAlert,
+  reloadOnInvitationSuccess,
+} from '~/invite_members/utils/trigger_successful_invite_alert';
 import { GROUPS_INVITATIONS_PATH, invitationsApiResponse } from '../mock_data/api_responses';
 import {
   propsData,
@@ -40,6 +44,7 @@ import {
   GlEmoji,
 } from '../mock_data/member_modal';
 
+jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
 jest.mock('~/experimentation/experiment_tracking');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -57,6 +62,7 @@ describe('InviteMembersModal', () => {
       },
       propsData: {
         usersLimitDataset: {},
+        fullPath: 'project',
         ...propsData,
         ...props,
       },
@@ -95,6 +101,7 @@ describe('InviteMembersModal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findBase = () => wrapper.findComponent(InviteModalBase);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
+  const findEmptyInvitesAlert = () => wrapper.findByTestId('empty-invites-alert');
   const findMemberErrorAlert = () => wrapper.findByTestId('alert-member-error');
   const findMoreInviteErrorsButton = () => wrapper.findByTestId('accordion-button');
   const findUserLimitAlert = () => wrapper.findComponent(UserLimitNotification);
@@ -397,7 +404,8 @@ describe('InviteMembersModal', () => {
 
         await waitForPromises();
 
-        expect(membersFormGroupInvalidFeedback()).toBe(EMPTY_INVITES_ERROR_TEXT);
+        expect(findEmptyInvitesAlert().text()).toBe(EMPTY_INVITES_ALERT_TEXT);
+        expect(membersFormGroupInvalidFeedback()).toBe(MEMBERS_PLACEHOLDER);
         expect(findMembersSelect().props('exceptionState')).toBe(false);
 
         await triggerMembersTokenSelect([user1]);
@@ -416,6 +424,29 @@ describe('InviteMembersModal', () => {
         tasks_to_be_done: [],
         tasks_project_id: '',
       };
+
+      describe('when reloadOnSubmit is true', () => {
+        beforeEach(async () => {
+          createComponent({ reloadPageOnSubmit: true });
+          await triggerMembersTokenSelect([user1, user2]);
+
+          wrapper.vm.$toast = { show: jest.fn() };
+          jest.spyOn(Api, 'inviteGroupMembers').mockResolvedValue({ data: postData });
+          clickInviteButton();
+        });
+
+        it('calls displaySuccessfulInvitationAlert on mount', () => {
+          expect(displaySuccessfulInvitationAlert).toHaveBeenCalled();
+        });
+
+        it('calls reloadOnInvitationSuccess', () => {
+          expect(reloadOnInvitationSuccess).toHaveBeenCalled();
+        });
+
+        it('does not show the toast message', () => {
+          expect(wrapper.vm.$toast.show).not.toHaveBeenCalled();
+        });
+      });
 
       describe('when member is added successfully', () => {
         beforeEach(async () => {
@@ -437,6 +468,14 @@ describe('InviteMembersModal', () => {
 
           it('displays the successful toastMessage', () => {
             expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added');
+          });
+
+          it('does not call displaySuccessfulInvitationAlert on mount', () => {
+            expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
+          });
+
+          it('does not call reloadOnInvitationSuccess', () => {
+            expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
           });
         });
 
@@ -464,7 +503,7 @@ describe('InviteMembersModal', () => {
 
         describe('clearing the invalid state and message', () => {
           beforeEach(async () => {
-            mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.EMAIL_TAKEN);
+            mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.EMAIL_TAKEN);
 
             clickInviteButton();
 
@@ -523,7 +562,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays the restricted user api message for response with bad request', async () => {
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.EMAIL_RESTRICTED);
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.EMAIL_RESTRICTED);
 
           clickInviteButton();
 
@@ -536,7 +575,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays all errors when there are multiple existing users that are restricted by email', async () => {
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
 
           clickInviteButton();
 
@@ -590,6 +629,14 @@ describe('InviteMembersModal', () => {
           it('displays the successful toastMessage', () => {
             expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added');
           });
+
+          it('does not call displaySuccessfulInvitationAlert on mount', () => {
+            expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
+          });
+
+          it('does not call reloadOnInvitationSuccess', () => {
+            expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
+          });
         });
       });
 
@@ -633,7 +680,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays the restricted email error when restricted email is invited', async () => {
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.EMAIL_RESTRICTED);
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.EMAIL_RESTRICTED);
 
           clickInviteButton();
 
@@ -647,7 +694,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays all errors when there are multiple emails that return a restricted error message', async () => {
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
 
           clickInviteButton();
 
@@ -677,6 +724,14 @@ describe('InviteMembersModal', () => {
           expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
           expect(findMembersSelect().props('exceptionState')).toBe(false);
         });
+
+        it('does not call displaySuccessfulInvitationAlert on mount', () => {
+          expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
+        });
+
+        it('does not call reloadOnInvitationSuccess', () => {
+          expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
+        });
       });
 
       describe('when multiple emails are invited at the same time', () => {
@@ -698,7 +753,7 @@ describe('InviteMembersModal', () => {
           createInviteMembersToGroupWrapper();
 
           await triggerMembersTokenSelect([user3, user4, user5, user6]);
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.EXPANDED_RESTRICTED);
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.EXPANDED_RESTRICTED);
 
           clickInviteButton();
 
@@ -790,6 +845,14 @@ describe('InviteMembersModal', () => {
 
           it('displays the successful toastMessage', () => {
             expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added');
+          });
+
+          it('does not call displaySuccessfulInvitationAlert on mount', () => {
+            expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
+          });
+
+          it('does not call reloadOnInvitationSuccess', () => {
+            expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
           });
         });
 

@@ -78,7 +78,7 @@ func TestGetInfoRefsProxiedToGitalySuccessfully(t *testing.T) {
 	for k, v := range badMetadata {
 		features[k] = v
 	}
-	apiResponse.GitalyServer.Features = features
+	apiResponse.GitalyServer.CallMetadata = features
 
 	testCases := []struct {
 		showAllRefs bool

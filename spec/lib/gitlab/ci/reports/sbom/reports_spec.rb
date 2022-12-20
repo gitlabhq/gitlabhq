@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Reports::Sbom::Reports do
+RSpec.describe Gitlab::Ci::Reports::Sbom::Reports, feature_category: :dependency_management do
   subject(:reports_list) { described_class.new }
 
   describe '#add_report' do

@@ -37,11 +37,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    ref="variablesSection"
-    class="d-sm-flex flex-sm-wrap pt-2 pr-1 pb-0 pl-2 variables-section"
-    data-qa-selector="variables_content"
-  >
+  <div ref="variablesSection" class="d-sm-flex flex-sm-wrap pt-2 pr-1 pb-0 pl-2 variables-section">
     <div v-for="variable in variables" :key="variable.name" class="mb-1 pr-2 d-flex d-sm-block">
       <component
         :is="variableField(variable.type)"
@@ -50,7 +46,6 @@ export default {
         :value="variable.value"
         :name="variable.name"
         :options="variable.options"
-        data-qa-selector="variable_item"
         @input="refreshDashboard(variable, $event)"
       />
     </div>

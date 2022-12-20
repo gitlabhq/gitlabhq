@@ -23,6 +23,7 @@ import {
   VISIBILITY_LEVEL_INTERNAL_STRING,
   VISIBILITY_LEVEL_PUBLIC_STRING,
   VISIBILITY_LEVELS_STRING_TO_INTEGER,
+  VISIBILITY_LEVELS_INTEGER_TO_STRING,
 } from '~/visibility_level/constants';
 import ProjectNamespace from './project_namespace.vue';
 
@@ -105,39 +106,8 @@ export default {
     };
   },
   computed: {
-    projectVisibilityLevel() {
-      return VISIBILITY_LEVELS_STRING_TO_INTEGER[this.projectVisibility];
-    },
-    namespaceVisibilityLevel() {
-      const visibility =
-        this.form.fields.namespace.value?.visibility || VISIBILITY_LEVEL_PUBLIC_STRING;
-      return VISIBILITY_LEVELS_STRING_TO_INTEGER[visibility];
-    },
-    visibilityLevelCap() {
-      return Math.min(this.projectVisibilityLevel, this.namespaceVisibilityLevel);
-    },
-    restrictedVisibilityLevelsSet() {
-      return new Set(this.restrictedVisibilityLevels);
-    },
     allowedVisibilityLevels() {
-      const allowedLevels = Object.entries(VISIBILITY_LEVELS_STRING_TO_INTEGER).reduce(
-        (levels, [levelName, levelValue]) => {
-          if (
-            !this.restrictedVisibilityLevelsSet.has(levelValue) &&
-            levelValue <= this.visibilityLevelCap
-          ) {
-            levels.push(levelName);
-          }
-          return levels;
-        },
-        [],
-      );
-
-      if (!allowedLevels.length) {
-        return [VISIBILITY_LEVEL_PRIVATE_STRING];
-      }
-
-      return allowedLevels;
+      return this.getAllowedVisibilityLevels();
     },
     visibilityLevels() {
       return [
@@ -178,13 +148,60 @@ export default {
       return !this.allowedVisibilityLevels.includes(visibility);
     },
     getInitialVisibilityValue() {
-      return this.restrictedVisibilityLevels.length !== 0 ? null : this.projectVisibility;
+      return this.getMaximumAllowedVisibilityLevel(this.projectVisibility);
     },
     setNamespace(namespace) {
-      this.form.fields.visibility.value =
-        this.restrictedVisibilityLevels.length !== 0 ? null : VISIBILITY_LEVEL_PRIVATE_STRING;
       this.form.fields.namespace.value = namespace;
       this.form.fields.namespace.state = true;
+      this.form.fields.visibility.value = this.getMaximumAllowedVisibilityLevel(
+        this.form.fields.visibility.value,
+      );
+    },
+    getProjectVisibilityLevel() {
+      return VISIBILITY_LEVELS_STRING_TO_INTEGER[this.projectVisibility];
+    },
+    getNamespaceVisibilityLevel() {
+      const visibility =
+        this.form?.fields?.namespace?.value?.visibility || VISIBILITY_LEVEL_PUBLIC_STRING;
+      return VISIBILITY_LEVELS_STRING_TO_INTEGER[visibility];
+    },
+    getVisibilityLevelCap() {
+      return Math.min(this.getProjectVisibilityLevel(), this.getNamespaceVisibilityLevel());
+    },
+    getRestrictedVisibilityLevelsSet() {
+      return new Set(this.restrictedVisibilityLevels);
+    },
+    getAllowedVisibilityLevels() {
+      const allowedLevels = Object.entries(VISIBILITY_LEVELS_STRING_TO_INTEGER).reduce(
+        (levels, [levelName, levelValue]) => {
+          if (
+            !this.getRestrictedVisibilityLevelsSet().has(levelValue) &&
+            levelValue <= this.getVisibilityLevelCap()
+          ) {
+            levels.push(levelName);
+          }
+          return levels;
+        },
+        [],
+      );
+
+      if (!allowedLevels.length) {
+        return [VISIBILITY_LEVEL_PRIVATE_STRING];
+      }
+
+      return allowedLevels;
+    },
+    getMaximumAllowedVisibilityLevel(visibility) {
+      const allowedVisibilities = this.getAllowedVisibilityLevels().map(
+        (s) => VISIBILITY_LEVELS_STRING_TO_INTEGER[s],
+      );
+      const current = VISIBILITY_LEVELS_STRING_TO_INTEGER[visibility];
+      const lower = allowedVisibilities.filter((l) => l <= current);
+      if (lower.length) {
+        return VISIBILITY_LEVELS_INTEGER_TO_STRING[Math.max(...lower)];
+      }
+      const higher = allowedVisibilities.filter((l) => l >= current);
+      return VISIBILITY_LEVELS_INTEGER_TO_STRING[Math.min(...higher)];
     },
     async onSubmit() {
       this.form.showValidation = true;

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectContainerRepositories do
+RSpec.describe API::ProjectContainerRepositories, feature_category: :package_registry do
   include ExclusiveLeaseHelpers
 
   let_it_be(:project) { create(:project, :private) }
@@ -33,7 +33,10 @@ RSpec.describe API::ProjectContainerRepositories do
   let(:method) { :get }
   let(:params) { {} }
 
-  let(:snowplow_gitlab_standard_context) { { user: api_user, project: project, namespace: project.namespace } }
+  let(:snowplow_gitlab_standard_context) do
+    { user: api_user, project: project, namespace: project.namespace,
+      property: 'i_package_container_user' }
+  end
 
   before_all do
     project.add_maintainer(maintainer)
@@ -143,20 +146,6 @@ RSpec.describe API::ProjectContainerRepositories do
             expect { subject }.to change { root_repository.reload.status }.from(nil).to('delete_scheduled')
 
             expect(response).to have_gitlab_http_status(:accepted)
-          end
-
-          context 'with container_registry_delete_repository_with_cron_worker disabled' do
-            before do
-              stub_feature_flags(container_registry_delete_repository_with_cron_worker: false)
-            end
-
-            it 'schedules removal of repository' do
-              expect(DeleteContainerRepositoryWorker).to receive(:perform_async)
-                .with(maintainer.id, root_repository.id)
-              expect { subject }.to change { root_repository.reload.status }.from(nil).to('delete_scheduled')
-
-              expect(response).to have_gitlab_http_status(:accepted)
-            end
           end
         end
       end
@@ -414,6 +403,9 @@ RSpec.describe API::ProjectContainerRepositories do
 
         context 'for developer', :snowplow do
           let(:api_user) { developer }
+          let(:service_ping_context) do
+            [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'i_package_container_user').to_h]
+          end
 
           context 'when there are multiple tags' do
             before do
@@ -427,7 +419,10 @@ RSpec.describe API::ProjectContainerRepositories do
               subject
 
               expect(response).to have_gitlab_http_status(:ok)
-              expect_snowplow_event(category: described_class.name, action: 'delete_tag', project: project, user: api_user, namespace: project.namespace)
+              expect_snowplow_event(category: described_class.name, action: 'delete_tag', project: project,
+                                    user: api_user, namespace: project.namespace.reload,
+                                    label: 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
+                                    property: 'i_package_container_user', context: service_ping_context)
             end
           end
 
@@ -443,7 +438,10 @@ RSpec.describe API::ProjectContainerRepositories do
               subject
 
               expect(response).to have_gitlab_http_status(:ok)
-              expect_snowplow_event(category: described_class.name, action: 'delete_tag', project: project, user: api_user, namespace: project.namespace)
+              expect_snowplow_event(category: described_class.name, action: 'delete_tag', project: project,
+                                    user: api_user, namespace: project.namespace.reload,
+                                    label: 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
+                                    property: 'i_package_container_user', context: service_ping_context)
             end
           end
         end

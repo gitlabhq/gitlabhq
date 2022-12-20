@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User explores projects' do
+RSpec.describe 'User explores projects', feature_category: :users do
   context 'when some projects exist' do
     let_it_be(:archived_project) { create(:project, :archived) }
     let_it_be(:internal_project) { create(:project, :internal) }
@@ -35,8 +35,6 @@ RSpec.describe 'User explores projects' do
 
       before do
         sign_in(user)
-
-        stub_feature_flags(project_list_filter_bar: false)
       end
 
       shared_examples 'empty search results' do

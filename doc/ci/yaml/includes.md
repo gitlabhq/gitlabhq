@@ -13,8 +13,8 @@ You can use [`include`](index.md#include) to include external YAML files in your
 
 To include a single configuration file, use either of these syntax options:
 
-- `include` by itself with a single file, which is the same as
-  [`include:local`](index.md#includelocal):
+- `include` by itself with a single file. If this is a local file, it is the same as [`include:local`](index.md#includelocal).
+  If this is a remote file, it is the same as [`include:remote`](index.md#includeremote).
 
   ```yaml
   include: '/templates/.after-script-template.yml'
@@ -31,7 +31,8 @@ To include a single configuration file, use either of these syntax options:
 
 You can include an array of configuration files:
 
-- If you do not specify an `include` type, the type defaults to [`include:local`](index.md#includelocal):
+- If you do not specify an `include` type, each array item defaults to [`include:local`](index.md#includelocal)
+  or [`include:remote`](index.md#includeremote), as needed:
 
   ```yaml
   include:

@@ -1,0 +1,33 @@
+{
+    "kind": "Service",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "redis-slave",
+        "namespace": "development",
+        "selfLink": "/api/v1/namespaces/development/services/redis-slave",
+        "uid": "bdb80a8f-db93-11e4-b293-f8b156af4ae1",
+        "resourceVersion": "2815",
+        "creationTimestamp": "2015-04-05T13:00:31Z",
+        "labels": {
+            "name": "redis",
+            "role": "slave"
+        }
+    },
+    "spec": {
+        "ports": [
+            {
+                "name": "",
+                "protocol": "TCP",
+                "port": 6379,
+                "targetPort": "redis-server"
+            }
+        ],
+        "selector": {
+            "name": "redis",
+            "role": "slave"
+        },
+        "clusterIP": "10.0.0.140",
+        "sessionAffinity": "None"
+    },
+    "status": {}
+}

@@ -1,9 +1,11 @@
 #!/bin/bash
 
 QA_IMAGE_NAME="gitlab-ee-qa"
+QA_BUILD_TARGET="ee"
 
 if [[ "${CI_PROJECT_NAME}" == "gitlabhq" || "${CI_PROJECT_NAME}" == "gitlab-foss" ]]; then
   QA_IMAGE_NAME="gitlab-ce-qa"
+  QA_BUILD_TARGET="foss"
 fi
 
 # Tag with commit SHA by default
@@ -36,7 +38,7 @@ docker buildx build \
   --build-arg=CHROME_VERSION="${CHROME_VERSION}" \
   --build-arg=DOCKER_VERSION="${DOCKER_VERSION}" \
   --build-arg=RUBY_VERSION="${RUBY_VERSION}" \
-  --build-arg=QA_BUILD_TARGET="${QA_BUILD_TARGET:-qa}" \
+  --build-arg=QA_BUILD_TARGET="${QA_BUILD_TARGET}" \
   --file="${CI_PROJECT_DIR}/qa/Dockerfile" \
   --push \
   ${DESTINATIONS} \

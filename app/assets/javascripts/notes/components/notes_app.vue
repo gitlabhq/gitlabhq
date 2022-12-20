@@ -1,13 +1,11 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
-import { createAlert } from '~/flash';
-import { __ } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
-import { getLocationHash, doesHashExistInUrl } from '~/lib/utils/url_utility';
+import { getLocationHash } from '~/lib/utils/url_utility';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SkeletonLoadingContainer from '~/vue_shared/components/notes/skeleton_note.vue';
@@ -57,11 +55,6 @@ export default {
       default: undefined,
       required: false,
     },
-    userData: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
     shouldShow: {
       type: Boolean,
       required: false,
@@ -90,15 +83,11 @@ export default {
       'commentsDisabled',
       'getNoteableData',
       'userCanReply',
-      'discussionTabCounter',
       'sortDirection',
       'timelineEnabled',
     ]),
     sortDirDesc() {
       return this.sortDirection === constants.DESC;
-    },
-    discussionTabCounterText() {
-      return this.isLoading ? '' : this.discussionTabCounter;
     },
     noteableType() {
       return this.noteableData.noteableType;
@@ -147,11 +136,6 @@ export default {
         this.renderSkeleton = !this.shouldShow;
       });
     },
-    discussionTabCounterText(val) {
-      if (this.discussionsCount) {
-        this.discussionsCount.textContent = val;
-      }
-    },
     isAppReady: {
       handler(isReady) {
         if (!isReady) return;
@@ -162,20 +146,7 @@ export default {
       immediate: true,
     },
   },
-  created() {
-    this.discussionsCount = document.querySelector('.js-discussions-count');
-
-    this.setNotesData(this.notesData);
-    this.setNoteableData(this.noteableData);
-    this.setUserData(this.userData);
-    this.setTargetNoteHash(getLocationHash());
-    eventHub.$once('fetchNotesData', this.fetchNotes);
-  },
   mounted() {
-    if (this.shouldShow) {
-      this.fetchNotes();
-    }
-
     const { parentElement } = this.$el;
     if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
       parentElement.addEventListener('toggleAward', (event) => {
@@ -200,23 +171,16 @@ export default {
   },
   methods: {
     ...mapActions([
-      'setFetchingState',
-      'setLoadingState',
-      'fetchDiscussions',
-      'poll',
       'toggleAward',
-      'setNotesData',
-      'setNoteableData',
-      'setUserData',
       'setLastFetchedAt',
       'setTargetNoteHash',
       'toggleDiscussion',
-      'setNotesFetchedState',
       'expandDiscussion',
       'startTaskList',
       'convertToDiscussion',
       'stopPolling',
       'setConfidentiality',
+      'fetchNotes',
     ]),
     discussionIsIndividualNoteAndNotConverted(discussion) {
       return discussion.individual_note && !this.convertedDisscussionIds.includes(discussion.id);
@@ -227,37 +191,6 @@ export default {
       if (noteId) {
         this.setTargetNoteHash(getLocationHash());
       }
-    },
-    fetchNotes() {
-      if (this.isFetching) return null;
-
-      this.setFetchingState(true);
-
-      return this.fetchDiscussions(this.getFetchDiscussionsConfig())
-        .then(this.initPolling)
-        .then(() => {
-          this.setLoadingState(false);
-          this.setNotesFetchedState(true);
-          eventHub.$emit('fetchedNotesData');
-          this.setFetchingState(false);
-        })
-        .catch(() => {
-          this.setLoadingState(false);
-          this.setNotesFetchedState(true);
-          createAlert({
-            message: __('Something went wrong while fetching comments. Please try again.'),
-          });
-        });
-    },
-    initPolling() {
-      if (this.isPollingInitialized) {
-        return;
-      }
-
-      this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
-
-      this.poll();
-      this.isPollingInitialized = true;
     },
     checkLocationHash() {
       const hash = getLocationHash();
@@ -277,24 +210,6 @@ export default {
       return this.convertToDiscussion(discussionId)
         .then(this.$nextTick)
         .then(() => eventHub.$emit('startReplying', discussionId));
-    },
-    getFetchDiscussionsConfig() {
-      const defaultConfig = { path: this.getNotesDataByProp('discussionsPath') };
-
-      const currentFilter =
-        this.getNotesDataByProp('notesFilter') || constants.DISCUSSION_FILTERS_DEFAULT_VALUE;
-
-      if (
-        doesHashExistInUrl(constants.NOTE_UNDERSCORE) &&
-        currentFilter !== constants.DISCUSSION_FILTERS_DEFAULT_VALUE
-      ) {
-        return {
-          ...defaultConfig,
-          filter: constants.DISCUSSION_FILTERS_DEFAULT_VALUE,
-          persistFilter: false,
-        };
-      }
-      return defaultConfig;
     },
   },
   systemNote: constants.SYSTEM_NOTE,

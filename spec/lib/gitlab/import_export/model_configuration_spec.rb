@@ -23,8 +23,8 @@ RSpec.describe 'Import/Export model configuration' do
   # List of current models between models, in the format of
   # {model: [model_2, model3], ...}
   def setup_models
-    model_names.each_with_object({}) do |model_name, hash|
-      hash[model_name] = associations_for(relation_class_for_name(model_name)) - ['project']
+    model_names.index_with do |model_name|
+      associations_for(relation_class_for_name(model_name)) - ['project']
     end
   end
 

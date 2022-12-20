@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Audit::Type::Definition do
       description: 'Group deploy token is deleted',
       introduced_by_issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/1',
       introduced_by_mr: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1',
-      group: 'govern::compliance',
+      feature_category: 'continuous_delivery',
       milestone: '15.4',
       saved_to_database: true,
       streamed: true }
@@ -17,6 +17,12 @@ RSpec.describe Gitlab::Audit::Type::Definition do
   let(:path) { File.join('types', 'group_deploy_token_destroyed.yml') }
   let(:definition) { described_class.new(path, attributes) }
   let(:yaml_content) { attributes.deep_stringify_keys.to_yaml }
+
+  around do |example|
+    described_class.clear_memoization(:definitions)
+    example.run
+    described_class.clear_memoization(:definitions)
+  end
 
   describe '#key' do
     subject { definition.key }
@@ -36,7 +42,7 @@ RSpec.describe Gitlab::Audit::Type::Definition do
       :description         | nil                             | %r{property '/description' is not of type: string}
       :introduced_by_issue | nil                             | %r{property '/introduced_by_issue' is not of type: string}
       :introduced_by_mr    | nil                             | %r{property '/introduced_by_mr' is not of type: string}
-      :group               | nil                             | %r{property '/group' is not of type: string}
+      :feature_category    | nil                             | %r{property '/feature_category' is not of type: string}
       :milestone           | nil                             | %r{property '/milestone' is not of type: string}
     end
     # rubocop:enable Layout/LineLength
@@ -103,11 +109,70 @@ RSpec.describe Gitlab::Audit::Type::Definition do
 
         expect(audit_event_type_definition.name).to eq "group_deploy_token_destroyed"
         expect(audit_event_type_definition.description).to eq "Group deploy token is deleted"
-        expect(audit_event_type_definition.group).to eq "govern::compliance"
+        expect(audit_event_type_definition.feature_category).to eq "continuous_delivery"
         expect(audit_event_type_definition.milestone).to eq "15.4"
         expect(audit_event_type_definition.saved_to_database).to be true
         expect(audit_event_type_definition.streamed).to be true
       end
+    end
+  end
+
+  describe '.event_names' do
+    before do
+      allow(described_class).to receive(:definitions) do
+        { definition.key => definition }
+      end
+    end
+
+    it 'returns names of event types as string array' do
+      expect(described_class.event_names).to match_array([definition.attributes[:name]])
+    end
+  end
+
+  describe '.defined?' do
+    before do
+      allow(described_class).to receive(:definitions) do
+        { definition.key => definition }
+      end
+    end
+
+    it 'returns true if definition for the event name exists' do
+      expect(described_class.defined?('group_deploy_token_destroyed')).to be_truthy
+    end
+
+    it 'returns false if definition for the event name exists' do
+      expect(described_class.defined?('random_event_name')).to be_falsey
+    end
+  end
+
+  describe '.stream_only?' do
+    let(:stream_only_event_attributes) do
+      { name: 'policy_project_updated',
+        description: 'This event is triggered whenever the security policy project is updated for a project',
+        introduced_by_issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/2',
+        introduced_by_mr: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2',
+        feature_category: 'security_policy_management',
+        milestone: '15.6',
+        saved_to_database: false,
+        streamed: true }
+    end
+
+    let(:stream_only_event_path) { File.join('types', 'policy_project_updated.yml') }
+    let(:stream_only_event_definition) { described_class.new(stream_only_event_path, stream_only_event_attributes) }
+
+    before do
+      allow(described_class).to receive(:definitions) do
+        { definition.key => definition,
+          stream_only_event_definition.key => stream_only_event_definition }
+      end
+    end
+
+    it 'returns true for a stream only event' do
+      expect(described_class.stream_only?('group_deploy_token_destroyed')).to be_falsey
+    end
+
+    it 'returns false for an event that is saved to database' do
+      expect(described_class.stream_only?('policy_project_updated')).to be_truthy
     end
   end
 
@@ -183,6 +248,12 @@ RSpec.describe Gitlab::Audit::Type::Definition do
       write_audit_event_type(store1, path, '{}')
 
       expect { subject }.to raise_error(/Invalid definition for .* '' must match the filename/)
+    end
+  end
+
+  describe 'validate that all the YAML definitions matches the audit event type schema' do
+    it 'successfully loads all the YAML definitions' do
+      expect { described_class.definitions }.not_to raise_error
     end
   end
 

@@ -23,6 +23,10 @@ export default CodeBlockLowlight.extend({
         // eslint-disable-next-line @gitlab/require-i18n-strings
         default: 'code highlight',
       },
+      langParams: {
+        default: null,
+        parseHTML: (element) => element.dataset.langParams,
+      },
     };
   },
   addInputRules() {

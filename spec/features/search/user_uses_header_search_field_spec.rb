@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User uses header search field', :js, :disable_rate_limiter do
+RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feature_category: :global_search do
   include FilteredSearchHelpers
 
   let_it_be(:project) { create(:project, :repository) }

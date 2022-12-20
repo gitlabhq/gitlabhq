@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Creation of a new Custom Emoji' do
+RSpec.describe 'Creation of a new Custom Emoji', feature_category: :not_owned do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

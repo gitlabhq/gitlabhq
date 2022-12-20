@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectPackages do
+RSpec.describe API::ProjectPackages, feature_category: :package_registry do
   let_it_be(:project) { create(:project, :public) }
 
   let(:user) { create(:user) }
@@ -348,6 +348,16 @@ RSpec.describe API::ProjectPackages do
             expect(response).to match_response_schema('public_api/v4/packages/package_with_build')
           end
         end
+      end
+    end
+
+    context 'when package has no default status' do
+      let!(:package1) { create(:npm_package, :error, project: project) }
+
+      it 'returns 404' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

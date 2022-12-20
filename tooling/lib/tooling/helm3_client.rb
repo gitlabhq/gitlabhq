@@ -35,10 +35,7 @@ module Tooling
     end
 
     def delete(release_name:)
-      run_command([
-        'uninstall',
-        release_name
-      ])
+      run_command(['uninstall', release_name])
     end
 
     private

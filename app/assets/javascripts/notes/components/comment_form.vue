@@ -7,7 +7,7 @@ import Autosave from '~/autosave';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/flash';
 import { badgeState } from '~/issuable/components/status_box.vue';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import {
   capitalizeFirstCharacter,
   convertToCamelCase,
@@ -27,8 +27,6 @@ import CommentFieldLayout from './comment_field_layout.vue';
 import CommentTypeDropdown from './comment_type_dropdown.vue';
 import DiscussionLockedWidget from './discussion_locked_widget.vue';
 import NoteSignedOutWidget from './note_signed_out_widget.vue';
-
-const { UNPROCESSABLE_ENTITY } = httpStatusCodes;
 
 export default {
   name: 'CommentForm',
@@ -198,7 +196,7 @@ export default {
       'toggleIssueLocalState',
     ]),
     handleSaveError({ data, status }) {
-      if (status === UNPROCESSABLE_ENTITY && data.errors?.commands_only?.length) {
+      if (status === HTTP_STATUS_UNPROCESSABLE_ENTITY && data.errors?.commands_only?.length) {
         this.errors = data.errors.commands_only;
       } else {
         this.errors = [this.$options.i18n.GENERIC_UNSUBMITTABLE_NETWORK];

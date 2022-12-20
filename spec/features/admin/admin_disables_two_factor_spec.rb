@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin disables 2FA for a user' do
+RSpec.describe 'Admin disables 2FA for a user', feature_category: :system_access do
   include Spec::Support::Helpers::ModalHelpers
 
   it 'successfully', :js do

@@ -1,0 +1,10 @@
+job1:
+  hooks:
+    invalid_script:
+      - echo 'hello job1 invalid_script'
+  script: echo 'hello job1 script'
+
+job2:
+  hooks:
+    pre_get_sources_script: true
+  script: echo 'hello job1 script'

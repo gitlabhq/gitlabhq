@@ -50,7 +50,7 @@ vision of our next rate limiting and policies enforcement architecture.
 - Finding what limits are defined requires performing a codebase audit.
 - We don't have a good way to expose limits to satellite services like Registry.
 - We enforce a number of different policies via opaque external systems
-  (Pipeline Validation Service, Bouncer, Watchtower, Cloudflare, Haproxy).
+  (Pipeline Validation Service, Bouncer, Watchtower, Cloudflare, HAProxy).
 - There is not standardized way to define policies in a way consistent with defining limits.
 - It is difficult to understand when a user is approaching a limit threshold.
 - There is no way to automatically notify a user when they are approaching thresholds.
@@ -103,16 +103,16 @@ quota and by a policy.
   risks to performance, stability, and security.
   - _Example:_ API calls per second for a given IP address
   - _Example:_ `git clone` events per minute for a given user
-  - _Example:_ maximum artifact upload size of 1GB
+  - _Example:_ maximum artifact upload size of 1 GB
 - **Quota:** A global constraint in application usage that is aggregated across an
   entire namespace over the duration of their billing cycle.
   - _Example:_ 400 CI/CD minutes per namespace per month
-  - _Example:_ 10GB transfer per namespace per month
+  - _Example:_ 10 GB transfer per namespace per month
 - **Policy:** A representation of business logic that is decoupled from application
   code. Decoupled policy definitions allow logic to be shared across multiple services
   and/or "hot-loaded" at runtime without releasing a new version of the application.
   - _Example:_ decode and verify a JWT, determine whether the user has access to the
-    given resource based on the JWT's scopes and claims
+    given resource based on the JWT scopes and claims
   - _Example:_ deny access based on group-level constraints
     (such as IP allowlist, SSO, and 2FA) across all services
 
@@ -286,7 +286,7 @@ The GitLab Policy Service might be used in two different ways:
 1. The policy service feature will be used as a backend to store policies defined by users.
 
 These are two slightly different use-cases: first one is about using
-internally-defined policies to ensure the stability / availably of a GitLab
+internally-defined policies to ensure the stability / availability of a GitLab
 instance (GitLab.com or self-managed instance). The second use-case is about
 making GitLab Policy Service a feature that users will be able to build on top
 of.
@@ -303,7 +303,7 @@ the sections of this document above.
 It is possible that GitLab Policy Service and Decoupled Limits Service can
 actually be the same thing. It, however, depends on the implementation details
 that we can't predict yet, and the decision about merging these services
-together will need to be informed by subsequent interations' feedback.
+together will need to be informed by subsequent iterations' feedback.
 
 ## Hierarchical limits
 
@@ -362,7 +362,7 @@ hierarchy. Choosing a proper solution will require a thoughtful research.
     b. Develop YAML model for limits.
     c. Build Rails SDK.
     d. Create examples showcasing usage of the new rate limits SDK.
-**Phase 3**: Team Fanout of Rails SDK - Stage Groups
+**Phase 3**: Team fan out of Rails SDK - Stage Groups
     a. Individual stage groups begin using the SDK built in Phase 2 for new limit and policies.
     b. Stage groups begin replacing historical adhoc limit implementations with the SDK.
     c. Provides means to monitor and observe the progress of the replacement effort. Ideally this is broken down to the `feature_category` level to drive group-level buy-in -- Owning Team.
@@ -373,7 +373,7 @@ hierarchy. Choosing a proper solution will require a thoughtful research.
 **Phase 5**: SDK for Satellite Services - Owning Team
     a. Build Golang SDK.
     c. Create examples showcasing usage of the new rate limits SDK.
-**Phase 6**: Team Fanout for Satellite Services - Stage Groups
+**Phase 6**: Team fan out for Satellite Services - Stage Groups
     a. Individual stage groups being using the SDK built in Phase 5 for new limit and policies.
     b. Stage groups begin replacing historical adhoc limit implementations with the SDK.
 

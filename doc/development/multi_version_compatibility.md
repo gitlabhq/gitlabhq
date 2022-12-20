@@ -112,7 +112,7 @@ During an update, there will be [two different versions of GitLab running in dif
 
 Yes! We have specific instructions for [zero-downtime updates](../update/index.md#upgrading-without-downtime) because it allows us to ignore some permutations of compatibility. This is why we don't worry about Rails code making DB calls to an old PostgreSQL database schema.
 
-## I've identified a potential backwards compatibility problem, what can I do about it?
+## You've identified a potential backwards compatibility problem, what can you do about it?
 
 ### Coordinate
 

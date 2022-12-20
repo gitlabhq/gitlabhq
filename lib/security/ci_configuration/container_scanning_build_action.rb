@@ -12,7 +12,7 @@ module Security
       def template
         return 'Auto-DevOps.gitlab-ci.yml' if @auto_devops_enabled
 
-        'Security/Container-Scanning.gitlab-ci.yml'
+        'Jobs/Container-Scanning.gitlab-ci.yml'
       end
 
       def comment

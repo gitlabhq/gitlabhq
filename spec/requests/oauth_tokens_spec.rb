@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'OAuth Tokens requests' do
+RSpec.describe 'OAuth Tokens requests', feature_category: :authentication_and_authorization do
   let(:user) { create :user }
   let(:application) { create :oauth_application, scopes: 'api' }
   let(:grant_type) { 'authorization_code' }

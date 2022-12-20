@@ -62,7 +62,7 @@ This has led to increased complexity across the board, from development
   that would normally be "free".
 - In many cases, we copy around object storage files needlessly
   (for example, [issue #285597](https://gitlab.com/gitlab-org/gitlab/-/issues/285597)).
-  Large files (LFS, packages, and so on) are slow to finalize or don't work
+  Large files (for example, LFS and packages) are slow to finalize or don't work
   at all as a result.
 
 ## Improvements over the current situation
@@ -113,7 +113,7 @@ Because every group of features requires its own bucket, we don't have
 direct upload enabled everywhere. Contributing a new upload requires
 coding it in both Ruby on Rails and Go.
 
-Implementing a new feature that does not yet have a dedicated bucket
+Implementing a new feature that does not have a dedicated bucket
 requires the developer to also create a merge request in Omnibus
 and CNG, as well as coordinate with SREs to configure the new bucket
 for our own environments.
@@ -138,7 +138,7 @@ access to new features without infrastructure chores.
 Our implementation is built on top of a 3rd-party framework where
 every object storage client is a 3rd-party library. Unfortunately some
 of them are unmaintained.
-[We have customers who cannot push 5GB Git LFS objects](https://gitlab.com/gitlab-org/gitlab/-/issues/216442),
+[We have customers who cannot push 5 GB Git LFS objects](https://gitlab.com/gitlab-org/gitlab/-/issues/216442),
 but with such a vital feature implemented in 3rd-party libraries we
 are slowed down in fixing it, and we also rely on external maintainers
 to merge and release fixes.

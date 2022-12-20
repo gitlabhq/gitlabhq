@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'read-only message' do
+RSpec.describe 'read-only message', feature_category: :database do
   let_it_be(:user) { create(:user) }
 
   before do
@@ -14,7 +14,7 @@ RSpec.describe 'read-only message' do
       allow(Gitlab::Database).to receive(:read_only?).and_return(true)
     end
 
-    it_behaves_like 'Read-only instance', /You are on a read\-only GitLab instance./
+    it_behaves_like 'Read-only instance', /You are on a read-only GitLab instance./
   end
 
   context 'when database is in read-write mode' do
@@ -22,6 +22,6 @@ RSpec.describe 'read-only message' do
       allow(Gitlab::Database).to receive(:read_only?).and_return(false)
     end
 
-    it_behaves_like 'Read-write instance', /You are on a read\-only GitLab instance./
+    it_behaves_like 'Read-write instance', /You are on a read-only GitLab instance./
   end
 end

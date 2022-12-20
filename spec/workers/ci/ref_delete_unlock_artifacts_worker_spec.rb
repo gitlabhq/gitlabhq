@@ -46,30 +46,11 @@ RSpec.describe Ci::RefDeleteUnlockArtifactsWorker do
           context 'when a locked pipeline with persisted artifacts exists' do
             let!(:pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: 'master', project: project, locked: :artifacts_locked) }
 
-            context 'with ci_update_unlocked_job_artifacts disabled' do
-              before do
-                stub_feature_flags(ci_update_unlocked_job_artifacts: false)
-              end
+            it 'logs the correct extra metadata' do
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:unlocked_pipelines, 1)
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:unlocked_job_artifacts, 2)
 
-              it 'logs the correct extra metadata' do
-                expect(worker).to receive(:log_extra_metadata_on_done).with(:unlocked_pipelines, 1)
-                expect(worker).to receive(:log_extra_metadata_on_done).with(:unlocked_job_artifacts, 0)
-
-                perform
-              end
-            end
-
-            context 'with ci_update_unlocked_job_artifacts enabled' do
-              before do
-                stub_feature_flags(ci_update_unlocked_job_artifacts: true)
-              end
-
-              it 'logs the correct extra metadata' do
-                expect(worker).to receive(:log_extra_metadata_on_done).with(:unlocked_pipelines, 1)
-                expect(worker).to receive(:log_extra_metadata_on_done).with(:unlocked_job_artifacts, 2)
-
-                perform
-              end
+              perform
             end
           end
         end

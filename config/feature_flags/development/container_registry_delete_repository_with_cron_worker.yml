@@ -1,8 +1,0 @@
----
-name: container_registry_delete_repository_with_cron_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101918
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378818
-milestone: '15.6'
-type: development
-group: group::container registry
-default_enabled: false

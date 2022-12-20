@@ -6,7 +6,6 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 // Will not return a non-nil error after the response body has been
@@ -15,18 +14,12 @@ func handleReceivePack(w *HttpResponseWriter, r *http.Request, a *api.Response) 
 	action := getService(r)
 	writePostRPCHeader(w, action)
 
-	cr, cw := helper.NewWriteAfterReader(r.Body, w)
+	cr, cw := newWriteAfterReader(r.Body, w)
 	defer cw.Flush()
 
 	gitProtocol := r.Header.Get("Git-Protocol")
 
-	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(
-		r.Context(),
-		a.GitalyServer,
-		gitaly.WithFeatures(a.GitalyServer.Features),
-		gitaly.WithUserID(a.GL_ID),
-		gitaly.WithUsername(a.GL_USERNAME),
-	)
+	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(r.Context(), a.GitalyServer)
 	if err != nil {
 		return fmt.Errorf("smarthttp.ReceivePack: %v", err)
 	}

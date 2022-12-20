@@ -4,7 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
-import ActionButtons from '~/vue_merge_request_widget/components/action_buttons.vue';
+import ActionButtons from '~/vue_merge_request_widget/components/widget/action_buttons.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
 
@@ -24,6 +24,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
   const findActionButtons = () => wrapper.findComponent(ActionButtons);
   const findToggleButton = () => wrapper.findByTestId('toggle-button');
   const findHelpPopover = () => wrapper.findComponent(HelpPopover);
+  const findDynamicScroller = () => wrapper.findByTestId('dynamic-content-scroller');
 
   const createComponent = ({ propsData, slots } = {}) => {
     wrapper = shallowMountExtended(Widget, {
@@ -212,7 +213,10 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
         },
       });
 
-      expect(findHelpPopover().props('options')).toEqual({ title: 'My help popover title' });
+      const popover = findHelpPopover();
+
+      expect(popover.props('options')).toEqual({ title: 'My help popover title' });
+      expect(popover.props('icon')).toBe('information-o');
       expect(wrapper.findByText('Help popover content').exists()).toBe(true);
       expect(wrapper.findByText('Learn more').attributes('href')).toBe('/path/to/docs');
       expect(wrapper.findByText('Learn more').attributes('target')).toBe('_blank');
@@ -370,7 +374,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
               href: '#',
               target: '_blank',
               id: 'full-report-button',
-              text: 'Full Report',
+              text: 'Full report',
             },
           ],
         },
@@ -388,7 +392,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
 
     it('when full report is clicked it should call the respective telemetry event', async () => {
       expect(wrapper.vm.telemetryHub.fullReportClicked).not.toHaveBeenCalled();
-      wrapper.findByText('Full Report').vm.$emit('click');
+      wrapper.findByText('Full report').vm.$emit('click');
       await nextTick();
       expect(wrapper.vm.telemetryHub.fullReportClicked).toHaveBeenCalledTimes(1);
     });
@@ -406,6 +410,32 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
 
     it('should not call create a telemetry hub', () => {
       expect(wrapper.vm.telemetryHub).toBe(null);
+    });
+  });
+
+  describe('dynamic content', () => {
+    const content = [
+      {
+        id: 'row-id',
+        header: ['This is a header', 'This is a subheader'],
+        text: 'Main text for the row',
+        subtext: 'Optional: Smaller sub-text to be displayed below the main text',
+      },
+    ];
+
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          content,
+        },
+      });
+    });
+
+    it('uses a dynamic scroller to show the items', async () => {
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+      expect(findDynamicScroller().props('items')).toEqual(content);
     });
   });
 });

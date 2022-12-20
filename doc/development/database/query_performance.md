@@ -15,13 +15,14 @@ When you are optimizing your SQL queries, there are two dimensions to pay attent
 
 ## Timing guidelines for queries
 
-| Query Type | Maximum Query Time | Notes |
-|----|----|---|
-| General queries | `100ms` | This is not a hard limit, but if a query is getting above it, it is important to spend time understanding why it can or cannot be optimized. |
-| Queries in a migration | `100ms` | This is different than the total [migration time](../migration_style_guide.md#how-long-a-migration-should-take). |
-| Concurrent operations in a migration | `5min` | Concurrent operations do not block the database, but they block the GitLab update. This includes operations such as `add_concurrent_index` and `add_concurrent_foreign_key`. |
-| Background migrations | `1s` |  |
-| Service Ping | `1s` | See the [Service Ping docs](../service_ping/implement.md) for more details. |
+| Query Type                                | Maximum Query Time | Notes                                                                                                                                                                                                                                                                                                                      |
+|-------------------------------------------|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| General queries                           | `100ms`            | This is not a hard limit, but if a query is getting above it, it is important to spend time understanding why it can or cannot be optimized.                                                                                                                                                                               |
+| Queries in a migration                    | `100ms`            | This is different than the total [migration time](../migration_style_guide.md#how-long-a-migration-should-take).                                                                                                                                                                                                           |
+| Concurrent operations in a migration      | `5min`             | Concurrent operations do not block the database, but they block the GitLab update. This includes operations such as `add_concurrent_index` and `add_concurrent_foreign_key`.                                                                                                                                               |
+| Concurrent operations in a post migration | `20min`            | Concurrent operations do not block the database, but they block the GitLab post update process. This includes operations such as `add_concurrent_index` and `add_concurrent_foreign_key`. If index creation exceeds 20 minutes, consider [async index creation](adding_database_indexes.md#create-indexes-asynchronously). |
+| Background migrations                     | `1s`               |                                                                                                                                                                                                                                                                                                                            |
+| Service Ping                              | `1s`               | See the [Service Ping docs](../service_ping/implement.md) for more details.                                                                                                                                                                                                                                                |
 
 - When analyzing your query's performance, pay attention to if the time you are seeing is on a [cold or warm cache](#cold-and-warm-cache). These guidelines apply for both cache types.
 - When working with batched queries, change the range and batch size to see how it effects the query timing and caching.

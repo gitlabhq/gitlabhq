@@ -6,6 +6,7 @@ module Gitlab
   module X509
     class Signature
       include Gitlab::Utils::StrongMemoize
+      include SignatureType
 
       attr_reader :signature_text, :signed_text, :created_at
 
@@ -16,14 +17,18 @@ module Gitlab
         @created_at = created_at
       end
 
+      def type
+        :x509
+      end
+
       def x509_certificate
         return if certificate_attributes.nil?
 
         X509Certificate.safe_create!(certificate_attributes) unless verified_signature.nil?
       end
 
-      def user
-        strong_memoize(:user) { User.find_by_any_email(@email) }
+      def signed_by_user
+        strong_memoize(:signed_by_user) { User.find_by_any_email(@email) }
       end
 
       def verified_signature
@@ -33,11 +38,11 @@ module Gitlab
       def verification_status
         return :unverified if
           x509_certificate.nil? ||
-          x509_certificate.revoked? ||
-          !verified_signature ||
-          user.nil?
+            x509_certificate.revoked? ||
+            !verified_signature ||
+            signed_by_user.nil?
 
-        if user.verified_emails.include?(@email.downcase) && certificate_email.casecmp?(@email)
+        if signed_by_user.verified_emails.include?(@email.downcase) && certificate_email.casecmp?(@email)
           :verified
         else
           :unverified

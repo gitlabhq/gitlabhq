@@ -9,7 +9,13 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService do
   let!(:lfs_objects_project) { create_list(:lfs_objects_project, 2, project: project) }
   let!(:existing_lfs_objects) { LfsObject.pluck(:oid, :size).to_h }
   let(:oids) { { 'oid1' => 123, 'oid2' => 125 } }
-  let(:oid_download_links) { { 'oid1' => "#{import_url}/gitlab-lfs/objects/oid1", 'oid2' => "#{import_url}/gitlab-lfs/objects/oid2" } }
+  let(:oid_download_links) do
+    [
+      { 'oid1' => "#{import_url}/gitlab-lfs/objects/oid1" },
+      { 'oid2' => "#{import_url}/gitlab-lfs/objects/oid2" }
+    ]
+  end
+
   let(:all_oids) { existing_lfs_objects.merge(oids) }
   let(:remote_uri) { URI.parse(lfs_endpoint) }
 
@@ -21,17 +27,24 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService do
     allow_any_instance_of(Projects::LfsPointers::LfsListService).to receive(:execute).and_return(all_oids)
   end
 
-  describe '#execute' do
+  describe '#each_list_item' do
     context 'when no lfs pointer is linked' do
       before do
-        allow_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:execute).and_return(oid_download_links)
-        expect(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:new).with(project, remote_uri: URI.parse(default_endpoint)).and_call_original
+        allow_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService)
+          .to receive(:each_link).with(oids)
+          .and_yield(oid_download_links[0])
+          .and_yield(oid_download_links[1])
       end
 
       it 'retrieves all lfs pointers in the project repository' do
+        expect(Projects::LfsPointers::LfsDownloadLinkListService)
+          .to receive(:new).with(project, remote_uri: URI.parse(default_endpoint))
+          .and_call_original
         expect_any_instance_of(Projects::LfsPointers::LfsListService).to receive(:execute)
 
-        subject.execute
+        checksum = 0
+        subject.each_list_item { |lfs_object| checksum += 1 }
+        expect(checksum).to eq 2
       end
 
       context 'when no LFS objects exist' do
@@ -40,17 +53,23 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService do
         end
 
         it 'retrieves all LFS objects' do
-          expect_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:execute).with(all_oids)
+          expect(Projects::LfsPointers::LfsDownloadLinkListService)
+            .to receive(:new).with(project, remote_uri: URI.parse(default_endpoint)).and_call_original
+          expect_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService)
+            .to receive(:each_link).with(all_oids)
 
-          subject.execute
+          subject.each_list_item {}
         end
       end
 
       context 'when some LFS objects already exist' do
         it 'retrieves the download links of non-existent objects' do
-          expect_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:execute).with(oids)
+          expect_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService)
+            .to receive(:each_link).with(oids)
 
-          subject.execute
+          checksum = 0
+          subject.each_list_item { |lfs_object| checksum += 1 }
+          expect(checksum).to eq 2
         end
       end
     end
@@ -62,16 +81,15 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService do
 
       context 'when url points to the same import url host' do
         let(:lfs_endpoint) { "#{import_url}/different_endpoint" }
-        let(:service) { double }
-
-        before do
-          allow(service).to receive(:execute)
-        end
+        let(:service) { instance_double(Projects::LfsPointers::LfsDownloadLinkListService, each_link: nil) }
 
         it 'downloads lfs object using the new endpoint' do
-          expect(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:new).with(project, remote_uri: remote_uri).and_return(service)
+          expect(Projects::LfsPointers::LfsDownloadLinkListService)
+            .to receive(:new)
+            .with(project, remote_uri: remote_uri)
+            .and_return(service)
 
-          subject.execute
+          subject.each_list_item {}
         end
 
         context 'when import url has credentials' do
@@ -79,10 +97,14 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService do
 
           it 'adds the credentials to the new endpoint' do
             expect(Projects::LfsPointers::LfsDownloadLinkListService)
-              .to receive(:new).with(project, remote_uri: URI.parse("http://user:password@www.gitlab.com/demo/repo.git/different_endpoint"))
+              .to receive(:new)
+              .with(
+                project,
+                remote_uri: URI.parse("http://user:password@www.gitlab.com/demo/repo.git/different_endpoint")
+              )
               .and_return(service)
 
-            subject.execute
+            subject.each_list_item {}
           end
 
           context 'when url has its own credentials' do
@@ -93,7 +115,7 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService do
                 .to receive(:new).with(project, remote_uri: remote_uri)
                 .and_return(service)
 
-              subject.execute
+              subject.each_list_item {}
             end
           end
         end
@@ -105,7 +127,7 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService do
         it 'disables lfs from the project' do
           expect(project.lfs_enabled?).to be_truthy
 
-          subject.execute
+          subject.each_list_item {}
 
           expect(project.lfs_enabled?).to be_falsey
         end
@@ -113,7 +135,7 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService do
         it 'does not download anything' do
           expect_any_instance_of(Projects::LfsPointers::LfsListService).not_to receive(:execute)
 
-          subject.execute
+          subject.each_list_item {}
         end
       end
     end

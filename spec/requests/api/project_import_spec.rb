@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectImport, :aggregate_failures do
+RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :importers do
   include WorkhorseHelpers
   include AfterNextHelpers
 
@@ -44,7 +44,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures do
 
     it_behaves_like 'requires authentication'
 
-    it 'executes a limited number of queries' do
+    it 'executes a limited number of queries', :use_clean_rails_redis_caching do
       control_count = ActiveRecord::QueryRecorder.new { subject }.count
 
       expect(control_count).to be <= 111
@@ -126,13 +126,31 @@ RSpec.describe API::ProjectImport, :aggregate_failures do
       end
     end
 
-    it 'schedules an import at the user namespace level' do
-      stub_import(user.namespace)
-      params[:path] = 'test-import2'
+    context 'when namespace not set' do
+      it 'schedules an import at the user namespace level' do
+        stub_import(user.namespace)
+        params[:path] = 'test-import2'
 
-      subject
+        subject
 
-      expect(response).to have_gitlab_http_status(:created)
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      context 'when current user is a bot user' do
+        let(:user) { create(:user, :project_bot) }
+
+        it 'does not schedule an import' do
+          expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
+
+          params[:namespace] = nil
+          params[:path] = 'test-import3'
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq("Namespace is not valid")
+        end
+      end
     end
 
     it 'does not schedule an import for a namespace that does not exist' do
@@ -159,6 +177,20 @@ RSpec.describe API::ProjectImport, :aggregate_failures do
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Namespace Not Found')
+    end
+
+    context 'when passed in namespace is a bot user namespace' do
+      let(:user) { create(:user, :project_bot) }
+
+      it 'does not schedule an import' do
+        expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
+        params[:namespace] = user.namespace.full_path
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq("Namespace is not valid")
+      end
     end
 
     context 'if user uploads no valid file' do

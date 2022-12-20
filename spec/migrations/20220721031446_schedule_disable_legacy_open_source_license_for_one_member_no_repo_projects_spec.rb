@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleDisableLegacyOpenSourceLicenseForOneMemberNoRepoProjects do
+RSpec.describe ScheduleDisableLegacyOpenSourceLicenseForOneMemberNoRepoProjects, feature_category: :projects do
   context 'when on gitlab.com' do
     let(:migration) { described_class::MIGRATION }
 

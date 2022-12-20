@@ -1199,18 +1199,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
-  describe '#add_column_with_default' do
-    let(:column) { Project.columns.find { |c| c.name == "id" } }
-
-    it 'delegates to #add_column' do
-      expect(model).to receive(:add_column).with(:projects, :foo, :integer, default: 10, limit: nil, null: true)
-
-      model.add_column_with_default(:projects, :foo, :integer,
-                                    default: 10,
-                                    allow_null: true)
-    end
-  end
-
   describe '#rename_column_concurrently' do
     context 'in a transaction' do
       it 'raises RuntimeError' do
@@ -2006,170 +1994,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
-  describe 'sidekiq migration helpers', :redis do
-    let(:worker) do
-      Class.new do
-        include Sidekiq::Worker
-
-        sidekiq_options queue: 'test'
-
-        def self.name
-          'WorkerClass'
-        end
-      end
-    end
-
-    let(:same_queue_different_worker) do
-      Class.new do
-        include Sidekiq::Worker
-
-        sidekiq_options queue: 'test'
-
-        def self.name
-          'SameQueueDifferentWorkerClass'
-        end
-      end
-    end
-
-    let(:unrelated_worker) do
-      Class.new do
-        include Sidekiq::Worker
-
-        sidekiq_options queue: 'unrelated'
-
-        def self.name
-          'UnrelatedWorkerClass'
-        end
-      end
-    end
-
-    before do
-      stub_const(worker.name, worker)
-      stub_const(unrelated_worker.name, unrelated_worker)
-      stub_const(same_queue_different_worker.name, same_queue_different_worker)
-    end
-
-    describe '#sidekiq_remove_jobs', :clean_gitlab_redis_queues do
-      def clear_queues
-        Sidekiq::Queue.new('test').clear
-        Sidekiq::Queue.new('unrelated').clear
-        Sidekiq::RetrySet.new.clear
-        Sidekiq::ScheduledSet.new.clear
-      end
-
-      around do |example|
-        clear_queues
-        Sidekiq::Testing.disable!(&example)
-        clear_queues
-      end
-
-      it "removes all related job instances from the job class's queue" do
-        worker.perform_async
-        same_queue_different_worker.perform_async
-        unrelated_worker.perform_async
-
-        queue_we_care_about = Sidekiq::Queue.new(worker.queue)
-        unrelated_queue = Sidekiq::Queue.new(unrelated_worker.queue)
-
-        expect(queue_we_care_about.size).to eq(2)
-        expect(unrelated_queue.size).to eq(1)
-
-        model.sidekiq_remove_jobs(job_klass: worker)
-
-        expect(queue_we_care_about.size).to eq(1)
-        expect(queue_we_care_about.map(&:klass)).not_to include(worker.name)
-        expect(queue_we_care_about.map(&:klass)).to include(
-          same_queue_different_worker.name
-        )
-        expect(unrelated_queue.size).to eq(1)
-      end
-
-      context 'when job instances are in the scheduled set' do
-        it 'removes all related job instances from the scheduled set' do
-          worker.perform_in(1.hour)
-          unrelated_worker.perform_in(1.hour)
-
-          scheduled = Sidekiq::ScheduledSet.new
-
-          expect(scheduled.size).to eq(2)
-          expect(scheduled.map(&:klass)).to include(
-            worker.name,
-            unrelated_worker.name
-          )
-
-          model.sidekiq_remove_jobs(job_klass: worker)
-
-          expect(scheduled.size).to eq(1)
-          expect(scheduled.map(&:klass)).not_to include(worker.name)
-          expect(scheduled.map(&:klass)).to include(unrelated_worker.name)
-        end
-      end
-
-      context 'when job instances are in the retry set' do
-        include_context 'when handling retried jobs'
-
-        it 'removes all related job instances from the retry set' do
-          retry_in(worker, 1.hour)
-          retry_in(worker, 2.hours)
-          retry_in(worker, 3.hours)
-          retry_in(unrelated_worker, 4.hours)
-
-          retries = Sidekiq::RetrySet.new
-
-          expect(retries.size).to eq(4)
-          expect(retries.map(&:klass)).to include(
-            worker.name,
-            unrelated_worker.name
-          )
-
-          model.sidekiq_remove_jobs(job_klass: worker)
-
-          expect(retries.size).to eq(1)
-          expect(retries.map(&:klass)).not_to include(worker.name)
-          expect(retries.map(&:klass)).to include(unrelated_worker.name)
-        end
-      end
-    end
-
-    describe '#sidekiq_queue_length' do
-      context 'when queue is empty' do
-        it 'returns zero' do
-          Sidekiq::Testing.disable! do
-            expect(model.sidekiq_queue_length('test')).to eq 0
-          end
-        end
-      end
-
-      context 'when queue contains jobs' do
-        it 'returns correct size of the queue' do
-          Sidekiq::Testing.disable! do
-            worker.perform_async('Something', [1])
-            worker.perform_async('Something', [2])
-
-            expect(model.sidekiq_queue_length('test')).to eq 2
-          end
-        end
-      end
-    end
-
-    describe '#sidekiq_queue_migrate' do
-      it 'migrates jobs from one sidekiq queue to another' do
-        Sidekiq::Testing.disable! do
-          worker.perform_async('Something', [1])
-          worker.perform_async('Something', [2])
-
-          expect(model.sidekiq_queue_length('test')).to eq 2
-          expect(model.sidekiq_queue_length('new_test')).to eq 0
-
-          model.sidekiq_queue_migrate('test', to: 'new_test')
-
-          expect(model.sidekiq_queue_length('test')).to eq 0
-          expect(model.sidekiq_queue_length('new_test')).to eq 2
-        end
-      end
-    end
-  end
-
   describe '#check_trigger_permissions!' do
     it 'does nothing when the user has the correct permissions' do
       expect { model.check_trigger_permissions!('users') }
@@ -2790,18 +2614,18 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       model.backfill_iids('issues')
 
-      issue = issue_class.create!(project_id: project.id)
+      issue = issue_class.create!(project_id: project.id, namespace_id: project.project_namespace_id)
 
       expect(issue.iid).to eq(1)
     end
 
     it 'generates iids properly for models created after the migration when iids are backfilled' do
       project = setup
-      issue_a = issues.create!(project_id: project.id, work_item_type_id: issue_type.id)
+      issue_a = issues.create!(project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: issue_type.id)
 
       model.backfill_iids('issues')
 
-      issue_b = issue_class.create!(project_id: project.id)
+      issue_b = issue_class.create!(project_id: project.id, namespace_id: project.project_namespace_id)
 
       expect(issue_a.reload.iid).to eq(1)
       expect(issue_b.iid).to eq(2)
@@ -2810,14 +2634,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     it 'generates iids properly for models created after the migration across multiple projects' do
       project_a = setup
       project_b = setup
-      issues.create!(project_id: project_a.id, work_item_type_id: issue_type.id)
-      issues.create!(project_id: project_b.id, work_item_type_id: issue_type.id)
-      issues.create!(project_id: project_b.id, work_item_type_id: issue_type.id)
+      issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id)
+      issues.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type.id)
+      issues.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type.id)
 
       model.backfill_iids('issues')
 
-      issue_a = issue_class.create!(project_id: project_a.id, work_item_type_id: issue_type.id)
-      issue_b = issue_class.create!(project_id: project_b.id, work_item_type_id: issue_type.id)
+      issue_a = issue_class.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id)
+      issue_b = issue_class.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type.id)
 
       expect(issue_a.iid).to eq(2)
       expect(issue_b.iid).to eq(3)
@@ -2827,11 +2651,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       it 'generates an iid' do
         project_a = setup
         project_b = setup
-        issue_a = issues.create!(project_id: project_a.id, work_item_type_id: issue_type.id)
+        issue_a = issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id)
 
         model.backfill_iids('issues')
 
-        issue_b = issue_class.create!(project_id: project_b.id)
+        issue_b = issue_class.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id)
 
         expect(issue_a.reload.iid).to eq(1)
         expect(issue_b.reload.iid).to eq(1)
@@ -2841,8 +2665,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     context 'when a row already has an iid set in the database' do
       it 'backfills iids' do
         project = setup
-        issue_a = issues.create!(project_id: project.id, work_item_type_id: issue_type.id, iid: 1)
-        issue_b = issues.create!(project_id: project.id, work_item_type_id: issue_type.id, iid: 2)
+        issue_a = issues.create!(project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: issue_type.id, iid: 1)
+        issue_b = issues.create!(project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: issue_type.id, iid: 2)
 
         model.backfill_iids('issues')
 
@@ -2853,9 +2677,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       it 'backfills for multiple projects' do
         project_a = setup
         project_b = setup
-        issue_a = issues.create!(project_id: project_a.id, work_item_type_id: issue_type.id, iid: 1)
-        issue_b = issues.create!(project_id: project_b.id, work_item_type_id: issue_type.id, iid: 1)
-        issue_c = issues.create!(project_id: project_a.id, work_item_type_id: issue_type.id, iid: 2)
+        issue_a = issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id, iid: 1)
+        issue_b = issues.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type.id, iid: 1)
+        issue_c = issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id, iid: 2)
 
         model.backfill_iids('issues')
 

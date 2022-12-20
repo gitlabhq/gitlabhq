@@ -91,7 +91,7 @@ module AvatarsHelper
       title: user_name
     }
 
-    tag(:img, image_options)
+    tag.img(**image_options)
   end
 
   def user_avatar(options = {})

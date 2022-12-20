@@ -9,7 +9,7 @@ RSpec.describe Releases::ManageEvidenceWorker do
     specify :sidekiq_inline do
       aggregate_failures do
         expect(::Releases::CreateEvidenceService).not_to receive(:execute)
-        expect { described_class.new.perform }.to change(Releases::Evidence, :count).by(0)
+        expect { described_class.new.perform }.to change { Releases::Evidence.count }.by(0)
       end
     end
   end
@@ -23,7 +23,7 @@ RSpec.describe Releases::ManageEvidenceWorker do
           expect(service).to receive(:execute).and_call_original
         end
 
-        expect { described_class.new.perform }.to change(Releases::Evidence, :count).by(1)
+        expect { described_class.new.perform }.to change { Releases::Evidence.count }.by(1)
       end
     end
 

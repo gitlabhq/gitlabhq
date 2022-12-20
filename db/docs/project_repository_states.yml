@@ -7,3 +7,4 @@ feature_categories:
 description: Keeps checksums of repositories
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4428
 milestone: '10.6'
+gitlab_schema: gitlab_main

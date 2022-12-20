@@ -53,7 +53,7 @@ class ServiceDeskSetting < ApplicationRecord
   def projects_with_same_slug_and_key_exists?
     return false unless project_key
 
-    settings = self.class.with_project_key(project_key).preload(:project)
+    settings = self.class.with_project_key(project_key).where.not(project_id: project_id).preload(:project)
     project_slug = self.project.full_path_slug
 
     settings.any? do |setting|

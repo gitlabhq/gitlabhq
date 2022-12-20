@@ -11,7 +11,7 @@ import FormattingBubbleMenu from './bubble_menus/formatting_bubble_menu.vue';
 import CodeBlockBubbleMenu from './bubble_menus/code_block_bubble_menu.vue';
 import LinkBubbleMenu from './bubble_menus/link_bubble_menu.vue';
 import MediaBubbleMenu from './bubble_menus/media_bubble_menu.vue';
-import TopToolbar from './top_toolbar.vue';
+import FormattingToolbar from './formatting_toolbar.vue';
 import LoadingIndicator from './loading_indicator.vue';
 
 export default {
@@ -20,7 +20,7 @@ export default {
     ContentEditorAlert,
     ContentEditorProvider,
     TiptapEditorContent,
-    TopToolbar,
+    FormattingToolbar,
     FormattingBubbleMenu,
     CodeBlockBubbleMenu,
     LinkBubbleMenu,
@@ -56,6 +56,11 @@ export default {
       required: false,
       default: false,
       validator: (autofocus) => TIPTAP_AUTOFOCUS_OPTIONS.includes(autofocus),
+    },
+    useBottomToolbar: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -163,8 +168,8 @@ export default {
         class="md-area"
         :class="{ 'is-focused': focused }"
       >
-        <top-toolbar ref="toolbar" class="gl-mb-4" />
-        <div class="gl-relative">
+        <formatting-toolbar v-if="!useBottomToolbar" ref="toolbar" class="gl-border-b" />
+        <div class="gl-relative gl-mt-4">
           <formatting-bubble-menu />
           <code-block-bubble-menu />
           <link-bubble-menu />
@@ -176,6 +181,7 @@ export default {
           />
           <loading-indicator v-if="isLoading" />
         </div>
+        <formatting-toolbar v-if="useBottomToolbar" ref="toolbar" class="gl-border-t" />
       </div>
     </div>
   </content-editor-provider>

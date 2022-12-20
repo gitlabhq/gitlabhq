@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration! 'clean_up_migrate_merge_request_diff_commit_users'
 
-RSpec.describe CleanUpMigrateMergeRequestDiffCommitUsers, :migration do
+RSpec.describe CleanUpMigrateMergeRequestDiffCommitUsers, :migration, feature_category: :code_review do
   describe '#up' do
     context 'when there are pending jobs' do
       it 'processes the jobs immediately' do

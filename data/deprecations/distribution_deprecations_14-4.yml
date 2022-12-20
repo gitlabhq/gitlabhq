@@ -1,4 +1,4 @@
-- name: "Move `custom_hooks_dir` setting from GitLab Shell to Gitaly"  # The name of the feature to be deprecated
+- title: "Move `custom_hooks_dir` setting from GitLab Shell to Gitaly"  # The name of the feature to be deprecated
   announcement_milestone: "14.9"  # The milestone when this feature was first announced as deprecated.
   announcement_date: "2022-03-22"
   removal_milestone: "15.0"  # the milestone when this feature is planned to be removed

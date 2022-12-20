@@ -19,6 +19,9 @@ are accessible.
 - **Jira Server**: Your network must allow access to your instance.
 - **Jira Cloud**: Your instance must be accessible through the internet.
 
+NOTE:
+When using GitLab 15.0 and later (including GitLab.com) with Jira Server, you might experience a [session token bug in Jira](https://jira.atlassian.com/browse/JSWSERVER-21389). As a workaround, ensure Jira Server is version 9.1.0 and later or 8.20.11 and later.
+
 ## Smart Commits
 
 When connecting GitLab with Jira with DVCS, you can process your Jira issues using

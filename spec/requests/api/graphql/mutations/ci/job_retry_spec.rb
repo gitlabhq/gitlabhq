@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'JobRetry' do
+RSpec.describe 'JobRetry', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

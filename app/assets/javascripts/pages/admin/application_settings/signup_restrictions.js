@@ -14,7 +14,6 @@ export default function initSignupRestrictions(elementSelector = '#js-signup-for
     booleanAttributes: [
       'signupEnabled',
       'requireAdminApprovalAfterUserSignup',
-      'sendUserConfirmationEmail',
       'domainDenylistEnabled',
       'denylistTypeRawSelected',
       'emailRestrictionsEnabled',

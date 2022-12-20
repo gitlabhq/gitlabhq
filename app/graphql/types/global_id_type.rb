@@ -49,9 +49,7 @@ module Types
           An example `#{graphql_name}` is: `"#{::Gitlab::GlobalId.build(model_name: model_name, id: 1)}"`.
           #{
             if deprecation = Gitlab::GlobalId::Deprecations.deprecation_by(model_name)
-              'The older format `"' +
-              ::Gitlab::GlobalId.build(model_name: deprecation.old_name, id: 1).to_s +
-              '"` was deprecated in ' +  deprecation.milestone + '.'
+              "The older format `\"#{::Gitlab::GlobalId.build(model_name: deprecation.old_name, id: 1)}\"` was deprecated in #{deprecation.milestone}."
             end}
 
         MD

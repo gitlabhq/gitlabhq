@@ -155,7 +155,7 @@ In our case, `data-qa-selector="login_field"`, `data-qa-selector="password_field
 
 Things to note:
 
-- The name of the element and the `qa_selector` must match and be snake_cased
+- The name of the element and the `qa_selector` must match and be snake cased
 - If the element appears on the page unconditionally, add `required: true` to the element. See
   [Dynamic element validation](dynamic_element_validation.md)
 - You may see `.qa-selector` classes in existing Page Objects. We should prefer the [`data-qa-selector`](#data-qa-selector-vs-qa-selector)

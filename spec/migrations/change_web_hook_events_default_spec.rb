@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ChangeWebHookEventsDefault do
+RSpec.describe ChangeWebHookEventsDefault, feature_category: :integrations do
   let(:web_hooks) { table(:web_hooks) }
   let(:projects) { table(:projects) }
   let(:groups) { table(:namespaces) }

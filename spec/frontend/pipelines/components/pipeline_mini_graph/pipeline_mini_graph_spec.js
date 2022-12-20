@@ -48,7 +48,6 @@ describe('Pipeline Mini Graph', () => {
         isMergeTrain: false,
         pipelinePath: '',
         stages: expect.any(Array),
-        stagesClass: '',
         updateDropdown: false,
         upstreamPipeline: undefined,
       });
@@ -62,15 +61,6 @@ describe('Pipeline Mini Graph', () => {
     it('should not render arrow icons', () => {
       expect(findUpstreamArrowIcon().exists()).toBe(false);
       expect(findDownstreamArrowIcon().exists()).toBe(false);
-    });
-
-    it('triggers events in "action request complete"', () => {
-      createComponent();
-
-      findPipelineMiniGraph(0).vm.$emit('pipelineActionRequestComplete');
-      findPipelineMiniGraph(1).vm.$emit('pipelineActionRequestComplete');
-
-      expect(wrapper.emitted('pipelineActionRequestComplete')).toHaveLength(2);
     });
   });
 
@@ -92,7 +82,6 @@ describe('Pipeline Mini Graph', () => {
         isMergeTrain: false,
         pipelinePath: '',
         stages: expect.any(Array),
-        stagesClass: '',
         updateDropdown: false,
         upstreamPipeline: expect.any(Object),
       });
@@ -124,7 +113,6 @@ describe('Pipeline Mini Graph', () => {
         isMergeTrain: false,
         pipelinePath: 'my/pipeline/path',
         stages: expect.any(Array),
-        stagesClass: '',
         updateDropdown: false,
         upstreamPipeline: undefined,
       });

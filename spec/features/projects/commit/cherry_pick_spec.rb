@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Cherry-pick Commits', :js do
+RSpec.describe 'Cherry-pick Commits', :js, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
 

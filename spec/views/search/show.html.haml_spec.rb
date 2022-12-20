@@ -2,27 +2,32 @@
 
 require 'spec_helper'
 
-RSpec.describe 'search/show' do
+RSpec.describe 'search/show', feature_category: :global_search do
   let(:search_term) { nil }
   let(:user) { build(:user) }
+  let(:search_service_presenter) do
+    instance_double(SearchServicePresenter, without_count?: false, advanced_search_enabled?: false)
+  end
 
   before do
     stub_template "search/_category.html.haml" => 'Category Partial'
     stub_template "search/_results.html.haml" => 'Results Partial'
+
+    assign(:search_service, search_service_presenter)
   end
 
   context 'search_page_vertical_nav feature flag enabled' do
     before do
       allow(view).to receive(:current_user) { user }
       assign(:search_term, search_term)
-
-      render
     end
 
     context 'when search term is supplied' do
       let(:search_term) { 'Search Foo' }
 
       it 'will not render category partial' do
+        render
+
         expect(rendered).not_to render_template('search/_category')
         expect(rendered).to render_template('search/_results')
       end
@@ -34,17 +39,19 @@ RSpec.describe 'search/show' do
       stub_feature_flags(search_page_vertical_nav: false)
 
       assign(:search_term, search_term)
-
-      render
     end
 
     context 'when the search page is opened' do
       it 'displays the title' do
+        render
+
         expect(rendered).to have_selector('h1.page-title', text: 'Search')
         expect(rendered).not_to have_selector('h1.page-title code')
       end
 
       it 'does not render partials' do
+        render
+
         expect(rendered).not_to render_template('search/_category')
         expect(rendered).not_to render_template('search/_results')
       end
@@ -54,6 +61,8 @@ RSpec.describe 'search/show' do
       let(:search_term) { 'Search Foo' }
 
       it 'renders partials' do
+        render
+
         expect(rendered).to render_template('search/_category')
         expect(rendered).to render_template('search/_results')
       end
@@ -73,8 +82,8 @@ RSpec.describe 'search/show' do
         end
 
         context 'search with full count' do
-          before do
-            assign(:without_count, false)
+          let(:search_service_presenter) do
+            instance_double(SearchServicePresenter, without_count?: false, advanced_search_enabled?: false)
           end
 
           it 'renders meta tags for a group' do
@@ -96,8 +105,8 @@ RSpec.describe 'search/show' do
         end
 
         context 'search without full count' do
-          before do
-            assign(:without_count, true)
+          let(:search_service_presenter) do
+            instance_double(SearchServicePresenter, without_count?: true, advanced_search_enabled?: false)
           end
 
           it 'renders meta tags for a group' do

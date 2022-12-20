@@ -10,6 +10,7 @@ import {
   getParents,
   getParentByTagName,
   setAttributes,
+  replaceCommentsWith,
 } from '~/lib/utils/dom_utils';
 
 const TEST_MARGIN = 5;
@@ -261,6 +262,23 @@ describe('DOM Utils', () => {
 
     it('returns an empty string for a class that does not exist', () => {
       expect(getContentWrapperHeight('.does-not-exist')).toBe('');
+    });
+  });
+
+  describe('replaceCommentsWith', () => {
+    let div;
+    beforeEach(() => {
+      div = document.createElement('div');
+    });
+
+    it('replaces the comments in a DOM node with an element', () => {
+      div.innerHTML = '<h1> hi there <!-- some comment --> <p> <!-- another comment -->';
+
+      replaceCommentsWith(div, 'comment');
+
+      expect(div.innerHTML).toBe(
+        '<h1> hi there <comment> some comment </comment> <p> <comment> another comment </comment></p></h1>',
+      );
     });
   });
 });

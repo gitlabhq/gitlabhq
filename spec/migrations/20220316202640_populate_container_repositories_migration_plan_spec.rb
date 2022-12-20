@@ -3,10 +3,10 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe PopulateContainerRepositoriesMigrationPlan, :aggregate_failures do
-  let_it_be(:namespaces) { table(:namespaces) }
-  let_it_be(:projects) { table(:projects) }
-  let_it_be(:container_repositories) { table(:container_repositories) }
+RSpec.describe PopulateContainerRepositoriesMigrationPlan, :aggregate_failures, feature_category: :container_registry do
+  let!(:namespaces) { table(:namespaces) }
+  let!(:projects) { table(:projects) }
+  let!(:container_repositories) { table(:container_repositories) }
 
   let!(:namespace) { namespaces.create!(id: 1, name: 'namespace', path: 'namespace') }
   let!(:project) { projects.create!(id: 1, name: 'project', path: 'project', namespace_id: 1) }

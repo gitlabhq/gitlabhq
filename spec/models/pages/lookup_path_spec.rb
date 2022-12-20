@@ -74,6 +74,12 @@ RSpec.describe Pages::LookupPath do
         end
       end
 
+      it 'does not recreate source hash' do
+        expect(deployment.file).to receive(:url_or_file_path).once
+
+        2.times { lookup_path.source }
+      end
+
       context 'when deployment is in the local storage' do
         before do
           deployment.file.migrate!(::ObjectStorage::Store::LOCAL)

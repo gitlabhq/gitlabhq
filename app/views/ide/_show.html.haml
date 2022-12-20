@@ -1,13 +1,10 @@
-- @body_class = 'ide-layout'
 - page_title _('IDE')
 
-- add_page_specific_style 'page_bundles/build'
-- add_page_specific_style 'page_bundles/ide'
+- unless use_new_web_ide?
+  - add_page_specific_style 'page_bundles/build'
+  - add_page_specific_style 'page_bundles/ide'
 
-- content_for :prefetch_asset_tags do
-  - webpack_preload_asset_tag('monaco')
+  - content_for :prefetch_asset_tags do
+    - webpack_preload_asset_tag('monaco')
 
-#ide.ide-loading{ data: ide_data }
-  .text-center
-    = gl_loading_icon(size: 'md')
-    %h2.clgray= _('Loading the GitLab IDE...')
+= render partial: 'shared/ide_root', locals: { data: ide_data, loading_text: _('Loading the GitLab IDE...') }

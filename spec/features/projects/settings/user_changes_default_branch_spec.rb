@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > User changes default branch' do
+RSpec.describe 'Projects > Settings > User changes default branch', feature_category: :projects do
   let(:user) { create(:user) }
 
   before do

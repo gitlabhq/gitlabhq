@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User sorts issues" do
+RSpec.describe "User sorts issues", feature_category: :team_planning do
   include SortingHelper
   include IssueHelpers
 

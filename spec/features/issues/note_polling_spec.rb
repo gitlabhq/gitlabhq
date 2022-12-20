@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue notes polling', :js do
+RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
   include NoteInteractionHelpers
 
   let(:project) { create(:project, :public) }

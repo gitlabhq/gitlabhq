@@ -25,8 +25,7 @@ Starting with version 9.2, the Omnibus GitLab package ships a
 `dependency_licenses.json` file containing version and license information of
 all bundled software, including software libraries, Ruby gems that the rails
 application uses, and JavaScript libraries that is required for the frontend
-components. This file, being in JSON format, is easily machine parseable and
-can be used for automated checks or validations. The file may be found at
+components. Because it's in JSON format, GitLab can parse this file easily and use it for automated checks or validations. The file may be found at
 `/opt/gitlab/dependency_licenses.json`.
 
 Starting with version 11.3, we have also made the license information available

@@ -8,6 +8,7 @@ mutation alertSetAssignees($fullPath: ID!, $assigneeUsernames: [String!]!, $iid:
   ) {
     errors
     issuable: alert {
+      id
       iid
       assignees {
         nodes {

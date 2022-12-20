@@ -28,6 +28,10 @@ RSpec.shared_context 'conan api setup' do
     )
   end
 
+  let(:snowplow_gitlab_standard_context) do
+    { user: user, project: project, namespace: project.namespace, property: 'i_package_conan_user' }
+  end
+
   before do
     project.add_developer(user)
     allow(Settings).to receive(:attr_encrypted_db_key_base).and_return(base_secret)

@@ -31,6 +31,25 @@ RSpec.describe Import::BitbucketServerService do
     allow(subject).to receive(:authorized?).and_return(true)
   end
 
+  context 'execute' do
+    before do
+      allow(subject).to receive(:authorized?).and_return(true)
+      allow(client).to receive(:repo).with(project_key, repo_slug).and_return(double(repo))
+    end
+
+    it 'tracks an access level event' do
+      subject.execute(credentials)
+
+      expect_snowplow_event(
+        category: 'Import::BitbucketServerService',
+        action: 'create',
+        label: 'import_access_level',
+        user: user,
+        extra: { import_type: 'bitbucket', user_role: 'Owner' }
+      )
+    end
+  end
+
   context 'when no repo is found' do
     before do
       allow(subject).to receive(:authorized?).and_return(true)

@@ -1,4 +1,4 @@
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const ADD_CI_VARIABLE_MODAL_ID = 'add-ci-variable';
 
@@ -43,6 +43,7 @@ export const defaultVariableState = {
   key: '',
   masked: false,
   protected: false,
+  raw: false,
   value: '',
   variableType: variableTypes.envType,
 };
@@ -69,10 +70,19 @@ export const AWS_SECRET_ACCESS_KEY = 'AWS_SECRET_ACCESS_KEY';
 export const AWS_TOKEN_CONSTANTS = [AWS_ACCESS_KEY_ID, AWS_DEFAULT_REGION, AWS_SECRET_ACCESS_KEY];
 
 export const CONTAINS_VARIABLE_REFERENCE_MESSAGE = __(
-  'Values that contain the %{codeStart}$%{codeEnd} character can be considered a variable reference and expanded. %{docsLinkStart}Learn more.%{docsLinkEnd}',
+  'Unselect "Expand variable reference" if you want to use the variable value as a raw string.',
 );
 
 export const ENVIRONMENT_SCOPE_LINK_TITLE = __('Learn more');
+export const EXCEEDS_VARIABLE_LIMIT_TEXT = s__(
+  'CiVariables|This %{entity} has %{currentVariableCount} defined CI/CD variables. The maximum number of variables per %{entity} is %{maxVariableLimit}. To add new variables, you must reduce the number of defined variables.',
+);
+export const DEFAULT_EXCEEDS_VARIABLE_LIMIT_TEXT = s__(
+  'CiVariables|You have reached the maximum number of variables available. To add new variables, you must reduce the number of defined variables.',
+);
+export const MAXIMUM_VARIABLE_LIMIT_REACHED = s__(
+  'CiVariables|Maximum number of variables reached.',
+);
 
 export const ADD_VARIABLE_ACTION = 'ADD_VARIABLE';
 export const EDIT_VARIABLE_ACTION = 'EDIT_VARIABLE';
@@ -84,6 +94,10 @@ export const GRAPHQL_GROUP_TYPE = 'Group';
 export const ADD_MUTATION_ACTION = 'add';
 export const UPDATE_MUTATION_ACTION = 'update';
 export const DELETE_MUTATION_ACTION = 'delete';
+
+export const EXPANDED_VARIABLES_NOTE = __(
+  '%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable.',
+);
 
 export const environmentFetchErrorText = __(
   'There was an error fetching the environments information.',

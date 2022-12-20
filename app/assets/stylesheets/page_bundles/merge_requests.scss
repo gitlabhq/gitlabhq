@@ -329,6 +329,8 @@ $tabs-holder-z-index: 250;
       top: 0;
       // !important is required to override inline styles of resizable sidebar
       width: 100% !important;
+      // avoid sticky elements overlap header and other elements
+      z-index: 1;
     }
 
     .tree-list-holder {
@@ -339,11 +341,13 @@ $tabs-holder-z-index: 250;
 }
 
 .ci-widget-container {
+  align-items: center;
   justify-content: space-between;
   flex: 1;
   flex-direction: row;
 
   @include media-breakpoint-down(sm) {
+    align-items: initial;
     flex-direction: column;
 
     .dropdown .mini-pipeline-graph-dropdown-menu.dropdown-menu {
@@ -632,13 +636,6 @@ $tabs-holder-z-index: 250;
     margin: 3px 0;
   }
 
-  .ci-status-icon svg {
-    margin: 3px 0;
-    position: relative;
-    overflow: visible;
-    display: block;
-  }
-
   .normal {
     flex: 1;
     flex-basis: auto;
@@ -673,10 +670,6 @@ $tabs-holder-z-index: 250;
   }
 
   .mr-widget-body {
-    &:not(.mr-widget-body-line-height-1) {
-      line-height: 24px;
-    }
-
     @include clearfix;
 
     .approve-btn {
@@ -1003,7 +996,7 @@ $tabs-holder-z-index: 250;
     max-width: 650px;
     max-height: calc(100vh - 50px);
 
-    .gl-new-dropdown-inner {
+    .gl-dropdown-inner {
       max-height: none !important;
     }
 
@@ -1038,7 +1031,7 @@ $tabs-holder-z-index: 250;
     }
   }
 
-  .gl-new-dropdown-contents {
+  .gl-dropdown-contents {
     padding: $gl-spacing-scale-4 !important;
   }
 
@@ -1048,20 +1041,28 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-widget-merge-details {
+  *,
+  & {
+    @include gl-font-sm;
+  }
+
+  p {
+    @include gl-font-base;
+  }
+
   li:not(:last-child) {
-    @include gl-mb-3;
+    @include gl-mb-2;
   }
 }
 
-.mr-ready-merge-related-links,
-.mr-widget-merge-details {
-  a {
-    @include gl-text-decoration-underline;
+.mr-ready-merge-related-links a,
+.mr-widget-merge-details a,
+.mr-widget-author {
+  @include gl-text-decoration-underline;
 
-    &:hover,
-    &:focus {
-      @include gl-text-decoration-none;
-    }
+  &:hover,
+  &:focus {
+    @include gl-text-decoration-none;
   }
 }
 
@@ -1075,34 +1076,18 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.detail-page-header-actions {
-  .gl-toggle {
-    @include gl-ml-auto;
-    @include gl-rounded-pill;
-    @include gl-w-9;
-
-    &.is-checked:hover {
-      background-color: $blue-500;
-    }
-  }
-}
-
 .page-with-icon-sidebar .issue-sticky-header {
   --width: calc(100% - #{$contextual-sidebar-collapsed-width});
 }
 
 .merge-request-notification-toggle {
+  .gl-toggle {
+    @include gl-ml-auto;
+  }
+
   .gl-toggle-label {
     @include gl-font-weight-normal;
   }
-}
-
-.dropdown-menu li button.gl-toggle:not(.is-checked) {
-  background: $gray-400;
-}
-
-.mr-widget-content-row:first-child {
-  border-top: 0;
 }
 
 .mr-widget-status-icon-level-1::before {

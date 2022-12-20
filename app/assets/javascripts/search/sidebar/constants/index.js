@@ -9,3 +9,5 @@ export const NAV_LINK_DEFAULT_CLASSES = [
   'gl-justify-content-space-between',
   'gl-text-gray-900',
 ];
+
+export const NAV_LINK_COUNT_DEFAULT_CLASSES = ['gl-font-sm', 'gl-font-weight-normal'];

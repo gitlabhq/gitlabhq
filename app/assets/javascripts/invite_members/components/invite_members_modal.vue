@@ -29,6 +29,10 @@ import eventHub from '../event_hub';
 import { responseFromSuccess } from '../utils/response_message_parser';
 import { memberName } from '../utils/member_utils';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
+import {
+  displaySuccessfulInvitationAlert,
+  reloadOnInvitationSuccess,
+} from '../utils/trigger_successful_invite_alert';
 import ModalConfetti from './confetti.vue';
 import MembersTokenSelect from './members_token_select.vue';
 import UserLimitNotification from './user_limit_notification.vue';
@@ -98,10 +102,19 @@ export default {
       type: Array,
       required: true,
     },
+    fullPath: {
+      type: String,
+      required: true,
+    },
     usersLimitDataset: {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    reloadPageOnSubmit: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -119,7 +132,7 @@ export default {
       selectedAccessLevel: undefined,
       errorsLimit: 2,
       isErrorsSectionExpanded: false,
-      emptyInvitesError: false,
+      shouldShowEmptyInvitesAlert: false,
     };
   },
   computed: {
@@ -204,12 +217,15 @@ export default {
         count: this.errorsExpanded.length,
       });
     },
+    formGroupDescription() {
+      return this.invalidFeedbackMessage ? null : this.$options.labels.placeHolder;
+    },
   },
   watch: {
     isEmptyInvites: {
       handler(updatedValue) {
         // nothing to do if the invites are **still** empty and the emptyInvites were never set from submit
-        if (!updatedValue && !this.emptyInvitesError) {
+        if (!updatedValue && !this.shouldShowEmptyInvitesAlert) {
           return;
         }
 
@@ -218,6 +234,10 @@ export default {
     },
   },
   mounted() {
+    if (this.reloadPageOnSubmit) {
+      displaySuccessfulInvitationAlert();
+    }
+
     eventHub.$on('openModal', (options) => {
       this.openModal(options);
       if (this.isOnLearnGitlab) {
@@ -258,16 +278,17 @@ export default {
       const tracking = new ExperimentTracking(experimentName);
       tracking.event(eventName);
     },
-    showEmptyInvitesError() {
-      this.invalidFeedbackMessage = this.$options.labels.emptyInvitesErrorText;
-      this.emptyInvitesError = true;
+    showEmptyInvitesAlert() {
+      this.invalidFeedbackMessage = this.$options.labels.placeHolder;
+      this.shouldShowEmptyInvitesAlert = true;
+      this.$refs.alerts.focus();
     },
     sendInvite({ accessLevel, expiresAt }) {
       this.isLoading = true;
       this.clearValidation();
 
       if (!this.isEmptyInvites) {
-        this.showEmptyInvitesError();
+        this.showEmptyInvitesAlert();
         return;
       }
 
@@ -298,7 +319,7 @@ export default {
           if (error) {
             this.showMemberErrors(message);
           } else {
-            this.showSuccessMessage();
+            this.onInviteSuccess();
           }
         })
         .catch((e) => this.showInvalidFeedbackMessage(e))
@@ -308,6 +329,7 @@ export default {
     },
     showMemberErrors(message) {
       this.invalidMembers = message;
+      this.$refs.alerts.focus();
     },
     tokenName(username) {
       // initial token creation hits this and nothing is found... so safe navigation
@@ -322,12 +344,20 @@ export default {
     resetFields() {
       this.clearValidation();
       this.isLoading = false;
+      this.shouldShowEmptyInvitesAlert = false;
       this.newUsersToInvite = [];
       this.selectedTasksToBeDone = [];
       [this.selectedTaskProject] = this.projects;
     },
     changeSelectedTaskProject(project) {
       this.selectedTaskProject = project;
+    },
+    onInviteSuccess() {
+      if (this.reloadPageOnSubmit) {
+        reloadOnInvitationSuccess();
+      } else {
+        this.showSuccessMessage();
+      }
     },
     showSuccessMessage() {
       if (this.isOnLearnGitlab) {
@@ -347,7 +377,7 @@ export default {
     },
     clearEmptyInviteError() {
       this.invalidFeedbackMessage = '';
-      this.emptyInvitesError = false;
+      this.shouldShowEmptyInvitesAlert = false;
     },
     removeToken(token) {
       delete this.invalidMembers[memberName(token)];
@@ -370,12 +400,13 @@ export default {
     :help-link="helpLink"
     :label-intro-text="labelIntroText"
     :label-search-field="$options.labels.searchField"
-    :form-group-description="$options.labels.placeHolder"
+    :form-group-description="formGroupDescription"
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
     :new-users-to-invite="newUsersToInvite"
     :root-group-id="rootId"
     :users-limit-dataset="usersLimitDataset"
+    :full-path="fullPath"
     @reset="resetFields"
     @submit="sendInvite"
     @access-level="onAccessLevelUpdate"
@@ -390,59 +421,77 @@ export default {
     </template>
 
     <template #alert>
-      <gl-alert
-        v-if="hasInvalidMembers"
-        variant="danger"
-        :dismissible="false"
-        :title="memberErrorTitle"
-        data-testid="alert-member-error"
-      >
-        {{ $options.labels.memberErrorListText }}
-        <ul class="gl-pl-5 gl-mb-0">
-          <li v-for="error in errorsLimited" :key="error.member" data-testid="errors-limited-item">
-            <strong>{{ error.displayedMemberName }}:</strong> {{ error.message }}
-          </li>
-        </ul>
-        <template v-if="shouldErrorsSectionExpand">
-          <gl-collapse v-model="isErrorsSectionExpanded">
-            <ul class="gl-pl-5 gl-mb-0">
-              <li
-                v-for="error in errorsExpanded"
-                :key="error.member"
-                data-testid="errors-expanded-item"
-              >
-                <strong>{{ error.displayedMemberName }}:</strong> {{ error.message }}
-              </li>
-            </ul>
-          </gl-collapse>
-          <gl-button
-            class="gl-text-decoration-none! gl-shadow-none! gl-mt-3"
-            data-testid="accordion-button"
-            variant="link"
-            @click="toggleErrorExpansion"
-          >
-            {{ errorCollapseText }}
-            <gl-icon
-              name="chevron-down"
-              class="gl-transition-medium"
-              :class="{ 'gl-rotate-180': isErrorsSectionExpanded }"
-            />
-          </gl-button>
-        </template>
-      </gl-alert>
-      <user-limit-notification
-        v-else-if="showUserLimitNotification"
-        :limit-variant="limitVariant"
-        :users-limit-dataset="usersLimitDataset"
-      />
+      <div ref="alerts" tabindex="-1">
+        <gl-alert
+          v-if="shouldShowEmptyInvitesAlert"
+          id="empty-invites-alert"
+          class="gl-mb-4"
+          variant="danger"
+          :dismissible="false"
+          data-testid="empty-invites-alert"
+        >
+          {{ $options.labels.emptyInvitesAlertText }}
+        </gl-alert>
+        <gl-alert
+          v-if="hasInvalidMembers"
+          class="gl-mb-4"
+          variant="danger"
+          :dismissible="false"
+          :title="memberErrorTitle"
+          data-testid="alert-member-error"
+        >
+          {{ $options.labels.memberErrorListText }}
+          <ul class="gl-pl-5 gl-mb-0">
+            <li
+              v-for="error in errorsLimited"
+              :key="error.member"
+              data-testid="errors-limited-item"
+            >
+              <strong>{{ error.displayedMemberName }}:</strong> {{ error.message }}
+            </li>
+          </ul>
+          <template v-if="shouldErrorsSectionExpand">
+            <gl-collapse v-model="isErrorsSectionExpanded">
+              <ul class="gl-pl-5 gl-mb-0">
+                <li
+                  v-for="error in errorsExpanded"
+                  :key="error.member"
+                  data-testid="errors-expanded-item"
+                >
+                  <strong>{{ error.displayedMemberName }}:</strong> {{ error.message }}
+                </li>
+              </ul>
+            </gl-collapse>
+            <gl-button
+              class="gl-text-decoration-none! gl-shadow-none! gl-mt-3"
+              data-testid="accordion-button"
+              variant="link"
+              @click="toggleErrorExpansion"
+            >
+              {{ errorCollapseText }}
+              <gl-icon
+                name="chevron-down"
+                class="gl-transition-medium"
+                :class="{ 'gl-rotate-180': isErrorsSectionExpanded }"
+              />
+            </gl-button>
+          </template>
+        </gl-alert>
+        <user-limit-notification
+          v-else-if="showUserLimitNotification"
+          :limit-variant="limitVariant"
+          :users-limit-dataset="usersLimitDataset"
+        />
+      </div>
     </template>
 
-    <template #select="{ exceptionState, labelId }">
+    <template #select="{ exceptionState, inputId }">
       <members-token-select
         v-model="newUsersToInvite"
         class="gl-mb-2"
+        aria-labelledby="empty-invites-alert"
+        :input-id="inputId"
         :exception-state="exceptionState"
-        :aria-labelledby="labelId"
         :users-filter="usersFilter"
         :filter-id="filterId"
         :invalid-members="invalidMembers"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Release::Links do
+RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   let(:project) { create(:project, :repository, :private) }
   let(:maintainer) { create(:user) }
   let(:developer) { create(:user) }

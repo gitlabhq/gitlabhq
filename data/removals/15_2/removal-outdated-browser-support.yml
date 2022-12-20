@@ -1,4 +1,4 @@
-- name: "Support for older browsers"
+- title: "Support for older browsers"
   removal_date: July 22, 2022
   removal_milestone: "15.2"
   reporter: leipert

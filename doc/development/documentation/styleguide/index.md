@@ -97,7 +97,7 @@ move in this direction, so we can address these issues:
   information into a format that is geared toward helping others, rather than
   documenting how a feature was implemented.
 
-GitLab uses these [topic types](../structure.md).
+GitLab uses these [topic types](../topic_types/index.md).
 
 ### Link instead of repeating text
 
@@ -147,7 +147,7 @@ help benefit translation. For example, we:
   - [since and because](word_list.md#since)
   - [once and after](word_list.md#once)
   - [it](word_list.md#it)
-- Avoid [ing](word_list.md#-ing-words) words.
+- Avoid [-ing](word_list.md#-ing-words) words.
 
 [The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly,
 and with translation in mind. [The word list](word_list.md) and our Vale rules
@@ -158,7 +158,7 @@ also aid in consistency, which is important for localization.
 All GitLab documentation is written using [Markdown](https://en.wikipedia.org/wiki/Markdown).
 
 The [documentation website](https://docs.gitlab.com) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown),
-a "flavored" Kramdown engine to render pages from Markdown to HTML. The use of Kramdown's
+a "flavored" Kramdown engine to render pages from Markdown to HTML. The use of Kramdown
 features is limited by our linters, so, use regular Markdown and follow the rules in the
 linked style guide. You can't use Kramdown-specific markup (for example, `{:.class}`).
 
@@ -345,10 +345,36 @@ Some contractions, however, should be avoided:
 
 <!-- vale gitlab.Possessive = YES -->
 
+### Possessives
+
+Try to avoid using possessives (`'s`) for proper nouns, like organization or product names.
+
+For example, instead of `Docker's CLI`, use `the Docker CLI`.
+
+For details, see [the Google documentation style guide](https://developers.google.com/style/possessives#product,-feature,-and-company-names).
+
+### Prepositions
+
+Use prepositions at the end of the sentence when needed.
+Dangling or stranded prepositions are fine. For example:
+
+- You can leave the group you're a member of.
+- Share the credentials with users you want to give access to.
+
+These constructions are more casual than the alternatives:
+
+- You can leave the group of which you're a member.
+- Share the credentials with users to which you want to give access.
+
 ### Acronyms
 
 If you use an acronym, spell it out on first use on a page. You do not need to spell it out more than once on a page.
-When possible, try to avoid acronyms in topic titles.
+
+- **Titles:** Try to avoid acronyms in topic titles, especially if the acronym is not widely used.
+- **Plurals:** Try not to make acronyms plural. For example, use `YAML files`, not `YAMLs`. If you must make an acronym plural, do not use an apostrophe. For example, use `APIs`, not `API's`.
+- **Possessives:** Use caution when making an acronym possessive. If possible,
+  write the sentence to avoid making the acronym possessive. If you must make the
+  acronym possessive, consider spelling out the words.
 
 ### Numbers
 
@@ -383,7 +409,11 @@ when published. Example:
 
 ### Emphasis
 
+<!-- vale gitlab.Spelling = NO -->
+
 Use **bold** rather than italic to provide emphasis. GitLab uses a sans-serif font and italic text does not stand out as much as it would in a serif font. For details, see [Butterick's Practical Typography guide on bold or italic](https://practicaltypography.com/bold-or-italic.html).
+
+<!-- vale gitlab.Spelling = YES -->
 
 You can use italics when you are introducing a term for the first time. Otherwise, use bold.
 
@@ -700,7 +730,7 @@ Put the entire link on a single line so that [linters](../testing.md) can find i
 ### Links in separate repositories
 
 To link to a page in a different repository, use an absolute URL.
-For example, to link from a page in the GitLab repo to the Charts repo,
+For example, to link from a page in the GitLab repository to the Charts repository,
 use a URL like `https://docs.gitlab.com/charts/`.
 
 ### Anchor links
@@ -737,6 +767,28 @@ in your merge request fails.
 
 ### Text for links
 
+Follow these guidelines for link text.
+
+#### Standard text
+
+As much as possible, use text that follows one of these patterns:
+
+- `For more information, see [LINK TEXT](LINK)`.
+- `To [DO THIS THING], see [LINK TEXT](LINK)`
+
+For example:
+
+- `For more information, see [merge requests](../../../user/project/merge_requests/index.md).`
+- `To create a review app, see [review apps](../../../ci/review_apps/index.md).`
+
+You can expand on this text by using phrases like
+`For more information about this feature, see...`
+
+Do not to use alternate phrases, like `Learn more about...` or
+`To read more...`.
+
+#### Descriptive text rather than `here`
+
 Use descriptive text for links, rather than words like `here` or `this page.`
 
 For example, instead of:
@@ -747,6 +799,14 @@ For example, instead of:
 Use:
 
 - `For more information, see [merge requests](LINK)`.
+
+#### Links to issues
+
+When linking to an issue, include the issue number in the link. For example:
+
+- `For more information, see [issue 12345](LINK).`
+
+Do not use the pound sign (`issue #12345`).
 
 ### Links to external documentation
 
@@ -1382,10 +1442,12 @@ Here's some other content in tab two.
 For tab titles, be brief and consistent. Ensure they are parallel, and start each with a capital letter.
 For example:
 
-- `Omnibus package`, `Helm chart`, `Source`
+- `Linux package (Omnibus)`, `Helm chart (Kubernetes)` (when documenting configuration edits, follow the
+  [configuration edits guide](#configuration-documentation-for-different-installation-methods))
 - `15.1 and earlier`, `15.2 and later`
 
-See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for details.
+See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for more
+details on tabs.
 
 ## Terms
 
@@ -1414,9 +1476,7 @@ When names change, it is more complicated to search or grep text that has line b
 ### Product tier badges
 
 Tier badges are displayed as orange text next to a topic title. These badges link to the GitLab
-pricing page. For example:
-
-![Tier badge](img/tier_badge.png)
+pricing page.
 
 You must assign a tier badge:
 
@@ -1436,17 +1496,17 @@ functionality is described.
 
 #### Available product tier badges
 
-| Tier in which feature is available                                      | Tier badge            |
-|:------------------------------------------------------------------------|:----------------------|
-| GitLab Free self-managed and SaaS, and higher tiers                     | `**(FREE)**`          |
-| GitLab Premium self-managed and SaaS, and their higher tiers            | `**(PREMIUM)**`       |
-| GitLab Ultimate self-managed and SaaS                                   | `**(ULTIMATE)**`      |
-| Only GitLab Free self-managed and higher tiers (no SaaS-based tiers)    | `**(FREE SELF)**`     |
-| Only GitLab Premium self-managed and higher tiers (no SaaS-based tiers) | `**(PREMIUM SELF)**`  |
-| Only GitLab Ultimate self-managed (no SaaS-based tiers)                 | `**(ULTIMATE SELF)**` |
-| Only GitLab Free SaaS and higher tiers (no self-managed instances)      | `**(FREE SAAS)**`     |
-| Only GitLab Premium SaaS and higher tiers (no self-managed instances)   | `**(PREMIUM SAAS)**`  |
-| Only GitLab Ultimate SaaS (no self-managed instances)                   | `**(ULTIMATE SAAS)**` |
+| Where feature is available                                                               | Tier badge            |
+|:-----------------------------------------------------------------------------------------|:----------------------|
+| On GitLab self-managed and GitLab SaaS, available in all tiers.                          | `**(FREE)**`          |
+| On GitLab self-managed and GitLab SaaS, available in Premium and Ultimate.               | `**(PREMIUM)**`       |
+| On GitLab self-managed and GitLab SaaS, available in Ultimate.                           | `**(ULTIMATE)**`      |
+| On GitLab self-managed, available in all tiers. Not available on GitLab SaaS.            | `**(FREE SELF)**`     |
+| On GitLab self-managed, available in Premium and Ultimate. Not available on GitLab SaaS. | `**(PREMIUM SELF)**`  |
+| On GitLab self-managed, available in Ultimate. Not available on GitLab SaaS.             | `**(ULTIMATE SELF)**` |
+| On GitLab SaaS, available in all tiers. Not available on self-managed.                   | `**(FREE SAAS)**`     |
+| On GitLab SaaS, available in Premium and Ultimate. Not available on self-managed.        | `**(PREMIUM SAAS)**`  |
+| On GitLab SaaS, available in Ultimate. Not available on self-managed.                    | `**(ULTIMATE SAAS)**` |
 
 Topics that are only for instance administrators should be badged `<TIER> SELF`. Instance
 administrator documentation often includes sections that mention:
@@ -1487,21 +1547,35 @@ we install Ruby from source. To update the guide for a new Ruby version:
 - Replace the sha256sum. It's available on the
   [downloads page](https://www.ruby-lang.org/en/downloads/) of the Ruby website.
 
-### Configuration documentation for source and Omnibus installations
+### Configuration documentation for different installation methods
 
-GitLab supports two installation methods: installations from source, and Omnibus
-packages. Possible configuration settings include:
+GitLab supports four installation methods:
 
-- Settings that touch configuration files in `config/`.
-- NGINX settings.
-- Other settings in `lib/support/`.
+- Linux package (Omnibus)
+- Helm chart (Kubernetes)
+- Docker
+- Self-compiled (source)
 
 Configuration procedures can require users to edit configuration files, reconfigure
-GitLab, or restart GitLab. Use these styles to document these steps, replacing
-`PATH/TO` with the appropriate path:
+GitLab, or restart GitLab. In this case:
 
+- Use [tabs](#tabs) to differentiate among the various installation methods.
+- Use the installation methods names exactly as described in the previous list.
+- Use them in the order described below.
+- Indent the code blocks to line up with the list item they belong to.
+- Use the appropriate syntax highlighting for each code block (`ruby`, `shell`, or `yaml`).
+- For the YAML files, always include the parent settings.
+- The final step to reconfigure or restart GitLab can be used verbatim since it's
+  the same every time.
+
+You can copy and paste the following snippet when describing a configuration
+edit:
+
+<!-- markdownlint-disable tabs-blank-lines -->
 ````markdown
-**For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1509,32 +1583,159 @@ GitLab, or restart GitLab. Use these styles to document these steps, replacing
    external_url "https://gitlab.example.com"
    ```
 
-1. Save the file and [reconfigure](PATH/TO/administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
-   GitLab for the changes to take effect.
+1. Save the file and reconfigure GitLab:
 
----
-
-**For installations from source**
-
-1. Edit `config/gitlab.yml`:
-
-   ```yaml
-   gitlab:
-     host: "gitlab.example.com"
+   ```shell
+   sudo gitlab-ctl reconfigure
    ```
 
-1. Save the file and [restart](PATH/TO/administration/restart_gitlab.md#installations-from-source)
-   GitLab for the changes to take effect.
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     hosts:
+       gitlab:
+         name: gitlab.example.com
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           external_url "https://gitlab.example.com"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     gitlab:
+       host: "gitlab.example.com"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
 ````
+<!-- markdownlint-enable tabs-blank-lines -->
 
-In this case:
+It renders as:
 
-- Bold the installation method's name.
-- Separate the methods with three dashes (`---`) to create a horizontal line.
-- Indent the code blocks to line up with the list item they belong to..
-- Use the appropriate syntax highlighting for each code block.
-- Use the [GitLab Restart](#gitlab-restart) section to explain any required
-  restart or reconfigure of GitLab.
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   external_url "https://gitlab.example.com"
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     hosts:
+       gitlab:
+         name: gitlab.example.com
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           external_url "https://gitlab.example.com"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     gitlab:
+       host: "gitlab.example.com"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
 
 ## Feature flags
 

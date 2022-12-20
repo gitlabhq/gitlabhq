@@ -5,7 +5,7 @@ RSpec.shared_examples 'boards recent visit' do
 
   describe '#visited' do
     it 'creates a visit if one does not exists' do
-      expect { described_class.visited!(user, board) }.to change(described_class, :count).by(1)
+      expect { described_class.visited!(user, board) }.to change { described_class.count }.by(1)
     end
 
     shared_examples 'was visited previously' do

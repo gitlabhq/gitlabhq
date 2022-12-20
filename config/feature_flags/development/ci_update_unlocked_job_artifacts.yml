@@ -1,8 +1,0 @@
----
-name: ci_update_unlocked_job_artifacts
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70235
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343465
-milestone: '14.5'
-type: development
-group: group::pipeline insights
-default_enabled: true

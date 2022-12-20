@@ -145,7 +145,7 @@ end
 This means running one query for every object to update. This code can
 easily overload a database given enough rows to update or many instances of this
 code running in parallel. This particular problem is known as the
-["N+1 query problem"](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations). You can write a test with [QueryRecorder](query_recorder.md) to detect this and prevent regressions.
+["N+1 query problem"](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations). You can write a test with [QueryRecorder](database/query_recorder.md) to detect this and prevent regressions.
 
 In this particular case the workaround is fairly easy:
 
@@ -224,7 +224,7 @@ The total number of the queries (including cached ones) executed by the code mod
 should not increase unless absolutely necessary.
 The number of executed queries (including cached queries) should not depend on
 collection size.
-You can write a test by passing the `skip_cached` variable to [QueryRecorder](query_recorder.md) to detect this and prevent regressions.
+You can write a test by passing the `skip_cached` variable to [QueryRecorder](database/query_recorder.md) to detect this and prevent regressions.
 
 As an example, say you have a CI pipeline. All pipeline builds belong to the same pipeline,
 thus they also belong to the same project (`pipeline.project`):
@@ -351,7 +351,7 @@ Post.all.includes(:author).each do |post|
 end
 ```
 
-Also consider using [QueryRecoder tests](query_recorder.md) to prevent a regression when eager loading.
+Also consider using [QueryRecoder tests](database/query_recorder.md) to prevent a regression when eager loading.
 
 ## Memory Usage
 
@@ -463,7 +463,7 @@ Read more about when and how feature flags should be used in
 
 We can consider the following types of storages:
 
-- **Local temporary storage** (very-very short-term storage) This type of storage is system-provided storage, ex. `/tmp` folder.
+- **Local temporary storage** (very-very short-term storage) This type of storage is system-provided storage, like a `/tmp` folder.
   This is the type of storage that you should ideally use for all your temporary tasks.
   The fact that each node has its own temporary storage makes scaling significantly easier.
   This storage is also very often SSD-based, thus is significantly faster.
@@ -480,7 +480,7 @@ We can consider the following types of storages:
   Be respectful of that.
 
 - **Shared persistent storage** (long-term storage) This type of storage uses
-  shared network-based storage (ex. NFS). This solution is mostly used by customers running small
+  shared network-based storage (for example, NFS). This solution is mostly used by customers running small
   installations consisting of a few nodes. The files on shared storage are easily accessible,
   but any job that is uploading or downloading data can create a serious contention to all other jobs.
   This is also an approach by default used by Omnibus.
@@ -525,13 +525,13 @@ end
 
 The usage of shared temporary storage is required if your intent
 is to persistent file for a disk-based storage, and not Object Storage.
-[Workhorse direct_upload](uploads/index.md#direct-upload) when accepting file
+[Workhorse direct upload](uploads/index.md#direct-upload) when accepting file
 can write it to shared storage, and later GitLab Rails can perform a move operation.
 The move operation on the same destination is instantaneous.
 The system instead of performing `copy` operation just re-attaches file into a new place.
 
 Since this introduces extra complexity into application, you should only try
-to re-use well established patterns (ex.: `ObjectStorage` concern) instead of re-implementing it.
+to re-use well established patterns (for example, `ObjectStorage` concern) instead of re-implementing it.
 
 The usage of shared temporary storage is otherwise deprecated for all other usages.
 
@@ -549,7 +549,7 @@ that implements a seamless support for Shared and Object Storage-based persisten
 #### Data access
 
 Each feature that accepts data uploads or allows to download them needs to use
-[Workhorse direct_upload](uploads/index.md#direct-upload). It means that uploads needs to be
+[Workhorse direct upload](uploads/index.md#direct-upload). It means that uploads needs to be
 saved directly to Object Storage by Workhorse, and all downloads needs to be served
 by Workhorse.
 
@@ -561,5 +561,5 @@ can time out, which is especially problematic for slow clients. If clients take 
 to upload/download the processing slot might be killed due to request processing
 timeout (usually between 30s-60s).
 
-For the above reasons it is required that [Workhorse direct_upload](uploads/index.md#direct-upload) is implemented
+For the above reasons it is required that [Workhorse direct upload](uploads/index.md#direct-upload) is implemented
 for all file uploads and downloads.

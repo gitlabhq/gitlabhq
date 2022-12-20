@@ -1,8 +1,0 @@
----
-name: pipeline_tabs_vue
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80401
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353118
-milestone: '14.10'
-type: development
-group: group::pipeline authoring
-default_enabled: false

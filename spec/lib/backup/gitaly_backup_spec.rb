@@ -61,7 +61,7 @@ RSpec.describe Backup::GitalyBackup do
 
       it 'erases any existing repository backups' do
         existing_file = File.join(destination, 'some_existing_file')
-        IO.write(existing_file, "Some existing file.\n")
+        File.write(existing_file, "Some existing file.\n")
 
         subject.start(:create, destination, backup_id: backup_id)
         subject.finish!

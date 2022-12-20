@@ -167,6 +167,10 @@ module API
         current_authenticated_job.project == project
     end
 
+    def enforce_jobs_api_rate_limits(project)
+      ::Feature.enabled?(:ci_enforce_rate_limits_jobs_api, project)
+    end
+
     # rubocop: disable CodeReuse/ActiveRecord
     def find_group(id)
       if id.to_s =~ INTEGER_ID_REGEX
@@ -301,7 +305,7 @@ module API
 
     def authenticated_as_admin!
       authenticate!
-      forbidden! unless current_user.admin?
+      forbidden! unless current_user.can_admin_all_resources?
     end
 
     def authorize!(action, subject = :global, reason = nil)
@@ -710,7 +714,7 @@ module API
 
       unauthorized! unless initial_current_user
 
-      unless initial_current_user.admin?
+      unless initial_current_user.can_admin_all_resources?
         forbidden!('Must be admin to use sudo')
       end
 

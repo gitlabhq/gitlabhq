@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User searches for projects', :js, :disable_rate_limiter do
+RSpec.describe 'User searches for projects', :js, :disable_rate_limiter, feature_category: :global_search do
   let!(:project) { create(:project, :public, name: 'Shop') }
 
   context 'when signed out' do

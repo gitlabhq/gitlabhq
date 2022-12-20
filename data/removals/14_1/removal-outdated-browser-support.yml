@@ -1,4 +1,4 @@
-- name: "Remove support for older browsers"
+- title: "Remove support for older browsers"
   removal_date: July 22, 2021
   removal_milestone: "14.1"
   reporter: leipert

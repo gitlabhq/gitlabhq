@@ -65,7 +65,7 @@ RSpec.shared_examples Integrations::HasWebHook do
     end
 
     it 'creates or updates a service hook' do
-      expect { call }.to change(ServiceHook, :count).by(1)
+      expect { call }.to change { ServiceHook.count }.by(1)
       expect(integration.service_hook.url).to eq(hook_url)
 
       integration.service_hook.update!(url: 'http://other.com')
@@ -98,10 +98,10 @@ RSpec.shared_examples Integrations::HasWebHook do
 
     it 'creates the webhook if necessary and executes it' do
       expect_next(ServiceHook).to receive(:execute).with(*args)
-      expect { call }.to change(ServiceHook, :count).by(1)
+      expect { call }.to change { ServiceHook.count }.by(1)
 
       expect(integration.service_hook).to receive(:execute).with(*args)
-      expect { call }.not_to change(ServiceHook, :count)
+      expect { call }.not_to change { ServiceHook.count }
     end
 
     it 'raises an error if the service hook could not be saved' do

@@ -76,7 +76,7 @@ module Atlassian
         return if items.empty?
 
         r = post('/rest/deployments/0.1/bulk', { deployments: items })
-        handle_response(r, 'deployments') { |data| errors(data, 'rejectedDeployments') }
+        handle_response(r, 'deployments') { |data| errors(data, 'rejectedDeployments', r) }
       end
 
       def store_build_info(project:, pipelines:, update_sequence_id: nil)
@@ -92,7 +92,7 @@ module Atlassian
         return if builds.empty?
 
         r = post('/rest/builds/0.1/bulk', { builds: builds })
-        handle_response(r, 'builds') { |data| errors(data, 'rejectedBuilds') }
+        handle_response(r, 'builds') { |data| errors(data, 'rejectedBuilds', r) }
       end
 
       def store_dev_info(project:, commits: nil, branches: nil, merge_requests: nil, update_sequence_id: nil)
@@ -132,22 +132,20 @@ module Atlassian
         if [200, 202].include?(response.code)
           yield data
         else
-          message = case response.code
-                    when 400 then { 'errorMessages' => data.map { |e| e['message'] } }
-                    when 401 then { 'errorMessages' => ['Invalid JWT'] }
-                    when 403 then { 'errorMessages' => ["App does not support #{name}"] }
-                    when 413 then { 'errorMessages' => ['Data too large'] + data.map { |e| e['message'] } }
-                    when 429 then { 'errorMessages' => ['Rate limit exceeded'] }
-                    when 503 then { 'errorMessages' => ['Service unavailable'] }
-                    else
-                      { 'errorMessages' => ['Unknown error'], 'response' => data }
-                    end
-
-          message.merge('responseCode' => response.code)
+          case response.code
+          when 400 then { 'errorMessages' => data.map { |e| e['message'] } }
+          when 401 then { 'errorMessages' => ['Invalid JWT'] }
+          when 403 then { 'errorMessages' => ["App does not support #{name}"] }
+          when 413 then { 'errorMessages' => ['Data too large'] + data.map { |e| e['message'] } }
+          when 429 then { 'errorMessages' => ['Rate limit exceeded'] }
+          when 503 then { 'errorMessages' => ['Service unavailable'] }
+          else
+            { 'errorMessages' => ['Unknown error'], 'response' => data }
+          end.merge('responseCode' => response.code)
         end
       end
 
-      def errors(data, key)
+      def errors(data, key, response)
         messages = if data[key].present?
                      data[key].flat_map do |rejection|
                        rejection['errors'].map { |e| e['message'] }
@@ -156,7 +154,13 @@ module Atlassian
                      []
                    end
 
-        { 'errorMessages' => messages }
+        { 'errorMessages' => messages, 'responseCode' => response.code, 'requestBody' => request_body_schema(response) }
+      end
+
+      def request_body_schema(response)
+        Oj.load(response.request.raw_body).deep_transform_values! {}
+      rescue Oj::ParseError, EncodingError, Encoding::UndefinedConversionError
+        'Request body includes invalid JSON'
       end
 
       def user_notes_count(merge_requests)

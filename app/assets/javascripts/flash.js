@@ -114,6 +114,7 @@ const addDismissFlashClickListener = (flashEl, fadeTransition) => {
  * @param {object} [options.parent] - Reference to parent element under which alert needs to appear. Defaults to `document`.
  * @param {Function} [options.onDismiss] - Handler to call when this alert is dismissed.
  * @param {string} [options.containerSelector] - Selector for the container of the alert
+ * @param {boolean} [options.preservePrevious] - Set to `true` to preserve previous alerts. Defaults to `false`.
  * @param {object} [options.primaryButton] - Object describing primary button of alert
  * @param {string} [options.primaryButton.link] - Href of primary button
  * @param {string} [options.primaryButton.text] - Text of primary button
@@ -131,6 +132,7 @@ const createAlert = function createAlert({
   variant = VARIANT_DANGER,
   parent = document,
   containerSelector = '.flash-container',
+  preservePrevious = false,
   primaryButton = null,
   secondaryButton = null,
   onDismiss = null,
@@ -143,7 +145,11 @@ const createAlert = function createAlert({
   if (!alertContainer) return null;
 
   const el = document.createElement('div');
-  alertContainer.appendChild(el);
+  if (preservePrevious) {
+    alertContainer.appendChild(el);
+  } else {
+    alertContainer.replaceChildren(el);
+  }
 
   return new Vue({
     el,

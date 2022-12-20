@@ -19,7 +19,7 @@ module Gitlab
 
         attr_reader :table, :value
 
-        def initialize(table, value, partition_name: nil )
+        def initialize(table, value, partition_name: nil)
           @table = table
           @value = value
           @partition_name = partition_name

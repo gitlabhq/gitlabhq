@@ -53,7 +53,7 @@ bundle exec rake db:reset RAILS_ENV=test
 - `bundle exec rake db:migrate:up:main VERSION=20170926203418 RAILS_ENV=development`: Set up a migration
 - `bundle exec rake db:migrate:redo:main VERSION=20170926203418 RAILS_ENV=development`: Re-run a specific migration
 
-Replace `main` in the above commands to execute agains the `ci` database instead of `main`.
+Replace `main` in the above commands to execute against the `ci` database instead of `main`.
 
 ## Manually access the database
 
@@ -107,7 +107,7 @@ The new connection should be working now.
 Use these instructions for exploring the GitLab database while developing with the GDK:
 
 1. Install or open [Visual Studio Code](https://code.visualstudio.com/download).
-1. Install the [PostgreSQL VSCode Extension](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres).
+1. Install the [PostgreSQL VS Code Extension](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres).
 1. In Visual Studio Code select **PostgreSQL Explorer** in the left toolbar.
 1. In the top bar of the new window, select `+` to **Add Database Connection**, and follow the prompts to fill in the details:
    1. **Hostname**: the path to the PostgreSQL folder in your GDK directory (for example `/dev/gitlab-development-kit/postgresql`).

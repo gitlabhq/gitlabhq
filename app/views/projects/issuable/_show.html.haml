@@ -3,6 +3,7 @@
 - page_card_attributes issuable.card_attributes
 - if issuable.relocation_target
   - page_canonical_link issuable.relocation_target.present(current_user: current_user).web_url
+- add_page_specific_style 'page_bundles/issuable'
 
 = render "projects/issues/service_desk/alert_moved_from_service_desk", issue: issuable
 

@@ -18,7 +18,7 @@ module Projects
             container_repository.each_tags_page(page_size: TAGS_PAGE_SIZE) do |tags|
               execute_for_tags(tags, result)
 
-              raise TimeoutError if timeout?(start_time)
+              raise TimeoutError if !timeout_disabled? && timeout?(start_time)
             end
           end
         end
@@ -71,6 +71,10 @@ module Projects
 
         def pushed_at(tag)
           tag.updated_at || tag.created_at
+        end
+
+        def timeout_disabled?
+          params['disable_timeout'] || false
         end
       end
     end

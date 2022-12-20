@@ -292,11 +292,7 @@ export default {
       <div v-if="graphDataIsLoading" class="mx-1 mt-1">
         <gl-loading-icon size="sm" />
       </div>
-      <div
-        v-if="isContextualMenuShown"
-        ref="contextualMenu"
-        data-qa-selector="prometheus_graph_widgets"
-      >
+      <div v-if="isContextualMenuShown" ref="contextualMenu">
         <div data-testid="dropdown-wrapper" class="d-flex align-items-center">
           <!--
             This component should be replaced with a variant developed
@@ -310,7 +306,6 @@ export default {
             :text-sr-only="true"
             toggle-class="gl-px-3!"
             no-caret
-            data-qa-selector="prometheus_widgets_dropdown"
             right
             :title="__('More actions')"
           >
@@ -339,7 +334,6 @@ export default {
               ref="copyChartLink"
               v-track-event="generateLinkToChartOptions(clipboardText)"
               :data-clipboard-text="clipboardText"
-              data-qa-selector="generate_chart_link_menu_item"
               @click="showToast(clipboardText)"
             >
               {{ __('Copy link to chart') }}

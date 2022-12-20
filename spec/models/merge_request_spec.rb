@@ -30,6 +30,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it { is_expected.to have_many(:resource_state_events) }
     it { is_expected.to have_many(:draft_notes) }
     it { is_expected.to have_many(:reviews).inverse_of(:merge_request) }
+    it { is_expected.to have_many(:reviewed_by_users).through(:reviews).source(:author) }
     it { is_expected.to have_one(:cleanup_schedule).inverse_of(:merge_request) }
     it { is_expected.to have_many(:created_environments).class_name('Environment').inverse_of(:merge_request) }
 
@@ -44,6 +45,20 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
       it 'finds the associated merge request' do
         expect(project.merge_requests.find(merge_request.id)).to eq(merge_request)
+      end
+    end
+
+    describe '#reviewed_by_users' do
+      let!(:merge_request) { create(:merge_request) }
+
+      context 'when the same user has several reviews' do
+        before do
+          2.times { create(:review, merge_request: merge_request, project: merge_request.project, author: merge_request.author) }
+        end
+
+        it 'returns distinct users' do
+          expect(merge_request.reviewed_by_users).to match_array([merge_request.author])
+        end
       end
     end
   end
@@ -4228,6 +4243,18 @@ RSpec.describe MergeRequest, factory_default: :keep do
         expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(subject).and_call_original
 
         transition!
+      end
+
+      context 'when transaction is not committed' do
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription' do
+          def transition!
+            MergeRequest.transaction do
+              super
+
+              raise ActiveRecord::Rollback
+            end
+          end
+        end
       end
     end
 

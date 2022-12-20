@@ -31,6 +31,7 @@ RSpec.describe Gitlab::FileTypeDetection do
       expect(described_class.extension_match?('my/file.foo', extensions)).to eq(true)
     end
   end
+
   context 'when class is an uploader' do
     let(:uploader) do
       example_uploader = Class.new(CarrierWave::Uploader::Base) do

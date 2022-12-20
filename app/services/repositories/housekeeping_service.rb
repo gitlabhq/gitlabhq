@@ -84,7 +84,11 @@ module Repositories
     end
 
     def period_match?
-      [gc_period, full_repack_period, repack_period, PACK_REFS_PERIOD].any? { |period| pushes_since_gc % period == 0 }
+      if Feature.enabled?(:optimized_housekeeping)
+        pushes_since_gc % repack_period == 0
+      else
+        [gc_period, full_repack_period, repack_period, PACK_REFS_PERIOD].any? { |period| pushes_since_gc % period == 0 }
+      end
     end
 
     def housekeeping_enabled?

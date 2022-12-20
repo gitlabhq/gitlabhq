@@ -1,5 +1,5 @@
 ---
-# Suggestion: gitlab.Units
+# Warning: gitlab.Units
 #
 # Recommends a space between a number and a unit of measure.
 #
@@ -8,7 +8,7 @@ extends: existence
 message: "Add a space between the number and the unit in '%s'."
 link: 'https://docs.gitlab.com/ee/development/documentation/styleguide/'
 nonword: true
-level: suggestion
+level: warning
 ignorecase: true
 tokens:
   - \d+(?:B|kB|KiB|MB|MiB|GB|GiB|TB|TiB)

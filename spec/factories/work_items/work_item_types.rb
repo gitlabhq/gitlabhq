@@ -13,7 +13,7 @@ FactoryBot.define do
 
       # Expect base_types to exist on the DB
       if type_base_attributes.slice(:namespace, :namespace_id).compact.empty?
-        WorkItems::Type.find_or_initialize_by(type_base_attributes).tap { |type| type.assign_attributes(attributes) }
+        WorkItems::Type.find_or_initialize_by(type_base_attributes)
       else
         WorkItems::Type.new(attributes)
       end

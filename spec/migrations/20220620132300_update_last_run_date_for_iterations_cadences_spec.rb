@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe UpdateLastRunDateForIterationsCadences, :migration do
+RSpec.describe UpdateLastRunDateForIterationsCadences, :migration, feature_category: :team_planning do
   let(:current_date) { Date.parse(ApplicationRecord.connection.execute("SELECT CURRENT_DATE").first["current_date"]) }
   let(:namespaces) { table(:namespaces) }
   let(:iterations_cadences) { table(:iterations_cadences) }

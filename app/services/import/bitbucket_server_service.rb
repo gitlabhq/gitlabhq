@@ -19,6 +19,8 @@ module Import
 
       project = create_project(credentials)
 
+      track_access_level('bitbucket')
+
       if project.persisted?
         success(project)
       elsif project.errors[:import_source_disabled].present?

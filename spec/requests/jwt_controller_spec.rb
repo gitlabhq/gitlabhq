@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JwtController do
+RSpec.describe JwtController, feature_category: :authentication_and_authorization do
   include_context 'parsed logs'
 
   let(:service) { double(execute: {} ) }

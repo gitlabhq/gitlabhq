@@ -236,14 +236,12 @@ module Gitlab
           else
             :modified_target_removed_source
           end
+        elsif our_path.present? && their_path.present?
+          :both_added
+        elsif their_path.blank?
+          diff_file.renamed_file? ? :renamed_same_file : :removed_target_renamed_source
         else
-          if our_path.present? && their_path.present?
-            :both_added
-          elsif their_path.blank?
-            diff_file.renamed_file? ? :renamed_same_file : :removed_target_renamed_source
-          else
-            :removed_source_renamed_target
-          end
+          :removed_source_renamed_target
         end
       end
 

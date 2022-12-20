@@ -10,21 +10,21 @@ namespace :gitlab do
       desc 'GitLab | Sidekiq | Migrate jobs in the scheduled set to new queue names'
       task schedule: :environment do
         ::Gitlab::SidekiqMigrateJobs
-          .new(::Gitlab::SidekiqConfig.worker_queue_mappings, logger: Logger.new($stdout) )
+          .new(::Gitlab::SidekiqConfig.worker_queue_mappings, logger: Logger.new($stdout))
           .migrate_set('schedule')
       end
 
       desc 'GitLab | Sidekiq | Migrate jobs in the retry set to new queue names'
       task retry: :environment do
         ::Gitlab::SidekiqMigrateJobs
-          .new(::Gitlab::SidekiqConfig.worker_queue_mappings, logger: Logger.new($stdout) )
+          .new(::Gitlab::SidekiqConfig.worker_queue_mappings, logger: Logger.new($stdout))
           .migrate_set('retry')
       end
 
       desc 'GitLab | Sidekiq | Migrate jobs in queues outside of routing rules'
       task queued: :environment do
         ::Gitlab::SidekiqMigrateJobs
-          .new(::Gitlab::SidekiqConfig.worker_queue_mappings, logger: Logger.new($stdout) )
+          .new(::Gitlab::SidekiqConfig.worker_queue_mappings, logger: Logger.new($stdout))
           .migrate_queues
       end
     end
@@ -129,6 +129,11 @@ namespace :gitlab do
           MSG
         end
       end
+    end
+
+    namespace :queues do
+      desc 'GitLab | Sidekiq | Validate all_queues.yml and sidekiq_queues.yml match worker definitions'
+      task check: ['gitlab:sidekiq:all_queues_yml:check', 'gitlab:sidekiq:sidekiq_queues_yml:check', :environment]
     end
   end
 end

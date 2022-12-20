@@ -464,7 +464,7 @@ To delete:
 
 ```shell
 curl --header 'Content-Type: application/json' --request PATCH \
-     --data '{"push_access_levels": [{"group_id": 9899829, access_level: 40}]}' \
+     --data '{"allowed_to_push": [{"access_level": 40}]}' \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/master"
 ```
@@ -474,13 +474,13 @@ Example response:
 ```json
 {
    "name": "master",
-   "allowed_to_push": [
+   "push_access_levels": [
       {
          "id": 12,
          "access_level": 40,
-         "access_level_description": "Administrator",
+         "access_level_description": "Maintainers",
          "user_id": null,
-         "group_id": 9899829
+         "group_id": null
       }
    ]
 }
@@ -489,21 +489,23 @@ Example response:
 ### Example: update a `push_access_level` record
 
 ```shell
-curl --header 'Content-Type: application/json' --request PUT \
-     --data '{"push_access_levels": [{"id": 12, "group_id": 22034120}]' \
+curl --header 'Content-Type: application/json' --request PATCH \
+     --data '{"allowed_to_push": [{"id": 12, "access_level": 0}]' \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/master"
 ```
+
+Example response:
 
 ```json
 {
    "name": "master",
-   "deploy_access_levels": [
+   "push_access_levels": [
       {
          "id": 12,
-         "access_level": 40,
-         "access_level_description": "Administrator",
+         "access_level": 0,
+         "access_level_description": "No One",
          "user_id": null,
-         "group_id": 22034120
+         "group_id": null
       }
    ]
 }
@@ -512,8 +514,8 @@ curl --header 'Content-Type: application/json' --request PUT \
 ### Example: delete a `push_access_level` record
 
 ```shell
-curl --header 'Content-Type: application/json' --request PUT \
-     --data '{"push_access_levels": [{"id": 12, "_destroy": true}]' \
+curl --header 'Content-Type: application/json' --request PATCH \
+     --data '{"allowed_to_push": [{"id": 12, "_destroy": true}]}' \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/master"
 ```
 

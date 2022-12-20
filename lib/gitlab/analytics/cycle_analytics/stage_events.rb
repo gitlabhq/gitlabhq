@@ -80,6 +80,10 @@ module Gitlab
         def self.internal_events
           INTERNAL_EVENTS
         end
+
+        def self.selectable_events
+          (events - internal_events).sort_by(&:name)
+        end
       end
     end
   end

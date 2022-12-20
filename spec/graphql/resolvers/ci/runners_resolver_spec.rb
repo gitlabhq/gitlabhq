@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Ci::RunnersResolver do
+RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :runner_fleet do
   include GraphqlHelpers
 
   describe '#resolve' do
@@ -28,8 +28,24 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
     context 'when user can see runners' do
       let(:obj) { nil }
 
-      it 'returns all the runners' do
-        expect(subject.items.to_a).to contain_exactly(inactive_project_runner, offline_project_runner, group_runner, subgroup_runner, instance_runner)
+      context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+        it 'returns all the runners' do
+          expect(subject.items.to_a).to contain_exactly(inactive_project_runner, offline_project_runner, group_runner, subgroup_runner, instance_runner)
+        end
+      end
+
+      context 'when admin mode setting is enabled' do
+        context 'when in admin mode', :enable_admin_mode do
+          it 'returns all the runners' do
+            expect(subject.items.to_a).to contain_exactly(inactive_project_runner, offline_project_runner, group_runner, subgroup_runner, instance_runner)
+          end
+        end
+
+        context 'when not in admin mode' do
+          it 'returns no runners' do
+            expect(subject.items.to_a).to eq([])
+          end
+        end
       end
     end
 
@@ -67,7 +83,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
             upgrade_status: 'recommended',
             type_type: :instance_type,
             tag_name: ['active_runner'],
-            preload: { tag_name: nil },
+            preload: { tag_name: false },
             search: 'abc',
             sort: 'contacted_asc'
           }
@@ -92,7 +108,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
         let(:expected_params) do
           {
             active: false,
-            preload: { tag_name: nil }
+            preload: { tag_name: false }
           }
         end
 
@@ -112,7 +128,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
         let(:expected_params) do
           {
             active: false,
-            preload: { tag_name: nil }
+            preload: { tag_name: false }
           }
         end
 
@@ -131,7 +147,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
 
         let(:expected_params) do
           {
-            preload: { tag_name: nil }
+            preload: { tag_name: false }
           }
         end
 

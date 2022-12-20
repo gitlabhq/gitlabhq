@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Clusters', :js do
+RSpec.describe 'Clusters', :js, feature_category: :projects do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }

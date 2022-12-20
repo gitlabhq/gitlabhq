@@ -14,7 +14,7 @@ module Gitlab
           description
           introduced_by_issue
           introduced_by_mr
-          group
+          feature_category
           milestone
           saved_to_database
           streamed

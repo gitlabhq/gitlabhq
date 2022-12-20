@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Delete a cluster agent' do
+RSpec.describe 'Delete a cluster agent', feature_category: :kubernetes_management do
   include GraphqlHelpers
 
   let(:cluster_agent) { create(:cluster_agent) }

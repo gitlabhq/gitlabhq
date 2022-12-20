@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunningBuild do
+RSpec.describe Ci::RunningBuild, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
@@ -47,6 +47,28 @@ RSpec.describe Ci::RunningBuild do
         expect { described_class.upsert_shared_runner_build!(build) }
           .to raise_error(ArgumentError, 'build has not been picked by a shared runner')
       end
+    end
+  end
+
+  describe 'partitioning', :ci_partitionable do
+    include Ci::PartitioningHelpers
+
+    before do
+      stub_current_partition_id
+    end
+
+    let(:new_pipeline ) { create(:ci_pipeline, project: pipeline.project) }
+    let(:new_build) { create(:ci_build, :running, pipeline: new_pipeline, runner: runner) }
+
+    it 'assigns the same partition id as the one that build has', :aggregate_failures do
+      expect(new_build.partition_id).to eq ci_testing_partition_id
+      expect(new_build.partition_id).not_to eq pipeline.partition_id
+
+      described_class.upsert_shared_runner_build!(build)
+      described_class.upsert_shared_runner_build!(new_build)
+
+      expect(build.reload.runtime_metadata.partition_id).to eq pipeline.partition_id
+      expect(new_build.reload.runtime_metadata.partition_id).to eq ci_testing_partition_id
     end
   end
 

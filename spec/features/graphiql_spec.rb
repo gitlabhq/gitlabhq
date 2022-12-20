@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'GraphiQL' do
+RSpec.describe 'GraphiQL', feature_category: :integrations do
   context 'without relative_url_root' do
     before do
       visit '/-/graphql-explorer'

@@ -13,7 +13,7 @@ module InvisibleCaptchaOnSignup
     invisible_captcha_honeypot_counter.increment
     log_request('Invisible_Captcha_Honeypot_Request')
 
-    head(200)
+    head(:ok)
   end
 
   def on_timestamp_spam_callback

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Pipeline Badge' do
+RSpec.describe 'Pipeline Badge', feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository, :public) }
 
   let(:ref) { project.default_branch }

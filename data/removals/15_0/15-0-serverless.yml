@@ -1,4 +1,4 @@
-- name: "GitLab Serverless"
+- title: "GitLab Serverless"
   announcement_milestone: "14.3"
   announcement_date: "2021-09-22"
   removal_milestone: "15.0"

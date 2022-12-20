@@ -1,6 +1,6 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import Vue from 'vue';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import SuggestionDiff from './suggestion_diff.vue';

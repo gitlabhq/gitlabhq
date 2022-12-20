@@ -21,22 +21,24 @@ To view or edit merge request approval settings:
 
 ### Approval settings
 
-These settings limit who can approve merge requests.
+These settings limit who can approve merge requests:
 
-| Setting | Description |
-| ------ | ------ |
-| [Prevent approval by author](#prevent-approval-by-author)  | When enabled, the author of a merge request cannot approve it. |
-| [Prevent approvals by users who add commits](#prevent-approvals-by-users-who-add-commits) | When enabled, users who have committed to a merge request cannot approve it. |
-| [Prevent editing approval rules in merge requests](#prevent-editing-approval-rules-in-merge-requests) | When enabled, users can't override the project's approval rules on merge requests.  |
-| [Require user password to approve](#require-user-password-to-approve) | Force potential approvers to first authenticate with a password. |
-
-You can further define what happens to existing approvals when commits are added to the merge request.
-
-| Setting | Description |
-| ------ | ------ |
-| Keep approvals | Do not remove approvals. |
-| [Remove all approvals](#remove-all-approvals-when-commits-are-added-to-the-source-branch) | Remove all existing approvals. |
-| [Remove approvals by Code Owners if their files changed](#remove-approvals-by-code-owners-if-their-files-changed) | If a Code Owner has approved the merge request, and the commit changes files they are the Code Owner for, their approval is removed. |
+- [**Prevent approval by author**](#prevent-approval-by-author):
+  Prevents the author of a merge request from approving it.
+- [**Prevent approvals by users who add commits**](#prevent-approvals-by-users-who-add-commits):
+  Prevents users who add commits to a merge request from also approving it.
+- [**Prevent editing approval rules in merge requests**](#prevent-editing-approval-rules-in-merge-requests):
+  Prevents users from overriding project level approval rules on merge requests.
+- [**Require user password to approve**](#require-user-password-to-approve):
+  Force potential approvers to first authenticate with a password.
+- Code Owner approval removals: Define what happens to existing approvals when
+  commits are added to the merge request.
+  - **Keep approvals**: Do not remove any approvals.
+  - [**Remove all approvals**](#remove-all-approvals-when-commits-are-added-to-the-source-branch):
+    Remove all existing approvals.
+  - [**Remove approvals by Code Owners if their files changed**](#remove-approvals-by-code-owners-if-their-files-changed):
+    If a Code Owner approves a merge request, and a later commit changes files
+    they are a Code Owner for, their approval is removed.
 
 ## Prevent approval by author
 

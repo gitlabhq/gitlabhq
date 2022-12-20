@@ -30,7 +30,7 @@ For results about an investigation conducted into an unexpected drop in Service 
 
 Check if the [export jobs](https://gitlab.com/gitlab-services/version-gitlab-com#data-export-using-pipeline-schedules) are successful.
 
-Check [Service Ping errors](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health?widget=14609989&udv=0) in the [Service Ping Health Dahsboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health).
+Check [Service Ping errors](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health?widget=14609989&udv=0) in the [Service Ping Health Dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health).
 
 ### Troubleshoot Google Storage layer
 

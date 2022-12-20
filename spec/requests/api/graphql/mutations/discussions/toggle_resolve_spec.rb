@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Toggling the resolve status of a discussion' do
+RSpec.describe 'Toggling the resolve status of a discussion', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :public, :repository) }

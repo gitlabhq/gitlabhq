@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting notes for a merge request' do
+RSpec.describe 'getting notes for a merge request', feature_category: :code_review do
   include GraphqlHelpers
 
   let_it_be(:noteable) { create(:merge_request) }

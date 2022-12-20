@@ -63,16 +63,19 @@ module Projects
     end
 
     def build_commit_status
+      stage = create_stage
+
       GenericCommitStatus.new(
         user: build.user,
         ci_stage: stage,
         name: 'pages:deploy',
-        stage: 'deploy'
+        stage: 'deploy',
+        stage_idx: stage.position
       )
     end
 
     # rubocop: disable Performance/ActiveRecordSubtransactionMethods
-    def stage
+    def create_stage
       build.pipeline.stages.safe_find_or_create_by(name: 'deploy', pipeline_id: build.pipeline.id) do |stage|
         stage.position = GenericCommitStatus::EXTERNAL_STAGE_IDX
         stage.project = build.project

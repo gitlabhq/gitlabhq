@@ -67,7 +67,7 @@ module Types
           end
 
     field :package,
-          description: 'Find a package. This field can only be resolved for one query in any single request.',
+          description: 'Find a package. This field can only be resolved for one query in any single request. Returns `null` if a package has no `default` status.',
           resolver: Resolvers::PackageDetailsResolver
 
     field :user, Types::UserType,

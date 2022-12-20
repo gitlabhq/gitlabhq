@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Workspace
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: 'To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments'
 type: reference, index, howto
 ---
 
@@ -75,41 +75,44 @@ To configure visibility, features, and permissions for a project:
 
 Use the toggles to enable or disable features in the project.
 
-| Option                           | More access limit options | Description   |
-|:---------------------------------|:--------------------------|:--------------|
-| **Issues**                       | ✓                         | Activates the GitLab issues tracker. |
-| **Repository**                   | ✓                         | Enables [repository](../repository/index.md) functionality |
+| Option                           | More access limit options | Description                                                                                                                                            |
+| :------------------------------- | :------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Issues**                       | ✓                         | Activates the GitLab issues tracker.                                                                                                                   |
+| **Repository**                   | ✓                         | Enables [repository](../repository/index.md) functionality                                                                                             |
 | **Merge requests**               | ✓                         | Enables [merge request](../merge_requests/index.md) functionality; also see [Merge request settings](#configure-merge-request-settings-for-a-project). |
-| **Forks**                        | ✓                         | Enables [forking](../repository/forking_workflow.md) functionality. |
-| **Git Large File Storage (LFS)** |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs). |
-| **Packages**                     |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality. |
-| **CI/CD**                        | ✓                         | Enables [CI/CD](../../../ci/index.md) functionality. |
-| **Container Registry**           |                           | Activates a [registry](../../packages/container_registry/index.md) for your Docker images. |
-| **Analytics**                    | ✓                         | Enables [analytics](../../analytics/index.md). |
-| **Requirements**                 | ✓                         | Control access to [Requirements Management](../requirements/index.md). |
-| **Security & Compliance**        | ✓                         | Control access to [security features](../../application_security/index.md). |
-| **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/index.md). |
-| **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md). |
-| **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/index.md). |
-| **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md).                                                                                                                                                                    |
-| **Releases**                     | ✓                         | Control access to [Releases](../releases/index.md).                                                                                                                                                                                      |
+| **Forks**                        | ✓                         | Enables [forking](../repository/forking_workflow.md) functionality.                                                                                    |
+| **Git Large File Storage (LFS)** |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs).                                                         |
+| **Packages**                     |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality.        |
+| **CI/CD**                        | ✓                         | Enables [CI/CD](../../../ci/index.md) functionality.                                                                                                   |
+| **Container Registry**           |                           | Activates a [registry](../../packages/container_registry/index.md) for your Docker images.                                                             |
+| **Analytics**                    | ✓                         | Enables [analytics](../../analytics/index.md).                                                                                                         |
+| **Requirements**                 | ✓                         | Control access to [Requirements Management](../requirements/index.md).                                                                                 |
+| **Security & Compliance**        | ✓                         | Control access to [security features](../../application_security/index.md).                                                                            |
+| **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/index.md).                                                                                       |
+| **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md).                                                                                                 |
+| **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/index.md).                                                                                            |
+| **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md).                                                                                  |
+| **Releases**                     | ✓                         | Control access to [Releases](../releases/index.md).                                                                                                    |
 | **Environments**                 | ✓                         | Control access to [Environments and Deployments](../../../ci/environments/index.md).                                                                   |
 | **Feature flags**                | ✓                         | Control access to [Feature Flags](../../../operations/feature_flags.md).                                                                               |
-| **Monitor**                      | ✓                         | Control access to [Monitor](../../../operations/index.md) features.                                                                                            |
-| **Infrastructure**               | ✓                         | Control access to [Infrastructure](../../infrastructure/index.md) features.                                                                                                    |
+| **Monitor**                      | ✓                         | Control access to [Monitor](../../../operations/index.md) features.                                                                                    |
+| **Infrastructure**               | ✓                         | Control access to [Infrastructure](../../infrastructure/index.md) features.                                                                            |
 
 When you disable a feature, the following additional features are also disabled:
 
 - If you disable the **Issues** feature, project users cannot use:
+
   - **Issue Boards**
   - **Service Desk**
   - Project users can still access **Milestones** from merge requests.
 
 - If you disable **Issues** and **Merge Requests**, project users cannot use:
+
   - **Labels**
   - **Milestones**
 
 - If you disable **Repository**, project users cannot access:
+
   - **Merge requests**
   - **CI/CD**
   - **Container Registry**
@@ -236,10 +239,8 @@ Prerequisites:
 - You must have at least the Maintainer role for the [group](../../group/manage.md#create-a-group) to which you are transferring.
 - You must be the Owner of the project you transfer.
 - The group must allow creation of new projects.
-- The project must not contain any [container images](../../packages/container_registry/index.md#limitations).
-  - If you transfer a project to a different root namespace,
-    the project must not contain any
-    [NPM packages](../../packages/npm_registry/index.md#limitations).
+- The project must not contain any [container images](../../packages/container_registry/index.md#known-issues).
+- Remove any npm packages. If you transfer a project to a different root namespace, the project must not contain any npm packages. When you update the path of a user or group, or transfer a subgroup or project, you must remove any npm packages first. You cannot update the root namespace of a project with npm packages. Make sure you update your .npmrc files to follow the naming convention and run npm publish if necessary.
 
 To transfer a project:
 
@@ -262,7 +263,7 @@ When you transfer a project from a namespace licensed for GitLab SaaS Premium or
 
 - [Project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked
 - [Pipeline subscriptions](../../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
-and [test cases](../../../ci/test_cases/index.md) are deleted.
+  and [test cases](../../../ci/test_cases/index.md) are deleted.
 
 ## Delete a project
 
@@ -270,7 +271,7 @@ You can mark a project to be deleted.
 
 Prerequisite:
 
-- You must have at least the Owner role for a project.
+- You must have the Owner role for a project.
 
 To delete a project:
 
@@ -308,7 +309,7 @@ If you don't want to wait, you can delete a project immediately.
 
 Prerequisites:
 
-- You must have at least the Owner role for a project.
+- You must have the Owner role for a project.
 - You have [marked the project for deletion](#delete-a-project).
 
 To immediately delete a project marked for deletion:
@@ -361,11 +362,11 @@ Configure [alert integrations](../../../operations/incident_management/integrati
 
 #### Alert integration
 
-Automatically [create](../../../operations/incident_management/incidents.md#create-incidents-automatically), [notify on](../../../operations/incident_management/paging.md#email-notifications-for-alerts), and [resolve](../../../operations/incident_management/incidents.md#automatically-close-incidents-via-recovery-alerts) incidents based on GitLab alerts.
+Automatically [create](../../../operations/metrics/alerts.md#trigger-actions-from-alerts), [notify on](../../../operations/incident_management/paging.md#email-notifications-for-alerts), and [resolve](../../../operations/incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts) incidents based on GitLab alerts.
 
 #### PagerDuty integration
 
-[Create incidents in GitLab for each PagerDuty incident](../../../operations/incident_management/incidents.md#create-incidents-via-the-pagerduty-webhook).
+[Create incidents in GitLab for each PagerDuty incident](../../../operations/incident_management/manage_incidents.md#using-the-pagerduty-webhook).
 
 #### Incident settings
 

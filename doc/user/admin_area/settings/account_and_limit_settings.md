@@ -57,7 +57,7 @@ You can change the maximum push size for your instance:
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum push size (MB)**.
 
-For GitLab.com application limits, read [GitLab application limits](../../../administration/instance_limits.md#max-push-size).
+For GitLab.com push size limits, read [accounts and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
 
 NOTE:
 When you [add files to a repository](../../project/repository/web_editor.md#create-a-file)

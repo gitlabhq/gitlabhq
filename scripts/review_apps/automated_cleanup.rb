@@ -22,6 +22,7 @@ module ReviewApps
     IGNORED_KUBERNETES_ERRORS = [
       'NotFound'
     ].freeze
+    ENVIRONMENTS_NOT_FOUND_THRESHOLD = 3
 
     # $GITLAB_PROJECT_REVIEW_APP_CLEANUP_API_TOKEN => `Automated Review App Cleanup` project token
     def initialize(
@@ -30,10 +31,11 @@ module ReviewApps
       api_endpoint: ENV['CI_API_V4_URL'],
       options: {}
     )
-      @project_path = project_path
-      @gitlab_token = gitlab_token
-      @api_endpoint = api_endpoint
-      @dry_run = options[:dry_run]
+      @project_path                     = project_path
+      @gitlab_token                     = gitlab_token
+      @api_endpoint                     = api_endpoint
+      @dry_run                          = options[:dry_run]
+      @environments_not_found_count     = 0
 
       puts "Dry-run mode." if dry_run
     end
@@ -91,13 +93,11 @@ module ReviewApps
             release = Tooling::Helm3Client::Release.new(environment.slug, 1, deployed_at.to_s, nil, nil, environment.slug)
             releases_to_delete << release
           end
+        elsif deployed_at >= stop_threshold
+          print_release_state(subject: 'Review App', release_name: environment.slug, release_date: last_deploy, action: 'leaving')
         else
-          if deployed_at >= stop_threshold
-            print_release_state(subject: 'Review App', release_name: environment.slug, release_date: last_deploy, action: 'leaving')
-          else
-            environment_state = fetch_environment(environment)&.state
-            stop_environment(environment, deployment) if environment_state && environment_state != 'stopped'
-          end
+          environment_state = fetch_environment(environment)&.state
+          stop_environment(environment, deployment) if environment_state && environment_state != 'stopped'
         end
 
         checked_environments << environment.slug
@@ -174,7 +174,7 @@ module ReviewApps
 
     private
 
-    attr_reader :project_path, :gitlab_token, :api_endpoint, :dry_run
+    attr_reader :api_endpoint, :dry_run, :gitlab_token, :project_path
 
     def fetch_environment(environment)
       gitlab.environment(project_path, environment.id)
@@ -188,10 +188,17 @@ module ReviewApps
       print_release_state(subject: 'Review app', release_name: environment.slug, release_date: release_date, action: 'deleting')
       gitlab.delete_environment(project_path, environment.id) unless dry_run
 
+    rescue Gitlab::Error::NotFound
+      puts "Review app '#{environment.name}' / '#{environment.slug}' (##{environment.id}) was not found: ignoring it"
+      @environments_not_found_count += 1
+
+      if @environments_not_found_count >= ENVIRONMENTS_NOT_FOUND_THRESHOLD
+        raise "At least #{ENVIRONMENTS_NOT_FOUND_THRESHOLD} environments were missing when we tried to delete them. Please investigate"
+      end
     rescue Gitlab::Error::Forbidden
       puts "Review app '#{environment.name}' / '#{environment.slug}' (##{environment.id}) is forbidden: skipping it"
     rescue Gitlab::Error::InternalServerError
-      puts "Review app '#{environment.name}' / '#{environment.slug}' (##{environment.id}) 500 error - ignoring it"
+      puts "Review app '#{environment.name}' / '#{environment.slug}' (##{environment.id}) 500 error: ignoring it"
     end
 
     def stop_environment(environment, deployment)

@@ -23,7 +23,7 @@ module QA
         end
 
         def fabricate_via_api_unless_fips!
-          if QA::Support::FIPS.enabled?
+          if Runtime::Env.personal_access_tokens_disabled?
             fabricate!
           else
             fabricate_via_api!
@@ -31,7 +31,7 @@ module QA
         end
 
         def fabricate!(*args, &prepare_block)
-          if QA::Support::FIPS.enabled?
+          if Runtime::Env.personal_access_tokens_disabled?
             fabricate_via_browser_ui!(*args, &prepare_block)
           else
             fabricate_via_api!(*args, &prepare_block)
@@ -107,7 +107,7 @@ module QA
 
             Support::FabricationTracker.save_fabrication(:"#{fabrication_method}_fabrication", fabrication_time)
 
-            unless resource.retrieved_from_cache || QA::Support::FIPS.enabled?
+            unless resource.retrieved_from_cache || Runtime::Env.personal_access_tokens_disabled?
               Tools::TestResourceDataProcessor.collect(
                 resource: resource,
                 info: resource.identifier,

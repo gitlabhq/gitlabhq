@@ -32,12 +32,18 @@ class Key < ApplicationRecord
 
   delegate :name, :email, to: :user, prefix: true
 
-  after_commit :add_to_authorized_keys, on: :create
+  enum usage_type: {
+    auth_and_signing: 0,
+    auth: 1,
+    signing: 2
+  }
+
   after_create :post_create_hook
   after_create :refresh_user_cache
-  after_commit :remove_from_authorized_keys, on: :destroy
   after_destroy :post_destroy_hook
   after_destroy :refresh_user_cache
+  after_commit :add_to_authorized_keys, on: :create
+  after_commit :remove_from_authorized_keys, on: :destroy
 
   alias_attribute :fingerprint_md5, :fingerprint
   alias_attribute :name, :title
@@ -45,6 +51,8 @@ class Key < ApplicationRecord
   scope :preload_users, -> { preload(:user) }
   scope :for_user, -> (user) { where(user: user) }
   scope :order_last_used_at_desc, -> { reorder(arel_table[:last_used_at].desc.nulls_last) }
+  scope :auth, -> { where(usage_type: [:auth, :auth_and_signing]) }
+  scope :signing, -> { where(usage_type: [:signing, :auth_and_signing]) }
 
   # Date is set specifically in this scope to improve query time.
   scope :expired_today_and_not_notified, -> { where(["date(expires_at AT TIME ZONE 'UTC') = CURRENT_DATE AND expiry_notification_delivered_at IS NULL"]) }

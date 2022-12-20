@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Conflict::File do
     let(:section_keys) { conflict_file.sections.map { |section| section[:id] }.compact }
 
     context 'when resolving everything to the same side' do
-      let(:resolution_hash) { section_keys.to_h { |key| [key, 'head'] } }
+      let(:resolution_hash) { section_keys.index_with { 'head' } }
       let(:resolved_lines) { conflict_file.resolve_lines(resolution_hash) }
       let(:expected_lines) { conflict_file.lines.reject { |line| line.type == 'old' } }
 
@@ -63,8 +63,8 @@ RSpec.describe Gitlab::Conflict::File do
     end
 
     it 'raises ResolutionError when passed a hash without resolutions for all sections' do
-      empty_hash = section_keys.to_h { |key| [key, nil] }
-      invalid_hash = section_keys.to_h { |key| [key, 'invalid'] }
+      empty_hash = section_keys.index_with { nil }
+      invalid_hash = section_keys.index_with { 'invalid' }
 
       expect { conflict_file.resolve_lines({}) }
         .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)

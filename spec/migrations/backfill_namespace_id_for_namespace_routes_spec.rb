@@ -3,8 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillNamespaceIdForNamespaceRoutes do
-  let_it_be(:migration) { described_class::MIGRATION }
+RSpec.describe BackfillNamespaceIdForNamespaceRoutes, feature_category: :projects do
+  let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do
     it 'schedules background jobs for each batch of routes' do

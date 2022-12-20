@@ -30,7 +30,7 @@ feature flag is under test.
 
 - Format: `feature_flag: { name: 'feature_flag_name', scope: :project }`
 - When `scope` is set to `:global`, the test will be **skipped on all live .com environments**. This is to avoid issues with feature flag changes affecting other tests or users on that environment.
-- When `scope` is set to any other value (such as `:project`, `:group` or `:user`), or if no `scope` is specified, the test will only be **skipped on canary, production, and preprod**.
+- When `scope` is set to any other value (such as `:project`, `:group` or `:user`), or if no `scope` is specified, the test will only be **skipped on canary, production, and pre-production**.
 This is due to the fact that administrator access is not available there.
 
 **WARNING:** You are strongly advised to first try and [enable feature flags only for a group, project, user](../../feature_flags/index.md#feature-actors),
@@ -42,7 +42,7 @@ or [feature group](../../feature_flags/index.md#feature-groups).
   with administrator access, such as staging.
 
 **Note on `requires_admin`:** This tag should still be applied if there are other actions within the test that require administrator access that are unrelated to updating a
-feature flag (ex: creating a user via the API).
+feature flag (like creating a user via the API).
 
 The code below would enable a feature flag named `:feature_flag_name` for the project
 created by the test:

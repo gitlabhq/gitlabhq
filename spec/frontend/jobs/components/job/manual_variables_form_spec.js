@@ -1,46 +1,71 @@
 import { GlSprintf, GlLink } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
-import Vuex from 'vuex';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { createLocalVue } from '@vue/test-utils';
+import VueApollo from 'vue-apollo';
+import { nextTick } from 'vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { GRAPHQL_ID_TYPES } from '~/jobs/constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import ManualVariablesForm from '~/jobs/components/job/manual_variables_form.vue';
+import getJobQuery from '~/jobs/components/job/graphql/queries/get_job.query.graphql';
+import retryJobMutation from '~/jobs/components/job/graphql/mutations/job_retry_with_variables.mutation.graphql';
+import {
+  mockFullPath,
+  mockId,
+  mockJobResponse,
+  mockJobWithVariablesResponse,
+  mockJobMutationData,
+} from './mock_data';
 
-Vue.use(Vuex);
+const localVue = createLocalVue();
+localVue.use(VueApollo);
+
+const defaultProvide = {
+  projectPath: mockFullPath,
+};
 
 describe('Manual Variables Form', () => {
   let wrapper;
-  let store;
+  let mockApollo;
+  let getJobQueryResponse;
 
-  const requiredProps = {
-    action: {
-      path: '/play',
-      method: 'post',
-      button_title: 'Trigger this manual action',
-    },
+  const createComponent = ({ options = {}, props = {} } = {}) => {
+    wrapper = mountExtended(ManualVariablesForm, {
+      propsData: {
+        ...props,
+        jobId: mockId,
+        isRetryable: true,
+      },
+      provide: {
+        ...defaultProvide,
+      },
+      ...options,
+    });
   };
 
-  const createComponent = (props = {}) => {
-    store = new Vuex.Store({
-      actions: {
-        triggerManualJob: jest.fn(),
-      },
+  const createComponentWithApollo = async ({ props = {} } = {}) => {
+    const requestHandlers = [[getJobQuery, getJobQueryResponse]];
+
+    mockApollo = createMockApollo(requestHandlers);
+
+    const options = {
+      localVue,
+      apolloProvider: mockApollo,
+    };
+
+    createComponent({
+      props,
+      options,
     });
 
-    wrapper = extendedWrapper(
-      mount(ManualVariablesForm, {
-        propsData: { ...requiredProps, ...props },
-        store,
-        stubs: {
-          GlSprintf,
-        },
-      }),
-    );
+    return waitForPromises();
   };
 
   const findHelpText = () => wrapper.findComponent(GlSprintf);
   const findHelpLink = () => wrapper.findComponent(GlLink);
-
-  const findTriggerBtn = () => wrapper.findByTestId('trigger-manual-job-btn');
+  const findCancelBtn = () => wrapper.findByTestId('cancel-btn');
+  const findRerunBtn = () => wrapper.findByTestId('run-manual-job-btn');
   const findDeleteVarBtn = () => wrapper.findByTestId('delete-variable-btn');
   const findAllDeleteVarBtns = () => wrapper.findAllByTestId('delete-variable-btn');
   const findDeleteVarBtnPlaceholder = () => wrapper.findByTestId('delete-variable-btn-placeholder');
@@ -62,95 +87,134 @@ describe('Manual Variables Form', () => {
   };
 
   beforeEach(() => {
-    createComponent();
+    getJobQueryResponse = jest.fn();
   });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('creates a new variable when user enters a new key value', async () => {
-    expect(findAllVariables()).toHaveLength(1);
+  describe('when page renders', () => {
+    beforeEach(async () => {
+      getJobQueryResponse.mockResolvedValue(mockJobResponse);
+      await createComponentWithApollo();
+    });
 
-    await setCiVariableKey();
+    it('renders help text with provided link', () => {
+      expect(findHelpText().exists()).toBe(true);
+      expect(findHelpLink().attributes('href')).toBe(
+        '/help/ci/variables/index#add-a-cicd-variable-to-a-project',
+      );
+    });
 
-    expect(findAllVariables()).toHaveLength(2);
+    it('renders buttons', () => {
+      expect(findCancelBtn().exists()).toBe(true);
+      expect(findRerunBtn().exists()).toBe(true);
+    });
   });
 
-  it('does not create extra empty variables', async () => {
-    expect(findAllVariables()).toHaveLength(1);
+  describe('when job has variables', () => {
+    beforeEach(async () => {
+      getJobQueryResponse.mockResolvedValue(mockJobWithVariablesResponse);
+      await createComponentWithApollo();
+    });
 
-    await setCiVariableKey();
+    it('sets manual job variables', () => {
+      const queryKey = mockJobWithVariablesResponse.data.project.job.manualVariables.nodes[0].key;
+      const queryValue =
+        mockJobWithVariablesResponse.data.project.job.manualVariables.nodes[0].value;
 
-    expect(findAllVariables()).toHaveLength(2);
-
-    await setCiVariableKey();
-
-    expect(findAllVariables()).toHaveLength(2);
+      expect(findCiVariableKey().element.value).toBe(queryKey);
+      expect(findCiVariableValue().element.value).toBe(queryValue);
+    });
   });
 
-  it('removes the correct variable row', async () => {
-    const variableKeyNameOne = 'key-one';
-    const variableKeyNameThree = 'key-three';
+  describe('when mutation fires', () => {
+    beforeEach(async () => {
+      await createComponentWithApollo();
+      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockJobMutationData);
+    });
 
-    await setCiVariableKeyByPosition(0, variableKeyNameOne);
+    it('passes variables in correct format', async () => {
+      await setCiVariableKey();
 
-    await setCiVariableKeyByPosition(1, 'key-two');
+      await findCiVariableValue().setValue('new value');
 
-    await setCiVariableKeyByPosition(2, variableKeyNameThree);
+      await findRerunBtn().vm.$emit('click');
 
-    expect(findAllVariables()).toHaveLength(4);
-
-    await findAllDeleteVarBtns().at(1).trigger('click');
-
-    expect(findAllVariables()).toHaveLength(3);
-
-    expect(findAllCiVariableKeys().at(0).element.value).toBe(variableKeyNameOne);
-    expect(findAllCiVariableKeys().at(1).element.value).toBe(variableKeyNameThree);
-    expect(findAllCiVariableKeys().at(2).element.value).toBe('');
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+        mutation: retryJobMutation,
+        variables: {
+          id: convertToGraphQLId(GRAPHQL_ID_TYPES.ciBuild, mockId),
+          variables: [
+            {
+              key: 'new key',
+              value: 'new value',
+            },
+          ],
+        },
+      });
+    });
   });
 
-  it('trigger button is disabled after trigger action', async () => {
-    expect(findTriggerBtn().props('disabled')).toBe(false);
+  describe('updating variables in UI', () => {
+    beforeEach(async () => {
+      getJobQueryResponse.mockResolvedValue(mockJobResponse);
+      await createComponentWithApollo();
+    });
 
-    await findTriggerBtn().trigger('click');
+    it('creates a new variable when user enters a new key value', async () => {
+      expect(findAllVariables()).toHaveLength(1);
 
-    expect(findTriggerBtn().props('disabled')).toBe(true);
-  });
+      await setCiVariableKey();
 
-  it('delete variable button should only show when there is more than one variable', async () => {
-    expect(findDeleteVarBtn().exists()).toBe(false);
+      expect(findAllVariables()).toHaveLength(2);
+    });
 
-    await setCiVariableKey();
+    it('does not create extra empty variables', async () => {
+      expect(findAllVariables()).toHaveLength(1);
 
-    expect(findDeleteVarBtn().exists()).toBe(true);
-  });
+      await setCiVariableKey();
 
-  it('delete variable button placeholder should only exist when a user cannot remove', async () => {
-    expect(findDeleteVarBtnPlaceholder().exists()).toBe(true);
-  });
+      expect(findAllVariables()).toHaveLength(2);
 
-  it('renders help text with provided link', () => {
-    expect(findHelpText().exists()).toBe(true);
-    expect(findHelpLink().attributes('href')).toBe(
-      '/help/ci/variables/index#add-a-cicd-variable-to-a-project',
-    );
-  });
+      await setCiVariableKey();
 
-  it('passes variables in correct format', async () => {
-    jest.spyOn(store, 'dispatch');
+      expect(findAllVariables()).toHaveLength(2);
+    });
 
-    await setCiVariableKey();
+    it('removes the correct variable row', async () => {
+      const variableKeyNameOne = 'key-one';
+      const variableKeyNameThree = 'key-three';
 
-    await findCiVariableValue().setValue('new value');
+      await setCiVariableKeyByPosition(0, variableKeyNameOne);
 
-    await findTriggerBtn().trigger('click');
+      await setCiVariableKeyByPosition(1, 'key-two');
 
-    expect(store.dispatch).toHaveBeenCalledWith('triggerManualJob', [
-      {
-        key: 'new key',
-        secret_value: 'new value',
-      },
-    ]);
+      await setCiVariableKeyByPosition(2, variableKeyNameThree);
+
+      expect(findAllVariables()).toHaveLength(4);
+
+      await findAllDeleteVarBtns().at(1).trigger('click');
+
+      expect(findAllVariables()).toHaveLength(3);
+
+      expect(findAllCiVariableKeys().at(0).element.value).toBe(variableKeyNameOne);
+      expect(findAllCiVariableKeys().at(1).element.value).toBe(variableKeyNameThree);
+      expect(findAllCiVariableKeys().at(2).element.value).toBe('');
+    });
+
+    it('delete variable button should only show when there is more than one variable', async () => {
+      expect(findDeleteVarBtn().exists()).toBe(false);
+
+      await setCiVariableKey();
+
+      expect(findDeleteVarBtn().exists()).toBe(true);
+    });
+
+    it('delete variable button placeholder should only exist when a user cannot remove', async () => {
+      expect(findDeleteVarBtnPlaceholder().exists()).toBe(true);
+    });
   });
 });

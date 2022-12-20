@@ -13,10 +13,8 @@ RSpec.shared_examples 'logs downstream pipeline creation' do
   end
 
   it 'logs details' do
-    pipeline = nil
-
     log_entry = record_downstream_pipeline_logs do
-      pipeline = subject
+      downstream_pipeline
     end
 
     expect(log_entry).to be_present
@@ -24,7 +22,7 @@ RSpec.shared_examples 'logs downstream pipeline creation' do
       message: "downstream pipeline created",
       class: described_class.name,
       root_pipeline_id: expected_root_pipeline.id,
-      downstream_pipeline_id: pipeline.id,
+      downstream_pipeline_id: downstream_pipeline.id,
       downstream_pipeline_relationship: expected_downstream_relationship,
       hierarchy_size: expected_hierarchy_size,
       root_pipeline_plan: expected_root_pipeline.project.actual_plan_name,

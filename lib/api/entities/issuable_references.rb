@@ -3,15 +3,15 @@
 module API
   module Entities
     class IssuableReferences < Grape::Entity
-      expose :short do |issuable|
+      expose :short, documentation: { type: "string", example: "&6" } do |issuable|
         issuable.to_reference
       end
 
-      expose :relative do |issuable, options|
+      expose :relative, documentation: { type: "string", example: "&6" } do |issuable, options|
         issuable.to_reference(options[:group] || options[:project])
       end
 
-      expose :full do |issuable|
+      expose :full, documentation: { type: "string", example: "test&6" } do |issuable|
         issuable.to_reference(full: true)
       end
     end

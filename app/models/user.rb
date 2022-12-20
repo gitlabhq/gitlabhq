@@ -46,6 +46,8 @@ class User < ApplicationRecord
   MAX_USERNAME_LENGTH = 255
   MIN_USERNAME_LENGTH = 2
 
+  MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT = 100
+
   SECONDARY_EMAIL_ATTRIBUTES = [
     :commit_email,
     :notification_email,
@@ -58,16 +60,16 @@ class User < ApplicationRecord
   add_authentication_token_field :feed_token
   add_authentication_token_field :static_object_token, encrypted: :optional
 
-  default_value_for :admin, false
-  default_value_for(:external) { Gitlab::CurrentSettings.user_default_external }
-  default_value_for(:can_create_group) { Gitlab::CurrentSettings.can_create_group }
-  default_value_for :can_create_team, false
-  default_value_for :hide_no_ssh_key, false
-  default_value_for :hide_no_password, false
-  default_value_for :project_view, :files
-  default_value_for :notified_of_own_activity, false
-  default_value_for :preferred_language, I18n.default_locale
-  default_value_for :theme_id, gitlab_config.default_theme
+  attribute :admin, default: false
+  attribute :external, default: -> { Gitlab::CurrentSettings.user_default_external }
+  attribute :can_create_group, default: -> { Gitlab::CurrentSettings.can_create_group }
+  attribute :can_create_team, default: false
+  attribute :hide_no_ssh_key, default: false
+  attribute :hide_no_password, default: false
+  attribute :project_view, default: :files
+  attribute :notified_of_own_activity, default: false
+  attribute :preferred_language, default: -> { I18n.default_locale }
+  attribute :theme_id, default: -> { gitlab_config.default_theme }
 
   attr_encrypted :otp_secret,
     key: Gitlab::Application.secrets.otp_key_base,
@@ -298,16 +300,17 @@ class User < ApplicationRecord
 
   validates :website_url, allow_blank: true, url: true, if: :website_url_changed?
 
+  after_initialize :set_projects_limit
   before_validation :sanitize_attrs
+  before_validation :ensure_namespace_correct
+  after_validation :set_username_errors
   before_save :default_private_profile_to_false
   before_save :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
-  before_validation :ensure_namespace_correct
   before_save :ensure_namespace_correct # in case validation is skipped
   before_save :ensure_user_detail_assigned
-  after_validation :set_username_errors
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
@@ -327,8 +330,6 @@ class User < ApplicationRecord
   after_commit(on: :update) do
     update_invalid_gpg_signatures if previous_changes.key?('email')
   end
-
-  after_initialize :set_projects_limit
 
   # User's Layout preference
   enum layout: { fixed: 0, fluid: 1 }
@@ -360,6 +361,7 @@ class User < ApplicationRecord
             :diffs_deletion_color, :diffs_deletion_color=,
             :diffs_addition_color, :diffs_addition_color=,
             :use_legacy_web_ide, :use_legacy_web_ide=,
+            :use_new_navigation, :use_new_navigation=,
             to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
@@ -376,6 +378,14 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :credit_card_validation, update_only: true, allow_destroy: true
 
   state_machine :state, initial: :active do
+    # state_machine uses this method at class loading time to fetch the default
+    # value for the `state` column but in doing so it also evaluates all other
+    # columns default values which could trigger the recursive generation of
+    # ApplicationSetting records. We're setting it to `nil` here because we
+    # don't have a database default for the `state` column.
+    #
+    def owner_class_attribute_default; end
+
     event :block do
       transition active: :blocked
       transition deactivated: :blocked
@@ -811,7 +821,7 @@ class User < ApplicationRecord
 
     # Returns a user for the given SSH key.
     def find_by_ssh_key_id(key_id)
-      find_by('EXISTS (?)', Key.select(1).where('keys.user_id = users.id').where(id: key_id))
+      find_by('EXISTS (?)', Key.select(1).where('keys.user_id = users.id').auth.where(id: key_id))
     end
 
     def find_by_full_path(path, follow_redirects: false)
@@ -893,6 +903,18 @@ class User < ApplicationRecord
         u.bio = 'The GitLab automation bot used for automated workflows and tasks'
         u.name = 'GitLab Automation Bot'
         u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for automation-bot
+      end
+    end
+
+    def admin_bot
+      email_pattern = "admin-bot%s@#{Settings.gitlab.host}"
+
+      unique_internal(where(user_type: :admin_bot), 'GitLab-Admin-Bot', email_pattern) do |u|
+        u.bio = 'Admin bot used for tasks that require admin privileges'
+        u.name = 'GitLab Admin Bot'
+        u.avatar = bot_avatar(image: 'admin-bot.png')
+        u.admin = true
+        u.confirmed_at = Time.zone.now
       end
     end
 
@@ -1759,12 +1781,10 @@ class User < ApplicationRecord
   end
 
   def ci_owned_runners
-    @ci_owned_runners ||= begin
-      Ci::Runner
+    @ci_owned_runners ||= Ci::Runner
         .from_union([ci_owned_project_runners_from_project_members,
                      ci_owned_project_runners_from_group_members,
                      ci_owned_group_runners])
-    end
   end
 
   def owns_runner?(runner)
@@ -1773,7 +1793,11 @@ class User < ApplicationRecord
 
   def notification_email_for(notification_group)
     # Return group-specific email address if present, otherwise return global notification email address
-    notification_group&.notification_email_for(self) || notification_email_or_default
+    group_email = if notification_group && notification_group.respond_to?(:notification_email_for)
+                    notification_group.notification_email_for(self)
+                  end
+
+    group_email || notification_email_or_default
   end
 
   def notification_settings_for(source, inherit: false)
@@ -1866,6 +1890,7 @@ class User < ApplicationRecord
 
   def invalidate_issue_cache_counts
     Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
+    Rails.cache.delete(['users', id, 'max_assigned_open_issues_count']) if Feature.enabled?(:limit_assigned_issues_count)
   end
 
   def invalidate_merge_request_cache_counts
@@ -2323,9 +2348,7 @@ class User < ApplicationRecord
   end
 
   def check_password_weakness
-    if Feature.enabled?(:block_weak_passwords) &&
-        password.present? &&
-        Security::WeakPasswords.weak_for_user?(password, self)
+    if password.present? && Security::WeakPasswords.weak_for_user?(password, self)
       errors.add(:password, _('must not contain commonly used combinations of words and letters'))
     end
   end

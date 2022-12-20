@@ -36,7 +36,7 @@ gl-emoji {
   }
 }
 
-.emoji-picker .gl-new-dropdown .dropdown-menu {
+.emoji-picker .gl-dropdown .dropdown-menu {
   width: 350px;
 }
 
@@ -48,6 +48,6 @@ gl-emoji {
   border-bottom-color: var(--gl-theme-accent, $theme-indigo-500);
 }
 
-.emoji-picker .gl-new-dropdown-inner > :last-child {
+.emoji-picker .gl-dropdown-inner > :last-child {
   padding-bottom: 0;
 }

@@ -134,6 +134,8 @@ To approve or reject a deployment to a protected environment using the UI:
 1. On the left sidebar, select **Deployments > Environments**.
 1. Select the environment's name.
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
+   Before approving or rejecting the deployment, you can view the number of approvals granted and
+   remaining, also who has approved or rejected it.
 1. Optional. Add a comment which describes your reason for approving or rejecting the deployment.
 1. Select **Approve** or **Reject**.
 
@@ -153,6 +155,29 @@ Example:
 curl --data "status=approved&comment=Looks good to me" \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/1/approval"
 ```
+
+### View the approval details of a deployment
+
+Prerequisites:
+
+- Permission to deploy to the protected environment.
+
+A deployment to a protected environment can only proceed after all required approvals have been
+granted.
+
+To view the approval details of a deployment:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
+1. Select the environment's name.
+1. In the deployment's row, select **Approval options** (**{thumb-up}**).
+
+The approval status details are shown:
+
+- Eligible approvers
+- Number of approvals granted, and number of approvals required
+- Users who have granted approval
+- History of approvals or rejections
 
 ## How to see blocked deployments
 

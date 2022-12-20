@@ -111,7 +111,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
   end
 
   def read_json(path)
-    Gitlab::Json.parse(IO.read(path))
+    Gitlab::Json.parse(File.read(path))
   end
 
   def read_ndjson(path)

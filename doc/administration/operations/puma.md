@@ -66,9 +66,9 @@ From this output:
 
 - The formula that calculates the maximum memory value results in workers
   being killed before they reach the `per_worker_max_memory_mb` value.
-- In GitLab 13.4 and earlier, the default values for the formula were 550MB for the primary
-  and 850MB for each worker.
-- In GitLab 13.5 and later, the values are primary: 800MB, worker: 1024MB.
+- In GitLab 13.4 and earlier, the default values for the formula were 550 MB for the primary
+  and 850 MB for each worker.
+- In GitLab 13.5 and later, the values are primary: 800 MB, worker: 1024 MB.
 - The threshold for workers to be killed is set at 98% of the limit:
 
   ```plaintext
@@ -110,11 +110,11 @@ To change the worker timeout to 600 seconds:
 
 WARNING:
 This is an experimental [Alpha feature](../../policy/alpha-beta-support.md#alpha-features) and subject to change without notice. The feature
-is not ready for production use. If you want to use this feature, we recommend testing
+is not ready for production use. If you want to use this feature, you should test
 outside of production first. See the [known issues](#puma-single-mode-known-issues)
 for additional details.
 
-In a memory-constrained environment with less than 4GB of RAM available, consider disabling Puma
+In a memory-constrained environment with less than 4 GB of RAM available, consider disabling Puma
 [clustered mode](https://github.com/puma/puma#clustered-mode).
 
 Set the number of `workers` to `0` to reduce memory usage by hundreds of MB:

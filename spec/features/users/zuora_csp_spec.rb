@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Zuora content security policy' do
+RSpec.describe 'Zuora content security policy', feature_category: :purchase do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }

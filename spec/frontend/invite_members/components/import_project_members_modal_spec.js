@@ -8,6 +8,12 @@ import * as ProjectsApi from '~/api/projects_api';
 import ImportProjectMembersModal from '~/invite_members/components/import_project_members_modal.vue';
 import ProjectSelect from '~/invite_members/components/project_select.vue';
 import axios from '~/lib/utils/axios_utils';
+import {
+  displaySuccessfulInvitationAlert,
+  reloadOnInvitationSuccess,
+} from '~/invite_members/utils/trigger_successful_invite_alert';
+
+jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
 
 let wrapper;
 let mock;
@@ -19,11 +25,12 @@ const $toast = {
   show: jest.fn(),
 };
 
-const createComponent = () => {
+const createComponent = ({ props = {} } = {}) => {
   wrapper = shallowMountExtended(ImportProjectMembersModal, {
     propsData: {
       projectId,
       projectName,
+      ...props,
     },
     stubs: {
       GlModal: stubComponent(GlModal, {
@@ -101,6 +108,35 @@ describe('ImportProjectMembersModal', () => {
   });
 
   describe('submitting the import', () => {
+    describe('when the import is successful with reloadPageOnSubmit', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { reloadPageOnSubmit: true },
+        });
+
+        findProjectSelect().vm.$emit('input', projectToBeImported);
+
+        jest.spyOn(ProjectsApi, 'importProjectMembers').mockResolvedValue();
+
+        clickImportButton();
+      });
+
+      it('calls displaySuccessfulInvitationAlert on mount', () => {
+        expect(displaySuccessfulInvitationAlert).toHaveBeenCalled();
+      });
+
+      it('calls reloadOnInvitationSuccess', () => {
+        expect(reloadOnInvitationSuccess).toHaveBeenCalled();
+      });
+
+      it('does not display the successful toastMessage', () => {
+        expect($toast.show).not.toHaveBeenCalledWith(
+          'Successfully imported',
+          wrapper.vm.$options.toastOptions,
+        );
+      });
+    });
+
     describe('when the import is successful', () => {
       beforeEach(() => {
         createComponent();
@@ -124,6 +160,14 @@ describe('ImportProjectMembersModal', () => {
           'Successfully imported',
           wrapper.vm.$options.toastOptions,
         );
+      });
+
+      it('does not call displaySuccessfulInvitationAlert on mount', () => {
+        expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
+      });
+
+      it('does not call reloadOnInvitationSuccess', () => {
+        expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
       });
 
       it('sets isLoading to false after success', () => {

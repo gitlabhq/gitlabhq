@@ -28,8 +28,8 @@ module Gitlab
           payload.map do |key, value|
             if has_metric_definition?(key, parents)
               parents.dup.append(key).join('.')
-            else
-              payload_keys(value, parents.dup << key) if value.is_a?(Hash)
+            elsif value.is_a?(Hash)
+              payload_keys(value, parents.dup << key)
             end
           end
         end

@@ -79,11 +79,11 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
         let(:accepted_n_plus_ones) do
           1 + # SELECT "ci_instance_variables"
-          1 + # INSERT INTO "ci_stages"
-          1 + # SELECT "ci_builds".* FROM "ci_builds"
-          1 + # INSERT INTO "ci_builds"
-          1 + # INSERT INTO "ci_builds_metadata"
-          1   # SELECT "taggings".* FROM "taggings"
+            1 + # INSERT INTO "ci_stages"
+            1 + # SELECT "ci_builds".* FROM "ci_builds"
+            1 + # INSERT INTO "ci_builds"
+            1 + # INSERT INTO "ci_builds_metadata"
+            1   # SELECT "taggings".* FROM "taggings"
         end
       end
     end
@@ -707,6 +707,29 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
           expect(result.payload).not_to be_persisted
           expect(internal_id.last_value).to eq(0)
         end
+      end
+    end
+
+    context 'when the configuration includes ID tokens' do
+      it 'creates variables for the ID tokens' do
+        config = YAML.dump({
+          job_with_id_tokens: {
+            script: 'ls',
+            id_tokens: {
+              'TEST_ID_TOKEN' => {
+                aud: 'https://gitlab.com'
+              }
+            }
+          }
+        })
+        stub_ci_pipeline_yaml_file(config)
+
+        result = execute_service.payload
+
+        expect(result).to be_persisted
+        expect(result.builds.first.id_tokens).to eq({
+          'TEST_ID_TOKEN' => { 'aud' => 'https://gitlab.com' }
+        })
       end
     end
 

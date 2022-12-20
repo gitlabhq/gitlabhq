@@ -34,5 +34,9 @@ FactoryBot.define do
     trait :pending_destruction do
       status { :pending_destruction }
     end
+
+    trait :filelists do
+      file_name { 'filelists.xml' }
+    end
   end
 end

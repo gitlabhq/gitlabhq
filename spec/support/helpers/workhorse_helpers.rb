@@ -39,11 +39,11 @@ module WorkhorseHelpers
 
   # workhorse_finalize will transform file_key inside params as if it was the finalize call of an inline object storage upload.
   # note that based on the content of the params it can simulate a disc acceleration or an object storage upload
-  def workhorse_finalize(url, method: :post, file_key:, params:, headers: {}, send_rewritten_field: false)
+  def workhorse_finalize(url, file_key:, params:, method: :post, headers: {}, send_rewritten_field: false)
     workhorse_finalize_with_multiple_files(url, method: method, file_keys: file_key, params: params, headers: headers, send_rewritten_field: send_rewritten_field)
   end
 
-  def workhorse_finalize_with_multiple_files(url, method: :post, file_keys:, params:, headers: {}, send_rewritten_field: false)
+  def workhorse_finalize_with_multiple_files(url, file_keys:, params:, method: :post, headers: {}, send_rewritten_field: false)
     workhorse_request_with_multiple_files(method, url,
                                           file_keys: file_keys,
                                           params: params,
@@ -52,11 +52,11 @@ module WorkhorseHelpers
     )
   end
 
-  def workhorse_request_with_file(method, url, file_key:, params:, env: {}, extra_headers: {}, send_rewritten_field:)
+  def workhorse_request_with_file(method, url, file_key:, params:, send_rewritten_field:, env: {}, extra_headers: {})
     workhorse_request_with_multiple_files(method, url, file_keys: file_key, params: params, env: env, extra_headers: extra_headers, send_rewritten_field: send_rewritten_field)
   end
 
-  def workhorse_request_with_multiple_files(method, url, file_keys:, params:, env: {}, extra_headers: {}, send_rewritten_field:)
+  def workhorse_request_with_multiple_files(method, url, file_keys:, params:, send_rewritten_field:, env: {}, extra_headers: {})
     workhorse_params = params.dup
 
     file_keys = Array(file_keys)

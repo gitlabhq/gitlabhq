@@ -36,6 +36,7 @@ module Ci
       items = by_yaml_errors(items)
       items = by_updated_at(items)
       items = by_source(items)
+      items = by_name(items)
 
       sort_items(items)
     end
@@ -150,6 +151,15 @@ module Ci
       items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
 
       items
+    end
+
+    def by_name(items)
+      return items unless
+        Feature.enabled?(:pipeline_name, project) &&
+          Feature.enabled?(:pipeline_name_search, project) &&
+          params[:name].present?
+
+      items.for_name(params[:name])
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

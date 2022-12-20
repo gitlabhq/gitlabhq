@@ -69,7 +69,7 @@ The `whitespace` tokenizer was selected to have more control over how tokens are
 Please see the `code` filter for an explanation on how tokens are split.
 
 NOTE:
-The [Elasticsearch code_analyzer doesn't account for all code cases](../integration/advanced_search/elasticsearch_troubleshooting.md#elasticsearch-code_analyzer-doesnt-account-for-all-code-cases).
+The [Elasticsearch `code_analyzer` doesn't account for all code cases](../integration/advanced_search/elasticsearch_troubleshooting.md#elasticsearch-code_analyzer-doesnt-account-for-all-code-cases).
 
 #### `code_search_analyzer`
 
@@ -113,9 +113,9 @@ Uses a [Pattern Capture token filter](https://www.elastic.co/guide/en/elasticsea
 
 Patterns:
 
-- `"(\\p{Ll}+|\\p{Lu}\\p{Ll}+|\\p{Lu}+)"`: captures CamelCased and lowedCameCased strings as separate tokens
+- `"(\\p{Ll}+|\\p{Lu}\\p{Ll}+|\\p{Lu}+)"`: captures CamelCase and lowerCamelCase strings as separate tokens
 - `"(\\d+)"`: extracts digits
-- `"(?=([\\p{Lu}]+[\\p{L}]+))"`: captures CamelCased strings recursively. Ex: `ThisIsATest` => `[ThisIsATest, IsATest, ATest, Test]`
+- `"(?=([\\p{Lu}]+[\\p{L}]+))"`: captures CamelCase strings recursively. For example: `ThisIsATest` => `[ThisIsATest, IsATest, ATest, Test]`
 - `'"((?:\\"|[^"]|\\")*)"'`: captures terms inside quotes, removing the quotes
 - `"'((?:\\'|[^']|\\')*)'"`: same as above, for single-quotes
 - `'\.([^.]+)(?=\.|\s|\Z)'`: separate terms with periods in-between

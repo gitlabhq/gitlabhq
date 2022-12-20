@@ -1,0 +1,11 @@
+- data = local_assigns.fetch(:data)
+- loading_text = local_assigns.fetch(:loading_text)
+
+-# Fix for iOS 13+, the height of the page is actually less than
+-# 100vh because of the presence of the bottom bar
+- @body_class = 'gl-max-h-full gl-fixed'
+
+#ide.gl--flex-center.gl-h-full{ data: data }
+  .gl-text-center
+    = gl_loading_icon(size: 'md')
+    %h2.clgray= loading_text

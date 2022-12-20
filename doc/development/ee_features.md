@@ -94,6 +94,25 @@ setting the [`FOSS_ONLY` environment variable](https://gitlab.com/gitlab-org/git
 to something that evaluates as `true`. The same works for running tests
 (for example `FOSS_ONLY=1 yarn jest`).
 
+### Simulate a CE instance with a licensed GDK
+
+To simulate a CE instance without deleting the license in a GDK:
+
+1. Create an `env.runit` file in the root of your GDK with the line:
+
+    ```shell
+    export FOSS_ONLY=1
+    ```
+
+1. Then restart the GDK:
+
+    ```shell
+    gdk restart rails && gdk restart webpack
+    ```
+
+Remove the line in `env.runit` if you want to revert back to an EE
+installation, and repeat step 2.
+
 #### Run feature specs as CE
 
 When running [feature specs](testing_guide/best_practices.md#system--feature-tests)

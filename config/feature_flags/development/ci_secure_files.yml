@@ -1,8 +1,0 @@
----
-name: ci_secure_files
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78227
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350748
-milestone: '14.8'
-type: development
-group: group::incubation
-default_enabled: false

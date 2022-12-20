@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project Deployment query' do
+RSpec.describe 'Project Deployment query', feature_category: :continuous_delivery do
   let_it_be(:project) { create(:project, :private, :repository) }
   let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
   let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }

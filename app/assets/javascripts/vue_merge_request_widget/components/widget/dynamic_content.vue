@@ -1,8 +1,9 @@
 <script>
-import { GlBadge, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
-import Actions from '../action_buttons.vue';
+import { GlBadge, GlLink } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { generateText } from '../extensions/utils';
 import ContentRow from './widget_content_row.vue';
+import Actions from './action_buttons.vue';
 
 export default {
   name: 'DynamicContent',
@@ -13,7 +14,7 @@ export default {
     ContentRow,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     data: {
@@ -81,10 +82,8 @@ export default {
           v-if="data.children && data.children.length > 0 && level === 2"
           class="gl-m-0 gl-p-0 gl-list-style-none"
         >
-          <li>
+          <li v-for="(childData, index) in data.children" :key="childData.id || index">
             <dynamic-content
-              v-for="(childData, index) in data.children"
-              :key="childData.id || index"
               :data="childData"
               :widget-name="widgetName"
               :level="3"

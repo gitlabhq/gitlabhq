@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Import repository from GitHub
 
-Import your projects from GitHub to GitLab via the API.
+Import your projects from GitHub to GitLab using the API.
 
 ```plaintext
 POST /import/github
@@ -60,6 +60,16 @@ Example response:
     "full_name": "Administrator / my-repo"
 }
 ```
+
+### Import a public project through the API using a group access token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362683) in GitLab 15.7, projects are not imported into a [bot user's](../user/group/settings/group_access_tokens.md#bot-users-for-groups) namespace in any circumstances. Projects imported into a bot user's namespace could not be deleted by users with valid tokens, which represented a security risk.
+
+When you import a project from GitHub to GitLab through the API using a group access
+token:
+
+- The GitLab project inherits the original project's visibility settings. As a result, the project is publicly accessible if the original project is public.
+- If the `path` or `target_namespace` does not exist, the project import fails.
 
 ## Cancel GitHub project import
 

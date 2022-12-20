@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::NpmProjectPackages do
+RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
   include_context 'npm api setup'
 
   shared_examples 'accept get request on private project with access to package registry for everyone' do
@@ -42,8 +42,19 @@ RSpec.describe API::NpmProjectPackages do
     end
   end
 
+  describe 'POST /api/v4/projects/:id/packages/npm/-/npm/v1/security/advisories/bulk' do
+    it_behaves_like 'handling audit request', path: 'advisories/bulk', scope: :project do
+      let(:url) { api("/projects/#{project.id}/packages/npm/-/npm/v1/security/advisories/bulk") }
+    end
+  end
+
+  describe 'POST /api/v4/projects/:id/packages/npm/-/npm/v1/security/audits/quick' do
+    it_behaves_like 'handling audit request', path: 'audits/quick', scope: :project do
+      let(:url) { api("/projects/#{project.id}/packages/npm/-/npm/v1/security/audits/quick") }
+    end
+  end
+
   describe 'GET /api/v4/projects/:id/packages/npm/*package_name/-/*file_name' do
-    let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
     let(:package_file) { package.package_files.first }
 
     let(:headers) { {} }
@@ -203,7 +214,7 @@ RSpec.describe API::NpmProjectPackages do
         let_it_be(:version) { '1.2.3' }
 
         let(:params) { upload_params(package_name: package_name, package_version: version) }
-        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
+        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_npm_user' } }
 
         shared_examples 'handling upload with different authentications' do
           context 'with access token' do

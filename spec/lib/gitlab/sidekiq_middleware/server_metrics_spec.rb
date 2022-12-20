@@ -231,8 +231,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
         include Sidekiq::Worker
         include WorkerAttributes
 
-        def perform(*args)
-        end
+        def perform(*args); end
       end
 
       allow(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer).and_return(load_balancer)
@@ -306,8 +305,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           feature_category :not_owned
         end
 
-        def perform
-        end
+        def perform; end
       end
     end
 

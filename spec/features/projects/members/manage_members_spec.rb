@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Manage members', :js, product_group: :onboarding do
+RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :onboarding do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
   include Spec::Support::Helpers::ModalHelpers
@@ -104,7 +104,6 @@ RSpec.describe 'Projects > Members > Manage members', :js, product_group: :onboa
 
       click_on 'Invite members'
 
-      click_on 'Guest'
       wait_for_requests
     end
 
@@ -112,13 +111,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, product_group: :onboa
       let(:current_user) { project_owner }
 
       it 'shows Owner in the dropdown' do
-        page.within '.dropdown-menu' do
-          expect(page).to have_button('Guest')
-          expect(page).to have_button('Reporter')
-          expect(page).to have_button('Developer')
-          expect(page).to have_button('Maintainer')
-          expect(page).to have_button('Owner')
-        end
+        expect(page).to have_select('Select a role', options: %w[Guest Reporter Developer Maintainer Owner])
       end
     end
 
@@ -126,13 +119,8 @@ RSpec.describe 'Projects > Members > Manage members', :js, product_group: :onboa
       let(:current_user) { project_maintainer }
 
       it 'does not show the Owner option' do
-        page.within '.dropdown-menu' do
-          expect(page).to have_button('Guest')
-          expect(page).to have_button('Reporter')
-          expect(page).to have_button('Developer')
-          expect(page).to have_button('Maintainer')
-          expect(page).not_to have_button('Owner')
-        end
+        expect(page).to have_select('Select a role', options: %w[Guest Reporter Developer Maintainer])
+        expect(page).not_to have_select('Select a role', options: %w[Owner])
       end
     end
   end

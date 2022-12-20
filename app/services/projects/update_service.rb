@@ -10,7 +10,6 @@ module Projects
     def execute
       build_topics
       remove_unallowed_params
-      mirror_operations_access_level_changes
       validate!
 
       ensure_wiki_exists if enabling_wiki?
@@ -65,14 +64,34 @@ module Projects
       return unless changing_default_branch?
 
       previous_default_branch = project.default_branch
+      new_default_branch = params[:default_branch]
 
-      if project.change_head(params[:default_branch])
+      if project.change_head(new_default_branch)
         params[:previous_default_branch] = previous_default_branch
+
+        if !project.root_ref?(new_default_branch) && has_custom_head_branch?
+          raise ValidationError,
+            format(
+              s_("UpdateProject|Could not set the default branch. Do you have a branch named 'HEAD' in your repository? (%{linkStart}How do I fix this?%{linkEnd})"),
+              linkStart: ambiguous_head_documentation_link, linkEnd: '</a>'
+            ).html_safe
+        end
 
         after_default_branch_change(previous_default_branch)
       else
         raise ValidationError, s_("UpdateProject|Could not set the default branch")
       end
+    end
+
+    def ambiguous_head_documentation_link
+      url = Rails.application.routes.url_helpers.help_page_path('user/project/repository/branches/index.md', anchor: 'error-ambiguous-head-branch-exists')
+
+      format('<a href="%{url}" target="_blank" rel="noopener noreferrer">', url: url)
+    end
+
+    # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/381731
+    def has_custom_head_branch?
+      project.repository.branch_names.any? { |name| name.casecmp('head') == 0 }
     end
 
     def after_default_branch_change(previous_default_branch)
@@ -81,21 +100,6 @@ module Projects
 
     def remove_unallowed_params
       params.delete(:emails_disabled) unless can?(current_user, :set_emails_disabled, project)
-    end
-
-    # Temporary code to sync permissions changes as operations access setting
-    # is being split into monitor_access_level, deployments_access_level, infrastructure_access_level.
-    # To be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/364240
-    def mirror_operations_access_level_changes
-      return if Feature.enabled?(:split_operations_visibility_permissions, project)
-
-      operations_access_level = params.dig(:project_feature_attributes, :operations_access_level)
-
-      return if operations_access_level.nil?
-
-      [:monitor_access_level, :infrastructure_access_level, :feature_flags_access_level, :environments_access_level].each do |key|
-        params[:project_feature_attributes][key] = operations_access_level
-      end
     end
 
     def after_update

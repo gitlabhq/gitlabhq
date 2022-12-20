@@ -7,9 +7,7 @@ module Projects
   class BatchOpenIssuesCountService < Projects::BatchCountService
     # rubocop: disable CodeReuse/ActiveRecord
     def global_count
-      @global_count ||= begin
-        count_service.query(project_ids).group(:project_id).count
-      end
+      @global_count ||= count_service.query(project_ids).group(:project_id).count
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

@@ -13,11 +13,10 @@ class Projects::TreeController < Projects::ApplicationController
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :assign_ref_vars
   before_action :assign_dir_vars, only: [:create_dir]
-  before_action :authorize_download_code!
+  before_action :authorize_read_code!
   before_action :authorize_edit_tree!, only: [:create_dir]
 
   before_action do
-    push_frontend_feature_flag(:lazy_load_commits, @project)
     push_frontend_feature_flag(:highlight_js, @project)
     push_frontend_feature_flag(:file_line_blame, @project)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Repository do
+RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_management do
   include Gitlab::EncodingHelper
   include RepoHelpers
   using RSpec::Parameterized::TableSyntax
@@ -70,12 +70,7 @@ RSpec.describe Gitlab::Git::Repository do
     it { is_expected.to include("master") }
     it { is_expected.not_to include("branch-from-space") }
 
-    it 'gets the branch names from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:branch_names)
-      subject
-    end
-
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :branch_names
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :list_refs
   end
 
   describe '#tag_names' do
@@ -100,7 +95,7 @@ RSpec.describe Gitlab::Git::Repository do
     it { is_expected.to include("v1.0.0") }
     it { is_expected.not_to include("v5.0.0") }
 
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tag_names
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :list_refs
   end
 
   describe '#tags' do
@@ -1353,7 +1348,7 @@ RSpec.describe Gitlab::Git::Repository do
         it "returns the number of commits in the whole repository" do
           options = { all: true }
 
-          expect(repository.count_commits(options)).to eq(314)
+          expect(repository.count_commits(options)).to eq(315)
         end
       end
 
@@ -1377,6 +1372,24 @@ RSpec.describe Gitlab::Git::Repository do
       branch = repository.find_branch('this-is-garbage')
 
       expect(branch).to eq(nil)
+    end
+
+    context 'when branch is ambiguous' do
+      let(:ambiguous_branch) { 'prefix' }
+      let(:branch_with_prefix) { 'prefix/branch' }
+
+      before do
+        repository.create_branch(branch_with_prefix)
+      end
+
+      after do
+        repository.delete_branch(branch_with_prefix)
+      end
+
+      it 'returns nil for ambiguous branch' do
+        expect(repository.find_branch(branch_with_prefix)).to be_a_kind_of(Gitlab::Git::Branch)
+        expect(repository.find_branch(ambiguous_branch)).to eq(nil)
+      end
     end
   end
 
@@ -1415,16 +1428,6 @@ RSpec.describe Gitlab::Git::Repository do
 
       it 'returns the count of local branches' do
         expect(repository.branch_count).to eq(repository.local_branches.count)
-      end
-
-      context 'with Gitaly disabled' do
-        before do
-          allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
-        end
-
-        it 'returns the count of local branches' do
-          expect(repository.branch_count).to eq(repository.local_branches.count)
-        end
       end
     end
   end
@@ -2212,15 +2215,49 @@ RSpec.describe Gitlab::Git::Repository do
   end
 
   describe '#compare_source_branch' do
-    it 'delegates to Gitlab::Git::CrossRepoComparer' do
-      expect_next_instance_of(::Gitlab::Git::CrossRepoComparer) do |instance|
-        expect(instance.source_repo).to eq(:source_repository)
-        expect(instance.target_repo).to eq(repository)
+    it 'compares two branches cross repo' do
+      mutable_repository.commit_files(
+        user,
+        branch_name: mutable_repository.root_ref, message: 'Committing something',
+        actions: [{ action: :create, file_path: 'encoding/CHANGELOG', content: 'New file' }]
+      )
 
-        expect(instance).to receive(:compare).with('feature', 'master', straight: :straight)
+      repository.commit_files(
+        user,
+        branch_name: repository.root_ref, message: 'Commit to root ref',
+        actions: [{ action: :create, file_path: 'encoding/CHANGELOG', content: 'One more' }]
+      )
+
+      [
+        [repository, mutable_repository, true],
+        [repository, mutable_repository, false],
+        [mutable_repository, repository, true],
+        [mutable_repository, repository, false]
+      ].each do |source_repo, target_repo, straight|
+        raw_compare = target_repo.compare_source_branch(
+          target_repo.root_ref, source_repo, source_repo.root_ref, straight: straight)
+
+        expect(raw_compare).to be_a(::Gitlab::Git::Compare)
+
+        expect(raw_compare.commits).to eq([source_repo.commit])
+        expect(raw_compare.head).to eq(source_repo.commit)
+        expect(raw_compare.base).to eq(target_repo.commit)
+        expect(raw_compare.straight).to eq(straight)
       end
+    end
 
-      repository.compare_source_branch('master', :source_repository, 'feature', straight: :straight)
+    context 'source ref does not exist in source repo' do
+      it 'returns an empty comparison' do
+        expect_next_instance_of(::Gitlab::Git::CrossRepo) do |instance|
+          expect(instance).not_to receive(:fetch_source_branch!)
+        end
+
+        raw_compare = repository.compare_source_branch(
+          repository.root_ref, mutable_repository, 'does-not-exist', straight: true)
+
+        expect(raw_compare).to be_a(::Gitlab::Git::Compare)
+        expect(raw_compare.commits.size).to eq(0)
+      end
     end
   end
 
@@ -2515,6 +2552,32 @@ RSpec.describe Gitlab::Git::Repository do
           expect(new_repository.list_refs([tmp_ref]).map(&:name)).to match_array([tmp_ref])
         end
       end
+    end
+  end
+
+  describe '#check_objects_exist' do
+    it 'returns hash specifying which object exists in repo' do
+      refs_exist = %w(
+        b83d6e391c22777fca1ed3012fce84f633d7fed0
+        498214de67004b1da3d820901307bed2a68a8ef6
+        1b12f15a11fc6e62177bef08f47bc7b5ce50b141
+      )
+      refs_dont_exist = %w(
+        1111111111111111111111111111111111111111
+        2222222222222222222222222222222222222222
+      )
+      object_existence_map = repository.check_objects_exist(refs_exist + refs_dont_exist)
+      expect(object_existence_map).to eq({
+        'b83d6e391c22777fca1ed3012fce84f633d7fed0' => true,
+        '498214de67004b1da3d820901307bed2a68a8ef6' => true,
+        '1b12f15a11fc6e62177bef08f47bc7b5ce50b141' => true,
+        '1111111111111111111111111111111111111111' => false,
+        '2222222222222222222222222222222222222222' => false
+      })
+      expect(object_existence_map.keys).to eq(refs_exist + refs_dont_exist)
+
+      single_sha = 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+      expect(repository.check_objects_exist(single_sha)).to eq({ single_sha => true })
     end
   end
 end

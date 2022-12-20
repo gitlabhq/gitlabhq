@@ -4,7 +4,6 @@ module Projects
   module ImportExport
     class RelationExportUpload < ApplicationRecord
       include WithUploads
-      include ObjectStorage::BackgroundMove
 
       self.table_name = 'project_relation_export_uploads'
 

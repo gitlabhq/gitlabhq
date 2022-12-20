@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleBackfillNamespaceDetails, schema: 20220921093355 do
+RSpec.describe ScheduleBackfillNamespaceDetails, schema: 20220921093355, feature_category: :subgroups do
   context 'when on gitlab.com' do
     let(:background_migration) { described_class::MIGRATION }
     let(:migration) { described_class.new }

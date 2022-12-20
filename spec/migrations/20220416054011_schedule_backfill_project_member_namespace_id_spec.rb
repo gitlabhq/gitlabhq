@@ -3,8 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleBackfillProjectMemberNamespaceId do
-  let_it_be(:migration) { described_class::MIGRATION }
+RSpec.describe ScheduleBackfillProjectMemberNamespaceId, feature_category: :subgroups do
+  let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do
     it 'schedules background jobs for each batch of project members' do

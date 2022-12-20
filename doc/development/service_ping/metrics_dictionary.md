@@ -41,7 +41,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `value_type`        | yes      | `string`; one of [`string`, `number`, `boolean`, `object`](https://json-schema.org/understanding-json-schema/reference/type.html).                                                     |
 | `status`            | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `active`, `removed`, `broken`. |
 | `time_frame`        | yes      | `string`; may be set to a value like `7d`, `28d`, `all`, `none`. |
-| `data_source`       | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `system`. |
+| `data_source`       | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `system`, `license`. |
 | `data_category`     | yes      | `string`; [categories](#data-category) of the metric, may be set to `operational`, `optional`, `subscription`, `standard`. The default value is `optional`.|
 | `instrumentation_class` | yes   | `string`; [the class that implements the metric](metrics_instrumentation.md).  |
 | `distribution`      | yes      | `array`; may be set to one of `ce, ee` or `ee`. The [distribution](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the tracked feature is available.  |
@@ -55,7 +55,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `options`           | no       | `object`: options information needed to calculate the metric value. |
 | `skip_validation`   | no       | This should **not** be set. [Used for imported metrics until we review, update and make them valid](https://gitlab.com/groups/gitlab-org/-/epics/5425). |
 
-### Metric key_path
+### Metric `key_path`
 
 The `key_path` of the metric is the location in the JSON Service Ping payload.
 
@@ -108,7 +108,7 @@ Metric definitions can have one of the following statuses:
 - `broken`: Metric reports broken data (for example, -1 fallback), or does not report data at all. A metric marked as `broken` must also have the `repair_issue_url` attribute.
 - `removed`: Metric was removed, but it may appear in Service Ping payloads sent from instances running on older versions of GitLab.
 
-### Metric value_type
+### Metric `value_type`
 
 Metric definitions can have one of the following values for `value_type`:
 
@@ -120,12 +120,23 @@ In general, we avoid complex objects and prefer one of the `boolean`, `number`, 
 An example of a metric that uses `value_type: object` is `topology` (`/config/metrics/settings/20210323120839_topology.yml`),
 which has a related schema in `/config/metrics/objects_schemas/topology_schema.json`.
 
-### Metric time_frame
+### Metric `time_frame`
 
-- `7d`: The metric data applies to the most recent 7-day interval. For example, the following metric counts the number of users that create epics over a 7-day interval: `ee/config/metrics/counts_7d/20210305145820_g_product_planning_epic_created_weekly.yml`.
-- `28d`: The metric data applies to the most recent 28-day interval. For example, the following metric counts the number of unique users that create issues over a 28-day interval: `config/metrics/counts_28d/20210216181139_issues.yml`.
-- `all`: The metric data applies for the whole time the metric has been active (all-time interval). For example, the following metric counts all users that create issues: `/config/metrics/counts_all/20210216181115_issues.yml`.
-- `none`: The metric collects a type of data that's not tracked over time, such as settings and configuration information. Therefore, a time interval is not applicable. For example, `uuid` has no time interval applicable: `config/metrics/license/20210201124933_uuid.yml`.
+A metric's time frame is calculated based on the `time_frame` field and the `data_source` of the metric.
+For `redis_hll` metrics, the type of aggregation is also taken into consideration. In this context, the term "aggregation" refers to [chosen events data storage interval](implement.md#add-new-events), and is **NOT** related to the Aggregated Metrics feature.
+For more information about the aggregation type of each feature, see the [`common.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml). Weeks run from Monday to Sunday.
+
+| data_source            | time_frame | aggregation    | Description                                     | 
+|------------------------|------------|----------------|-------------------------------------------------|
+| any                    | `none`     | not applicable | A type of data that’s not tracked over time, such as settings and configuration information |
+| `database`             | `all`      | not applicable | The whole time the metric has been active (all-time interval) |
+| `database`             | `7d`       | not applicable | 9 days ago to 2 days ago |
+| `database`             | `28d`      | not applicable | 30 days ago to 2 days ago |
+| `redis`                | `all`      | not applicable | The whole time the metric has been active (all-time interval) |
+| `redis_hll`            | `7d`       | `daily`        | Most recent 7 complete days |
+| `redis_hll`            | `7d`       | `weekly`       | Most recent complete week |
+| `redis_hll`            | `28d`      | `daily`        | Most recent 28 complete days |
+| `redis_hll`            | `28d`      | `weekly`       | Most recent 4 complete weeks |
 
 ### Data category
 

@@ -49,6 +49,14 @@ class Import::BitbucketController < Import::BaseController
     namespace_path = params[:new_namespace].presence || repo_owner
     target_namespace = find_or_create_namespace(namespace_path, current_user)
 
+    Gitlab::Tracking.event(
+      self.class.name,
+      'create',
+      label: 'import_access_level',
+      user: current_user,
+      extra: { user_role: user_role(current_user, target_namespace), import_type: 'bitbucket' }
+    )
+
     if current_user.can?(:create_projects, target_namespace)
       # The token in a session can be expired, we need to get most recent one because
       # Bitbucket::Connection class refreshes it.
@@ -88,6 +96,21 @@ class Import::BitbucketController < Import::BaseController
   end
 
   private
+
+  def user_role(user, namespace)
+    if current_user.id == namespace&.owner_id
+      Gitlab::Access.options_with_owner.key(Gitlab::Access::OWNER)
+    else
+      access_level = current_user&.group_members&.find_by(source_id: namespace&.id)&.access_level
+
+      case access_level
+      when nil
+        'Not a member'
+      else
+        Gitlab::Access.human_access(access_level)
+      end
+    end
+  end
 
   def oauth_client
     @oauth_client ||= OAuth2::Client.new(provider.app_id, provider.app_secret, options)

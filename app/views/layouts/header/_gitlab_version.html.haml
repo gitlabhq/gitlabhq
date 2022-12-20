@@ -17,4 +17,4 @@
     %span.gl-font-sm.gl-text-gray-500
       #{Gitlab.version_info.major}.#{Gitlab.version_info.minor}
     %span.gl-ml-2
-      .js-gitlab-version-check-badge{ data: { "size": "sm" } }
+      .js-gitlab-version-check-badge{ data: { "size": "sm", "version": gitlab_version_check.to_json } }

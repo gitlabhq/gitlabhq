@@ -16,7 +16,7 @@ module Ci
     belongs_to :owner, class_name: 'User'
     has_one :last_pipeline, -> { order(id: :desc) }, class_name: 'Ci::Pipeline'
     has_many :pipelines
-    has_many :variables, class_name: 'Ci::PipelineScheduleVariable', validate: false
+    has_many :variables, class_name: 'Ci::PipelineScheduleVariable'
 
     validates :cron, unless: :importing?, cron: true, presence: { unless: :importing? }
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
@@ -77,8 +77,6 @@ module Ci
 
       ref.start_with? 'refs/tags/'
     end
-
-    private
 
     def worker_cron_expression
       Settings.cron_jobs['pipeline_schedule_worker']['cron']

@@ -133,6 +133,11 @@ module QA
         enabled?(ENV['SIGNUP_DISABLED'], default: false)
       end
 
+      # PATs are disabled for FedRamp
+      def personal_access_tokens_disabled?
+        enabled?(ENV['PERSONAL_ACCESS_TOKENS_DISABLED'], default: false)
+      end
+
       def admin_password
         ENV['GITLAB_ADMIN_PASSWORD']
       end
@@ -431,7 +436,7 @@ module QA
       end
 
       def gitlab_agentk_version
-        ENV.fetch('GITLAB_AGENTK_VERSION', 'v14.5.0')
+        ENV.fetch('GITLAB_AGENTK_VERSION', 'fe716ea')
       end
 
       def transient_trials
@@ -491,6 +496,10 @@ module QA
 
       def use_public_ip_api?
         enabled?(ENV['QA_USE_PUBLIC_IP_API'], default: false)
+      end
+
+      def allow_local_requests?
+        enabled?(ENV['QA_ALLOW_LOCAL_REQUESTS'], default: false)
       end
 
       def chrome_default_download_path

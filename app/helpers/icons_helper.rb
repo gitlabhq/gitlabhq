@@ -38,7 +38,7 @@ module IconsHelper
 
       css_classes = []
       css_classes << "s#{size}" if size
-      css_classes << "#{css_class}" unless css_class.blank?
+      css_classes << css_class.to_s unless css_class.blank?
 
       content_tag(
         :svg,

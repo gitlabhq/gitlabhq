@@ -229,83 +229,37 @@ RSpec.describe PerformanceMonitoring::PrometheusDashboard do
       allow(Gitlab::Metrics::Dashboard::Finder).to receive(:find_raw).with(project, dashboard_path: path).and_call_original
     end
 
-    context 'metrics_dashboard_exhaustive_validations is on' do
-      before do
-        stub_feature_flags(metrics_dashboard_exhaustive_validations: true)
-      end
+    context 'when schema is valid' do
+      let(:dashboard_schema) { YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml')) }
 
-      context 'when schema is valid' do
-        let(:dashboard_schema) { YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml')) }
+      it 'returns empty array' do
+        expect(described_class).to receive(:from_json).with(dashboard_schema)
 
-        it 'returns empty array' do
-          expect(Gitlab::Metrics::Dashboard::Validator).to receive(:errors).with(dashboard_schema, dashboard_path: path, project: project).and_return([])
-
-          expect(schema_validation_warnings).to eq []
-        end
-      end
-
-      context 'when schema is invalid' do
-        let(:dashboard_schema) { YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/dashboard_missing_panel_groups.yml')) }
-
-        it 'returns array with errors messages' do
-          error = ::Gitlab::Metrics::Dashboard::Validator::Errors::SchemaValidationError.new
-
-          expect(Gitlab::Metrics::Dashboard::Validator).to receive(:errors).with(dashboard_schema, dashboard_path: path, project: project).and_return([error])
-
-          expect(schema_validation_warnings).to eq [error.message]
-        end
-      end
-
-      context 'when YAML has wrong syntax' do
-        let(:project) { create(:project, :repository, :custom_repo, files: { path => fixture_file('lib/gitlab/metrics/dashboard/broken_yml_syntax.yml') }) }
-
-        subject(:schema_validation_warnings) { described_class.new(path: path, environment: environment).schema_validation_warnings }
-
-        it 'returns array with errors messages' do
-          expect(Gitlab::Metrics::Dashboard::Validator).not_to receive(:errors)
-
-          expect(schema_validation_warnings).to eq ['Invalid yaml']
-        end
+        expect(schema_validation_warnings).to eq []
       end
     end
 
-    context 'metrics_dashboard_exhaustive_validations is off' do
-      before do
-        stub_feature_flags(metrics_dashboard_exhaustive_validations: false)
+    context 'when schema is invalid' do
+      let(:dashboard_schema) { YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/dashboard_missing_panel_groups.yml')) }
+
+      it 'returns array with errors messages' do
+        instance = described_class.new
+        instance.errors.add(:test, 'test error')
+
+        expect(described_class).to receive(:from_json).and_raise(ActiveModel::ValidationError.new(instance))
+        expect(described_class.new.schema_validation_warnings).to eq ['test: test error']
       end
+    end
 
-      context 'when schema is valid' do
-        let(:dashboard_schema) { YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml')) }
+    context 'when YAML has wrong syntax' do
+      let(:project) { create(:project, :repository, :custom_repo, files: { path => fixture_file('lib/gitlab/metrics/dashboard/broken_yml_syntax.yml') }) }
 
-        it 'returns empty array' do
-          expect(described_class).to receive(:from_json).with(dashboard_schema)
+      subject(:schema_validation_warnings) { described_class.new(path: path, environment: environment).schema_validation_warnings }
 
-          expect(schema_validation_warnings).to eq []
-        end
-      end
+      it 'returns array with errors messages' do
+        expect(described_class).not_to receive(:from_json)
 
-      context 'when schema is invalid' do
-        let(:dashboard_schema) { YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/dashboard_missing_panel_groups.yml')) }
-
-        it 'returns array with errors messages' do
-          instance = described_class.new
-          instance.errors.add(:test, 'test error')
-
-          expect(described_class).to receive(:from_json).and_raise(ActiveModel::ValidationError.new(instance))
-          expect(described_class.new.schema_validation_warnings).to eq ['test: test error']
-        end
-      end
-
-      context 'when YAML has wrong syntax' do
-        let(:project) { create(:project, :repository, :custom_repo, files: { path => fixture_file('lib/gitlab/metrics/dashboard/broken_yml_syntax.yml') }) }
-
-        subject(:schema_validation_warnings) { described_class.new(path: path, environment: environment).schema_validation_warnings }
-
-        it 'returns array with errors messages' do
-          expect(described_class).not_to receive(:from_json)
-
-          expect(schema_validation_warnings).to eq ['Invalid yaml']
-        end
+        expect(schema_validation_warnings).to eq ['Invalid yaml']
       end
     end
   end

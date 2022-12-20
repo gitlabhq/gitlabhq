@@ -1,5 +1,4 @@
-import { createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import {
   fetchData,
@@ -12,26 +11,28 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarEscalationStatus from '~/sidebar/components/incidents/sidebar_escalation_status.vue';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import { escalationStatusQuery, escalationStatusMutation } from '~/sidebar/constants';
+import {
+  escalationStatusQuery,
+  escalationStatusMutation,
+  STATUS_ACKNOWLEDGED,
+} from '~/sidebar/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import EscalationStatus from 'ee_else_ce/sidebar/components/incidents/escalation_status.vue';
-import { STATUS_ACKNOWLEDGED } from '~/sidebar/components/incidents/constants';
 import { createAlert } from '~/flash';
 import { logError } from '~/lib/logger';
 
 jest.mock('~/lib/logger');
 jest.mock('~/flash');
 
-const localVue = createLocalVue();
+Vue.use(VueApollo);
 
 describe('SidebarEscalationStatus', () => {
   let wrapper;
+  let mockApollo;
   const queryResolverMock = jest.fn();
   const mutationResolverMock = jest.fn();
 
   function createMockApolloProvider({ hasFetchError = false, hasMutationError = false } = {}) {
-    localVue.use(VueApollo);
-
     queryResolverMock.mockResolvedValue({ data: hasFetchError ? fetchError : fetchData });
     mutationResolverMock.mockResolvedValue({
       data: hasMutationError ? mutationError : mutationData,
@@ -45,15 +46,7 @@ describe('SidebarEscalationStatus', () => {
     return createMockApollo(requestHandlers);
   }
 
-  function createComponent({ mockApollo } = {}) {
-    let config;
-
-    if (mockApollo) {
-      config = { apolloProvider: mockApollo };
-    } else {
-      config = { mocks: { $apollo: { queries: { status: { loading: false } } } } };
-    }
-
+  function createComponent(apolloProvider) {
     wrapper = mountExtended(SidebarEscalationStatus, {
       propsData: {
         iid: '1',
@@ -66,13 +59,15 @@ describe('SidebarEscalationStatus', () => {
       directives: {
         GlTooltip: createMockDirective(),
       },
-      localVue,
-      ...config,
+      apolloProvider,
     });
+
+    // wait for apollo requests
+    return waitForPromises();
   }
 
-  afterEach(() => {
-    wrapper.destroy();
+  beforeEach(() => {
+    mockApollo = createMockApolloProvider();
   });
 
   const findSidebarComponent = () => wrapper.findComponent(SidebarEditableItem);
@@ -80,36 +75,32 @@ describe('SidebarEscalationStatus', () => {
   const findEditButton = () => wrapper.findByTestId('edit-button');
   const findIcon = () => wrapper.findByTestId('status-icon');
 
-  const clickEditButton = async () => {
+  const clickEditButton = () => {
     findEditButton().vm.$emit('click');
-    await nextTick();
+    return nextTick();
   };
-  const selectAcknowledgedStatus = async () => {
+  const selectAcknowledgedStatus = () => {
     findStatusComponent().vm.$emit('input', STATUS_ACKNOWLEDGED);
     // wait for apollo requests
-    await waitForPromises();
+    return waitForPromises();
   };
 
   describe('sidebar', () => {
-    it('renders the sidebar component', () => {
-      createComponent();
+    it('renders the sidebar component', async () => {
+      await createComponent(mockApollo);
       expect(findSidebarComponent().exists()).toBe(true);
     });
 
     describe('status icon', () => {
-      it('is visible', () => {
-        createComponent();
+      it('is visible', async () => {
+        await createComponent(mockApollo);
 
         expect(findIcon().exists()).toBe(true);
         expect(findIcon().isVisible()).toBe(true);
       });
 
       it('has correct tooltip', async () => {
-        const mockApollo = createMockApolloProvider();
-        createComponent({ mockApollo });
-
-        // wait for apollo requests
-        await waitForPromises();
+        await createComponent(mockApollo);
 
         const tooltip = getBinding(findIcon().element, 'gl-tooltip');
 
@@ -120,11 +111,7 @@ describe('SidebarEscalationStatus', () => {
 
     describe('status dropdown', () => {
       beforeEach(async () => {
-        const mockApollo = createMockApolloProvider();
-        createComponent({ mockApollo });
-
-        // wait for apollo requests
-        await waitForPromises();
+        await createComponent(mockApollo);
       });
 
       it('is closed by default', () => {
@@ -148,11 +135,7 @@ describe('SidebarEscalationStatus', () => {
 
     describe('update Status event', () => {
       beforeEach(async () => {
-        const mockApollo = createMockApolloProvider();
-        createComponent({ mockApollo });
-
-        // wait for apollo requests
-        await waitForPromises();
+        await createComponent(mockApollo);
 
         await clickEditButton();
         await selectAcknowledgedStatus();
@@ -184,22 +167,16 @@ describe('SidebarEscalationStatus', () => {
 
     describe('mutation errors', () => {
       it('should error upon fetch', async () => {
-        const mockApollo = createMockApolloProvider({ hasFetchError: true });
-        createComponent({ mockApollo });
-
-        // wait for apollo requests
-        await waitForPromises();
+        mockApollo = createMockApolloProvider({ hasFetchError: true });
+        await createComponent(mockApollo);
 
         expect(createAlert).toHaveBeenCalled();
         expect(logError).toHaveBeenCalled();
       });
 
       it('should error upon mutation', async () => {
-        const mockApollo = createMockApolloProvider({ hasMutationError: true });
-        createComponent({ mockApollo });
-
-        // wait for apollo requests
-        await waitForPromises();
+        mockApollo = createMockApolloProvider({ hasMutationError: true });
+        await createComponent(mockApollo);
 
         await clickEditButton();
         await selectAcknowledgedStatus();

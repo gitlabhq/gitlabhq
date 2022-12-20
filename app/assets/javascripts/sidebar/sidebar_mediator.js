@@ -1,9 +1,9 @@
-import Store from '~/sidebar/stores/sidebar_store';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
-import { visitUrl } from '../lib/utils/url_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
 import Service from './services/sidebar_service';
+import Store from './stores/sidebar_store';
 
 export default class SidebarMediator {
   constructor(options) {
@@ -31,6 +31,9 @@ export default class SidebarMediator {
   assignYourself() {
     this.store.addAssignee(this.store.currentUser);
   }
+  addSelfReview() {
+    this.store.addReviewer(this.store.currentUser);
+  }
 
   async saveAssignees(field) {
     const selected = this.store.assignees.map((u) => u.id);
@@ -56,12 +59,14 @@ export default class SidebarMediator {
   }
 
   async saveReviewers(field) {
-    const selected = this.store.reviewers.map((u) => u.id);
+    const selectedReviewers = this.store.reviewers;
+    const selectedIds = selectedReviewers.map((u) => u.id);
+    const suggestedSelectedIds = selectedReviewers.filter((u) => u.suggested).map((u) => u.id);
 
     // If there are no ids, that means we have to unassign (which is id = 0)
     // And it only accepts an array, hence [0]
-    const reviewers = selected.length === 0 ? [0] : selected;
-    const data = { reviewer_ids: reviewers };
+    const reviewers = selectedIds.length === 0 ? [0] : selectedIds;
+    const data = { reviewer_ids: reviewers, suggested_reviewer_ids: suggestedSelectedIds };
 
     try {
       const res = await this.service.update(field, data);

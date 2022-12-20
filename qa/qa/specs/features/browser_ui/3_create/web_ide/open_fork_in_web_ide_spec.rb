@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :editor do
+  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :project }, product_group: :editor do
     describe 'Open a fork in Web IDE',
       skip: {
         issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/351696",
@@ -12,6 +12,14 @@ module QA
           project.name = 'parent-project'
           project.initialize_with_readme = true
         end
+      end
+
+      before do
+        Runtime::Feature.disable(:vscode_web_ide, project: parent_project)
+      end
+
+      after do
+        Runtime::Feature.enable(:vscode_web_ide, project: parent_project)
       end
 
       context 'when a user does not have permissions to commit to the project' do
@@ -57,6 +65,7 @@ module QA
 
         def submit_merge_request_upstream
           Page::Project::WebIDE::Edit.perform do |ide|
+            ide.wait_until_ide_loads
             expect(ide).to have_project_path("#{user.username}/#{parent_project.name}")
 
             ide.add_file('new file', 'some random text')

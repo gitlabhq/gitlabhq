@@ -12,7 +12,6 @@ module StubObjectStorage
         uploader:,
         enabled: true,
         proxy_download: false,
-        background_upload: false,
         direct_upload: false,
         cdn: {}
   )
@@ -20,7 +19,6 @@ module StubObjectStorage
     new_config = config.to_h.deep_symbolize_keys.merge({
       enabled: enabled,
       proxy_download: proxy_download,
-      background_upload: background_upload,
       direct_upload: direct_upload,
       cdn: cdn
     })
@@ -30,7 +28,6 @@ module StubObjectStorage
     allow(config).to receive(:to_h).and_return(new_config)
     allow(config).to receive(:enabled) { enabled }
     allow(config).to receive(:proxy_download) { proxy_download }
-    allow(config).to receive(:background_upload) { background_upload }
     allow(config).to receive(:direct_upload) { direct_upload }
 
     uploader_config = Settingslogic.new(new_config.deep_stringify_keys)

@@ -1,55 +1,118 @@
 {
   "type": "object",
-  "required" : [
+  "required": [
     "status",
     "applications"
   ],
-  "properties" : {
-    "status": { "type": "string" },
-    "status_reason": { "type": ["string", "null"] },
+  "properties": {
+    "status": {
+      "type": "string"
+    },
+    "status_reason": {
+      "$ref": "types/nullable_string.json"
+    },
     "applications": {
       "type": "array",
-      "items": { "$ref": "#/definitions/application_status" }
+      "items": {
+        "$ref": "#/definitions/application_status"
+      }
     }
   },
   "additionalProperties": false,
   "definitions": {
     "application_status": {
       "type": "object",
+      "required": [
+        "name",
+        "status"
+      ],
       "additionalProperties": false,
-      "properties" : {
-        "name": { "type": "string" },
-        "status": {
-          "type": {
-            "enum": [
-              "installable",
-              "scheduled",
-              "installing",
-              "installed",
-              "errored"
-            ]
-          }
+      "properties": {
+        "name": {
+          "type": "string"
         },
-        "version": { "type": "string" },
-        "status_reason": { "type": ["string", "null"] },
-        "external_ip": { "type": ["string", "null"] },
-        "external_hostname": { "type": ["string", "null"] },
-        "hostname": { "type": ["string", "null"] },
-        "email": { "type": ["string", "null"] },
-        "stack": { "type": ["string", "null"] },
-        "host": {"type": ["string", "null"]},
-        "port": {"type": ["integer", "514"]},
-        "protocol": {"type": ["integer", "0"]},
-        "update_available": { "type": ["boolean", "null"] },
-        "can_uninstall": { "type": "boolean" },
+        "status": {
+          "type": "string",
+          "enum": [
+            "installable",
+            "scheduled",
+            "installing",
+            "installed",
+            "errored",
+            "not_installable"
+          ]
+        },
+        "version": {
+          "type": "string"
+        },
+        "status_reason": {
+          "$ref": "types/nullable_string.json"
+        },
+        "external_ip": {
+          "$ref": "types/nullable_string.json"
+        },
+        "external_hostname": {
+          "$ref": "types/nullable_string.json"
+        },
+        "hostname": {
+          "$ref": "types/nullable_string.json"
+        },
+        "email": {
+          "$ref": "types/nullable_string.json"
+        },
+        "stack": {
+          "$ref": "types/nullable_string.json"
+        },
+        "host": {
+          "$ref": "types/nullable_string.json"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "protocol": {
+          "type": "integer"
+        },
+        "update_available": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "can_uninstall": {
+          "type": "boolean"
+        },
         "available_domains": {
           "type": "array",
-          "items": { "$ref": "#/definitions/domain" }
+          "items": {
+            "$ref": "#/definitions/domain"
+          }
         },
-        "pages_domain": { "type": [ { "$ref": "#/definitions/domain" }, "null"] }
-      },
-      "required" : [ "name", "status" ]
+        "pages_domain": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/definitions/domain"
+            }
+          ]
+        }
+      }
     },
-    "domain": { "id": "integer", "domain": "string" }
+    "domain": {
+      "type": "object",
+      "required": [
+        "id",
+        "domain"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "domain": {
+          "type": "string"
+        }
+      }
+    }
   }
 }

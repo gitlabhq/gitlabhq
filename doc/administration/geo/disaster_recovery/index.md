@@ -174,7 +174,7 @@ Use `gitlab-ctl geo promote` instead.
 
 #### Promoting a **secondary** site with multiple nodes running GitLab 14.5 and later
 
-1. SSH to every Sidekiq, PostgresSQL, and Gitaly node in the **secondary** site and run one of the following commands:
+1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the **secondary** site and run one of the following commands:
 
    - To promote the node on the secondary site to primary:
 
@@ -252,7 +252,7 @@ do this manually.
 
 #### Promoting a **secondary** site with a Patroni standby cluster running GitLab 14.5 and later
 
-1. SSH to every Sidekiq, PostgresSQL, and Gitaly node in the **secondary** site and run one of the following commands:
+1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the **secondary** site and run one of the following commands:
 
    - To promote the secondary site to primary:
 
@@ -364,7 +364,7 @@ with the **secondary** site:
      sudo -u $PG_SUPERUSER $PG_CTL_BINARY -D $PG_DATA_DIRECTORY promote
      ```
 
-1. SSH to every Sidekiq, PostgresSQL, and Gitaly node in the **secondary** site and run one of the following commands:
+1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the **secondary** site and run one of the following commands:
 
    - To promote the secondary site to primary:
 

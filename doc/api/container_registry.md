@@ -419,18 +419,51 @@ To query those, follow the Registry's built-in mechanism to obtain and use an
 NOTE:
 These are different from project or personal access tokens in the GitLab application.
 
+### Obtain token from GitLab
+
+```plaintext
+GET ${CI_SERVER_URL}/jwt/auth?service=container_registry&scope=*
+```
+
+You must specify the correct [scopes and actions](https://docs.docker.com/registry/spec/auth/scope/) to retrieve a valid token:
+
+```shell
+$ SCOPE="repository:${CI_REGISTRY_IMAGE}:delete" #or push,pull
+
+$ curl  --request GET --user "${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" \
+        "https://gitlab.example.com/jwt/auth?service=container_registry&scope=${SCOPE}"
+{"token":" ... "}
+```
+
+### Delete image tags by reference
+
+```plaintext
+DELETE http(s)://${CI_REGISTRY}/v2/${CI_REGISTRY_IMAGE}/tags/reference/${CI_COMMIT_SHORT_SHA}
+```
+
+You can use the token retrieved with the predefined `CI_REGISTRY_USER` and `CI_REGISTRY_PASSWORD` variables to delete container image tags by reference on your GitLab instance.
+The `tag_delete` [Container-Registry-Feature](https://gitlab.com/gitlab-org/container-registry/-/tree/v3.61.0-gitlab/docs-gitlab#api) must be enabled.
+
+```shell
+$ curl  --request DELETE --header "Authorization: Bearer <token_from_above>" \
+        --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+        "https://gitlab.example.com:5050/v2/${CI_REGISTRY_IMAGE}/tags/reference/${CI_COMMIT_SHORT_SHA}"
+```
+
 ### Listing all container repositories
 
 ```plaintext
-GET /v2/_catalog
+GET http(s)://${CI_REGISTRY}/v2/_catalog
 ```
 
 To list all container repositories on your GitLab instance, administrator credentials are required:
 
 ```shell
-$ curl --request GET --user "<admin-username>:<admin-password>" "https://gitlab.example.com/jwt/auth?service=container_registry&scope=registry:catalog:*"
+$ SCOPE="registry:catalog:*"
+
+$ curl  --request GET --user "<admin-username>:<admin-password>" \
+        "https://gitlab.example.com/jwt/auth?service=container_registry&scope=${SCOPE}"
 {"token":" ... "}
 
 $ curl --header "Authorization: Bearer <token_from_above>" https://gitlab.example.com:5050/v2/_catalog
-{"repositories":["user/project1", "group/subgroup/project2", ... ]}
 ```

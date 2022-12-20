@@ -22,5 +22,4 @@ Rake/Require:
     - 'lib/tasks/gitlab/x509/update.rake'
     - 'lib/tasks/import.rake'
     - 'lib/tasks/tokens.rake'
-    - 'qa/tasks/ci.rake'
     - 'qa/tasks/webdrivers.rake'

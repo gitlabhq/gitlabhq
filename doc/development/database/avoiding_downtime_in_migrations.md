@@ -82,7 +82,7 @@ to write a migration that removes a column:
 In this case, a **transactional migration** can be used. Something as simple as:
 
 ```ruby
-class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.0]
+class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.1]
   def up
     remove_column :users, :updated_at
   end
@@ -103,7 +103,7 @@ If the `down` method requires adding back any dropped indexes or constraints, th
 be done within a transactional migration, then the migration would look like this:
 
 ```ruby
-class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.0]
+class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up
@@ -158,7 +158,7 @@ renaming. For example
 
 ```ruby
 # A regular migration in db/migrate
-class RenameUsersUpdatedAtToUpdatedAtTimestamp < Gitlab::Database::Migration[2.0]
+class RenameUsersUpdatedAtToUpdatedAtTimestamp < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up
@@ -186,7 +186,7 @@ We can perform this cleanup using
 
 ```ruby
 # A post-deployment migration in db/post_migrate
-class CleanupUsersUpdatedAtRename < Gitlab::Database::Migration[2.0]
+class CleanupUsersUpdatedAtRename < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up
@@ -233,7 +233,7 @@ as follows:
 
 ```ruby
 # A regular migration in db/migrate
-class ChangeUsersUsernameStringToText < Gitlab::Database::Migration[2.0]
+class ChangeUsersUsernameStringToText < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up
@@ -252,7 +252,7 @@ Next we need to clean up our changes using a post-deployment migration:
 
 ```ruby
 # A post-deployment migration in db/post_migrate
-class ChangeUsersUsernameStringToTextCleanup < Gitlab::Database::Migration[2.0]
+class ChangeUsersUsernameStringToTextCleanup < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up
@@ -318,6 +318,11 @@ This operation is safe as there's no code using the table just yet.
 
 Dropping tables can be done safely using a post-deployment migration, but only
 if the application no longer uses the table.
+
+Add the table to `DELETED_TABLES` in
+[gitlab_schema.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/gitlab_schema.rb),
+along with its `gitlab_schema`. Even though the table is deleted, it is still
+referenced in database migrations.
 
 ## Renaming Tables
 
@@ -418,7 +423,7 @@ Check how the migration is performing while it's running. Multiple ways to do th
 
 #### High-level status of batched background migrations
 
-See how to [check the status of batched background migrations](../../update/index.md#checking-for-background-migrations-before-upgrading).
+See how to [check the status of batched background migrations](../../update/background_migrations.md).
 
 #### Query the database
 
@@ -478,7 +483,7 @@ for batched background migration:
 
 To monitor the health of the database, use these additional metrics:
 
-- [PostgreSQL Tuple Statistics](https://dashboards.gitlab.net/d/000000167/postgresql-tuple-statistics?orgId=1&refresh=1m): if you see high rate of updates for the tables being actively converted, or increasing percentage of dead tuples for this table, it might mean that autovacuum cannot keep up.
+- [PostgreSQL Tuple Statistics](https://dashboards.gitlab.net/d/000000167/postgresql-tuple-statistics?orgId=1&refresh=1m): if you see high rate of updates for the tables being actively converted, or increasing percentage of dead tuples for this table, it might mean that `autovacuum` cannot keep up.
 - [PostgreSQL Overview](https://dashboards.gitlab.net/d/000000144/postgresql-overview?orgId=1): if you see high system usage or transactions per second (TPS) on the primary database server, it might mean that the migration is causing problems.
 
 ### Prometheus metrics
@@ -499,8 +504,8 @@ If the migration has not completed, the subsequent steps fail anyway. By checkin
 aim to have more helpful error message.
 1. Create indexes using the `bigint` columns that match the existing indexes using the `integer`
 column ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L28-34)).
-1. Create foreign keys (FK) using the `bigint` columns that match the existing FKs using the
-`integer` column. Do this both for FK referencing other tables, and FKs that reference the table
+1. Create foreign keys (FK) using the `bigint` columns that match the existing FK using the
+`integer` column. Do this both for FK referencing other tables, and FK that reference the table
 that is being migrated ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L36-43)).
 1. Inside a transaction, swap the columns:
     1. Lock the tables involved. To reduce the chance of hitting a deadlock, we recommended to do this in parent to child order ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L47)).
@@ -509,7 +514,7 @@ that is being migrated ([see an example](https://gitlab.com/gitlab-org/gitlab/-/
     1. Swap the defaults ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L59-62)).
     1. Swap the PK constraint (if any) ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L64-68)).
     1. Remove old indexes and rename new ones ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L70-72)).
-    1. Remove old FKs (if still present) and rename new ones ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L74)).
+    1. Remove old foreign keys (if still present) and rename new ones ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L74)).
 
 See example [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66088), and [migration](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb).
 

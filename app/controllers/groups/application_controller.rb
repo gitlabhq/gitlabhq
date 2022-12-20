@@ -96,6 +96,28 @@ class Groups::ApplicationController < ApplicationController
   def validate_root_group!
     render_404 unless group.root?
   end
+
+  def authorize_action!(action)
+    access_denied! unless can?(current_user, action, group)
+  end
+
+  def respond_to_missing?(method, *args)
+    case method.to_s
+    when /\Aauthorize_(.*)!\z/
+      true
+    else
+      super
+    end
+  end
+
+  def method_missing(method_sym, *arguments, &block)
+    case method_sym.to_s
+    when /\Aauthorize_(.*)!\z/
+      authorize_action!(Regexp.last_match(1).to_sym)
+    else
+      super
+    end
+  end
 end
 
 Groups::ApplicationController.prepend_mod_with('Groups::ApplicationController')

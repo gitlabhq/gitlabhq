@@ -216,6 +216,7 @@ module ApplicationSettingsHelper
       :default_branch_protection,
       :default_ci_config_path,
       :default_group_visibility,
+      :default_preferred_language,
       :default_project_creation,
       :default_project_visibility,
       :default_projects_limit,
@@ -287,6 +288,7 @@ module ApplicationSettingsHelper
       :max_import_size,
       :max_pages_size,
       :max_pages_custom_domains_per_project,
+      :max_terraform_state_size_bytes,
       :max_yaml_size_bytes,
       :max_yaml_depth,
       :metrics_method_call_threshold,
@@ -318,7 +320,6 @@ module ApplicationSettingsHelper
       :require_two_factor_authentication,
       :restricted_visibility_levels,
       :rsa_key_restriction,
-      :send_user_confirmation_email,
       :session_expire_delay,
       :shared_runners_enabled,
       :shared_runners_text,
@@ -445,7 +446,8 @@ module ApplicationSettingsHelper
       :project_runner_token_expiration_interval,
       :pipeline_limit_per_project_user_sha,
       :invitation_flow_enforcement,
-      :can_create_group
+      :can_create_group,
+      :bulk_import_enabled
     ].tap do |settings|
       next if Gitlab.com?
 
@@ -545,7 +547,6 @@ module ApplicationSettingsHelper
       settings_path: general_admin_application_settings_path(anchor: 'js-signup-settings'),
       signup_enabled: @application_setting[:signup_enabled].to_s,
       require_admin_approval_after_user_signup: @application_setting[:require_admin_approval_after_user_signup].to_s,
-      send_user_confirmation_email: @application_setting[:send_user_confirmation_email].to_s,
       email_confirmation_setting: @application_setting[:email_confirmation_setting].to_s,
       minimum_password_length: @application_setting[:minimum_password_length],
       minimum_password_length_min: ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH,

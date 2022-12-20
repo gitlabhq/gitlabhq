@@ -28,9 +28,9 @@
         "https"
       ]
     },
-    "group": {
+    "feature_category": {
       "type": "string",
-      "description": "Name of the group that introduced this audit event. For example, manage::compliance"
+      "description": "The feature category of this audit event. For example, compliance_management"
     },
     "milestone": {
       "type": "string",
@@ -48,7 +48,7 @@
   },
   "required": [
     "description",
-    "group",
+    "feature_category",
     "introduced_by_issue",
     "introduced_by_mr",
     "milestone",

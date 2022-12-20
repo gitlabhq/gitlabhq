@@ -7,7 +7,7 @@
       - else
         %span
           = "##{runner.id} (#{runner.short_sha})"
-      - if runner.locked?
+      - if runner.locked? && runner.project_type?
         %span.has-tooltip{ title: s_('Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.') }
           = sprite_icon('lock')
     .gl-ml-2

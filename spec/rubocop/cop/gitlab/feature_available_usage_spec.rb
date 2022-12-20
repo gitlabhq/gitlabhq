@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'rubocop_spec_helper'
-require 'rubocop'
-require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/feature_available_usage'
 
 RSpec.describe RuboCop::Cop::Gitlab::FeatureAvailableUsage do

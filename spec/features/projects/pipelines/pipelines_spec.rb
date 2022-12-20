@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Pipelines', :js do
+RSpec.describe 'Pipelines', :js, feature_category: :projects do
   include ProjectForksHelper
   include Spec::Support::Helpers::ModalHelpers
 
@@ -596,8 +596,8 @@ RSpec.describe 'Pipelines', :js do
         it 'changes the Pipeline ID column for Pipeline IID' do
           page.find('[data-testid="pipeline-key-dropdown"]').click
 
-          within '.gl-new-dropdown-contents' do
-            dropdown_options = page.find_all '.gl-new-dropdown-item'
+          within '.gl-dropdown-contents' do
+            dropdown_options = page.find_all '.gl-dropdown-item'
 
             dropdown_options[1].click
           end
@@ -663,7 +663,19 @@ RSpec.describe 'Pipelines', :js do
     describe 'POST /:project/-/pipelines' do
       let(:project) { create(:project, :repository) }
 
-      shared_examples 'run pipeline form with gitlab-ci.yml' do
+      before do
+        visit new_project_pipeline_path(project)
+      end
+
+      context 'for valid commit', :js do
+        before do
+          click_button project.default_branch
+          wait_for_requests
+
+          find('p', text: 'master').click
+          wait_for_requests
+        end
+
         context 'with gitlab-ci.yml', :js do
           before do
             stub_ci_pipeline_to_return_yaml_file
@@ -680,7 +692,7 @@ RSpec.describe 'Pipelines', :js do
           end
 
           context 'when variables are specified' do
-            it 'creates a new pipeline with variables' do
+            it 'creates a new pipeline with variables', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375552' do
               page.within(find("[data-testid='ci-variable-row']")) do
                 find("[data-testid='pipeline-form-ci-variable-key']").set('key_name')
                 find("[data-testid='pipeline-form-ci-variable-value']").set('value')
@@ -697,9 +709,7 @@ RSpec.describe 'Pipelines', :js do
             end
           end
         end
-      end
 
-      shared_examples 'run pipeline form without gitlab-ci.yml' do
         context 'without gitlab-ci.yml' do
           before do
             click_on 'Run pipeline'
@@ -708,7 +718,7 @@ RSpec.describe 'Pipelines', :js do
 
           it { expect(page).to have_content('Missing CI config file') }
 
-          it 'creates a pipeline after first request failed and a valid gitlab-ci.yml file is available when trying again' do
+          it 'creates a pipeline after first request failed and a valid gitlab-ci.yml file is available when trying again', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375552' do
             stub_ci_pipeline_to_return_yaml_file
 
             expect do
@@ -717,52 +727,6 @@ RSpec.describe 'Pipelines', :js do
             end
               .to change { Ci::Pipeline.count }.by(1)
           end
-        end
-      end
-
-      # Run Pipeline form with REST endpoints
-      # TODO: Clean up tests when run_pipeline_graphql is enabled
-      # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/372310
-      context 'with feature flag disabled' do
-        before do
-          stub_feature_flags(run_pipeline_graphql: false)
-          visit new_project_pipeline_path(project)
-        end
-
-        context 'for valid commit', :js do
-          before do
-            click_button project.default_branch
-            wait_for_requests
-
-            find('p', text: 'master').click
-            wait_for_requests
-          end
-
-          it_behaves_like 'run pipeline form with gitlab-ci.yml'
-
-          it_behaves_like 'run pipeline form without gitlab-ci.yml'
-        end
-      end
-
-      # Run Pipeline form with GraphQL
-      context 'with feature flag enabled' do
-        before do
-          stub_feature_flags(run_pipeline_graphql: true)
-          visit new_project_pipeline_path(project)
-        end
-
-        context 'for valid commit', :js do
-          before do
-            click_button project.default_branch
-            wait_for_requests
-
-            find('p', text: 'master').click
-            wait_for_requests
-          end
-
-          it_behaves_like 'run pipeline form with gitlab-ci.yml'
-
-          it_behaves_like 'run pipeline form without gitlab-ci.yml'
         end
       end
     end
@@ -825,7 +789,7 @@ RSpec.describe 'Pipelines', :js do
           page.within '[data-testid="ref-select"]' do
             find('[data-testid="search-refs"]').native.send_keys('fix')
 
-            page.within '.gl-new-dropdown-contents' do
+            page.within '.gl-dropdown-contents' do
               expect(page).to have_content('fix')
             end
           end

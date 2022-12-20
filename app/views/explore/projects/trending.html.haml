@@ -9,5 +9,5 @@
 - else
   = render 'explore/head'
 
-= render 'explore/projects/nav' unless Feature.enabled?(:project_list_filter_bar) && current_user
+= render 'explore/projects/nav'
 = render 'projects', projects: @projects

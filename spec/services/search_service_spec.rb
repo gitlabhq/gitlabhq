@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SearchService do
+RSpec.describe SearchService, feature_category: :global_search do
   let_it_be(:user) { create(:user) }
 
   let_it_be(:accessible_group) { create(:group, :private) }

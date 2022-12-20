@@ -70,6 +70,10 @@ export default {
 <template>
   <div>
     <gl-alert v-if="error" variant="danger" @dismiss="error = ''">{{ error }}</gl-alert>
-    <work-item-detail :work-item-id="gid" :iid="id" @deleteWorkItem="deleteWorkItem($event)" />
+    <work-item-detail
+      :work-item-id="gid"
+      :work-item-iid="id"
+      @deleteWorkItem="deleteWorkItem($event)"
+    />
   </div>
 </template>

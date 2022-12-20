@@ -5,13 +5,10 @@
 # This concept is currently tried to be upstreamed here:
 # - https://github.com/ruby/ruby/pull/3978
 module MemoryInstrumentationHelper
-  def skip_memory_instrumentation!
+  def verify_memory_instrumentation_available!
     return if ::Gitlab::Memory::Instrumentation.available?
 
-    # if we are running in CI, a test cannot be skipped
-    return if ENV['CI']
-
-    skip 'Missing a memory instrumentation patch. ' \
+    raise 'Ruby is missing a required patch that enables memory instrumentation. ' \
       'More information can be found here: https://gitlab.com/gitlab-org/gitlab/-/issues/296530.'
   end
 end

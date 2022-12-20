@@ -16,9 +16,7 @@ module IssuesCalendar
         #       the content as a file (even ignoring the Content-Disposition
         #       header). We want to display the content inline when accessed
         #       from GitLab, similarly to the RSS feed.
-        if request.referer&.start_with?(::Settings.gitlab.base_url)
-          response.headers['Content-Type'] = 'text/plain'
-        end
+        response.headers['Content-Type'] = 'text/plain' if request.referer&.start_with?(::Settings.gitlab.base_url)
       end
     end
   end

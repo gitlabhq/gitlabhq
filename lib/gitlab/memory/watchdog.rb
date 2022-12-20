@@ -50,27 +50,17 @@ module Gitlab
       def initialize
         @configuration = Configuration.new
         @alive = true
-
-        init_prometheus_metrics
       end
 
       ##
-      # Configuration for Watchdog, use like:
-      #
-      #   watchdog.configure do |config|
-      #     config.handler = Gitlab::Memory::Watchdog::TermProcessHandler
-      #     config.sleep_time_seconds = 60
-      #     config.logger = Gitlab::AppLogger
-      #     config.monitors do |stack|
-      #       stack.push MyMonitorClass, args*, max_strikes:, kwargs**, &block
-      #     end
-      #   end
+      # Configuration for Watchdog, see Gitlab::Memory::Watchdog::Configurator
+      # for examples.
       def configure
-        yield @configuration
+        yield configuration
       end
 
       def call
-        logger.info(log_labels.merge(message: 'started'))
+        event_reporter.started(log_labels)
 
         while @alive
           sleep(sleep_time_seconds)
@@ -78,35 +68,45 @@ module Gitlab
           monitor if Feature.enabled?(:gitlab_memory_watchdog, type: :ops)
         end
 
-        logger.info(log_labels.merge(message: 'stopped'))
+        event_reporter.stopped(log_labels(memwd_reason: @reason).compact)
       end
 
-      def stop
+      def stop(reason: nil)
+        @reason = reason
         @alive = false
       end
 
       private
 
+      attr_reader :configuration
+
+      delegate :event_reporter, :monitors, :sleep_time_seconds, to: :configuration
+
       def monitor
-        @configuration.monitors.call_each do |result|
+        if monitors.empty?
+          stop(reason: 'monitors are not configured')
+          return
+        end
+
+        monitors.call_each do |result|
           break unless @alive
 
           next unless result.threshold_violated?
 
-          @counter_violations.increment(reason: result.monitor_name)
+          event_reporter.threshold_violated(result.monitor_name)
 
           next unless result.strikes_exceeded?
 
-          @alive = !memory_limit_exceeded_callback(result.monitor_name, result.payload)
+          strike_exceeded_callback(result.monitor_name, result.payload)
         end
       end
 
-      def memory_limit_exceeded_callback(monitor_name, monitor_payload)
-        all_labels = log_labels.merge(monitor_payload)
-        logger.warn(all_labels)
-        @counter_violations_handled.increment(reason: monitor_name)
+      def strike_exceeded_callback(monitor_name, monitor_payload)
+        event_reporter.strikes_exceeded(monitor_name, log_labels(monitor_payload))
 
-        handler.call
+        Gitlab::Memory::Reports::HeapDump.enqueue!
+
+        stop(reason: 'successfully handled') if handler.call
       end
 
       def handler
@@ -114,46 +114,13 @@ module Gitlab
         # all that happens is we collect logs and Prometheus events for fragmentation violations.
         return NullHandler.instance unless Feature.enabled?(:enforce_memory_watchdog, type: :ops)
 
-        @configuration.handler
+        configuration.handler
       end
 
-      def logger
-        @configuration.logger
-      end
-
-      def sleep_time_seconds
-        @configuration.sleep_time_seconds
-      end
-
-      def log_labels
-        {
-          pid: $$,
-          worker_id: worker_id,
+      def log_labels(extra = {})
+        extra.merge(
           memwd_handler_class: handler.class.name,
-          memwd_sleep_time_s: sleep_time_seconds,
-          memwd_rss_bytes: process_rss_bytes
-        }
-      end
-
-      def process_rss_bytes
-        Gitlab::Metrics::System.memory_usage_rss[:total]
-      end
-
-      def worker_id
-        ::Prometheus::PidProvider.worker_id
-      end
-
-      def init_prometheus_metrics
-        default_labels = { pid: worker_id }
-        @counter_violations = Gitlab::Metrics.counter(
-          :gitlab_memwd_violations_total,
-          'Total number of times a Ruby process violated a memory threshold',
-          default_labels
-        )
-        @counter_violations_handled = Gitlab::Metrics.counter(
-          :gitlab_memwd_violations_handled_total,
-          'Total number of times Ruby process memory violations were handled',
-          default_labels
+          memwd_sleep_time_s: sleep_time_seconds
         )
       end
     end

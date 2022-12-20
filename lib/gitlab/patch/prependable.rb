@@ -26,7 +26,7 @@ module Gitlab
         # https://github.com/rails/rails/pull/42067
         #
         # Let's keep our own implementation, until the issue is fixed
-        Module.instance_method(:prepend_features).bind(self).call(base)
+        Module.instance_method(:prepend_features).bind_call(self, base)
 
         if const_defined?(:ClassMethods)
           klass_methods = const_get(:ClassMethods, false)

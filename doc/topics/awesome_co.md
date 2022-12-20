@@ -71,7 +71,7 @@ AwesomeCo seeding uses FactoryBot definitions from `spec/factories` which ...
 1. Are always up-to-date
 1. Execute on the lowest-level (`ActiveRecord`) possible to create data as quickly as possible
 
-> _from the [FactoryBot README](https://github.com/thoughtbot/factory_bot#readme_) : factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build
+> From the [FactoryBot README](https://github.com/thoughtbot/factory_bot#readme_) : `factory_bot` is a fixtures replacement with a straightforward definition syntax, support for multiple build
 > strategies (saved instances, unsaved instances, attribute hashes, and stubbed objects), and support for multiple factories for the same class, including factory
 > inheritance
 

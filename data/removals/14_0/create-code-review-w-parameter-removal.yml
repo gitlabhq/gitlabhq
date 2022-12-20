@@ -1,4 +1,4 @@
-- name: "`?w=1` URL parameter to ignore whitespace changes"
+- title: "`?w=1` URL parameter to ignore whitespace changes"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: phikai

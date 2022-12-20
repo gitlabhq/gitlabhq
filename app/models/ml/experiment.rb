@@ -10,6 +10,7 @@ module Ml
     belongs_to :project
     belongs_to :user
     has_many :candidates, class_name: 'Ml::Candidate'
+    has_many :metadata, class_name: 'Ml::ExperimentMetadata'
 
     has_internal_id :iid, scope: :project
 

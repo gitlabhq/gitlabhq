@@ -1,6 +1,7 @@
 <script>
-import { GlTooltipDirective, GlSafeHtmlDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { mapActions } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { createAlert } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import { UNFOLD_COUNT, INLINE_DIFF_LINES_KEY } from '../constants';
@@ -21,7 +22,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     file: {

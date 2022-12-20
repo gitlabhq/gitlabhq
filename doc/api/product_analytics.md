@@ -16,12 +16,13 @@ This feature is not ready for production use.
 NOTE:
 Make sure to define the `cube_api_base_url` and `cube_api_key` application settings first using [the API](settings.md).
 
-## Send request to Cube
+## Send query request to Cube
 
 Generate an access token that can be used to query the Cube API. For example:
 
 ```plaintext
 POST /projects/:id/product_analytics/request/load
+POST /projects/:id/product_analytics/request/dry-run
 ```
 
 | Attribute | Type             | Required | Description                                                   |
@@ -30,7 +31,7 @@ POST /projects/:id/product_analytics/request/load
 
 ### Request body
 
-The body of the request should be a valid Cube query.
+The body of the load request must be a valid Cube query.
 
 ```json
 {
@@ -66,3 +67,15 @@ The body of the request should be a valid Cube query.
   "queryType": "multi"
 }
 ```
+
+## Send metadata request to Cube
+
+Return Cube Metadata for the Analytics data. For example:
+
+```plaintext
+GET /projects/:id/product_analytics/request/meta
+```
+
+| Attribute | Type             | Required | Description                                                   |
+| --------- |------------------| -------- |---------------------------------------------------------------|
+| `id`      | integer          | yes      | The ID of a project that the current user has read access to. |

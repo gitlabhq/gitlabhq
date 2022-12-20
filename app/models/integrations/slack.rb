@@ -20,5 +20,12 @@ module Integrations
     def webhook_help
       'https://hooks.slack.com/services/…'
     end
+
+    private
+
+    override :metrics_key_prefix
+    def metrics_key_prefix
+      'i_ecosystem_slack_service'
+    end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::CreateAndLinkService do
+RSpec.describe WorkItems::CreateAndLinkService, feature_category: :portfolio_management do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:user) { create(:user) }
@@ -94,7 +94,7 @@ RSpec.describe WorkItems::CreateAndLinkService do
         end
 
         it 'returns a link creation error message' do
-          expect(service_result.errors).to contain_exactly(/only Issue and Incident can be parent of Task./)
+          expect(service_result.errors).to contain_exactly(/is not allowed to add this type of parent/)
         end
       end
     end

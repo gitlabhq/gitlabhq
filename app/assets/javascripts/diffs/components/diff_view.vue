@@ -1,5 +1,4 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { IdState } from 'vendor/vue-virtual-scroller';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -21,9 +20,6 @@ export default {
     DiffLine,
     DiffCommentCell,
     DraftNote,
-  },
-  directives: {
-    SafeHtml,
   },
   mixins: [
     draftCommentsMixin,
@@ -307,7 +303,11 @@ export default {
           class="diff-td notes-content parallel old"
         >
           <div v-for="draft in lineDrafts(line, 'left')" :key="draft.id" class="content">
-            <draft-note :draft="draft" :line="line.left" />
+            <article class="note-wrapper">
+              <ul class="notes draft-notes">
+                <draft-note :draft="draft" :line="line.left" />
+              </ul>
+            </article>
           </div>
         </div>
         <div
@@ -315,7 +315,11 @@ export default {
           class="diff-td notes-content parallel new"
         >
           <div v-for="draft in lineDrafts(line, 'right')" :key="draft.id" class="content">
-            <draft-note :draft="draft" :line="line.right" />
+            <article class="note-wrapper">
+              <ul class="notes draft-notes">
+                <draft-note :draft="draft" :line="line.right" />
+              </ul>
+            </article>
           </div>
         </div>
       </div>

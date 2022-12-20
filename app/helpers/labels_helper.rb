@@ -159,7 +159,7 @@ module LabelsHelper
   end
 
   def label_subscription_toggle_button_text(label, project = nil)
-    label.subscribed?(current_user, project) ? 'Unsubscribe' : 'Subscribe'
+    label.subscribed?(current_user, project) ? _('Unsubscribe') : _('Subscribe')
   end
 
   def create_label_title(subject)
@@ -219,8 +219,8 @@ module LabelsHelper
     }.merge(opts)
   end
 
-  def issuable_types
-    ['issues', 'merge requests']
+  def labels_function_introduction
+    _('Labels can be applied to issues and merge requests. Group labels are available for any project within the group.')
   end
 
   def show_labels_full_path?(project, group)

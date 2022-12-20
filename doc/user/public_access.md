@@ -7,16 +7,17 @@ type: reference
 
 # Project and group visibility **(FREE)**
 
-GitLab allows users with the Owner role to set a project's or group's visibility as:
+If you have the Owner role, you can set a project's or group's visibility as:
 
 - **Public**
-- **Internal**
+- **[Internal](#internal-projects-and-groups)**
 - **Private**
 
-These visibility levels affect who can see the project in the public access directory (`/public`
-for your GitLab instance). For example, <https://gitlab.com/public>.
-You can control the visibility of individual features with
-[project feature settings](permissions.md#project-features).
+These visibility levels affect who can see the project in the public access directory
+(for example, <https://gitlab.com/public>).
+
+For more granular control, you can determine
+[which features in a project are visible](project/working_with_projects.md#change-the-visibility-of-individual-features-in-a-project).
 
 The visibility setting of a project must be at least as restrictive
 as the visibility of its parent group.
@@ -38,16 +39,16 @@ By default, `/public` is visible to unauthenticated users. However, if the
 [**Public** visibility level](admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
 is restricted, `/public` is visible only to signed-in users.
 
-## Internal projects and groups
+## Internal projects and groups **(FREE SELF)**
 
 Internal projects can be cloned by any signed-in user except
-[external users](permissions.md#external-users).
+[external users](admin_area/external_users.md).
 
 They are also listed in the public access directory (`/public`), but only for signed-in users.
 
 Internal groups can have internal or private subgroups.
 
-Any signed-in users except [external users](permissions.md#external-users) have the
+Any signed-in users except [external users](admin_area/external_users.md) have the
 Guest role on the repository.
 
 NOTE:
@@ -66,6 +67,8 @@ Private groups can only have private subgroups.
 
 ## Change project visibility
 
+You can change the visibility of a project.
+
 Prerequisite:
 
 - You must have the Owner role for a project.
@@ -77,6 +80,8 @@ Prerequisite:
 1. Select **Save changes**.
 
 ## Change group visibility
+
+You can change the visibility of all projects in a group.
 
 Prerequisites:
 

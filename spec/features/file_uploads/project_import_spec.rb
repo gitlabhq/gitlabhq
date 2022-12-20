@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upload a project export archive', :api, :js do
+RSpec.describe 'Upload a project export archive', :api, :js, feature_category: :projects do
   include_context 'file upload requests helpers'
 
   let_it_be(:user) { create(:user, :admin) }

@@ -100,13 +100,6 @@ export default {
           });
         });
     },
-    pipelineActionRequestComplete() {
-      // close the dropdown in MR widget
-      this.$refs.dropdown.hide();
-
-      // warn the pipelines table to update
-      this.$emit('pipelineActionRequestComplete');
-    },
     stageAriaLabel(title) {
       return sprintf(__('View Stage: %{title}'), { title });
     },
@@ -149,7 +142,7 @@ export default {
       class="js-builds-dropdown-list scrollable-menu"
       data-testid="mini-pipeline-graph-dropdown-menu-list"
     >
-      <div class="gl--flex-center gl-border-b gl-font-weight-bold gl-pb-3">
+      <div class="gl--flex-center gl-border-b gl-font-weight-bold gl-mb-3 gl-pb-3">
         <span class="gl-mr-1">{{ $options.i18n.stage }}</span>
         <span data-testid="pipeline-stage-dropdown-menu-title">{{ stageName }}</span>
       </div>
@@ -158,11 +151,10 @@ export default {
           :dropdown-length="dropdownContent.length"
           :job="job"
           css-class-job-name="mini-pipeline-graph-dropdown-item"
-          @pipelineActionRequestComplete="pipelineActionRequestComplete"
         />
       </li>
       <template v-if="isMergeTrain">
-        <li class="gl-new-dropdown-divider" role="presentation">
+        <li class="gl-dropdown-divider" role="presentation">
           <hr role="separator" aria-orientation="horizontal" class="dropdown-divider" />
         </li>
         <li>

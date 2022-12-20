@@ -350,9 +350,13 @@ module Ci
     scope :for_sha_or_source_sha, -> (sha) { for_sha(sha).or(for_source_sha(sha)) }
     scope :for_ref, -> (ref) { where(ref: ref) }
     scope :for_branch, -> (branch) { for_ref(branch).where(tag: false) }
-    scope :for_id, -> (id) { where(id: id) }
     scope :for_iid, -> (iid) { where(iid: iid) }
     scope :for_project, -> (project_id) { where(project_id: project_id) }
+    scope :for_name, -> (name) do
+      name_column = Ci::PipelineMetadata.arel_table[:name]
+
+      joins(:pipeline_metadata).where(name_column.lower.eq(name.downcase))
+    end
     scope :created_after, -> (time) { where(arel_table[:created_at].gt(time)) }
     scope :created_before_id, -> (id) { where(arel_table[:id].lt(id)) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
@@ -721,7 +725,7 @@ module Ci
 
     def freeze_period?
       strong_memoize(:freeze_period) do
-        Ci::FreezePeriodStatus.new(project: project).execute
+        project.freeze_periods.any?(&:active?)
       end
     end
 
@@ -1341,13 +1345,14 @@ module Ci
       persistent_ref.create
     end
 
+    # For dependent bridge jobs we reset the upstream bridge recursively
+    # to reflect that a downstream pipeline is running again
     def reset_source_bridge!(current_user)
       # break recursion when no source_pipeline bridge (first upstream pipeline)
       return unless bridge_waiting?
       return unless current_user.can?(:update_pipeline, source_bridge.pipeline)
 
-      source_bridge.pending!
-      Ci::AfterRequeueJobService.new(project, current_user).execute(source_bridge) # rubocop:disable CodeReuse/ServiceClass
+      Ci::EnqueueJobService.new(source_bridge, current_user: current_user).execute(&:pending!) # rubocop:disable CodeReuse/ServiceClass
     end
 
     # EE-only

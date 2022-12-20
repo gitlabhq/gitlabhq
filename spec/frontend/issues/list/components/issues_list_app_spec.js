@@ -1,4 +1,4 @@
-import { GlButton, GlEmptyState } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -21,18 +21,21 @@ import {
   setSortPreferenceMutationResponseWithErrors,
   urlParams,
 } from 'jest/issues/list/mock_data';
-import createFlash, { FLASH_TYPES } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/flash';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
 import {
   CREATED_DESC,
   RELATIVE_POSITION,
   RELATIVE_POSITION_ASC,
+  UPDATED_DESC,
   urlSortParams,
 } from '~/issues/list/constants';
 import eventHub from '~/issues/list/eventhub';
@@ -58,10 +61,11 @@ import {
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_SEARCH_WITHIN,
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
-import('~/issuable/bulk_update_sidebar');
+import('~/issuable');
 import('~/users_select');
 
 jest.mock('@sentry/browser');
@@ -122,10 +126,8 @@ describe('CE IssuesListApp component', () => {
 
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
-  const findGlButton = () => wrapper.findComponent(GlButton);
   const findGlButtons = () => wrapper.findAllComponents(GlButton);
   const findGlButtonAt = (index) => findGlButtons().at(index);
-  const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findNewIssueDropdown = () => wrapper.findComponent(NewIssueDropdown);
 
@@ -182,7 +184,11 @@ describe('CE IssuesListApp component', () => {
         namespace: defaultProvide.fullPath,
         recentSearchesStorageKey: 'issues',
         searchInputPlaceholder: IssuesListApp.i18n.searchPlaceholder,
-        sortOptions: getSortOptions(true, true),
+        sortOptions: getSortOptions({
+          hasBlockedIssuesFeature: defaultProvide.hasBlockedIssuesFeature,
+          hasIssuableHealthStatusFeature: defaultProvide.hasIssuableHealthStatusFeature,
+          hasIssueWeightsFeature: defaultProvide.hasIssueWeightsFeature,
+        }),
         initialSortBy: CREATED_DESC,
         issuables: getIssuesQueryResponse.data.project.issues.nodes,
         tabs: IssuableListTabs,
@@ -395,9 +401,9 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('shows an alert to tell the user that manual reordering is disabled', () => {
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: IssuesListApp.i18n.issueRepositioningMessage,
-            type: FLASH_TYPES.NOTICE,
+            variant: VARIANT_INFO,
           });
         });
       });
@@ -435,9 +441,9 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('shows an alert to tell the user they must be signed in to search', () => {
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: IssuesListApp.i18n.anonymousSearchingMessage,
-            type: FLASH_TYPES.NOTICE,
+            variant: VARIANT_INFO,
           });
         });
       });
@@ -486,136 +492,29 @@ describe('CE IssuesListApp component', () => {
 
   describe('empty states', () => {
     describe('when there are issues', () => {
-      describe('when search returns no results', () => {
-        beforeEach(() => {
-          setWindowLocation(`?search=no+results`);
-
-          wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
-        });
-
-        it('shows empty state', () => {
-          expect(findGlEmptyState().props()).toMatchObject({
-            description: IssuesListApp.i18n.noSearchResultsDescription,
-            title: IssuesListApp.i18n.noSearchResultsTitle,
-            svgPath: defaultProvide.emptyStateSvgPath,
-          });
-        });
+      beforeEach(() => {
+        wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
       });
 
-      describe('when "Open" tab has no issues', () => {
-        beforeEach(() => {
-          wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
-        });
-
-        it('shows empty state', () => {
-          expect(findGlEmptyState().props()).toMatchObject({
-            description: IssuesListApp.i18n.noOpenIssuesDescription,
-            title: IssuesListApp.i18n.noOpenIssuesTitle,
-            svgPath: defaultProvide.emptyStateSvgPath,
-          });
-        });
-      });
-
-      describe('when "Closed" tab has no issues', () => {
-        beforeEach(() => {
-          setWindowLocation(`?state=${IssuableStates.Closed}`);
-
-          wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
-        });
-
-        it('shows empty state', () => {
-          expect(findGlEmptyState().props()).toMatchObject({
-            title: IssuesListApp.i18n.noClosedIssuesTitle,
-            svgPath: defaultProvide.emptyStateSvgPath,
-          });
+      it('shows EmptyStateWithAnyIssues empty state', () => {
+        expect(wrapper.findComponent(EmptyStateWithAnyIssues).props()).toEqual({
+          hasSearch: false,
+          isOpenTab: true,
         });
       });
     });
 
     describe('when there are no issues', () => {
-      describe('when user is logged in', () => {
-        beforeEach(() => {
-          wrapper = mountComponent({
-            provide: { hasAnyIssues: false, isSignedIn: true },
-            mountFn: mount,
-          });
-        });
-
-        it('shows empty state', () => {
-          expect(findGlEmptyState().props()).toMatchObject({
-            title: IssuesListApp.i18n.noIssuesSignedInTitle,
-            svgPath: defaultProvide.emptyStateSvgPath,
-          });
-          expect(findGlEmptyState().text()).toContain(
-            IssuesListApp.i18n.noIssuesSignedInDescription,
-          );
-        });
-
-        it('shows "New issue" and import/export buttons', () => {
-          expect(findGlButton().text()).toBe(IssuesListApp.i18n.newIssueLabel);
-          expect(findGlButton().attributes('href')).toBe(defaultProvide.newIssuePath);
-          expect(findCsvImportExportButtons().props()).toMatchObject({
-            exportCsvPath: defaultProvide.exportCsvPath,
-            issuableCount: 0,
-          });
-        });
-
-        it('shows Jira integration information', () => {
-          const paragraphs = wrapper.findAll('p');
-          const links = wrapper.findAll('.gl-link');
-          expect(paragraphs.at(1).text()).toContain(IssuesListApp.i18n.jiraIntegrationTitle);
-          expect(paragraphs.at(2).text()).toContain(
-            'Enable the Jira integration to view your Jira issues in GitLab.',
-          );
-          expect(paragraphs.at(3).text()).toContain(
-            IssuesListApp.i18n.jiraIntegrationSecondaryMessage,
-          );
-          expect(links.at(1).text()).toBe('Enable the Jira integration');
-          expect(links.at(1).attributes('href')).toBe(defaultProvide.jiraIntegrationPath);
-        });
+      beforeEach(() => {
+        wrapper = mountComponent({ provide: { hasAnyIssues: false } });
       });
 
-      describe('when user is logged in and can create projects', () => {
-        beforeEach(() => {
-          wrapper = mountComponent({
-            provide: { canCreateProjects: true, hasAnyIssues: false, isSignedIn: true },
-            stubs: { GlEmptyState },
-          });
-        });
-
-        it('shows empty state with additional description about creating projects', () => {
-          expect(findGlEmptyState().text()).toContain(
-            IssuesListApp.i18n.noIssuesSignedInDescription,
-          );
-          expect(findGlEmptyState().text()).toContain(
-            IssuesListApp.i18n.noGroupIssuesSignedInDescription,
-          );
-        });
-
-        it('shows "New project" button', () => {
-          expect(findGlButton().text()).toBe(IssuesListApp.i18n.newProjectLabel);
-          expect(findGlButton().attributes('href')).toBe(defaultProvide.newProjectPath);
-        });
-      });
-
-      describe('when user is logged out', () => {
-        beforeEach(() => {
-          wrapper = mountComponent({
-            provide: { hasAnyIssues: false, isSignedIn: false },
-            mountFn: mount,
-          });
-        });
-
-        it('shows empty state', () => {
-          expect(findGlEmptyState().props()).toMatchObject({
-            title: IssuesListApp.i18n.noIssuesSignedOutTitle,
-            svgPath: defaultProvide.emptyStateSvgPath,
-            primaryButtonText: IssuesListApp.i18n.noIssuesSignedOutButtonText,
-            primaryButtonLink: defaultProvide.signInPath,
-          });
-          expect(findGlEmptyState().text()).toContain(
-            IssuesListApp.i18n.noIssuesSignedOutDescription,
-          );
+      it('shows EmptyStateWithoutAnyIssues empty state', () => {
+        expect(wrapper.findComponent(EmptyStateWithoutAnyIssues).props()).toEqual({
+          currentTabCount: 0,
+          exportCsvPathWithQuery: defaultProvide.exportCsvPath,
+          showCsvButtons: true,
+          showNewIssueDropdown: false,
         });
       });
     });
@@ -636,8 +535,8 @@ describe('CE IssuesListApp component', () => {
 
       it('does not render My-Reaction or Confidential tokens', () => {
         expect(findIssuableList().props('searchTokens')).not.toMatchObject([
-          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors: [mockCurrentUser] },
-          { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors: [mockCurrentUser] },
+          { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [mockCurrentUser] },
+          { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers: [mockCurrentUser] },
           { type: TOKEN_TYPE_MY_REACTION },
           { type: TOKEN_TYPE_CONFIDENTIAL },
         ]);
@@ -685,13 +584,13 @@ describe('CE IssuesListApp component', () => {
       });
 
       it('renders all tokens alphabetically', () => {
-        const preloadedAuthors = [
+        const preloadedUsers = [
           { ...mockCurrentUser, id: convertToGraphQLId('User', mockCurrentUser.id) },
         ];
 
         expect(findIssuableList().props('searchTokens')).toMatchObject([
-          { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors },
-          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors },
+          { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
+          { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
           { type: TOKEN_TYPE_CONFIDENTIAL },
           { type: TOKEN_TYPE_CONTACT },
           { type: TOKEN_TYPE_LABEL },
@@ -699,6 +598,7 @@ describe('CE IssuesListApp component', () => {
           { type: TOKEN_TYPE_MY_REACTION },
           { type: TOKEN_TYPE_ORGANIZATION },
           { type: TOKEN_TYPE_RELEASE },
+          { type: TOKEN_TYPE_SEARCH_WITHIN },
           { type: TOKEN_TYPE_TYPE },
         ]);
       });
@@ -899,7 +799,11 @@ describe('CE IssuesListApp component', () => {
       it.each(Object.keys(urlSortParams))(
         'updates to the new sort when payload is `%s`',
         async (sortKey) => {
-          wrapper = mountComponent();
+          // Ensure initial sort key is different so we can trigger an update when emitting a sort key
+          wrapper =
+            sortKey === CREATED_DESC
+              ? mountComponent({ provide: { initialSort: UPDATED_DESC } })
+              : mountComponent();
           router.push = jest.fn();
 
           findIssuableList().vm.$emit('sort', sortKey);
@@ -929,9 +833,9 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('shows an alert to tell the user that manual reordering is disabled', () => {
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: IssuesListApp.i18n.issueRepositioningMessage,
-            type: FLASH_TYPES.NOTICE,
+            variant: VARIANT_INFO,
           });
         });
       });
@@ -941,9 +845,9 @@ describe('CE IssuesListApp component', () => {
           const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
           wrapper = mountComponent({ sortPreferenceMutationResponse: mutationMock });
 
-          findIssuableList().vm.$emit('sort', CREATED_DESC);
+          findIssuableList().vm.$emit('sort', UPDATED_DESC);
 
-          expect(mutationMock).toHaveBeenCalledWith({ input: { issuesSort: CREATED_DESC } });
+          expect(mutationMock).toHaveBeenCalledWith({ input: { issuesSort: UPDATED_DESC } });
         });
 
         it('captures error when mutation response has errors', async () => {
@@ -952,7 +856,7 @@ describe('CE IssuesListApp component', () => {
             .mockResolvedValue(setSortPreferenceMutationResponseWithErrors);
           wrapper = mountComponent({ sortPreferenceMutationResponse: mutationMock });
 
-          findIssuableList().vm.$emit('sort', CREATED_DESC);
+          findIssuableList().vm.$emit('sort', UPDATED_DESC);
           await waitForPromises();
 
           expect(Sentry.captureException).toHaveBeenCalledWith(new Error('oh no!'));
@@ -1016,9 +920,9 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('shows an alert to tell the user they must be signed in to search', () => {
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: IssuesListApp.i18n.anonymousSearchingMessage,
-            type: FLASH_TYPES.NOTICE,
+            variant: VARIANT_INFO,
           });
         });
       });

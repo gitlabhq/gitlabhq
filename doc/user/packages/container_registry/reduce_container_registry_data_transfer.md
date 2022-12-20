@@ -44,7 +44,7 @@ Consider using a smaller base image, such as [Alpine Linux](https://alpinelinux.
 An Alpine image is around 5MB, which is several times smaller than popular base images such as
 [Debian](https://hub.docker.com/_/debian).
 If your application is distributed as a self-contained static binary, such as for Go applications,
-you can also consider using Docker's [scratch](https://hub.docker.com/_/scratch/)
+you can also consider using the Docker [scratch](https://hub.docker.com/_/scratch/)
 base image.
 
 If you need to use a specific base image OS, look for `-slim` or `-minimal` variants, as this helps

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Users > User browses projects on user page', :js do
+RSpec.describe 'Users > User browses projects on user page', :js, feature_category: :projects do
   let!(:user) { create :user }
   let!(:private_project) do
     create :project, :private, name: 'private', namespace: user.namespace do |project|

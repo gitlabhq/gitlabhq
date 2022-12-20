@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::ExportRequestWorker do
+RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
   let_it_be(:bulk_import) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: bulk_import) }
+  let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
   let_it_be(:version_url) { 'https://gitlab.example/api/v4/version' }
 
   let(:response_double) { double(code: 200, success?: true, parsed_response: {}) }
@@ -29,73 +30,6 @@ RSpec.describe BulkImports::ExportRequestWorker do
           expect(BulkImports::EntityWorker).to receive(:perform_async).twice
 
           perform_multiple(job_args)
-        end
-
-        context 'when network error is raised' do
-          let(:exception) { BulkImports::NetworkError.new('Export error') }
-
-          before do
-            allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-              allow(client).to receive(:post).and_raise(exception).twice
-            end
-          end
-
-          context 'when error is retriable' do
-            it 'logs retry request and reenqueues' do
-              allow(exception).to receive(:retriable?).twice.and_return(true)
-
-              expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-                expect(logger).to receive(:error).with(
-                  a_hash_including(
-                    'bulk_import_entity_id' => entity.id,
-                    'bulk_import_id' => entity.bulk_import_id,
-                    'bulk_import_entity_type' => entity.source_type,
-                    'source_full_path' => entity.source_full_path,
-                    'exception.backtrace' => anything,
-                    'exception.class' => 'BulkImports::NetworkError',
-                    'exception.message' => 'Export error',
-                    'message' => 'Retrying export request',
-                    'importer' => 'gitlab_migration',
-                    'source_version' => entity.bulk_import.source_version_info.to_s
-                  )
-                ).twice
-              end
-
-              expect(described_class).to receive(:perform_in).twice.with(2.seconds, entity.id)
-
-              perform_multiple(job_args)
-            end
-          end
-
-          context 'when error is not retriable' do
-            it 'logs export failure and marks entity as failed' do
-              allow(exception).to receive(:retriable?).twice.and_return(false)
-
-              expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-                expect(logger).to receive(:error).with(
-                  a_hash_including(
-                    'bulk_import_entity_id' => entity.id,
-                    'bulk_import_id' => entity.bulk_import_id,
-                    'bulk_import_entity_type' => entity.source_type,
-                    'source_full_path' => entity.source_full_path,
-                    'exception.backtrace' => anything,
-                    'exception.class' => 'BulkImports::NetworkError',
-                    'exception.message' => 'Export error',
-                    'message' => "Request to export #{entity.source_type} failed",
-                    'importer' => 'gitlab_migration',
-                    'source_version' => entity.bulk_import.source_version_info.to_s
-                  )
-                ).twice
-              end
-
-              perform_multiple(job_args)
-
-              failure = entity.failures.last
-
-              expect(failure.pipeline_class).to eq('ExportRequestWorker')
-              expect(failure.exception_message).to eq('Export error')
-            end
-          end
         end
 
         context 'when source id is nil' do
@@ -177,6 +111,26 @@ RSpec.describe BulkImports::ExportRequestWorker do
       let(:full_path_url) { '/projects/foo%2Fbar/export_relations' }
 
       it_behaves_like 'requests relations export for api resource'
+    end
+  end
+
+  describe '#sidekiq_retries_exhausted' do
+    it 'logs export failure and marks entity as failed' do
+      entity = create(:bulk_import_entity, bulk_import: bulk_import)
+      error = 'Exhausted error!'
+
+      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect(logger)
+          .to receive(:error)
+          .with(hash_including('message' => "Request to export #{entity.source_type} failed"))
+      end
+
+      described_class
+        .sidekiq_retries_exhausted_block
+        .call({ 'args' => [entity.id] }, StandardError.new(error))
+
+      expect(entity.reload.failed?).to eq(true)
+      expect(entity.failures.last.exception_message).to eq(error)
     end
   end
 end

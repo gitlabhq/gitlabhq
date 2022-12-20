@@ -1,7 +1,7 @@
 - form_id = "transfer-group-form"
 - initial_data = { button_text: s_('GroupSettings|Transfer group'), group_name: @group.name, group_id: @group.id, target_form_id: form_id, is_paid_group: group.paid?.to_s }
 
-.sub-section
+.sub-section{ data: { qa_selector: 'transfer_group_content' } }
   %h4.warning-title= s_('GroupSettings|Transfer group')
   %p= _('Transfer group to another parent group.')
   = form_for group, url: transfer_group_path(group), method: :put, html: { id: form_id, class: 'js-group-transfer-form' } do |f|
@@ -15,5 +15,5 @@
     - if group.paid?
       = render Pajamas::AlertComponent.new(dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
         = c.body do
-          = html_escape(_("This group can't be transferred because it is linked to a subscription. To transfer this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/index', anchor: 'change-the-linked-namespace')}\">".html_safe, linkEnd: '</a>'.html_safe }
+          = html_escape(_("This group can't be transferred because it is linked to a subscription. To transfer this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/gitlab_com/index', anchor: 'change-the-linked-namespace')}\">".html_safe, linkEnd: '</a>'.html_safe }
     .js-transfer-group-form{ data: initial_data }

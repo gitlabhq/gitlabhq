@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group CI/CD settings' do
+RSpec.describe 'Group CI/CD settings', feature_category: :continuous_integration do
   include WaitForRequests
 
   let_it_be(:user) { create(:user) }
@@ -21,11 +21,6 @@ RSpec.describe 'Group CI/CD settings' do
 
     before do
       visit group_settings_ci_cd_path(group)
-    end
-
-    it 'displays the new group runners view banner' do
-      expect(page).to have_content(s_('Runners|New group runners view'))
-      expect(page).to have_link(href: group_runners_path(group))
     end
 
     it 'has "Enable shared runners for this group" toggle', :js do

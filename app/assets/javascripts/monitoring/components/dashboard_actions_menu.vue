@@ -146,7 +146,6 @@ export default {
   <gl-dropdown
     v-gl-tooltip
     data-testid="actions-menu"
-    data-qa-selector="actions_menu_dropdown"
     right
     no-caret
     toggle-class="gl-px-3!"
@@ -223,7 +222,6 @@ export default {
     <gl-dropdown-item
       v-if="isMenuItemEnabled.editDashboard"
       :href="selectedDashboard ? selectedDashboard.project_blob_path : null"
-      data-qa-selector="edit_dashboard_button_enabled"
       data-testid="edit-dashboard-item-enabled"
     >
       {{ $options.i18n.editDashboard }}

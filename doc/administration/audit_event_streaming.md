@@ -18,6 +18,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Custom HTTP headers UI [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) in GitLab 15.3. [Feature flag `custom_headers_streaming_audit_events_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) removed.
 > - [Improved user experience](https://gitlab.com/gitlab-org/gitlab/-/issues/367963) in GitLab 15.3.
 > - User-specified verification token API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360813) in GitLab 15.4.
+> - Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
 
 Users can set a streaming destination for a top-level group to receive all audit events about the group, its subgroups, and
 projects as structured JSON.
@@ -143,6 +144,7 @@ query {
             id
           }
         }
+        eventTypeFilters
       }
     }
   }
@@ -283,6 +285,63 @@ Users with the Owner role for a group can list streaming destinations and see th
 1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select the **Streams**.
 1. View the verification token on the right side of each item.
+
+## Event type filters
+
+> Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
+
+When this feature is enabled for a group, you can use an API to permit users to filter streamed audit events per destination.
+If the feature is enabled with no filters, the destination receives all audit events.
+
+A streaming destination that has an event type filter set has a **filtered** (**{filter}**) label.
+
+### Use the API to add an event type filter
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+You can add a list of event type filters using the `auditEventsStreamingDestinationEventsAdd` query type:
+
+```graphql
+mutation {
+    auditEventsStreamingDestinationEventsAdd(input: {
+        destinationId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/1",
+        eventTypeFilters: ["list of event type filters"]}){
+        errors
+        eventTypeFilters
+    }
+}
+```
+
+Event type filters are added if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
+### Use the API to remove an event type filter
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+You can remove a list of event type filters using the `auditEventsStreamingDestinationEventsRemove` query type:
+
+```graphql
+mutation {
+    auditEventsStreamingDestinationEventsRemove(input: {
+    destinationId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/1",
+    eventTypeFilters: ["list of event type filters"]
+  }){
+    errors
+  }
+}
+```
+
+Event type filters are removed if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
 
 ## Payload schema
 

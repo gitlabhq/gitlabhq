@@ -1,8 +1,8 @@
-- name: "`CI_BUILD_*` predefined variables"
+- title: "`CI_BUILD_*` predefined variables"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
   removal_milestone: "16.0"
-  removal_date: "2023-04-22"
+  removal_date: "2023-05-22"
   breaking_change: true
   reporter: dhershkovitch
   body: |

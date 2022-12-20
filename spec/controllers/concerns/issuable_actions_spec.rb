@@ -14,8 +14,7 @@ RSpec.describe IssuableActions do
     klass = Class.new do
       attr_reader :current_user, :project, :issuable
 
-      def self.before_action(action = nil, params = nil)
-      end
+      def self.before_action(action = nil, params = nil); end
 
       include IssuableActions
 
@@ -40,8 +39,7 @@ RSpec.describe IssuableActions do
         []
       end
 
-      def render(options)
-      end
+      def render(options); end
     end
 
     klass.new(issuable, project, user, finder_params_for_issuable)

@@ -7,5 +7,9 @@ module Postgresql
     def fully_qualified_table_name
       "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{table_name}"
     end
+
+    def table_schema
+      Gitlab::Database::GitlabSchema.table_schema(table_name)
+    end
   end
 end

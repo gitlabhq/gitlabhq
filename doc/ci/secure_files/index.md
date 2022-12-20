@@ -29,7 +29,7 @@ plain text and binary file types.
 You can manage secure files in the project settings, or with the [secure files API](../../api/secure_files.md).
 
 Secure files can be [downloaded and used by CI/CD jobs](#use-secure-files-in-cicd-jobs)
-by using the [load-secure-files](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/load-secure-files)
+by using the [download-secure-files](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files)
 tool.
 
 NOTE:
@@ -49,11 +49,11 @@ To add a secure file to a project:
 
 ## Use secure files in CI/CD jobs
 
-To use your secure files in a CI/CD job, you must use the [`load-secure-files`](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/load-secure-files)
+To use your secure files in a CI/CD job, you must use the [`download-secure-files`](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files)
 tool to download the files in the job. After they are downloaded, you can use them
 with your other script commands.
 
-Add a command in the `script` section of your job to download the `load-secure-files` tool
+Add a command in the `script` section of your job to download the `download-secure-files` tool
 and execute it. The files download into a `.secure_files` directory in the root of the project.
 To change the download location for the secure files, set the path in the `SECURE_FILES_DOWNLOAD_PATH`
 [CI/CD variable](../variables/index.md).
@@ -65,5 +65,5 @@ test:
   variables:
     SECURE_FILES_DOWNLOAD_PATH: './where/files/should/go/'
   script:
-    - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/load-secure-files/-/raw/main/installer" | bash
+    - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
 ```

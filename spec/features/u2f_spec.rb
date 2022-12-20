@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
+RSpec.describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js,
+feature_category: :authentication_and_authorization do
   include Spec::Support::Helpers::Features::TwoFactorHelpers
 
   before do

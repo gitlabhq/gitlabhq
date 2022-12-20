@@ -6,35 +6,35 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Permissions and roles **(FREE)**
 
-Users have different abilities depending on the role they have in a
-particular group or project. If a user is both in a project's group and the
-project itself, the highest role is used.
+When you add a user to a project or group, you assign them a role.
+The role determines which actions they can take in GitLab.
 
-On [public and internal projects](../api/projects.md#project-visibility-level), the Guest role
-(not to be confused with [Guest user](#free-guest-users)) is not enforced.
+If you add a user to both a project's group and the
+project itself, the higher role is used.
 
-When a member leaves a team's project, all the assigned [issues](project/issues/index.md) and
-[merge requests](project/merge_requests/index.md) are automatically unassigned.
+GitLab [administrators](../administration/index.md) have all permissions.
 
-GitLab [administrators](../administration/index.md) receive all permissions.
+## Roles
 
-To add or import a user, you can follow the
-[project members documentation](project/members/index.md).
+The available roles are:
 
-## Principles behind permissions
+- Guest (This role applies to [private and internal projects](../user/public_access.md) only.)
+- Reporter
+- Developer
+- Maintainer
+- Owner
 
-See our [product handbook on permissions](https://about.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab).
+A user assigned the Guest role has the least permissions,
+and the Owner has the most.
 
-## Instance-wide user permissions
-
-By default, users can create top-level groups and change their
-usernames. A GitLab administrator can configure the GitLab instance to
-[modify this behavior](../administration/user_settings.md).
+By default, all users can create top-level groups and change their
+usernames. A GitLab administrator can [change this behavior](../administration/user_settings.md)
+for the GitLab instance.
 
 ## Project members permissions
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219299) in GitLab 14.8, personal namespace owners appear with Owner role in new projects in their namespace. Introduced [with a flag](../administration/feature_flags.md) named `personal_project_owner_with_owner_access`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/351919) in GitLab 14.9. Feature flag `personal_project_owner_with_owner_access` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/219299).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219299) in GitLab 14.8, personal namespace owners appear with Owner role in new projects in their namespace. Introduced [with a flag](../administration/feature_flags.md) named `personal_project_owner_with_owner_access`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/351919) in GitLab 14.9. Feature flag `personal_project_owner_with_owner_access` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/219299).
 
 A user's role determines what permissions they have on a project. The Owner role provides all permissions but is
 available only:
@@ -79,14 +79,17 @@ The following table lists project permissions available for each role:
 | [GitLab Pages](project/pages/index.md):<br>Manage                                                                                                                                    |          |          |           | ✓          | ✓        |
 | [GitLab Pages](project/pages/index.md):<br>Manage GitLab Pages domains and certificates                                                                                              |          |          |           | ✓          | ✓        |
 | [GitLab Pages](project/pages/index.md):<br>Remove GitLab Pages                                                                                                                       |          |          |           | ✓          | ✓        |
-| [Incident Management](../operations/incident_management/index.md):<br>View [alerts](../operations/incident_management/alerts.md)                                                     |          | ✓        | ✓         | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>Assign an alert                                                                                                | ✓        | ✓        | ✓         | ✓          | ✓        |
-| [Incident Management](../operations/incident_management/index.md):<br>[Change an alert status](../operations/incident_management/alerts.md#change-an-alerts-status)                                                                                               |         | ✓        | ✓         | ✓          | ✓        |
-| [Incident Management](../operations/incident_management/index.md):<br>View [incident](../operations/incident_management/incidents.md)                                                | ✓        | ✓        | ✓         | ✓          | ✓        |
-| [Incident Management](../operations/incident_management/index.md):<br>Create [incident](../operations/incident_management/incidents.md)                                              |    | ✓        | ✓         | ✓          | ✓        |
-| [Incident Management](../operations/incident_management/index.md):<br>View [on-call schedules](../operations/incident_management/oncall_schedules.md)                                |          | ✓        | ✓         | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>Participate in on-call rotation                                                                                | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Incident Management](../operations/incident_management/index.md):<br>View [incident](../operations/incident_management/incidents.md)                                                | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Incident Management](../operations/incident_management/index.md):<br>Change [alert status](../operations/incident_management/alerts.md#change-an-alerts-status)                  |          | ✓        | ✓         | ✓          | ✓        |
+| [Incident Management](../operations/incident_management/index.md):<br>Change [incident severity](../operations/incident_management/manage_incidents.md#change-severity)              |          | ✓        | ✓         | ✓          | ✓        |
+| [Incident Management](../operations/incident_management/index.md):<br>Create [incident](../operations/incident_management/incidents.md)                                              |          | ✓        | ✓         | ✓          | ✓        |
+| [Incident Management](../operations/incident_management/index.md):<br>View [alerts](../operations/incident_management/alerts.md)                                                     |          | ✓        | ✓         | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>View [escalation policies](../operations/incident_management/escalation_policies.md)                           |          | ✓        | ✓         | ✓          | ✓        |
+| [Incident Management](../operations/incident_management/index.md):<br>View [on-call schedules](../operations/incident_management/oncall_schedules.md)                                |          | ✓        | ✓         | ✓          | ✓        |
+| [Incident Management](../operations/incident_management/index.md):<br>Change [incident escalation status](../operations/incident_management/manage_incidents.md#change-status)       |          |          | ✓         | ✓          | ✓        |
+| [Incident Management](../operations/incident_management/index.md):<br>Change [incident escalation policy](../operations/incident_management/manage_incidents.md#change-escalation-policy) |     |          | ✓         | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>Manage [on-call schedules](../operations/incident_management/oncall_schedules.md)                              |          |          |           | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>Manage [escalation policies](../operations/incident_management/escalation_policies.md)                         |          |          |           | ✓          | ✓        |
 | [Issue boards](project/issue_board.md):<br>Create or delete lists                                                                                                                    |          | ✓        | ✓         | ✓          | ✓        |
@@ -161,7 +164,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Edit comments (posted by any user)                                                                                                                  |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Edit project badges                                                                                                                                 |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Edit project settings                                                                                                                               |          |          |           | ✓          | ✓        |
-| [Projects](project/index.md):<br>Export project                                                                                                                                      |          |          |           | ✓          | ✓        |
+| [Projects](project/index.md):<br>[Export project](project/settings/import_export.md)                                                                                                                                      |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Manage [project access tokens](project/settings/project_access_tokens.md) (*11*)                                                                    |          |          |           | ✓ (*20*)   | ✓        |
 | [Projects](project/index.md):<br>Manage [Project Operations](../operations/index.md)                                                                                                 |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Rename project                                                                                                                                      |          |          |           | ✓          | ✓        |
@@ -204,7 +207,7 @@ The following table lists project permissions available for each role:
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Use security dashboard                                                                                    |          |          | ✓         | ✓          | ✓        |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability                                                                                        |          |          | ✓         | ✓          | ✓        |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability findings in [dependency list](application_security/dependency_list/index.md)           |          |          | ✓         | ✓          | ✓        |
-| [Tasks](tasks.md):<br>Create (*17*)     | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Tasks](tasks.md):<br>Create (*17*)     |          | ✓        | ✓         | ✓          | ✓        |
 | [Tasks](tasks.md):<br>Edit              |          | ✓         | ✓         | ✓          | ✓        |
 | [Tasks](tasks.md):<br>Remove from issue |          | ✓         | ✓         | ✓          | ✓        |
 | [Tasks](tasks.md):<br>Delete (*21*)     |          |           |            |            | ✓        |
@@ -218,7 +221,7 @@ The following table lists project permissions available for each role:
 <!-- markdownlint-disable MD029 -->
 
 1. On self-managed GitLab instances, guest users are able to perform this action only on
-   public and internal projects (not on private projects). [External users](#external-users)
+   public and internal projects (not on private projects). [External users](admin_area/external_users.md)
    must be given explicit access even if the project is internal. For GitLab.com, see the
    [GitLab.com visibility settings](gitlab_com/index.md#visibility-settings).
 2. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves or are assigned to.
@@ -327,29 +330,7 @@ This table shows granted privileges for jobs triggered by specific types of user
 | Push source and LFS                          |                 |           |            |               |
 
 1. Only if the triggering user is not an external one.
-1. Only if the triggering user is a member of the project.
-
-### Wiki and issues
-
-Project features like [wikis](project/wiki/index.md) and issues can be hidden from users depending on
-which visibility level you select on project settings.
-
-- Disabled: disabled for everyone
-- Only team members: only team members can see even if your project is public or internal
-- Everyone with access: everyone can see depending on your project's visibility level
-- Everyone: enabled for everyone (only available for GitLab Pages)
-
-### Protected branches
-
-Additional restrictions can be applied on a per-branch basis with [protected branches](project/protected_branches.md).
-Additionally, you can customize permissions to allow or prevent project Developers or Maintainers
-from pushing to a protected branch. Read through the documentation on
-[protected branches](project/protected_branches.md) to learn more.
-
-### Value stream analytics permissions
-
-Find the current permissions on the value stream analytics dashboard, as described in
-[related documentation](analytics/value_stream_analytics.md#access-permissions-for-value-stream-analytics).
+1. Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](http://docs.gitlabl.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
 
 ### File Locking permissions **(PREMIUM)**
 
@@ -380,6 +361,7 @@ The following table lists group permissions available for each role:
 
 | Action                                                                                  | Guest | Reporter | Developer | Maintainer | Owner |
 |-----------------------------------------------------------------------------------------|-------|----------|-----------|------------|-------|
+| Add/remove [child epics](group/epics/manage_epics.md#multi-level-child-epics)           | ✓ (8) | ✓        | ✓         | ✓          | ✓     |
 | Add an issue to an [epic](group/epics/index.md)                                         | ✓ (7) | ✓ (7)    | ✓ (7)     | ✓ (7)      | ✓ (7) |
 | Browse group                                                                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | Pull a container image using the dependency proxy                                       | ✓     | ✓        | ✓         | ✓          | ✓     |
@@ -397,6 +379,7 @@ The following table lists group permissions available for each role:
 | Pull [packages](packages/index.md)                                                      |       | ✓        | ✓         | ✓          | ✓     |
 | Delete [packages](packages/index.md)                                                    |       |          |           | ✓          | ✓     |
 | Create/edit/delete [Maven and generic package duplicate settings](packages/generic_packages/index.md#do-not-allow-duplicate-generic-packages)                                                    |       |          |           | ✓          | ✓     |
+| Enable/disable package request forwarding                                               |       |          |           | ✓          | ✓     |
 | Pull a Container Registry image                                                         | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
 | Remove a Container Registry image                                                       |       |          | ✓         | ✓          | ✓     |
 | View [Group DevOps Adoption](group/devops_adoption/index.md)                            |       | ✓        | ✓         | ✓          | ✓     |
@@ -448,6 +431,7 @@ The following table lists group permissions available for each role:
 5. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
 6. Users can only view events based on their individual actions.
 7. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue.
+8. You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent and child epics.
 
 <!-- markdownlint-enable MD029 -->
 
@@ -460,109 +444,6 @@ nested groups if you have membership in one of its parents.
 To learn more, read through the documentation on
 [subgroups memberships](group/subgroups/index.md#subgroup-membership).
 
-## External users **(FREE SELF)**
-
-In cases where it is desired that a user has access only to some internal or
-private projects, there is the option of creating **External Users**. This
-feature may be useful when for example a contractor is working on a given
-project and should only have access to that project.
-
-External users:
-
-- Cannot create project, groups, and snippets in their personal namespaces.
-- Can only create projects (including forks), subgroups, and snippets within top-level groups to which they are explicitly granted access.
-- Can only access public projects and projects to which they are explicitly granted access,
-  thus hiding all other internal or private ones from them (like being
-  logged out).
-- Can only access public groups and groups to which they are explicitly granted access,
-  thus hiding all other internal or private ones from them (like being
-  logged out).
-- Can only access public snippets.
-
-Access can be granted by adding the user as member to the project or group.
-Like usual users, they receive a role in the project or group with all
-the abilities that are mentioned in the [permissions table above](#project-members-permissions).
-For example, if an external user is added as Guest, and your project is internal or
-private, they do not have access to the code; you need to grant the external
-user access at the Reporter level or above if you want them to have access to the code. You should
-always take into account the
-[project's visibility and permissions settings](project/settings/index.md#configure-project-visibility-features-and-permissions)
-as well as the permission level of the user.
-
-NOTE:
-External users still count towards a license seat.
-
-An administrator can flag a user as external by either of the following methods:
-
-- [Through the API](../api/users.md#user-modification).
-- Using the GitLab UI:
-  1. On the top bar, select **Main menu > Admin**.
-  1. On the left sidebar, select **Overview > Users** to create a new user or edit an existing one.
-     There, you can find the option to flag the user as external.
-
-Additionally, users can be set as external users using:
-
-- [SAML groups](../integration/saml.md#external-groups).
-- [LDAP groups](../administration/auth/ldap/ldap_synchronization.md#external-groups).
-
-### Setting new users to external
-
-By default, new users are not set as external users. This behavior can be changed
-by an administrator:
-
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Account and limit** section.
-
-If you change the default behavior of creating new users as external, you
-have the option to narrow it down by defining a set of internal users.
-The **Internal users** field allows specifying an email address regex pattern to
-identify default internal users. New users whose email address matches the regex
-pattern are set to internal by default rather than an external collaborator.
-
-The regex pattern format is in Ruby, but it needs to be convertible to JavaScript,
-and the ignore case flag is set (`/regex pattern/i`). Here are some examples:
-
-- Use `\.internal@domain\.com$` to mark email addresses ending with
-  `.internal@domain.com` as internal.
-- Use `^(?:(?!\.ext@domain\.com).)*$\r?` to mark users with email addresses
-  not including `.ext@domain.com` as internal.
-
-WARNING:
-Be aware that this regex could lead to a
-[regular expression denial of service (ReDoS) attack](https://en.wikipedia.org/wiki/ReDoS).
-
-## Free Guest users **(ULTIMATE)**
-
-When a user is given the Guest role on a project, group, or both, and holds no
-higher permission level on any other project or group on the GitLab instance,
-the user is considered a guest user by GitLab and does not consume a license seat.
-There is no other specific "guest" designation for newly created users.
-
-If the user is assigned a higher role on any projects or groups, the user
-takes a license seat. If a user creates a project, the user becomes a Maintainer
-on the project, resulting in the use of a license seat. Also, note that if your
-project is internal or private, Guest users have all the abilities that are
-mentioned in the [permissions table above](#project-members-permissions) (they
-are unable to browse the project's repository, for example).
-
-NOTE:
-To prevent a guest user from creating projects, as an administrator, you can edit the
-user's profile to mark the user as [external](#external-users).
-Beware though that even if a user is external, if they already have Reporter or
-higher permissions in any project or group, they are **not** counted as a
-free guest user.
-
-## Auditor users **(PREMIUM SELF)**
-
-Auditor users are given read-only access to all projects, groups, and other
-resources on the GitLab instance.
-
-An Auditor user should be able to access all projects and groups of a GitLab instance
-with the permissions described on the documentation on [auditor users permissions](../administration/auditor_users.md#auditor-user-permissions-and-restrictions).
-
-[Read more about Auditor users.](../administration/auditor_users.md)
-
 ## Users with minimal access **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
@@ -570,6 +451,11 @@ with the permissions described on the documentation on [auditor users permission
 Owners can add members with a "minimal access" role to a parent group. Such users don't automatically have access to
 projects and subgroups underneath. Owners must explicitly add these "minimal access" users to the specific subgroups and
 projects.
+
+You can use minimal access to give the same member more than one role in a group:
+
+1. Add the member to the parent group with a minimal access role.
+1. Invite the member as a direct member with a specific role in any subgroup or project in that group.
 
 Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), when minimal access users:
 
@@ -584,16 +470,6 @@ Users with even a "minimal access" role are counted against your number of licen
 requirement does not apply for [GitLab Ultimate](https://about.gitlab.com/pricing/)
 subscriptions.
 
-## Project features
-
-Project features like wiki and issues can be hidden from users depending on
-which visibility level you select on project settings.
-
-- Disabled: disabled for everyone.
-- Only team members: only team members can see, even if your project is public or internal.
-- Everyone with access: everyone can see depending on your project visibility level.
-- Everyone: enabled for everyone (only available for GitLab Pages).
-
 ## Release permissions with protected tags
 
 [The permission to create tags](project/protected_tags.md) is used to define if a user can
@@ -602,12 +478,12 @@ create, edit, and delete [Releases](project/releases/index.md).
 See [Release permissions](project/releases/index.md#release-permissions)
 for more information.
 
-## LDAP users permissions
+## Related topics
 
-LDAP user permissions can be manually overridden by an administrator.
-Read through the documentation on [LDAP users permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap) to learn more.
-
-## Project aliases
-
-Project aliases can only be read, created and deleted by a GitLab administrator.
-Read through the documentation on [Project aliases](../user/project/import/index.md#project-aliases) to learn more.
+- [The GitLab principles behind permissions](https://about.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab)
+- [Members](project/members/index.md)
+- Customize permissions on [protected branches](project/protected_branches.md)
+- [LDAP users permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)
+- [Value stream analytics permissions](analytics/value_stream_analytics.md#access-permissions-for-value-stream-analytics)
+- [Project aliases](../user/project/import/index.md#project-aliases)
+- [Auditor users](../administration/auditor_users.md)

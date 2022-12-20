@@ -11,14 +11,22 @@ module API
         namespace :integrations do
           namespace :jira_connect do
             resource :subscriptions do
-              desc 'Subscribe a namespace to a JiraConnectInstallation'
+              desc 'Subscribe a namespace to a JiraConnectInstallation' do
+                detail 'Subscribes the namespace to the JiraConnectInstallation'
+                success ::API::Entities::BasicSuccess
+                failure [
+                  { code: 400, message: 'Bad request' },
+                  { code: 401, message: 'Unauthorized' },
+                  { code: 403, message: 'Forbidden' },
+                  { code: 404, message: 'Not found' }
+                ]
+                tags %w[jira_connect_subscriptions]
+              end
               params do
                 requires :jwt, type: String, desc: 'JWT token for authorization with the Jira Connect installation'
                 requires :namespace_path, type: String, desc: 'Path for the namespace that should be subscribed'
               end
               post do
-                not_found! unless Feature.enabled?(:jira_connect_oauth, current_user)
-
                 jwt = Atlassian::JiraConnect::Jwt::Symmetric.new(params[:jwt])
                 installation = JiraConnectInstallation.find_by_client_key(jwt.iss_claim)
 

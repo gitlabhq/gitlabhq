@@ -20,6 +20,8 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 )
 
 var (
@@ -93,7 +95,7 @@ func (s *sendFileResponseWriter) WriteHeader(status int) {
 		s.hijacked = true
 
 		// Serve the file
-		helper.DisableResponseBuffering(s.rw)
+		nginx.DisableResponseBuffering(s.rw)
 		sendFileFromDisk(s.rw, s.req, file)
 		return
 	}
@@ -129,7 +131,7 @@ func sendFileFromDisk(w http.ResponseWriter, r *http.Request, file string) {
 	if contentTypeHeaderPresent {
 		data, err := io.ReadAll(io.LimitReader(content, headers.MaxDetectSize))
 		if err != nil {
-			helper.Fail500(w, r, fmt.Errorf("content type detection: %v", err))
+			fail.Request(w, r, fmt.Errorf("content type detection: %v", err))
 			return
 		}
 

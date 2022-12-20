@@ -42,14 +42,6 @@ RSpec.describe WebHooks::LogExecutionService do
       service.execute
     end
 
-    it 'does not update the last failure when the feature flag is disabled' do
-      stub_feature_flags(web_hooks_disable_failed: false)
-
-      expect(project_hook).not_to receive(:update_last_failure)
-
-      service.execute
-    end
-
     context 'obtaining an exclusive lease' do
       let(:lease_key) { "web_hooks:update_hook_failure_state:#{project_hook.id}" }
 
@@ -136,19 +128,6 @@ RSpec.describe WebHooks::LogExecutionService do
 
         expect { service.execute }.not_to change(project_hook, :recent_failures)
       end
-
-      context 'when the web_hooks_disable_failed FF is disabled' do
-        before do
-          # Hook will only be executed if the flag is disabled.
-          stub_feature_flags(web_hooks_disable_failed: false)
-        end
-
-        it 'does not allow the failure count to overflow' do
-          project_hook.update!(recent_failures: 32767)
-
-          expect { service.execute }.not_to change(project_hook, :recent_failures)
-        end
-      end
     end
 
     context 'when response_category is :error' do
@@ -162,6 +141,24 @@ RSpec.describe WebHooks::LogExecutionService do
         expect(project_hook).to receive(:backoff!)
 
         service.execute
+      end
+    end
+
+    context 'with url_variables' do
+      before do
+        project_hook.update!(
+          url: 'http://example1.test/{foo}-{bar}',
+          url_variables: { 'foo' => 'supers3cret', 'bar' => 'token' }
+        )
+      end
+
+      let(:data) { super().merge(response_headers: { 'X-Token-Id' => 'supers3cret-token', 'X-Request' => 'PUBLIC-token' }) }
+      let(:expected_headers) { { 'X-Token-Id' => '{foo}-{bar}', 'X-Request' => 'PUBLIC-{bar}' } }
+
+      it 'logs the data and masks response headers' do
+        expect { service.execute }.to change(::WebHookLog, :count).by(1)
+
+        expect(WebHookLog.recent.first.response_headers).to eq(expected_headers)
       end
     end
 

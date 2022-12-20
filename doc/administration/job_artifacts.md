@@ -100,8 +100,7 @@ In a multi-server setup you must use one of the options to
 
 #### Object Storage Settings
 
-NOTE:
-In GitLab 13.2 and later, we recommend using the
+In GitLab 13.2 and later, you should use the
 [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
 This section describes the earlier configuration format.
 
@@ -235,7 +234,7 @@ by the `gitlab:artifacts:migrate` Rake task.
 To migrate back to local storage:
 
 1. Run `gitlab-rake gitlab:artifacts:migrate_to_local`.
-1. Disable object_storage for artifacts in `gitlab.rb`:
+1. Disable object storage for artifacts in `gitlab.rb`:
    - Set `gitlab_rails['artifacts_object_store_enabled'] = false`.
    - Comment out all other `artifacts_object_store` settings, including the entire
      `artifacts_object_store_connection` section, including the closing `}`.
@@ -635,24 +634,6 @@ If you need to manually remove **all** job artifacts associated with multiple jo
    - `7.days.ago`
    - `3.months.ago`
    - `1.year.ago`
-
-### Error `Downloading artifacts from coordinator... not found`
-
-When a job attempts to download artifacts from an earlier job, you might receive an error message similar to:
-
-```plaintext
-Downloading artifacts from coordinator... not found  id=12345678 responseStatus=404 Not Found
-```
-
-This can be caused by a `gitlab.rb` file with the following configuration:
-
-```ruby
-gitlab_rails['artifacts_object_store_background_upload'] = false
-gitlab_rails['artifacts_object_store_direct_upload'] = true
-```
-
-To prevent this, comment out or remove those lines, or switch to their [default values](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template), and
-then run `sudo gitlab-ctl reconfigure`.
 
 ### Job artifact upload fails with error 500
 

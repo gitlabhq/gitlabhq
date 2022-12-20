@@ -33,10 +33,7 @@ module QA
         runner.remove_via_api!
       end
 
-      context(
-        'when policy is allowed',
-        quarantine: { type: :flaky, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/369397' }
-      ) do
+      context 'when policy is allowed' do
         let(:allowed_policies) { %w[if-not-present always never] }
 
         where do
@@ -87,20 +84,19 @@ module QA
         let(:allowed_policies) { %w[never] }
         let(:pull_policies) { %w[always] }
 
-        let(:message) do
-          'ERROR: Preparation failed: the configured PullPolicies ([always])'\
-            ' are not allowed by AllowedPullPolicies ([never])'
-        end
+        # The sentence seems differ from time to time,
+        # only checking portions of the sentence that matter
+        let(:text1) { 'pull_policy ([always])' }
+        let(:text2) { 'is not one of the allowed_pull_policies ([never])' }
 
         it(
           'fails job with policy not allowed message',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368853',
-          quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/371420', type: :stale }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368853'
         ) do
           visit_job
 
-          expect(job_log).to have_content(message),
-                             "Expected to find #{message} in #{job_log}, but didn't."
+          expect(job_log).to include(text1, text2),
+                             "Expected to find contents #{text1} and #{text2} in #{job_log}, but didn't."
         end
       end
 
@@ -123,8 +119,7 @@ module QA
 
         tempdir.close!
 
-        # Give runner some time to pick up new configuration
-        sleep(30)
+        runner.restart
       end
 
       def add_ci_file
@@ -154,7 +149,7 @@ module QA
 
       def visit_job
         Page::Project::Pipeline::Show.perform do |show|
-          Support::Waiter.wait_until { show.completed? }
+          Support::Waiter.wait_until(max_duration: 90) { show.completed? }
 
           show.click_job(job_name)
         end

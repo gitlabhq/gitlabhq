@@ -9,6 +9,7 @@ import {
   FILTERED_SEARCH_TOKEN_TWO_FACTOR,
   FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS,
 } from '~/members/constants';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 jest.mock('~/lib/utils/url_utility', () => {
@@ -130,7 +131,7 @@ describe('MembersFilteredSearchBar', () => {
 
       expect(findFilteredSearchBar().props('initialFilterValue')).toEqual([
         {
-          type: 'filtered-search-term',
+          type: FILTERED_SEARCH_TERM,
           value: {
             data: 'foobar',
           },
@@ -145,7 +146,7 @@ describe('MembersFilteredSearchBar', () => {
 
       expect(findFilteredSearchBar().props('initialFilterValue')).toEqual([
         {
-          type: 'filtered-search-term',
+          type: FILTERED_SEARCH_TERM,
           value: {
             data: 'foo bar baz',
           },
@@ -174,7 +175,7 @@ describe('MembersFilteredSearchBar', () => {
 
       findFilteredSearchBar().vm.$emit('onFilter', [
         { type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, value: { data: 'enabled', operator: '=' } },
-        { type: 'filtered-search-term', value: { data: 'foobar' } },
+        { type: FILTERED_SEARCH_TERM, value: { data: 'foobar' } },
       ]);
 
       expect(redirectTo).toHaveBeenCalledWith(
@@ -187,7 +188,7 @@ describe('MembersFilteredSearchBar', () => {
 
       findFilteredSearchBar().vm.$emit('onFilter', [
         { type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, value: { data: 'enabled', operator: '=' } },
-        { type: 'filtered-search-term', value: { data: 'foo bar baz' } },
+        { type: FILTERED_SEARCH_TERM, value: { data: 'foo bar baz' } },
       ]);
 
       expect(redirectTo).toHaveBeenCalledWith(
@@ -202,7 +203,7 @@ describe('MembersFilteredSearchBar', () => {
 
       findFilteredSearchBar().vm.$emit('onFilter', [
         { type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, value: { data: 'enabled', operator: '=' } },
-        { type: 'filtered-search-term', value: { data: 'foobar' } },
+        { type: FILTERED_SEARCH_TERM, value: { data: 'foobar' } },
       ]);
 
       expect(redirectTo).toHaveBeenCalledWith(
@@ -216,7 +217,7 @@ describe('MembersFilteredSearchBar', () => {
       createComponent();
 
       findFilteredSearchBar().vm.$emit('onFilter', [
-        { type: 'filtered-search-term', value: { data: 'foobar' } },
+        { type: FILTERED_SEARCH_TERM, value: { data: 'foobar' } },
       ]);
 
       expect(redirectTo).toHaveBeenCalledWith('https://localhost/?search=foobar&tab=invited');

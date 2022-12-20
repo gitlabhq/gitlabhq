@@ -1,5 +1,6 @@
 <script>
-import { GlAlert, GlSprintf, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import axios from '~/lib/utils/axios_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, sprintf } from '~/locale';
@@ -16,7 +17,7 @@ export default {
     ServiceDeskSetting,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   inject: {
     initialIsEnabled: {

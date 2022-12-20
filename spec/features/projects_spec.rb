@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project' do
+RSpec.describe 'Project', feature_category: :projects do
   include ProjectForksHelper
   include MobileHelpers
 
@@ -327,9 +327,9 @@ RSpec.describe 'Project' do
     end
 
     it 'has working links to submodules' do
-      click_link('645f6c4c')
+      submodule = find_link('645f6c4c')
 
-      expect(page).to have_selector('.ref-selector', text: '645f6c4c82fd3f5e06f67134450a570b795e55a6')
+      expect(submodule[:href]).to eq('https://gitlab.com/gitlab-org/gitlab-grack/-/tree/645f6c4c82fd3f5e06f67134450a570b795e55a6')
     end
 
     context 'for signed commit on default branch', :js do
@@ -418,7 +418,7 @@ RSpec.describe 'Project' do
       visit path
     end
 
-    it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="project[name]"]' }]
+    it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="project[name]"]', submit: 'button[type="submit"]' }]
   end
 
   describe 'view for a user without an access to a repo' do

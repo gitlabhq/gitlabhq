@@ -188,6 +188,21 @@ describe('RunnerList', () => {
       expect(findCell({ fieldKey: 'summary' }).text()).toContain(`Summary: ${mockRunners[0].id}`);
     });
 
+    it('Render #runner-job-status-badge slot in "summary" cell', () => {
+      createComponent(
+        {
+          scopedSlots: {
+            'runner-job-status-badge': ({ runner }) => `Job status ${runner.jobExecutionStatus}`,
+          },
+        },
+        mountExtended,
+      );
+
+      expect(findCell({ fieldKey: 'summary' }).text()).toContain(
+        `Job status ${mockRunners[0].jobExecutionStatus}`,
+      );
+    });
+
     it('Render #runner-actions-cell slot in "actions" cell', () => {
       createComponent(
         {

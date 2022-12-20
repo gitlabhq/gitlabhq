@@ -435,3 +435,33 @@ func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*h
 
 	return ws, ws.Close, waitForNextApiPoll
 }
+
+func TestFixRemoteAddr(t *testing.T) {
+	testCases := []struct {
+		initial   string
+		forwarded string
+		expected  string
+	}{
+		{initial: "@", forwarded: "", expected: "127.0.0.1:0"},
+		{initial: "@", forwarded: "18.245.0.1", expected: "18.245.0.1:0"},
+		{initial: "@", forwarded: "127.0.0.1", expected: "127.0.0.1:0"},
+		{initial: "@", forwarded: "192.168.0.1", expected: "127.0.0.1:0"},
+		{initial: "192.168.1.1:0", forwarded: "", expected: "192.168.1.1:0"},
+		{initial: "192.168.1.1:0", forwarded: "18.245.0.1", expected: "18.245.0.1:0"},
+	}
+
+	for _, tc := range testCases {
+		req, err := http.NewRequest("POST", "unix:///tmp/test.socket/info/refs", nil)
+		require.NoError(t, err)
+
+		req.RemoteAddr = tc.initial
+
+		if tc.forwarded != "" {
+			req.Header.Add("X-Forwarded-For", tc.forwarded)
+		}
+
+		fixRemoteAddr(req)
+
+		require.Equal(t, tc.expected, req.RemoteAddr)
+	}
+}

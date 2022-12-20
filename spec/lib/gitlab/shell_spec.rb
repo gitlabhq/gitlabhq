@@ -88,18 +88,11 @@ RSpec.describe Gitlab::Shell do
       let(:disk_path) { "#{project.disk_path}.git" }
 
       it 'returns true when the command succeeds' do
-        expect(TestEnv.storage_dir_exists?(project.repository_storage, disk_path)).to be(true)
+        expect(project.repository.raw).to exist
 
         expect(gitlab_shell.remove_repository(project.repository_storage, project.disk_path)).to be(true)
 
-        expect(TestEnv.storage_dir_exists?(project.repository_storage, disk_path)).to be(false)
-      end
-
-      it 'keeps the namespace directory' do
-        gitlab_shell.remove_repository(project.repository_storage, project.disk_path)
-
-        expect(TestEnv.storage_dir_exists?(project.repository_storage, disk_path)).to be(false)
-        expect(TestEnv.storage_dir_exists?(project.repository_storage, project.disk_path.gsub(project.name, ''))).to be(true)
+        expect(project.repository.raw).not_to exist
       end
     end
 
@@ -107,21 +100,22 @@ RSpec.describe Gitlab::Shell do
       let!(:project2) { create(:project, :repository) }
 
       it 'returns true when the command succeeds' do
-        old_path = project2.disk_path
+        old_repo = project2.repository.raw
         new_path = "project/new_path"
+        new_repo = Gitlab::Git::Repository.new(project2.repository_storage, "#{new_path}.git", nil, nil)
 
-        expect(TestEnv.storage_dir_exists?(project2.repository_storage, "#{old_path}.git")).to be(true)
-        expect(TestEnv.storage_dir_exists?(project2.repository_storage, "#{new_path}.git")).to be(false)
+        expect(old_repo).to exist
+        expect(new_repo).not_to exist
 
-        expect(gitlab_shell.mv_repository(project2.repository_storage, old_path, new_path)).to be_truthy
+        expect(gitlab_shell.mv_repository(project2.repository_storage, project2.disk_path, new_path)).to be_truthy
 
-        expect(TestEnv.storage_dir_exists?(project2.repository_storage, "#{old_path}.git")).to be(false)
-        expect(TestEnv.storage_dir_exists?(project2.repository_storage, "#{new_path}.git")).to be(true)
+        expect(old_repo).not_to exist
+        expect(new_repo).to exist
       end
 
       it 'returns false when the command fails' do
         expect(gitlab_shell.mv_repository(project2.repository_storage, project2.disk_path, '')).to be_falsy
-        expect(TestEnv.storage_dir_exists?(project2.repository_storage, "#{project2.disk_path}.git")).to be(true)
+        expect(project2.repository.raw).to exist
       end
     end
   end
@@ -133,9 +127,11 @@ RSpec.describe Gitlab::Shell do
 
     describe '#add_namespace' do
       it 'creates a namespace' do
-        Gitlab::GitalyClient::NamespaceService.allow { subject.add_namespace(storage, "mepmep") }
+        Gitlab::GitalyClient::NamespaceService.allow do
+          subject.add_namespace(storage, "mepmep")
 
-        expect(TestEnv.storage_dir_exists?(storage, "mepmep")).to be(true)
+          expect(Gitlab::GitalyClient::NamespaceService.new(storage).exists?("mepmep")).to be(true)
+        end
       end
     end
 
@@ -160,9 +156,9 @@ RSpec.describe Gitlab::Shell do
         Gitlab::GitalyClient::NamespaceService.allow do
           subject.add_namespace(storage, "mepmep")
           subject.rm_namespace(storage, "mepmep")
-        end
 
-        expect(TestEnv.storage_dir_exists?(storage, "mepmep")).to be(false)
+          expect(Gitlab::GitalyClient::NamespaceService.new(storage).exists?("mepmep")).to be(false)
+        end
       end
     end
 
@@ -171,10 +167,10 @@ RSpec.describe Gitlab::Shell do
         Gitlab::GitalyClient::NamespaceService.allow do
           subject.add_namespace(storage, "mepmep")
           subject.mv_namespace(storage, "mepmep", "2mep")
-        end
 
-        expect(TestEnv.storage_dir_exists?(storage, "mepmep")).to be(false)
-        expect(TestEnv.storage_dir_exists?(storage, "2mep")).to be(true)
+          expect(Gitlab::GitalyClient::NamespaceService.new(storage).exists?("mepmep")).to be(false)
+          expect(Gitlab::GitalyClient::NamespaceService.new(storage).exists?("2mep")).to be(true)
+        end
       end
     end
   end

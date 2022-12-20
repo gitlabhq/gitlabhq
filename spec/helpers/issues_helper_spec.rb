@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe IssuesHelper do
-  let(:project) { create(:project) }
-  let(:issue) { create(:issue, project: project) }
-  let(:ext_project) { create(:project, :with_redmine_integration) }
+  let_it_be(:project) { create(:project) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
   describe '#work_item_type_icon' do
     it 'returns icon of all standard base types' do
@@ -378,6 +377,27 @@ RSpec.describe IssuesHelper do
       }
 
       expect(helper.group_issues_list_data(group, current_user)).to include(expected)
+    end
+  end
+
+  describe '#dashboard_issues_list_data' do
+    let(:current_user) { double.as_null_object }
+
+    it 'returns expected result' do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:image_path).and_return('#')
+      allow(helper).to receive(:url_for).and_return('#')
+
+      expected = {
+        calendar_path: '#',
+        empty_state_svg_path: '#',
+        initial_sort: current_user&.user_preference&.issues_sort,
+        is_public_visibility_restricted: Gitlab::CurrentSettings.restricted_visibility_levels ? 'false' : '',
+        is_signed_in: current_user.present?.to_s,
+        rss_path: '#'
+      }
+
+      expect(helper.dashboard_issues_list_data(current_user)).to include(expected)
     end
   end
 

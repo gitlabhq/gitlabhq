@@ -43,16 +43,17 @@ Object {
       },
       "author": Object {
         "__typename": "UserCore",
-        "avatarUrl": "https://www.gravatar.com/avatar/16f8e2050ce10180ca571c2eb19cfce2?s=80&d=identicon",
+        "avatarUrl": "https://www.gravatar.com/avatar/eb329fbfeccd9e6d45ff159da8736876?s=80&d=identicon",
         "id": Any<String>,
-        "username": "administrator",
-        "webUrl": "http://localhost/administrator",
+        "username": "user1",
+        "webUrl": "http://localhost/user1",
       },
       "commit": Object {
         "shortId": "b83d6e39",
         "title": "Merge branch 'branch-merged' into 'master'",
       },
       "commitPath": "http://localhost/releases-namespace/releases-project/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0",
+      "createdAt": 2019-01-03T00:00:00.000Z,
       "descriptionHtml": "<p data-sourcepos=\\"1:1-1:23\\" dir=\\"auto\\">An okay release <gl-emoji title=\\"shrug\\" data-name=\\"shrug\\" data-unicode-version=\\"9.0\\">🤷</gl-emoji></p>",
       "evidences": Array [],
       "historicalRelease": false,
@@ -140,16 +141,17 @@ Object {
       },
       "author": Object {
         "__typename": "UserCore",
-        "avatarUrl": "https://www.gravatar.com/avatar/16f8e2050ce10180ca571c2eb19cfce2?s=80&d=identicon",
+        "avatarUrl": "https://www.gravatar.com/avatar/eb329fbfeccd9e6d45ff159da8736876?s=80&d=identicon",
         "id": Any<String>,
-        "username": "administrator",
-        "webUrl": "http://localhost/administrator",
+        "username": "user1",
+        "webUrl": "http://localhost/user1",
       },
       "commit": Object {
         "shortId": "b83d6e39",
         "title": "Merge branch 'branch-merged' into 'master'",
       },
       "commitPath": "http://localhost/releases-namespace/releases-project/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0",
+      "createdAt": 2018-12-03T00:00:00.000Z,
       "descriptionHtml": "<p data-sourcepos=\\"1:1-1:33\\" dir=\\"auto\\">Best. Release. <strong>Ever.</strong> <gl-emoji title=\\"rocket\\" data-name=\\"rocket\\" data-unicode-version=\\"6.0\\">🚀</gl-emoji></p>",
       "evidences": Array [
         Object {
@@ -253,6 +255,7 @@ Object {
       "sources": Array [],
     },
     "author": undefined,
+    "createdAt": 2018-12-03T00:00:00.000Z,
     "description": "Best. Release. **Ever.** :rocket:",
     "evidences": Array [],
     "milestones": Array [
@@ -362,16 +365,17 @@ Object {
     },
     "author": Object {
       "__typename": "UserCore",
-      "avatarUrl": "https://www.gravatar.com/avatar/16f8e2050ce10180ca571c2eb19cfce2?s=80&d=identicon",
+      "avatarUrl": "https://www.gravatar.com/avatar/eb329fbfeccd9e6d45ff159da8736876?s=80&d=identicon",
       "id": Any<String>,
-      "username": "administrator",
-      "webUrl": "http://localhost/administrator",
+      "username": "user1",
+      "webUrl": "http://localhost/user1",
     },
     "commit": Object {
       "shortId": "b83d6e39",
       "title": "Merge branch 'branch-merged' into 'master'",
     },
     "commitPath": "http://localhost/releases-namespace/releases-project/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0",
+    "createdAt": 2018-12-03T00:00:00.000Z,
     "descriptionHtml": "<p data-sourcepos=\\"1:1-1:33\\" dir=\\"auto\\">Best. Release. <strong>Ever.</strong> <gl-emoji title=\\"rocket\\" data-name=\\"rocket\\" data-unicode-version=\\"6.0\\">🚀</gl-emoji></p>",
     "evidences": Array [
       Object {

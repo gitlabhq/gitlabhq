@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group issues page' do
+RSpec.describe 'Group issues page', feature_category: :subgroups do
   include FilteredSearchHelpers
   include DragTo
 
@@ -10,6 +10,10 @@ RSpec.describe 'Group issues page' do
   let(:project) { create(:project, :public, group: group) }
   let(:project_with_issues_disabled) { create(:project, :issues_disabled, group: group) }
   let(:path) { issues_group_path(group) }
+
+  before do
+    stub_feature_flags(or_issuable_queries: false)
+  end
 
   context 'with shared examples', :js do
     let(:issuable) { create(:issue, project: project, title: "this is my created issuable") }

@@ -59,6 +59,8 @@ To change a vulnerability's status from its Vulnerability Page:
 1. From the **Status** dropdown list select a status, then select **Change status**.
 1. Optionally, at the bottom of the page, add a comment to the log entry.
 
+The Actions log records each status change along with which user changed the status and the time of the change.
+
 ## Creating an issue for a vulnerability
 
 From a vulnerability's page you can create an issue to track all action taken to resolve or

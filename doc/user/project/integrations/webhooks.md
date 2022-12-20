@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 [Webhooks](https://en.wikipedia.org/wiki/Webhook) are custom HTTP callbacks
 that you define. They are usually triggered by an
-event, such as pushing code to a repository or posting a comment on a blog.
+event, such as pushing code to a repository or posting a comment on an issue.
 When the event occurs, the source app makes an HTTP request to the URI
 configured for the webhook. The action to take may be anything. For example,
 you can use webhooks to:
@@ -52,7 +52,7 @@ specific to a group, including:
 
 ## Configure a webhook in GitLab
 
-You can configure a webhook for a group or a project.
+To configure a webhook for a project or group:
 
 1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
 1. In **URL**, enter the URL of the webhook endpoint.
@@ -61,6 +61,40 @@ You can configure a webhook for a group or a project.
 1. In the **Trigger** section, select the [events](webhook_events.md) to trigger the webhook.
 1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](index.md#manage-ssl-verification).
 1. Select **Add webhook**.
+
+## Mask sensitive portions of webhook URLs
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99995) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `webhook_form_mask_url`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/376106) in GitLab 15.6.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/376106) in GitLab 15.7. Feature flag `webhook_form_mask_url` removed.
+
+You can define and mask sensitive portions of webhook URLs and replace them
+with configured values any number of times when webhooks are executed.
+Sensitive portions do not get logged and are encrypted at rest in the database.
+
+To mask sensitive portions of the webhook URL:
+
+1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
+1. In **URL**, enter the full webhook URL.
+1. Select **Mask portions of URL**.
+1. In **Sensitive portion of URL**, enter the portion you want to mask.
+1. In **How it looks in the UI**, enter the masking value.
+
+To interpolate sensitive portions for each webhook, use `url_variables`.
+For example, if a webhook has the following URL:
+
+```plaintext
+https://{subdomain}.example.com/{path}?key={value}
+```
+
+You must define the following variables:
+
+- `subdomain`
+- `path`
+- `value`
+
+Variable names can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
+You can define URL variables directly using the REST API.
 
 ## Configure your webhook receiver endpoint
 
@@ -86,27 +120,22 @@ Endpoints should follow these best practices:
 
 ### Failing webhooks
 
-> Introduced in GitLab 13.12 [with a flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60837) in GitLab 13.12 [with a flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/329849) in GitLab 15.7.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/329849) in GitLab 15.7. Feature flag `web_hooks_disable_failed` removed.
 
 If a webhook fails repeatedly, it may be disabled automatically.
 
 Webhooks that return response codes in the `5xx` range are understood to be failing
-intermittently, and are temporarily disabled. This lasts initially
-for 10 minutes. If the hook continues to fail, the back-off period is
-extended on each retry, up to a maximum disabled period of 24 hours.
+intermittently and are temporarily disabled. These webhooks are initially disabled
+for 1 minute, which is extended on each retry up to a maximum of 24 hours.
 
-Webhooks that return failure codes in the `4xx` range are understood to be
-misconfigured, and these are disabled until you manually re-enable
-them. These webhooks are not automatically retried.
+Webhooks that return response codes in the `4xx` range are understood to be
+misconfigured and are permanently disabled until you manually re-enable
+them yourself.
 
-See [troubleshooting](#troubleshoot-webhooks) for information on
-how to see if a webhook is disabled, and how to re-enable it.
+See [Troubleshooting](#troubleshoot-webhooks) for more information on
+disabled webhooks and how to re-enable them.
 
 ## Test a webhook
 
@@ -190,10 +219,10 @@ You can filter push events by branch. Use one of the following options to filter
 
 - **All branches**: push events from all branches.
 - **Wildcard pattern**: push events from a branch that matches a wildcard pattern (for example, `*-stable` or `production/*`).
-- **Regular expression**: push events from a branch that matches a regular expression (for example, `(feature|hotfix)/*`).
+- **Regular expression**: push events from a branch that matches a regular expression (for example, `^(feature|hotfix)/`).
 
-You can configure branch filtering
-in the [webhook settings](#configure-a-webhook-in-gitlab) in your project.
+To configure branch filtering for a project or group, see
+[Configure a webhook in GitLab](#configure-a-webhook-in-gitlab).
 
 ## How image URLs are displayed in the webhook body
 
@@ -302,13 +331,7 @@ GitLab expects a response in [10 seconds](../../../user/gitlab_com/index.md#othe
 ### Re-enable disabled webhooks
 
 > - Introduced in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `webhooks_failed_callout`. Disabled by default.
-> - The [`web_hooks_disable_failed` flag](#failing-webhooks) must also be enabled for this feature to work. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flags](../../../administration/feature_flags.md) named `webhooks_failed_callout` and `web_hooks_disable_failed`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365535) in GitLab 15.7. Feature flag `webhooks_failed_callout` removed.
 
 If a webhook is failing, a banner displays at the top of the edit page explaining
 why it is disabled, and when it will be automatically re-enabled. For example:

@@ -26,15 +26,21 @@ module API
       desc 'Receives notifications from the container registry when an operation occurs' do
         detail 'This feature was introduced in GitLab 12.10'
         consumes [:json, DOCKER_DISTRIBUTION_EVENTS_V1_JSON]
+        success code: 200, message: 'Success'
+        failure [
+          { code: 401, message: 'Invalid Token' }
+        ]
+        tags %w[container_registry_event]
       end
       params do
         requires :events, type: Array, desc: 'Event notifications' do
           requires :action, type: String, desc: 'The action to perform, `push`, `delete`',
                             values: %w[push delete].freeze
           optional :target, type: Hash, desc: 'The target of the action' do
-            optional :tag, type: String, desc: 'The target tag'
-            optional :repository, type: String, desc: 'The target repository'
-            optional :digest, type: String, desc: 'Unique identifier for target image manifest'
+            optional :tag, type: String, desc: 'The target tag', documentation: { example: 'latest' }
+            optional :repository, type: String, desc: 'The target repository', documentation: { example: 'group/p1' }
+            optional :digest, type: String, desc: 'Unique identifier for target image manifest',
+                              documentation: { example: 'imagedigest' }
           end
         end
       end

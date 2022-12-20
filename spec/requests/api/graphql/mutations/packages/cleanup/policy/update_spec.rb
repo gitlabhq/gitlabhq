@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Updating the packages cleanup policy' do
+RSpec.describe 'Updating the packages cleanup policy', feature_category: :package_registry do
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 

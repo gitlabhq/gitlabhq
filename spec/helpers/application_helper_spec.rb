@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ApplicationHelper do
+  include Devise::Test::ControllerHelpers
+
   describe 'current_controller?' do
     before do
       stub_controller_name('foo')
@@ -419,7 +421,7 @@ RSpec.describe ApplicationHelper do
       end
 
       it 'includes all possible body data elements and associates the project elements with project' do
-        expect(helper).to receive(:can?).with(nil, :download_code, project)
+        expect(helper).to receive(:can?).with(nil, :read_code, project)
         expect(helper.body_data).to eq(
           {
             page: 'application',
@@ -437,7 +439,7 @@ RSpec.describe ApplicationHelper do
         let_it_be(:project) { create(:project, :repository, group: create(:group)) }
 
         it 'includes all possible body data elements and associates the project elements with project' do
-          expect(helper).to receive(:can?).with(nil, :download_code, project)
+          expect(helper).to receive(:can?).with(nil, :read_code, project)
           expect(helper.body_data).to eq(
             {
               page: 'application',
@@ -463,7 +465,7 @@ RSpec.describe ApplicationHelper do
             stub_controller_method(:action_name, 'show')
             stub_controller_method(:params, { id: issue.id })
 
-            expect(helper).to receive(:can?).with(nil, :download_code, project).and_return(false)
+            expect(helper).to receive(:can?).with(nil, :read_code, project).and_return(false)
             expect(helper.body_data).to eq(
               {
                 page: 'projects:issues:show',
@@ -479,12 +481,34 @@ RSpec.describe ApplicationHelper do
         end
       end
 
-      context 'when current_user has download_code permission' do
-        it 'returns find_file with the default branch' do
-          allow(helper).to receive(:current_user).and_return(user)
+      describe 'find_file attribute' do
+        subject { helper.body_data[:find_file] }
 
-          expect(helper).to receive(:can?).with(user, :download_code, project).and_return(true)
-          expect(helper.body_data[:find_file]).to end_with(project.default_branch)
+        before do
+          allow(helper).to receive(:current_user).and_return(user)
+        end
+
+        context 'when the project has no repository' do
+          before do
+            allow(project).to receive(:empty_repo?).and_return(true)
+          end
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when user cannot read_code for the project' do
+          before do
+            allow(helper).to receive(:can?).with(user, :read_code, project).and_return(false)
+          end
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when current_user has read_code permission' do
+          it 'returns find_file with the default branch' do
+            expect(helper).to receive(:can?).with(user, :read_code, project).and_return(true)
+            expect(subject).to end_with(project.default_branch)
+          end
         end
       end
     end
@@ -648,6 +672,42 @@ RSpec.describe ApplicationHelper do
       it 'does not track or raise' do
         expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
         expect(helper.dispensable_render_if_exists).to eq('foo')
+      end
+    end
+  end
+
+  describe 'stylesheet_link_tag_defer' do
+    it 'uses print stylesheet by default' do
+      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="print" href="/stylesheets/test.css" />')
+    end
+
+    it 'uses regular stylesheet when no_startup_css param present' do
+      allow(helper.controller).to receive(:params).and_return({ no_startup_css: '' })
+
+      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="screen" href="/stylesheets/test.css" />')
+    end
+  end
+
+  describe '#use_new_fonts?' do
+    subject { helper.use_new_fonts? }
+
+    it { is_expected.to eq true }
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(new_fonts: false)
+      end
+
+      it { is_expected.to eq false }
+
+      context 'with special request param' do
+        let(:request) { instance_double(ActionController::TestRequest, params: { new_fonts: true }) }
+
+        before do
+          allow(helper).to receive(:request).and_return(request)
+        end
+
+        it { is_expected.to eq true }
       end
     end
   end

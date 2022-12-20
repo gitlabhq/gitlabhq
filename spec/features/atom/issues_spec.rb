@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issues Feed' do
+RSpec.describe 'Issues Feed', feature_category: :devops_reports do
   describe 'GET /issues' do
     let_it_be_with_reload(:user) do
       user = create(:user, email: 'private1@example.com')

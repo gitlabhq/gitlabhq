@@ -14,7 +14,7 @@ A short downtime is expected for all methods.
 
 ## Omnibus installations
 
-If you have used the [Omnibus packages](https://about.gitlab.com/install/) to install GitLab, then
+If you have used the [Omnibus packages](https://about.gitlab.com/install/) to install GitLab,
 you should already have `gitlab-ctl` in your `PATH`.
 
 `gitlab-ctl` interacts with the Omnibus packages and can be used to restart the
@@ -88,16 +88,14 @@ sudo gitlab-ctl reconfigure
 Reconfiguring GitLab should occur in the event that something in its
 configuration (`/etc/gitlab/gitlab.rb`) has changed.
 
-When you run this command, [Chef](https://www.chef.io/products/chef-infra), the underlying configuration management
-application that powers Omnibus GitLab, makes sure that all things like directories,
-permissions, and services are in place and in the same shape that they were
-initially shipped.
+When you run `gitlab-ctl reconfigure`, [Chef](https://www.chef.io/products/chef-infra),
+the underlying configuration management application that powers Omnibus GitLab, runs some checks.
+Chef ensures directories, permissions, and services are in place and working.
 
-It also [restarts GitLab components](#how-to-restart-gitlab)
-where needed, if any of their configuration files have changed.
+Chef also [restarts GitLab components](#how-to-restart-gitlab) if any of their configuration files have changed.
 
 If you manually edit any files in `/var/opt/gitlab` that are managed by Chef,
-running reconfigure reverts the changes and restarts the services that
+running `reconfigure` reverts the changes and restarts the services that
 depend on those files.
 
 ## Installations from source
@@ -118,7 +116,7 @@ This should restart Puma, Sidekiq, GitLab Workhorse, and [Mailroom](reply_by_ema
 
 ## Helm chart installations
 
-There is no single command to restart the entire GitLab application installed via
+There is no single command to restart the entire GitLab application installed through
 the [cloud-native Helm chart](https://docs.gitlab.com/charts/). Usually, it should be
 enough to restart a specific component separately (for example, `gitaly`, `puma`,
 `workhorse`, or `gitlab-shell`) by deleting all the pods related to it:

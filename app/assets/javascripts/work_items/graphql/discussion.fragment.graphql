@@ -1,0 +1,12 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+fragment Discussion on Note {
+  id
+  body
+  bodyHtml
+  systemNoteIconName
+  createdAt
+  author {
+    ...User
+  }
+}

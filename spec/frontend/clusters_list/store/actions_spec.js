@@ -17,6 +17,10 @@ describe('Clusters store actions', () => {
 
   describe('reportSentryError', () => {
     beforeEach(() => {
+      jest.spyOn(Sentry, 'withScope').mockImplementation((fn) => {
+        const mockScope = { setTag: () => {} };
+        fn(mockScope);
+      });
       captureException = jest.spyOn(Sentry, 'captureException');
     });
 

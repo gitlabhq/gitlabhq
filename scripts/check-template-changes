@@ -1,0 +1,105 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'tmpdir'
+
+@template = ARGV.first
+
+if @template.nil?
+  puts "Usage: #{__FILE__} <path_to_project_template>"
+  exit 1
+end
+
+@name = File.basename(@template).delete_suffix('.tar.gz')
+@extracted_template_dir = Dir.mktmpdir(@name)
+@master_template_dir = Dir.mktmpdir(@name)
+
+def extract(dest)
+  system('tar', 'xf', @template, '-C', dest, exception: true)
+end
+
+def cleanup
+  FileUtils.rm_rf(@extracted_template_dir)
+  FileUtils.rm_rf(@master_template_dir)
+end
+
+def repo_details
+  Dir.chdir(@extracted_template_dir) do
+    system('git', 'clone', 'project.bundle', @name, exception: true)
+  end
+
+  Dir.chdir(File.join(@extracted_template_dir, @name)) do
+    head_commit = `git cat-file -p HEAD`
+    lines = head_commit.split("\n")
+
+    repository = lines
+      .find { |line| line.start_with?('Template repository: ') }
+      .rpartition(' ').last
+
+    commit_sha = lines
+      .find { |line| line.start_with?('Commit SHA: ') }
+      .rpartition(' ').last
+
+    [repository, commit_sha]
+  end
+end
+
+puts "Extracting template to: #{@extracted_template_dir}"
+
+extract(@extracted_template_dir)
+branch = `git rev-parse --abbrev-ref HEAD`.chomp
+system('git', 'checkout', 'master', exception: true)
+extract(@master_template_dir)
+system('git', 'checkout', branch, exception: true)
+
+puts
+puts '🧐 Comparing new template with master'
+puts
+
+system('git', '--no-pager', 'diff', '--no-index', @master_template_dir, @extracted_template_dir)
+
+puts
+puts '--- end diff ---'
+
+repository, commit_sha = repo_details
+
+puts
+puts "📝 Template is created from #{repository} at commit #{commit_sha}"
+
+unless repository.start_with?('https://gitlab.com/gitlab-org/project-templates/')
+  puts '❌ This template does not have the correct origin'
+  cleanup
+  exit 1
+end
+
+puts '🧐 Verifying that template repo matches remote'
+puts
+
+remote_repo_dir = Dir.mktmpdir(@name)
+
+system('git', 'clone', repository, remote_repo_dir, exception: true)
+
+Dir.chdir(remote_repo_dir) do
+  system('git', 'checkout', commit_sha, exception: true)
+  system('git', '--no-pager', 'show')
+end
+
+extracted_template_repo_dir = File.join(@extracted_template_dir, @name)
+
+FileUtils.rm_rf(File.join(extracted_template_repo_dir, '.git'))
+FileUtils.cp_r(File.join(remote_repo_dir, '.git'), extracted_template_repo_dir)
+
+Dir.chdir(extracted_template_repo_dir) do
+  status = `git status`
+  puts status
+  puts
+
+  if status.include?('nothing to commit, working tree clean')
+    puts "✅ Template is up to date with remote commit #{commit_sha}"
+  else
+    puts '❌ Template is not synced with remote'
+  end
+end
+
+FileUtils.rm_rf(remote_repo_dir)
+cleanup

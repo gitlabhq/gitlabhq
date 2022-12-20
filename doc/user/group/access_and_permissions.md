@@ -228,7 +228,10 @@ projects in a group, allowing tighter control over project membership.
 For example, if you want to lock the group for an [Audit Event](../../administration/audit_events.md),
 you can guarantee that project membership cannot be modified during the audit.
 
-You can still invite groups or to add members to groups, implicitly giving members access to projects in the **locked** group.
+If group membership lock is enabled, the group owner can still:
+
+- Invite groups or add members to groups to give them access to projects in the **locked** group.
+- Change the role of group members.
 
 The setting does not cascade. Projects in subgroups observe the subgroup configuration, ignoring the parent group.
 
@@ -239,8 +242,10 @@ To prevent members from being added to projects in a group:
 1. Under **Membership**, select **Users cannot be added to projects in this group**.
 1. Select **Save changes**.
 
-All users who previously had permissions can no longer add members to a group.
-API requests to add a new user to a project are not possible.
+After you lock the membership for a group:
+
+- All users who previously had permissions can no longer add members to a group.
+- API requests to add a new user to a project are not possible.
 
 ## Manage group memberships via LDAP **(PREMIUM SELF)**
 

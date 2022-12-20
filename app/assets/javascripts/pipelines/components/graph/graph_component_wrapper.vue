@@ -148,12 +148,13 @@ export default {
 
         reportMessageToSentry(
           this.$options.name,
-          `| type: ${LOAD_FAILURE} , info: ${serializeLoadErrors(err)}`,
+          `| type: ${LOAD_FAILURE} , info: ${JSON.stringify(err)}`,
           {
+            graphViewType: this.graphViewType,
+            graphqlResourceEtag: this.graphqlResourceEtag,
+            metricsPath: this.metricsPath,
             projectPath: this.pipelineProjectPath,
             pipelineIid: this.pipelineIid,
-            pipelineStages: this.pipeline?.stages?.length || 0,
-            nbOfDownstreams: this.pipeline?.downstream?.length || 0,
           },
         );
       },

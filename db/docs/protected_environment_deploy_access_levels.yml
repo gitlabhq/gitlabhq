@@ -4,6 +4,9 @@ classes:
 - ProtectedEnvironments::DeployAccessLevel
 feature_categories:
 - continuous_delivery
-description: https://docs.gitlab.com/ee/ci/environments/protected_environments.html
+description: >-
+  A rule associated to a protected environment that allows a user, group, or role to deploy.
+  See https://docs.gitlab.com/ee/ci/environments/protected_environments.html for more details.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6672
 milestone: '11.3'
+gitlab_schema: gitlab_main

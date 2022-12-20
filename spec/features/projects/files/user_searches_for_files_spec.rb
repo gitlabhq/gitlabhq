@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User searches for files' do
+RSpec.describe 'Projects > Files > User searches for files', feature_category: :projects do
   let(:user) { project.first_owner }
 
   before do

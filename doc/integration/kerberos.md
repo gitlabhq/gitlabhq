@@ -357,6 +357,38 @@ to a larger value in [the NGINX configuration](https://nginx.org/en/docs/http/ng
 
 ## Troubleshooting
 
+### Test connectivity between the GitLab and Kerberos servers
+
+You can use utilities like [`kinit`](https://web.mit.edu/kerberos/krb5-1.12/doc/user/user_commands/kinit.html) and [`klist`](https://web.mit.edu/kerberos/krb5-1.12/doc/user/user_commands/klist.html) to test connectivity between the GitLab server
+and the Kerberos server. How you install these depends on your specific OS.
+
+Use `klist` to see the service principal names (SPN) available in your `keytab` file and the encryption type for each SPN:
+
+```shell
+klist -ke /etc/http.keytab
+```
+
+On an Ubuntu server, the output would look similar to the following:
+
+```shell
+Keytab name: FILE:/etc/http.keytab
+KVNO Principal
+---- --------------------------------------------------------------------------
+   3 HTTP/my.gitlab.domain@MY.REALM (des-cbc-crc)
+   3 HTTP/my.gitlab.domain@MY.REALM (des-cbc-md5)
+   3 HTTP/my.gitlab.domain@MY.REALM (arcfour-hmac)
+   3 HTTP/my.gitlab.domain@MY.REALM (aes256-cts-hmac-sha1-96)
+   3 HTTP/my.gitlab.domain@MY.REALM (aes128-cts-hmac-sha1-96)
+```
+
+Use `kinit` in verbose mode to test whether GitLab can use the keytab file to connect to the Kerberos server:
+
+```shell
+KRB5_TRACE=/dev/stdout kinit -kt /etc/http.keytab HTTP/my.gitlab.domain@MY.REALM
+```
+
+This command shows a detailed output of the authentication process.
+
 ### Unsupported GSSAPI mechanism
 
 With Kerberos SPNEGO authentication, the browser is expected to send a list of

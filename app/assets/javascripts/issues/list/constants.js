@@ -6,7 +6,7 @@ import {
   FILTER_STARTED,
   FILTER_UPCOMING,
   OPERATOR_IS,
-  OPERATOR_IS_NOT,
+  OPERATOR_NOT,
   OPERATOR_OR,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
@@ -22,6 +22,7 @@ import {
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_WEIGHT,
+  TOKEN_TYPE_SEARCH_WITHIN,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   WORK_ITEM_TYPE_ENUM_INCIDENT,
@@ -29,6 +30,50 @@ import {
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
   WORK_ITEM_TYPE_ENUM_TASK,
 } from '~/work_items/constants';
+
+export const ISSUE_REFERENCE = /^#\d+$/;
+export const MAX_LIST_SIZE = 10;
+export const PAGE_SIZE = 20;
+export const PARAM_ASSIGNEE_ID = 'assignee_id';
+export const PARAM_FIRST_PAGE_SIZE = 'first_page_size';
+export const PARAM_LAST_PAGE_SIZE = 'last_page_size';
+export const PARAM_PAGE_AFTER = 'page_after';
+export const PARAM_PAGE_BEFORE = 'page_before';
+export const PARAM_SORT = 'sort';
+export const PARAM_STATE = 'state';
+export const RELATIVE_POSITION = 'relative_position';
+
+export const BLOCKING_ISSUES_ASC = 'BLOCKING_ISSUES_ASC';
+export const BLOCKING_ISSUES_DESC = 'BLOCKING_ISSUES_DESC';
+export const CLOSED_AT_ASC = 'CLOSED_AT_ASC';
+export const CLOSED_AT_DESC = 'CLOSED_AT_DESC';
+export const CREATED_ASC = 'CREATED_ASC';
+export const CREATED_DESC = 'CREATED_DESC';
+export const DUE_DATE_ASC = 'DUE_DATE_ASC';
+export const DUE_DATE_DESC = 'DUE_DATE_DESC';
+export const HEALTH_STATUS_ASC = 'HEALTH_STATUS_ASC';
+export const HEALTH_STATUS_DESC = 'HEALTH_STATUS_DESC';
+export const LABEL_PRIORITY_ASC = 'LABEL_PRIORITY_ASC';
+export const LABEL_PRIORITY_DESC = 'LABEL_PRIORITY_DESC';
+export const MILESTONE_DUE_ASC = 'MILESTONE_DUE_ASC';
+export const MILESTONE_DUE_DESC = 'MILESTONE_DUE_DESC';
+export const POPULARITY_ASC = 'POPULARITY_ASC';
+export const POPULARITY_DESC = 'POPULARITY_DESC';
+export const PRIORITY_ASC = 'PRIORITY_ASC';
+export const PRIORITY_DESC = 'PRIORITY_DESC';
+export const RELATIVE_POSITION_ASC = 'RELATIVE_POSITION_ASC';
+export const TITLE_ASC = 'TITLE_ASC';
+export const TITLE_DESC = 'TITLE_DESC';
+export const UPDATED_ASC = 'UPDATED_ASC';
+export const UPDATED_DESC = 'UPDATED_DESC';
+export const WEIGHT_ASC = 'WEIGHT_ASC';
+export const WEIGHT_DESC = 'WEIGHT_DESC';
+
+export const API_PARAM = 'apiParam';
+export const URL_PARAM = 'urlParam';
+export const NORMAL_FILTER = 'normalFilter';
+export const SPECIAL_FILTER = 'specialFilter';
+export const ALTERNATIVE_FILTER = 'alternativeFilter';
 
 export const i18n = {
   anonymousSearchingMessage: __('You must sign in to search for specific terms.'),
@@ -57,11 +102,9 @@ export const i18n = {
   ),
   noOpenIssuesDescription: __('To keep this project going, create a new issue'),
   noOpenIssuesTitle: __('There are no open issues'),
-  noIssuesSignedInDescription: __('Learn more about issues.'),
-  noIssuesSignedInTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
+  noIssuesDescription: __('Learn more about issues.'),
+  noIssuesTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
   noIssuesSignedOutButtonText: __('Register / Sign In'),
-  noIssuesSignedOutDescription: __('Learn more about issues.'),
-  noIssuesSignedOutTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
   noSearchResultsDescription: __('To widen your search, change or remove filters above'),
   noSearchResultsTitle: __('Sorry, your filter produced no results'),
   relatedMergeRequests: __('Related merge requests'),
@@ -69,44 +112,9 @@ export const i18n = {
   rssLabel: __('Subscribe to RSS feed'),
   searchPlaceholder: __('Search or filter results...'),
   upvotes: __('Upvotes'),
+  titles: __('Titles'),
+  descriptions: __('Descriptions'),
 };
-
-export const ISSUE_REFERENCE = /^#\d+$/;
-export const MAX_LIST_SIZE = 10;
-export const PAGE_SIZE = 20;
-export const PAGE_SIZE_MANUAL = 100;
-export const PARAM_ASSIGNEE_ID = 'assignee_id';
-export const PARAM_FIRST_PAGE_SIZE = 'first_page_size';
-export const PARAM_LAST_PAGE_SIZE = 'last_page_size';
-export const PARAM_PAGE_AFTER = 'page_after';
-export const PARAM_PAGE_BEFORE = 'page_before';
-export const PARAM_SORT = 'sort';
-export const PARAM_STATE = 'state';
-export const RELATIVE_POSITION = 'relative_position';
-
-export const BLOCKING_ISSUES_ASC = 'BLOCKING_ISSUES_ASC';
-export const BLOCKING_ISSUES_DESC = 'BLOCKING_ISSUES_DESC';
-export const CREATED_ASC = 'CREATED_ASC';
-export const CREATED_DESC = 'CREATED_DESC';
-export const DUE_DATE_ASC = 'DUE_DATE_ASC';
-export const DUE_DATE_DESC = 'DUE_DATE_DESC';
-export const LABEL_PRIORITY_ASC = 'LABEL_PRIORITY_ASC';
-export const LABEL_PRIORITY_DESC = 'LABEL_PRIORITY_DESC';
-export const MILESTONE_DUE_ASC = 'MILESTONE_DUE_ASC';
-export const MILESTONE_DUE_DESC = 'MILESTONE_DUE_DESC';
-export const POPULARITY_ASC = 'POPULARITY_ASC';
-export const POPULARITY_DESC = 'POPULARITY_DESC';
-export const PRIORITY_ASC = 'PRIORITY_ASC';
-export const PRIORITY_DESC = 'PRIORITY_DESC';
-export const RELATIVE_POSITION_ASC = 'RELATIVE_POSITION_ASC';
-export const TITLE_ASC = 'TITLE_ASC';
-export const TITLE_DESC = 'TITLE_DESC';
-export const UPDATED_ASC = 'UPDATED_ASC';
-export const UPDATED_DESC = 'UPDATED_DESC';
-export const WEIGHT_ASC = 'WEIGHT_ASC';
-export const WEIGHT_DESC = 'WEIGHT_DESC';
-export const CLOSED_ASC = 'CLOSED_AT_ASC';
-export const CLOSED_DESC = 'CLOSED_AT_DESC';
 
 export const urlSortParams = {
   [PRIORITY_ASC]: 'priority',
@@ -115,8 +123,8 @@ export const urlSortParams = {
   [CREATED_DESC]: 'created_date',
   [UPDATED_ASC]: 'updated_asc',
   [UPDATED_DESC]: 'updated_desc',
-  [CLOSED_ASC]: 'closed_asc',
-  [CLOSED_DESC]: 'closed_desc',
+  [CLOSED_AT_ASC]: 'closed_at',
+  [CLOSED_AT_DESC]: 'closed_at_desc',
   [MILESTONE_DUE_ASC]: 'milestone',
   [MILESTONE_DUE_DESC]: 'milestone_due_desc',
   [DUE_DATE_ASC]: 'due_date',
@@ -126,19 +134,15 @@ export const urlSortParams = {
   [LABEL_PRIORITY_ASC]: 'label_priority',
   [LABEL_PRIORITY_DESC]: 'label_priority_desc',
   [RELATIVE_POSITION_ASC]: RELATIVE_POSITION,
+  [TITLE_ASC]: 'title_asc',
+  [TITLE_DESC]: 'title_desc',
+  [HEALTH_STATUS_ASC]: 'health_status_asc',
+  [HEALTH_STATUS_DESC]: 'health_status_desc',
   [WEIGHT_ASC]: 'weight',
   [WEIGHT_DESC]: 'weight_desc',
   [BLOCKING_ISSUES_ASC]: 'blocking_issues_asc',
   [BLOCKING_ISSUES_DESC]: 'blocking_issues_desc',
-  [TITLE_ASC]: 'title_asc',
-  [TITLE_DESC]: 'title_desc',
 };
-
-export const API_PARAM = 'apiParam';
-export const URL_PARAM = 'urlParam';
-export const NORMAL_FILTER = 'normalFilter';
-export const SPECIAL_FILTER = 'specialFilter';
-export const ALTERNATIVE_FILTER = 'alternativeFilter';
 
 export const specialFilterValues = [
   FILTER_NONE,
@@ -148,7 +152,17 @@ export const specialFilterValues = [
   FILTER_STARTED,
 ];
 
-export const TYPE_TOKEN_TASK_OPTION = { icon: 'issue-type-task', title: 'task', value: 'task' };
+export const TYPE_TOKEN_OBJECTIVE_OPTION = {
+  icon: 'issue-type-objective',
+  title: 'objective',
+  value: 'objective',
+};
+
+export const TYPE_TOKEN_KEY_RESULT_OPTION = {
+  icon: 'issue-type-key-result',
+  title: 'key_result',
+  value: 'key_result',
+};
 
 // This should be consistent with Issue::TYPES_FOR_LIST in the backend
 // https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/models/issue.rb#L48
@@ -163,19 +177,34 @@ export const defaultTypeTokenOptions = [
   { icon: 'issue-type-issue', title: 'issue', value: 'issue' },
   { icon: 'issue-type-incident', title: 'incident', value: 'incident' },
   { icon: 'issue-type-test-case', title: 'test_case', value: 'test_case' },
+  { icon: 'issue-type-task', title: 'task', value: 'task' },
 ];
 
 export const filters = {
   [TOKEN_TYPE_AUTHOR]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'authorUsername',
+      [ALTERNATIVE_FILTER]: 'authorUsernames',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'author_username',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[author_username]',
+      },
+      [OPERATOR_OR]: {
+        [ALTERNATIVE_FILTER]: 'or[author_username]',
+      },
+    },
+  },
+  [TOKEN_TYPE_SEARCH_WITHIN]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'in',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'in',
       },
     },
   },
@@ -190,7 +219,7 @@ export const filters = {
         [SPECIAL_FILTER]: 'assignee_id',
         [ALTERNATIVE_FILTER]: 'assignee_username',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[assignee_username][]',
       },
       [OPERATOR_OR]: {
@@ -208,7 +237,7 @@ export const filters = {
         [NORMAL_FILTER]: 'milestone_title',
         [SPECIAL_FILTER]: 'milestone_title',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[milestone_title]',
         [SPECIAL_FILTER]: 'not[milestone_title]',
       },
@@ -225,7 +254,7 @@ export const filters = {
         [SPECIAL_FILTER]: 'label_name[]',
         [ALTERNATIVE_FILTER]: 'label_name',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[label_name][]',
       },
     },
@@ -238,7 +267,7 @@ export const filters = {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'type[]',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[type][]',
       },
     },
@@ -253,7 +282,7 @@ export const filters = {
         [NORMAL_FILTER]: 'release_tag',
         [SPECIAL_FILTER]: 'release_tag',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[release_tag]',
       },
     },
@@ -268,7 +297,7 @@ export const filters = {
         [NORMAL_FILTER]: 'my_reaction_emoji',
         [SPECIAL_FILTER]: 'my_reaction_emoji',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[my_reaction_emoji]',
       },
     },
@@ -293,7 +322,7 @@ export const filters = {
         [NORMAL_FILTER]: 'iteration_id',
         [SPECIAL_FILTER]: 'iteration_id',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[iteration_id]',
         [SPECIAL_FILTER]: 'not[iteration_id]',
       },
@@ -309,7 +338,7 @@ export const filters = {
         [NORMAL_FILTER]: 'epic_id',
         [SPECIAL_FILTER]: 'epic_id',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[epic_id]',
       },
     },
@@ -324,7 +353,7 @@ export const filters = {
         [NORMAL_FILTER]: 'weight',
         [SPECIAL_FILTER]: 'weight',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[weight]',
       },
     },

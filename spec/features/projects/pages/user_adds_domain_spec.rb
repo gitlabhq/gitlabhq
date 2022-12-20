@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'User adds pages domain', :js do
+RSpec.describe 'User adds pages domain', :js, feature_category: :pages do
   include LetsEncryptHelpers
   include Spec::Support::Helpers::ModalHelpers
 

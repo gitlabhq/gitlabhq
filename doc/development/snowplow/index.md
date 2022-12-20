@@ -17,7 +17,7 @@ Snowplow is an enterprise-grade marketing and Product Intelligence platform that
 - **Data modeling** joins event-level data with other data sets, aggregates them into smaller data sets, and applies business logic. This produces a clean set of tables for data analysis. We use data models for Redshift and Looker.
 - **Analytics** are performed on Snowplow events or on aggregate tables.
 
-![snowplow_flow](../img/snowplow_flow.png)
+![Snowplow flow](../img/snowplow_flow.png)
 
 ## Enable Snowplow tracking
 

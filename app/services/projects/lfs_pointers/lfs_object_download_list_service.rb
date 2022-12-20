@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# This service manages the whole worflow of discovering the Lfs files in a
-# repository, linking them to the project and downloading (and linking) the non
-# existent ones.
+# This service discovers the Lfs files that are linked in repository,
+# but not downloaded yet and yields the operation
+# on each Lfs file link (url) to remote repository.
 module Projects
   module LfsPointers
     class LfsObjectDownloadListService < BaseService
@@ -14,29 +14,30 @@ module Projects
 
       LfsObjectDownloadListError = Class.new(StandardError)
 
-      def execute
-        return [] unless project&.lfs_enabled?
-
-        if external_lfs_endpoint?
-          # If the endpoint host is different from the import_url it means
-          # that the repo is using a third party service for storing the LFS files.
-          # In this case, we have to disable lfs in the project
-          disable_lfs!
-
-          return []
-        end
+      def each_list_item(&block)
+        return unless context_valid?
 
         # Downloading the required information and gathering it inside an
         #   LfsDownloadObject for each oid
-        #
         LfsDownloadLinkListService
           .new(project, remote_uri: current_endpoint_uri)
-          .execute(missing_lfs_files)
+          .each_link(missing_lfs_files, &block)
       rescue LfsDownloadLinkListService::DownloadLinksError => e
         raise LfsObjectDownloadListError, "The LFS objects download list couldn't be imported. Error: #{e.message}"
       end
 
       private
+
+      def context_valid?
+        return false unless project&.lfs_enabled?
+        return true unless external_lfs_endpoint?
+
+        # If the endpoint host is different from the import_url it means
+        # that the repo is using a third party service for storing the LFS files.
+        # In this case, we have to disable lfs in the project
+        disable_lfs!
+        false
+      end
 
       def external_lfs_endpoint?
         lfsconfig_endpoint_uri && lfsconfig_endpoint_uri.host != import_uri.host
@@ -99,12 +100,10 @@ module Projects
 
       # The import url must end with '.git' here we ensure it is
       def default_endpoint_uri
-        @default_endpoint_uri ||= begin
-          import_uri.dup.tap do |uri|
-            path = uri.path.gsub(%r(/$), '')
-            path += '.git' unless path.ends_with?('.git')
-            uri.path = path + LFS_BATCH_API_ENDPOINT
-          end
+        @default_endpoint_uri ||= import_uri.dup.tap do |uri|
+          path = uri.path.gsub(%r(/$), '')
+          path += '.git' unless path.ends_with?('.git')
+          uri.path = path + LFS_BATCH_API_ENDPOINT
         end
       end
     end

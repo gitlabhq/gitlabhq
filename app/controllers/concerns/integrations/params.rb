@@ -88,7 +88,9 @@ module Integrations
       param_values = return_value[:integration]
 
       if param_values.is_a?(ActionController::Parameters)
-        if action_name == 'update' && integration.chat? && param_values['webhook'] == BaseChatNotification::SECRET_MASK
+        if %w[update test].include?(action_name) && integration.chat? &&
+            param_values['webhook'] == BaseChatNotification::SECRET_MASK
+
           param_values.delete('webhook')
         end
 

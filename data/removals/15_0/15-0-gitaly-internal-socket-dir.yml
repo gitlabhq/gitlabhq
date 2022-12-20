@@ -1,4 +1,4 @@
-- name: "Support for `gitaly['internal_socket_dir']`"
+- title: "Support for `gitaly['internal_socket_dir']`"
   announcement_milestone: "14.10"
   announcement_date: "2022-04-22"
   removal_milestone: "15.0"

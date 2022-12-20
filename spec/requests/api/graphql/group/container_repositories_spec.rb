@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'getting container repositories in a group' do
+RSpec.describe 'getting container repositories in a group', feature_category: :source_code_management do
   using RSpec::Parameterized::TableSyntax
   include GraphqlHelpers
 

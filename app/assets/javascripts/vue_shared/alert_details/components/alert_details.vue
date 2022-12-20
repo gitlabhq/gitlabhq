@@ -9,9 +9,9 @@ import {
   GlTabs,
   GlTab,
   GlButton,
-  GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import { fetchPolicies } from '~/lib/graphql';
 import { toggleContainerClasses } from '~/lib/utils/dom_utils';
@@ -41,7 +41,7 @@ export default {
     reportedAtWithTool: s__('AlertManagement|Reported %{when} by %{tool}'),
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   severityLabels: SEVERITY_LEVELS,
   tabsConfig: [
@@ -369,10 +369,10 @@ export default {
           <alert-details-table :alert="alert" :loading="loading" :statuses="statuses" />
         </gl-tab>
 
-        <metric-images-tab
-          :data-testid="$options.tabsConfig[1].id"
-          :title="$options.tabsConfig[1].title"
-        />
+        <gl-tab :title="$options.tabsConfig[1].title">
+          <metric-images-tab :data-testid="$options.tabsConfig[1].id" />
+        </gl-tab>
+
         <gl-tab :data-testid="$options.tabsConfig[2].id" :title="$options.tabsConfig[2].title">
           <div v-if="alert.notes.nodes.length > 0" class="issuable-discussion">
             <ul class="notes main-notes-list timeline">

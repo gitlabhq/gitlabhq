@@ -473,3 +473,27 @@ nested-references:
 ```
 
 In this example, the `nested-references` job runs all three `echo` commands.
+
+### Configure your IDE to support `!reference` tags
+
+The [pipeline editor](../pipeline_editor/index.md) supports `!reference` tags. However, the schema rules for custom YAML
+tags like `!reference` might be treated as invalid by your editor by default.
+You can configure some editors to accept `!reference` tags. For example:
+
+- In VS Code, you can set `vscode-yaml` to parse `customTags` in your `settings.json` file:
+
+  ```json
+  "yaml.customTags": [
+     "!reference sequence"
+  ]
+  ```
+
+- In Sublime Text, if you are using the `LSP-yaml` package, you can set `customTags` in your `LSP-yaml` user settings:
+
+  ```json
+  {
+    "settings": {
+      "yaml.customTags": ["!reference sequence"]
+    }
+  }
+  ```

@@ -5,21 +5,16 @@ module Ci
   # Data that should be persisted forever, should be stored with Ci::Build model.
   class BuildMetadata < Ci::ApplicationRecord
     BuildTimeout = Struct.new(:value, :source)
-    ROUTING_FEATURE_FLAG = :ci_partitioning_use_ci_builds_metadata_routing_table
 
     include Ci::Partitionable
     include Presentable
     include ChronicDurationAttribute
     include Gitlab::Utils::StrongMemoize
 
-    self.table_name = 'ci_builds_metadata'
+    self.table_name = 'p_ci_builds_metadata'
     self.primary_key = 'id'
-    self.sequence_name = 'ci_builds_metadata_id_seq'
 
-    partitionable scope: :build, through: {
-      table: :p_ci_builds_metadata,
-      flag: ROUTING_FEATURE_FLAG
-    }
+    partitionable scope: :build
 
     belongs_to :build, class_name: 'CommitStatus'
     belongs_to :project
@@ -61,6 +56,12 @@ module Ci
 
     def cancel_gracefully?
       runtime_runner_features[:cancel_gracefully] == true
+    end
+
+    def enable_debug_trace!
+      self.debug_trace_enabled = true
+      save! if changes.any?
+      true
     end
 
     private

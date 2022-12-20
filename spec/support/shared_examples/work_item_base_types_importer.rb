@@ -4,7 +4,7 @@ RSpec.shared_examples 'work item base types importer' do
   it "creates all base work item types if they don't exist" do
     WorkItems::Type.delete_all
 
-    expect { subject }.to change(WorkItems::Type, :count).from(0).to(WorkItems::Type::BASE_TYPES.count)
+    expect { subject }.to change { WorkItems::Type.count }.from(0).to(WorkItems::Type::BASE_TYPES.count)
 
     types_in_db = WorkItems::Type.all.map { |type| type.slice(:base_type, :icon_name, :name).symbolize_keys }
     expected_types = WorkItems::Type::BASE_TYPES.map do |type, attributes|
@@ -25,7 +25,7 @@ RSpec.shared_examples 'work item base types importer' do
       subject
       first_type.reload
     end.to not_change(WorkItems::Type, :count).and(
-      change(first_type, :name).from(original_name.upcase).to(original_name)
+      change { first_type.name }.from(original_name.upcase).to(original_name)
     )
   end
 
@@ -40,7 +40,7 @@ RSpec.shared_examples 'work item base types importer' do
 
     it 'inserts all types and does nothing if some already existed' do
       expect { subject }.to make_queries_matching(/INSERT/, 1).and(
-        change(WorkItems::Type, :count).by(1)
+        change { WorkItems::Type.count }.by(1)
       )
       expect(WorkItems::Type.count).to eq(WorkItems::Type::BASE_TYPES.count)
     end

@@ -7,10 +7,12 @@
     "CiGroupVariable",
     "CiInstanceVariable",
     "CiManualVariable",
-    "CiProjectVariable"
+    "CiProjectVariable",
+    "PipelineScheduleVariable"
   ],
   "CommitSignature": [
     "GpgSignature",
+    "SshSignature",
     "X509Signature"
   ],
   "CurrentUserTodos": [
@@ -144,10 +146,13 @@
   "WorkItemWidget": [
     "WorkItemWidgetAssignees",
     "WorkItemWidgetDescription",
+    "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",
     "WorkItemWidgetLabels",
     "WorkItemWidgetMilestone",
+    "WorkItemWidgetNotes",
+    "WorkItemWidgetProgress",
     "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetStatus",
     "WorkItemWidgetWeight"

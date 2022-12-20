@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Notes do
+RSpec.describe API::Notes, feature_category: :team_planning do
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :public) }
   let(:private_user) { create(:user) }
@@ -201,6 +201,51 @@ RSpec.describe API::Notes do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['body']).to eq(cross_reference_note.note)
           end
+        end
+      end
+
+      context 'without notes widget' do
+        let(:request_body) { 'Hi!' }
+        let(:params) { { body: request_body } }
+        let(:request_path) { "/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes" }
+
+        before do
+          stub_const('WorkItems::Type::BASE_TYPES', { issue: { name: 'NoNotesWidget', enum_value: 0 } })
+          stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', { issue: [::WorkItems::Widgets::Description] })
+        end
+
+        it 'does not fetch notes' do
+          get api(request_path, private_user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'does not fetch specific note' do
+          get api("#{request_path}/#{cross_reference_note.id}", private_user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'does not create note' do
+          post api(request_path, private_user), params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'does not update note' do
+          put api("#{request_path}/#{cross_reference_note.id}", private_user), params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'does not run quick actions' do
+          params[:body] = "/spend 1h"
+
+          expect do
+            post api("#{request_path}/#{cross_reference_note.id}", private_user), params: params
+          end.to not_change { Note.system.count }.and(not_change { Note.where(system: false).count })
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

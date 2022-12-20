@@ -8,9 +8,9 @@ module Gitlab
 
         def initialize(cache, pipeline)
           cache = Array.wrap(cache)
-          @cache = cache.map do |cache|
+          @cache = cache.map.with_index do |cache, index|
             Gitlab::Ci::Pipeline::Seed::Build::Cache
-            .new(pipeline, cache)
+            .new(pipeline, cache, index)
           end
         end
 

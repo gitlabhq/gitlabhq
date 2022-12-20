@@ -15,7 +15,7 @@ RSpec.shared_examples 'board destroy service' do
 
         expect do
           expect(service.execute(board)).to be_success
-        end.to change(boards, :count).by(-1)
+        end.to change { boards.count }.by(-1)
       end
     end
 
@@ -23,7 +23,7 @@ RSpec.shared_examples 'board destroy service' do
       it 'does remove board' do
         expect do
           service.execute(board)
-        end.to change(boards, :count).by(-1)
+        end.to change { boards.count }.by(-1)
       end
     end
   end

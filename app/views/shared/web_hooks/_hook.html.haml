@@ -16,7 +16,7 @@
       %div
         - hook.class.triggers.each_value do |trigger|
           - if hook.public_send(trigger)
-            = gl_badge_tag(trigger.to_s.titleize, size: :sm)
+            = gl_badge_tag(integration_webhook_event_human_name(trigger), size: :sm)
         = gl_badge_tag(sslBadgeText, size: :sm)
 
     .col-md-4.col-lg-5.text-right-md.gl-mt-2

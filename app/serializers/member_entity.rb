@@ -23,6 +23,8 @@ class MemberEntity < Grape::Entity
     member.can_remove?
   end
 
+  expose :last_owner?, as: :is_last_owner
+
   expose :is_direct_member do |member, options|
     member.source == options[:source]
   end

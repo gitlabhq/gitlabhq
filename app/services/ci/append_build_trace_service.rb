@@ -24,6 +24,11 @@ module Ci
       body_start = content_range[0].to_i
       body_end = body_start + body_data.bytesize
 
+      if first_debug_chunk?(body_start)
+        # Update the build metadata prior to appending trace content
+        build.enable_debug_trace!
+      end
+
       if trace_size_exceeded?(body_end)
         build.drop(:trace_size_exceeded)
 
@@ -45,8 +50,16 @@ module Ci
 
     delegate :project, to: :build
 
+    def first_debug_chunk?(body_start)
+      body_start == 0 && debug_trace
+    end
+
     def stream_range
       params.fetch(:content_range)
+    end
+
+    def debug_trace
+      params.fetch(:debug_trace, false)
     end
 
     def log_range_error(stream_size, body_end)

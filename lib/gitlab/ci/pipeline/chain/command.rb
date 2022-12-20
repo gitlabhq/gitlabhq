@@ -98,7 +98,7 @@ module Gitlab
 
           def observe_step_duration(step_class, duration)
             step = step_class.name.underscore.parameterize(separator: '_')
-            logger.observe("pipeline_step_#{step}_duration_s", duration)
+            logger.observe("pipeline_step_#{step}_duration_s", duration, once: true)
 
             if Feature.enabled?(:ci_pipeline_creation_step_duration_tracking, type: :ops)
               metrics.pipeline_creation_step_duration_histogram
@@ -107,14 +107,14 @@ module Gitlab
           end
 
           def observe_creation_duration(duration)
-            logger.observe(:pipeline_creation_duration_s, duration)
+            logger.observe(:pipeline_creation_duration_s, duration, once: true)
 
             metrics.pipeline_creation_duration_histogram
-              .observe({}, duration.seconds)
+              .observe({ gitlab: gitlab_org_project?.to_s }, duration.seconds)
           end
 
           def observe_pipeline_size(pipeline)
-            logger.observe(:pipeline_size_count, pipeline.total_size)
+            logger.observe(:pipeline_size_count, pipeline.total_size, once: true)
 
             metrics.pipeline_size_histogram
               .observe({ source: pipeline.source.to_s, plan: project.actual_plan_name }, pipeline.total_size)
@@ -156,6 +156,10 @@ module Gitlab
 
           def full_git_ref_name_unavailable?
             ref == origin_ref
+          end
+
+          def gitlab_org_project?
+            project.full_path == 'gitlab-org/gitlab'
           end
         end
       end

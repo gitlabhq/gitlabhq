@@ -50,6 +50,7 @@ RSpec.describe EnvironmentHelper do
       expect(subject).to eq({
         name: environment.name,
         id: environment.id,
+        project_full_path: project.full_path,
         external_url: environment.external_url,
         can_update_environment: true,
         can_destroy_environment: true,

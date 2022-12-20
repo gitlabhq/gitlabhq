@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard > label filter', :js do
+RSpec.describe 'Dashboard > label filter', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
 
   let(:filtered_search) { find('.filtered-search') }

@@ -1,5 +1,6 @@
 <script>
 import { isEmpty } from 'lodash';
+import { produce } from 'immer';
 import {
   GlAlert,
   GlSkeletonLoader,
@@ -11,10 +12,11 @@ import {
   GlEmptyState,
 } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg';
+import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import {
   i18n,
@@ -23,10 +25,14 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_VIEWED_STORAGE_KEY,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_ITERATION,
+  WIDGET_TYPE_HEALTH_STATUS,
+  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WIDGET_TYPE_NOTES,
 } from '../constants';
 
 import workItemDatesSubscription from '../graphql/work_item_dates.subscription.graphql';
@@ -37,6 +43,7 @@ import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql
 import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
 import { getWorkItemQuery } from '../utils';
 
+import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
@@ -45,7 +52,7 @@ import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestone from './work_item_milestone.vue';
-import WorkItemInformation from './work_item_information.vue';
+import WorkItemNotes from './work_item_notes.vue';
 
 export default {
   i18n,
@@ -68,11 +75,14 @@ export default {
     WorkItemTitle,
     WorkItemState,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
-    WorkItemInformation,
-    LocalStorageSync,
+    WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
     WorkItemTypeIcon,
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
+    WorkItemHealthStatus: () =>
+      import('ee_component/work_items/components/work_item_health_status.vue'),
     WorkItemMilestone,
+    WorkItemTree,
+    WorkItemNotes,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath'],
@@ -87,7 +97,7 @@ export default {
       required: false,
       default: null,
     },
-    iid: {
+    workItemIid: {
       type: String,
       required: false,
       default: null,
@@ -103,7 +113,6 @@ export default {
       error: undefined,
       updateError: undefined,
       workItem: {},
-      showInfoBanner: true,
       updateInProgress: false,
     };
   },
@@ -201,17 +210,31 @@ export default {
     fullPath() {
       return this.workItem?.project.fullPath;
     },
+    workItemsMvcEnabled() {
+      return this.glFeatures.workItemsMvc;
+    },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
     parentWorkItem() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
+    parentWorkItemType() {
+      return this.parentWorkItem?.workItemType?.name;
+    },
+    parentWorkItemIconName() {
+      return this.parentWorkItem?.workItemType?.iconName;
+    },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
     },
     parentUrl() {
-      return `../../issues/${this.parentWorkItem?.iid}`;
+      // Once more types are moved to have Work Items involved
+      // we need to handle this properly.
+      if (this.parentWorkItemType === WORK_ITEM_TYPE_VALUE_ISSUE) {
+        return `../../issues/${this.parentWorkItem?.iid}`;
+      }
+      return this.parentWorkItem?.webUrl;
     },
     workItemIconName() {
       return this.workItem?.workItemType?.iconName;
@@ -234,40 +257,47 @@ export default {
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
     },
+    workItemProgress() {
+      return this.isWidgetPresent(WIDGET_TYPE_PROGRESS);
+    },
     workItemHierarchy() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY);
     },
     workItemIteration() {
       return this.isWidgetPresent(WIDGET_TYPE_ITERATION);
     },
+    workItemHealthStatus() {
+      return this.isWidgetPresent(WIDGET_TYPE_HEALTH_STATUS);
+    },
     workItemMilestone() {
       return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
     },
+    workItemNotes() {
+      return this.isWidgetPresent(WIDGET_TYPE_NOTES);
+    },
     fetchByIid() {
-      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(this.$route.query.iid_path);
+      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
     },
     queryVariables() {
       return this.fetchByIid
         ? {
             fullPath: this.fullPath,
-            iid: this.iid,
+            iid: this.workItemIid,
           }
         : {
             id: this.workItemId,
           };
     },
-  },
-  beforeDestroy() {
-    /** make sure that if the user has not even dismissed the alert ,
-     * should no be able to see the information next time and update the local storage * */
-    this.dismissBanner();
+    children() {
+      const widgetHierarchy = this.workItem.widgets.find(
+        (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
+      );
+      return widgetHierarchy.children.nodes;
+    },
   },
   methods: {
     isWidgetPresent(type) {
       return this.workItem?.widgets?.find((widget) => widget.type === type);
-    },
-    dismissBanner() {
-      this.showInfoBanner = false;
     },
     toggleConfidentiality(confidentialStatus) {
       this.updateInProgress = true;
@@ -321,8 +351,76 @@ export default {
       this.error = this.$options.i18n.fetchError;
       document.title = s__('404|Not found');
     },
+    addChild(child) {
+      const { defaultClient: client } = this.$apollo.provider.clients;
+      this.toggleChildFromCache(child, child.id, client);
+    },
+    toggleChildFromCache(workItem, childId, store) {
+      const sourceData = store.readQuery({
+        query: getWorkItemQuery(this.fetchByIid),
+        variables: this.queryVariables,
+      });
+
+      const newData = produce(sourceData, (draftState) => {
+        const widgetHierarchy = draftState.workItem.widgets.find(
+          (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
+        );
+
+        const index = widgetHierarchy.children.nodes.findIndex((child) => child.id === childId);
+
+        if (index >= 0) {
+          widgetHierarchy.children.nodes.splice(index, 1);
+        } else {
+          widgetHierarchy.children.nodes.unshift(workItem);
+        }
+      });
+
+      store.writeQuery({
+        query: getWorkItemQuery(this.fetchByIid),
+        variables: this.queryVariables,
+        data: newData,
+      });
+    },
+    async updateWorkItem(workItem, childId, parentId) {
+      return this.$apollo.mutate({
+        mutation: updateWorkItemMutation,
+        variables: { input: { id: childId, hierarchyWidget: { parentId } } },
+        update: (store) => this.toggleChildFromCache(workItem, childId, store),
+      });
+    },
+    async undoChildRemoval(workItem, childId) {
+      try {
+        const { data } = await this.updateWorkItem(workItem, childId, this.workItem.id);
+
+        if (data.workItemUpdate.errors.length === 0) {
+          this.activeToast?.hide();
+        }
+      } catch (error) {
+        this.updateError = s__('WorkItem|Something went wrong while undoing child removal.');
+        Sentry.captureException(error);
+      } finally {
+        this.activeToast?.hide();
+      }
+    },
+    async removeChild(childId) {
+      try {
+        const { data } = await this.updateWorkItem(null, childId, null);
+
+        if (data.workItemUpdate.errors.length === 0) {
+          this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
+            action: {
+              text: s__('WorkItem|Undo'),
+              onClick: this.undoChildRemoval.bind(this, data.workItemUpdate.workItem, childId),
+            },
+          });
+        }
+      } catch (error) {
+        this.updateError = s__('WorkItem|Something went wrong while removing child.');
+        Sentry.captureException(error);
+      }
+    },
   },
-  WORK_ITEM_VIEWED_STORAGE_KEY,
+  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 };
 </script>
 
@@ -347,14 +445,14 @@ export default {
       <div class="gl-display-flex gl-align-items-center" data-testid="work-item-body">
         <ul
           v-if="parentWorkItem"
-          class="list-unstyled gl-display-flex gl-mr-auto gl-max-w-26 gl-md-max-w-50p gl-min-w-0 gl-mb-0"
+          class="list-unstyled gl-display-flex gl-mr-auto gl-max-w-26 gl-md-max-w-50p gl-min-w-0 gl-mb-0 gl-z-index-0"
           data-testid="work-item-parent"
         >
           <li class="gl-ml-n4 gl-display-flex gl-align-items-center gl-overflow-hidden">
             <gl-button
               v-gl-tooltip.hover
               class="gl-text-truncate gl-max-w-full"
-              icon="issues"
+              :icon="parentWorkItemIconName"
               category="tertiary"
               :href="parentUrl"
               :title="parentWorkItem.title"
@@ -411,16 +509,6 @@ export default {
           @click="$emit('close')"
         />
       </div>
-      <local-storage-sync
-        v-model="showInfoBanner"
-        :storage-key="$options.WORK_ITEM_VIEWED_STORAGE_KEY"
-      >
-        <work-item-information
-          v-if="showInfoBanner && !error"
-          :show-info-banner="showInfoBanner"
-          @work-item-banner-dismissed="dismissBanner"
-        />
-      </local-storage-sync>
       <work-item-title
         v-if="workItem.title"
         :work-item-id="workItem.id"
@@ -465,19 +553,17 @@ export default {
         :work-item-type="workItemType"
         @error="updateError = $event"
       />
-      <template v-if="workItemsMvc2Enabled">
-        <work-item-milestone
-          v-if="workItemMilestone"
-          :work-item-id="workItem.id"
-          :work-item-milestone="workItemMilestone.milestone"
-          :work-item-type="workItemType"
-          :fetch-by-iid="fetchByIid"
-          :query-variables="queryVariables"
-          :can-update="canUpdate"
-          :full-path="fullPath"
-          @error="updateError = $event"
-        />
-      </template>
+      <work-item-milestone
+        v-if="workItemMilestone"
+        :work-item-id="workItem.id"
+        :work-item-milestone="workItemMilestone.milestone"
+        :work-item-type="workItemType"
+        :fetch-by-iid="fetchByIid"
+        :query-variables="queryVariables"
+        :can-update="canUpdate"
+        :full-path="fullPath"
+        @error="updateError = $event"
+      />
       <work-item-weight
         v-if="workItemWeight"
         class="gl-mb-5"
@@ -489,20 +575,38 @@ export default {
         :query-variables="queryVariables"
         @error="updateError = $event"
       />
-      <template v-if="workItemsMvc2Enabled">
-        <work-item-iteration
-          v-if="workItemIteration"
-          class="gl-mb-5"
-          :iteration="workItemIteration.iteration"
-          :can-update="canUpdate"
-          :work-item-id="workItem.id"
-          :work-item-type="workItemType"
-          :fetch-by-iid="fetchByIid"
-          :query-variables="queryVariables"
-          :full-path="fullPath"
-          @error="updateError = $event"
-        />
-      </template>
+      <work-item-progress
+        v-if="workItemProgress"
+        class="gl-mb-5"
+        :can-update="canUpdate"
+        :progress="workItemProgress.progress"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        :fetch-by-iid="fetchByIid"
+        :query-variables="queryVariables"
+        @error="updateError = $event"
+      />
+      <work-item-iteration
+        v-if="workItemIteration"
+        class="gl-mb-5"
+        :iteration="workItemIteration.iteration"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        :fetch-by-iid="fetchByIid"
+        :query-variables="queryVariables"
+        :full-path="fullPath"
+        @error="updateError = $event"
+      />
+      <work-item-health-status
+        v-if="workItemHealthStatus"
+        class="gl-mb-5"
+        :health-status="workItemHealthStatus.healthStatus"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        @error="updateError = $event"
+      />
       <work-item-description
         v-if="hasDescriptionWidget"
         :work-item-id="workItem.id"
@@ -512,6 +616,27 @@ export default {
         class="gl-pt-5"
         @error="updateError = $event"
       />
+      <work-item-tree
+        v-if="workItemType === $options.WORK_ITEM_TYPE_VALUE_OBJECTIVE"
+        :work-item-type="workItemType"
+        :work-item-id="workItem.id"
+        :children="children"
+        :can-update="canUpdate"
+        :project-path="fullPath"
+        @addWorkItemChild="addChild"
+        @removeChild="removeChild"
+      />
+      <template v-if="workItemsMvc2Enabled">
+        <work-item-notes
+          v-if="workItemNotes"
+          :work-item-id="workItem.id"
+          :query-variables="queryVariables"
+          :full-path="fullPath"
+          :fetch-by-iid="fetchByIid"
+          class="gl-pt-5"
+          @error="updateError = $event"
+        />
+      </template>
       <gl-empty-state
         v-if="error"
         :title="$options.i18n.fetchErrorTitle"

@@ -17,8 +17,7 @@
     = clipboard_button(target: '#registration_token', title: _("Copy token"))
 
 .gl-mt-3.gl-mb-3
-= button_to _("Reset registration token"), reset_token_url,
-method: :put, class: 'gl-button btn btn-default',
-data: { confirm: _("Are you sure you want to reset the registration token?") }
+= render Pajamas::ButtonComponent.new(variant: :default, method: :put, href: reset_token_url, button_options: { id: 'Reset registration token', data: { confirm: _("Are you sure you want to reset the registration token?") } }) do
+  = _('Reset registration token')
 
 #js-install-runner

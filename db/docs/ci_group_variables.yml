@@ -7,3 +7,4 @@ feature_categories:
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/5b0954759cc24bdba97be89bb117c5440174f859
 milestone: '9.4'
+gitlab_schema: gitlab_ci

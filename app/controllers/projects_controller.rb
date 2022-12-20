@@ -26,7 +26,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :verify_git_import_enabled, only: [:create]
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
   before_action :present_project, only: [:edit]
-  before_action :authorize_download_code!, only: [:refs]
+  before_action :authorize_read_code!, only: [:refs]
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
@@ -37,19 +37,15 @@ class ProjectsController < Projects::ApplicationController
   before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
 
   before_action do
-    push_frontend_feature_flag(:lazy_load_commits, @project)
     push_frontend_feature_flag(:highlight_js, @project)
     push_frontend_feature_flag(:file_line_blame, @project)
     push_frontend_feature_flag(:increase_page_size_exponentially, @project)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_mvc, @project&.work_items_mvc_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, @project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:package_registry_access_level)
-  end
-
-  before_action only: :edit do
-    push_frontend_feature_flag(:split_operations_visibility_permissions, @project)
   end
 
   layout :determine_layout
@@ -369,7 +365,7 @@ class ProjectsController < Projects::ApplicationController
   def render_landing_page
     Gitlab::Tracking.event('project_overview', 'render', user: current_user, project: @project.project)
 
-    if can?(current_user, :download_code, @project)
+    if can?(current_user, :read_code, @project)
       return render 'projects/no_repo' unless @project.repository_exists?
 
       render 'projects/empty' if @project.empty_repo?
@@ -433,17 +429,11 @@ class ProjectsController < Projects::ApplicationController
       security_and_compliance_access_level
       container_registry_access_level
       releases_access_level
-    ] + operations_feature_attributes
-  end
-
-  def operations_feature_attributes
-    if Feature.enabled?(:split_operations_visibility_permissions, project)
-      %i[
-        environments_access_level feature_flags_access_level monitor_access_level infrastructure_access_level
-      ]
-    else
-      %i[operations_access_level]
-    end
+      environments_access_level
+      feature_flags_access_level
+      monitor_access_level
+      infrastructure_access_level
+    ]
   end
 
   def project_setting_attributes
@@ -520,14 +510,6 @@ class ProjectsController < Projects::ApplicationController
     false
   end
 
-  def project_view_files?
-    if current_user
-      current_user.project_view == 'files'
-    else
-      project_view_files_allowed?
-    end
-  end
-
   # Override extract_ref from ExtractsPath, which returns the branch and file path
   # for the blob/tree, which in this case is just the root of the default branch.
   # This way we avoid to access the repository.ref_names.
@@ -538,10 +520,6 @@ class ProjectsController < Projects::ApplicationController
   # Override get_id from ExtractsPath in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
-  end
-
-  def project_view_files_allowed?
-    !project.empty_repo? && can?(current_user, :download_code, project)
   end
 
   def build_canonical_path(project)

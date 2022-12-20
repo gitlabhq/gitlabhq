@@ -26,7 +26,7 @@ monolith. This architecture also supports regions by allowing for low traffic
 databases to be replicated across regions.
 
 Users are not directly exposed to the concept of Pods but instead they see
-different data dependent on their currently chosen "organization".
+different data dependent on their chosen "organization".
 [Organizations](index.md#organizations) will be a new model introduced to enforce isolation in the
 application and allow us to decide which request route to which pod, since an
 organization can only be on a single pod.
@@ -639,9 +639,9 @@ Migrating data between pods will need to factor all data stores:
 ### Is it still possible to leak the existence of private groups via a timing attack?
 
 If you have router in EU, and you know that EU router by default redirects
-to EU located Pods, you know their latency (lets assume 10ms). Now, if your
+to EU located Pods, you know their latency (lets assume 10 ms). Now, if your
 request is bounced back and redirected to US which has different latency
-(lets assume that roundtrip will be around 60ms) you can deduce that 404 was
+(lets assume that roundtrip will be around 60 ms) you can deduce that 404 was
 returned by US Pod and know that your 404 is in fact 403.
 
 We may defer this until we actually implement a pod in a different region. Such timing attacks are already theoretically possible with the way we do permission checks today but the timing difference is probably too small to be able to detect.

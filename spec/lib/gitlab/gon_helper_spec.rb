@@ -40,11 +40,11 @@ RSpec.describe Gitlab::GonHelper do
       end
     end
 
-    describe 'sentry configuration' do
+    context 'when sentry is configured' do
       let(:clientside_dsn) { 'https://xxx@sentry.example.com/1' }
       let(:environment) { 'staging' }
 
-      describe 'sentry integration' do
+      context 'with legacy sentry configuration' do
         before do
           stub_config(sentry: { enabled: true, clientside_dsn: clientside_dsn, environment: environment })
         end
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::GonHelper do
         end
       end
 
-      describe 'new sentry integration' do
+      context 'with sentry settings' do
         before do
           stub_application_setting(sentry_enabled: true)
           stub_application_setting(sentry_clientside_dsn: clientside_dsn)
@@ -104,6 +104,7 @@ RSpec.describe Gitlab::GonHelper do
       thing = stub_feature_flag_gate('thing')
 
       stub_feature_flags(my_feature_flag: thing)
+      stub_feature_flag_definition(:my_feature_flag)
 
       allow(helper)
         .to receive(:gon)

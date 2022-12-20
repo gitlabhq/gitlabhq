@@ -1,13 +1,8 @@
 <script>
-import {
-  GlButton,
-  GlLoadingIcon,
-  GlSafeHtmlDirective as SafeHtml,
-  GlSprintf,
-  GlAlert,
-} from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlSprintf, GlAlert } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { IdState } from 'vendor/vue-virtual-scroller';
 import DiffContent from 'jh_else_ce/diffs/components/diff_content.vue';
 import { createAlert } from '~/flash';

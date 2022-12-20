@@ -21,6 +21,10 @@ module Gitlab
       def monthly_time_range_db_params(column: nil)
         { (column || DEFAULT_TIMESTAMP_COLUMN) => 30.days.ago..2.days.ago }
       end
+
+      def weekly_time_range_db_params(column: nil)
+        { (column || DEFAULT_TIMESTAMP_COLUMN) => 9.days.ago..2.days.ago }
+      end
     end
   end
 end

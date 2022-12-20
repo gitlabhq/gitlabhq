@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :issue, traits: [:has_internal_id] do
     title { generate(:title) }
     project
+    namespace { project.project_namespace }
     author { project.creator }
     updated_by { author }
     relative_position { RelativePositioning::START_POSITION }
@@ -68,6 +69,16 @@ FactoryBot.define do
     trait :task do
       issue_type { :task }
       association :work_item_type, :default, :task
+    end
+
+    trait :objective do
+      issue_type { :objective }
+      association :work_item_type, :default, :objective
+    end
+
+    trait :key_result do
+      issue_type { :key_result }
+      association :work_item_type, :default, :key_result
     end
 
     factory :incident do

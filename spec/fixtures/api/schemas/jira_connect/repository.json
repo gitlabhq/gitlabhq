@@ -1,11 +1,29 @@
 {
   "type": "object",
   "properties": {
-    "id": { "type": "string" },
-    "name": { "type": "string" },
-    "description": { "type": ["string", "null"] },
-    "url": { "type": "uri" },
-    "avatar": { "type": "uri" },
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "avatar": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
     "commits": {
       "type": "array",
       "items": {
@@ -24,11 +42,20 @@
         "$ref": "./pull_request.json"
       }
     },
-    "updateSequenceId": { "type": "integer" }
+    "updateSequenceId": {
+      "type": "integer"
+    }
   },
   "required": [
-    "id", "name", "description", "url", "avatar",
-    "commits", "branches", "pullRequests", "updateSequenceId"
+    "id",
+    "name",
+    "description",
+    "url",
+    "avatar",
+    "commits",
+    "branches",
+    "pullRequests",
+    "updateSequenceId"
   ],
   "additionalProperties": false
 }

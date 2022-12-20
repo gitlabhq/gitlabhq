@@ -70,6 +70,12 @@ class GraphqlController < ApplicationController
     end
   end
 
+  rescue_from Gitlab::Auth::TooManyIps do |exception|
+    log_exception(exception)
+
+    render_error(exception.message, status: :forbidden)
+  end
+
   rescue_from Gitlab::Graphql::Variables::Invalid do |exception|
     render_error(exception.message, status: :unprocessable_entity)
   end

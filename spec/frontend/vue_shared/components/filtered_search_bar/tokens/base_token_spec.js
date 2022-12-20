@@ -12,12 +12,12 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   mockRegularLabel,
   mockLabels,
-} from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
+} from 'jest/sidebar/components/labels/labels_select_vue/mock_data';
 
 import {
-  DEFAULT_NONE_ANY,
+  OPTIONS_NONE_ANY,
   OPERATOR_IS,
-  OPERATOR_IS_NOT,
+  OPERATOR_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   getRecentlyUsedSuggestions,
@@ -76,7 +76,7 @@ const mockProps = {
   active: false,
   suggestions: [],
   suggestionsLoading: false,
-  defaultSuggestions: DEFAULT_NONE_ANY,
+  defaultSuggestions: OPTIONS_NONE_ANY,
   getActiveTokenValue: (labels, data) => labels.find((label) => label.title === data),
   cursorPosition: 'start',
 };
@@ -301,13 +301,13 @@ describe('BaseToken', () => {
 
     describe('with default suggestions', () => {
       describe.each`
-        operator           | shouldRenderFilteredSearchSuggestion
-        ${OPERATOR_IS}     | ${true}
-        ${OPERATOR_IS_NOT} | ${false}
+        operator        | shouldRenderFilteredSearchSuggestion
+        ${OPERATOR_IS}  | ${true}
+        ${OPERATOR_NOT} | ${false}
       `('when operator is $operator', ({ shouldRenderFilteredSearchSuggestion, operator }) => {
         beforeEach(() => {
           const props = {
-            defaultSuggestions: DEFAULT_NONE_ANY,
+            defaultSuggestions: OPTIONS_NONE_ANY,
             value: { data: '', operator },
           };
 
@@ -322,7 +322,7 @@ describe('BaseToken', () => {
 
           if (shouldRenderFilteredSearchSuggestion) {
             expect(filteredSearchSuggestions.map((c) => c.props())).toMatchObject(
-              DEFAULT_NONE_ANY.map((opt) => ({ value: opt.value })),
+              OPTIONS_NONE_ANY.map((opt) => ({ value: opt.value })),
             );
           } else {
             expect(filteredSearchSuggestions).toHaveLength(0);

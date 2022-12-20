@@ -11,11 +11,7 @@ module Analytics
       private
 
       def events
-        (stage_events.events - stage_events.internal_events).sort_by(&:name)
-      end
-
-      def stage_events
-        Gitlab::Analytics::CycleAnalytics::StageEvents
+        Gitlab::Analytics::CycleAnalytics::StageEvents.selectable_events
       end
     end
   end

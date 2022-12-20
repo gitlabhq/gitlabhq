@@ -231,7 +231,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
     end
 
     describe '#updated_cached_html_for' do
-      let(:thing) { klass.new(description: markdown, description_html: html, cached_markdown_version: cache_version) }
+      let(:thing) { klass.new(project_id: project.id, namespace_id: project.project_namespace_id, description: markdown, description_html: html, cached_markdown_version: cache_version) }
 
       context 'when the markdown cache is outdated' do
         before do
@@ -286,7 +286,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
   end
 
   shared_examples 'a class with mentionable markdown fields' do
-    let(:mentionable) { klass.new(description: markdown, description_html: html, title: markdown, title_html: html, cached_markdown_version: cache_version) }
+    let(:mentionable) { klass.new(project_id: project.id, namespace_id: project.project_namespace_id, description: markdown, description_html: html, title: markdown, title_html: html, cached_markdown_version: cache_version) }
 
     context 'when klass is a Mentionable', :aggregate_failures do
       before do
@@ -336,7 +336,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
           end
 
           context 'when the markdown field also a mentionable attribute' do
-            let(:thing) { klass.new(description: markdown, description_html: html, cached_markdown_version: cache_version) }
+            let(:thing) { klass.new(project_id: project.id, namespace_id: project.project_namespace_id, description: markdown, description_html: html, cached_markdown_version: cache_version) }
 
             it 'calls #store_mentions!' do
               expect(thing).to receive(:mentionable_attributes_changed?).and_return(true)
@@ -349,7 +349,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
           end
 
           context 'when the markdown field is not mentionable attribute' do
-            let(:thing) { klass.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
+            let(:thing) { klass.new(project_id: project.id, namespace_id: project.project_namespace_id, title: markdown, title_html: html, cached_markdown_version: cache_version) }
 
             it 'does not call #store_mentions!' do
               expect(thing).not_to receive(:store_mentions!)
@@ -363,7 +363,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
         end
 
         context 'when the markdown field does not exist' do
-          let(:thing) { klass.new(cached_markdown_version: cache_version) }
+          let(:thing) { klass.new(project_id: project.id, namespace_id: project.project_namespace_id, cached_markdown_version: cache_version) }
 
           it 'does not call #store_mentions!' do
             expect(thing).not_to receive(:store_mentions!)
@@ -376,13 +376,15 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
   end
 
   context 'for Active record classes' do
+    let_it_be(:project) { create(:project) }
+
     let(:klass) { ar_class }
 
     it_behaves_like 'a class with cached markdown fields'
     it_behaves_like 'a class with mentionable markdown fields'
 
     describe '#attribute_invalidated?' do
-      let(:thing) { klass.create!(description: markdown, description_html: html, cached_markdown_version: cache_version) }
+      let(:thing) { klass.create!(project_id: project.id, namespace_id: project.project_namespace_id, description: markdown, description_html: html, cached_markdown_version: cache_version) }
 
       it 'returns true when cached_markdown_version is different' do
         thing.cached_markdown_version += 1
@@ -425,7 +427,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
       let(:thing) do
         # This forces the record to have outdated HTML. We can't use `create` because the `before_create` hook
         # would re-render the HTML to the latest version
-        klass.create!.tap do |thing|
+        klass.create!(project_id: project.id, namespace_id: project.project_namespace_id).tap do |thing|
           thing.update_columns(description: markdown, description_html: old_html, cached_markdown_version: old_version)
         end
       end
@@ -441,6 +443,8 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
   end
 
   context 'for other classes' do
+    let_it_be(:project) { create(:project) }
+
     let(:klass) { other_class }
 
     it_behaves_like 'a class with cached markdown fields'

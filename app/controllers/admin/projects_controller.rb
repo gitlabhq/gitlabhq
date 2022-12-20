@@ -13,9 +13,7 @@ class Admin::ProjectsController < Admin::ApplicationController
     params[:sort] ||= 'latest_activity_desc'
     @sort = params[:sort]
 
-    if params[:last_repository_check_failed].present? && params[:archived].nil?
-      params[:archived] = true
-    end
+    params[:archived] = true if params[:last_repository_check_failed].present? && params[:archived].nil?
 
     @projects = Admin::ProjectsFinder.new(params: params, current_user: current_user).execute
 
@@ -57,9 +55,7 @@ class Admin::ProjectsController < Admin::ApplicationController
     namespace = Namespace.find_by(id: params[:new_namespace_id])
     ::Projects::TransferService.new(@project, current_user, params.dup).execute(namespace)
 
-    if @project.errors[:new_namespace].present?
-      flash[:alert] = @project.errors[:new_namespace].first
-    end
+    flash[:alert] = @project.errors[:new_namespace].first if @project.errors[:new_namespace].present?
 
     @project.reset
     redirect_to admin_project_path(@project)

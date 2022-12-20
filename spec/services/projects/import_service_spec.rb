@@ -419,25 +419,5 @@ RSpec.describe Projects::ImportService do
         end
       end
     end
-
-    it_behaves_like 'measurable service' do
-      let(:base_log_data) do
-        {
-          class: described_class.name,
-          current_user: user.name,
-          project_full_path: project.full_path,
-          import_type: project.import_type,
-          file_path: project.import_source
-        }
-      end
-
-      before do
-        project.import_type = 'github'
-      end
-
-      after do
-        subject.execute
-      end
-    end
   end
 end

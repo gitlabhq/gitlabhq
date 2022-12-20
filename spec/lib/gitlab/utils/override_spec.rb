@@ -35,8 +35,7 @@ RSpec.describe Gitlab::Utils::Override do
       override :good
 
       if bad_arity
-        def good(num)
-        end
+        def good(num); end
       elsif negative_arity
         def good(*args)
           super.succ

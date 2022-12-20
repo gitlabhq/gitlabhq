@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runner do
+RSpec.describe Ci::Runner, feature_category: :runner do
   include StubGitlabCalls
 
   it_behaves_like 'having unique enum values'
@@ -699,6 +699,30 @@ RSpec.describe Ci::Runner do
     let!(:runner2) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
 
     it { is_expected.to eq([runner1]) }
+  end
+
+  describe '.with_running_builds' do
+    subject { described_class.with_running_builds }
+
+    let_it_be(:runner1) { create(:ci_runner) }
+
+    context 'with no builds running' do
+      it { is_expected.to be_empty }
+    end
+
+    context 'with single build running on runner2' do
+      let(:runner2) { create(:ci_runner) }
+      let(:runner3) { create(:ci_runner) }
+
+      before do
+        project = create(:project, :repository)
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_build, :running, runner: runner2, pipeline: pipeline)
+        create(:ci_build, :running, runner: runner3, pipeline: pipeline)
+      end
+
+      it { is_expected.to contain_exactly(runner2, runner3) }
+    end
   end
 
   describe '#matches_build?' do

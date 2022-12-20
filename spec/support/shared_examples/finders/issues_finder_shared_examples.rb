@@ -109,19 +109,76 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       end
 
       context 'filtering by release' do
-        context 'when the release tag is none' do
+        context 'when filter by none' do
           let(:params) { { release_tag: 'none' } }
 
           it 'returns items without releases' do
             expect(items).to contain_exactly(item2, item3, item4, item5)
           end
+
+          context 'when sort by milestone' do
+            let(:params) { { release_tag: 'none', sort: 'milestone_due_desc' } }
+
+            it 'returns items without any releases' do
+              expect(items).to contain_exactly(item2, item3, item4, item5)
+            end
+          end
         end
 
-        context 'when the release tag exists' do
+        context 'when filter by any' do
+          let(:params) { { release_tag: 'any' } }
+
+          it 'returns items with any releases' do
+            expect(items).to contain_exactly(item1)
+          end
+
+          context 'when sort by milestone' do
+            let(:params) { { release_tag: 'any', sort: 'milestone_due_desc' } }
+
+            it 'returns items without any releases' do
+              expect(items).to contain_exactly(item1)
+            end
+          end
+        end
+
+        context 'when filter by a release_tag' do
           let(:params) { { project_id: project1.id, release_tag: release.tag } }
 
-          it 'returns the items associated with that release' do
+          it 'returns the items associated with the release tag' do
             expect(items).to contain_exactly(item1)
+          end
+
+          context 'when sort by milestone' do
+            let(:params) { { project_id: project1.id, release_tag: release.tag, sort: 'milestone_due_desc' } }
+
+            it 'returns the items associated with the release tag' do
+              expect(items).to contain_exactly(item1)
+            end
+          end
+        end
+
+        context 'when filter by a negated release_tag' do
+          let_it_be(:another_release) { create(:release, project: project1, tag: 'v2.0.0') }
+          let_it_be(:another_milestone) { create(:milestone, project: project1, releases: [another_release]) }
+          let_it_be(:another_item) do
+            create(factory,
+                   project: project1,
+                   milestone: another_milestone,
+                   title: 'another item')
+          end
+
+          let(:params) { { not: { release_tag: release.tag, project_id: project1.id } } }
+
+          it 'returns the items not associated with the release' do
+            expect(items).to contain_exactly(another_item)
+          end
+
+          context 'when sort by milestone' do
+            let(:params) { { not: { release_tag: release.tag, project_id: project1.id }, sort: 'milestone_due_desc' } }
+
+            it 'returns the items not associated with the release' do
+              expect(items).to contain_exactly(another_item)
+            end
           end
         end
       end
@@ -864,12 +921,15 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
 
       context 'filtering by item type' do
         let_it_be(:incident_item) { create(factory, issue_type: :incident, project: project1) }
+        let_it_be(:objective) { create(factory, issue_type: :objective, project: project1) }
+        let_it_be(:key_result) { create(factory, issue_type: :key_result, project: project1) }
 
         context 'no type given' do
           let(:params) { { issue_types: [] } }
 
           it 'returns all items' do
-            expect(items).to contain_exactly(incident_item, item1, item2, item3, item4, item5)
+            expect(items)
+              .to contain_exactly(incident_item, item1, item2, item3, item4, item5, objective, key_result)
           end
         end
 
@@ -878,6 +938,22 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
 
           it 'returns incident items' do
             expect(items).to contain_exactly(incident_item)
+          end
+        end
+
+        context 'objective type' do
+          let(:params) { { issue_types: ['objective'] } }
+
+          it 'returns incident items' do
+            expect(items).to contain_exactly(objective)
+          end
+        end
+
+        context 'key_result type' do
+          let(:params) { { issue_types: ['key_result'] } }
+
+          it 'returns incident items' do
+            expect(items).to contain_exactly(key_result)
           end
         end
 

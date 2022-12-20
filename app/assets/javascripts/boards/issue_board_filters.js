@@ -14,13 +14,13 @@ export default function issueBoardFilters(apollo, fullPath, boardType) {
     return isGroupBoard ? groupBoardMembers : projectBoardMembers;
   };
 
-  const fetchAuthors = (authorsSearchTerm) => {
+  const fetchUsers = (usersSearchTerm) => {
     return apollo
       .query({
         query: boardAssigneesQuery(),
         variables: {
           fullPath,
-          search: authorsSearchTerm,
+          search: usersSearchTerm,
         },
       })
       .then(({ data }) => data.workspace?.assignees.nodes.map(({ user }) => user));
@@ -42,6 +42,6 @@ export default function issueBoardFilters(apollo, fullPath, boardType) {
 
   return {
     fetchLabels,
-    fetchAuthors,
+    fetchUsers,
   };
 }

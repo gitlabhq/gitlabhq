@@ -14,9 +14,18 @@ module Gitlab
         private
 
         def increment_call_count(context)
+          query_id = fetch_query_id(context)
+
           context[:call_count] ||= {}
-          context[:call_count][field] ||= 0
-          context[:call_count][field] += 1
+          context[:call_count][query_id] ||= {}
+          context[:call_count][query_id][field] ||= 0
+          context[:call_count][query_id][field] += 1
+        end
+
+        def fetch_query_id(context)
+          context.query.operation_fingerprint
+        rescue TypeError
+          ''
         end
 
         def limit

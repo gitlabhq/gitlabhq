@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'New merge request breadcrumb' do
+RSpec.describe 'New merge request breadcrumb', feature_category: :code_review do
   let(:project) { create(:project, :repository) }
   let(:user) { project.creator }
 

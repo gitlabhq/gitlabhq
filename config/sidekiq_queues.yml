@@ -71,6 +71,8 @@
   - 1
 - - background_migration_ci_database
   - 1
+- - batched_background_migrations
+  - 1
 - - bulk_import
   - 1
 - - bulk_imports_entity
@@ -128,6 +130,10 @@
 - - delete_stored_files
   - 1
 - - delete_user
+  - 1
+- - dependencies_destroy_export
+  - 1
+- - dependencies_export
   - 1
 - - dependency_proxy
   - 1
@@ -192,6 +198,8 @@
 - - gcp_cluster
   - 1
 - - geo
+  - 1
+- - github_gists_importer
   - 1
 - - github_import_advance_stage
   - 1
@@ -259,8 +267,6 @@
   - 1
 - - integrations_slack_event
   - 1
-- - integrations_slack_interactivity
-  - 1
 - - invalid_gpg_signature_update
   - 2
 - - issuable_export_csv
@@ -295,13 +301,13 @@
   - 1
 - - merge_request_reset_approvals
   - 1
+- - merge_requests_capture_suggested_reviewers_accepted
+  - 1
 - - merge_requests_close_issue
   - 1
 - - merge_requests_create_approval_event
   - 1
 - - merge_requests_create_approval_note
-  - 1
-- - merge_requests_delete_branch
   - 1
 - - merge_requests_delete_source_branch
   - 1
@@ -401,7 +407,11 @@
   - 1
 - - projects_after_import
   - 1
+- - projects_delete_branch
+  - 1
 - - projects_git_garbage_collect
+  - 1
+- - projects_import_export_parallel_project_export
   - 1
 - - projects_import_export_relation_export
   - 1
@@ -430,6 +440,8 @@
 - - propagate_integration_inherit_descendant
   - 1
 - - propagate_integration_project
+  - 1
+- - pull_mirrors_reenable_configuration
   - 1
 - - reactive_caching
   - 1

@@ -8,8 +8,6 @@ import (
 	"net/url"
 
 	"github.com/gorilla/websocket"
-
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 type ChannelSettings struct {
@@ -53,7 +51,10 @@ func (t *ChannelSettings) Dialer() *websocket.Dialer {
 func (t *ChannelSettings) Clone() *ChannelSettings {
 	// Doesn't clone the strings, but that's OK as strings are immutable in go
 	cloned := *t
-	cloned.Header = helper.HeaderClone(t.Header)
+	cloned.Header = t.Header.Clone()
+	if cloned.Header == nil {
+		cloned.Header = make(http.Header)
+	}
 	return &cloned
 }
 

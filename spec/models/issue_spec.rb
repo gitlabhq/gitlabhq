@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issue do
+RSpec.describe Issue, feature_category: :project_management do
   include ExternalAuthorizationServiceHelpers
 
   using RSpec::Parameterized::TableSyntax
@@ -25,7 +25,7 @@ RSpec.describe Issue do
     it { is_expected.to have_many(:design_versions) }
     it { is_expected.to have_one(:sentry_issue) }
     it { is_expected.to have_one(:alert_management_alert) }
-    it { is_expected.to have_many(:alert_management_alerts) }
+    it { is_expected.to have_many(:alert_management_alerts).validate(false) }
     it { is_expected.to have_many(:resource_milestone_events) }
     it { is_expected.to have_many(:resource_state_events) }
     it { is_expected.to have_and_belong_to_many(:prometheus_alert_events) }
@@ -135,6 +135,31 @@ RSpec.describe Issue do
         let(:issue_type) { nil }
 
         it { is_expected.to eq(false) }
+      end
+    end
+
+    describe '#allowed_work_item_type_change' do
+      where(:old_type, :new_type, :is_valid) do
+        :issue     | :incident  | true
+        :incident  | :issue     | true
+        :test_case | :issue     | true
+        :issue     | :test_case | true
+        :issue     | :task      | false
+        :test_case | :task      | false
+        :incident  | :task      | false
+        :task      | :issue     | false
+        :task      | :incident  | false
+        :task      | :test_case | false
+      end
+
+      with_them do
+        it 'is possible to change type only between selected types' do
+          issue = create(:issue, old_type, project: reusable_project)
+
+          issue.work_item_type_id = WorkItems::Type.default_by_type(new_type).id
+
+          expect(issue.valid?).to eq(is_valid)
+        end
       end
     end
 
@@ -257,7 +282,7 @@ RSpec.describe Issue do
       end
 
       context 'when no type was set' do
-        let_it_be(:issue, refind: true) { build(:issue, project: project, work_item_type: nil).tap { |issue| issue.save!(validate: false) } }
+        let(:issue) { build(:issue, project: project, work_item_type: nil) }
 
         it 'sets a work item type before validation' do
           expect(issue.work_item_type_id).to be_nil
@@ -446,17 +471,6 @@ RSpec.describe Issue do
       subject { described_class.order_escalation_status_desc }
 
       it { is_expected.to eq([resolved_incident, triggered_incident, issue_no_status]) }
-    end
-  end
-
-  # TODO: Remove when NOT NULL constraint is added to the relationship
-  describe '#work_item_type' do
-    let(:issue) { build(:issue, :incident, project: reusable_project, work_item_type: nil).tap { |issue| issue.save!(validate: false) } }
-
-    it 'returns a default type if the legacy issue does not have a work item type associated yet' do
-      expect(issue.work_item_type_id).to be_nil
-      expect(issue.issue_type).to eq('incident')
-      expect(issue.work_item_type).to eq(WorkItems::Type.default_by_type(:incident))
     end
   end
 

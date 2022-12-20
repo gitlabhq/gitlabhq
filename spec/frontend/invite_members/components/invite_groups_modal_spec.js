@@ -6,8 +6,15 @@ import InviteGroupsModal from '~/invite_members/components/invite_groups_modal.v
 import InviteModalBase from '~/invite_members/components/invite_modal_base.vue';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import GroupSelect from '~/invite_members/components/group_select.vue';
+import InviteGroupNotification from '~/invite_members/components/invite_group_notification.vue';
 import { stubComponent } from 'helpers/stub_component';
+import {
+  displaySuccessfulInvitationAlert,
+  reloadOnInvitationSuccess,
+} from '~/invite_members/utils/trigger_successful_invite_alert';
 import { propsData, sharedGroup } from '../mock_data/group_modal';
+
+jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
 
 describe('InviteGroupsModal', () => {
   let wrapper;
@@ -44,6 +51,7 @@ describe('InviteGroupsModal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findGroupSelect = () => wrapper.findComponent(GroupSelect);
+  const findInviteGroupAlert = () => wrapper.findComponent(InviteGroupNotification);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
   const membersFormGroupInvalidFeedback = () =>
@@ -71,6 +79,20 @@ describe('InviteGroupsModal', () => {
 
         expect(findIntroText()).toBe("You're inviting a group to the test name group.");
       });
+    });
+  });
+
+  describe('rendering the invite group notification', () => {
+    it('shows the user limit notification alert when free user cap is enabled', () => {
+      createComponent({ freeUserCapEnabled: true });
+
+      expect(findInviteGroupAlert().exists()).toBe(true);
+    });
+
+    it('does not show the user limit notification alert', () => {
+      createComponent();
+
+      expect(findInviteGroupAlert().exists()).toBe(false);
     });
   });
 
@@ -126,6 +148,14 @@ describe('InviteGroupsModal', () => {
           onComplete: expect.any(Function),
         });
       });
+
+      it('does not call displaySuccessfulInvitationAlert on mount', () => {
+        expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
+      });
+
+      it('does not call reloadOnInvitationSuccess', () => {
+        expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
+      });
     });
 
     describe('when fails', () => {
@@ -153,6 +183,39 @@ describe('InviteGroupsModal', () => {
         await nextTick();
 
         expect(membersFormGroupInvalidFeedback()).toBe('');
+      });
+    });
+  });
+
+  describe('submitting the invite form with reloadPageOnSubmit set true', () => {
+    const groupPostData = {
+      group_id: sharedGroup.id,
+      group_access: propsData.defaultAccessLevel,
+      expires_at: undefined,
+      format: 'json',
+    };
+
+    beforeEach(() => {
+      createComponent({ reloadPageOnSubmit: true });
+      triggerGroupSelect(sharedGroup);
+
+      wrapper.vm.$toast = { show: jest.fn() };
+      jest.spyOn(Api, 'groupShareWithGroup').mockResolvedValue({ data: groupPostData });
+
+      clickInviteButton();
+    });
+
+    describe('when succeeds', () => {
+      it('calls displaySuccessfulInvitationAlert on mount', () => {
+        expect(displaySuccessfulInvitationAlert).toHaveBeenCalled();
+      });
+
+      it('calls reloadOnInvitationSuccess', () => {
+        expect(reloadOnInvitationSuccess).toHaveBeenCalled();
+      });
+
+      it('does not show the toast message on failure', () => {
+        expect(wrapper.vm.$toast.show).not.toHaveBeenCalled();
       });
     });
   });

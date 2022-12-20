@@ -25,6 +25,8 @@
 - cluster_cost_management
 - code_quality
 - code_review
+- code_search
+- code_suggestions
 - code_testing
 - commerce_integrations
 - compliance_management
@@ -49,6 +51,7 @@
 - design_system
 - devops_reports
 - disaster_recovery
+- dora_metrics
 - dynamic_application_security_testing
 - editor_extension
 - environment_management
@@ -67,7 +70,6 @@
 - geo_replication
 - git_lfs
 - gitaly
-- gitlab_docs
 - global_search
 - helm_chart_registry
 - importers
@@ -105,6 +107,7 @@
 - pubsec_services
 - purchase
 - quality_management
+- rate_limiting
 - redis
 - release_evidence
 - release_orchestration
@@ -116,6 +119,7 @@
 - runner_fleet
 - runner_saas
 - saas_provisioning
+- sbom
 - scalability
 - secret_detection
 - secrets_management
@@ -124,13 +128,11 @@
 - service_desk
 - service_ping
 - sm_provisioning
-- snippets
 - source_code_management
 - static_application_security_testing
 - subgroups
 - subscription_cost_management
 - subscription_management
-- subscription_usage_reports
 - system_access
 - team_planning
 - tracing

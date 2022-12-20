@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleUpdateUsersWhereTwoFactorAuthRequiredFromGroup do
+RSpec.describe ScheduleUpdateUsersWhereTwoFactorAuthRequiredFromGroup, feature_category: :require_two_factor_authentication_from_group do
   let(:users) { table(:users) }
   let!(:user_1) { users.create!(require_two_factor_authentication_from_group: false, name: "user1", email: "user1@example.com", projects_limit: 1) }
   let!(:user_2) { users.create!(require_two_factor_authentication_from_group: true, name: "user2", email: "user2@example.com", projects_limit: 1) }

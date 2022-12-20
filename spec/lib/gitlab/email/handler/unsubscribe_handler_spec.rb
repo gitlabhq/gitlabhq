@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Handler::UnsubscribeHandler do
-  include_context :email_shared_context
+  include_context 'email shared context'
 
   before do
     stub_incoming_email_setting(enabled: true, address: 'reply+%{key}@appmail.adventuretime.ooo')

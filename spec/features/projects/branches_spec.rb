@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Branches' do
+RSpec.describe 'Branches', feature_category: :projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
   let(:repository) { project.repository }
@@ -143,7 +143,7 @@ RSpec.describe 'Branches' do
 
         click_button "Updated date" # Open sorting dropdown
         within '[data-testid="branches-dropdown"]' do
-          find('p', text: 'Name').click
+          first('span', text: 'Name').click
         end
 
         expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :name))
@@ -154,7 +154,7 @@ RSpec.describe 'Branches' do
 
         click_button "Updated date" # Open sorting dropdown
         within '[data-testid="branches-dropdown"]' do
-          find('p', text: 'Oldest updated').click
+          first('span', text: 'Oldest updated').click
         end
 
         expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :updated_asc))

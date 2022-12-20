@@ -702,16 +702,12 @@ RSpec.describe ProjectsController do
           skip unless project.hashed_storage?(:repository)
 
           hashed_storage_path = ::Storage::Hashed.new(project).disk_path
-          original_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            project.repository.path
-          end
+          original_repository_path = project.repository.relative_path
 
           expect { update_project path: 'renamed_path' }.to change { project.reload.path }
           expect(project.path).to include 'renamed_path'
 
-          assign_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            assigns(:repository).path
-          end
+          assign_repository_path = assigns(:repository).relative_path
 
           expect(original_repository_path).to include(hashed_storage_path)
           expect(assign_repository_path).to include(hashed_storage_path)
@@ -721,16 +717,12 @@ RSpec.describe ProjectsController do
           skip if project.hashed_storage?(:repository)
 
           hashed_storage_path = Storage::Hashed.new(project).disk_path
-          original_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            project.repository.path
-          end
+          original_repository_path = project.repository.relative_path
 
           expect { update_project path: 'renamed_path' }.to change { project.reload.path }
           expect(project.path).to include 'renamed_path'
 
-          assign_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            assigns(:repository).path
-          end
+          assign_repository_path = assigns(:repository).relative_path
 
           expect(original_repository_path).not_to include(hashed_storage_path)
           expect(assign_repository_path).to include(hashed_storage_path)
@@ -927,35 +919,6 @@ RSpec.describe ProjectsController do
 
       with_them do
         it_behaves_like 'feature update success'
-      end
-
-      context 'for feature_access_level operations_access_level' do
-        let(:feature_access_level) { :operations_access_level }
-
-        include_examples 'feature update failure'
-      end
-
-      context 'with feature flag split_operations_visibility_permissions disabled' do
-        before do
-          stub_feature_flags(split_operations_visibility_permissions: false)
-        end
-
-        context 'for feature_access_level operations_access_level' do
-          let(:feature_access_level) { :operations_access_level }
-
-          include_examples 'feature update success'
-        end
-
-        where(:feature_access_level) do
-          %i[
-            environments_access_level feature_flags_access_level
-            monitor_access_level
-          ]
-        end
-
-        with_them do
-          it_behaves_like 'feature update failure'
-        end
       end
     end
   end
@@ -1334,7 +1297,7 @@ RSpec.describe ProjectsController do
                                   text: merge_request.to_reference
                                 }
 
-        expect(json_response['body']).to match(/\!#{merge_request.iid} \(closed\)/)
+        expect(json_response['body']).to match(/!#{merge_request.iid} \(closed\)/)
       end
     end
 
@@ -1635,6 +1598,12 @@ RSpec.describe ProjectsController do
         context 'applies correct scope when throttling', :clean_gitlab_redis_rate_limiting do
           before do
             stub_application_setting(project_download_export_limit: 1)
+
+            travel_to Date.current.beginning_of_day
+          end
+
+          after do
+            travel_back
           end
 
           it 'applies throttle per namespace' do

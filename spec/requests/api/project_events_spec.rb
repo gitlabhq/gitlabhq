@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectEvents do
+RSpec.describe API::ProjectEvents, feature_category: :users do
   let(:user) { create(:user) }
   let(:non_member) { create(:user) }
   let(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }

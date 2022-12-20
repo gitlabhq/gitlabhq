@@ -75,7 +75,7 @@ To resolve less-complex conflicts from the GitLab user interface:
 Resolving conflicts merges the target branch of the merge request into the
 source branch, using the version of the text you chose. If the source branch is
 `feature` and the target branch is `main`, these actions are similar to running
-`git checkout feature; git merge main` locally.
+`git switch feature; git merge main` locally.
 
 ## Resolve conflicts in the inline editor
 
@@ -101,7 +101,7 @@ most control over each change:
 1. Open the terminal and check out your feature branch. For example, `my-feature-branch`:
 
    ```shell
-   git checkout my-feature-branch
+   git switch my-feature-branch
    ```
 
 1. [Rebase your branch](../../../topics/git/git_rebase.md#regular-rebase) against the

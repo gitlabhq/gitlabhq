@@ -7,7 +7,7 @@ import {
 import confidentialMergeRequestState from '~/confidential_merge_request/state';
 import DropLab from '~/filtered_search/droplab/drop_lab_deprecated';
 import ISetter from '~/filtered_search/droplab/plugins/input_setter';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -141,7 +141,7 @@ export default class CreateMergeRequestDropdown {
       .catch(() => {
         this.unavailable();
         this.disable();
-        createFlash({
+        createAlert({
           message: __('Failed to check related branches.'),
         });
       });
@@ -162,7 +162,7 @@ export default class CreateMergeRequestDropdown {
         }
       })
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('Failed to create a branch for this issue. Please try again.'),
         }),
       );
@@ -293,7 +293,7 @@ export default class CreateMergeRequestDropdown {
         }
         this.unavailable();
         this.disable();
-        createFlash({
+        createAlert({
           message: __('Failed to get ref.'),
         });
 

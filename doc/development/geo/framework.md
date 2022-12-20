@@ -18,6 +18,14 @@ across Geo sites. This API is presented as a Ruby Domain-Specific
 Language (DSL) and aims to make it possible to replicate data with
 minimal effort of the engineer who created a data type.
 
+## Geo is a requirement in the definition of done
+
+Geo is the GitLab solution for [disaster recovery](https://about.gitlab.com/direction/geo/disaster_recovery/). A robust disaster recovery solution must replicate **all GitLab data** such that all GitLab services can be successfully restored in their entirety with minimal data loss in the event of a disaster.
+
+For this reason, Geo replication and verification support for GitLab generated data is part of the [definition of done](../contributing/merge_request_workflow.md#definition-of-done). This ensures that new features ship with Geo support and our customers are not exposed to data loss.
+
+Adding Geo support with the Self Service Framework (SSF) is easy and outlined in detail on this page for various types of data. However, for a more general guide that can help you decide if and how you need to add Geo support for a new GitLab feature, [you may start here](../geo.md#ensuring-a-new-feature-has-geo-support).
+
 ## Nomenclature
 
 Before digging into the API, developers need to know some Geo-specific

@@ -104,7 +104,7 @@ To retrieve metrics for change failure rate, use the [GraphQL](../../api/graphql
 
 ### Insights: Custom DORA reporting
 
-Custom charts to visualize DORA data with Insights YAML-based reports.
+Custom charts to visualize DORA data with [Insights YAML-based reports](../../user/project/insights/index.md#dora-query-parameters).
 
 With this new visualization, software leaders can track metrics improvements, understand patterns in their metrics trends, and compare performance between groups and projects.
 
@@ -113,7 +113,7 @@ With this new visualization, software leaders can track metrics improvements, un
 Deployment frequency is calculated based on the deployments record, which is created for typical push-based deployments.
 These deployment records are not created for pull-based deployments, for example when Container Images are connected to GitLab with an agent.
 
-To track DORA metrics in these cases, you can [create a deployment record](../../api/deployments.md#create-a-deployment) using the Deployments API.
+To track DORA metrics in these cases, you can [create a deployment record](../../api/deployments.md#create-a-deployment) using the Deployments API. See also the documentation page for [Track deployments of an external deployment tool](../../ci/environments/external_deployment_tools.md).
 
 ### Supported DORA metrics in GitLab
 

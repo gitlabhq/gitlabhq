@@ -30,7 +30,7 @@ module ProtectedBranches
           params[:merge_access_levels_attributes] = [{ access_level: Gitlab::Access::MAINTAINER }]
         end
 
-        service = ProtectedBranches::UpdateService.new(project, current_user, params)
+        service = ProtectedBranches::UpdateService.new(project_or_group, current_user, params)
         service.execute(protected_branch)
       end
     end

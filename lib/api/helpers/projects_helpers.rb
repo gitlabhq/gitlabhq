@@ -37,6 +37,10 @@ module API
         optional :container_registry_access_level, type: String, values: %w(disabled private enabled), desc: 'Controls visibility of the container registry. One of `disabled`, `private` or `enabled`. `private` will make the container registry accessible only to project members (reporter role and above). `enabled` will make the container registry accessible to everyone who has access to the project. `disabled` will disable the container registry'
         optional :security_and_compliance_access_level, type: String, values: %w(disabled private enabled), desc: 'Security and compliance access level. One of `disabled`, `private` or `enabled`'
         optional :releases_access_level, type: String, values: %w(disabled private enabled), desc: 'Releases access level. One of `disabled`, `private` or `enabled`'
+        optional :environments_access_level, type: String, values: %w(disabled private enabled), desc: 'Environments access level. One of `disabled`, `private` or `enabled`'
+        optional :feature_flags_access_level, type: String, values: %w(disabled private enabled), desc: 'Feature flags access level. One of `disabled`, `private` or `enabled`'
+        optional :infrastructure_access_level, type: String, values: %w(disabled private enabled), desc: 'Infrastructure access level. One of `disabled`, `private` or `enabled`'
+        optional :monitor_access_level, type: String, values: %w(disabled private enabled), desc: 'Monitor access level. One of `disabled`, `private` or `enabled`'
 
         optional :emails_disabled, type: Boolean, desc: 'Disable email notifications'
         optional :show_default_award_emojis, type: Boolean, desc: 'Show default award emojis'
@@ -183,6 +187,10 @@ module API
           :mr_default_target_self,
           :enforce_auth_checks_on_uploads,
           :releases_access_level,
+          :environments_access_level,
+          :feature_flags_access_level,
+          :infrastructure_access_level,
+          :monitor_access_level,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

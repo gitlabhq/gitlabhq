@@ -6,14 +6,16 @@
 # Each table / view needs to have assigned gitlab_schema. Names supported today:
 #
 # - gitlab_shared - defines a set of tables that are found on all databases (data accessed is dependent on connection)
-# - gitlab_main / gitlab_ci - defines a set of tables that can only exist on a given database
+# - gitlab_main / gitlab_ci - defines a set of tables that can only exist on a given application database
+# - gitlab_geo - defines a set of tables that can only exist on the geo database
+# - gitlab_internal - defines all internal tables of Rails and PostgreSQL
 #
 # Tables for the purpose of tests should be prefixed with `_test_my_table_name`
 
 module Gitlab
   module Database
     module GitlabSchema
-      GITLAB_SCHEMAS_FILE = 'lib/gitlab/database/gitlab_schemas.yml'
+      DICTIONARY_PATH = 'db/docs/'
 
       # These tables are deleted/renamed, but still referenced by migrations.
       # This is needed for now, but should be removed in the future
@@ -55,7 +57,7 @@ module Gitlab
         tables.map { |table| table_schema(table) }.to_set
       end
 
-      def self.table_schema(name)
+      def self.table_schema(name, undefined: true)
         schema_name, table_name = name.split('.', 2) # Strip schema name like: `public.`
 
         # Most of names do not have schemas, ensure that this is table
@@ -68,7 +70,7 @@ module Gitlab
         table_name.gsub!(/_[0-9]+$/, '')
 
         # Tables that are properly mapped
-        if gitlab_schema = tables_to_schema[table_name]
+        if gitlab_schema = views_and_tables_to_schema[table_name]
           return gitlab_schema
         end
 
@@ -84,6 +86,8 @@ module Gitlab
 
         return :gitlab_ci if table_name.start_with?('_test_gitlab_ci_')
 
+        return :gitlab_geo if table_name.start_with?('_test_gitlab_geo_')
+
         # All tables that start with `_test_` without a following schema are shared and ignored
         return :gitlab_shared if table_name.start_with?('_test_')
 
@@ -91,15 +95,39 @@ module Gitlab
         return :gitlab_internal if table_name.start_with?('pg_')
 
         # When undefined it's best to return a unique name so that we don't incorrectly assume that 2 undefined schemas belong on the same database
-        :"undefined_#{table_name}"
+        undefined ? :"undefined_#{table_name}" : nil
+      end
+
+      def self.dictionary_path_globs
+        [Rails.root.join(DICTIONARY_PATH, '*.yml')]
+      end
+
+      def self.view_path_globs
+        [Rails.root.join(DICTIONARY_PATH, 'views', '*.yml')]
+      end
+
+      def self.views_and_tables_to_schema
+        @views_and_tables_to_schema ||= self.tables_to_schema.merge(self.views_to_schema)
       end
 
       def self.tables_to_schema
-        @tables_to_schema ||= YAML.load_file(Rails.root.join(GITLAB_SCHEMAS_FILE))
+        @tables_to_schema ||= Dir.glob(self.dictionary_path_globs).each_with_object({}) do |file_path, dic|
+          data = YAML.load_file(file_path)
+
+          dic[data['table_name']] = data['gitlab_schema'].to_sym
+        end
+      end
+
+      def self.views_to_schema
+        @views_to_schema ||= Dir.glob(self.view_path_globs).each_with_object({}) do |file_path, dic|
+          data = YAML.load_file(file_path)
+
+          dic[data['view_name']] = data['gitlab_schema'].to_sym
+        end
       end
 
       def self.schema_names
-        @schema_names ||= self.tables_to_schema.values.to_set
+        @schema_names ||= self.views_and_tables_to_schema.values.to_set
       end
     end
   end

@@ -5,24 +5,43 @@ require 'spec_helper'
 RSpec.describe Clusters::AgentTokensFinder do
   describe '#execute' do
     let_it_be(:project) { create(:project) }
+    let_it_be(:agent) { create(:cluster_agent, project: project) }
     let(:user) { create(:user, maintainer_projects: [project]) }
-    let(:agent) { create(:cluster_agent, project: project) }
-    let(:agent_id) { agent.id }
 
-    let!(:matching_agent_tokens) do
+    let_it_be(:active_agent_tokens) do
       [
         create(:cluster_agent_token, agent: agent),
+        create(:cluster_agent_token, agent: agent)
+      ]
+    end
+
+    let_it_be(:revoked_agent_tokens) do
+      [
+        create(:cluster_agent_token, :revoked, agent: agent),
         create(:cluster_agent_token, :revoked, agent: agent)
       ]
     end
 
-    subject(:execute) { described_class.new(project, user, agent_id).execute }
-
-    it 'returns the tokens of the specified agent' do
-      # creating a token in a different agent to make sure it will not be included in the result
+    before_all do
+      # set up a token under a different agent as a way to verify
+      # that only tokens of a given agent are included in the result
       create(:cluster_agent_token, agent: create(:cluster_agent))
+    end
 
-      expect(execute).to match_array(matching_agent_tokens)
+    subject(:execute) { described_class.new(agent, user).execute }
+
+    it { is_expected.to match_array(active_agent_tokens + revoked_agent_tokens) }
+
+    context 'when filtering by status=active' do
+      subject(:execute) { described_class.new(agent, user, status: 'active').execute }
+
+      it { is_expected.to match_array(active_agent_tokens) }
+    end
+
+    context 'when filtering by status=revoked' do
+      subject(:execute) { described_class.new(agent, user, status: 'revoked').execute }
+
+      it { is_expected.to match_array(revoked_agent_tokens) }
     end
 
     context 'when user does not have permission' do
@@ -32,16 +51,20 @@ RSpec.describe Clusters::AgentTokensFinder do
         project.add_reporter(user)
       end
 
-      it 'raises an error' do
-        expect { execute }.to raise_error(ActiveRecord::RecordNotFound)
+      it { is_expected.to eq ::Clusters::AgentToken.none }
+    end
+
+    context 'when current_user is nil' do
+      it 'returns an empty list' do
+        result = described_class.new(agent, nil).execute
+        expect(result).to eq ::Clusters::AgentToken.none
       end
     end
 
-    context 'when agent does not exist' do
-      let(:agent_id) { non_existing_record_id }
-
-      it 'raises an error' do
-        expect { execute }.to raise_error(ActiveRecord::RecordNotFound)
+    context 'when agent is nil' do
+      it 'returns an empty list' do
+        result = described_class.new(nil, user).execute
+        expect(result).to eq ::Clusters::AgentToken.none
       end
     end
   end

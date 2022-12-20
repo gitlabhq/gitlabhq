@@ -2,9 +2,9 @@
 
 module ChatNames
   class FindUserService
-    def initialize(integration, params)
-      @integration = integration
-      @params = params
+    def initialize(team_id, user_id)
+      @team_id = team_id
+      @user_id = user_id
     end
 
     def execute
@@ -17,12 +17,13 @@ module ChatNames
 
     private
 
+    attr_reader :team_id, :user_id
+
     # rubocop: disable CodeReuse/ActiveRecord
     def find_chat_name
       ChatName.find_by(
-        integration: @integration,
-        team_id: @params[:team_id],
-        chat_id: @params[:user_id]
+        team_id: team_id,
+        chat_id: user_id
       )
     end
     # rubocop: enable CodeReuse/ActiveRecord

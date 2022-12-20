@@ -117,7 +117,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   end
 
   def blob_file_name
-    @blob_file_name ||= params[:sha].sub('sha256:', '') + '.gz'
+    @blob_file_name ||= "#{params[:sha].sub('sha256:', '')}.gz"
   end
 
   def manifest_file_name

@@ -141,7 +141,7 @@ exports[`Webhook push events form editor component Different push events rules w
     class="form-text text-muted custom-control"
   >
     <gl-sprintf-stub
-      message="Regex such as %{REGEX_CODE} is supported."
+      message="Regular expressions such as %{REGEX_CODE} are supported."
     />
   </p>
 </gl-form-radio-group-stub>
@@ -367,7 +367,7 @@ exports[`Webhook push events form editor component Different push events rules w
     class="form-text text-muted custom-control"
   >
     <gl-sprintf-stub
-      message="Regex such as %{REGEX_CODE} is supported."
+      message="Regular expressions such as %{REGEX_CODE} are supported."
     />
   </p>
 </gl-form-radio-group-stub>

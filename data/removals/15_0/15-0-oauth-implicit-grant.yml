@@ -1,4 +1,4 @@
-- name: "OAuth implicit grant"  # the name of the feature being removed. Avoid the words `deprecation`, `deprecate`, `removal`, and `remove` in this field because these are implied.
+- title: "OAuth implicit grant"  # the name of the feature being removed. Avoid the words `deprecation`, `deprecate`, `removal`, and `remove` in this field because these are implied.
   announcement_milestone: "14.0"  # The milestone when this feature was deprecated.
   announcement_date: "2021-06-22"  # The date of the milestone release when this feature was deprecated. This should almost always be the 22nd of a month (YYYY-MM-DD), unless you did an out of band blog post.
   removal_milestone: "15.0"  # The milestone when this feature is being removed.

@@ -56,6 +56,12 @@ module QA
           @run_untagged = false
         end
 
+        def restart
+          super
+
+          wait_until_shell_command_matches("docker logs #{@name}", /Configuration loaded/)
+        end
+
         private
 
         def register_command

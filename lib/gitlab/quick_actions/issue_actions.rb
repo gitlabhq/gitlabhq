@@ -80,7 +80,7 @@ module Gitlab
 
         desc { _('Mark this issue as a duplicate of another issue') }
         explanation do |duplicate_reference|
-          _("Marks this issue as a duplicate of %{duplicate_reference}.") % { duplicate_reference: duplicate_reference }
+          _("Closes this issue. Marks as related to, and a duplicate of, %{duplicate_reference}.") % { duplicate_reference: duplicate_reference }
         end
         params '#issue'
         types Issue
@@ -94,7 +94,7 @@ module Gitlab
           if canonical_issue.present?
             @updates[:canonical_issue_id] = canonical_issue.id
 
-            message = _("Marked this issue as a duplicate of %{duplicate_param}.") % { duplicate_param: duplicate_param }
+            message = _("Closed this issue. Marked as related to, and a duplicate of, %{duplicate_param}.") % { duplicate_param: duplicate_param }
           else
             message = _('Failed to mark this issue as a duplicate because referenced issue was not found.')
           end

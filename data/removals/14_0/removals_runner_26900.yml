@@ -1,4 +1,4 @@
-- name: "Success and failure for finished build metric conversion"
+- title: "Success and failure for finished build metric conversion"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: deastman

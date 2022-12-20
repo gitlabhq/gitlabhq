@@ -8,17 +8,17 @@ import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
 
-import { failedReport } from 'jest/reports/mock_data/mock_data';
-import mixedResultsTestReports from 'jest/reports/mock_data/new_and_fixed_failures_report.json';
-import newErrorsTestReports from 'jest/reports/mock_data/new_errors_report.json';
-import newFailedTestReports from 'jest/reports/mock_data/new_failures_report.json';
-import newFailedTestWithNullFilesReport from 'jest/reports/mock_data/new_failures_with_null_files_report.json';
-import successTestReports from 'jest/reports/mock_data/no_failures_report.json';
-import resolvedFailures from 'jest/reports/mock_data/resolved_failures.json';
-import recentFailures from 'jest/reports/mock_data/recent_failures_report.json';
+import { failedReport } from 'jest/ci/reports/mock_data/mock_data';
+import mixedResultsTestReports from 'jest/ci/reports/mock_data/new_and_fixed_failures_report.json';
+import newErrorsTestReports from 'jest/ci/reports/mock_data/new_errors_report.json';
+import newFailedTestReports from 'jest/ci/reports/mock_data/new_failures_report.json';
+import newFailedTestWithNullFilesReport from 'jest/ci/reports/mock_data/new_failures_with_null_files_report.json';
+import successTestReports from 'jest/ci/reports/mock_data/no_failures_report.json';
+import resolvedFailures from 'jest/ci/reports/mock_data/resolved_failures.json';
+import recentFailures from 'jest/ci/reports/mock_data/recent_failures_report.json';
 
 const reportWithParsingErrors = failedReport;
 reportWithParsingErrors.suites[0].suite_errors = {
@@ -82,7 +82,7 @@ describe('Test report extension', () => {
     });
 
     it('with a 204 response, continues to display loading state', async () => {
-      mockApi(httpStatusCodes.NO_CONTENT, '');
+      mockApi(HTTP_STATUS_NO_CONTENT, '');
       createComponent();
 
       await waitForPromises();

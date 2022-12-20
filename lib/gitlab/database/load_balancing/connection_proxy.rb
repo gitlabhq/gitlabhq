@@ -95,7 +95,7 @@ module Gitlab
         # name - The name of the method to call on a connection object.
         def read_using_load_balancer(...)
           if current_session.use_primary? &&
-             !current_session.use_replicas_for_read_queries?
+              !current_session.use_replicas_for_read_queries?
             @load_balancer.read_write do |connection|
               connection.send(...)
             end

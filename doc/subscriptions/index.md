@@ -73,11 +73,13 @@ With the [Customers Portal](https://customers.gitlab.com/) you can:
 - [Change account owner information](#change-account-owner-information)
 - [Change your company details](#change-your-company-details)
 - [Change your payment method](#change-your-payment-method)
-- [Change the linked account](#change-the-linked-account)
-- [Change the namespace the subscription is linked to](#change-the-linked-namespace)
+- [Change the linked account](gitlab_com/index.md#change-the-linked-account)
+- [Change the namespace the subscription is linked to](gitlab_com/index.md#change-the-linked-namespace)
 - [Change customers portal account password](#change-customers-portal-account-password)
 
-The Customers Portal is available only to customers who purchased their subscription from GitLab. If you made your purchase through a partner or reseller, you must contact them directly for assistance with your subscription.
+The Customers Portal is available only to customers who purchased their
+subscription from GitLab. If you made your purchase through a partner or
+reseller, you must contact them directly for assistance with your subscription.
 
 ### Change account owner information
 
@@ -132,40 +134,6 @@ method as the default:
 1. **Edit** the selected payment method and check the **Make default payment method** checkbox.
 1. Select **Save Changes**.
 
-### Change the linked account
-
-To change the GitLab.com account linked to your Customers Portal account:
-
-1. Log in to the
-   [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. In a separate browser tab, go to [GitLab SaaS](https://gitlab.com) and ensure you
-   are not logged in.
-1. On the Customers Portal page, select **My account > Account details**.
-1. Under **Your GitLab.com account**, select **Change linked account**. If the account is not yet linked, select **Link my GitLab.com account**.
-1. Log in to the [GitLab SaaS](https://gitlab.com) account you want to link to the Customers Portal
-   account.
-
-### Change the linked namespace
-
-To change the namespace linked to a subscription:
-
-1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
-   [linked](#change-the-linked-account) GitLab SaaS account.
-1. Navigate to the **Manage Purchases** page.
-1. Select **Change linked namespace**.
-1. Select the desired group from the **Select user or group** dropdown list. For a group to appear
-   here, you must have the Owner role for that group.
-1. Select **Proceed to checkout**.
-
-If the group you want to link does not appear in the dropdown list, check:
-
-- You have [linked your Customers Portal account with your GitLab.com account](#change-the-linked-account).
-- That the linked account is a member of the group you want to select, and you are assigned the Owner role.
-
-Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the [total number of users](gitlab_com/index.md#view-seat-usage) exceeds the number of seats in your subscription, your account is charged for the additional users and you need to pay for the overage before you can change the linked namespace.
-
-Only one namespace can be linked to a subscription.
-
 ### Change Customers Portal account password
 
 To change the password for this customers portal account:
@@ -187,9 +155,6 @@ For qualifying open source projects, the [GitLab for Open Source Program](https:
 
 #### Meeting GitLab for Open Source Program requirements
 
-NOTE:
-GitLab for Open Source Program benefits apply to an entire GitLab namespace. To qualify for the GitLab for Open Source Program, all projects in an applicant's namespace must meet program requirements. Applicants submit materials related to one project in the applying namespace, and the open source program team uses that project to verify eligibility of the entire namespace.
-
 To meet GitLab for Open Source Program requirements, first add an OSI-approved open source license to all projects in your namespace.
 
 To add a license to a project:
@@ -197,7 +162,12 @@ To add a license to a project:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the overview page, select **Add LICENSE**. If the license you want is not available as a license template, manually copy the entire, unaltered [text of your chosen license](https://opensource.org/licenses/alphabetical) into the `LICENSE` file. Note that GitLab defaults to **All rights reserved** if users do not perform this action.
 
+![Add license](img/add-license.png)
+
 Applicants must add the correct license to each project in their respective groups or namespaces. When you're sure you're using OSI-approved licenses for your projects, you can take your screenshots.
+
+NOTE:
+GitLab for Open Source Program benefits apply to an entire GitLab namespace. To qualify for the GitLab for Open Source Program, all projects in an applicant's namespace must meet program requirements. Applicants submit materials related to one project in the applying namespace, and the open source program team uses that project to verify eligibility of the entire namespace.
 
 #### Verification for Open Source Program
 

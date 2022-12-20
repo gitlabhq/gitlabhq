@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Pipelines do
+RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
   let_it_be(:non_member) { create(:user) }
   let_it_be(:project2) { create(:project, creator: user) }

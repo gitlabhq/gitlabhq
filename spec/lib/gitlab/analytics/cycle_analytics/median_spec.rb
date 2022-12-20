@@ -18,10 +18,6 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Median do
 
   subject { described_class.new(stage: stage, query: query).seconds }
 
-  around do |example|
-    Timecop.freeze { example.run }
-  end
-
   it 'retruns nil when no results' do
     expect(subject).to eq(nil)
   end
@@ -30,11 +26,11 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Median do
     merge_request1 = create(:merge_request, source_branch: '1', target_project: project, source_project: project)
     merge_request2 = create(:merge_request, source_branch: '2', target_project: project, source_project: project)
 
-    travel_to(5.minutes.from_now) do
+    travel(5.minutes) do
       merge_request1.metrics.update!(merged_at: Time.zone.now)
     end
 
-    travel_to(10.minutes.from_now) do
+    travel(10.minutes) do
       merge_request2.metrics.update!(merged_at: Time.zone.now)
     end
 

@@ -159,7 +159,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
 
       expect do
         post api(uri, user), params: { body: 'hi!' }
-      end.to change(Event, :count).by(1)
+      end.to change { Event.count }.by(1)
     end
 
     context 'setting created_at' do

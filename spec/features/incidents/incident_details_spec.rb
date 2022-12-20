@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Incident details', :js do
+RSpec.describe 'Incident details', :js, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:incident) { create(:incident, project: project, author: developer, description: 'description') }

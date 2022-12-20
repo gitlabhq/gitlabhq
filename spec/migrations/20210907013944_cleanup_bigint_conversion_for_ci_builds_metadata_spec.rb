@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanupBigintConversionForCiBuildsMetadata do
+RSpec.describe CleanupBigintConversionForCiBuildsMetadata, feature_category: :continuous_integration do
   let(:ci_builds_metadata) { table(:ci_builds_metadata) }
 
   it 'correctly migrates up and down' do

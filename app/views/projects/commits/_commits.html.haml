@@ -15,7 +15,7 @@
   %li.commits-row{ data: { day: day } }
     %ul.content-list.commit-list.flex-list
       - if Feature.enabled?(:cached_commits, project)
-        = render partial: 'projects/commits/commit', collection: daily_commits, locals: { project: project, ref: ref, merge_request: merge_request }, cached: -> (commit) { commit_partial_cache_key(commit, ref: ref, merge_request: merge_request, request: request) }
+        = render partial: 'projects/commits/commit', collection: daily_commits, locals: { project: project, ref: ref, merge_request: merge_request }, cached: ->(commit) { commit_partial_cache_key(commit, ref: ref, merge_request: merge_request, request: request) }
       - else
         = render partial: 'projects/commits/commit', collection: daily_commits, locals: { project: project, ref: ref, merge_request: merge_request }
 
@@ -29,7 +29,7 @@
   %li.commits-row
     %ul.content-list.commit-list.flex-list
       - if Feature.enabled?(:cached_commits, project)
-        = render partial: 'projects/commits/commit', collection: context_commits, locals: { project: project, ref: ref, merge_request: merge_request }, cached: -> (commit) { commit_partial_cache_key(commit, ref: ref, merge_request: merge_request, request: request) }
+        = render partial: 'projects/commits/commit', collection: context_commits, locals: { project: project, ref: ref, merge_request: merge_request }, cached: ->(commit) { commit_partial_cache_key(commit, ref: ref, merge_request: merge_request, request: request) }
       - else
         = render partial: 'projects/commits/commit', collection: context_commits, locals: { project: project, ref: ref, merge_request: merge_request }
 

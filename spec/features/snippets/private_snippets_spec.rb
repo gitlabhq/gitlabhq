@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Private Snippets', :js do
+RSpec.describe 'Private Snippets', :js, feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:private_snippet) { create(:personal_snippet, :repository, :private, author: user) }
   let(:content) { private_snippet.blobs.first.data.strip! }

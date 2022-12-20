@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Administrators of large GitLab instances can find that over time, projects become inactive and are no longer used.
 These projects take up unnecessary disk space. With inactive project deletion, you can identify these projects, warn
 the maintainers ahead of time, and then delete the projects if they remain inactive. When an inactive project is
-deleted, the action generates an audit event that it was performed by the first active administrator.
+deleted, the action generates an audit event that it was performed by the @GitLab-Admin-Bot.
 
 For the default setting on GitLab.com, see the [GitLab.com settings page](../user/gitlab_com/index.md#inactive-project-deletion).
 

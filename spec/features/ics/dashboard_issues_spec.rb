@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Issues Calendar Feed' do
+RSpec.describe 'Dashboard Issues Calendar Feed', feature_category: :team_planning do
   describe 'GET /issues' do
     let!(:user) do
       user = create(:user, email: 'private1@example.com')

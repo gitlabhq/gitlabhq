@@ -12,8 +12,8 @@ class SnippetStatistics < ApplicationRecord
 
   delegate :repository, :project, :project_id, to: :snippet
 
-  after_save :update_author_root_storage_statistics, if: :update_author_root_storage_statistics?
   after_destroy :update_author_root_storage_statistics, unless: :project_snippet?
+  after_save :update_author_root_storage_statistics, if: :update_author_root_storage_statistics?
 
   def update_commit_count
     self.commit_count = repository.commit_count

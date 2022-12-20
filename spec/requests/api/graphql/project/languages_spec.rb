@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project.languages' do
+RSpec.describe 'Project.languages', feature_category: :internationalization do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

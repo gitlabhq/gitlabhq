@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RemoveInvalidIntegrations, :migration do
+RSpec.describe RemoveInvalidIntegrations, :migration, feature_category: :integrations do
   describe '#up' do
     let!(:integrations) { table(:integrations) }
 

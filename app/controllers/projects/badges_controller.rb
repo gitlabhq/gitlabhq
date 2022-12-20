@@ -13,10 +13,10 @@ class Projects::BadgesController < Projects::ApplicationController
   def pipeline
     pipeline_status = Gitlab::Ci::Badge::Pipeline::Status
       .new(project, params[:ref], opts: {
-        ignore_skipped: params[:ignore_skipped],
-        key_text: params[:key_text],
-        key_width: params[:key_width]
-      })
+             ignore_skipped: params[:ignore_skipped],
+             key_text: params[:key_text],
+             key_width: params[:key_width]
+           })
 
     render_badge pipeline_status
   end
@@ -24,13 +24,13 @@ class Projects::BadgesController < Projects::ApplicationController
   def coverage
     coverage_report = Gitlab::Ci::Badge::Coverage::Report
       .new(project, params[:ref], opts: {
-        job: params[:job],
-        key_text: params[:key_text],
-        key_width: params[:key_width],
-        min_good: params[:min_good],
-        min_acceptable: params[:min_acceptable],
-        min_medium: params[:min_medium]
-      })
+             job: params[:job],
+             key_text: params[:key_text],
+             key_width: params[:key_width],
+             min_good: params[:min_good],
+             min_acceptable: params[:min_acceptable],
+             min_medium: params[:min_medium]
+           })
 
     render_badge coverage_report
   end
@@ -38,10 +38,10 @@ class Projects::BadgesController < Projects::ApplicationController
   def release
     latest_release = Gitlab::Ci::Badge::Release::LatestRelease
       .new(project, current_user, opts: {
-        key_text: params[:key_text],
-        key_width: params[:key_width],
-        order_by: params[:order_by]
-      })
+             key_text: params[:key_text],
+             key_width: params[:key_width],
+             order_by: params[:order_by]
+           })
 
     render_badge latest_release
   end

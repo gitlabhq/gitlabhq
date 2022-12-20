@@ -31,7 +31,7 @@ it's reset to a pristine test after each test.
   inconsistent state, so that following tests might not know about certain columns.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/368500): A test modifies data that is
   used by a following test.
-- [Example 3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103434#note_1172316521): A test for a database query passes in a fresh database, but in a 
+- [Example 3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103434#note_1172316521): A test for a database query passes in a fresh database, but in a
   CI/CD pipeline where the database is used to process previous test sequences, the test fails. This likely
     means that the query itself needs to be updated to work in a non-clean database.
 
@@ -56,6 +56,7 @@ the problem.
 - [Example 1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10148/diffs): Without
   specifying `ORDER BY`, database will not give deterministic ordering, or data race happening
   in the tests.
+- [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106936/diffs).
 
 ### Dataset-specific
 
@@ -75,7 +76,7 @@ difficult to achieve locally.
   any table has more than 500 columns. It could pass in the merge request, but fail later in
   `master` if the order of tests changes.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91016/diffs): A test asserts
-  that trying to find a record with an unexisting ID retuns an error message. The test uses an
+  that trying to find a record with an nonexistent ID returns an error message. The test uses an
   hardcoded ID that's supposed to not exist (e.g. `42`). If the test is run early in the test
   suite, it might pass as not enough records were created before it, but as soon as it would run
   later in the suite, there could be a record that actually has the ID `42`, hence the test would
@@ -104,6 +105,7 @@ or the app.
 **Description:** The DOM selector used in the test is unreliable.
 
 **Difficulty to reproduce:** Moderate to difficult. Depending on whether the DOM selector is duplicated, or appears after a delay etc.
+Adding a delay in API or controller could help reproducing the issue.
 
 **Resolution:** It really depends on the problem here. It could be to wait for requests to finish, to scroll down the page etc.
 
@@ -207,10 +209,10 @@ The `rspec/flaky/report-suite.json` report is:
 - [Sporadic RSpec failures due to `PG::UniqueViolation`](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28307#note_24958837): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9846>
   - Follow-up: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10688>
   - [Capybara.reset_session! should be called before requests are blocked](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33779): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12224>
-- FFaker generates funky data that tests are not ready to handle (and tests should be predictable so that's bad!):
+- ffaker generates funky data that tests are not ready to handle (and tests should be predictable so that's bad!):
   - [Make `spec/mailers/notify_spec.rb` more robust](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/20121): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10015>
   - [Transient failure in `spec/requests/api/commits_spec.rb`](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/27988#note_25342521): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9944>
-  - [Replace FFaker factory data with sequences](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29643): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10184>
+  - [Replace ffaker factory data with sequences](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29643): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10184>
   - [Transient failure in spec/finders/issues_finder_spec.rb](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30211#note_26707685): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10404>
 
 ### Order-dependent flaky tests

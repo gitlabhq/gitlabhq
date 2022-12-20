@@ -363,6 +363,10 @@ class Deployment < ApplicationRecord
     deployable&.user || user
   end
 
+  def triggered_by?(user)
+    deployed_by == user
+  end
+
   def link_merge_requests(relation)
     # NOTE: relation.select will perform column deduplication,
     # when id == environment_id it will outputs 2 columns instead of 3
@@ -441,9 +445,10 @@ class Deployment < ApplicationRecord
   # default tag limit is 100, 0 means no limit
   # when refs_by_oid is passed an SHA, returns refs for that commit
   def tags(limit: 100)
-    project.repository.refs_by_oid(oid: sha, limit: limit, ref_patterns: [Gitlab::Git::TAG_REF_PREFIX]) || []
+    strong_memoize_with(:tag, limit) do
+      project.repository.refs_by_oid(oid: sha, limit: limit, ref_patterns: [Gitlab::Git::TAG_REF_PREFIX]) || []
+    end
   end
-  strong_memoize_attr :tags
 
   private
 

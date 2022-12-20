@@ -6,7 +6,6 @@ RSpec.describe API::MergeRequests, '(JavaScript fixtures)', type: :request do
   include ApiHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:admin) { create(:admin, name: 'root') }
   let_it_be(:namespace) { create(:namespace, name: 'gitlab-test') }
   let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'lorem-ipsum') }
   let_it_be(:early_mrs) do
@@ -14,21 +13,22 @@ RSpec.describe API::MergeRequests, '(JavaScript fixtures)', type: :request do
   end
 
   let_it_be(:mr) { create(:merge_request, source_project: project) }
+  let_it_be(:user) { project.owner }
 
   it 'api/merge_requests/get.json' do
-    get api("/projects/#{project.id}/merge_requests", admin)
+    get api("/projects/#{project.id}/merge_requests", user)
 
     expect(response).to be_successful
   end
 
   it 'api/merge_requests/versions.json' do
-    get api("/projects/#{project.id}/merge_requests/#{mr.iid}/versions", admin)
+    get api("/projects/#{project.id}/merge_requests/#{mr.iid}/versions", user)
 
     expect(response).to be_successful
   end
 
   it 'api/merge_requests/changes.json' do
-    get api("/projects/#{project.id}/merge_requests/#{mr.iid}/changes", admin)
+    get api("/projects/#{project.id}/merge_requests/#{mr.iid}/changes", user)
 
     expect(response).to be_successful
   end

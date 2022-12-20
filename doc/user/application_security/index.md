@@ -240,9 +240,9 @@ reports are available to download. To download a report, select
 
 ### Ultimate
 
-A merge request contains a security widget which displays a summary of the new results. New results are determined by comparing the current findings against existing findings in the target (default) branch (if there are prior findings).
+A merge request contains a security widget which displays a summary of the new results. New results are determined by comparing the findings of the merge request against the findings of the most recent completed pipeline (`success`, `failed`, `canceled` or `skipped`) for the latest commit in the target branch.
 
-We recommend you run a scan of the `default` branch before enabling feature branch scans for your developers. Otherwise, there is no base for comparison and all feature branches display the full scan results in the merge request security widget.
+If security scans have not run for the most recent completed pipeline in the target branch there is no base for comparison. The vulnerabilities from the merge request findings will be listed as new in the merge request security widget. We recommend you run a scan of the `default` (target) branch before enabling feature branch scans for your developers.
 
 The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both new and existing findings.
 
@@ -339,7 +339,7 @@ custom job:
 The above `.gitlab-ci.yml` causes a linting error:
 
 ```plaintext
-Found errors in your .gitlab-ci.yml:
+Unable to create pipeline
 - dependency_scanning job: chosen stage does not exist; available stages are .pre
 - unit-tests
 - .post
@@ -590,7 +590,7 @@ like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/l
 the following error may occur, depending on your GitLab CI/CD configuration:
 
 ```plaintext
-Found errors in your .gitlab-ci.yml:
+Unable to create pipeline
 
     jobs:sast config key may not be used with `rules`: only/except
 ```
@@ -683,7 +683,7 @@ This can be used for offline setups or for anyone wishing to use [Auto DevOps](.
 
 Instructions are available in the [legacy template project](https://gitlab.com/gitlab-org/auto-devops-v12-10).
 
-#### Vulnerabilities are found, but the job succeeds. How can I have a pipeline fail instead?
+#### Vulnerabilities are found, but the job succeeds. How can you have a pipeline fail instead?
 
 In these circumstances, that the job succeeds is the default behavior. The job's status indicates
 success or failure of the analyzer itself. Analyzer results are displayed in the

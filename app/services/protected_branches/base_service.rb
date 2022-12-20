@@ -2,10 +2,12 @@
 
 module ProtectedBranches
   class BaseService < ::BaseService
+    attr_reader :project_or_group
+
     # current_user - The user that performs the action
     # params - A hash of parameters
-    def initialize(project, current_user = nil, params = {})
-      @project = project
+    def initialize(project_or_group, current_user = nil, params = {})
+      @project_or_group = project_or_group
       @current_user = current_user
       @params = params
     end
@@ -15,7 +17,7 @@ module ProtectedBranches
     end
 
     def refresh_cache
-      CacheService.new(@project, @current_user, @params).refresh
+      CacheService.new(@project_or_group, @current_user, @params).refresh
     end
   end
 end

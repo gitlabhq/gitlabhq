@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Show > Download buttons' do
+RSpec.describe 'Projects > Show > Download buttons', feature_category: :projects do
   let(:user) { create(:user) }
   let(:role) { :developer }
   let(:status) { 'success' }

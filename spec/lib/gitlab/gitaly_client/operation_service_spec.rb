@@ -898,7 +898,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
         end
 
         shared_examples '#user_commit_files failure' do
-          it 'raises a PreReceiveError' do
+          it 'raises an IndexError' do
             expect_any_instance_of(Gitaly::OperationService::Stub)
               .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
               .and_raise(structured_error)
@@ -912,7 +912,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
         context 'with missing file' do
           let(:status_code) { GRPC::Core::StatusCodes::NOT_FOUND }
-          let(:expected_message) { "File not found: README.md" }
+          let(:expected_message) { "A file with this name doesn't exist" }
           let(:expected_error) do
             Gitaly::UserCommitFilesError.new(
               index_update: Gitaly::IndexError.new(
@@ -926,7 +926,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
         context 'with existing directory' do
           let(:status_code) { GRPC::Core::StatusCodes::ALREADY_EXISTS }
-          let(:expected_message) { "Directory already exists: dir1" }
+          let(:expected_message) { "A directory with this name already exists" }
           let(:expected_error) do
             Gitaly::UserCommitFilesError.new(
               index_update: Gitaly::IndexError.new(
@@ -940,7 +940,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
         context 'with existing file' do
           let(:status_code) { GRPC::Core::StatusCodes::ALREADY_EXISTS }
-          let(:expected_message) { "File already exists: README.md" }
+          let(:expected_message) { "A file with this name already exists" }
           let(:expected_error) do
             Gitaly::UserCommitFilesError.new(
               index_update: Gitaly::IndexError.new(
@@ -954,7 +954,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
         context 'with invalid path' do
           let(:status_code) { GRPC::Core::StatusCodes::INVALID_ARGUMENT }
-          let(:expected_message) { "Invalid path: invalid://file/name" }
+          let(:expected_message) { "invalid path: 'invalid://file/name'" }
           let(:expected_error) do
             Gitaly::UserCommitFilesError.new(
               index_update: Gitaly::IndexError.new(
@@ -968,7 +968,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
         context 'with directory traversal' do
           let(:status_code) { GRPC::Core::StatusCodes::INVALID_ARGUMENT }
-          let(:expected_message) { "Directory traversal in path escapes repository: ../../../../etc/shadow" }
+          let(:expected_message) { "Path cannot include directory traversal" }
           let(:expected_error) do
             Gitaly::UserCommitFilesError.new(
               index_update: Gitaly::IndexError.new(
@@ -982,7 +982,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
         context 'with empty path' do
           let(:status_code) { GRPC::Core::StatusCodes::INVALID_ARGUMENT }
-          let(:expected_message) { "Received empty path" }
+          let(:expected_message) { "You must provide a file path" }
           let(:expected_error) do
             Gitaly::UserCommitFilesError.new(
               index_update: Gitaly::IndexError.new(
@@ -1009,16 +1009,33 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
         end
 
         context 'with an exception without the detailed error' do
-          let(:permission_error) do
-            GRPC::PermissionDenied.new
-          end
-
-          it 'raises PermissionDenied' do
+          before do
             expect_any_instance_of(Gitaly::OperationService::Stub)
               .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
-              .and_raise(permission_error)
+              .and_raise(raised_error)
+          end
 
-            expect { subject }.to raise_error(GRPC::PermissionDenied)
+          context 'with an index error from libgit2' do
+            let(:raised_error) do
+              GRPC::Internal.new('invalid path: .git/foo')
+            end
+
+            it 'raises IndexError' do
+              expect { subject }.to raise_error do |error|
+                expect(error).to be_a(Gitlab::Git::Index::IndexError)
+                expect(error.message).to eq('invalid path: .git/foo')
+              end
+            end
+          end
+
+          context 'with a generic error' do
+            let(:raised_error) do
+              GRPC::PermissionDenied.new
+            end
+
+            it 'raises PermissionDenied' do
+              expect { subject }.to raise_error(GRPC::PermissionDenied)
+            end
           end
         end
       end

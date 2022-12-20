@@ -34,7 +34,7 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
       Gitlab::Shell.new.remove_repository(project.repository_storage, project.disk_path)
     end
 
-    it 'restores the repo successfully' do
+    it 'restores the repo successfully', :aggregate_failures do
       expect(project.repository.exists?).to be false
       expect(subject.restore).to be_truthy
 
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
     end
 
     context 'when the repository already exists' do
-      it 'deletes the existing repository before importing' do
+      it 'deletes the existing repository before importing', :aggregate_failures do
         allow(project.repository).to receive(:exists?).and_return(true)
         allow(project.repository).to receive(:disk_path).and_return('repository_path')
 
@@ -69,7 +69,7 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
       Gitlab::Shell.new.remove_repository(project.wiki.repository_storage, project.wiki.disk_path)
     end
 
-    it 'restores the wiki repo successfully' do
+    it 'restores the wiki repo successfully', :aggregate_failures do
       expect(project.wiki_repository_exists?).to be false
 
       subject.restore
@@ -83,9 +83,20 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
 
       let(:bundler) { Gitlab::ImportExport::WikiRepoSaver.new(exportable: project_without_wiki, shared: shared) }
 
-      it 'does not creates an empty wiki' do
+      it 'does not creates an empty wiki', :aggregate_failures do
         expect(subject.restore).to be true
         expect(project.wiki_repository_exists?).to be false
+      end
+    end
+
+    context 'when wiki already exists' do
+      subject do
+        described_class.new(path_to_bundle: bundle_path, shared: shared, importable: ProjectWiki.new(project_with_repo))
+      end
+
+      it 'does not cause an error when restoring', :aggregate_failures do
+        expect(subject.restore).to be true
+        expect(shared.errors).to be_empty
       end
     end
   end

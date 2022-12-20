@@ -38,6 +38,10 @@ class IssuableSidebarBasicEntity < Grape::Entity
     expose :can_admin_label do |issuable|
       can?(current_user, :admin_label, issuable.project)
     end
+
+    expose :can_create_timelogs do |issuable|
+      can?(current_user, :create_timelog, issuable)
+    end
   end
 
   expose :issuable_json_path do |issuable|

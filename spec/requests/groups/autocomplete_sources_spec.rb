@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'groups autocomplete' do
+RSpec.describe 'groups autocomplete', feature_category: :subgroups do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:group) { create(:group, :private) }
 

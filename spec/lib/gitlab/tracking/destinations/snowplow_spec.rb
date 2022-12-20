@@ -3,8 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_by_default do
-  let(:emitter) { SnowplowTracker::Emitter.new('localhost', buffer_size: 1) }
-  let(:tracker) { SnowplowTracker::Tracker.new(emitter, SnowplowTracker::Subject.new, 'namespace', 'app_id') }
+  let(:emitter) { SnowplowTracker::Emitter.new(endpoint: 'localhost', options: { buffer_size: 1 }) }
+  let(:tracker) do
+    SnowplowTracker::Tracker.new(emitters: [emitter], subject: SnowplowTracker::Subject.new, namespace: 'namespace',
+                                 app_id: 'app_id')
+  end
 
   before do
     stub_application_setting(snowplow_collector_hostname: 'gitfoo.com')
@@ -21,16 +24,19 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
 
       expect(SnowplowTracker::AsyncEmitter)
         .to receive(:new)
-        .with('gitfoo.com',
-              { protocol: 'https',
-                on_success: subject.method(:increment_successful_events_emissions),
-                on_failure: subject.method(:failure_callback) })
+        .with(endpoint: 'gitfoo.com',
+              options: { protocol: 'https',
+                         on_success: subject.method(:increment_successful_events_emissions),
+                         on_failure: subject.method(:failure_callback) })
         .and_return(emitter)
 
       expect(SnowplowTracker::Tracker)
         .to receive(:new)
-        .with(emitter, an_instance_of(SnowplowTracker::Subject), described_class::SNOWPLOW_NAMESPACE, '_abc123_')
-        .and_return(tracker)
+              .with(emitters: [emitter],
+                    subject: an_instance_of(SnowplowTracker::Subject),
+                    namespace: described_class::SNOWPLOW_NAMESPACE,
+                    app_id: '_abc123_')
+              .and_return(tracker)
     end
 
     describe '#event' do
@@ -41,7 +47,8 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
 
         expect(tracker)
           .to have_received(:track_struct_event)
-          .with('category', 'action', 'label', 'property', 1.5, nil, (Time.now.to_f * 1000).to_i)
+          .with(category: 'category', action: 'action', label: 'label', property: 'property', value: 1.5, context: nil,
+                tstamp: (Time.now.to_f * 1000).to_i)
       end
 
       it 'increase total snowplow events counter' do

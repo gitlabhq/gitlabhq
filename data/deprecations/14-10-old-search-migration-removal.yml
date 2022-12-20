@@ -1,4 +1,4 @@
-- name: "Outdated indices of Advanced Search migrations"
+- title: "Outdated indices of Advanced Search migrations"
   announcement_milestone: "14.10"
   announcement_date: "2021-04-22"
   removal_milestone: "15.0"

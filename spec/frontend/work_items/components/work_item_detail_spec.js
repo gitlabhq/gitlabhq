@@ -11,7 +11,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
@@ -21,7 +21,7 @@ import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
-import WorkItemInformation from '~/work_items/components/work_item_information.vue';
+import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -31,7 +31,6 @@ import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assign
 import workItemMilestoneSubscription from '~/work_items/graphql/work_item_milestone.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   mockParent,
   workItemDatesSubscriptionResponse,
@@ -40,11 +39,11 @@ import {
   workItemAssigneesSubscriptionResponse,
   workItemMilestoneSubscriptionResponse,
   projectWorkItemResponse,
+  objectiveType,
 } from '../mock_data';
 
 describe('WorkItemDetail component', () => {
   let wrapper;
-  useLocalStorageSpy();
 
   Vue.use(VueApollo);
 
@@ -81,8 +80,7 @@ describe('WorkItemDetail component', () => {
   const findParentButton = () => findParent().findComponent(GlButton);
   const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
   const findWorkItemType = () => wrapper.find('[data-testid="work-item-type"]');
-  const findWorkItemInformationAlert = () => wrapper.findComponent(WorkItemInformation);
-  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
+  const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
 
   const createComponent = ({
     isModal = false,
@@ -92,9 +90,9 @@ describe('WorkItemDetail component', () => {
     subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
     error = undefined,
+    workItemsMvcEnabled = false,
     workItemsMvc2Enabled = false,
     fetchByIid = false,
-    iidPathQueryParam = undefined,
   } = {}) => {
     const handlers = [
       [workItemQuery, handler],
@@ -108,7 +106,7 @@ describe('WorkItemDetail component', () => {
 
     wrapper = shallowMount(WorkItemDetail, {
       apolloProvider: createMockApollo(handlers),
-      propsData: { isModal, workItemId, iid: '1' },
+      propsData: { isModal, workItemId, workItemIid: '1' },
       data() {
         return {
           updateInProgress,
@@ -117,11 +115,14 @@ describe('WorkItemDetail component', () => {
       },
       provide: {
         glFeatures: {
+          workItemsMvc: workItemsMvcEnabled,
           workItemsMvc2: workItemsMvc2Enabled,
           useIidInWorkItemsPath: fetchByIid,
         },
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
+        hasOkrsFeature: true,
+        hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         fullPath: 'group/project',
       },
@@ -129,18 +130,12 @@ describe('WorkItemDetail component', () => {
         WorkItemWeight: true,
         WorkItemIteration: true,
       },
-      mocks: {
-        $route: {
-          query: {
-            iid_path: iidPathQueryParam,
-          },
-        },
-      },
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
+    setWindowLocation('');
   });
 
   describe('when there is no `workItemId` prop', () => {
@@ -406,8 +401,30 @@ describe('WorkItemDetail component', () => {
         expect(findWorkItemType().exists()).toBe(false);
       });
 
-      it('sets the parent breadcrumb URL', () => {
+      it('shows parent breadcrumb icon', () => {
+        expect(findParentButton().props('icon')).toBe(mockParent.parent.workItemType.iconName);
+      });
+
+      it('sets the parent breadcrumb URL pointing to issue page when parent type is `Issue`', () => {
         expect(findParentButton().attributes().href).toBe('../../issues/5');
+      });
+
+      it('sets the parent breadcrumb URL based on parent webUrl when parent type is not `Issue`', async () => {
+        const mockParentObjective = {
+          parent: {
+            ...mockParent.parent,
+            workItemType: {
+              id: mockParent.parent.workItemType.id,
+              name: 'Objective',
+              iconName: 'issue-type-objective',
+            },
+          },
+        };
+        const parentResponse = workItemResponseFactory(mockParentObjective);
+        createComponent({ handler: jest.fn().mockResolvedValue(parentResponse) });
+        await waitForPromises();
+
+        expect(findParentButton().attributes().href).toBe(mockParentObjective.parent.webUrl);
       });
     });
   });
@@ -563,7 +580,7 @@ describe('WorkItemDetail component', () => {
     `('$description', async ({ milestoneWidgetPresent, exists }) => {
       const response = workItemResponseFactory({ milestoneWidgetPresent });
       const handler = jest.fn().mockResolvedValue(response);
-      createComponent({ handler, workItemsMvc2Enabled: true });
+      createComponent({ handler });
       await waitForPromises();
 
       expect(findWorkItemMilestone().exists()).toBe(exists);
@@ -594,24 +611,6 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  describe('work item information', () => {
-    beforeEach(() => {
-      createComponent();
-      return waitForPromises();
-    });
-
-    it('is visible when viewed for the first time and sets localStorage value', async () => {
-      localStorage.clear();
-      expect(findWorkItemInformationAlert().exists()).toBe(true);
-      expect(findLocalStorageSync().props('value')).toBe(true);
-    });
-
-    it('is not visible after reading local storage input', async () => {
-      await findLocalStorageSync().vm.$emit('input', false);
-      expect(findWorkItemInformationAlert().exists()).toBe(false);
-    });
-  });
-
   it('calls the global ID work item query when `useIidInWorkItemsPath` feature flag is false', async () => {
     createComponent();
     await waitForPromises();
@@ -633,6 +632,8 @@ describe('WorkItemDetail component', () => {
   });
 
   it('calls the IID work item query when `useIidInWorkItemsPath` feature flag is true and `iid_path` route parameter is present', async () => {
+    setWindowLocation(`?iid_path=true`);
+
     createComponent({ fetchByIid: true, iidPathQueryParam: 'true' });
     await waitForPromises();
 
@@ -640,6 +641,26 @@ describe('WorkItemDetail component', () => {
     expect(successByIidHandler).toHaveBeenCalledWith({
       fullPath: 'group/project',
       iid: '1',
+    });
+  });
+
+  describe('hierarchy widget', () => {
+    it('does not render children tree by default', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findHierarchyTree().exists()).toBe(false);
+    });
+
+    it('renders children tree when work item is an Objective', async () => {
+      const objectiveWorkItem = workItemResponseFactory({
+        workItemType: objectiveType,
+      });
+      const handler = jest.fn().mockResolvedValue(objectiveWorkItem);
+      createComponent({ handler });
+      await waitForPromises();
+
+      expect(findHierarchyTree().exists()).toBe(true);
     });
   });
 });

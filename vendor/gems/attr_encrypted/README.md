@@ -451,7 +451,7 @@ When storing your encrypted data, please consider the length requirements of the
 It is advisable to also store metadata regarding the circumstances of your encrypted data. Namely, you should store information about the key used to encrypt your data, as well as the algorithm. Having this metadata with every record will make key rotation and migrating to a new algorithm signficantly easier. It will allow you to continue to decrypt old data using the information provided in the metadata and new data can be encrypted using your new key and algorithm of choice.
 
 #### Enforcing the IV as a nonce
-On a related note, most algorithms require that your IV be unique for every record and key combination. You can enforce this using composite unique indexes on your IV and encryption key name/id column. [RFC 5084](https://tools.ietf.org/html/rfc5084#section-1.5)
+On a related note, most algorithms require that your IV be unique for every record and key combination. You can enforce this using composite unique indexes on your IV and encryption key name/id column. [RFC 5084](https://www.rfc-editor.org/rfc/rfc5084#section-1.5)
 
 #### Unique key per record
 Lastly, while the `:per_attribute_iv_and_salt` mode is more secure than `:per_attribute_iv` mode because it uses a unique key per record, it uses a PBKDF function which introduces a huge performance hit (175x slower by my benchmarks). There are other ways of deriving a unique key per record that would be much faster.

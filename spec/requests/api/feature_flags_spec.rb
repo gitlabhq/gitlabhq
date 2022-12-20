@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::FeatureFlags do
+RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
   include FeatureFlagHelpers
 
   let_it_be(:project) { create(:project) }

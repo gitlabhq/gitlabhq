@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddUserIdAndIpAddressSuccessIndexToAuthenticationEvents do
+RSpec.describe AddUserIdAndIpAddressSuccessIndexToAuthenticationEvents,
+feature_category: :authentication_and_authorization do
   let(:db) { described_class.new }
   let(:old_index) { described_class::OLD_INDEX_NAME }
   let(:new_index) { described_class::NEW_INDEX_NAME }

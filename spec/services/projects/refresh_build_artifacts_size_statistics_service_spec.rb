@@ -28,6 +28,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
     end
 
     let(:now) { Time.zone.now }
+    let(:statistics) { project.statistics }
 
     around do |example|
       freeze_time { example.run }
@@ -45,7 +46,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
     end
 
     it 'increments the counter attribute by the total size of the current batch of artifacts' do
-      expect { service.execute }.to change { project.statistics.get_counter_value(:build_artifacts_size) }.to(3)
+      expect { service.execute }.to change { statistics.counter(:build_artifacts_size).get }.to(3)
     end
 
     it 'updates the last_job_artifact_id to the ID of the last artifact from the batch' do

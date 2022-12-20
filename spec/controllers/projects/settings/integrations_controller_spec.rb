@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Settings::IntegrationsController do
+RSpec.describe Projects::Settings::IntegrationsController, feature_category: :integrations do
   include JiraIntegrationHelpers
   include AfterNextHelpers
 
@@ -39,168 +39,174 @@ RSpec.describe Projects::Settings::IntegrationsController do
     end
   end
 
-  describe '#test' do
-    context 'when the integration is not testable' do
-      it 'renders 404' do
-        allow_any_instance_of(Integration).to receive(:testable?).and_return(false)
+  describe '#test', :clean_gitlab_redis_rate_limiting do
+    let_it_be(:integration) { create(:external_wiki_integration, project: project) }
 
-        put :test, params: project_params
+    let(:integration_params) { { external_wiki_url: 'https://example.net/wiki' } }
 
-        expect(response).to have_gitlab_http_status(:not_found)
+    it 'renders 404 when the integration is not testable' do
+      allow_next_found_instance_of(integration.class) do |integration|
+        allow(integration).to receive(:testable?).and_return(false)
       end
+
+      put :test, params: project_params(service: integration_params)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response).to eq({})
     end
 
-    context 'when validations fail', :clean_gitlab_redis_rate_limiting do
-      let(:integration_params) { { active: 'true', url: '' } }
+    it 'returns success if test is successful' do
+      allow_next(Integrations::Test::ProjectService).to receive(:execute).and_return({ success: true })
 
-      it 'returns error messages in JSON response' do
-        put :test, params: project_params(service: integration_params)
+      put :test, params: project_params(service: integration_params)
 
-        expect(json_response['message']).to eq 'Validations failed.'
-        expect(json_response['service_response']).to include "Url can't be blank"
-        expect(response).to be_successful
-      end
+      expect(response).to be_successful
+      expect(json_response).to eq({})
     end
 
-    context 'when successful', :clean_gitlab_redis_rate_limiting do
-      context 'with empty project' do
-        let_it_be(:project) { create(:project) }
+    it 'returns extra given data if test is successful' do
+      allow_next(Integrations::Test::ProjectService).to receive(:execute)
+        .and_return({ success: true, data: { my_payload: true } })
 
-        context 'with chat notification integration' do
-          let_it_be(:teams_integration) { project.create_microsoft_teams_integration(webhook: 'http://webhook.com') }
+      put :test, params: project_params(service: integration_params)
 
-          let(:integration) { teams_integration }
-
-          it 'returns success' do
-            allow_next(::MicrosoftTeams::Notifier).to receive(:ping).and_return(true)
-
-            put :test, params: project_params
-
-            expect(response).to be_successful
-          end
-        end
-
-        it 'returns success' do
-          stub_jira_integration_test
-
-          expect(Gitlab::HTTP).to receive(:get).with('/rest/api/2/serverInfo', any_args).and_call_original
-
-          put :test, params: project_params(service: integration_params)
-
-          expect(response).to be_successful
-        end
-      end
-
-      it 'returns success' do
-        stub_jira_integration_test
-
-        expect(Gitlab::HTTP).to receive(:get).with('/rest/api/2/serverInfo', any_args).and_call_original
-
-        put :test, params: project_params(service: integration_params)
-
-        expect(response).to be_successful
-      end
-
-      context 'when service is configured for the first time' do
-        let(:integration_params) do
-          {
-            'active' => '1',
-            'push_events' => '1',
-            'token' => 'token',
-            'project_url' => 'https://buildkite.com/organization/pipeline'
-          }
-        end
-
-        before do
-          allow_next(ServiceHook).to receive(:execute).and_return(true)
-        end
-
-        it 'persist the object' do
-          do_put
-
-          expect(response).to be_successful
-          expect(json_response).to be_empty
-          expect(Integrations::Buildkite.first).to be_present
-        end
-
-        it 'creates the ServiceHook object' do
-          do_put
-
-          expect(response).to be_successful
-          expect(json_response).to be_empty
-          expect(Integrations::Buildkite.first.service_hook).to be_present
-        end
-
-        def do_put
-          put :test, params: project_params(id: 'buildkite',
-                                            service: integration_params)
-        end
-      end
+      expect(response).to be_successful
+      expect(json_response).to eq({ 'my_payload' => true })
     end
 
-    context 'when unsuccessful', :clean_gitlab_redis_rate_limiting do
-      it 'returns an error response when the integration test fails' do
-        stub_request(:get, 'http://example.com/rest/api/2/serverInfo')
-          .to_return(status: 404)
+    it 'returns an error response if the test is not successful' do
+      allow_next(Integrations::Test::ProjectService).to receive(:execute).and_return({ success: false })
+
+      put :test, params: project_params(service: integration_params)
+
+      expect(response).to be_successful
+      expect(json_response).to eq(
+        'error' => true,
+        'message' => 'Connection failed. Check your integration settings.',
+        'service_response' => '',
+        'test_failed' => true
+      )
+    end
+
+    it 'returns extra given message if the test is not successful' do
+      allow_next(Integrations::Test::ProjectService).to receive(:execute)
+        .and_return({ success: false, result: 'Result of test' })
+
+      put :test, params: project_params(service: integration_params)
+
+      expect(response).to be_successful
+      expect(json_response).to eq(
+        'error' => true,
+        'message' => 'Connection failed. Check your integration settings.',
+        'service_response' => 'Result of test',
+        'test_failed' => true
+      )
+    end
+
+    it 'returns an error response if a network exception is raised' do
+      allow_next(Integrations::Test::ProjectService).to receive(:execute).and_raise(Errno::ECONNREFUSED)
+
+      put :test, params: project_params(service: integration_params)
+
+      expect(response).to be_successful
+      expect(json_response).to eq(
+        'error' => true,
+        'message' => 'Connection failed. Check your integration settings.',
+        'service_response' => 'Connection refused',
+        'test_failed' => true
+      )
+    end
+
+    it 'returns error messages in JSON response if validations fail' do
+      integration_params = { active: 'true', external_wiki_url: '' }
+
+      put :test, params: project_params(service: integration_params)
+
+      expect(json_response['message']).to eq 'Validations failed.'
+      expect(json_response['service_response']).to eq(
+        "External wiki url can't be blank, External wiki url must be a valid URL"
+      )
+      expect(response).to be_successful
+    end
+
+    context 'when integration has a webhook' do
+      let_it_be(:integration) { create(:integrations_slack, project: project) }
+
+      it 'returns an error response if the webhook URL is changed to one that is blocked' do
+        integration_params = { webhook: 'http://127.0.0.1' }
 
         put :test, params: project_params(service: integration_params)
 
         expect(response).to be_successful
         expect(json_response).to eq(
           'error' => true,
-          'message' => 'Connection failed. Check your integration settings.',
-          'service_response' => '',
-          'test_failed' => true
+          'message' => 'Validations failed.',
+          'service_response' => "Webhook is blocked: Requests to localhost are not allowed",
+          'test_failed' => false
         )
       end
 
-      context 'with the Slack integration' do
-        let_it_be(:integration) { build(:integrations_slack) }
+      it 'ignores masked webhook param' do
+        integration_params = { active: 'true', webhook: '************' }
+        allow_next(Integrations::Test::ProjectService).to receive(:execute).and_return({ success: true })
 
-        it 'returns an error response when the URL is blocked' do
-          put :test, params: project_params(service: { webhook: 'http://127.0.0.1' })
+        expect do
+          put :test, params: project_params(service: integration_params)
+        end.not_to change { integration.reload.webhook }
 
-          expect(response).to be_successful
-          expect(json_response).to eq(
-            'error' => true,
-            'message' => 'Connection failed. Check your integration settings.',
-            'service_response' => "URL 'http://127.0.0.1' is blocked: Requests to localhost are not allowed",
-            'test_failed' => true
-          )
-        end
+        expect(response).to be_successful
+        expect(json_response).to eq({})
+      end
 
-        it 'returns an error response when a network exception is raised' do
-          expect_next(Integrations::Slack).to receive(:test).and_raise(Errno::ECONNREFUSED)
+      it 'creates an associated web hook record if web hook integration is configured for the first time' do
+        integration_params = {
+          'active' => '1',
+          'issues_events' => '1',
+          'push_events' => '0',
+          'token' => 'my-token',
+          'project_url' => 'https://buildkite.com/organization/pipeline'
+        }
+        allow_next(ServiceHook).to receive(:execute).and_return(true)
 
-          put :test, params: project_params
+        expect do
+          put :test, params: project_params(id: 'buildkite', service: integration_params)
+        end.to change { Integrations::Buildkite.count }.from(0).to(1)
 
-          expect(response).to be_successful
-          expect(json_response).to eq(
-            'error' => true,
-            'message' => 'Connection failed. Check your integration settings.',
-            'service_response' => 'Connection refused',
-            'test_failed' => true
-          )
-        end
+        integration = Integrations::Buildkite.take
+
+        expect(response).to be_successful
+        expect(json_response).to eq({})
+        expect(integration).to have_attributes(
+          project_url: 'https://buildkite.com/organization/pipeline',
+          issues_events: true,
+          push_events: false
+        )
+        expect(integration.service_hook).to have_attributes(
+          url: 'https://webhook.buildkite.com/deliver/{webhook_token}',
+          interpolated_url: 'https://webhook.buildkite.com/deliver/my-token'
+        )
       end
     end
 
-    context 'when the endpoint receives requests above the limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
+    context 'when the endpoint receives requests above the rate limit', :freeze_time do
       before do
         allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits)
           .and_return(project_testing_integration: { threshold: 1, interval: 1.minute })
       end
 
       it 'prevents making test requests' do
-        stub_jira_integration_test
-
         expect_next_instance_of(::Integrations::Test::ProjectService) do |service|
           expect(service).to receive(:execute).and_return(http_status: 200)
         end
 
         2.times { post :test, params: project_params(service: integration_params) }
 
-        expect(response.body).to include(_('This endpoint has been requested too many times. Try again later.'))
+        expect(json_response).to eq(
+          {
+            'error' => true,
+            'message' => 'This endpoint has been requested too many times. Try again later.'
+          }
+        )
         expect(response).to have_gitlab_http_status(:ok)
       end
     end

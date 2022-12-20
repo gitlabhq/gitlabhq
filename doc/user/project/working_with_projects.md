@@ -347,10 +347,27 @@ You can sort projects by:
 
 You can also choose to hide or show archived projects.
 
+## Change the visibility of individual features in a project
+
+You can change the visibility of individual features in a project.
+
+Prerequisite:
+
+- You must have the Owner role for the project.
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Use the toggle by each feature you want to turn on or off, or change access for.
+1. Select **Save changes**.
+
 ## Leave a project
 
-If you leave a project, you are no longer a project
-member and cannot contribute.
+When you leave a project:
+
+- You are no longer a project member and cannot contribute.
+- All the issues and merge requests that were assigned
+  to you are unassigned.
 
 To leave a project:
 

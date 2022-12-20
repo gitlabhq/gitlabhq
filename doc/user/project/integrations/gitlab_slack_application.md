@@ -10,7 +10,7 @@ NOTE:
 The GitLab for Slack app is only configurable for GitLab.com. It does **not**
 work for on-premises installations where you can configure
 [Slack slash commands](slack_slash_commands.md) instead. See
-[Slack application integration for self-managed instances](https://gitlab.com/gitlab-org/gitlab/-/issues/28164)
+[Slack application integration for self-managed instances](https://gitlab.com/groups/gitlab-org/-/epics/1211)
 for our plans to make the app configurable for all GitLab installations.
 
 Slack provides a native application that you can enable with your project's
@@ -36,12 +36,12 @@ workspace to be able to install a new application. See
 
 To enable the GitLab integration for your Slack workspace:
 
-1. Go to your project's **Settings > Integration > Slack application** (only
+1. Go to your project's **Settings > Integration > GitLab for Slack app** (only
    visible on GitLab.com).
-1. Select **Install Slack app**.
+1. Select **Install GitLab for Slack app**.
 1. Select **Allow** on Slack's confirmation screen.
 
-You can also select **Reinstall Slack app** to update the app in your Slack workspace
+You can also select **Reinstall GitLab for Slack app** to update the app in your Slack workspace
 to the latest version. See [Version history](#version-history) for details.
 
 ## Create a project alias for Slack
@@ -50,7 +50,7 @@ To create a project alias on GitLab.com for Slack integration:
 
 1. Go to your project's home page.
 1. Go to **Settings > Integrations** (only visible on GitLab.com).
-1. On the **Integrations** page, select **Slack application**.
+1. On the **Integrations** page, select **GitLab for Slack app**.
 1. The current **Project Alias**, if any, is displayed. To edit this value,
    select **Edit**.
 1. Enter your desired alias, and select **Save changes**.
@@ -91,7 +91,7 @@ As a workaround, ensure your app is up to date.
 To update an existing Slack integration:
 
 1. Go to your [chat settings](https://gitlab.com/-/profile/chat_names).
-1. Next to your project, select **Slack application**.
-1. Select **Reinstall Slack app**.
+1. Next to your project, select **GitLab for Slack app**.
+1. Select **Reinstall GitLab for Slack app**.
 
 Alternatively, you can [configure a new Slack integration](https://about.gitlab.com/solutions/slack/).

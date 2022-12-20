@@ -14,6 +14,7 @@ RSpec.describe GitlabSchema.types['Subscription'] do
       issuable_milestone_updated
       merge_request_reviewers_updated
       merge_request_merge_status_updated
+      merge_request_approval_state_updated
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

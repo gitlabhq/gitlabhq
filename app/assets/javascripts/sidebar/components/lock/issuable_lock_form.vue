@@ -4,8 +4,8 @@ import { mapGetters, mapActions } from 'vuex';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { createAlert } from '~/flash';
-import eventHub from '~/sidebar/event_hub';
 import toast from '~/vue_shared/plugins/global_toast';
+import eventHub from '../../event_hub';
 import EditForm from './edit_form.vue';
 
 export default {
@@ -111,9 +111,9 @@ export default {
 </script>
 
 <template>
-  <li v-if="isMergeRequest" class="gl-new-dropdown-item">
+  <li v-if="isMergeRequest" class="gl-dropdown-item">
     <button type="button" class="dropdown-item" @click="toggleLocked">
-      <span class="gl-new-dropdown-item-text-wrapper">
+      <span class="gl-dropdown-item-text-wrapper">
         <template v-if="isLocked">
           {{ __('Unlock merge request') }}
         </template>

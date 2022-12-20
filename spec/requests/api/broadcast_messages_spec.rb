@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::BroadcastMessages do
+RSpec.describe API::BroadcastMessages, feature_category: :onboarding do
   let_it_be(:user)  { create(:user) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:message) { create(:broadcast_message) }

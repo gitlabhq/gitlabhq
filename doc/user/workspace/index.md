@@ -26,12 +26,12 @@ everything you do as a GitLab administrator, including:
 Our goal is to reach feature parity between SaaS and self-managed installations, with all
 [Admin Area settings](/ee/user/admin_area/settings/index.md) moving to either:
 
-- Groups. Available in the Workspace, top-level group namespaces, and subgroups.
+- Groups. Available in the Workspace, top-level groups, and subgroups.
 - Hardware Controls. For functionality that does not apply to groups, Hardware Controls are only
   applicable to self-managed installations. There is one Hardware Controls section per installation.
 
-To learn about the current state of workspace development,
-see [epic 4257](https://gitlab.com/groups/gitlab-org/-/epics/4257).
+For more information about the state of workspace development,
+see [epic 9265](https://gitlab.com/groups/gitlab-org/-/epics/9265).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video introduction to the new hierarchy concept for groups and projects for epics, see

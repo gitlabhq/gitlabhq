@@ -14,8 +14,8 @@ import SidebarDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue
 import SidebarSeverity from '~/sidebar/components/severity/sidebar_severity.vue';
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
-import SidebarLabelsWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
-import { LabelType } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
+import SidebarLabelsWidget from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
+import { LabelType } from '~/sidebar/components/labels/labels_select_widget/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -32,10 +32,12 @@ export default {
     SidebarTodoWidget,
     SidebarSeverity,
     MountingPortal,
+    SidebarHealthStatusWidget: () =>
+      import('ee_component/sidebar/components/health_status/sidebar_health_status_widget.vue'),
+    SidebarIterationWidget: () =>
+      import('ee_component/sidebar/components/iteration/sidebar_iteration_widget.vue'),
     SidebarWeightWidget: () =>
       import('ee_component/sidebar/components/weight/sidebar_weight_widget.vue'),
-    IterationSidebarDropdownWidget: () =>
-      import('ee_component/sidebar/components/iteration_sidebar_dropdown_widget.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   inject: {
@@ -49,6 +51,9 @@ export default {
       default: false,
     },
     weightFeatureAvailable: {
+      default: false,
+    },
+    healthStatusFeatureAvailable: {
       default: false,
     },
     allowLabelEdit: {
@@ -115,6 +120,7 @@ export default {
       'setActiveItemConfidential',
       'setActiveBoardItemLabels',
       'setActiveItemWeight',
+      'setActiveItemHealthStatus',
     ]),
     handleClose() {
       this.toggleBoardItem({ boardItem: this.activeBoardItem, sidebarType: this.sidebarType });
@@ -143,7 +149,7 @@ export default {
     <gl-drawer
       v-bind="$attrs"
       :open="showSidebar"
-      class="boards-sidebar gl-absolute"
+      class="boards-sidebar"
       variant="sidebar"
       @close="handleClose"
     >
@@ -187,7 +193,7 @@ export default {
             :issuable-type="issuableType"
             data-testid="sidebar-milestones"
           />
-          <iteration-sidebar-dropdown-widget
+          <sidebar-iteration-widget
             v-if="iterationFeatureAvailable && !isIncidentSidebar"
             :iid="activeBoardItem.iid"
             :workspace-path="projectPathForActiveIssue"
@@ -235,6 +241,13 @@ export default {
           :full-path="fullPath"
           :issuable-type="issuableType"
           @weightUpdated="setActiveItemWeight($event)"
+        />
+        <sidebar-health-status-widget
+          v-if="healthStatusFeatureAvailable"
+          :iid="activeBoardItem.iid"
+          :full-path="fullPath"
+          :issuable-type="issuableType"
+          @statusUpdated="setActiveItemHealthStatus($event)"
         />
         <sidebar-confidentiality-widget
           :iid="activeBoardItem.iid"

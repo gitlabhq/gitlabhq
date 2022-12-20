@@ -10,7 +10,7 @@ module HooksHelper
 
   def link_to_test_hook(hook, trigger)
     path = test_hook_path(hook, trigger)
-    trigger_human_name = trigger.to_s.tr('_', ' ').camelize
+    trigger_human_name = integration_webhook_event_human_name(trigger)
 
     link_to path, rel: 'nofollow', method: :post do
       content_tag(:span, trigger_human_name)

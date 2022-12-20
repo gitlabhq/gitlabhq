@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79855
 rollout_issue_url:
 milestone: '14.8'
 type: ops
-group: 'group::authentication and authorization'
+group: 'group::workspace'
 default_enabled: true

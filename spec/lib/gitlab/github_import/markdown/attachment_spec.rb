@@ -35,6 +35,12 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment do
 
         it { expect(described_class.from_markdown(markdown_node)).to eq nil }
       end
+
+      context 'when URL is blank' do
+        let(:url) { nil }
+
+        it { expect(described_class.from_markdown(markdown_node)).to eq nil }
+      end
     end
 
     context "when it's an image attachment" do
@@ -63,6 +69,12 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment do
 
         it { expect(described_class.from_markdown(markdown_node)).to eq nil }
       end
+
+      context 'when URL is blank' do
+        let(:url) { nil }
+
+        it { expect(described_class.from_markdown(markdown_node)).to eq nil }
+      end
     end
 
     context "when it's an inline html node" do
@@ -79,6 +91,12 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment do
 
         expect(attachment.name).to eq name
         expect(attachment.url).to eq url
+      end
+
+      context 'when image src is not present' do
+        let(:img) { "<img width=\"248\" alt=\"#{name}\">" }
+
+        it { expect(described_class.from_markdown(markdown_node)).to eq nil }
       end
     end
   end

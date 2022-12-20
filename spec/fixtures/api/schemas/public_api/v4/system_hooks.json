@@ -1,9 +1,6 @@
 {
   "type": "array",
   "items": {
-    "type": "object",
-    "properties" : {
-      "$ref": "./system_hook.json"
-    }
+    "$ref": "./system_hook.json"
   }
 }

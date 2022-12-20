@@ -10,7 +10,7 @@ import searchUsersQueryOnMR from '~/graphql_shared/queries/users_search_with_mr_
 import { IssuableType } from '~/issues/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
-import getIssueParticipantsQuery from '~/vue_shared/components/sidebar/queries/get_issue_participants.query.graphql';
+import getIssueParticipantsQuery from '~/sidebar/queries/get_issue_participants.query.graphql';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import {
   searchResponse,

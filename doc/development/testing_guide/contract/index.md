@@ -26,6 +26,8 @@ The contracts themselves are stored in [`/spec/contracts/contracts`](https://git
 
 Before running the consumer tests, go to `spec/contracts/consumer` and run `npm install`. To run all the consumer tests, you just need to run `npm test -- /specs`. Otherwise, to run a specific spec file, replace `/specs` with the specific spec filename.
 
+You can also run tests from the root directory of the project, using the command `yarn jest:contract`.
+
 ### Run the provider tests
 
 Before running the provider tests, make sure your GDK (GitLab Development Kit) is fully set up and running. You can follow the setup instructions detailed in the [GDK repository](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main). To run the provider tests, you use Rake tasks that can be found in [`./lib/tasks/contracts`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/tasks/contracts). To get a list of all the Rake tasks related to the provider tests, run `bundle exec rake -T contracts`. For example:

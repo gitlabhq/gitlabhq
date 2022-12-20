@@ -83,11 +83,7 @@ module Clusters
       end
 
       def allowed_projects
-        if group_root_ancestor?
-          root_ancestor.all_projects
-        else
-          ::Project.id_in(project.id)
-        end
+        root_ancestor.all_projects
       end
 
       def allowed_groups

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe AddDefaultPreferredLanguageToApplicationSettings do
+RSpec.describe AddDefaultPreferredLanguageToApplicationSettings, feature_category: :internationalization do
   let(:application_setting) { table(:application_settings).create! }
 
   describe "#up" do

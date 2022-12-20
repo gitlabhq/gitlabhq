@@ -1,19 +1,20 @@
 # frozen_string_literal: true
 
 class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
+  ALLOWED_IFRAME_ANCESTORS = [:self, 'https://*.atlassian.net', 'https://*.jira.com'].freeze
   layout 'jira_connect'
 
   content_security_policy do |p|
     next if p.directives.blank?
 
     # rubocop: disable Lint/PercentStringArray
-    script_src_values = Array.wrap(p.directives['script-src']) | %w('self' https://connect-cdn.atl-paas.net)
-    style_src_values = Array.wrap(p.directives['style-src']) | %w('self' 'unsafe-inline')
+    script_src_values = Array.wrap(p.directives['script-src']) | %w['self' https://connect-cdn.atl-paas.net]
+    style_src_values = Array.wrap(p.directives['style-src']) | %w['self' 'unsafe-inline']
     # rubocop: enable Lint/PercentStringArray
 
     # *.jira.com is needed for some legacy Jira Cloud instances, new ones will use *.atlassian.net
     # https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/
-    p.frame_ancestors :self, 'https://*.atlassian.net', 'https://*.jira.com'
+    p.frame_ancestors(*(ALLOWED_IFRAME_ANCESTORS + Gitlab.config.jira_connect.additional_iframe_ancestors))
     p.script_src(*script_src_values)
     p.style_src(*style_src_values)
   end
@@ -27,7 +28,6 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   before_action :verify_qsh_claim!, only: :index
   before_action :allow_self_managed_content_security_policy, only: :index
   before_action :authenticate_user!, only: :create
-  before_action :set_cors_headers
 
   def index
     @subscriptions = current_jira_installation.subscriptions.preload_namespace_route
@@ -65,8 +65,6 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   private
 
   def allow_self_managed_content_security_policy
-    return unless Feature.enabled?(:jira_connect_oauth_self_managed_setting)
-
     return unless current_jira_installation.instance_url?
 
     request.content_security_policy.directives['connect-src'] ||= []

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Metrics::UserStarredDashboards do
+RSpec.describe API::Metrics::UserStarredDashboards, feature_category: :metrics do
   let_it_be(:user) { create(:user) }
   let_it_be(:dashboard_yml) { fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
   let_it_be(:dashboard) { '.gitlab/dashboards/find&seek.yml' }

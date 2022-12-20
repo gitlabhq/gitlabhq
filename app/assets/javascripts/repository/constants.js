@@ -99,5 +99,4 @@ export const LEGACY_FILE_TYPES = [
   'requirements_txt',
   'cargo_toml',
   'go_mod',
-  'go_sum',
 ];

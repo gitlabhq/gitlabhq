@@ -10,13 +10,14 @@ Type=notify
 User=git
 WorkingDirectory=/home/git/gitlab
 Environment=RAILS_ENV=production
-ExecStart=/usr/local/bin/bundle exec sidekiq --config /home/git/gitlab/config/sidekiq_queues.yml --environment production
+Environment=SIDEKIQ_QUEUES=*
+ExecStart=/home/git/gitlab/bin/sidekiq-cluster $SIDEKIQ_QUEUES -P /home/git/gitlab/tmp/pids/sidekiq.pid
+NotifyAccess=all
 PIDFile=/home/git/gitlab/tmp/pids/sidekiq.pid
 Restart=on-failure
 RestartSec=1
 SyslogIdentifier=gitlab-sidekiq
 Slice=gitlab.slice
-WatchdogSec=10
 
 [Install]
 WantedBy=gitlab.target

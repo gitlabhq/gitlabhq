@@ -16,17 +16,23 @@ export const WIDGET_TYPE_DESCRIPTION = 'DESCRIPTION';
 export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
+export const WIDGET_TYPE_PROGRESS = 'PROGRESS';
 export const WIDGET_TYPE_HIERARCHY = 'HIERARCHY';
 export const WIDGET_TYPE_MILESTONE = 'MILESTONE';
 export const WIDGET_TYPE_ITERATION = 'ITERATION';
-
-export const WORK_ITEM_VIEWED_STORAGE_KEY = 'gl-show-work-item-banner';
+export const WIDGET_TYPE_NOTES = 'NOTES';
+export const WIDGET_TYPE_HEALTH_STATUS = 'HEALTH_STATUS';
 
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
 export const WORK_ITEM_TYPE_ENUM_TASK = 'TASK';
 export const WORK_ITEM_TYPE_ENUM_TEST_CASE = 'TEST_CASE';
 export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
+export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
+export const WORK_ITEM_TYPE_ENUM_KEY_RESULT = 'KEY_RESULT';
+
+export const WORK_ITEM_TYPE_VALUE_ISSUE = 'Issue';
+export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 
 export const i18n = {
   fetchErrorTitle: s__('WorkItem|Work item not found'),
@@ -59,6 +65,13 @@ export const I18N_WORK_ITEM_DELETED = s__('WorkItem|%{workItemType} deleted');
 
 export const I18N_WORK_ITEM_FETCH_ITERATIONS_ERROR = s__(
   'WorkItem|Something went wrong when fetching iterations. Please try again.',
+);
+
+export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
+export const I18N_WORK_ITEM_ADD_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}');
+export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}s');
+export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__(
+  'WorkItem|Search existing %{workItemType}s',
 );
 
 export const sprintfWorkItem = (msg, workItemTypeArg) => {
@@ -100,11 +113,45 @@ export const WORK_ITEMS_TYPE_MAP = {
     icon: `issue-type-requirements`,
     name: s__('WorkItem|Requirements'),
   },
+  [WORK_ITEM_TYPE_ENUM_OBJECTIVE]: {
+    icon: `issue-type-objective`,
+    name: s__('WorkItem|Objective'),
+  },
+  [WORK_ITEM_TYPE_ENUM_KEY_RESULT]: {
+    icon: `issue-type-issue`,
+    name: s__('WorkItem|Key Result'),
+  },
+};
+
+export const WORK_ITEMS_TREE_TEXT_MAP = {
+  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: {
+    title: s__('WorkItem|Child objectives and key results'),
+    empty: s__('WorkItem|No objectives or key results are currently assigned.'),
+  },
+  [WORK_ITEM_TYPE_VALUE_ISSUE]: {
+    title: s__('WorkItem|Tasks'),
+    empty: s__(
+      'WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts.',
+    ),
+  },
+};
+
+export const WORK_ITEM_NAME_TO_ICON_MAP = {
+  Issue: 'issue-type-issue',
+  Task: 'issue-type-task',
+  Objective: 'issue-type-objective',
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  'Key Result': 'issue-type-key-result',
 };
 
 export const FORM_TYPES = {
   create: 'create',
   add: 'add',
+  [WORK_ITEM_TYPE_ENUM_OBJECTIVE]: {
+    icon: `issue-type-issue`,
+    name: s__('WorkItem|Objective'),
+  },
 };
 
 export const DEFAULT_PAGE_SIZE_ASSIGNEES = 10;
+export const DEFAULT_PAGE_SIZE_NOTES = 100;

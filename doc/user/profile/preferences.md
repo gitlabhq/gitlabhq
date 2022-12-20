@@ -96,7 +96,7 @@ A diff compares the old/removed content with the new/added content (for example,
 [Markdown inline diff](../markdown.md#inline-diff)).
 Typically, the colors red and green are used for removed and added lines in diffs.
 The exact colors depend on the selected [syntax highlighting theme](#syntax-highlighting-theme).
-The colors may lead to difficulties in case of red–green color blindness.
+The colors may lead to difficulties in case of red-green color blindness.
 
 For this reason, you can customize the following colors:
 
@@ -202,6 +202,22 @@ To set your time preference:
 NOTE:
 This feature is experimental, and choosing absolute times might break certain layouts.
 Open an issue if you notice that using absolute times breaks a layout.
+
+## Web IDE
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370139) in GitLab 15.7 [with a flag](../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available.
+
+The [Web IDE Beta](../project/web_ide_beta/index.md) is
+the default editing environment when the `vscode_web_ide` feature
+flag is enabled.
+
+To stop using the Web IDE Beta:
+
+1. In the **Web IDE** section, select the **Opt out of the Web IDE Beta** checkbox.
+1. Select **Save changes**.
 
 ## Integrations
 

@@ -88,6 +88,24 @@ module API
 
           present_approval(merge_request)
         end
+
+        desc 'Remove all merge request approvals' do
+          detail 'Clear all approvals of merge request. This feature was added in GitLab 15.4'
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[merge_requests]
+        end
+        put 'reset_approvals', urgency: :low do
+          merge_request = find_project_merge_request(params[:merge_request_iid])
+
+          unauthorized! unless current_user.can?(:reset_merge_request_approvals, merge_request)
+
+          merge_request.approvals.delete_all
+
+          status :accepted
+        end
       end
     end
   end

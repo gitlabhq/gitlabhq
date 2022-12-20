@@ -2,20 +2,23 @@
   .form-group.project-name.col-sm-12
     = label_tag :name, _('Project name'), class: 'label-bold'
     = text_field_tag :name, @name, placeholder: "My awesome project", class: "js-project-name form-control gl-form-input input-lg", autofocus: true, required: true, aria: { required: true }, data: { qa_selector: 'project_name_field' }
-  .form-group.col-12.col-sm-6
+  .form-group.col-12.col-sm-6.gl-pr-0
     = label_tag :namespace_id, _('Project URL'), class: 'label-bold'
-    .form-group
-      .input-group.gl-flex-nowrap
-        - if current_user.can_select_namespace?
-          .input-group-prepend.flex-shrink-0.has-tooltip{ title: root_url }
-            .input-group-text
-              = root_url
-          = select_tag :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), class: 'select2 js-select-namespace block-truncated'
-        - else
-          .input-group-prepend.static-namespace.has-tooltip{ title: user_url(current_user.username) + '/' }
-            .input-group-text.border-0
-              #{user_url(current_user.username)}/
-          = hidden_field_tag :namespace_id, current_user.namespace_id
+    .input-group.gl-flex-nowrap
+      - if current_user.can_select_namespace?
+        - namespace_id = namespace_id_from(params)
+        .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path || current_user.namespace.full_path,
+          namespace_id: namespace_id || current_user.namespace_id,
+          input_id: 'namespace_id',
+          input_name: 'namespace_id',
+          root_url: root_url,
+          user_namespace_id: current_user.namespace_id } }
+      - else
+        .input-group-prepend.static-namespace.flex-shrink-0.has-tooltip{ title: user_url(current_user.username) + '/' }
+          .input-group-text.border-0
+            #{user_url(current_user.username)}/
+        = hidden_field_tag :namespace_id, current_user.namespace_id
+      .gl-align-self-center.gl-pl-5 /
   .form-group.col-12.col-sm-6.project-path
     = label_tag :path, _('Project slug'), class: 'label-bold'
     = text_field_tag :path, @path, placeholder: "my-awesome-project", class: "js-path-name form-control gl-form-input", required: true, aria: { required: true }, data: { qa_selector: 'project_slug_field' }

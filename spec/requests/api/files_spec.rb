@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Files do
+RSpec.describe API::Files, feature_category: :source_code_management do
   include RepoHelpers
 
   let_it_be(:group) { create(:group, :public) }
@@ -11,8 +11,12 @@ RSpec.describe API::Files do
   let_it_be(:inherited_reporter) { create(:user) }
   let_it_be(:inherited_developer) { create(:user) }
 
-  let!(:project) { create(:project, :repository, namespace: user.namespace) }
-  let(:guest) { create(:user) { |u| project.add_guest(u) } }
+  let_it_be_with_reload(:project) { create(:project, :repository, namespace: user.namespace) }
+  let_it_be_with_reload(:public_project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:private_project) { create(:project, :private, :repository, group: group) }
+  let_it_be_with_reload(:public_project_private_repo) { create(:project, :public, :repository, :repository_private, group: group) }
+
+  let_it_be(:guest) { create(:user) { |u| project.add_guest(u) } }
   let(:file_path) { 'files%2Fruby%2Fpopen%2Erb' }
   let(:file_name) { 'popen.rb' }
   let(:last_commit_id) { '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' }
@@ -183,8 +187,9 @@ RSpec.describe API::Files do
 
     context 'when unauthenticated' do
       context 'and project is public' do
+        let(:project) { public_project }
+
         it_behaves_like 'repository files' do
-          let(:project) { create(:project, :public, :repository) }
           let(:current_user) { nil }
         end
       end
@@ -361,7 +366,7 @@ RSpec.describe API::Files do
     context 'when unauthenticated' do
       context 'and project is public' do
         it_behaves_like 'repository files' do
-          let(:project) { create(:project, :public, :repository) }
+          let(:project) { public_project }
           let(:current_user) { nil }
           let(:api_user) { nil }
         end
@@ -406,7 +411,7 @@ RSpec.describe API::Files do
     context 'when authenticated' do
       context 'and user is an inherited member from the group' do
         context 'when project is public with private repository' do
-          let_it_be(:project) { create(:project, :public, :repository, :repository_private, group: group) }
+          let(:project) { public_project_private_repo }
 
           context 'and user is a guest' do
             it_behaves_like 'returns non-executable file attributes as json' do
@@ -428,7 +433,7 @@ RSpec.describe API::Files do
         end
 
         context 'when project is private' do
-          let_it_be(:project) { create(:project, :private, :repository, group: group) }
+          let(:project) { private_project }
 
           context 'and user is a guest' do
             it_behaves_like '403 response' do
@@ -655,7 +660,7 @@ RSpec.describe API::Files do
     context 'when unauthenticated' do
       context 'and project is public' do
         it_behaves_like 'repository blame files' do
-          let(:project) { create(:project, :public, :repository) }
+          let(:project) { public_project }
           let(:current_user) { nil }
         end
       end
@@ -774,12 +779,69 @@ RSpec.describe API::Files do
           let(:request) { get api(route(file_path), current_user), params: params }
         end
       end
+
+      context 'when lfs parameter is true and the project has lfs enabled' do
+        before do
+          allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+          project.update_attribute(:lfs_enabled, true)
+        end
+
+        let(:request) { get api(route(file_path) + '/raw', current_user), params: params.merge(lfs: true) }
+        let(:file_path) { 'files%2Flfs%2Flfs_object.iso' }
+
+        it_behaves_like '404 response'
+
+        context 'and the file has an lfs object' do
+          let_it_be(:lfs_object) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897') }
+
+          it_behaves_like '404 response'
+
+          context 'and the project has access to the lfs object' do
+            before do
+              project.lfs_objects << lfs_object
+            end
+
+            context 'and lfs uses local file storage' do
+              before do
+                Grape::Endpoint.before_each do |endpoint|
+                  allow(endpoint).to receive(:sendfile).with(lfs_object.file.path)
+                end
+              end
+
+              after do
+                Grape::Endpoint.before_each nil
+              end
+
+              it 'responds with the lfs object file' do
+                request
+                expect(response.headers["Content-Disposition"]).to eq(
+                  "attachment; filename=\"#{lfs_object.file.filename}\"; filename*=UTF-8''#{lfs_object.file.filename}"
+                )
+              end
+            end
+
+            context 'and lfs uses remote object storage' do
+              before do
+                stub_lfs_object_storage
+                lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
+              end
+
+              it 'redirects to the lfs object file' do
+                request
+
+                expect(response).to have_gitlab_http_status(:found)
+                expect(response.location).to include(lfs_object.reload.file.path)
+              end
+            end
+          end
+        end
+      end
     end
 
     context 'when unauthenticated' do
       context 'and project is public' do
         it_behaves_like 'repository raw files' do
-          let(:project) { create(:project, :public, :repository) }
+          let(:project) { public_project }
           let(:current_user) { nil }
         end
       end
@@ -821,7 +883,7 @@ RSpec.describe API::Files do
   end
 
   describe 'POST /projects/:id/repository/files/:file_path' do
-    let!(:file_path) { 'new_subfolder%2Fnewfile%2Erb' }
+    let(:file_path) { FFaker::Guid.guid }
 
     let(:params) do
       {
@@ -939,14 +1001,13 @@ RSpec.describe API::Files do
 
             it_behaves_like 'creates a new file in the project repo' do
               let(:current_user) { user }
-              let(:file_path) { 'newfile%2Erb' }
+              let(:file_path) { FFaker::Guid.guid }
             end
           end
 
           context 'when specifying an author' do
             it 'creates a new file with the specified author' do
               params.merge!(author_email: author_email, author_name: author_name)
-
               post api(route('new_file_with_author%2Etxt'), user), params: params
 
               expect(response).to have_gitlab_http_status(:created)
@@ -963,7 +1024,7 @@ RSpec.describe API::Files do
     context 'when authenticated' do
       context 'and user is an inherited member from the group' do
         context 'when project is public with private repository' do
-          let_it_be(:project) { create(:project, :public, :repository, :repository_private, group: group) }
+          let(:project) { public_project_private_repo }
 
           context 'and user is a guest' do
             it_behaves_like '403 response' do
@@ -985,7 +1046,7 @@ RSpec.describe API::Files do
         end
 
         context 'when project is private' do
-          let_it_be(:project) { create(:project, :private, :repository, group: group) }
+          let(:project) { private_project }
 
           context 'and user is a guest' do
             it_behaves_like '403 response' do
@@ -1161,64 +1222,76 @@ RSpec.describe API::Files do
       }
     end
 
-    it 'returns 400 when file path is invalid' do
-      delete api(route(invalid_file_path), user), params: params
+    describe 'when files are deleted' do
+      let(:file_path) { FFaker::Guid.guid }
 
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq(invalid_file_message)
-    end
-
-    it_behaves_like 'when path is absolute' do
-      subject { delete api(route(absolute_path), user), params: params }
-    end
-
-    it 'deletes existing file in project repo' do
-      delete api(route(file_path), user), params: params
-
-      expect(response).to have_gitlab_http_status(:no_content)
-    end
-
-    context 'when no params given' do
-      it 'returns a 400 bad request' do
-        delete api(route(file_path), user)
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
-    end
-
-    context 'when the commit message is empty' do
       before do
-        params[:commit_message] = ''
+        create_file_in_repo(project, 'master', 'master', file_path, 'Test file')
       end
 
-      it 'returns a 400 bad request' do
-        delete api(route(file_path), user), params: params
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
-    end
-
-    context 'when fails to delete file' do
-      before do
-        allow_next_instance_of(Repository) do |instance|
-          allow(instance).to receive(:delete_file).and_raise(Gitlab::Git::CommitError, 'Cannot delete file')
-        end
-      end
-
-      it 'returns a 400 bad request' do
-        delete api(route(file_path), user), params: params
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
-    end
-
-    context 'when specifying an author' do
-      it 'removes a file with the specified author' do
-        params.merge!(author_email: author_email, author_name: author_name)
-
+      it 'deletes existing file in project repo' do
         delete api(route(file_path), user), params: params
 
         expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      context 'when specifying an author' do
+        before do
+          params.merge!(author_email: author_email, author_name: author_name)
+        end
+
+        it 'removes a file with the specified author' do
+          delete api(route(file_path), user), params: params
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+    end
+
+    describe 'when files are not deleted' do
+      it_behaves_like 'when path is absolute' do
+        subject { delete api(route(absolute_path), user), params: params }
+      end
+
+      it 'returns 400 when file path is invalid' do
+        delete api(route(invalid_file_path), user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq(invalid_file_message)
+      end
+
+      context 'when no params given' do
+        it 'returns a 400 bad request' do
+          delete api(route(file_path), user)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'when the commit message is empty' do
+        before do
+          params[:commit_message] = ''
+        end
+
+        it 'returns a 400 bad request' do
+          delete api(route(file_path), user), params: params
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'when fails to delete file' do
+        before do
+          allow_next_instance_of(Repository) do |instance|
+            allow(instance).to receive(:delete_file).and_raise(Gitlab::Git::CommitError, 'Cannot delete file')
+          end
+        end
+
+        it 'returns a 400 bad request' do
+          delete api(route(file_path), user), params: params
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
       end
     end
   end

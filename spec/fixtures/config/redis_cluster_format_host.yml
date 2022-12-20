@@ -1,0 +1,29 @@
+# redis://[:password@]host[:port][/db-number][?option=value]
+# more details: http://www.iana.org/assignments/uri-schemes/prov/redis
+development:
+  password: myclusterpassword
+  cluster:
+    -
+      host: development-master1
+      port: 6379
+    -
+      host: development-master2
+      port: 6379
+test:
+  password: myclusterpassword
+  cluster:
+    -
+      host: test-master1
+      port: 6379
+    -
+      host: test-master2
+      port: 6379
+production:
+  password: myclusterpassword
+  cluster:
+    -
+      host: production-master1
+      port: 6379
+    -
+      host: production-master2
+      port: 6379

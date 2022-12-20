@@ -37,8 +37,8 @@ module QA
           resource: self
         }
 
-        self.class.resources[reuse_as][:attributes] ||= all_attributes.each_with_object({}) do |attribute_name, attributes|
-          attributes[attribute_name] = instance_variable_get("@#{attribute_name}")
+        self.class.resources[reuse_as][:attributes] ||= all_attributes.index_with do |attribute_name|
+          instance_variable_get("@#{attribute_name}")
         end
         self.class.resources[reuse_as][:tests] << Runtime::Example.location
       end

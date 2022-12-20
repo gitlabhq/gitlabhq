@@ -38,7 +38,7 @@ RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task
       end
 
       it 'inserts refreshes in batches with a sleep' do
-        expect(Projects::BuildArtifactsSizeRefresh).to receive(:enqueue_refresh).with([project_1, project_2]).ordered
+        expect(Projects::BuildArtifactsSizeRefresh).to receive(:enqueue_refresh).with(match_array([project_1, project_2])).ordered
         expect(Kernel).to receive(:sleep).with(1)
         expect(Projects::BuildArtifactsSizeRefresh).to receive(:enqueue_refresh).with([project_3]).ordered
 

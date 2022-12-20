@@ -35,11 +35,6 @@ export default {
       required: true,
       default: () => [],
     },
-    stagesClass: {
-      type: [Array, Object, String],
-      required: false,
-      default: '',
-    },
     updateDropdown: {
       type: Boolean,
       required: false,
@@ -56,15 +51,10 @@ export default {
       return Boolean(this.downstreamPipelines.length);
     },
   },
-  methods: {
-    onPipelineActionRequestComplete() {
-      this.$emit('pipelineActionRequestComplete');
-    },
-  },
 };
 </script>
 <template>
-  <div class="stage-cell" data-testid="pipeline-mini-graph">
+  <div data-testid="pipeline-mini-graph">
     <linked-pipelines-mini-list
       v-if="upstreamPipeline"
       :triggered-by="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
@@ -82,9 +72,7 @@ export default {
       :is-merge-train="isMergeTrain"
       :stages="stages"
       :update-dropdown="updateDropdown"
-      :stages-class="stagesClass"
       data-testid="pipeline-stages"
-      @pipelineActionRequestComplete="onPipelineActionRequestComplete"
       @miniGraphStageClick="$emit('miniGraphStageClick')"
     />
     <gl-icon

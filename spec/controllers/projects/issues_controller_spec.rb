@@ -141,18 +141,32 @@ RSpec.describe Projects::IssuesController do
       project.add_developer(user)
     end
 
-    it "returns issue attributes" do
-      participants = create_list(:issue_email_participant, 2, issue: issue)
+    context 'issue email participants' do
+      context 'when issue is confidential' do
+        let(:issue) { create(:issue, project: project, confidential: true) }
+        let!(:participants) { create_list(:issue_email_participant, 2, issue: issue) }
 
-      get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }, format: :json
+        it "returns issue email participants" do
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }, format: :json
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).to include(
-        'issue_email_participants' => contain_exactly(
-          { "email" => participants[0].email }, { "email" => participants[1].email }
-        ),
-        'type' => 'ISSUE'
-      )
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include(
+            'issue_email_participants' => contain_exactly(
+              { "email" => participants[0].email }, { "email" => participants[1].email }
+            ),
+            'type' => 'ISSUE'
+          )
+        end
+      end
+
+      context 'when issue is not confidential' do
+        it "returns empty email participants" do
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }, format: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include('issue_email_participants' => [])
+        end
+      end
     end
 
     context 'when issue is not a task and work items feature flag is enabled' do
@@ -366,10 +380,10 @@ RSpec.describe Projects::IssuesController do
       }
     end
 
-    context 'the current user cannot download code' do
+    context 'the current user cannot read code' do
       it 'prevents access' do
         allow(controller).to receive(:can?).with(any_args).and_return(true)
-        allow(controller).to receive(:can?).with(user, :download_code, project).and_return(false)
+        allow(controller).to receive(:can?).with(user, :read_code, project).and_return(false)
 
         subject
 

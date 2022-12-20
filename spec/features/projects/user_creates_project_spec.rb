@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User creates a project', :js do
+RSpec.describe 'User creates a project', :js, feature_category: :projects do
   let(:user) { create(:user) }
 
   before do

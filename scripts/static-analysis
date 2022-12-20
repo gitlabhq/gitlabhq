@@ -50,7 +50,6 @@ class StaticAnalysis
     Task.new(%w[bin/rake gettext:lint], 105),
     Task.new(%W[scripts/license-check.sh #{project_path}], 200),
     Task.new(%w[bin/rake lint:static_verification], 40),
-    Task.new(%w[scripts/rubocop-max-files-in-cache-check], 25),
     Task.new(%w[bin/rake config_lint], 10),
     Task.new(%w[bin/rake gitlab:sidekiq:all_queues_yml:check], 15),
     (Gitlab.ee? ? Task.new(%w[bin/rake gitlab:sidekiq:sidekiq_queues_yml:check], 11) : nil),
@@ -134,7 +133,7 @@ class StaticAnalysis
 
   def warning_count(static_analysis)
     static_analysis.warned_results
-      .count { |result| !ALLOWED_WARNINGS.include?(result.stderr.strip) }
+      .count { |result| !ALLOWED_WARNINGS.include?(result.stderr.strip) } # rubocop:disable Rails/NegateInclude
   end
 
   def tasks_to_run(node_total)

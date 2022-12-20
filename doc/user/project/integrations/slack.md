@@ -36,10 +36,6 @@ to control GitLab from Slack. Slash commands are configured separately.
    - *To send messages to channels,* enter the Slack channel names, separated by
      commas.
    - *To send direct messages,* use the Member ID found in the user's Slack profile.
-
-   NOTE:
-   Usernames and private channels are not supported.
-
 1. In **Webhook**, enter the webhook URL you copied in the
    [Slack configuration](#configure-slack) step.
 1. Optional. In **Username**, enter the username of the Slack bot that sends

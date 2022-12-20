@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require 'spec_helper'
 
 RSpec.describe Projects::UpdateService do
@@ -303,6 +302,25 @@ RSpec.describe Projects::UpdateService do
         expect(project.default_branch).to eq 'master'
         expect(project.previous_default_branch).to be_nil
       end
+
+      context 'when repository has an ambiguous branch named "HEAD"' do
+        before do
+          allow(project.repository.raw).to receive(:write_ref).and_return(false)
+          allow(project.repository).to receive(:branch_names) { %w[fix master main HEAD] }
+        end
+
+        it 'returns an error to the user' do
+          result = update_project(project, admin, default_branch: 'fix')
+
+          expect(result).to include(status: :error)
+          expect(result[:message]).to include("Could not set the default branch. Do you have a branch named 'HEAD' in your repository?")
+
+          project.reload
+
+          expect(project.default_branch).to eq 'master'
+          expect(project.previous_default_branch).to be_nil
+        end
+      end
     end
 
     context 'when we update project but not enabling a wiki' do
@@ -421,25 +439,6 @@ RSpec.describe Projects::UpdateService do
         expect(feature.infrastructure_access_level).not_to eq(ProjectFeature::DISABLED)
         expect(feature.feature_flags_access_level).not_to eq(ProjectFeature::DISABLED)
         expect(feature.environments_access_level).not_to eq(ProjectFeature::DISABLED)
-      end
-
-      context 'when split_operations_visibility_permissions feature is disabled' do
-        before do
-          stub_feature_flags(split_operations_visibility_permissions: false)
-        end
-
-        it 'syncs the changes to the related fields' do
-          result = update_project(project, user, project_feature_attributes: feature_params)
-
-          expect(result).to eq({ status: :success })
-          feature = project.project_feature
-
-          expect(feature.operations_access_level).to eq(ProjectFeature::DISABLED)
-          expect(feature.monitor_access_level).to eq(ProjectFeature::DISABLED)
-          expect(feature.infrastructure_access_level).to eq(ProjectFeature::DISABLED)
-          expect(feature.feature_flags_access_level).to eq(ProjectFeature::DISABLED)
-          expect(feature.environments_access_level).to eq(ProjectFeature::DISABLED)
-        end
       end
     end
 

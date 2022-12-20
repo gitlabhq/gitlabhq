@@ -11,6 +11,10 @@ module Types
 
     field :build_artifacts_size, GraphQL::Types::Float, null: false,
                                                         description: 'Build artifacts size of the project in bytes.'
+    field :container_registry_size,
+          GraphQL::Types::Float,
+          null: true,
+          description: 'Container Registry size of the project in bytes.'
     field :lfs_objects_size,
           GraphQL::Types::Float,
           null: false,
@@ -29,9 +33,5 @@ module Types
                                                 description: 'Uploads size of the project in bytes.'
     field :wiki_size, GraphQL::Types::Float, null: true,
                                              description: 'Wiki size of the project in bytes.'
-    field :container_registry_size,
-          GraphQL::Types::Float,
-          null: true,
-          description: 'Container Registry size of the project in bytes.'
   end
 end

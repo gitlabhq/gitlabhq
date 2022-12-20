@@ -24,7 +24,7 @@ class IssuableExportCsvWorker # rubocop:disable Scalability/IdempotentWorker
 
   def export_service(type, user, project, params)
     issuable_classes = issuable_classes_for(type.to_sym)
-    issuables = issuable_classes[:finder].new(user, parse_params(params, project.id)).execute
+    issuables = issuable_classes[:finder].new(user, parse_params(params, project.id, type)).execute
     issuable_classes[:service].new(issuables, project)
   end
 
@@ -39,7 +39,7 @@ class IssuableExportCsvWorker # rubocop:disable Scalability/IdempotentWorker
     end
   end
 
-  def parse_params(params, project_id)
+  def parse_params(params, project_id, _type)
     params
       .with_indifferent_access
       .except(:sort)

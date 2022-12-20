@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'package details' do
+RSpec.describe 'package details', feature_category: :package_registry do
   include GraphqlHelpers
 
   let_it_be_with_reload(:group) { create(:group) }
@@ -224,6 +224,17 @@ RSpec.describe 'package details' do
         it 'returns web_path correctly' do
           expect(graphql_data_at(:package, :_links, :web_path)).to eq("/#{project.full_path}/-/infrastructure_registry/#{terraform_package.id}")
         end
+      end
+    end
+
+    context 'with package that has no default status' do
+      before do
+        composer_package.update!(status: :error)
+        subject
+      end
+
+      it "does not return package's details" do
+        expect(package_details).to be_nil
       end
     end
   end

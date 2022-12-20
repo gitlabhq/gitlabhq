@@ -16,14 +16,22 @@ module Bundler::Checksum::Command
         .send(:compact_index_client)
         .instance_variable_get(:@cache)
 
-      seen = []
       Bundler.definition.resolve.sort_by(&:name).each do |spec|
         next unless spec.source.is_a?(Bundler::Source::Rubygems)
+        spec_identifier = "#{spec.name}==#{spec.version}"
 
-        next if seen.include?(spec.name)
-        seen << spec.name
+        previous_checksum = previous_checksums.select do |checksum|
+          checksum[:name] == spec.name && checksum[:version] == spec.version.to_s
+        end
 
-        $stderr.puts "Adding #{spec.name}==#{spec.version}"
+        if !previous_checksum.empty?
+          $stderr.puts "Using #{spec_identifier}"
+          checksums += previous_checksum
+
+          next
+        end
+
+        $stderr.puts "Adding #{spec_identifier}"
 
         compact_index_dependencies = compact_index_cache.dependencies(spec.name).select { |item| item.first == spec.version.to_s }
 
@@ -53,6 +61,15 @@ module Bundler::Checksum::Command
     end
 
     private
+
+    def previous_checksums
+      @previous_checksums ||=
+        if File.exist?(checksum_file)
+          ::Bundler::Checksum.checksums_from_file
+        else
+          []
+        end
+    end
 
     def checksum_file
       ::Bundler::Checksum.checksum_file

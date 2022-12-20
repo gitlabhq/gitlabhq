@@ -1,22 +1,56 @@
 {
   "type": "object",
-  "required": ["tag_name", "description"],
+  "required": [
+    "tag_name",
+    "description"
+  ],
   "properties": {
-    "name": { "type": "string" },
-    "tag_name": { "type": "string" },
-    "ref": { "type": "string "},
-    "description": { "type": "string" },
-    "description_html": { "type": "string" },
-    "created_at": { "type": "string", "format": "date-time" },
+    "name": {
+      "type": "string"
+    },
+    "tag_name": {
+      "type": "string"
+    },
+    "ref": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "description_html": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
     "commit": {
-      "oneOf": [{ "type": "null" }, { "$ref": "public_api/v4/commit/basic.json" }]
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "public_api/v4/commit/basic.json"
+        }
+      ]
     },
     "author": {
-      "oneOf": [{ "type": "null" }, { "$ref": "public_api/v4/user/basic.json" }]
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "public_api/v4/user/basic.json"
+        }
+      ]
     },
     "assets": {
-      "count": { "type": "integer" },
-      "links": { "$ref": "release/links.json" },
+      "count": {
+        "type": "integer"
+      },
+      "links": {
+        "$ref": "release/links.json"
+      },
       "sources": {
         "type": "array",
         "items": {

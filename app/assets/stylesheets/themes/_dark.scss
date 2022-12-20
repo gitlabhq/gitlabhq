@@ -11,6 +11,20 @@ $gray-800: #dcdcde;
 $gray-900: #ececef;
 $gray-950: #fbfafd;
 
+$gray-lightest: lighten($gray-10, 1);
+$gray-light: lighten($gray-10, 2);
+$gray-lighter: darken($gray-50, 4);
+$gray-normal: $gray-50;
+$gray-dark: darken($gray-100, 2);
+$gray-darker: darken($gray-200, 2);
+$gray-darkest: $gray-700;
+
+$black: #fff;
+$black-normal: $gray-900;
+$white: $gray-50;
+$white-normal: $gray-50;
+$white-dark: $gray-100;
+
 $green-50: #0a4020;
 $green-100: #0d532a;
 $green-200: #24663b;
@@ -83,159 +97,21 @@ $purple-800: #cbbbf2;
 $purple-900: #e1d8f9;
 $purple-950: #f4f0ff;
 
-$gray-lightest: #222;
-$gray-light: $gray-50;
-$gray-lighter: #303030;
-$gray-normal: #333;
-$gray-dark: $gray-100;
-$gray-darker: #4f4f4f;
-$gray-darkest: #c4c4c4;
-
-$black: #fff;
-$black-normal: $gray-900;
-$white: #333;
-$white-light: #2b2b2b;
-$white-normal: #333;
-$white-dark: #444;
-
 $theme-indigo-50: #1a1a40;
 
 $border-color: #4f4f4f;
 
-:root {
-  color-scheme: dark;
-}
-
-body.gl-dark {
-  --gray-10: #{$gray-10};
-  --gray-50: #{$gray-50};
-  --gray-100: #{$gray-100};
-  --gray-200: #{$gray-200};
-  --gray-300: #{$gray-300};
-  --gray-400: #{$gray-400};
-  --gray-500: #{$gray-500};
-  --gray-600: #{$gray-600};
-  --gray-700: #{$gray-700};
-  --gray-800: #{$gray-800};
-  --gray-900: #{$gray-900};
-  --gray-950: #{$gray-950};
-
-  --green-50: #{$green-50};
-  --green-100: #{$green-100};
-  --green-200: #{$green-200};
-  --green-300: #{$green-300};
-  --green-400: #{$green-400};
-  --green-500: #{$green-500};
-  --green-600: #{$green-600};
-  --green-700: #{$green-700};
-  --green-800: #{$green-800};
-  --green-900: #{$green-900};
-  --green-950: #{$green-950};
-
-  --blue-50: #{$blue-50};
-  --blue-100: #{$blue-100};
-  --blue-200: #{$blue-200};
-  --blue-300: #{$blue-300};
-  --blue-400: #{$blue-400};
-  --blue-500: #{$blue-500};
-  --blue-600: #{$blue-600};
-  --blue-700: #{$blue-700};
-  --blue-800: #{$blue-800};
-  --blue-900: #{$blue-900};
-  --blue-950: #{$blue-950};
-
-  --orange-50: #{$orange-50};
-  --orange-100: #{$orange-100};
-  --orange-200: #{$orange-200};
-  --orange-300: #{$orange-300};
-  --orange-400: #{$orange-400};
-  --orange-500: #{$orange-500};
-  --orange-600: #{$orange-600};
-  --orange-700: #{$orange-700};
-  --orange-800: #{$orange-800};
-  --orange-900: #{$orange-900};
-  --orange-950: #{$orange-950};
-
-  --red-50: #{$red-50};
-  --red-100: #{$red-100};
-  --red-200: #{$red-200};
-  --red-300: #{$red-300};
-  --red-400: #{$red-400};
-  --red-500: #{$red-500};
-  --red-600: #{$red-600};
-  --red-700: #{$red-700};
-  --red-800: #{$red-800};
-  --red-900: #{$red-900};
-  --red-950: #{$red-950};
-
-  --indigo-50: #{$indigo-50};
-  --indigo-100: #{$indigo-100};
-  --indigo-200: #{$indigo-200};
-  --indigo-300: #{$indigo-300};
-  --indigo-400: #{$indigo-400};
-  --indigo-500: #{$indigo-500};
-  --indigo-600: #{$indigo-600};
-  --indigo-700: #{$indigo-700};
-  --indigo-800: #{$indigo-800};
-  --indigo-900: #{$indigo-900};
-  --indigo-950: #{$indigo-950};
-
-  --purple-50: #{$purple-50};
-  --purple-100: #{$purple-100};
-  --purple-200: #{$purple-200};
-  --purple-300: #{$purple-300};
-  --purple-400: #{$purple-400};
-  --purple-500: #{$purple-500};
-  --purple-600: #{$purple-600};
-  --purple-700: #{$purple-700};
-  --purple-800: #{$purple-800};
-  --purple-900: #{$purple-900};
-  --purple-950: #{$purple-950};
-
-  --dark-icon-color-purple-1: #524a68;
-  --dark-icon-color-purple-2: #715bae;
-  --dark-icon-color-purple-3: #9a79f7;
-  --dark-icon-color-orange-1: #665349;
-  --dark-icon-color-orange-2: #b37a5d;
-
-  --gl-text-color: #{$gray-900};
-  --border-color: #{$border-color};
-
-  --white: #{$white};
-  --black: #{$black};
-  --gray-light: #{$gray-50};
-
-  --svg-status-bg: #{$white};
-
-  .gl-button.gl-button,
-  .gl-button.gl-button.btn-block {
-    &.btn-default,
-    &.btn-dashed,
-    &.btn-info,
-    &.btn-success,
-    &.btn-danger,
-    &.btn-confirm {
-      &-tertiary {
-        mix-blend-mode: screen;
-      }
-    }
-  }
-
-  .gl-datepicker-theme {
-    .pika-prev,
-    .pika-next {
-      filter: invert(0.9);
-    }
-
-    .is-selected > .pika-button {
-      color: $gray-900;
-    }
-
-    :not(.is-selected) > .pika-button:hover {
-      background-color: $gray-200;
-    }
-  }
-}
+$data-viz-blue-50: #2a2b59;
+$data-viz-blue-100: #303470;
+$data-viz-blue-200: #374291;
+$data-viz-blue-300: #3f51ae;
+$data-viz-blue-400: #4e65cd;
+$data-viz-blue-500: #617ae2;
+$data-viz-blue-600: #7992f5;
+$data-viz-blue-700: #97acff;
+$data-viz-blue-800: #b7c6ff;
+$data-viz-blue-900: #d2dcff;
+$data-viz-blue-950: #e9ebff;
 
 $border-white-normal: $border-color;
 
@@ -265,11 +141,3 @@ $line-removed-dark: $red-200;
 
 $well-expand-item: $gray-200;
 $well-inner-border: $gray-200;
-
-$calendar-activity-colors: (
-  #404040,
-  #1e23a8,
-  #445cf2,
-  #97acff,
-  #e9ebff
-);

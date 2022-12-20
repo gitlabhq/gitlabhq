@@ -4,7 +4,8 @@
   - if current_user && current_user.snippets.any? || @snippets.any?
     .page-title-controls
       - if can?(current_user, :create_snippet)
-        = link_to _("New snippet"), new_snippet_path, class: "gl-button btn btn-confirm", title: _("New snippet")
+        = render Pajamas::ButtonComponent.new(href: new_snippet_path, variant: :confirm, button_options: { title: _("New snippet") }) do
+          = _("New snippet")
 
 .top-area
   = gl_tabs_nav({ class: 'gl-border-0' }) do

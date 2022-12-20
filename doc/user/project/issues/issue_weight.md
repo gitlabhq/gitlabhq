@@ -36,7 +36,7 @@ When you change the weight of an issue, the new value overwrites the previous va
 
 ### When you create an issue
 
-To set the issue weight when you [create an issue](managing_issues.md#create-an-issue), enter a
+To set the issue weight when you [create an issue](create_issues.md), enter a
 number under **Weight**.
 
 ### From an existing issue

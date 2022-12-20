@@ -1,9 +1,9 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml, GlDrawer, GlAlert, GlSkeletonLoader } from '@gitlab/ui';
-import $ from 'jquery';
-import '~/behaviors/markdown/render_gfm';
+import { GlDrawer, GlAlert, GlSkeletonLoader } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
 import { contentTop } from '~/lib/utils/common_utils';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { getRenderedMarkdown } from './utils/fetch';
 
 export const cache = {};
@@ -34,12 +34,8 @@ export default {
       title: '',
       body: null,
       open: false,
+      drawerTop: '0px',
     };
-  },
-  computed: {
-    drawerOffsetTop() {
-      return `${contentTop()}px`;
-    },
   },
   watch: {
     documentPath: {
@@ -76,18 +72,23 @@ export default {
         cache[this.documentPath] = { title, body };
       }
     },
+    getDrawerTop() {
+      this.drawerTop = `${contentTop()}px`;
+    },
     renderGLFM() {
       this.$nextTick(() => {
-        $(this.$refs['content-element']).renderGFM();
+        renderGFM(this.$refs['content-element']);
       });
     },
     closeDrawer() {
       this.open = false;
     },
     toggleDrawer() {
+      this.getDrawerTop();
       this.open = !this.open;
     },
     openDrawer() {
+      this.getDrawerTop();
       this.open = true;
     },
   },
@@ -97,7 +98,7 @@ export default {
 };
 </script>
 <template>
-  <gl-drawer :header-height="drawerOffsetTop" :open="open" header-sticky @close="closeDrawer">
+  <gl-drawer :header-height="drawerTop" :open="open" header-sticky @close="closeDrawer">
     <template #title>
       <h4 data-testid="title-element" class="gl-m-0">{{ title }}</h4>
     </template>

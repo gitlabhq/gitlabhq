@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/EmptyElse:
   Exclude:
     - 'app/controllers/concerns/issuable_collections_action.rb'
@@ -24,7 +24,6 @@ Style/EmptyElse:
     - 'app/models/resource_timebox_event.rb'
     - 'app/services/award_emojis/add_service.rb'
     - 'app/services/merge_requests/update_service.rb'
-    - 'app/workers/gitlab/github_import/stage/import_issue_events_worker.rb'
     - 'app/workers/post_receive.rb'
     - 'config/initializers/doorkeeper_openid_connect.rb'
     - 'ee/app/controllers/admin/audit_logs_controller.rb'
@@ -37,7 +36,6 @@ Style/EmptyElse:
     - 'ee/app/services/gitlab_subscriptions/check_future_renewal_service.rb'
     - 'ee/app/services/projects/update_mirror_service.rb'
     - 'ee/app/workers/gitlab_subscriptions/notify_seats_exceeded_worker.rb'
-    - 'ee/db/fixtures/development/20_vulnerabilities.rb'
     - 'ee/lib/elastic/latest/note_instance_proxy.rb'
     - 'ee/lib/gitlab/analytics/cycle_analytics/summary/change_failure_rate.rb'
     - 'ee/lib/gitlab/geo/oauth/logout_token.rb'

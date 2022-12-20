@@ -6,7 +6,10 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import PipelinesFilteredSearch from '~/pipelines/components/pipelines_list/pipelines_filtered_search.vue';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  FILTERED_SEARCH_TERM,
+  OPERATORS_IS,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import { TRACKING_CATEGORIES } from '~/pipelines/constants';
 import { users, mockSearch, branches, tags } from '../mock_data';
 
@@ -63,7 +66,7 @@ describe('Pipelines filtered search', () => {
       title: 'Trigger author',
       unique: true,
       projectId: '21',
-      operators: OPERATOR_IS_ONLY,
+      operators: OPERATORS_IS,
     });
 
     expect(findBranchToken()).toMatchObject({
@@ -73,7 +76,7 @@ describe('Pipelines filtered search', () => {
       unique: true,
       projectId: '21',
       defaultBranchName: 'main',
-      operators: OPERATOR_IS_ONLY,
+      operators: OPERATORS_IS,
     });
 
     expect(findSourceToken()).toMatchObject({
@@ -81,7 +84,7 @@ describe('Pipelines filtered search', () => {
       icon: 'trigger-source',
       title: 'Source',
       unique: true,
-      operators: OPERATOR_IS_ONLY,
+      operators: OPERATORS_IS,
     });
 
     expect(findStatusToken()).toMatchObject({
@@ -89,7 +92,7 @@ describe('Pipelines filtered search', () => {
       icon: 'status',
       title: 'Status',
       unique: true,
-      operators: OPERATOR_IS_ONLY,
+      operators: OPERATORS_IS,
     });
 
     expect(findTagToken()).toMatchObject({
@@ -97,7 +100,7 @@ describe('Pipelines filtered search', () => {
       icon: 'tag',
       title: 'Tag name',
       unique: true,
-      operators: OPERATOR_IS_ONLY,
+      operators: OPERATORS_IS,
     });
   });
 
@@ -111,7 +114,7 @@ describe('Pipelines filtered search', () => {
   it('disables tag name token when branch name token is active', async () => {
     findFilteredSearch().vm.$emit('input', [
       { type: 'ref', value: { data: 'branch-1', operator: '=' } },
-      { type: 'filtered-search-term', value: { data: '' } },
+      { type: FILTERED_SEARCH_TERM, value: { data: '' } },
     ]);
 
     await nextTick();
@@ -122,7 +125,7 @@ describe('Pipelines filtered search', () => {
   it('disables branch name token when tag name token is active', async () => {
     findFilteredSearch().vm.$emit('input', [
       { type: 'tag', value: { data: 'tag-1', operator: '=' } },
-      { type: 'filtered-search-term', value: { data: '' } },
+      { type: FILTERED_SEARCH_TERM, value: { data: '' } },
     ]);
 
     await nextTick();
@@ -139,7 +142,7 @@ describe('Pipelines filtered search', () => {
   });
 
   it('resets tokens disabled state when clearing tokens by backspace', async () => {
-    findFilteredSearch().vm.$emit('input', [{ type: 'filtered-search-term', value: { data: '' } }]);
+    findFilteredSearch().vm.$emit('input', [{ type: FILTERED_SEARCH_TERM, value: { data: '' } }]);
 
     await nextTick();
     expect(findBranchToken().disabled).toBe(false);
@@ -172,7 +175,7 @@ describe('Pipelines filtered search', () => {
             operator: '=',
           },
         },
-        { type: 'filtered-search-term', value: { data: '' } },
+        { type: FILTERED_SEARCH_TERM, value: { data: '' } },
       ];
 
       expect(findFilteredSearch().props('value')).toMatchObject(expectedValueProp);

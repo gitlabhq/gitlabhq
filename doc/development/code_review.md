@@ -28,7 +28,7 @@ The reviewer can:
 - Give you a second opinion on the chosen solution and implementation.
 - Help look for bugs, logic problems, or uncovered edge cases.
 
-If the merge request is trivial (for example, fixing a typo or a tiny refactor that doesn't change the behavior or any data),
+If the merge request is trivial to review (for example, fixing a typo or a tiny refactor that doesn't change the behavior or any data),
 you can skip the reviewer step and directly ask a [maintainer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer).
 Otherwise, a merge request should always be first reviewed by a reviewer in each
 [category (e.g. backend, database)](#approval-guidelines)
@@ -124,8 +124,10 @@ page, with these behaviors:
   branch name (unless their out-of-office (`OOO`) status changes, as in point 1). It
   removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
   that it can be stable for backport branches.
+- People whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
+  is Ⓜ `:m:`are only suggested as reviewers on projects they are a maintainer of.
 
-The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette) contains:
+The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/) contains:
 
 - Assignment events in the last 7 and 30 days.
 - Currently assigned merge requests per person.
@@ -155,7 +157,7 @@ with [domain expertise](#domain-experts).
 | `~frontend` changes (*1*)       | [Frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend). |
 | `~UX` user-facing changes (*3*) | [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX). Refer to the [design and user interface guidelines](contributing/design.md) for details. |
 | Adding a new JavaScript library (*1*) | - [Frontend foundations member](https://about.gitlab.com/direction/manage/foundations/) if the library significantly increases the [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/master/doc/report.md).<br/>- A [legal department member](https://about.gitlab.com/handbook/legal/) if the license used by the new library hasn't been approved for use in GitLab.<br/><br/>More information about license compatibility can be found in our [GitLab Licensing and Compatibility documentation](licensing.md). |
-| A new dependency or a file system change | - [Distribution team member](https://about.gitlab.com/company/team/). See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/systems/distribution/#how-to-work-with-distribution) for more details.<br/>- For Rubygems, request an [AppSec review](gemfile.md#request-an-appsec-review). |
+| A new dependency or a file system change | - [Distribution team member](https://about.gitlab.com/company/team/). See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/systems/distribution/#how-to-work-with-distribution) for more details.<br/>- For RubyGems, request an [AppSec review](gemfile.md#request-an-appsec-review). |
 | `~documentation` or `~UI text` changes | [Technical writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments) based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages). |
 | Changes to development guidelines | Follow the [review process](development_processes.md#development-guidelines-review) and get the approvals accordingly. |
 | End-to-end **and** non-end-to-end changes (*4*) | [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors). |
@@ -185,49 +187,52 @@ Using checklists improves quality in software engineering. This checklist is a s
 
 See the [test engineering process](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/test-engineering/) for further quality guidelines.
 
-1. I have self-reviewed this MR per [code review guidelines](code_review.md).
-1. For the code that this change impacts, I believe that the automated tests ([Testing Guide](testing_guide/index.md)) validate functionality that is highly important to users (including consideration of [all test levels](testing_guide/testing_levels.md)).
-1. If the existing automated tests do not cover the above functionality, I have added the necessary additional tests or added an issue to describe the automation testing gap and linked it to this MR.
-1. I have considered the technical aspects of this change's impact on GitLab.com hosted customers and self-managed customers.
-1. I have considered the impact of this change on the frontend, backend, and database portions of the system where appropriate and applied the `~ux`, `~frontend`, `~backend`, and `~database` labels accordingly.
-1. I have tested this MR in [all supported browsers](../install/requirements.md#supported-web-browsers), or determined that this testing is not needed.
-1. I have confirmed that this change is [backwards compatible across updates](multi_version_compatibility.md), or I have decided that this does not apply.
-1. I have properly separated EE content from FOSS, or this MR is FOSS only.
+1. You have self-reviewed this MR per [code review guidelines](code_review.md).
+1. For the code that this change impacts, you believe that the automated tests ([Testing Guide](testing_guide/index.md)) validate functionality that is highly important to users (including consideration of [all test levels](testing_guide/testing_levels.md)).
+1. If the existing automated tests do not cover the above functionality, you have added the necessary additional tests or added an issue to describe the automation testing gap and linked it to this MR.
+1. You have considered the technical aspects of this change's impact on GitLab.com hosted customers and self-managed customers.
+1. You have considered the impact of this change on the frontend, backend, and database portions of the system where appropriate and applied the `~ux`, `~frontend`, `~backend`, and `~database` labels accordingly.
+1. You have tested this MR in [all supported browsers](../install/requirements.md#supported-web-browsers), or determined that this testing is not needed.
+1. You have confirmed that this change is [backwards compatible across updates](multi_version_compatibility.md), or you have decided that this does not apply.
+1. You have properly separated EE content from FOSS, or this MR is FOSS only.
     - [Where should EE code go?](ee_features.md)
-1. I have considered that existing data may be surprisingly varied. For example, a new model validation can break existing records. Consider making validation on existing data optional rather than required if you haven't confirmed that existing data will pass validation.
+1. You have considered that existing data may be surprisingly varied. For example, a new model validation can break existing records. Consider making validation on existing data optional rather than required if you haven't confirmed that existing data will pass validation.
 
 ##### Performance, reliability, and availability
 
-1. I am confident that this MR does not harm performance, or I have asked a reviewer to help assess the performance impact. ([Merge request performance guidelines](merge_request_performance_guidelines.md))
-1. I have added [information for database reviewers in the MR description](database_review.md#required), or I have decided that it is unnecessary.
+1. You are confident that this MR does not harm performance, or you have asked a reviewer to help assess the performance impact. ([Merge request performance guidelines](merge_request_performance_guidelines.md))
+1. You have added [information for database reviewers in the MR description](database_review.md#required), or you have decided that it is unnecessary.
     - [Does this MR have database-related changes?](database_review.md)
-1. I have considered the availability and reliability risks of this change.
-1. I have considered the scalability risk based on future predicted growth.
-1. I have considered the performance, reliability, and availability impacts of this change on large customers who may have significantly more data than the average customer.
+1. You have considered the availability and reliability risks of this change.
+1. You have considered the scalability risk based on future predicted growth.
+1. You have considered the performance, reliability, and availability impacts of this change on large customers who may have significantly more data than the average customer.
 
 ##### Observability instrumentation
 
-1. I have included enough instrumentation to facilitate debugging and proactive performance improvements through observability.
+1. You have included enough instrumentation to facilitate debugging and proactive performance improvements through observability.
    See [example](https://gitlab.com/gitlab-org/gitlab/-/issues/346124#expectations) of adding feature flags, logging, and instrumentation.
 
 ##### Documentation
 
-1. I have included changelog trailers, or I have decided that they are not needed.
+1. You have included changelog trailers, or you have decided that they are not needed.
     - [Does this MR need a changelog?](changelog.md#what-warrants-a-changelog-entry)
-1. I have added/updated documentation or decided that documentation changes are unnecessary for this MR.
+1. You have added/updated documentation or decided that documentation changes are unnecessary for this MR.
     - [Is documentation required?](https://about.gitlab.com/handbook/product/ux/technical-writing/workflow/#when-documentation-is-required)
 
 ##### Security
 
-1. I have confirmed that if this MR contains changes to processing or storing of credentials or tokens, authorization, and authentication methods, or other items described in [the security review guidelines](https://about.gitlab.com/handbook/security/#when-to-request-a-security-review), I have added the `~security` label and I have `@`-mentioned `@gitlab-com/gl-security/appsec`.
-1. I have reviewed the documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/security/#internal-application-security-reviews) for **when** and **how** to request a security review and requested a security review if this is warranted for this change.
+1. You have confirmed that if this MR contains changes to processing or storing of credentials or tokens, authorization, and authentication methods, or other items described in [the security review guidelines](https://about.gitlab.com/handbook/security/#when-to-request-a-security-review), you have added the `~security` label and you have `@`-mentioned `@gitlab-com/gl-security/appsec`.
+1. You have reviewed the documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/security/#internal-application-security-reviews) for **when** and **how** to request a security review and requested a security review if this is warranted for this change.
+1. If there are security scan results that are blocking the MR (due to the [scan result policies](https://gitlab.com/gitlab-com/gl-security/security-policies)):
+    - For true positive findings, they should be corrected before the merge request is merged. This will remove the AppSec approval required by the scan result policy.
+    - For false positive findings, something that should be discussed for risk acceptance, or anything questionable, please ping `@gitlab-com/gl-security/appsec`.
 
 ##### Deployment
 
-1. I have considered using a feature flag for this change because the change may be high risk.
-1. If I am using a feature flag, I plan to test the change in staging before I test it in production, and I have considered rolling it out to a subset of production customers before rolling it out to all customers.
+1. You have considered using a feature flag for this change because the change may be high risk.
+1. If you are using a feature flag, you plan to test the change in staging before you test it in production, and you have considered rolling it out to a subset of production customers before rolling it out to all customers.
     - [When to use a feature flag](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags)
-1. I have informed the Infrastructure department of a default setting or new setting change per [definition of done](contributing/merge_request_workflow.md#definition-of-done), or decided that this is unnecessary.
+1. You have informed the Infrastructure department of a default setting or new setting change per [definition of done](contributing/merge_request_workflow.md#definition-of-done), or decided that this is unnecessary.
 
 ### The responsibility of the merge request author
 

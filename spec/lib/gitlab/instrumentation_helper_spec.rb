@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'rspec-parameterized'
+require 'support/helpers/rails_helpers'
 
 RSpec.describe Gitlab::InstrumentationHelper do
   using RSpec::Parameterized::TableSyntax
@@ -38,25 +39,33 @@ RSpec.describe Gitlab::InstrumentationHelper do
 
     context 'when Redis calls are made' do
       it 'adds Redis data and omits Gitaly data' do
-        Gitlab::Redis::Cache.with { |redis| redis.set('test-cache', 123) }
+        stub_rails_env('staging') # to avoid raising CrossSlotError
+        Gitlab::Redis::Cache.with { |redis| redis.mset('test-cache', 123, 'test-cache2', 123) }
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          Gitlab::Redis::Cache.with { |redis| redis.mget('cache-test', 'cache-test-2') }
+        end
         Gitlab::Redis::Queues.with { |redis| redis.set('test-queues', 321) }
 
         subject
 
         # Aggregated payload
-        expect(payload[:redis_calls]).to eq(2)
+        expect(payload[:redis_calls]).to eq(3)
+        expect(payload[:redis_cross_slot_calls]).to eq(1)
+        expect(payload[:redis_allowed_cross_slot_calls]).to eq(1)
         expect(payload[:redis_duration_s]).to be >= 0
         expect(payload[:redis_read_bytes]).to be >= 0
         expect(payload[:redis_write_bytes]).to be >= 0
 
-        # Shared state payload
+        # Queue payload
         expect(payload[:redis_queues_calls]).to eq(1)
         expect(payload[:redis_queues_duration_s]).to be >= 0
         expect(payload[:redis_queues_read_bytes]).to be >= 0
         expect(payload[:redis_queues_write_bytes]).to be >= 0
 
         # Cache payload
-        expect(payload[:redis_cache_calls]).to eq(1)
+        expect(payload[:redis_cache_calls]).to eq(2)
+        expect(payload[:redis_cache_cross_slot_calls]).to eq(1)
+        expect(payload[:redis_cache_allowed_cross_slot_calls]).to eq(1)
         expect(payload[:redis_cache_duration_s]).to be >= 0
         expect(payload[:redis_cache_read_bytes]).to be >= 0
         expect(payload[:redis_cache_write_bytes]).to be >= 0
@@ -64,6 +73,26 @@ RSpec.describe Gitlab::InstrumentationHelper do
         # Gitaly
         expect(payload[:gitaly_calls]).to be_nil
         expect(payload[:gitaly_duration]).to be_nil
+      end
+    end
+
+    context 'when LDAP requests are made' do
+      let(:provider) { 'ldapmain' }
+      let(:adapter) { Gitlab::Auth::Ldap::Adapter.new(provider) }
+      let(:conn) { instance_double(Net::LDAP::Connection, search: search) }
+      let(:search) { double(:search, result_code: 200) } # rubocop: disable RSpec/VerifiedDoubles
+
+      it 'adds LDAP data' do
+        allow_next_instance_of(Net::LDAP) do |net_ldap|
+          allow(net_ldap).to receive(:use_connection).and_yield(conn)
+        end
+
+        adapter.users('uid', 'foo')
+        subject
+
+        # Query count should be 2, as it will call `open` then `search`
+        expect(payload[:net_ldap_count]).to eq(2)
+        expect(payload[:net_ldap_duration_s]).to be >= 0
       end
     end
 
@@ -122,7 +151,7 @@ RSpec.describe Gitlab::InstrumentationHelper do
       include MemoryInstrumentationHelper
 
       before do
-        skip_memory_instrumentation!
+        verify_memory_instrumentation_available!
       end
 
       it 'logs memory usage metrics' do

@@ -1,6 +1,5 @@
 <script>
 import { GlSkeletonLoader, GlButton } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { sprintf, __ } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
 import getRefMixin from '../../mixins/get_ref';
@@ -17,7 +16,7 @@ export default {
     ParentRow,
     GlButton,
   },
-  mixins: [getRefMixin, glFeatureFlagMixin()],
+  mixins: [getRefMixin],
   apollo: {
     projectPath: {
       query: projectPathQuery,
@@ -93,9 +92,6 @@ export default {
     },
     generateRowNumber(path, id, index) {
       const key = `${path}-${id}-${index}`;
-      if (!this.glFeatures.lazyLoadCommits) {
-        return 0;
-      }
 
       if (!this.rowNumbers[key] && this.rowNumbers[key] !== 0) {
         this.$options.totalRowsLoaded += 1;
@@ -105,10 +101,6 @@ export default {
       return this.rowNumbers[key];
     },
     getCommit(fileName) {
-      if (!this.glFeatures.lazyLoadCommits) {
-        return {};
-      }
-
       return this.commits.find(
         (commitEntry) => commitEntry.filePath === joinPaths(this.path, fileName),
       );

@@ -1,8 +1,0 @@
----
-name: graphql_job_app
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96703
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372276 
-milestone: '15.4'
-type: development
-group: group::pipeline authoring
-default_enabled: false

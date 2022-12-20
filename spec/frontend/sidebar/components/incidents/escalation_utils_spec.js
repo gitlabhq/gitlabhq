@@ -1,5 +1,5 @@
-import { STATUS_ACKNOWLEDGED } from '~/sidebar/components/incidents/constants';
-import { getStatusLabel } from '~/sidebar/components/incidents/utils';
+import { STATUS_ACKNOWLEDGED } from '~/sidebar/constants';
+import { getStatusLabel } from '~/sidebar/utils';
 
 describe('EscalationUtils', () => {
   describe('getStatusLabel', () => {

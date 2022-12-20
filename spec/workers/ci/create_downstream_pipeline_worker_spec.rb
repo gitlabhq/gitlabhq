@@ -9,19 +9,52 @@ RSpec.describe Ci::CreateDownstreamPipelineWorker do
 
   let(:bridge) { create(:ci_bridge, user: user, pipeline: pipeline) }
 
-  let(:service) { double('pipeline creation service') }
-
   describe '#perform' do
     context 'when bridge exists' do
-      it 'calls cross project pipeline creation service' do
+      let(:service) { double('pipeline creation service') }
+
+      let(:service_result) { ServiceResponse.success(payload: instance_double(Ci::Pipeline, id: 100)) }
+
+      it 'calls cross project pipeline creation service and logs the new pipeline id' do
         expect(Ci::CreateDownstreamPipelineService)
           .to receive(:new)
           .with(project, user)
           .and_return(service)
 
-        expect(service).to receive(:execute).with(bridge)
+        expect(service)
+          .to receive(:execute)
+          .with(bridge)
+          .and_return(service_result)
 
-        described_class.new.perform(bridge.id)
+        worker = described_class.new
+        worker.perform(bridge.id)
+
+        expect(worker.logging_extras).to eq({ "extra.ci_create_downstream_pipeline_worker.new_pipeline_id" => 100 })
+      end
+
+      context 'when downstream pipeline creation errors' do
+        let(:service_result) { ServiceResponse.error(message: 'Already has a downstream pipeline') }
+
+        it 'calls cross project pipeline creation service and logs the error' do
+          expect(Ci::CreateDownstreamPipelineService)
+            .to receive(:new)
+            .with(project, user)
+            .and_return(service)
+
+          expect(service)
+            .to receive(:execute)
+            .with(bridge)
+            .and_return(service_result)
+
+          worker = described_class.new
+          worker.perform(bridge.id)
+
+          expect(worker.logging_extras).to eq(
+            {
+              "extra.ci_create_downstream_pipeline_worker.create_error_message" => "Already has a downstream pipeline"
+            }
+          )
+        end
       end
     end
 

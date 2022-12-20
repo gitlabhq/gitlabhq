@@ -19,13 +19,14 @@ class MergeRequests::DeleteSourceBranchWorker
     return if merge_request.source_branch_sha != source_branch_sha
 
     if Feature.enabled?(:add_delete_branch_worker, merge_request.source_project)
-      ::MergeRequests::DeleteBranchWorker.perform_async(merge_request_id, user_id, merge_request.source_branch, true)
+      ::Projects::DeleteBranchWorker.new.perform(merge_request.source_project.id, user_id,
+                                                      merge_request.source_branch)
     else
       ::Branches::DeleteService.new(merge_request.source_project, user).execute(merge_request.source_branch)
-
-      ::MergeRequests::RetargetChainService.new(project: merge_request.source_project, current_user: user)
-        .execute(merge_request)
     end
+
+    ::MergeRequests::RetargetChainService.new(project: merge_request.source_project, current_user: user)
+            .execute(merge_request)
   rescue ActiveRecord::RecordNotFound
   end
 end

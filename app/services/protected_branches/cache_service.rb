@@ -66,13 +66,18 @@ module ProtectedBranches
       log_error(
         'class' => self.class.name,
         'message' => "Cache mismatch '#{encoded_ref_name}': cached value: #{cached_value}, real value: #{real_value}",
-        'project_id' => @project.id,
-        'project_path' => @project.full_path
+        'record_class' => project_or_group.class.name,
+        'record_id' => project_or_group.id,
+        'record_path' => project_or_group.full_path
       )
     end
 
     def redis_key
-      @redis_key ||= [CACHE_ROOT_KEY, @project.id].join(':')
+      @redis_key ||= if Feature.enabled?(:group_protected_branches)
+                       [CACHE_ROOT_KEY, project_or_group.class.name, project_or_group.id].join(':')
+                     else
+                       [CACHE_ROOT_KEY, project_or_group.id].join(':')
+                     end
     end
 
     def metrics

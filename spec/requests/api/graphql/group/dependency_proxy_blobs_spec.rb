@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'getting dependency proxy blobs in a group' do
+RSpec.describe 'getting dependency proxy blobs in a group', feature_category: :dependency_proxy do
   using RSpec::Parameterized::TableSyntax
   include GraphqlHelpers
 

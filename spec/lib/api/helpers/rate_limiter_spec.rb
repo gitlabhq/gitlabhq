@@ -19,8 +19,7 @@ RSpec.describe API::Helpers::RateLimiter do
         @current_user = current_user
       end
 
-      def render_api_error!(**args)
-      end
+      def render_api_error!(**args); end
     end
   end
 

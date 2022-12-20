@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['AlertManagementAlert'] do
+RSpec.describe GitlabSchema.types['AlertManagementAlert'], feature_category: :incident_management do
   specify { expect(described_class.graphql_name).to eq('AlertManagementAlert') }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_alert_management_alert) }
@@ -11,6 +11,7 @@ RSpec.describe GitlabSchema.types['AlertManagementAlert'] do
 
   it 'exposes the expected fields' do
     expected_fields = %i[
+      id
       iid
       issueIid
       issue

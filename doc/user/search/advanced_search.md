@@ -29,11 +29,27 @@ You can use Advanced Search in:
 - Commits
 - Project wikis (not [group wikis](../project/wiki/group.md))
 
-## Configure Advanced Search
+For Advanced Search:
+
+- You can only search files smaller than 1 MB.
+  For self-managed GitLab instances, an administrator can
+  [change this limit](../../integration/advanced_search/elasticsearch.md#advanced-search-configuration).
+- You can't use any of the following characters in the search query:
+
+  ```plaintext
+  . , : ; / ` ' = ? $ & ^ | ~ < > ( ) { } [ ] @
+  ```
+
+- Only the default branch of a project is indexed for code search.
+  In a non-default branch, basic search is used.
+- Search results show only the first match in a file,
+  but there might be more results in that file.
+
+## Enable Advanced Search
 
 - On GitLab.com, Advanced Search is enabled for groups with paid subscriptions.
 - For self-managed GitLab instances, an administrator must
-  [configure Advanced Search](../../integration/advanced_search/elasticsearch.md).
+  [enable Advanced Search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
 
 ## Syntax
 

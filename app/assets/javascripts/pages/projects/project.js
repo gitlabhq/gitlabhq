@@ -11,10 +11,14 @@ import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import projectSelect from '~/project_select';
 
+const BRANCH_REF_TYPE = 'heads';
+const TAG_REF_TYPE = 'tags';
+const BRANCH_GROUP_NAME = __('Branches');
+const TAG_GROUP_NAME = __('Tags');
+
 export default class Project {
   constructor() {
     initClonePanel();
-
     // Ref switcher
     if (document.querySelector('.js-project-refs-dropdown')) {
       Project.initRefSwitcher();
@@ -62,6 +66,7 @@ export default class Project {
     return $('.js-project-refs-dropdown').each(function () {
       const $dropdown = $(this);
       const selected = $dropdown.data('selected');
+      const refType = $dropdown.data('refType');
       const fieldName = $dropdown.data('fieldName');
       const shouldVisit = Boolean($dropdown.data('visit'));
       const $form = $dropdown.closest('form');
@@ -91,18 +96,32 @@ export default class Project {
         filterByText: true,
         inputFieldName: $dropdown.data('inputFieldName'),
         fieldName,
-        renderRow(ref) {
+        renderRow(ref, _, params) {
           const li = refListItem.cloneNode(false);
 
           const link = refLink.cloneNode(false);
 
           if (ref === selected) {
-            link.className = 'is-active';
+            // Check group and current ref type to avoid adding a class when tags and branches share the same name
+            if (
+              (refType === BRANCH_REF_TYPE && params.group === BRANCH_GROUP_NAME) ||
+              (refType === TAG_REF_TYPE && params.group === TAG_GROUP_NAME) ||
+              !refType
+            ) {
+              link.className = 'is-active';
+            }
           }
+
           link.textContent = ref;
           link.dataset.ref = ref;
           if (ref.length > 0 && shouldVisit) {
-            link.href = mergeUrlParams({ [fieldName]: ref }, linkTarget);
+            const urlParams = { [fieldName]: ref };
+            if (params.group === BRANCH_GROUP_NAME) {
+              urlParams.ref_type = BRANCH_REF_TYPE;
+            } else {
+              urlParams.ref_type = TAG_REF_TYPE;
+            }
+            link.href = mergeUrlParams(urlParams, linkTarget);
           }
 
           li.appendChild(link);

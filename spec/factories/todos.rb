@@ -41,6 +41,10 @@ FactoryBot.define do
       action { Todo::UNMERGEABLE }
     end
 
+    trait :member_access_requested do
+      action { Todo::MEMBER_ACCESS_REQUESTED }
+    end
+
     trait :pending do
       state { :pending }
     end

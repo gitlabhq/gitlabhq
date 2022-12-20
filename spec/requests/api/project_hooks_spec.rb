@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectHooks, 'ProjectHooks' do
+RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :integrations do
   let_it_be(:user) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }

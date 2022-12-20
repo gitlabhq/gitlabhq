@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WhatsNewController, :clean_gitlab_redis_cache do
+RSpec.describe WhatsNewController, :clean_gitlab_redis_cache, feature_category: :navigation do
   after do
     ReleaseHighlight.instance_variable_set(:@file_paths, nil)
   end

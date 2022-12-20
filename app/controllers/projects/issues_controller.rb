@@ -7,6 +7,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include IssuesCalendar
   include RecordUserLastActivity
+  include ::Observability::ContentSecurityPolicy
 
   ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk].freeze
   SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
@@ -19,7 +20,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :disable_query_limiting, only: [:create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
-  before_action :redirect_if_task, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
+  before_action :redirect_if_work_item, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
 
   after_action :log_issue_show, only: :show
 
@@ -37,7 +38,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_create_merge_request_from!, only: [:create_merge_request]
 
   before_action :authorize_import_issues!, only: [:import_csv]
-  before_action :authorize_download_code!, only: [:related_branches]
+  before_action :authorize_read_code!, only: [:related_branches]
 
   before_action do
     push_frontend_feature_flag(:preserve_unchanged_markdown, project)
@@ -55,8 +56,10 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action only: :show do
     push_frontend_feature_flag(:issue_assignees_widget, project)
     push_frontend_feature_flag(:work_items_mvc, project&.group)
+    push_force_frontend_feature_flag(:work_items_mvc, project&.work_items_mvc_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
+    push_frontend_feature_flag(:use_iid_in_work_items_path, project)
     push_force_frontend_feature_flag(:work_items_create_from_markdown, project&.work_items_create_from_markdown_feature_flag_enabled?)
   end
 
@@ -432,14 +435,18 @@ class Projects::IssuesController < Projects::ApplicationController
   # Overridden in EE
   def create_vulnerability_issue_feedback(issue); end
 
-  def redirect_if_task
-    return unless issue.task?
+  def redirect_if_work_item
+    return unless allowed_work_item?
 
     if Feature.enabled?(:use_iid_in_work_items_path, project.group)
       redirect_to project_work_items_path(project, issue.iid, params: request.query_parameters.merge(iid_path: true))
     else
       redirect_to project_work_items_path(project, issue.id, params: request.query_parameters)
     end
+  end
+
+  def allowed_work_item?
+    issue.task?
   end
 end
 

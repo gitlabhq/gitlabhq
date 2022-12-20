@@ -16,7 +16,7 @@ exports[`Alert integration settings form default state should match the default 
     >
       <gl-form-checkbox-stub
         checked="true"
-        data-qa-selector="create_issue_checkbox"
+        data-qa-selector="create_incident_checkbox"
         id="2"
       >
         <span>

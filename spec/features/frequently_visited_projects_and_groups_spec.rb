@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Frequently visited items', :js do
+RSpec.describe 'Frequently visited items', :js, feature_category: :not_owned do
   include Spec::Support::Helpers::Features::TopNavSpecHelpers
 
   let_it_be(:user) { create(:user) }

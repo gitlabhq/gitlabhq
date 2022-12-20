@@ -24,6 +24,7 @@ module QA
       def projects
         parse_body(api_get_from("#{api_get_path}/projects")).map do |project|
           Project.init do |resource|
+            resource.add_name_uuid = false
             resource.api_client = api_client
             resource.group = self
             resource.id = project[:id]

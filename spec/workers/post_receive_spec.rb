@@ -275,30 +275,17 @@ RSpec.describe PostReceive do
           expect { perform }.to change { counter.read(:pushes) }.by(1)
         end
 
-        it 'records correct payload with Snowplow event', :snowplow do
-          stub_feature_flags(route_hll_to_snowplow_phase2: true)
+        it_behaves_like 'Snowplow event tracking' do
+          let(:action) { :push }
+          let(:category) { described_class.name }
+          let(:namespace) { project.namespace }
+          let(:user) { project.creator }
+          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+          let(:label) { 'counts.source_code_pushes' }
+          let(:property) { 'source_code_pushes' }
+          let(:context) { [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: label).to_h] }
 
-          perform
-
-          expect_snowplow_event(
-            category: 'PostReceive',
-            action: 'source_code_pushes',
-            namespace: project.namespace,
-            user: project.first_owner,
-            project: project
-          )
-        end
-
-        context 'when FF is disabled' do
-          before do
-            stub_feature_flags(route_hll_to_snowplow_phase2: false)
-          end
-
-          it 'doesnt emit snowplow events', :snowplow do
-            perform
-
-            expect_no_snowplow_event
-          end
+          subject(:post_receive) { perform }
         end
       end
     end
@@ -324,8 +311,8 @@ RSpec.describe PostReceive do
         expect do
           perform
           project.reload
-        end.to change(project, :last_activity_at)
-           .and change(project, :last_repository_updated_at)
+        end.to change { project.last_activity_at }
+           .and change { project.last_repository_updated_at }
       end
     end
 

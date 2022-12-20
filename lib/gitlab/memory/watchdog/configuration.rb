@@ -10,7 +10,6 @@ module Gitlab
           end
 
           def push(monitor_class, *args, **kwargs, &block)
-            remove(monitor_class)
             @monitors.push(build_monitor_state(monitor_class, *args, **kwargs, &block))
           end
 
@@ -20,16 +19,17 @@ module Gitlab
             end
           end
 
-          private
-
-          def remove(monitor_class)
-            @monitors.delete_if { |monitor| monitor.monitor_class == monitor_class }
+          def empty?
+            @monitors.empty?
           end
 
-          def build_monitor_state(monitor_class, *args, max_strikes:, **kwargs, &block)
-            monitor = build_monitor(monitor_class, *args, **kwargs, &block)
+          private
 
-            Gitlab::Memory::Watchdog::MonitorState.new(monitor, max_strikes: max_strikes)
+          def build_monitor_state(monitor_class, *args, max_strikes:, monitor_name: nil, **kwargs, &block)
+            monitor = build_monitor(monitor_class, *args, **kwargs, &block)
+            monitor_name ||= monitor_class.name.demodulize.underscore
+
+            Gitlab::Memory::Watchdog::MonitorState.new(monitor, max_strikes: max_strikes, monitor_name: monitor_name)
           end
 
           def build_monitor(monitor_class, *args, **kwargs, &block)
@@ -39,7 +39,7 @@ module Gitlab
 
         DEFAULT_SLEEP_TIME_SECONDS = 60
 
-        attr_writer :logger, :handler, :sleep_time_seconds
+        attr_writer :event_reporter, :handler, :sleep_time_seconds
 
         def monitors
           @monitor_stack ||= MonitorStack.new
@@ -51,8 +51,8 @@ module Gitlab
           @handler ||= NullHandler.instance
         end
 
-        def logger
-          @logger ||= Gitlab::Logger.new($stdout)
+        def event_reporter
+          @event_reporter ||= EventReporter.new
         end
 
         # Used to control the frequency with which the watchdog will wake up and poll the GC.

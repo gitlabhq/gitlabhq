@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Branches do
+RSpec.describe API::Branches, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
   let(:project) { create(:project, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt') }
@@ -338,6 +338,18 @@ RSpec.describe API::Branches do
 
       context 'when repository is disabled' do
         include_context 'disabled repository'
+
+        it_behaves_like '404 response' do
+          let(:request) { get api(route, current_user) }
+        end
+      end
+
+      context 'when branch is ambiguous' do
+        let(:branch_name) { 'prefix' }
+
+        before do
+          project.repository.create_branch('prefix/branch')
+        end
 
         it_behaves_like '404 response' do
           let(:request) { get api(route, current_user) }

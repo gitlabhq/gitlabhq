@@ -16,6 +16,12 @@ module API
     namespace 'projects/:id/packages/npm' do
       desc 'Download the NPM tarball' do
         detail 'This feature was introduced in GitLab 11.8'
+        success code: 200
+        failure [
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[npm_packages]
       end
       params do
         requires :package_name, type: String, desc: 'Package name'
@@ -33,13 +39,21 @@ module API
         package_file = ::Packages::PackageFileFinder
           .new(package, params[:file_name]).execute!
 
-        track_package_event('pull_package', package, category: 'API::NpmPackages', project: project, namespace: project.namespace)
+        track_package_event('pull_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
 
         present_package_file!(package_file)
       end
 
       desc 'Create NPM package' do
         detail 'This feature was introduced in GitLab 11.8'
+        success code: 200
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[npm_packages]
       end
       params do
         requires :package_name, type: String, desc: 'Package name'

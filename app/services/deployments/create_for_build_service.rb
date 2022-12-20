@@ -28,7 +28,7 @@ module Deployments
 
     def to_resource(build, environment)
       return build.deployment if build.deployment
-      return unless build.starts_environment?
+      return unless build.deployment_job?
 
       deployment = ::Deployment.new(attributes(build, environment))
 

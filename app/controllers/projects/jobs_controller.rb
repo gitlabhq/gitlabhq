@@ -20,9 +20,6 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action :push_job_log_jump_to_failures, only: [:show]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
-  before_action do
-    push_frontend_feature_flag(:graphql_job_app, project, type: :development)
-  end
 
   layout 'project'
 

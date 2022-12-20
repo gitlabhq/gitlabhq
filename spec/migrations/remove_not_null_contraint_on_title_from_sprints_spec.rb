@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RemoveNotNullContraintOnTitleFromSprints, :migration do
+RSpec.describe RemoveNotNullContraintOnTitleFromSprints, :migration, feature_category: :team_planning do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:sprints) { table(:sprints) }

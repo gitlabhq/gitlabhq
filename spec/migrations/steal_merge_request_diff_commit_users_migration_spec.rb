@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe StealMergeRequestDiffCommitUsersMigration, :migration do
+RSpec.describe StealMergeRequestDiffCommitUsersMigration, :migration, feature_category: :source_code_management do
   let(:migration) { described_class.new }
 
   describe '#up' do

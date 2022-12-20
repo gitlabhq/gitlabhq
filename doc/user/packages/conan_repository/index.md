@@ -270,8 +270,9 @@ Prerequisites:
    ```
 
 NOTE:
-If you try to install the package you just created in this tutorial, the package
-already exists on your local computer, so this command has no effect.
+If you try installing the package you created in this tutorial, the install command
+will have no effect because the package already exists.
+Delete `~/.conan/data` to clean up the packages stored in the cache.
 
 ## Remove a Conan package
 

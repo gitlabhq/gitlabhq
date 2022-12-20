@@ -184,3 +184,12 @@ It corresponds to a single object from the previous example:
     user_approvers:
     - adalberto.dare
 ```
+
+## Example situations where scan result policies require additional approval
+
+There are several situations where the scan result policy will require an additional approval step. For example:
+
+- The number of security jobs is reduced in the working branch and no longer matches the number of security jobs in the target branch. Users can't skip the Scanning Result Policies by removing scanning jobs from the CI configuration.
+- Someone stops a pipeline security job, and users can't skip the security scan.
+- A job in a merge request fails and is configured with `allow_failure: false`. As a result, the pipeline is in a blocked state.
+- A pipeline has a manual job that must run successfully for the entire pipeline to pass.

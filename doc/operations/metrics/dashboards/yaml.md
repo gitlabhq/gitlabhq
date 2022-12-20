@@ -156,7 +156,7 @@ To confirm your dashboard definition contains valid YAML syntax:
 Files with valid syntax display **Metrics Dashboard YAML definition is valid**,
 and files with invalid syntax display **Metrics Dashboard YAML definition is invalid**.
 
-![Metrics Dashboard_YAML_syntax_validation](img/prometheus_dashboard_yaml_validation_v13_1.png)
+![Metrics dashboard YAML syntax validation](img/prometheus_dashboard_yaml_validation_v13_1.png)
 
 When **Metrics Dashboard YAML definition is invalid** at least one of the following messages is displayed:
 

@@ -49,6 +49,9 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService do
       it_behaves_like 'when regex matching everything is specified',
                       delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[E]]
 
+      it_behaves_like 'when regex matching everything is specified and latest is not kept',
+                      delete_expectations: [%w[latest A], %w[Ba Bb], %w[C D], %w[E]]
+
       it_behaves_like 'when delete regex matching specific tags is used'
 
       it_behaves_like 'when delete regex matching specific tags is used with overriding allow regex'
@@ -96,6 +99,19 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService do
           response = expected_service_response(status: :error, deleted: %w[A Ba Bb], original_size: 4)
 
           is_expected.to eq(response)
+        end
+
+        context 'when disable_timeout is set to true' do
+          let(:params) do
+            { 'name_regex_delete' => '.*', 'disable_timeout' => true }
+          end
+
+          it 'does not check if it timed out' do
+            expect(service).not_to receive(:timeout?)
+          end
+
+          it_behaves_like 'when regex matching everything is specified',
+                          delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[E]]
         end
       end
     end

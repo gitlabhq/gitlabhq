@@ -1,6 +1,7 @@
 <script>
-import { GlModal, GlSafeHtmlDirective, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlModal, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { n__ } from '~/locale';
 import { leftSidebarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
 import { createUnexpectedCommitError } from '../../lib/errors';
@@ -17,7 +18,7 @@ export default {
     GlButton,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
   data() {

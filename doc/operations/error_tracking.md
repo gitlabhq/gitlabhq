@@ -127,17 +127,14 @@ Marking an error as resolved indicates that the error has stopped firing events.
 
 If another event occurs, the error reverts to unresolved.
 
-## Integrated error tracking
+## Integrated error tracking **(FREE SAAS)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) in GitLab 14.4.
 > - [Disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/353639) in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `integrated_error_tracking`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/7586) in GitLab 15.6.
 
-FLAG:
-By default this feature is not available. To make it available on self-managed GitLab, ask an
-administrator to [enable the feature flag](../administration/feature_flags.md)
-named `integrated_error_tracking`. The feature is not ready for production use.
-On GitLab.com, this feature is available.
+NOTE:
+Available only on GitLab.com. This feature is currently in [Open Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta).
 
 Integrated error tracking is a lightweight alternative to Sentry backend.
 You still use Sentry SDK with your application. But you don't need to deploy Sentry
@@ -149,9 +146,8 @@ settings. By using a GitLab-provided DSN, your application connects to GitLab to
 Those errors are stored in the GitLab database and rendered by the GitLab UI, in the same way as
 Sentry integration.
 
-In GitLab 15.6 and later, the integrated error tracking is available as an
-[open Beta](../policy/alpha-beta-support.md#beta-features).
-It now uses a new backend based on the ClickHouse database that enables better scalability.
+In GitLab 15.6 and later, the integrated error tracking 
+uses a new backend based on the ClickHouse database that enables better scalability.
 Integrated error tracking remains limited in comparison to the Sentry backend, as only a small subset of the
 Sentry API is implemented.
 

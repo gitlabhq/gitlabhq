@@ -5,14 +5,16 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
     let_it_be(:project) { create(:project, :repository, :wiki_repo) }
     let_it_be(:integration) { create(factory, branches_to_be_notified: 'all', project: project) }
 
-    before do
-      stub_request(:post, integration.webhook)
+    def usage_tracking_key(action)
+      prefix = integration.send(:metrics_key_prefix)
+
+      "#{prefix}_#{action}_notification"
     end
 
     it 'uses only known events', :aggregate_failures do
       described_class::SUPPORTED_EVENTS_FOR_USAGE_LOG.each do |action|
         expect(
-          Gitlab::UsageDataCounters::HLLRedisCounter.known_event?("i_ecosystem_slack_service_#{action}_notification")
+          Gitlab::UsageDataCounters::HLLRedisCounter.known_event?(usage_tracking_key(action))
         ).to be true
       end
     end
@@ -20,7 +22,9 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
     context 'when hook data includes a user object' do
       let_it_be(:user) { create_default(:user) }
 
-      shared_examples 'increases the usage data counter' do |event_name|
+      shared_examples 'increases the usage data counter' do |event|
+        let(:event_name) { usage_tracking_key(event) }
+
         subject(:execute) { integration.execute(data) }
 
         it 'increases the usage data counter' do
@@ -30,7 +34,7 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
           execute
         end
 
-        it_behaves_like 'Snowplow event tracking' do
+        it_behaves_like 'Snowplow event tracking with RedisHLL context' do
           let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
           let(:category) { described_class.to_s }
           let(:action) { 'perform_integrations_action' }
@@ -47,7 +51,7 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
 
         it 'does not increase the usage data counter' do
           expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-            .not_to receive(:track_event).with('i_ecosystem_slack_service_pipeline_notification', values: user.id)
+            .not_to receive(:track_event).with(usage_tracking_key(:pipeline), values: user.id)
 
           integration.execute(data)
         end
@@ -58,13 +62,13 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
 
         let(:data) { issue.to_hook_data(user) }
 
-        it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_issue_notification'
+        it_behaves_like 'increases the usage data counter', :issue
       end
 
       context 'for push notification' do
         let(:data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
 
-        it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_push_notification'
+        it_behaves_like 'increases the usage data counter', :push
       end
 
       context 'for deployment notification' do
@@ -72,7 +76,7 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
 
         let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, deployment.status, Time.current) }
 
-        it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_deployment_notification'
+        it_behaves_like 'increases the usage data counter', :deployment
       end
 
       context 'for wiki_page notification' do
@@ -88,7 +92,7 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
           allow(project.wiki).to receive(:after_wiki_activity)
         end
 
-        it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_wiki_page_notification'
+        it_behaves_like 'increases the usage data counter', :wiki_page
       end
 
       context 'for merge_request notification' do
@@ -96,7 +100,7 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
 
         let(:data) { merge_request.to_hook_data(user) }
 
-        it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_merge_request_notification'
+        it_behaves_like 'increases the usage data counter', :merge_request
       end
 
       context 'for note notification' do
@@ -104,7 +108,7 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
 
         let(:data) { Gitlab::DataBuilder::Note.build(issue_note, user) }
 
-        it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_note_notification'
+        it_behaves_like 'increases the usage data counter', :note
       end
 
       context 'for tag_push notification' do
@@ -115,7 +119,7 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
           Git::TagHooksService.new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref }).send(:push_data)
         end
 
-        it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_tag_push_notification'
+        it_behaves_like 'increases the usage data counter', :tag_push
       end
 
       context 'for confidential note notification' do
@@ -125,7 +129,7 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
 
         let(:data) { Gitlab::DataBuilder::Note.build(confidential_issue_note, user) }
 
-        it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_confidential_note_notification'
+        it_behaves_like 'increases the usage data counter', :confidential_note
       end
 
       context 'for confidential issue notification' do
@@ -133,7 +137,7 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
 
         let(:data) { issue.to_hook_data(user) }
 
-        it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_confidential_issue_notification'
+        it_behaves_like 'increases the usage data counter', :confidential_issue
       end
     end
 

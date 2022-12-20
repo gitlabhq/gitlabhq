@@ -25,10 +25,21 @@ module Ci
       PARTITIONABLE_MODELS = %w[
         CommitStatus
         Ci::BuildMetadata
-        Ci::Stage
+        Ci::BuildNeed
+        Ci::BuildReportResult
+        Ci::BuildRunnerSession
+        Ci::BuildTraceChunk
+        Ci::BuildTraceMetadata
+        Ci::BuildPendingState
         Ci::JobArtifact
-        Ci::PipelineVariable
+        Ci::JobVariable
         Ci::Pipeline
+        Ci::PendingBuild
+        Ci::RunningBuild
+        Ci::PipelineVariable
+        Ci::Sources::Pipeline
+        Ci::Stage
+        Ci::UnitTestFailure
       ].freeze
 
       def self.check_inclusion(klass)
@@ -57,14 +68,31 @@ module Ci
     end
 
     class_methods do
-      def partitionable(scope:, through: nil)
-        if through
-          define_singleton_method(:routing_table_name) { through[:table] }
-          define_singleton_method(:routing_table_name_flag) { through[:flag] }
+      def partitionable(scope:, through: nil, partitioned: false)
+        handle_partitionable_through(through)
+        handle_partitionable_dml(partitioned)
+        handle_partitionable_scope(scope)
+      end
 
-          include Partitionable::Switch
-        end
+      private
 
+      def handle_partitionable_through(options)
+        return unless options
+
+        define_singleton_method(:routing_table_name) { options[:table] }
+        define_singleton_method(:routing_table_name_flag) { options[:flag] }
+
+        include Partitionable::Switch
+      end
+
+      def handle_partitionable_dml(partitioned)
+        define_singleton_method(:partitioned?) { partitioned }
+        return unless partitioned
+
+        include Partitionable::PartitionedFilter
+      end
+
+      def handle_partitionable_scope(scope)
         define_method(:partition_scope_value) do
           strong_memoize(:partition_scope_value) do
             next Ci::Pipeline.current_partition_value if respond_to?(:importing?) && importing?

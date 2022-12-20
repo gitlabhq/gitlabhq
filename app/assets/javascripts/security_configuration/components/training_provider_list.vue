@@ -8,9 +8,9 @@ import {
   GlLink,
   GlSkeletonLoader,
   GlIcon,
-  GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import Tracking from '~/tracking';
 import { __, s__ } from '~/locale';
 import {
@@ -54,7 +54,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [Tracking.mixin()],
   inject: ['projectFullPath'],

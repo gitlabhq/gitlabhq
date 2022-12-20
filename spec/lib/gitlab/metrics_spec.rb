@@ -101,14 +101,32 @@ RSpec.describe Gitlab::Metrics do
       401  | true
       nil  | false
       500  | false
-      503   | false
-      '100' | false
-      '201' | true
+      503 | false
       'nothing' | false
     end
 
     with_them do
       specify { expect(described_class.record_duration_for_status?(status)).to be(should_record) }
+      specify { expect(described_class.record_duration_for_status?(status.to_s)).to be(should_record) }
+    end
+  end
+
+  describe '.server_error?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:status, :should_record) do
+      100   | false
+      200   | false
+      401   | false
+      500   | true
+      503   | true
+      nil   | false
+      'nothing' | false
+    end
+
+    with_them do
+      specify { expect(described_class.server_error?(status)).to be(should_record) }
+      specify { expect(described_class.server_error?(status.to_s)).to be(should_record) }
     end
   end
 

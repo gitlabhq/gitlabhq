@@ -152,4 +152,11 @@ RSpec.shared_examples 'a request using Gitlab::UrlBlocker' do
       expect(request_stub).to have_been_requested
     end
   end
+
+  context 'when a non HTTP/HTTPS URL is provided' do
+    it 'raises an error' do
+      expect { make_request('ssh://example.com') }
+        .to raise_error(ArgumentError)
+    end
+  end
 end

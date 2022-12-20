@@ -183,25 +183,25 @@ RSpec.describe PipelineSerializer do
 
       context 'with triggered pipelines' do
         before do
-          pipeline_1 = create(:ci_pipeline)
+          pipeline_1 = create(:ci_pipeline, project: project)
           build_1 = create(:ci_build, pipeline: pipeline_1)
           create(:ci_sources_pipeline, source_job: build_1)
-
-          pipeline_2 = create(:ci_pipeline)
-          build_2 = create(:ci_build, pipeline: pipeline_2)
-          create(:ci_sources_pipeline, source_job: build_2)
         end
 
         it 'verifies number of queries', :request_store do
-          recorded = ActiveRecord::QueryRecorder.new { subject }
+          control = ActiveRecord::QueryRecorder.new do
+            serializer.represent(Ci::Pipeline.all, preload: true)
+          end
 
-          # Existing numbers are high and require performance optimization
-          # Ongoing issue:
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/225156
-          expected_queries = Gitlab.ee? ? 78 : 74
+          pipeline_2 = create(:ci_pipeline, project: project)
+          build_2 = create(:ci_build, pipeline: pipeline_2)
+          create(:ci_sources_pipeline, source_job: build_2)
 
-          expect(recorded.count).to be_within(2).of(expected_queries)
-          expect(recorded.cached_count).to eq(0)
+          recorded = ActiveRecord::QueryRecorder.new do
+            serializer.represent(Ci::Pipeline.all, preload: true)
+          end
+
+          expect(recorded).not_to exceed_query_limit(control)
         end
       end
 

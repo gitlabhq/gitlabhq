@@ -41,7 +41,10 @@ module Resolvers
       next_cursor = tree.cursor&.next_cursor
       Gitlab::Graphql::ExternallyPaginatedArray.new(cursor, next_cursor, *tree)
     rescue Gitlab::Git::CommandError => e
-      raise Gitlab::Graphql::Errors::ArgumentError, e
+      raise Gitlab::Graphql::Errors::BaseError.new(
+        e,
+        extensions: { code: e.code, gitaly_code: e.status, service: e.service }
+      )
     end
 
     def self.field_options

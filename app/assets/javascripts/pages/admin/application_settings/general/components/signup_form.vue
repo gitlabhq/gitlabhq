@@ -43,7 +43,6 @@ export default {
     'settingsPath',
     'signupEnabled',
     'requireAdminApprovalAfterUserSignup',
-    'sendUserConfirmationEmail',
     'emailConfirmationSetting',
     'minimumPasswordLength',
     'minimumPasswordLengthMin',
@@ -68,7 +67,6 @@ export default {
       form: {
         signupEnabled: this.signupEnabled,
         requireAdminApproval: this.requireAdminApprovalAfterUserSignup,
-        sendConfirmationEmail: this.sendUserConfirmationEmail,
         emailConfirmationSetting: this.emailConfirmationSetting,
         minimumPasswordLength: this.minimumPasswordLength,
         minimumPasswordLengthMin: this.minimumPasswordLengthMin,
@@ -204,7 +202,6 @@ export default {
     buttonText: s__('ApplicationSettings|Save changes'),
     signupEnabledLabel: s__('ApplicationSettings|Sign-up enabled'),
     requireAdminApprovalLabel: s__('ApplicationSettings|Require admin approval for new sign-ups'),
-    sendConfirmationEmailLabel: s__('ApplicationSettings|Send confirmation email on sign-up'),
     emailConfirmationSettingsLabel: s__('ApplicationSettings|Email confirmation settings'),
     emailConfirmationSettingsOffLabel: s__('ApplicationSettings|Off'),
     emailConfirmationSettingsOffHelpText: s__(
@@ -282,13 +279,6 @@ export default {
         :label="$options.i18n.requireAdminApprovalLabel"
         data-qa-selector="require_admin_approval_after_user_signup_checkbox"
         data-testid="require-admin-approval-checkbox"
-      />
-
-      <signup-checkbox
-        v-model="form.sendConfirmationEmail"
-        class="gl-mb-5"
-        name="application_setting[send_user_confirmation_email]"
-        :label="$options.i18n.sendConfirmationEmailLabel"
       />
 
       <gl-form-group :label="$options.i18n.emailConfirmationSettingsLabel">

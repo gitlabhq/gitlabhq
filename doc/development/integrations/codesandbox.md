@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Set up local CodeSandbox development environment
 
 This guide walks through setting up a local [CodeSandbox repository](https://github.com/codesandbox/codesandbox-client) and integrating it with a local GitLab instance. CodeSandbox
-is used to power the Web IDE's [Live Preview feature](../../user/project/web_ide/index.md#live-preview). Having a local CodeSandbox setup is useful for debugging upstream issues or
+is used to power the Web IDE [Live Preview feature](../../user/project/web_ide/index.md#live-preview). Having a local CodeSandbox setup is useful for debugging upstream issues or
 creating upstream contributions like [this one](https://github.com/codesandbox/codesandbox-client/pull/5137).
 
 ## Initial setup
@@ -43,7 +43,7 @@ Before using CodeSandbox with your local GitLab instance, you must:
 GitLab integrates with two parts of CodeSandbox:
 
 - An npm package called `smooshpack` (called `sandpack` in the `codesandbox-client` project).
-  This exposes an entrypoint for us to kick off Codesandbox's bundler.
+  This exposes an entrypoint for us to kick off CodeSandbox's bundler.
 - A server that houses CodeSandbox assets for bundling and previewing. This is hosted
   on a separate server for security.
 

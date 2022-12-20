@@ -12,6 +12,7 @@ fragment ListItemShared on CiRunner {
   createdAt
   contactedAt
   status(legacyMode: null)
+  jobExecutionStatus
   userPermissions {
     updateRunner
     deleteRunner

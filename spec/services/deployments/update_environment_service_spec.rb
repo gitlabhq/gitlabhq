@@ -115,7 +115,7 @@ RSpec.describe Deployments::UpdateEnvironmentService do
         let(:external_url) { 'javascript:alert("hello")' }
 
         it 'fails to update the tier due to validation error' do
-          expect { subject.execute }.not_to change { environment.tier }
+          expect { subject.execute }.not_to change { environment.reload.tier }
         end
 
         it 'tracks an exception' do

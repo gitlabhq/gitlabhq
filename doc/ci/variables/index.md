@@ -153,6 +153,8 @@ job:
 
 ### Add a CI/CD variable to a project
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, projects can define a maximum of 200 CI/CD variables.
+
 You can add CI/CD variables to a project's settings. Only project members with the
 Maintainer role
 can add or update project CI/CD variables. To keep a CI/CD variable secret, put it
@@ -191,7 +193,8 @@ The output is:
 
 ### Add a CI/CD variable to a group
 
-> Support for environment scopes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) in GitLab Premium 13.11
+> - Support for environment scopes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) in GitLab Premium 13.11
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, groups can define a maximum of 200 CI/CD variables.
 
 To make a CI/CD variable available to all projects in a group, define a group CI/CD variable. Only group owners can add or update group-level CI/CD variables.
 
@@ -390,6 +393,21 @@ To mark a variable as protected:
 1. Select **Update variable**.
 
 The variable is available for all subsequent pipelines.
+
+### Expand CI/CD variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217309) in GitLab 13.7.
+
+Expanded variables treat values with the `$` character as a reference to another variable. CI/CD variables are expanded
+by default.
+
+To treat variables with a `$` character as raw strings, disable variable expansion for the variable:
+
+1. In the project or group, go to **Settings > CI/CD**.
+1. Expand the **Variables** section.
+1. Next to the variable you want to do not want expanded, select **Edit**.
+1. Clear the **Expand variable** checkbox.
+1. Select **Update variable**.
 
 ### CI/CD variable security
 
@@ -715,7 +733,7 @@ You can override the value of a CI/CD variable when you
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295234) in GitLab 13.8.
 
-You can grant permission to override variables to [maintainers](../../user/permissions.md#project-features) only. When other users try to run a pipeline
+You can grant permission to override variables to users with the Maintainer role only. When other users try to run a pipeline
 with overridden variables, they receive the `Insufficient permissions to set pipeline variables`
 error message.
 
@@ -757,7 +775,7 @@ You can configure [Auto DevOps](../../topics/autodevops/index.md) to pass CI/CD 
 to a running application.
 
 To make a CI/CD variable available as an environment variable in the running application's container,
-[prefix the variable key](../../topics/autodevops/customize.md#application-secret-variables)
+[prefix the variable key](../../topics/autodevops/cicd_variables.md#configure-application-secret-variables)
 with `K8S_SECRET_`.
 
 CI/CD variables with multi-line values are not supported.
@@ -776,7 +794,7 @@ or job scripts. Debug logging exposes job execution details that are usually hid
 by the runner and makes job logs more verbose. It also exposes all variables and secrets
 available to the job.
 
-Before you enable debug logging, make sure only [team members](../../user/permissions.md#project-features)
+Before you enable debug logging, make sure only team members
 can view job logs. You should also [delete job logs](../jobs/index.md#view-jobs-in-a-pipeline)
 with debug output before you make logs public again.
 

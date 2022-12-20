@@ -4,6 +4,7 @@ classes:
 - Clusters::Applications::Ingress
 feature_categories:
 - kubernetes_management
-description: (Deprecated) A GitLab managed Ingress installation in a Kubernetes cluster
+description: "(Deprecated) A GitLab managed Ingress installation in a Kubernetes cluster"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/d8223468ae2ae061020cc26336c51dc93cc75571
 milestone: '10.2'
+gitlab_schema: gitlab_main

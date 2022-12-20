@@ -1,4 +1,4 @@
-- name: "SAST analyzer consolidation and CI/CD template changes"
+- title: "SAST analyzer consolidation and CI/CD template changes"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
   removal_milestone: "15.4"

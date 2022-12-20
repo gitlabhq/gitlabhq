@@ -16,7 +16,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/command"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/lsif_transformer/parser"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
@@ -83,7 +83,7 @@ func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, 
 	if err := zipMd.Start(); err != nil {
 		return nil, err
 	}
-	defer helper.CleanUpProcessGroup(zipMd)
+	defer command.KillProcessGroup(zipMd)
 
 	fh, err := destination.Upload(ctx, zipMdOut, -1, "metadata.gz", metaOpts)
 	if err != nil {
@@ -91,7 +91,7 @@ func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, 
 	}
 
 	if err := zipMd.Wait(); err != nil {
-		st, ok := helper.ExitStatus(err)
+		st, ok := command.ExitStatus(err)
 
 		if !ok {
 			return nil, err

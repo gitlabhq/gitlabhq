@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User searches for milestones', :js, :clean_gitlab_redis_rate_limiting do
+RSpec.describe 'User searches for milestones', :js, :clean_gitlab_redis_rate_limiting,
+feature_category: :global_search do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }

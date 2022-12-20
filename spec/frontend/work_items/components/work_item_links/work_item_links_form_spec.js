@@ -33,7 +33,7 @@ describe('WorkItemLinksForm', () => {
     typesResponse = projectWorkItemTypesQueryResponse,
     parentConfidential = false,
     hasIterationsFeature = false,
-    workItemsMvc2Enabled = false,
+    workItemsMvcEnabled = false,
     parentIteration = null,
     formType = FORM_TYPES.create,
   } = {}) => {
@@ -52,7 +52,7 @@ describe('WorkItemLinksForm', () => {
       },
       provide: {
         glFeatures: {
-          workItemsMvc2: workItemsMvc2Enabled,
+          workItemsMvc: workItemsMvcEnabled,
         },
         projectPath: 'project/path',
         hasIterationsFeature,
@@ -165,23 +165,8 @@ describe('WorkItemLinksForm', () => {
   });
 
   describe('associate iteration with task', () => {
-    it('does not update iteration when mvc2 feature flag is not enabled', async () => {
-      await createComponent({
-        hasIterationsFeature: true,
-        parentIteration: mockParentIteration,
-      });
-
-      findInput().vm.$emit('input', 'Create task test');
-
-      findForm().vm.$emit('submit', {
-        preventDefault: jest.fn(),
-      });
-      await waitForPromises();
-      expect(updateMutationResolver).not.toHaveBeenCalled();
-    });
     it('updates when parent has an iteration associated', async () => {
       await createComponent({
-        workItemsMvc2Enabled: true,
         hasIterationsFeature: true,
         parentIteration: mockParentIteration,
       });
@@ -191,18 +176,23 @@ describe('WorkItemLinksForm', () => {
         preventDefault: jest.fn(),
       });
       await waitForPromises();
-      expect(updateMutationResolver).toHaveBeenCalledWith({
+      expect(createMutationResolver).toHaveBeenCalledWith({
         input: {
-          id: 'gid://gitlab/WorkItem/1',
+          title: 'Create task test',
+          projectPath: 'project/path',
+          workItemTypeId: 'gid://gitlab/WorkItems::Type/3',
+          hierarchyWidget: {
+            parentId: 'gid://gitlab/WorkItem/1',
+          },
+          confidential: false,
           iterationWidget: {
             iterationId: mockParentIteration.id,
           },
         },
       });
     });
-    it('does not update when parent has no iteration associated', async () => {
+    it('does not send the iteration widget to mutation when parent has no iteration associated', async () => {
       await createComponent({
-        workItemsMvc2Enabled: true,
         hasIterationsFeature: true,
       });
       findInput().vm.$emit('input', 'Create task test');
@@ -211,7 +201,20 @@ describe('WorkItemLinksForm', () => {
         preventDefault: jest.fn(),
       });
       await waitForPromises();
-      expect(updateMutationResolver).not.toHaveBeenCalled();
+      expect(createMutationResolver).not.toHaveBeenCalledWith({
+        input: {
+          title: 'Create task test',
+          projectPath: 'project/path',
+          workItemTypeId: 'gid://gitlab/WorkItems::Type/3',
+          hierarchyWidget: {
+            parentId: 'gid://gitlab/WorkItem/1',
+          },
+          confidential: false,
+          iterationWidget: {
+            iterationId: mockParentIteration.id,
+          },
+        },
+      });
     });
   });
 });

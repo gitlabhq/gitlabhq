@@ -76,7 +76,7 @@ Your primary email address is not confirmed.
 You can assure your users that they have not been [Blocked](admin_area/moderate_users.md#block-and-unblock-users) by an administrator.
 When affected users see this message, they must confirm their email address before they can commit code.
 
-## What do I need to know as an administrator of a GitLab self-managed Instance?
+## What do you need to know as an administrator of a GitLab self-managed Instance?
 
 You have the following options to help your users:
 
@@ -85,7 +85,7 @@ You have the following options to help your users:
 
 As an administrator, you may also confirm a user in the [Admin Area](admin_area/index.md#administering-users).
 
-## What do I do if I am an administrator and I am locked out?
+## What do you do if you are an administrator and you're locked out?
 
 If you are an administrator and cannot otherwise verify your email address, sign in to your GitLab
 instance with a [Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
@@ -97,7 +97,7 @@ admin.confirmed_at = Time.zone.now
 admin.save!
 ```
 
-## How do I force-confirm all users on my self-managed instance?
+## How do you force-confirm all users on your self-managed instance?
 
 If you are an administrator and would like to force-confirm all users on your system, sign in to your GitLab
 instance with a [Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).

@@ -19,7 +19,7 @@ module QA
               element :service_jira_issue_transition_id_field
             end
 
-            view 'app/assets/javascripts/integrations/edit/components/integration_form.vue' do
+            view 'app/assets/javascripts/integrations/edit/components/integration_form_actions.vue' do
               element :save_changes_button
             end
 

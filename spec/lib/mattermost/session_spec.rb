@@ -14,14 +14,14 @@ RSpec.describe Mattermost::Session, type: :request do
   subject { described_class.new(user) }
 
   # Needed for doorkeeper to function
+  before do
+    subject.base_uri = mattermost_url
+  end
+
   it { is_expected.to respond_to(:current_resource_owner) }
   it { is_expected.to respond_to(:request) }
   it { is_expected.to respond_to(:authorization) }
   it { is_expected.to respond_to(:strategy) }
-
-  before do
-    subject.base_uri = mattermost_url
-  end
 
   describe '#with session' do
     let(:location) { 'http://location.tld' }

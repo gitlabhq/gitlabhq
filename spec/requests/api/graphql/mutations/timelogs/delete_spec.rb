@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Delete a timelog' do
+RSpec.describe 'Delete a timelog', feature_category: :team_planning do
   include GraphqlHelpers
   let_it_be(:author) { create(:user) }
   let_it_be(:project) { create(:project, :public) }

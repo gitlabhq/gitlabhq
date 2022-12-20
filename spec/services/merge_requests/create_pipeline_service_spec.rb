@@ -223,5 +223,26 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache d
         expect(response.payload).to be_nil
       end
     end
+
+    context 'when merge request pipeline creates a dynamic environment' do
+      let(:config) do
+        {
+          review_app: {
+            script: 'echo',
+            only: ['merge_requests'],
+            environment: { name: "review/$CI_COMMIT_REF_NAME" }
+          }
+        }
+      end
+
+      it 'associates merge request with the environment' do
+        expect { response }.to change { Ci::Pipeline.count }.by(1)
+
+        environment = Environment.find_by_name('review/feature')
+        expect(response).to be_success
+        expect(environment).to be_present
+        expect(environment.merge_request).to eq(merge_request)
+      end
+    end
   end
 end

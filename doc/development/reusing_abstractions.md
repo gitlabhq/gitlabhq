@@ -198,7 +198,7 @@ Several base classes implement the service classes convention. You may consider 
 - `BaseGroupService` for services scoped to groups.
 
 Classes that are not service objects should be
-[created elsewhere](directory_structure.md#use-namespaces-to-define-bounded-contexts),
+[created elsewhere](software_design.md#use-namespaces-to-define-bounded-contexts),
 such as in `lib`.
 
 #### ServiceResponse

@@ -14,11 +14,11 @@
       icon: 'pencil',
       button_options: { title: _('Edit'),
         'aria-label' => _('Edit'),
-        class: button_classes } )
+        class: button_classes })
     = render Pajamas::ButtonComponent.new(category: :tertiary,
       href: url_for([:admin, @user, identity]),
       icon: 'remove',
       button_options: { title: _('Delete'),
        'aria-label' => _('Delete identity'),
         class: button_classes,
-        data: { method: :delete, confirm: _("Are you sure you want to remove this identity?") } } )
+        data: { method: :delete, confirm: _("Are you sure you want to remove this identity?") } })

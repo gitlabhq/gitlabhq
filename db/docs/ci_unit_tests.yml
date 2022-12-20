@@ -7,3 +7,4 @@ feature_categories:
 description: Stores unit test data produced from builds.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56137
 milestone: '13.11'
+gitlab_schema: gitlab_ci

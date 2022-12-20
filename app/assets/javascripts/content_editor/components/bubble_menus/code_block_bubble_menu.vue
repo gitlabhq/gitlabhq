@@ -166,9 +166,7 @@ export default {
                 icon="arrow-left"
                 @click.prevent.stop="showCustomLanguageInput = false"
               />
-              <p
-                class="gl-text-center gl-new-dropdown-header-top gl-mb-0! gl-border-none! gl-pb-1!"
-              >
+              <p class="gl-text-center gl-dropdown-header-top gl-mb-0! gl-border-none! gl-pb-1!">
                 {{ __('Create custom type') }}
               </p>
             </div>

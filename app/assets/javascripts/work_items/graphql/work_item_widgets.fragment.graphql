@@ -1,6 +1,7 @@
 #import "~/graphql_shared/fragments/label.fragment.graphql"
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/work_items/graphql/milestone.fragment.graphql"
+#import "./work_item_metadata_widgets.fragment.graphql"
 
 fragment WorkItemWidgets on WorkItemWidget {
   ... on WorkItemWidgetDescription {
@@ -38,15 +39,39 @@ fragment WorkItemWidgets on WorkItemWidget {
   }
   ... on WorkItemWidgetHierarchy {
     type
+    hasChildren
     parent {
       id
       iid
       title
       confidential
+      webUrl
+      workItemType {
+        id
+        name
+        iconName
+      }
     }
     children {
       nodes {
         id
+        confidential
+        workItemType {
+          id
+          name
+          iconName
+        }
+        title
+        state
+        createdAt
+        closedAt
+        widgets {
+          ... on WorkItemWidgetHierarchy {
+            type
+            hasChildren
+          }
+          ...WorkItemMetadataWidgets
+        }
       }
     }
   }
@@ -55,5 +80,8 @@ fragment WorkItemWidgets on WorkItemWidget {
     milestone {
       ...MilestoneFragment
     }
+  }
+  ... on WorkItemWidgetNotes {
+    type
   }
 }

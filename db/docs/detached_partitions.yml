@@ -15,3 +15,4 @@ description: >
   Rows in this table are processed by Database::DropDetachedPartitionsWorker, which runs once a day.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67056
 milestone: '14.2'
+gitlab_schema: gitlab_shared

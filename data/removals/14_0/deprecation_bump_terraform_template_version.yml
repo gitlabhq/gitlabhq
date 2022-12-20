@@ -1,4 +1,4 @@
-- name: "Terraform template version"
+- title: "Terraform template version"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"  # example
   issue_url: ""

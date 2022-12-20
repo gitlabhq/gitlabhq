@@ -53,7 +53,7 @@ module AlertManagement
     validates :fingerprint,     allow_blank: true, uniqueness: {
       scope: :project,
       conditions: -> { not_resolved },
-      message: -> (object, data) { _('Cannot have multiple unresolved alerts') }
+      message: ->(object, data) { _('Cannot have multiple unresolved alerts') }
     }, unless: :resolved?
     validate :hosts_format
 
@@ -74,23 +74,23 @@ module AlertManagement
     delegate :iid, to: :issue, prefix: true, allow_nil: true
     delegate :details_url, to: :present
 
-    scope :for_iid, -> (iid) { where(iid: iid) }
-    scope :for_fingerprint, -> (project, fingerprint) { where(project: project, fingerprint: fingerprint) }
-    scope :for_environment, -> (environment) { where(environment: environment) }
-    scope :for_assignee_username, -> (assignee_username) { joins(:assignees).merge(User.by_username(assignee_username)) }
-    scope :search, -> (query) { fuzzy_search(query, [:title, :description, :monitoring_tool, :service]) }
+    scope :for_iid, ->(iid) { where(iid: iid) }
+    scope :for_fingerprint, ->(project, fingerprint) { where(project: project, fingerprint: fingerprint) }
+    scope :for_environment, ->(environment) { where(environment: environment) }
+    scope :for_assignee_username, ->(assignee_username) { joins(:assignees).merge(User.by_username(assignee_username)) }
+    scope :search, ->(query) { fuzzy_search(query, [:title, :description, :monitoring_tool, :service]) }
     scope :not_resolved, -> { without_status(:resolved) }
     scope :with_prometheus_alert, -> { includes(:prometheus_alert) }
     scope :with_operations_alerts, -> { where(domain: :operations) }
 
-    scope :order_start_time,    -> (sort_order) { order(started_at: sort_order) }
-    scope :order_end_time,      -> (sort_order) { order(ended_at: sort_order) }
-    scope :order_event_count,   -> (sort_order) { order(events: sort_order) }
+    scope :order_start_time,    ->(sort_order) { order(started_at: sort_order) }
+    scope :order_end_time,      ->(sort_order) { order(ended_at: sort_order) }
+    scope :order_event_count,   ->(sort_order) { order(events: sort_order) }
 
     # Ascending sort order sorts severity from less critical to more critical.
     # Descending sort order sorts severity from more critical to less critical.
     # https://gitlab.com/gitlab-org/gitlab/-/issues/221242#what-is-the-expected-correct-behavior
-    scope :order_severity,      -> (sort_order) { order(severity: sort_order == :asc ? :desc : :asc) }
+    scope :order_severity,      ->(sort_order) { order(severity: sort_order == :asc ? :desc : :asc) }
     scope :order_severity_with_open_prometheus_alert, -> { open.with_prometheus_alert.order(severity: :asc, started_at: :desc) }
 
     scope :counts_by_project_id, -> { group(:project_id).count }

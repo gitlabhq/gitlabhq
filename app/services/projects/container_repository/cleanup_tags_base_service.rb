@@ -6,6 +6,8 @@ module Projects
       private
 
       def filter_out_latest!(tags)
+        return unless keep_latest
+
         tags.reject!(&:latest?)
       end
 
@@ -82,6 +84,10 @@ module Projects
 
       def keep_n
         params['keep_n']
+      end
+
+      def keep_latest
+        params.fetch('keep_latest', true)
       end
 
       def project

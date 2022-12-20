@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting Alert Management Alert Assignees' do
+RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :projects do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

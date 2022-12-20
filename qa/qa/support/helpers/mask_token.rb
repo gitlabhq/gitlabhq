@@ -9,9 +9,8 @@ module QA
             ci_variable.project = project
             ci_variable.key = name
             ci_variable.value = value
-            ci_variable.protected = true
           end
-          "$#{name}"
+          "${#{name}}"
         end
 
         def use_group_ci_variable(name:, value:, group:)
@@ -19,9 +18,8 @@ module QA
             ci_variable.group = group
             ci_variable.key = name
             ci_variable.value = value
-            ci_variable.protected = true
           end
-          "$#{name}"
+          "${#{name}}"
         end
       end
     end

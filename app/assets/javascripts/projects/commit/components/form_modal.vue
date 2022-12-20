@@ -41,6 +41,11 @@ export default {
       required: false,
       default: false,
     },
+    isRevert: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     primaryActionEventName: {
       type: String,
       required: false,
@@ -150,7 +155,12 @@ export default {
       >
         <input id="start_branch" type="hidden" name="start_branch" :value="branch" />
 
-        <branches-dropdown class="gl-w-half" :value="branch" @selectBranch="setBranch" />
+        <branches-dropdown
+          class="gl-w-half"
+          :value="branch"
+          :blanked="isRevert"
+          @selectBranch="setBranch"
+        />
       </gl-form-group>
 
       <gl-form-checkbox

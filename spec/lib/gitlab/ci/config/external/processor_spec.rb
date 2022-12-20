@@ -2,17 +2,31 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::Processor do
+RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipeline_authoring do
   include StubRequests
+  include RepoHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be_with_reload(:another_project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
-  let(:sha) { '12345' }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:another_project) { create(:project, :repository) }
+
+  let(:project_files) { {} }
+  let(:other_project_files) { {} }
+
+  let(:sha) { project.commit.sha }
   let(:context_params) { { project: project, sha: sha, user: user } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
-  let(:processor) { described_class.new(values, context) }
+
+  subject(:processor) { described_class.new(values, context) }
+
+  around do |example|
+    create_and_delete_files(project, project_files) do
+      create_and_delete_files(another_project, other_project_files) do
+        example.run
+      end
+    end
+  end
 
   before do
     project.add_developer(user)
@@ -63,7 +77,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
       let(:values) { { include: remote_file, image: 'image:1.0' } }
       let(:external_file_content) do
-        <<-HEREDOC
+        <<-YAML
         before_script:
           - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
           - ruby -v
@@ -77,7 +91,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
         rubocop:
           script:
             - bundle exec rubocop
-        HEREDOC
+        YAML
       end
 
       before do
@@ -98,7 +112,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
       let(:values) { { include: remote_file, image: 'image:1.0' } }
       let(:external_file_content) do
-        <<-HEREDOC
+        <<-YAML
         include:
           - local: another-file.yml
             rules:
@@ -107,7 +121,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
         rspec:
           script:
             - bundle exec rspec
-        HEREDOC
+        YAML
       end
 
       before do
@@ -127,19 +141,16 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
     context 'with a valid local external file is defined' do
       let(:values) { { include: '/lib/gitlab/ci/templates/template.yml', image: 'image:1.0' } }
       let(:local_file_content) do
-        <<-HEREDOC
+        <<-YAML
         before_script:
           - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
           - ruby -v
           - which ruby
           - bundle install --jobs $(nproc)  "${FLAGS[@]}"
-        HEREDOC
+        YAML
       end
 
-      before do
-        allow_any_instance_of(Gitlab::Ci::Config::External::File::Local)
-          .to receive(:fetch_local_content).and_return(local_file_content)
-      end
+      let(:project_files) { { '/lib/gitlab/ci/templates/template.yml' => local_file_content } }
 
       it 'appends the file to the values' do
         output = processor.perform
@@ -153,6 +164,11 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
 
     context 'with multiple external files are defined' do
       let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
+
+      let(:local_file_content) do
+        File.read(Rails.root.join('spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml'))
+      end
+
       let(:external_files) do
         [
           '/spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml',
@@ -168,20 +184,21 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       end
 
       let(:remote_file_content) do
-        <<-HEREDOC
+        <<-YAML
         stages:
           - build
           - review
           - cleanup
-        HEREDOC
+        YAML
+      end
+
+      let(:project_files) do
+        {
+          '/spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml' => local_file_content
+        }
       end
 
       before do
-        local_file_content = File.read(Rails.root.join('spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml'))
-
-        allow_any_instance_of(Gitlab::Ci::Config::External::File::Local)
-          .to receive(:fetch_local_content).and_return(local_file_content)
-
         stub_full_request(remote_file).to_return(body: remote_file_content)
       end
 
@@ -199,10 +216,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
 
       let(:local_file_content) { 'invalid content file ////' }
 
-      before do
-        allow_any_instance_of(Gitlab::Ci::Config::External::File::Local)
-          .to receive(:fetch_local_content).and_return(local_file_content)
-      end
+      let(:project_files) { { '/lib/gitlab/ci/templates/template.yml' => local_file_content } }
 
       it 'raises an error' do
         expect { processor.perform }.to raise_error(
@@ -222,9 +236,9 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       end
 
       let(:remote_file_content) do
-        <<~HEREDOC
+        <<~YAML
         image: php:5-fpm-alpine
-        HEREDOC
+        YAML
       end
 
       it 'takes precedence' do
@@ -244,31 +258,32 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
         }
       end
 
+      let(:project_files) do
+        {
+          '/local/file.yml' => <<~YAML
+          include:
+            - template: Ruby.gitlab-ci.yml
+            - remote: http://my.domain.com/config.yml
+            - project: #{another_project.full_path}
+              file: /templates/my-workflow.yml
+          YAML
+        }
+      end
+
+      let(:other_project_files) do
+        {
+          '/templates/my-workflow.yml' => <<~YAML,
+          include:
+            - local: /templates/my-build.yml
+          YAML
+          '/templates/my-build.yml' => <<~YAML
+          my_build:
+            script: echo Hello World
+          YAML
+        }
+      end
+
       before do
-        allow(project.repository).to receive(:blob_data_at).with('12345', '/local/file.yml') do
-          <<~HEREDOC
-            include:
-              - template: Ruby.gitlab-ci.yml
-              - remote: http://my.domain.com/config.yml
-              - project: #{another_project.full_path}
-                file: /templates/my-workflow.yml
-          HEREDOC
-        end
-
-        allow_any_instance_of(Repository).to receive(:blob_data_at).with(another_project.commit.id, '/templates/my-workflow.yml') do
-          <<~HEREDOC
-            include:
-              - local: /templates/my-build.yml
-          HEREDOC
-        end
-
-        allow_any_instance_of(Repository).to receive(:blob_data_at).with(another_project.commit.id, '/templates/my-build.yml') do
-          <<~HEREDOC
-            my_build:
-              script: echo Hello World
-          HEREDOC
-        end
-
         stub_full_request('http://my.domain.com/config.yml')
           .to_return(body: 'remote_build: { script: echo Hello World }')
       end
@@ -299,32 +314,32 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
           expect(context.includes).to contain_exactly(
             { type: :local,
               location: '/local/file.yml',
-              blob: "http://localhost/#{project.full_path}/-/blob/12345/local/file.yml",
-              raw: "http://localhost/#{project.full_path}/-/raw/12345/local/file.yml",
+              blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/local/file.yml",
+              raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/local/file.yml",
               extra: {},
               context_project: project.full_path,
-              context_sha: '12345' },
+              context_sha: sha },
             { type: :template,
               location: 'Ruby.gitlab-ci.yml',
               blob: nil,
               raw: 'https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Ruby.gitlab-ci.yml',
               extra: {},
               context_project: project.full_path,
-              context_sha: '12345' },
+              context_sha: sha },
             { type: :remote,
               location: 'http://my.domain.com/config.yml',
               blob: nil,
               raw: "http://my.domain.com/config.yml",
               extra: {},
               context_project: project.full_path,
-              context_sha: '12345' },
+              context_sha: sha },
             { type: :file,
               location: '/templates/my-workflow.yml',
               blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-workflow.yml",
               raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-workflow.yml",
               extra: { project: another_project.full_path, ref: 'HEAD' },
               context_project: project.full_path,
-              context_sha: '12345' },
+              context_sha: sha },
             { type: :local,
               location: '/templates/my-build.yml',
               blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-build.yml",
@@ -393,17 +408,17 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
         }
       end
 
+      let(:other_project_files) do
+        {
+          '/templates/my-build.yml' => <<~YAML
+          my_build:
+            script: echo Hello World
+          YAML
+        }
+      end
+
       before do
         another_project.add_developer(user)
-
-        allow_next_instance_of(Repository) do |repository|
-          allow(repository).to receive(:blob_data_at).with(another_project.commit.id, '/templates/my-build.yml') do
-            <<~HEREDOC
-              my_build:
-                script: echo Hello World
-            HEREDOC
-          end
-        end
       end
 
       it 'appends the file to the values' do
@@ -423,24 +438,21 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
         }
       end
 
+      let(:other_project_files) do
+        {
+          '/templates/my-build.yml' => <<~YAML,
+          my_build:
+            script: echo Hello World
+          YAML
+          '/templates/my-test.yml' => <<~YAML
+          my_test:
+            script: echo Hello World
+          YAML
+        }
+      end
+
       before do
         another_project.add_developer(user)
-
-        allow_next_instance_of(Repository) do |repository|
-          allow(repository).to receive(:blob_data_at).with(another_project.commit.id, '/templates/my-build.yml') do
-            <<~HEREDOC
-              my_build:
-                script: echo Hello World
-            HEREDOC
-          end
-
-          allow(repository).to receive(:blob_data_at).with(another_project.commit.id, '/templates/my-test.yml') do
-            <<~HEREDOC
-              my_test:
-                script: echo Hello World
-            HEREDOC
-          end
-        end
       end
 
       it 'appends the file to the values' do
@@ -458,45 +470,34 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
             raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-build.yml",
             extra: { project: another_project.full_path, ref: 'HEAD' },
             context_project: project.full_path,
-            context_sha: '12345' },
+            context_sha: sha },
           { type: :file,
             blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-test.yml",
             raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-test.yml",
             location: '/templates/my-test.yml',
             extra: { project: another_project.full_path, ref: 'HEAD' },
             context_project: project.full_path,
-            context_sha: '12345' }
+            context_sha: sha }
         )
       end
     end
 
     context 'when local file path has wildcard' do
-      let(:project) { create(:project, :repository) }
-
       let(:values) do
         { include: 'myfolder/*.yml', image: 'image:1.0' }
       end
 
-      before do
-        allow_next_instance_of(Repository) do |repository|
-          allow(repository).to receive(:search_files_by_wildcard_path).with('myfolder/*.yml', sha) do
-            ['myfolder/file1.yml', 'myfolder/file2.yml']
-          end
-
-          allow(repository).to receive(:blob_data_at).with(sha, 'myfolder/file1.yml') do
-            <<~HEREDOC
-              my_build:
-                script: echo Hello World
-            HEREDOC
-          end
-
-          allow(repository).to receive(:blob_data_at).with(sha, 'myfolder/file2.yml') do
-            <<~HEREDOC
-              my_test:
-                script: echo Hello World
-            HEREDOC
-          end
-        end
+      let(:project_files) do
+        {
+          'myfolder/file1.yml' => <<~YAML,
+          my_build:
+            script: echo Hello World
+          YAML
+          'myfolder/file2.yml' => <<~YAML
+          my_test:
+            script: echo Hello World
+          YAML
+        }
       end
 
       it 'fetches the matched files' do
@@ -510,18 +511,18 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
         expect(context.includes).to contain_exactly(
           { type: :local,
             location: 'myfolder/file1.yml',
-            blob: "http://localhost/#{project.full_path}/-/blob/12345/myfolder/file1.yml",
-            raw: "http://localhost/#{project.full_path}/-/raw/12345/myfolder/file1.yml",
+            blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/myfolder/file1.yml",
+            raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/myfolder/file1.yml",
             extra: {},
             context_project: project.full_path,
-            context_sha: '12345' },
+            context_sha: sha },
           { type: :local,
-            blob: "http://localhost/#{project.full_path}/-/blob/12345/myfolder/file2.yml",
-            raw: "http://localhost/#{project.full_path}/-/raw/12345/myfolder/file2.yml",
+            blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/myfolder/file2.yml",
+            raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/myfolder/file2.yml",
             location: 'myfolder/file2.yml',
             extra: {},
             context_project: project.full_path,
-            context_sha: '12345' }
+            context_sha: sha }
         )
       end
     end

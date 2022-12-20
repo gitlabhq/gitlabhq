@@ -128,7 +128,7 @@ with the [v1 auto-deploy-image](#use-a-specific-version-of-auto-deploy-dependenc
 
 > [Introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/merge_requests/109) in GitLab 13.4.
 
-Auto Deploy supports advanced deployment strategies such as [canary deployments](customize.md#deploy-policy-for-canary-environments)
+Auto Deploy supports advanced deployment strategies such as [canary deployments](cicd_variables.md#deploy-policy-for-canary-environments)
 and [incremental rollouts](../../ci/environments/incremental_rollouts.md).
 
 Previously, `auto-deploy-image` created one service to balance the traffic between
@@ -171,7 +171,7 @@ Alternatively, you can use the [v13.12 Auto DevOps templates archive](https://gi
 ### Ignore warnings and continue deploying
 
 If you are certain that the new chart version is safe to be deployed, you can add
-the `AUTO_DEVOPS_FORCE_DEPLOY_V<major-version-number>` [CI/CD variable](customize.md#build-and-deployment)
+the `AUTO_DEVOPS_FORCE_DEPLOY_V<major-version-number>` [CI/CD variable](cicd_variables.md#build-and-deployment-variables)
 to force the deployment to continue.
 
 For example, if you want to deploy the `v2.0.0` chart on a deployment that previously

@@ -285,7 +285,7 @@ In the second (filtered) example, we know exactly 100 will be updated with each 
 1. In the post-deployment migration, enqueue the batched background migration:
 
    ```ruby
-   class BackfillNamespaceType < Gitlab::Database::Migration[2.0]
+   class BackfillNamespaceType < Gitlab::Database::Migration[2.1]
      MIGRATION = 'BackfillNamespaceType'
      DELAY_INTERVAL = 2.minutes
 
@@ -308,7 +308,7 @@ In the second (filtered) example, we know exactly 100 will be updated with each 
 
 NOTE:
 When applying additional filters, it is important to ensure they are properly covered by an index to optimize `EachBatch` performance.
-In the example above we need an index on `(type, id)` to support the filters. See [the `EachBatch` docs for more information](../iterating_tables_in_batches.md).
+In the example above we need an index on `(type, id)` to support the filters. See [the `EachBatch` docs for more information](iterating_tables_in_batches.md).
 
 ## Example
 
@@ -366,7 +366,7 @@ background migration.
 1. Create a post-deployment migration that queues the migration for existing data:
 
    ```ruby
-   class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.0]
+   class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.1]
      MIGRATION = 'BackfillRouteNamespaceId'
      DELAY_INTERVAL = 2.minutes
 
@@ -403,7 +403,7 @@ background migration.
    that checks that the batched background migration is completed. For example:
 
    ```ruby
-   class FinalizeBackfillRouteNamespaceId < Gitlab::Database::Migration[2.0]
+   class FinalizeBackfillRouteNamespaceId < Gitlab::Database::Migration[2.1]
      MIGRATION = 'BackfillRouteNamespaceId'
      disable_ddl_transaction!
 
@@ -452,7 +452,7 @@ the batching column.
 Database post-migration:
 
 ```ruby
-class ProjectsWithIssuesMigration < Gitlab::Database::Migration[2.0]
+class ProjectsWithIssuesMigration < Gitlab::Database::Migration[2.1]
   MIGRATION = 'BatchProjectsWithIssues'
   INTERVAL = 2.minutes
   BATCH_SIZE = 5000

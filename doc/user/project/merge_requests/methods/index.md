@@ -10,47 +10,107 @@ type: reference, concepts
 The merge method you select for your project determines how the changes in your
 merge requests are merged into an existing branch.
 
+The examples on this page assume a `main` branch with commits A, C, and E, and a
+`feature` branch with commits B and D:
+
+```mermaid
+gitGraph
+   commit id: "A"
+   branch feature
+   commit id: "B"
+   commit id: "D"
+   checkout main
+   commit id: "C"
+   commit id: "E"
+```
+
 ## Configure a project's merge method
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Merge requests**.
-1. In the **Merge method** section, select your desired merge method.
+1. Select your desired **Merge method** from these options:
+   - Merge commit
+   - Merge commit with semi-linear history
+   - Fast-forward merge
+1. In **Squash commits when merging**, select the default behavior for handling commits:
+   - **Do not allow**: Squashing is never performed, and the user cannot change the behavior.
+   - **Allow**: Squashing is off by default, but the user can change the behavior.
+   - **Encourage**: Squashing is on by default, but the user can change the behavior.
+   - **Require**: Squashing is always performed, and the user cannot change the behavior.
 1. Select **Save changes**.
 
 ## Merge commit
 
-This setting is the default. It always creates a separate merge commit,
-even when using [squash](../squash_and_merge.md). An example commit graph generated using this merge method:
+By default, GitLab creates a merge commit when a branch is merged into `main`.
+A separate merge commit is always created, regardless of whether or not commits
+are [squashed when merging](../squash_and_merge.md). This strategy can result
+in both a squash commit and a merge commit being added to your `main` branch.
+
+These diagrams show how the `feature` branch merges into `main` if you use the
+**Merge commit** strategy. They are equivalent to the command `git merge --no-ff <feature>`,
+and selecting `Merge commit` as the **Merge method** in the GitLab UI:
+
+The merge strategy:
 
 ```mermaid
+%%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main'}} }%%
 gitGraph
-  commit id: "Init"
-  branch mr-branch-1
-  commit
-  checkout main
-  commit
-  branch mr-branch-2
-  commit
-  checkout mr-branch-1
-  commit
-  checkout main
-  branch squash-mr
-  commit id: "Squashed commits"
-  checkout main
-  merge squash-mr
-  merge mr-branch-1
-  commit
-  merge mr-branch-2
+   commit id: "A"
+   branch feature
+   commit id: "B"
+   commit id: "D"
+   checkout main
+   commit id: "C"
+   commit id: "E"
+   merge feature
 ```
 
-- For regular merges, it is equivalent to the command `git merge --no-ff <source-branch>`.
-- For squash merges, it squashes all commits in the source branch before merging it normally. It performs actions similar to:
+After a feature branch is merged with the **Merge commit** method, your `main` branch
+looks like this:
+
+```mermaid
+%%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main'}} }%%
+gitGraph
+   commit id: "A"
+   commit id: "C"
+   commit id: "E"
+   commit id: "squash commit"
+   commit id: "merge commit"
+```
+
+In comparison, a **squash merge** constructs a squash commit, a virtual copy of all commits
+from the `feature` branch. The original commits (B and D) remain unchanged
+on the `feature` branch, and the squash commit is placed on the `main` branch:
+
+```mermaid
+%%{init: { 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main'}} }%%
+gitGraph
+   commit id:"A"
+   branch feature
+   checkout main
+   commit id:"C"
+   checkout feature
+   commit id:"B"
+   commit id:"D"
+   checkout main
+   commit id:"E"
+   commit id:"squash commit" type: HIGHLIGHT
+```
+
+The squash merge graph is equivalent to these settings in the GitLab UI:
+
+- **Merge method**: Merge commit.
+- **Squash commits when merging** should be set to either:
+  - Require.
+  - Either Allow or Encourage, and squashing must be selected on the merge request.
+
+The squash merge graph is also equivalent to these commands:
 
   ```shell
-  git checkout `git merge-base <source-branch> <target-branch>`
-  git merge --squash <source-branch>
+  git checkout `git merge-base feature main`
+  git merge --squash <feature>
   SOURCE_SHA=`git rev-parse HEAD`
-  git checkout <target-branch>
+  git checkout <main>
   git merge --no-ff $SOURCE_SHA
   ```
 
@@ -58,7 +118,8 @@ gitGraph
 
 A merge commit is created for every merge, but the branch is only merged if
 a fast-forward merge is possible. This ensures that if the merge request build
-succeeded, the target branch build also succeeds after the merge. An example commit graph generated using this merge method:
+succeeded, the target branch build also succeeds after the merge. An example
+commit graph generated using this merge method:
 
 ```mermaid
 gitGraph
@@ -113,8 +174,8 @@ This method is equivalent to `git merge --ff <source-branch>` for regular merges
 
 When the fast-forward merge
 ([`--ff-only`](https://git-scm.com/docs/git-merge#git-merge---ff-only)) setting
-is enabled, no merge commits are created and all merges are fast-forwarded,
-which means that merging is only allowed if the branch can be fast-forwarded.
+is enabled, no merge commits are created and all merges are fast-forwarded.
+Merging is only allowed if the branch can be fast-forwarded.
 When a fast-forward merge is not possible, the user is given the option to rebase, see
 [Rebasing in (semi-)linear merge methods](#rebasing-in-semi-linear-merge-methods).
 
@@ -136,11 +197,16 @@ In these merge methods, you can merge only when your source branch is up-to-date
 - Fast-forward merge.
 
 If a fast-forward merge is not possible but a conflict-free rebase is possible,
-GitLab offers you the [`/rebase` quick action](../../../../topics/git/git_rebase.md#rebase-from-the-gitlab-ui),
-and the ability to select **Rebase** from the user interface.
+GitLab provides:
 
-If the target branch is ahead of the source branch and a conflict-free rebase is
-not possible, you must rebase the source branch locally before you can do a fast-forward merge.
+- The [`/rebase` quick action](../../../../topics/git/git_rebase.md#rebase-from-the-gitlab-ui).
+- The option to select **Rebase** in the user interface.
+
+You must rebase the source branch locally before a fast-forward merge if both
+conditions are true:
+
+- The target branch is ahead of the source branch.
+- A conflict-free rebase is not possible.
 
 ![Fast forward merge rebase locally](../img/ff_merge_rebase_locally.png)
 

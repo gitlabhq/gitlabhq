@@ -19,8 +19,6 @@ module SensitiveSerializableHash
   # In general, prefer NOT to use serializable_hash / to_json / as_json in favor
   # of serializers / entities instead which has an allowlist of attributes
   def serializable_hash(options = nil)
-    return super if options && options[:unsafe_serialization_hash]
-
     options = options.try(:dup) || {}
     options[:except] = Array(options[:except]).dup
 

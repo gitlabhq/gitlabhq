@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::UsersController do
+RSpec.describe JiraConnect::UsersController, feature_category: :integrations do
   describe 'GET /-/jira_connect/users' do
     let_it_be(:user) { create(:user) }
 

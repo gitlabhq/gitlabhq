@@ -1,5 +1,5 @@
 <script>
-import { GlToast, GlTooltipDirective, GlSafeHtmlDirective, GlModal } from '@gitlab/ui';
+import { GlToast, GlTooltipDirective, GlModal } from '@gitlab/ui';
 import Vue from 'vue';
 import { createAlert } from '~/flash';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
@@ -19,7 +19,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -110,7 +109,6 @@ export default {
       this.availability = value;
     },
   },
-  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   actionPrimary: { text: s__('SetStatusModal|Set status') },
   actionSecondary: { text: s__('SetStatusModal|Remove status') },
 };

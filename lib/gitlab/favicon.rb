@@ -34,11 +34,9 @@ module Gitlab
       end
 
       def available_status_names
-        @available_status_names ||= begin
-          Dir.glob(Rails.root.join('app', 'assets', 'images', 'ci_favicons', '*.png'))
+        @available_status_names ||= Dir.glob(Rails.root.join('app', 'assets', 'images', 'ci_favicons', '*.png'))
             .map { |file| File.basename(file, '.png') }
             .sort
-        end
       end
 
       private

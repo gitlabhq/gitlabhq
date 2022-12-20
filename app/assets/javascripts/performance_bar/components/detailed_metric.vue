@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlDropdown, GlDropdownItem, GlModal, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlModal, GlModalDirective, GlCollapsibleListbox } from '@gitlab/ui';
 
 import { __, s__ } from '~/locale';
 import { sortOrders, sortOrderOptions } from '../constants';
@@ -9,9 +9,8 @@ export default {
   components: {
     RequestWarning,
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
     GlModal,
+    GlCollapsibleListbox,
   },
   directives: {
     'gl-modal': GlModalDirective,
@@ -119,9 +118,6 @@ export default {
     itemHasOpenedBacktrace(toggledIndex) {
       return this.openedBacktraces.find((openedIndex) => openedIndex === toggledIndex) >= 0;
     },
-    changeSortOrder(order) {
-      this.sortOrder = order;
-    },
     sortDetailByDuration(a, b) {
       return a.duration < b.duration ? 1 : -1;
     },
@@ -157,19 +153,14 @@ export default {
             </div>
           </div>
         </div>
-        <gl-dropdown
+        <gl-collapsible-listbox
           v-if="displaySortOrder"
-          :text="$options.sortOrderOptions[sortOrder]"
+          v-model="sortOrder"
+          :toggle-text="$options.sortOrderOptions[sortOrder].text"
+          :items="Object.values($options.sortOrderOptions)"
           right
           data-testid="performance-bar-sort-order"
-        >
-          <gl-dropdown-item
-            v-for="option in Object.keys($options.sortOrderOptions)"
-            :key="option"
-            @click="changeSortOrder(option)"
-            >{{ $options.sortOrderOptions[option] }}</gl-dropdown-item
-          >
-        </gl-dropdown>
+        />
       </div>
       <hr />
       <table class="table gl-table">

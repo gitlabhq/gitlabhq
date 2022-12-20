@@ -11,6 +11,14 @@ module Resolvers
       description: 'Global ID of the package.'
 
     def resolve(id:)
+      Gitlab::Graphql::Lazy.with_value(find_object(id: id)) do |package|
+        package if package.default?
+      end
+    end
+
+    private
+
+    def find_object(id:)
       GitlabSchema.find_by_gid(id)
     end
   end

@@ -157,7 +157,7 @@ export default {
         .find(({ hasNextPage }) => hasNextPage);
     },
     handleRowAppear(rowNumber) {
-      if (!this.glFeatures.lazyLoadCommits || isRequested(rowNumber)) {
+      if (isRequested(rowNumber)) {
         return;
       }
 

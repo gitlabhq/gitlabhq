@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, feature_category: :pipeline_authoring do
   include Ci::TemplateHelpers
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, namespace: group) }
@@ -13,7 +13,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
       name: 'rspec:test 1',
       pipeline: pipeline,
       user: user,
-      yaml_variables: [{ key: 'YAML_VARIABLE', value: 'value' }]
+      yaml_variables: [{ key: 'YAML_VARIABLE', value: 'value' }],
+      environment: 'test'
     )
   end
 
@@ -32,6 +33,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
           value: job.stage_name },
         { key: 'CI_NODE_TOTAL',
           value: '1' },
+        { key: 'CI_ENVIRONMENT_NAME',
+          value: 'test' },
         { key: 'CI_BUILD_NAME',
           value: 'rspec:test 1' },
         { key: 'CI_BUILD_STAGE',
@@ -76,6 +79,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
           value: project.full_path_slug },
         { key: 'CI_PROJECT_NAMESPACE',
           value: project.namespace.full_path },
+        { key: 'CI_PROJECT_NAMESPACE_ID',
+          value: project.namespace.id.to_s },
         { key: 'CI_PROJECT_ROOT_NAMESPACE',
           value: project.namespace.root_ancestor.path },
         { key: 'CI_PROJECT_URL',
@@ -276,10 +281,16 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
     subject { builder.kubernetes_variables(environment: nil, job: job) }
 
     before do
-      allow(Ci::GenerateKubeconfigService).to receive(:new).with(job.pipeline, token: job.token).and_return(service)
+      allow(Ci::GenerateKubeconfigService).to receive(:new).with(job.pipeline, token: job.token, environment: anything).and_return(service)
     end
 
     it { is_expected.to include(key: 'KUBECONFIG', value: 'example-kubeconfig', public: false, file: true) }
+
+    it 'calls the GenerateKubeconfigService with the correct arguments' do
+      expect(Ci::GenerateKubeconfigService).to receive(:new).with(job.pipeline, token: job.token, environment: nil)
+
+      subject
+    end
 
     context 'generated config is invalid' do
       let(:template_valid) { false }
@@ -296,6 +307,16 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
       expect(template).to receive(:merge_yaml).with('deployment-kubeconfig')
       expect(subject['KUBECONFIG'].value).to eq('example-kubeconfig')
       expect(subject['OTHER'].value).to eq('some value')
+    end
+
+    context 'when environment is not nil' do
+      subject { builder.kubernetes_variables(environment: 'production', job: job) }
+
+      it 'passes the environment when generating the KUBECONFIG' do
+        expect(Ci::GenerateKubeconfigService).to receive(:new).with(job.pipeline, token: job.token, environment: 'production')
+
+        subject
+      end
     end
   end
 

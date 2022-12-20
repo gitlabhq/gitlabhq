@@ -2,7 +2,7 @@
 
 module WorkItems
   class DeleteTaskService
-    def initialize(work_item:, current_user: nil, task_params: {}, lock_version:)
+    def initialize(work_item:, lock_version:, current_user: nil, task_params: {})
       @work_item = work_item
       @current_user = current_user
       @task_params = task_params

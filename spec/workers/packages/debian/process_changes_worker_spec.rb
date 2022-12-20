@@ -78,10 +78,28 @@ RSpec.describe Packages::Debian::ProcessChangesWorker, type: :worker do
       end
     end
 
+    context 'without a distribution' do
+      before do
+        distribution.destroy!
+      end
+
+      it 'removes package file and log exception', :aggregate_failures do
+        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+          instance_of(ActiveRecord::RecordNotFound),
+          package_file_id: package_file_id,
+          user_id: user_id
+        )
+        expect { subject }
+          .to not_change { Packages::Package.count }
+          .and change { Packages::PackageFile.count }.by(-1)
+          .and change { incoming.package_files.count }.from(7).to(6)
+      end
+    end
+
     context 'when the service raises an error' do
       let(:package_file) { incoming.package_files.first }
 
-      it 'removes package file', :aggregate_failures do
+      it 'removes package file and log exception', :aggregate_failures do
         expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
           instance_of(Packages::Debian::ExtractChangesMetadataService::ExtractionError),
           package_file_id: package_file_id,

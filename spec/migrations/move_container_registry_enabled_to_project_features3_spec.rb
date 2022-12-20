@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe MoveContainerRegistryEnabledToProjectFeatures3, :migration do
+RSpec.describe MoveContainerRegistryEnabledToProjectFeatures3, :migration, feature_category: :container_registry do
   let(:namespace) { table(:namespaces).create!(name: 'gitlab', path: 'gitlab-org') }
 
   let!(:background_jobs) do

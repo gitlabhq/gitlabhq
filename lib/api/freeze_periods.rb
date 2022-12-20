@@ -34,7 +34,7 @@ module API
       get ":id/freeze_periods" do
         authorize! :read_freeze_period, user_project
 
-        freeze_periods = ::FreezePeriodsFinder.new(user_project, current_user).execute
+        freeze_periods = ::Ci::FreezePeriodsFinder.new(user_project, current_user).execute
 
         present paginate(freeze_periods), with: Entities::FreezePeriod, current_user: current_user
       end

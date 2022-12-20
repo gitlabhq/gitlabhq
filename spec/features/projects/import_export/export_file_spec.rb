@@ -6,7 +6,7 @@ require 'spec_helper'
 # It looks up for any sensitive word inside the JSON, so if a sensitive word is found
 # we'll have to either include it adding the model that includes it to the +safe_list+
 # or make sure the attribute is blacklisted in the +import_export.yml+ configuration
-RSpec.describe 'Import/Export - project export integration test', :js do
+RSpec.describe 'Import/Export - project export integration test', :js, feature_category: :importers do
   include Select2Helper
   include ExportFileHelper
 
@@ -53,7 +53,7 @@ RSpec.describe 'Import/Export - project export integration test', :js do
           project_json_path = File.join(tmpdir, 'project.json')
           expect(File).to exist(project_json_path)
 
-          project_hash = Gitlab::Json.parse(IO.read(project_json_path))
+          project_hash = Gitlab::Json.parse(File.read(project_json_path))
 
           sensitive_words.each do |sensitive_word|
             found = find_sensitive_attributes(sensitive_word, project_hash)
@@ -79,7 +79,7 @@ RSpec.describe 'Import/Export - project export integration test', :js do
           expect(File).to exist(project_json_path)
 
           relations = []
-          relations << Gitlab::Json.parse(IO.read(project_json_path))
+          relations << Gitlab::Json.parse(File.read(project_json_path))
           Dir.glob(File.join(tmpdir, 'tree/project', '*.ndjson')) do |rb_filename|
             File.foreach(rb_filename) do |line|
               relations << Gitlab::Json.parse(line)

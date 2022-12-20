@@ -78,7 +78,7 @@ RSpec.describe Banzai::Pipeline::IncidentManagement::TimelineEventPipeline do
       it 'replaces existing label to a link' do
         # rubocop:disable Layout/LineLength
         is_expected.to match(
-          %r(<p>.+<a href=\"[\w/]+-/issues\?label_name=#{label.name}\".+style=\"background-color: #\d{6}\".*>#{label.name}</span></a></span> ~unknown</p>)
+          %r(<p>.+<a href="[\w/]+-/issues\?label_name=#{label.name}".+style="background-color: #\d{6}".*>#{label.name}</span></a></span> ~unknown</p>)
         )
         # rubocop:enable Layout/LineLength
       end

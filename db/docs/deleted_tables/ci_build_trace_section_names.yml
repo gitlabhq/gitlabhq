@@ -1,0 +1,9 @@
+---
+table_name: ci_build_trace_section_names
+gitlab_schema: gitlab_ci
+feature_categories: []
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67618
+milestone: '14.2'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73841
+removed_in_milestone: '14.5'

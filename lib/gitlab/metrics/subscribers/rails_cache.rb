@@ -8,6 +8,17 @@ module Gitlab
       class RailsCache < ActiveSupport::Subscriber
         attach_to :active_support
 
+        def cache_read_multi(event)
+          observe(:read_multi, event.duration)
+
+          return unless current_transaction
+
+          current_transaction.observe(:gitlab_cache_read_multikey_count, event.payload[:key].size) do
+            buckets [10, 50, 100, 1000]
+            docstring 'Number of keys for mget in read_multi/fetch_multi'
+          end
+        end
+
         def cache_read(event)
           observe(:read, event.duration)
 

@@ -1,0 +1,21 @@
+<script>
+import { GlEmptyState } from '@gitlab/ui';
+
+import { s__ } from '~/locale';
+
+export default {
+  components: { GlEmptyState },
+  i18n: {
+    title: s__('GroupsEmptyState|No archived projects.'),
+  },
+  inject: ['newProjectIllustration'],
+};
+</script>
+
+<template>
+  <gl-empty-state
+    :title="$options.i18n.title"
+    :svg-path="newProjectIllustration"
+    :svg-height="100"
+  />
+</template>

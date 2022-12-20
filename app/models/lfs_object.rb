@@ -4,7 +4,6 @@ class LfsObject < ApplicationRecord
   include AfterCommitQueue
   include Checksummable
   include EachBatch
-  include ObjectStorage::BackgroundMove
   include FileStoreMounter
 
   has_many :lfs_objects_projects

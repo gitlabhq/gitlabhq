@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'merge requests creations' do
+RSpec.describe 'merge requests creations', feature_category: :code_review do
   describe 'GET /:namespace/:project/merge_requests/new' do
     include ProjectForksHelper
 
@@ -23,6 +23,18 @@ RSpec.describe 'merge requests creations' do
       5.times { fork_project(project, user) }
 
       expect { get_new }.not_to exceed_query_limit(control)
+    end
+
+    it_behaves_like "observability csp policy", Projects::MergeRequests::CreationsController do
+      let(:tested_path) do
+        project_new_merge_request_path(project, merge_request: {
+                                         title: 'Some feature',
+                                         source_branch: 'fix',
+                                         target_branch: 'feature',
+                                         target_project: project,
+                                         source_project: project
+                                       })
+      end
     end
   end
 end

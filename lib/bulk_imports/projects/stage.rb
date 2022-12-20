@@ -21,7 +21,7 @@ module BulkImports
       # instance version is 15.2.0, 15.2.1, 16.0.0, etc.
 
       def config
-        @config ||= {
+        {
           project: {
             pipeline: BulkImports::Projects::Pipelines::ProjectPipeline,
             stage: 0

@@ -45,7 +45,7 @@ module RSpec
       private
 
       def method_owner
-        @method_owner ||= Object.instance_method(:method).bind(object).call(@method_name).owner
+        @method_owner ||= Object.instance_method(:method).bind_call(object, @method_name).owner
       end
     end
   end

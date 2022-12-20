@@ -608,7 +608,7 @@ Here is a list and description of each machine and the assigned IP:
 
 All passwords are set to `toomanysecrets`. Do not use this password or derived hashes and the `external_url` for GitLab is `http://gitlab.example.com`.
 
-After the initial configuration, if a failover occurs, the PostgresSQL leader node changes to one of the available secondaries until it is failed back.
+After the initial configuration, if a failover occurs, the PostgreSQL leader node changes to one of the available secondaries until it is failed back.
 
 #### Example recommended setup for Consul servers
 
@@ -1080,6 +1080,190 @@ NOTE:
 Reverting the PostgreSQL upgrade with `gitlab-ctl revert-pg-upgrade` has the same considerations as
 `gitlab-ctl pg-upgrade`. You should follow the same procedure by first stopping the replicas,
 then reverting the leader, and finally reverting the replicas.
+
+### Near zero downtime upgrade of PostgreSQL in a Patroni cluster (Experimental)
+
+Patroni enables you to run a major PostgreSQL upgrade without shutting down the cluster. However, this
+requires additional resources to host the new Patroni nodes with the upgraded PostgreSQL. In practice, with this
+procedure, you are:
+
+- Creating a new Patroni cluster with a new version of PostgreSQL.
+- Migrating the data from the existing cluster.
+
+This procedure is non-invasive, and does not impact your existing cluster before switching it off.
+However, it can be both time- and resource-consuming. Consider their trade-offs with availability.
+
+The steps, in order:
+
+1. [Provision resources for the new cluster](#provision-resources-for-the-new-cluster).
+1. [Preflight check](#preflight-check).
+1. [Configure the leader of the new cluster](#configure-the-leader-of-the-new-cluster).
+1. [Start publisher on the existing leader](#start-publisher-on-the-existing-leader).
+1. [Copy the data from the existing cluster](#copy-the-data-from-the-existing-cluster).
+1. [Replicate data from the existing cluster](#replicate-data-from-the-existing-cluster).
+1. [Grow the new cluster](#grow-the-new-cluster).
+1. [Switch the application to use the new cluster](#switch-the-application-to-use-the-new-cluster).
+1. [Clean up](#clean-up).
+
+#### Provision resources for the new cluster
+
+You need a new set of resources for Patroni nodes. The new Patroni cluster does not require exactly the same number
+of nodes as the existing cluster. You may choose a different number of nodes based on your requirements. The new
+cluster uses the existing Consul cluster (with a different `patroni['scope']`) and PgBouncer nodes.
+
+Make sure that at least the leader node of the existing cluster is accessible from the nodes of the new
+cluster.
+
+#### Preflight check
+
+We rely on PostgreSQL [logical replication](https://www.postgresql.org/docs/current/logical-replication.html)
+to support near-zero downtime upgrades of Patroni clusters. The of
+[logical replication requirements](https://www.postgresql.org/docs/current/logical-replication-restrictions.html)
+must be met. In particular, `wal_level` must be `logical`. To check the `wal_level`,
+run the following command with `gitlab-psql` on any node of the existing cluster:
+
+```sql
+SHOW wal_level;
+```
+
+By default, Patroni sets `wal_level` to `replica`. You must increase it to `logical`.
+Changing `wal_level` requires restarting PostgreSQL, so this step leads to a short
+downtime (hence near-zero downtime). To do this on the Patroni **leader** node:
+
+1. Edit `gitlab.rb` by setting:
+
+   ```ruby
+   patroni['postgresql']['wal_level'] = 'logical'
+   ```
+
+1. Run `gitlab-ctl reconfigure`. This writes the configuration but does not restart PostgreSQL service.
+1. Run `gitlab-ctl patroni restart` to restart PostgreSQL and apply the new `wal_level` without triggering
+   failover. For the duration of restart cycle, the cluster leader is unavailable.
+1. Verify the change by running `SHOW wal_level` with `gitlab-psql`.
+
+#### Configure the leader of the new cluster
+
+Configure the first node of the new cluster. It becomes the leader of the new cluster.
+You can use the configuration of the existing cluster, if it is compatible with the new
+PostgreSQL version. Refer to the documentation on [configuring Patroni clusters](#configuring-patroni-cluster).
+
+In addition to the common configuration, you must apply the following in `gitlab.rb` to:
+
+1. Make sure that the new Patroni cluster uses a different scope. The scope is used to namespace the Patroni settings
+   in Consul, making it possible to use the same Consul cluster for the existing and the new clusters.
+
+   ```ruby
+   patroni['scope'] = 'postgresql_new-ha'
+   ```
+
+1. Make sure that Consul agents don't mix PostgreSQL services offered by the existing and the new Patroni
+   clusters. For this purpose, you must use an internal attribute that is currently undocumented:
+
+   ```ruby
+   consul['internal']['postgresql_service_name'] = 'postgresql_new'
+   ```
+
+#### Start publisher on the existing leader
+
+On the existing leader, run this SQL statement with `gitlab-psql` to start a logical replication publisher:
+
+```sql
+CREATE PUBLICATION patroni_upgrade FOR ALL TABLES;
+```
+
+#### Copy the data from the existing cluster
+
+To dump the current database from the existing cluster, run these commands on the
+**leader** of the new cluster:
+
+1. Optional. Copy global database objects:
+
+   ```shell
+   pg_dumpall -h ${EXISTING_CLUSTER_LEADER} -U gitlab-psql -g | gitlab-psql
+   ```
+
+   You can ignore the errors about existing database objects, such as roles. They are
+   created when the node is configured for the first time.
+
+1. Copy the current database:
+
+   ```shell
+   pg_dump -h ${EXISTING_CLUSTER_LEADER} -U gitlab-psql -d gitlabhq_production -s | gitlab-psql
+   ```
+
+   Depending on the size of your database, this command may take a while to complete.
+
+The `pg_dump` and `pg_dumpall` commands are in `/opt/gitlab/embedded/bin`. In these commands,
+`EXISTING_CLUSTER_LEADER` is the host address of the leader node of the existing cluster.
+
+NOTE:
+The `gitlab-psql` user must be able to authenticate the existing leader from the new leader node.
+
+#### Replicate data from the existing cluster
+
+After taking the initial data dump, you must keep the new leader in sync with the
+latest changes of your existing cluster. On the new leader, run this SQL statement
+with `gitlab-psql` to subscribe to publication of the existing leader:
+
+```sql
+CREATE SUBSCRIPTION patroni_upgrade
+  CONNECTION 'host=EXISTING_CLUSTER_LEADER dbname=gitlabhq_production user=gitlab-psql'
+  PUBLICATION patroni_upgrade;
+```
+
+In this statement, `EXISTING_CLUSTER_LEADER` is the host address of the leader node
+of the existing cluster. You can also use
+[other parameters](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS)
+to change the connection string. For example, you can pass the authentication password.
+
+To check the status of replication, run these queries:
+
+- `SELECT * FROM pg_replication_slots WHERE slot_name = 'patroni_upgrade'` on the existing leader (the publisher).
+- `SELECT * FROM pg_stat_subscription` on the new leader (the subscriber).
+
+#### Grow the new cluster
+
+Configure other nodes of the new cluster in the way you
+[configured the leader](#configure-the-leader-of-the-new-cluster).
+Make sure that you use the same `patroni['scope']` and
+`consul['internal']['postgresql_service_name']`.
+
+What happens here:
+
+- The application still uses the existing leader as its database backend.
+- The logical replication ensures that the new leader keeps in sync.
+- When other nodes are added to the new cluster, Patroni handles
+  the replication to the these nodes.
+
+It is a good idea to wait until the replica nodes of the new cluster are initialized and caught up on the replication
+lag.
+
+#### Switch the application to use the new cluster
+
+Up to this point, you can stop the upgrade procedure without losing data on the
+existing cluster. When you switch the database backend of the application and point
+it to the new cluster, the old cluster does not receive new updates. It falls behind
+the new cluster. After this point, any recovery must be done from the nodes of the new cluster.
+
+To do the switch on **all** PgBouncer nodes:
+
+1. Edit `gitlab.rb` by setting:
+
+   ```ruby
+   consul['watchers'] = %w(postgresql_new)
+   consul['internal']['postgresql_service_name'] = 'postgresql_new'
+   ```
+
+1. Run `gitlab-ctl reconfigure`.
+1. You must also run `rm /var/opt/gitlab/consul/config.d/watcher_postgresql.json`.
+   This is a [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7293).
+
+#### Clean up
+
+After completing these steps, then you can clean up the resources of the old Patroni cluster.
+They are no longer needed. However, before removing the resources, remove the
+logical replication subscription on the new leader by running `DROP SUBSCRIPTION patroni_upgrade`
+with `gitlab-psql`.
 
 ## Troubleshooting
 

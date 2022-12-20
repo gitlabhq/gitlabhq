@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Troubleshooting Dynamic Application Security Testing (DAST) **(ULTIMATE)**
+# Troubleshooting DAST proxy-based analyzer **(ULTIMATE)**
 
 The following troubleshooting scenarios have been collected from customer support cases. If you
 experience a problem not addressed here, or the information here does not fix your problem, create a

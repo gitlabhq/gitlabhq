@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.ciConfig' do
+RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
   include GraphqlHelpers
   include StubRequests
 

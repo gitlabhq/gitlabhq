@@ -1,0 +1,9 @@
+---
+table_name: clusters_applications_fluentd
+gitlab_schema: gitlab_main
+feature_categories: []
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28844
+milestone: '12.10'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63758
+removed_in_milestone:  '14.1'

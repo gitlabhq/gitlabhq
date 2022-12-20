@@ -18,6 +18,7 @@ class PersonalAccessToken < ApplicationRecord
 
   belongs_to :user
 
+  after_initialize :set_default_scopes, if: :persisted?
   before_save :ensure_token
 
   scope :active, -> { not_revoked.not_expired }
@@ -40,8 +41,6 @@ class PersonalAccessToken < ApplicationRecord
 
   validates :scopes, presence: true
   validate :validate_scopes
-
-  after_initialize :set_default_scopes, if: :persisted?
 
   def revoke!
     update!(revoked: true)

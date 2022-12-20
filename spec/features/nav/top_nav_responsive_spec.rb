@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'top nav responsive', :js do
+RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
   include MobileHelpers
 
   let_it_be(:user) { create(:user) }

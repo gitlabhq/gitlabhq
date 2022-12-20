@@ -13,7 +13,7 @@ module Autocomplete
     end
 
     def execute
-      return [] if @search.blank?
+      return Route.none if @search.blank?
 
       Route
         .for_routable(routables)
@@ -30,7 +30,7 @@ module Autocomplete
 
     class NamespacesOnly < self
       def routables
-        return Namespace.without_project_namespaces if current_user.admin?
+        return Namespace.without_project_namespaces if current_user.can_admin_all_resources?
 
         current_user.namespaces
       end
@@ -38,7 +38,7 @@ module Autocomplete
 
     class ProjectsOnly < self
       def routables
-        return Project.all if current_user.admin?
+        return Project.all if current_user.can_admin_all_resources?
 
         current_user.projects
       end

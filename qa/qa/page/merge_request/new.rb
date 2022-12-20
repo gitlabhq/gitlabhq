@@ -13,7 +13,7 @@ module QA
           element :source_branch_dropdown
         end
 
-        view 'app/views/projects/merge_requests/show.html.haml' do
+        view 'app/views/projects/merge_requests/_page.html.haml' do
           element :diffs_tab
         end
 

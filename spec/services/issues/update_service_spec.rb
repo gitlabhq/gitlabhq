@@ -60,7 +60,7 @@ RSpec.describe Issues::UpdateService, :mailer do
           description: 'Also please fix',
           assignee_ids: [user2.id],
           state_event: 'close',
-          label_ids: [label.id],
+          label_ids: [label&.id],
           due_date: Date.tomorrow,
           discussion_locked: true,
           severity: 'low',
@@ -189,6 +189,27 @@ RSpec.describe Issues::UpdateService, :mailer do
           subject { update_issue(confidential: true) }
 
           it_behaves_like 'an incident management tracked event', :incident_management_incident_change_confidential
+
+          it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+            let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+            let(:namespace) { issue.namespace }
+            let(:category) { described_class.to_s }
+            let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }
+            let(:action) { 'incident_management_incident_change_confidential' }
+            let(:opts) do
+              {
+                title: 'New title',
+                description: 'Also please fix',
+                assignee_ids: [user2.id],
+                state_event: 'close',
+                due_date: Date.tomorrow,
+                discussion_locked: true,
+                severity: 'low',
+                milestone_id: milestone.id,
+                add_contacts: [contact.email]
+              }
+            end
+          end
         end
       end
 
@@ -673,6 +694,14 @@ RSpec.describe Issues::UpdateService, :mailer do
           let(:current_user) { user }
 
           it_behaves_like 'an incident management tracked event', :incident_management_incident_assigned
+
+          it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+            let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+            let(:namespace) { issue.namespace }
+            let(:category) { described_class.to_s }
+            let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }
+            let(:action) { "incident_management_incident_assigned" }
+          end
         end
       end
 

@@ -114,6 +114,7 @@ export const MOCK_NAVIGATION = {
     scope: 'projects',
     link: '/search?scope=projects&search=et',
     count_link: '/search/count?scope=projects&search=et',
+    count: '10,000+',
   },
   blobs: {
     label: 'Code',

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'query terraform states' do
+RSpec.describe 'query terraform states', feature_category: :infrastructure_as_code do
   include GraphqlHelpers
   include ::API::Helpers::RelatedResourcesHelpers
 

@@ -21,12 +21,14 @@ module SimpleCovEnv
   def configure_formatter
     SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
 
-    SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
-      SimpleCov::Formatter::SimpleFormatter,
-      SimpleCov::Formatter::HTMLFormatter,
-      SimpleCov::Formatter::CoberturaFormatter,
-      SimpleCov::Formatter::LcovFormatter
-    ])
+    SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(
+      [
+        SimpleCov::Formatter::SimpleFormatter,
+        SimpleCov::Formatter::HTMLFormatter,
+        SimpleCov::Formatter::CoberturaFormatter,
+        SimpleCov::Formatter::LcovFormatter
+      ]
+    )
   end
 
   def configure_job

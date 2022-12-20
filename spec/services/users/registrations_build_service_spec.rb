@@ -16,7 +16,7 @@ RSpec.describe Users::RegistrationsBuildService do
 
     context 'when automatic user confirmation is not enabled' do
       before do
-        stub_application_setting(send_user_confirmation_email: true)
+        stub_application_setting_enum('email_confirmation_setting', 'hard')
       end
 
       context 'when skip_confirmation is true' do
@@ -44,7 +44,7 @@ RSpec.describe Users::RegistrationsBuildService do
 
     context 'when automatic user confirmation is enabled' do
       before do
-        stub_application_setting(send_user_confirmation_email: false)
+        stub_application_setting_enum('email_confirmation_setting', 'off')
       end
 
       context 'when skip_confirmation is true' do

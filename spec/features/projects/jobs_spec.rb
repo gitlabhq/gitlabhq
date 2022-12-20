@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
+RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :projects do
   include Gitlab::Routing
   include ProjectForksHelper
 
@@ -213,10 +213,6 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       before do
         visit project_job_path(project, job)
-      end
-
-      it 'shows retry button' do
-        expect(page).to have_link('Retry')
       end
 
       context 'if job passed' do

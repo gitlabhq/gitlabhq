@@ -34,6 +34,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_many :member_roles }
     it { is_expected.to have_one :cluster_enabled_grant }
     it { is_expected.to have_many(:work_items) }
+    it { is_expected.to have_many :achievements }
 
     it do
       is_expected.to have_one(:ci_cd_settings).class_name('NamespaceCiCdSetting').inverse_of(:namespace).autosave(true)
@@ -1886,6 +1887,30 @@ RSpec.describe Namespace do
       let(:namespace) { user.namespace }
 
       it { is_expected.to be_truthy }
+    end
+
+    context 'when type is a group' do
+      let(:namespace) { create(:group) }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#bot_user_namespace?' do
+    subject { namespace.bot_user_namespace? }
+
+    context 'when owner is a bot user user' do
+      let(:user) { create(:user, :project_bot) }
+      let(:namespace) { user.namespace }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when owner is a non-bot user' do
+      let(:user) { create(:user) }
+      let(:namespace) { user.namespace }
+
+      it { is_expected.to be_falsy }
     end
 
     context 'when type is a group' do

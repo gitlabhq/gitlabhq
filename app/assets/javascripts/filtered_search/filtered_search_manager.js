@@ -10,8 +10,12 @@ import {
   DOWN_KEY_CODE,
 } from '~/lib/utils/keycodes';
 import { __ } from '~/locale';
-import { addClassIfElementExists } from '../lib/utils/dom_utils';
-import { visitUrl, getUrlParamsArray, getParameterByName } from '../lib/utils/url_utility';
+import { addClassIfElementExists } from '~/lib/utils/dom_utils';
+import { visitUrl, getUrlParamsArray, getParameterByName } from '~/lib/utils/url_utility';
+import {
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchContainer from './container';
 import DropdownUtils from './dropdown_utils';
 import eventHub from './event_hub';
@@ -675,7 +679,7 @@ export default class FilteredSearchManager {
           const id = parseInt(value, 10);
           if (usernameParams[id]) {
             hasFilteredSearch = true;
-            const tokenName = 'assignee';
+            const tokenName = TOKEN_TYPE_ASSIGNEE;
             const canEdit = this.canEdit && this.canEdit(tokenName);
             const operator = FilteredSearchVisualTokens.getOperatorToken(usernameParams[id]);
             const valueToken = FilteredSearchVisualTokens.getValueToken(usernameParams[id]);
@@ -688,7 +692,7 @@ export default class FilteredSearchManager {
           const id = parseInt(value, 10);
           if (usernameParams[id]) {
             hasFilteredSearch = true;
-            const tokenName = 'author';
+            const tokenName = TOKEN_TYPE_AUTHOR;
             const canEdit = this.canEdit && this.canEdit(tokenName);
             const operator = FilteredSearchVisualTokens.getOperatorToken(usernameParams[id]);
             const valueToken = FilteredSearchVisualTokens.getValueToken(usernameParams[id]);

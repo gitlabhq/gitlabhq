@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Ml::ExperimentsController do
+RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
   let_it_be(:project_with_feature) { create(:project, :repository) }
   let_it_be(:user) { project_with_feature.first_owner }
   let_it_be(:project_without_feature) do
@@ -17,7 +17,6 @@ RSpec.describe Projects::Ml::ExperimentsController do
 
   let(:params) { basic_params }
   let(:ff_value) { true }
-  let(:threshold) { 4 }
   let(:project) { project_with_feature }
   let(:basic_params) { { namespace_id: project.namespace.to_param, project_id: project } }
 
@@ -48,11 +47,11 @@ RSpec.describe Projects::Ml::ExperimentsController do
     end
 
     it 'does not perform N+1 sql queries' do
-      control_count = ActiveRecord::QueryRecorder.new { list_experiments }
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_experiments }
 
       create_list(:ml_experiments, 2, project: project, user: user)
 
-      expect { list_experiments }.not_to exceed_all_query_limit(control_count).with_threshold(threshold)
+      expect { list_experiments }.not_to exceed_all_query_limit(control_count)
     end
 
     context 'when :ml_experiment_tracking is disabled for the project' do
@@ -77,7 +76,8 @@ RSpec.describe Projects::Ml::ExperimentsController do
       expect(response).to render_template('projects/ml/experiments/show')
     end
 
-    it 'does not perform N+1 sql queries' do
+    # MR removing this xit https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104166
+    xit 'does not perform N+1 sql queries' do
       control_count = ActiveRecord::QueryRecorder.new { show_experiment }
 
       create_list(:ml_candidates, 2, :with_metrics_and_params, experiment: experiment)

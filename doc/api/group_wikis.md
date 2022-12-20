@@ -131,13 +131,13 @@ Update an existing wiki page. At least one parameter is required to update the w
 PUT /groups/:id/wikis/:slug
 ```
 
-| Attribute       | Type           | Required                          | Description                                                                                            |
-| --------------- | -------        | --------------------------------- | -------------------------------                                                                        |
-| `id`            | integer/string | yes                               | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)                          |
-| `content`       | string         | yes if `title` is not provided    | The content of the wiki page                                                                           |
-| `title`         | string         | yes if `content` is not provided  | The title of the wiki page                                                                             |
-| `format`        | string         | no                                | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc` and `org` |
-| `slug`          | string         | yes                               | URL encoded slug (a unique string) of the wiki page. Ex. dir%2Fpage_name                                                        |
+| Attribute | Type           | Required                         | Description |
+|-----------|----------------|----------------------------------|-------------|
+| `id`      | integer/string | yes                              | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding). |
+| `content` | string         | yes if `title` is not provided   | The content of the wiki page. |
+| `title`   | string         | yes if `content` is not provided | The title of the wiki page. |
+| `format`  | string         | no                               | The format of the wiki page. Available formats are `markdown` (default), `rdoc`, `asciidoc`, and `org`. |
+| `slug`    | string         | yes                              | URL encoded slug (a unique string) of the wiki page. For example: `dir%2Fpage_name`. |
 
 ```shell
 curl --request PUT --data "format=rdoc&content=documentation&title=Docs" \

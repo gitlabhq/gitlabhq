@@ -12,7 +12,7 @@ The GitLab documentation is [intended as the single source of truth (SSOT)](http
 In addition to this page, the following resources can help you craft and contribute to documentation:
 
 - [Style Guide](styleguide/index.md) - What belongs in the docs, language guidelines, Markdown standards to follow, links, and more.
-- [Topic type template](structure.md) - Learn about the different types of topics.
+- [Topic types](topic_types/index.md) - Learn about the different types of topics.
 - [Documentation process](workflow.md).
 - [Markdown Guide](../../user/markdown.md) - A reference for all Markdown syntax supported by GitLab.
 - [Site architecture](site_architecture/index.md) - How <https://docs.gitlab.com> is built.
@@ -159,26 +159,17 @@ You can use a Rake task to update the `CODEOWNERS` file.
 
 To update the `CODEOWNERS` file:
 
-1. Open a merge request to update
-  [the Rake task](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/tw/codeowners.rake)
-  with the latest [TW team assignments](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments).
-1. Assign the merge request to a backend maintainer for review and merge.
-1. After the MR is merged, go to the root of the `gitlab` repository.
-1. Run the Rake task and save the output in a file:
-
-   ```shell
-   bundle exec rake tw:codeowners > ~/Desktop/updates.md
-   ```
-
-1. Open the file (for example, `~/Desktop/updates.md`) and copy everything
-   except the errors at the bottom of the file.
-1. Open the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS)
-   file and paste the lines into the `^[Documentation Pages]` section.
-
-   WARNING:
-   The documentation section is not the last section of the `CODEOWNERS` file. Don't
-   delete data that isn't ours!
-
+1. Review the [TW team assignments](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
+   in the [`codeowners.rake`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/tw/codeowners.rake)
+   file. If any assignments have changed:
+   1. Update the `codeowners.rake` file with the changes.
+   1. Assign the merge request to a technical writing manager for review and merge.
+1. After the changes to `codeowners.rake` are merged, go to the root of the `gitlab` repository.
+1. Run the Rake task with this command: `bundle exec rake tw:codeowners`
+1. Review the command output for any pages that need attention to
+   their metadata. Handle any needed changes in a separate merge request.
+1. Add the changes to the CODEOWNERS file to Git: `git add .gitlab/CODEOWNERS`
+1. Commit your changes to your branch, and push your branch up to `origin`.
 1. Create a merge request and assign it to a technical writing manager for review.
 
 ## Move, rename, or delete a page

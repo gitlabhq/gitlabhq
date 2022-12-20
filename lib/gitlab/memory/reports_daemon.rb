@@ -7,9 +7,7 @@ module Gitlab
       DEFAULT_SLEEP_MAX_DELTA_S = 600 # 0..10 minutes
       DEFAULT_SLEEP_BETWEEN_REPORTS_S = 120 # 2 minutes
 
-      DEFAULT_REPORTS_PATH = Dir.tmpdir
-
-      def initialize(**options)
+      def initialize(reporter: nil, reports: nil, **options)
         super
 
         @alive = true
@@ -21,31 +19,20 @@ module Gitlab
         @sleep_between_reports_s =
           ENV['GITLAB_DIAGNOSTIC_REPORTS_SLEEP_BETWEEN_REPORTS_S']&.to_i || DEFAULT_SLEEP_BETWEEN_REPORTS_S
 
-        @reports_path =
-          ENV["GITLAB_DIAGNOSTIC_REPORTS_PATH"] || DEFAULT_REPORTS_PATH
-
-        @reports = [Gitlab::Memory::Reports::JemallocStats.new(reports_path: reports_path)]
-
-        init_prometheus_metrics
+        @reporter = reporter || Reporter.new
+        @reports = reports || [
+          Gitlab::Memory::Reports::JemallocStats.new
+        ]
       end
 
-      attr_reader :sleep_s, :sleep_max_delta_s, :sleep_between_reports_s, :reports_path
+      attr_reader :sleep_s, :sleep_max_delta_s, :sleep_between_reports_s
 
       def run_thread
         while alive
           sleep interval_with_jitter
 
           reports.select(&:active?).each do |report|
-            start_monotonic_time = Gitlab::Metrics::System.monotonic_time
-            start_thread_cpu_time = Gitlab::Metrics::System.thread_cpu_time
-
-            file_path = report.run
-
-            cpu_s = Gitlab::Metrics::System.thread_cpu_duration(start_thread_cpu_time)
-            duration_s = Gitlab::Metrics::System.monotonic_time - start_monotonic_time
-
-            log_report(label: report_label(report), cpu_s: cpu_s, duration_s: duration_s, size: file_size(file_path))
-            @report_duration_counter.increment({ report: report_label(report) }, duration_s)
+            @reporter.run_report(report)
 
             sleep sleep_between_reports_s
           end
@@ -62,44 +49,8 @@ module Gitlab
         sleep_s + rand(sleep_max_delta_s)
       end
 
-      def log_report(label:, duration_s:, cpu_s:, size:)
-        Gitlab::AppLogger.info(
-          message: 'finished',
-          pid: $$,
-          worker_id: worker_id,
-          perf_report: label,
-          duration_s: duration_s.round(2),
-          cpu_s: cpu_s.round(2),
-          perf_report_size_bytes: size
-        )
-      end
-
-      def worker_id
-        ::Prometheus::PidProvider.worker_id
-      end
-
-      def report_label(report)
-        report.class.to_s.demodulize.underscore
-      end
-
       def stop_working
         @alive = false
-      end
-
-      def init_prometheus_metrics
-        default_labels = { pid: worker_id }
-
-        @report_duration_counter = Gitlab::Metrics.counter(
-          :gitlab_diag_report_duration_seconds_total,
-          'Total time elapsed for running diagnostic report',
-          default_labels
-        )
-      end
-
-      def file_size(file_path)
-        File.size(file_path.to_s)
-      rescue Errno::ENOENT
-        0
       end
     end
   end

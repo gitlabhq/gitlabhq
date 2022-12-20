@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelinesFinder do
-  let(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public, :repository) }
   let(:current_user) { nil }
   let(:params) { {} }
 
@@ -239,6 +239,45 @@ RSpec.describe Ci::PipelinesFinder do
 
       it 'returns only the matched pipeline' do
         is_expected.to eq([web_pipeline])
+      end
+    end
+
+    context 'when name is specified' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, name: 'Build pipeline') }
+      let_it_be(:pipeline_other) { create(:ci_pipeline, project: project, name: 'Some other pipeline') }
+
+      let(:params) { { name: 'build Pipeline' } }
+
+      it 'performs case insensitive compare' do
+        is_expected.to contain_exactly(pipeline)
+      end
+
+      context 'when name does not exist' do
+        let(:params) { { name: 'absent-name' } }
+
+        it 'returns empty' do
+          is_expected.to be_empty
+        end
+      end
+
+      context 'when pipeline_name feature flag is off' do
+        before do
+          stub_feature_flags(pipeline_name: false)
+        end
+
+        it 'ignores name parameter' do
+          is_expected.to contain_exactly(pipeline, pipeline_other)
+        end
+      end
+
+      context 'when pipeline_name_search feature flag is off' do
+        before do
+          stub_feature_flags(pipeline_name_search: false)
+        end
+
+        it 'ignores name parameter' do
+          is_expected.to contain_exactly(pipeline, pipeline_other)
+        end
       end
     end
 

@@ -16,6 +16,7 @@ mutation deleteGroupVariable($variable: CiVariable!, $endpoint: String!, $fullPa
             environmentScope
             masked
             protected
+            raw
           }
         }
       }

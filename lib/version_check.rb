@@ -5,6 +5,9 @@ require "base64"
 class VersionCheck
   include ReactiveCaching
 
+  # Increment when format of cache value is changed
+  CACHE_VERSION = 1
+
   ## Version Check Reactive Caching
   ## This cache stores the external API response from https://version.gitlab.com
   ##
@@ -61,7 +64,7 @@ class VersionCheck
   end
 
   def id
-    Gitlab::VERSION
+    [Gitlab::VERSION, Gitlab.revision, CACHE_VERSION].join('-')
   end
 
   def calculate_reactive_cache(*)
@@ -69,13 +72,19 @@ class VersionCheck
 
     case response&.code
     when 200
-      response.body
+      Gitlab::Json.parse(response.body)
+    else
+      { error: 'version check failed', status: response&.code }
     end
+  rescue JSON::ParserError
+    { error: 'parsing version check response failed', status: response&.code }
   end
 
   def response
     with_reactive_cache do |data|
-      Gitlab::Json.parse(data) if data
+      raise InvalidateReactiveCache if !data.is_a?(Hash) || data[:error]
+
+      data
     end
   end
 end

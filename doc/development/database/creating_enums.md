@@ -79,7 +79,7 @@ This works as-is, however, it has a couple of downside that:
 - When it happens, we have to ship a database migration to fix the data integrity,
   which might be impossible if you cannot recover the original value.
 
-Also, you might observe a workaround for this concern by setting an offset in EE's values.
+Also, you might observe a workaround for this concern by setting an offset in the `EE` module's values.
 For example, this example sets `1000` as the offset:
 
 ```ruby

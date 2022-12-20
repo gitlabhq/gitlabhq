@@ -40,29 +40,8 @@ is at:
 https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json.
 ```
 
-The schema rules for custom YAML tags like `!reference` are treated as invalid by your editor until the custom tags are
-set in your editor settings. For example:
-
-- In VS Code, you can set `vscode-yaml` to parse `customTags` in your `settings.json` file:
-
-  ```json
-  "yaml.customTags": [
-     "!reference sequence"
-  ]
-  ```
-
-- In Sublime Text, if you are using the `LSP-yaml` package, you can set `customTags` in your `LSP-yaml` user settings:
-
-  ```json
-  {
-    "settings": {
-      "yaml.customTags": ["!reference sequence"]
-    }
-  }
-  ```
-
 To see the full list of custom tags covered by the CI/CD schema, check the
-latest version of the schema, linked above.
+latest version of the schema.
 
 ### Verify syntax with CI Lint tool
 
@@ -116,7 +95,7 @@ if you are using that type:
 
 Troubleshooting guides are available for some CI/CD features and related topics:
 
-- [Container Registry](../user/packages/container_registry/index.md#troubleshooting-the-gitlab-container-registry)
+- [Container Registry](../user/packages/container_registry/troubleshoot_container_registry.md)
 - [GitLab Runner](https://docs.gitlab.com/runner/faq/)
 - [Merge Trains](pipelines/merge_trains.md#troubleshooting)
 - [Docker Build](docker/using_docker_build.md#troubleshooting)
@@ -362,7 +341,7 @@ To [prevent duplicate pipelines](jobs/job_control.md#avoid-duplicate-pipelines),
 [`workflow: rules`](yaml/index.md#workflow) or rewrite your rules to control
 which pipelines can run.
 
-### Console workaround if job using resource_group gets stuck **(FREE SELF)**
+### Console workaround if job using `resource_group` gets stuck **(FREE SELF)**
 
 ```ruby
 # find resource group by name

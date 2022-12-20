@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs' do
+RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs', feature_category: :source_code_management do
   let!(:user)          { create(:user) }
   let!(:merge_request) { create(:merge_request, importing: true) }
   let!(:project)       { merge_request.target_project }

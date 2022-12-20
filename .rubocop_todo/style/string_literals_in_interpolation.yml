@@ -1,10 +1,9 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/StringLiteralsInInterpolation:
   Exclude:
     - 'app/graphql/mutations/base_mutation.rb'
     - 'app/helpers/colors_helper.rb'
-    - 'app/helpers/todos_helper.rb'
     - 'app/models/application_setting_implementation.rb'
     - 'app/models/ci/namespace_mirror.rb'
     - 'app/models/integrations/campfire.rb'
@@ -21,7 +20,6 @@ Style/StringLiteralsInInterpolation:
     - 'ee/app/models/license.rb'
     - 'ee/app/services/epics/tree_reorder_service.rb'
     - 'ee/lib/ee/api/helpers/issues_helpers.rb'
-    - 'ee/lib/gitlab/elastic/helper.rb'
     - 'ee/lib/tasks/gitlab/elastic.rake'
     - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/features/subscriptions/expiring_subscription_message_spec.rb'
@@ -29,7 +27,6 @@ Style/StringLiteralsInInterpolation:
     - 'lib/api/helpers/snippets_helpers.rb'
     - 'lib/api/validations/validators/check_assignees_count.rb'
     - 'lib/banzai/filter/references/abstract_reference_filter.rb'
-    - 'lib/banzai/filter/syntax_highlight_filter.rb'
     - 'lib/generators/gitlab/usage_metric_definition_generator.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_prometheus_service.rb'
     - 'lib/gitlab/ci/config/entry/job.rb'

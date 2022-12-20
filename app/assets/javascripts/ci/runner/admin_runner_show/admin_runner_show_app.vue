@@ -1,5 +1,6 @@
 <script>
-import { GlBadge, GlTabs, GlTab, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlTabs, GlTab } from '@gitlab/ui';
+import VueRouter from 'vue-router';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { TYPE_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -11,10 +12,27 @@ import RunnerPauseButton from '../components/runner_pause_button.vue';
 import RunnerHeader from '../components/runner_header.vue';
 import RunnerDetails from '../components/runner_details.vue';
 import RunnerJobs from '../components/runner_jobs.vue';
-import { I18N_DETAILS, I18N_FETCH_ERROR } from '../constants';
+import { I18N_DETAILS, I18N_JOBS, I18N_FETCH_ERROR } from '../constants';
 import runnerQuery from '../graphql/show/runner.query.graphql';
 import { captureException } from '../sentry_utils';
 import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
+
+const ROUTE_DETAILS = 'details';
+const ROUTE_JOBS = 'jobs';
+
+const routes = [
+  {
+    path: '/',
+    name: ROUTE_DETAILS,
+    component: RunnerDetails,
+  },
+  {
+    path: '/jobs',
+    name: ROUTE_JOBS,
+    component: RunnerJobs,
+  },
+  { path: '*', redirect: { name: ROUTE_DETAILS } },
+];
 
 export default {
   name: 'AdminRunnerShowApp',
@@ -26,12 +44,10 @@ export default {
     RunnerEditButton,
     RunnerPauseButton,
     RunnerHeader,
-    RunnerDetails,
-    RunnerJobs,
   },
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
+  router: new VueRouter({
+    routes,
+  }),
   props: {
     runnerId: {
       type: String,
@@ -72,11 +88,17 @@ export default {
     jobCount() {
       return formatJobCount(this.runner?.jobCount);
     },
+    tabIndex() {
+      return routes.findIndex(({ name }) => name === this.$route.name);
+    },
   },
   errorCaptured(error) {
     this.reportToSentry(error);
   },
   methods: {
+    goTo(name) {
+      this.$router.push({ name });
+    },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
     },
@@ -85,7 +107,10 @@ export default {
       redirectTo(this.runnersPath);
     },
   },
+  ROUTE_DETAILS,
+  ROUTE_JOBS,
   I18N_DETAILS,
+  I18N_JOBS,
 };
 </script>
 <template>
@@ -98,15 +123,13 @@ export default {
       </template>
     </runner-header>
 
-    <gl-tabs>
-      <gl-tab>
+    <gl-tabs :value="tabIndex">
+      <gl-tab @click="goTo($options.ROUTE_DETAILS)">
         <template #title>{{ $options.I18N_DETAILS }}</template>
-
-        <runner-details v-if="runner" :runner="runner" />
       </gl-tab>
-      <gl-tab>
+      <gl-tab @click="goTo($options.ROUTE_JOBS)">
         <template #title>
-          {{ s__('Runners|Jobs') }}
+          {{ $options.I18N_JOBS }}
           <gl-badge
             v-if="jobCount"
             data-testid="job-count-badge"
@@ -116,9 +139,9 @@ export default {
             {{ jobCount }}
           </gl-badge>
         </template>
-
-        <runner-jobs v-if="runner" :runner="runner" />
       </gl-tab>
+
+      <router-view v-if="runner" :runner="runner" />
     </gl-tabs>
   </div>
 </template>

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 )
 
 var (
@@ -45,6 +46,14 @@ func NewProxy(myURL *url.URL, version string, roundTripper http.RoundTripper, op
 	u.Path = ""
 	p.reverseProxy = httputil.NewSingleHostReverseProxy(&u)
 	p.reverseProxy.Transport = roundTripper
+	chainDirector(p.reverseProxy, func(r *http.Request) {
+		r.Header.Set("Gitlab-Workhorse", p.Version)
+		r.Header.Set("Gitlab-Workhorse-Proxy-Start", fmt.Sprintf("%d", time.Now().UnixNano()))
+
+		for k, v := range p.customHeaders {
+			r.Header.Set(k, v)
+		}
+	})
 
 	for _, option := range options {
 		option(&p)
@@ -54,10 +63,7 @@ func NewProxy(myURL *url.URL, version string, roundTripper http.RoundTripper, op
 		// because of https://github.com/golang/go/issues/28168, the
 		// upstream won't receive the expected Host header unless this
 		// is forced in the Director func here
-		previousDirector := p.reverseProxy.Director
-		p.reverseProxy.Director = func(request *http.Request) {
-			previousDirector(request)
-
+		chainDirector(p.reverseProxy, func(request *http.Request) {
 			// send original host along for the upstream
 			// to know it's being proxied under a different Host
 			// (for redirects and other stuff that depends on this)
@@ -66,27 +72,23 @@ func NewProxy(myURL *url.URL, version string, roundTripper http.RoundTripper, op
 
 			// override the Host with the target
 			request.Host = request.URL.Host
-		}
+		})
 	}
 
 	return &p
 }
 
-func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// Clone request
-	req := *r
-	req.Header = helper.HeaderClone(r.Header)
-
-	// Set Workhorse version
-	req.Header.Set("Gitlab-Workhorse", p.Version)
-	req.Header.Set("Gitlab-Workhorse-Proxy-Start", fmt.Sprintf("%d", time.Now().UnixNano()))
-
-	for k, v := range p.customHeaders {
-		req.Header.Set(k, v)
+func chainDirector(rp *httputil.ReverseProxy, nextDirector func(*http.Request)) {
+	previous := rp.Director
+	rp.Director = func(r *http.Request) {
+		previous(r)
+		nextDirector(r)
 	}
+}
 
+func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if p.AllowResponseBuffering {
-		helper.AllowResponseBuffering(w)
+		nginx.AllowResponseBuffering(w)
 	}
 
 	// If the ultimate client disconnects when the response isn't fully written
@@ -100,5 +102,5 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	p.reverseProxy.ServeHTTP(w, &req)
+	p.reverseProxy.ServeHTTP(w, r)
 }

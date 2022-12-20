@@ -123,14 +123,62 @@ uses a parameter hash.
     end
     ```
 
-## Removing workers
+## Removing worker classes
 
-Try to avoid removing workers and their queues in minor and patch
-releases.
+To remove a worker class, follow these steps over two minor releases:
 
-During online update instance can have pending jobs and removing the queue can
-lead to those jobs being stuck forever. If you can't write migration for those
-Sidekiq jobs, please consider removing the worker in a major release only.
+### In the first minor release
+
+1. Remove any code that enqueues the jobs.
+
+    For example, if there is a UI component or an API endpoint that a user can interact with that results in the worker instance getting enqueued, make sure those surface areas are either removed or updated in a way that the worker instance is no longer enqueued.
+
+    This ensures that instances related to the worker class are no longer being enqueued.
+
+1. Ensure both the frontend and backend code no longer relies on any of the work that used to be done by the worker.
+1. In the relevant worker classes, replace the contents of the `perform` method with a no-op, while keeping any arguments in tact.
+
+    For example, if you're working with the following `ExampleWorker`:
+
+      ```ruby
+        class ExampleWorker
+          def perform(object_id)
+            SomeService.run!(object_id)
+          end
+        end
+      ```
+
+    Implementing the no-op might look like this:
+
+      ```ruby
+        class ExampleWorker
+          def perform(object_id); end
+        end
+      ```
+
+    By implementing this no-op, you can avoid unnecessary cycles once any deprecated jobs that are still enqueued eventually get processed.
+
+### In a subsequent, separate minor release
+
+1. Delete the worker class file and follow the guidance in our [Sidekiq queues documentation](../sidekiq/index.md#sidekiq-queues) around running Rake tasks to regenerate/update related files.
+1. Add a migration (not a post-deployment migration) that uses `sidekiq_remove_jobs`:
+
+    ```ruby
+    class RemoveMyDeprecatedWorkersJobInstances < Gitlab::Database::Migration[2.0]
+      DEPRECATED_JOB_CLASSES = %w[
+        MyDeprecatedWorkerOne
+        MyDeprecatedWorkerTwo
+      ]
+
+      def up
+        sidekiq_remove_jobs(job_klasses: DEPRECATED_JOB_CLASSES)
+      end
+
+      def down
+        # This migration removes any instances of deprecated workers and cannot be undone.
+      end
+    end
+    ```
 
 ## Renaming queues
 
@@ -141,7 +189,7 @@ When renaming queues, use the `sidekiq_queue_migrate` helper migration method
 in a **post-deployment migration**:
 
 ```ruby
-class MigrateTheRenamedSidekiqQueue < Gitlab::Database::Migration[2.0]
+class MigrateTheRenamedSidekiqQueue < Gitlab::Database::Migration[2.1]
   restrict_gitlab_migration gitlab_schema: :gitlab_main
   disable_ddl_transaction!
 

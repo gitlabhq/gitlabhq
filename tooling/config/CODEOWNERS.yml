@@ -56,6 +56,11 @@
         - 'token_access/'
         - 'pipelines/'
         - 'ci/runner/'
+        - 'config/events/'
+        - 'config/audit_events/'
+        - 'runner_token_expiration/'
+        - '*metadata_id_tokens*'
+        - '/app/assets/javascripts/invite_members/'
       patterns:
         - '%{keyword}'
 

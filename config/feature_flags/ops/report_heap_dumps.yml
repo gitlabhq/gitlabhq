@@ -1,0 +1,8 @@
+---
+name: report_heap_dumps
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106406
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385175
+milestone: '15.7'
+type: ops
+group: group::application performance
+default_enabled: false

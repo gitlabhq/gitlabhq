@@ -6,29 +6,29 @@
     .dropdown-menu
       %ul
         %li
-          = link_to 'https://about.gitlab.com/stages-devops-lifecycle/' do
+          = link_to Gitlab::Utils.append_path(promo_url, 'stages-devops-lifecycle') do
             = s_('LoggedOutMarketingHeader|GitLab: the DevOps platform')
         %li
           = link_to explore_root_path do
             = s_('LoggedOutMarketingHeader|Explore GitLab')
         %li
-          = link_to 'https://about.gitlab.com/install/' do
+          = link_to Gitlab::Utils.append_path(promo_url, 'install') do
             = s_('LoggedOutMarketingHeader|Install GitLab')
         %li
-          = link_to 'https://about.gitlab.com/is-it-any-good/' do
+          = link_to Gitlab::Utils.append_path(promo_url, 'is-it-any-good') do
             = s_('LoggedOutMarketingHeader|How GitLab compares')
         %li
-          = link_to 'https://about.gitlab.com/get-started/' do
+          = link_to Gitlab::Utils.append_path(promo_url, 'get-started') do
             = s_('LoggedOutMarketingHeader|Get started')
         %li
-          = link_to 'https://docs.gitlab.com/' do
+          = link_to Gitlab::Saas::doc_url do
             = s_('LoggedOutMarketingHeader|GitLab docs')
         %li
-          = link_to 'https://about.gitlab.com/learn/' do
+          = link_to Gitlab::Utils.append_path(promo_url, 'learn') do
             = s_('LoggedOutMarketingHeader|GitLab Learn')
   %li.gl-mr-3
-    = link_to 'https://about.gitlab.com/pricing/' do
+    = link_to Gitlab::Utils.append_path(promo_url, 'pricing') do
       = s_('LoggedOutMarketingHeader|Pricing')
   %li.gl-mr-3
-    = link_to 'https://about.gitlab.com/sales/' do
+    = link_to Gitlab::Utils.append_path(promo_url, 'sales') do
       = s_('LoggedOutMarketingHeader|Talk to an expert')

@@ -25,6 +25,7 @@ module Gitlab
           end
         end
       end
+
       class StreamError < StandardError
         attr_reader :response_body
 
@@ -33,6 +34,7 @@ module Gitlab
           @response_body = response_body
         end
       end
+
       class ChunkStream
         DEFAULT_BUFFER_SIZE = 128.kilobytes
 

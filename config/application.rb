@@ -284,6 +284,8 @@ module Gitlab
     config.assets.precompile << "page_bundles/incident_management_list.css"
     config.assets.precompile << "page_bundles/incidents.css"
     config.assets.precompile << "page_bundles/issues_analytics.css"
+    config.assets.precompile << "page_bundles/issuable.css"
+    config.assets.precompile << "page_bundles/issuable_list.css"
     config.assets.precompile << "page_bundles/issues_list.css"
     config.assets.precompile << "page_bundles/issues_show.css"
     config.assets.precompile << "page_bundles/jira_connect.css"
@@ -316,13 +318,16 @@ module Gitlab
     config.assets.precompile << "page_bundles/roadmap.css"
     config.assets.precompile << "page_bundles/requirements.css"
     config.assets.precompile << "page_bundles/runner_details.css"
+    config.assets.precompile << "page_bundles/search.css"
     config.assets.precompile << "page_bundles/security_dashboard.css"
     config.assets.precompile << "page_bundles/security_discover.css"
+    config.assets.precompile << "page_bundles/settings.css"
     config.assets.precompile << "page_bundles/signup.css"
     config.assets.precompile << "page_bundles/terminal.css"
     config.assets.precompile << "page_bundles/terms.css"
     config.assets.precompile << "page_bundles/todos.css"
     config.assets.precompile << "page_bundles/tree.css"
+    config.assets.precompile << "page_bundles/users.css"
     config.assets.precompile << "page_bundles/wiki.css"
     config.assets.precompile << "page_bundles/work_items.css"
     config.assets.precompile << "page_bundles/xterm.css"
@@ -333,6 +338,7 @@ module Gitlab
     config.assets.precompile << "disable_animations.css"
     config.assets.precompile << "test_environment.css"
     config.assets.precompile << "snippets.css"
+    config.assets.precompile << "fonts.css"
     config.assets.precompile << "locale/**/app.js"
     config.assets.precompile << "emoji_sprites.css"
     config.assets.precompile << "errors.css"
@@ -343,6 +349,11 @@ module Gitlab
     config.assets.precompile << "highlight/themes/*.css"
     config.assets.precompile << "highlight/diff_custom_colors_addition.css"
     config.assets.precompile << "highlight/diff_custom_colors_deletion.css"
+
+    # Import woff2 for fonts
+    config.assets.paths << "#{config.root}/node_modules/@gitlab/fonts/"
+    config.assets.precompile << "gitlab-sans/*.woff2"
+    config.assets.precompile << "jetbrains-mono/*.woff2"
 
     # Import gitlab-svgs directly from vendored directory
     config.assets.paths << "#{config.root}/node_modules/@gitlab/svgs/dist"
@@ -415,6 +426,21 @@ module Gitlab
           headers: :any,
           methods: :any,
           expose: headers_to_expose
+      end
+
+      allow do
+        origins { |source, env| source == Gitlab::CurrentSettings.jira_connect_proxy_url }
+        resource '/-/jira_connect/oauth_application_id', headers: :any, credentials: false, methods: %i(get options)
+      end
+
+      allow do
+        origins { |source, env| source == Gitlab::CurrentSettings.jira_connect_proxy_url }
+        resource '/-/jira_connect/subscriptions.json', headers: :any, credentials: false, methods: %i(get options)
+      end
+
+      allow do
+        origins { |source, env| source == Gitlab::CurrentSettings.jira_connect_proxy_url }
+        resource '/-/jira_connect/subscriptions/*', headers: :any, credentials: false, methods: %i(delete options)
       end
 
       # Cross-origin requests must be enabled for the Authorization code with PKCE OAuth flow when used from a browser.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::ParentLinks::CreateService do
+RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfolio_management do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:guest) { create(:user) }
@@ -117,7 +117,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
         end
 
         it 'returns error status' do
-          error = "#{issue.to_reference} cannot be added: only Task can be assigned as a child in hierarchy.. " \
+          error = "#{issue.to_reference} cannot be added: is not allowed to add this type of parent. " \
             "#{other_project_task.to_reference} cannot be added: parent must be in the same project as child."
 
           is_expected.to eq(service_error(error, http_status: 422))
@@ -139,7 +139,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
         let(:params) { { target_issuable: task1 } }
 
         it 'returns error status' do
-          error = "#{task1.to_reference} cannot be added: only Issue and Incident can be parent of Task."
+          error = "#{task1.to_reference} cannot be added: is not allowed to add this type of parent"
 
           is_expected.to eq(service_error(error, http_status: 422))
         end

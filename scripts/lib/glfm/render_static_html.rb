@@ -23,8 +23,8 @@ require_relative 'shared'
 # the API and obtain the response.
 #
 # It is intended to be invoked as a helper subprocess from the `update_example_snapshots.rb`
-# script class. It's not intended to be run or used directly. This usage is also reinforced
-# by not naming the file with a `_spec.rb` ending.
+# and `update_specification.rb` script classes. It's not intended to be run or used directly.
+# This usage is also reinforced by not naming the file with a `_spec.rb` ending.
 RSpec.describe 'Render Static HTML', :api, type: :request do
   include Glfm::Constants
   include Glfm::Shared

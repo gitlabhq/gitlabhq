@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillClustersIntegrationPrometheusEnabled, :migration do
+RSpec.describe BackfillClustersIntegrationPrometheusEnabled, :migration, feature_category: :clusters_applications_prometheus do
   def create_cluster!(label = rand(2**64).to_s)
     table(:clusters).create!(
       name: "cluster: #{label}",

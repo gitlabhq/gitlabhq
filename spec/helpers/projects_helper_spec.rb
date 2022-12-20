@@ -404,10 +404,6 @@ RSpec.describe ProjectsHelper do
       Project.all
     end
 
-    before do
-      stub_feature_flags(project_list_filter_bar: false)
-    end
-
     it 'returns true when there are projects' do
       expect(helper.show_projects?(projects, {})).to eq(true)
     end
@@ -963,7 +959,6 @@ RSpec.describe ProjectsHelper do
         lfsEnabled: !!project.lfs_enabled,
         emailsDisabled: project.emails_disabled?,
         metricsDashboardAccessLevel: project.project_feature.metrics_dashboard_access_level,
-        operationsAccessLevel: project.project_feature.operations_access_level,
         showDefaultAwardEmojis: project.show_default_award_emojis?,
         securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
         containerRegistryAccessLevel: project.project_feature.container_registry_access_level,
@@ -1335,6 +1330,27 @@ RSpec.describe ProjectsHelper do
         graph_ref: ref,
         graph_csv_path: start_with(daily_coverage_options.fetch(:download_path))
       )
+    end
+  end
+
+  describe '#fork_divergence_message' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:behind, :ahead, :message) do
+      0 | 0 | 'Up to date with upstream repository'
+      1 | 0 | '1 commit behind upstream repository'
+      2 | 0 | '2 commits behind upstream repository'
+      0 | 1 | '1 commit ahead of upstream repository'
+      0 | 2 | '2 commits ahead of upstream repository'
+      5 | 7 | '5 commits behind, 7 commits ahead of upstream repository'
+      nil | 7 | 'Fork has diverged from upstream repository'
+      7 | nil | 'Fork has diverged from upstream repository'
+    end
+
+    with_them do
+      it 'returns message based on behind/ahead values' do
+        expect(helper.fork_divergence_message({ behind: behind, ahead: ahead })).to eq(message)
+      end
     end
   end
 

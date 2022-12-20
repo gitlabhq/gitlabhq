@@ -2,7 +2,7 @@
 
 module Groups
   module GroupLinks
-    class UpdateService < BaseService
+    class UpdateService < ::Groups::BaseService
       def initialize(group_link, user = nil)
         super(group_link.shared_group, user)
 

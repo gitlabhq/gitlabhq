@@ -149,7 +149,7 @@ function renderLink(row, data, { options, group, index }) {
 }
 
 function getOptionRenderer({ options, instance }) {
-  return options.renderRow && ((li, data) => options.renderRow(data, instance));
+  return options.renderRow && ((li, data, params) => options.renderRow(data, instance, params));
 }
 
 function getRenderer(data, params) {

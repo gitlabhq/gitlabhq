@@ -170,7 +170,7 @@ module QA
           # wait for the page to reload after deletion
           wait_until(reload: false) do
             has_no_element?(:delete_snippet_button) &&
-                has_no_element?(:snippet_action_button, action: 'Delete')
+              has_no_element?(:snippet_action_button, action: 'Delete')
           end
         end
 

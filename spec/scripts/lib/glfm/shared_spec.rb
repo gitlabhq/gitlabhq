@@ -10,7 +10,7 @@ RSpec.describe Glfm::Shared do
   end
 
   describe '#write_file' do
-    it 'works' do
+    it 'creates the file' do
       filename = Dir::Tmpname.create('basename') do |path|
         instance.write_file(path, 'test')
       end
@@ -20,7 +20,7 @@ RSpec.describe Glfm::Shared do
   end
 
   describe '#run_external_cmd' do
-    it 'works' do
+    it 'runs the external command' do
       expect(instance.run_external_cmd('echo "hello"')).to eq("hello\n")
     end
 
@@ -35,7 +35,7 @@ RSpec.describe Glfm::Shared do
   end
 
   describe '#dump_yaml_with_formatting' do
-    it 'works' do
+    it 'returns formatted yaml' do
       hash = { a: 'b' }
       yaml = instance.dump_yaml_with_formatting(hash, literal_scalars: true)
       expect(yaml).to eq("---\na: |-\n  b\n")

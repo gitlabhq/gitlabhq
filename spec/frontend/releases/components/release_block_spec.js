@@ -1,5 +1,4 @@
 import { mount } from '@vue/test-utils';
-import $ from 'jquery';
 import { nextTick } from 'vue';
 import originalOneReleaseQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release.query.graphql.json';
 import { convertOneReleaseGraphQLResponse } from '~/releases/util';
@@ -10,6 +9,9 @@ import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('Release block', () => {
   let wrapper;
@@ -34,7 +36,6 @@ describe('Release block', () => {
   const editButton = () => wrapper.find('.js-edit-button');
 
   beforeEach(() => {
-    jest.spyOn($.fn, 'renderGFM');
     release = convertOneReleaseGraphQLResponse(originalOneReleaseQueryResponse).data;
   });
 
@@ -62,7 +63,7 @@ describe('Release block', () => {
 
     it('renders release description', () => {
       expect(wrapper.vm.$refs['gfm-content']).toBeDefined();
-      expect($.fn.renderGFM).toHaveBeenCalledTimes(1);
+      expect(renderGFM).toHaveBeenCalledTimes(1);
     });
 
     it('renders release date', () => {

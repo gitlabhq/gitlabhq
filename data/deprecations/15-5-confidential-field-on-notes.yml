@@ -1,4 +1,4 @@
-- name: 'GraphQL field `confidential` changed to `internal` on notes'
+- title: 'GraphQL field `confidential` changed to `internal` on notes'
   announcement_milestone: '15.5'
   announcement_date: '2022-10-22'
   removal_milestone: '16.0'

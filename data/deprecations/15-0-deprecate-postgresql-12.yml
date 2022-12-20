@@ -1,4 +1,4 @@
-- name: "PostgreSQL 12 deprecated"
+- title: "PostgreSQL 12 deprecated"
   announcement_milestone: "15.0"
   announcement_date: "2022-05-22"
   removal_milestone: "16.0"

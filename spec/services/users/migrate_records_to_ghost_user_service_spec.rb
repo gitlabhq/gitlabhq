@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Users::MigrateRecordsToGhostUserService do
+  include BatchDestroyDependentAssociationsHelper
+
   let!(:user) { create(:user) }
   let(:service) { described_class.new(user, admin, execution_tracker) }
   let(:execution_tracker) { instance_double(::Gitlab::Utils::ExecutionTracker, over_limit?: false) }
@@ -125,6 +127,12 @@ RSpec.describe Users::MigrateRecordsToGhostUserService do
         let(:created_record) { create(:review, author: user) }
       end
     end
+
+    context 'for releases' do
+      include_examples 'migrating records to the ghost user', Release, [:author] do
+        let(:created_record) { create(:release, author: user) }
+      end
+    end
   end
 
   context 'on post-migrate cleanups' do
@@ -149,12 +157,6 @@ RSpec.describe Users::MigrateRecordsToGhostUserService do
       # rubocop:disable Layout/LineLength
       def nullify_in_batches_regexp(table, column, user, batch_size: 100)
         %r{^UPDATE "#{table}" SET "#{column}" = NULL WHERE "#{table}"."id" IN \(SELECT "#{table}"."id" FROM "#{table}" WHERE "#{table}"."#{column}" = #{user.id} LIMIT #{batch_size}\)}
-      end
-
-      def delete_in_batches_regexps(table, column, user, items, batch_size: 1000)
-        select_query = %r{^SELECT "#{table}".* FROM "#{table}" WHERE "#{table}"."#{column}" = #{user.id}.*ORDER BY "#{table}"."id" ASC LIMIT #{batch_size}}
-
-        [select_query] + items.map { |item| %r{^DELETE FROM "#{table}" WHERE "#{table}"."id" = #{item.id}} }
       end
       # rubocop:enable Layout/LineLength
 

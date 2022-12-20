@@ -75,15 +75,6 @@ RSpec.describe Gitlab::Ci::Trace::Archive do
           include_context 'with FIPS'
         end
 
-        context 'with background_upload enabled' do
-          before do
-            stub_artifacts_object_storage(background_upload: true)
-          end
-
-          it_behaves_like 'skips validations'
-          include_context 'with FIPS'
-        end
-
         context 'with direct_upload enabled' do
           before do
             stub_artifacts_object_storage(direct_upload: true)

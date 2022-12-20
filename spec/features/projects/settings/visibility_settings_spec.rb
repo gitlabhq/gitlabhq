@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > Visibility settings', :js do
+RSpec.describe 'Projects > Settings > Visibility settings', :js, feature_category: :projects do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace, visibility_level: 20) }
 
@@ -26,26 +26,6 @@ RSpec.describe 'Projects > Settings > Visibility settings', :js do
 
       expect(visibility_select.value).to eq '0'
       expect(visibility_select_container).to have_content 'Only accessible by project members. Membership must be explicitly granted to each user.'
-    end
-
-    context 'builds select' do
-      it 'hides builds select section' do
-        find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .gl-toggle').click
-
-        visit project_settings_merge_requests_path(project)
-
-        expect(page).to have_selector('.builds-feature', visible: false)
-      end
-
-      context 'given project with builds_disabled access level' do
-        let(:project) { create(:project, :builds_disabled, namespace: user.namespace) }
-
-        it 'hides builds select section' do
-          visit project_settings_merge_requests_path(project)
-
-          expect(page).to have_selector('.builds-feature', visible: false)
-        end
-      end
     end
 
     context 'disable email notifications' do

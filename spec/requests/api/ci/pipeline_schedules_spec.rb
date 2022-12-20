@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::PipelineSchedules do
+RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integration do
   let_it_be(:developer) { create(:user) }
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, public_builds: false) }

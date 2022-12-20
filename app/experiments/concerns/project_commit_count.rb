@@ -10,9 +10,9 @@ module ProjectCommitCount
     return default_count unless root_ref
 
     Gitlab::GitalyClient::CommitService.new(raw_repo).commit_count(root_ref, {
-      all: true, # include all branches
-      max_count: max_count # limit as an optimization
-    })
+                                                                     all: true, # include all branches
+                                                                     max_count: max_count # limit as an optimization
+                                                                   })
   rescue StandardError => e
     Gitlab::ErrorTracking.track_exception(e, exception_details)
 

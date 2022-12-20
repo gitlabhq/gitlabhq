@@ -47,7 +47,7 @@ the longest common prefix, grouping similar queries together.
 
 In some cases, N+1 specs have been written to include three requests: first one to
 warm the cache, second one to establish a control, third one to validate that
-ther are no N+1 queries. Rather than make an extra request to warm the cache, prefer two requests
+there are no N+1 queries. Rather than make an extra request to warm the cache, prefer two requests
 (control and test) and configure your test to ignore [cached queries](#cached-queries) in N+1 specs.
 
 ## Cached queries

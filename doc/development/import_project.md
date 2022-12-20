@@ -57,7 +57,7 @@ This method takes longer to import than the other methods and depends on several
 
 This script was introduced in GitLab 12.6 for importing large GitLab project exports.
 
-As part of this script we also disable direct and background upload to avoid situations where a huge archive is being uploaded to GCS (while being inside a transaction, which can cause idle transaction timeouts).
+As part of this script we also disable direct upload to avoid situations where a huge archive is being uploaded to GCS (while being inside a transaction, which can cause idle transaction timeouts).
 
 We can run this script from the terminal:
 

@@ -180,7 +180,7 @@ The `Pajamas::CheckboxComponent` follows the [Pajamas Checkbox](https://design.g
 
 NOTE:
 `Pajamas::CheckboxComponent` is used internally by the [GitLab UI form builder](haml.md#use-the-gitlab-ui-form-builder) and requires an instance of [ActionView::Helpers::FormBuilder](https://api.rubyonrails.org/v6.1.0/classes/ActionView/Helpers/FormBuilder.html) to be passed as the `form` argument.
-It is preferred to use the [gitlab_ui_checkbox_component](haml.md#gitlab_ui_checkbox_component) method to render this ViewComponent.
+It is preferred to use the [`gitlab_ui_checkbox_component`](haml.md#gitlab_ui_checkbox_component) method to render this ViewComponent.
 To use a checkbox without an instance of [ActionView::Helpers::FormBuilder](https://api.rubyonrails.org/v6.1.0/classes/ActionView/Helpers/FormBuilder.html) use [CheckboxTagComponent](#checkbox-tag).
 
 For the full list of options, see its

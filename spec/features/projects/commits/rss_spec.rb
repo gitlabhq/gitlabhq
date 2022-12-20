@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project Commits RSS' do
+RSpec.describe 'Project Commits RSS', feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let(:path) { project_commits_path(project, :master) }

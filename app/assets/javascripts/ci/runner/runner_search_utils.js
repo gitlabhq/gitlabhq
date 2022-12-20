@@ -176,6 +176,7 @@ export const fromSearchToUrl = (
     [PARAM_KEY_RUNNER_TYPE]: [],
     [PARAM_KEY_MEMBERSHIP]: [],
     [PARAM_KEY_TAG]: [],
+    [PARAM_KEY_PAUSED]: [],
     // Current filters
     ...filterToQueryObject(processFilters(filters), {
       filteredSearchTermKey: PARAM_KEY_SEARCH,

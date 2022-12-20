@@ -9,10 +9,13 @@ RSpec.describe 'projects/issues/_related_branches' do
   let(:status) { pipeline.detailed_status(build(:user)) }
 
   before do
-    assign(:related_branches, [
-      { name: 'other', link: 'link-to-other', pipeline_status: nil },
-      { name: 'feature', link: 'link-to-feature', pipeline_status: status }
-    ])
+    assign(:related_branches,
+      [
+        { name: 'other', link: 'link-to-other', pipeline_status: nil },
+        { name: 'feature', link: 'link-to-feature', pipeline_status: status }
+
+      ]
+    )
 
     render
   end

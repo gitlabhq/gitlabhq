@@ -1,8 +1,0 @@
----
-name: global_search_error_rate_sli
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96667
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/373800
-milestone: '15.4'
-type: development
-group: group::application performance
-default_enabled: false

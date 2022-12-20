@@ -41,6 +41,9 @@
         "before_script": {
           "$ref": "#/definitions/before_script"
         },
+        "hooks": {
+          "$ref": "#/definitions/hooks"
+        },
         "cache": {
           "$ref": "#/definitions/cache"
         },
@@ -202,25 +205,11 @@
         "when": {
           "markdownDescription": "Configure when artifacts are uploaded depended on job status. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#artifactswhen).",
           "default": "on_success",
-          "oneOf": [
-            {
-              "enum": [
-                "on_success"
-              ],
-              "description": "Upload artifacts only when the job succeeds (this is the default)."
-            },
-            {
-              "enum": [
-                "on_failure"
-              ],
-              "description": "Upload artifacts only when the job fails."
-            },
-            {
-              "enum": [
-                "always"
-              ],
-              "description": "Upload artifacts regardless of job status."
-            }
+          "type": "string",
+          "enum": [
+            "on_success",
+            "on_failure",
+            "always"
           ]
         },
         "expire_in": {
@@ -347,10 +336,10 @@
     "include_item": {
       "oneOf": [
         {
-          "description": "Will infer the method based on the value. E.g. `https://...` strings will be of type `include:remote`, and `/templates/...` will be of type `include:local`.",
+          "description": "Will infer the method based on the value. E.g. `https://...` strings will be of type `include:remote`, and `/templates/...` or `templates/...` will be of type `include:local`.",
           "type": "string",
           "format": "uri-reference",
-          "pattern": "^(https?://|/).+\\.ya?ml$"
+          "pattern": "^(https?://|/?.?-?(?!\\w+://)\\w).+\\.ya?ml$"
         },
         {
           "type": "object",
@@ -585,56 +574,98 @@
         ]
       }
     },
+    "id_tokens": {
+      "type": "object",
+      "markdownDescription": "Defines JWTs to be injected as environment variables.",
+      "patternProperties": {
+        ".*": {
+          "type": "object",
+          "properties": {
+            "aud": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                }
+              ]
+            }
+          },
+          "required": [
+            "aud"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
     "secrets": {
       "type": "object",
       "markdownDescription": "Defines secrets to be injected as environment variables. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#secrets).",
-      "additionalProperties": {
-        "type": "object",
-        "description": "Environment variable name",
-        "properties": {
-          "vault": {
-            "oneOf": [
-              {
-                "type": "string",
-                "description": "The secret to be fetched from Vault (e.g. 'production/db/password@ops' translates to secret 'ops/data/production/db', field `password`)"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "engine": {
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "path": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "name",
-                      "path"
-                    ]
-                  },
-                  "path": {
-                    "type": "string"
-                  },
-                  "field": {
-                    "type": "string"
-                  }
+      "patternProperties": {
+        ".*": {
+          "type": "object",
+          "properties": {
+            "vault": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "markdownDescription": "The secret to be fetched from Vault (e.g. 'production/db/password@ops' translates to secret 'ops/data/production/db', field `password`). [Learn More](https://docs.gitlab.com/ee/ci/yaml/#secretsvault)"
                 },
-                "required": [
-                  "engine",
-                  "path",
-                  "field"
-                ]
-              }
-            ]
-          }
-        },
-        "required": [
-          "vault"
-        ]
+                {
+                  "type": "object",
+                  "properties": {
+                    "engine": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "path": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "path"
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "field": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "engine",
+                    "path",
+                    "field"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "file": {
+              "type": "boolean",
+              "default": true,
+              "markdownDescription": "Configures the secret to be stored as either a file or variable type CI/CD variable. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#secretsfile)"
+            },
+            "token": {
+              "type": "string",
+              "description": "Specifies the JWT variable that should be used to authenticate with Hashicorp Vault."
+            }
+          },
+          "required": [
+            "vault"
+          ],
+          "additionalProperties": false
+        }
       }
     },
     "before_script": {
@@ -739,7 +770,17 @@
               "type": "object",
               "properties": {
                 "value": {
-                  "type": "string"
+                  "type": "string",
+                  "markdownDescription": "Default value of the variable. If used with `options`, `value` must be included in the array. [Learn More](https://docs.gitlab.com/ee/ci/pipelines/index.html#prefill-variables-in-manual-pipelines)"
+                },
+                "options": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "markdownDescription": "A list of predefined values that users can select from in the **Run pipeline** page when running a pipeline manually. [Learn More](https://docs.gitlab.com/ee/ci/pipelines/index.html#configure-a-list-of-selectable-values-for-a-prefilled-variable)"
                 },
                 "description": {
                   "type": "string",
@@ -959,6 +1000,7 @@
           "default": false
         },
         "when": {
+          "type": "string",
           "markdownDescription": "Defines when to save the cache, based on the status of the job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cachewhen).",
           "default": "on_success",
           "enum": [
@@ -1200,6 +1242,9 @@
         "after_script": {
           "$ref": "#/definitions/after_script"
         },
+        "hooks": {
+          "$ref": "#/definitions/hooks"
+        },
         "rules": {
           "$ref": "#/definitions/rules"
         },
@@ -1208,6 +1253,9 @@
         },
         "cache": {
           "$ref": "#/definitions/cache"
+        },
+        "id_tokens": {
+          "$ref": "#/definitions/id_tokens"
         },
         "secrets": {
           "$ref": "#/definitions/secrets"
@@ -1861,6 +1909,39 @@
           }
         ]
       }
+    },
+    "hooks": {
+      "type": "object",
+      "markdownDescription": "Specifies lists of commands to execute on the runner at certain stages of job execution. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#hooks).",
+      "properties": {
+        "pre_get_sources_script": {
+          "markdownDescription": "Specifies a list of commands to execute on the runner before updating the Git repository and any submodules. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#hookspre_get_sources_script).",
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "minItems": 1
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
     }
   }
 }

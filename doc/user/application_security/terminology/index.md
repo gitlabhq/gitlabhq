@@ -83,11 +83,6 @@ once.
 
 A finding that doesn't exist but is incorrectly reported as existing.
 
-### Feedback
-
-Feedback the user provides about a finding. Types of feedback include dismissal, creating an issue,
-or creating a merge request.
-
 ### Finding
 
 An asset that has the potential to be vulnerable, identified in a project by an analyzer. Assets
@@ -95,6 +90,11 @@ include but are not restricted to source code, binary packages, containers, depe
 applications, and infrastructure.
 
 Findings are all potential vulnerability items scanners identify in MRs/feature branches. Only after merging to default does a finding become a [vulnerability](#vulnerability).
+
+You can interact with vulnerability findings in two ways. 
+
+1. You can open an issue or merge request for the vulnerability finding.
+1. You can dismiss the vulnerability finding. Dismissing the finding hides it from the default views.
 
 ### Grouping
 
@@ -164,15 +164,15 @@ table.package-managers-and-types ul {
   <tbody>
     <tr>
       <td>gem</td>
-      <td><a href="https://bundler.io/">bundler</a></td>
+      <td><a href="https://bundler.io/">Bundler</a></td>
     </tr>
     <tr>
-      <td>packagist</td>
-      <td><a href="https://getcomposer.org/">composer</a></td>
+      <td>Packagist</td>
+      <td><a href="https://getcomposer.org/">Composer</a></td>
     </tr>
     <tr>
-      <td>conan</td>
-      <td><a href="https://conan.io/">conan</a></td>
+      <td>Conan</td>
+      <td><a href="https://conan.io/">Conan</a></td>
     </tr>
     <tr>
       <td>go</td>
@@ -180,10 +180,10 @@ table.package-managers-and-types ul {
     </tr>
     <tr>
       <td rowspan="3">maven</td>
-      <td><a href="https://gradle.org/">gradle</a></td>
+      <td><a href="https://gradle.org/">Gradle</a></td>
     </tr>
     <tr>
-      <td><a href="https://maven.apache.org/">maven</a></td>
+      <td><a href="https://maven.apache.org/">Maven</a></td>
     </tr>
     <tr>
       <td><a href="https://www.scala-sbt.org">sbt</a></td>
@@ -196,12 +196,12 @@ table.package-managers-and-types ul {
       <td><a href="https://classic.yarnpkg.com/en">yarn</a></td>
     </tr>
     <tr>
-      <td>nuget</td>
-      <td><a href="https://www.nuget.org/">nuget</a></td>
+      <td>NuGet</td>
+      <td><a href="https://www.nuget.org/">NuGet</a></td>
     </tr>
     <tr>
-      <td rowspan="4">pypi</td>
-      <td><a href="https://setuptools.pypa.io/en/latest/">setuptools</a></td>
+      <td rowspan="4">PyPI</td>
+      <td><a href="https://setuptools.pypa.io/en/latest/">Setuptools</a></td>
     </tr>
     <tr>
       <td><a href="https://pip.pypa.io/en/stable">pip</a></td>

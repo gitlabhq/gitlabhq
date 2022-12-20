@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
       end
 
       def method_name
-        strong_memoize(:method_name) do
+        strong_memoize(:method_name) do # rubocop: disable Gitlab/StrongMemoizeAttr
           trace << value
           value
         end
@@ -59,22 +59,19 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
 
       protected
 
-      def private_method
-      end
+      def private_method; end
       private :private_method
       strong_memoize_attr :private_method
 
       public
 
-      def protected_method
-      end
+      def protected_method; end
       protected :protected_method
       strong_memoize_attr :protected_method
 
       private
 
-      def public_method
-      end
+      def public_method; end
       public :public_method
       strong_memoize_attr :public_method
     end
@@ -219,6 +216,10 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
         it 'calls the existing .method_added' do
           expect(klass.method_added_list).to include(:method_name_attr)
         end
+
+        it 'retains method arity' do
+          expect(klass.instance_method(member_name).arity).to eq(0)
+        end
       end
 
       context "memoized before method definition with different member name and value #{value}" do
@@ -278,6 +279,23 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
 
       it 'fails when strong-memoizing a nonexistent method' do
         expect { subject }.to raise_error(NameError, %r{undefined method `nonexistent_method' for class})
+      end
+    end
+
+    context 'when memoized method has parameters' do
+      it 'raises an error' do
+        expected_message = /Using `strong_memoize_attr` on methods with parameters is not supported/
+
+        expect do
+          strong_memoize_class = described_class
+
+          Class.new do
+            include strong_memoize_class
+
+            def method_with_parameters(params); end
+            strong_memoize_attr :method_with_parameters
+          end
+        end.to raise_error(RuntimeError, expected_message)
       end
     end
   end

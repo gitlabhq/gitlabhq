@@ -29,6 +29,5 @@ your Pages website.
 For every change pushed to your repository, GitLab CI/CD runs a new pipeline
 that immediately publishes your changes to the Pages site.
 
-To view the HTMl and other assets that were created for the site,
-go to the **Pipelines** tab, view the job, and on the right side,
-select **Download artifacts**.
+To view the HTML and other assets that were created for the site,
+[download the job artifacts](../../../../ci/pipelines/job_artifacts.md#download-job-artifacts).

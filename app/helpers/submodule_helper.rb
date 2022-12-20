@@ -75,7 +75,7 @@ module SubmoduleHelper
     return true if url_no_dotgit == [Gitlab.config.gitlab.url, '/', namespace, '/',
                                      project].join('')
 
-    url_with_dotgit = url_no_dotgit + '.git'
+    url_with_dotgit = "#{url_no_dotgit}.git"
     url_with_dotgit == Gitlab::RepositoryUrlBuilder.build([namespace, '/', project].join(''))
   end
 
@@ -108,7 +108,7 @@ module SubmoduleHelper
 
   def relative_self_links(relative_path, commit, old_commit, project)
     relative_path = relative_path.rstrip
-    absolute_project_path = "/" + project.full_path
+    absolute_project_path = "/#{project.full_path}"
 
     # Resolve `relative_path` to target path
     # Assuming `absolute_project_path` is `/g1/p1`:

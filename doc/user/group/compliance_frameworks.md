@@ -21,13 +21,27 @@ Group owners can create, edit, and delete compliance frameworks:
 1. Expand the **Compliance frameworks** section.
 1. Create, edit, or delete compliance frameworks.
 
-## Set a default compliance framework
+## Default compliance frameworks
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375036) in GitLab 15.6.
 
 Group owners can set a default compliance framework. The default framework is applied to all the new projects
 that are created within that group. It does not affect the framework applied to the existing projects. The default
 framework cannot be deleted.
+
+A compliance framework that is set to default has a **default** label.
+
+### Set and remove as default
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375038) in GitLab 15.7.
+
+Group owners can set a compliance framework as default (or remove the setting):
+
+1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Compliance frameworks** section and locate the compliance framework to set (or remove) as default.
+1. Select the vertical ellipsis (**{ellipsis_v}**) for the compliance frame and then select **Set default** (or
+   **Remove default**).
 
 ### Example GraphQL mutations for setting a default compliance framework
 
@@ -191,7 +205,7 @@ When creating such an MR against a project with CF pipelines, the above snippet 
 This is because in the context of the target project, `$CI_COMMIT_REF_NAME` evaluates to a non-existing branch name.
 
 To get the correct context, use `$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH` instead of `$CI_PROJECT_PATH`.
-This variable is only availabe in
+This variable is only available in
 [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md).
 
 For example, for a configuration that supports both merge request pipelines originating in project forks and branch pipelines,

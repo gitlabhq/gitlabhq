@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'New/edit issue', :js do
+RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   include ActionView::Helpers::JavaScriptHelper
 
   let_it_be(:project)   { create(:project, :repository) }
@@ -43,7 +43,7 @@ RSpec.describe 'New/edit issue', :js do
         # To work around this, we have to hold on to and call to the original implementation manually.
         original_issue_dropdown_options = FormHelper.instance_method(:assignees_dropdown_options)
         allow_any_instance_of(FormHelper).to receive(:assignees_dropdown_options).and_wrap_original do |original, *args|
-          options = original_issue_dropdown_options.bind(original.receiver).call(*args)
+          options = original_issue_dropdown_options.bind_call(original.receiver, *args)
           options[:data][:per_page] = 2
 
           options

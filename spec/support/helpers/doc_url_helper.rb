@@ -13,7 +13,7 @@ module DocUrlHelper
     "#{documentation_base_url}/ee/#{path}.html"
   end
 
-  def stub_doc_file_read(file_name: 'index.md', content: )
+  def stub_doc_file_read(content:, file_name: 'index.md')
     expect_file_read(File.join(Rails.root, 'doc', file_name), content: content)
   end
 end

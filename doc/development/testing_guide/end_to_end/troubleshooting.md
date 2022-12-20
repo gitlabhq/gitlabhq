@@ -59,7 +59,7 @@ Net::ReadTimeout: Net::ReadTimeout with #<TCPSocket:(closed)>
 ```
 
 This error can happen if GitLab runs on an address that does not resolve from
-`localhost`. For example, if you set GDK's `hostname`
+`localhost`. For example, if you set the GDK `hostname`
 [to a specific local IP address](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/run_qa_against_gdk.md#run-qa-tests-against-your-gdk-setup),
 you must use that IP address instead of `localhost` in the command.
 For example, if your IP is `192.168.0.12`:

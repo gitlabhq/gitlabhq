@@ -20,6 +20,8 @@ import simplePoll from '~/lib/utils/simple_poll';
 import { __, s__, n__ } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 import {
   AUTO_MERGE_STRATEGIES,
   WARNING,
@@ -86,6 +88,31 @@ export default {
         if (this.state.mergeTrainsCount !== null && this.state.mergeTrainsCount !== undefined) {
           this.initPolling();
         }
+      },
+      subscribeToMore: {
+        document() {
+          return readyToMergeSubscription;
+        },
+        skip() {
+          return !this.mr?.id || this.loading || !window.gon?.features?.realtimeMrStatusChange;
+        },
+        variables() {
+          return {
+            issuableId: convertToGraphQLId('MergeRequest', this.mr?.id),
+          };
+        },
+        updateQuery(
+          _,
+          {
+            subscriptionData: {
+              data: { mergeRequestMergeStatusUpdated },
+            },
+          },
+        ) {
+          if (mergeRequestMergeStatusUpdated) {
+            this.state = mergeRequestMergeStatusUpdated;
+          }
+        },
       },
     },
   },
@@ -295,7 +322,7 @@ export default {
       return this.mr.divergedCommitsCount > 0;
     },
     showMergeDetailsHeader() {
-      return ['readyToMerge'].indexOf(this.mr.state) >= 0;
+      return !['readyToMerge'].includes(this.mr.state);
     },
   },
   mounted() {
@@ -467,8 +494,9 @@ export default {
 
 <template>
   <div
+    :class="{ 'gl-bg-gray-10': mr.state !== 'closed' && mr.state !== 'merged' }"
     data-testid="ready_to_merge_state"
-    class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-bg-gray-10 gl-pl-7"
+    class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-pl-7"
   >
     <div v-if="loading" class="mr-widget-body">
       <div class="gl-w-full mr-ready-to-merge-loader">
@@ -481,7 +509,9 @@ export default {
       </div>
     </div>
     <template v-else>
-      <div class="mr-widget-body mr-widget-body-ready-merge media mr-widget-body-line-height-1">
+      <div
+        class="mr-widget-body mr-widget-body-ready-merge media gl-display-flex gl-align-items-center"
+      >
         <div class="media-body">
           <div class="mr-widget-body-controls gl-display-flex gl-align-items-center gl-flex-wrap">
             <template v-if="shouldShowMergeControls">
@@ -555,7 +585,19 @@ export default {
                   </li>
                 </ul>
               </div>
-              <div class="gl-w-full gl-text-gray-500 gl-mb-3 gl-md-mb-0 gl-md-pb-5">
+              <div
+                class="gl-w-full gl-text-gray-500 gl-mb-3 gl-md-mb-0 gl-md-pb-5 mr-widget-merge-details"
+              >
+                <template v-if="sourceHasDivergedFromTarget">
+                  <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
+                    <template #link>
+                      <gl-link :href="mr.targetBranchPath">{{
+                        $options.i18n.divergedCommits(mr.divergedCommitsCount)
+                      }}</gl-link>
+                    </template>
+                  </gl-sprintf>
+                  &middot;
+                </template>
                 <added-commit-message
                   :is-squash-enabled="squashBeforeMerge"
                   :is-fast-forward-enabled="!shouldShowMergeEdit"
@@ -631,7 +673,7 @@ export default {
               class="gl-w-full gl-order-n1 mr-widget-merge-details"
               data-qa-selector="merged_status_content"
             >
-              <p v-if="showMergeDetailsHeader" class="gl-mb-3 gl-text-gray-900">
+              <p v-if="showMergeDetailsHeader" class="gl-mb-2 gl-text-gray-900">
                 {{ __('Merge details') }}
               </p>
               <ul class="gl-pl-4 gl-mb-0 gl-ml-3 gl-text-gray-600">

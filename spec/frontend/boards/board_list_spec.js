@@ -198,6 +198,13 @@ describe('Board list component', () => {
         expect(findDraggable().exists()).toBe(true);
       });
 
+      it('sets delay and delayOnTouchOnly attributes on board list', () => {
+        const listEl = wrapper.findComponent({ ref: 'list' });
+
+        expect(listEl.attributes('delay')).toBe('100');
+        expect(listEl.attributes('delayontouchonly')).toBe('true');
+      });
+
       describe('handleDragOnStart', () => {
         it('adds a class `is-dragging` to document body', () => {
           expect(document.body.classList.contains('is-dragging')).toBe(false);
@@ -268,6 +275,10 @@ describe('Board list component', () => {
 
       it('Draggable is not used', () => {
         expect(findDraggable().exists()).toBe(false);
+      });
+
+      it('Board card move to position is not visible', () => {
+        expect(findMoveToPositionComponent().exists()).toBe(false);
       });
     });
   });

@@ -1,8 +1,10 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+import { breakpoints } from '@gitlab/ui/dist/utils';
 import { sortBy, throttle } from 'lodash';
 import Draggable from 'vuedraggable';
 import { mapState, mapGetters, mapActions } from 'vuex';
+import { contentTop } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { formatBoardLists } from 'ee_else_ce/boards/boards_util';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
@@ -114,6 +116,8 @@ export default {
         group: 'boards-list',
         tag: 'div',
         value: this.boardListsToUse,
+        delay: 100,
+        delayOnTouchOnly: true,
       };
 
       return this.canDragColumns ? options : {};
@@ -142,7 +146,11 @@ export default {
       el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
     },
     setBoardHeight() {
-      this.boardHeight = `${window.innerHeight - this.$el.getBoundingClientRect().top}px`;
+      if (window.innerWidth < breakpoints.md) {
+        this.boardHeight = `${window.innerHeight - contentTop()}px`;
+      } else {
+        this.boardHeight = `${window.innerHeight - this.$el.getBoundingClientRect().top}px`;
+      }
     },
   },
 };

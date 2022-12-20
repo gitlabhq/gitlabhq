@@ -30,6 +30,8 @@ RSpec.shared_examples 'label note created from events' do
       expect(note.noteable).to eq event.issuable
       expect(note.note).to be_present
       expect(note.note_html).to be_present
+      expect(note.created_at).to eq create_event.created_at
+      expect(note.updated_at).to eq create_event.created_at
     end
 
     it 'updates markdown cache if reference is not set yet' do

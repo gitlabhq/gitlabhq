@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Snippets' do
+RSpec.describe 'Snippets', feature_category: :snippets do
   context 'when the project has snippets' do
     let(:project) { create(:project, :public) }
     let!(:snippets) { create_list(:project_snippet, 2, :public, author: project.first_owner, project: project) }

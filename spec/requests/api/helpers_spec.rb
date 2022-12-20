@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'raven/transports/dummy'
 require_relative '../../../config/initializers/sentry'
 
-RSpec.describe API::Helpers do
+RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :authentication_and_authorization do
   include API::APIGuard::HelperMethods
   include described_class
   include TermsHelper

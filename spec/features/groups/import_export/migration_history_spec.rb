@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Import/Export - GitLab migration history', :js do
+RSpec.describe 'Import/Export - GitLab migration history', :js, feature_category: :importers do
   let_it_be(:user) { create(:user) }
 
   let_it_be(:user_import_1) { create(:bulk_import, user: user) }

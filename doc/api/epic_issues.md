@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Epic Issues API **(PREMIUM)**
 
-Every API call to epic_issues must be authenticated.
+Every API call to the epic issues API endpoint must be authenticated.
 
 If a user is not a member of a group and the group is private, a `GET` request on that group
 results in a `404` status code.

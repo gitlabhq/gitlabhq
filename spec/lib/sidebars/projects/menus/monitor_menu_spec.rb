@@ -16,40 +16,30 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
     let(:enabled) { Featurable::PRIVATE }
     let(:disabled) { Featurable::DISABLED }
 
-    where(:flag_enabled, :operations_access_level, :monitor_level, :render) do
-      true  | ref(:disabled) | ref(:enabled)  | true
-      true  | ref(:disabled) | ref(:disabled) | false
-      true  | ref(:enabled)  | ref(:enabled)  | true
-      true  | ref(:enabled)  | ref(:disabled) | false
-      false | ref(:disabled) | ref(:enabled)  | false
-      false | ref(:disabled) | ref(:disabled) | false
-      false | ref(:enabled)  | ref(:enabled)  | true
-      false | ref(:enabled)  | ref(:disabled) | true
+    where(:monitor_level, :render) do
+      ref(:enabled)  | true
+      ref(:disabled) | false
     end
 
     with_them do
       it 'renders when expected to' do
-        stub_feature_flags(split_operations_visibility_permissions: flag_enabled)
-        project.project_feature.update!(operations_access_level: operations_access_level)
         project.project_feature.update!(monitor_access_level: monitor_level)
 
         expect(subject.render?).to be render
       end
     end
 
-    context 'when operation feature is enabled' do
-      context 'when menu does not have any renderable menu items' do
-        it 'returns false' do
-          allow(subject).to receive(:has_renderable_items?).and_return(false)
+    context 'when menu does not have any renderable menu items' do
+      it 'returns false' do
+        allow(subject).to receive(:has_renderable_items?).and_return(false)
 
-          expect(subject.render?).to be false
-        end
+        expect(subject.render?).to be false
       end
+    end
 
-      context 'when menu has menu items' do
-        it 'returns true' do
-          expect(subject.render?).to be true
-        end
+    context 'when menu has menu items' do
+      it 'returns true' do
+        expect(subject.render?).to be true
       end
     end
   end

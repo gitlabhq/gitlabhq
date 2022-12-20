@@ -3,7 +3,6 @@
 module BulkImports
   class ExportUpload < ApplicationRecord
     include WithUploads
-    include ObjectStorage::BackgroundMove
 
     self.table_name = 'bulk_import_export_uploads'
 

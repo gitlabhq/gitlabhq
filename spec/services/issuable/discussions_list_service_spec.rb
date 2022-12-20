@@ -17,6 +17,19 @@ RSpec.describe Issuable::DiscussionsListService do
     let_it_be(:issuable) { create(:issue, project: project) }
 
     it_behaves_like 'listing issuable discussions', :guest, 1, 7
+
+    context 'without notes widget' do
+      let_it_be(:issuable) { create(:work_item, :issue, project: project) }
+
+      before do
+        stub_const('WorkItems::Type::BASE_TYPES', { issue: { name: 'NoNotesWidget', enum_value: 0 } })
+        stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', { issue: [::WorkItems::Widgets::Description] })
+      end
+
+      it "returns no notes" do
+        expect(discussions_service.execute).to be_empty
+      end
+    end
   end
 
   describe 'fetching notes for merge requests' do

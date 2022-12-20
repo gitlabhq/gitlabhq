@@ -4,7 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import ContactFormWrapper from '~/crm/contacts/components/contact_form_wrapper.vue';
-import ContactForm from '~/crm/components/form.vue';
+import CrmForm from '~/crm/components/crm_form.vue';
 import getGroupContactsQuery from '~/crm/contacts/components/graphql/get_group_contacts.query.graphql';
 import createContactMutation from '~/crm/contacts/components/graphql/create_contact.mutation.graphql';
 import updateContactMutation from '~/crm/contacts/components/graphql/update_contact.mutation.graphql';
@@ -16,7 +16,7 @@ describe('Customer relations contact form wrapper', () => {
   let wrapper;
   let fakeApollo;
 
-  const findContactForm = () => wrapper.findComponent(ContactForm);
+  const findCrmForm = () => wrapper.findComponent(CrmForm);
 
   const $route = {
     params: {
@@ -65,21 +65,21 @@ describe('Customer relations contact form wrapper', () => {
     });
 
     it('renders correct getQuery prop', () => {
-      expect(findContactForm().props('getQueryNodePath')).toBe('group.contacts');
+      expect(findCrmForm().props('getQueryNodePath')).toBe('group.contacts');
     });
 
     it('renders correct mutation prop', () => {
-      expect(findContactForm().props('mutation')).toBe(mutation);
+      expect(findCrmForm().props('mutation')).toBe(mutation);
     });
 
     it('renders correct additionalCreateParams prop', () => {
-      expect(findContactForm().props('additionalCreateParams')).toMatchObject({
+      expect(findCrmForm().props('additionalCreateParams')).toMatchObject({
         groupId: 'gid://gitlab/Group/26',
       });
     });
 
     it('renders correct existingId prop', () => {
-      expect(findContactForm().props('existingId')).toBe(existingId);
+      expect(findCrmForm().props('existingId')).toBe(existingId);
     });
 
     it('renders correct fields prop', () => {
@@ -101,15 +101,15 @@ describe('Customer relations contact form wrapper', () => {
         { name: 'description', label: 'Description' },
       ];
       if (isEditMode) fields.push({ name: 'active', label: 'Active', required: true, bool: true });
-      expect(findContactForm().props('fields')).toEqual(fields);
+      expect(findCrmForm().props('fields')).toEqual(fields);
     });
 
     it('renders correct title prop', () => {
-      expect(findContactForm().props('title')).toBe(title);
+      expect(findCrmForm().props('title')).toBe(title);
     });
 
     it('renders correct successMessage prop', () => {
-      expect(findContactForm().props('successMessage')).toBe(successMessage);
+      expect(findCrmForm().props('successMessage')).toBe(successMessage);
     });
   });
 });

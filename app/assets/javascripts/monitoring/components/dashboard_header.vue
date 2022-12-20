@@ -173,7 +173,6 @@ export default {
     <div class="gl-mb-3 gl-mr-3 gl-display-flex gl-sm-display-block">
       <dashboards-dropdown
         id="monitor-dashboards-dropdown"
-        data-qa-selector="dashboards_filter_dropdown"
         class="flex-grow-1"
         toggle-class="dropdown-menu-toggle"
         :default-branch="defaultBranch"
@@ -188,7 +187,6 @@ export default {
         id="monitor-environments-dropdown"
         ref="monitorEnvironmentsDropdown"
         class="flex-grow-1"
-        data-qa-selector="environments_dropdown"
         data-testid="environments-dropdown"
         toggle-class="dropdown-menu-toggle"
         menu-class="monitor-environment-dropdown-menu"
@@ -225,7 +223,6 @@ export default {
       <date-time-picker
         ref="dateTimePicker"
         class="flex-grow-1 show-last-dropdown"
-        data-qa-selector="range_picker_dropdown"
         :value="selectedTimeRange"
         :options="$options.timeRanges"
         :utc="displayUtc"

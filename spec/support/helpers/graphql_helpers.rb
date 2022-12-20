@@ -859,7 +859,7 @@ module GraphqlHelpers
 
   # A lookahead that selects everything
   def positive_lookahead
-    double(selects?: true).tap do |selection|
+    double(selected?: true, selects?: true).tap do |selection|
       allow(selection).to receive(:selection).and_return(selection)
       allow(selection).to receive(:selections).and_return(selection)
       allow(selection).to receive(:map).and_return(double(include?: true))
@@ -868,7 +868,7 @@ module GraphqlHelpers
 
   # A lookahead that selects nothing
   def negative_lookahead
-    double(selects?: false).tap do |selection|
+    double(selected?: false, selects?: false, selections: []).tap do |selection|
       allow(selection).to receive(:selection).and_return(selection)
     end
   end

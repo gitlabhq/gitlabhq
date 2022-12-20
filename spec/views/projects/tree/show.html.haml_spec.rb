@@ -35,7 +35,7 @@ RSpec.describe 'projects/tree/show' do
     it 'displays correctly' do
       render
 
-      expect(rendered).to have_css('.js-project-refs-dropdown .dropdown-toggle-text', text: ref)
+      expect(rendered).to have_css('#js-tree-ref-switcher')
     end
   end
 end

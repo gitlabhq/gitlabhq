@@ -14,11 +14,13 @@
 
     .gl-max-w-full.gl-m-auto
       %h1.h4.gl-font-size-h-display= s_('AdminArea|No applications found')
-      = link_to _('New application'), new_admin_application_path, class: 'btn gl-button btn-confirm'
+      = render Pajamas::ButtonComponent.new(href: new_admin_application_path, variant: :confirm) do
+        = s_('New application')
 
 - else
   %hr
-  %p= link_to _('New application'), new_admin_application_path, class: 'gl-button btn btn-confirm'
+    = render Pajamas::ButtonComponent.new(href: new_admin_application_path, variant: :confirm) do
+      = s_('New application')
 
   .table-responsive
     %table.b-table.gl-table.gl-w-full{ role: 'table' }

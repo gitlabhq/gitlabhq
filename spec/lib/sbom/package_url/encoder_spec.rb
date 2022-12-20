@@ -5,7 +5,7 @@ require 'rspec-parameterized'
 
 require_relative '../../../support/shared_contexts/lib/sbom/package_url_shared_contexts'
 
-RSpec.describe Sbom::PackageUrl::Encoder do
+RSpec.describe Sbom::PackageUrl::Encoder, feature_category: :dependency_management do
   describe '#encode' do
     let(:package) do
       ::Sbom::PackageUrl.new(

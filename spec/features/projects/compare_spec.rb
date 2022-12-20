@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "Compare", :js do
+RSpec.describe "Compare", :js, feature_category: :projects do
   let(:user)    { create(:user) }
   let(:project) { create(:project, :repository) }
 
@@ -17,10 +17,10 @@ RSpec.describe "Compare", :js do
         visit project_compare_index_path(project, from: 'master', to: 'master')
 
         select_using_dropdown 'from', 'feature'
-        expect(find('.js-compare-from-dropdown .gl-new-dropdown-button-text')).to have_content('feature')
+        expect(find('.js-compare-from-dropdown .gl-dropdown-button-text')).to have_content('feature')
 
         select_using_dropdown 'to', 'binary-encoding'
-        expect(find('.js-compare-to-dropdown .gl-new-dropdown-button-text')).to have_content('binary-encoding')
+        expect(find('.js-compare-to-dropdown .gl-dropdown-button-text')).to have_content('binary-encoding')
 
         click_button 'Compare'
 
@@ -32,8 +32,8 @@ RSpec.describe "Compare", :js do
     it "pre-populates fields" do
       visit project_compare_index_path(project, from: "master", to: "master")
 
-      expect(find(".js-compare-from-dropdown .gl-new-dropdown-button-text")).to have_content("master")
-      expect(find(".js-compare-to-dropdown .gl-new-dropdown-button-text")).to have_content("master")
+      expect(find(".js-compare-from-dropdown .gl-dropdown-button-text")).to have_content("master")
+      expect(find(".js-compare-to-dropdown .gl-dropdown-button-text")).to have_content("master")
     end
 
     it_behaves_like 'compares branches'
@@ -99,7 +99,7 @@ RSpec.describe "Compare", :js do
 
       find(".js-compare-from-dropdown .compare-dropdown-toggle").click
 
-      expect(find(".js-compare-from-dropdown .gl-new-dropdown-contents")).to have_selector('li.gl-new-dropdown-item', count: 1)
+      expect(find(".js-compare-from-dropdown .gl-dropdown-contents")).to have_selector('li.gl-dropdown-item', count: 1)
     end
 
     context 'when commit has overflow', :js do
@@ -153,10 +153,10 @@ RSpec.describe "Compare", :js do
       visit project_compare_index_path(project, from: "master", to: "master")
 
       select_using_dropdown "from", "v1.0.0"
-      expect(find(".js-compare-from-dropdown .gl-new-dropdown-button-text")).to have_content("v1.0.0")
+      expect(find(".js-compare-from-dropdown .gl-dropdown-button-text")).to have_content("v1.0.0")
 
       select_using_dropdown "to", "v1.1.0"
-      expect(find(".js-compare-to-dropdown .gl-new-dropdown-button-text")).to have_content("v1.1.0")
+      expect(find(".js-compare-to-dropdown .gl-dropdown-button-text")).to have_content("v1.1.0")
 
       click_button "Compare"
       expect(page).to have_content "Commits"

@@ -8,13 +8,31 @@
     "protected"
   ],
   "properties": {
-    "id": { "type": "integer" },
-    "key": { "type": "string" },
-    "value": { "type": "string" },
-    "masked": { "type": "boolean" },
-    "protected": { "type": "boolean" },
-    "variable_type": { "type": "string" },
-    "environment_scope": { "type": "string", "optional": true }
+    "id": {
+      "type": "integer"
+    },
+    "key": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    },
+    "masked": {
+      "type": "boolean"
+    },
+    "protected": {
+      "type": "boolean"
+    },
+    "raw": {
+      "type": "boolean"
+    },
+    "variable_type": {
+      "type": "string"
+    },
+    "environment_scope": {
+      "type": "string",
+      "optional": true
+    }
   },
   "additionalProperties": false
 }

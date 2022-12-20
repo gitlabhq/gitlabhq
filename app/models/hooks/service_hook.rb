@@ -13,4 +13,9 @@ class ServiceHook < WebHook
 
   override :parent
   delegate :parent, to: :integration
+
+  override :executable?
+  def executable?
+    true
+  end
 end

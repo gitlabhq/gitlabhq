@@ -1,26 +1,46 @@
 import Visibility from 'visibilityjs';
+import _ from 'lodash';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { visitUrl, objectToQuery } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import { isProjectImportable } from '../utils';
+import { PROVIDERS } from '../../constants';
 import * as types from './mutation_types';
 
 let eTagPoll;
 
 const hasRedirectInError = (e) => e?.response?.data?.error?.redirect;
 const redirectToUrlInError = (e) => visitUrl(e.response.data.error.redirect);
-const tooManyRequests = (e) => e.response.status === httpStatusCodes.TOO_MANY_REQUESTS;
+const tooManyRequests = (e) => e.response.status === HTTP_STATUS_TOO_MANY_REQUESTS;
 const pathWithParams = ({ path, ...params }) => {
   const filteredParams = Object.fromEntries(
     Object.entries(params).filter(([, value]) => value !== ''),
   );
   const queryString = objectToQuery(filteredParams);
   return queryString ? `${path}?${queryString}` : path;
+};
+const commitPaginationData = ({ state, commit, data }) => {
+  const cursorsGitHubResponse = !_.isEmpty(data.pageInfo || {});
+
+  if (state.provider === PROVIDERS.GITHUB && cursorsGitHubResponse) {
+    commit(types.SET_PAGE_CURSORS, data.pageInfo);
+  } else {
+    const nextPage = state.pageInfo.page + 1;
+    commit(types.SET_PAGE, nextPage);
+  }
+};
+const paginationParams = ({ state }) => {
+  if (state.provider === PROVIDERS.GITHUB && state.pageInfo.endCursor) {
+    return { after: state.pageInfo.endCursor };
+  }
+
+  const nextPage = state.pageInfo.page + 1;
+  return { page: nextPage === 1 ? '' : nextPage.toString() };
 };
 
 const isRequired = () => {
@@ -55,7 +75,6 @@ const importAll = ({ state, dispatch }, config = {}) => {
 };
 
 const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) => {
-  const nextPage = state.pageInfo.page + 1;
   commit(types.REQUEST_REPOS);
 
   const { provider, filter } = state;
@@ -65,12 +84,13 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
       pathWithParams({
         path: reposPath,
         filter: filter ?? '',
-        page: nextPage === 1 ? '' : nextPage.toString(),
+        ...paginationParams({ state }),
       }),
     )
     .then(({ data }) => {
-      commit(types.SET_PAGE, nextPage);
-      commit(types.RECEIVE_REPOS_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true }));
+      const camelData = convertObjectPropsToCamelCase(data, { deep: true });
+      commitPaginationData({ state, commit, data: camelData });
+      commit(types.RECEIVE_REPOS_SUCCESS, camelData);
     })
     .catch((e) => {
       if (hasRedirectInError(e)) {
@@ -139,6 +159,42 @@ const fetchImportFactory = (importPath = isRequired()) => (
     });
 };
 
+export const cancelImportFactory = (cancelImportPath) => ({ state, commit }, { repoId }) => {
+  const existingRepo = state.repositories.find((r) => r.importSource.id === repoId);
+
+  if (!existingRepo?.importedProject) {
+    throw new Error(`Attempting to cancel project which is not started: ${repoId}`);
+  }
+
+  const { id } = existingRepo.importedProject;
+
+  return axios
+    .post(cancelImportPath, {
+      project_id: id,
+    })
+    .then(() => {
+      commit(types.CANCEL_IMPORT_SUCCESS, {
+        repoId,
+      });
+    })
+    .catch((e) => {
+      const serverErrorMessage = e?.response?.data?.errors;
+      const flashMessage = serverErrorMessage
+        ? sprintf(
+            s__('ImportProjects|Cancelling project import failed: %{reason}'),
+            {
+              reason: serverErrorMessage,
+            },
+            false,
+          )
+        : s__('ImportProjects|Cancelling project import failed');
+
+      createAlert({
+        message: flashMessage,
+      });
+    });
+};
+
 export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, dispatch }) => {
   if (eTagPoll) {
     stopJobsPolling();
@@ -176,22 +232,6 @@ export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, d
   });
 };
 
-const fetchNamespacesFactory = (namespacesPath = isRequired()) => ({ commit }) => {
-  commit(types.REQUEST_NAMESPACES);
-  axios
-    .get(namespacesPath)
-    .then(({ data }) =>
-      commit(types.RECEIVE_NAMESPACES_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true })),
-    )
-    .catch(() => {
-      createAlert({
-        message: s__('ImportProjects|Requesting namespaces failed'),
-      });
-
-      commit(types.RECEIVE_NAMESPACES_ERROR);
-    });
-};
-
 const setFilter = ({ commit, dispatch }, filter) => {
   commit(types.SET_FILTER, filter);
 
@@ -207,6 +247,6 @@ export default ({ endpoints = isRequired() }) => ({
   importAll,
   fetchRepos: fetchReposFactory({ reposPath: endpoints.reposPath }),
   fetchImport: fetchImportFactory(endpoints.importPath),
+  cancelImport: cancelImportFactory(endpoints.cancelPath),
   fetchJobs: fetchJobsFactory(endpoints.jobsPath),
-  fetchNamespaces: fetchNamespacesFactory(endpoints.namespacesPath),
 });

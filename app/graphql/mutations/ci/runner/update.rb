@@ -54,7 +54,7 @@ module Mutations
         argument :associated_projects, [::Types::GlobalIDType[::Project]],
                  required: false,
                  description: 'Projects associated with the runner. Available only for project runners.',
-                 prepare: -> (global_ids, ctx) { global_ids&.filter_map { |gid| gid.model_id.to_i } }
+                 prepare: ->(global_ids, ctx) { global_ids&.filter_map { |gid| gid.model_id.to_i } }
 
         field :runner,
               Types::Ci::RunnerType,

@@ -1,0 +1,11 @@
+= gitlab_ui_form_for @application_setting, url: preferences_admin_application_settings_path(anchor: 'js-terraform-limits-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :max_terraform_state_size_bytes, s_('TerraformLimits|Terraform state size limit (bytes)'), class: 'label-bold'
+      = f.number_field :max_terraform_state_size_bytes, class: 'form-control gl-form-input'
+      .form-text.text-muted
+        = s_("TerraformLimits|Maximum file size (in bytes) of Terraform state files. Set to 0 for no limit.")
+
+  = f.submit _('Save changes'), pajamas_button: true

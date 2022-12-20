@@ -3,6 +3,11 @@
 # This cop checks for missing GraphQL descriptions and enforces the description style guide:
 # https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#description-style-guide
 #
+# @safety
+#   This cop is unsafe because not all cases of "this" can be substituted with
+#   "the". This will require a technical writer to assist with the alternative,
+#   proper grammar that can be used for that particular GraphQL descriptions.
+#
 # @examples
 #
 #   # bad
@@ -49,6 +54,8 @@ module RuboCop
         MSG_NO_DESCRIPTION = "Please add a `description` property. #{MSG_STYLE_GUIDE_LINK}"
         MSG_NO_PERIOD = "`description` strings must end with a `.`. #{MSG_STYLE_GUIDE_LINK}"
         MSG_BAD_START = "`description` strings should not start with \"A...\" or \"The...\". #{MSG_STYLE_GUIDE_LINK}"
+        MSG_CONTAINS_THIS = "`description` strings should not contain the demonstrative \"this\"."\
+          " #{MSG_STYLE_GUIDE_LINK}"
 
         def_node_matcher :graphql_describable?, <<~PATTERN
           (send nil? {:field :argument :value} ...)
@@ -82,15 +89,17 @@ module RuboCop
                       MSG_NO_PERIOD
                     elsif bad_start?(description)
                       MSG_BAD_START
+                    elsif contains_demonstrative_this?(description)
+                      MSG_CONTAINS_THIS
                     end
 
           return unless message
 
           add_offense(node, message: message) do |corrector|
-            description = locate_description(node)
             next unless description
 
-            corrector.insert_after(before_end_quote(description), '.')
+            corrector.insert_after(before_end_quote(description), '.') if no_period?(description)
+            corrector.replace(locate_this(description), 'the') if contains_demonstrative_this?(description)
           end
         end
 
@@ -114,6 +123,10 @@ module RuboCop
           string?(description) && description.value.strip.downcase.start_with?('a ', 'the ')
         end
 
+        def contains_demonstrative_this?(description)
+          string?(description) && /\bthis\b/.match?(description.value.strip)
+        end
+
         # Returns true if `description` node is a `:str` (as opposed to a `#copy_field_description` call)
         def string?(description)
           description.type == :str
@@ -126,6 +139,14 @@ module RuboCop
           heredoc_source = string.location.heredoc_body.source
           adjust = heredoc_source.index(/\s+\Z/) - heredoc_source.length
           string.location.heredoc_body.adjust(end_pos: adjust)
+        end
+
+        # Returns a `Parser::Source::Range` of the first `this` encountered
+        def locate_this(string)
+          target = 'this'
+          range = string.heredoc? ? string.location.heredoc_body : string.location.expression
+          index = range.source.index(target)
+          range.adjust(begin_pos: index, end_pos: (index + target.length) - range.length)
         end
       end
     end

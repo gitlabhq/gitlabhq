@@ -54,7 +54,7 @@ module Gitlab
         return unless environment
 
         actions = environment.actions_for(to).select do |action|
-          action.starts_environment?
+          action.deployment_job?
         end
 
         if actions.many?

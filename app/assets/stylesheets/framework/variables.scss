@@ -83,17 +83,8 @@ $darken-dark-factor: 10% !default;
 $darken-border-factor: 5% !default;
 $darken-border-dashed-factor: 25% !default;
 
-$white: #fff !default;
-$white-normal: #f0f0f0 !default;
-$white-dark: #eaeaea !default;
-$white-transparent: rgba($white, 0.8) !default;
-
 $purple: #6d49cb !default;
 $purple-light: #ede8fb !default;
-
-$black: #000 !default;
-$black-transparent: rgba(0, 0, 0, 0.3) !default;
-$almost-black: #242424 !default;
 
 $green-50: #ecf4ee !default;
 $green-100: #c3e6cd !default;
@@ -182,6 +173,15 @@ $t-gray-a-06: rgba($gray-950, 0.06) !default;
 $t-gray-a-08: rgba($gray-950, 0.08) !default;
 $t-gray-a-16: rgba($gray-950, 0.16) !default;
 $t-gray-a-24: rgba($gray-950, 0.24) !default;
+
+$white: #fff !default;
+$white-normal: $gray-50 !default;
+$white-dark: darken($gray-50, 2) !default;
+$white-transparent: rgba($white, 0.8) !default;
+
+$black: #000 !default;
+$black-transparent: $t-gray-a-24 !default;
+$almost-black: $gray-950 !default;
 
 $greens: (
   '50': $green-50,
@@ -350,17 +350,17 @@ $theme-light-red-700: #a62e21;
 
 // Data visualization color palette
 
-$data-viz-blue-50: #e9ebff;
-$data-viz-blue-100: #d4dcfa;
-$data-viz-blue-200: #b7c6ff;
-$data-viz-blue-300: #97acff;
-$data-viz-blue-400: #748eff;
-$data-viz-blue-500: #5772ff;
-$data-viz-blue-600: #445cf2;
-$data-viz-blue-700: #3547de;
-$data-viz-blue-800: #232fcf;
-$data-viz-blue-900: #1e23a8;
-$data-viz-blue-950: #11118a;
+$data-viz-blue-50: #e9ebff !default;
+$data-viz-blue-100: #d2dcff !default;
+$data-viz-blue-200: #b7c6ff !default;
+$data-viz-blue-300: #97acff !default;
+$data-viz-blue-400: #7992f5 !default;
+$data-viz-blue-500: #617ae2 !default;
+$data-viz-blue-600: #4e65cd !default;
+$data-viz-blue-700: #3f51ae !default;
+$data-viz-blue-800: #374291 !default;
+$data-viz-blue-900: #303470 !default;
+$data-viz-blue-950: #2a2b59 !default;
 
 $border-white-light: darken($white, $darken-border-factor) !default;
 $border-white-normal: darken($white-normal, $darken-border-factor) !default;
@@ -380,7 +380,7 @@ $well-expand-item: #e8f2f7 !default;
 $well-inner-border: #eef0f2 !default;
 $well-light-border: #f1f1f1;
 $well-light-text-color: #5b6169;
-$nav-active-bg: rgba($black, 0.08);
+$nav-active-bg: $t-gray-a-08;
 
 /*
  * Text
@@ -555,11 +555,13 @@ $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 /*
  * Fonts
  */
-$monospace-font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono',
-  'Courier New', 'andale mono', 'lucida console', monospace;
-$regular-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Ubuntu, Cantarell,
-  'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-  'Noto Color Emoji';
+$monospace-font: var(--default-mono-font, 'Menlo'), 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas',
+  'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
+$regular-font: var(--default-regular-font, -apple-system), BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans',
+  Ubuntu, Cantarell, 'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+  'Segoe UI Symbol', 'Noto Color Emoji';
+$gl-monospace-font: $monospace-font;
+$gl-regular-font: $regular-font;
 
 /*
 * Dropdowns
@@ -730,12 +732,6 @@ $commit-message-text-area-bg: rgba(0, 0, 0, 0);
 $commit-stat-summary-height: 36px;
 
 /*
-* Common
-*/
-$common-gray-light: #bbb;
-$common-gray-dark: #444;
-
-/*
 * Files
 */
 $logs-li-color: #888;
@@ -784,16 +780,6 @@ $fade-mask-transition-curve: ease-in-out;
 $login-brand-holder-color: #888;
 
 /*
-* Projects
-*/
-$project-option-descr-color: #54565b;
-
-/*
- * Monitor Charts
- */
-$chart-tooltip-max-width: 512px;
-
-/*
 Stat Graph
 */
 $stat-graph-common-bg: #f3f3f3;
@@ -822,7 +808,6 @@ Pipeline Graph
 $ci-action-icon-size: 22px;
 $ci-action-icon-size-lg: 24px;
 $pipeline-dropdown-line-height: 20px;
-$pipeline-dropdown-status-icon-size: 18px;
 $ci-action-dropdown-button-size: 24px;
 $ci-action-dropdown-svg-size: 12px;
 

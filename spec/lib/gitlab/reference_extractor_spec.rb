@@ -262,8 +262,11 @@ RSpec.describe Gitlab::ReferenceExtractor do
 
   describe '#all' do
     let(:issue) { create(:issue, project: project) }
+    let(:issue2) { create(:issue, project: project) }
+    let(:issue2_url) { Rails.application.routes.url_helpers.project_issue_url(project, issue2) }
     let(:label) { create(:label, project: project) }
-    let(:text) { "Ref. #{issue.to_reference} and #{label.to_reference}" }
+    let(:alert) { create(:alert_management_alert, project: project) }
+    let(:text) { "Ref. #{issue.to_reference} and #{label.to_reference} and #{alert.to_reference} and #{issue2_url}" }
 
     before do
       project.add_developer(project.creator)
@@ -271,7 +274,22 @@ RSpec.describe Gitlab::ReferenceExtractor do
     end
 
     it 'returns all referables' do
-      expect(subject.all).to match_array([issue, label])
+      expect(subject.all).to match_array([issue, label, alert, issue2])
+    end
+  end
+
+  describe '#alerts' do
+    let(:alert1) { create(:alert_management_alert, project: project) }
+    let(:alert2) { create(:alert_management_alert, project: project) }
+    let(:text) { "Alert ref: #{alert1.to_reference} URL: #{alert2.details_url} Infalid ref: ^alert#0" }
+
+    before do
+      project.add_developer(project.creator)
+      subject.analyze(text)
+    end
+
+    it 'returns alert referables' do
+      expect(subject.alerts).to match_array([alert1, alert2])
     end
   end
 

@@ -63,14 +63,16 @@ module ExceedQueryLimitHelpers
     end
   end
 
-  MARGINALIA_ANNOTATION_REGEX = %r{\s*\/\*.*\*\/}.freeze
+  MARGINALIA_ANNOTATION_REGEX = %r{\s*/\*.*\*/}.freeze
 
-  DB_QUERY_RE = Regexp.union([
-    /^(?<prefix>SELECT .* FROM "?[a-z_]+"?) (?<suffix>.*)$/m,
-    /^(?<prefix>UPDATE "?[a-z_]+"?) (?<suffix>.*)$/m,
-    /^(?<prefix>INSERT INTO "[a-z_]+" \((?:"[a-z_]+",?\s?)+\)) (?<suffix>.*)$/m,
-    /^(?<prefix>DELETE FROM "[a-z_]+") (?<suffix>.*)$/m
-  ]).freeze
+  DB_QUERY_RE = Regexp.union(
+    [
+      /^(?<prefix>SELECT .* FROM "?[a-z_]+"?) (?<suffix>.*)$/m,
+      /^(?<prefix>UPDATE "?[a-z_]+"?) (?<suffix>.*)$/m,
+      /^(?<prefix>INSERT INTO "[a-z_]+" \((?:"[a-z_]+",?\s?)+\)) (?<suffix>.*)$/m,
+      /^(?<prefix>DELETE FROM "[a-z_]+") (?<suffix>.*)$/m
+    ]
+  ).freeze
 
   def with_threshold(threshold)
     @threshold = threshold

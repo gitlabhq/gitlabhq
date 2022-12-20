@@ -1,0 +1,57 @@
+{
+    "kind": "ReplicationController",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "guestbook-controller",
+        "namespace": "default",
+        "selfLink": "/api/v1/replicationcontrollers/guestbook-controller?namespace=default",
+        "uid": "c71aa4c0-a240-11e4-a265-3c970e4a436a",
+        "resourceVersion": "8",
+        "creationTimestamp": "2015-01-22T16:13:02+02:00",
+        "labels": {
+            "name": "guestbook"
+        }
+    },
+    "spec": {
+        "replicas": 3,
+        "selector": {
+            "name": "guestbook"
+        },
+        "template": {
+            "metadata": {
+                "creationTimestamp": null,
+                "labels": {
+                    "name": "guestbook"
+                }
+            },
+            "spec": {
+                "volumes": null,
+                "containers": [
+                    {
+                        "name": "guestbook",
+                        "image": "kubernetes/guestbook",
+                        "ports": [
+                            {
+                                "name": "http-server",
+                                "containerPort": 3000,
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "memory": "0",
+                        "cpu": "0m",
+                        "imagePullPolicy": ""
+                    }
+                ],
+                "restartPolicy": {
+                    "always": {
+
+                    }
+                },
+                "dnsPolicy": "ClusterFirst"
+            }
+        }
+    },
+    "status": {
+        "replicas": 3
+    }
+}

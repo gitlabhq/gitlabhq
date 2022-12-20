@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Incident timeline events', :js do
+RSpec.describe 'Incident timeline events', :js, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:incident) { create(:incident, project: project) }
@@ -50,9 +50,9 @@ RSpec.describe 'Incident timeline events', :js do
     it 'shows the confirmation modal and edits the event' do
       click_button _('More actions')
 
-      page.within '.gl-new-dropdown-contents' do
+      page.within '.gl-dropdown-contents' do
         expect(page).to have_content(_('Edit'))
-        page.find('.gl-new-dropdown-item-text-primary', text: _('Edit')).click
+        page.find('.gl-dropdown-item-text-primary', text: _('Edit')).click
       end
 
       expect(page).to have_selector('.common-note-form')
@@ -82,9 +82,9 @@ RSpec.describe 'Incident timeline events', :js do
     it 'shows the confirmation modal and deletes the event' do
       click_button _('More actions')
 
-      page.within '.gl-new-dropdown-contents' do
+      page.within '.gl-dropdown-contents' do
         expect(page).to have_content(_('Delete'))
-        page.find('.gl-new-dropdown-item-text-primary', text: 'Delete').click
+        page.find('.gl-dropdown-item-text-primary', text: 'Delete').click
       end
 
       page.within '.modal' do

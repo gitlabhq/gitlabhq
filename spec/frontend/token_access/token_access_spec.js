@@ -8,6 +8,7 @@ import { createAlert } from '~/flash';
 import TokenAccess from '~/token_access/components/token_access.vue';
 import addProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
 import removeProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/remove_project_ci_job_token_scope.mutation.graphql';
+import updateCIJobTokenScopeMutation from '~/token_access/graphql/mutations/update_ci_job_token_scope.mutation.graphql';
 import getCIJobTokenScopeQuery from '~/token_access/graphql/queries/get_ci_job_token_scope.query.graphql';
 import getProjectsWithCIJobTokenScopeQuery from '~/token_access/graphql/queries/get_projects_with_ci_job_token_scope.query.graphql';
 import {
@@ -16,6 +17,7 @@ import {
   projectsWithScope,
   addProjectSuccess,
   removeProjectSuccess,
+  updateScopeSuccess,
 } from './mock_data';
 
 const projectPath = 'root/my-repo';
@@ -31,11 +33,11 @@ describe('TokenAccess component', () => {
 
   const enabledJobTokenScopeHandler = jest.fn().mockResolvedValue(enabledJobTokenScope);
   const disabledJobTokenScopeHandler = jest.fn().mockResolvedValue(disabledJobTokenScope);
-  const getProjectsWithScope = jest.fn().mockResolvedValue(projectsWithScope);
+  const getProjectsWithScopeHandler = jest.fn().mockResolvedValue(projectsWithScope);
   const addProjectSuccessHandler = jest.fn().mockResolvedValue(addProjectSuccess);
-  const addProjectFailureHandler = jest.fn().mockRejectedValue(error);
   const removeProjectSuccessHandler = jest.fn().mockResolvedValue(removeProjectSuccess);
-  const removeProjectFailureHandler = jest.fn().mockRejectedValue(error);
+  const updateScopeSuccessHandler = jest.fn().mockResolvedValue(updateScopeSuccess);
+  const failureHandler = jest.fn().mockRejectedValue(error);
 
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -69,7 +71,7 @@ describe('TokenAccess component', () => {
     it('shows loading state while waiting on query to resolve', async () => {
       createComponent([
         [getCIJobTokenScopeQuery, enabledJobTokenScopeHandler],
-        [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
+        [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
       ]);
 
       expect(findLoadingIcon().exists()).toBe(true);
@@ -80,11 +82,53 @@ describe('TokenAccess component', () => {
     });
   });
 
+  describe('fetching projects and scope', () => {
+    it('fetches projects and scope correctly', () => {
+      const expectedVariables = {
+        fullPath: 'root/my-repo',
+      };
+
+      createComponent([
+        [getCIJobTokenScopeQuery, enabledJobTokenScopeHandler],
+        [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
+      ]);
+
+      expect(enabledJobTokenScopeHandler).toHaveBeenCalledWith(expectedVariables);
+      expect(getProjectsWithScopeHandler).toHaveBeenCalledWith(expectedVariables);
+    });
+
+    it('handles fetch projects error correctly', async () => {
+      createComponent([
+        [getCIJobTokenScopeQuery, enabledJobTokenScopeHandler],
+        [getProjectsWithCIJobTokenScopeQuery, failureHandler],
+      ]);
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'There was a problem fetching the projects',
+      });
+    });
+
+    it('handles fetch scope error correctly', async () => {
+      createComponent([
+        [getCIJobTokenScopeQuery, failureHandler],
+        [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
+      ]);
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'There was a problem fetching the job token scope value',
+      });
+    });
+  });
+
   describe('toggle', () => {
     it('the toggle is on and the alert is hidden', async () => {
       createComponent([
         [getCIJobTokenScopeQuery, enabledJobTokenScopeHandler],
-        [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
+        [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
       ]);
 
       await waitForPromises();
@@ -96,13 +140,54 @@ describe('TokenAccess component', () => {
     it('the toggle is off and the alert is visible', async () => {
       createComponent([
         [getCIJobTokenScopeQuery, disabledJobTokenScopeHandler],
-        [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
+        [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
       ]);
 
       await waitForPromises();
 
       expect(findToggle().props('value')).toBe(false);
       expect(findTokenDisabledAlert().exists()).toBe(true);
+    });
+
+    describe('update ci job token scope', () => {
+      it('calls updateCIJobTokenScopeMutation mutation', async () => {
+        createComponent(
+          [
+            [getCIJobTokenScopeQuery, enabledJobTokenScopeHandler],
+            [updateCIJobTokenScopeMutation, updateScopeSuccessHandler],
+          ],
+          mountExtended,
+        );
+
+        await waitForPromises();
+
+        findToggle().vm.$emit('change', false);
+
+        expect(updateScopeSuccessHandler).toHaveBeenCalledWith({
+          input: {
+            fullPath: 'root/my-repo',
+            jobTokenScopeEnabled: false,
+          },
+        });
+      });
+
+      it('handles update scope error correctly', async () => {
+        createComponent(
+          [
+            [getCIJobTokenScopeQuery, disabledJobTokenScopeHandler],
+            [updateCIJobTokenScopeMutation, failureHandler],
+          ],
+          mountExtended,
+        );
+
+        await waitForPromises();
+
+        findToggle().vm.$emit('change', true);
+
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({ message });
+      });
     });
   });
 
@@ -111,7 +196,7 @@ describe('TokenAccess component', () => {
       createComponent(
         [
           [getCIJobTokenScopeQuery, enabledJobTokenScopeHandler],
-          [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
+          [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
           [addProjectCIJobTokenScopeMutation, addProjectSuccessHandler],
         ],
         mountExtended,
@@ -133,8 +218,8 @@ describe('TokenAccess component', () => {
       createComponent(
         [
           [getCIJobTokenScopeQuery, enabledJobTokenScopeHandler],
-          [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
-          [addProjectCIJobTokenScopeMutation, addProjectFailureHandler],
+          [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
+          [addProjectCIJobTokenScopeMutation, failureHandler],
         ],
         mountExtended,
       );
@@ -154,7 +239,7 @@ describe('TokenAccess component', () => {
       createComponent(
         [
           [getCIJobTokenScopeQuery, enabledJobTokenScopeHandler],
-          [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
+          [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
           [removeProjectCIJobTokenScopeMutation, removeProjectSuccessHandler],
         ],
         mountExtended,
@@ -176,8 +261,8 @@ describe('TokenAccess component', () => {
       createComponent(
         [
           [getCIJobTokenScopeQuery, enabledJobTokenScopeHandler],
-          [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
-          [removeProjectCIJobTokenScopeMutation, removeProjectFailureHandler],
+          [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
+          [removeProjectCIJobTokenScopeMutation, failureHandler],
         ],
         mountExtended,
       );

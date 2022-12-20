@@ -11,6 +11,7 @@ query getVariables($after: String, $first: Int = 100) {
       ... on CiInstanceVariable {
         masked
         protected
+        raw
       }
     }
   }

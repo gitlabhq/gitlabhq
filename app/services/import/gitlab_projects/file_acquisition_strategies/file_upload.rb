@@ -8,7 +8,7 @@ module Import
 
         validate :uploaded_file
 
-        def initialize(current_user: nil, params:)
+        def initialize(params:, current_user: nil)
           @params = params
         end
 

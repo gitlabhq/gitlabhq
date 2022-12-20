@@ -15,6 +15,7 @@ module BitbucketServer
       Errno::EHOSTUNREACH,
       Net::OpenTimeout,
       Net::ReadTimeout,
+      URI::InvalidURIError,
       Gitlab::HTTP::BlockedUrlError
     ].freeze
 

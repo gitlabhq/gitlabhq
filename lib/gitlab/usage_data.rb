@@ -157,7 +157,6 @@ module Gitlab
             runners_usage,
             integrations_usage,
             user_preferences_usage,
-            container_expiration_policies_usage,
             service_desk_counts
           ).tap do |data|
             data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
@@ -300,7 +299,7 @@ module Gitlab
             object_store: {
               enabled: alt_usage_data { config['enabled'] },
               direct_upload: alt_usage_data { config['direct_upload'] },
-              background_upload: alt_usage_data { config['background_upload'] },
+              background_upload: alt_usage_data { false }, # This setting no longer exists
               provider: alt_usage_data { config['connection']['provider'] }
             }
           }
@@ -328,26 +327,6 @@ module Gitlab
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def container_expiration_policies_usage
-        results = {}
-        start = minimum_id(Project)
-        finish = maximum_id(Project)
-
-        # rubocop: disable UsageData/LargeTable
-        base = ::ContainerExpirationPolicy.active
-        # rubocop: enable UsageData/LargeTable
-
-        # rubocop: disable UsageData/LargeTable
-        ::ContainerExpirationPolicy.older_than_options.keys.each do |value|
-          results["projects_with_expiration_policy_enabled_with_older_than_set_to_#{value}".to_sym] = distinct_count(base.where(older_than: value), :project_id, start: start, finish: finish)
-        end
-        # rubocop: enable UsageData/LargeTable
-
-        results[:projects_with_expiration_policy_enabled_with_older_than_unset] = distinct_count(base.where(older_than: nil), :project_id, start: start, finish: finish)
-
-        results
-      end
-
       def integrations_usage
         # rubocop: disable UsageData/LargeTable:
         Integration.available_integration_names(include_dev: false).each_with_object({}) do |name, response|
@@ -611,10 +590,6 @@ module Gitlab
         {}
       end
 
-      def redis_hll_counters
-        { redis_hll_counters: ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events_data }
-      end
-
       def action_monthly_active_users(time_period)
         counter = Gitlab::UsageDataCounters::EditorUniqueCounter
         date_range = { date_from: time_period[:created_at].first, date_to: time_period[:created_at].last }
@@ -665,7 +640,6 @@ module Gitlab
           .merge(topology_usage_data)
           .merge(usage_activity_by_stage)
           .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, monthly_time_range_db_params))
-          .merge(redis_hll_counters)
       end
 
       def metric_time_period(time_period)
@@ -794,8 +768,8 @@ module Gitlab
 
       # rubocop:disable CodeReuse/ActiveRecord
       def distinct_count_user_auth_by_provider(time_period)
-        counts = auth_providers_except_ldap.each_with_object({}) do |provider, hash|
-          hash[provider] = distinct_count(
+        counts = auth_providers_except_ldap.index_with do |provider|
+          distinct_count(
             ::AuthenticationEvent.success.for_provider(provider).where(time_period), :user_id)
         end
 

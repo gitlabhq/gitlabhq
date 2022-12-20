@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Thread Comments Commit', :js do
+RSpec.describe 'Thread Comments Commit', :js, feature_category: :source_code_management do
   include RepoHelpers
 
   let(:user) { create(:user) }

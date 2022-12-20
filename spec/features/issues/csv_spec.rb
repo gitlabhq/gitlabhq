@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issues csv', :js do
+RSpec.describe 'Issues csv', :js, feature_category: :team_planning do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:milestone) { create(:milestone, title: 'v1.0', project: project) }

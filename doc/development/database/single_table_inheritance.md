@@ -31,7 +31,7 @@ could result in loading unexpected code or associations which may cause unintend
 side effects or failures during upgrades.
 
 ```ruby
-class SomeMigration < Gitlab::Database::Migration[2.0]
+class SomeMigration < Gitlab::Database::Migration[2.1]
   class Services < MigrationRecord
     self.table_name = 'services'
     self.inheritance_column = :_type_disabled
@@ -47,7 +47,7 @@ This ensures that the migration loads the columns for the migration in isolation
 and the helper disables STI by default.
 
 ```ruby
-class EnqueueSomeBackgroundMigration < Gitlab::Database::Migration[2.0]
+class EnqueueSomeBackgroundMigration < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up

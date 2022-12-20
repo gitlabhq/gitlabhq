@@ -101,10 +101,13 @@ This feature allows you to search and select branches quickly. Search results ap
 - Branches with names that matched search terms exactly.
 - Other branches with names that include search terms, sorted alphabetically.
 
-Sometimes when you have hundreds of branches you may want a more flexible matching pattern. In such cases you can use the following:
+Sometimes when you have hundreds of branches you may want a more flexible matching pattern. In such cases you can use the following operators:
 
-- `^feature` matches only branch names that begin with 'feature'.
-- `feature$` matches only branch names that end with 'feature'.
+- `^` matches beginning of branch name, for example `^feat` would match `feat/user-authentication`
+- `$` matches end of branch name, for example `widget$` would match `feat/search-box-widget`
+- `*` wildcard matcher, for example `branch*cache*` would match `fix/branch-search-cache-expiration`
+
+These operators can be mixed, for example `^chore/*migration$` would match `chore/user-data-migration`
 
 ## Swap revisions
 
@@ -116,14 +119,26 @@ The Swap revisions feature allows you to swap the Source and Target revisions. W
 
 ![After swap revisions](img/swap_revisions_after_v13_12.png)
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Error: ambiguous `HEAD` branch exists
 
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+In versions of Git earlier than 2.16.0, you could create a branch named `HEAD`.
+This branch named `HEAD` collides with the internal reference (also named `HEAD`)
+Git uses to describe the active (checked out) branch. This naming collision can
+prevent you from updating the default branch of your repository:
+
+```plaintext
+Error: Could not set the default branch. Do you have a branch named 'HEAD' in your repository?
+```
+
+To fix this problem:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Branches**.
+1. Search for a branch named `HEAD`.
+1. Make sure the branch has no uncommitted changes.
+1. Select **Delete branch**, then **Yes, delete branch**.
+
+Git versions [2.16.0 and later](https://github.com/git/git/commit/a625b092cc59940521789fe8a3ff69c8d6b14eb2),
+prevent you from creating a branch with this name.

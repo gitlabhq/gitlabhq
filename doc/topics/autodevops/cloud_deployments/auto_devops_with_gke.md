@@ -231,7 +231,7 @@ takes you to the pod's logs page.
 
 NOTE:
 The example shows only one pod hosting the application at the moment, but you can add
-more pods by defining the [`REPLICAS` CI/CD variable](../customize.md#cicd-variables)
+more pods by defining the [`REPLICAS` CI/CD variable](../cicd_variables.md)
 in **Settings > CI/CD > Variables**.
 
 ### Work with branches
@@ -300,7 +300,7 @@ and customized to fit your workflow. Here are some helpful resources for further
 
 1. [Auto DevOps](../index.md)
 1. [Multiple Kubernetes clusters](../multiple_clusters_auto_devops.md)
-1. [Incremental rollout to production](../customize.md#incremental-rollout-to-production)
-1. [Disable jobs you don't need with CI/CD variables](../customize.md#cicd-variables)
+1. [Incremental rollout to production](../cicd_variables.md#incremental-rollout-to-production)
+1. [Disable jobs you don't need with CI/CD variables](../cicd_variables.md)
 1. [Use your own buildpacks to build your application](../customize.md#custom-buildpacks)
 1. [Prometheus monitoring](../../../user/project/integrations/prometheus.md)

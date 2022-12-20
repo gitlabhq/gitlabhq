@@ -9,7 +9,7 @@ type: reference
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68982) in GitLab 14.3.
 
-[Sidekiq](../../../administration/sidekiq.md) jobs get stored in
+[Sidekiq](../../../administration/sidekiq/index.md) jobs get stored in
 Redis. To avoid excessive memory for Redis, we:
 
 - Compress job arguments before storing them in Redis.

@@ -10,6 +10,7 @@ query getIssues(
   $search: String
   $sort: IssueSort
   $state: IssuableState
+  $in: [IssuableSearchableField!]
   $assigneeId: String
   $assigneeUsernames: [String!]
   $authorUsername: String
@@ -38,6 +39,7 @@ query getIssues(
       search: $search
       sort: $sort
       state: $state
+      in: $in
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
@@ -72,6 +74,7 @@ query getIssues(
       search: $search
       sort: $sort
       state: $state
+      in: $in
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername

@@ -123,15 +123,39 @@ describe('BoardContent', () => {
       expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
     });
 
-    it('resizes the list on resize', async () => {
+    it('on small screens, sets board container height to full height', async () => {
       window.innerHeight = 1000;
+      window.innerWidth = 767;
       jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: 100 });
 
       wrapper.vm.resizeObserver.trigger();
 
       await nextTick();
 
-      expect(wrapper.findComponent({ ref: 'list' }).attributes('style')).toBe('height: 900px;');
+      const style = wrapper.findComponent({ ref: 'list' }).attributes('style');
+
+      expect(style).toBe('height: 1000px;');
+    });
+
+    it('on large screens, sets board container height fill area below filters', async () => {
+      window.innerHeight = 1000;
+      window.innerWidth = 768;
+      jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: 100 });
+
+      wrapper.vm.resizeObserver.trigger();
+
+      await nextTick();
+
+      const style = wrapper.findComponent({ ref: 'list' }).attributes('style');
+
+      expect(style).toBe('height: 900px;');
+    });
+
+    it('sets delay and delayOnTouchOnly attributes on board list', () => {
+      const listEl = wrapper.findComponent({ ref: 'list' });
+
+      expect(listEl.attributes('delay')).toBe('100');
+      expect(listEl.attributes('delayontouchonly')).toBe('true');
     });
   });
 

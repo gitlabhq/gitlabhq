@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Secure Files', :js do
+RSpec.describe 'Secure Files', :js, feature_category: :projects do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
@@ -12,31 +12,10 @@ RSpec.describe 'Secure Files', :js do
     sign_in(user)
   end
 
-  context 'when the :ci_secure_files feature flag is enabled' do
-    before do
-      stub_feature_flags(ci_secure_files: true)
-
+  context 'authenticated user with admin permissions' do
+    it 'shows the secure files settings' do
       visit project_settings_ci_cd_path(project)
-    end
-
-    context 'authenticated user with admin permissions' do
-      it 'shows the secure files settings' do
-        expect(page).to have_content('Secure Files')
-      end
-    end
-  end
-
-  context 'when the :ci_secure_files feature flag is disabled' do
-    before do
-      stub_feature_flags(ci_secure_files: false)
-
-      visit project_settings_ci_cd_path(project)
-    end
-
-    context 'authenticated user with admin permissions' do
-      it 'does not shows the secure files settings' do
-        expect(page).not_to have_content('Secure Files')
-      end
+      expect(page).to have_content('Secure Files')
     end
   end
 

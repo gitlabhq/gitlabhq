@@ -10,6 +10,7 @@ RSpec.describe MergeRequestPolicy do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:non_team_member) { create(:user) }
+  let_it_be(:bot) { create(:user, :project_bot) }
 
   def permissions(user, merge_request)
     described_class.new(user, merge_request)
@@ -72,6 +73,7 @@ RSpec.describe MergeRequestPolicy do
       project.add_guest(guest)
       project.add_guest(author)
       project.add_developer(developer)
+      project.add_developer(bot)
     end
 
     context 'when merge request is public' do
@@ -94,6 +96,18 @@ RSpec.describe MergeRequestPolicy do
 
           it do
             is_expected.to be_allowed(:approve_merge_request)
+          end
+
+          it do
+            is_expected.to be_disallowed(:reset_merge_request_approvals)
+          end
+        end
+
+        context 'and the user is a bot' do
+          let(:user) { bot }
+
+          it do
+            is_expected.to be_allowed(:reset_merge_request_approvals)
           end
         end
       end
@@ -123,6 +137,14 @@ RSpec.describe MergeRequestPolicy do
 
         it_behaves_like 'a denied user'
       end
+
+      describe 'a bot' do
+        let(:subject) { permissions(bot, merge_request) }
+
+        it do
+          is_expected.to be_disallowed(:reset_merge_request_approvals)
+        end
+      end
     end
 
     context 'when merge requests are private' do
@@ -143,6 +165,14 @@ RSpec.describe MergeRequestPolicy do
         subject { developer }
 
         it_behaves_like 'a user with full access'
+      end
+
+      describe 'a bot' do
+        let(:subject) { permissions(bot, merge_request) }
+
+        it do
+          is_expected.to be_allowed(:reset_merge_request_approvals)
+        end
       end
     end
 
@@ -214,6 +244,7 @@ RSpec.describe MergeRequestPolicy do
       group.add_guest(author)
       group.add_reporter(reporter)
       group.add_developer(developer)
+      group.add_developer(bot)
     end
 
     context 'when project is public' do
@@ -222,8 +253,24 @@ RSpec.describe MergeRequestPolicy do
       describe 'the merge request author' do
         subject { permissions(author, merge_request) }
 
-        specify do
+        it do
           is_expected.to be_allowed(:approve_merge_request)
+        end
+
+        it do
+          is_expected.to be_disallowed(:reset_merge_request_approvals)
+        end
+      end
+
+      describe 'a bot' do
+        subject { permissions(bot, merge_request) }
+
+        it do
+          is_expected.to be_allowed(:approve_merge_request)
+        end
+
+        it do
+          is_expected.to be_allowed(:reset_merge_request_approvals)
         end
       end
 
@@ -250,6 +297,14 @@ RSpec.describe MergeRequestPolicy do
 
           it_behaves_like 'a user with full access'
         end
+
+        describe 'a bot' do
+          let(:subject) { permissions(bot, merge_request) }
+
+          it do
+            is_expected.to be_allowed(:reset_merge_request_approvals)
+          end
+        end
       end
     end
 
@@ -272,6 +327,14 @@ RSpec.describe MergeRequestPolicy do
         subject { developer }
 
         it_behaves_like 'a user with full access'
+      end
+
+      describe 'a bot' do
+        let(:subject) { permissions(bot, merge_request) }
+
+        it do
+          is_expected.to be_allowed(:reset_merge_request_approvals)
+        end
       end
     end
   end
@@ -297,10 +360,27 @@ RSpec.describe MergeRequestPolicy do
           group_access: Gitlab::Access::DEVELOPER)
 
         group.add_guest(non_team_member)
+        group.add_guest(bot)
       end
 
-      specify do
+      it do
         is_expected.to be_allowed(:approve_merge_request)
+      end
+
+      it do
+        is_expected.to be_disallowed(:reset_merge_request_approvals)
+      end
+
+      context 'and the user is a bot' do
+        let(:user) { bot }
+
+        it do
+          is_expected.to be_allowed(:approve_merge_request)
+        end
+
+        it do
+          is_expected.to be_allowed(:reset_merge_request_approvals)
+        end
       end
     end
   end
@@ -313,8 +393,24 @@ RSpec.describe MergeRequestPolicy do
 
       subject { permissions(non_team_member, merge_request) }
 
-      specify do
+      it do
         is_expected.not_to be_allowed(:approve_merge_request)
+      end
+
+      it do
+        is_expected.not_to be_allowed(:reset_merge_request_approvals)
+      end
+
+      context 'and the user is a bot' do
+        subject { permissions(bot, merge_request) }
+
+        it do
+          is_expected.not_to be_allowed(:approve_merge_request)
+        end
+
+        it do
+          is_expected.not_to be_allowed(:reset_merge_request_approvals)
+        end
       end
     end
 

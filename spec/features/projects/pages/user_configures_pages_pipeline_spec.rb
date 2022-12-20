@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'Pages edits pages settings', :js do
+RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:project) { create(:project, pages_https_only: false) }
@@ -46,14 +46,14 @@ RSpec.describe 'Pages edits pages settings', :js do
       Feature.disable(:use_pipeline_wizard_for_pages)
     end
 
+    after do
+      Feature.enable(:use_pipeline_wizard_for_pages)
+    end
+
     it 'shows configure pages instructions' do
       visit project_pages_path(project)
 
       expect(page).to have_content('Configure pages')
-    end
-
-    after do
-      Feature.enable(:use_pipeline_wizard_for_pages)
     end
   end
 end

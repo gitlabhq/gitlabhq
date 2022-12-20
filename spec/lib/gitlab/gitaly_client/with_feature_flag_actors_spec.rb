@@ -157,70 +157,47 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors do
     let(:call_arg_2) { double }
     let(:call_arg_3) { double }
     let(:call_result) { double }
+    let(:repository_actor) { instance_double(::Repository) }
+    let(:user_actor) { instance_double(::User) }
+    let(:project_actor) { instance_double(Project) }
+    let(:group_actor) { instance_double(Group) }
 
     before do
+      allow(service).to receive(:user_actor).and_return(user_actor)
+      allow(service).to receive(:repository_actor).and_return(repository_actor)
+      allow(service).to receive(:project_actor).and_return(project_actor)
+      allow(service).to receive(:group_actor).and_return(group_actor)
+      allow(Gitlab::GitalyClient).to receive(:with_feature_flag_actors).and_call_original
       allow(Gitlab::GitalyClient).to receive(:call).and_return(call_result)
     end
 
-    context 'when actors_aware_gitaly_calls flag is enabled' do
-      let(:repository_actor) { instance_double(::Repository) }
-      let(:user_actor) { instance_double(::User) }
-      let(:project_actor) { instance_double(Project) }
-      let(:group_actor) { instance_double(Group) }
+    it 'triggers client call with feature flag actors' do
+      result = service.gitaly_client_call(call_arg_1, call_arg_2, karg: call_arg_3)
 
-      before do
-        stub_feature_flags(actors_aware_gitaly_calls: true)
-
-        allow(service).to receive(:user_actor).and_return(user_actor)
-        allow(service).to receive(:repository_actor).and_return(repository_actor)
-        allow(service).to receive(:project_actor).and_return(project_actor)
-        allow(service).to receive(:group_actor).and_return(group_actor)
-        allow(Gitlab::GitalyClient).to receive(:with_feature_flag_actors).and_call_original
-      end
-
-      it 'triggers client call with feature flag actors' do
-        result = service.gitaly_client_call(call_arg_1, call_arg_2, karg: call_arg_3)
-
-        expect(Gitlab::GitalyClient).to have_received(:call).with(call_arg_1, call_arg_2, karg: call_arg_3)
-        expect(Gitlab::GitalyClient).to have_received(:with_feature_flag_actors).with(
-          repository: repository_actor,
-          user: user_actor,
-          project: project_actor,
-          group: group_actor
-        )
-        expect(result).to be(call_result)
-      end
-
-      context 'when call without repository_actor' do
-        before do
-          allow(service).to receive(:repository_actor).and_return(nil)
-          allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).and_call_original
-        end
-
-        it 'calls error tracking track_and_raise_for_dev_exception' do
-          expect do
-            service.gitaly_client_call(call_arg_1, call_arg_2, karg: call_arg_3)
-          end.to raise_error /gitaly_client_call called without setting repository_actor/
-
-          expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception).with(
-            be_a(Feature::InvalidFeatureFlagError)
-          )
-        end
-      end
+      expect(Gitlab::GitalyClient).to have_received(:call).with(call_arg_1, call_arg_2, karg: call_arg_3)
+      expect(Gitlab::GitalyClient).to have_received(:with_feature_flag_actors).with(
+        repository: repository_actor,
+        user: user_actor,
+        project: project_actor,
+        group: group_actor
+      )
+      expect(result).to be(call_result)
     end
 
-    context 'when actors_aware_gitaly_calls not enabled' do
+    context 'when call without repository_actor' do
       before do
-        stub_feature_flags(actors_aware_gitaly_calls: false)
+        allow(service).to receive(:repository_actor).and_return(nil)
+        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).and_call_original
       end
 
-      it 'triggers client call without feature flag actors' do
-        expect(Gitlab::GitalyClient).not_to receive(:with_feature_flag_actors)
+      it 'calls error tracking track_and_raise_for_dev_exception' do
+        expect do
+          service.gitaly_client_call(call_arg_1, call_arg_2, karg: call_arg_3)
+        end.to raise_error /gitaly_client_call called without setting repository_actor/
 
-        result = service.gitaly_client_call(call_arg_1, call_arg_2, karg: call_arg_3)
-
-        expect(Gitlab::GitalyClient).to have_received(:call).with(call_arg_1, call_arg_2, karg: call_arg_3)
-        expect(result).to be(call_result)
+        expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception).with(
+          be_a(Feature::InvalidFeatureFlagError)
+        )
       end
     end
 
@@ -228,47 +205,28 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors do
       let_it_be(:project) { create(:project) }
       let(:repository_actor) { project.repository }
 
-      context 'when actors_aware_gitaly_calls flag is enabled' do
-        let(:user_actor) { instance_double(::User) }
-        let(:project_actor) { instance_double(Project) }
-        let(:group_actor) { instance_double(Group) }
+      let(:user_actor) { instance_double(::User) }
+      let(:project_actor) { instance_double(Project) }
+      let(:group_actor) { instance_double(Group) }
 
-        before do
-          stub_feature_flags(actors_aware_gitaly_calls: true)
-
-          allow(Feature::Gitaly).to receive(:user_actor).and_return(user_actor)
-          allow(Feature::Gitaly).to receive(:project_actor).with(project).and_return(project_actor)
-          allow(Feature::Gitaly).to receive(:group_actor).with(project).and_return(group_actor)
-        end
-
-        it 'returns a hash with collected feature flag actors' do
-          result = service.gitaly_feature_flag_actors(repository_actor)
-          expect(result).to eql(
-            repository: repository_actor,
-            user: user_actor,
-            project: project_actor,
-            group: group_actor
-          )
-
-          expect(Feature::Gitaly).to have_received(:user_actor).with(no_args)
-          expect(Feature::Gitaly).to have_received(:project_actor).with(project)
-          expect(Feature::Gitaly).to have_received(:group_actor).with(project)
-        end
+      before do
+        allow(Feature::Gitaly).to receive(:user_actor).and_return(user_actor)
+        allow(Feature::Gitaly).to receive(:project_actor).with(project).and_return(project_actor)
+        allow(Feature::Gitaly).to receive(:group_actor).with(project).and_return(group_actor)
       end
 
-      context 'when actors_aware_gitaly_calls not enabled' do
-        before do
-          stub_feature_flags(actors_aware_gitaly_calls: false)
-        end
+      it 'returns a hash with collected feature flag actors' do
+        result = service.gitaly_feature_flag_actors(repository_actor)
+        expect(result).to eql(
+          repository: repository_actor,
+          user: user_actor,
+          project: project_actor,
+          group: group_actor
+        )
 
-        it 'returns an empty hash' do
-          expect(Feature::Gitaly).not_to receive(:user_actor)
-          expect(Feature::Gitaly).not_to receive(:project_actor)
-          expect(Feature::Gitaly).not_to receive(:group_actor)
-
-          result = service.gitaly_feature_flag_actors(repository_actor)
-          expect(result).to eql({})
-        end
+        expect(Feature::Gitaly).to have_received(:user_actor).with(no_args)
+        expect(Feature::Gitaly).to have_received(:project_actor).with(project)
+        expect(Feature::Gitaly).to have_received(:group_actor).with(project)
       end
     end
   end

@@ -135,7 +135,7 @@ class Import::BulkImportsController < ApplicationController
       session[url_key],
       allow_localhost: allow_local_requests?,
       allow_local_network: allow_local_requests?,
-      schemes: %w(http https)
+      schemes: %w[http https]
     )
   rescue Gitlab::UrlBlocker::BlockedUrlError => e
     clear_session_data

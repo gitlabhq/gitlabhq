@@ -46,6 +46,14 @@ module ProfilesHelper
     end
   end
 
+  def ssh_key_usage_types
+    {
+      s_('SSHKey|Authentication & Signing') => 'auth_and_signing',
+      s_('SSHKey|Authentication') => 'auth',
+      s_('SSHKey|Signing') => 'signing'
+    }
+  end
+
   # Overridden in EE::ProfilesHelper#ssh_key_expiration_tooltip
   def ssh_key_expiration_tooltip(key)
     return key.errors.full_messages.join(', ') if key.errors.full_messages.any?

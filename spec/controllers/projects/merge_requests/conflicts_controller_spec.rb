@@ -105,15 +105,13 @@ RSpec.describe Projects::MergeRequests::ConflictsController do
               if section['conflict']
                 expect(line['type']).to be_in(%w(old new))
                 expect(line.values_at('old_line', 'new_line')).to contain_exactly(nil, a_kind_of(Integer))
+              elsif line['type'].nil?
+                expect(line['old_line']).not_to eq(nil)
+                expect(line['new_line']).not_to eq(nil)
               else
-                if line['type'].nil?
-                  expect(line['old_line']).not_to eq(nil)
-                  expect(line['new_line']).not_to eq(nil)
-                else
-                  expect(line['type']).to eq('match')
-                  expect(line['old_line']).to eq(nil)
-                  expect(line['new_line']).to eq(nil)
-                end
+                expect(line['type']).to eq('match')
+                expect(line['old_line']).to eq(nil)
+                expect(line['new_line']).to eq(nil)
               end
             end
           end

@@ -115,7 +115,8 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
           create(:award_emoji, name: 'thumbsup', awardable: public_note)
 
           # 1 extra query per source (3 emojis + 2 notes) to fetch participables collection
-          expect { query.call }.not_to exceed_query_limit(control_count).with_threshold(5)
+          # 1 extra query to load work item widgets collection
+          expect { query.call }.not_to exceed_query_limit(control_count).with_threshold(6)
         end
 
         it 'does not execute N+1 for system note metadata relation' do

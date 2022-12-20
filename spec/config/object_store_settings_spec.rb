@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('config', 'object_store_settings.rb')
 
-RSpec.describe ObjectStoreSettings do
+RSpec.describe ObjectStoreSettings, feature_category: :not_owned do
   describe '#parse!' do
     let(:settings) { Settingslogic.new(config) }
 
@@ -70,7 +70,6 @@ RSpec.describe ObjectStoreSettings do
         expect(settings.artifacts['object_store']['enabled']).to be true
         expect(settings.artifacts['object_store']['connection']).to eq(connection)
         expect(settings.artifacts['object_store']['direct_upload']).to be true
-        expect(settings.artifacts['object_store']['background_upload']).to be false
         expect(settings.artifacts['object_store']['proxy_download']).to be false
         expect(settings.artifacts['object_store']['remote_directory']).to eq('artifacts')
         expect(settings.artifacts['object_store']['bucket_prefix']).to eq(nil)
@@ -81,7 +80,6 @@ RSpec.describe ObjectStoreSettings do
         expect(settings.lfs['object_store']['enabled']).to be true
         expect(settings.lfs['object_store']['connection']).to eq(connection)
         expect(settings.lfs['object_store']['direct_upload']).to be true
-        expect(settings.lfs['object_store']['background_upload']).to be false
         expect(settings.lfs['object_store']['proxy_download']).to be true
         expect(settings.lfs['object_store']['remote_directory']).to eq('lfs-objects')
         expect(settings.lfs['object_store']['bucket_prefix']).to eq(nil)
@@ -200,7 +198,6 @@ RSpec.describe ObjectStoreSettings do
             'enabled' => true,
             'remote_directory' => 'some-bucket',
             'direct_upload' => false,
-            'background_upload' => true,
             'proxy_download' => false
           }
         end
@@ -215,9 +212,7 @@ RSpec.describe ObjectStoreSettings do
           expect(settings.artifacts['object_store']).to be_nil
           expect(settings.lfs['object_store']['remote_directory']).to eq('some-bucket')
           expect(settings.lfs['object_store']['bucket_prefix']).to eq(nil)
-          # Disable background_upload, regardless of the input config
           expect(settings.lfs['object_store']['direct_upload']).to eq(true)
-          expect(settings.lfs['object_store']['background_upload']).to eq(false)
           expect(settings.external_diffs['object_store']).to be_nil
         end
       end
@@ -230,7 +225,6 @@ RSpec.describe ObjectStoreSettings do
 
       expect(settings['enabled']).to be false
       expect(settings['direct_upload']).to be true
-      expect(settings['background_upload']).to be false
       expect(settings['remote_directory']).to be nil
       expect(settings['bucket_prefix']).to be nil
     end
@@ -245,7 +239,6 @@ RSpec.describe ObjectStoreSettings do
 
       expect(settings['enabled']).to be true
       expect(settings['direct_upload']).to be true
-      expect(settings['background_upload']).to be false
       expect(settings['remote_directory']).to eq 'artifacts'
       expect(settings['bucket_prefix']).to be nil
     end

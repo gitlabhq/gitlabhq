@@ -9,8 +9,8 @@ import {
   GlPopover,
   GlLink,
   GlTooltipDirective,
-  GlSafeHtmlDirective,
 } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { visitUrl } from '~/lib/utils/url_utility';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
@@ -29,7 +29,7 @@ import ItemTypeIcon from './item_type_icon.vue';
 export default {
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   components: {
     GlAvatar,
@@ -200,11 +200,9 @@ export default {
               class="no-expand gl-mr-3 gl-text-gray-900!"
               :itemprop="microdata.nameItemprop"
             >
-              {{
-                // ending bracket must be by closing tag to prevent
-                // link hover text-decoration from over-extending
-                group.name
-              }}
+              <!-- ending bracket must be by closing tag to prevent -->
+              <!-- link hover text-decoration from over-extending -->
+              {{ group.name }}
             </a>
             <gl-icon
               v-gl-tooltip.hover.bottom

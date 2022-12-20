@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project callouts' do
+RSpec.describe 'Project callouts', feature_category: :navigation do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 

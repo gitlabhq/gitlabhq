@@ -139,7 +139,7 @@ module EmailsHelper
     max_domain_length = list_id_max_length - Gitlab.config.gitlab.host.length - project.id.to_s.length - 2
 
     if max_domain_length < 3
-      return project.id.to_s + "..." + Gitlab.config.gitlab.host
+      return "#{project.id}...#{Gitlab.config.gitlab.host}"
     end
 
     if project_path_as_domain.length > max_domain_length
@@ -151,7 +151,7 @@ module EmailsHelper
       project_path_as_domain = project_path_as_domain.slice(0, last_dot_index).concat("..")
     end
 
-    project.id.to_s + "." + project_path_as_domain + "." + Gitlab.config.gitlab.host
+    "#{project.id}.#{project_path_as_domain}.#{Gitlab.config.gitlab.host}"
   end
 
   def html_header_message

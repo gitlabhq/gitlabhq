@@ -10,6 +10,8 @@ module Gitlab
       # separate file keys (https://gitlab.com/gitlab-org/gitlab/issues/30550).
       #
       class MergeRequestDiffBatch < MergeRequestDiffBase
+        include PaginatedDiffs
+
         DEFAULT_BATCH_PAGE = 1
         DEFAULT_BATCH_SIZE = 30
 
@@ -25,40 +27,7 @@ module Gitlab
           }
         end
 
-        override :diffs
-        def diffs
-          strong_memoize(:diffs) do
-            @merge_request_diff.opening_external_diff do
-              # Avoiding any extra queries.
-              collection = @paginated_collection.to_a
-
-              # The offset collection and calculation is required so that we
-              # know how much has been loaded in previous batches, collapsing
-              # the current paginated set accordingly (collection limit calculation).
-              # See: https://docs.gitlab.com/ee/development/diffs.html#diff-collection-limits
-              #
-              offset_index = collection.first&.index
-              options = diff_options.dup
-
-              collection =
-                if offset_index && offset_index > 0
-                  offset_collection = relation.limit(offset_index) # rubocop:disable CodeReuse/ActiveRecord
-                  options[:offset_index] = offset_index
-                  offset_collection + collection
-                else
-                  collection
-                end
-
-              Gitlab::Git::DiffCollection.new(collection.map(&:to_hash), options)
-            end
-          end
-        end
-
         private
-
-        def relation
-          @merge_request_diff.merge_request_diff_files
-        end
 
         # rubocop: disable CodeReuse/ActiveRecord
         def load_paginated_collection(batch_page, batch_size, diff_options)

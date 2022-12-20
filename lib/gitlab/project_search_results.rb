@@ -125,17 +125,15 @@ module Gitlab
     def wiki_blobs(limit: count_limit)
       return [] unless Ability.allowed?(@current_user, :read_wiki, @project)
 
-      @wiki_blobs ||= begin
-        if project.wiki_enabled? && query.present?
-          if project.wiki.empty?
-            []
-          else
-            Gitlab::WikiFileFinder.new(project, repository_wiki_ref).find(query, content_match_cutoff: limit)
-          end
-        else
-          []
-        end
-      end
+      @wiki_blobs ||= if project.wiki_enabled? && query.present?
+                        if project.wiki.empty?
+                          []
+                        else
+                          Gitlab::WikiFileFinder.new(project, repository_wiki_ref).find(query, content_match_cutoff: limit)
+                        end
+                      else
+                        []
+                      end
     end
 
     def notes
@@ -195,3 +193,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ProjectSearchResults.prepend_mod_with('Gitlab::ProjectSearchResults')

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RenameServicesToIntegrations do
+RSpec.describe RenameServicesToIntegrations, feature_category: :integrations do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

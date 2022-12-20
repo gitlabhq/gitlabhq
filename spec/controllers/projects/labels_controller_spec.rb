@@ -100,7 +100,7 @@ RSpec.describe Projects::LabelsController do
         list_labels
       end
 
-      it 'avoids N+1 queries' do
+      it 'avoids N+1 queries', :use_clean_rails_redis_caching do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_labels }
 
         create_list(:label, 3, project: project)

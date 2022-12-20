@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Help Dropdown", :js do
+RSpec.describe "Help Dropdown", :js, feature_category: :not_owned do
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }
 

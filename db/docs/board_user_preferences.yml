@@ -7,3 +7,4 @@ feature_categories:
 description: Preferences for issue boards stored on a per user basis, such as whether to hide or show labels
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33892
 milestone: '13.1'
+gitlab_schema: gitlab_main

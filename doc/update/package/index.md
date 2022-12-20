@@ -16,7 +16,7 @@ GitLab package.
 - If you are upgrading from a non-package installation to a GitLab package installation, see
   [Upgrading from a non-package installation to a GitLab package installation](https://docs.gitlab.com/omnibus/update/convert_to_omnibus.html).
 - Ensure that any
-  [background migrations](../index.md#checking-for-background-migrations-before-upgrading)
+  [background migrations](../background_migrations.md)
   are fully completed. Upgrading
   before background migrations have finished can lead to data corruption.
   We recommend performing upgrades between major and minor releases no more than once per
@@ -178,8 +178,11 @@ To download and install GitLab:
    # Debian/Ubuntu
    dpkg -i <package_name>
 
-   # CentOS/RHEL
+   # RHEL/CentOS 6 and 7 
    rpm -Uvh <package_name>
+
+   # RHEL/CentOS 8
+   dnf install <package_name>
 
    # SUSE
    zypper install <package_name>

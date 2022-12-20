@@ -13,7 +13,7 @@ module QA
               element :service_password_field, ':data-qa-selector="`${fieldId}_field`"' # rubocop:disable QA/ElementWithPattern
             end
 
-            view 'app/assets/javascripts/integrations/edit/components/integration_form.vue' do
+            view 'app/assets/javascripts/integrations/edit/components/integration_form_actions.vue' do
               element :save_changes_button
             end
 

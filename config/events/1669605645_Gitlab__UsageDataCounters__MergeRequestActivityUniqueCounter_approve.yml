@@ -1,0 +1,22 @@
+---
+description: Mirrored RedisHLL i_code_review_user_approve_mr_monthly events sent to Snowplow
+category: Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
+action: approve
+identifiers:
+  - project
+  - user
+  - namespace
+product_stage: create
+product_group: code_review
+product_category: code_review
+product_section: 'TBD'
+milestone: "15.7"
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104670"
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+

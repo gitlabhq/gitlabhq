@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Groups with access list', :js do
+RSpec.describe 'Projects > Members > Groups with access list', :js, feature_category: :subgroups do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::ModalHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper

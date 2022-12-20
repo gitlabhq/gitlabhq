@@ -163,22 +163,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
           end
         end
 
-        context 'when policy is unknown' do
-          let(:config) { { policy: 'unknown' } }
-
-          it 'reports error' do
-            is_expected.to include('cache policy should be pull-push, push, or pull')
-          end
-        end
-
-        context 'when `when` is unknown' do
-          let(:config) { { when: 'unknown' } }
-
-          it 'reports error' do
-            is_expected.to include('cache when should be on_success, on_failure or always')
-          end
-        end
-
         context 'when descendants are invalid' do
           context 'with invalid keys' do
             let(:config) { { key: 1 } }
@@ -226,6 +210,62 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
 
           it 'reports error with descendants' do
             is_expected.to include 'cache config contains unknown keys: invalid'
+          end
+        end
+
+        context 'when the `when` keyword is not a valid string' do
+          context 'when `when` is unknown' do
+            let(:config) { { when: 'unknown' } }
+
+            it 'returns error' do
+              is_expected.to include('cache when should be one of: on_success, on_failure, always')
+            end
+          end
+
+          context 'when it is an array' do
+            let(:config) { { when: ['always'] } }
+
+            it 'returns error' do
+              expect(entry).not_to be_valid
+              is_expected.to include('cache when should be a string')
+            end
+          end
+
+          context 'when it is a boolean' do
+            let(:config) { { when: true } }
+
+            it 'returns error' do
+              expect(entry).not_to be_valid
+              is_expected.to include('cache when should be a string')
+            end
+          end
+        end
+
+        context 'when the `policy` keyword is not a valid string' do
+          context 'when `policy` is unknown' do
+            let(:config) { { policy: 'unknown' } }
+
+            it 'returns error' do
+              is_expected.to include('cache policy should be one of: pull-push, push, pull')
+            end
+          end
+
+          context 'when it is an array' do
+            let(:config) { { policy: ['pull-push'] } }
+
+            it 'returns error' do
+              expect(entry).not_to be_valid
+              is_expected.to include('cache policy should be a string')
+            end
+          end
+
+          context 'when it is a boolean' do
+            let(:config) { { policy: true } }
+
+            it 'returns error' do
+              expect(entry).not_to be_valid
+              is_expected.to include('cache policy should be a string')
+            end
           end
         end
       end

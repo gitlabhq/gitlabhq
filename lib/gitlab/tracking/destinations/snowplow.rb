@@ -14,7 +14,15 @@ module Gitlab
         def event(category, action, label: nil, property: nil, value: nil, context: nil)
           return unless enabled?
 
-          tracker.track_struct_event(category, action, label, property, value, context, (Time.now.to_f * 1000).to_i)
+          tracker.track_struct_event(
+            category: category,
+            action: action,
+            label: label,
+            property: property,
+            value: value,
+            context: context,
+            tstamp: (Time.now.to_f * 1000).to_i
+          )
           increment_total_events_counter
         end
 
@@ -54,19 +62,21 @@ module Gitlab
 
         def tracker
           @tracker ||= SnowplowTracker::Tracker.new(
-            emitter,
-            SnowplowTracker::Subject.new,
-            SNOWPLOW_NAMESPACE,
-            app_id
+            emitters: [emitter],
+            subject: SnowplowTracker::Subject.new,
+            namespace: SNOWPLOW_NAMESPACE,
+            app_id: app_id
           )
         end
 
         def emitter
           SnowplowTracker::AsyncEmitter.new(
-            hostname,
-            protocol: protocol,
-            on_success: method(:increment_successful_events_emissions),
-            on_failure: method(:failure_callback)
+            endpoint: hostname,
+            options: {
+              protocol: protocol,
+              on_success: method(:increment_successful_events_emissions),
+              on_failure: method(:failure_callback)
+            }
           )
         end
 

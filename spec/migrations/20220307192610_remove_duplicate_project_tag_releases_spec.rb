@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RemoveDuplicateProjectTagReleases do
+RSpec.describe RemoveDuplicateProjectTagReleases, feature_category: :release_orchestration do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:users) { table(:users) }

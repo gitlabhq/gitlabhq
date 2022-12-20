@@ -2,16 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe IssuePolicy do
+RSpec.describe IssuePolicy, feature_category: :team_planning do
   include_context 'ProjectPolicyTable context'
   include ExternalAuthorizationServiceHelpers
   include ProjectHelpers
   include UserHelpers
 
+  let(:admin) { create(:user, :admin) }
   let(:guest) { create(:user) }
   let(:author) { create(:user) }
   let(:assignee) { create(:user) }
   let(:reporter) { create(:user) }
+  let(:maintainer) { create(:user) }
+  let(:owner) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:reporter_from_group_link) { create(:user) }
   let(:non_member) { create(:user) }
@@ -197,6 +200,8 @@ RSpec.describe IssuePolicy do
     before do
       project.add_guest(guest)
       project.add_reporter(reporter)
+      project.add_maintainer(maintainer)
+      project.add_owner(owner)
 
       group.add_reporter(reporter_from_group_link)
 
@@ -305,7 +310,6 @@ RSpec.describe IssuePolicy do
 
       let(:issue) { create(:issue, project: project, author: author) }
       let(:visitor) { create(:user) }
-      let(:admin) { create(:user, :admin) }
 
       it 'forbids visitors from viewing issues' do
         expect(permissions(visitor, issue)).to be_disallowed(:read_issue)
@@ -394,12 +398,15 @@ RSpec.describe IssuePolicy do
 
         expect(permissions(assignee, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
       end
+
+      it 'allows admins to read confidential issues' do
+        expect(permissions(admin, confidential_issue)).to be_allowed(:read_issue)
+      end
     end
 
     context 'with a hidden issue' do
       let(:user) { create(:user) }
       let(:banned_user) { create(:user, :banned) }
-      let(:admin) { create(:user, :admin) }
       let(:hidden_issue) { create(:issue, project: project, author: banned_user) }
 
       it 'does not allow non-admin user to read the issue' do
@@ -408,6 +415,37 @@ RSpec.describe IssuePolicy do
 
       it 'allows admin to read the issue', :enable_admin_mode do
         expect(permissions(admin, hidden_issue)).to be_allowed(:read_issue)
+      end
+    end
+
+    context 'when accounting for notes widget' do
+      let(:policy) { described_class.new(reporter, note) }
+
+      before do
+        widgets_per_type = WorkItems::Type::WIDGETS_FOR_TYPE.dup
+        widgets_per_type[:task] = [::WorkItems::Widgets::Description]
+        stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', widgets_per_type)
+      end
+
+      context 'and notes widget is disabled for task' do
+        let(:task) { create(:work_item, :task, project: project) }
+
+        it 'does not allow accessing notes' do
+          # if notes widget is disabled not even maintainer can access notes
+          expect(permissions(maintainer, task)).to be_disallowed(:create_note, :read_note, :mark_note_as_confidential, :read_internal_note)
+          expect(permissions(admin, task)).to be_disallowed(:create_note, :read_note, :read_internal_note, :mark_note_as_confidential, :set_note_created_at)
+        end
+      end
+
+      context 'and notes widget is enabled for issue' do
+        it 'allows accessing notes' do
+          # with notes widget enabled, even guests can access notes
+          expect(permissions(guest, issue)).to be_allowed(:create_note, :read_note)
+          expect(permissions(guest, issue)).to be_disallowed(:read_internal_note, :mark_note_as_confidential, :set_note_created_at)
+          expect(permissions(reporter, issue)).to be_allowed(:create_note, :read_note, :read_internal_note, :mark_note_as_confidential)
+          expect(permissions(maintainer, issue)).to be_allowed(:create_note, :read_note, :read_internal_note, :mark_note_as_confidential)
+          expect(permissions(owner, issue)).to be_allowed(:create_note, :read_note, :read_internal_note, :mark_note_as_confidential, :set_note_created_at)
+        end
       end
     end
   end

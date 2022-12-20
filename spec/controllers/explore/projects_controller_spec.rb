@@ -101,6 +101,7 @@ RSpec.describe Explore::ProjectsController do
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
       context 'when topic exists' do
         before do
           create(:topic, name: 'topic1')

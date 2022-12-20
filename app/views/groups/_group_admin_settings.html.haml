@@ -27,3 +27,13 @@
   = f.text_field :two_factor_grace_period, class: 'form-control gl-form-input gl-form-input-sm'
   %small.form-text.text-gl-muted
     = _("Time (in hours) that users are allowed to skip forced configuration of two-factor authentication.")
+
+- if @group.namespace_settings.present?
+  .form-group.gl-form-group
+    %legend.col-form-label.col-form-label
+      = s_('Runners|Runner Registration')
+    - parent_disabled = Gitlab::CurrentSettings.valid_runner_registrars.exclude?('group') || !@group.all_ancestors_have_runner_registration_enabled?
+    = f.gitlab_ui_checkbox_component :runner_registration_enabled,
+      s_('Runners|New group runners can be registered'),
+      checkbox_options: { checked: @group.runner_registration_enabled && !parent_disabled, disabled: parent_disabled },
+      help_text: s_('Runners|Existing runners are not affected. To permit runner registration for all groups, enable this setting in the Admin Area in Settings &gt CI/CD.').html_safe

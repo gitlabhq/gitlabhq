@@ -34,6 +34,11 @@ module Types
           subscription: Subscriptions::IssuableUpdated,
           null: true,
           description: 'Triggered when the merge status of a merge request is updated.'
+
+    field :merge_request_approval_state_updated,
+          subscription: Subscriptions::IssuableUpdated,
+          null: true,
+          description: 'Triggered when approval state of a merge request is updated.'
   end
 end
 

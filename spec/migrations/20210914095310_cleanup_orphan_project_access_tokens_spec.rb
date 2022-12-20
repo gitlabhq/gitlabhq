@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanupOrphanProjectAccessTokens, :migration do
+RSpec.describe CleanupOrphanProjectAccessTokens, :migration, feature_category: :users do
   def create_user(**extra_options)
     defaults = { state: 'active', projects_limit: 0, email: "#{extra_options[:username]}@example.com" }
 

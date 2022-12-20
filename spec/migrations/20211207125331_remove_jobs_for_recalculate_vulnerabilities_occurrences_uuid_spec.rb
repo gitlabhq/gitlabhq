@@ -20,8 +20,9 @@ def create_background_migration_jobs(ids, status, created_at)
   )
 end
 
-RSpec.describe RemoveJobsForRecalculateVulnerabilitiesOccurrencesUuid, :migration do
-  let_it_be(:background_migration_jobs) { table(:background_migration_jobs) }
+RSpec.describe RemoveJobsForRecalculateVulnerabilitiesOccurrencesUuid, :migration,
+feature_category: :vulnerability_management do
+  let!(:background_migration_jobs) { table(:background_migration_jobs) }
 
   context 'when RecalculateVulnerabilitiesOccurrencesUuid jobs are present' do
     before do

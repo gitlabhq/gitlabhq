@@ -5,7 +5,6 @@ class Projects::ClustersController < Clusters::ClustersController
   before_action :repository
 
   before_action do
-    push_frontend_feature_flag(:prometheus_computed_alerts)
     push_frontend_feature_flag(:show_gitlab_agent_feedback, type: :ops)
   end
 

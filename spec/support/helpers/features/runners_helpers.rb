@@ -50,7 +50,7 @@ module Spec
             page.within(search_bar_selector) do
               click_on filter
 
-              # For OPERATOR_IS_ONLY, clicking the filter
+              # For OPERATORS_IS, clicking the filter
               # immediately preselects "=" operator
 
               page.find('input').send_keys(value)

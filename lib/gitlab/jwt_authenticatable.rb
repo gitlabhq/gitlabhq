@@ -3,7 +3,7 @@
 module Gitlab
   module JwtAuthenticatable
     # Supposedly the effective key size for HMAC-SHA256 is 256 bits, i.e. 32
-    # bytes https://tools.ietf.org/html/rfc4868#section-2.6
+    # bytes https://www.rfc-editor.org/rfc/rfc4868#section-2.6
     SECRET_LENGTH = 32
 
     def self.included(base)

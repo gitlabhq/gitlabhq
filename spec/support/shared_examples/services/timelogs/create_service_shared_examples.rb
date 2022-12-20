@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'issuable supports timelog creation service' do
+  let_it_be(:time_spent) { 3600 }
+  let_it_be(:spent_at) { Time.now }
+  let_it_be(:summary) { "Test summary" }
+
+  let(:service) { described_class.new(issuable, time_spent, spent_at, summary, user) }
+
   shared_examples 'success_response' do
     it 'sucessfully saves the timelog' do
       is_expected.to be_success
@@ -9,7 +15,7 @@ RSpec.shared_examples 'issuable supports timelog creation service' do
 
       expect(timelog).to be_persisted
       expect(timelog.time_spent).to eq(time_spent)
-      expect(timelog.spent_at).to eq('Fri, 08 Jul 2022 00:00:00.000000000 UTC +00:00')
+      expect(timelog.spent_at).to eq(spent_at)
       expect(timelog.summary).to eq(summary)
       expect(timelog.issuable).to eq(issuable)
     end
@@ -34,6 +40,39 @@ RSpec.shared_examples 'issuable supports timelog creation service' do
       users_container.add_reporter(user)
     end
 
+    context 'when spent_at is in the future' do
+      let_it_be(:spent_at) { Time.now + 2.hours }
+
+      it 'returns an error' do
+        is_expected.to be_error
+
+        expect(subject.message).to eq("Spent at can't be a future date and time.")
+        expect(subject.http_status).to eq(404)
+      end
+    end
+
+    context 'when time_spent is zero' do
+      let_it_be(:time_spent) { 0 }
+
+      it 'returns an error' do
+        is_expected.to be_error
+
+        expect(subject.message).to eq("Time spent can't be zero.")
+        expect(subject.http_status).to eq(404)
+      end
+    end
+
+    context 'when time_spent is nil' do
+      let_it_be(:time_spent) { nil }
+
+      it 'returns an error' do
+        is_expected.to be_error
+
+        expect(subject.message).to eq("Time spent can't be blank")
+        expect(subject.http_status).to eq(404)
+      end
+    end
+
     context 'when the timelog save fails' do
       before do
         allow_next_instance_of(Timelog) do |timelog|
@@ -54,6 +93,12 @@ RSpec.shared_examples 'issuable supports timelog creation service' do
 end
 
 RSpec.shared_examples 'issuable does not support timelog creation service' do
+  let_it_be(:time_spent) { 3600 }
+  let_it_be(:spent_at) { Time.now }
+  let_it_be(:summary) { "Test summary" }
+
+  let(:service) { described_class.new(issuable, time_spent, spent_at, summary, user) }
+
   shared_examples 'error_response' do
     it 'returns an error' do
       is_expected.to be_error

@@ -7,3 +7,4 @@ feature_categories:
 description: Stores access levels for group features, like the wiki
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82017
 milestone: '14.10'
+gitlab_schema: gitlab_main

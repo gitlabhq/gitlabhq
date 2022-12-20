@@ -1,8 +1,8 @@
-import $ from 'jquery';
 import Vue from 'vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import store from '~/mr_notes/stores';
+import notesEventHub from '~/notes/event_hub';
 import discussionNavigator from '../notes/components/discussion_navigator.vue';
 import NotesApp from '../notes/components/notes_app.vue';
 import { getNotesFilterData } from '../notes/utils/get_notes_filter_data';
@@ -36,13 +36,12 @@ export default () => {
         endpoints: {
           metadata: notesDataset.endpointMetadata,
         },
-        currentUserData: JSON.parse(notesDataset.currentUserData),
         notesData: JSON.parse(notesDataset.notesData),
         helpPagePath: notesDataset.helpPagePath,
       };
     },
     computed: {
-      ...mapGetters(['discussionTabCounter']),
+      ...mapGetters(['isNotesFetched']),
       ...mapState({
         activeTab: (state) => state.page.activeTab,
       }),
@@ -51,15 +50,6 @@ export default () => {
       },
     },
     watch: {
-      discussionTabCounter() {
-        if (window.gon?.features?.paginatedMrDiscussions) {
-          if (this.$store.state.notes.doneFetchingBatchDiscussions) {
-            this.updateDiscussionTabCounter();
-          }
-        } else {
-          this.updateDiscussionTabCounter();
-        }
-      },
       isShowTabActive: {
         handler(newVal) {
           if (newVal) {
@@ -70,25 +60,16 @@ export default () => {
       },
     },
     created() {
-      this.setActiveTab(window.mrTabs.getCurrentAction());
       this.setEndpoints(this.endpoints);
+
+      if (!this.isNotesFetched) {
+        notesEventHub.$emit('fetchNotesData');
+      }
 
       this.fetchMrMetadata();
     },
-    mounted() {
-      this.notesCountBadge = $('.issuable-details').find('.notes-tab .badge');
-      $(document).on('visibilitychange', this.updateDiscussionTabCounter);
-      window.mrTabs.eventHub.$on('MergeRequestTabChange', this.setActiveTab);
-    },
-    beforeDestroy() {
-      $(document).off('visibilitychange', this.updateDiscussionTabCounter);
-      window.mrTabs.eventHub.$off('MergeRequestTabChange', this.setActiveTab);
-    },
     methods: {
-      ...mapActions(['setActiveTab', 'setEndpoints', 'fetchMrMetadata']),
-      updateDiscussionTabCounter() {
-        this.notesCountBadge.text(this.discussionTabCounter);
-      },
+      ...mapActions(['setEndpoints', 'fetchMrMetadata']),
     },
     render(createElement) {
       // NOTE: Even though `discussionNavigator` is added to the `notes-app`,

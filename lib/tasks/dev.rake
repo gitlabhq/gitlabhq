@@ -76,12 +76,8 @@ namespace :dev do
   namespace :copy_db do
     ALLOWED_DATABASES = %w[ci].freeze
 
-    defined_copy_db_tasks = []
-
     ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
       next unless ALLOWED_DATABASES.include?(name)
-
-      defined_copy_db_tasks << name
 
       desc "Copies the #{name} database from the main database"
       task name => :environment do
@@ -93,17 +89,6 @@ namespace :dev do
       rescue ActiveRecord::DatabaseAlreadyExists
         warn "Database '#{db_config.database}' already exists"
       end
-    end
-
-    ALLOWED_DATABASES.each do |name|
-      next if defined_copy_db_tasks.include?(name)
-
-      # :nocov: we cannot mock ActiveRecord::Tasks::DatabaseTasks in time
-      # Workaround for GDK issue, see
-      # https://gitlab.com/gitlab-org/gitlab-development-kit/-/issues/1464
-      desc "No-op task"
-      task name
-      # :nocov:
     end
   end
 end

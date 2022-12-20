@@ -17,8 +17,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Client, :clean_gitlab_r
 
         include ApplicationWorker
 
-        def perform(*args)
-        end
+        def perform(*args); end
       end
     end
 

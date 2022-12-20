@@ -1,0 +1,17 @@
+#import "~/graphql_shared/fragments/issue_time_tracking.fragment.graphql"
+#import "~/graphql_shared/fragments/merge_request_time_tracking.fragment.graphql"
+
+mutation createTimelog($input: TimelogCreateInput!) {
+  timelogCreate(input: $input) {
+    errors
+    timelog {
+      id
+      issue {
+        ...IssueTimeTrackingFragment
+      }
+      mergeRequest {
+        ...MergeRequestTimeTrackingFragment
+      }
+    }
+  }
+}

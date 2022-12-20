@@ -107,6 +107,7 @@ module Gitlab
             cache: job[:cache],
             resource_group_key: job[:resource_group],
             scheduling_type: job[:scheduling_type],
+            id_tokens: job[:id_tokens],
             options: {
               image: job[:image],
               services: job[:services],
@@ -118,6 +119,7 @@ module Gitlab
               before_script: job[:before_script],
               script: job[:script],
               after_script: job[:after_script],
+              hooks: job[:hooks],
               environment: job[:environment],
               resource_group_key: job[:resource_group],
               retry: job[:retry],

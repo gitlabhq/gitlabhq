@@ -17,7 +17,7 @@ For Free, Premium, and Ultimate plan customers, jobs on these instances consume 
 
 |                   | Small                     | Medium                    | Large                    |
 |-------------------|---------------------------|---------------------------|--------------------------|
-| Specs             | 1 vCPU, 3.75GB RAM        | 2 vCPUs, 8GB RAM          | 4 vCPUs, 16GB RAM        |
+| Specs             | 1 vCPU, 3.75 GB RAM        | 2 vCPUs, 8 GB RAM          | 4 vCPUs, 16 GB RAM        |
 | GitLab CI/CD tags | `saas-linux-small-amd64` | `saas-linux-medium-amd64` | `saas-linux-large-amd64` |
 | Subscription      | Free, Premium, Ultimate   | Free, Premium, Ultimate   | Premium, Ultimate        |
 
@@ -73,12 +73,12 @@ Below are the settings for SaaS runners on Linux.
 | Setting                                                                 | GitLab.com       | Default |
 |-------------------------------------------------------------------------|------------------|---------|
 | Executor                                                                | `docker+machine` | -       |
-| Default Docker image                                                    | `ruby:2.5`       | -       |
+| Default Docker image                                                    | `ruby:3.1`       | -       |
 | `privileged` (run [Docker in Docker](https://hub.docker.com/_/docker/)) | `true`           | `false` |
 
 - **Cache**: These runners share a
   [distributed cache](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching)
-  that's stored in a Google Cloud Storage (GCS) bucket. Cache contents not updated within
+  that's stored in a Google Cloud Storage (GCS) bucket. Cache contents not updated in
   the last 14 days are automatically removed, based on the
   [object lifecycle management policy](https://cloud.google.com/storage/docs/lifecycle).
 
@@ -88,8 +88,8 @@ Below are the settings for SaaS runners on Linux.
   and [#4070](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/4070).
 
 NOTE:
-The final disk space your jobs can use will be less than 25GB. Some disk space
-allocated to the instance will be occupied by the operating system, the Docker image,
+The final disk space your jobs can use is less than 25 GB. Some disk space
+allocated to the instance is occupied by the operating system, the Docker image,
 and a copy of your cloned repository.
 
 ## Pre-clone script
@@ -198,7 +198,7 @@ sentry_dsn = "X"
   ]
   limit = X
   [runners.docker]
-    image = "ruby:2.5"
+    image = "ruby:3.1"
     privileged = true
     volumes = [
       "/certs/client",

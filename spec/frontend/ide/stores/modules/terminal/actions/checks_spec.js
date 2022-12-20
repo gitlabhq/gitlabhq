@@ -10,7 +10,7 @@ import {
 import * as messages from '~/ide/stores/modules/terminal/messages';
 import * as mutationTypes from '~/ide/stores/modules/terminal/mutation_types';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 
 const TEST_PROJECT_PATH = 'lorem/root';
 const TEST_BRANCH_ID = 'main';
@@ -78,7 +78,7 @@ describe('IDE store terminal check actions', () => {
 
   describe('receiveConfigCheckError', () => {
     it('handles error response', () => {
-      const status = httpStatus.UNPROCESSABLE_ENTITY;
+      const status = HTTP_STATUS_UNPROCESSABLE_ENTITY;
       const payload = { response: { status } };
 
       return testAction(

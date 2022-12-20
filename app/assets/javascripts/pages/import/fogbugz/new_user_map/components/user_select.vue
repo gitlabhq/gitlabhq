@@ -1,5 +1,5 @@
 <script>
-import { GlAvatarLabeled, GlListbox } from '@gitlab/ui';
+import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -11,7 +11,7 @@ const USERS_PER_PAGE = 20;
 export default {
   components: {
     GlAvatarLabeled,
-    GlListbox,
+    GlCollapsibleListbox,
   },
   props: {
     name: {
@@ -70,7 +70,7 @@ export default {
 </script>
 <template>
   <div>
-    <gl-listbox
+    <gl-collapsible-listbox
       ref="listbox"
       v-model="user"
       :items="users"
@@ -89,7 +89,7 @@ export default {
           :sub-label="item.username"
         />
       </template>
-    </gl-listbox>
+    </gl-collapsible-listbox>
     <input type="hidden" :name="name" :value="userId" />
   </div>
 </template>

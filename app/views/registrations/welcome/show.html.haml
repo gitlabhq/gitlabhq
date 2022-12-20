@@ -18,22 +18,24 @@
         %p.gl-text-center= html_escape(_('%{gitlab_experience_text}. Don\'t worry, this information isn\'t shared outside of your self-managed GitLab instance.')) % { gitlab_experience_text: gitlab_experience_text }
       = gitlab_ui_form_for(current_user,
         url: users_sign_up_welcome_path(glm_tracking_params),
-        html: { class: 'card gl-w-full! gl-p-5 js-users-signup-welcome',
+        html: { class: 'gl-w-full! gl-p-5 js-users-signup-welcome',
                 'aria-live' => 'assertive',
                 data: { testid: 'welcome-form' } }) do |f|
-        .devise-errors
-          = render 'devise/shared/error_messages', resource: current_user
-        .row
-          .form-group.col-sm-12
-            = f.label :role, _('Role'), class: 'label-bold'
-            = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, { include_blank: _('Select a role') }, class: 'form-control js-user-role-dropdown', autofocus: true, required: true, data: { qa_selector: 'role_dropdown' }
-        = render_if_exists "registrations/welcome/jobs_to_be_done", f: f
-        = render_if_exists "registrations/welcome/setup_for_company", f: f
-        = render_if_exists "registrations/welcome/joining_project"
-        = render 'devise/shared/email_opted_in', f: f
-        .row
-          .form-group.col-sm-12.gl-mb-0
-            - if partial_exists? "registrations/welcome/button"
-              = render "registrations/welcome/button"
-            - else
-              = f.submit _('Get started!'), class: 'btn-confirm gl-button btn btn-block gl-mb-0 gl-p-3', data: { qa_selector: 'get_started_button' }
+        = render Pajamas::CardComponent.new do |c|
+          - c.body do
+            .devise-errors
+              = render 'devise/shared/error_messages', resource: current_user
+            .row
+              .form-group.col-sm-12
+                = f.label :role, _('Role'), class: 'label-bold'
+                = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, { include_blank: _('Select a role') }, class: 'form-control js-user-role-dropdown', autofocus: true, required: true, data: { qa_selector: 'role_dropdown' }
+            = render_if_exists "registrations/welcome/jobs_to_be_done", f: f
+            = render_if_exists "registrations/welcome/setup_for_company", f: f
+            = render_if_exists "registrations/welcome/joining_project"
+            = render 'devise/shared/email_opted_in', f: f
+            .row
+              .form-group.col-sm-12.gl-mb-0
+                - if partial_exists? "registrations/welcome/button"
+                  = render "registrations/welcome/button"
+                - else
+                  = f.submit _('Get started!'), class: 'btn-confirm gl-button btn btn-block gl-mb-0 gl-p-3', data: { qa_selector: 'get_started_button' }

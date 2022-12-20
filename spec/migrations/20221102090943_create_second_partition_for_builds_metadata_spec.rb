@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CreateSecondPartitionForBuildsMetadata, :migration do
+RSpec.describe CreateSecondPartitionForBuildsMetadata, :migration, feature_category: :continuous_integration do
   let(:migration) { described_class.new }
   let(:partitions) { table(:ci_partitions) }
 

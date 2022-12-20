@@ -82,9 +82,6 @@ function factory({ path, isLoading = false, hasMore = true, entries = {}, commit
     mocks: {
       $apollo,
     },
-    provide: {
-      glFeatures: { lazyLoadCommits: true },
-    },
   });
 }
 

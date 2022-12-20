@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NotificationRecipient do
+RSpec.describe NotificationRecipient, feature_category: :team_planning do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let(:target) { create(:issue, project: project) }

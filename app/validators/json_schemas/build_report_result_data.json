@@ -3,10 +3,15 @@
   "description": "Build report result data",
   "type": "object",
   "properties": {
-    "coverage": { "type": "float" },
+    "coverage": {
+      "type": "number",
+      "format": "float"
+    },
     "tests": {
       "type": "object",
-      "items": { "$ref": "./build_report_result_data_tests.json" }
+      "items": {
+        "$ref": "./build_report_result_data_tests.json"
+      }
     }
   },
   "additionalProperties": false

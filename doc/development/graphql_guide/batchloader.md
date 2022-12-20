@@ -180,7 +180,7 @@ def resolve(args = {}, context = { current_user: current_user })
 end
 ```
 
-We can also use [QueryRecorder](../query_recorder.md) to make sure we are performing only **one SQL query** per call.
+We can also use [QueryRecorder](../database/query_recorder.md) to make sure we are performing only **one SQL query** per call.
 
 ```ruby
 it 'executes only 1 SQL query' do

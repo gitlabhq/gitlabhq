@@ -6,7 +6,7 @@ class Projects::NetworkController < Projects::ApplicationController
 
   before_action :require_non_empty_project
   before_action :assign_ref_vars
-  before_action :authorize_download_code!
+  before_action :authorize_read_code!
   before_action :assign_options
   before_action :assign_commit
 
@@ -14,7 +14,13 @@ class Projects::NetworkController < Projects::ApplicationController
   urgency :low, [:show]
 
   def show
-    @url = project_network_path(@project, @ref, @options.merge(format: :json))
+    @url = if Feature.enabled?(:use_ref_type_parameter, @project)
+             project_network_path(@project, @ref, @options.merge(format: :json, ref_type: ref_type))
+           else
+             project_network_path(@project, @ref, @options.merge(format: :json))
+           end
+
+    @ref_type = ref_type
     @commit_url = project_commit_path(@project, 'ae45ca32').gsub("ae45ca32", "%s")
 
     respond_to do |format|

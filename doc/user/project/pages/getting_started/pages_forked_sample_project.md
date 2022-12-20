@@ -29,32 +29,37 @@ When the pipeline is finished, go to **Settings > Pages** to find the link to yo
 For every change pushed to your repository, GitLab CI/CD runs a new pipeline
 that immediately publishes your changes to the Pages site.
 
-To view the HTMl and other assets that were created for the site,
-go to the **Pipelines** tab, view the job, and on the right side,
-select **Download artifacts**.
+## Remove the fork relationship
 
-You can take some **optional** further steps:
+If you want to contribute to the project you forked from,
+you can keep the forked relationship. Otherwise:
 
-- Remove the fork relationship. If you want to contribute to the project you forked from,
-  you can keep this relationship. Otherwise, go to your project's **Settings > General**,
-  expand **Advanced settings**, and scroll down to **Remove fork relationship**:
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced settings**.
+1. Select **Remove fork relationship**.
 
-  ![Remove fork relationship](../img/remove_fork_relationship_v13_1.png)
+## Change the URL
 
-- Change the URL to match your namespace. If your Pages site is hosted on GitLab.com,
-  you can rename it to `<namespace>.gitlab.io`, where `<namespace>` is your GitLab namespace
-  (the one you chose when you forked the project).
+You can change the URL to match your namespace.
+If your Pages site is hosted on GitLab.com,
+you can rename it to `<namespace>.gitlab.io`, where `<namespace>` is your GitLab namespace
+(the one you chose when you forked the project).
 
-  - Go to your project's **Settings > General** and expand **Advanced**. Scroll down to
-    **Change path** and change the path to `<namespace>.gitlab.io`.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
+1. In **Change path**, update the path to `<namespace>.gitlab.io`.
 
-    For example, if your project's URL is `gitlab.com/gitlab-tests/jekyll`, your namespace is
-    `gitlab-tests`.
+   For example, if your project's URL is `gitlab.com/gitlab-tests/jekyll`, your namespace is
+   `gitlab-tests`.
 
-    If you set the repository path to `gitlab-tests.gitlab.io`,
-    the resulting URL for your Pages website is `https://gitlab-tests.gitlab.io`.
+   If you set the repository path to `gitlab-tests.gitlab.io`,
+   the resulting URL for your Pages website is `https://gitlab-tests.gitlab.io`.
 
-    ![Change repository's path](../img/change_path_v12_10.png)
+   ![Change repository's path](../img/change_path_v12_10.png)
 
-  - Now go to your SSG's configuration file and change the [base URL](../getting_started_part_one.md#urls-and-base-urls)
-    from `"project-name"` to `""`. The project name setting varies by SSG and may not be in the configuration file.
+1. Open your SSG configuration file and change the [base URL](../getting_started_part_one.md#urls-and-base-urls)
+   from `"project-name"` to `""`. The project name setting varies by SSG and may not be in the configuration file.
+
+## Related topics
+
+- [Download the job artifacts](../../../../ci/pipelines/job_artifacts.md#download-job-artifacts)

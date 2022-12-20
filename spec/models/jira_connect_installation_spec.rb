@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnectInstallation do
+RSpec.describe JiraConnectInstallation, feature_category: :integrations do
   describe 'associations' do
     it { is_expected.to have_many(:subscriptions).class_name('JiraConnectSubscription') }
   end
@@ -121,6 +121,20 @@ RSpec.describe JiraConnectInstallation do
       let(:installation) { build(:jira_connect_installation, instance_url: 'https://example.com') }
 
       it { is_expected.to eq('https://example.com/-/jira_connect/events/installed') }
+    end
+  end
+
+  describe 'audience_uninstalled_event_url' do
+    let(:installation) { build(:jira_connect_installation) }
+
+    subject(:audience) { installation.audience_uninstalled_event_url }
+
+    it { is_expected.to eq(nil) }
+
+    context 'when proxy installation' do
+      let(:installation) { build(:jira_connect_installation, instance_url: 'https://example.com') }
+
+      it { is_expected.to eq('https://example.com/-/jira_connect/events/uninstalled') }
     end
   end
 

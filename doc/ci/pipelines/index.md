@@ -188,6 +188,30 @@ In this example:
 - `DEPLOY_ENVIRONMENT` is listed in the **Run pipeline** page, but with no value set.
   The user is expected to define the value each time the pipeline is run manually.
 
+##### Configure a list of selectable values for a prefilled variable
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `run_pipeline_graphql`. Disabled by default.
+> - The `options` keyword was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106038) in GitLab 15.7. Feature flag `run_pipeline_graphql` removed.
+
+You can define an array of CI/CD variable values the user can select from when running a pipeline manually.
+These values are in a dropdown list in the **Run pipeline** page. Add the list of
+value options to `options` and set the default value with `value`. The string in `value`
+must also be included in the `options` list.
+
+For example:
+
+```yaml
+variables:
+  DEPLOY_ENVIRONMENT:
+    value: "staging"
+    options:
+      - "production"
+      - "staging"
+      - "canary"
+    description: "The deployment target. Set to 'staging' by default."
+```
+
 ### Run a pipeline by using a URL query string
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24146) in GitLab 12.5.

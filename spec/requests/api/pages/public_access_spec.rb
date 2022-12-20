@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Public Project Pages Access" do
+RSpec.describe "Public Project Pages Access", feature_category: :pages do
   using RSpec::Parameterized::TableSyntax
   include AccessMatchers
 

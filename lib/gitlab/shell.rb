@@ -24,9 +24,7 @@ module Gitlab
       #
       # @return [String] secret token
       def secret_token
-        @secret_token ||= begin
-          File.read(Gitlab.config.gitlab_shell.secret_file).chomp
-        end
+        @secret_token ||= File.read(Gitlab.config.gitlab_shell.secret_file).chomp
       end
 
       # Ensure gitlab shell has a secret token stored in the secret_file

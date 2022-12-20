@@ -4,6 +4,7 @@ import $ from 'jquery';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
+import '~/behaviors/markdown/init_gfm';
 
 // MarkdownPreview
 //

@@ -2,7 +2,7 @@
 
 .tree-ref-container.gl-display-flex.mb-2.mb-md-0
   .tree-ref-holder
-    = render 'shared/ref_switcher', destination: 'tree', show_create: true
+    #js-tree-ref-switcher{ data: { project_id: @project.id, project_root_path: project_path(@project) } }
 
   #js-repo-breadcrumb{ data: breadcrumb_data_attributes }
 

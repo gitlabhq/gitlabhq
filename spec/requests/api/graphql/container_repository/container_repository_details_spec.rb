@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'container repository details' do
+RSpec.describe 'container repository details', feature_category: :container_registry do
   include_context 'container registry tags'
   include_context 'container registry client stubs'
 

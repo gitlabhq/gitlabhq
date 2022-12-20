@@ -180,7 +180,6 @@ describe('HeaderSearchApp', () => {
           findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: 27 }));
           await nextTick();
           expect(findHeaderSearchDropdown().exists()).toBe(false);
-          // only one event emmited from findHeaderSearchInput().vm.$emit('click');
           expect(wrapper.emitted().expandSearchBar.length).toBe(1);
         });
       });

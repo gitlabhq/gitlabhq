@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Adjusted from https://gitlab.com/fdegier/pre-push-hooks with hardcoded values for speed
+ORIGIN=origin
+DEFAULT_BRANCH=master
+
+if [[ -n "$ORIGIN" ]]
+then
+  # Pull the default branch from remote
+  git fetch --quiet origin "$DEFAULT_BRANCH":"$DEFAULT_BRANCH"
+fi
+
+# Check for merge conflicts and abort
+if git merge --autostash --no-commit --no-ff --no-edit "$DEFAULT_BRANCH" > /dev/null 2>&1
+then
+  # Able to merge without conflicts
+  git merge --abort > /dev/null 2>&1
+  exit 0
+else
+  echo "Merge conflicts detected when merging to $DEFAULT_BRANCH!"
+  git merge --abort > /dev/null 2>&1
+  exit 1
+fi

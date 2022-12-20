@@ -8,7 +8,7 @@ def visit_jobs_page
   wait_for_requests
 end
 
-RSpec.describe 'User browses jobs' do
+RSpec.describe 'User browses jobs', feature_category: :projects do
   describe 'Jobs', :js do
     let(:project) { create(:project, :repository) }
     let(:user) { create(:user) }

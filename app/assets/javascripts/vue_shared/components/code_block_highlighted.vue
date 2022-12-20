@@ -1,5 +1,5 @@
 <script>
-import { GlSafeHtmlDirective } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
 import CodeBlock from './code_block.vue';
@@ -7,7 +7,7 @@ import CodeBlock from './code_block.vue';
 export default {
   name: 'CodeBlockHighlighted',
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   components: {
     CodeBlock,

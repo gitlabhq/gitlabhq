@@ -76,3 +76,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Usage::Metrics::Aggregates::Aggregate.prepend_mod

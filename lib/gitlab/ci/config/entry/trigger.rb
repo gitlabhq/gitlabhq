@@ -41,7 +41,7 @@ module Gitlab
               validations do
                 validates :config, presence: true
                 validates :config, allowed_keys: ALLOWED_KEYS
-                validates :project, presence: true
+                validates :project, type: String, presence: true
                 validates :branch, type: String, allow_nil: true
                 validates :strategy, type: String, inclusion: { in: %w[depend], message: 'should be depend' }, allow_nil: true
               end

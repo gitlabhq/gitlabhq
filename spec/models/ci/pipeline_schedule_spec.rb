@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineSchedule do
+RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration do
   let_it_be_with_reload(:project) { create_default(:project) }
 
   subject { build(:ci_pipeline_schedule) }
@@ -37,6 +37,12 @@ RSpec.describe Ci::PipelineSchedule do
 
     it 'does not allow invalid cron patterns' do
       pipeline_schedule = build(:ci_pipeline_schedule, cron_timezone: 'invalid')
+
+      expect(pipeline_schedule).not_to be_valid
+    end
+
+    it 'does not allow empty variable key' do
+      pipeline_schedule = build(:ci_pipeline_schedule, variables_attributes: [{ secret_value: 'test_value' }])
 
       expect(pipeline_schedule).not_to be_valid
     end
@@ -110,48 +116,18 @@ RSpec.describe Ci::PipelineSchedule do
   end
 
   describe '#set_next_run_at' do
-    using RSpec::Parameterized::TableSyntax
+    let(:now) { Time.zone.local(2021, 3, 2, 1, 0) }
+    let(:pipeline_schedule) { create(:ci_pipeline_schedule, cron: "0 1 * * *") }
 
-    where(:worker_cron, :schedule_cron, :plan_limit, :now, :result) do
-      '0 1 2 3 *'   | '0 1 * * *'   | nil                                          | Time.zone.local(2021, 3, 2, 1, 0)    | Time.zone.local(2022, 3, 2, 1, 0)
-      '0 1 2 3 *'   | '0 1 * * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | Time.zone.local(2021, 3, 2, 1, 0)    | Time.zone.local(2022, 3, 2, 1, 0)
-      '*/5 * * * *' | '*/1 * * * *' | nil                                          | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 11, 5)
-      '*/5 * * * *' | '*/1 * * * *' | (1.day.in_minutes / 1.hour.in_minutes).to_i  | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 12, 0)
-      '*/5 * * * *' | '*/1 * * * *' | (1.day.in_minutes / 10).to_i                 | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 11, 10)
-      '*/5 * * * *' | '*/1 * * * *' | 200                                          | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 11, 10)
-      '*/5 * * * *' | '0 * * * *'   | nil                                          | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 12, 5)
-      '*/5 * * * *' | '0 * * * *'   | (1.day.in_minutes / 10).to_i                 | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 12, 0)
-      '*/5 * * * *' | '0 * * * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 12, 0)
-      '*/5 * * * *' | '0 * * * *'   | (1.day.in_minutes / 2.hours.in_minutes).to_i | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 12, 5)
-      '*/5 * * * *' | '0 1 * * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | Time.zone.local(2021, 5, 27, 1, 0)   | Time.zone.local(2021, 5, 28, 1, 0)
-      '*/5 * * * *' | '0 1 * * *'   | (1.day.in_minutes / 10).to_i                 | Time.zone.local(2021, 5, 27, 1, 0)   | Time.zone.local(2021, 5, 28, 1, 0)
-      '*/5 * * * *' | '0 1 * * *'   | (1.day.in_minutes / 8).to_i                  | Time.zone.local(2021, 5, 27, 1, 0)   | Time.zone.local(2021, 5, 28, 1, 0)
-      '*/5 * * * *' | '0 1 1 * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | Time.zone.local(2021, 5, 1, 1, 0)    | Time.zone.local(2021, 6, 1, 1, 0)
-      '*/9 * * * *' | '0 1 1 * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | Time.zone.local(2021, 5, 1, 1, 9)    | Time.zone.local(2021, 6, 1, 1, 0)
-      '*/5 * * * *' | '59 14 * * *' | (1.day.in_minutes / 1.hour.in_minutes).to_i  | Time.zone.local(2021, 5, 1, 15, 0)   | Time.zone.local(2021, 5, 2, 15, 0)
-      '*/5 * * * *' | '45 21 1 2 *' | (1.day.in_minutes / 5).to_i                  | Time.zone.local(2021, 2, 1, 21, 45)  | Time.zone.local(2022, 2, 1, 21, 45)
-    end
+    it 'calls fallback method next_run_at if there is no plan limit' do
+      allow(Settings).to receive(:cron_jobs).and_return({ 'pipeline_schedule_worker' => { 'cron' => "0 1 2 3 *" } })
 
-    with_them do
-      let(:pipeline_schedule) { create(:ci_pipeline_schedule, cron: schedule_cron) }
+      travel_to(now) do
+        expect(pipeline_schedule).to receive(:calculate_next_run_at).and_call_original
 
-      before do
-        allow(Settings).to receive(:cron_jobs) do
-          { 'pipeline_schedule_worker' => { 'cron' => worker_cron } }
-        end
+        pipeline_schedule.set_next_run_at
 
-        create(:plan_limits, :default_plan, ci_daily_pipeline_schedule_triggers: plan_limit) if plan_limit
-
-        # Setting this here to override initial save with the current time
-        pipeline_schedule.next_run_at = now
-      end
-
-      it 'updates next_run_at' do
-        travel_to(now) do
-          pipeline_schedule.set_next_run_at
-
-          expect(pipeline_schedule.next_run_at).to eq(result)
-        end
+        expect(pipeline_schedule.next_run_at).to eq(Time.zone.local(2022, 3, 2, 1, 0))
       end
     end
 
@@ -285,6 +261,17 @@ RSpec.describe Ci::PipelineSchedule do
       end
 
       it { expect(subject.ref_for_display).to eq(nil) }
+    end
+  end
+
+  describe '#worker_cron' do
+    before do
+      allow(Settings).to receive(:cron_jobs)
+        .and_return({ pipeline_schedule_worker: { cron: "* 1 2 3 4" } }.with_indifferent_access)
+    end
+
+    it "returns cron expression set in Settings" do
+      expect(subject.worker_cron_expression).to eq("* 1 2 3 4")
     end
   end
 

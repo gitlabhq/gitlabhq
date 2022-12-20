@@ -1,6 +1,6 @@
-import { GlToggle, GlBadge } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlToggle } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import FeatureFlagsTable from '~/feature_flags/components/feature_flags_table.vue';
@@ -52,10 +52,10 @@ const getDefaultProps = () => ({
 describe('Feature flag table', () => {
   let wrapper;
   let props;
-  let badges;
+  let labels;
 
   const createWrapper = (propsData, opts = {}) => {
-    wrapper = shallowMount(FeatureFlagsTable, {
+    wrapper = mountExtended(FeatureFlagsTable, {
       propsData,
       provide: {
         csrfToken: 'fakeToken',
@@ -70,16 +70,11 @@ describe('Feature flag table', () => {
       provide: { csrfToken: 'fakeToken' },
     });
 
-    badges = wrapper.findAll('[data-testid="strategy-badge"]');
+    labels = wrapper.findAllByTestId('strategy-label');
   });
 
   beforeEach(() => {
     props = getDefaultProps();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
   });
 
   describe('with an active scope and a standard rollout strategy', () => {
@@ -101,7 +96,7 @@ describe('Feature flag table', () => {
     });
 
     it('Should render a status column', () => {
-      const badge = wrapper.find('[data-testid="feature-flag-status-badge"]');
+      const badge = wrapper.findByTestId('feature-flag-status-badge');
 
       expect(badge.exists()).toBe(true);
       expect(trimText(badge.text())).toEqual('Active');
@@ -116,10 +111,10 @@ describe('Feature flag table', () => {
       );
     });
 
-    it('should render an environments specs badge with active class', () => {
-      const envColumn = wrapper.find('.js-feature-flag-environments');
+    it('should render an environments specs label', () => {
+      const strategyLabel = wrapper.findByTestId('strategy-label');
 
-      expect(trimText(envColumn.findComponent(GlBadge).text())).toBe('All Users: All Environments');
+      expect(trimText(strategyLabel.text())).toBe('All Users: All Environments');
     });
 
     it('should render an actions column', () => {
@@ -167,29 +162,29 @@ describe('Feature flag table', () => {
   });
 
   it('shows All Environments if the environment scope is *', () => {
-    expect(badges.at(0).text()).toContain('All Environments');
+    expect(labels.at(0).text()).toContain('All Environments');
   });
 
   it('shows the environment scope if another is set', () => {
-    expect(badges.at(1).text()).toContain('production');
-    expect(badges.at(1).text()).toContain('staging');
-    expect(badges.at(2).text()).toContain('review/*');
+    expect(labels.at(1).text()).toContain('production');
+    expect(labels.at(1).text()).toContain('staging');
+    expect(labels.at(2).text()).toContain('review/*');
   });
 
   it('shows All Users for the default strategy', () => {
-    expect(badges.at(0).text()).toContain('All Users');
+    expect(labels.at(0).text()).toContain('All Users');
   });
 
   it('shows the percent for a percent rollout', () => {
-    expect(badges.at(1).text()).toContain('Percent of users - 50%');
+    expect(labels.at(1).text()).toContain('Percent of users - 50%');
   });
 
   it('shows the number of users for users with ID', () => {
-    expect(badges.at(2).text()).toContain('User IDs - 4 users');
+    expect(labels.at(2).text()).toContain('User IDs - 4 users');
   });
 
   it('shows the name of a user list for user list', () => {
-    expect(badges.at(3).text()).toContain('User List - test list');
+    expect(labels.at(3).text()).toContain('User List - test list');
   });
 
   it('renders a feature flag without an iid', () => {

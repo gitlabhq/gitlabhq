@@ -64,7 +64,7 @@ RSpec.shared_examples 'a creatable merge request' do
     visit project_new_merge_request_path(source_project)
 
     first('.js-target-project').click
-    find('.dropdown-target-project .dropdown-content a', text: target_project.full_path).click
+    find('.dropdown-target-project li', text: target_project.full_path).click
 
     wait_for_requests
 

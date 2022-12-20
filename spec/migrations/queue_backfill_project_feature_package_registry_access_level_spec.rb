@@ -3,8 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillProjectFeaturePackageRegistryAccessLevel do
-  let_it_be(:batched_migration) { described_class::MIGRATION }
+RSpec.describe QueueBackfillProjectFeaturePackageRegistryAccessLevel, feature_category: :package_registry do
+  let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do
     reversible_migration do |migration|

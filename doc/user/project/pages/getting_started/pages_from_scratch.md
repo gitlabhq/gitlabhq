@@ -420,9 +420,8 @@ Now GitLab CI/CD not only builds the website, but also:
 - **Caches** dependencies installed with Bundler.
 - **Continuously deploys** every push to the `main` branch.
 
-To view the HTMl and other assets that were created for the site,
-go to the **Pipelines** tab, view the job, and on the right side,
-select **Download artifacts**.
+To view the HTML and other assets that were created for the site,
+[download the job artifacts](../../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
 
 ## Related topics
 

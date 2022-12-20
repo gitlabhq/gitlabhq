@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User edits Release', :js do
+RSpec.describe 'User edits Release', :js, feature_category: :continuous_delivery do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 

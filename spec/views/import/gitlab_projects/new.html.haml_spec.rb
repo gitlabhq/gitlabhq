@@ -26,7 +26,7 @@ RSpec.describe 'import/gitlab_projects/new.html.haml' do
 
       render
 
-      expect(rendered).to have_select('namespace_id', count: 1)
+      expect(rendered).to have_css('.js-vue-new-project-url-select', count: 1)
     end
   end
 end

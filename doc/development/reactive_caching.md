@@ -208,7 +208,7 @@ There are some `class_attribute` options which can be tweaked.
   self.reactive_cache_key = ->(integration) { [integration.class.model_name.singular, integration.project_id] }
   ```
 
-  If your reactive_cache_key is exactly like the above, you can use the existing
+  If your `reactive_cache_key` is exactly like the above, you can use the existing
   `Integrations::ReactivelyCached` concern instead.
 
 #### `self.reactive_cache_lease_timeout`

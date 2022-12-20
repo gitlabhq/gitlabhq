@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.merge_request(id)' do
+RSpec.describe 'Query.merge_request(id)', feature_category: :code_review do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :empty_repo) }

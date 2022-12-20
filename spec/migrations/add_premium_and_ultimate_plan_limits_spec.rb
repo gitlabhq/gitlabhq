@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe AddPremiumAndUltimatePlanLimits, :migration do
+RSpec.describe AddPremiumAndUltimatePlanLimits, :migration, feature_category: :purchase do
   shared_examples_for 'a migration that does not alter plans or plan limits' do
     it do
       expect { migrate! }.not_to change {

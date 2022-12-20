@@ -3,8 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RescheduleBackfillImportedIssueSearchData do
-  let_it_be(:reschedule_migration) { described_class::MIGRATION }
+RSpec.describe RescheduleBackfillImportedIssueSearchData, feature_category: :global_search do
+  let!(:reschedule_migration) { described_class::MIGRATION }
 
   def create_batched_migration(max_value:)
     Gitlab::Database::BackgroundMigration::BatchedMigration
@@ -55,12 +55,23 @@ RSpec.describe RescheduleBackfillImportedIssueSearchData do
   end
 
   context 'when an issue is available' do
-    let_it_be(:namespaces_table) { table(:namespaces) }
-    let_it_be(:projects_table) { table(:projects) }
+    let!(:namespaces_table) { table(:namespaces) }
+    let!(:projects_table) { table(:projects) }
 
     let(:namespace) { namespaces_table.create!(name: 'gitlab-org', path: 'gitlab-org') }
-    let(:project) { projects_table.create!(name: 'gitlab', path: 'gitlab-org/gitlab-ce', namespace_id: namespace.id, project_namespace_id: namespace.id) } # rubocop:disable Layout/LineLength
-    let(:issue) { table(:issues).create!(project_id: project.id, title: 'test title', description: 'test description') }
+
+    let(:project) do
+      projects_table.create!(
+        name: 'gitlab', path: 'gitlab-org/gitlab-ce', namespace_id: namespace.id, project_namespace_id: namespace.id
+      )
+    end
+
+    let(:issue) do
+      table(:issues).create!(
+        project_id: project.id, namespace_id: project.project_namespace_id,
+        title: 'test title', description: 'test description'
+      )
+    end
 
     before do
       create_batched_migration(max_value: max_value)

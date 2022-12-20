@@ -90,7 +90,7 @@ function getFahrenheit(celsius) {
 }
 ```
 
-It does not make sense to test our `getFahrenheit` function because underneath it does nothing else but invoking the library function, and we can expect that one is working as intended. (Simplified, I know)
+It does not make sense to test our `getFahrenheit` function because underneath it does nothing else but invoking the library function, and we can expect that one is working as intended.
 
 Let's take a short look into Vue land. Vue is a critical part of the GitLab JavaScript codebase. When writing specs for Vue components, a common gotcha is to actually end up testing Vue provided functionality, because it appears to be the easiest thing to test. Here's an example taken from our codebase.
 
@@ -522,7 +522,7 @@ it('waits for an event', () => {
 
 ### Ensuring that tests are isolated
 
-Tests are normally architected in a pattern which requires a recurring setup and breakdown of the component under test. This is done by making use of the `beforeEach` and `afterEach` hooks.
+Tests are normally architected in a pattern which requires a recurring setup of the component under test. This is often achieved by making use of the `beforeEach` hook.
 
 Example
 
@@ -532,15 +532,21 @@ Example
   beforeEach(() => {
     wrapper = mount(Component);
   });
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 ```
 
-When looking at this initially you'd suspect that the component is setup before each test and then broken down afterwards, providing isolation between tests.
+With [enableAutoDestroy](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100389), it is no longer necessary to manually call `wrapper.destroy()`.
+However, some mocks, spies, and fixtures do need to be torn down, and we can leverage the `afterEach` hook.
 
-This is however not entirely true as the `destroy` method does not remove everything which has been mutated on the `wrapper` object. For functional components, destroy only removes the rendered DOM elements from the document.
+Example
+
+```javascript
+  let wrapper;
+
+  afterEach(() => {
+    fakeApollo = null;
+    store = null;
+  });
+```
 
 ### Jest best practices
 
@@ -713,7 +719,7 @@ unit testing by mocking out modules that cannot be easily consumed in our test e
 > Instead, consider using [`jest.mock(..)`](https://jestjs.io/docs/jest-object#jestmockmodulename-factory-options)
 > (or a similar mocking function) in the relevant spec file.
 
-#### Where should I put manual mocks?
+#### Where should you put manual mocks?
 
 Jest supports [manual module mocks](https://jestjs.io/docs/manual-mocks) by placing a mock in a `__mocks__/` directory next to the source module
 (for example, `app/assets/javascripts/ide/__mocks__`). **Don't do this.** We want to keep all of our test-related code in one place (the `spec/` folder).
@@ -1159,7 +1165,7 @@ By now you've probably heard of [Jest snapshot tests](https://jestjs.io/docs/sna
 To use them within GitLab, there are a few guidelines that should be highlighted:
 
 - Treat snapshots as code
-- Don't think of a snapshot file as a Blackbox
+- Don't think of a snapshot file as a black box
 - Care for the output of the snapshot, otherwise, it's not providing any real value. This will usually involve reading the generated snapshot file as you would read any other piece of code
 
 Think of a snapshot test as a simple way to store a raw `String` representation of what you've put into the item being tested. This can be used to evaluate changes in a component, a store, a complex piece of generated output, etc. You can see more in the list below for some recommended `Do's and Don'ts`.
@@ -1169,7 +1175,7 @@ Jest provides a great set of docs on [best practices](https://jestjs.io/docs/sna
 
 ### How does a snapshot work?
 
-A snapshot is purely a stringified version of what you ask to be tested on the lefthand side of the function call. This means any kind of changes you make to the formatting of the string has an impact on the outcome. This process is done by leveraging serializers for an automatic transform step. For Vue this is already taken care of by leveraging the `vue-jest` package, which offers the proper serializer.
+A snapshot is purely a stringified version of what you ask to be tested on the left-hand side of the function call. This means any kind of changes you make to the formatting of the string has an impact on the outcome. This process is done by leveraging serializers for an automatic transform step. For Vue this is already taken care of by leveraging the `vue-jest` package, which offers the proper serializer.
 
 Should the outcome of your spec be different from what is in the generated snapshot file, you'll be notified about it by a failing test in your test suite.
 
@@ -1448,13 +1454,10 @@ Before executing any page interaction when navigating or making asynchronous cal
 
 #### Elements interaction
 
-There are a lot of different ways to find and interact with elements. For example, you could use the basic `find` method with the `selector` and `text` parameter and then use the `.click` method
+There are a lot of different ways to find and interact with elements.
+For best practises, refer to the [UI testing](best_practices.md#ui-testing) section.
 
-```ruby
-  find('.gl-tab-nav-item', text: 'Tests').click
-```
-
-Alternatively, you could use `click_button` with a string of text that is found within the button, which is a more semantically meaningful way of clicking the element.
+To click a button, use `click_button` with the string of text found in the button:
 
 ```ruby
   click_button 'Text inside the button element'
@@ -1474,25 +1477,31 @@ You can use `fill_in` to fill input / form elements. The first argument is the s
 
 Alternatively, you can use the `find` selector paired with `send_keys` to add keys in a field without removing previous text, or `set` which completely replaces the value of the input element.
 
-All of these are valid selectors and methods. Pick whichever suits your needs and look around as there are many more useful ones!
+You can find a more comprehensive list of actions in the [feature tests actions](best_practices.md#actions) documentation.
 
 #### Assertions
 
 To assert anything in a page, you can always access `page` variable, which is automatically defines and actually means the page document. This means you can expect the `page` to have certain components like selectors or content. Here are a few examples:
 
 ```ruby
-  # Finding an element by ID
-  expect(page).to have_selector('#js-pipeline-graph')
+  # Finding a button
+  expect(page).to have_button('Submit review')
 ```
 
 ```ruby
   # Finding by text
-  expect(page).to have_content('build')
+  expect(page).to have_text('build')
 ```
 
 ```ruby
   # Finding by `href` value
   expect(page).to have_link(pipeline.ref)
+```
+
+```ruby
+  # Find by data-testid
+  # Like CSS selector, this is acceptable when there isn't a specific matcher available.
+  expect(page).to have_css('[data-testid="pipeline-multi-actions-dropdown"]')
 ```
 
 ```ruby
@@ -1502,14 +1511,8 @@ To assert anything in a page, you can always access `page` variable, which is au
 ```
 
 ```ruby
-  # Find by data-testid
-  # Like CSS selector, this is acceptable when there isn't a specific matcher available.
-  expect(page).to have_selector('[data-testid="pipeline-multi-actions-dropdown"]')
-```
-
-```ruby
   # You can combine any of these selectors with `not_to` instead
-  expect(page).not_to have_selector('#js-pipeline-graph')
+  expect(page).not_to have_button('Submit review')
 ```
 
 ```ruby
@@ -1529,10 +1532,12 @@ You can also create a sub-block to look into, to:
 - Make sure an element is found within the right boundaries.
 
 ```ruby
-  page.within('#js-pipeline-graph') do
+  page.within('[data-testid="pipeline-multi-actions-dropdown"]') do
     ...
   end
 ```
+
+You can find a more comprehensive list of matchers in the [feature tests matchers](best_practices.md#matchers) documentation.
 
 #### Feature flags
 

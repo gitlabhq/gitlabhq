@@ -46,7 +46,15 @@ export default {
       debounce: DEBOUNCE_DELAY,
     },
   },
-  inject: ['namespaceFullPath', 'namespaceId', 'rootUrl', 'trackLabel', 'userNamespaceId'],
+  inject: [
+    'namespaceFullPath',
+    'namespaceId',
+    'rootUrl',
+    'trackLabel',
+    'userNamespaceId',
+    'inputName',
+    'inputId',
+  ],
   data() {
     return {
       currentUser: {},
@@ -124,6 +132,11 @@ export default {
           }
         : this.$options.emptyNameSpace;
     },
+    trackDropdownShow() {
+      if (this.trackLabel) {
+        this.track('activate_form_input', { label: this.trackLabel, property: 'project_path' });
+      }
+    },
   },
   emptyNameSpace: {
     id: undefined,
@@ -145,7 +158,7 @@ export default {
       class="js-group-namespace-dropdown gl-flex-grow-1"
       :toggle-class="`gl-rounded-top-right-base! gl-rounded-bottom-right-base! gl-w-20 ${dropdownPlaceholderClass}`"
       data-qa-selector="select_namespace_dropdown"
-      @show="track('activate_form_input', { label: trackLabel, property: 'project_path' })"
+      @show="trackDropdownShow"
       @shown="handleDropdownShown"
     >
       <template #button-text>
@@ -173,7 +186,7 @@ export default {
             {{ group.fullPath }}
           </gl-dropdown-item>
         </template>
-        <template v-if="hasNamespaceMatches">
+        <template v-if="hasNamespaceMatches && userNamespaceId">
           <gl-dropdown-section-header>{{ __('Users') }}</gl-dropdown-section-header>
           <gl-dropdown-item @click="handleDropdownItemClick(userNamespace)">
             {{ userNamespace.fullPath }}
@@ -186,9 +199,9 @@ export default {
     <input type="hidden" name="project[selected_namespace_id]" :value="selectedNamespace.id" />
 
     <input
-      id="project_namespace_id"
+      :id="inputId"
       type="hidden"
-      name="project[namespace_id]"
+      :name="inputName"
       :value="selectedNamespace.id || userNamespaceId"
     />
   </gl-button-group>

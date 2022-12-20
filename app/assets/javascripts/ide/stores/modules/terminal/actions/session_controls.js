@@ -1,6 +1,6 @@
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import * as terminalService from '../../../../services/terminals';
 import { STARTING, STOPPING, STOPPED } from '../constants';
 import * as messages from '../messages';
@@ -108,7 +108,7 @@ export const restartSession = ({ state, dispatch, rootState }) => {
       // We may have removed the build, in this case we'll just create a new session
       if (
         responseStatus === httpStatus.NOT_FOUND ||
-        responseStatus === httpStatus.UNPROCESSABLE_ENTITY
+        responseStatus === HTTP_STATUS_UNPROCESSABLE_ENTITY
       ) {
         dispatch('startSession');
       } else {

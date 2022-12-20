@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe UpdateIntegrationsTriggerTypeNewOnInsert do
+RSpec.describe UpdateIntegrationsTriggerTypeNewOnInsert, feature_category: :integrations do
   let(:migration) { described_class.new }
   let(:integrations) { table(:integrations) }
 

@@ -6,7 +6,7 @@ require_relative '../../../../rubocop/cop/performance/readlines_each'
 RSpec.describe RuboCop::Cop::Performance::ReadlinesEach do
   let(:message) { 'Avoid `IO.readlines.each`, since it reads contents into memory in full. Use `IO.each_line` or `IO.each` instead.' }
 
-  shared_examples_for(:class_read) do |klass|
+  shared_examples_for('class read') do |klass|
     context "and it is called as a class method on #{klass}" do
       it 'flags it as an offense' do
         leading_readline = "#{klass}.readlines(file_path)."
@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Performance::ReadlinesEach do
 
   context 'when reading all lines using IO.readlines.each' do
     %w(IO File).each do |klass|
-      it_behaves_like(:class_read, klass)
+      it_behaves_like('class read', klass)
     end
 
     context 'and it is called as an instance method on a return value' do

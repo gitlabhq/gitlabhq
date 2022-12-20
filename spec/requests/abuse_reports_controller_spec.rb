@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AbuseReportsController do
+RSpec.describe AbuseReportsController, feature_category: :users do
   let(:reporter) { create(:user) }
   let(:user)     { create(:user) }
   let(:attrs) do

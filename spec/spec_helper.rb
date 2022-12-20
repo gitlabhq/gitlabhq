@@ -211,7 +211,6 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
-    Timecop.safe_mode = true
     TestEnv.init
 
     # Reload all feature flags definitions
@@ -270,6 +269,10 @@ RSpec.configure do |config|
       # It's disabled in specs because we don't support certain features which
       # cause spec failures.
       stub_feature_flags(use_click_house_database_for_error_tracking: false)
+
+      # Disable this to avoid the Web IDE modals popping up in tests:
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/385453
+      stub_feature_flags(vscode_web_ide: false)
 
       enable_rugged = example.metadata[:enable_rugged].present?
 

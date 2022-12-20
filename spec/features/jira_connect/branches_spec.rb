@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Create GitLab branches from Jira', :js do
+RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integrations do
   let_it_be(:alice) { create(:user, name: 'Alice') }
   let_it_be(:bob) { create(:user, name: 'Bob') }
 
@@ -49,16 +49,11 @@ RSpec.describe 'Create GitLab branches from Jira', :js do
     expect(page).to have_button('Create branch', disabled: false)
 
     click_on 'master'
+    fill_in 'Search', with: source_branch
+    expect(page).not_to have_text(source_branch)
 
-    within_dropdown do
-      fill_in 'Search', with: source_branch
-
-      expect(page).not_to have_text(source_branch)
-
-      fill_in 'Search', with: 'master'
-
-      expect(page).to have_text('master')
-    end
+    fill_in 'Search', with: 'master'
+    expect(page).to have_text('master')
 
     # Switch to project2
 
@@ -70,10 +65,13 @@ RSpec.describe 'Create GitLab branches from Jira', :js do
     end
 
     click_on 'master'
+    wait_for_requests
 
-    within_dropdown do
-      fill_in 'Search', with: source_branch
-      click_on source_branch
+    fill_in 'Search', with: source_branch
+    wait_for_requests
+
+    within '[role="listbox"]' do
+      find('li', text: source_branch).click
     end
 
     fill_in 'Branch name', with: new_branch

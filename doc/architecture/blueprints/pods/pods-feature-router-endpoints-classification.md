@@ -29,7 +29,7 @@ hitting load balancer of a GitLab installation to a Pod that can serve it.
 Each Pod should be able to decode each request and classify for which Pod
 it belongs to.
 
-GitLab currently implements houndreds of endpoints. This document tries
+GitLab currently implements hundreds of endpoints. This document tries
 to describe various techniques that can be implemented to allow the Rails
 to provide this information efficiently.
 

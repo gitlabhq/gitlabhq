@@ -34,7 +34,7 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessWebhookService do
           end
 
           it 'processes issues' do
-            incident_payload = ::PagerDuty::WebhookPayloadParser.call(webhook_payload).first['incident']
+            incident_payload = ::PagerDuty::WebhookPayloadParser.call(webhook_payload)['incident']
 
             expect(::IncidentManagement::PagerDuty::ProcessIncidentWorker)
               .to receive(:perform_async)

@@ -20,10 +20,43 @@ module Ml
         ::Ml::Experiment.by_project_id(project.id)
       end
 
-      def create!(name)
-        ::Ml::Experiment.create!(name: name,
-                                 user: user,
-                                 project: project)
+      def create!(name, tags = nil)
+        experiment = ::Ml::Experiment.create!(name: name,
+                                              user: user,
+                                              project: project)
+
+        add_tags(experiment, tags)
+
+        experiment
+      end
+
+      def add_tag!(experiment, key, value)
+        return unless experiment.present?
+
+        experiment.metadata.create!(name: key, value: value)
+      end
+
+      private
+
+      def timestamps
+        current_time = Time.zone.now
+
+        { created_at: current_time, updated_at: current_time }
+      end
+
+      def add_tags(experiment, tag_definitions)
+        return unless experiment.present? && tag_definitions.present?
+
+        entities = tag_definitions.map do |d|
+          {
+            experiment_id: experiment.id,
+            name: d[:key],
+            value: d[:value],
+            **timestamps
+          }
+        end
+
+        ::Ml::ExperimentMetadata.insert_all(entities, returning: false) unless entities.empty?
       end
     end
   end

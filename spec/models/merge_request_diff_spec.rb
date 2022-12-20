@@ -507,6 +507,50 @@ RSpec.describe MergeRequestDiff do
       end
     end
 
+    describe '#paginated_diffs' do
+      context 'when no persisted files available' do
+        before do
+          diff_with_commits.clean!
+        end
+
+        it 'returns a Gitlab::Diff::FileCollection::Compare' do
+          diffs = diff_with_commits.paginated_diffs(1, 10)
+
+          expect(diffs).to be_a(Gitlab::Diff::FileCollection::Compare)
+          expect(diffs.diff_files.size).to eq(10)
+        end
+      end
+
+      context 'when persisted files available' do
+        it 'returns paginated diffs' do
+          diffs = diff_with_commits.paginated_diffs(1, 10)
+
+          expect(diffs).to be_a(Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff)
+          expect(diffs.diff_files.size).to eq(10)
+        end
+
+        it 'sorts diff files directory first' do
+          diff_with_commits.update!(sorted: false) # Mark as unsorted so it'll re-order
+
+          # There will be 11 returned, as we have to take into account for new and old paths
+          expect(diff_with_commits.paginated_diffs(1, 10).diff_paths).to eq(
+            [
+              'bar/branch-test.txt',
+              'custom-highlighting/test.gitlab-custom',
+              'encoding/iso8859.txt',
+              'files/images/wm.svg',
+              'files/js/commit.js.coffee',
+              'files/js/commit.coffee',
+              'files/lfs/lfs_object.iso',
+              'files/ruby/popen.rb',
+              'files/ruby/regex.rb',
+              'files/.DS_Store',
+              'files/whitespace'
+            ])
+        end
+      end
+    end
+
     describe '#diffs' do
       let(:diff_options) { {} }
 

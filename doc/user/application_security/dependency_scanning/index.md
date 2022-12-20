@@ -109,7 +109,7 @@ maximum of two directory levels from the repository's root. For example, the
 `gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,
 `api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is `api/v1/client/Gemfile`.
 
-For Java and Python, when a supported depedency file is detected, Dependency Scanning attempts to build the project and execute some Java or Python commands to get the list of dependencies. For all other projects, the lock file is parsed to obtain the list of dependencies without needing to build the project first.
+For Java and Python, when a supported dependency file is detected, Dependency Scanning attempts to build the project and execute some Java or Python commands to get the list of dependencies. For all other projects, the lock file is parsed to obtain the list of dependencies without needing to build the project first.
 
 When a supported dependency file is detected, all dependencies, including transitive dependencies are analyzed. There is no limit to the depth of nested or transitive dependencies that are analyzed.
 
@@ -309,7 +309,7 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-3"></a>
     <p>
-      npm is only supported when <code>lockfileVersion = 1</code> or <code>lockfileVersion = 2</code>. Work to add support for <code>lockfileVersion = 3</code> is being tracked in issue <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">GitLab#365176</a>.
+      npm is supported for <code>lockfileVersion = 1</code>, <code>lockfileVersion = 2</code>, and <code>lockfileVersion = 3</code>. Support for <code>lockfileVersion = 3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">introduced</a> in GitLab 15.7.
     </p>
   </li>
   <li>
@@ -437,7 +437,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
   <li>
     <a id="exported-dependency-information-notes-4"></a>
     <p>
-      Because of the implementation of <code>go build</code>, the Go build process requires network access, a pre-loaded modcache via <code>go mod download</code>, or vendored dependencies. For more information,
+      Because of the implementation of <code>go build</code>, the Go build process requires network access, a pre-loaded mod cache via <code>go mod download</code>, or vendored dependencies. For more information,
       refer to the Go documentation on <a href="https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies">compiling packages and dependencies</a>.
     </p>
   </li>
@@ -867,13 +867,8 @@ Here's an example dependency scanning report:
 
 ### CycloneDX Software Bill of Materials
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350509) in GitLab 14.8 in [Beta](../../../policy/alpha-beta-support.md#beta-features).
-
-NOTE:
-CycloneDX SBOMs are a [Beta](../../../policy/alpha-beta-support.md#beta-features) feature,
-and the reports are subject to change during the beta period. Do not build integrations
-that rely on the format of these SBOMs staying consistent, as the format might change
-before the feature is made generally available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350509) in GitLab 14.8 in [Beta](../../../policy/alpha-beta-support.md#beta-features).
+> - Generally available in GitLab 15.7.
 
 In addition to the [JSON report file](#reports-json-format), the [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
 Dependency Scanning tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for
@@ -996,7 +991,7 @@ process by which external resources can be imported or temporarily accessed.
 These scanners are [periodically updated](../index.md#vulnerability-scanner-maintenance)
 with new definitions, and you may be able to make occasional updates on your own.
 
-For details on saving and transporting Docker images as a file, see Docker's documentation on
+For details on saving and transporting Docker images as a file, see the Docker documentation on
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
 [`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
 
@@ -1257,7 +1252,7 @@ file in the `CI_BUILDS_DIR` directory triggers the dependency scanning job.
 
 We recommend committing the lock files, which prevents this warning.
 
-### I no longer get the latest Docker image after setting `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE`
+### You no longer get the latest Docker image after setting `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE`
 
 If you have manually set `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE` for specific reasons,
 and now must update your configuration to again get the latest patched versions of our

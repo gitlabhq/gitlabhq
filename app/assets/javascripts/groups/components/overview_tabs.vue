@@ -13,19 +13,32 @@ import {
 } from '../constants';
 import eventHub from '../event_hub';
 import GroupsApp from './app.vue';
+import SubgroupsAndProjectsEmptyState from './empty_states/subgroups_and_projects_empty_state.vue';
+import SharedProjectsEmptyState from './empty_states/shared_projects_empty_state.vue';
+import ArchivedProjectsEmptyState from './empty_states/archived_projects_empty_state.vue';
 
 const [SORTING_ITEM_NAME] = OVERVIEW_TABS_SORTING_ITEMS;
 const MIN_SEARCH_LENGTH = 3;
 
 export default {
-  components: { GlTabs, GlTab, GroupsApp, GlSearchBoxByType, GlSorting, GlSortingItem },
+  components: {
+    GlTabs,
+    GlTab,
+    GroupsApp,
+    GlSearchBoxByType,
+    GlSorting,
+    GlSortingItem,
+    SubgroupsAndProjectsEmptyState,
+    SharedProjectsEmptyState,
+    ArchivedProjectsEmptyState,
+  },
   inject: ['endpoints', 'initialSort'],
   data() {
     const tabs = [
       {
         title: this.$options.i18n[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS],
         key: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
-        renderEmptyState: true,
+        emptyStateComponent: SubgroupsAndProjectsEmptyState,
         lazy: this.$route.name !== ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
         service: new GroupsService(this.endpoints[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS]),
         store: new GroupsStore({ showSchemaMarkup: true }),
@@ -33,7 +46,7 @@ export default {
       {
         title: this.$options.i18n[ACTIVE_TAB_SHARED],
         key: ACTIVE_TAB_SHARED,
-        renderEmptyState: false,
+        emptyStateComponent: SharedProjectsEmptyState,
         lazy: this.$route.name !== ACTIVE_TAB_SHARED,
         service: new GroupsService(this.endpoints[ACTIVE_TAB_SHARED]),
         store: new GroupsStore(),
@@ -41,7 +54,7 @@ export default {
       {
         title: this.$options.i18n[ACTIVE_TAB_ARCHIVED],
         key: ACTIVE_TAB_ARCHIVED,
-        renderEmptyState: false,
+        emptyStateComponent: ArchivedProjectsEmptyState,
         lazy: this.$route.name !== ACTIVE_TAB_ARCHIVED,
         service: new GroupsService(this.endpoints[ACTIVE_TAB_ARCHIVED]),
         store: new GroupsStore(),
@@ -158,18 +171,16 @@ export default {
 <template>
   <gl-tabs content-class="gl-pt-0" :value="activeTabIndex" @input="handleTabInput">
     <gl-tab
-      v-for="{ key, title, renderEmptyState, lazy, service, store } in tabs"
+      v-for="{ key, title, emptyStateComponent, lazy, service, store } in tabs"
       :key="key"
       :title="title"
       :lazy="lazy"
     >
-      <groups-app
-        :action="key"
-        :service="service"
-        :store="store"
-        :hide-projects="false"
-        :render-empty-state="renderEmptyState"
-      />
+      <groups-app :action="key" :service="service" :store="store" :hide-projects="false">
+        <template v-if="emptyStateComponent" #empty-state>
+          <component :is="emptyStateComponent" />
+        </template>
+      </groups-app>
     </gl-tab>
     <template #tabs-end>
       <li class="gl-flex-grow-1 gl-align-self-center gl-w-full gl-lg-w-auto gl-py-2">

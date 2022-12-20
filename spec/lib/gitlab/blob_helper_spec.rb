@@ -68,6 +68,7 @@ RSpec.describe Gitlab::BlobHelper do
         expect(blob.image?).to be_falsey
       end
     end
+
     context 'with a .webp file' do
       it 'returns true' do
         expect(webp_blob.image?).to be_truthy

@@ -1,4 +1,4 @@
-- name: "`FF_SHELL_EXECUTOR_USE_LEGACY_PROCESS_KILL` feature flag"
+- title: "`FF_SHELL_EXECUTOR_USE_LEGACY_PROCESS_KILL` feature flag"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: deastman

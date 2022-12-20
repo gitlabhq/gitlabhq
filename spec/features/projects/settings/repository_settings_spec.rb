@@ -2,12 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > Repository settings' do
+RSpec.describe 'Projects > Settings > Repository settings', feature_category: :projects do
   let(:project) { create(:project_empty_repo) }
   let(:user) { create(:user) }
   let(:role) { :developer }
 
   before do
+    stub_feature_flags(branch_rules: false)
     project.add_role(user, role)
     sign_in(user)
   end
@@ -39,18 +40,17 @@ RSpec.describe 'Projects > Settings > Repository settings' do
     end
 
     context 'Branch rules', :js do
-      it 'renders branch rules settings' do
-        visit project_settings_repository_path(project)
-        expect(page).to have_content('Branch rules')
-      end
-
       context 'branch_rules feature flag disabled', :js do
         it 'does not render branch rules settings' do
-          stub_feature_flags(branch_rules: false)
           visit project_settings_repository_path(project)
-
           expect(page).not_to have_content('Branch rules')
         end
+      end
+
+      it 'renders branch rules settings' do
+        stub_feature_flags(branch_rules: true)
+        visit project_settings_repository_path(project)
+        expect(page).to have_content('Branch rules')
       end
     end
 
@@ -164,13 +164,7 @@ RSpec.describe 'Projects > Settings > Repository settings' do
         end
 
         project.reload
-
-        # TODO: The following line is skipped because a toast with
-        # "An error occurred while loading branch rules. Please try again."
-        # shows up right after which hides the below message. It is causing flakiness.
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/383717#note_1185091998
-
-        # expect(page).to have_content('Mirroring settings were successfully updated')
+        expect(page).to have_content('Mirroring settings were successfully updated')
         expect(project.remote_mirrors.first.only_protected_branches).to eq(false)
       end
 
@@ -190,13 +184,7 @@ RSpec.describe 'Projects > Settings > Repository settings' do
         end
 
         project.reload
-
-        # TODO: The following line is skipped because a toast with
-        # "An error occurred while loading branch rules. Please try again."
-        # shows up right after which hides the below message. It is causing flakiness.
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/383717#note_1185091998
-
-        # expect(page).to have_content('Mirroring settings were successfully updated')
+        expect(page).to have_content('Mirroring settings were successfully updated')
         expect(project.remote_mirrors.first.only_protected_branches).to eq(true)
       end
 
@@ -213,7 +201,12 @@ RSpec.describe 'Projects > Settings > Repository settings' do
           click_button 'Mirror repository'
         end
 
-        expect(page).to have_content('Mirroring settings were successfully updated')
+        # TODO: The following line is skipped because a toast with
+        # "An error occurred while loading branch rules. Please try again."
+        # shows up right after which hides the below message. It is causing flakiness.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/383717#note_1185091998
+
+        # expect(page).to have_content('Mirroring settings were successfully updated')
         expect(project.reload.remote_mirrors.first.keep_divergent_refs).to eq(true)
       end
 
@@ -229,7 +222,12 @@ RSpec.describe 'Projects > Settings > Repository settings' do
           click_button 'Mirror repository'
         end
 
-        expect(page).to have_content('Mirroring settings were successfully updated')
+        # TODO: The following line is skipped because a toast with
+        # "An error occurred while loading branch rules. Please try again."
+        # shows up right after which hides the below message. It is causing flakiness.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/383717#note_1185091998
+
+        # expect(page).to have_content('Mirroring settings were successfully updated')
         expect(page).to have_selector('[title="Copy SSH public key"]')
       end
 
@@ -272,7 +270,6 @@ RSpec.describe 'Projects > Settings > Repository settings' do
             click_button 'Start cleanup'
           end
         end
-
         expect(page).to have_content('Repository cleanup has started')
         expect(RepositoryCleanupWorker.jobs.count).to eq(1)
       end

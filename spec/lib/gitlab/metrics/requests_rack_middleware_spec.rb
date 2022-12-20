@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
+RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, feature_category: :error_budgets do
   let(:app) { double('app') }
 
   subject { described_class.new(app) }
@@ -38,6 +38,29 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
         expect(described_class).to receive_message_chain(:http_request_duration_seconds, :observe).with({ method: 'get' }, a_positive_execution_time)
         expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment)
           .with(labels: { feature_category: 'unknown', endpoint_id: 'unknown', request_urgency: :default }, success: true)
+        expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment)
+          .with(labels: { feature_category: 'unknown', endpoint_id: 'unknown', request_urgency: :default }, error: false)
+
+        subject.call(env)
+      end
+
+      it 'guarantees SLI metrics are incremented with all the required labels' do
+        described_class.initialize_metrics
+
+        expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).and_call_original
+        expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment).and_call_original
+
+        subject.call(env)
+      end
+
+      it 'does not track error rate when feature flag is disabled' do
+        stub_feature_flags(gitlab_metrics_error_rate_sli: false)
+
+        expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'unknown')
+        expect(described_class).to receive_message_chain(:http_request_duration_seconds, :observe).with({ method: 'get' }, a_positive_execution_time)
+        expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment)
+          .with(labels: { feature_category: 'unknown', endpoint_id: 'unknown', request_urgency: :default }, success: true)
+        expect(Gitlab::Metrics::RailsSlis.request_error_rate).not_to receive(:increment)
 
         subject.call(env)
       end
@@ -84,10 +107,23 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
     context '@app.call returns an error code' do
       let(:status) { '500' }
 
-      it 'tracks count but not duration or apdex' do
+      it 'tracks count and error rate but not duration and apdex' do
         expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '500', feature_category: 'unknown')
         expect(described_class).not_to receive(:http_request_duration_seconds)
         expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
+        expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment)
+          .with(labels: { feature_category: 'unknown', endpoint_id: 'unknown', request_urgency: :default }, error: true)
+
+        subject.call(env)
+      end
+
+      it 'does not track error rate when feature flag is disabled' do
+        stub_feature_flags(gitlab_metrics_error_rate_sli: false)
+
+        expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '500', feature_category: 'unknown')
+        expect(described_class).not_to receive(:http_request_duration_seconds)
+        expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
+        expect(Gitlab::Metrics::RailsSlis.request_error_rate).not_to receive(:increment)
 
         subject.call(env)
       end
@@ -108,6 +144,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
         expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: 'undefined', feature_category: 'unknown')
         expect(described_class.http_request_duration_seconds).not_to receive(:observe)
         expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
+        expect(Gitlab::Metrics::RailsSlis.request_error_rate).not_to receive(:increment)
 
         expect { subject.call(env) }.to raise_error(StandardError)
       end
@@ -124,6 +161,8 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
           expect(described_class).not_to receive(:http_health_requests_total)
           expect(Gitlab::Metrics::RailsSlis.request_apdex)
             .to receive(:increment).with(labels: { feature_category: 'team_planning', endpoint_id: 'IssuesController#show', request_urgency: :default }, success: true)
+          expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment)
+            .with(labels: { feature_category: 'team_planning', endpoint_id: 'IssuesController#show', request_urgency: :default }, error: false)
 
           subject.call(env)
         end
@@ -134,6 +173,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
           expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get', status: '200')
           expect(described_class).not_to receive(:http_requests_total)
           expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
+          expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_error_rate)
 
           subject.call(env)
         end
@@ -147,8 +187,9 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
         it 'adds the feature category to the labels for http_requests_total' do
           expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: 'undefined', feature_category: 'team_planning')
-          expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
 
+          expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
+          expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_error_rate)
           expect { subject.call(env) }.to raise_error(StandardError)
         end
       end
@@ -159,6 +200,8 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
           expect(described_class).not_to receive(:http_health_requests_total)
           expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment)
             .with(labels: { feature_category: 'unknown', endpoint_id: 'unknown', request_urgency: :default }, success: true)
+          expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment)
+            .with(labels: { feature_category: 'unknown', endpoint_id: 'unknown', request_urgency: :default }, error: false)
 
           subject.call(env)
         end
@@ -214,6 +257,15 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
                 },
                 success: success
               )
+              expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment).with(
+                labels: {
+                  feature_category: 'hello_world',
+                  endpoint_id: 'GET /projects/:id/archive',
+                  request_urgency: request_urgency_name
+                },
+                error: false
+              )
+
               subject.call(env)
             end
           end
@@ -247,6 +299,15 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
                 },
                 success: success
               )
+              expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment).with(
+                labels: {
+                  feature_category: 'hello_world',
+                  endpoint_id: 'AnonymousController#index',
+                  request_urgency: request_urgency_name
+                },
+                error: false
+              )
+
               subject.call(env)
             end
           end
@@ -273,6 +334,14 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
               },
               success: true
             )
+            expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment).with(
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :default
+              },
+              error: false
+            )
             subject.call(env)
 
             allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(100, 101)
@@ -283,6 +352,14 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
                 request_urgency: :default
               },
               success: false
+            )
+            expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment).with(
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :default
+              },
+              error: false
             )
             subject.call(env)
           end
@@ -307,6 +384,14 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
               },
               success: true
             )
+            expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment).with(
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :default
+              },
+              error: false
+            )
             subject.call(env)
 
             allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(100, 101)
@@ -317,6 +402,14 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
                 request_urgency: :default
               },
               success: false
+            )
+            expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment).with(
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :default
+              },
+              error: false
             )
             subject.call(env)
           end
@@ -337,6 +430,14 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
               },
               success: true
             )
+            expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment).with(
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :default
+              },
+              error: false
+            )
             subject.call(env)
 
             allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(100, 101)
@@ -347,6 +448,14 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
                 request_urgency: :default
               },
               success: false
+            )
+            expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment).with(
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :default
+              },
+              error: false
             )
             subject.call(env)
           end

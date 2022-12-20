@@ -1,23 +1,14 @@
 # frozen_string_literal: true
 
 class Analytics::CycleAnalytics::Aggregation < ApplicationRecord
-  include IgnorableColumns
   include FromUnion
 
   belongs_to :group, optional: false
 
   validates :incremental_runtimes_in_seconds, :incremental_processed_records, :full_runtimes_in_seconds, :full_processed_records, presence: true, length: { maximum: 10 }, allow_blank: true
 
-  scope :priority_order, -> (column_to_sort = :last_incremental_run_at) { order(arel_table[column_to_sort].asc.nulls_first) }
+  scope :priority_order, ->(column_to_sort = :last_incremental_run_at) { order(arel_table[column_to_sort].asc.nulls_first) }
   scope :enabled, -> { where('enabled IS TRUE') }
-
-  # These columns were added with wrong naming convention, the columns were never used.
-  ignore_column :last_full_run_processed_records, remove_with: '15.1', remove_after: '2022-05-22'
-  ignore_column :last_full_run_runtimes_in_seconds, remove_with: '15.1', remove_after: '2022-05-22'
-  ignore_column :last_full_run_issues_updated_at, remove_with: '15.1', remove_after: '2022-05-22'
-  ignore_column :last_full_run_mrs_updated_at, remove_with: '15.1', remove_after: '2022-05-22'
-  ignore_column :last_full_run_issues_id, remove_with: '15.1', remove_after: '2022-05-22'
-  ignore_column :last_full_run_merge_requests_id, remove_with: '15.1', remove_after: '2022-05-22'
 
   def cursor_for(mode, model)
     {

@@ -6,6 +6,7 @@ export const I18N = {
   branchNameOrPattern: s__('BranchRules|Branch name or pattern'),
   branch: s__('BranchRules|Target Branch'),
   allBranches: s__('BranchRules|All branches'),
+  matchingBranchesLinkTitle: s__('BranchRules|%{total} matching %{subject}'),
   protectBranchTitle: s__('BranchRules|Protect branch'),
   protectBranchDescription: s__(
     'BranchRules|Keep stable branches secure and force developers to use merge requests. %{linkStart}What are protected branches?%{linkEnd}',

@@ -232,6 +232,7 @@ describe('Container Expiration Policy Settings Form', () => {
   describe('form', () => {
     describe('form submit event', () => {
       useMockLocationHelper();
+      const originalHref = window.location.href;
 
       it('save has type submit', () => {
         mountComponent();
@@ -319,7 +320,7 @@ describe('Container Expiration Policy Settings Form', () => {
             await submitForm();
 
             expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_ERROR_MESSAGE);
-            expect(window.location.href).toBeUndefined();
+            expect(window.location.href).toBe(originalHref);
           });
 
           it('parses the error messages', async () => {

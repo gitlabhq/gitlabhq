@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlTooltipDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
 import eventHub from '../event_hub';
 import animateMixin from '../mixins/animate';

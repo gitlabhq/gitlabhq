@@ -31,7 +31,7 @@ module Gitlab
       repo_events = events_created_between(start_time, end_time, :repository)
         .where(action: :pushed)
       issue_events = events_created_between(start_time, end_time, :issues)
-        .where(action: [:created, :closed], target_type: "Issue")
+        .where(action: [:created, :closed], target_type: %w[Issue WorkItem])
       mr_events = events_created_between(start_time, end_time, :merge_requests)
         .where(action: [:merged, :created, :closed], target_type: "MergeRequest")
       note_events = events_created_between(start_time, end_time, :merge_requests)

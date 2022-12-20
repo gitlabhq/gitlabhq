@@ -2,12 +2,12 @@
 - hook = local_assigns.fetch(:hook)
 - triggers = hook.class.triggers
 
-.hook-test-button.dropdown.gl-new-dropdown.inline>
+.hook-test-button.dropdown.gl-dropdown.inline>
   %button.btn.gl-button{ 'data-toggle' => 'dropdown', class: button_class }
     = _('Test')
     = sprite_icon('chevron-down')
   %ul.dropdown-menu.dropdown-menu-right{ role: 'menu' }
-    .gl-new-dropdown-inner
+    .gl-dropdown-inner
       - triggers.each_value do |event|
-        %li.gl-new-dropdown-item
+        %li.gl-dropdown-item
           = link_to_test_hook(hook, event)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project fork' do
+RSpec.describe 'Project fork', feature_category: :projects do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

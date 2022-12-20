@@ -23,7 +23,7 @@ we can document the reasons for not choosing this approach.
 
 # Pods: GraphQL
 
-GitLab exensively uses GraphQL to perform efficient data query operations.
+GitLab extensively uses GraphQL to perform efficient data query operations.
 GraphQL due to it's nature is not directly routable. The way how GitLab uses
 it calls the `/api/graphql` endpoint, and only query or mutation of body request
 might define where the data can be accessed.

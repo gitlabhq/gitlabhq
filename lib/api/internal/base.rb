@@ -191,7 +191,7 @@ module API
         get '/authorized_keys', feature_category: :source_code_management, urgency: :high do
           fingerprint = Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint_sha256
 
-          key = Key.find_by_fingerprint_sha256(fingerprint)
+          key = Key.auth.find_by_fingerprint_sha256(fingerprint)
           not_found!('Key') if key.nil?
           present key, with: Entities::SSHKey
         end

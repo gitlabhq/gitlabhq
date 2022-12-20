@@ -56,7 +56,7 @@ module Issues
     end
 
     def perform_incident_management_actions(issue)
-      resolve_alert(issue)
+      resolve_alerts(issue)
       resolve_incident(issue)
     end
 
@@ -71,12 +71,17 @@ module Issues
       SystemNoteService.change_status(issue, issue.project, current_user, issue.state, current_commit)
     end
 
-    def resolve_alert(issue)
-      return unless alert = issue.alert_management_alert
+    def resolve_alerts(issue)
+      issue.alert_management_alerts.each { |alert| resolve_alert(alert) }
+    end
+
+    def resolve_alert(alert)
       return if alert.resolved?
 
+      issue = alert.issue
+
       if alert.resolve
-        SystemNoteService.change_alert_status(alert, current_user, " by closing incident #{issue.to_reference(project)}")
+        SystemNoteService.change_alert_status(alert, User.alert_bot, " because #{current_user.to_reference} closed incident #{issue.to_reference(project)}")
       else
         Gitlab::AppLogger.warn(
           message: 'Cannot resolve an associated Alert Management alert',

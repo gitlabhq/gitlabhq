@@ -1,25 +1,75 @@
 {
   "type": "object",
-  "properties" : {
-    "id": { "type": "integer" },
-    "iid": { "type": "integer" },
-    "project_id": { "type": "integer" },
-    "title": { "type": "string" },
-    "description": { "type": ["string", "null"] },
-    "state": { "type": "string" },
-    "merged_by": { "$ref": "user/basic.json" },
-    "merge_user": { "$ref": "user/basic.json" },
-    "merged_at": { "type": ["string", "null"] },
-    "closed_by": { "$ref": "user/basic.json" },
-    "closed_at": { "type": ["string", "null"], "format": "date-time" },
-    "created_at": { "type": "string", "format": "date-time" },
-    "updated_at": { "type": "string", "format": "date-time" },
-    "target_branch": { "type": "string" },
-    "source_branch": { "type": "string" },
-    "upvotes": { "type": "integer" },
-    "downvotes": { "type": "integer" },
-    "author": { "$ref": "user/basic.json" },
-    "assignee": { "$ref": "user/basic.json" },
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "iid": {
+      "type": "integer"
+    },
+    "project_id": {
+      "type": "integer"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "state": {
+      "type": "string"
+    },
+    "merged_by": {
+      "$ref": "user/basic.json"
+    },
+    "merge_user": {
+      "$ref": "user/basic.json"
+    },
+    "merged_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "closed_by": {
+      "$ref": "user/basic.json"
+    },
+    "closed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "target_branch": {
+      "type": "string"
+    },
+    "source_branch": {
+      "type": "string"
+    },
+    "upvotes": {
+      "type": "integer"
+    },
+    "downvotes": {
+      "type": "integer"
+    },
+    "author": {
+      "$ref": "user/basic.json"
+    },
+    "assignee": {
+      "$ref": "user/basic.json"
+    },
     "assignees": {
       "type": "array",
       "items": {
@@ -32,60 +82,159 @@
         "$ref": "user/basic.json"
       }
     },
-    "source_project_id": { "type": "integer" },
-    "target_project_id": { "type": "integer" },
+    "source_project_id": {
+      "type": "integer"
+    },
+    "target_project_id": {
+      "type": "integer"
+    },
     "labels": {
       "type": "array",
       "items": {
         "type": "string"
       }
     },
-    "work_in_progress": { "type": "boolean" },
+    "work_in_progress": {
+      "type": "boolean"
+    },
     "milestone": {
       "oneOf": [
-        { "type": "null" },
-        { "$ref": "milestone.json" }
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "milestone.json"
+        }
       ]
     },
-    "merge_when_pipeline_succeeds": { "type": "boolean" },
-    "merge_status": { "type": "string" },
-    "sha": { "type": "string" },
-    "merge_commit_sha": { "type": ["string", "null"] },
-    "user_notes_count": { "type": "integer" },
-    "changes_count": { "type": "string" },
-    "should_remove_source_branch": { "type": ["boolean", "null"] },
-    "force_remove_source_branch": { "type": ["boolean", "null"] },
-    "discussion_locked": { "type": ["boolean", "null"] },
-    "web_url": { "type": "uri" },
-    "squash": { "type": "boolean" },
-    "time_stats": {
-      "time_estimate": { "type": "integer" },
-      "total_time_spent": { "type": "integer" },
-      "human_time_estimate": { "type": ["string", "null"] },
-      "human_total_time_spent": { "type": ["string", "null"] }
+    "merge_when_pipeline_succeeds": {
+      "type": "boolean"
     },
-    "allow_collaboration": { "type": ["boolean", "null"] },
-    "allow_maintainer_to_push": { "type": ["boolean", "null"] },
+    "merge_status": {
+      "type": "string"
+    },
+    "sha": {
+      "type": "string"
+    },
+    "merge_commit_sha": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "user_notes_count": {
+      "type": "integer"
+    },
+    "changes_count": {
+      "type": "string"
+    },
+    "should_remove_source_branch": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "force_remove_source_branch": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "discussion_locked": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "web_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "squash": {
+      "type": "boolean"
+    },
+    "time_stats": {
+      "time_estimate": {
+        "type": "integer"
+      },
+      "total_time_spent": {
+        "type": "integer"
+      },
+      "human_time_estimate": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "human_total_time_spent": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "allow_collaboration": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "allow_maintainer_to_push": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
     "references": {
-      "short": {"type": "string"},
-      "relative": {"type": "string"},
-      "full": {"type": "string"}
+      "short": {
+        "type": "string"
+      },
+      "relative": {
+        "type": "string"
+      },
+      "full": {
+        "type": "string"
+      }
     }
   },
   "required": [
-    "id", "iid", "project_id", "title", "description",
-    "state", "created_at", "updated_at", "target_branch",
-    "source_branch", "upvotes", "downvotes", "author",
-    "assignee", "source_project_id", "target_project_id",
-    "labels", "work_in_progress", "milestone", "merge_when_pipeline_succeeds",
-    "merge_status", "sha", "merge_commit_sha", "user_notes_count",
-    "should_remove_source_branch", "force_remove_source_branch",
-    "web_url", "squash"
+    "id",
+    "iid",
+    "project_id",
+    "title",
+    "description",
+    "state",
+    "created_at",
+    "updated_at",
+    "target_branch",
+    "source_branch",
+    "upvotes",
+    "downvotes",
+    "author",
+    "assignee",
+    "source_project_id",
+    "target_project_id",
+    "labels",
+    "work_in_progress",
+    "milestone",
+    "merge_when_pipeline_succeeds",
+    "merge_status",
+    "sha",
+    "merge_commit_sha",
+    "user_notes_count",
+    "should_remove_source_branch",
+    "force_remove_source_branch",
+    "web_url",
+    "squash"
   ],
   "head_pipeline": {
     "oneOf": [
-      { "type": "null" },
-      { "$ref": "pipeline/detail.json" }
+      {
+        "type": "null"
+      },
+      {
+        "$ref": "pipeline/detail.json"
+      }
     ]
   }
 }

@@ -70,7 +70,7 @@ module Projects
       end
 
       def validate_required_params!
-        params.require(%i(branch file_name dashboard commit_message))
+        params.require(%i[branch file_name dashboard commit_message])
       end
 
       def redirect_safe_branch_name
@@ -78,7 +78,7 @@ module Projects
       end
 
       def dashboard_params
-        params.permit(%i(branch file_name dashboard commit_message)).to_h
+        params.permit(%i[branch file_name dashboard commit_message]).to_h
       end
 
       def file_content_params

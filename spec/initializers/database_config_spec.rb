@@ -7,15 +7,33 @@ RSpec.describe 'Database config initializer', :reestablished_active_record_base 
     load Rails.root.join('config/initializers/database_config.rb')
   end
 
-  it 'retains the correct database name for the connection' do
-    previous_db_name = ApplicationRecord.connection.pool.db_config.name
+  shared_examples 'does not change connection attributes' do
+    it 'retains the correct database name for connection' do
+      previous_db_name = database_base_model.connection.pool.db_config.name
 
-    subject
+      subject
 
-    expect(ApplicationRecord.connection.pool.db_config.name).to eq(previous_db_name)
+      expect(database_base_model.connection.pool.db_config.name).to eq(previous_db_name)
+    end
+
+    it 'does not overwrite custom pool settings' do
+      expect { subject }.not_to change { database_base_model.connection_db_config.pool }
+    end
   end
 
-  it 'does not overwrite custom pool settings' do
-    expect { subject }.not_to change { ActiveRecord::Base.connection_db_config.pool }
+  context 'when main database connection' do
+    let(:database_base_model) { Gitlab::Database.database_base_models[:main] }
+
+    it_behaves_like 'does not change connection attributes'
+  end
+
+  context 'when ci database connection' do
+    before do
+      skip_if_multiple_databases_not_setup
+    end
+
+    let(:database_base_model) { Gitlab::Database.database_base_models[:ci] }
+
+    it_behaves_like 'does not change connection attributes'
   end
 end

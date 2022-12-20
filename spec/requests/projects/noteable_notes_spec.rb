@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project noteable notes' do
+RSpec.describe 'Project noteable notes', feature_category: :team_planning do
   describe '#index' do
     let_it_be(:merge_request) { create(:merge_request) }
 

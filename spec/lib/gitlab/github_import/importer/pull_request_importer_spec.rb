@@ -202,6 +202,20 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
         importer.create_merge_request
       end
     end
+
+    context 'when merge request is invalid' do
+      before do
+        allow(pull_request).to receive(:formatted_source_branch).and_return(nil)
+        allow(importer.user_finder)
+          .to receive(:author_id_for)
+          .with(pull_request)
+          .and_return([project.creator_id, false])
+      end
+
+      it 'fails validation' do
+        expect { importer.create_merge_request }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
   end
 
   describe '#set_merge_request_assignees' do
@@ -285,6 +299,16 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
 
       it 'ignores Git command errors when creating a branch' do
         expect(project.repository).to receive(:add_branch).and_raise(Gitlab::Git::CommandError)
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+
+        mr = insert_git_data
+
+        expect(project.repository.branch_exists?(mr.source_branch)).to be_falsey
+        expect(project.repository.branch_exists?(mr.target_branch)).to be_truthy
+      end
+
+      it 'ignores Git PreReceive errors when creating a branch' do
+        expect(project.repository).to receive(:add_branch).and_raise(Gitlab::Git::PreReceiveError)
         expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
         mr = insert_git_data

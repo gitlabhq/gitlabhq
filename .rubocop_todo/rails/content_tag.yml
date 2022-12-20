@@ -1,9 +1,0 @@
----
-# Cop supports --autocorrect.
-Rails/ContentTag:
-  Details: grace period
-  Exclude:
-    - 'app/helpers/avatars_helper.rb'
-    - 'app/helpers/page_layout_helper.rb'
-    - 'lib/gitlab/middleware/go.rb'
-    - 'spec/helpers/avatars_helper_spec.rb'

@@ -1,11 +1,12 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml, GlToast, GlTooltip, GlModalDirective } from '@gitlab/ui';
+import { GlToast, GlTooltip, GlModalDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -27,6 +28,7 @@ import {
   TASK_TYPE_NAME,
   WIDGET_TYPE_DESCRIPTION,
 } from '~/work_items/constants';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import animateMixin from '../mixins/animate';
 import { convertDescriptionWithNewSort } from '../utils';
 
@@ -165,7 +167,7 @@ export default {
     this.renderGFM();
     this.updateTaskStatusText();
 
-    if (this.workItemId) {
+    if (this.workItemId && this.workItemsEnabled) {
       const taskLink = this.$el.querySelector(
         `.gfm-issue[data-issue="${getIdFromGraphQLId(this.workItemId)}"]`,
       );
@@ -177,7 +179,7 @@ export default {
   },
   methods: {
     renderGFM() {
-      $(this.$refs['gfm-content']).renderGFM();
+      renderGFM(this.$refs['gfm-content']);
 
       if (this.canUpdate) {
         // eslint-disable-next-line no-new
@@ -283,7 +285,7 @@ export default {
     },
 
     taskListUpdateError() {
-      createFlash({
+      createAlert({
         message: sprintf(
           __(
             'Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again.',
@@ -467,7 +469,7 @@ export default {
         this.workItemId = newWorkItem.id;
         this.openWorkItemDetailModal(el);
       } catch (error) {
-        createFlash({
+        createAlert({
           message: sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, workItemTypes.TASK),
           error,
           captureError: true,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Snippets > User deletes a snippet', :js do
+RSpec.describe 'Projects > Snippets > User deletes a snippet', :js, feature_category: :snippets do
   let(:project) { create(:project) }
   let!(:snippet) { create(:project_snippet, :repository, project: project, author: user) }
   let(:user) { create(:user) }

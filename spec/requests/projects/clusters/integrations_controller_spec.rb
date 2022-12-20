@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Clusters::IntegrationsController do
+RSpec.describe Projects::Clusters::IntegrationsController, feature_category: :integrations do
   include AccessMatchersForController
 
   shared_examples 'a secure endpoint' do

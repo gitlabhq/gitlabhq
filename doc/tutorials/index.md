@@ -19,10 +19,8 @@ and running quickly.
 | [GitLab 101](https://levelup.gitlab.com/learn/course/gitlab101)  |  Learn the basics of GitLab in this certification course. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Use GitLab for DevOps](https://www.youtube.com/watch?v=7q9Y1Cv-ib0) (12m 34s) | Use GitLab through the entire DevOps lifecycle, from planning to monitoring. | **{star}** |
 | [Use Markdown at GitLab](../user/markdown.md) |  GitLab Flavored Markdown (GLFM) is used in many areas of GitLab, for example, in merge requests. | **{star}** |
-| [GitLab 201](https://levelup.gitlab.com/learn/course/gitlab-201-certification)  |  Go beyond the basics to learn more about using GitLab for your work. | |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Learn GitLab project walkthrough](https://www.youtube.com/watch?v=-oaI2WEKdI4&list=PL05JrBw4t0KofkHq4GZJ05FnNGa11PQ4d) (59m 2s) | Step through the tutorial-style issues in the **Learn GitLab** project. If you don't have this project, download [the export file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/project_templates/learn_gitlab_ultimate.tar.gz) and [import it to a new project](../user/project/settings/import_export.md#import-a-project-and-its-data). | |
 | [Productivity tips](https://about.gitlab.com/blog/2021/02/18/improve-your-gitlab-productivity-with-these-10-tips/) | Get tips to help make you a productive GitLab user. | |
-| <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Structure a multi-team organization](https://www.youtube.com/watch?v=KmASFwSap7c) (37m 37s) | Learn to use issues, milestones, epics, labels, and more to plan and manage your work. | |
 
 ## Use Git
 
@@ -33,6 +31,7 @@ the most out of GitLab.
 |-------|-------------|--------------------|
 | [Make your first Git commit](make_your_first_git_commit.md) | Create a project, edit a file, and commit changes to a Git repository from the command line. | **{star}** |
 | [Start using Git on the command line](../gitlab-basics/start-using-git.md) | Learn how to set up Git, clone repositories, and work with branches. | **{star}** |
+| [Take advantage of Git rebase](https://about.gitlab.com/blog/2022/10/06/take-advantage-of-git-rebase/)| Learn how to use the `rebase` command in your workflow. | |
 | [Git cheat sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf) | Download a PDF of common Git commands. | |
 
 ## Plan your work in projects
@@ -42,10 +41,9 @@ collaborating, and more.
 
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
-| [Create a project from a template](https://gitlab.com/projects/new#create_from_template) | For hands-on learning, select **Sample GitLab Project** and create a project with example issues and merge requests. | **{star}** |
+| [Create a project from a template](https://gitlab.com/projects/new#create_from_template) | Choose a project template and create a project with files to get you started. | |
 | [Migrate to GitLab](../user/project/import/index.md) | If you are coming to GitLab from another platform, you can import or convert your projects. | |
 | [Run an agile iteration](agile_sprint.md) | Use group, projects, and iterations to run an agile development iteration. |
-| <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Use GitLab for multi-team planning (SAFe)](https://www.youtube.com/watch?v=KmASFwSap7c) (37m 37s) | A use case of a multi-team organization that uses GitLab with [Scaled Agile Framework (SAFe)](https://about.gitlab.com/solutions/agile-delivery/scaled-agile/). |
 
 ## Use CI/CD pipelines
 
@@ -87,6 +85,7 @@ GitLab can check your application for security vulnerabilities.
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
 | [Set up dependency scanning](https://about.gitlab.com/blog/2021/01/14/try-dependency-scanning/) | Try out dependency scanning, which checks for known vulnerabilities in dependencies. | **{star}** |
+| [Get started with GitLab application security](../user/application_security/get-started-security.md) | Follow recommended steps to set up security tools. | |
 
 ## Work with a self-managed instance
 
@@ -95,13 +94,12 @@ can help you manage and configure your instance.
 
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
-| [Install GitLab](../install/index.md)  |  Install GitLab according to your requirements.| |
+| [Install GitLab](../install/install_methods.md)  |  Install GitLab according to your requirements.| |
 | [Get started administering GitLab](../administration/get_started.md) | Configure your organization and its authentication, then secure, monitor, and back up GitLab. | |
-| [Secure your instance](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/)  |  Implement security features for your instance. | |
 
 ## Integrate with GitLab
 
-GitLab [integrates](../integration/index.md) with a number of third-party services,
+GitLab [integrates](../user/project/integrations/index.md) with a number of third-party services,
 enabling you to work with those services directly from GitLab.
 
 | Topic | Description | Good for beginners |

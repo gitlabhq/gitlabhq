@@ -267,7 +267,7 @@ However, there are a number of strategies to ensure queues get drained
 in a timely manner:
 
 - Add more processing capacity. This can be done by spinning up more
-  instances of Sidekiq or [Sidekiq Cluster](../administration/operations/extra_sidekiq_processes.md).
+  instances of Sidekiq or [Sidekiq Cluster](../administration/sidekiq/extra_sidekiq_processes.md).
 - Split jobs into smaller units of work. For example, `PostReceive`
   used to process each commit message in the push, but now it farms out
   this to `ProcessCommitWorker`.

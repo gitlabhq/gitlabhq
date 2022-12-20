@@ -7,7 +7,15 @@
 
 .todos-list > .todo {
   // workaround because we cannot use border-collapse
+  padding: 6px 12px !important;
   border-top: 1px solid transparent;
+
+  span:not(.todo-label),
+  button,
+  a:not(.todo-target-link),
+  time {
+    @include gl-relative;
+  }
 
   // overwrite border style of .content-list
   &:last-child {
@@ -38,25 +46,66 @@
 .todo-item {
   @include transition(opacity);
 
-  .todo-label,
-  .todo-project {
-    a {
-      color: var(--blue-600, $blue-600);
-    }
+  .todo-label a::before {
+    // Make area of the todo item clickable by expanding the area around the todo link
+    @include gl-content-empty;
+    @include gl-absolute;
+    @include gl-left-0;
+    @include gl-right-0;
+    @include gl-top-0;
+    @include gl-bottom-0;
+    z-index: 9;
+  }
+}
+
+.todo-title {
+  margin-right: 2.5rem;
+
+  @include media-breakpoint-up(sm) {
+    @include gl-mr-0;
+    @include gl-text-overflow-ellipsis;
+    @include gl-white-space-nowrap;
+    @include gl-overflow-hidden;
+  }
+}
+
+.todo-body {
+  p {
+    @include gl-display-inline;
+    color: var(--gl-text-color, $gl-text-color);
   }
 
-  .todo-body {
-    p {
-      color: var(--gl-text-color, $gl-text-color);
-    }
+  pre.code.highlight {
+    @include gl-py-0;
+    @include gl-px-1;
+    @include gl-m-0;
+    @include gl-bg-gray-50;
+    @include gl-border-0;
+    @include gl-rounded-base;
+    @include gl-display-inline-flex;
+    @include gl-text-body;
+  }
 
-    .gl-label-scoped {
-      --label-inset-border: inset 0 0 0 1px currentColor;
-    }
+  .gl-label-scoped {
+    --label-inset-border: inset 0 0 0 1px currentColor;
+  }
 
-    @include media-breakpoint-down(sm) {
-      border-left: 2px solid var(--border-color, $border-color);
-      padding-left: 10px;
-    }
+  .avatar {
+    @include gl-mb-0;
+  }
+}
+
+.todo-actions,
+.todo-body .todo-avatar,
+.todos-list > .todo a:not(.todo-target-link) {
+  z-index: 11 !important;
+}
+
+.todo-actions {
+  @include gl-absolute;
+  @include gl-right-0;
+
+  @include media-breakpoint-up(sm) {
+    @include gl-relative;
   }
 }

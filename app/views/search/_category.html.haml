@@ -23,7 +23,7 @@
         = search_filter_link 'milestones', _("Milestones")
       = users
 
-    - elsif @show_snippets
+    - elsif @search_service.show_snippets?
       = search_filter_link 'snippet_titles', _("Titles and Descriptions"), search: { snippets: true, group_id: nil, project_id: nil }
     - else
       = search_filter_link 'projects', _("Projects"), data: { qa_selector: 'projects_tab' }

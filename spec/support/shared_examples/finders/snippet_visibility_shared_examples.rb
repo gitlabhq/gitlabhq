@@ -237,8 +237,8 @@ RSpec.shared_examples 'snippet visibility' do
 
           if project.private?
             project.add_developer(external) unless member
-          else
-            member.delete if member
+          elsif member
+            member.delete
           end
         end
       end

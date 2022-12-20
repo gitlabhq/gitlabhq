@@ -7,3 +7,4 @@ feature_categories:
 description: The SHA referencing changes to a single design or multiple design files
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10552
 milestone: '11.10'
+gitlab_schema: gitlab_main

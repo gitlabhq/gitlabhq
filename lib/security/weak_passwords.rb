@@ -9,6 +9,14 @@ module Security
     # random password.
     MINIMUM_SUBSTRING_SIZE = 4
 
+    # Passwords of 64+ characters are more likely to randomly include a
+    # forbidden substring.
+    #
+    # This length was chosen somewhat arbitrarily, balancing security,
+    # usability, and skipping checks on `::User.random_password` which
+    # is 128 chars. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105755
+    PASSWORD_SUBSTRING_CHECK_MAX_LENGTH = 64
+
     class << self
       # Returns true when the password is on a list of weak passwords,
       # or contains predictable substrings derived from user attributes.
@@ -72,7 +80,11 @@ module Security
       # Case-insensitively checks whether a password includes a dynamic
       # list of substrings. Substrings which are too short are not
       # predictable and may occur randomly, and therefore not checked.
+      # Similarly passwords which are long enough to inadvertently and
+      # randomly include a substring are not checked.
       def contains_predicatable_substring?(password, substrings)
+        return unless password.length < PASSWORD_SUBSTRING_CHECK_MAX_LENGTH
+
         substrings = substrings.filter_map do |substring|
           substring.downcase if substring.length >= MINIMUM_SUBSTRING_SIZE
         end

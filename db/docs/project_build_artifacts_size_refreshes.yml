@@ -7,3 +7,4 @@ feature_categories:
 description: Temporary table to accurately recompute artifacts size.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81306
 milestone: '14.9'
+gitlab_schema: gitlab_main

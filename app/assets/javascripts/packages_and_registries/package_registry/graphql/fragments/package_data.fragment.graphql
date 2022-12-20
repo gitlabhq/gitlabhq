@@ -29,4 +29,7 @@ fragment PackageData on Package {
     fullPath
     webUrl
   }
+  _links {
+    webPath
+  }
 }

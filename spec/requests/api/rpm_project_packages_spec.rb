@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::RpmProjectPackages do
+RSpec.describe API::RpmProjectPackages, feature_category: :package_registry do
   include HttpBasicAuthHelpers
   include WorkhorseHelpers
 
@@ -136,7 +136,7 @@ RSpec.describe API::RpmProjectPackages do
   end
 
   describe 'GET /api/v4/projects/:id/packages/rpm/:package_file_id/:filename' do
-    let(:snowplow_gitlab_standard_context) { { project: project, namespace: group } }
+    let(:snowplow_gitlab_standard_context) { { project: project, namespace: group, property: 'i_package_rpm_user' } }
     let(:url) { "/projects/#{project.id}/packages/rpm/#{package_file_id}/#{package_name}" }
 
     subject { get api(url), headers: headers }
@@ -148,7 +148,10 @@ RSpec.describe API::RpmProjectPackages do
   end
 
   describe 'POST /api/v4/projects/:project_id/packages/rpm' do
-    let(:snowplow_gitlab_standard_context) { { project: project, namespace: group, user: user } }
+    let(:snowplow_gitlab_standard_context) do
+      { project: project, namespace: group, user: user, property: 'i_package_rpm_user' }
+    end
+
     let(:url) { "/projects/#{project.id}/packages/rpm" }
     let(:file_upload) { fixture_file_upload('spec/fixtures/packages/rpm/hello-0.0.1-1.fc29.x86_64.rpm') }
 
@@ -211,6 +214,19 @@ RSpec.describe API::RpmProjectPackages do
 
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(response.body).to match(/File is too large/)
+          end
+        end
+
+        context 'when filelists.xml file size too large' do
+          before do
+            create(:rpm_repository_file, :filelists, size: 21.megabytes, project: project)
+          end
+
+          it 'returns an error' do
+            upload_file(params: { file: file_upload }, request_headers: headers)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response.body).to match(/Repository packages limit exceeded/)
           end
         end
       end

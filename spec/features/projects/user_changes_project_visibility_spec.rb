@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User changes public project visibility', :js do
+RSpec.describe 'User changes public project visibility', :js, feature_category: :projects do
   include ProjectForksHelper
 
   shared_examples 'changing visibility to private' do

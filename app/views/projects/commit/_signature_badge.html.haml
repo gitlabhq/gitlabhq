@@ -17,18 +17,23 @@
 - content = capture do
   - if show_user
     .clearfix
-      - uri_signature_badge_user = "projects/commit/#{'x509/' if x509_signature?(signature)}signature_badge_user"
+      - uri_signature_badge_user = "projects/commit/#{'x509/' if signature.x509?}signature_badge_user"
       = render partial: "#{uri_signature_badge_user}", locals: { signature: signature }
 
-  - if x509_signature?(signature)
+  - if signature.x509?
     = render partial: "projects/commit/x509/certificate_details", locals: { signature: signature }
 
-    = link_to(_('Learn more about X.509 signed commits'), help_page_path('user/project/repository/x509_signed_commits/index.md'), class: 'gpg-popover-help-link')
+    = link_to(_('Learn more about X.509 signed commits'), help_page_path('user/project/repository/x509_signed_commits/index.md'), class: 'gl-link gl-display-block')
+  - elsif ::Feature.enabled?(:ssh_commit_signatures, signature.project) && signature.ssh?
+    = _('SSH key fingerprint:')
+    %span.gl-font-monospace= signature.key&.fingerprint_sha256 || _('Unknown')
+
+    = link_to(_('Learn about signing commits with SSH keys.'), help_page_path('user/project/repository/ssh_signed_commits/index.md'), class: 'gl-link gl-display-block')
   - else
     = _('GPG Key ID:')
-    %span.monospace= signature.gpg_key_primary_keyid
+    %span.gl-font-monospace= signature.gpg_key_primary_keyid
 
-    = link_to(_('Learn more about signing commits'), help_page_path('user/project/repository/gpg_signed_commits/index.md'), class: 'gpg-popover-help-link gl-display-block')
+    = link_to(_('Learn more about signing commits'), help_page_path('user/project/repository/gpg_signed_commits/index.md'), class: 'gl-link gl-display-block')
 
 %a{ role: 'button', tabindex: 0, class: css_classes, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
   = label

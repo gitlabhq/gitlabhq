@@ -12,7 +12,7 @@ class BoardProjectRecentVisit < ApplicationRecord
   validates :project, presence: true
   validates :board,   presence: true
 
-  scope :by_user_parent, -> (user, project) { where(user: user, project: project) }
+  scope :by_user_parent, ->(user, project) { where(user: user, project: project) }
 
   def self.board_parent_relation
     :project

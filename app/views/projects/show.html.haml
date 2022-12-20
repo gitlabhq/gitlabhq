@@ -15,7 +15,7 @@
 
 = render "home_panel"
 
-- if can?(current_user, :download_code, @project) && @project.repository_languages.present?
+- if can?(current_user, :read_code, @project) && @project.repository_languages.present?
   - add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "" })
   = repository_languages_bar(@project.repository_languages)
 
@@ -24,9 +24,6 @@
 = render_if_exists "projects/ancestor_group_marked_for_deletion_notice", project: @project
 
 - view_path = @project.default_view
-
-- if show_auto_devops_callout?(@project)
-  = render 'shared/auto_devops_callout'
 
 %div{ class: project_child_container_class(view_path) }
   = render view_path, is_project_overview: true

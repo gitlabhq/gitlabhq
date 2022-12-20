@@ -202,6 +202,7 @@ export default {
       if (!this.allowsMultipleAssignees) {
         this.localAssignees = assignees.length > 0 ? [assignees[assignees.length - 1]] : [];
         this.isEditing = false;
+        this.setAssignees(this.assigneeIds);
         return;
       }
       this.localAssignees = assignees;

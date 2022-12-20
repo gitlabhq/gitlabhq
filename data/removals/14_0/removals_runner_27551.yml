@@ -1,4 +1,4 @@
-- name: "Windows Server 1903 image support"
+- title: "Windows Server 1903 image support"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: deastman

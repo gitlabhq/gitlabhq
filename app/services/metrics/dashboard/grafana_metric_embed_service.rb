@@ -51,8 +51,7 @@ module Metrics
         # being passed to #get_dashboard (which accepts none)
         ::Metrics::Dashboard::BaseService
           .instance_method(:get_dashboard)
-          .bind(self)
-          .call() # rubocop:disable Style/MethodCallWithoutArgsParentheses
+          .bind_call(self)
       end
 
       def cache_key(*args)

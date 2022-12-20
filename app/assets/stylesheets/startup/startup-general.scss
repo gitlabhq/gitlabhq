@@ -17,9 +17,10 @@ header {
 }
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: var(--default-regular-font, -apple-system), BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue",
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -47,8 +48,9 @@ a:not([href]):not([class]) {
   text-decoration: none;
 }
 kbd {
-  font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas",
-    "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace;
+  font-family: var(--default-mono-font, "Menlo"), "DejaVu Sans Mono",
+    "Liberation Mono", "Consolas", "Ubuntu Mono", "Courier New", "andale mono",
+    "lucida console", monospace;
   font-size: 1em;
 }
 img {
@@ -426,9 +428,10 @@ a.gl-badge.badge-warning:active {
 .gl-form-input,
 .gl-form-input.form-control {
   background-color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: var(--default-regular-font, -apple-system), BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue",
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
   font-size: 0.875rem;
   line-height: 1rem;
   padding-top: 0.5rem;
@@ -506,6 +509,15 @@ a.gl-badge.badge-warning:active {
   align-items: center;
   font-size: 0.875rem;
   border-radius: 0.25rem;
+}
+.gl-button.gl-button .gl-button-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin-top: -1px;
+  margin-bottom: -1px;
 }
 .gl-button.gl-button.btn-default {
   background-color: #fff;
@@ -606,8 +618,8 @@ html {
 }
 .btn:active,
 .btn.active {
-  background-color: #eaeaea;
-  border-color: #e3e3e3;
+  background-color: #e6e6ea;
+  border-color: #dedee3;
   color: #333238;
 }
 .btn svg {
@@ -685,7 +697,7 @@ html {
   list-style: none;
 }
 .dropdown-menu li > a,
-.dropdown-menu li button {
+.dropdown-menu li > button {
   background: transparent;
   border: 0;
   border-radius: 0;
@@ -702,14 +714,14 @@ html {
   width: 100%;
 }
 .dropdown-menu li > a:active,
-.dropdown-menu li button:active {
+.dropdown-menu li > button:active {
   background-color: #ececef;
   color: #333238;
   outline: 0;
   text-decoration: none;
 }
 .dropdown-menu li > a:active,
-.dropdown-menu li button:active {
+.dropdown-menu li > button:active {
   box-shadow: inset 0 0 0 2px #428fdc, inset 0 0 0 3px #fff,
     inset 0 0 0 1px #fff;
   outline: none;
@@ -758,10 +770,10 @@ input {
 kbd {
   display: inline-block;
   padding: 3px 5px;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   line-height: 10px;
   color: var(--gray-700, #535158);
-  vertical-align: middle;
+  vertical-align: unset;
   background-color: var(--gray-10, #fbfafd);
   border-width: 1px;
   border-style: solid;
@@ -820,6 +832,22 @@ kbd {
 }
 .navbar-gitlab .header-content .navbar-collapse > ul.nav > li:not(.d-none) {
   margin: 0 2px;
+}
+.navbar-gitlab .header-content .header-search-new {
+  max-width: 640px;
+}
+.navbar-gitlab .header-search {
+  min-width: 320px;
+}
+@media (min-width: 768px) and (max-width: 1199.98px) {
+  .navbar-gitlab .header-search {
+    min-width: 200px;
+  }
+}
+.navbar-gitlab .header-search .keyboard-shortcut-helper {
+  transform: translateY(calc(50% - 2px));
+  box-shadow: none;
+  border-color: transparent;
 }
 .navbar-gitlab .navbar-collapse {
   flex: 0 0 auto;
@@ -1123,7 +1151,7 @@ kbd {
   font-weight: 600;
 }
 .nav-sidebar li.active:not(.fly-out-top-item) > a:not(.has-sub-items) {
-  background-color: rgba(0, 0, 0, 0.08);
+  background-color: rgba(31, 30, 36, 0.08);
 }
 .nav-sidebar ul {
   padding-left: 0;
@@ -1503,87 +1531,6 @@ svg.s12 {
 }
 svg.s16 {
   vertical-align: -3px;
-}
-.header-content .header-search-new {
-  max-width: 640px;
-}
-.header-search {
-  min-width: 320px;
-}
-@media (min-width: 768px) and (max-width: 1199.98px) {
-  .header-search {
-    min-width: 200px;
-  }
-}
-.header-search .keyboard-shortcut-helper {
-  transform: translateY(calc(50% - 2px));
-  box-shadow: none;
-  border-color: transparent;
-}
-.search {
-  margin: 0 8px;
-}
-.search form {
-  display: block;
-  margin: 0;
-  padding: 4px;
-  width: 200px;
-  line-height: 24px;
-  height: 32px;
-  border: 0;
-  border-radius: 4px;
-}
-@media (min-width: 1200px) {
-  .search form {
-    width: 320px;
-  }
-}
-.search .search-input {
-  border: 0;
-  font-size: 14px;
-  padding: 0 20px 0 0;
-  margin-left: 5px;
-  line-height: 25px;
-  width: 98%;
-  color: #fff;
-  background: none;
-}
-.search .search-input-container {
-  display: flex;
-  position: relative;
-}
-.search .search-input-wrap {
-  width: 100%;
-}
-.search .search-input-wrap .search-icon,
-.search .search-input-wrap .clear-icon {
-  position: absolute;
-  right: 5px;
-  top: 4px;
-}
-.search .search-input-wrap .search-icon {
-  user-select: none;
-}
-.search .search-input-wrap .clear-icon {
-  display: none;
-}
-.search .search-input-wrap .dropdown {
-  position: static;
-}
-.search .search-input-wrap .dropdown-menu {
-  left: -5px;
-  max-height: 400px;
-  overflow: auto;
-}
-@media (min-width: 1200px) {
-  .search .search-input-wrap .dropdown-menu {
-    width: 320px;
-  }
-}
-.search .identicon {
-  flex-basis: 16px;
-  flex-shrink: 0;
-  margin-right: 4px;
 }
 .avatar,
 .avatar-container {

@@ -5,7 +5,7 @@ RSpec.shared_examples 'lists destroy service' do
     it 'removes list from board' do
       service = described_class.new(parent, user)
 
-      expect { service.execute(list) }.to change(board.lists, :count).by(-1)
+      expect { service.execute(list) }.to change { board.lists.count }.by(-1)
     end
 
     it 'decrements position of higher lists' do
@@ -24,6 +24,6 @@ RSpec.shared_examples 'lists destroy service' do
   it 'does not remove list from board when list type is closed' do
     service = described_class.new(parent, user)
 
-    expect { service.execute(closed_list) }.not_to change(board.lists, :count)
+    expect { service.execute(closed_list) }.not_to change { board.lists.count }
   end
 end

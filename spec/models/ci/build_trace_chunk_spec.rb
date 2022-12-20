@@ -15,12 +15,12 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
     described_class.new(build: build, chunk_index: chunk_index, data_store: data_store, raw_data: raw_data)
   end
 
-  it_behaves_like 'having unique enum values'
-
   before do
     stub_feature_flags(ci_enable_live_trace: true)
     stub_artifacts_object_storage
   end
+
+  it_behaves_like 'having unique enum values'
 
   def redis_instance
     {
@@ -952,6 +952,35 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
 
     with_them do
       it { is_expected.to eq(value) }
+    end
+  end
+
+  describe 'partitioning' do
+    context 'with build' do
+      let(:build) { FactoryBot.build(:ci_build, partition_id: ci_testing_partition_id) }
+      let(:build_trace_chunk) { FactoryBot.build(:ci_build_trace_chunk, build: build) }
+
+      it 'sets partition_id to the current partition value' do
+        expect { build_trace_chunk.valid? }.to change { build_trace_chunk.partition_id }.to(ci_testing_partition_id)
+      end
+
+      context 'when it is already set' do
+        let(:build_trace_chunk) { FactoryBot.build(:ci_build_trace_chunk, partition_id: 125) }
+
+        it 'does not change the partition_id value' do
+          expect { build_trace_chunk.valid? }.not_to change { build_trace_chunk.partition_id }
+        end
+      end
+    end
+
+    context 'without build' do
+      let(:build_trace_chunk) { FactoryBot.build(:ci_build_trace_chunk, build: nil, partition_id: 125) }
+
+      it { is_expected.to validate_presence_of(:partition_id) }
+
+      it 'does not change the partition_id value' do
+        expect { build_trace_chunk.valid? }.not_to change { build_trace_chunk.partition_id }
+      end
     end
   end
 end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'rubocop_spec_helper'
-require 'rubocop'
-require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/mark_used_feature_flags'
 
 RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::BuildReportResult do
-  let(:build_report_result) { build(:ci_build_report_result, :with_junit_success) }
+  let_it_be_with_reload(:build_report_result) { create(:ci_build_report_result, :with_junit_success) }
 
   it_behaves_like 'cleanup by a loose foreign key' do
     let!(:parent) { create(:project) }
@@ -68,6 +68,36 @@ RSpec.describe Ci::BuildReportResult do
   describe '#tests_skipped' do
     it 'returns the skipped count' do
       expect(build_report_result.tests_skipped).to eq(0)
+    end
+  end
+
+  describe 'partitioning' do
+    let(:build_report_result) { FactoryBot.build(:ci_build_report_result, build: build) }
+
+    context 'with build' do
+      let(:build) { FactoryBot.build(:ci_build, partition_id: ci_testing_partition_id) }
+
+      it 'copies the partition_id from build' do
+        expect { build_report_result.valid? }.to change { build_report_result.partition_id }.to(ci_testing_partition_id)
+      end
+
+      context 'when it is already set' do
+        let(:build_report_result) { FactoryBot.build(:ci_build_report_result, partition_id: 125) }
+
+        it 'does not change the partition_id value' do
+          expect { build_report_result.valid? }.not_to change { build_report_result.partition_id }
+        end
+      end
+    end
+
+    context 'without build' do
+      subject(:build_report_result) { FactoryBot.build(:ci_build_report_result, build: nil, partition_id: 125) }
+
+      it { is_expected.to validate_presence_of(:partition_id) }
+
+      it 'does not change the partition_id value' do
+        expect { build_report_result.valid? }.not_to change { build_report_result.partition_id }
+      end
     end
   end
 end

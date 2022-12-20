@@ -1,0 +1,10 @@
+---
+view_name: postgres_constraints
+description: TODO
+classes:
+- Gitlab::Database::PostgresConstraint
+feature_categories:
+- database
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96815
+milestone: '15.4'
+gitlab_schema: gitlab_shared

@@ -5,7 +5,7 @@ module Spec
     module Helpers
       module Features
         module InviteMembersModalHelper
-          def invite_member(names, role: 'Guest', expires_at: nil, refresh: true)
+          def invite_member(names, role: 'Guest', expires_at: nil)
             click_on 'Invite members'
 
             page.within invite_modal_selector do
@@ -14,7 +14,23 @@ module Spec
               submit_invites
             end
 
-            page.refresh if refresh
+            wait_for_requests
+          end
+
+          def invite_member_by_email(role)
+            click_on _('Invite members')
+
+            page.within invite_modal_selector do
+              choose_options(role, nil)
+              find(member_dropdown_selector).set('new_email@gitlab.com')
+              wait_for_requests
+
+              find('.dropdown-item', text: 'Invite "new_email@gitlab.com" by email').click
+
+              submit_invites
+
+              wait_for_requests
+            end
           end
 
           def input_invites(names)
@@ -43,8 +59,6 @@ module Spec
             choose_options(role, expires_at)
 
             submit_invites
-
-            page.refresh
           end
 
           def submit_invites
@@ -52,12 +66,7 @@ module Spec
           end
 
           def choose_options(role, expires_at)
-            unless role == 'Guest'
-              click_button 'Guest'
-              wait_for_requests
-              click_button role
-            end
-
+            select role, from: 'Select a role'
             fill_in 'YYYY-MM-DD', with: expires_at.strftime('%Y-%m-%d') if expires_at
           end
 

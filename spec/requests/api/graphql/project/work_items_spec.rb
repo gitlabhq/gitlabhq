@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting a work item list for a project' do
+RSpec.describe 'getting a work item list for a project', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
@@ -93,6 +93,11 @@ RSpec.describe 'getting a work item list for a project' do
               }
               ... on WorkItemWidgetHierarchy {
                 parent { id }
+                children {
+                  nodes {
+                    id
+                  }
+                }
               }
               ... on WorkItemWidgetLabels {
                 labels { nodes { id } }
@@ -109,6 +114,57 @@ RSpec.describe 'getting a work item list for a project' do
       end
 
       it_behaves_like 'work items resolver without N + 1 queries'
+    end
+  end
+
+  context 'when querying WorkItemWidgetHierarchy' do
+    let_it_be(:children) { create_list(:work_item, 3, :task, project: project) }
+    let_it_be(:child_link1) { create(:parent_link, work_item_parent: item1, work_item: children[0]) }
+
+    let(:fields) do
+      <<~GRAPHQL
+          nodes {
+            widgets {
+              type
+              ... on WorkItemWidgetHierarchy {
+                hasChildren
+                parent { id }
+                children { nodes { id } }
+              }
+            }
+          }
+      GRAPHQL
+    end
+
+    it 'executes limited number of N+1 queries' do
+      post_graphql(query, current_user: current_user) # warm-up
+
+      control = ActiveRecord::QueryRecorder.new do
+        post_graphql(query, current_user: current_user)
+      end
+
+      parent_work_items = create_list(:work_item, 2, project: project)
+      create(:parent_link, work_item_parent: parent_work_items[0], work_item: children[1])
+      create(:parent_link, work_item_parent: parent_work_items[1], work_item: children[2])
+
+      # There are 2 extra queries for fetching the children field
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/363569
+      expect { post_graphql(query, current_user: current_user) }
+        .not_to exceed_query_limit(control).with_threshold(2)
+    end
+
+    it 'avoids N+1 queries when children are added to a work item' do
+      post_graphql(query, current_user: current_user) # warm-up
+
+      control = ActiveRecord::QueryRecorder.new do
+        post_graphql(query, current_user: current_user)
+      end
+
+      create(:parent_link, work_item_parent: item1, work_item: children[1])
+      create(:parent_link, work_item_parent: item1, work_item: children[2])
+
+      expect { post_graphql(query, current_user: current_user) }
+        .not_to exceed_query_limit(control)
     end
   end
 
@@ -188,6 +244,60 @@ RSpec.describe 'getting a work item list for a project' do
     end
   end
 
+  describe 'fetching work item notes widget' do
+    let(:item_filter_params) { { iid: item2.iid.to_s } }
+    let(:fields) do
+      <<~GRAPHQL
+        edges {
+          node {
+            widgets {
+              type
+              ... on WorkItemWidgetNotes {
+                system: discussions(filter: ONLY_ACTIVITY, first: 10) { nodes { id  notes { nodes { id system internal body } } } },
+                comments: discussions(filter: ONLY_COMMENTS, first: 10) { nodes { id  notes { nodes { id system internal body } } } },
+                all_notes: discussions(filter: ALL_NOTES, first: 10) { nodes { id  notes { nodes { id system internal body } } } }
+              }
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    before do
+      create_notes(item1, "some note1")
+      create_notes(item2, "some note2")
+    end
+
+    shared_examples 'fetches work item notes' do |user_comments_count:, system_notes_count:|
+      it "fetches notes" do
+        post_graphql(query, current_user: current_user)
+
+        all_widgets = graphql_dig_at(items_data, :node, :widgets)
+        notes_widget = all_widgets.find { |x| x["type"] == "NOTES" }
+
+        all_notes = graphql_dig_at(notes_widget["all_notes"], :nodes)
+        system_notes = graphql_dig_at(notes_widget["system"], :nodes)
+        comments = graphql_dig_at(notes_widget["comments"], :nodes)
+
+        expect(comments.count).to eq(user_comments_count)
+        expect(system_notes.count).to eq(system_notes_count)
+        expect(all_notes.count).to eq(user_comments_count + system_notes_count)
+      end
+    end
+
+    context 'when user has permission to view internal notes' do
+      before do
+        project.add_developer(current_user)
+      end
+
+      it_behaves_like 'fetches work item notes', user_comments_count: 2, system_notes_count: 5
+    end
+
+    context 'when user cannot view internal notes' do
+      it_behaves_like 'fetches work item notes', user_comments_count: 1, system_notes_count: 5
+    end
+  end
+
   def item_ids
     graphql_dig_at(items_data, :node, :id)
   end
@@ -198,5 +308,27 @@ RSpec.describe 'getting a work item list for a project' do
       { 'fullPath' => project.full_path },
       query_graphql_field('workItems', params, fields)
     )
+  end
+
+  def create_notes(work_item, note_body)
+    create(:note, system: true, project: work_item.project, noteable: work_item)
+
+    disc_start = create(:discussion_note_on_issue, noteable: work_item, project: work_item.project, note: note_body)
+    create(:note,
+      discussion_id: disc_start.discussion_id, noteable: work_item,
+      project: work_item.project, note: "reply on #{note_body}")
+
+    create(:resource_label_event, user: current_user, issue: work_item, label: label1, action: 'add')
+    create(:resource_label_event, user: current_user, issue: work_item, label: label1, action: 'remove')
+
+    create(:resource_milestone_event, issue: work_item, milestone: milestone1, action: 'add')
+    create(:resource_milestone_event, issue: work_item, milestone: milestone1, action: 'remove')
+
+    # confidential notes are currently available only on issues and epics
+    conf_disc_start = create(:discussion_note_on_issue, :confidential,
+      noteable: work_item, project: work_item.project, note: "confidential #{note_body}")
+    create(:note, :confidential,
+      discussion_id: conf_disc_start.discussion_id, noteable: work_item,
+      project: work_item.project, note: "reply on confidential #{note_body}")
   end
 end

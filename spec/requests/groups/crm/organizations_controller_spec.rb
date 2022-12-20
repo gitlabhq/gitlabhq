@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::Crm::OrganizationsController do
+RSpec.describe Groups::Crm::OrganizationsController, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
 
   shared_examples 'response with 404 status' do

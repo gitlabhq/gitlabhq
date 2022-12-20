@@ -16,9 +16,11 @@ engineering, and so on, to improve the performance of the model. Keeping track o
 artifacts so that the data scientist can later replicate the experiment is not trivial. Machine learning experiment
 tracking enables them to log parameters, metrics, and artifacts directly into GitLab, giving easy access later on.
 
-![List of Experiments](img/experiments.png)
+![List of Experiments](img/experiments_v15_7.png)
 
-![Experiment Candidates](img/candidates.png)
+![Experiment Candidates](img/candidates_v15_7.png)
+
+![Candidate Detail](img/candidate_v15_7.png)
 
 ## What is an experiment?
 
@@ -53,18 +55,19 @@ integration. More information on how to use GitLab as a backend for MLFlow Clien
 ### Exploring model candidates
 
 To list the current active experiments, navigate to `https/-/ml/experiments`. To display all trials
-that have been logged, along with their metrics and parameters, selecting an experiment.
+that have been logged, along with their metrics and parameters, select an experiment. To display details for a candidate,
+select **Details**.
 
 ### Logging artifacts
 
 Trial artifacts are saved as [generic packages](../../../packages/generic_packages/index.md), and follow all their
 conventions. After an artifact is logged for a candidate, all artifacts logged for the candidate are listed in the
-package registry. The package name for a candidate is `ml_candidate_<candidate_id>`, with version `-`.
+package registry. The package name for a candidate is `ml_candidate_<candidate_id>`, with version `-`. The link to the
+artifacts can also be accessed from the **Experiment Candidates** list or **Candidate detail**.
 
 ### Limitations and future
 
 - Searching experiments, searching trials, visual comparison of trials, and creating, deleting and updating experiments and trials through GitLab UI is under development.
-- No support for experiment and trial metadata that do not classify as parameters or metrics.
 
 ## Disabling or enabling the Feature
 
@@ -73,4 +76,6 @@ On GitLab.com, this feature is currently on private testing.
 
 ## Feedback, roadmap and reports
 
-For updates on the development, feedback and bug reports, refer to the [development epic](https://gitlab.com/groups/gitlab-org/-/epics/8560).
+For updates on the development, refer to the [development epic](https://gitlab.com/groups/gitlab-org/-/epics/8560).
+
+For feedback, bug reports and feature requests, refer to the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381660).

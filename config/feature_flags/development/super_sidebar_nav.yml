@@ -1,0 +1,8 @@
+---
+name: super_sidebar_nav
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101910
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381456
+milestone: '15.7'
+type: development
+group: group::foundations
+default_enabled: false

@@ -21,7 +21,7 @@ There are a number of shared Go modules shared across analyzers for common behav
 ## How to use the analyzers
 
 Analyzers are shipped as Docker images. For example, to run the
-[semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) Docker image to scan the working directory:
+[Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) Docker image to scan the working directory:
 
 1. `cd` into the directory of the source code you want to scan.
 1. Run `docker login registry.gitlab.com` and provide username plus

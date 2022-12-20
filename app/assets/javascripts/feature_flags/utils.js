@@ -50,17 +50,11 @@ const scopeName = ({ environment_scope: scope }) =>
 
 export const labelForStrategy = (strategy) => {
   const { name, parameters } = badgeTextByType[strategy.name];
+  const scopes = strategy.scopes.map(scopeName).join(', ');
 
-  if (parameters) {
-    return sprintf('%{name} - %{parameters}: %{scopes}', {
-      name,
-      parameters: parameters(strategy),
-      scopes: strategy.scopes.map(scopeName).join(', '),
-    });
-  }
-
-  return sprintf('%{name}: %{scopes}', {
+  return {
     name,
-    scopes: strategy.scopes.map(scopeName).join(', '),
-  });
+    parameters: parameters ? parameters(strategy) : null,
+    scopes,
+  };
 };

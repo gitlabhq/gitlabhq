@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'rspec-parameterized'
+require 'support/helpers/rails_helpers'
 
 RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_shared_state, :request_store do
   using RSpec::Parameterized::TableSyntax
@@ -74,6 +75,47 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
         end
       end.to raise_exception(Redis::CommandError)
     end
+
+    context 'in production environment' do
+      before do
+        stub_rails_env('production') # to avoid raising CrossSlotError
+      end
+
+      it 'counts disallowed cross-slot requests' do
+        expect(instrumentation_class).to receive(:increment_cross_slot_request_count).and_call_original
+        expect(instrumentation_class).not_to receive(:increment_allowed_cross_slot_request_count).and_call_original
+
+        Gitlab::Redis::SharedState.with { |redis| redis.call(:mget, 'foo', 'bar') }
+      end
+
+      it 'does not count allowed cross-slot requests' do
+        expect(instrumentation_class).not_to receive(:increment_cross_slot_request_count).and_call_original
+        expect(instrumentation_class).to receive(:increment_allowed_cross_slot_request_count).and_call_original
+
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          Gitlab::Redis::SharedState.with { |redis| redis.call(:mget, 'foo', 'bar') }
+        end
+      end
+
+      it 'skips count for non-cross-slot requests' do
+        expect(instrumentation_class).not_to receive(:increment_cross_slot_request_count).and_call_original
+        expect(instrumentation_class).not_to receive(:increment_allowed_cross_slot_request_count).and_call_original
+
+        Gitlab::Redis::SharedState.with { |redis| redis.call(:mget, '{foo}bar', '{foo}baz') }
+      end
+    end
+
+    context 'without active RequestStore' do
+      before do
+        ::RequestStore.end!
+      end
+
+      it 'still runs cross-slot validation' do
+        expect do
+          Gitlab::Redis::SharedState.with { |redis| redis.mget('foo', 'bar') }
+        end.to raise_error(instance_of(Gitlab::Instrumentation::RedisClusterValidator::CrossSlotError))
+      end
+    end
   end
 
   describe 'latency' do
@@ -103,7 +145,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
 
           Gitlab::Redis::SharedState.with do |redis|
             redis.pipelined do |pipeline|
-              pipeline.call(:get, '{foobar}:buz')
+              pipeline.call(:get, '{foobar}buz')
               pipeline.call(:get, '{foobar}baz')
             end
           end
@@ -123,37 +165,36 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
     end
 
     describe 'commands not in the apdex' do
-      where(:command) do
-        [
-          [%w[brpop foobar 0.01]],
-          [%w[blpop foobar 0.01]],
-          [%w[brpoplpush foobar bazqux 0.01]],
-          [%w[bzpopmin foobar 0.01]],
-          [%w[bzpopmax foobar 0.01]],
-          [%w[xread block 1 streams mystream 0-0]],
-          [%w[xreadgroup group mygroup myconsumer block 1 streams foobar 0-0]]
-        ]
+      where(:setup, :command) do
+        [['rpush', 'foobar', 1]] | ['brpop', 'foobar', 0]
+        [['rpush', 'foobar', 1]] | ['blpop', 'foobar', 0]
+        [['rpush', '{abc}foobar', 1]] | ['brpoplpush', '{abc}foobar', '{abc}bazqux', 0]
+        [['rpush', '{abc}foobar', 1]] | ['brpoplpush', '{abc}foobar', '{abc}bazqux', 0]
+        [['zadd', 'foobar', 1, 'a']] | ['bzpopmin', 'foobar', 0]
+        [['zadd', 'foobar', 1, 'a']] | ['bzpopmax', 'foobar', 0]
+        [['xadd', 'mystream', 1, 'myfield', 'mydata']] | ['xread', 'block', 1, 'streams', 'mystream', '0-0']
+        [['xadd', 'foobar', 1, 'myfield', 'mydata'], ['xgroup', 'create', 'foobar', 'mygroup', 0]] | ['xreadgroup', 'group', 'mygroup', 'myconsumer', 'block', 1, 'streams', 'foobar', '0-0']
       end
 
       with_them do
         it 'skips requests we do not want in the apdex' do
+          Gitlab::Redis::SharedState.with { |redis| setup.each { |cmd| redis.call(*cmd) } }
+
           expect(instrumentation_class).not_to receive(:instance_observe_duration)
 
-          begin
-            Gitlab::Redis::SharedState.with { |redis| redis.call(*command) }
-          rescue Gitlab::Instrumentation::RedisClusterValidator::CrossSlotError, ::Redis::CommandError
-          end
+          Gitlab::Redis::SharedState.with { |redis| redis.call(*command) }
         end
       end
 
       context 'with pipelined commands' do
-        it 'skips requests that have blocking commands', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/373026' do
+        it 'skips requests that have blocking commands' do
           expect(instrumentation_class).not_to receive(:instance_observe_duration)
 
           Gitlab::Redis::SharedState.with do |redis|
             redis.pipelined do |pipeline|
-              pipeline.call(:get, 'foo')
-              pipeline.call(:brpop, 'foobar', '0.01')
+              pipeline.call(:get, '{foobar}buz')
+              pipeline.call(:rpush, '{foobar}baz', 1)
+              pipeline.call(:brpop, '{foobar}baz', 0)
             end
           end
         end

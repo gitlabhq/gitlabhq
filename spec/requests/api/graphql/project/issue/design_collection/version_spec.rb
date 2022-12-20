@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)' do
+RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)',
+feature_category: :design_management do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 
@@ -67,7 +68,7 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
       query_graphql_field(:design_at_version, dav_params, 'id filename')
     end
 
-    shared_examples :finds_dav do
+    shared_examples 'finds dav' do
       it 'finds all the designs as of the given version' do
         post_query
 
@@ -88,19 +89,19 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
     context 'by ID' do
       let(:dav_params) { { id: global_id_of(design_at_version) } }
 
-      include_examples :finds_dav
+      include_examples 'finds dav'
     end
 
     context 'by filename' do
       let(:dav_params) { { filename: design.filename } }
 
-      include_examples :finds_dav
+      include_examples 'finds dav'
     end
 
     context 'by design_id' do
       let(:dav_params) { { design_id: global_id_of(design) } }
 
-      include_examples :finds_dav
+      include_examples 'finds dav'
     end
   end
 

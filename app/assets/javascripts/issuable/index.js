@@ -1,12 +1,25 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
-import IssuableContext from '~/issuable/issuable_context';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import Sidebar from '~/right_sidebar';
 import { getSidebarOptions } from '~/sidebar/mount_sidebar';
 import CsvImportExportButtons from './components/csv_import_export_buttons.vue';
 import IssuableByEmail from './components/issuable_by_email.vue';
 import IssuableHeaderWarnings from './components/issuable_header_warnings.vue';
+import issuableBulkUpdateActions from './issuable_bulk_update_actions';
+import IssuableBulkUpdateSidebar from './issuable_bulk_update_sidebar';
+import IssuableContext from './issuable_context';
+
+export function initBulkUpdateSidebar(prefixId) {
+  const el = document.querySelector('.issues-bulk-update');
+
+  if (!el) {
+    return;
+  }
+
+  issuableBulkUpdateActions.init({ prefixId });
+  new IssuableBulkUpdateSidebar(); // eslint-disable-line no-new
+}
 
 export function initCsvImportExportButtons() {
   const el = document.querySelector('.js-csv-import-export-buttons');

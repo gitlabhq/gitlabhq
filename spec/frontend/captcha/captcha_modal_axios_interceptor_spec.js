@@ -4,7 +4,10 @@ import { registerCaptchaModalInterceptor } from '~/captcha/captcha_modal_axios_i
 import UnsolvedCaptchaError from '~/captcha/unsolved_captcha_error';
 import { waitForCaptchaToBeSolved } from '~/captcha/wait_for_captcha_to_be_solved';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, {
+  HTTP_STATUS_CONFLICT,
+  HTTP_STATUS_METHOD_NOT_ALLOWED,
+} from '~/lib/utils/http_status';
 
 jest.mock('~/captcha/wait_for_captcha_to_be_solved');
 
@@ -33,7 +36,7 @@ describe('registerCaptchaModalInterceptor', () => {
     mock.onAny('/endpoint-with-unrelated-error').reply(404, AXIOS_RESPONSE);
     mock.onAny('/endpoint-with-captcha').reply((config) => {
       if (!supportedMethods.includes(config.method)) {
-        return [httpStatusCodes.METHOD_NOT_ALLOWED, { method: config.method }];
+        return [HTTP_STATUS_METHOD_NOT_ALLOWED, { method: config.method }];
       }
 
       const data = JSON.parse(config.data);
@@ -46,7 +49,7 @@ describe('registerCaptchaModalInterceptor', () => {
         return [httpStatusCodes.OK, { ...data, method: config.method, CAPTCHA_SUCCESS }];
       }
 
-      return [httpStatusCodes.CONFLICT, NEEDS_CAPTCHA_RESPONSE];
+      return [HTTP_STATUS_CONFLICT, NEEDS_CAPTCHA_RESPONSE];
     });
 
     axios.interceptors.response.handlers = [];
@@ -123,7 +126,7 @@ describe('registerCaptchaModalInterceptor', () => {
       await expect(() => axios[method]('/endpoint-with-captcha')).rejects.toThrow(
         expect.objectContaining({
           response: expect.objectContaining({
-            status: httpStatusCodes.METHOD_NOT_ALLOWED,
+            status: HTTP_STATUS_METHOD_NOT_ALLOWED,
             data: { method },
           }),
         }),

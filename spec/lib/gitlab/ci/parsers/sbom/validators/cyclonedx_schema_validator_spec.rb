@@ -2,7 +2,8 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Ci::Parsers::Sbom::Validators::CyclonedxSchemaValidator do
+RSpec.describe Gitlab::Ci::Parsers::Sbom::Validators::CyclonedxSchemaValidator,
+  feature_category: :dependency_management do
   # Reports should be valid or invalid according to the specification at
   # https://cyclonedx.org/docs/1.4/json/
 

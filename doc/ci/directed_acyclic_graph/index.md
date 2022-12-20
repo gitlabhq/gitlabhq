@@ -10,7 +10,7 @@ type: reference
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47063) in GitLab 12.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/206902) in GitLab 12.10.
 
-A [directed acyclic graph](https://www.techopedia.com/definition/5739/directed-acyclic-graph-dag) can be
+A [directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) can be
 used in the context of a CI/CD pipeline to build relationships between jobs such that
 execution is performed in the quickest possible manner, regardless how stages may
 be set up.
@@ -38,10 +38,10 @@ It has a pipeline that looks like the following:
 
 | build | test | deploy |
 | ----- | ---- | ------ |
-| build_a | test_a | deploy_a |
-| build_b | test_b | deploy_b |
-| build_c | test_c | deploy_c |
-| build_d | test_d | deploy_d |
+| `build_a` | `test_a` | `deploy_a` |
+| `build_b` | `test_b` | `deploy_b` |
+| `build_c` | `test_c` | `deploy_c` |
+| `build_d` | `test_d` | `deploy_d` |
 
 Using a DAG, you can relate the `_a` jobs to each other separately from the `_b` jobs,
 and even if service `a` takes a very long time to build, service `b` doesn't

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin Jobs' do
+RSpec.describe 'Admin Jobs', feature_category: :continuous_integration do
   before do
     admin = create(:admin)
     sign_in(admin)

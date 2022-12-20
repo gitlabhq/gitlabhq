@@ -180,7 +180,7 @@ can result in malformed data or broken packages.
 
 ## Get a project package
 
-Get a single project package.
+Get a single project package. Only packages with status `default` are returned.
 
 ```plaintext
 GET /projects/:id/packages/:package_id
@@ -256,7 +256,7 @@ Example response:
 
 The `_links` object contains the following properties:
 
-- `web_path`: The path which you can visit in GitLab and see the details of the package.
+- `web_path`: The path which you can visit in GitLab and see the details of the package. Only available if the package has status `default`.
 - `delete_api_path`: The API path to delete the package. Only available if the request user has permission to do so.
 
 ## List package files

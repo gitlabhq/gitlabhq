@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RemoveWikiNotes, :migration do
+RSpec.describe RemoveWikiNotes, :migration, feature_category: :team_planning do
   let(:notes) { table(:notes) }
 
   it 'removes all wiki notes' do

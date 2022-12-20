@@ -2,42 +2,123 @@
   "type": "array",
   "items": {
     "type": "object",
-    "properties" : {
-      "id": { "type": "integer" },
-      "type": { "type": ["string", "null"] },
-      "body": { "type": "string" },
-      "attachment": { "type": ["string", "null"] },
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "type": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "body": {
+        "type": "string"
+      },
+      "attachment": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
       "author": {
         "type": "object",
         "properties": {
-          "name": { "type": "string" },
-          "username": { "type": "string" },
-          "id": { "type": "integer" },
-          "state": { "type": "string" },
-          "avatar_url": { "type": "uri" },
-          "web_url": { "type": "uri" }
+          "name": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "string"
+          },
+          "avatar_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "web_url": {
+            "type": "string",
+            "format": "uri"
+          }
         },
-        "required" : [
-          "id", "name", "username", "state", "avatar_url", "web_url"
+        "required": [
+          "id",
+          "name",
+          "username",
+          "state",
+          "avatar_url",
+          "web_url"
         ]
       },
-      "commands_changes": { "type": "object", "additionalProperties": true },
-      "created_at": { "type": "string", "format": "date-time" },
-      "updated_at": { "type": "string", "format": "date-time" },
-      "system": { "type": "boolean" },
-      "noteable_id": { "type": "integer" },
-      "noteable_iid": { "type": "integer" },
-      "noteable_type": { "type": "string" },
-      "resolved": { "type": "boolean" },
-      "resolvable": { "type": "boolean" },
-      "resolved_by": { "type": ["string", "null"] },
-      "resolved_at": { "type": ["string", "null"] },
-      "confidential": { "type": ["boolean", "null"] },
-      "internal": { "type": ["boolean", "null"] }
+      "commands_changes": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "created_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "updated_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "system": {
+        "type": "boolean"
+      },
+      "noteable_id": {
+        "type": "integer"
+      },
+      "noteable_iid": {
+        "type": "integer"
+      },
+      "noteable_type": {
+        "type": "string"
+      },
+      "resolved": {
+        "type": "boolean"
+      },
+      "resolvable": {
+        "type": "boolean"
+      },
+      "resolved_by": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "resolved_at": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "confidential": {
+        "type": [
+          "boolean",
+          "null"
+        ]
+      },
+      "internal": {
+        "type": [
+          "boolean",
+          "null"
+        ]
+      }
     },
     "required": [
-      "id", "body", "attachment", "author", "created_at", "updated_at",
-      "system", "noteable_id", "noteable_type"
+      "id",
+      "body",
+      "attachment",
+      "author",
+      "created_at",
+      "updated_at",
+      "system",
+      "noteable_id",
+      "noteable_type"
     ],
     "additionalProperties": false
   }

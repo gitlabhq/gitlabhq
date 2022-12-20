@@ -452,6 +452,14 @@ module Gitlab
         when :index_update
           raise Gitlab::Git::Index::IndexError, index_error_message(detailed_error.index_update)
         else
+          # Some invalid path errors are caught by Gitaly directly and returned
+          # as an :index_update error, while others are found by libgit2 and
+          # come as generic errors. We need to convert the latter as IndexErrors
+          # as well.
+          if e.to_status.details.start_with?('invalid path')
+            raise Gitlab::Git::Index::IndexError, e.to_status.details
+          end
+
           raise e
         end
       end
@@ -600,17 +608,17 @@ module Gitlab
 
         case index_error.error_type
         when :ERROR_TYPE_EMPTY_PATH
-          "Received empty path"
+          "You must provide a file path"
         when :ERROR_TYPE_INVALID_PATH
-          "Invalid path: #{encoded_path}"
+          "invalid path: '#{encoded_path}'"
         when :ERROR_TYPE_DIRECTORY_EXISTS
-          "Directory already exists: #{encoded_path}"
+          "A directory with this name already exists"
         when :ERROR_TYPE_DIRECTORY_TRAVERSAL
-          "Directory traversal in path escapes repository: #{encoded_path}"
+          "Path cannot include directory traversal"
         when :ERROR_TYPE_FILE_EXISTS
-          "File already exists: #{encoded_path}"
+          "A file with this name already exists"
         when :ERROR_TYPE_FILE_NOT_FOUND
-          "File not found: #{encoded_path}"
+          "A file with this name doesn't exist"
         else
           "Unknown error performing git operation"
         end

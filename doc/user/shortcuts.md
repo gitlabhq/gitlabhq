@@ -37,6 +37,7 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>f</kbd>                       | Put cursor in the filter bar. |
 | <kbd>Shift</kbd> + <kbd>i</kbd>    | Go to your Issues page. |
 | <kbd>Shift</kbd> + <kbd>m</kbd>    | Go to your [Merge requests](project/merge_requests/index.md) page. |
+| <kbd>Shift</kbd> + <kbd>r</kbd>    | Go to your Review requests page. |
 | <kbd>Shift</kbd> + <kbd>t</kbd>    | Go to your To-Do List page. |
 | <kbd>p</kbd>, then <kbd>b</kbd>     | Show or hide the Performance Bar. |
 | <kbd>Escape</kbd>                  | Hide tooltips or popovers. |

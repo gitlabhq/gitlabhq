@@ -4,6 +4,7 @@ module API
   module Entities
     class Appearance < Grape::Entity
       expose :title
+      expose :short_title
       expose :description
 
       expose :logo do |appearance, options|

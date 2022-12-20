@@ -274,7 +274,7 @@ Sample response:
 Get the latest pipeline for a specific ref in a project.
 
 ```plaintext
-POST /projects/:id/pipeline/latest
+GET /projects/:id/pipelines/latest
 ```
 
 | Attribute   | Type    | Required | Description         |

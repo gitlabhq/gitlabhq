@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectSnapshots do
+RSpec.describe API::ProjectSnapshots, feature_category: :source_code_management do
   include WorkhorseHelpers
 
   let(:project) { create(:project) }
@@ -21,7 +21,7 @@ RSpec.describe API::ProjectSnapshots do
       expect(type).to eq('git-snapshot')
       expect(params).to eq(
         'GitalyServer' => {
-          'features' => { 'gitaly-feature-foobar' => 'true' },
+          'call_metadata' => { 'gitaly-feature-foobar' => 'true' },
           'address' => Gitlab::GitalyClient.address(repository.project.repository_storage),
           'token' => Gitlab::GitalyClient.token(repository.project.repository_storage)
         },

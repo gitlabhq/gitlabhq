@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Profile account page', :js do
+RSpec.describe 'Profile account page', :js, feature_category: :users do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:user) { create(:user) }

@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Registration enabled callout' do
+RSpec.describe 'Registration enabled callout', feature_category: :authentication_and_authorization do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:non_admin) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:callout_title) { _('Anyone can register for an account.') }
+  let_it_be(:callout_title) { _('Check your sign-up restrictions') }
 
   context 'when "Sign-up enabled" setting is `true`' do
     before do
@@ -22,7 +22,7 @@ RSpec.describe 'Registration enabled callout' do
         visit root_path
 
         expect(page).to have_content callout_title
-        expect(page).to have_link _('Turn off'), href: general_admin_application_settings_path(anchor: 'js-signup-settings')
+        expect(page).to have_link _('Deactivate'), href: general_admin_application_settings_path(anchor: 'js-signup-settings')
 
         visit root_dashboard_path
 

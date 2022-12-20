@@ -40,8 +40,10 @@ export default {
       :is-event-processed="editTimelineEventActive"
       :previous-occurred-at="event.occurredAt"
       :previous-note="event.note"
+      show-delete
       @save-event="saveEvent"
       @cancel="$emit('hide-edit')"
+      @delete="$emit('delete')"
     />
   </div>
 </template>

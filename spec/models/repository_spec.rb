@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe Repository do
   include RepoHelpers
 
-  TestBlob = Struct.new(:path)
+  before do
+    stub_const('TestBlob', Struct.new(:path))
+  end
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
@@ -164,11 +166,11 @@ RSpec.describe Repository do
           repository.add_tag(user, annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', 'test tag message\n')
         end
 
-        it { is_expected.to eq(['v1.0.0', 'v1.1.0', annotated_tag_name]) }
-
         after do
           repository.rm_tag(user, annotated_tag_name)
         end
+
+        it { is_expected.to eq(['v1.0.0', 'v1.1.0', annotated_tag_name]) }
       end
     end
 
@@ -2224,32 +2226,34 @@ RSpec.describe Repository do
 
   describe '#after_change_head' do
     it 'flushes the method caches' do
-      expect(repository).to receive(:expire_method_caches).with([
-        :size,
-        :commit_count,
-        :readme_path,
-        :contribution_guide,
-        :changelog,
-        :license_blob,
-        :license_licensee,
-        :license_gitaly,
-        :gitignore,
-        :gitlab_ci_yml,
-        :branch_names,
-        :tag_names,
-        :branch_count,
-        :tag_count,
-        :avatar,
-        :exists?,
-        :root_ref,
-        :merged_branch_names,
-        :has_visible_content?,
-        :issue_template_names_hash,
-        :merge_request_template_names_hash,
-        :user_defined_metrics_dashboard_paths,
-        :xcode_project?,
-        :has_ambiguous_refs?
-      ])
+      expect(repository).to receive(:expire_method_caches).with(
+        [
+          :size,
+          :commit_count,
+          :readme_path,
+          :contribution_guide,
+          :changelog,
+          :license_blob,
+          :license_licensee,
+          :license_gitaly,
+          :gitignore,
+          :gitlab_ci_yml,
+          :branch_names,
+          :tag_names,
+          :branch_count,
+          :tag_count,
+          :avatar,
+          :exists?,
+          :root_ref,
+          :merged_branch_names,
+          :has_visible_content?,
+          :issue_template_names_hash,
+          :merge_request_template_names_hash,
+          :user_defined_metrics_dashboard_paths,
+          :xcode_project?,
+          :has_ambiguous_refs?
+        ]
+      )
 
       repository.after_change_head
     end

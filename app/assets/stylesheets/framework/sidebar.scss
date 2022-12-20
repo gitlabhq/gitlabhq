@@ -198,17 +198,17 @@
       }
     }
 
+    $line-height: map-get($spacers, 4) + px-to-rem(2px);
+
     &-icon {
       /**
       * 2px extra is to give a little more height than needed
       * to hide timeline line before/after the element starts/ends
       */
-      height: map-get($spacers, 4) + px-to-rem(2px);
+      height: $line-height;
       z-index: 1;
       position: relative;
-      top: -3px;
       padding: $gl-padding-4 0;
-      background-color: $body-bg;
 
       &.opened {
         color: $green-500;
@@ -220,7 +220,7 @@
     }
 
     &-content {
-      line-height: initial;
+      line-height: $line-height;
       margin-left: $gl-padding-8;
     }
   }
@@ -278,5 +278,641 @@
 
   [data-css-area='user'] {
     grid-area: user;
+  }
+}
+
+@mixin right-sidebar {
+  position: fixed;
+  top: $header-height;
+  // Default value for CSS var must contain a unit
+  // stylelint-disable-next-line length-zero-no-unit
+  bottom: var(--review-bar-height, 0px);
+  right: 0;
+  transition: width $gl-transition-duration-medium;
+  background-color: $white;
+  z-index: 200;
+  overflow: hidden;
+
+}
+
+.right-sidebar {
+  &:not(.right-sidebar-merge-requests) {
+    @include right-sidebar;
+  }
+
+  &.right-sidebar-merge-requests {
+    @include media-breakpoint-down(md) {
+      @include right-sidebar;
+      z-index: 251;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    z-index: 251;
+  }
+
+  a:not(.btn) {
+    color: inherit;
+
+    &:hover {
+      color: $blue-800;
+    }
+  }
+
+  .gl-label .gl-label-link:hover {
+    color: inherit;
+  }
+
+  .btn-link {
+    color: inherit;
+  }
+
+  .issuable-header-text {
+    margin-top: 7px;
+  }
+
+  .gutter-toggle {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+    padding: 4px;
+    border-radius: 4px;
+    height: 24px;
+
+    &:hover {
+      color: $gl-text-color;
+      background: $gray-50;
+    }
+
+    &:hover,
+    &:focus {
+      text-decoration: none;
+    }
+  }
+
+  &.right-sidebar-merge-requests {
+    .block,
+    .sidebar-contained-width,
+    .issuable-sidebar-header {
+      width: 100%;
+    }
+
+    .block {
+      @include media-breakpoint-up(lg) {
+        padding: $gl-spacing-scale-4 0 $gl-spacing-scale-5;
+      }
+
+      &.participants {
+        border-bottom: 0;
+      }
+    }
+  }
+
+  .block,
+  .sidebar-contained-width,
+  .issuable-sidebar-header {
+    @include clearfix;
+    padding: $gl-spacing-scale-4 0 $gl-spacing-scale-5;
+    border-bottom: 1px solid $border-gray-normal;
+    // This prevents the mess when resizing the sidebar
+    // of elements repositioning themselves..
+    width: $gutter-inner-width;
+    // --
+
+    &:last-child {
+      border: 0;
+    }
+
+    &.assignee {
+      .author-link {
+        display: block;
+        position: relative;
+
+        &:hover {
+          .author {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+
+    &.time-tracking,
+    &.participants,
+    &.subscriptions,
+    &.with-sub-blocks {
+      padding-top: $gl-spacing-scale-5;
+    }
+  }
+
+  .block-first {
+    padding-top: 0;
+  }
+
+  .title {
+    color: $gl-text-color;
+    line-height: $gl-line-height-20;
+
+    .avatar {
+      margin-left: 0;
+    }
+  }
+
+  .selectbox {
+    display: none;
+
+    &.show {
+      display: block;
+    }
+  }
+
+  .btn-clipboard:hover {
+    color: $gl-text-color;
+  }
+
+  .issuable-sidebar {
+    height: 100%;
+
+    &:not(.is-merge-request) {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    &.is-merge-request {
+      @include media-breakpoint-down(sm) {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+  }
+
+  &.right-sidebar-expanded {
+    &:not(.right-sidebar-merge-requests) {
+      width: $gutter-width;
+    }
+
+    .value {
+      line-height: 1;
+    }
+
+    .issuable-sidebar {
+      padding: 0 20px;
+
+      &.is-merge-request {
+        @include media-breakpoint-up(lg) {
+          padding: 0;
+
+          .issuable-context-form {
+            --initial-top: calc(#{$header-height} + 76px);
+            --top: var(--initial-top);
+
+            @include gl-sticky;
+            @include gl-overflow-auto;
+
+            top: var(--top);
+            height: calc(100vh - var(--top));
+            padding: 0 15px;
+            margin-bottom: calc(var(--top) * -1);
+
+            .with-performance-bar & {
+              --top: calc(var(--initial-top) + #{$performance-bar-height});
+            }
+
+            .with-system-header & {
+              --top: calc(var(--initial-top) + #{$system-header-height});
+            }
+
+            .with-performance-bar.with-system-header & {
+              --top: calc(var(--initial-top) + #{$system-header-height} + #{$performance-bar-height});
+            }
+          }
+        }
+      }
+    }
+
+    &:not(.boards-sidebar):not([data-signed-in]):not([data-always-show-toggle]) {
+      .issuable-sidebar-header {
+        display: none;
+      }
+    }
+
+    .light {
+      font-weight: $gl-font-weight-normal;
+    }
+
+    .no-value {
+      color: $gl-text-color-secondary;
+    }
+
+    .sidebar-collapsed-icon {
+      display: none;
+    }
+
+    .gutter-toggle {
+      text-align: center;
+    }
+
+    .title .gutter-toggle {
+      margin-top: 0;
+    }
+
+    .assignee .user-list .avatar {
+      margin: 0;
+    }
+
+    .hide-expanded {
+      display: none;
+    }
+  }
+
+  &.right-sidebar-collapsed {
+    /* Extra small devices (phones, less than 768px) */
+    display: none;
+    /* Small devices (tablets, 768px and up) */
+
+    &:not(.right-sidebar-merge-requests) {
+      @include media-breakpoint-up(sm) {
+        display: block;
+      }
+    }
+
+    &.right-sidebar-merge-requests {
+      @include media-breakpoint-up(lg) {
+        display: block;
+      }
+    }
+
+    width: $gutter-collapsed-width;
+    padding: 0;
+
+    .block,
+    .sidebar-contained-width,
+    .issuable-sidebar-header {
+      width: $gutter-collapsed-width - 2px;
+      padding: 0;
+      border-bottom: 0;
+      overflow: hidden;
+    }
+
+    .block,
+    .gutter-toggle,
+    .sidebar-collapsed-container {
+      &.with-sub-blocks .sub-block:hover,
+      &:not(.with-sub-blocks):hover {
+        background-color: $gray-100;
+      }
+    }
+
+    .participants {
+      border-bottom: 1px solid $border-gray-normal;
+    }
+
+    .hide-collapsed {
+      display: none;
+    }
+
+    .gutter-toggle {
+      width: 100%;
+      height: $sidebar-toggle-height;
+      margin-left: 0;
+      border-bottom: 1px solid $border-white-normal;
+      border-radius: 0;
+    }
+
+    a.gutter-toggle {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .merge-icon {
+      height: 12px;
+      width: 12px;
+      bottom: -5px;
+      right: 4px;
+    }
+
+    .sidebar-collapsed-icon {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: $sidebar-toggle-height;
+      text-align: center;
+      color: $gl-text-color-secondary;
+
+      > svg {
+        fill: $gl-text-color-secondary;
+      }
+
+      &:hover:not(.disabled),
+      &:hover .todo-undone {
+        color: $gl-text-color;
+
+        > svg {
+          fill: $gl-text-color;
+        }
+      }
+
+      .todo-undone {
+        color: $blue-600;
+        fill: $blue-600;
+      }
+
+      .author {
+        display: none;
+      }
+
+      .btn-clipboard {
+        /*
+          This change should be temporary, because the DOM currently gets
+          generated from a ruby definition in `app/helpers/button_helper.rb`.
+          As soon as the `copy to clipboard` button will be transferred to
+          Vue this should be adjusted as well.
+        */
+        flex: 1;
+        align-self: stretch;
+        padding: 0;
+
+        border: 0;
+        background: transparent;
+        color: $gl-text-color-secondary;
+
+        &:hover {
+          color: $gl-text-color;
+        }
+      }
+
+      &.multiple-users {
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    .sidebar-avatar-counter {
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+
+      ~.merge-icon {
+        bottom: 0;
+      }
+    }
+
+    .sidebar-collapsed-user {
+      padding-bottom: 0;
+
+      .author-link {
+        padding-left: 0;
+
+        .avatar {
+          position: static;
+          margin: 0;
+        }
+      }
+    }
+
+    .issuable-header-btn {
+      display: none;
+    }
+
+    .multiple-users {
+      .btn-link {
+        padding: 0;
+        border: 0;
+
+        .avatar {
+          margin: 0;
+        }
+      }
+
+      .btn-link:first-child {
+        position: absolute;
+        left: 10px;
+        z-index: 1;
+      }
+
+      .btn-link:last-child {
+        position: absolute;
+        right: 10px;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+
+    .milestone-title span,
+    .collapse-truncated-title {
+      @include str-truncated(100%);
+      display: block;
+      margin: 0 4px;
+    }
+  }
+
+  .dropdown-menu-toggle {
+    width: 100%;
+    padding-top: 6px;
+  }
+
+  .dropdown-menu {
+    width: 100%;
+
+    /*
+     * Overwrite hover style for dropdown items, so that they are not blue
+     * This should be removed during dev of https://gitlab.com/gitlab-org/gitlab-foss/issues/44040
+     */
+    li a {
+      &:hover,
+      &:active,
+      &:focus,
+      &.is-focused {
+        @include dropdown-item-hover;
+      }
+    }
+
+  }
+}
+
+.with-performance-bar .right-sidebar {
+  top: calc(#{$header-height} + #{$performance-bar-height});
+}
+
+.sidebar-move-issue-confirmation-button {
+  width: 100%;
+
+  &.is-loading {
+    .sidebar-move-issue-confirmation-loading-icon {
+      display: inline-block;
+    }
+  }
+}
+
+.sidebar-move-issue-confirmation-loading-icon {
+  display: none;
+}
+
+.issuable-show-labels {
+  .gl-label {
+    margin-bottom: 5px;
+    margin-right: 5px;
+  }
+
+  a {
+    display: inline-block;
+
+    .color-label {
+      padding: 4px $grid-size;
+      border-radius: $label-border-radius;
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+
+    &:hover .color-label {
+      text-decoration: underline;
+    }
+  }
+
+  &.has-labels {
+    // this font size is a fix to
+    // prevent unintended spacing between labels
+    // which shows up when rendering markup has white-space
+    // characters present.
+    // see: https://css-tricks.com/fighting-the-space-between-inline-block-elements/#article-header-id-3
+    font-size: 0;
+    margin-bottom: -5px;
+  }
+}
+
+.assignee,
+.reviewer {
+  .merge-icon {
+    color: $orange-400;
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    filter: drop-shadow(0 0 0.5px $white) drop-shadow(0 0 1px $white) drop-shadow(0 0 2px $white);
+  }
+}
+
+.participants-author {
+  &:nth-of-type(8n) {
+    padding-right: 0;
+  }
+
+  .avatar.avatar-inline {
+    margin: 0;
+  }
+}
+
+.participants-more,
+.user-list-more {
+  margin-left: 5px;
+
+  a,
+  .btn-link {
+    color: $gl-text-color-secondary;
+  }
+
+  .btn-link {
+    padding: 0;
+  }
+
+  .btn-link:hover {
+    color: $blue-800;
+    text-decoration: none;
+  }
+
+  .btn-link:focus {
+    text-decoration: none;
+  }
+}
+
+.sidebar-help-wrap {
+  .sidebar-help-state {
+    margin: 16px -20px -20px;
+    padding: 16px 20px;
+  }
+
+  .help-state-toggle-enter-active {
+    transition: all 0.8s ease;
+  }
+
+  .help-state-toggle-leave-active {
+    transition: all 0.5s ease;
+  }
+
+  .help-state-toggle-enter,
+  .help-state-toggle-leave-active {
+    opacity: 0;
+  }
+}
+
+.time-tracker {
+  .sidebar-collapsed-icon {
+    > .stopwatch-svg {
+      display: inline-block;
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+      fill: $gl-text-color-secondary;
+    }
+
+    &:hover svg {
+      fill: $gl-text-color;
+    }
+  }
+
+  .compare-meter {
+    &.over_estimate {
+      .time-remaining,
+      .compare-value.spent {
+        color: $red-500;
+      }
+    }
+  }
+
+  .compare-display-container {
+    font-size: 13px;
+  }
+}
+
+/*
+ * Following overrides are done to prevent
+ * legacy dropdown styles from influencing
+ * GitLab UI components used within GlDropdown
+ */
+.right-sidebar-collapsed {
+  .sidebar-grouped-item {
+    .sidebar-collapsed-icon {
+      margin-bottom: 0;
+    }
+
+    .sidebar-collapsed-divider {
+      line-height: 5px;
+      font-size: 12px;
+      color: $gray-500;
+
+      + .sidebar-collapsed-icon {
+        padding-top: 0;
+      }
+    }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  // Overriding the following rule with the negative margin
+  // https://gitlab.com/gitlab-org/gitlab/-/blob/146c43c931c3743a140529307aea616e4aa9ff21/app/assets/stylesheets/framework/sidebar.scss#L1-5
+  .container-fluid {
+    .issuable-list,
+    .issues-filters,
+    .epics-filters {
+      margin: 0 (-$gl-padding);
+    }
   }
 }

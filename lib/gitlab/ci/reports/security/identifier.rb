@@ -31,8 +31,8 @@ module Gitlab
               fingerprint
               name
               url
-            ].each_with_object({}) do |key, hash|
-              hash[key] = public_send(key) # rubocop:disable GitlabSecurity/PublicSend
+            ].index_with do |key|
+              public_send(key) # rubocop:disable GitlabSecurity/PublicSend
             end
           end
 

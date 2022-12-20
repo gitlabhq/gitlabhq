@@ -6,7 +6,7 @@ module Gitlab
       module Seed
         class Build
           class Cache
-            def initialize(pipeline, cache)
+            def initialize(pipeline, cache, custom_key_prefix)
               @pipeline = pipeline
               local_cache = cache.to_h.deep_dup
               @key = local_cache.delete(:key)
@@ -14,6 +14,7 @@ module Gitlab
               @policy = local_cache.delete(:policy)
               @untracked = local_cache.delete(:untracked)
               @when = local_cache.delete(:when)
+              @custom_key_prefix = custom_key_prefix
 
               raise ArgumentError, "unknown cache keys: #{local_cache.keys}" if local_cache.any?
             end
@@ -45,6 +46,7 @@ module Gitlab
             def key_from_files
               return unless @key.is_a?(Hash)
 
+              @key[:prefix] ||= @custom_key_prefix.to_s
               [@key[:prefix], files_digest].select(&:present?).join('-')
             end
 

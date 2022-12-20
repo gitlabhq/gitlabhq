@@ -40,8 +40,6 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
 
   let(:has_yaml_errors) { false }
 
-  it_behaves_like Integrations::ChatMessage
-
   before do
     test_commit = double("A test commit", committer: args[:user], title: "A test commit message")
     test_project = build(:project, name: args[:project][:name])
@@ -61,6 +59,8 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
     allow(Gitlab::UrlBuilder).to receive(:build).with(test_commit).and_return("http://example.com/commit")
     allow(Gitlab::UrlBuilder).to receive(:build).with(args[:user]).and_return("http://example.gitlab.com/hacker")
   end
+
+  it_behaves_like Integrations::ChatMessage
 
   it 'returns an empty pretext' do
     expect(subject.pretext).to be_empty

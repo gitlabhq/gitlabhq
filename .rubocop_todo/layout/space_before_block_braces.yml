@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Layout/SpaceBeforeBlockBraces:
   Exclude:
     - 'app/helpers/colors_helper.rb'

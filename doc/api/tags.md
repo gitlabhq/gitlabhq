@@ -176,3 +176,56 @@ Parameters:
 | ---------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
 | `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `tag_name` | string         | yes      | The name of a tag                                                                                               |
+
+## Get X.509 signature of a tag
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106578) in GitLab 15.7.
+
+Get the [X.509 signature from a tag](../user/project/repository/x509_signed_commits/index.md#sign-commits-and-tags-with-x509-certificates),
+if it is signed. Unsigned tags return a `404 Not Found` response.
+
+```plaintext
+GET /projects/:id/repository/tags/:tag_name/signature
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `tag_name` | string         | yes      | The name of a tag. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/repository/tags/v1.1.1/signature"
+```
+
+Example response if tag is X.509 signed:
+
+```json
+{
+  "signature_type": "X509",
+  "verification_status": "unverified",
+  "x509_certificate": {
+    "id": 1,
+    "subject": "CN=gitlab@example.org,OU=Example,O=World",
+    "subject_key_identifier": "BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC",
+    "email": "gitlab@example.org",
+    "serial_number": 278969561018901340486471282831158785578,
+    "certificate_status": "good",
+    "x509_issuer": {
+      "id": 1,
+      "subject": "CN=PKI,OU=Example,O=World",
+      "subject_key_identifier": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
+      "crl_url": "http://example.com/pki.crl"
+    }
+  }
+}
+```
+
+Example response if tag is unsigned:
+
+```json
+{
+  "message": "404 GPG Signature Not Found"
+}
+```

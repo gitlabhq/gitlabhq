@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
+import notesStore from '~/mr_notes/stores';
 
 import eventHub from '../notes/event_hub';
 import DiffsApp from './components/app.vue';
@@ -9,7 +10,7 @@ import { TREE_LIST_STORAGE_KEY, DIFF_WHITESPACE_COOKIE_NAME } from './constants'
 import { getReviewsForMergeRequest } from './utils/file_reviews';
 import { getDerivedMergeRequestInformation } from './utils/merge_request';
 
-export default function initDiffsApp(store) {
+export default function initDiffsApp(store = notesStore) {
   const vm = new Vue({
     el: '#js-diffs-app',
     name: 'MergeRequestDiffs',

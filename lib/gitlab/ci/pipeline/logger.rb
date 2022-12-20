@@ -23,7 +23,7 @@ module Gitlab
           log_conditions.push(block)
         end
 
-        def instrument(operation)
+        def instrument(operation, once: false)
           return yield unless enabled?
 
           raise ArgumentError, 'block not given' unless block_given?
@@ -32,63 +32,72 @@ module Gitlab
 
           result = yield
 
-          observe("#{operation}_duration_s", current_monotonic_time - op_started_at)
+          observe("#{operation}_duration_s", current_monotonic_time - op_started_at, once: once)
 
           result
         end
 
-        def instrument_with_sql(operation, &block)
+        def instrument_once_with_sql(operation, &block)
           op_start_db_counters = current_db_counter_payload
 
-          result = instrument(operation, &block)
+          result = instrument(operation, once: true, &block)
 
-          observe_sql_counters(operation, op_start_db_counters, current_db_counter_payload)
+          observe_sql_counters(operation, op_start_db_counters, current_db_counter_payload, once: true)
 
           result
         end
 
-        def observe(operation, value)
+        def observe(operation, value, once: false)
           return unless enabled?
 
-          observations[operation.to_s].push(value)
+          if once
+            observations[operation.to_s] = value
+          else
+            observations[operation.to_s] ||= []
+            observations[operation.to_s].push(value)
+          end
         end
 
         def commit(pipeline:, caller:)
           return unless log?
 
-          attributes = {
-            class: self.class.name.to_s,
-            pipeline_creation_caller: caller,
-            project_id: project&.id, # project is not available when called from `/ci/lint`
-            pipeline_persisted: pipeline.persisted?,
-            pipeline_source: pipeline.source,
-            pipeline_creation_service_duration_s: age
-          }
+          Gitlab::ApplicationContext.with_context(project: project) do
+            attributes = Gitlab::ApplicationContext.current.merge(
+              class: self.class.name.to_s,
+              pipeline_creation_caller: caller,
+              project_id: project&.id, # project is not available when called from `/ci/lint`
+              pipeline_persisted: pipeline.persisted?,
+              pipeline_source: pipeline.source,
+              pipeline_creation_service_duration_s: age
+            )
 
-          if pipeline.persisted?
-            attributes[:pipeline_builds_tags_count] = pipeline.tags_count
-            attributes[:pipeline_builds_distinct_tags_count] = pipeline.distinct_tags_count
-            attributes[:pipeline_id] = pipeline.id
+            if pipeline.persisted?
+              attributes[:pipeline_builds_tags_count] = pipeline.tags_count
+              attributes[:pipeline_builds_distinct_tags_count] = pipeline.distinct_tags_count
+              attributes[:pipeline_id] = pipeline.id
+            end
+
+            attributes.compact!
+            attributes.stringify_keys!
+            attributes.merge!(observations_hash)
+
+            destination.info(attributes)
           end
-
-          attributes.compact!
-          attributes.stringify_keys!
-          attributes.merge!(observations_hash)
-
-          destination.info(attributes)
         end
 
         def observations_hash
-          observations.transform_values do |values|
-            next if values.empty?
+          observations.transform_values do |observation|
+            next if observation.blank?
 
-            {
-              'count' => values.size,
-              'min' => values.min,
-              'max' => values.max,
-              'sum' => values.sum,
-              'avg' => values.sum / values.size
-            }
+            if observation.is_a?(Array)
+              {
+                'count' => observation.size,
+                'max' => observation.max,
+                'sum' => observation.sum
+              }
+            else
+              observation
+            end
           end.compact
         end
 
@@ -110,21 +119,20 @@ module Gitlab
         end
 
         def enabled?
-          strong_memoize(:enabled) do
-            ::Feature.enabled?(:ci_pipeline_creation_logger, project, type: :ops)
-          end
+          ::Feature.enabled?(:ci_pipeline_creation_logger, project, type: :ops)
         end
+        strong_memoize_attr :enabled?, :enabled
 
         def observations
-          @observations ||= Hash.new { |hash, key| hash[key] = [] }
+          @observations ||= {}
         end
 
-        def observe_sql_counters(operation, start_db_counters, end_db_counters)
+        def observe_sql_counters(operation, start_db_counters, end_db_counters, once: false)
           end_db_counters.each do |key, value|
             result = value - start_db_counters.fetch(key, 0)
             next if result == 0
 
-            observe("#{operation}_#{key}", result)
+            observe("#{operation}_#{key}", result, once: once)
           end
         end
 

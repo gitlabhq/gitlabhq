@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue Boards new issue', :js do
+RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning do
   let_it_be(:project)        { create(:project, :public) }
   let_it_be(:board)          { create(:board, project: project) }
   let_it_be(:backlog_list)   { create(:backlog_list, board: board) }

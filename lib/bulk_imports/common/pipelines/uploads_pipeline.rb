@@ -21,15 +21,16 @@ module BulkImports
         end
 
         def load(context, file_path)
-          avatar_path = AVATAR_PATTERN.match(file_path)
+          # Validate that the path is OK to load
+          Gitlab::Utils.check_allowed_absolute_path_and_path_traversal!(file_path, [Dir.tmpdir])
+          return if File.directory?(file_path)
+          return if File.lstat(file_path).symlink?
 
+          avatar_path = AVATAR_PATTERN.match(file_path)
           return save_avatar(file_path) if avatar_path
 
           dynamic_path = file_uploader.extract_dynamic_path(file_path)
-
           return unless dynamic_path
-          return if File.directory?(file_path)
-          return if File.lstat(file_path).symlink?
 
           named_captures = dynamic_path.named_captures.symbolize_keys
 

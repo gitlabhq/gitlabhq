@@ -81,6 +81,10 @@ module API
       expose(:container_registry_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :container_registry) }
       expose(:security_and_compliance_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :security_and_compliance) }
       expose(:releases_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :releases) }
+      expose(:environments_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :environments) }
+      expose(:feature_flags_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :feature_flags) }
+      expose(:infrastructure_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :infrastructure) }
+      expose(:monitor_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :monitor) }
 
       expose :emails_disabled, documentation: { type: 'boolean' }
       expose :shared_runners_enabled, documentation: { type: 'boolean' }

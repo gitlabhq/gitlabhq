@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Projects > Settings > Pipelines settings" do
+RSpec.describe "Projects > Settings > Pipelines settings", feature_category: :projects do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :developer }
@@ -165,7 +165,7 @@ RSpec.describe "Projects > Settings > Pipelines settings" do
         let(:page_token) { find('#registration_token').text }
 
         before do
-          click_button 'Reset registration token'
+          click_link 'Reset registration token'
         end
 
         it 'changes registration token' do

@@ -3,7 +3,7 @@
 module API
   class GroupDebianDistributions < ::API::Base
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
     end
 
     before do

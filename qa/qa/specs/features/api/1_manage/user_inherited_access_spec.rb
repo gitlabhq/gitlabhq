@@ -70,13 +70,7 @@ module QA
 
         it(
           'is allowed to commit to sub-group project via the API',
-          :reliable,
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363349',
-          quarantine: {
-            only: { subdomain: %i[staging staging-ref] },
-            type: :investigating,
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/370282'
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363349'
         ) do
           expect do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
@@ -87,6 +81,9 @@ module QA
               commit.commit_message = 'Add new file'
               commit.add_files([{ file_path: 'test.txt', content: 'new file' }])
             end
+          rescue StandardError => e
+            QA::Runtime::Logger.error("Full failure message: #{e.message}")
+            raise
           end.not_to raise_error
         end
 

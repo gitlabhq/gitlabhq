@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > For a forked project', :js do
+RSpec.describe 'Projects > Settings > For a forked project', :js, feature_category: :projects do
   let_it_be(:project) { create(:project, :repository, create_templates: :issue) }
 
   let(:user) { project.first_owner }

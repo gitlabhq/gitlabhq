@@ -16,7 +16,7 @@ The visibility level is determined by the `visibility` field in the project.
 Values for the project visibility level are:
 
 - `private`: project access must be granted explicitly to each user.
-- `internal`: the project can be cloned by any signed-in user except [external users](../user/permissions.md#external-users).
+- `internal`: the project can be cloned by any signed-in user except [external users](../user/admin_area/external_users.md).
 - `public`: the project can be accessed without any authentication.
 
 For more, read [Project visibility](../user/public_access.md).
@@ -51,10 +51,10 @@ GET /projects
 | `id_after`                                 | integer  | **{dotted-circle}** No | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                                | integer  | **{dotted-circle}** No | Limit results to projects with IDs less than the specified ID. |
 | `imported`                                 | boolean  | **{dotted-circle}** No | Limit results to projects which were imported from external systems by current user. |
-| `last_activity_after`                      | datetime | **{dotted-circle}** No | Limit results to projects with last_activity after specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
-| `last_activity_before`                     | datetime | **{dotted-circle}** No | Limit results to projects with last_activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
+| `last_activity_after`                      | datetime | **{dotted-circle}** No | Limit results to projects with last activity after specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
+| `last_activity_before`                     | datetime | **{dotted-circle}** No | Limit results to projects with last activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `membership`                               | boolean  | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
-| `min_access_level`                         | integer  | **{dotted-circle}** No | Limit by current user minimal [access level](members.md#valid-access-levels). |
+| `min_access_level`                         | integer  | **{dotted-circle}** No | Limit by current user minimal [role (`access_level`)](members.md#roles). |
 | `order_by`                                 | string   | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `last_activity_at`, or `similarity` fields. `repository_size`, `storage_size`, `packages_size` or `wiki_size` fields are only allowed for administrators. `similarity` ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332890) in GitLab 14.1) is only available when searching and is limited to projects that the current user is a member of. Default is `created_at`. |
 | `owned`                                    | boolean  | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `repository_checksum_failed` **(PREMIUM)** | boolean  | **{dotted-circle}** No | Limit projects where the repository checksum calculation has failed. |
@@ -333,7 +333,7 @@ GET /users/:user_id/projects
 | `id_after`                    | integer | **{dotted-circle}** No | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                   | integer | **{dotted-circle}** No | Limit results to projects with IDs less than the specified ID. |
 | `membership`                  | boolean | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer | **{dotted-circle}** No | Limit by current user minimal [access level](members.md#valid-access-levels). |
+| `min_access_level`            | integer | **{dotted-circle}** No | Limit by current user minimal [role (`access_level`)](members.md#roles). |
 | `order_by`                    | string  | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string  | **{dotted-circle}** No | Return list of projects matching the search criteria. |
@@ -590,7 +590,7 @@ GET /users/:user_id/starred_projects
 | `user_id`                     | string  | **{check-circle}** Yes | The ID or username of the user. |
 | `archived`                    | boolean | **{dotted-circle}** No | Limit by archived status. |
 | `membership`                  | boolean | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer | **{dotted-circle}** No | Limit by current user minimal [access level](members.md#valid-access-levels). |
+| `min_access_level`            | integer | **{dotted-circle}** No | Limit by current user minimal [role (`access_level`)](members.md#roles). |
 | `order_by`                    | string  | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string  | **{dotted-circle}** No | Return list of projects matching the search criteria. |
@@ -1150,7 +1150,7 @@ GET /projects/:id/groups
 |-----------------------------|-------------------|------------------------|-------------|
 | `id`                        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `search`                    | string            | **{dotted-circle}** No | Search for specific groups. |
-| `shared_min_access_level`   | integer           | **{dotted-circle}** No | Limit to shared groups with at least this [access level](members.md#valid-access-levels). |
+| `shared_min_access_level`   | integer           | **{dotted-circle}** No | Limit to shared groups with at least this [role (`access_level`)](members.md#roles). |
 | `shared_visible_only`       | boolean           | **{dotted-circle}** No | Limit to shared groups user has access to. |
 | `skip_groups`               | array of integers | **{dotted-circle}** No | Skip the group IDs passed. |
 | `with_shared`               | boolean           | **{dotted-circle}** No | Include projects shared with this group. Default is `false`. |
@@ -1250,6 +1250,10 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `printing_merge_request_link_enabled`                       | boolean | **{dotted-circle}** No | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                             | boolean | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project members. |
 | `releases_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `environments_access_level`                                 | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `feature_flags_access_level`                                | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `infrastructure_access_level`                               | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `monitor_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | **{dotted-circle}** No | Which storage shard the repository is on. _(administrator only)_ |
@@ -1330,6 +1334,10 @@ POST /projects/user/:user_id
 | `printing_merge_request_link_enabled`                       | boolean | **{dotted-circle}** No | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                             | boolean | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project-members. |
 | `releases_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `environments_access_level`                                 | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `feature_flags_access_level`                                | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `infrastructure_access_level`                               | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `monitor_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | **{dotted-circle}** No | Which storage shard the repository is on. _(administrators only)_ |
@@ -1434,6 +1442,10 @@ Supported attributes:
 | `printing_merge_request_link_enabled`                       | boolean        | **{dotted-circle}** No | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                             | boolean        | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project members. |
 | `releases_access_level`                                     | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `environments_access_level`                                 | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `feature_flags_access_level`                                | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `infrastructure_access_level`                               | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `monitor_access_level`                                      | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean        | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string         | **{dotted-circle}** No | Which storage shard the repository is on. _(administrators only)_ |
@@ -1496,7 +1508,7 @@ GET /projects/:id/forks
 | `id`                          | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `archived`                    | boolean        | **{dotted-circle}** No | Limit by archived status. |
 | `membership`                  | boolean        | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer        | **{dotted-circle}** No | Limit by current user minimal [access level](members.md#valid-access-levels). |
+| `min_access_level`            | integer        | **{dotted-circle}** No | Limit by current user minimal [role (`access_level`)](members.md#roles). |
 | `order_by`                    | string         | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean        | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string         | **{dotted-circle}** No | Return list of projects matching the search criteria. |
@@ -2310,7 +2322,7 @@ POST /projects/:id/share
 
 | Attribute      | Type           | Required               | Description |
 |----------------|----------------|------------------------|-------------|
-| `group_access` | integer        | **{check-circle}** Yes | The [access level](members.md#valid-access-levels) to grant the group. |
+| `group_access` | integer        | **{check-circle}** Yes | The [role (`access_level`)](members.md#roles) to grant the group. |
 | `group_id`     | integer        | **{check-circle}** Yes | The ID of the group to share with. |
 | `id`           | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `expires_at`   | string         | **{dotted-circle}** No | Share expiration date in ISO 8601 format: 2016-09-26 |
@@ -2462,7 +2474,7 @@ PUT /projects/:id/hooks/:hook_id
 | `push_events`                | boolean        | **{dotted-circle}** No | Trigger hook on push events. |
 | `releases_events`            | boolean        | **{dotted-circle}** No | Trigger hook on release events. |
 | `tag_push_events`            | boolean        | **{dotted-circle}** No | Trigger hook on tag push events. |
-| `token`                      | string         | **{dotted-circle}** No | Secret token to validate received payloads; this isn't returned in the response. |
+| `token`                      | string         | **{dotted-circle}** No | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 | `wiki_page_events`           | boolean        | **{dotted-circle}** No | Trigger hook on wiki page events. |
 
 ### Delete project hook

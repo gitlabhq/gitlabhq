@@ -33,7 +33,13 @@ RSpec.describe Ci::ResourceGroup do
     end
   end
 
-  describe '#assign_resource_to' do
+  describe '#assign_resource_to', :ci_partitionable do
+    include Ci::PartitioningHelpers
+
+    before do
+      stub_current_partition_id
+    end
+
     subject { resource_group.assign_resource_to(build) }
 
     let(:build) { create(:ci_build) }
@@ -41,10 +47,12 @@ RSpec.describe Ci::ResourceGroup do
 
     it 'retains resource for the processable' do
       expect(resource_group.resources.first.processable).to be_nil
+      expect(resource_group.resources.first.partition_id).to be_nil
 
       is_expected.to eq(true)
 
       expect(resource_group.resources.first.processable).to eq(build)
+      expect(resource_group.resources.first.partition_id).to eq(build.partition_id)
     end
 
     context 'when there are no free resources' do
@@ -66,7 +74,13 @@ RSpec.describe Ci::ResourceGroup do
     end
   end
 
-  describe '#release_resource_from' do
+  describe '#release_resource_from', :ci_partitionable do
+    include Ci::PartitioningHelpers
+
+    before do
+      stub_current_partition_id
+    end
+
     subject { resource_group.release_resource_from(build) }
 
     let(:build) { create(:ci_build) }
@@ -79,10 +93,12 @@ RSpec.describe Ci::ResourceGroup do
 
       it 'releases resource from the build' do
         expect(resource_group.resources.first.processable).to eq(build)
+        expect(resource_group.resources.first.partition_id).to eq(build.partition_id)
 
         is_expected.to eq(true)
 
         expect(resource_group.resources.first.processable).to be_nil
+        expect(resource_group.resources.first.partition_id).to be_nil
       end
     end
 

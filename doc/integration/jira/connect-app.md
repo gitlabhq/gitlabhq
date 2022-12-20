@@ -72,6 +72,55 @@ for details.
 
 If the app requires additional permissions, [the update must first be manually approved in Jira](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/#changes-that-require-manual-customer-approval).
 
+## Connect the GitLab.com for Jira Cloud app for self-managed instances **(FREE SELF)**
+
+> - Introduced in GitLab 15.6 [with flags](../../administration/feature_flags.md) named [`jira_connect_oauth_self_managed_setting`](https://gitlab.com/gitlab-org/gitlab/-/issues/377679), [`jira_connect_oauth`](https://gitlab.com/gitlab-org/gitlab/-/issues/355048), and [`jira_connect_oauth_self_managed`](https://gitlab.com/gitlab-org/gitlab/-/issues/359940). Disabled by default.
+> - Feature flag `jira_connect_oauth_self_managed_setting` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105070) in GitLab 15.7.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flags](../../administration/feature_flags.md) named
+`jira_connect_oauth` and `jira_connect_oauth_self_managed`. On GitLab.com, this feature
+is not available. The feature is not ready for production use.
+
+Prerequisites:
+
+- GitLab.com must serve as a proxy for the instance.
+- The instance must be publicly available.
+- The instance must be on version 15.7 or later.
+
+You can link self-managed instances after installing the GitLab.com for Jira Cloud app from the marketplace.
+Jira apps can only link to one URL per marketplace listing. The official listing links to GitLab.com.
+
+### Set up your instance
+
+To set up your self-managed instance for the GitLab.com for Jira Cloud app in GitLab 15.7 or later:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Applications** (`/admin/applications`).
+1. Select **New application**.
+1. In **Redirect URI**, enter `https://gitlab.com/-/jira_connect/oauth_callbacks`.
+1. Ensure the **Trusted** and **Confidential** checkboxes are cleared.
+<!-- markdownlint-disable MD044 -->
+1. In **Scopes**, select the **api** checkbox only.
+<!-- markdownlint-enable MD044 -->
+1. Select **Save application**.
+1. Copy the **Application ID** value.
+1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
+1. Expand the **GitLab for Jira App** section.
+1. Paste the **Application ID** value into **Jira Connect Application ID**.
+1. In **Jira Connect Proxy URL**, enter `https://gitlab.com`.
+1. Select **Save changes**.
+
+### Link your instance
+
+To link your self-managed instance to the GitLab.com for Jira Cloud app:
+
+1. Install the [GitLab.com for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
+1. Select **GitLab (self-managed)**.
+1. Enter your GitLab instance URL.
+1. Select **Save**.
+
 ## Install the GitLab.com for Jira Cloud app for self-managed instances **(FREE SELF)**
 
 If your GitLab instance is self-managed, you must follow some

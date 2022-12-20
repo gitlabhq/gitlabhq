@@ -46,7 +46,7 @@ The item text must include these words in order. Capitalization doesn't matter.
 
 - `introduced`, `enabled`, `deprecated`, `changed`, `moved`, `recommended`, `removed`, or `renamed`
 - `in` or `to`
-- `GitLab`
+- `GitLab` (or, for external projects, the name of the project)
 
 If possible, include a link to the related issue, merge request, or epic.
 Do not link to the pricing page. Do not include the subscription tier.
@@ -203,8 +203,8 @@ We cannot guarantee future feature work, and promises
 like these can raise legal issues. Instead, say that an issue exists.
 For example:
 
-- Support for improvements is proposed in issue `[issue-number](LINK-TO-ISSUE)`.
-- You cannot do this thing, but issue `[issue-number](LINK-TO-ISSUE)` proposes to change this behavior.
+- Support for improvements is proposed in `[issue <issue_number>](LINK-TO-ISSUE)`.
+- You cannot do this thing, but `[issue 12345](LINK-TO-ISSUE)` proposes to change this behavior.
 
 You can say that we plan to remove a feature.
 

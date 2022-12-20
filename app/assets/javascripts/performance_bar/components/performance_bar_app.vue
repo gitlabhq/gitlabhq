@@ -1,5 +1,5 @@
 <script>
-import { GlSafeHtmlDirective } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { glEmojiTag } from '~/emoji';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 
@@ -15,7 +15,7 @@ export default {
     RequestSelector,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     store: {

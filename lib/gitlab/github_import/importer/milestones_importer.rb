@@ -13,7 +13,10 @@ module Gitlab
         # rubocop: enable CodeReuse/ActiveRecord
 
         def execute
-          bulk_insert(Milestone, build_milestones)
+          rows, validation_errors = build_milestones
+
+          bulk_insert(rows)
+          bulk_insert_failures(validation_errors) if validation_errors.any?
           build_milestones_cache
         end
 
@@ -29,7 +32,7 @@ module Gitlab
           MilestoneFinder.new(project).build_cache
         end
 
-        def build(milestone)
+        def build_attributes(milestone)
           {
             iid: milestone[:number],
             title: milestone[:title],
@@ -52,6 +55,10 @@ module Gitlab
 
         def object_type
           :milestone
+        end
+
+        def model
+          Milestone
         end
       end
     end

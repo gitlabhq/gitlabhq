@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::GroupDebianDistributions do
+RSpec.describe API::GroupDebianDistributions, feature_category: :package_registry do
   include HttpBasicAuthHelpers
   include WorkhorseHelpers
 

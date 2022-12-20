@@ -12,17 +12,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 To view cluster vulnerabilities, you can view the [vulnerability report](../../application_security/vulnerabilities/index.md).
 You can also configure your agent so the vulnerabilities are displayed with other agent information in GitLab.
 
-## Enable operational container scanning **(ULTIMATE)**
+## Enable operational container scanning
 
-You can use operational container scanning
-to scan container images in your cluster for security vulnerabilities.
+You can use operational container scanning to scan container images in your cluster for security vulnerabilities. You
+can enable the scanner to run on a cadence as configured via the agent, or setup scan execution policies within a
+project that houses the agent.
 
 NOTE:
 In GitLab 15.0 and later, you do not need to install Starboard operator in the Kubernetes cluster.
 
-To begin scanning all resources in your cluster, add a `container_scanning`
-configuration block to your agent configuration with a `cadence` field
-containing a CRON expression for when the scans will be run.
+### Enable via agent configuration
+
+To enable scanning of all images within your Kubernetes cluster via the agent configuration, add a `container_scanning` configuration block to your agent
+configuration with a `cadence` field containing a [CRON expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) for when the scans will be run.
 
 ```yaml
 container_scanning:
@@ -34,29 +36,67 @@ The `cadence` field is required. GitLab supports the following types of CRON syn
 - A daily cadence of once per hour at a specified hour, for example: `0 18 * * *`
 - A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
 
-It is possible that other elements of the CRON syntax will work in the cadence field, however, GitLab does not officially test or support them.
+NOTE:
+Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
+
+NOTE:
+The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
 
 By default, operational container scanning will attempt to scan the workloads in all
-namespaces for vulnerabilities. The `vulnerability_report` block has a `namespaces`
+namespaces for vulnerabilities. You can set the `vulnerability_report` block with the `namespaces`
 field which can be used to restrict which namespaces are scanned. For example,
-if you would like to scan only the `development`, `staging`, and `production`
-namespaces, you can use this configuration:
+if you would like to scan only the `default`, `kube-system` namespaces, you can use this configuration:
 
 ```yaml
 container_scanning:
   cadence: '0 0 * * *'
   vulnerability_report:
     namespaces:
-      - development
-      - staging
-      - production
+      - default
+      - kube-system
 ```
 
+## Enable via scan execution policies
+
+To enable scanning of all images within your Kubernetes cluster via scan execution policies, we can use the
+[scan execution policy editor](../../application_security/policies/scan-execution-policies.md#scan-execution-policy-editor)
+in order to create a new schedule rule.
+
+NOTE:
+The Kubernetes agent must be running in your cluster in order to scan running container images
+
+Here is an example of a policy which enables operational container scanning within the cluster the Kubernetes agent is attached to:
+
+```yaml
+- name: Enforce Container Scanning in cluster connected through my-gitlab-agent for default and kube-system namespaces
+  enabled: true
+  rules:
+  - type: schedule
+    cadence: '0 10 * * *'
+    agents:
+      <agent-name>:
+        namespaces:
+        - 'default'
+        - 'kube-system'
+  actions:
+  - scan: container_scanning
+```
+
+The keys for a schedule rule are:
+
+- cadence (required): a [CRON expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) for when the scans will be run
+- agents:<agent-name> (required): The name of the agent to use for scanning
+- agents:<agent-name>:namespaces (optional): The Kubernetes namespaces to scan. If omitted, all namespaces will be scanned
+
+NOTE:
+Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
+
+NOTE:
+The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
+
+You can view the complete schema within the [scan execution policy documentation](../../application_security/policies/scan-execution-policies.md#scan-execution-policies-schema).
+
 ## View cluster vulnerabilities
-
-Prerequisite:
-
-- You must have at least the Developer role.
 
 To view vulnerability information in GitLab:
 
@@ -68,3 +108,6 @@ To view vulnerability information in GitLab:
 ![Cluster agent security tab UI](../img/cluster_agent_security_tab_v14_8.png)
 
 This information can also be found under [operational vulnerabilities](../../../user/application_security/vulnerability_report/index.md#operational-vulnerabilities).
+
+NOTE:
+You must have at least the Developer role.

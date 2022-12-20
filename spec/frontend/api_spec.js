@@ -1,7 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, {
+  HTTP_STATUS_ACCEPTED,
+  HTTP_STATUS_CREATED,
+  HTTP_STATUS_NO_CONTENT,
+} from '~/lib/utils/http_status';
 
 jest.mock('~/flash');
 
@@ -1069,7 +1073,7 @@ describe('Api', () => {
 
       describe('when the release is successfully created', () => {
         it('resolves the Promise', () => {
-          mock.onPost(expectedUrl, release).replyOnce(httpStatus.CREATED);
+          mock.onPost(expectedUrl, release).replyOnce(HTTP_STATUS_CREATED);
 
           return Api.createRelease(dummyProjectPath, release).then(() => {
             expect(mock.history.post).toHaveLength(1);
@@ -1125,7 +1129,7 @@ describe('Api', () => {
 
       describe('when the Release is successfully created', () => {
         it('resolves the Promise', () => {
-          mock.onPost(expectedUrl, expectedLink).replyOnce(httpStatus.CREATED);
+          mock.onPost(expectedUrl, expectedLink).replyOnce(HTTP_STATUS_CREATED);
 
           return Api.createReleaseLink(dummyProjectPath, dummyTagName, expectedLink).then(() => {
             expect(mock.history.post).toHaveLength(1);
@@ -1224,7 +1228,7 @@ describe('Api', () => {
 
     describe('when the merge request is successfully created', () => {
       it('resolves the Promise', () => {
-        mock.onPost(expectedUrl, options).replyOnce(httpStatus.CREATED);
+        mock.onPost(expectedUrl, options).replyOnce(HTTP_STATUS_CREATED);
 
         return Api.createProjectMergeRequest(dummyProjectPath, options).then(() => {
           expect(mock.history.post).toHaveLength(1);
@@ -1332,7 +1336,7 @@ describe('Api', () => {
 
     describe('when the freeze period is successfully created', () => {
       it('resolves the Promise', () => {
-        mock.onPost(expectedUrl, options).replyOnce(httpStatus.CREATED, expectedResult);
+        mock.onPost(expectedUrl, options).replyOnce(HTTP_STATUS_CREATED, expectedResult);
 
         return Api.createFreezePeriod(projectId, options).then(({ data }) => {
           expect(data).toStrictEqual(expectedResult);
@@ -1598,7 +1602,7 @@ describe('Api', () => {
       const secureFileId = 2;
 
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/secure_files/${secureFileId}`;
-      mock.onDelete(expectedUrl).reply(httpStatus.NO_CONTENT, '');
+      mock.onDelete(expectedUrl).reply(HTTP_STATUS_NO_CONTENT, '');
       const { data } = await Api.deleteProjectSecureFile(projectId, secureFileId);
       expect(data).toEqual('');
     });
@@ -1609,10 +1613,10 @@ describe('Api', () => {
       const groupId = 1;
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/dependency_proxy/cache`;
 
-      mock.onDelete(expectedUrl).reply(httpStatus.ACCEPTED);
+      mock.onDelete(expectedUrl).reply(HTTP_STATUS_ACCEPTED);
       const { status } = await Api.deleteDependencyProxyCacheList(groupId, {});
 
-      expect(status).toBe(httpStatus.ACCEPTED);
+      expect(status).toBe(HTTP_STATUS_ACCEPTED);
     });
   });
 

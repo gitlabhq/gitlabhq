@@ -15,7 +15,7 @@ RSpec.shared_examples 'schedules bulk repository shard moves' do
       let(:job_args) { [source_storage_name, destination_storage_name] }
 
       it 'schedules container repository storage moves' do
-        expect { subject }.to change(move_service_klass, :count).by(1)
+        expect { subject }.to change { move_service_klass.count }.by(1)
 
         storage_move = container.repository_storage_moves.last!
 

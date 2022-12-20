@@ -103,7 +103,7 @@ parameter:
 |:---------------------------|:-----------------------------------|
 | `change_failure_rate`      | The number of incidents divided by the number of deployments during the time period. Available only for production environment. |
 | `deployment_frequency`     | The number of successful deployments during the time period. |
-| `lead_time_for_changes`    | The median number of seconds between the merge of the merge request (MR) and the deployment of the MR's commits for all MRs deployed during the time period. |
+| `lead_time_for_changes`    | The median number of seconds between the merge of the merge request (MR) and the deployment of the MR commits for all MRs deployed during the time period. |
 | `time_to_restore_service`  | The median number of seconds an incident was open during the time period. Available only for production environment. |
 
 NOTE:

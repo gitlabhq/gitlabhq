@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::IssueLinksController do
+RSpec.describe Projects::IssueLinksController, feature_category: :team_planning do
   let(:user) { create :user }
   let(:project) { create(:project_empty_repo) }
   let(:issue) { create :issue, project: project }

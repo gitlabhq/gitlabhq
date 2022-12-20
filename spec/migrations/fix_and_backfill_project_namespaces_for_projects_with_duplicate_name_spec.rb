@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe FixAndBackfillProjectNamespacesForProjectsWithDuplicateName, :migration do
+RSpec.describe FixAndBackfillProjectNamespacesForProjectsWithDuplicateName, :migration, feature_category: :projects do
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
 

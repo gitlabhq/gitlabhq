@@ -156,8 +156,6 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'lib/gitlab/database.rb'                                    | [:database, :backend]
       'lib/gitlab/database/foo'                                   | [:database, :backend]
       'ee/lib/gitlab/database/foo'                                | [:database, :backend]
-      'lib/gitlab/github_import.rb'                               | [:database, :backend]
-      'lib/gitlab/github_import/foo'                              | [:database, :backend]
       'lib/gitlab/sql/foo'                                        | [:database, :backend]
       'rubocop/cop/migration/foo'                                 | [:database]
 

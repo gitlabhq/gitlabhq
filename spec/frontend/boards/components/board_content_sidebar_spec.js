@@ -12,7 +12,7 @@ import SidebarDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue
 import SidebarSeverity from '~/sidebar/components/severity/sidebar_severity.vue';
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
-import SidebarLabelsWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
+import SidebarLabelsWidget from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
 import { mockActiveIssue, mockIssue, mockIssueGroupPath, mockIssueProjectPath } from '../mock_data';
 
 Vue.use(Vuex);
@@ -144,6 +144,20 @@ describe('BoardContentSidebar', () => {
 
   it('does not render SidebarSeverity', () => {
     expect(wrapper.findComponent(SidebarSeverity).exists()).toBe(false);
+  });
+
+  it('does not render SidebarHealthStatusWidget', async () => {
+    const SidebarHealthStatusWidget = (
+      await import('ee_component/sidebar/components/health_status/sidebar_health_status_widget.vue')
+    ).default;
+    expect(wrapper.findComponent(SidebarHealthStatusWidget).exists()).toBe(false);
+  });
+
+  it('does not render SidebarWeightWidget', async () => {
+    const SidebarWeightWidget = (
+      await import('ee_component/sidebar/components/weight/sidebar_weight_widget.vue')
+    ).default;
+    expect(wrapper.findComponent(SidebarWeightWidget).exists()).toBe(false);
   });
 
   describe('when we emit close', () => {

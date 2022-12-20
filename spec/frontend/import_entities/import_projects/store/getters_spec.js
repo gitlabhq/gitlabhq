@@ -1,6 +1,5 @@
 import { STATUSES } from '~/import_entities/constants';
 import {
-  isLoading,
   isImportingAnyRepo,
   hasIncompatibleRepos,
   hasImportableRepos,
@@ -29,24 +28,6 @@ describe('import_projects store getters', () => {
   beforeEach(() => {
     localState = state();
   });
-
-  it.each`
-    isLoadingRepos | isLoadingNamespaces | isLoadingValue
-    ${false}       | ${false}            | ${false}
-    ${true}        | ${false}            | ${true}
-    ${false}       | ${true}             | ${true}
-    ${true}        | ${true}             | ${true}
-  `(
-    'isLoading returns $isLoadingValue when isLoadingRepos is $isLoadingRepos and isLoadingNamespaces is $isLoadingNamespaces',
-    ({ isLoadingRepos, isLoadingNamespaces, isLoadingValue }) => {
-      Object.assign(localState, {
-        isLoadingRepos,
-        isLoadingNamespaces,
-      });
-
-      expect(isLoading(localState)).toBe(isLoadingValue);
-    },
-  );
 
   it.each`
     importStatus           | value

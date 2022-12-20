@@ -22,7 +22,7 @@ module Docs
       entries = source_file_paths.flat_map do |file|
         YAML.load_file(file)
       end
-      entries = entries.sort_by { |d| d["name"] }
+      entries = entries.sort_by { |d| d["title"] }
 
       milestones = entries.map { |entry| entry[milestone_key_name] }.uniq
       milestones = VersionSorter.rsort(milestones)

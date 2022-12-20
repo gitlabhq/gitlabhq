@@ -50,30 +50,30 @@ module Gitlab
       'eo' => 0,
       'es' => 35,
       'fil_PH' => 0,
-      'fr' => 85,
+      'fr' => 94,
       'gl_ES' => 0,
       'id_ID' => 0,
       'it' => 1,
       'ja' => 30,
-      'ko' => 21,
-      'nb_NO' => 25,
+      'ko' => 20,
+      'nb_NO' => 24,
       'nl_NL' => 0,
       'pl_PL' => 3,
-      'pt_BR' => 58,
-      'ro_RO' => 98,
-      'ru' => 25,
+      'pt_BR' => 57,
+      'ro_RO' => 96,
+      'ru' => 26,
       'si_LK' => 11,
       'tr_TR' => 11,
       'uk' => 52,
-      'zh_CN' => 98,
+      'zh_CN' => 97,
       'zh_HK' => 1,
-      'zh_TW' => 100
+      'zh_TW' => 99
     }.freeze
     private_constant :TRANSLATION_LEVELS
 
-    def selectable_locales
+    def selectable_locales(minimum_translation_level = MINIMUM_TRANSLATION_LEVEL)
       AVAILABLE_LANGUAGES.reject do |code, _name|
-        percentage_translated_for(code) < MINIMUM_TRANSLATION_LEVEL
+        percentage_translated_for(code) < minimum_translation_level
       end
     end
 

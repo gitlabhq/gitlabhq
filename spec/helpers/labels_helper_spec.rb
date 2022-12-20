@@ -321,4 +321,27 @@ RSpec.describe LabelsHelper do
       expect(wrap_label_html('xss', label: xss_label, small: false)).not_to include('color:')
     end
   end
+
+  describe '#label_subscription_toggle_button_text' do
+    let(:label) { instance_double(Label) }
+    let(:current_user) { instance_double(User) }
+
+    subject { label_subscription_toggle_button_text(label) }
+
+    context 'when the label is subscribed' do
+      before do
+        allow(label).to receive(:subscribed?).and_return(true)
+      end
+
+      it { is_expected.to eq(_('Unsubscribe')) }
+    end
+
+    context 'when the label is not subscribed' do
+      before do
+        allow(label).to receive(:subscribed?).and_return(false)
+      end
+
+      it { is_expected.to eq(_('Subscribe')) }
+    end
+  end
 end

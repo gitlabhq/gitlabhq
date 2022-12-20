@@ -14,7 +14,7 @@ to keep it in the same project as your code, you can use the wiki GitLab provide
 in each GitLab project. Every wiki is a separate Git repository, so you can create
 wiki pages in the web interface, or [locally using Git](#create-or-edit-wiki-pages-locally).
 
-GitLab wikis support Markdown, RDoc, AsciiDoc, and Org for content.
+GitLab wikis support Markdown, Rdoc, AsciiDoc, and Org for content.
 Wiki pages written in Markdown support all [Markdown features](../../markdown.md),
 and also provide some [wiki-specific behavior](../../markdown.md#wiki-specific-markdown)
 for links.
@@ -338,11 +338,12 @@ GitLab provides a WYSIWYG editing experience for GitLab Flavored Markdown in wik
 
 Support includes:
 
-- Text formatting options, including bold, italics, block quotes, headings, and inline code.
-- List formatting for unordered, numbered, and checklists.
-- Creating and editing the structure of tables.
+- Formatting text, including using bold, italics, block quotes, headings, and inline code.
+- Formatting ordered lists, unordered lists, and checklists.
+- Creating and editing table structure.
 - Inserting and formatting code blocks with syntax highlighting.
-- Live preview of Mermaid, PlantUML, and Kroki diagrams ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86701) in GitLab 15.2).
+- Previewing Mermaid, PlantUML, and Kroki diagrams ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86701) in GitLab 15.2).
+- Creating and editing HTML comments ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104084) in GitLab 15.7).
 
 ### Use the Content Editor
 

@@ -30,7 +30,7 @@ However, this may not lead to more downloads in parallel unless the number of
 available Sidekiq threads is also increased. For example, if repository synchronization
 concurrency is increased from 25 to 50, you may also want to increase the number
 of Sidekiq threads from 25 to 50. See the
-[Sidekiq concurrency documentation](../../sidekiq/extra_sidekiq_processes.md#number-of-threads)
+[Sidekiq concurrency documentation](../../sidekiq/extra_sidekiq_processes.md#concurrency)
 for more details.
 
 ## Repository re-verification

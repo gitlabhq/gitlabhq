@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Google Analytics 4 content security policy' do
+RSpec.describe 'Google Analytics 4 content security policy', feature_category: :purchase do
   it 'includes the GA4 content security policy headers' do
     visit root_path
 

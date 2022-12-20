@@ -17,8 +17,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
         jobs.find { |job| job['args'] == args }
       end
 
-      def perform(*args)
-      end
+      def perform(*args); end
     end
   end
 
@@ -38,8 +37,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
         'TestMailer'
       end
 
-      def test_mail
-      end
+      def test_mail; end
     end
   end
 

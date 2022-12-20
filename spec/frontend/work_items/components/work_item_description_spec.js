@@ -38,7 +38,7 @@ describe('WorkItemDescription', () => {
   const subscriptionHandler = jest.fn().mockResolvedValue(workItemDescriptionSubscriptionResponse);
   const workItemByIidResponseHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
   let workItemResponseHandler;
-  let workItemsMvc2;
+  let workItemsMvc;
 
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
@@ -46,7 +46,7 @@ describe('WorkItemDescription', () => {
   const findEditedAt = () => wrapper.findComponent(EditedAt);
 
   const editDescription = (newText) => {
-    if (workItemsMvc2) {
+    if (workItemsMvc) {
       return findMarkdownEditor().vm.$emit('input', newText);
     }
     return wrapper.find('textarea').setValue(newText);
@@ -60,6 +60,7 @@ describe('WorkItemDescription', () => {
     canUpdate = true,
     workItemResponse = workItemResponseFactory({ canUpdate }),
     isEditing = false,
+    queryVariables = { id: workItemId },
     fetchByIid = false,
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
@@ -75,14 +76,12 @@ describe('WorkItemDescription', () => {
       propsData: {
         workItemId: id,
         fullPath: 'test-project-path',
-        queryVariables: {
-          id: workItemId,
-        },
+        queryVariables,
         fetchByIid,
       },
       provide: {
         glFeatures: {
-          workItemsMvc2,
+          workItemsMvc,
         },
       },
       stubs: {
@@ -104,11 +103,21 @@ describe('WorkItemDescription', () => {
   });
 
   describe.each([true, false])(
-    'editing description with workItemsMvc2 %workItemsMvc2Enabled',
-    (workItemsMvc2Enabled) => {
+    'editing description with workItemsMvc %workItemsMvcEnabled',
+    (workItemsMvcEnabled) => {
       beforeEach(() => {
         beforeEach(() => {
-          workItemsMvc2 = workItemsMvc2Enabled;
+          workItemsMvc = workItemsMvcEnabled;
+        });
+      });
+
+      it('has a subscription', async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        expect(subscriptionHandler).toHaveBeenCalledWith({
+          issuableId: workItemQueryResponse.data.workItem.id,
         });
       });
 
@@ -274,6 +283,13 @@ describe('WorkItemDescription', () => {
 
         expect(workItemResponseHandler).not.toHaveBeenCalled();
         expect(workItemByIidResponseHandler).toHaveBeenCalled();
+      });
+
+      it('skips calling the handlers when missing the needed queryVariables', async () => {
+        createComponent({ queryVariables: {}, fetchByIid: false });
+        await waitForPromises();
+
+        expect(workItemResponseHandler).not.toHaveBeenCalled();
       });
     },
   );

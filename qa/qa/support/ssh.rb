@@ -70,3 +70,5 @@ module QA
     end
   end
 end
+
+QA::Support::SSH.prepend_mod_with("Support::SSH", namespace: QA)

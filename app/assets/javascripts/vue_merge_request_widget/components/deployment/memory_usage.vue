@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import { backOff } from '~/lib/utils/common_utils';
-import statusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import { bytesToMiB } from '~/lib/utils/number_utils';
 import { s__ } from '~/locale';
 import MemoryGraph from '~/vue_shared/components/memory_graph.vue';
@@ -107,7 +107,7 @@ export default {
       backOff((next, stop) => {
         MRWidgetService.fetchMetrics(this.metricsUrl)
           .then((res) => {
-            if (res.status === statusCodes.NO_CONTENT) {
+            if (res.status === HTTP_STATUS_NO_CONTENT) {
               this.backOffRequestCounter += 1;
               /* eslint-disable no-unused-expressions */
               this.backOffRequestCounter < 3 ? next() : stop(res);
@@ -118,7 +118,7 @@ export default {
           .catch(stop);
       })
         .then((res) => {
-          if (res.status === statusCodes.NO_CONTENT) {
+          if (res.status === HTTP_STATUS_NO_CONTENT) {
             return res;
           }
 

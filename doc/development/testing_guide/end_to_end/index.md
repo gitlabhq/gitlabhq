@@ -238,7 +238,7 @@ Each type of scheduled pipeline generates a static link for the latest test repo
 - [`production`](https://storage.googleapis.com/gitlab-qa-allure-reports/production-full/master/index.html)
 - [`production-sanity`](https://storage.googleapis.com/gitlab-qa-allure-reports/production-sanity/master/index.html)
 
-## How do I run the tests?
+## How do you run the tests?
 
 If you are not [testing code in a merge request](#testing-code-in-merge-requests),
 there are two main options for running the tests. If you want to run
@@ -255,12 +255,12 @@ and the section below.
 
 Learn how to perform [tests that require special setup or consideration to run on your local environment](running_tests_that_require_special_setup.md).
 
-## How do I write tests?
+## How do you write tests?
 
 In order to write new tests, you first need to learn more about GitLab QA
 architecture. See the [documentation about it](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/architecture.md).
 
-Once you decided where to put [test environment orchestration scenarios](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/lib/gitlab/qa/scenario) and
+After you've decided where to put [test environment orchestration scenarios](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/lib/gitlab/qa/scenario) and
 [instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features), take a look at the [GitLab QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/README.md),
 the [GitLab QA orchestrator README](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md),
 and [the already existing instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features).
@@ -283,7 +283,7 @@ Continued reading:
 - [Execution context selection](execution_context_selection.md)
 - [Troubleshooting](troubleshooting.md)
 
-## Where can I ask for help?
+## Where can you ask for help?
 
 You can ask question in the `#quality` channel on Slack (GitLab internal) or
 you can find an issue you would like to work on in

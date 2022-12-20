@@ -68,7 +68,7 @@ RSpec.describe Admin::HooksController do
       hook.reload
 
       expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:notice]).to include('successfully updated')
+      expect(flash[:notice]).to include('was updated')
       expect(hook).to have_attributes(hook_params.except(:url_variables))
       expect(hook).to have_attributes(
         url_variables: { 'token' => 'some secret value', 'baz' => 'woo' }

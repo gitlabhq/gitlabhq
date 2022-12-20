@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User creates a merge request', :js do
+RSpec.describe 'User creates a merge request', :js, feature_category: :code_review do
   include ProjectForksHelper
 
   shared_examples 'creates a merge request' do
@@ -77,7 +77,7 @@ RSpec.describe 'User creates a merge request', :js do
         first('.dropdown-source-project a', text: forked_project.full_path)
 
         first('.js-target-project').click
-        first('.dropdown-target-project a', text: project.full_path)
+        first('.dropdown-target-project li', text: project.full_path)
 
         first('.js-source-branch').click
 

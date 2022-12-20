@@ -23,9 +23,9 @@ module Mutations
         updated_ids = restore(todos)
 
         {
-            updated_ids: updated_ids,
-            todos: Todo.id_in(updated_ids),
-            errors: errors_on_objects(todos)
+          updated_ids: updated_ids,
+          todos: Todo.id_in(updated_ids),
+          errors: errors_on_objects(todos)
         }
       end
 

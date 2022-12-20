@@ -5,12 +5,7 @@ module Ci
     def execute(bridge)
       check_access!(bridge)
 
-      bridge.tap do |bridge|
-        bridge.user = current_user
-        bridge.enqueue!
-
-        AfterRequeueJobService.new(project, current_user).execute(bridge)
-      end
+      Ci::EnqueueJobService.new(bridge, current_user: current_user).execute
     end
 
     private

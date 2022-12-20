@@ -1,7 +1,7 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 
 import { __, s__ } from '~/locale';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 
 // Overridden in EE
 export const EE_APP_OPTIONS = {};
@@ -117,7 +117,7 @@ export const FILTERED_SEARCH_TOKEN_TWO_FACTOR = {
   title: s__('Members|2FA'),
   token: GlFilteredSearchToken,
   unique: true,
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
   options: [
     { value: 'enabled', title: s__('Members|Enabled') },
     { value: 'disabled', title: s__('Members|Disabled') },
@@ -131,7 +131,7 @@ export const FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS = {
   title: s__('Members|Membership'),
   token: GlFilteredSearchToken,
   unique: true,
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
   options: [
     { value: 'exclude', title: s__('Members|Direct') },
     { value: 'only', title: s__('Members|Inherited') },
@@ -186,8 +186,6 @@ export const DAYS_TO_EXPIRE_SOON = 7;
 export const LEAVE_MODAL_ID = 'member-leave-modal';
 
 export const REMOVE_GROUP_LINK_MODAL_ID = 'remove-group-link-modal-id';
-
-export const SEARCH_TOKEN_TYPE = 'filtered-search-term';
 
 export const SORT_QUERY_PARAM_NAME = 'sort';
 export const ACTIVE_TAB_QUERY_PARAM_NAME = 'tab';

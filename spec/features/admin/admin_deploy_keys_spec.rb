@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin deploy keys', :js do
+RSpec.describe 'admin deploy keys', :js, feature_category: :authentication_and_authorization do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:admin) { create(:admin) }

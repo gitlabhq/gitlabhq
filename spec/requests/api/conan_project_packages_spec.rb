@@ -1,11 +1,21 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::ConanProjectPackages do
+RSpec.describe API::ConanProjectPackages, feature_category: :package_registry do
   include_context 'conan api setup'
 
   let(:project_id) { project.id }
-  let(:snowplow_standard_context_params) { { user: user, project: project, namespace: project.namespace } }
+
+  shared_examples 'accept get request on private project with access to package registry for everyone' do
+    subject { get api(url) }
+
+    before do
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+    end
+
+    it_behaves_like 'returning response status', :ok
+  end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v1/ping' do
     let(:url) { "/projects/#{project.id}/packages/conan/v1/ping" }
@@ -41,43 +51,50 @@ RSpec.describe API::ConanProjectPackages do
     include_context 'conan recipe endpoints'
 
     let(:url_prefix) { "#{Settings.gitlab.base_url}/api/v4/projects/#{project_id}" }
+    let(:recipe_path) { package.conan_recipe_path }
+
+    subject { get api(url), headers: headers }
 
     describe 'GET /api/v4/projects/:id/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel' do
-      let(:recipe_path) { package.conan_recipe_path }
       let(:url) { "/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}" }
 
       it_behaves_like 'recipe snapshot endpoint'
+      it_behaves_like 'accept get request on private project with access to package registry for everyone'
     end
 
     describe 'GET /api/v4/projects/:id/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel/packages/:conan_package_reference' do
-      let(:recipe_path) { package.conan_recipe_path }
       let(:url) { "/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}/packages/#{conan_package_reference}" }
 
       it_behaves_like 'package snapshot endpoint'
+      it_behaves_like 'accept get request on private project with access to package registry for everyone'
     end
 
     describe 'GET /api/v4/projects/:id/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel/digest' do
-      subject { get api("/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}/digest"), headers: headers }
+      let(:url) { "/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}/digest" }
 
       it_behaves_like 'recipe download_urls endpoint'
+      it_behaves_like 'accept get request on private project with access to package registry for everyone'
     end
 
     describe 'GET /api/v4/projects/:id/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls' do
-      subject { get api("/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}/packages/#{conan_package_reference}/download_urls"), headers: headers }
+      let(:url) { "/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}/packages/#{conan_package_reference}/download_urls" }
 
       it_behaves_like 'package download_urls endpoint'
+      it_behaves_like 'accept get request on private project with access to package registry for everyone'
     end
 
     describe 'GET /api/v4/projects/:id/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel/download_urls' do
-      subject { get api("/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}/download_urls"), headers: headers }
+      let(:url) { "/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}/download_urls" }
 
       it_behaves_like 'recipe download_urls endpoint'
+      it_behaves_like 'accept get request on private project with access to package registry for everyone'
     end
 
     describe 'GET /api/v4/projects/:id/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel/packages/:conan_package_reference/digest' do
-      subject { get api("/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}/packages/#{conan_package_reference}/digest"), headers: headers }
+      let(:url) { "/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}/packages/#{conan_package_reference}/digest" }
 
       it_behaves_like 'package download_urls endpoint'
+      it_behaves_like 'accept get request on private project with access to package registry for everyone'
     end
 
     describe 'POST /api/v4/projects/:id/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel/upload_urls' do
@@ -102,24 +119,22 @@ RSpec.describe API::ConanProjectPackages do
   context 'file download endpoints', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/326194' do
     include_context 'conan file download endpoints'
 
+    subject { get api(url), headers: headers }
+
     describe 'GET /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel/:recipe_revision/export/:file_name' do
-      subject do
-        get api("/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision}/export/#{recipe_file.file_name}"),
-            headers: headers
-      end
+      let(:url) { "/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision}/export/#{recipe_file.file_name}" }
 
       it_behaves_like 'recipe file download endpoint'
       it_behaves_like 'project not found by project id'
+      it_behaves_like 'accept get request on private project with access to package registry for everyone'
     end
 
     describe 'GET /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name' do
-      subject do
-        get api("/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision}/package/#{metadata.conan_package_reference}/#{metadata.package_revision}/#{package_file.file_name}"),
-            headers: headers
-      end
+      let(:url) { "/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision}/package/#{metadata.conan_package_reference}/#{metadata.package_revision}/#{package_file.file_name}" }
 
       it_behaves_like 'package file download endpoint'
       it_behaves_like 'project not found by project id'
+      it_behaves_like 'accept get request on private project with access to package registry for everyone'
     end
   end
 

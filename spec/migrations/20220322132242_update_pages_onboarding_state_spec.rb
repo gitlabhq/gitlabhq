@@ -2,7 +2,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe UpdatePagesOnboardingState do
+RSpec.describe UpdatePagesOnboardingState, feature_category: :pages do
   let(:migration) { described_class.new }
   let!(:namespaces) { table(:namespaces) }
   let!(:projects) { table(:projects) }

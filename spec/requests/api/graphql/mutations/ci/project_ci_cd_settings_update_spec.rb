@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'ProjectCiCdSettingsUpdate' do
+RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:project) do

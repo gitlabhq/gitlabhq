@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
@@ -31,7 +31,7 @@ describe('GroupSelect', () => {
   const inputId = 'inputId';
 
   // Finders
-  const findListbox = () => wrapper.findComponent(GlListbox);
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findInput = () => wrapper.findByTestId('input');
 
   // Helpers

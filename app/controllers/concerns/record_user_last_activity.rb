@@ -18,9 +18,8 @@ module RecordUserLastActivity
   def set_user_last_activity
     return unless request.get?
     return if Gitlab::Database.read_only?
+    return unless current_user && current_user.last_activity_on != Date.today
 
-    if current_user && current_user.last_activity_on != Date.today
-      Users::ActivityService.new(current_user).execute
-    end
+    Users::ActivityService.new(current_user).execute
   end
 end

@@ -142,6 +142,26 @@ RSpec.describe Gitlab::Ci::Config::Entry::Artifacts do
       end
     end
 
+    context 'when the `when` keyword is not a string' do
+      context 'when it is an array' do
+        let(:config) { { paths: %w[results.txt], when: ['always'] } }
+
+        it 'returns error' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to include 'artifacts when should be a string'
+        end
+      end
+
+      context 'when it is a boolean' do
+        let(:config) { { paths: %w[results.txt], when: true } }
+
+        it 'returns error' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to include 'artifacts when should be a string'
+        end
+      end
+    end
+
     describe 'excluded artifacts' do
       context 'when configuration is valid' do
         let(:config) { { untracked: true, exclude: ['some/directory/'] } }

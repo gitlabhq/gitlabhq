@@ -2,359 +2,320 @@
 
 require 'spec_helper'
 
-RSpec.describe PersonalAccessTokensFinder do
-  def finder(options = {}, current_user = nil)
-    described_class.new(options, current_user)
-  end
+RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
+  using RSpec::Parameterized::TableSyntax
 
-  describe '# searches PATs' do
-    using RSpec::Parameterized::TableSyntax
+  describe '#execute' do
+    let(:admin) { create(:admin) }
+    let(:user) { create(:user) }
+    let(:other_user) { create(:user) }
+    let(:project_bot) { create(:user, :project_bot) }
 
-    let_it_be(:time_token) do
-      create(:personal_access_token, created_at: DateTime.new(2022, 01, 02),
-                                     last_used_at: DateTime.new(2022, 01, 02))
+    let!(:tokens) do
+      {
+        active: create(:personal_access_token, user: user, name: 'my_pat_1'),
+        active_other: create(:personal_access_token, user: other_user, name: 'my_pat_2'),
+        expired: create(:personal_access_token, :expired, user: user),
+        revoked: create(:personal_access_token, :revoked, user: user),
+        active_impersonation: create(:personal_access_token, :impersonation, user: user),
+        expired_impersonation: create(:personal_access_token, :expired, :impersonation, user: user),
+        revoked_impersonation: create(:personal_access_token, :revoked, :impersonation, user: user),
+        bot: create(:personal_access_token, user: project_bot)
+      }
     end
 
-    let_it_be(:name_token) { create(:personal_access_token, name: 'test_1') }
+    let(:params) { {} }
+    let(:current_user) { admin }
 
-    let_it_be(:impersonated_token) do
-      create(:personal_access_token, :impersonation,
-        created_at: DateTime.new(2022, 01, 02),
-        last_used_at: DateTime.new(2022, 01, 02),
-        name: 'imp_token'
-      )
-    end
+    subject { described_class.new(params, current_user).execute }
 
-    shared_examples 'finding tokens by user and options' do
-      subject { finder(option, user).execute }
+    describe 'by current user' do
+      context 'with no user' do
+        let(:current_user) { nil }
 
-      it 'finds exactly' do
-        subject
+        it 'returns all tokens' do
+          is_expected.to match_array(tokens.values)
+        end
+      end
 
-        is_expected.to contain_exactly(*result)
+      context 'with admin' do
+        let(:current_user) { admin }
+
+        context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+          it 'returns all tokens' do
+            is_expected.to match_array(tokens.values)
+          end
+        end
+
+        context 'when admin mode setting is enabled' do
+          context 'when in admin mode', :enable_admin_mode do
+            it 'returns all tokens' do
+              is_expected.to match_array(tokens.values)
+            end
+          end
+
+          context 'when not in admin mode' do
+            before do
+              allow_next_instance_of(Gitlab::Auth::CurrentUserMode) do |current_user_mode|
+                allow(current_user_mode).to receive(:admin_mode?).and_return(false)
+              end
+            end
+
+            it 'returns no tokens' do
+              is_expected.to be_empty
+            end
+          end
+        end
+      end
+
+      context 'when user can read user personal access tokens' do
+        let(:params) { { user: user } }
+        let(:current_user) { user }
+
+        it 'returns tokens of user' do
+          is_expected.to contain_exactly(*user.personal_access_tokens)
+        end
+      end
+
+      context 'when user can not read user personal access tokens' do
+        let(:params) { { user: other_user } }
+        let(:current_user) { user }
+
+        it 'returns no tokens' do
+          is_expected.to be_empty
+        end
       end
     end
 
-    context 'by' do
-      where(:option, :user, :result) do
-        { created_before: DateTime.new(2022, 01, 03) } | create(:admin) | lazy { [time_token, impersonated_token] }
-        { created_after: DateTime.new(2022, 01, 01) }    | create(:admin) | lazy { [time_token, name_token, impersonated_token] }
-        { last_used_before: DateTime.new(2022, 01, 03) } | create(:admin) | lazy { [time_token, impersonated_token] }
-        { last_used_before: DateTime.new(2022, 01, 03) } | create(:admin) | lazy { [time_token, impersonated_token] }
-        { impersonation: true }                          | create(:admin) | lazy { [impersonated_token] }
-        { search: 'test' }                               | create(:admin) | lazy { [name_token] }
+    describe 'by user' do
+      where(:by_user, :expected_tokens) do
+        nil              | tokens.keys
+        ref(:user)       | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
+        ref(:other_user) | [:active_other]
+        ref(:admin)      | []
       end
 
       with_them do
-        it_behaves_like 'finding tokens by user and options'
-      end
-    end
-  end
+        let(:params) { { user: by_user } }
 
-  describe '#execute' do
-    let(:user) { create(:user) }
-    let(:params) { {} }
-    let(:current_user) { nil }
-    let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
-    let!(:expired_personal_access_token) { create(:personal_access_token, :expired, user: user) }
-    let!(:revoked_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
-    let!(:active_impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
-    let!(:expired_impersonation_token) { create(:personal_access_token, :expired, :impersonation, user: user) }
-    let!(:revoked_impersonation_token) { create(:personal_access_token, :revoked, :impersonation, user: user) }
-    let!(:project_bot) { create(:user, :project_bot) }
-    let!(:project_member) { create(:project_member, user: project_bot) }
-    let!(:project_access_token) { create(:personal_access_token, user: project_bot) }
-
-    subject { finder(params, current_user).execute }
-
-    context 'when current_user is defined' do
-      let(:current_user) { create(:admin) }
-      let(:params) { { user: user } }
-
-      context 'current_user is allowed to read PATs' do
-        it do
-          is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token,
-                                        revoked_personal_access_token, expired_personal_access_token,
-                                        revoked_impersonation_token, expired_impersonation_token)
-        end
-      end
-
-      context 'current_user is not allowed to read PATs' do
-        let(:current_user) { create(:user) }
-
-        it { is_expected.to be_empty }
-      end
-
-      context 'when user param is not set' do
-        let(:params) { {} }
-
-        it do
-          is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token,
-                                         revoked_personal_access_token, expired_personal_access_token,
-                                         revoked_impersonation_token, expired_impersonation_token, project_access_token)
-        end
-
-        context 'when current_user is not an administrator' do
-          let(:current_user) { create(:user) }
-
-          it { is_expected.to be_empty }
+        it 'returns tokens by user' do
+          is_expected.to match_array(tokens.values_at(*expected_tokens))
         end
       end
     end
 
-    describe 'without user' do
-      it do
-        is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token,
-          revoked_personal_access_token, expired_personal_access_token,
-          revoked_impersonation_token, expired_impersonation_token, project_access_token)
+    describe 'by users' do
+      where(:by_users, :expected_tokens) do
+        nil                         | tokens.keys
+        lazy { [user] }             | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
+        lazy { [other_user] }       | [:active_other]
+        lazy { [user, other_user] } | [:active, :active_other, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
+        []                          | [] # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
       end
 
-      describe 'with users' do
-        let(:user2) { create(:user) }
+      with_them do
+        let(:params) { { users: by_users } }
 
-        before do
-          create(:personal_access_token, user: user2)
-          create(:personal_access_token, :expired, user: user2)
-          create(:personal_access_token, :revoked, user: user2)
-          create(:personal_access_token, :impersonation, user: user2)
-          create(:personal_access_token, :expired, :impersonation, user: user2)
-          create(:personal_access_token, :revoked, :impersonation, user: user2)
-
-          params[:users] = [user]
-        end
-
-        it {
-          is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token,
-                                         revoked_personal_access_token, expired_personal_access_token,
-                                         revoked_impersonation_token, expired_impersonation_token)
-        }
-      end
-
-      describe 'with sort order' do
-        before do
-          params[:sort] = 'id_asc'
-        end
-
-        it 'sorts records as per the specified sort order' do
-          expect(subject).to match_array(PersonalAccessToken.all.order(id: :asc))
-        end
-      end
-
-      describe 'without impersonation' do
-        before do
-          params[:impersonation] = false
-        end
-
-        it { is_expected.to contain_exactly(active_personal_access_token, revoked_personal_access_token, expired_personal_access_token, project_access_token) }
-
-        describe 'with active state' do
-          before do
-            params[:state] = 'active'
-          end
-
-          it { is_expected.to contain_exactly(active_personal_access_token, project_access_token) }
-        end
-
-        describe 'with inactive state' do
-          before do
-            params[:state] = 'inactive'
-          end
-
-          it { is_expected.to contain_exactly(revoked_personal_access_token, expired_personal_access_token) }
-        end
-      end
-
-      describe 'with impersonation' do
-        before do
-          params[:impersonation] = true
-        end
-
-        it { is_expected.to contain_exactly(active_impersonation_token, revoked_impersonation_token, expired_impersonation_token) }
-
-        describe 'with active state' do
-          before do
-            params[:state] = 'active'
-          end
-
-          it { is_expected.to contain_exactly(active_impersonation_token) }
-        end
-
-        describe 'with inactive state' do
-          before do
-            params[:state] = 'inactive'
-          end
-
-          it { is_expected.to contain_exactly(revoked_impersonation_token, expired_impersonation_token) }
-        end
-      end
-
-      describe 'with active state' do
-        before do
-          params[:state] = 'active'
-        end
-
-        it { is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token, project_access_token) }
-      end
-
-      describe 'with inactive state' do
-        before do
-          params[:state] = 'inactive'
-        end
-
-        it do
-          is_expected.to contain_exactly(expired_personal_access_token, revoked_personal_access_token,
-            expired_impersonation_token, revoked_impersonation_token)
-        end
-      end
-
-      describe 'with id' do
-        subject { finder(params).find_by_id(active_personal_access_token.id) }
-
-        it { is_expected.to eq(active_personal_access_token) }
-
-        describe 'with impersonation' do
-          before do
-            params[:impersonation] = true
-          end
-
-          it { is_expected.to be_nil }
-        end
-      end
-
-      describe 'with token' do
-        subject { finder(params).find_by_token(active_personal_access_token.token) }
-
-        it { is_expected.to eq(active_personal_access_token) }
-
-        describe 'with impersonation' do
-          before do
-            params[:impersonation] = true
-          end
-
-          it { is_expected.to be_nil }
+        it 'returns tokens by users' do
+          is_expected.to match_array(tokens.values_at(*expected_tokens))
         end
       end
     end
 
-    describe 'with user' do
-      let(:user2) { create(:user) }
-      let!(:other_user_active_personal_access_token) { create(:personal_access_token, user: user2) }
-      let!(:other_user_expired_personal_access_token) { create(:personal_access_token, :expired, user: user2) }
-      let!(:other_user_revoked_personal_access_token) { create(:personal_access_token, :revoked, user: user2) }
-      let!(:other_user_active_impersonation_token) { create(:personal_access_token, :impersonation, user: user2) }
-      let!(:other_user_expired_impersonation_token) { create(:personal_access_token, :expired, :impersonation, user: user2) }
-      let!(:other_user_revoked_impersonation_token) { create(:personal_access_token, :revoked, :impersonation, user: user2) }
+    describe 'by impersonation' do
+      where(:by_impersonation, :expected_tokens) do
+        nil       | tokens.keys
+        true      | [:active_impersonation, :expired_impersonation, :revoked_impersonation]
+        false     | [:active, :active_other, :expired, :revoked, :bot]
+        'other'   | tokens.keys
+      end
 
+      with_them do
+        let(:params) { { impersonation: by_impersonation } }
+
+        it 'returns tokens by impersonation' do
+          is_expected.to match_array(tokens.values_at(*expected_tokens))
+        end
+      end
+    end
+
+    describe 'by state' do
+      where(:by_state, :expected_tokens) do
+        nil        | tokens.keys
+        'active'   | [:active, :active_other, :active_impersonation, :bot]
+        'inactive' | [:expired, :revoked, :expired_impersonation, :revoked_impersonation]
+        'other'    | tokens.keys
+      end
+
+      with_them do
+        let(:params) { { state: by_state } }
+
+        it 'returns tokens by state' do
+          is_expected.to match_array(tokens.values_at(*expected_tokens))
+        end
+      end
+    end
+
+    describe 'by owner type' do
+      where(:by_owner_type, :expected_tokens) do
+        nil     | tokens.keys
+        'human' | [:active, :active_other, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
+        'other' | tokens.keys
+      end
+
+      with_them do
+        let(:params) { { owner_type: by_owner_type } }
+
+        it 'returns tokens by owner type' do
+          is_expected.to match_array(tokens.values_at(*expected_tokens))
+        end
+      end
+    end
+
+    describe 'by revoked state' do
+      where(:by_revoked_state, :expected_tokens) do
+        nil   | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot]
+        true  | [:revoked, :revoked_impersonation]
+        false | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot]
+      end
+
+      with_them do
+        let(:params) { { revoked: by_revoked_state } }
+
+        it 'returns tokens by revoked state' do
+          is_expected.to match_array(tokens.values_at(*expected_tokens))
+        end
+      end
+    end
+
+    describe 'by created date' do
       before do
-        params[:user] = user
+        tokens[:active_other].update!(created_at: 5.days.ago)
       end
 
-      it do
-        is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token,
-          revoked_personal_access_token, expired_personal_access_token,
-          revoked_impersonation_token, expired_impersonation_token)
-      end
-
-      describe 'filtering human tokens' do
-        before do
-          params[:owner_type] = 'human'
+      describe 'by created before' do
+        where(:by_created_before, :expected_tokens) do
+          6.days.ago      | []
+          2.days.ago      | [:active_other]
+          2.days.from_now | tokens.keys
         end
 
-        it { is_expected.not_to include(project_access_token) }
-      end
+        with_them do
+          let(:params) { { created_before: by_created_before } }
 
-      describe 'without impersonation' do
-        before do
-          params[:impersonation] = false
-        end
-
-        it { is_expected.to contain_exactly(active_personal_access_token, revoked_personal_access_token, expired_personal_access_token) }
-
-        describe 'with active state' do
-          before do
-            params[:state] = 'active'
+          it 'returns tokens by created before' do
+            is_expected.to match_array(tokens.values_at(*expected_tokens))
           end
-
-          it { is_expected.to contain_exactly(active_personal_access_token) }
-        end
-
-        describe 'with inactive state' do
-          before do
-            params[:state] = 'inactive'
-          end
-
-          it { is_expected.to contain_exactly(revoked_personal_access_token, expired_personal_access_token) }
         end
       end
 
-      describe 'with impersonation' do
-        before do
-          params[:impersonation] = true
+      describe 'by created after' do
+        where(:by_created_after, :expected_tokens) do
+          6.days.ago      | tokens.keys
+          2.days.ago      | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :bot]
+          2.days.from_now | []
         end
 
-        it { is_expected.to contain_exactly(active_impersonation_token, revoked_impersonation_token, expired_impersonation_token) }
+        with_them do
+          let(:params) { { created_after: by_created_after } }
 
-        describe 'with active state' do
-          before do
-            params[:state] = 'active'
+          it 'returns tokens by created before' do
+            is_expected.to match_array(tokens.values_at(*expected_tokens))
           end
+        end
+      end
+    end
 
-          it { is_expected.to contain_exactly(active_impersonation_token) }
+    describe 'by last used date' do
+      before do
+        PersonalAccessToken.update_all(last_used_at: Time.now)
+        tokens[:active_other].update!(last_used_at: 5.days.ago)
+      end
+
+      describe 'by last used before' do
+        where(:by_last_used_before, :expected_tokens) do
+          6.days.ago      | []
+          2.days.ago      | [:active_other]
+          2.days.from_now | tokens.keys
         end
 
-        describe 'with inactive state' do
-          before do
-            params[:state] = 'inactive'
-          end
+        with_them do
+          let(:params) { { last_used_before: by_last_used_before } }
 
-          it { is_expected.to contain_exactly(revoked_impersonation_token, expired_impersonation_token) }
+          it 'returns tokens by last used before' do
+            is_expected.to match_array(tokens.values_at(*expected_tokens))
+          end
         end
       end
 
-      describe 'with active state' do
-        before do
-          params[:state] = 'active'
+      describe 'by last used after' do
+        where(:by_last_used_after, :expected_tokens) do
+          6.days.ago      | tokens.keys
+          2.days.ago      | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :bot]
+          2.days.from_now | []
         end
 
-        it { is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token) }
-      end
+        with_them do
+          let(:params) { { last_used_after: by_last_used_after } }
 
-      describe 'with inactive state' do
-        before do
-          params[:state] = 'inactive'
-        end
-
-        it do
-          is_expected.to contain_exactly(expired_personal_access_token, revoked_personal_access_token,
-            expired_impersonation_token, revoked_impersonation_token)
-        end
-      end
-
-      describe 'with id' do
-        subject { finder(params).find_by_id(active_personal_access_token.id) }
-
-        it { is_expected.to eq(active_personal_access_token) }
-
-        describe 'with impersonation' do
-          before do
-            params[:impersonation] = true
+          it 'returns tokens by last used after' do
+            is_expected.to match_array(tokens.values_at(*expected_tokens))
           end
+        end
+      end
+    end
 
-          it { is_expected.to be_nil }
+    describe 'by search' do
+      where(:by_search, :expected_tokens) do
+        nil      | tokens.keys
+        'my_pat' | [:active, :active_other]
+        'other'  | []
+      end
+
+      with_them do
+        let(:params) { { search: by_search } }
+
+        it 'returns tokens by search' do
+          is_expected.to match_array(tokens.values_at(*expected_tokens))
+        end
+      end
+    end
+
+    describe 'sort' do
+      where(:sort, :expected_tokens) do
+        nil       | tokens.keys
+        'id_asc'  | [:active, :active_other, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :bot]
+        'id_desc' | [:bot, :revoked_impersonation, :expired_impersonation, :active_impersonation, :revoked, :expired, :active_other, :active]
+        'other'   | tokens.keys
+      end
+
+      with_them do
+        let(:params) { { sort: sort } }
+
+        it 'returns ordered tokens' do
+          expect(subject.map(&:id)).to eq(tokens.values_at(*expected_tokens).map(&:id))
+        end
+      end
+    end
+
+    describe 'delegates' do
+      subject { described_class.new(params, current_user) }
+
+      describe '#find_by_id' do
+        it 'returns token by id' do
+          expect(subject.find_by_id(tokens[:active].id)).to eq(tokens[:active])
         end
       end
 
-      describe 'with token' do
-        subject { finder(params).find_by_token(active_personal_access_token.token) }
+      describe '#find_by_token' do
+        it 'returns token by token' do
+          expect(subject.find_by_token(tokens[:active].token)).to eq(tokens[:active])
+        end
+      end
 
-        it { is_expected.to eq(active_personal_access_token) }
-
-        describe 'with impersonation' do
-          before do
-            params[:impersonation] = true
-          end
-
-          it { is_expected.to be_nil }
+      describe '#find' do
+        it 'returns token by id' do
+          expect(subject.find(tokens[:active].id)).to eq(tokens[:active])
         end
       end
     end

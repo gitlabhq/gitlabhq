@@ -7,6 +7,8 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::LooseIndexScanBa
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:issues) { table(:issues) }
+  let(:issue_base_type_enum_value) { 0 }
+  let(:issue_type) { table(:work_item_types).find_by!(namespace_id: nil, base_type: issue_base_type_enum_value) }
 
   let!(:namespace1) { namespaces.create!(name: 'ns1', path: 'ns1') }
   let!(:namespace2) { namespaces.create!(name: 'ns2', path: 'ns2') }
@@ -19,13 +21,15 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::LooseIndexScanBa
   let!(:project4) { projects.create!(name: 'p4', namespace_id: namespace4.id, project_namespace_id: namespace4.id) }
   let!(:project5) { projects.create!(name: 'p5', namespace_id: namespace5.id, project_namespace_id: namespace5.id) }
 
-  let!(:issue1) { issues.create!(title: 'title', description: 'description', project_id: project2.id) }
-  let!(:issue2) { issues.create!(title: 'title', description: 'description', project_id: project1.id) }
-  let!(:issue3) { issues.create!(title: 'title', description: 'description', project_id: project2.id) }
-  let!(:issue4) { issues.create!(title: 'title', description: 'description', project_id: project3.id) }
-  let!(:issue5) { issues.create!(title: 'title', description: 'description', project_id: project2.id) }
-  let!(:issue6) { issues.create!(title: 'title', description: 'description', project_id: project4.id) }
-  let!(:issue7) { issues.create!(title: 'title', description: 'description', project_id: project5.id) }
+  # rubocop:disable Layout/LineLength
+  let!(:issue1) { issues.create!(title: 'title', description: 'description', project_id: project2.id, namespace_id: project2.project_namespace_id, work_item_type_id: issue_type.id) }
+  let!(:issue2) { issues.create!(title: 'title', description: 'description', project_id: project1.id, namespace_id: project1.project_namespace_id, work_item_type_id: issue_type.id) }
+  let!(:issue3) { issues.create!(title: 'title', description: 'description', project_id: project2.id, namespace_id: project2.project_namespace_id, work_item_type_id: issue_type.id) }
+  let!(:issue4) { issues.create!(title: 'title', description: 'description', project_id: project3.id, namespace_id: project3.project_namespace_id, work_item_type_id: issue_type.id) }
+  let!(:issue5) { issues.create!(title: 'title', description: 'description', project_id: project2.id, namespace_id: project2.project_namespace_id, work_item_type_id: issue_type.id) }
+  let!(:issue6) { issues.create!(title: 'title', description: 'description', project_id: project4.id, namespace_id: project4.project_namespace_id, work_item_type_id: issue_type.id) }
+  let!(:issue7) { issues.create!(title: 'title', description: 'description', project_id: project5.id, namespace_id: project5.project_namespace_id, work_item_type_id: issue_type.id) }
+  # rubocop:enable Layout/LineLength
 
   it { expect(described_class).to be < Gitlab::BackgroundMigration::BatchingStrategies::BaseStrategy }
 

@@ -1,0 +1,38 @@
+.protected-branches-list.js-protected-branches-list{ data: { testid: 'protected-branches-list' } }
+  - if @protected_branches.empty?
+    .card-header.bg-white
+      = s_("ProtectedBranch|Protected branch (%{protected_branches_count})") % { protected_branches_count: 0 }
+    %p.settings-message.text-center
+      = s_("ProtectedBranch|There are currently no protected branches, protect a branch with the form above.")
+  - else
+    .flash-container
+    %table.table.table-bordered
+      %colgroup
+        %col{ width: "30%" }
+        %col{ width: "20%" }
+        %col{ width: "20%" }
+        %col{ width: "10%" }
+        %col{ width: "10%" }
+        - if can_admin_project
+          %col
+      %thead
+        %tr
+          %th
+            = s_("ProtectedBranch|Branch")
+          %th
+            = s_("ProtectedBranch|Allowed to merge")
+          %th
+            = s_("ProtectedBranch|Allowed to push")
+          %th
+            = s_("ProtectedBranch|Allowed to force push")
+            %span.has-tooltip{ data: { container: 'body' }, title: s_('ProtectedBranch|Allow all users with push access to force push.'), 'aria-hidden': 'true' }
+              = sprite_icon('question', size: 16, css_class: 'gl-text-gray-500')
+
+          = render_if_exists 'protected_branches/ee/code_owner_approval_table_head'
+
+          - if can_admin_project
+            %th
+      %tbody
+        = yield
+
+    = paginate @protected_branches, theme: 'gitlab'

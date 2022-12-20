@@ -40,7 +40,8 @@
           = render Pajamas::ButtonComponent.new(variant: :default, button_options: { class: 'js-confirm-modal-button', data: confirm_user_data(@user) }) do
             = _('Confirm user')
     .gl-p-2
-      = link_to _('New identity'), new_admin_user_identity_path(@user), class: "btn btn-primary gl-button"
+      = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_identity_path(@user)) do
+        = _('New identity')
 = gl_tabs_nav do
   = gl_tab_link_to _("Account"), admin_user_path(@user)
   = gl_tab_link_to _("Groups and projects"), projects_admin_user_path(@user)

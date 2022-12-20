@@ -1,5 +1,6 @@
 <script>
-import { GlBadge, GlIcon, GlLink, GlSafeHtmlDirective, GlButton } from '@gitlab/ui';
+import { GlBadge, GlIcon, GlLink, GlButton } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { dateInWords, isValidDate } from '~/lib/utils/datetime_utility';
 
 export default {
@@ -10,7 +11,7 @@ export default {
     GlButton,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     feature: {

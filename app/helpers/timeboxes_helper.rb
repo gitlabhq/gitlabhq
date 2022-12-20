@@ -36,7 +36,7 @@ module TimeboxesHelper
     end
   end
 
-  def milestones_browse_issuables_path(milestone, state: nil, type:)
+  def milestones_browse_issuables_path(milestone, type:, state: nil)
     opts = { milestone_title: milestone.title, state: state }
 
     if @project

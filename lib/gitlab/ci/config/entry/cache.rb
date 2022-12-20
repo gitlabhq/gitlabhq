@@ -17,16 +17,16 @@ module Gitlab
 
           validations do
             validates :config, type: Hash, allowed_keys: ALLOWED_KEYS
-            validates :policy,
-              inclusion: { in: ALLOWED_POLICY, message: 'should be pull-push, push, or pull' },
-              allow_blank: true
+            validates :policy, type: String, allow_blank: true, inclusion: {
+              in: ALLOWED_POLICY,
+              message: "should be one of: #{ALLOWED_POLICY.join(', ')}"
+            }
 
             with_options allow_nil: true do
-              validates :when,
-                  inclusion: {
-                    in: ALLOWED_WHEN,
-                    message: 'should be on_success, on_failure or always'
-                  }
+              validates :when, type: String, inclusion: {
+                in: ALLOWED_WHEN,
+                message: "should be one of: #{ALLOWED_WHEN.join(', ')}"
+              }
             end
           end
 

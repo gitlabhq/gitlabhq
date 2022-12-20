@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Bridge do
+RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:target_project) { create(:project, name: 'project', namespace: create(:namespace, name: 'my')) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
@@ -32,6 +32,24 @@ RSpec.describe Ci::Bridge do
   it 'has one downstream pipeline' do
     expect(bridge).to have_one(:sourced_pipeline)
     expect(bridge).to have_one(:downstream_pipeline)
+  end
+
+  describe '#sourced_pipelines' do
+    subject { bridge.sourced_pipelines }
+
+    it 'raises error' do
+      expect { subject }.to raise_error RuntimeError, 'Ci::Bridge does not have sourced_pipelines association'
+    end
+
+    context 'when ci_bridge_remove_sourced_pipelines is disabled' do
+      before do
+        stub_feature_flags(ci_bridge_remove_sourced_pipelines: false)
+      end
+
+      it 'returns the sourced_pipelines association' do
+        expect(bridge.sourced_pipelines).to eq([])
+      end
+    end
   end
 
   describe '#retryable?' do

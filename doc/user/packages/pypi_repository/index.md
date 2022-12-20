@@ -283,6 +283,32 @@ characters are removed.
 A `pip install` request for `my.package` looks for packages that match any of
 the three characters, such as `my-package`, `my_package`, and `my....package`.
 
+## Using `requirements.txt`
+
+If you want pip to access your private registry, add the `--extra-index-url` parameter along with the URL for your registry to your `requirements.txt` file.
+
+```plaintext
+--extra-index-url https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple
+package-name==1.0.0
+```
+
+If this is a private registry, you can authenticate in a couple of ways. For example:
+
+- Using your `requirements.txt` file:
+
+```plaintext
+--extra-index-url https://__token__:<your_personal_token>@gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple
+package-name==1.0.0
+```
+
+- Using a `~/.netrc` file:
+
+```plaintext
+machine gitlab.example.com
+login __token__
+password <your_personal_token>
+```
+
 ## Troubleshooting
 
 To improve performance, the pip command caches files related to a package. Note that pip doesn't remove data by
@@ -292,6 +318,18 @@ this command:
 ```shell
 pip cache purge
 ```
+
+### Multiple `index-url` or `extra-index-url` parameters
+
+You can define multiple `index-url` and `extra-index-url` parameters.
+
+If you use the same domain name (such as `gitlab.example.com`) multiple times with different authentication
+tokens, `pip` may not be able to find your packages. This problem is due to how `pip` 
+[registers and stores your tokens](https://github.com/pypa/pip/pull/10904#issuecomment-1126690115) during commands executions.
+
+To workaround this issue, you can use a [group deploy token](../../project/deploy_tokens/index.md) with the
+scope `read_package_registry` from a common parent group for all projects or groups targeted by the
+`index-url` and `extra-index-url` values.
 
 ## Supported CLI commands
 

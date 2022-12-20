@@ -162,4 +162,24 @@ RSpec.describe IssueEntity do
   end
 
   it_behaves_like 'issuable entity current_user properties'
+
+  context 'when issue has email participants' do
+    before do
+      resource.issue_email_participants.create!(email: 'any@email.com')
+    end
+
+    context 'when issue is confidential' do
+      it 'returns email participants' do
+        resource.update!(confidential: true)
+
+        expect(subject[:issue_email_participants]).to match_array([{ email: "any@email.com" }])
+      end
+    end
+
+    context 'when issue is not confidential' do
+      it 'returns empty array' do
+        expect(subject[:issue_email_participants]).to be_empty
+      end
+    end
+  end
 end

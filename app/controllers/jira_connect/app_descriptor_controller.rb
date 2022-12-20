@@ -28,7 +28,7 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
         type: 'jwt'
       },
       modules: modules,
-      scopes: %w(READ WRITE DELETE),
+      scopes: %w[READ WRITE DELETE],
       apiVersion: 1,
       apiMigrations: {
         'context-qsh': true,
@@ -76,7 +76,7 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
       jiraDevelopmentTool: {
         actions: {
           createBranch: {
-            templateUrl: new_jira_connect_branch_url + '?issue_key={issue.key}&issue_summary={issue.summary}'
+            templateUrl: "#{new_jira_connect_branch_url}?issue_key={issue.key}&issue_summary={issue.summary}"
           }
         },
         key: 'gitlab-development-tool',
@@ -84,7 +84,7 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
         name: { value: 'GitLab' },
         url: HOME_URL,
         logoUrl: logo_url,
-        capabilities: %w(branch commit pull_request)
+        capabilities: %w[branch commit pull_request]
       }
     }
   end

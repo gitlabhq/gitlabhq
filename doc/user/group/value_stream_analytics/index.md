@@ -223,7 +223,7 @@ Value stream analytics records the following times for each stage:
 - **Review**: 14:00 to 19:00: 5 hrs
 - **Staging**: 19:00 to 19:30: 30 minutes
 
-There are some additional considerations for this example:
+Keep in mind the following observations related to this example:
 
 - This example demonstrates that it doesn't matter if your first
   commit doesn't mention the issue number, you can do this later in any commit

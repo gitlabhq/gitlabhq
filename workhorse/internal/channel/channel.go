@@ -2,7 +2,9 @@ package channel
 
 import (
 	"fmt"
+	"net"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -10,7 +12,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 )
 
 var (
@@ -24,7 +26,7 @@ var (
 func Handler(myAPI *api.API) http.Handler {
 	return myAPI.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
 		if err := a.Channel.Validate(); err != nil {
-			helper.Fail500(w, r, err)
+			fail.Request(w, r, err)
 			return
 		}
 
@@ -45,7 +47,7 @@ func Handler(myAPI *api.API) http.Handler {
 func ProxyChannel(w http.ResponseWriter, r *http.Request, settings *api.ChannelSettings, proxy *Proxy) {
 	server, err := connectToServer(settings, r)
 	if err != nil {
-		helper.Fail500(w, r, err)
+		fail.Request(w, r, err)
 		log.ContextLogger(r.Context()).WithError(err).Print("Channel: connecting to server failed")
 		return
 	}
@@ -109,7 +111,7 @@ func pingLoop(conn Connection) {
 func connectToServer(settings *api.ChannelSettings, r *http.Request) (Connection, error) {
 	settings = settings.Clone()
 
-	helper.SetForwardedFor(&settings.Header, r)
+	setForwardedFor(&settings.Header, r)
 
 	conn, _, err := settings.Dial()
 	if err != nil {
@@ -129,4 +131,20 @@ func closeAfterMaxTime(proxy *Proxy, maxSessionTime int) {
 		"connection closed: session time greater than maximum time allowed - %v seconds",
 		maxSessionTime,
 	)
+}
+
+func setForwardedFor(newHeaders *http.Header, originalRequest *http.Request) {
+	if clientIP, _, err := net.SplitHostPort(originalRequest.RemoteAddr); err == nil {
+		var header string
+
+		// If we aren't the first proxy retain prior
+		// X-Forwarded-For information as a comma+space
+		// separated list and fold multiple headers into one.
+		if prior, ok := originalRequest.Header["X-Forwarded-For"]; ok {
+			header = strings.Join(prior, ", ") + ", " + clientIP
+		} else {
+			header = clientIP
+		}
+		newHeaders.Set("X-Forwarded-For", header)
+	}
 }

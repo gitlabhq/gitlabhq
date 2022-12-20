@@ -67,8 +67,8 @@ module Gitlab
         private
 
         def instance_method_defined?(klass, name)
-          klass.instance_methods(false).include?(name) ||
-            klass.private_instance_methods(false).include?(name)
+          klass.method_defined?(name, false) ||
+            klass.private_method_defined?(name, false)
         end
 
         def find_direct_method(klass, name)

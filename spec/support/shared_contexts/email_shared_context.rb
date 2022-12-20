@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_context :email_shared_context do
+RSpec.shared_context 'email shared context' do
   let(:mail_key) { '59d8df8370b7e95c5a49fbf86aeb2c93' }
   let(:receiver) { Gitlab::Email::Receiver.new(email_raw) }
   let(:markdown) { '![image](uploads/image.png)' }
@@ -27,7 +27,7 @@ def service_desk_fixture(path, slug: nil, key: 'mykey')
   fixture_file(path).gsub('project_slug', slug).gsub('project_key', key)
 end
 
-RSpec.shared_examples :reply_processing_shared_examples do
+RSpec.shared_examples 'reply processing shared examples' do
   context 'when the user could not be found' do
     before do
       user.destroy!
@@ -49,7 +49,7 @@ RSpec.shared_examples :reply_processing_shared_examples do
   end
 end
 
-RSpec.shared_examples :checks_permissions_on_noteable_examples do
+RSpec.shared_examples 'checks permissions on noteable examples' do
   context 'when user has access' do
     before do
       project.add_reporter(user)
@@ -67,7 +67,7 @@ RSpec.shared_examples :checks_permissions_on_noteable_examples do
   end
 end
 
-RSpec.shared_examples :note_handler_shared_examples do |forwardable|
+RSpec.shared_examples 'note handler shared examples' do |forwardable|
   context 'when the noteable could not be found' do
     before do
       noteable.destroy!
@@ -157,7 +157,7 @@ RSpec.shared_examples :note_handler_shared_examples do |forwardable|
       noteable.update_attribute(:discussion_locked, true)
     end
 
-    it_behaves_like :checks_permissions_on_noteable_examples
+    it_behaves_like 'checks permissions on noteable examples'
   end
 
   context 'when everything is fine' do

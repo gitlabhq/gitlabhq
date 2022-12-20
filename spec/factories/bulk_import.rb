@@ -5,6 +5,7 @@ FactoryBot.define do
     user
     source_type { :gitlab }
     source_version { BulkImport.min_gl_version_for_project_migration.to_s }
+    source_enterprise { false }
 
     trait :created do
       status { 0 }

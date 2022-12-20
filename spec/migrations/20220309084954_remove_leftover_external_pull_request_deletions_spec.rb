@@ -3,7 +3,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RemoveLeftoverExternalPullRequestDeletions do
+RSpec.describe RemoveLeftoverExternalPullRequestDeletions, feature_category: :sharding do
   let(:deleted_records) { table(:loose_foreign_keys_deleted_records) }
 
   let(:pending_record1) { deleted_records.create!(id: 1, fully_qualified_table_name: 'public.external_pull_requests', primary_key_value: 1, status: 1) }

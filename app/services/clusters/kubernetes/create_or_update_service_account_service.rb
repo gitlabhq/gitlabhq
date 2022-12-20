@@ -3,7 +3,7 @@
 module Clusters
   module Kubernetes
     class CreateOrUpdateServiceAccountService
-      def initialize(kubeclient, service_account_name:, service_account_namespace:, service_account_namespace_labels: nil, token_name:, rbac:, namespace_creator: false, role_binding_name: nil)
+      def initialize(kubeclient, service_account_name:, service_account_namespace:, token_name:, rbac:, service_account_namespace_labels: nil, namespace_creator: false, role_binding_name: nil)
         @kubeclient = kubeclient
         @service_account_name = service_account_name
         @service_account_namespace = service_account_namespace

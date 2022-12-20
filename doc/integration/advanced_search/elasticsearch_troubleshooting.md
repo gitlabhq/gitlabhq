@@ -96,7 +96,7 @@ Here are some common pitfalls and how to overcome them.
   a Lucene index.
 - **Replicas**: Failover mechanisms that duplicate indices.
 
-## How can I verify that my GitLab instance is using Elasticsearch?
+## How can you verify that your GitLab instance is using Elasticsearch?
 
 There are a couple of ways to achieve that:
 
@@ -184,13 +184,13 @@ If reindexing the project shows:
 - Elasticsearch errors or doesn't present any errors at all, reach out to your
   Elasticsearch administrator to check the instance.
 
-### I updated GitLab and now I can't find anything
+### You updated GitLab and now you can't find anything
 
 We continuously make updates to our indexing strategies and aim to support
 newer versions of Elasticsearch. When indexing changes are made, it may
 be necessary for you to [reindex](elasticsearch.md#zero-downtime-reindexing) after updating GitLab.
 
-### I indexed all the repositories but I can't get any hits for my search term in the UI
+### You indexed all the repositories but you can't get any hits for your search term in the UI
 
 Make sure you [indexed all the database data](elasticsearch.md#enable-advanced-search).
 
@@ -220,7 +220,7 @@ The above instructions are not to be used for scenarios that only index a [subse
 
 See [Elasticsearch Index Scopes](elasticsearch.md#advanced-search-index-scopes) for more information on searching for specific types of data.
 
-### I indexed all the repositories but then switched Elasticsearch servers and now I can't find anything
+### You indexed all the repositories but then switched Elasticsearch servers and now you can't find anything
 
 You must re-run all the Rake tasks to reindex the database, repositories, and wikis.
 
@@ -228,11 +228,11 @@ You must re-run all the Rake tasks to reindex the database, repositories, and wi
 
 The more data present in your GitLab instance, the longer the indexing process takes.
 
-### There are some projects that weren't indexed, but I don't know which ones
+### There are some projects that weren't indexed, but you don't know which ones
 
 You can run `sudo gitlab-rake gitlab:elastic:projects_not_indexed` to display projects that aren't indexed.
 
-### No new data is added to the Elasticsearch index when I push code
+### No new data is added to the Elasticsearch index when you push code
 
 NOTE:
 This was [fixed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35936) in GitLab 13.2 and the Rake task is not available for versions greater than that.
@@ -248,7 +248,7 @@ sudo gitlab-rake gitlab:elastic:clear_locked_projects
 If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error during indexing, it usually means that Elasticsearch is unable to keep up with the concurrency of indexing request. To address change the following settings:
 
 - To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced Search settings](elasticsearch.md#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
-- If changing `Bulk request concurrency` didn't help, you can use the [queue selector](../../administration/sidekiq/extra_sidekiq_processes.md#queue-selector) option to [limit indexing jobs only to specific Sidekiq nodes](elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
+- If changing `Bulk request concurrency` didn't help, you can use the [queue selector](../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors) option to [limit indexing jobs only to specific Sidekiq nodes](elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
 
 ### Indexing is very slow or fails with `rejected execution of coordinating operation` messages
 
@@ -447,24 +447,9 @@ however, searches only surface results that can be viewed by the user.
 Advanced Search honors all permission checks in the application by
 filtering out projects that a user does not have access to at search time.
 
-## Access requirements for the self-managed AWS OpenSearch Service
+### Role mapping when using fine-grained access control with AWS Elasticsearch or OpenSearch
 
-To use the self-managed AWS OpenSearch Service with GitLab, configure your instance's domain access policies
-to contain the actions below.
-See [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details.
-
-```plaintext
-es:ESHttpDelete
-es:ESHttpGet
-es:ESHttpHead
-es:ESHttpPost
-es:ESHttpPut
-es:ESHttpPatch
-```
-
-## Role-mapping when using AWS Elasticsearch or AWS OpenSearch fine-grained access control
-
-When using fine-grained access control with an IAM role, you might encounter the following error:
+When using fine-grained access control with an IAM role or a role created using OpenSearch Dashboards, you might encounter the following error:
 
 ```plaintext
 {"error":{"root_cause":[{"type":"security_exception","reason":"no permissions for [indices:data/write/bulk] and User [name=arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE, backend_roles=[arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE], requestedTenant=null]"}],"type":"security_exception","reason":"no permissions for [indices:data/write/bulk] and User [name=arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE, backend_roles=[arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE], requestedTenant=null]"},"status":403}

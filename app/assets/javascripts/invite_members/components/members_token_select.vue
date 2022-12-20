@@ -49,6 +49,11 @@ export default {
       type: Object,
       required: true,
     },
+    inputId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -83,6 +88,13 @@ export default {
     },
     hasInvalidMembers() {
       return !isEmpty(this.invalidMembers);
+    },
+    textInputAttrs() {
+      return {
+        'data-testid': 'members-token-select-input',
+        'data-qa-selector': 'members_token_select_input',
+        id: this.inputId,
+      };
     },
   },
   watch: {
@@ -183,10 +195,7 @@ export default {
     :hide-dropdown-with-no-items="hideDropdownWithNoItems"
     :placeholder="placeholderText"
     :aria-labelledby="ariaLabelledby"
-    :text-input-attrs="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-      'data-testid': 'members-token-select-input',
-      'data-qa-selector': 'members_token_select_input',
-    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+    :text-input-attrs="textInputAttrs"
     @blur="handleBlur"
     @text-input="handleTextInput"
     @input="handleInput"

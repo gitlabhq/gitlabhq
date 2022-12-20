@@ -7,4 +7,4 @@
   = expanded ? _('Collapse') : _('Expand')
 
 %p
-  = render "ci/variables/content"
+  = render "ci/variables/content", entity: @entity, variable_limit: @variable_limit

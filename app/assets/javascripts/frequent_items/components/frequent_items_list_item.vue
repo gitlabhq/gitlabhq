@@ -1,6 +1,7 @@
 <script>
-import { GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { snakeCase } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 import { mapVuexModuleState } from '~/lib/utils/vuex_module_mappers';
@@ -15,7 +16,7 @@ export default {
     ProjectAvatar,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [trackingMixin],
   inject: ['vuexModule'],

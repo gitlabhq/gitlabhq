@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching do
+RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching, feature_category: :team_planning do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let(:issue) { create(:issue, project: project) }
@@ -12,6 +12,7 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
     issue.assignees = [user]
     merge_request.update!(assignees: [user])
     sign_in(user)
+    stub_feature_flags(limit_assigned_issues_count: false)
   end
 
   it 'reflects dashboard issues count' do
@@ -27,6 +28,28 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
       visit issues_path
 
       expect_counters('issues', '0', n_("%d assigned issue", "%d assigned issues", 0) % 0)
+    end
+  end
+
+  context 'when :limit_assigned_issues_count FF is used' do
+    before do
+      stub_feature_flags(limit_assigned_issues_count: true)
+    end
+
+    it 'reflects dashboard issues count' do
+      visit issues_path
+
+      expect_counters('issues', '1', n_("%d assigned issue", "%d assigned issues", 1) % 1)
+
+      issue.update!(assignees: [])
+
+      Users::AssignedIssuesCountService.new(current_user: user).delete_cache
+
+      travel_to(3.minutes.from_now) do
+        visit issues_path
+
+        expect_counters('issues', '0', n_("%d assigned issue", "%d assigned issues", 0) % 0)
+      end
     end
   end
 

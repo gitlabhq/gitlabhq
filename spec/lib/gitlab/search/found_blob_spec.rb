@@ -141,9 +141,8 @@ RSpec.describe Gitlab::Search::FoundBlob do
       subject { described_class.new(blob_path: path, project: project, ref: 'master') }
 
       before do
-        allow(Gitlab::Git::Blob).to receive(:batch).and_return([
-          Gitlab::Git::Blob.new(path: path)
-        ])
+        allow(Gitlab::Git::Blob)
+          .to receive(:batch).and_return([Gitlab::Git::Blob.new(path: path)])
       end
 
       it { expect(subject.path).to eq('a/b/c.md') }

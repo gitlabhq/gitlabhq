@@ -9,7 +9,7 @@
         = sprite_icon('search', css_class: 'search-icon')
     .gl-flex-grow-1
     .js-merge-topics{ data: { path: merge_admin_topics_path } }
-    = link_to new_admin_topic_path, class: "gl-button btn btn-confirm gl-w-full gl-md-w-auto" do
+    = render Pajamas::ButtonComponent.new(href: new_admin_topic_path, variant: 'confirm') do
       = _('New topic')
 %ul.content-list
   = render partial: 'topic', collection: @topics

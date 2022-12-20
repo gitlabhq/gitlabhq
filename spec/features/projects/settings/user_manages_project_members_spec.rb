@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > User manages project members' do
+RSpec.describe 'Projects > Settings > User manages project members', feature_category: :projects do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
@@ -50,8 +50,6 @@ RSpec.describe 'Projects > Settings > User manages project members' do
     click_button project2.name
     click_button 'Import project members'
     wait_for_requests
-
-    page.refresh
 
     expect(find_member_row(user_mike)).to have_content('Reporter')
   end

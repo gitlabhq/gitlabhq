@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge Requests > User filters', :js do
+RSpec.describe 'Merge Requests > User filters', :js, feature_category: :code_review do
   include FilteredSearchHelpers
 
   let_it_be(:project) { create(:project, :public, :repository) }

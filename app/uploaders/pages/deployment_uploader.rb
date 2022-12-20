@@ -36,13 +36,6 @@ module Pages
         false
       end
 
-      # we don't need background uploads because we upload files
-      # to the right store right away, and we already do that in
-      # the background job
-      def background_upload_enabled?
-        false
-      end
-
       def default_store
         object_store_enabled? ? ObjectStorage::Store::REMOTE : ObjectStorage::Store::LOCAL
       end

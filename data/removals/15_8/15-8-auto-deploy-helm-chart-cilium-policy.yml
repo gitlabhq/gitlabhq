@@ -1,0 +1,16 @@
+- title: "CiliumNetworkPolicy within the auto deploy Helm chart is removed"  # (required) Actionable title. e.g., The `confidential` field for a `Note` is deprecated. Use `internal` instead.
+  announcement_milestone: "14.8"  # The milestone when this feature was first announced as deprecated.
+  announcement_date: "2022-02-22"  # The date of the milestone release when this feature was first announced as deprecated
+  removal_milestone: "15.8"  # The milestone when this feature is planned to be removed
+  removal_date: "2023-01-22"  # (optional - may be required in the future) YYYY-MM-DD format - the date of the milestone release when this feature is planned to be removed
+  breaking_change: false  # (required) Change to true if this removal is a breaking change.
+  reporter: sam.white  # (required) GitLab username of the person reporting the removal
+  stage: govern  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382044
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    All functionality related to the GitLab Container Network Security and Container Host Security categories was deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. The [CiliumNetworkPolicy definition](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/blob/master/assets/auto-deploy-app/values.yaml#L175) that exists as part of the [GitLab Auto Deploy Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) was not removed as scheduled in GitLab 15.0. This policy is planned to be removed in the GitLab 15.8 release.
+
+    If you want to preserve this functionality, you can follow one of these two paths:
+
+    1. Fork the [GitLab Auto Deploy Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) into the `chart/` path within your project
+    1. Set `AUTO_DEPLOY_IMAGE_VERSION` and `DAST_AUTO_DEPLOY_IMAGE_VERSION` to the most recent version of the image that included the CiliumNetworkPolicy

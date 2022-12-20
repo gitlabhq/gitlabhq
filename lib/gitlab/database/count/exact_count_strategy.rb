@@ -18,9 +18,7 @@ module Gitlab
         end
 
         def count
-          models.each_with_object({}) do |model, data|
-            data[model] = model.count
-          end
+          models.index_with(&:count)
         rescue *CONNECTION_ERRORS
           {}
         end

@@ -45,8 +45,15 @@ module API
           use :shared_package_file_params
         end
 
-        desc 'The package' do
+        desc 'Download Debian package' do
           detail 'This feature was introduced in GitLab 14.2'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[debian_packages]
         end
 
         route_setting :authentication, authenticate_non_public: true
@@ -55,12 +62,24 @@ module API
         end
 
         params do
-          requires :file_name, type: String, desc: 'The file name'
+          requires :file_name, type: String, desc: 'The file name', documentation: { example: 'example_1.0.0~alpha2_amd64.deb' }
         end
 
         namespace ':file_name', requirements: FILE_NAME_REQUIREMENTS do
           format :txt
           content_type :json, Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
+
+          desc 'Upload Debian package' do
+            detail 'This feature was introduced in GitLab 14.0'
+            success code: 201
+            failure [
+              { code: 400, message: 'Bad Request' },
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            tags %w[debian_packages]
+          end
 
           # PUT {projects|groups}/:id/packages/debian/:file_name
           params do
@@ -91,6 +110,16 @@ module API
           end
 
           # PUT {projects|groups}/:id/packages/debian/:file_name/authorize
+          desc 'Authorize Debian package upload' do
+            detail 'This feature was introduced in GitLab 13.5'
+            success code: 200
+            failure [
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            tags %w[debian_packages]
+          end
           route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
           put 'authorize' do
             authorize_workhorse!(

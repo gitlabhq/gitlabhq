@@ -9,9 +9,7 @@ module ControllerWithCrossProjectAccessCheck
   end
 
   def cross_project_check
-    if Gitlab::CrossProjectAccess.find_check(self)&.should_run?(self)
-      authorize_cross_project_page!
-    end
+    authorize_cross_project_page! if Gitlab::CrossProjectAccess.find_check(self)&.should_run?(self)
   end
 
   def authorize_cross_project_page!

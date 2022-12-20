@@ -9,7 +9,7 @@ RSpec.shared_examples 'Web hook destroyer' do
     delete :destroy, params: params
 
     expect(response).to have_gitlab_http_status(:found)
-    expect(flash[:notice]).to eq("#{hook.model_name.human} was deleted")
+    expect(flash[:notice]).to eq('Webhook was deleted')
   end
 
   it 'displays a message about async delete', :aggregate_failures do
@@ -20,7 +20,7 @@ RSpec.shared_examples 'Web hook destroyer' do
     delete :destroy, params: params
 
     expect(response).to have_gitlab_http_status(:found)
-    expect(flash[:notice]).to eq("#{hook.model_name.human} was scheduled for deletion")
+    expect(flash[:notice]).to eq('Webhook was scheduled for deletion')
   end
 
   it 'displays an error if deletion failed', :aggregate_failures do

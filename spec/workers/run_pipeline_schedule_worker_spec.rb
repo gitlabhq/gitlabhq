@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe RunPipelineScheduleWorker do
+  it 'has an until_executed deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+  end
+
   describe '#perform' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, namespace: group) }
@@ -10,6 +14,12 @@ RSpec.describe RunPipelineScheduleWorker do
     let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }
 
     let(:worker) { described_class.new }
+
+    around do |example|
+      travel_to(pipeline_schedule.next_run_at + 1.hour) do
+        example.run
+      end
+    end
 
     context 'when a schedule not found' do
       it 'does not call the Service' do

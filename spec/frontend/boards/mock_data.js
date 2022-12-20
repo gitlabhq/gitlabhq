@@ -2,22 +2,26 @@ import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
 import { ListType } from '~/boards/constants';
 import {
-  OPERATOR_IS_AND_IS_NOT,
-  OPERATOR_IS_ONLY,
+  OPERATORS_IS,
+  OPERATORS_IS_NOT,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_CONFIDENTIAL,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
@@ -733,54 +737,54 @@ export const mockMoveData = {
 };
 
 export const mockEmojiToken = {
-  type: 'my-reaction',
+  type: TOKEN_TYPE_MY_REACTION,
   icon: 'thumb-up',
-  title: 'My-Reaction',
+  title: TOKEN_TITLE_MY_REACTION,
   unique: true,
   token: EmojiToken,
   fetchEmojis: expect.any(Function),
 };
 
 export const mockConfidentialToken = {
-  type: 'confidential',
+  type: TOKEN_TYPE_CONFIDENTIAL,
   icon: 'eye-slash',
-  title: 'Confidential',
+  title: TOKEN_TITLE_CONFIDENTIAL,
   unique: true,
   token: GlFilteredSearchToken,
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
   options: [
     { icon: 'eye-slash', value: 'yes', title: 'Yes' },
     { icon: 'eye', value: 'no', title: 'No' },
   ],
 };
 
-export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedIn) => [
+export const mockTokens = (fetchLabels, fetchUsers, fetchMilestones, isSignedIn) => [
   {
     icon: 'user',
     title: TOKEN_TITLE_ASSIGNEE,
     type: TOKEN_TYPE_ASSIGNEE,
-    operators: OPERATOR_IS_AND_IS_NOT,
-    token: AuthorToken,
+    operators: OPERATORS_IS_NOT,
+    token: UserToken,
     unique: true,
-    fetchAuthors,
-    preloadedAuthors: [],
+    fetchUsers,
+    preloadedUsers: [],
   },
   {
     icon: 'pencil',
     title: TOKEN_TITLE_AUTHOR,
     type: TOKEN_TYPE_AUTHOR,
-    operators: OPERATOR_IS_AND_IS_NOT,
+    operators: OPERATORS_IS_NOT,
     symbol: '@',
-    token: AuthorToken,
+    token: UserToken,
     unique: true,
-    fetchAuthors,
-    preloadedAuthors: [],
+    fetchUsers,
+    preloadedUsers: [],
   },
   {
     icon: 'labels',
     title: TOKEN_TITLE_LABEL,
     type: TOKEN_TYPE_LABEL,
-    operators: OPERATOR_IS_AND_IS_NOT,
+    operators: OPERATORS_IS_NOT,
     token: LabelToken,
     unique: false,
     symbol: '~',

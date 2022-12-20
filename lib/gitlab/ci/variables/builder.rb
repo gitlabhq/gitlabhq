@@ -53,7 +53,7 @@ module Gitlab
             # https://gitlab.com/groups/gitlab-org/configure/-/epics/8
             # Until then, we need to make both the old and the new KUBECONFIG contexts available
             collection.concat(deployment_variables(environment: environment, job: job))
-            template = ::Ci::GenerateKubeconfigService.new(pipeline, token: job.try(:token)).execute
+            template = ::Ci::GenerateKubeconfigService.new(pipeline, token: job.try(:token), environment: environment).execute
             kubeconfig_yaml = collection['KUBECONFIG']&.value
             template.merge_yaml(kubeconfig_yaml) if kubeconfig_yaml.present?
 
@@ -134,6 +134,9 @@ module Gitlab
 
             variables.append(key: 'CI_NODE_INDEX', value: job.options[:instance].to_s) if job.options&.include?(:instance)
             variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job).to_s)
+
+            # Set environment name here so we can access it when evaluating the job's rules
+            variables.append(key: 'CI_ENVIRONMENT_NAME', value: job.environment) if job.environment
 
             # legacy variables
             variables.append(key: 'CI_BUILD_NAME', value: job.name)

@@ -29,7 +29,8 @@ RSpec.shared_examples 'setting CSP' do |rule_name|
 
       context 'when feature is enabled' do
         it "appends to #{rule_name}" do
-          is_expected.to eql("#{rule_name} #{default_csp_values} #{allowlisted_url}")
+          is_expected.to include("#{rule_name} #{default_csp_values}")
+          is_expected.to include(allowlisted_url)
         end
       end
 
@@ -37,7 +38,7 @@ RSpec.shared_examples 'setting CSP' do |rule_name|
         include_context 'disable feature'
 
         it "keeps original #{rule_name}" do
-          is_expected.to eql("#{rule_name} #{default_csp_values}")
+          is_expected.to include("#{rule_name} #{default_csp_values}")
         end
       end
     end
@@ -47,7 +48,8 @@ RSpec.shared_examples 'setting CSP' do |rule_name|
 
       context 'when feature is enabled' do
         it "uses default-src values in #{rule_name}" do
-          is_expected.to eql("default-src #{default_csp_values}; #{rule_name} #{default_csp_values} #{allowlisted_url}")
+          is_expected.to include("default-src #{default_csp_values}")
+          is_expected.to include(allowlisted_url)
         end
       end
 
@@ -55,7 +57,7 @@ RSpec.shared_examples 'setting CSP' do |rule_name|
         include_context 'disable feature'
 
         it "does not add #{rule_name}" do
-          is_expected.to eql("default-src #{default_csp_values}")
+          is_expected.to include("default-src #{default_csp_values}")
         end
       end
     end
@@ -65,7 +67,8 @@ RSpec.shared_examples 'setting CSP' do |rule_name|
 
       context 'when feature is enabled' do
         it "uses default-src values in #{rule_name}" do
-          is_expected.to eql("font-src #{default_csp_values}; #{rule_name} #{allowlisted_url}")
+          is_expected.to include("font-src #{default_csp_values}")
+          is_expected.not_to include("#{rule_name} #{default_csp_values}")
         end
       end
 
@@ -73,7 +76,7 @@ RSpec.shared_examples 'setting CSP' do |rule_name|
         include_context 'disable feature'
 
         it "does not add #{rule_name}" do
-          is_expected.to eql("font-src #{default_csp_values}")
+          is_expected.to include("font-src #{default_csp_values}")
         end
       end
     end

@@ -65,11 +65,7 @@ if ! cd "$app_root" ; then
   echo "Failed to cd into $app_root, exiting!";  exit 1
 fi
 
-if [ -z "$SIDEKIQ_WORKERS" ]; then
-  sidekiq_pid_path="$pid_path/sidekiq.pid"
-else
-  sidekiq_pid_path="$pid_path/sidekiq-cluster.pid"
-fi
+sidekiq_pid_path="$pid_path/sidekiq-cluster.pid"
 
 ### Init Script functions
 

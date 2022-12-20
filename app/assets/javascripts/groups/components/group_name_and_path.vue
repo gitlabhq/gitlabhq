@@ -59,7 +59,7 @@ export default {
     learnMore: s__('Groups|Learn more'),
   },
   inputSize: { md: 'lg' },
-  changingGroupPathHelpPagePath: helpPagePath('user/group/index', {
+  changingGroupPathHelpPagePath: helpPagePath('user/group/manage', {
     anchor: 'change-a-groups-path',
   }),
   mattermostDataBindName: 'create_chat_team',

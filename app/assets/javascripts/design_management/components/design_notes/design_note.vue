@@ -1,13 +1,7 @@
 <script>
-import {
-  GlAvatar,
-  GlAvatarLink,
-  GlButton,
-  GlLink,
-  GlSafeHtmlDirective,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlAvatar, GlAvatarLink, GlButton, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -33,7 +27,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     note: {

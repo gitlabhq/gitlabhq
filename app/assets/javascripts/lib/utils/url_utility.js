@@ -86,7 +86,7 @@ export function cleanLeadingSeparator(path) {
   return path.replace(PATH_SEPARATOR_LEADING_REGEX, '');
 }
 
-function cleanEndingSeparator(path) {
+export function cleanEndingSeparator(path) {
   return path.replace(PATH_SEPARATOR_ENDING_REGEX, '');
 }
 

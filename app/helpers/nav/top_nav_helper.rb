@@ -101,8 +101,7 @@ module Nav
         builder.add_primary_menu_item_with_shortcut(
           header: top_nav_localized_headers[:switch_to],
           active: nav == 'project' || active_nav_link?(path: %w[root#index projects#trending projects#starred dashboard/projects#index]),
-          css_class: 'qa-projects-dropdown',
-          data: { track_label: "projects_dropdown", track_action: "click_dropdown" },
+          data: { track_label: "projects_dropdown", track_action: "click_dropdown", qa_selector: "projects_dropdown" },
           view: PROJECTS_VIEW,
           shortcut_href: dashboard_projects_path,
           **projects_menu_item_attrs
@@ -116,8 +115,7 @@ module Nav
         builder.add_primary_menu_item_with_shortcut(
           header: top_nav_localized_headers[:switch_to],
           active: nav == 'group' || active_nav_link?(path: %w[dashboard/groups explore/groups]),
-          css_class: 'qa-groups-dropdown',
-          data: { track_label: "groups_dropdown", track_action: "click_dropdown" },
+          data: { track_label: "groups_dropdown", track_action: "click_dropdown", qa_selector: "groups_dropdown" },
           view: GROUPS_VIEW,
           shortcut_href: dashboard_groups_path,
           **groups_menu_item_attrs
@@ -133,7 +131,7 @@ module Nav
           href: dashboard_milestones_path,
           active: active_nav_link?(controller: 'dashboard/milestones'),
           icon: 'clock',
-          data: { qa_selector: 'milestones_link', **menu_data_tracking_attrs('milestones') },
+          data: { **menu_data_tracking_attrs('milestones') },
           shortcut_class: 'dashboard-shortcuts-milestones'
         )
       end
@@ -156,7 +154,7 @@ module Nav
           href: activity_dashboard_path,
           active: active_nav_link?(path: 'dashboard#activity'),
           icon: 'history',
-          data: { qa_selector: 'activity_link', **menu_data_tracking_attrs('activity') },
+          data: { **menu_data_tracking_attrs('activity') },
           shortcut_class: 'dashboard-shortcuts-activity'
         )
       end
@@ -173,9 +171,8 @@ module Nav
           title: title,
           active: active_nav_link?(controller: 'admin/dashboard'),
           icon: 'admin',
-          css_class: 'qa-admin-area-link',
           href: admin_root_path,
-          data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
+          data: { qa_selector: 'admin_area_link', **menu_data_tracking_attrs(title) }
         )
       end
 

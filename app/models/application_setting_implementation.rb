@@ -76,6 +76,7 @@ module ApplicationSettingImplementation
         eks_account_id: nil,
         eks_integration_enabled: false,
         eks_secret_access_key: nil,
+        email_confirmation_setting: 'off',
         email_restrictions_enabled: false,
         email_restrictions: nil,
         external_pipeline_validation_service_timeout: nil,
@@ -113,6 +114,7 @@ module ApplicationSettingImplementation
         max_attachment_size: Settings.gitlab['max_attachment_size'],
         max_export_size: 0,
         max_import_size: 0,
+        max_terraform_state_size_bytes: 0,
         max_yaml_size_bytes: 1.megabyte,
         max_yaml_depth: 100,
         minimum_password_length: DEFAULT_MINIMUM_PASSWORD_LENGTH,
@@ -146,7 +148,6 @@ module ApplicationSettingImplementation
         require_two_factor_authentication: false,
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
         rsa_key_restriction: default_min_key_size(:rsa),
-        send_user_confirmation_email: false,
         session_expire_delay: Settings.gitlab['session_expire_delay'],
         shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
         shared_runners_text: nil,
@@ -243,7 +244,8 @@ module ApplicationSettingImplementation
         search_rate_limit_unauthenticated: 10,
         users_get_by_id_limit: 300,
         users_get_by_id_limit_allowlist: [],
-        can_create_group: true
+        can_create_group: true,
+        bulk_import_enabled: false
       }
     end
 

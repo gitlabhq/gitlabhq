@@ -34,19 +34,25 @@ review-build-cng-env:
     - .review:rules:review-build-cng
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3
   stage: prepare
-  needs: []
+  needs:
+    # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream CNG pipeline.
+    - pipeline: $PARENT_PIPELINE_ID
+      job: build-assets-image
+  variables:
+    BUILD_ENV: build.env
   before_script:
     - source ./scripts/utils.sh
     - install_gitlab_gem
   script:
-    - ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > build.env
+    - 'ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > $BUILD_ENV'
+    - echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
     - ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> build.env
-    - cat build.env
+    - cat $BUILD_ENV
   artifacts:
     reports:
-      dotenv: build.env
+      dotenv: $BUILD_ENV
     paths:
-      - build.env
+      - $BUILD_ENV
     expire_in: 7 days
     when: always
 
@@ -96,7 +102,7 @@ review-build-cng:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
     on_stop: review-stop
-    auto_stop_in: 48 hours
+    auto_stop_in: 6 hours
 
 review-deploy:
   extends:
@@ -108,6 +114,8 @@ review-deploy:
     key: "review-deploy-dependencies-charts-${GITLAB_HELM_CHART_REF}-v1"
     paths:
       - "gitlab-${GITLAB_HELM_CHART_REF}"
+  environment:
+    action: start
   before_script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
@@ -115,12 +123,13 @@ review-deploy:
     - echo "${CI_ENVIRONMENT_URL}" > environment_url.txt
     - echo "QA_GITLAB_URL=${CI_ENVIRONMENT_URL}" > environment.env
     - *base-before_script
+    - !reference [".use-kube-context", before_script]
   script:
     - run_timed_command "check_kube_domain"
     - run_timed_command "download_chart"
     - run_timed_command "deploy" || (display_deployment_debug && exit 1)
-    - run_timed_command "verify_deploy"|| (display_deployment_debug && exit 1)
-    - run_timed_command "disable_sign_ups"
+    - run_timed_command "verify_deploy" || (display_deployment_debug && exit 1)
+    - run_timed_command "disable_sign_ups" || (display_deployment_debug && exit 1)
   after_script:
     # Run seed-dast-test-data.sh only when DAST_RUN is set to true. This is to pupulate review app with data for DAST scan.
     # Set DAST_RUN to true when jobs are manually scheduled.
@@ -128,6 +137,7 @@ review-deploy:
   artifacts:
     paths:
       - environment_url.txt
+      - curl-logs/
     reports:
       dotenv: environment.env
     expire_in: 7 days
@@ -139,12 +149,15 @@ review-deploy-sample-projects:
     - .review:rules:review-deploy
   stage: deploy
   needs: ["review-deploy"]
+  environment:
+    action: prepare
   before_script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
     - echo "${CI_ENVIRONMENT_URL}" > environment_url.txt
     - *base-before_script
+    - !reference [".use-kube-context", before_script]
   script:
     - date
     - create_sample_projects
@@ -160,7 +173,9 @@ review-deploy-sample-projects:
     # See https://gitlab.com/gitlab-org/gitlab/issues/191273
     GIT_DEPTH: 1
   before_script:
-    - *base-before_script
+    - source ./scripts/utils.sh
+    - source ./scripts/review_apps/review-apps.sh
+    - !reference [".use-kube-context", before_script]
 
 review-delete-deployment:
   extends:
@@ -174,7 +189,7 @@ review-stop:
   extends:
     - .review-stop-base
     - .review:rules:review-stop
-  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
+  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
   stage: deploy
   needs: []
   script:

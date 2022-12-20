@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User views issue" do
+RSpec.describe "User views issue", feature_category: :team_planning do
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project, description: "# Description header\n\n**Lorem** _ipsum_ dolor sit [amet](https://example.com)", author: user) }

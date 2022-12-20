@@ -1,12 +1,12 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
-import $ from 'jquery';
 import { isEmpty } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { slugify } from '~/lib/utils/text_utility';
 import { getLocationHash } from '~/lib/utils/url_utility';
+import { CREATED_ASC } from '~/releases/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import '~/behaviors/markdown/render_gfm';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import EvidenceBlock from './evidence_block.vue';
 import ReleaseBlockAssets from './release_block_assets.vue';
 import ReleaseBlockFooter from './release_block_footer.vue';
@@ -31,6 +31,11 @@ export default {
       type: Object,
       required: true,
       default: () => ({}),
+    },
+    sort: {
+      type: String,
+      required: false,
+      default: CREATED_ASC,
     },
   },
   data() {
@@ -80,7 +85,7 @@ export default {
   },
   methods: {
     renderGFM() {
-      $(this.$refs['gfm-content']).renderGFM();
+      renderGFM(this.$refs['gfm-content']);
     },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
@@ -119,6 +124,8 @@ export default {
       :tag-path="release.tagPath"
       :author="release.author"
       :released-at="release.releasedAt"
+      :created-at="release.createdAt"
+      :sort="sort"
     />
   </div>
 </template>

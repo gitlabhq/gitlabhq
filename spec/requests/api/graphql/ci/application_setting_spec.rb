@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting Application Settings' do
+RSpec.describe 'getting Application Settings', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let(:fields) do

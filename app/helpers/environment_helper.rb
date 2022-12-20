@@ -72,6 +72,7 @@ module EnvironmentHelper
     {
       name: environment.name,
       id: environment.id,
+      project_full_path: project.full_path,
       external_url: environment.external_url,
       can_update_environment: can?(current_user, :update_environment, environment),
       can_destroy_environment: can_destroy_environment?(environment),

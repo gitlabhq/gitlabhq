@@ -25,6 +25,9 @@ RSpec.describe Feature::Definition do
     using RSpec::Parameterized::TableSyntax
 
     where(:param, :value, :result) do
+      :name            | 'colon:separated'          | /Feature flag 'colon:separated' is invalid/
+      :name            | 'space separated'          | /Feature flag 'space separated' is invalid/
+      :name            | 'ALL_CAPS'                 | /Feature flag 'ALL_CAPS' is invalid/
       :name            | nil                        | /Feature flag is missing name/
       :path            | nil                        | /Feature flag 'feature_flag' is missing path/
       :type            | nil                        | /Feature flag 'feature_flag' is missing type/
@@ -111,6 +114,11 @@ RSpec.describe Feature::Definition do
 
     subject { described_class.send(:load_all!) }
 
+    after do
+      FileUtils.rm_rf(store1)
+      FileUtils.rm_rf(store2)
+    end
+
     it "when there's no feature flags a list of definitions is empty" do
       is_expected.to be_empty
     end
@@ -134,11 +142,6 @@ RSpec.describe Feature::Definition do
 
       expect { subject }
         .to raise_error(/Feature flag is missing name/)
-    end
-
-    after do
-      FileUtils.rm_rf(store1)
-      FileUtils.rm_rf(store2)
     end
 
     def write_feature_flag(store, path, content)

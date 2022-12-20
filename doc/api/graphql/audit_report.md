@@ -20,13 +20,13 @@ The query includes:
 - [`pageInfo`](#pageinfo)
 - [`nodes`](#nodes)
 
-## pageInfo
+## `pageInfo`
 
 This contains the data needed to implement pagination. GitLab uses cursor-based
 [pagination](getting_started.md#pagination). For more information, see
 [Pagination](https://graphql.org/learn/pagination/) in the GraphQL documentation.
 
-## nodes
+## `nodes`
 
 In a GraphQL query, `nodes` is used to represent a collection of [`nodes` on a graph](https://en.wikipedia.org/wiki/Vertex_(graph_theory)).
 In this case, the collection of nodes is a collection of `User` objects. For each one,

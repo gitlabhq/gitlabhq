@@ -17,6 +17,8 @@ module Gitlab
         'desc' => Gitaly::SortDirection::DESCENDING
       }.freeze
 
+      AMBIGUOUS_REFERENCE = 'reference is ambiguous'
+
       # 'repository' is a Gitlab::Git::Repository
       def initialize(repository)
         @repository = repository
@@ -54,26 +56,6 @@ module Gitlab
         Gitlab::Git.branch_name(response.name)
       end
 
-      def branch_names
-        request = Gitaly::FindAllBranchNamesRequest.new(repository: @gitaly_repo)
-        response = gitaly_client_call(@storage, :ref_service, :find_all_branch_names, request, timeout: GitalyClient.fast_timeout)
-        consume_refs_response(response) { |name| Gitlab::Git.branch_name(name) }
-      end
-
-      def tag_names
-        request = Gitaly::FindAllTagNamesRequest.new(repository: @gitaly_repo)
-        response = gitaly_client_call(@storage, :ref_service, :find_all_tag_names, request, timeout: GitalyClient.fast_timeout)
-        consume_refs_response(response) { |name| Gitlab::Git.tag_name(name) }
-      end
-
-      def count_tag_names
-        tag_names.count
-      end
-
-      def count_branch_names
-        branch_names.count
-      end
-
       def local_branches(sort_by: nil, pagination_params: nil)
         request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo, pagination_params: pagination_params)
         request.sort_by = sort_local_branches_by_param(sort_by) if sort_by
@@ -109,6 +91,10 @@ module Gitlab
 
         target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
         Gitlab::Git::Branch.new(@repository, branch.name.dup, branch.target_commit.id, target_commit)
+      rescue GRPC::BadStatus => e
+        raise e unless e.message.include?(AMBIGUOUS_REFERENCE)
+
+        raise Gitlab::Git::AmbiguousRef, "branch is ambiguous: #{branch_name}"
       end
 
       def find_tag(tag_name)

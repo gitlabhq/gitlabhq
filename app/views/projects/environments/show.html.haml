@@ -8,28 +8,31 @@
 #environments-detail-view{ data: { details: environments_detail_data_json(current_user, @project, @environment) } }
   #environments-detail-view-header
 
-  .environments-container
-    - if @deployments.blank?
-      .empty-state
-        .text-content
-          %h4.state-title
-            = _("You don't have any deployments right now.")
-          %p
-            = html_escape(_("Define environments in the deploy stage(s) in %{code_open}.gitlab-ci.yml%{code_close} to track deployments here.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-          .text-center
-            = link_to _("Read more"), help_page_path("ci/environments/index.md"), class: "gl-button btn btn-confirm"
-    - else
-      .table-holder.gl-overflow-visible
-        .ci-table.environments{ role: 'grid' }
-          .gl-responsive-table-row.table-row-header{ role: 'row' }
-            .table-section.section-15{ role: 'columnheader' }= _('Status')
-            .table-section.section-10{ role: 'columnheader' }= _('ID')
-            .table-section.section-10{ role: 'columnheader' }= _('Triggerer')
-            .table-section.section-25{ role: 'columnheader' }= _('Commit')
-            .table-section.section-10{ role: 'columnheader' }= _('Job')
-            .table-section.section-10{ role: 'columnheader' }= _('Created')
-            .table-section.section-10{ role: 'columnheader' }= _('Deployed')
+  - if Feature.enabled?(:environment_details_vue, @project)
+    #environment_details_page
+  - else
+    .environments-container
+      - if @deployments.blank?
+        .empty-state
+          .text-content
+            %h4.state-title
+              = _("You don't have any deployments right now.")
+            %p
+              = html_escape(_("Define environments in the deploy stage(s) in %{code_open}.gitlab-ci.yml%{code_close} to track deployments here.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+            .text-center
+              = link_to _("Read more"), help_page_path("ci/environments/index.md"), class: "gl-button btn btn-confirm"
+      - else
+        .table-holder.gl-overflow-visible
+          .ci-table.environments{ role: 'grid' }
+            .gl-responsive-table-row.table-row-header{ role: 'row' }
+              .table-section.section-15{ role: 'columnheader' }= _('Status')
+              .table-section.section-10{ role: 'columnheader' }= _('ID')
+              .table-section.section-10{ role: 'columnheader' }= _('Triggerer')
+              .table-section.section-25{ role: 'columnheader' }= _('Commit')
+              .table-section.section-10{ role: 'columnheader' }= _('Job')
+              .table-section.section-10{ role: 'columnheader' }= _('Created')
+              .table-section.section-10{ role: 'columnheader' }= _('Deployed')
 
-          = render @deployments
+            = render @deployments
 
-      = paginate @deployments, theme: 'gitlab'
+        = paginate @deployments, theme: 'gitlab'

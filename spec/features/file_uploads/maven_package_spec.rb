@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upload a maven package', :api, :js do
+RSpec.describe 'Upload a maven package', :api, :js, feature_category: :package_registry do
   include_context 'file upload requests helpers'
 
   let_it_be(:project) { create(:project) }

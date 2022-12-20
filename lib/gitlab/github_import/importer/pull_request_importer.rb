@@ -61,6 +61,9 @@ module Gitlab
             updated_at: pull_request.updated_at
           }
 
+          mr = project.merge_requests.new(attributes.merge(importing: true))
+          mr.validate!
+
           create_merge_request_without_hooks(project, attributes, pull_request.iid)
         end
 
@@ -93,7 +96,7 @@ module Gitlab
           return if project.repository.branch_exists?(source_branch)
 
           project.repository.add_branch(project.creator, source_branch, pull_request.source_branch_sha)
-        rescue Gitlab::Git::CommandError => e
+        rescue Gitlab::Git::PreReceiveError, Gitlab::Git::CommandError => e
           Gitlab::ErrorTracking.track_exception(e,
             source_branch: source_branch,
             project_id: merge_request.project.id,

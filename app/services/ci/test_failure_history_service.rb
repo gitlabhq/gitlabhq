@@ -103,7 +103,8 @@ module Ci
         {
           unit_test_id: ci_unit_test.id,
           build_id: build.id,
-          failed_at: build.finished_at
+          failed_at: build.finished_at,
+          partition_id: build.partition_id
         }
       end
     end

@@ -28,6 +28,7 @@
         fi
       fi
     - assets_compile_script
+    - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
 
 compile-production-assets:
   extends:
@@ -43,6 +44,7 @@ compile-production-assets:
       # These assets are used in multiple locations:
       # - in `build-assets-image` job to create assets image for packaging systems
       # - GitLab UI for integration tests: https://gitlab.com/gitlab-org/gitlab-ui/-/blob/e88493b3c855aea30bf60baee692a64606b0eb1e/.storybook/preview-head.pug#L1
+      - cached-assets-hash.txt
       - public/assets/
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
@@ -73,9 +75,6 @@ update-assets-compile-production-cache:
     - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
-  script:
-    - !reference [compile-production-assets, script]
-    - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
   artifacts: {}  # This job's purpose is only to update the cache.
 
 update-assets-compile-test-cache:
@@ -273,32 +272,6 @@ coverage-frontend:
       coverage_report:
         coverage_format: cobertura
         path: coverage-frontend/cobertura-coverage.xml
-
-.qa-frontend-node:
-  extends:
-    - .default-retry
-    - .default-utils-before_script
-    - .qa-frontend-node-cache
-    - .frontend:rules:qa-frontend-node
-  stage: test
-  needs: []
-  script:
-    - yarn_install_script
-    - run_timed_command "retry yarn run webpack-prod"
-
-qa-frontend-node:14:
-  extends: .qa-frontend-node
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}node:14
-
-qa-frontend-node:16:
-  extends: .qa-frontend-node
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}node:16
-
-qa-frontend-node:latest:
-  extends:
-    - .qa-frontend-node
-    - .frontend:rules:qa-frontend-node-latest
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}node:latest
 
 webpack-dev-server:
   extends:

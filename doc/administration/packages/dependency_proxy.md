@@ -121,14 +121,11 @@ To change the local storage path:
 ### Using object storage
 
 Instead of relying on the local storage, you can use an object storage to
-store the blobs of the Dependency Proxy.
+store the blobs of the Dependency Proxy. In GitLab 13.2 and later, you should use the
+[consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
+This section describes the earlier configuration format. [Migration steps still apply](#migrate-local-dependency-proxy-blobs-and-manifests-to-object-storage).
 
 [Read more about using object storage with GitLab](../object_storage.md).
-
-NOTE:
-In GitLab 13.2 and later, we recommend using the
-[consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
-This section describes the earlier configuration format.
 
 **Omnibus GitLab installations**
 

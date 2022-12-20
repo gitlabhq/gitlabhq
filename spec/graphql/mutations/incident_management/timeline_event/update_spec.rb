@@ -7,21 +7,33 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Update do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:incident) { create(:incident, project: project) }
+  let_it_be(:tag1) { create(:incident_management_timeline_event_tag, project: project, name: 'Tag 1') }
+  let_it_be(:tag2) { create(:incident_management_timeline_event_tag, project: project, name: 'Tag 2') }
   let_it_be_with_reload(:timeline_event) do
     create(:incident_management_timeline_event, project: project, incident: incident)
+  end
+
+  # Pre-attach a tag to the event
+  let_it_be(:tag_link1) do
+    create(:incident_management_timeline_event_tag_link,
+      timeline_event: timeline_event,
+      timeline_event_tag: tag1
+    )
   end
 
   let(:args) do
     {
       id: timeline_event_id,
       note: note,
-      occurred_at: occurred_at
+      occurred_at: occurred_at,
+      timeline_event_tag_names: tag_names
     }
   end
 
   let(:note) { 'Updated Note' }
   let(:timeline_event_id) { GitlabSchema.id_from_object(timeline_event).to_s }
   let(:occurred_at) { 1.minute.ago }
+  let(:tag_names) { [] }
 
   before do
     project.add_developer(developer)
@@ -91,6 +103,36 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Update do
             it 'responds with error' do
               expect(resolve).to eq(timeline_event: nil, errors: ["Occurred at can't be blank"])
             end
+          end
+
+          context 'when timeline event tag do not exist' do
+            let(:tag_names) { ['some other tag'] }
+
+            it 'does not update the timeline event' do
+              expect { resolve }.not_to change { timeline_event.reload.updated_at }
+            end
+
+            it 'responds with error' do
+              expect(resolve).to eq(timeline_event: nil, errors: ["Following tags don't exist: [\"some other tag\"]"])
+            end
+          end
+        end
+
+        context 'when timeline event tags are passed' do
+          let(:tag_names) { [tag2.name] }
+
+          it 'returns updated timeline event' do
+            expect(resolve).to eq(
+              timeline_event: timeline_event.reload,
+              errors: []
+            )
+          end
+
+          it 'removes tag1 and assigns tag2 to the event' do
+            response = resolve
+            timeline_event = response[:timeline_event]
+
+            expect(timeline_event.timeline_event_tags).to contain_exactly(tag2)
           end
         end
       end

@@ -73,6 +73,7 @@ export default {
       :disabled="disableSubmitButton"
       :phrase="confirmationPhrase"
       :button-text="confirmButtonText"
+      button-qa-selector="transfer_group_button"
       @confirm="$emit('confirm')"
     />
   </div>

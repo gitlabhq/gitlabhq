@@ -6,13 +6,13 @@ module QA
       include_context 'with gitlab project migration'
 
       context 'with release' do
-        let(:tag) { 'v0.0.1' }
-        let(:source_project_with_readme) { true }
+        let!(:tag) { 'v0.0.1' }
+        let!(:source_project_with_readme) { true }
 
-        let(:milestone) do
+        let!(:milestone) do
           Resource::ProjectMilestone.fabricate_via_api! do |resource|
             resource.project = source_project
-            resource.api_client = api_client
+            resource.api_client = source_admin_api_client
           end
         end
 
@@ -60,7 +60,7 @@ module QA
           'successfully imports project release',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360243'
         ) do
-          expect_import_finished
+          expect_project_import_finished_successfully
 
           expect(imported_releases.size).to eq(1), "Expected to have 1 migrated release"
           expect(imported_release).to eq(source_release)

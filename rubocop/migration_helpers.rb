@@ -19,7 +19,7 @@ module RuboCop
 
     # List of helpers that add new columns, either directly (ADD_COLUMN_METHODS)
     # or through a create/alter table (TABLE_METHODS)
-    ADD_COLUMN_METHODS = %i(add_column add_column_with_default change_column_type_concurrently).freeze
+    ADD_COLUMN_METHODS = %i(add_column change_column_type_concurrently).freeze
 
     TABLE_METHODS = %i(create_table create_table_if_not_exists change_table create_table_with_constraints).freeze
 
@@ -66,7 +66,7 @@ module RuboCop
     def array_column?(node)
       node.each_descendant(:pair).any? do |pair_node|
         pair_node.child_nodes[0].value == :array && # Searching for a (pair (sym :array) (true)) node
-        pair_node.child_nodes[1].type == :true # RuboCop::AST::Node uses symbols for types, even when that is a :true
+          pair_node.child_nodes[1].type == :true # RuboCop::AST::Node uses symbols for types, even when that is a :true
       end
     end
     # rubocop:enable Lint/BooleanSymbol

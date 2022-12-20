@@ -35,5 +35,30 @@ module Import
     def success(project)
       super().merge(project: project, status: :success)
     end
+
+    def track_access_level(import_type)
+      Gitlab::Tracking.event(
+        self.class.name,
+        'create',
+        label: 'import_access_level',
+        user: current_user,
+        extra: { user_role: user_role, import_type: import_type }
+      )
+    end
+
+    def user_role
+      if current_user.id == target_namespace.owner_id
+        'Owner'
+      else
+        access_level = current_user&.group_members&.find_by(source_id: target_namespace.id)&.access_level
+
+        case access_level
+        when nil
+          'Not a member'
+        else
+          Gitlab::Access.human_access(access_level)
+        end
+      end
+    end
   end
 end

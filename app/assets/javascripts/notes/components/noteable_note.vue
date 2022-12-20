@@ -1,16 +1,18 @@
 <script>
-import { GlSprintf, GlSafeHtmlDirective as SafeHtml, GlAvatarLink, GlAvatar } from '@gitlab/ui';
+import { GlSprintf, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import $ from 'jquery';
 import { escape, isEmpty } from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
 import { createAlert } from '~/flash';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_GONE } from '~/lib/utils/http_status';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { __, s__, sprintf } from '~/locale';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -286,7 +288,7 @@ export default {
       this.isEditing = false;
       this.isRequesting = false;
       this.oldContent = null;
-      $(this.$refs.noteBody.$el).renderGFM();
+      renderGFM(this.$refs.noteBody.$el);
       this.$refs.noteBody.resetAutoSave();
       this.$emit('updateSuccess');
     },
@@ -336,7 +338,7 @@ export default {
           callback();
         })
         .catch((response) => {
-          if (response.status === httpStatusCodes.GONE) {
+          if (response.status === HTTP_STATUS_GONE) {
             this.removeNote(this.note);
             this.updateSuccess();
             callback();
@@ -515,6 +517,9 @@ export default {
           @handleFormUpdate="formUpdateHandler"
           @cancelForm="formCancelHandler"
         />
+        <div class="timeline-discussion-body-footer">
+          <slot name="after-note-body"></slot>
+        </div>
       </div>
     </div>
   </timeline-entry-item>

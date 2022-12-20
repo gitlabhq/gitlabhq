@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::ProjectDebianDistributions do
+RSpec.describe API::ProjectDebianDistributions, feature_category: :package_registry do
   include HttpBasicAuthHelpers
   include WorkhorseHelpers
 
@@ -23,13 +23,13 @@ RSpec.describe API::ProjectDebianDistributions do
     describe 'GET projects/:id/debian_distributions' do
       let(:url) { "/projects/#{container.id}/debian_distributions" }
 
-      it_behaves_like 'Debian distributions read endpoint', 'GET', :success, /^\[{.*"codename":"existing-codename\",.*"components":\["existing-component"\],.*"architectures":\["all","existing-arch"\]/
+      it_behaves_like 'Debian distributions read endpoint', 'GET', :success, /^\[{.*"codename":"existing-codename",.*"components":\["existing-component"\],.*"architectures":\["all","existing-arch"\]/
     end
 
     describe 'GET projects/:id/debian_distributions/:codename' do
       let(:url) { "/projects/#{container.id}/debian_distributions/#{distribution.codename}" }
 
-      it_behaves_like 'Debian distributions read endpoint', 'GET', :success, /^{.*"codename":"existing-codename\",.*"components":\["existing-component"\],.*"architectures":\["all","existing-arch"\]/
+      it_behaves_like 'Debian distributions read endpoint', 'GET', :success, /^{.*"codename":"existing-codename",.*"components":\["existing-component"\],.*"architectures":\["all","existing-arch"\]/
     end
 
     describe 'GET projects/:id/debian_distributions/:codename/key.asc' do
@@ -56,7 +56,7 @@ RSpec.describe API::ProjectDebianDistributions do
       let(:method) { :delete }
       let(:url) { "/projects/#{container.id}/debian_distributions/#{distribution.codename}" }
 
-      it_behaves_like 'Debian distributions maintainer write endpoint', 'DELETE', :success, /^{\"message\":\"202 Accepted\"}$/
+      it_behaves_like 'Debian distributions maintainer write endpoint', 'DELETE', :success, /^{"message":"202 Accepted"}$/
 
       context 'when destroy fails' do
         before do

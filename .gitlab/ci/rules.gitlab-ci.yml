@@ -38,11 +38,16 @@
 # Once https://gitlab.com/gitlab-org/gitlab/-/issues/373904 is implemented, we should be able to change this back to
 # if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
 # or any similar condition to check that the MR has *any* approval (not just required approval).
+#
+# Temprorarily adding || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-full-rspec/ for backward compatibility,
+# remove once https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1557 is fully rolled out
 .if-merge-request-approved: &if-merge-request-approved
-  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-full-rspec/'
+  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-full-rspec/'
 
+# Temprorarily adding && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-full-rspec/ for backward compatibility,
+# remove once https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1557 is fully rolled out
 .if-merge-request-not-approved: &if-merge-request-not-approved
-  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-full-rspec/'
+  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-full-rspec/'
 
 .if-automated-merge-request: &if-automated-merge-request
   if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-ee$/'
@@ -83,8 +88,8 @@
 .if-merge-request-labels-group-global-search: &if-merge-request-labels-group-global-search
   if: '$CI_MERGE_REQUEST_LABELS =~ /group::global search/'
 
-.if-merge-request-labels-pipeline-expedite-master-fixing: &if-merge-request-labels-pipeline-expedite-master-fixing
-  if: '$CI_MERGE_REQUEST_LABELS =~ /master:(foss-)?broken/ && $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite-master-fixing/'
+.if-merge-request-labels-pipeline-expedite: &if-merge-request-labels-pipeline-expedite
+  if: '$CI_MERGE_REQUEST_LABELS =~ /master:(foss-)?broken/ && $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/'
 
 .if-merge-request-labels-frontend-and-feature-flag: &if-merge-request-labels-frontend-and-feature-flag
   if: '$CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
@@ -95,11 +100,17 @@
 .if-fork-merge-request: &if-fork-merge-request
   if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
 
-.if-default-branch-schedule-maintenance: &if-default-branch-schedule-maintenance
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
+.if-schedule-pipeline: &if-schedule-pipeline
+  if: '$CI_PIPELINE_SOURCE == "schedule"'
+
+.if-schedule-maintenance: &if-schedule-maintenance
+  if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
 .if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
+
+.if-ruby3-branch-schedule-nightly: &if-ruby3-branch-schedule-nightly
+  if: '$CI_COMMIT_BRANCH == "ruby3" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
 .if-security-schedule: &if-security-schedule
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_PIPELINE_SOURCE == "schedule"'
@@ -107,14 +118,8 @@
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
-.if-dot-com-ee-schedule: &if-dot-com-ee-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule"'
-
-.if-dot-com-ee-schedule-maintenance: &if-dot-com-ee-schedule-maintenance
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
-
-.if-dot-com-ee-schedule-nightly: &if-dot-com-ee-schedule-nightly
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
+.if-dot-com-ee-schedule-default-branch-maintenance: &if-dot-com-ee-schedule-default-branch-maintenance
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
 .if-dot-com-ee-schedule-nightly-child-pipeline: &if-dot-com-ee-schedule-nightly-child-pipeline
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $SCHEDULE_TYPE == "nightly"'
@@ -192,8 +197,7 @@
   - "spec/support/gitlab-git-test.git/**/*"
 
 .yaml-lint-patterns: &yaml-lint-patterns
-  - "*.yml"
-  - "**/*.yml"
+  - "**/*.{yml,yaml}{,.*}"
 
 .lint-pipeline-yaml-patterns: &lint-pipeline-yaml-patterns
   - ".gitlab-ci.yml"
@@ -315,6 +319,7 @@
   - "scripts/rspec_helpers.sh"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+  - "doc/index.md"
 
 .search-backend-patterns: &search-backend-patterns
   - "{,jh/}Gemfile.lock"
@@ -332,6 +337,7 @@
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration/**/*"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration{,_spec}.rb"
   - "{,ee/,jh/}spec/support/helpers/database/**/*"
+  - "{,ee/,jh/}spec/support/helpers/migrations_helpers/**/*"
   - "lib/gitlab/markdown_cache/active_record/**/*"
   - "lib/api/admin/batched_background_migrations.rb"
   - "spec/requests/api/admin/batched_background_migrations_spec.rb"
@@ -384,6 +390,7 @@
   - ".gitlab/ci/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+  - "doc/index.md"
 
 # .code-patterns + .backstage-patterns
 .code-backstage-patterns: &code-backstage-patterns
@@ -414,6 +421,7 @@
   - "{,spec/}tooling/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+  - "doc/index.md"
 
 # .code-patterns + .qa-patterns
 .code-qa-patterns: &code-qa-patterns
@@ -440,6 +448,7 @@
   - "{,jh/}qa/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+  - "doc/index.md"
 
 # .code-patterns + .backstage-patterns + .qa-patterns
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
@@ -474,6 +483,7 @@
   - "{,jh/}qa/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+  - "doc/index.md"
 
 # .code-backstage-qa-patterns + .workhorse-patterns
 # NOTE: `setup-test-env-patterns` intentionally does not include docs files, because this would
@@ -496,7 +506,9 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+  - "doc/index.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -660,7 +672,7 @@
 ################
 .shared:rules:update-cache:
   rules:
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-security-schedule
     - <<: *if-merge-request-labels-update-caches
 
@@ -684,6 +696,8 @@
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-qa-patterns
     - <<: *if-auto-deploy-branches
+      variables:
+        ARCH: amd64,arm64
     - <<: *if-default-branch-or-tag
       variables:
         ARCH: amd64,arm64
@@ -713,7 +727,7 @@
   rules:
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-dot-com-gitlab-org-default-branch
       changes: ["workhorse/**/*"]
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -730,7 +744,7 @@
       when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-dot-com-gitlab-org-default-branch
       changes: *assets-compilation-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -748,7 +762,7 @@
       when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:
         - ".gitlab/ci/caching.gitlab-ci.yml"
@@ -800,8 +814,7 @@
 
 .docs:rules:docs-code-quality:
   rules:
-    - <<: *if-default-branch-refs
-    - <<: *if-default-refs
+    - <<: *if-merge-request
       changes: *docs-code-quality-patterns
 
 .docs:rules:docs-lint:
@@ -896,6 +909,7 @@
       when: never
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
@@ -926,6 +940,7 @@
     - !reference [".strict-ee-only-rules", rules]
     - !reference [".frontend:rules:default-frontend-jobs-as-if-foss", rules]
     - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-merge-request
       changes: *frontend-patterns-for-as-if-foss
 
@@ -1007,28 +1022,12 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
+    - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
     - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
-
-.frontend:rules:qa-frontend-node:
-  rules:
-    - <<: *if-default-branch-refs
-      changes: *frontend-dependency-patterns
-    - <<: *if-merge-request
-      changes: *frontend-dependency-patterns
-
-.frontend:rules:qa-frontend-node-latest:
-  rules:
-    - <<: *if-default-branch-refs
-      changes: *frontend-dependency-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *frontend-dependency-patterns
-      allow_failure: true
 
 .frontend:rules:bundle-size-review:
   rules:
@@ -1066,7 +1065,7 @@
 ###############
 .pages:rules:
   rules:
-    - <<: *if-dot-com-ee-schedule-maintenance
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
 
 ############
 # QA rules #
@@ -1116,7 +1115,7 @@
       when: never
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
+    - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-targeting-stable-branch
       allow_failure: true
@@ -1549,24 +1548,25 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-default-branch-schedule-nightly
+    - <<: *if-ruby3-branch-schedule-nightly
     - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:rspec-coverage:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
+    - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:rspec-undercoverage:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
+    - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-skip-undercoverage
       when: never
@@ -1601,7 +1601,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
+    - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$SKIP_FLAKY_TESTS_AUTOMATICALLY == "true" || $RETRY_FAILED_TESTS_IN_NEW_PROCESS == "true"'
       changes: *code-backstage-patterns
@@ -1849,7 +1849,7 @@
   rules:
     - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
       when: never
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-merge-request
       changes: ["yarn.lock"]
 
@@ -1857,7 +1857,7 @@
   rules:
     - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
       when: never
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-merge-request
       changes: ["Gemfile.lock"]
 
@@ -1882,37 +1882,39 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
+    - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
-      when: never
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-build-patterns
       variables: *review-change-pattern
-      when: never
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *controllers-patterns
       variables: *review-change-pattern
-      when: never
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *models-patterns
       variables: *review-change-pattern
-      when: never
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *lib-gitlab-patterns
       variables: *review-change-pattern
-      when: never
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      when: never
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
-      when: never
       allow_failure: true
       variables:
         KNAPSACK_GENERATE_REPORT: "true"
@@ -1948,7 +1950,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
+    - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-run-review-app
       when: manual
@@ -1984,6 +1986,24 @@
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
 
+.review:rules:review-k8s-resources-count-checks:
+  rules:
+    - <<: *if-dot-com-gitlab-org-schedule
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes:
+        - "scripts/review_apps/k8s-resources-count-checks.sh"
+      allow_failure: true
+
+.review:rules:review-gcp-quotas-checks:
+  rules:
+    - <<: *if-dot-com-gitlab-org-schedule
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes:
+        - "scripts/review_apps/gcp-quotas-checks.rb"
+      allow_failure: true
+
 .review:rules:review-stop:
   rules:
     - when: manual
@@ -2015,6 +2035,8 @@
 .setup:rules:dont-interrupt-me:
   rules:
     - <<: *if-default-branch-or-tag
+      allow_failure: true
+    - <<: *if-schedule-pipeline
       allow_failure: true
     - <<: *if-auto-deploy-branches
       allow_failure: true
@@ -2061,7 +2083,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-ee-schedule-maintenance
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
     - <<: *if-default-refs
       changes:
         - ".gitlab/ci/setup.gitlab-ci.yml"
@@ -2083,7 +2105,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-ee-schedule-maintenance
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
     - <<: *if-default-refs
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"

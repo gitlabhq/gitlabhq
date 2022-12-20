@@ -16,9 +16,7 @@ module LabelsAsHash
       if already_set_labels.present?
         titles = already_set_labels.map(&:title)
         label_hashes.each do |hash|
-          if titles.include?(hash['title'])
-            hash[:set] = true
-          end
+          hash[:set] = true if titles.include?(hash['title'])
         end
       end
     end

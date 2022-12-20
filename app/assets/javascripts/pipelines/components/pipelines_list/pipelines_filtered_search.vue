@@ -3,7 +3,7 @@ import { GlFilteredSearch } from '@gitlab/ui';
 import { map } from 'lodash';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { TRACKING_CATEGORIES } from '../../constants';
 import PipelineBranchNameToken from './tokens/pipeline_branch_name_token.vue';
 import PipelineSourceToken from './tokens/pipeline_source_token.vue';
@@ -54,7 +54,7 @@ export default {
           title: s__('Pipeline|Trigger author'),
           unique: true,
           token: PipelineTriggerAuthorToken,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           projectId: this.projectId,
         },
         {
@@ -63,7 +63,7 @@ export default {
           title: s__('Pipeline|Branch name'),
           unique: true,
           token: PipelineBranchNameToken,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           projectId: this.projectId,
           defaultBranchName: this.defaultBranchName,
           disabled: this.selectedTypes.includes(this.$options.tagType),
@@ -74,7 +74,7 @@ export default {
           title: s__('Pipeline|Tag name'),
           unique: true,
           token: PipelineTagNameToken,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           projectId: this.projectId,
           disabled: this.selectedTypes.includes(this.$options.branchType),
         },
@@ -84,7 +84,7 @@ export default {
           title: s__('Pipeline|Status'),
           unique: true,
           token: PipelineStatusToken,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
         },
         {
           type: this.$options.sourceType,
@@ -92,7 +92,7 @@ export default {
           title: s__('Pipeline|Source'),
           unique: true,
           token: PipelineSourceToken,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
         },
       ];
     },

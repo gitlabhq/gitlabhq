@@ -215,13 +215,11 @@ module Gitlab
     def rgb
       return [] unless valid?
 
-      @rgb ||= begin
-        if @value.length == 4
-          @value[1, 4].scan(/./).map { |v| (v * 2).hex }
-        else
-          @value[1, 7].scan(/.{2}/).map(&:hex)
-        end
-      end
+      @rgb ||= if @value.length == 4
+                 @value[1, 4].scan(/./).map { |v| (v * 2).hex }
+               else
+                 @value[1, 7].scan(/.{2}/).map(&:hex)
+               end
     end
   end
 end

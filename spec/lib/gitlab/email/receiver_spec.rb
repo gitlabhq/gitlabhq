@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Receiver do
-  include_context :email_shared_context
+  include_context 'email shared context'
 
   let_it_be(:project) { create(:project) }
   let(:metric_transaction) { instance_double(Gitlab::Metrics::WebTransaction) }

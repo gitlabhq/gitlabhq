@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Issues do
+RSpec.describe API::Issues, feature_category: :team_planning do
   let_it_be(:user2)               { create(:user) }
   let_it_be(:admin)               { create(:user, :admin) }
   let_it_be(:non_member)          { create(:user) }

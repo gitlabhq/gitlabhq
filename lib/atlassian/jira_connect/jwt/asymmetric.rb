@@ -77,11 +77,7 @@ module Atlassian
         end
 
         def public_key_cdn_url
-          if public_key_cdn_url_setting.blank? || Feature.disabled?(:jira_connect_oauth_self_managed)
-            return DEFAULT_PUBLIC_KEY_CDN_URL
-          end
-
-          public_key_cdn_url_setting
+          public_key_cdn_url_setting.presence || DEFAULT_PUBLIC_KEY_CDN_URL
         end
 
         def public_key_cdn_url_setting

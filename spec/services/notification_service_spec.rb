@@ -361,8 +361,14 @@ RSpec.describe NotificationService, :mailer do
 
       subject(:notification_service) { notification.access_token_revoked(user, pat.name) }
 
-      it 'sends email to the token owner' do
-        expect { notification_service }.to have_enqueued_email(user, pat.name, mail: "access_token_revoked_email")
+      it 'sends email to the token owner without source' do
+        expect { notification_service }.to have_enqueued_email(user, pat.name, nil, mail: "access_token_revoked_email")
+      end
+
+      it 'sends email to the token owner with source' do
+        expect do
+          notification.access_token_revoked(user, pat.name, 'secret_detection')
+        end.to have_enqueued_email(user, pat.name, 'secret_detection', mail: "access_token_revoked_email")
       end
 
       context 'when user is not allowed to receive notifications' do

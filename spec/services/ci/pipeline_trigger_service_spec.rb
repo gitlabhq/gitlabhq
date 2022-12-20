@@ -197,8 +197,7 @@ RSpec.describe Ci::PipelineTriggerService do
           end
 
           it_behaves_like 'logs downstream pipeline creation' do
-            subject { result[:pipeline] }
-
+            let(:downstream_pipeline) { result[:pipeline] }
             let(:expected_root_pipeline) { pipeline }
             let(:expected_hierarchy_size) { 2 }
             let(:expected_downstream_relationship) { :multi_project }

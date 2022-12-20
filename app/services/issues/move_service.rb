@@ -19,6 +19,7 @@ module Issues
       # to receive service desk emails on the new moved issue.
       update_service_desk_sent_notifications
 
+      copy_email_participants
       queue_copy_designs
 
       new_entity
@@ -47,6 +48,18 @@ module Issues
 
       original_entity
         .sent_notifications.update_all(project_id: new_entity.project_id, noteable_id: new_entity.id)
+    end
+
+    def copy_email_participants
+      new_attributes = { id: nil, issue_id: new_entity.id }
+
+      new_participants = original_entity.issue_email_participants.dup
+
+      new_participants.each do |participant|
+        participant.assign_attributes(new_attributes)
+      end
+
+      IssueEmailParticipant.bulk_insert!(new_participants)
     end
 
     override :update_old_entity

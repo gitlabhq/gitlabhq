@@ -121,8 +121,8 @@ module Gitlab
           grouped = items.group_by(&:category)
           categories = grouped.keys
 
-          categories.each_with_object({}) do |category, hash|
-            hash[category] = grouped[category].map do |item|
+          categories.index_with do |category|
+            grouped[category].map do |item|
               { name: item.name, id: item.key, key: item.key, project_id: item.try(:project_id) }
             end
           end

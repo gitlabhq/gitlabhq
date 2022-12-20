@@ -7,6 +7,7 @@ import {
   EDITOR_TYPE_CODE,
   EDITOR_CODE_INSTANCE_FN,
   EDITOR_DIFF_INSTANCE_FN,
+  EXTENSION_CI_SCHEMA_FILE_NAME_MATCH,
 } from '~/editor/constants';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import { EditorWebIdeExtension } from '~/editor/extensions/source_editor_webide_ext';
@@ -26,6 +27,7 @@ import { performanceMarkAndMeasure } from '~/performance/utils';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   leftSidebarViews,
   viewerTypes,
@@ -53,6 +55,7 @@ export default {
     DiffViewer,
     FileTemplatesBar,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     file: {
       type: Object,
@@ -145,6 +148,12 @@ export default {
     showTabs() {
       return !this.shouldHideEditor && this.isEditModeActive && this.previewMode;
     },
+    isCiConfigFile() {
+      return (
+        this.file.path === EXTENSION_CI_SCHEMA_FILE_NAME_MATCH &&
+        this.editor?.getEditorType() === EDITOR_TYPE_CODE
+      );
+    },
   },
   watch: {
     'file.name': {
@@ -231,8 +240,6 @@ export default {
       if (this.shouldHideEditor && (this.file.content || this.file.raw)) {
         return;
       }
-
-      this.registerSchemaForFile();
 
       Promise.all([this.fetchFileData(), this.fetchEditorconfigRules()])
         .then(() => {
@@ -357,6 +364,8 @@ export default {
 
       this.model.updateOptions(this.rules);
 
+      this.registerSchemaForFile();
+
       this.model.onChange((model) => {
         const { file } = model;
         if (!file.active) return;
@@ -446,8 +455,33 @@ export default {
       return Promise.resolve();
     },
     registerSchemaForFile() {
-      const schema = this.getJsonSchemaForPath(this.file.path);
-      registerSchema(schema);
+      const registerExternalSchema = () => {
+        const schema = this.getJsonSchemaForPath(this.file.path);
+        return registerSchema(schema);
+      };
+      const registerLocalSchema = async () => {
+        if (!this.CiSchemaExtension) {
+          const { CiSchemaExtension } = await import(
+            '~/editor/extensions/source_editor_ci_schema_ext'
+          ).catch((e) =>
+            createAlert({
+              message: e,
+            }),
+          );
+          this.CiSchemaExtension = CiSchemaExtension;
+        }
+        this.editor.use({ definition: this.CiSchemaExtension });
+        this.editor.registerCiSchema();
+      };
+
+      if (this.isCiConfigFile && this.glFeatures.schemaLinting) {
+        registerLocalSchema();
+      } else {
+        if (this.CiSchemaExtension) {
+          this.editor.unuse(this.CiSchemaExtension);
+        }
+        registerExternalSchema();
+      }
     },
     updateEditor(data) {
       // Looks like our model wrapper `.dispose` causes the monaco editor to emit some position changes after

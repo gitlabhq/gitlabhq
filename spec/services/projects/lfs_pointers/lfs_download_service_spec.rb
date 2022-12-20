@@ -108,7 +108,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService do
       end
     end
 
-    context 'when file download fails' do
+    context 'when file downloading response code is not success' do
       before do
         allow(Gitlab::HTTP).to receive(:get).and_return(code: 500, 'success?' => false)
       end
@@ -119,6 +119,20 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService do
         expect(subject).to receive(:download_and_save_file!).and_raise(StandardError)
 
         subject.execute
+      end
+    end
+
+    context 'when file downloading request timeout few times' do
+      before do
+        allow(Gitlab::HTTP).to receive(:get).and_raise(Net::OpenTimeout)
+      end
+
+      it_behaves_like 'no lfs object is created'
+
+      it 'retries to get LFS object 3 times before raising exception' do
+        subject.execute
+
+        expect(Gitlab::HTTP).to have_received(:get).exactly(3).times
       end
     end
 

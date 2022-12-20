@@ -53,6 +53,7 @@ module Import
     def authorize_url
       state = SecureRandom.base64(64)
       session[auth_state_key] = state
+      session[:auth_on_failure_path] = "#{new_project_path}#import_project"
       if Feature.enabled?(:remove_legacy_github_client)
         oauth_client.auth_code.authorize_url(
           redirect_uri: callback_import_url,

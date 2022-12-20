@@ -34,5 +34,4 @@ export default () => ({
   environmentsGuidanceAlertDetected: false,
   previewMarkdownPath: '',
   userPreferencesPath: '',
-  canUseNewWebIde: false,
 });

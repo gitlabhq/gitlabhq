@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Transaction::Context do
+RSpec.describe Gitlab::Database::Transaction::Context, feature_category: :database do
   subject { described_class.new }
 
   let(:data) { subject.context }

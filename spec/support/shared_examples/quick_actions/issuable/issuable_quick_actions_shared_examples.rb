@@ -1,21 +1,23 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'issuable quick actions' do
-  QuickAction = Struct.new(:action_text, :expectation, :before_action, keyword_init: true) do
-    # Pass a block as :before_action if
-    # issuable state needs to be changed before
-    # the quick action is executed.
-    def call_before_action
-      before_action.call if before_action
-    end
+  before do
+    stub_const('QuickAction', Struct.new(:action_text, :expectation, :before_action, keyword_init: true) do
+      # Pass a block as :before_action if
+      # issuable state needs to be changed before
+      # the quick action is executed.
+      def call_before_action
+        before_action.call if before_action
+      end
 
-    def skip_access_check
-      action_text["/todo"] ||
-        action_text["/done"] ||
-        action_text["/subscribe"] ||
-        action_text["/shrug"] ||
-        action_text["/tableflip"]
-    end
+      def skip_access_check
+        action_text["/todo"] ||
+          action_text["/done"] ||
+          action_text["/subscribe"] ||
+          action_text["/shrug"] ||
+          action_text["/tableflip"]
+      end
+    end)
   end
 
   let(:unlabel_expectation) do
@@ -140,6 +142,12 @@ RSpec.shared_examples 'issuable quick actions' do
       ),
       QuickAction.new(
         action_text: "/label ~feature",
+        expectation: ->(noteable, can_use_quick_action) {
+          expect(noteable.labels&.last&.id == feature_label.id).to eq(can_use_quick_action)
+        }
+      ),
+      QuickAction.new(
+        action_text: "/labels ~feature",
         expectation: ->(noteable, can_use_quick_action) {
           expect(noteable.labels&.last&.id == feature_label.id).to eq(can_use_quick_action)
         }

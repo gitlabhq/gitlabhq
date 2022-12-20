@@ -8,9 +8,9 @@ module Gitlab
 
       # negative arity means arguments are optional
       if block.arity == 1 || block.arity < 0
-        block.call(model)
+        yield(model)
       else
-        block.call
+        yield
       end
 
     ensure

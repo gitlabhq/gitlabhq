@@ -126,7 +126,7 @@ PUT /projects/:id/invitations/:email
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `email`   | string | yes    | The email address to which the invitation was previously sent. |
+| `email`   | string | yes    | The email address the invitation was previously sent to. |
 | `access_level` | integer | no | A valid access level (defaults: `30`, the Developer role). |
 | `expires_at` | string | no | A date string in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`). |
 

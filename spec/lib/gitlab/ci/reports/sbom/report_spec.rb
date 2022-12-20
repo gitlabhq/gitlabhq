@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Reports::Sbom::Report do
+RSpec.describe Gitlab::Ci::Reports::Sbom::Report, feature_category: :dependency_management do
   subject(:report) { described_class.new }
 
   describe '#valid?' do

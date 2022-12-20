@@ -1,9 +1,0 @@
----
-table_name: experiment_subjects
-classes:
-- ExperimentSubject
-feature_categories:
-- experimentation_conversion
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47042
-milestone: '13.7'

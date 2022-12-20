@@ -1,4 +1,4 @@
-- name: "Legacy fields from DAST report"
+- title: "Legacy fields from DAST report"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: derekferguson

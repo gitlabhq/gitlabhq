@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'IDE', :js do
+RSpec.describe 'IDE', :js, feature_category: :web_ide do
   include WebIdeSpecHelpers
 
   let_it_be(:ide_iframe_selector) { '#ide iframe' }
@@ -46,10 +46,6 @@ RSpec.describe 'IDE', :js do
     end
 
     it_behaves_like 'legacy Web IDE'
-
-    it 'does not show switch button' do
-      expect(page).not_to have_button('Switch to new Web IDE')
-    end
   end
 
   context 'with vscode feature flag on and use_legacy_web_ide=true' do
@@ -61,19 +57,6 @@ RSpec.describe 'IDE', :js do
     end
 
     it_behaves_like 'legacy Web IDE'
-
-    describe 'when user switches to new Web IDE' do
-      before do
-        click_button('Switch to new Web IDE')
-
-        # Confirm modal
-        page.within('#confirmationModal') do
-          click_button('Switch editors')
-        end
-      end
-
-      it_behaves_like 'new Web IDE'
-    end
   end
 
   describe 'sub-groups' do

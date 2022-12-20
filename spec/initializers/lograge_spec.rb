@@ -93,7 +93,7 @@ RSpec.describe 'lograge', type: :request do
       include MemoryInstrumentationHelper
 
       before do
-        skip_memory_instrumentation!
+        verify_memory_instrumentation_available!
       end
 
       it 'logs memory usage metrics' do

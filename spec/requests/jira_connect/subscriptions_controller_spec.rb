@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::SubscriptionsController do
+RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrations do
   describe 'GET /-/jira_connect/subscriptions' do
     let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'http://self-managed-gitlab.com') }
     let(:qsh) do
@@ -10,7 +10,7 @@ RSpec.describe JiraConnect::SubscriptionsController do
     end
 
     let(:jwt) { Atlassian::Jwt.encode({ iss: installation.client_key, qsh: qsh }, installation.shared_secret) }
-    let(:cors_request_headers) { { 'Origin' => 'http://notgitlab.com' } }
+    let(:cors_request_headers) { { 'Origin' => 'https://gitlab.com' } }
     let(:path) { '/-/jira_connect/subscriptions' }
     let(:params) { { jwt: jwt } }
 
@@ -19,7 +19,7 @@ RSpec.describe JiraConnect::SubscriptionsController do
     end
 
     subject(:content_security_policy) do
-      get path, params: params
+      get path, params: params, headers: cors_request_headers
 
       response.headers['Content-Security-Policy']
     end
@@ -27,6 +27,17 @@ RSpec.describe JiraConnect::SubscriptionsController do
     it { is_expected.to include('http://self-managed-gitlab.com/-/jira_connect/') }
     it { is_expected.to include('http://self-managed-gitlab.com/api/') }
     it { is_expected.to include('http://self-managed-gitlab.com/oauth/') }
+    it { is_expected.to include('frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com') }
+
+    context 'with additional iframe ancestors' do
+      before do
+        allow(Gitlab.config.jira_connect).to receive(:additional_iframe_ancestors).and_return(['http://localhost:*', 'http://dev.gitlab.com'])
+      end
+
+      it {
+        is_expected.to include('frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com http://localhost:* http://dev.gitlab.com')
+      }
+    end
 
     context 'with no self-managed instance configured' do
       let_it_be(:installation) { create(:jira_connect_installation, instance_url: '') }
@@ -36,14 +47,48 @@ RSpec.describe JiraConnect::SubscriptionsController do
       it { is_expected.not_to include('http://self-managed-gitlab.com/oauth/') }
     end
 
-    context 'with jira_connect_oauth_self_managed_setting feature disabled' do
-      before do
-        stub_feature_flags(jira_connect_oauth_self_managed_setting: false)
-      end
+    context 'when json format' do
+      let(:path) { '/-/jira_connect/subscriptions.json' }
 
-      it { is_expected.not_to include('http://self-managed-gitlab.com/-/jira_connect/') }
-      it { is_expected.not_to include('http://self-managed-gitlab.com/api/') }
-      it { is_expected.not_to include('http://self-managed-gitlab.com/oauth/') }
+      it 'allows cross-origin requests', :aggregate_failures do
+        get path, params: params, headers: cors_request_headers
+
+        expect(response.headers['Access-Control-Allow-Origin']).to eq 'https://gitlab.com'
+        expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, OPTIONS'
+        expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
+      end
+    end
+  end
+
+  describe 'OPTIONS /-/jira_connect/subscriptions' do
+    let(:cors_request_headers) { { 'Origin' => 'https://gitlab.com', 'access-control-request-method' => 'GET' } }
+
+    before do
+      stub_application_setting(jira_connect_proxy_url: 'https://gitlab.com')
+    end
+
+    it 'allows cross-origin requests', :aggregate_failures do
+      options '/-/jira_connect/subscriptions.json', headers: cors_request_headers
+
+      expect(response.headers['Access-Control-Allow-Origin']).to eq 'https://gitlab.com'
+      expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, OPTIONS'
+      expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
+    end
+  end
+
+  describe 'OPTIONS /-/jira_connect/subscriptions/:id' do
+    let(:cors_request_headers) { { 'Origin' => 'https://gitlab.com', 'access-control-request-method' => 'DELETE' } }
+
+    before do
+      stub_application_setting(jira_connect_proxy_url: 'https://gitlab.com')
+    end
+
+    it 'allows cross-origin requests', :aggregate_failures do
+      options '/-/jira_connect/subscriptions/1', headers: cors_request_headers
+
+      expect(response.headers['Access-Control-Allow-Origin']).to eq 'https://gitlab.com'
+      expect(response.headers['Access-Control-Allow-Methods']).to eq 'DELETE, OPTIONS'
+      expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
     end
   end
 
@@ -56,7 +101,7 @@ RSpec.describe JiraConnect::SubscriptionsController do
     end
 
     let(:jwt) { Atlassian::Jwt.encode({ iss: installation.client_key, qsh: qsh }, installation.shared_secret) }
-    let(:cors_request_headers) { { 'Origin' => 'http://notgitlab.com' } }
+    let(:cors_request_headers) { { 'Origin' => 'https://gitlab.com' } }
     let(:params) { { jwt: jwt, format: :json } }
 
     before do

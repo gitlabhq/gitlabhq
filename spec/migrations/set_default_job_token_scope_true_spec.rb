@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe SetDefaultJobTokenScopeTrue, schema: 20210819153805 do
+RSpec.describe SetDefaultJobTokenScopeTrue, schema: 20210819153805, feature_category: :continuous_integration do
   let(:ci_cd_settings) { table(:project_ci_cd_settings) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

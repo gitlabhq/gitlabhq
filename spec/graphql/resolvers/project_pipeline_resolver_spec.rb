@@ -12,16 +12,16 @@ RSpec.describe Resolvers::ProjectPipelineResolver do
 
   let(:current_user) { create(:user) }
 
+  before do
+    project.add_developer(current_user)
+  end
+
   specify do
     expect(described_class).to have_nullable_graphql_type(::Types::Ci::PipelineType)
   end
 
   def resolve_pipeline(project, args)
     resolve(described_class, obj: project, args: args, ctx: { current_user: current_user })
-  end
-
-  before do
-    project.add_developer(current_user)
   end
 
   it 'resolves pipeline for the passed iid' do

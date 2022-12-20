@@ -98,6 +98,66 @@ RSpec.describe IssuablesHelper do
     end
   end
 
+  describe '#assigned_issuables_count', feature_category: :project_management do
+    context 'when issuable is issues' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project).tap { |p| p.add_developer(user) } }
+
+      subject { helper.assigned_issuables_count(:issues) }
+
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      context 'when assigned issues count is over 100' do
+        let_it_be(:issues) { create_list(:issue, 101, project: project, assignees: [user]) }
+
+        before do
+          stub_feature_flags(limit_assigned_issues_count: false)
+        end
+
+        it { is_expected.to eq 101 }
+
+        context 'when FF limit_assigned_issues_count is enabled' do
+          before do
+            stub_feature_flags(limit_assigned_issues_count: true)
+          end
+
+          it { is_expected.to eq 100 }
+        end
+      end
+    end
+  end
+
+  describe '#assigned_open_issues_count_text', feature_category: :project_management do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project).tap { |p| p.add_developer(user) } }
+
+    subject { helper.assigned_open_issues_count_text }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'when assigned issues count is over 99' do
+      let_it_be(:issues) { create_list(:issue, 100, project: project, assignees: [user]) }
+
+      before do
+        stub_feature_flags(limit_assigned_issues_count: false)
+      end
+
+      it { is_expected.to eq '100' }
+
+      context 'when FF limit_assigned_issues_count is enabled' do
+        before do
+          stub_feature_flags(limit_assigned_issues_count: true)
+        end
+
+        it { is_expected.to eq '99+' }
+      end
+    end
+  end
+
   describe '#issuable_meta', time_travel_to: '2022-08-05 00:00:00 +0000' do
     let(:user) { create(:user) }
 

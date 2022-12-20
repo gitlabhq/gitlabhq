@@ -25,7 +25,7 @@ whitepaper.
 
 GitLab provides the following DAST analyzers, one or more of which may be useful depending on the kind of application you're testing.
 
-For scanning websites, use one of: 
+For scanning websites, use one of:
 
 - The [DAST proxy-based analyzer](proxy-based.md) for scanning traditional applications serving simple HTML. The proxy-based analyzer can be run automatically or on-demand.
 - The [DAST browser-based analyzer](browser_based.md) for scanning applications that make heavy use of JavaScript. This includes single page web applications.

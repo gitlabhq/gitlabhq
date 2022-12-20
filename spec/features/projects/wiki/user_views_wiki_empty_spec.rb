@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project > User views empty wiki' do
+RSpec.describe 'Project > User views empty wiki', feature_category: :wiki do
   let_it_be(:user) { create(:user) }
 
   let(:wiki) { create(:project_wiki, project: project) }

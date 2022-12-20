@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillJiraTrackerDeploymentType2, :migration, schema: 20210301200959 do
-  let_it_be(:jira_integration_temp) { described_class::JiraServiceTemp }
-  let_it_be(:jira_tracker_data_temp) { described_class::JiraTrackerDataTemp }
-  let_it_be(:atlassian_host) { 'https://api.atlassian.net' }
-  let_it_be(:mixedcase_host) { 'https://api.AtlassiaN.nEt' }
-  let_it_be(:server_host) { 'https://my.server.net' }
+  let!(:jira_integration_temp) { described_class::JiraServiceTemp }
+  let!(:jira_tracker_data_temp) { described_class::JiraTrackerDataTemp }
+  let!(:atlassian_host) { 'https://api.atlassian.net' }
+  let!(:mixedcase_host) { 'https://api.AtlassiaN.nEt' }
+  let!(:server_host) { 'https://my.server.net' }
 
   let(:jira_integration) { jira_integration_temp.create!(type: 'JiraService', active: true, category: 'issue_tracker') }
 

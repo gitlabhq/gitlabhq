@@ -15,13 +15,11 @@ module Types
 
     field :project, Types::ProjectType,
           description: 'Project this to-do item is associated with.',
-          null: true,
-          authorize: :read_project
+          null: true
 
     field :group, 'Types::GroupType',
           description: 'Group this to-do item is associated with.',
-          null: true,
-          authorize: :read_group
+          null: true
 
     field :author, Types::UserType,
           description: 'Author of this to-do item.',

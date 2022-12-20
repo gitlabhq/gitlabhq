@@ -178,7 +178,7 @@ The `redirect-uri` must not contain any GitLab Pages site domain.
       auth-redirect-uri=http://pages.gdk.test:3010/auth # the authentication callback url for GitLab Pages
       ```
 
-1. If running Pages inside the GDK, you can use GDK's `protected_config_files` section under `gdk` in
+1. If running Pages inside the GDK, you can use GDK `protected_config_files` section under `gdk` in
    your `gdk.yml` to avoid getting `gitlab-pages.conf` configuration rewritten:
 
    ```yaml

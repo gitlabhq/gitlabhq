@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'PagerDuty webhook' do
+RSpec.describe 'PagerDuty webhook', feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
 
   describe 'POST /incidents/pagerduty' do

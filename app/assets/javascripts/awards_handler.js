@@ -2,7 +2,7 @@
 
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
-import { uniq } from 'lodash';
+import { uniq, escape } from 'lodash';
 import { getEmojiScoreWithIntent } from '~/emoji/utils';
 import { getCookie, setCookie, scrollToElement } from '~/lib/utils/common_utils';
 import * as Emoji from '~/emoji';
@@ -149,7 +149,7 @@ export class AwardsHandler {
     let frequentlyUsedCatgegory = '';
     if (frequentlyUsedEmojis.length > 0) {
       frequentlyUsedCatgegory = this.renderCategory('Frequently used', frequentlyUsedEmojis, {
-        menuListClass: 'frequent-emojis',
+        frequentEmojis: true,
       });
     }
 
@@ -228,9 +228,9 @@ export class AwardsHandler {
   renderCategory(name, emojiList, opts = {}) {
     return `
       <h5 class="emoji-menu-title">
-        ${name}
+        ${escape(name)}
       </h5>
-      <ul class="clearfix emoji-menu-list ${opts.menuListClass || ''}">
+      <ul class="clearfix emoji-menu-list ${opts.frequentEmojis ? 'frequent-emojis' : ''}">
         ${emojiList
           .map(
             (emojiName) => `

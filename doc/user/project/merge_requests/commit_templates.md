@@ -70,6 +70,7 @@ GitLab creates a squash commit message with this template:
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75639) `url`, `approved_by`, and `merged_by` variables in GitLab 14.7.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/20421) `co_authored_by` variable in GitLab 14.7.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/26303) `all_commits` variable in GitLab 14.9.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/378352) `reviewed_by` variable in GitLab 15.7.
 
 Commit message templates support these variables:
 
@@ -84,7 +85,8 @@ Commit message templates support these variables:
 | `%{first_commit}`  | Full message of the first commit in merge request diff. | `Update README.md` |
 | `%{first_multiline_commit}` | Full message of the first commit that's not a merge commit and has more than one line in message body. Merge request title if all commits aren't multiline. | `Update README.md`<br><br>`Improved project description in readme file.` |
 | `%{url}`           | Full URL to the merge request. | `https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1` |
-| `%{approved_by}`   | Line-separated list of the merge request approvers. | `Approved-by: Sidney Jones <sjones@example.com>` <br> `Approved-by: Zhang Wei <zwei@example.com>` |
+| `%{reviewed_by}`   | Line-separated list of the merge request reviewers, based on users who submit a review via batch comments, in a `Reviewed-by` Git commit trailer format. | `Reviewed-by: Sidney Jones <sjones@example.com>` <br> `Reviewed-by: Zhang Wei <zwei@example.com>` |
+| `%{approved_by}`   | Line-separated list of the merge request approvers in a `Approved-by` Git commit trailer format. | `Approved-by: Sidney Jones <sjones@example.com>` <br> `Approved-by: Zhang Wei <zwei@example.com>` |
 | `%{merged_by}`     | User who merged the merge request. | `Alex Garcia <agarcia@example.com>` |
 | `%{co_authored_by}` | Names and emails of commit authors in a `Co-authored-by` Git commit trailer format. Limited to authors of 100 most recent commits in merge request. | `Co-authored-by: Zane Doe <zdoe@example.com>` <br> `Co-authored-by: Blake Smith <bsmith@example.com>` |
 | `%{all_commits}`   | Messages from all commits in the merge request. Limited to 100 most recent commits. Skips commit bodies exceeding 100KiB and merge commit messages. | `* Feature introduced` <br><br> `This commit implements feature` <br> `Changelog:added` <br><br> `* Bug fixed` <br><br> `* Documentation improved` <br><br>`This commit introduced better docs.`|

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Infrastructure Registry' do
+RSpec.describe 'Infrastructure Registry', feature_category: :projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 

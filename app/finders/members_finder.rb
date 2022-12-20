@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class MembersFinder
-  RELATIONS = %i(direct inherited descendants invited_groups).freeze
-  DEFAULT_RELATIONS = %i(direct inherited).freeze
+  RELATIONS = %i[direct inherited descendants invited_groups].freeze
+  DEFAULT_RELATIONS = %i[direct inherited].freeze
 
   # Params can be any of the following:
   #   sort:       string

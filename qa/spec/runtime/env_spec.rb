@@ -7,7 +7,7 @@ RSpec.describe QA::Runtime::Env do
     it_behaves_like 'boolean method with parameter', kwargs
   end
 
-  shared_examples 'boolean method with parameter' do |method:, param: nil, env_key:, default:|
+  shared_examples 'boolean method with parameter' do |method:, env_key:, default:, param: nil|
     context 'when there is an env variable set' do
       it 'returns false when falsey values specified' do
         stub_env(env_key, 'false')

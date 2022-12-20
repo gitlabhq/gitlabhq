@@ -701,6 +701,16 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       describe '#up' do
         subject { run_rake_task("gitlab:db:migration_testing:up:#{db}") }
 
+        let(:migrations_id_runner) do
+          instance_double('Gitlab::Database::Migrations::BatchedMigrationLastId', store: true)
+        end
+
+        before do
+          allow(::Gitlab::Database::Migrations::Runner).to(
+            receive(:batched_migrations_last_id).and_return(migrations_id_runner)
+          )
+        end
+
         it 'delegates to the migration runner' do
           expect(::Gitlab::Database::Migrations::Runner).to receive(:up).with(database: db).and_return(runner)
           expect(runner).to receive(:run)

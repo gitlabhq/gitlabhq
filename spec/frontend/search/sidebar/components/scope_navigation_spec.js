@@ -1,4 +1,4 @@
-import { GlNav, GlNavItem } from '@gitlab/ui';
+import { GlNav, GlNavItem, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -37,6 +37,7 @@ describe('ScopeNavigation', () => {
   const findGlNav = () => wrapper.findComponent(GlNav);
   const findGlNavItems = () => wrapper.findAllComponents(GlNavItem);
   const findGlNavItemActive = () => findGlNavItems().wrappers.filter((w) => w.attributes('active'));
+  const findGlNavItemActiveLabel = () => findGlNavItemActive().at(0).findAll('span').at(0).text();
   const findGlNavItemActiveCount = () => findGlNavItemActive().at(0).findAll('span').at(1);
 
   describe('scope navigation', () => {
@@ -56,7 +57,7 @@ describe('ScopeNavigation', () => {
       expect(findGlNavItems()).toHaveLength(9);
     });
 
-    it('nav items have proper links', () => {
+    it('has all proper links', () => {
       const linkAtPosition = 3;
       const { link } = MOCK_NAVIGATION[Object.keys(MOCK_NAVIGATION)[linkAtPosition]];
 
@@ -64,17 +65,47 @@ describe('ScopeNavigation', () => {
     });
   });
 
-  describe('scope navigation sets proper state', () => {
+  describe('scope navigation sets proper state with url scope set', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    it('sets proper class to active item', () => {
+    it('has correct active item', () => {
       expect(findGlNavItemActive()).toHaveLength(1);
+      expect(findGlNavItemActiveLabel()).toBe('Issues');
     });
 
-    it('active item', () => {
+    it('has correct active item count', () => {
       expect(findGlNavItemActiveCount().text()).toBe('2.4K');
+    });
+
+    it('does not have plus sign after count text', () => {
+      expect(findGlNavItemActive().at(0).findComponent(GlIcon).exists()).toBe(false);
+    });
+
+    it('has count is highlighted correctly', () => {
+      expect(findGlNavItemActiveCount().classes('gl-text-gray-900')).toBe(true);
+    });
+  });
+
+  describe('scope navigation sets proper state with NO url scope set', () => {
+    beforeEach(() => {
+      createComponent({
+        urlQuery: {},
+      });
+    });
+
+    it('has correct active item', () => {
+      expect(findGlNavItems().at(0).attributes('active')).toBe('true');
+      expect(findGlNavItemActiveLabel()).toBe('Projects');
+    });
+
+    it('has correct active item count', () => {
+      expect(findGlNavItemActiveCount().text()).toBe('10K');
+    });
+
+    it('has correct active item count and over limit sign', () => {
+      expect(findGlNavItemActive().at(0).findComponent(GlIcon).exists()).toBe(true);
     });
   });
 });

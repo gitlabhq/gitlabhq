@@ -69,7 +69,7 @@ To enable the agent server on multiple nodes:
    - `gitlab_kas['api_secret_key']` is the shared secret used for authentication between KAS and GitLab. This value must be Base64-encoded and exactly 32 bytes long.
    - `gitlab_kas['private_api_secret_key']` is the shared secret used for authentication between different KAS instances. This value must be Base64-encoded and exactly 32 bytes long.
 
-1. For each application node, follow the steps in: [Use an external installation](../clusters/kas.md#use-an-external-installation).
+1. For each application node, follow the steps in [Use an external installation](../clusters/kas.md#use-an-external-installation). If the agent server is enabled on the application node, do not include `gitlab_kas['enable'] = false` in the configuration for that node.
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 ### For GitLab Helm Chart

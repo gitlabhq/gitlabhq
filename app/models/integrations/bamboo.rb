@@ -16,7 +16,7 @@ module Integrations
       help: -> { s_('BambooService|Bamboo build plan key.') },
       non_empty_password_title: -> { s_('BambooService|Enter new build key') },
       non_empty_password_help: -> { s_('BambooService|Leave blank to use your current build key.') },
-      placeholder: -> { s_('KEY') },
+      placeholder: -> { _('KEY') },
       required: true
 
     field :username,

@@ -25,14 +25,13 @@ module Snippets::BlobsActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def blob
-    strong_memoize(:blob) do
-      assign_ref_vars
+    assign_ref_vars
 
-      next unless @commit
+    return unless @commit
 
-      @repo.blob_at(@commit.id, @path)
-    end
+    @repo.blob_at(@commit.id, @path)
   end
+  strong_memoize_attr :blob
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def ensure_blob
@@ -40,11 +39,11 @@ module Snippets::BlobsActions
   end
 
   def ensure_repository
-    unless snippet.repo_exists?
-      Gitlab::AppLogger.error(message: "Snippet raw blob attempt with no repo", snippet: snippet.id)
+    return if snippet.repo_exists?
 
-      respond_422
-    end
+    Gitlab::AppLogger.error(message: "Snippet raw blob attempt with no repo", snippet: snippet.id)
+
+    respond_422
   end
 
   def snippet_id

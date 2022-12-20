@@ -3,11 +3,11 @@
 module Impersonation
   include Gitlab::Utils::StrongMemoize
 
-  SESSION_KEYS_TO_DELETE = %w(
+  SESSION_KEYS_TO_DELETE = %w[
     github_access_token gitea_access_token gitlab_access_token
     bitbucket_token bitbucket_refresh_token bitbucket_server_personal_access_token
     bulk_import_gitlab_access_token fogbugz_token
-  ).freeze
+  ].freeze
 
   def current_user
     user = super

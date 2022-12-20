@@ -26,11 +26,11 @@ RSpec.describe Projects::ProcessSyncEventsWorker do
     end
 
     it 'consumes all sync events' do
-      expect { perform }.to change(Projects::SyncEvent, :count).from(2).to(0)
+      expect { perform }.to change { Projects::SyncEvent.count }.from(2).to(0)
     end
 
     it 'syncs project namespace id' do
-      expect { perform }.to change(Ci::ProjectMirror, :all).to contain_exactly(
+      expect { perform }.to change { Ci::ProjectMirror.all }.to contain_exactly(
         an_object_having_attributes(namespace_id: group.id)
       )
     end

@@ -35,7 +35,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   sha_attribute :sha
   alias_attribute :id, :sha
 
-  serialize :trailers, Serializers::Json # rubocop:disable Cop/ActiveRecordSerialize
+  attribute :trailers, :ind_jsonb
   validates :trailers, json_schema: { filename: 'git_trailers' }
 
   scope :with_users, -> { preload(:commit_author, :committer) }

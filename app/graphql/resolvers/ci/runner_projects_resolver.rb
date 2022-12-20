@@ -40,6 +40,7 @@ module Resolvers
                             params: project_finder_params(args),
                             project_ids_relation: project_ids)
                        .execute
+          projects = apply_lookahead(projects)
           Preloaders::ProjectPolicyPreloader.new(projects, current_user).execute
           projects_by_id = projects.index_by(&:id)
 
@@ -57,6 +58,19 @@ module Resolvers
           end
         end
         # rubocop:enable CodeReuse/ActiveRecord
+      end
+
+      private
+
+      def unconditional_includes
+        [:project_feature]
+      end
+
+      def preloads
+        super.merge({
+                      full_path: [:route, { namespace: [:route] }],
+                      web_url: [:route, { namespace: [:route] }]
+                    })
       end
     end
   end

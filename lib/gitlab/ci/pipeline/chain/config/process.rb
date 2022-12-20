@@ -11,7 +11,7 @@ module Gitlab
             def perform!
               raise ArgumentError, 'missing config content' unless @command.config_content
 
-              result = logger.instrument(:pipeline_config_process) do
+              result = logger.instrument(:pipeline_config_process, once: true) do
                 processor = ::Gitlab::Ci::YamlProcessor.new(
                   @command.config_content, {
                     project: project,

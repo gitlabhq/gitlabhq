@@ -579,6 +579,7 @@ RSpec.describe Note do
         expect(commit_note.confidential?).to be_falsy
       end
     end
+
     context 'when note is confidential' do
       it 'is true even when a noteable is not confidential' do
         issue = create(:issue, confidential: false)

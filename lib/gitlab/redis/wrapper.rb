@@ -144,10 +144,19 @@ module Gitlab
 
       def redis_store_options
         config = raw_config_hash
+        config[:instrumentation_class] ||= self.class.instrumentation_class
+
+        if config[:cluster].present?
+          config[:db] = 0 # Redis Cluster only supports db 0
+          config
+        else
+          parse_redis_url(config)
+        end
+      end
+
+      def parse_redis_url(config)
         redis_url = config.delete(:url)
         redis_uri = URI.parse(redis_url)
-
-        config[:instrumentation_class] ||= self.class.instrumentation_class
 
         if redis_uri.scheme == 'unix'
           # Redis::Store does not handle Unix sockets well, so let's do it for them
@@ -178,7 +187,7 @@ module Gitlab
             { url: '' }
           end
 
-        if config_hash[:url].blank?
+        if config_hash[:url].blank? && config_hash[:cluster].blank?
           config_hash[:url] = legacy_fallback_urls[self.class.store_name] || legacy_fallback_urls[self.class.config_fallback.store_name]
         end
 

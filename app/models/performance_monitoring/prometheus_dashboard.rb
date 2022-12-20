@@ -53,8 +53,6 @@ module PerformanceMonitoring
     # This method is planned to be refactored as a part of https://gitlab.com/gitlab-org/gitlab/-/issues/219398
     # implementation. For new existing logic was reused to faster deliver MVC
     def schema_validation_warnings
-      return run_custom_validation.map(&:message) if Feature.enabled?(:metrics_dashboard_exhaustive_validations, environment&.project)
-
       self.class.from_json(reload_schema)
       []
     rescue Gitlab::Metrics::Dashboard::Errors::LayoutError => e
@@ -64,11 +62,6 @@ module PerformanceMonitoring
     end
 
     private
-
-    def run_custom_validation
-      Gitlab::Metrics::Dashboard::Validator
-        .errors(reload_schema, dashboard_path: path, project: environment&.project)
-    end
 
     # dashboard finder methods are somehow limited, #find includes checking if
     # user is authorised to view selected dashboard, but modifies schema, which in some cases may

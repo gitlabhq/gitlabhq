@@ -7,3 +7,4 @@ feature_categories:
 description: Stores GPG signatures
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9546
 milestone: '9.5'
+gitlab_schema: gitlab_main

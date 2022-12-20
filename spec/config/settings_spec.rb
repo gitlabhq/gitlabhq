@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Settings do
+RSpec.describe Settings, feature_category: :authentication_and_authorization do
   describe 'omniauth' do
     it 'defaults to enabled' do
       expect(described_class.omniauth.enabled).to be true

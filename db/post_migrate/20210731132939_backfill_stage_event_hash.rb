@@ -75,7 +75,7 @@ class BackfillStageEventHash < ActiveRecord::Migration[6.1]
         records = delete_invalid_records(records)
         next if records.empty?
 
-        hashes_by_stage = records.to_h { |stage| [stage, calculate_stage_events_hash(stage)] }
+        hashes_by_stage = records.index_with { |stage| calculate_stage_events_hash(stage) }
         hashes = hashes_by_stage.values.uniq
 
         StageEventHash.insert_all(hashes.map { |hash| { hash_sha256: hash } })

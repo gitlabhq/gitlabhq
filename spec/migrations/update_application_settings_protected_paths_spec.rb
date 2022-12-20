@@ -3,12 +3,13 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe UpdateApplicationSettingsProtectedPaths, :aggregate_failures do
+RSpec.describe UpdateApplicationSettingsProtectedPaths, :aggregate_failures,
+feature_category: :authentication_and_authorization do
   subject(:migration) { described_class.new }
 
-  let_it_be(:application_settings) { table(:application_settings) }
-  let_it_be(:oauth_paths) { %w[/oauth/authorize /oauth/token] }
-  let_it_be(:custom_paths) { %w[/foo /bar] }
+  let!(:application_settings) { table(:application_settings) }
+  let!(:oauth_paths) { %w[/oauth/authorize /oauth/token] }
+  let!(:custom_paths) { %w[/foo /bar] }
 
   let(:default_paths) { application_settings.column_defaults.fetch('protected_paths') }
 

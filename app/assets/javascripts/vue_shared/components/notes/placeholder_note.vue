@@ -16,8 +16,9 @@
  *   :note="{body: 'This is a note'}"
  *   />
  */
-import { GlSafeHtmlDirective as SafeHtml, GlAvatarLink, GlAvatar } from '@gitlab/ui';
+import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { renderMarkdown } from '~/notes/utils';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 

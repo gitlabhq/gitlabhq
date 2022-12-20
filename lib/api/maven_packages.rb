@@ -107,7 +107,7 @@ module API
 
       def fetch_package(file_name:, project: nil, group: nil)
         order_by_package_file = file_name.include?(::Packages::Maven::Metadata.filename) &&
-                                  !params[:path].include?(::Packages::Maven::FindOrCreatePackageService::SNAPSHOT_TERM)
+          !params[:path].include?(::Packages::Maven::FindOrCreatePackageService::SNAPSHOT_TERM)
 
         ::Packages::Maven::PackageFinder.new(
           current_user,
@@ -150,10 +150,17 @@ module API
 
     desc 'Download the maven package file at instance level' do
       detail 'This feature was introduced in GitLab 11.6'
+      success code: 200
+      failure [
+        { code: 401, message: 'Unauthorized' },
+        { code: 403, message: 'Forbidden' },
+        { code: 404, message: 'Not Found' }
+      ]
+      tags %w[maven_packages]
     end
     params do
-      requires :path, type: String, desc: 'Package path'
-      requires :file_name, type: String, desc: 'Package file name'
+      requires :path, type: String, desc: 'Package path', documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
+      requires :file_name, type: String, desc: 'Package file name', documentation: { example: 'mypkg-1.0-SNAPSHOT.jar' }
     end
     route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
     get 'packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
@@ -190,14 +197,24 @@ module API
 
     desc 'Download the maven package file at a group level' do
       detail 'This feature was introduced in GitLab 11.7'
+      success [
+        { code: 200 },
+        { code: 302 }
+      ]
+      failure [
+        { code: 401, message: 'Unauthorized' },
+        { code: 403, message: 'Forbidden' },
+        { code: 404, message: 'Not Found' }
+      ]
+      tags %w[maven_packages]
     end
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
-        requires :path, type: String, desc: 'Package path'
-        requires :file_name, type: String, desc: 'Package file name'
+        requires :path, type: String, desc: 'Package path', documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
+        requires :file_name, type: String, desc: 'Package file name', documentation: { example: 'mypkg-1.0-SNAPSHOT.jar' }
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       get ':id/-/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
@@ -225,10 +242,20 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Download the maven package file' do
         detail 'This feature was introduced in GitLab 11.3'
+        success [
+          { code: 200 },
+          { code: 302 }
+        ]
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[maven_packages]
       end
       params do
-        requires :path, type: String, desc: 'Package path'
-        requires :file_name, type: String, desc: 'Package file name'
+        requires :path, type: String, desc: 'Package path', documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
+        requires :file_name, type: String, desc: 'Package file name', documentation: { example: 'mypkg-1.0-SNAPSHOT.jar' }
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       get ':id/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
@@ -250,10 +277,18 @@ module API
 
       desc 'Workhorse authorize the maven package file upload' do
         detail 'This feature was introduced in GitLab 11.3'
+        success code: 200
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[maven_packages]
       end
       params do
-        requires :path, type: String, desc: 'Package path'
-        requires :file_name, type: String, desc: 'Package file name', regexp: Gitlab::Regex.maven_file_name_regex
+        requires :path, type: String, desc: 'Package path', documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
+        requires :file_name, type: String, desc: 'Package file name', regexp: Gitlab::Regex.maven_file_name_regex, documentation: { example: 'mypkg-1.0-SNAPSHOT.pom' }
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       put ':id/packages/maven/*path/:file_name/authorize', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
@@ -266,10 +301,19 @@ module API
 
       desc 'Upload the maven package file' do
         detail 'This feature was introduced in GitLab 11.3'
+        success code: 200
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not Found' },
+          { code: 422, message: 'Unprocessable Entity' }
+        ]
+        tags %w[maven_packages]
       end
       params do
-        requires :path, type: String, desc: 'Package path'
-        requires :file_name, type: String, desc: 'Package file name', regexp: Gitlab::Regex.maven_file_name_regex
+        requires :path, type: String, desc: 'Package path', documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
+        requires :file_name, type: String, desc: 'Package file name', regexp: Gitlab::Regex.maven_file_name_regex, documentation: { example: 'mypkg-1.0-SNAPSHOT.pom' }
         requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The package file to be published (generated by Multipart middleware)', documentation: { type: 'file' }
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true

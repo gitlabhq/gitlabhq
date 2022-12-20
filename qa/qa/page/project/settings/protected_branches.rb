@@ -5,19 +5,19 @@ module QA
     module Project
       module Settings
         class ProtectedBranches < Page::Base
-          view 'app/views/projects/protected_branches/shared/_dropdown.html.haml' do
+          view 'app/views/protected_branches/shared/_dropdown.html.haml' do
             element :protected_branch_dropdown
             element :protected_branch_dropdown_content
           end
 
-          view 'app/views/projects/protected_branches/_create_protected_branch.html.haml' do
+          view 'app/views/protected_branches/_create_protected_branch.html.haml' do
             element :allowed_to_push_dropdown
             element :allowed_to_push_dropdown_content
             element :allowed_to_merge_dropdown
             element :allowed_to_merge_dropdown_content
           end
 
-          view 'app/views/projects/protected_branches/shared/_create_protected_branch.html.haml' do
+          view 'app/views/protected_branches/shared/_create_protected_branch.html.haml' do
             element :protect_button
           end
 

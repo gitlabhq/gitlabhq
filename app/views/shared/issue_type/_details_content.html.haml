@@ -29,7 +29,7 @@
     - if can?(current_user, :admin_feature_flags_issue_links, @project)
       = render_if_exists 'projects/issues/related_feature_flags'
 
-    - if can?(current_user, :download_code, @project)
+    - if can?(current_user, :read_code, @project)
       - add_page_startup_api_call related_branches_path
       #related-branches{ data: { url: related_branches_path } }
         -# This element is filled in using JavaScript.

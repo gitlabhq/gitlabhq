@@ -11,7 +11,7 @@ module Atlassian
             schemaVersion pipelineId buildNumber updateSequenceNumber
             displayName url state issueKeys testInfo references
             lastUpdated
-           ),
+          ),
           'properties' => {
             'schemaVersion' => schema_version_type,
             'pipelineId' => { 'type' => 'string' },

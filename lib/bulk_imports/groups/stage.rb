@@ -21,7 +21,7 @@ module BulkImports
       # instance version is 15.2.0, 15.2.1, 16.0.0, etc.
 
       def config
-        @config ||= {
+        {
           group: {
             pipeline: BulkImports::Groups::Pipelines::GroupPipeline,
             stage: 0

@@ -28,7 +28,7 @@ RSpec.shared_examples 'finalized background migration' do |worker_class|
       .new
       .select do |scheduled|
         scheduled.klass == worker_class.name &&
-        scheduled.args.first == job_class_name
+          scheduled.args.first == job_class_name
       end
     expect(queued.size).to eq(0)
   end

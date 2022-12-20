@@ -67,42 +67,23 @@ func InitializeSidechannelRegistry(logger *logrus.Logger) {
 	}
 }
 
-type MetadataFunc func(metadata.MD)
-
-func WithUserID(userID string) MetadataFunc {
-	return func(md metadata.MD) {
-		md.Append("user_id", userID)
-	}
+var allowedMetadataKeys = map[string]bool{
+	"user_id":   true,
+	"username":  true,
+	"remote_ip": true,
 }
 
-func WithUsername(username string) MetadataFunc {
-	return func(md metadata.MD) {
-		md.Append("username", username)
-	}
-}
-
-func WithFeatures(features map[string]string) MetadataFunc {
-	return func(md metadata.MD) {
-		for k, v := range features {
-			if !strings.HasPrefix(k, "gitaly-feature-") {
-				continue
-			}
-			md.Append(k, v)
+func withOutgoingMetadata(ctx context.Context, gs api.GitalyServer) context.Context {
+	md := metadata.New(nil)
+	for k, v := range gs.CallMetadata {
+		if strings.HasPrefix(k, "gitaly-feature-") || allowedMetadataKeys[k] {
+			md.Set(k, v)
 		}
 	}
-}
-
-func withOutgoingMetadata(ctx context.Context, addMetadataFuncs ...MetadataFunc) context.Context {
-	md := metadata.New(nil)
-
-	for _, f := range addMetadataFuncs {
-		f(md)
-	}
-
 	return metadata.NewOutgoingContext(ctx, md)
 }
 
-func NewSmartHTTPClient(ctx context.Context, server api.GitalyServer, metadataFuncs ...MetadataFunc) (context.Context, *SmartHTTPClient, error) {
+func NewSmartHTTPClient(ctx context.Context, server api.GitalyServer) (context.Context, *SmartHTTPClient, error) {
 	conn, err := getOrCreateConnection(server)
 	if err != nil {
 		return nil, nil, err
@@ -112,48 +93,44 @@ func NewSmartHTTPClient(ctx context.Context, server api.GitalyServer, metadataFu
 		SmartHTTPServiceClient: grpcClient,
 		sidechannelRegistry:    sidechannelRegistry,
 	}
-
-	return withOutgoingMetadata(
-		ctx,
-		metadataFuncs...,
-	), smartHTTPClient, nil
+	return withOutgoingMetadata(ctx, server), smartHTTPClient, nil
 }
 
-func NewBlobClient(ctx context.Context, server api.GitalyServer, addMetadataFuncs ...MetadataFunc) (context.Context, *BlobClient, error) {
+func NewBlobClient(ctx context.Context, server api.GitalyServer) (context.Context, *BlobClient, error) {
 	conn, err := getOrCreateConnection(server)
 	if err != nil {
 		return nil, nil, err
 	}
 	grpcClient := gitalypb.NewBlobServiceClient(conn)
-	return withOutgoingMetadata(ctx, addMetadataFuncs...), &BlobClient{grpcClient}, nil
+	return withOutgoingMetadata(ctx, server), &BlobClient{grpcClient}, nil
 }
 
-func NewRepositoryClient(ctx context.Context, server api.GitalyServer, addMetadataFuncs ...MetadataFunc) (context.Context, *RepositoryClient, error) {
+func NewRepositoryClient(ctx context.Context, server api.GitalyServer) (context.Context, *RepositoryClient, error) {
 	conn, err := getOrCreateConnection(server)
 	if err != nil {
 		return nil, nil, err
 	}
 	grpcClient := gitalypb.NewRepositoryServiceClient(conn)
-	return withOutgoingMetadata(ctx, addMetadataFuncs...), &RepositoryClient{grpcClient}, nil
+	return withOutgoingMetadata(ctx, server), &RepositoryClient{grpcClient}, nil
 }
 
 // NewNamespaceClient is only used by the Gitaly integration tests at present
-func NewNamespaceClient(ctx context.Context, server api.GitalyServer, addMetadataFuncs ...MetadataFunc) (context.Context, *NamespaceClient, error) {
+func NewNamespaceClient(ctx context.Context, server api.GitalyServer) (context.Context, *NamespaceClient, error) {
 	conn, err := getOrCreateConnection(server)
 	if err != nil {
 		return nil, nil, err
 	}
 	grpcClient := gitalypb.NewNamespaceServiceClient(conn)
-	return withOutgoingMetadata(ctx, addMetadataFuncs...), &NamespaceClient{grpcClient}, nil
+	return withOutgoingMetadata(ctx, server), &NamespaceClient{grpcClient}, nil
 }
 
-func NewDiffClient(ctx context.Context, server api.GitalyServer, addMetadataFuncs ...MetadataFunc) (context.Context, *DiffClient, error) {
+func NewDiffClient(ctx context.Context, server api.GitalyServer) (context.Context, *DiffClient, error) {
 	conn, err := getOrCreateConnection(server)
 	if err != nil {
 		return nil, nil, err
 	}
 	grpcClient := gitalypb.NewDiffServiceClient(conn)
-	return withOutgoingMetadata(ctx, addMetadataFuncs...), &DiffClient{grpcClient}, nil
+	return withOutgoingMetadata(ctx, server), &DiffClient{grpcClient}, nil
 }
 
 func getOrCreateConnection(server api.GitalyServer) (*grpc.ClientConn, error) {

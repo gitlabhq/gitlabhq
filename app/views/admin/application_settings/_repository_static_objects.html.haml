@@ -1,4 +1,4 @@
-= form_for @application_setting, url: repository_admin_application_settings_path(anchor: 'js-repository-static-objects-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: repository_admin_application_settings_path(anchor: 'js-repository-static-objects-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -15,4 +15,4 @@
       %span.form-text.text-muted#static_objects_external_storage_auth_token_help_block
         = _('Secure token that identifies an external storage request.')
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), pajamas_button: true

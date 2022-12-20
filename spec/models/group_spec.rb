@@ -40,7 +40,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
     it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
     it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
-    it { is_expected.to have_many(:protected_branches) }
+    it { is_expected.to have_many(:protected_branches).inverse_of(:group).with_foreign_key(:namespace_id) }
     it { is_expected.to have_one(:crm_settings) }
     it { is_expected.to have_one(:group_feature) }
     it { is_expected.to have_one(:harbor_integration) }
@@ -842,16 +842,25 @@ RSpec.describe Group do
 
       it 'returns matching records based on paths' do
         expect(described_class.by_ids_or_paths(nil, [group_path])).to match_array([group])
+        expect(described_class.by_ids_or_paths(nil, [group_path.upcase])).to match_array([group])
       end
 
       it 'returns matching records based on ids' do
         expect(described_class.by_ids_or_paths([group_id], nil)).to match_array([group])
+        expect(described_class.by_ids_or_paths([group_id], [])).to match_array([group])
       end
 
       it 'returns matching records based on both paths and ids' do
         new_group = create(:group)
 
         expect(described_class.by_ids_or_paths([new_group.id], [group_path])).to match_array([group, new_group])
+      end
+
+      it 'returns matching records based on full_paths' do
+        new_group = create(:group, parent: group)
+
+        expect(described_class.by_ids_or_paths(nil, [new_group.full_path])).to match_array([new_group])
+        expect(described_class.by_ids_or_paths(nil, [new_group.full_path.upcase])).to match_array([new_group])
       end
     end
 
@@ -1955,6 +1964,78 @@ RSpec.describe Group do
     end
   end
 
+  describe '#self_and_hierarchy_intersecting_with_user_groups' do
+    let_it_be(:user) { create(:user) }
+    let(:subject) { group.self_and_hierarchy_intersecting_with_user_groups(user) }
+
+    it 'makes a call to GroupsFinder' do
+      expect(GroupsFinder).to receive_message_chain(:new, :execute, :unscope)
+
+      subject
+    end
+
+    context 'when the group is private' do
+      let_it_be(:group) { create(:group, :private) }
+
+      context 'when the user is not a member of the group' do
+        it 'is an empty array' do
+          expect(subject).to eq([])
+        end
+      end
+
+      context 'when the user is a member of the group' do
+        before do
+          group.add_developer(user)
+        end
+
+        it 'is equal to the group' do
+          expect(subject).to match_array([group])
+        end
+      end
+
+      context 'when the group has a sub group' do
+        let_it_be(:subgroup) { create(:group, :private, parent: group) }
+
+        context 'when the user is not a member of the subgroup' do
+          it 'is an empty array' do
+            expect(subject).to eq([])
+          end
+        end
+
+        context 'when the user is a member of the subgroup' do
+          before do
+            subgroup.add_developer(user)
+          end
+
+          it 'is equal to the group and subgroup' do
+            expect(subject).to match_array([group, subgroup])
+          end
+
+          context 'when the group has an ancestor' do
+            let_it_be(:ancestor) { create(:group, :private) }
+
+            before do
+              group.parent = ancestor
+              group.save!
+            end
+
+            it 'is equal to the ancestor, group and subgroup' do
+              expect(subject).to match_array([ancestor, group, subgroup])
+            end
+          end
+        end
+      end
+    end
+
+    context 'when the group is public' do
+      let_it_be(:group) { create(:group, :public) }
+
+      it 'is equal to the public group regardless of membership' do
+        expect(subject).to match_array([group])
+      end
+    end
+  end
+
   describe '#update_two_factor_requirement_for_members' do
     let_it_be_with_reload(:user) { create(:user) }
 
@@ -2735,7 +2816,7 @@ RSpec.describe Group do
   end
 
   describe 'has_project_with_service_desk_enabled?' do
-    let_it_be(:group) { create(:group, :private) }
+    let_it_be_with_refind(:group) { create(:group, :private) }
 
     subject { group.has_project_with_service_desk_enabled? }
 
@@ -3291,6 +3372,13 @@ RSpec.describe Group do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :work_items }
       let(:feature_flag_method) { :work_items_feature_flag_enabled? }
+    end
+  end
+
+  describe '#work_items_mvc_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :work_items_mvc }
+      let(:feature_flag_method) { :work_items_mvc_feature_flag_enabled? }
     end
   end
 

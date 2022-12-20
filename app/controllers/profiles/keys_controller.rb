@@ -37,6 +37,6 @@ class Profiles::KeysController < Profiles::ApplicationController
   private
 
   def key_params
-    params.require(:key).permit(:title, :key, :expires_at)
+    params.require(:key).permit(:title, :key, :usage_type, :expires_at)
   end
 end

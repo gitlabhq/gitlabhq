@@ -298,7 +298,7 @@ RSpec.describe QA::Support::PageErrorChecker do
       expect(page).to receive(:execute_script)
 
       expect(QA::Runtime::Logger).to receive(:debug).with("Fetching API error cache for #{page_url}")
-      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR.chomp)
+      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR)
         Interceptor Api Errors
         [500] GET https://foo.bar -- Correlation Id: 12345
       ERROR
@@ -318,7 +318,7 @@ RSpec.describe QA::Support::PageErrorChecker do
       expect(page).to receive(:execute_script)
 
       expect(QA::Runtime::Logger).to receive(:debug).with("Fetching API error cache for #{page_url}")
-      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR.chomp).exactly(1).time
+      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR).exactly(1).time
         Interceptor Api Errors
         [500] GET https://foo.bar -- Correlation Id: 12345
       ERROR
@@ -338,9 +338,31 @@ RSpec.describe QA::Support::PageErrorChecker do
       expect(page).to receive(:execute_script)
 
       expect(QA::Runtime::Logger).to receive(:debug).with("Fetching API error cache for #{page_url}")
-      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR.chomp)
+      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR)
         Interceptor Api Errors
         [500] GET https://foo.bar -- Correlation Id: 12345
+      ERROR
+
+      QA::Support::PageErrorChecker.log_request_errors(page)
+    end
+
+    it 'logs graphql errors if any exist' do
+      error = {
+        'url' => 'https://foo.bar?query={ sensitive-data: 12345 }',
+        'status' => 200,
+        'method' => 'POST',
+        'errorData' => 'error-messages: Something bad happened',
+        'headers' => { 'x-request-id' => '12345' }
+      }
+      expect(page).to receive(:driver).and_return(driver)
+      expect(page).to receive(:execute_script).and_return({ 'errors' => [error] })
+      expect(page).to receive(:execute_script)
+
+      expect(QA::Runtime::Logger).to receive(:debug).with("Fetching API error cache for #{page_url}")
+      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR.chomp)
+        Interceptor Api Errors
+        [200] POST https://foo.bar -- Correlation Id: 12345
+        error-messages: Something bad happened
       ERROR
 
       QA::Support::PageErrorChecker.log_request_errors(page)
@@ -365,15 +387,9 @@ RSpec.describe QA::Support::PageErrorChecker do
         end
       end
       stub_const('Logs', logs_class)
-      manage_class = Class.new do
+      browser_class = Class.new do
         def self.logs
           Logs
-        end
-      end
-      stub_const('Manage', manage_class)
-      browser_class = Class.new do
-        def self.manage
-          Manage
         end
       end
       stub_const('Browser', browser_class)

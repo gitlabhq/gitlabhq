@@ -1,4 +1,4 @@
-- name: "DAST default template stages"
+- title: "DAST default template stages"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: derekferguson

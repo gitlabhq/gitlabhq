@@ -2,6 +2,149 @@
 @import 'page_bundles/mixins_and_variables_and_functions';
 @import './themes/theme_helper';
 
+:root {
+  color-scheme: dark;
+  --gray-10: #{$gray-10};
+  --gray-50: #{$gray-50};
+  --gray-100: #{$gray-100};
+  --gray-200: #{$gray-200};
+  --gray-300: #{$gray-300};
+  --gray-400: #{$gray-400};
+  --gray-500: #{$gray-500};
+  --gray-600: #{$gray-600};
+  --gray-700: #{$gray-700};
+  --gray-800: #{$gray-800};
+  --gray-900: #{$gray-900};
+  --gray-950: #{$gray-950};
+
+  --green-50: #{$green-50};
+  --green-100: #{$green-100};
+  --green-200: #{$green-200};
+  --green-300: #{$green-300};
+  --green-400: #{$green-400};
+  --green-500: #{$green-500};
+  --green-600: #{$green-600};
+  --green-700: #{$green-700};
+  --green-800: #{$green-800};
+  --green-900: #{$green-900};
+  --green-950: #{$green-950};
+
+  --blue-50: #{$blue-50};
+  --blue-100: #{$blue-100};
+  --blue-200: #{$blue-200};
+  --blue-300: #{$blue-300};
+  --blue-400: #{$blue-400};
+  --blue-500: #{$blue-500};
+  --blue-600: #{$blue-600};
+  --blue-700: #{$blue-700};
+  --blue-800: #{$blue-800};
+  --blue-900: #{$blue-900};
+  --blue-950: #{$blue-950};
+
+  --orange-50: #{$orange-50};
+  --orange-100: #{$orange-100};
+  --orange-200: #{$orange-200};
+  --orange-300: #{$orange-300};
+  --orange-400: #{$orange-400};
+  --orange-500: #{$orange-500};
+  --orange-600: #{$orange-600};
+  --orange-700: #{$orange-700};
+  --orange-800: #{$orange-800};
+  --orange-900: #{$orange-900};
+  --orange-950: #{$orange-950};
+
+  --red-50: #{$red-50};
+  --red-100: #{$red-100};
+  --red-200: #{$red-200};
+  --red-300: #{$red-300};
+  --red-400: #{$red-400};
+  --red-500: #{$red-500};
+  --red-600: #{$red-600};
+  --red-700: #{$red-700};
+  --red-800: #{$red-800};
+  --red-900: #{$red-900};
+  --red-950: #{$red-950};
+
+  --indigo-50: #{$indigo-50};
+  --indigo-100: #{$indigo-100};
+  --indigo-200: #{$indigo-200};
+  --indigo-300: #{$indigo-300};
+  --indigo-400: #{$indigo-400};
+  --indigo-500: #{$indigo-500};
+  --indigo-600: #{$indigo-600};
+  --indigo-700: #{$indigo-700};
+  --indigo-800: #{$indigo-800};
+  --indigo-900: #{$indigo-900};
+  --indigo-950: #{$indigo-950};
+
+  --purple-50: #{$purple-50};
+  --purple-100: #{$purple-100};
+  --purple-200: #{$purple-200};
+  --purple-300: #{$purple-300};
+  --purple-400: #{$purple-400};
+  --purple-500: #{$purple-500};
+  --purple-600: #{$purple-600};
+  --purple-700: #{$purple-700};
+  --purple-800: #{$purple-800};
+  --purple-900: #{$purple-900};
+  --purple-950: #{$purple-950};
+
+  --dark-icon-color-purple-1: #524a68;
+  --dark-icon-color-purple-2: #715bae;
+  --dark-icon-color-purple-3: #9a79f7;
+  --dark-icon-color-orange-1: #665349;
+  --dark-icon-color-orange-2: #b37a5d;
+
+  --gl-text-color: #{$gray-900};
+  --border-color: #{$border-color};
+
+  --white: #{$white};
+  --black: #{$black};
+  --gray-light: #{$gray-50};
+
+  --svg-status-bg: #{$white};
+}
+
+body.gl-dark {
+  // redefine some colors and values to prevent sourcegraph conflicts
+  color-scheme: dark;
+  --gray-10: #{$gray-10};
+  --border-color: #{$border-color};
+  --white: #{$white};
+  --black: #{$black};
+}
+
+.gl-dark {
+  .gl-button.gl-button,
+  .gl-button.gl-button.btn-block {
+    &.btn-default,
+    &.btn-dashed,
+    &.btn-info,
+    &.btn-success,
+    &.btn-danger,
+    &.btn-confirm {
+      &-tertiary {
+        mix-blend-mode: screen;
+      }
+    }
+  }
+
+  .gl-datepicker-theme {
+    .pika-prev,
+    .pika-next {
+      filter: invert(0.9);
+    }
+
+    .is-selected > .pika-button {
+      color: $gray-900;
+    }
+
+    :not(.is-selected) > .pika-button:hover {
+      background-color: $gray-200;
+    }
+  }
+}
+
 // Some hacks and overrides for things that don't properly support dark mode
 .gl-label {
   filter: brightness(0.9) contrast(1.1);

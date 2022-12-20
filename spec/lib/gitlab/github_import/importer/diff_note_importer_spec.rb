@@ -35,7 +35,8 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
       end_line: end_line,
       github_id: 1,
       diff_hunk: diff_hunk,
-      side: 'RIGHT'
+      side: 'RIGHT',
+      discussion_id: discussion_id
     )
   end
 
@@ -114,10 +115,6 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             .to receive(:database_id)
             .and_return(merge_request.id)
         end
-
-        expect(Discussion)
-          .to receive(:discussion_id)
-          .and_return(discussion_id)
       end
 
       it_behaves_like 'diff notes without suggestion'
@@ -216,6 +213,16 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
               .to change(LegacyDiffNote, :count)
               .and not_change(DiffNote, :count)
           end
+        end
+      end
+
+      context 'when diff note is invalid' do
+        it 'fails validation' do
+          stub_user_finder(user.id, true)
+
+          expect(note_representation).to receive(:line_code).and_return(nil)
+
+          expect { subject.execute }.to raise_error(ActiveRecord::RecordInvalid)
         end
       end
     end

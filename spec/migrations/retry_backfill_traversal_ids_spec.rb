@@ -3,10 +3,10 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RetryBackfillTraversalIds, :migration do
+RSpec.describe RetryBackfillTraversalIds, :migration, feature_category: :subgroups do
   include ReloadHelpers
 
-  let_it_be(:namespaces_table) { table(:namespaces) }
+  let!(:namespaces_table) { table(:namespaces) }
 
   context 'when BackfillNamespaceTraversalIdsRoots jobs are pending' do
     before do

@@ -259,7 +259,7 @@ RSpec.describe Projects::PipelineSchedulesController do
         context 'when adds a new duplicated variable' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [{ key: 'CCC', secret_value: 'AAA123' }]
+              variables_attributes: [{ key: 'dup_key', secret_value: 'value_one' }, { key: 'dup_key', secret_value: 'value_two' }]
             })
           end
 
@@ -302,7 +302,7 @@ RSpec.describe Projects::PipelineSchedulesController do
           let(:schedule) do
             basic_param.merge({
               variables_attributes: [{ id: pipeline_schedule_variable.id, _destroy: true },
-                                     { key: 'CCC', secret_value: 'CCC123' }]
+                                     { key: 'AAA', secret_value: 'AAA123' }]
             })
           end
 
@@ -310,8 +310,8 @@ RSpec.describe Projects::PipelineSchedulesController do
             expect { go }.not_to change { Ci::PipelineScheduleVariable.count }
 
             pipeline_schedule.reload
-            expect(pipeline_schedule.variables.last.key).to eq('CCC')
-            expect(pipeline_schedule.variables.last.value).to eq('CCC123')
+            expect(pipeline_schedule.variables.last.key).to eq('AAA')
+            expect(pipeline_schedule.variables.last.value).to eq('AAA123')
           end
         end
       end

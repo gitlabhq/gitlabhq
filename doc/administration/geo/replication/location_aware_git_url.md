@@ -104,7 +104,7 @@ on the external URL of the current host. For example:
 
 You can customize the:
 
-- SSH remote URL to use the location-aware `git.example.com`. To do so, change the SSH remote URL's
+- SSH remote URL to use the location-aware `git.example.com`. To do so, change the SSH remote URL
   host by setting `gitlab_rails['gitlab_ssh_host']` in `gitlab.rb` of web nodes.
 - HTTP remote URL as shown in
   [Custom Git clone URL for HTTP(S)](../../../user/admin_area/settings/visibility_and_access_controls.md#customize-git-clone-url-for-https).

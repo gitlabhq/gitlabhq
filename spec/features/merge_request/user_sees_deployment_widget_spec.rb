@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees deployment widget', :js do
+RSpec.describe 'Merge request > User sees deployment widget', :js, feature_category: :continuous_delivery do
   include Spec::Support::Helpers::ModalHelpers
 
   describe 'when merge request has associated environments' do

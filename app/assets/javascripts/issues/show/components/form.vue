@@ -164,7 +164,7 @@ export default {
 
 <template>
   <form data-testid="issuable-form">
-    <locked-warning v-if="showLockedWarning" />
+    <locked-warning v-if="showLockedWarning" :issuable-type="issuableType" />
     <gl-alert
       v-if="showOutdatedDescriptionWarning"
       class="gl-mb-5"

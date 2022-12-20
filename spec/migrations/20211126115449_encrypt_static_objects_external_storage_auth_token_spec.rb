@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe EncryptStaticObjectsExternalStorageAuthToken, :migration do
+RSpec.describe EncryptStaticObjectsExternalStorageAuthToken, :migration, feature_category: :source_code_management do
   let(:application_settings) do
     Class.new(ActiveRecord::Base) do
       self.table_name = 'application_settings'

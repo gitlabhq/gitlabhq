@@ -482,6 +482,14 @@ production: &base
     enabled: false
     host: 'https://mattermost.example.com'
 
+  ## Jira connect
+  ## To switch to a Jira connect development environment
+  jira_connect:
+    # atlassian_js_url: 'http://localhost:9292/atlassian.js'
+    # enable_public_keys_storage: true
+    # enforce_jira_base_url_https: false
+    # additional_iframe_ancestors: ['localhost:*']
+
   ## Gravatar
   ## If using gravatar.com, there's nothing to change here. For Libravatar
   ## you'll need to provide the custom URLs. For more information,
@@ -847,7 +855,7 @@ production: &base
 
         # Filter LDAP users
         #
-        #   Format: RFC 4515 https://tools.ietf.org/search/rfc4515
+        #   Format: RFC 4515 https://www.rfc-editor.org/rfc/rfc4515
         #   Ex. (employeeType=developer)
         #
         #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
@@ -1050,7 +1058,7 @@ production: &base
       #             disable_ssl_verification: false,
       #             login_url: '/cas/login',
       #             service_validate_url: '/cas/p3/serviceValidate',
-      #             logout_url: '/cas/logout'} }
+      #             logout_url: '/cas/logout' } }
       # - { name: 'authentiq',
       #     # for client credentials (client ID and secret), go to https://www.authentiq.com/developers
       #     app_id: 'YOUR_CLIENT_ID',
@@ -1559,7 +1567,7 @@ test:
                   disable_ssl_verification: false,
                   login_url: '/cas/login',
                   service_validate_url: '/cas/p3/serviceValidate',
-                  logout_url: '/cas/logout'} }
+                  logout_url: '/cas/logout' } }
       - { name: 'github',
           app_id: 'YOUR_APP_ID',
           app_secret: 'YOUR_APP_SECRET',

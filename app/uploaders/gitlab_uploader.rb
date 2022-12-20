@@ -101,8 +101,8 @@ class GitlabUploader < CarrierWave::Uploader::Base
     stream =
       if file_storage?
         File.open(path, "rb") if path
-      else
-        ::Gitlab::HttpIO.new(url, cached_size) if url
+      elsif url
+        ::Gitlab::HttpIO.new(url, cached_size)
       end
 
     return unless stream
@@ -112,6 +112,15 @@ class GitlabUploader < CarrierWave::Uploader::Base
       yield(stream)
     ensure
       stream.close
+    end
+  end
+
+  def multi_read(offsets)
+    open do |stream|
+      offsets.map do |start_offset, end_offset|
+        stream.seek(start_offset)
+        stream.read(end_offset - start_offset + 1)
+      end
     end
   end
 

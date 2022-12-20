@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query current user todos' do
+RSpec.describe 'Query current user todos', feature_category: :source_code_management do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 
@@ -19,7 +19,7 @@ RSpec.describe 'Query current user todos' do
   let(:fields) do
     <<~QUERY
     nodes {
-      #{all_graphql_fields_for('todos'.classify)}
+      #{all_graphql_fields_for('todos'.classify, max_depth: 2)}
     }
     QUERY
   end

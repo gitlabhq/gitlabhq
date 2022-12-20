@@ -145,6 +145,20 @@ RSpec.describe Projects::CreateService, '#execute' do
         end
       end
     end
+
+    context 'when the passed in namespace is for a bot user' do
+      let(:bot_user) { create(:user, :project_bot) }
+      let(:opts) do
+        { name: project_name, namespace_id: bot_user.namespace.id }
+      end
+
+      it 'raises an error' do
+        project = create_project(bot_user, opts)
+
+        expect(project.errors.errors.length).to eq 1
+        expect(project.errors.messages[:namespace].first).to eq(("is not valid"))
+      end
+    end
   end
 
   describe 'after create actions' do
@@ -905,27 +919,6 @@ RSpec.describe Projects::CreateService, '#execute' do
 
       expect(project.errors[:external_authorization_classification_label]).to be_present
       expect(project).not_to be_persisted
-    end
-  end
-
-  it_behaves_like 'measurable service' do
-    before do
-      opts.merge!(
-        current_user: user,
-        path: 'foo'
-      )
-    end
-
-    let(:base_log_data) do
-      {
-        class: Projects::CreateService.name,
-        current_user: user.name,
-        project_full_path: "#{user.namespace.full_path}/#{opts[:path]}"
-      }
-    end
-
-    after do
-      create_project(user, opts)
     end
   end
 

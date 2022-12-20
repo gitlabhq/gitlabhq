@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Maintainer deletes protected tag', :js do
+RSpec.describe 'Maintainer deletes protected tag', :js, feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: group) }

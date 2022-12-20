@@ -72,12 +72,6 @@ RSpec.describe Terraform::StateUploader do
     end
   end
 
-  describe '.background_upload_enabled?' do
-    it 'returns false' do
-      expect(described_class.background_upload_enabled?).to eq(false)
-    end
-  end
-
   describe '.proxy_download_enabled?' do
     it 'returns true' do
       expect(described_class.proxy_download_enabled?).to eq(true)

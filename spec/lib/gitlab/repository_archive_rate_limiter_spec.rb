@@ -7,8 +7,7 @@ RSpec.describe ::Gitlab::RepositoryArchiveRateLimiter do
     Class.new do
       include ::Gitlab::RepositoryArchiveRateLimiter
 
-      def check_rate_limit!(**args)
-      end
+      def check_rate_limit!(**args); end
     end
   end
 

@@ -1,4 +1,5 @@
 import * as commonUtils from '~/lib/utils/common_utils';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 describe('common_utils', () => {
   describe('getPagePath', () => {
@@ -1067,6 +1068,37 @@ describe('common_utils', () => {
       ]);
 
       expect(result).toEqual([{ hello: '' }, { helloWorld: '' }]);
+    });
+  });
+
+  describe('useNewFonts', () => {
+    let beforeGon;
+    const beforeLocation = window.location.href;
+
+    beforeEach(() => {
+      window.gon = window.gon || {};
+      beforeGon = { ...window.gon };
+    });
+
+    describe.each`
+      featureFlag | queryParameter | fontEnabled
+      ${false}    | ${false}       | ${false}
+      ${true}     | ${false}       | ${true}
+      ${false}    | ${true}        | ${true}
+    `('new font', ({ featureFlag, queryParameter, fontEnabled }) => {
+      it(`will ${fontEnabled ? '' : 'NOT '}be applied when feature flag is ${
+        featureFlag ? '' : 'NOT '
+      }set and query parameter is ${queryParameter ? '' : 'NOT '}present`, () => {
+        const search = queryParameter ? `?new_fonts` : '';
+        setWindowLocation(search);
+        window.gon = { features: { newFonts: featureFlag } };
+        expect(commonUtils.useNewFonts()).toBe(fontEnabled);
+      });
+    });
+
+    afterEach(() => {
+      window.gon = beforeGon;
+      setWindowLocation(beforeLocation);
     });
   });
 });

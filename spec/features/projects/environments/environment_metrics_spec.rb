@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Environment > Metrics' do
+RSpec.describe 'Environment > Metrics', feature_category: :projects do
   include PrometheusHelpers
 
   let(:user) { create(:user) }

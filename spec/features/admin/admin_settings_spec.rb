@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin updates settings' do
+RSpec.describe 'Admin updates settings', feature_category: :not_owned do
   include StubENV
   include TermsHelper
   include UsageDataHelpers
@@ -71,11 +71,19 @@ RSpec.describe 'Admin updates settings' do
 
       it 'change Visibility and Access Controls' do
         page.within('.as-visibility-access') do
-          uncheck 'Enabled'
+          page.within('[data-testid="project-export"]') do
+            uncheck 'Enabled'
+          end
+
+          page.within('[data-testid="bulk-import"]') do
+            check 'Enabled'
+          end
+
           click_button 'Save changes'
         end
 
         expect(current_settings.project_export_enabled).to be_falsey
+        expect(current_settings.bulk_import_enabled).to be(true)
         expect(page).to have_content "Application settings saved successfully"
       end
 

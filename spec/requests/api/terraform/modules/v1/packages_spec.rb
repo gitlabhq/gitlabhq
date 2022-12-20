@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Terraform::Modules::V1::Packages do
+RSpec.describe API::Terraform::Modules::V1::Packages, feature_category: :package_registry do
   include PackagesManagerApiSpecHelpers
   include WorkhorseHelpers
   using RSpec::Parameterized::TableSyntax
@@ -418,7 +418,8 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
           {
             project: project,
             user: user_role == :anonymous ? nil : user,
-            namespace: project.namespace
+            namespace: project.namespace,
+            property: 'i_package_terraform_module_user'
           }
         end
 
@@ -583,7 +584,10 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
       with_them do
         let(:user_headers) { user_role == :anonymous ? {} : { token_header => token } }
         let(:headers) { user_headers.merge(workhorse_headers) }
-        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: snowplow_user } }
+        let(:snowplow_gitlab_standard_context) do
+          { project: project, namespace: project.namespace, user: snowplow_user, property: 'i_package_terraform_module_user' }
+        end
+
         let(:snowplow_user) do
           case token_type
           when :deploy_token

@@ -8,8 +8,8 @@ import {
   GlButton,
 } from '@gitlab/ui';
 import { createAlert } from '~/flash';
-import { INCIDENT_SEVERITY, ISSUABLE_TYPES, I18N } from './constants';
-import updateIssuableSeverity from './graphql/mutations/update_issuable_severity.mutation.graphql';
+import updateIssuableSeverity from '../../queries/update_issuable_severity.mutation.graphql';
+import { INCIDENT_SEVERITY, ISSUABLE_TYPES, SEVERITY_I18N as I18N } from '../../constants';
 import SeverityToken from './severity.vue';
 
 export default {

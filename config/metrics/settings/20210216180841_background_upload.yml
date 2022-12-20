@@ -7,7 +7,8 @@ product_stage: enablement
 product_group: memory
 product_category: memory
 value_type: boolean
-status: active
+status: broken
+repair_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382900
 time_frame: none
 data_source: system
 distribution:

@@ -1,0 +1,336 @@
+@import 'mixins_and_variables_and_functions';
+
+$search-dropdown-max-height: 400px;
+$search-avatar-size: 16px;
+$search-sidebar-min-width: 240px;
+$search-sidebar-max-width: 300px;
+$search-keyboard-shortcut: '/';
+
+$border-radius-medium: 3px;
+
+.search-results {
+  .search-result-row {
+    border-bottom: 1px solid var(--border-color, $border-color);
+    padding-bottom: $gl-padding;
+    margin-bottom: $gl-padding;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+}
+
+.search-sidebar {
+  @include media-breakpoint-up(md) {
+    min-width: $search-sidebar-min-width;
+    max-width: $search-sidebar-max-width;
+  }
+}
+
+.search {
+  margin: 0 8px;
+
+  form {
+    display: block;
+    margin: 0;
+    padding: 4px;
+    width: $search-input-width;
+    line-height: 24px;
+    height: 32px;
+    border: 0;
+    border-radius: $border-radius-default;
+    transition: border-color ease-in-out $default-transition-duration,
+      background-color ease-in-out $default-transition-duration;
+
+    @include media-breakpoint-up(xl) {
+      width: $search-input-xl-width;
+    }
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
+
+  .search-input {
+    border: 0;
+    font-size: 14px;
+    padding: 0 20px 0 0;
+    margin-left: 5px;
+    line-height: 25px;
+    width: 98%;
+    color: $white;
+    background: none;
+    transition: color ease-in-out $default-transition-duration;
+  }
+
+  .search-input::placeholder {
+    transition: color ease-in-out $default-transition-duration;
+  }
+
+  .search-input-container {
+    display: flex;
+    position: relative;
+  }
+
+  .search-input-wrap {
+    width: 100%;
+
+    .search-icon,
+    .clear-icon {
+      position: absolute;
+      right: 5px;
+      top: 4px;
+    }
+
+    .search-icon {
+      transition: color $default-transition-duration;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .clear-icon {
+      display: none;
+    }
+
+    // Rewrite position. Dropdown menu should be relative to .search-input-container
+    .dropdown {
+      position: static;
+    }
+
+    .dropdown-header {
+      // Necessary because deprecatedJQueryDropdown doesn't support a second style of headers
+      font-weight: $gl-font-weight-bold;
+      color: var(--gl-text-color, $gl-text-color);
+      font-size: $gl-font-size;
+      line-height: 16px;
+    }
+
+    // Custom dropdown positioning
+    .dropdown-menu {
+      left: -5px;
+      max-height: $search-dropdown-max-height;
+      overflow: auto;
+
+      @include media-breakpoint-up(xl) {
+        width: $search-input-xl-width;
+      }
+    }
+
+    .dropdown-content {
+      max-height: $search-dropdown-max-height - 18px;
+    }
+  }
+
+  &.search-active {
+    form {
+      border-color: var(--blue-300, $blue-300);
+      box-shadow: none;
+
+      .search-input-wrap {
+        .search-icon,
+        .clear-icon {
+          color: var(--gray-400, $gl-text-color-tertiary);
+          transition: color ease-in-out $default-transition-duration;
+        }
+      }
+
+      .search-input {
+        color: var(--gl-text-color, $gl-text-color);
+        transition: color ease-in-out $default-transition-duration;
+      }
+
+      .search-input::placeholder {
+        color: var(--gray-400, $gl-text-color-tertiary);
+      }
+    }
+  }
+
+  &.has-value {
+    .search-icon {
+      display: none;
+    }
+
+    .clear-icon {
+      cursor: pointer;
+      display: block;
+    }
+  }
+
+  .inline-search-icon {
+    position: relative;
+    margin-right: 4px;
+    color: var(--gray-500, $gl-text-color-secondary);
+  }
+
+  .identicon,
+  .search-item-avatar {
+    flex-basis: $search-avatar-size;
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
+
+  .search-item-avatar {
+    width: $search-avatar-size;
+    height: $search-avatar-size;
+    border-radius: 50%;
+    border: 1px solid var(--gray-50, $gray-normal);
+  }
+}
+
+.search-field-holder,
+.project-filter-form {
+  flex: 1 0 auto;
+  position: relative;
+
+  .search-holder & {
+    margin-right: 0;
+
+    @include media-breakpoint-up(sm) {
+      margin-right: 5px;
+    }
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 9px;
+    color: var(--gray-700, $gray-darkest);
+    pointer-events: none;
+  }
+
+  .search-text-input {
+    padding-left: $gl-padding + 15px;
+    padding-right: $gl-padding + 15px;
+  }
+}
+
+.search-holder {
+  @include media-breakpoint-up(sm) {
+    display: flex;
+  }
+
+  .btn-search,
+  .btn-success,
+  .dropdown-menu-toggle,
+  .gl-dropdown {
+    width: 100%;
+    margin-top: 5px;
+
+    @include media-breakpoint-up(sm) {
+      width: auto;
+      margin-top: 0;
+      margin-left: 5px;
+    }
+  }
+
+  .dropdown {
+    @include media-breakpoint-up(sm) {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+  }
+
+  .dropdown-menu-toggle,
+  .gl-dropdown {
+    @include media-breakpoint-up(sm) {
+      width: 180px;
+      margin-top: 0;
+    }
+  }
+}
+
+.search-page-form {
+  .dropdown-menu-toggle,
+  .btn-search {
+    width: 100%;
+  }
+
+  .dropdown-menu-toggle,
+  .gl-dropdown {
+    @include media-breakpoint-up(lg) {
+      width: 240px;
+    }
+  }
+
+  .btn-search {
+    @include media-breakpoint-up(lg) {
+      width: auto;
+    }
+  }
+}
+
+.ref-truncated {
+  @include str-truncated(10em);
+}
+
+.global-search-dropdown-menu {
+  width: 100% !important;
+  max-width: 400px;
+
+  @include media-breakpoint-up(md) {
+    // This is larger than the container so width: 100% doesn't work.
+    width: 400px !important;
+  }
+}
+
+// This overrides parts of the Project File View CSS
+// We leverage most of the styling but broke off
+// from how we were doing it in `shared/file_highlight`
+#search-blob-content {
+  .line_holder {
+    pre {
+      padding: 0; // This overrides the existing style that will add space between each line.
+      .line {
+        @include gl-word-break-word;
+        white-space: break-spaces;
+      }
+    }
+
+    svg {
+      float: none; // We have more than one icon on this implementation and don't want to float them.
+      margin: 0; // We will manage the margin with GitLab UI utility classes
+    }
+
+    .line-numbers {
+      padding: 0; // This overrides the existing style that will add space between each line.
+      min-width: 6.5rem; // Ensure our numbers fit
+
+      .diff-line-num {
+        a {
+          transition: none; // There will be a hover transition from theme, blue, darkened
+        }
+      }
+    }
+
+    &:hover {
+      svg {
+        visibility: visible; // We want to show the icons when the any part of the line is hovered
+      }
+    }
+
+    // The icons only appear on hover
+    // So on mobile we can hide them and retake the space for the code blob
+    @include media-breakpoint-down(sm) {
+      svg {
+        display: none;
+      }
+
+      .line-numbers {
+        min-width: 4rem;
+      }
+    }
+  }
+}
+
+// Disable Webkit's search input styles
+input[type='search'] {
+  /* stylelint-disable-next-line property-no-vendor-prefix */
+  -webkit-appearance: textfield;
+
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-results-button {
+    @include gl-display-none;
+  }
+}

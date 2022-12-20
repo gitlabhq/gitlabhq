@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Private Group access' do
+RSpec.describe 'Private Group access', feature_category: :permissions do
   include AccessMatchers
 
   let(:group)   { create(:group, :private) }
@@ -27,9 +27,11 @@ RSpec.describe 'Private Group access' do
     context 'when admin mode is enabled', :enable_admin_mode do
       it { is_expected.to be_allowed_for(:admin) }
     end
+
     context 'when admin mode is disabled' do
       it { is_expected.to be_denied_for(:admin) }
     end
+
     it { is_expected.to be_allowed_for(:owner).of(group) }
     it { is_expected.to be_allowed_for(:maintainer).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }
@@ -47,9 +49,11 @@ RSpec.describe 'Private Group access' do
     context 'when admin mode is enabled', :enable_admin_mode do
       it { is_expected.to be_allowed_for(:admin) }
     end
+
     context 'when admin mode is disabled' do
       it { is_expected.to be_denied_for(:admin) }
     end
+
     it { is_expected.to be_allowed_for(:owner).of(group) }
     it { is_expected.to be_allowed_for(:maintainer).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }
@@ -69,9 +73,11 @@ RSpec.describe 'Private Group access' do
     context 'when admin mode is enabled', :enable_admin_mode do
       it { is_expected.to be_allowed_for(:admin) }
     end
+
     context 'when admin mode is disabled' do
       it { is_expected.to be_denied_for(:admin) }
     end
+
     it { is_expected.to be_allowed_for(:owner).of(group) }
     it { is_expected.to be_allowed_for(:maintainer).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }
@@ -89,9 +95,11 @@ RSpec.describe 'Private Group access' do
     context 'when admin mode is enabled', :enable_admin_mode do
       it { is_expected.to be_allowed_for(:admin) }
     end
+
     context 'when admin mode is disabled' do
       it { is_expected.to be_denied_for(:admin) }
     end
+
     it { is_expected.to be_allowed_for(:owner).of(group) }
     it { is_expected.to be_allowed_for(:maintainer).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }
@@ -109,9 +117,11 @@ RSpec.describe 'Private Group access' do
     context 'when admin mode is enabled', :enable_admin_mode do
       it { is_expected.to be_allowed_for(:admin) }
     end
+
     context 'when admin mode is disabled' do
       it { is_expected.to be_denied_for(:admin) }
     end
+
     it { is_expected.to be_allowed_for(:owner).of(group) }
     it { is_expected.to be_denied_for(:maintainer).of(group) }
     it { is_expected.to be_denied_for(:developer).of(group) }
@@ -135,9 +145,11 @@ RSpec.describe 'Private Group access' do
     context 'when admin mode is enabled', :enable_admin_mode do
       it { is_expected.to be_allowed_for(:admin) }
     end
+
     context 'when admin mode is disabled' do
       it { is_expected.to be_denied_for(:admin) }
     end
+
     it { is_expected.to be_allowed_for(:owner).of(group) }
     it { is_expected.to be_allowed_for(:maintainer).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }

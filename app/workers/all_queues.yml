@@ -66,6 +66,24 @@
   :weight: 3
   :idempotent: false
   :tags: []
+- :name: batched_background_migrations:database_batched_background_migration_ci_execution
+  :worker_name: Database::BatchedBackgroundMigration::CiExecutionWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: batched_background_migrations:database_batched_background_migration_main_execution
+  :worker_name: Database::BatchedBackgroundMigration::MainExecutionWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: chaos:chaos_cpu_spin
   :worker_name: Chaos::CpuSpinWorker
   :feature_category: :not_owned
@@ -425,6 +443,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: cronjob:export_prune_project_export_jobs
+  :worker_name: Gitlab::Export::PruneProjectExportJobsWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:gitlab_service_ping
   :worker_name: GitlabServicePingWorker
@@ -1038,6 +1065,33 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: github_gists_importer:github_gists_import_finish_import
+  :worker_name: Gitlab::GithubGistsImport::FinishImportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: github_gists_importer:github_gists_import_import_gist
+  :worker_name: Gitlab::GithubGistsImport::ImportGistWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: github_gists_importer:github_gists_import_start_import
+  :worker_name: Gitlab::GithubGistsImport::StartImportWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: github_importer:github_import_attachments_import_issue
   :worker_name: Gitlab::GithubImport::Attachments::ImportIssueWorker
   :feature_category: :importers
@@ -1380,6 +1434,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: jira_connect:jira_connect_send_uninstalled_hook
+  :worker_name: JiraConnect::SendUninstalledHookWorker
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: jira_connect:jira_connect_sync_branch
   :worker_name: JiraConnect::SyncBranchWorker
   :feature_category: :integrations
@@ -1560,15 +1623,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: object_storage:object_storage_background_move
-  :worker_name: ObjectStorage::BackgroundMoveWorker
-  :feature_category: :not_owned
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: object_storage:object_storage_migrate_uploads
   :worker_name: ObjectStorage::MigrateUploadsWorker
   :feature_category: :not_owned
@@ -1616,6 +1670,15 @@
   :tags: []
 - :name: package_repositories:packages_debian_process_changes
   :worker_name: Packages::Debian::ProcessChangesWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: package_repositories:packages_debian_process_package_file
+  :worker_name: Packages::Debian::ProcessPackageFileWorker
   :feature_category: :package_registry
   :has_external_dependencies: false
   :urgency: :low
@@ -1810,7 +1873,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 4
-  :idempotent: false
+  :idempotent: true
   :tags: []
 - :name: pipeline_default:ci_create_cross_project_pipeline
   :worker_name: Ci::CreateCrossProjectPipelineWorker
@@ -2730,15 +2793,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: merge_requests_delete_branch
-  :worker_name: MergeRequests::DeleteBranchWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: merge_requests_delete_source_branch
   :worker_name: MergeRequests::DeleteSourceBranchWorker
   :feature_category: :source_code_management
@@ -3009,6 +3063,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: projects_delete_branch
+  :worker_name: Projects::DeleteBranchWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_git_garbage_collect
   :worker_name: Projects::GitGarbageCollectWorker
   :feature_category: :gitaly
@@ -3017,6 +3080,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: projects_import_export_parallel_project_export
+  :worker_name: Projects::ImportExport::ParallelProjectExportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :memory
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: projects_import_export_relation_export
   :worker_name: Projects::ImportExport::RelationExportWorker
@@ -3281,7 +3353,7 @@
   :tags: []
 - :name: update_highest_role
   :worker_name: UpdateHighestRoleWorker
-  :feature_category: :subscription_usage_reports
+  :feature_category: :subscription_cost_management
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown

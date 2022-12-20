@@ -491,7 +491,7 @@ RSpec.shared_examples_for "bulk member creation" do
                                     :developer,
                                     tasks_to_be_done: %w(issues),
                                     tasks_project_id: task_project.id)
-        end.not_to change(MemberTask, :count)
+        end.not_to change { MemberTask.count }
 
         member.reset
         expect(member.tasks_to_be_done).to match_array([:code, :ci])
@@ -505,7 +505,7 @@ RSpec.shared_examples_for "bulk member creation" do
                                     :developer,
                                     tasks_to_be_done: %w(issues),
                                     tasks_project_id: task_project.id)
-        end.to change(MemberTask, :count).by(1)
+        end.to change { MemberTask.count }.by(1)
 
         member = source.members.find_by(user_id: user1.id)
         expect(member.tasks_to_be_done).to match_array([:issues])

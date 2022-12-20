@@ -5,6 +5,7 @@ query getProjectVariables($after: String, $first: Int = 100, $fullPath: ID!) {
   project(fullPath: $fullPath) {
     id
     ciVariables(after: $after, first: $first) {
+      limit
       pageInfo {
         ...PageInfo
       }
@@ -13,6 +14,7 @@ query getProjectVariables($after: String, $first: Int = 100, $fullPath: ID!) {
         environmentScope
         masked
         protected
+        raw
       }
     }
   }

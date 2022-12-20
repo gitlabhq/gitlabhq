@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > Webhook Settings' do
+RSpec.describe 'Projects > Settings > Webhook Settings', feature_category: :projects do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:webhooks_path) { project_hooks_path(project) }
@@ -41,54 +41,28 @@ RSpec.describe 'Projects > Settings > Webhook Settings' do
         expect(page).to have_content('Tag push events')
         expect(page).to have_content('Issues events')
         expect(page).to have_content('Confidential issues events')
-        expect(page).to have_content('Note events')
-        expect(page).to have_content('Merge requests events')
+        expect(page).to have_content('Comment')
+        expect(page).to have_content('Merge request events')
         expect(page).to have_content('Pipeline events')
         expect(page).to have_content('Wiki page events')
         expect(page).to have_content('Releases events')
       end
 
-      context 'when feature flag "enhanced_webhook_support_regex" is disabled' do
-        before do
-          stub_feature_flags(enhanced_webhook_support_regex: false)
-        end
+      it 'create webhook', :js do
+        visit webhooks_path
 
-        it 'create webhook', :js do
-          visit webhooks_path
+        fill_in 'URL', with: url
+        check 'Tag push events'
+        check 'Enable SSL verification'
+        check 'Job events'
 
-          fill_in 'URL', with: url
-          check 'Tag push events'
-          fill_in 'hook_push_events_branch_filter', with: 'master'
-          check 'Enable SSL verification'
-          check 'Job events'
+        click_button 'Add webhook'
 
-          click_button 'Add webhook'
-
-          expect(page).to have_content(url)
-          expect(page).to have_content('SSL Verification: enabled')
-          expect(page).to have_content('Tag push events')
-          expect(page).to have_content('Job events')
-          expect(page).to have_content('Push events')
-        end
-      end
-
-      context 'when feature flag "enhanced_webhook_support_regex" is enabled' do
-        it 'create webhook', :js do
-          visit webhooks_path
-
-          fill_in 'URL', with: url
-          check 'Tag push events'
-          check 'Enable SSL verification'
-          check 'Job events'
-
-          click_button 'Add webhook'
-
-          expect(page).to have_content(url)
-          expect(page).to have_content('SSL Verification: enabled')
-          expect(page).to have_content('Tag push events')
-          expect(page).to have_content('Job events')
-          expect(page).to have_content('Push events')
-        end
+        expect(page).to have_content(url)
+        expect(page).to have_content('SSL Verification: enabled')
+        expect(page).to have_content('Tag push events')
+        expect(page).to have_content('Job events')
+        expect(page).to have_content('Push events')
       end
 
       it 'edit existing webhook', :js do
@@ -100,8 +74,8 @@ RSpec.describe 'Projects > Settings > Webhook Settings' do
         check 'Enable SSL verification'
         click_button 'Save changes'
 
-        expect(page).to have_content 'SSL Verification: enabled'
-        expect(page).to have_content(url)
+        expect(page).to have_content('Enable SSL verification')
+        expect(page).to have_current_path(edit_project_hook_path(project, hook), ignore_query: true)
       end
 
       it 'test existing webhook', :js do

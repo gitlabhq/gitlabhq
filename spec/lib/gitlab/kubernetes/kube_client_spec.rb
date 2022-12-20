@@ -132,6 +132,14 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
       it_behaves_like 'local address'
     end
 
+    context 'when a non HTTP/HTTPS URL is provided' do
+      let(:api_url) { 'ssh://192.168.1.2' }
+
+      it 'raises an error' do
+        expect { client }.to raise_error(Gitlab::UrlBlocker::BlockedUrlError)
+      end
+    end
+
     it 'falls back to default options, but allows overriding' do
       client = described_class.new(api_url)
       defaults = Gitlab::Kubernetes::KubeClient::DEFAULT_KUBECLIENT_OPTIONS
@@ -149,7 +157,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     it_behaves_like 'a Kubeclient'
 
     it 'has the core API endpoint' do
-      expect(subject.api_endpoint.to_s).to match(%r{\/api\Z})
+      expect(subject.api_endpoint.to_s).to match(%r{/api\Z})
     end
 
     it 'has the api_version' do
@@ -163,7 +171,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     it_behaves_like 'a Kubeclient'
 
     it 'has the RBAC API group endpoint' do
-      expect(subject.api_endpoint.to_s).to match(%r{\/apis\/rbac.authorization.k8s.io\Z})
+      expect(subject.api_endpoint.to_s).to match(%r{/apis/rbac.authorization.k8s.io\Z})
     end
 
     it 'has the api_version' do
@@ -177,7 +185,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     it_behaves_like 'a Kubeclient'
 
     it 'has the Istio API group endpoint' do
-      expect(subject.api_endpoint.to_s).to match(%r{\/apis\/networking.istio.io\Z})
+      expect(subject.api_endpoint.to_s).to match(%r{/apis/networking.istio.io\Z})
     end
 
     it 'has the api_version' do
@@ -191,7 +199,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     it_behaves_like 'a Kubeclient'
 
     it 'has the extensions API group endpoint' do
-      expect(subject.api_endpoint.to_s).to match(%r{\/apis\/serving.knative.dev\Z})
+      expect(subject.api_endpoint.to_s).to match(%r{/apis/serving.knative.dev\Z})
     end
 
     it 'has the api_version' do
@@ -205,7 +213,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     it_behaves_like 'a Kubeclient'
 
     it 'has the networking API group endpoint' do
-      expect(subject.api_endpoint.to_s).to match(%r{\/apis\/networking.k8s.io\Z})
+      expect(subject.api_endpoint.to_s).to match(%r{/apis/networking.k8s.io\Z})
     end
 
     it 'has the api_version' do
@@ -219,7 +227,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     it_behaves_like 'a Kubeclient'
 
     it 'has the metrics API group endpoint' do
-      expect(subject.api_endpoint.to_s).to match(%r{\/apis\/metrics.k8s.io\Z})
+      expect(subject.api_endpoint.to_s).to match(%r{/apis/metrics.k8s.io\Z})
     end
 
     it 'has the api_version' do

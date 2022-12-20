@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'issuable templates', :js do
+RSpec.describe 'issuable templates', :js, feature_category: :projects do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

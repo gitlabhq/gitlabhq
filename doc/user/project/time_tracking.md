@@ -74,6 +74,25 @@ Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
+#### Using the user interface
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101563) in GitLab 15.7.
+
+To add a time entry using the user interface:
+
+1. In the **Time tracking** section of the sidebar, select **Add time entry** (**{plus}**). A modal opens.
+1. Enter:
+
+   - The amount of time spent.
+   - Optional. When it was spent.
+   - Optional. A summary.
+
+1. Select **Save**.
+
+The **Spent** total in the sidebar is updated and you can view all entries in a [time tracking report](#view-a-time-tracking-report).
+
+#### Using a quick action
+
 To enter time spent, use the `/spend` [quick action](quick_actions.md), followed by the time.
 
 For example, if you need
@@ -90,15 +109,10 @@ Draft MR and respond to initial comments
 /spend 30m
 ```
 
-### Add time spent on a specific date
+To log when time was spent, enter a date after the time, using the `YYYY-MM-DD` format.
 
-Prerequisites:
-
-- You must have at least the Reporter role for the project.
-
-You can log time in the past by providing a date after the time.
 For example, to log 1 hour of time spent on 31 January 2021,
-type `/spend 1h 2021-01-31`.
+enter `/spend 1h 2021-01-31`.
 
 If you type a future date, no time is logged.
 

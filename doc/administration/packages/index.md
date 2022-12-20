@@ -6,11 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Package Registry administration **(FREE SELF)**
 
-GitLab Packages allows organizations to use GitLab as a private repository
-for a variety of common package managers. Users are able to build and publish
-packages, which can be easily consumed as a dependency in downstream projects.
+To use GitLab as a private repository for a variety of common package managers, use the Package Registry.
+You can build and publish
+packages, which can be consumed as dependencies in downstream projects.
 
-The Packages feature allows GitLab to act as a repository and supports the following formats:
+## Supported formats
+
+The Package Registry supports the following formats:
 
 | Package type                                                      | GitLab version |
 |-------------------------------------------------------------------|----------------|
@@ -49,68 +51,30 @@ guides you through the process.
 
 <!-- vale gitlab.Spelling = YES -->
 
-## Enabling the Packages feature
-
-NOTE:
-After the Packages feature is enabled, the repositories are available
-for all new projects by default. To enable it for existing projects, users
-explicitly do so in the project's settings.
-
-To enable the Packages feature:
-
-**Omnibus GitLab installations**
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
-
-   ```ruby
-   gitlab_rails['packages_enabled'] = true
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-
-**Installations from source**
-
-1. After the installation is complete, you configure the `packages`
-   section in `config/gitlab.yml`. Set to `true` to enable it:
-
-   ```yaml
-   packages:
-     enabled: true
-   ```
-
-1. [Restart GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-
-**Helm Chart installations**
-
-1. After the installation is complete, you configure the `packages`
-   section in `global.appConfig.packages`. Set to `true` to enable it:
-
-   ```yaml
-   packages:
-     enabled: true
-   ```
-
-1. [Restart GitLab](../restart_gitlab.md#helm-chart-installations) for the changes to take effect.
-
 ## Rate limits
 
 When downloading packages as dependencies in downstream projects, many requests are made through the
 Packages API. You may therefore reach enforced user and IP rate limits. To address this issue, you
 can define specific rate limits for the Packages API. For more details, see [Package Registry Rate Limits](../../user/admin_area/settings/package_registry_rate_limits.md).
 
-## Changing the storage path
+## Change the storage path
 
 By default, the packages are stored locally, but you can change the default
 local location or even use object storage.
 
-### Changing the local storage path
+### Change the local storage path
 
-The packages for Omnibus GitLab installations are stored under
-`/var/opt/gitlab/gitlab-rails/shared/packages/` and for source
-installations under `shared/packages/` (relative to the Git home directory).
+By default, the packages are stored in a local path, relative to the GitLab
+installation:
+
+- Linux package (Omnibus): `/var/opt/gitlab/gitlab-rails/shared/packages/`
+- Self-compiled (source): `/home/git/gitlab/shared/packages/`
+
 To change the local storage path:
 
-**Omnibus GitLab installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
@@ -118,135 +82,124 @@ To change the local storage path:
    gitlab_rails['packages_storage_path'] = "/mnt/packages"
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
-   for the changes to take effect.
+1. Save the file and reconfigure GitLab:
 
-**Installations from source**
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
 
-1. Edit the `packages` section in `config/gitlab.yml`:
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
    ```yaml
-   packages:
-     enabled: true
-     storage_path: shared/packages
+   production: &base
+     packages:
+       enabled: true
+       storage_path: /mnt/packages
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and restart GitLab:
 
-### Using object storage
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
 
-Instead of relying on the local storage, you can use an object storage to
-store packages.
-
-[Read more about using object storage with GitLab](../object_storage.md).
-
-NOTE:
-We recommend using the [consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration). The following instructions apply to the original configuration format.
-
-**Omnibus GitLab installations**
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the following lines (uncomment where
-   necessary):
-
-   ```ruby
-   gitlab_rails['packages_enabled'] = true
-   gitlab_rails['packages_object_store_enabled'] = true
-   gitlab_rails['packages_object_store_remote_directory'] = "packages" # The bucket name.
-   gitlab_rails['packages_object_store_proxy_download'] = false        # Passthrough all downloads via GitLab instead of using Redirects to Object Storage.
-   gitlab_rails['packages_object_store_connection'] = {
-     ##
-     ## If the provider is AWS S3, uncomment the following
-     ##
-     #'provider' => 'AWS',
-     #'region' => 'eu-west-1',
-     #'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
-     #'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY',
-     ## If an IAM profile is being used with AWS, omit the aws_access_key_id and aws_secret_access_key and uncomment
-     #'use_iam_profile' => true,
-     ##
-     ## If the provider is other than AWS (an S3-compatible one), uncomment the following
-     ##
-     #'host' => 's3.amazonaws.com',
-     #'aws_signature_version' => 4             # For creation of signed URLs. Set to 2 if provider does not support v4.
-     #'endpoint' => 'https://s3.amazonaws.com' # Useful for S3-compliant services such as DigitalOcean Spaces.
-     #'path_style' => false                    # If true, use 'host/bucket_name/object' instead of 'bucket_name.host/object'.
-   }
+   # For systems running SysV init
+   sudo service gitlab restart
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
-   for the changes to take effect.
+::EndTabs
 
-**Installations from source**
+Docker and Kubernetes do not use local storage.
 
-1. Edit the `packages` section in `config/gitlab.yml` (uncomment where necessary):
+- For the Helm chart (Kubernetes): Use object storage instead.
+- For Docker: The `/var/opt/gitlab/` directory is already
+  mounted in a directory on the host. There's no need to change the local
+  storage path inside the container.
 
-   ```yaml
-   packages:
-     enabled: true
-     ##
-     ## The location where build packages are stored (default: shared/packages).
-     ##
-     # storage_path: shared/packages
-     object_store:
-       enabled: false
-       remote_directory: packages  # The bucket name.
-       # proxy_download: false     # Passthrough all downloads via GitLab instead of using Redirects to Object Storage.
-       connection:
-       ##
-       ## If the provider is AWS S3, use the following:
-       ##
-         provider: AWS
-         region: us-east-1
-         aws_access_key_id: AWS_ACCESS_KEY_ID
-         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-         ##
-         ## If the provider is other than AWS (an S3-compatible one), comment out the previous 4 lines and use the following instead:
-         ##
-         #  host: 's3.amazonaws.com'             # default: s3.amazonaws.com.
-         #  aws_signature_version: 4             # For creation of signed URLs. Set to 2 if provider does not support v4.
-         #  endpoint: 'https://s3.amazonaws.com' # Useful for S3-compliant services such as DigitalOcean Spaces.
-         #  path_style: false                    # If true, use 'host/bucket_name/object' instead of 'bucket_name.host/object'.
-   ```
+### Use object storage
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+Instead of relying on the local storage, you can use an object storage to store
+packages.
 
-### Migrating local packages to object storage
+For more information, see how to use the
+[consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
 
-After [configuring the object storage](#using-object-storage), use the following task to
+### Migrate local packages to object storage
+
+After [configuring the object storage](#use-object-storage), use the following task to
 migrate existing packages from the local storage to the remote storage.
 The processing is done in a background worker and requires **no downtime**.
 
-For Omnibus GitLab:
+1. Migrate the packages.
 
-```shell
-sudo gitlab-rake "gitlab:packages:migrate"
-```
+   ::Tabs
 
-For installations from source:
+   :::TabTitle Linux package (Omnibus)
 
-```shell
-RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:packages:migrate
-```
+   ```shell
+   sudo gitlab-rake "gitlab:packages:migrate"
+   ```
 
-You can optionally track progress and verify that all packages migrated successfully using the
-[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+   :::TabTitle Self-compiled (source)
 
-- `sudo gitlab-rails dbconsole` for Omnibus GitLab 14.1 and earlier.
-- `sudo gitlab-rails dbconsole --database main` for Omnibus GitLab 14.2 and later.
-- `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
+   ```shell
+   RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:packages:migrate
+   ```
 
-Verify `objectstg` below (where `file_store = '2'`) has count of all packages:
+   ::EndTabs
 
-```shell
-gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM packages_package_files;
+1. Track the progress and verify that all packages migrated successfully using
+   the PostgreSQL console.
 
-total | filesystem | objectstg
-------+------------+-----------
- 34   |          0 |        34
-```
+   ::Tabs
 
-Verify that there are no files on disk in the `packages` folder:
+   :::TabTitle Linux package (Omnibus) 14.1 and earlier
 
-```shell
-sudo find /var/opt/gitlab/gitlab-rails/shared/packages -type f | grep -v tmp | wc -l
-```
+   ```shell
+   sudo gitlab-rails dbconsole
+   ```
+
+   :::TabTitle Linux package (Omnibus) 14.2 and later
+
+   ```shell
+   sudo gitlab-rails dbconsole --database main
+   ```
+
+   :::TabTitle Self-compiled (source)
+
+   ```shell
+   RAILS_ENV=production sudo -u git -H psql -d gitlabhq_production
+   ```
+
+   ::EndTabs
+
+1. Verify that all packages migrated to object storage with the following SQL
+   query. The number of `objectstg` should be the same as `total`:
+
+   ```shell
+   gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM packages_package_files;
+
+   total | filesystem | objectstg
+   ------+------------+-----------
+    34   |          0 |        34
+   ```
+
+1. Finally, verify that there are no files on disk in the `packages` directory:
+
+   ::Tabs
+
+   :::TabTitle Linux package (Omnibus)
+
+   ```shell
+   sudo find /var/opt/gitlab/gitlab-rails/shared/packages -type f | grep -v tmp | wc -l
+   ```
+
+   :::TabTitle Self-compiled (source)
+
+   ```shell
+   sudo -u git find /home/git/gitlab/shared/packages -type f | grep -v tmp | wc -l
+   ```
+
+   ::EndTabs

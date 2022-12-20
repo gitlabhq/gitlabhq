@@ -44,10 +44,6 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - Consuming PostgreSQL from [within CI runners](../../ci/services/postgres.md).
 
-- [Using Slony to update PostgreSQL](../../update/upgrading_postgresql_using_slony.md).
-  - Uses replication to handle PostgreSQL upgrades if the schemas are the same.
-  - Reduces downtime to a short window for switching to the newer version.
-
 - Managing Omnibus PostgreSQL versions [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html).
 
 - [PostgreSQL scaling](../postgresql/replication_and_failover.md)
@@ -104,14 +100,14 @@ or `statement_timeout`, but to leave the third setting at 60 seconds. Setting
 `idle_in_transaction` protects the database from sessions potentially hanging for
 days. There's more discussion in [the issue relating to introducing this timeout on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/1053).
 
-PostgresSQL defaults:
+PostgreSQL defaults:
 
 - `statement_timeout = 0` (never)
 - `idle_in_transaction_session_timeout = 0` (never)
 
 Comments in issue [#30528](https://gitlab.com/gitlab-org/gitlab/-/issues/30528)
 indicate that these should both be set to at least a number of minutes for all
-Omnibus GitLab installations (so they don't hang indefinitely). However, 15s
+Omnibus GitLab installations (so they don't hang indefinitely). However, 15 s
 for `statement_timeout` is very short, and is only effective if the
 underlying infrastructure is very performant.
 
@@ -188,7 +184,7 @@ To temporarily change the statement timeout:
 
 ### Database is not accepting commands to avoid wraparound data loss
 
-This error likely means that AUTOVACUUM is failing to complete its run:
+This error likely means that `autovacuum` is failing to complete its run:
 
 ```plaintext
 ERROR:  database is not accepting commands to avoid wraparound data loss in database "gitlabhq_production"
@@ -211,7 +207,7 @@ To resolve the error, run `VACUUM` manually:
 
 The [database requirements](../../install/requirements.md#database) for GitLab include:
 
-- Support for MySQL was removed in GitLab 12.1; [migrate to PostgreSQL](../../update/mysql_to_postgresql.md).
+- Support for MySQL was removed in [GitLab 12.1](../../update/index.md#1210).
 - Review and install the [required extension list](../../install/postgresql_extensions.md).
 
 ### Serialization errors in the `production/sidekiq` log

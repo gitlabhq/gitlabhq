@@ -72,7 +72,7 @@ Once built, a chart can be uploaded to the desired channel with `curl` or `helm 
 ### Release channels
 
 You can publish Helm charts to channels in GitLab. Channels are a method you can use to differentiate Helm chart repositories.
-For example, you can use `stable` and `devel` as channels to allow users to add the `stable` repo while `devel` charts are isolated.
+For example, you can use `stable` and `devel` as channels to allow users to add the `stable` repository while `devel` charts are isolated.
 
 ## Use CI/CD to publish a Helm package
 

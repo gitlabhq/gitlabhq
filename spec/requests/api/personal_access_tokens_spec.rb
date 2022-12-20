@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::PersonalAccessTokens do
+RSpec.describe API::PersonalAccessTokens, feature_category: :authentication_and_authorization do
   let_it_be(:path) { '/personal_access_tokens' }
 
   describe 'GET /personal_access_tokens' do

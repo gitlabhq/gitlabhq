@@ -5,14 +5,18 @@ import { buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
 import { createAlert, VARIANT_DANGER } from '~/flash';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { NEW_BROADCAST_MESSAGE } from '../constants';
+import MessageForm from './message_form.vue';
 import MessagesTable from './messages_table.vue';
 
 const PER_PAGE = 20;
 
 export default {
   name: 'BroadcastMessagesBase',
+  NEW_BROADCAST_MESSAGE,
   components: {
     GlPagination,
+    MessageForm,
     MessagesTable,
   },
 
@@ -97,6 +101,7 @@ export default {
 
 <template>
   <div>
+    <message-form :broadcast-message="$options.NEW_BROADCAST_MESSAGE" />
     <messages-table
       v-if="hasVisibleMessages"
       :messages="visibleMessages"

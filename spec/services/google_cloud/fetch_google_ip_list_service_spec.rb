@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe GoogleCloud::FetchGoogleIpListService,
-    :use_clean_rails_memory_store_caching, :clean_gitlab_redis_rate_limiting do
+RSpec.describe GoogleCloud::FetchGoogleIpListService, :use_clean_rails_memory_store_caching,
+:clean_gitlab_redis_rate_limiting, feature_category: :continuous_integration do
   include StubRequests
 
   let(:google_cloud_ips) { File.read(Rails.root.join('spec/fixtures/cdn/google_cloud.json')) }

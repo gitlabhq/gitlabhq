@@ -153,13 +153,15 @@ module Trigger
 
     # Read version files from all components
     def version_file_variables
-      Dir.glob("*_VERSION").each_with_object({}) do |version_file, params|
+      Dir.glob("*_VERSION").each_with_object({}) do |version_file, params| # rubocop:disable Rails/IndexWith
         params[version_file] = version_param_value(version_file)
       end
     end
   end
 
   class CNG < Base
+    ASSETS_HASH = "cached-assets-hash.txt"
+
     def variables
       # Delete variables that aren't useful when using native triggers.
       super.tap do |hash|
@@ -187,7 +189,6 @@ module Trigger
         "TRIGGER_BRANCH" => ref,
         "GITLAB_VERSION" => ENV['CI_COMMIT_SHA'],
         "GITLAB_TAG" => ENV['CI_COMMIT_TAG'], # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
-        "GITLAB_ASSETS_TAG" => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : ENV['CI_COMMIT_SHA'],
         "FORCE_RAILS_IMAGE_BUILDS" => 'true',
         "CE_PIPELINE" => Trigger.ee? ? nil : "true", # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
         "EE_PIPELINE" => Trigger.ee? ? "true" : nil # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.

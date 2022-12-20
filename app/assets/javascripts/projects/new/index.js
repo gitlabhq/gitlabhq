@@ -59,6 +59,8 @@ export function initNewProjectUrlSelect() {
           rootUrl: el.dataset.rootUrl,
           trackLabel: el.dataset.trackLabel,
           userNamespaceId: el.dataset.userNamespaceId,
+          inputId: el.dataset.inputId,
+          inputName: el.dataset.inputName,
         },
         render: (createElement) => createElement(NewProjectUrlSelect),
       }),

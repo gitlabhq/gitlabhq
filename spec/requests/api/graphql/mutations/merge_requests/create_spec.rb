@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Creation of a new merge request' do
+RSpec.describe 'Creation of a new merge request', feature_category: :code_review do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

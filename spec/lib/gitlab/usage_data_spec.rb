@@ -598,33 +598,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           external_diffs: { enabled: false },
           lfs: { enabled: true, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
           uploads: { enabled: nil, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
-          packages: { enabled: true, object_store: { enabled: false, direct_upload: false, background_upload: true, provider: "AWS" } } }
+          packages: { enabled: true, object_store: { enabled: false, direct_upload: false, background_upload: false, provider: "AWS" } } }
       )
-    end
-
-    context 'with existing container expiration policies' do
-      let_it_be(:disabled) { create(:container_expiration_policy, enabled: false) }
-      let_it_be(:enabled) { create(:container_expiration_policy, enabled: true) }
-
-      ::ContainerExpirationPolicy.older_than_options.keys.each do |value|
-        let_it_be("container_expiration_policy_with_older_than_set_to_#{value}") { create(:container_expiration_policy, older_than: value) }
-      end
-
-      let_it_be('container_expiration_policy_with_older_than_set_to_null') { create(:container_expiration_policy, older_than: nil) }
-
-      let(:inactive_policies) { ::ContainerExpirationPolicy.where(enabled: false) }
-      let(:active_policies) { ::ContainerExpirationPolicy.active }
-
-      subject { described_class.data[:counts] }
-
-      it 'gathers usage data' do
-        expect(subject[:projects_with_expiration_policy_enabled_with_older_than_unset]).to eq 1
-        expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_7d]).to eq 1
-        expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_14d]).to eq 1
-        expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_30d]).to eq 1
-        expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_60d]).to eq 1
-        expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_90d]).to eq 2
-      end
     end
 
     context 'when queries time out' do
@@ -860,7 +835,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
                   'direct_upload' => true,
                   'connection' =>
                 { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
-                  'background_upload' => false,
                   'proxy_download' => false } })
 
           expect(subject).to eq(
@@ -1132,36 +1106,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           action_monthly_active_users_ide_edit: 3
         }
       )
-    end
-  end
-
-  describe 'redis_hll_counters' do
-    subject { described_class.redis_hll_counters }
-
-    let(:migrated_categories) do
-      ::Gitlab::UsageDataCounters::HLLRedisCounter.categories_collected_from_metrics_definitions
-    end
-
-    let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories - migrated_categories }
-    let(:ignored_metrics) { ["i_package_composer_deploy_token_weekly"] }
-
-    it 'has all known_events' do
-      expect(subject).to have_key(:redis_hll_counters)
-
-      expect(subject[:redis_hll_counters].keys).to match_array(categories)
-
-      categories.each do |category|
-        keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category)
-
-        metrics = keys.map { |key| "#{key}_weekly" } + keys.map { |key| "#{key}_monthly" }
-        metrics -= ignored_metrics
-
-        if ::Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_FOR_TOTALS.include?(category)
-          metrics.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")
-        end
-
-        expect(subject[:redis_hll_counters][category].keys).to match_array(metrics)
-      end
     end
   end
 

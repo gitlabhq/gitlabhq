@@ -16,6 +16,16 @@ module Feature
     end
   end
 
+  class OptOut
+    def initialize(inner)
+      @inner = inner
+    end
+
+    def flipper_id
+      "#{@inner.flipper_id}:opt_out"
+    end
+  end
+
   class FlipperGate < Flipper::Adapters::ActiveRecord::Gate
     superclass.table_name = 'feature_gates'
   end
@@ -25,6 +35,7 @@ module Feature
   end
 
   InvalidFeatureFlagError = Class.new(Exception) # rubocop:disable Lint/InheritException
+  InvalidOperation = Class.new(ArgumentError) # rubocop:disable Lint/InheritException
 
   class << self
     delegate :group, to: :flipper
@@ -78,7 +89,7 @@ module Feature
     #    and should not be used outside of Gitaly's `lib/feature/gitaly.rb`
     def enabled?(key, thing = nil, type: :development, default_enabled_if_undefined: nil)
       if check_feature_flags_definition?
-        if thing && !thing.respond_to?(:flipper_id)
+        if thing && !thing.respond_to?(:flipper_id) && !thing.is_a?(Flipper::Types::Group)
           raise InvalidFeatureFlagError,
             "The thing '#{thing.class.name}' for feature flag '#{key}' needs to include `FeatureGate` or implement `flipper_id`"
         end
@@ -87,10 +98,7 @@ module Feature
       end
 
       default_enabled = Feature::Definition.default_enabled?(key, default_enabled_if_undefined: default_enabled_if_undefined)
-
-      feature_value = with_feature(key) do |feature|
-        feature_value = current_feature_value(feature, thing, default_enabled: default_enabled)
-      end
+      feature_value = current_feature_value(key, thing, default_enabled: default_enabled)
 
       # If not yielded, then either recursion is happening, or the database does not exist yet, so use default_enabled.
       feature_value = default_enabled if feature_value.nil?
@@ -108,6 +116,7 @@ module Feature
 
     def enable(key, thing = true)
       log(key: key, action: __method__, thing: thing)
+
       return_value = with_feature(key) { _1.enable(thing) }
 
       # rubocop:disable Gitlab/RailsLogger
@@ -120,12 +129,45 @@ module Feature
 
     def disable(key, thing = false)
       log(key: key, action: __method__, thing: thing)
+
       with_feature(key) { _1.disable(thing) }
+    end
+
+    def opted_out?(key, thing)
+      return false unless thing.respond_to?(:flipper_id) # Ignore Feature::Types::Group
+      return false unless persisted_name?(key)
+
+      opt_out = OptOut.new(thing)
+
+      with_feature(key) { _1.actors_value.include?(opt_out.flipper_id) }
+    end
+
+    def opt_out(key, thing)
+      return unless thing.respond_to?(:flipper_id) # Ignore Feature::Types::Group
+
+      log(key: key, action: __method__, thing: thing)
+      opt_out = OptOut.new(thing)
+
+      with_feature(key) { _1.enable(opt_out) }
+    end
+
+    def remove_opt_out(key, thing)
+      return unless thing.respond_to?(:flipper_id) # Ignore Feature::Types::Group
+      return unless persisted_name?(key)
+
+      log(key: key, action: __method__, thing: thing)
+      opt_out = OptOut.new(thing)
+
+      with_feature(key) { _1.disable(opt_out) }
     end
 
     def enable_percentage_of_time(key, percentage)
       log(key: key, action: __method__, percentage: percentage)
-      with_feature(key) { _1.enable_percentage_of_time(percentage) }
+      with_feature(key) do |flag|
+        raise InvalidOperation, 'Cannot enable percentage of time for a fully-enabled flag' if flag.state == :on
+
+        flag.enable_percentage_of_time(percentage)
+      end
     end
 
     def disable_percentage_of_time(key)
@@ -135,7 +177,11 @@ module Feature
 
     def enable_percentage_of_actors(key, percentage)
       log(key: key, action: __method__, percentage: percentage)
-      with_feature(key) { _1.enable_percentage_of_actors(percentage) }
+      with_feature(key) do |flag|
+        raise InvalidOperation, 'Cannot enable percentage of actors for a fully-enabled flag' if flag.state == :on
+
+        flag.enable_percentage_of_actors(percentage)
+      end
     end
 
     def disable_percentage_of_actors(key)
@@ -147,6 +193,7 @@ module Feature
       return unless persisted_name?(key)
 
       log(key: key, action: __method__)
+
       with_feature(key, &:remove)
     end
 
@@ -189,14 +236,26 @@ module Feature
 
     private
 
+    # Compute if thing is enabled, taking opt-out overrides into account
     # Evaluate if `default enabled: false` or the feature has been persisted.
     # `persisted_name?` can potentially generate DB queries and also checks for inclusion
     # in an array of feature names (177 at last count), possibly reducing performance by half.
     # So we only perform the `persisted` check if `default_enabled: true`
-    def current_feature_value(feature, thing, default_enabled:)
-      return true if default_enabled && !Feature.persisted_name?(feature.name)
+    def current_feature_value(key, thing, default_enabled:)
+      with_feature(key) do |feature|
+        if default_enabled && !Feature.persisted_name?(feature.name)
+          true
+        else
+          enabled = feature.enabled?(thing)
 
-      feature.enabled?(thing)
+          if enabled && !thing.nil?
+            opt_out = OptOut.new(thing)
+            feature.actors_value.exclude?(opt_out.flipper_id)
+          else
+            enabled
+          end
+        end
+      end
     end
 
     # NOTE: it is not safe to call `Flipper::Feature#enabled?` outside the block
@@ -292,7 +351,7 @@ module Feature
   end
 
   class Target
-    UnknowTargetError = Class.new(StandardError)
+    UnknownTargetError = Class.new(StandardError)
 
     attr_reader :params
 
@@ -322,7 +381,7 @@ module Feature
       return unless params.key?(:user)
 
       params[:user].split(',').map do |arg|
-        UserFinder.new(arg).find_by_username || (raise UnknowTargetError, "#{arg} is not found!")
+        UserFinder.new(arg).find_by_username || (raise UnknownTargetError, "#{arg} is not found!")
       end
     end
 
@@ -330,7 +389,7 @@ module Feature
       return unless params.key?(:project)
 
       params[:project].split(',').map do |arg|
-        Project.find_by_full_path(arg) || (raise UnknowTargetError, "#{arg} is not found!")
+        Project.find_by_full_path(arg) || (raise UnknownTargetError, "#{arg} is not found!")
       end
     end
 
@@ -338,7 +397,7 @@ module Feature
       return unless params.key?(:group)
 
       params[:group].split(',').map do |arg|
-        Group.find_by_full_path(arg) || (raise UnknowTargetError, "#{arg} is not found!")
+        Group.find_by_full_path(arg) || (raise UnknownTargetError, "#{arg} is not found!")
       end
     end
 
@@ -347,7 +406,7 @@ module Feature
 
       params[:namespace].split(',').map do |arg|
         # We are interested in Group or UserNamespace
-        Namespace.without_project_namespaces.find_by_full_path(arg) || (raise UnknowTargetError, "#{arg} is not found!")
+        Namespace.without_project_namespaces.find_by_full_path(arg) || (raise UnknownTargetError, "#{arg} is not found!")
       end
     end
 
@@ -356,7 +415,7 @@ module Feature
 
       params[:repository].split(',').map do |arg|
         container, _project, _type, _path = Gitlab::RepoPath.parse(arg)
-        raise UnknowTargetError, "#{arg} is not found!" if container.nil?
+        raise UnknownTargetError, "#{arg} is not found!" if container.nil?
 
         container.repository
       end

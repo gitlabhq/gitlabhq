@@ -6,7 +6,7 @@ RSpec.shared_examples 'search timeouts' do |scope|
   context 'when search times out' do
     before do
       allow_next_instance_of(SearchService) do |service|
-        allow(service).to receive(:search_objects).and_raise(ActiveRecord::QueryCanceled)
+        allow(service).to receive(:search_results).and_raise(ActiveRecord::QueryCanceled)
       end
 
       visit(search_path(search: 'test', scope: scope, **additional_params))

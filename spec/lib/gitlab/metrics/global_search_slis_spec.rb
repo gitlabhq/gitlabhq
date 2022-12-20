@@ -5,12 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::Metrics::GlobalSearchSlis do
   using RSpec::Parameterized::TableSyntax
 
-  let(:error_rate_feature_flag_enabled) { true }
-
-  before do
-    stub_feature_flags(global_search_error_rate_sli: error_rate_feature_flag_enabled)
-  end
-
   describe '#initialize_slis!' do
     it 'initializes Apdex SLIs for global_search' do
       expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(
@@ -21,27 +15,13 @@ RSpec.describe Gitlab::Metrics::GlobalSearchSlis do
       described_class.initialize_slis!
     end
 
-    context 'when global_search_error_rate_sli feature flag is enabled' do
-      let(:error_rate_feature_flag_enabled) { true }
+    it 'initializes ErrorRate SLIs for global_search' do
+      expect(Gitlab::Metrics::Sli::ErrorRate).to receive(:initialize_sli).with(
+        :global_search,
+        a_kind_of(Array)
+      )
 
-      it 'initializes ErrorRate SLIs for global_search' do
-        expect(Gitlab::Metrics::Sli::ErrorRate).to receive(:initialize_sli).with(
-          :global_search,
-          a_kind_of(Array)
-        )
-
-        described_class.initialize_slis!
-      end
-    end
-
-    context 'when global_search_error_rate_sli feature flag is disabled' do
-      let(:error_rate_feature_flag_enabled) { false }
-
-      it 'does not initialize the ErrorRate SLIs for global_search' do
-        expect(Gitlab::Metrics::Sli::ErrorRate).not_to receive(:initialize_sli)
-
-        described_class.initialize_slis!
-      end
+      described_class.initialize_slis!
     end
   end
 
@@ -105,34 +85,15 @@ RSpec.describe Gitlab::Metrics::GlobalSearchSlis do
   end
 
   describe '#record_error_rate' do
-    context 'when global_search_error_rate_sli feature flag is enabled' do
-      let(:error_rate_feature_flag_enabled) { true }
+    it 'calls increment on the error rate SLI' do
+      expect(Gitlab::Metrics::Sli::ErrorRate[:global_search]).to receive(:increment)
 
-      it 'calls increment on the error rate SLI' do
-        expect(Gitlab::Metrics::Sli::ErrorRate[:global_search]).to receive(:increment)
-
-        described_class.record_error_rate(
-          error: true,
-          search_type: 'basic',
-          search_level: 'global',
-          search_scope: 'issues'
-        )
-      end
-    end
-
-    context 'when global_search_error_rate_sli feature flag is disabled' do
-      let(:error_rate_feature_flag_enabled) { false }
-
-      it 'does not call increment on the error rate SLI' do
-        expect(Gitlab::Metrics::Sli::ErrorRate[:global_search]).not_to receive(:increment)
-
-        described_class.record_error_rate(
-          error: true,
-          search_type: 'basic',
-          search_level: 'global',
-          search_scope: 'issues'
-        )
-      end
+      described_class.record_error_rate(
+        error: true,
+        search_type: 'basic',
+        search_level: 'global',
+        search_scope: 'issues'
+      )
     end
   end
 end

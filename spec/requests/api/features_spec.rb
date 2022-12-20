@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Features, stub_feature_flags: false do
-  let_it_be(:user)  { create(:user) }
+RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feature_flags do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:opted_out) { create(:user) }
   let_it_be(:admin) { create(:admin) }
 
   # Find any `development` feature flag name
@@ -35,7 +36,10 @@ RSpec.describe API::Features, stub_feature_flags: false do
         {
           'name' => 'feature_1',
           'state' => 'on',
-          'gates' => [{ 'key' => 'boolean', 'value' => true }],
+          'gates' => [
+            { 'key' => 'boolean', 'value' => true },
+            { 'key' => 'actors', 'value' => ["#{opted_out.flipper_id}:opt_out"] }
+          ],
           'definition' => nil
         },
         {
@@ -64,6 +68,7 @@ RSpec.describe API::Features, stub_feature_flags: false do
 
     before do
       Feature.enable('feature_1')
+      Feature.opt_out('feature_1', opted_out)
       Feature.disable('feature_2')
       Feature.enable('feature_3', Feature.group(:perf_team))
       Feature.enable(known_feature_flag.name)
@@ -654,12 +659,53 @@ RSpec.describe API::Features, stub_feature_flags: false do
 
     it_behaves_like 'sets the feature flag status'
 
+    it 'opts given actors out' do
+      Feature.enable(feature_name)
+      expect(Feature.enabled?(feature_name, user)).to be_truthy
+
+      post api("/features/#{feature_name}", admin), params: { value: 'opt_out', user: user.username }
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response).to include(
+        'name' => feature_name,
+        'state' => 'on',
+        'gates' => [
+          { 'key' => 'boolean', 'value' => true },
+          { 'key' => 'actors', 'value' => ["#{user.flipper_id}:opt_out"] }
+        ]
+      )
+    end
+
+    context 'when the actor has opted-out' do
+      before do
+        Feature.enable(feature_name)
+        Feature.opt_out(feature_name, user)
+      end
+
+      it 'refuses to enable the feature' do
+        post api("/features/#{feature_name}", admin), params: { value: 'true', user: user.username }
+
+        expect(Feature).not_to be_enabled(feature_name, user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     context 'when feature flag set_feature_flag_service is disabled' do
       before do
         stub_feature_flags(set_feature_flag_service: false)
       end
 
       it_behaves_like 'sets the feature flag status'
+
+      it 'rejects opt_out requests' do
+        Feature.enable(feature_name)
+        expect(Feature).to be_enabled(feature_name, user)
+
+        post api("/features/#{feature_name}", admin), params: { value: 'opt_out', user: user.username }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
     end
   end
 

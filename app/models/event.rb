@@ -132,7 +132,7 @@ class Event < ApplicationRecord
       where(
         'action IN (?) OR (target_type IN (?) AND action IN (?))',
         [actions[:pushed], actions[:commented]],
-        %w(MergeRequest Issue), [actions[:created], actions[:closed], actions[:merged]]
+        %w(MergeRequest Issue WorkItem), [actions[:created], actions[:closed], actions[:merged]]
       )
     end
 
@@ -380,13 +380,11 @@ class Event < ApplicationRecord
   protected
 
   def capability
-    @capability ||= begin
-      capabilities.flat_map do |ability, syms|
-        if syms.any? { |sym| send(sym) } # rubocop: disable GitlabSecurity/PublicSend
-          [ability]
-        else
-          []
-        end
+    @capability ||= capabilities.flat_map do |ability, syms|
+      if syms.any? { |sym| send(sym) } # rubocop: disable GitlabSecurity/PublicSend
+        [ability]
+      else
+        []
       end
     end
   end

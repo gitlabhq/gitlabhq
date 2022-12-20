@@ -121,6 +121,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Creating users](../user/profile/account/create_accounts.md): Create users manually or through authentication integrations.
 - [Libravatar](libravatar.md): Use Libravatar instead of Gravatar for user avatars.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or allow only specific domains.
+- [Admin mode](../user/admin_area/settings/sign_in_restrictions.md#admin-mode): require that administrators authenticate separately to use administrative access, like `sudo`.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication and Authorization](auth/index.md): Configure external authentication with LDAP, SAML, CAS, and additional providers.
   - [Sync LDAP](auth/ldap/index.md)
@@ -133,7 +134,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - Instances.
 - [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
 - [Incoming email](incoming_email.md): Configure incoming emails to allow
-  users to [reply by email](reply_by_email.md), create [issues by email](../user/project/issues/managing_issues.md#by-sending-an-email) and
+  users to [reply by email](reply_by_email.md), create [issues by email](../user/project/issues/create_issues.md#by-sending-an-email) and
   [merge requests by email](../user/project/merge_requests/creating_merge_requests.md#by-sending-an-email), and to enable [Service Desk](../user/project/service_desk.md).
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
@@ -208,7 +209,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 ## Troubleshooting
 
 - [Log system](logs/index.md): Where to look for logs.
-- [Sidekiq Troubleshooting](troubleshooting/sidekiq.md): Debug when Sidekiq appears hung and is not processing jobs.
+- [Sidekiq Troubleshooting](sidekiq/sidekiq_troubleshooting.md): Debug when Sidekiq appears hung and is not processing jobs.
 - [Navigating GitLab via Rails console](operations/rails_console.md)
 - [GitLab application limits](instance_limits.md)
 - [Responding to security incidents](../security/responding_to_security_incidents.md)

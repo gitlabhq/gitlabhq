@@ -1,0 +1,11 @@
+---
+table_name: ml_candidate_metadata
+classes:
+  - Ml::CandidateMetadata
+feature_categories:
+  - mlops
+  - incubation
+gitlab_schema: gitlab_main
+description: A Candidate Metadata record holds extra information about the candidate
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104267
+milestone: '15.7'
