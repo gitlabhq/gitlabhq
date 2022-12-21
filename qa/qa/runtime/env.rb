@@ -406,14 +406,6 @@ module QA
         ENV.fetch('GITLAB_QA_LOOP_RUNNER_MINUTES', 1).to_i
       end
 
-      def reusable_project_path
-        ENV.fetch('QA_REUSABLE_PROJECT_PATH', 'reusable_project')
-      end
-
-      def reusable_group_path
-        ENV.fetch('QA_REUSABLE_GROUP_PATH', 'reusable_group')
-      end
-
       def mailhog_hostname
         ENV['MAILHOG_HOSTNAME']
       end

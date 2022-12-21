@@ -909,5 +909,3 @@ Cop/FeatureFlagUsage:
     - 'lib/gitlab/redis/**/*.rb'
     - 'lib/gitlab/patch/**/*.rb'
     - 'lib/gitlab/instrumentation/**/*.rb'
-  Exclude:
-    - 'lib/gitlab/redis/multi_store.rb'

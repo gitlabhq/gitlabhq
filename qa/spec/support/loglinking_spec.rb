@@ -13,103 +13,76 @@ RSpec.describe QA::Support::Loglinking do
     end
 
     context 'when correlation_id exists' do
-      context 'and logging environment exists' do
-        it 'returns Sentry URL' do
-          allow(QA::Support::Loglinking).to receive(:get_logging_environment).and_return(:foo)
-          allow(QA::Support::Loglinking).to receive(:get_sentry_base_url).and_return('https://sentry.address/?environment=bar')
-          allow(QA::Support::Loglinking).to receive(:get_kibana_base_url).and_return(nil)
-          allow(QA::Support::Loglinking).to receive(:get_kibana_index).and_return(nil)
+      let(:correlation_id) { 'foo123' }
+      let(:sentry_url) { "https://sentry.address/?environment=bar&query=correlation_id%3A%22#{correlation_id}%22" }
+      let(:discover_url) { "https://kibana.address/app/discover#/?_a=%28index:%27pubsub-rails-inf-foo%27%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20#{correlation_id}%27%29%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29" }
+      let(:dashboard_url) { "https://kibana.address/app/dashboards#/view/abc-123-dashboard-id?_g=%28time%3A%28from:%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29&_a=%28filters%3A%21%28%28query%3A%28match_phrase%3A%28json.correlation_id%3A%27#{correlation_id}%27%29%29%29%29%29" }
 
-          expect(QA::Support::Loglinking.failure_metadata('foo123')).to eql(<<~ERROR.chomp)
-          Correlation Id: foo123
-          Sentry Url: https://sentry.address/?environment=bar&query=correlation_id%3A%22foo123%22
-          ERROR
+      before do
+        allow(QA::Support::SystemLogs::Sentry).to receive(:new).and_return(sentry)
+        allow(QA::Support::SystemLogs::Kibana).to receive(:new).and_return(kibana)
+      end
+
+      context 'and both Sentry and Kibana exist for the logging environment' do
+        let(:sentry) { instance_double(QA::Support::SystemLogs::Sentry, url: sentry_url) }
+        let(:kibana) do
+          instance_double(QA::Support::SystemLogs::Kibana,
+                          discover_url: discover_url, dashboard_url: dashboard_url)
         end
 
-        it 'returns Kibana URL' do
-          time = Time.new(2022, 11, 14, 0, 0, 0, '+00:00')
-
-          allow(QA::Support::Loglinking).to receive(:get_logging_environment).and_return(:foo)
-          allow(QA::Support::Loglinking).to receive(:get_sentry_base_url).and_return(nil)
-          allow(QA::Support::Loglinking).to receive(:get_kibana_base_url).and_return('https://kibana.address/')
-          allow(QA::Support::Loglinking).to receive(:get_kibana_index).and_return('pubsub-rails-inf-foo')
-          allow(Time).to receive(:now).and_return(time)
-
-          expect(QA::Support::Loglinking.failure_metadata('foo123')).to eql(<<~ERROR.chomp)
+        it 'returns both Sentry and Kibana URLs' do
+          expect(QA::Support::Loglinking.failure_metadata(correlation_id)).to eql(<<~ERROR.chomp)
           Correlation Id: foo123
-          Kibana Url: https://kibana.address/app/discover#/?_a=%28index:%27pubsub-rails-inf-foo%27%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20foo123%27%29%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29
+          Sentry Url: #{sentry_url}
+          Kibana - Discover Url: #{discover_url}
+          Kibana - Dashboard Url: #{dashboard_url}
           ERROR
         end
       end
 
-      context 'and logging environment does not exist' do
+      context 'and only Sentry exists for the logging environment' do
+        let(:sentry) { instance_double(QA::Support::SystemLogs::Sentry, url: sentry_url) }
+        let(:kibana) do
+          instance_double(QA::Support::SystemLogs::Kibana,
+                          discover_url: nil, dashboard_url: nil)
+        end
+
+        it 'returns only Sentry URL' do
+          expect(QA::Support::Loglinking.failure_metadata(correlation_id)).to eql(<<~ERROR.chomp)
+          Correlation Id: foo123
+          Sentry Url: #{sentry_url}
+          ERROR
+        end
+      end
+
+      context 'and only Kibana exists for the logging environment' do
+        let(:sentry) { instance_double(QA::Support::SystemLogs::Sentry, url: nil) }
+        let(:kibana) do
+          instance_double(QA::Support::SystemLogs::Kibana,
+                          discover_url: discover_url, dashboard_url: dashboard_url)
+        end
+
+        it 'returns only Kibana Discover and Dashboard URLs' do
+          expect(QA::Support::Loglinking.failure_metadata(correlation_id)).to eql(<<~ERROR.chomp)
+          Correlation Id: foo123
+          Kibana - Discover Url: #{discover_url}
+          Kibana - Dashboard Url: #{dashboard_url}
+          ERROR
+        end
+      end
+
+      context 'and neither Sentry nor Kibana exists for the logging environment' do
+        let(:sentry) { instance_double(QA::Support::SystemLogs::Sentry, url: nil) }
+        let(:kibana) { instance_double(QA::Support::SystemLogs::Kibana, discover_url: nil, dashboard_url: nil) }
+
         it 'returns only the correlation ID' do
-          allow(QA::Support::Loglinking).to receive(:get_logging_environment).and_return(nil)
-
-          expect(QA::Support::Loglinking.failure_metadata('foo123')).to eql('Correlation Id: foo123')
+          expect(QA::Support::Loglinking.failure_metadata(correlation_id)).to eql("Correlation Id: #{correlation_id}")
         end
       end
     end
   end
 
-  describe '.get_sentry_base_url' do
-    let(:url_hash) do
-      {
-        :staging => 'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg',
-        :staging_ref => 'https://sentry.gitlab.net/gitlab/staging-ref/?environment=all',
-        :pre => 'https://sentry.gitlab.net/gitlab/pregitlabcom/?environment=all',
-        :production => 'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd',
-        :foo => nil,
-        nil => nil
-      }
-    end
-
-    it 'returns Sentry base URL based on environment' do
-      url_hash.each do |environment, url|
-        expect(QA::Support::Loglinking.get_sentry_base_url(environment)).to eq(url)
-      end
-    end
-  end
-
-  describe '.get_kibana_base_url' do
-    let(:url_hash) do
-      {
-        :staging => 'https://nonprod-log.gitlab.net/',
-        :staging_ref => nil,
-        :production => 'https://log.gprd.gitlab.net/',
-        :pre => 'https://nonprod-log.gitlab.net/',
-        :foo => nil,
-        nil => nil
-      }
-    end
-
-    it 'returns Kibana URL based on environment' do
-      url_hash.each do |environment, url|
-        expect(QA::Support::Loglinking.get_kibana_base_url(environment)).to eq(url)
-      end
-    end
-  end
-
-  describe '.get_kibana_index' do
-    let(:index_hash) do
-      {
-        :staging => 'ed942d00-5186-11ea-ad8a-f3610a492295',
-        :staging_ref => nil,
-        :production => '7092c4e2-4eb5-46f2-8305-a7da2edad090',
-        :pre => 'pubsub-rails-inf-pre',
-        :foo => nil,
-        nil => nil
-      }
-    end
-
-    it 'returns Kibana index based on environment' do
-      index_hash.each do |environment, index|
-        expect(QA::Support::Loglinking.get_kibana_index(environment)).to eq(index)
-      end
-    end
-  end
-
-  describe '.get_logging_environment' do
+  describe '.logging_environment' do
     let(:staging_address) { 'https://staging.gitlab.com' }
     let(:staging_ref_address) { 'https://staging-ref.gitlab.com' }
     let(:production_address) { 'https://gitlab.com' }
@@ -143,7 +116,7 @@ RSpec.describe QA::Support::Loglinking do
       logging_env_array.each do |logging_env_hash|
         allow(QA::Runtime::Scenario).to receive(:attributes).and_return({ gitlab_address: logging_env_hash[:address] })
 
-        expect(QA::Support::Loglinking.get_logging_environment).to eq(logging_env_hash[:expected_env])
+        expect(QA::Support::Loglinking.logging_environment).to eq(logging_env_hash[:expected_env])
       end
     end
   end

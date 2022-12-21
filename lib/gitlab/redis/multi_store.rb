@@ -175,7 +175,7 @@ module Gitlab
       # @return [Boolean]
       def feature_enabled?(prefix)
         feature_table_exists? &&
-          Feature.enabled?("#{prefix}_#{instance_name.underscore}") &&
+          Feature.enabled?("#{prefix}_#{instance_name.underscore}") && # rubocop:disable Cop/FeatureFlagUsage
           !same_redis_store?
       end
 
