@@ -3,7 +3,7 @@ table_name: uploads
 classes:
 - Upload
 feature_categories:
-- code_review
+- code_review_workflow
 - design_management
 - importers
 - portfolio_management

@@ -1,10 +1,11 @@
-<!-- Title suggestion: Upgrade `gilab-styles` to <VERSION X.Y.Z> - dry-run -->
+<!-- Title suggestion: Upgrade `gitlab-styles` to <VERSION X.Y.Z> - dry-run -->
 
 ## What does this MR do and why?
 
 Validating upcoming release of `gitlab-styles` <VERSION X.Y.Z>. See <LINK TO RELEASE MR>.
 
 This MR can be reused to upgrade `gitlab-styles` in this project after a new version of `gitlab-styles` is released.
+
 ### Checklist
 
 - [ ] Verify upcoming release of `gitlab-styles`
@@ -13,8 +14,8 @@ This MR can be reused to upgrade `gitlab-styles` in this project after a new ver
   - [ ] Update [bundler's checksum file](https://docs.gitlab.com/ee/development/gemfile.html#updating-the-checksum-file) via `bundle exec bundler-checksum init`
   - [ ] `rubocop` job
     - [ ] Inspect any warnings/errors
-    - [ ] (Optional) [Generate TODOs](https://docs.gitlab.com/ee/development/contributing/style_guides.html#resolving-rubocop-exceptions) for pending offenses
-      - [ ] Put :new: cop rules (or if configuration is changed) in "grace period". See [docs](https://docs.gitlab.com/ee/development/contributing/style_guides.html#enabling-a-new-cop).
+    - [ ] (Optional) [Generate TODOs](https://docs.gitlab.com/ee/development/rubocop_development_guide.html#resolving-rubocop-exceptions) for pending offenses
+      - [ ] Put :new: cop rules (or if configuration is changed) in "grace period". See [docs](https://docs.gitlab.com/ee/development/rubocop_development_guide.html#enabling-a-new-cop).
       - [ ] (Optional) Remove any offenses for disabled cops
       - Use `grep --perl-regexp -o ":\d+\d+: \w: \[\S+\] ([\w/]+)" raw_job_output.log | awk '{print $4}' | sort | uniq -c` to get a list of cop rules with offenses. Where `raw_job_output.log` is the raw output of the `rubocop` job
       - [ ] Ignore offenses related to temporary changes in `Gemfile`

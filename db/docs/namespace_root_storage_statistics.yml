@@ -3,7 +3,7 @@ table_name: namespace_root_storage_statistics
 classes:
 - Namespace::RootStorageStatistics
 feature_categories:
-- utilization
+- application_instrumentation
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/bde41ee866d0fe0b1bb5ece1130fb6e24d95ad17
 milestone: '12.1'

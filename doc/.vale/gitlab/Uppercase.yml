@@ -47,10 +47,10 @@ exceptions:
   - CSS
   - CSV
   - CTE
-  - CWE
   - CVE
   - CVS
   - CVSS
+  - CWE
   - DAG
   - DAST
   - DDL
@@ -148,6 +148,7 @@ exceptions:
   - NTP
   - OCI
   - OKD
+  - OKR
   - ONLY
   - OSS
   - OTP

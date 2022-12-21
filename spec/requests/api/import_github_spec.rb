@@ -6,33 +6,35 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
   let(:token) { "asdasd12345" }
   let(:provider) { :github }
   let(:access_params) { { github_access_token: token } }
+  let(:provider_username) { user.username }
+  let(:provider_user) { double('provider', login: provider_username).as_null_object }
+  let(:provider_repo) do
+    {
+      name: 'vim',
+      full_name: "#{provider_username}/vim",
+      owner: double('provider', login: provider_username),
+      description: 'provider',
+      private: false,
+      clone_url: 'https://fake.url/vim.git',
+      has_wiki: true
+    }
+  end
+
+  let(:client) { double('client', user: provider_user, repository: provider_repo) }
+
+  before do
+    Grape::Endpoint.before_each do |endpoint|
+      allow(endpoint).to receive(:client).and_return(client)
+    end
+  end
+
+  after do
+    Grape::Endpoint.before_each nil
+  end
 
   describe "POST /import/github" do
-    let(:user) { create(:user) }
-    let(:project) { create(:project) }
-    let(:provider_username) { user.username }
-    let(:provider_user) { double('provider', login: provider_username) }
-    let(:provider_repo) do
-      {
-        name: 'vim',
-        full_name: "#{provider_username}/vim",
-        owner: double('provider', login: provider_username),
-        description: 'provider',
-        private: false,
-        clone_url: 'https://fake.url/vim.git',
-        has_wiki: true
-      }
-    end
-
-    before do
-      Grape::Endpoint.before_each do |endpoint|
-        allow(endpoint).to receive(:client).and_return(double('client', user: provider_user, repository: provider_repo).as_null_object)
-      end
-    end
-
-    after do
-      Grape::Endpoint.before_each nil
-    end
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
 
     it 'rejects requests when Github Importer is disabled' do
       stub_application_setting(import_sources: nil)
@@ -147,6 +149,62 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
         }
 
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
+  describe 'POST /import/github/gists' do
+    let_it_be(:user) { create(:user) }
+    let(:params) { { personal_access_token: token } }
+
+    context 'when gists import was started' do
+      before do
+        allow(Import::Github::GistsImportService)
+          .to receive(:new).with(user, client, access_params)
+          .and_return(double(execute: { status: :success }))
+      end
+
+      it 'returns 202' do
+        post api('/import/github/gists', user), params: params
+
+        expect(response).to have_gitlab_http_status(:accepted)
+      end
+    end
+
+    context 'when gists import is in progress' do
+      before do
+        allow(Import::Github::GistsImportService)
+          .to receive(:new).with(user, client, access_params)
+          .and_return(double(execute: { status: :error, message: 'Import already in progress', http_status: :unprocessable_entity }))
+      end
+
+      it 'returns 422 error' do
+        post api('/import/github/gists', user), params: params
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['errors']).to eq('Import already in progress')
+      end
+    end
+
+    context 'when unauthenticated user' do
+      it 'returns 403 error' do
+        post api('/import/github/gists'), params: params
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when rate limit reached' do
+      before do
+        allow(Import::Github::GistsImportService)
+          .to receive(:new).with(user, client, access_params)
+          .and_raise(Gitlab::GithubImport::RateLimitError)
+      end
+
+      it 'returns 429 error' do
+        post api('/import/github/gists', user), params: params
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
   end

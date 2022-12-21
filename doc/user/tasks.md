@@ -30,8 +30,8 @@ and so you can provide a more accurate issue weight and completion criteria.
 Tasks are a type of work item, a step towards [default issue types](https://gitlab.com/gitlab-org/gitlab/-/issues/323404)
 in GitLab.
 For the roadmap of migrating issues and [epics](group/epics/index.md)
-to work items and adding custom work item types, visit
-[epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033) or
+to work items and adding custom work item types, see
+[epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033) or the
 [Plan direction page](https://about.gitlab.com/direction/plan/).
 
 ## View tasks
@@ -168,6 +168,10 @@ To change the assignee on a task:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339756) in GitLab 15.5.
 
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
 To add [labels](project/labels.md) to a task:
 
 1. In the issue description, in the **Tasks** section, select the title of the task you want to edit. The task window opens.
@@ -225,7 +229,7 @@ To add a task to a milestone:
 1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
    The task window opens.
 1. Next to **Milestone**, select **Add to milestone**.
-If a task already belongs to a milestone, the dropdown list shows the current milestone.
+   If a task already belongs to a milestone, the dropdown list shows the current milestone.
 1. From the dropdown list, select the milestone to be associated with the task.
 
 ## Set task weight **(PREMIUM)**

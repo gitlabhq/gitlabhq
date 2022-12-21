@@ -3,7 +3,7 @@ table_name: security_orchestration_policy_rule_schedules
 classes:
 - Security::OrchestrationPolicyRuleSchedule
 feature_categories:
-- security_orchestration
+- security_policy_management
 description: |
     Security policies scheduled to run based on cadence defined in the policy
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59842

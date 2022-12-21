@@ -495,7 +495,7 @@ module QA
       end
 
       def chrome_default_download_path
-        ENV['DEFAULT_CHROME_DOWNLOAD_PATH']
+        ENV['DEFAULT_CHROME_DOWNLOAD_PATH'] || Dir.tmpdir
       end
 
       private

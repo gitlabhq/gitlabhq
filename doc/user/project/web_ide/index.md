@@ -446,13 +446,12 @@ when:
 - You select any area outside the file editor after editing a file.
 - A file or folder is created, deleted, or renamed.
 
-### Limitations
+### Known issues
 
 The Web IDE has a few limitations:
 
 - Interactive Terminals is in a beta phase and continues to be improved in upcoming releases. In the meantime, the user is limited to having only one
   active terminal at a time.
-
 - LFS files can be rendered and displayed but they cannot be updated and committed using the Web IDE. If an LFS file is modified and pushed to the repository, the LFS pointer in the repository is overwritten with the modified LFS file content.
 
 ### Troubleshooting
@@ -463,3 +462,7 @@ The Web IDE has a few limitations:
 - If the terminal displays **Connection Failure**, then the terminal could not
   connect to the runner. Try to stop and restart the terminal. If the
   problem persists, double check your runner configuration.
+
+## Related topics
+
+- [Web IDE Beta](../web_ide_beta/index.md)

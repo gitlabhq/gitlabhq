@@ -18,7 +18,8 @@ module Gitlab
             pipeline.stages = @command.pipeline_seed.stages
 
             if stage_names.empty?
-              return error('No stages / jobs for this pipeline.')
+              return error('Pipeline will not run for the selected trigger. ' \
+                'The rules configuration prevented any jobs from being added to the pipeline.')
             end
 
             if pipeline.invalid?

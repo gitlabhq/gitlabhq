@@ -3,7 +3,7 @@ table_name: ci_minutes_additional_packs
 classes:
 - Ci::Minutes::AdditionalPack
 feature_categories:
-- utilization
+- purchase
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62393
 milestone: '14.0'

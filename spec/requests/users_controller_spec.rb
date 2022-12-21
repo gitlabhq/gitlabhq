@@ -464,6 +464,18 @@ RSpec.describe UsersController, feature_category: :user_management do
           expect(response.body).not_to be_empty
         end
 
+        it 'renders the correct url for issues and work items' do
+          work_item = create(:work_item, :task, project: project)
+          issue = create(:issue, project: project)
+          EventCreateService.new.open_issue(work_item, public_user)
+          EventCreateService.new.open_issue(issue, public_user)
+
+          get user_calendar_activities_url public_user.username
+
+          expect(response.body).to include(project_work_items_path(project, work_item.iid, iid_path: true))
+          expect(response.body).to include(project_issue_path(project, issue))
+        end
+
         it 'avoids N+1 queries', :request_store do
           get user_calendar_activities_url public_user.username
 

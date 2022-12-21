@@ -25763,6 +25763,9 @@ msgstr ""
 msgid "MemberRole|can't be changed"
 msgstr ""
 
+msgid "MemberRole|cannot be changed because it is already assigned to a user. Please create a new Member Role instead"
+msgstr ""
+
 msgid "MemberRole|must be top-level namespace"
 msgstr ""
 

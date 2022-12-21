@@ -3,7 +3,7 @@ table_name: elastic_reindexing_slices
 classes:
 - Elastic::ReindexingSlice
 feature_categories:
-- memory
+- application_performance
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55681
 milestone: '13.12'

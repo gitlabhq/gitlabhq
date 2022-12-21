@@ -3,7 +3,7 @@ table_name: namespace_limits
 classes:
 - NamespaceLimit
 feature_categories:
-- utilization
+- subscription_cost_management
 description: Contains limits for namespace features like storage and ci
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34746
 milestone: '13.2'

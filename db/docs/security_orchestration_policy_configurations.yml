@@ -3,7 +3,7 @@ table_name: security_orchestration_policy_configurations
 classes:
 - Security::OrchestrationPolicyConfiguration
 feature_categories:
-- security_orchestration
+- security_policy_management
 description: |
   Relates a Project/Namespace and Security Orchestration Policy Project, where Security
   Policies are stored in the repository as a YAML file.

@@ -547,8 +547,8 @@ Mattermost
 mbox
 memoization
 memoize
-memoizes
 memoized
+memoizes
 memoizing
 Memorystore
 mergeability
@@ -589,8 +589,8 @@ mutex
 nameserver
 nameservers
 namespace
-namespaced
 namespace's
+namespaced
 namespaces
 namespacing
 namespacings
@@ -620,6 +620,7 @@ offboarding
 offboards
 OIDs
 OKRs
+OKRs
 Okta
 OmniAuth
 onboarding
@@ -639,12 +640,12 @@ Packwerk
 paginator
 parallelization
 parallelizations
+parsable
 PascalCase
 PascalCased
 passthrough
 passthroughs
 passwordless
-parsable
 Patroni
 PDFs
 performant
@@ -827,8 +828,8 @@ Salesforce
 sandboxing
 sanitization
 SBOMs
-SBT
 sbt
+SBT
 scalers
 scatterplot
 scatterplots

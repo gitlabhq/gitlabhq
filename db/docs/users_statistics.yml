@@ -3,7 +3,7 @@ table_name: users_statistics
 classes:
 - UsersStatistics
 feature_categories:
-- utilization
+- application_instrumentation
 description: User statistics
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26261
 milestone: '12.9'

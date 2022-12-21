@@ -84,6 +84,7 @@ class Event < ApplicationRecord
   scope :recent, -> { reorder(id: :desc) }
   scope :for_wiki_page, -> { where(target_type: 'WikiPage::Meta') }
   scope :for_design, -> { where(target_type: 'DesignManagement::Design') }
+  scope :for_issue, -> { where(target_type: ISSUE_TYPES) }
   scope :for_fingerprint, ->(fingerprint) do
     fingerprint.present? ? where(fingerprint: fingerprint) : none
   end

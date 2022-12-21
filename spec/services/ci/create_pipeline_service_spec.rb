@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, :clean_gitlab_redis_cache do
+RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, :clean_gitlab_redis_cache, feature_category: :continuous_integration do
   include ProjectForksHelper
 
   let_it_be_with_refind(:project) { create(:project, :repository) }
@@ -684,7 +684,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         result = execute_service
 
         expect(result).to be_error
-        expect(result.message).to eq('No stages / jobs for this pipeline.')
+        expect(result.message).to eq('Pipeline will not run for the selected trigger. ' \
+          'The rules configuration prevented any jobs from being added to the pipeline.')
         expect(result.payload).not_to be_persisted
         expect(Ci::Build.all).to be_empty
         expect(Ci::Pipeline.count).to eq(0)
@@ -1423,9 +1424,11 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
               it 'does not create a detached merge request pipeline', :aggregate_failures do
                 expect(response).to be_error
-                expect(response.message).to eq('No stages / jobs for this pipeline.')
+                expect(response.message).to eq('Pipeline will not run for the selected trigger. ' \
+                  'The rules configuration prevented any jobs from being added to the pipeline.')
                 expect(pipeline).not_to be_persisted
-                expect(pipeline.errors[:base]).to eq(['No stages / jobs for this pipeline.'])
+                expect(pipeline.errors[:base]).to eq(['Pipeline will not run for the selected trigger. ' \
+                  'The rules configuration prevented any jobs from being added to the pipeline.'])
               end
             end
           end
@@ -1633,7 +1636,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
               it 'does not create a detached merge request pipeline', :aggregate_failures do
                 expect(response).to be_error
-                expect(response.message).to eq('No stages / jobs for this pipeline.')
+                expect(response.message).to eq('Pipeline will not run for the selected trigger. ' \
+                  'The rules configuration prevented any jobs from being added to the pipeline.')
                 expect(pipeline).not_to be_persisted
               end
             end
@@ -1669,7 +1673,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
             it 'does not create a detached merge request pipeline', :aggregate_failures do
               expect(response).to be_error
-              expect(response.message).to eq('No stages / jobs for this pipeline.')
+              expect(response.message).to eq('Pipeline will not run for the selected trigger. ' \
+                'The rules configuration prevented any jobs from being added to the pipeline.')
               expect(pipeline).not_to be_persisted
             end
           end
@@ -1697,7 +1702,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
             it 'does not create a detached merge request pipeline', :aggregate_failures do
               expect(response).to be_error
-              expect(response.message).to eq('No stages / jobs for this pipeline.')
+              expect(response.message).to eq('Pipeline will not run for the selected trigger. ' \
+                'The rules configuration prevented any jobs from being added to the pipeline.')
               expect(pipeline).not_to be_persisted
             end
           end
@@ -1727,7 +1733,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
             it 'does not create a detached merge request pipeline', :aggregate_failures do
               expect(response).to be_error
-              expect(response.message).to eq('No stages / jobs for this pipeline.')
+              expect(response.message).to eq('Pipeline will not run for the selected trigger. ' \
+                'The rules configuration prevented any jobs from being added to the pipeline.')
               expect(pipeline).not_to be_persisted
             end
           end
@@ -1755,7 +1762,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
             it 'does not create a detached merge request pipeline', :aggregate_failures do
               expect(response).to be_error
-              expect(response.message).to eq('No stages / jobs for this pipeline.')
+              expect(response.message).to eq('Pipeline will not run for the selected trigger. ' \
+                'The rules configuration prevented any jobs from being added to the pipeline.')
               expect(pipeline).not_to be_persisted
             end
           end

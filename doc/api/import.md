@@ -116,6 +116,38 @@ Returns the following status codes:
 - `400 Bad Request`: the project import cannot be canceled.
 - `404 Not Found`: the project associated with `project_id` does not exist.
 
+## Import GitHub gists into GitLab snippets
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371099) in GitLab 15.8.
+
+You can use the GitLab API to import personal GitHub gists (with up to 10 files) into personal GitLab snippets.
+GitHub gists with more than 10 files are skipped. You should manually migrate these GitHub gists.
+
+```plaintext
+POST /import/github/gists
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `personal_access_token`   | string | yes      | GitHub personal access token     |
+
+```shell
+curl --request POST \
+  --url "https://gitlab.example.com/api/v4/import/github/gists" \
+  --header "content-type: application/json" \
+  --header "PRIVATE-TOKEN: <your_gitlab_access_token>" \
+  --data '{
+    "personal_access_token": "<your_github_personal_access_token>"
+}'
+```
+
+Returns the following status codes:
+
+- `202 Accepted`: the gists import is being started.
+- `401 Unauthorized`: user's GitHub personal access token is invalid.
+- `422 Unprocessable Entity`: the gists import is already in progress.
+- `429 Too Many Requests`: the user has exceeded GitHub's rate limit.
+
 ## Import repository from Bitbucket Server
 
 Import your projects from Bitbucket Server to GitLab via the API.

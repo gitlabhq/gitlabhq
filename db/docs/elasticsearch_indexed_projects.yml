@@ -3,7 +3,7 @@ table_name: elasticsearch_indexed_projects
 classes:
 - ElasticsearchIndexedProject
 feature_categories:
-- memory
+- application_performance
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9861
 milestone: '11.10'

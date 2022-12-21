@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness do
+RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, feature_category: :pipeline_authoring do
   let(:project)     { create(:project, :repository) }
   let(:user)        { project.first_owner }
   let(:ref)         { 'refs/heads/master' }
@@ -1166,7 +1166,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         let(:ref) { 'refs/heads/master' }
 
         it 'invalidates the pipeline with an empty jobs error' do
-          expect(pipeline.errors[:base]).to include('No stages / jobs for this pipeline.')
+          expect(pipeline.errors[:base]).to include('Pipeline will not run for the selected trigger. ' \
+            'The rules configuration prevented any jobs from being added to the pipeline.')
           expect(pipeline).not_to be_persisted
         end
       end

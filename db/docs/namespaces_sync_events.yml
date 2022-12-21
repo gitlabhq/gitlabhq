@@ -3,7 +3,7 @@ table_name: namespaces_sync_events
 classes:
 - Namespaces::SyncEvent
 feature_categories:
-- sharding
+- pods
 description: Used as a queue of data that needs to be synchronized between the `ci` and `main` database
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75517
 milestone: '14.6'

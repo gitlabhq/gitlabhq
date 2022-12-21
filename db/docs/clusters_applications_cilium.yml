@@ -3,7 +3,7 @@ table_name: clusters_applications_cilium
 classes:
 - Clusters::Applications::Cilium
 feature_categories:
-- container_network_security
+- security_policy_management
 description: Information about installed instance of Cilium in the cluster
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34601
 milestone: '13.2'

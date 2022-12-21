@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Remote Development **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available. The feature is not ready for production use.
@@ -22,7 +22,7 @@ As with all projects, the items mentioned on this page are subject to change or 
 The development, release, and timing of any products, features, or functionality remain at the
 sole discretion of GitLab Inc.
 
-You can use the [Web IDE](../web_ide/index.md) to commit changes to a project directly from your web browser without installing any dependencies or cloning any repositories. The Web IDE, however, lacks a native runtime environment on which you would compile code, run tests, or generate real-time feedback in the IDE. For a more complete IDE experience, you can pair the Web IDE with a Remote Development environment that has been properly configured to run as a host.
+You can use the [Web IDE](../web_ide/index.md) to commit changes to a project directly from your web browser without installing any dependencies or cloning any repositories. The Web IDE, however, lacks a native runtime environment on which you would compile code, run tests, or generate real-time feedback in the IDE. For a more complete IDE experience, you can pair the [Web IDE Beta](../web_ide_beta/index.md) with a Remote Development environment that has been properly configured to run as a host.
 
 ## Connect a remote machine to the Web IDE
 
@@ -154,3 +154,8 @@ Alternatively, you can pass the parameters from a URL and connect directly to th
    ```
 
 1. Go to that URL and enter the [token you fetched](#fetch-a-token).
+
+## Related topics
+
+- [Web IDE](../web_ide/index.md)
+- [Web IDE Beta](../web_ide_beta/index.md)

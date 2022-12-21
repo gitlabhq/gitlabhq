@@ -56,7 +56,7 @@ You can include an array of configuration files:
     - template: Auto-DevOps.gitlab-ci.yml
   ```
 
-- You can define an array that combines both default and specific `include` type:
+- You can define an array that combines both default and specific `include` types:
 
   ```yaml
   include:
@@ -333,52 +333,82 @@ see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
 ## Use `rules` with `include`
 
 > - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) GitLab 14.3.
-> - [Feature flag `ci_include_rules` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4. Feature flag `ci_include_rules` removed.
 > - [Support for `exists` keyword added](https://gitlab.com/gitlab-org/gitlab/-/issues/341511) in GitLab 14.5.
 
 You can use [`rules`](index.md#rules) with `include` to conditionally include other configuration files.
 
-You can only use the following rules with `include` (and only with [certain variables](#use-variables-with-include)):
+You can only use `rules` with [certain variables](#use-variables-with-include), and
+these keywords:
 
-- [`if` rules](index.md#rulesif). For example:
-
-  ```yaml
-  include:
-    - local: builds.yml
-      rules:
-        - if: $INCLUDE_BUILDS == "true"
-    - local: deploys.yml
-      rules:
-        - if: $CI_COMMIT_BRANCH == "main"
-
-  test:
-    stage: test
-    script: exit 0
-  ```
-
-- [`exists` rules](index.md#rulesexists). For example:
-
-  ```yaml
-  include:
-    - local: builds.yml
-      rules:
-        - exists:
-            - file.md
-
-  test:
-    stage: test
-    script: exit 0
-  ```
-
-`rules` keyword `changes` is not supported.
+- [`rules:if`](index.md#rulesif).
+- [`rules:exists`](index.md#rulesexists).
 
 You cannot use [`needs:`](index.md#needs) to create a job dependency that points to
-a job added with `include:local:rules`. When the configuration is checked for validity,
-GitLab returns `undefined need: <job-name>`. An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/345377)
-to improve this behavior.
+a job added with `include:local:rules`. When the configuration is validated,
+GitLab returns `undefined need: <job-name>`. [Issue 345377](https://gitlab.com/gitlab-org/gitlab/-/issues/345377)
+proposes improving this behavior.
+
+### `include` with `rules:if`
+
+Use [`rules:if`](index.md#rulesif) to conditionally include other configuration files
+based on the status of CI/CD variables. For example:
+
+```yaml
+include:
+  - local: builds.yml
+    rules:
+      - if: $INCLUDE_BUILDS == "true"
+  - local: deploys.yml
+    rules:
+      - if: $CI_COMMIT_BRANCH == "main"
+
+test:
+  stage: test
+  script: exit 0
+```
+
+### `include` with `rules:exists`
+
+Use [`rules:exists`](index.md#rulesexists) to conditionally include other configuration files
+based on the existence of files. For example:
+
+```yaml
+include:
+  - local: builds.yml
+    rules:
+      - exists:
+          - file.md
+
+test:
+  stage: test
+  script: exit 0
+```
+
+In this example, GitLab checks for the existence of `file.md` in the current project.
+
+There is a known issue if you configure `include` with `rules:exists` to add a configuration file
+from a different project. GitLab checks for the existence of the file in the _other_ project.
+For example:
+
+```yaml
+include:
+- project: my-group/my-project-2
+  ref: main
+  file: test-file.yml
+  rules:
+    - exists:
+        - file.md
+
+test:
+  stage: test
+  script: exit 0
+```
+
+In this example, GitLab checks for the existence of `test-file.yml` in `my-group/my-project-2`,
+not the current project. Follow [issue 386040](https://gitlab.com/gitlab-org/gitlab/-/issues/386040)
+for information about work to improve this behavior.
 
 ## Use `include:local` with wildcard file paths
 

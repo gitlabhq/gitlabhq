@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Bridge::Factory do
+RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:project) { bridge.project }
   let(:status) { factory.fabricate! }
@@ -59,13 +59,15 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory do
 
     context 'failed with downstream_pipeline_creation_failed' do
       before do
-        bridge.options = { downstream_errors: ['No stages / jobs for this pipeline.', 'other error'] }
+        bridge.options = { downstream_errors: ['Pipeline will not run for the selected trigger. ' \
+            'The rules configuration prevented any jobs from being added to the pipeline.', 'other error'] }
         bridge.failure_reason = 'downstream_pipeline_creation_failed'
       end
 
       it 'fabricates correct status_tooltip' do
         expect(status.status_tooltip).to eq(
-          "#{s_('CiStatusText|failed')} - (downstream pipeline can not be created, No stages / jobs for this pipeline., other error)"
+          "#{s_('CiStatusText|failed')} - (downstream pipeline can not be created, Pipeline will not run for the selected trigger. " \
+          "The rules configuration prevented any jobs from being added to the pipeline., other error)"
         )
       end
     end

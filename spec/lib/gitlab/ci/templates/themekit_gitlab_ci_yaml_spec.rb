@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'ThemeKit.gitlab-ci.yml' do
+RSpec.describe 'ThemeKit.gitlab-ci.yml', feature_category: :continuous_integration do
   before do
     allow(Gitlab::Template::GitlabCiYmlTemplate).to receive(:excluded_patterns).and_return([])
   end
@@ -52,7 +52,8 @@ RSpec.describe 'ThemeKit.gitlab-ci.yml' do
 
       it 'has no jobs' do
         expect(build_names).to be_empty
-        expect(pipeline.errors.full_messages).to match_array(["No stages / jobs for this pipeline."])
+        expect(pipeline.errors.full_messages).to match_array(['Pipeline will not run for the selected trigger. ' \
+          'The rules configuration prevented any jobs from being added to the pipeline.'])
       end
     end
   end
