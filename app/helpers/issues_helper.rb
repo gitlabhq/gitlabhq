@@ -35,17 +35,15 @@ module IssuesHelper
     end
   end
 
-  def status_box_class(item)
+  def status_box_variant(item)
     if item.try(:expired?)
-      'gl-bg-orange-500'
-    elsif item.try(:merged?)
-      'badge-info'
+      'warning'
     elsif item.closed?
-      item.is_a?(MergeRequest) ? 'badge-danger' : 'gl-bg-red-500'
+      'danger'
     elsif item.try(:upcoming?)
-      'gl-bg-gray-500'
+      'neutral'
     else
-      item.is_a?(MergeRequest) ? 'badge-success' : 'gl-bg-green-500'
+      'success'
     end
   end
 

@@ -128,8 +128,8 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
 
         click_link 'Reopen Milestone'
 
-        expect(page).not_to have_selector('.gl-bg-red-500')
-        expect(page).to have_selector('.gl-bg-green-500')
+        expect(page).not_to have_selector('.badge-danger')
+        expect(page).to have_selector('.badge-success')
       end
     end
 
@@ -139,8 +139,8 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
 
         click_link 'Reopen Milestone'
 
-        expect(page).not_to have_selector('.gl-bg-red-500')
-        expect(page).to have_selector('.gl-bg-green-500')
+        expect(page).not_to have_selector('.badge-danger')
+        expect(page).to have_selector('.badge-success')
       end
     end
   end

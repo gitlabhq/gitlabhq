@@ -472,39 +472,32 @@ RSpec.describe IssuesHelper do
     end
   end
 
-  describe '#status_box_class' do
+  describe '#status_box_variant' do
     context 'when object is expired' do
-      it 'returns orange background' do
+      it 'returns warning badge' do
         milestone = build(:milestone, due_date: Date.today.prev_month)
-        expect(helper.status_box_class(milestone)).to eq('gl-bg-orange-500')
-      end
-    end
-
-    context 'when object is merged' do
-      it 'returns blue background' do
-        merge_request = build(:merge_request, :merged)
-        expect(helper.status_box_class(merge_request)).to eq('badge-info')
+        expect(helper.status_box_variant(milestone)).to eq('warning')
       end
     end
 
     context 'when object is closed' do
-      it 'returns red background' do
-        merge_request = build(:merge_request, :closed)
-        expect(helper.status_box_class(merge_request)).to eq('badge-danger')
+      it 'returns danger badge' do
+        milestone = build(:milestone, :closed)
+        expect(helper.status_box_variant(milestone)).to eq('danger')
       end
     end
 
     context 'when object is upcoming' do
-      it 'returns gray background' do
+      it 'returns neutral badge' do
         milestone = build(:milestone, start_date: Date.today.next_month)
-        expect(helper.status_box_class(milestone)).to eq('gl-bg-gray-500')
+        expect(helper.status_box_variant(milestone)).to eq('neutral')
       end
     end
 
     context 'when object is opened' do
-      it 'returns green background' do
-        merge_request = build(:merge_request, :opened)
-        expect(helper.status_box_class(merge_request)).to eq('badge-success')
+      it 'returns success badge' do
+        milestone = build(:milestone)
+        expect(helper.status_box_variant(milestone)).to eq('success')
       end
     end
   end

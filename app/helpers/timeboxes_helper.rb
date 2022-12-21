@@ -8,7 +8,7 @@ module TimeboxesHelper
     if milestone.closed?
       _('Closed')
     elsif milestone.expired?
-      _('Past due')
+      _('Expired')
     elsif milestone.upcoming?
       _('Upcoming')
     else

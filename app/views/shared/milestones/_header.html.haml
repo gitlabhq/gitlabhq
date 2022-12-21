@@ -1,7 +1,6 @@
 .detail-page-header.milestone-page-header
-  .status-box{ class: status_box_class(milestone) }
+  = render Pajamas::BadgeComponent.new(variant: status_box_variant(milestone), class: 'gl-mr-3') do
     = milestone_status_string(milestone)
-
   .header-text-content
     %span.identifier
       %strong
