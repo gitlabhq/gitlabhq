@@ -122,6 +122,11 @@ export default {
       required: false,
       default: () => [],
     },
+    showContentEditorSwitcher: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -364,6 +369,8 @@ export default {
           :quick-actions-docs-path="quickActionsDocsPath"
           :can-attach-file="canAttachFile"
           :show-comment-tool-bar="showCommentToolBar"
+          :show-content-editor-switcher="showContentEditorSwitcher"
+          @enableContentEditor="$emit('enableContentEditor')"
         />
       </div>
     </div>

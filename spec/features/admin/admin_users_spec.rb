@@ -69,13 +69,9 @@ RSpec.describe "Admin::Users", feature_category: :user_management do
       expect(page).not_to have_content(message)
     end
 
-    context 'with no license and service ping disabled' do
+    context 'with no license and service ping disabled', :without_license do
       before do
         stub_application_setting(usage_ping_enabled: false)
-
-        if Gitlab.ee?
-          allow(License).to receive(:current).and_return(nil)
-        end
       end
 
       it 'renders registration features CTA' do

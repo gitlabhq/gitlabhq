@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexCreator do
 
     it 'creates the index while controlling statement timeout' do
       allow(connection).to receive(:execute).and_call_original
-      expect(connection).to receive(:execute).with("SET statement_timeout TO '32400s'").ordered.and_call_original
+      expect(connection).to receive(:execute).with("SET statement_timeout TO '72000s'").ordered.and_call_original
       expect(connection).to receive(:execute).with(async_index.definition).ordered.and_call_original
       expect(connection).to receive(:execute).with("RESET statement_timeout").ordered.and_call_original
 

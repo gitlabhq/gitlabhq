@@ -127,13 +127,7 @@ RSpec.describe 'groups/edit.html.haml' do
       allow(view).to receive(:current_user) { user }
     end
 
-    context 'prompt user about registration features' do
-      before do
-        if Gitlab.ee?
-          allow(License).to receive(:current).and_return(nil)
-        end
-      end
-
+    context 'prompt user about registration features', :without_license do
       context 'with service ping disabled' do
         before do
           stub_application_setting(usage_ping_enabled: false)

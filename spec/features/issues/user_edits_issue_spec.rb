@@ -107,14 +107,14 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
         end
 
         it 'places focus on the web editor' do
-          toggle_editing_mode_selector = '[data-testid="toggle-editing-mode-button"] label'
           content_editor_focused_selector = '[data-testid="content-editor"].is-focused'
           markdown_field_focused_selector = 'textarea:focus'
           click_edit_issue_description
 
           expect(page).to have_selector(markdown_field_focused_selector)
 
-          find(toggle_editing_mode_selector, text: 'Rich text').click
+          click_on _('View rich text')
+          click_on _('Rich text')
 
           expect(page).not_to have_selector(content_editor_focused_selector)
 
@@ -124,7 +124,8 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
 
           expect(page).to have_selector(content_editor_focused_selector)
 
-          find(toggle_editing_mode_selector, text: 'Source').click
+          click_on _('View markdown')
+          click_on _('Markdown')
 
           expect(page).not_to have_selector(markdown_field_focused_selector)
         end

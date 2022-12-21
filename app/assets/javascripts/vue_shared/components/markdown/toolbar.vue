@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlLink, GlLoadingIcon, GlSprintf, GlIcon } from '@gitlab/ui';
+import EditorModeDropdown from './editor_mode_dropdown.vue';
 
 export default {
   components: {
@@ -8,6 +9,7 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     GlIcon,
+    EditorModeDropdown,
   },
   props: {
     markdownDocsPath: {
@@ -29,10 +31,22 @@ export default {
       required: false,
       default: true,
     },
+    showContentEditorSwitcher: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     hasQuickActionsDocsPath() {
       return this.quickActionsDocsPath !== '';
+    },
+  },
+  methods: {
+    handleEditorModeChanged(mode) {
+      if (mode === 'richText') {
+        this.$emit('enableContentEditor');
+      }
     },
   },
 };
@@ -121,5 +135,12 @@ export default {
         {{ __('Cancel') }}
       </gl-button>
     </span>
+    <editor-mode-dropdown
+      v-if="showContentEditorSwitcher"
+      size="small"
+      class="gl-float-right gl-line-height-28 gl-display-block"
+      value="markdown"
+      @input="handleEditorModeChanged"
+    />
   </div>
 </template>

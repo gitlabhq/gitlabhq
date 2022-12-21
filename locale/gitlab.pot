@@ -25340,6 +25340,9 @@ msgstr ""
 msgid "Mark to do as done"
 msgstr ""
 
+msgid "Markdown"
+msgstr ""
+
 msgid "Markdown Help"
 msgstr ""
 
@@ -45739,6 +45742,9 @@ msgstr ""
 msgid "View all projects"
 msgstr ""
 
+msgid "View and edit markdown, with the option to preview the formatted output."
+msgstr ""
+
 msgid "View blame"
 msgstr ""
 
@@ -45833,6 +45839,9 @@ msgstr ""
 msgid "View logs"
 msgstr ""
 
+msgid "View markdown"
+msgstr ""
+
 msgid "View milestones"
 msgstr ""
 
@@ -45865,6 +45874,9 @@ msgstr[1] ""
 msgid "View replaced file @ "
 msgstr ""
 
+msgid "View rich text"
+msgstr ""
+
 msgid "View seat usage"
 msgstr ""
 
@@ -45875,6 +45887,9 @@ msgid "View the %{code_open}last_activity_at%{code_close} attribute for %{projec
 msgstr ""
 
 msgid "View the documentation"
+msgstr ""
+
+msgid "View the formatted output in real-time as you edit."
 msgstr ""
 
 msgid "View the latest successful deployment to this environment"

@@ -1,4 +1,3 @@
-import { GlSegmentedControl } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
@@ -49,7 +48,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       },
     });
   };
-  const findSegmentedControl = () => wrapper.findComponent(GlSegmentedControl);
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
   const findTextarea = () => wrapper.find('textarea');
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
@@ -97,36 +95,26 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(findTextarea().element.value).toBe(value);
   });
 
-  it('renders switch segmented control', () => {
+  it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enableContentEditor emitted from markdown editor`, () => {
     buildWrapper();
 
-    expect(findSegmentedControl().props()).toEqual({
-      checked: EDITING_MODE_MARKDOWN_FIELD,
-      options: [
-        {
-          text: expect.any(String),
-          value: EDITING_MODE_MARKDOWN_FIELD,
-        },
-        {
-          text: expect.any(String),
-          value: EDITING_MODE_CONTENT_EDITOR,
-        },
-      ],
-    });
+    findMarkdownField().vm.$emit('enableContentEditor');
+
+    expect(wrapper.emitted(EDITING_MODE_CONTENT_EDITOR)).toHaveLength(1);
   });
 
-  describe.each`
-    editingMode
-    ${EDITING_MODE_CONTENT_EDITOR}
-    ${EDITING_MODE_MARKDOWN_FIELD}
-  `('when segmented control emits change event with $editingMode value', ({ editingMode }) => {
-    it(`emits ${editingMode} event`, () => {
-      buildWrapper();
-
-      findSegmentedControl().vm.$emit('change', editingMode);
-
-      expect(wrapper.emitted(editingMode)).toHaveLength(1);
+  it(`emits ${EDITING_MODE_MARKDOWN_FIELD} event when enableMarkdownEditor emitted from content editor`, async () => {
+    buildWrapper({
+      stubs: { ContentEditor: stubComponent(ContentEditor) },
     });
+
+    findMarkdownField().vm.$emit('enableContentEditor');
+
+    await nextTick();
+
+    findContentEditor().vm.$emit('enableMarkdownEditor');
+
+    expect(wrapper.emitted(EDITING_MODE_MARKDOWN_FIELD)).toHaveLength(1);
   });
 
   describe(`when editingMode is ${EDITING_MODE_MARKDOWN_FIELD}`, () => {
@@ -159,11 +147,10 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(wrapper.emitted('keydown')).toHaveLength(1);
     });
 
-    describe(`when segmented control triggers input event with ${EDITING_MODE_CONTENT_EDITOR} value`, () => {
+    describe(`when markdown field triggers enableContentEditor event`, () => {
       beforeEach(() => {
         buildWrapper();
-        findSegmentedControl().vm.$emit('input', EDITING_MODE_CONTENT_EDITOR);
-        findSegmentedControl().vm.$emit('change', EDITING_MODE_CONTENT_EDITOR);
+        findMarkdownField().vm.$emit('enableContentEditor');
       });
 
       it('displays the content editor', () => {
@@ -202,7 +189,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   describe(`when editingMode is ${EDITING_MODE_CONTENT_EDITOR}`, () => {
     beforeEach(() => {
       buildWrapper();
-      findSegmentedControl().vm.$emit('input', EDITING_MODE_CONTENT_EDITOR);
+      findMarkdownField().vm.$emit('enableContentEditor');
     });
 
     describe('when autofocus is true', () => {
@@ -234,9 +221,9 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(wrapper.emitted('keydown')).toEqual([[event]]);
     });
 
-    describe(`when segmented control triggers input event with ${EDITING_MODE_MARKDOWN_FIELD} value`, () => {
+    describe(`when richText editor triggers enableMarkdownEditor event`, () => {
       beforeEach(() => {
-        findSegmentedControl().vm.$emit('input', EDITING_MODE_MARKDOWN_FIELD);
+        findContentEditor().vm.$emit('enableMarkdownEditor');
       });
 
       it('hides the content editor', () => {
@@ -249,30 +236,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
       it('updates localStorage value', () => {
         expect(findLocalStorageSync().props().value).toBe(EDITING_MODE_MARKDOWN_FIELD);
-      });
-    });
-
-    describe('when content editor emits loading event', () => {
-      beforeEach(() => {
-        findContentEditor().vm.$emit('loading');
-      });
-
-      it('disables switch editing mode control', () => {
-        // This is the only way that I found to check the segmented control is disabled
-        expect(findSegmentedControl().find('input[disabled]').exists()).toBe(true);
-      });
-
-      describe.each`
-        event
-        ${'loadingSuccess'}
-        ${'loadingError'}
-      `('when content editor emits $event event', ({ event }) => {
-        beforeEach(() => {
-          findContentEditor().vm.$emit(event);
-        });
-        it('enables the switch editing mode control', () => {
-          expect(findSegmentedControl().find('input[disabled]').exists()).toBe(false);
-        });
       });
     });
   });

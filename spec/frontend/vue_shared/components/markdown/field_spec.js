@@ -37,7 +37,7 @@ describe('Markdown field component', () => {
     axiosMock.restore();
   });
 
-  function createSubject({ lines = [], enablePreview = true } = {}) {
+  function createSubject({ lines = [], enablePreview = true, showContentEditorSwitcher } = {}) {
     // We actually mount a wrapper component so that we can force Vue to rerender classes in order to test a regression
     // caused by mixing Vanilla JS and Vue.
     subject = mountExtended(
@@ -68,6 +68,7 @@ describe('Markdown field component', () => {
           lines,
           enablePreview,
           restrictedToolBarItems,
+          showContentEditorSwitcher,
         },
       },
     );
@@ -191,6 +192,7 @@ describe('Markdown field component', () => {
           markdownDocsPath,
           quickActionsDocsPath: '',
           showCommentToolBar: true,
+          showContentEditorSwitcher: false,
         });
       });
     });
@@ -341,5 +343,19 @@ describe('Markdown field component', () => {
     expect(subject.findComponent(MarkdownFieldHeader).props('restrictedToolBarItems')).toBe(
       restrictedToolBarItems,
     );
+  });
+
+  describe('showContentEditorSwitcher', () => {
+    it('defaults to false', () => {
+      createSubject();
+
+      expect(findMarkdownToolbar().props('showContentEditorSwitcher')).toBe(false);
+    });
+
+    it('passes showContentEditorSwitcher', () => {
+      createSubject({ showContentEditorSwitcher: true });
+
+      expect(findMarkdownToolbar().props('showContentEditorSwitcher')).toBe(true);
+    });
   });
 });

@@ -81,7 +81,7 @@ To connect a development environment to the Web IDE:
 
 1. [Create a development environment](#manage-a-development-environment).
 1. [Fetch a token](#fetch-a-token).
-1. [Connect to the Web IDE](#connect-to-the-web-ide).
+1. [Configure a remote connection](#configure-a-remote-connection).
 
 #### Manage a development environment
 
@@ -134,9 +134,18 @@ To remove a development environment:
 docker exec my-environment cat TOKEN
 ```
 
-#### Connect to the Web IDE
+#### Configure a remote connection
 
-To connect to the Web IDE:
+To configure a remote connection from the Web IDE:
+
+1. Open the Web IDE.
+1. In the Menu Bar, select **View > Terminal** or press <kbd>Control</kbd>+<kbd>`</kbd>.
+1. In the terminal panel, select **Configure a remote connection**.
+1. Enter the URL for the remote host including the port (for example, `yourdomain.com:3443`).
+1. Enter the project path.
+1. Enter the [token you fetched](#fetch-a-token).
+
+Alternatively, you can pass the parameters from a URL and connect directly to the Web IDE:
 
 1. Run the following command:
 

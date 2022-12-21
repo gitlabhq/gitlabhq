@@ -1,16 +1,13 @@
 <script>
-import { GlSegmentedControl } from '@gitlab/ui';
-import { __ } from '~/locale';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import axios from '~/lib/utils/axios_utils';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { EDITING_MODE_MARKDOWN_FIELD, EDITING_MODE_CONTENT_EDITOR } from '../../constants';
 import MarkdownField from './field.vue';
 
 export default {
   components: {
-    MarkdownField,
     LocalStorageSync,
-    GlSegmentedControl,
+    MarkdownField,
     ContentEditor: () =>
       import(
         /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
@@ -91,7 +88,6 @@ export default {
   data() {
     return {
       editingMode: EDITING_MODE_MARKDOWN_FIELD,
-      switchEditingControlEnabled: true,
       autofocused: false,
     };
   },
@@ -114,19 +110,16 @@ export default {
     updateMarkdownFromMarkdownField({ target }) {
       this.$emit('input', target.value);
     },
-    enableSwitchEditingControl() {
-      this.switchEditingControlEnabled = true;
-    },
-    disableSwitchEditingControl() {
-      this.switchEditingControlEnabled = false;
-    },
     renderMarkdown(markdown) {
       return axios.post(this.renderMarkdownPath, { text: markdown }).then(({ data }) => data.body);
     },
     onEditingModeChange(editingMode) {
+      this.editingMode = editingMode;
       this.notifyEditingModeChange(editingMode);
     },
     onEditingModeRestored(editingMode) {
+      this.editingMode = editingMode;
+      this.$emit(editingMode);
       this.notifyEditingModeChange(editingMode);
     },
     notifyEditingModeChange(editingMode) {
@@ -142,25 +135,10 @@ export default {
       this.autofocused = true;
     },
   },
-  switchEditingControlOptions: [
-    { text: __('Source'), value: EDITING_MODE_MARKDOWN_FIELD },
-    { text: __('Rich text'), value: EDITING_MODE_CONTENT_EDITOR },
-  ],
 };
 </script>
 <template>
   <div>
-    <div class="gl-display-flex gl-justify-content-start gl-mb-3">
-      <gl-segmented-control
-        v-model="editingMode"
-        data-testid="toggle-editing-mode-button"
-        data-qa-selector="editing_mode_button"
-        class="gl-display-flex"
-        :options="$options.switchEditingControlOptions"
-        :disabled="!enableContentEditor || !switchEditingControlEnabled"
-        @change="onEditingModeChange"
-      />
-    </div>
     <local-storage-sync
       v-model="editingMode"
       storage-key="gl-wiki-content-editor-enabled"
@@ -176,7 +154,9 @@ export default {
       :quick-actions-docs-path="quickActionsDocsPath"
       :uploads-path="uploadsPath"
       :enable-preview="enablePreview"
+      show-content-editor-switcher
       class="bordered-box"
+      @enableContentEditor="onEditingModeChange('contentEditor')"
     >
       <template #textarea>
         <textarea
@@ -205,10 +185,8 @@ export default {
         :use-bottom-toolbar="useBottomToolbar"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"
-        @loading="disableSwitchEditingControl"
-        @loadingSuccess="enableSwitchEditingControl"
-        @loadingError="enableSwitchEditingControl"
         @keydown="$emit('keydown', $event)"
+        @enableMarkdownEditor="onEditingModeChange('markdownField')"
       />
       <input
         :id="formFieldId"

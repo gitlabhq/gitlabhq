@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 RSpec/AnyInstanceOf:
   Exclude:
-    - 'ee/spec/features/ci_shared_runner_warnings_spec.rb'
     - 'ee/spec/features/issues/form_spec.rb'
     - 'ee/spec/features/projects/new_project_spec.rb'
     - 'ee/spec/features/registrations/welcome_spec.rb'

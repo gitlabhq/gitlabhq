@@ -7,7 +7,7 @@ module Gitlab
         include ExclusiveLeaseGuard
 
         TIMEOUT_PER_ACTION = 1.day
-        STATEMENT_TIMEOUT = 9.hours
+        STATEMENT_TIMEOUT = 20.hours
 
         def initialize(async_index)
           @async_index = async_index
