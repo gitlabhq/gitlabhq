@@ -389,8 +389,12 @@ RSpec.describe IssuesHelper do
       allow(helper).to receive(:url_for).and_return('#')
 
       expected = {
+        autocomplete_award_emojis_path: autocomplete_award_emojis_path,
         calendar_path: '#',
-        empty_state_svg_path: '#',
+        dashboard_labels_path: dashboard_labels_path(format: :json, include_ancestor_groups: true),
+        dashboard_milestones_path: dashboard_milestones_path(format: :json),
+        empty_state_with_filter_svg_path: '#',
+        empty_state_without_filter_svg_path: '#',
         initial_sort: current_user&.user_preference&.issues_sort,
         is_public_visibility_restricted: Gitlab::CurrentSettings.restricted_visibility_levels ? 'false' : '',
         is_signed_in: current_user.present?.to_s,

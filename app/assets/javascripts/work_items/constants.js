@@ -141,7 +141,7 @@ export const WORK_ITEM_NAME_TO_ICON_MAP = {
   Task: 'issue-type-task',
   Objective: 'issue-type-objective',
   // eslint-disable-next-line @gitlab/require-i18n-strings
-  'Key Result': 'issue-type-key-result',
+  'Key Result': 'issue-type-keyresult',
 };
 
 export const FORM_TYPES = {

@@ -98,7 +98,8 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
           expect(reporter).to receive(:stopped).once
             .with(
               memwd_handler_class: handler.class.name,
-              memwd_sleep_time_s: sleep_time_seconds
+              memwd_sleep_time_s: sleep_time_seconds,
+              memwd_reason: 'background task stopped'
             )
 
           watchdog.call

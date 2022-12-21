@@ -808,16 +808,15 @@ assertion encryption and request signing.
 
 ## Sign SAML authentication requests (optional)
 
-Another optional configuration is to sign SAML authentication requests. GitLab
-SAML Requests use the SAML redirect binding, so this isn't necessary (unlike the
-SAML POST binding, where signing is required to prevent intermediaries from
-tampering with the requests).
+You can configure GitLab to sign SAML authentication requests. This configuration
+is optional because GitLab SAML requests use the SAML redirect binding.
 
-To sign, create a private key and public certificate pair for your
-GitLab instance to use for SAML. The settings for signing can be set in the
-`security` section of the configuration.
+To implement signing:
 
-For example:
+1. Create a private key and public certificate pair for your GitLab instance to
+   use for SAML.
+1. Configure the signing settings in the `security` section of the configuration.
+   For example:
 
 ```yaml
 args: {
@@ -838,7 +837,22 @@ args: {
 }
 ```
 
-GitLab signs the request with the provided private key. GitLab includes the configured public x500 certificate in the metadata for your Identity Provider to validate the signature of the received request with. For more information on this option, see the [Ruby SAML gem documentation](https://github.com/onelogin/ruby-saml/tree/v1.7.0). The Ruby SAML gem is used by the [OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml) to implement the client side of the SAML authentication.
+GitLab then:
+
+- Signs the request with the provided private key.
+- Includes the configured public x500 certificate in the metadata for your IdP
+  to validate the signature of the received request with.
+
+For more information on this option, see the
+[Ruby SAML gem documentation](https://github.com/onelogin/ruby-saml/tree/v1.7.0).
+
+The Ruby SAML gem is used by the
+[OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml) to implement the
+client side of the SAML authentication.
+
+NOTE:
+The SAML redirect binding is different to the SAML POST binding. In the POST binding,
+signing is required to prevent intermediaries from tampering with the requests.
 
 ## Password generation for users created through SAML
 

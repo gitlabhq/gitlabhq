@@ -75,6 +75,12 @@ module Gitlab
               purchased_usage_total.to_f
             end
           end
+
+          def additional_ci_minutes_added?
+            # When opening the Usage quotas page, Seats quota tab is opened briefly even when url is to a different tab
+            ::QA::Support::WaitForRequests.wait_for_requests
+            additional_ci_minutes?
+          end
         end
       end
     end

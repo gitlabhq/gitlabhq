@@ -249,7 +249,7 @@ The merge request status widget shows the **Merge** button and whether or not a 
 request is ready to merge. If the merge request can't be merged, the reason for this
 is displayed.
 
-If the pipeline is still running, the **Merge** button is replaced with the
+If the pipeline is still running, **Merge** is replaced with the
 **Merge when pipeline succeeds** button.
 
 If [**Merge Trains**](pipelines/merge_trains.md)

@@ -149,6 +149,7 @@ describe('WorkItemLinkChild', () => {
       expect(metadataEl.exists()).toBe(true);
       expect(metadataEl.props()).toMatchObject({
         allowsScopedLabels: true,
+        progress: 10,
         milestone: mockMilestone,
         assignees: mockAssignees,
         labels: mockLabels,

@@ -155,6 +155,8 @@ To avoid creation, it is worth bearing in mind that:
 
 Use [Factory Doctor](https://test-prof.evilmartians.io/#/profilers/factory_doctor) to find cases where database persistence is not needed in a given test.
 
+Examples of factories optmization [1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106796), [2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105329).
+
 ```shell
 # run test for path
 FDOC=1 bin/rspec spec/[path]/[to]/[spec].rb

@@ -977,6 +977,11 @@ export const workItemObjectiveWithChild = {
       __typename: 'WorkItemWidgetHierarchy',
     },
     {
+      type: 'PROGRESS',
+      __typename: 'WorkItemWidgetProgress',
+      progress: 10,
+    },
+    {
       type: 'MILESTONE',
       __typename: 'WorkItemWidgetMilestone',
       milestone: mockMilestone,
@@ -1011,6 +1016,16 @@ export const workItemObjectiveNoMetadata = {
       type: 'HIERARCHY',
       hasChildren: true,
       __typename: 'WorkItemWidgetHierarchy',
+    },
+    {
+      __typename: 'WorkItemWidgetProgress',
+      type: 'PROGRESS',
+      progress: null,
+    },
+    {
+      __typename: 'WorkItemWidgetMilestone',
+      type: 'MILESTONE',
+      milestone: null,
     },
   ],
 };

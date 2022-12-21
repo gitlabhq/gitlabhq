@@ -68,12 +68,11 @@ module Gitlab
           monitor if Feature.enabled?(:gitlab_memory_watchdog, type: :ops)
         end
 
-        event_reporter.stopped(log_labels(memwd_reason: @reason).compact)
+        event_reporter.stopped(log_labels(memwd_reason: @stop_reason).compact)
       end
 
-      def stop(reason: nil)
-        @reason = reason
-        @alive = false
+      def stop
+        stop_working(reason: 'background task stopped')
       end
 
       private
@@ -84,7 +83,7 @@ module Gitlab
 
       def monitor
         if monitors.empty?
-          stop(reason: 'monitors are not configured')
+          stop_working(reason: 'monitors are not configured')
           return
         end
 
@@ -106,7 +105,7 @@ module Gitlab
 
         Gitlab::Memory::Reports::HeapDump.enqueue!
 
-        stop(reason: 'successfully handled') if handler.call
+        stop_working(reason: 'successfully handled') if handler.call
       end
 
       def handler
@@ -122,6 +121,13 @@ module Gitlab
           memwd_handler_class: handler.class.name,
           memwd_sleep_time_s: sleep_time_seconds
         )
+      end
+
+      def stop_working(reason:)
+        return unless @alive
+
+        @stop_reason = reason
+        @alive = false
       end
     end
   end

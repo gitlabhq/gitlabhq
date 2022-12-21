@@ -296,6 +296,7 @@ module API
         mount ::API::UsageData
         mount ::API::UsageDataNonSqlMetrics
         mount ::API::UsageDataQueries
+        mount ::API::Users
         mount ::API::UserCounts
         mount ::API::Wikis
 
@@ -333,7 +334,6 @@ module API
       mount ::API::Todos
       mount ::API::UsageData
       mount ::API::UsageDataNonSqlMetrics
-      mount ::API::Users
       mount ::API::Ml::Mlflow
     end
 

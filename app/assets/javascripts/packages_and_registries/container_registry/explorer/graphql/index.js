@@ -20,7 +20,7 @@ export const apolloProvider = new VueApollo({
           ContainerRepositoryDetails: {
             fields: {
               tags: {
-                keyArgs: ['id'],
+                keyArgs: ['id', 'name', 'sort'],
                 merge: mergeVariables,
               },
             },

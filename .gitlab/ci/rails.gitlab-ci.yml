@@ -650,25 +650,25 @@ rspec migration pg11:
   extends:
     - .rspec-base-pg11
     - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rails:rules:rspec-on-pg11
     - .rspec-migration-parallel
 
 rspec unit pg11:
   extends:
     - .rspec-base-pg11
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rails:rules:rspec-on-pg11
     - .rspec-unit-parallel
 
 rspec integration pg11:
   extends:
     - .rspec-base-pg11
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rails:rules:rspec-on-pg11
     - .rspec-integration-parallel
 
 rspec system pg11:
   extends:
     - .rspec-base-pg11
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rails:rules:rspec-on-pg11
     - .rspec-system-parallel
 
 # PG13

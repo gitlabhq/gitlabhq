@@ -1148,6 +1148,10 @@ rspec:
       - .config
 ```
 
+**Additional details**:
+
+- The `cache:paths` keyword includes files even if they are untracked or in your `.gitignore` file.
+
 **Related topics**:
 
 - See the [common `cache` use cases](../caching/index.md#common-use-cases-for-caches) for more

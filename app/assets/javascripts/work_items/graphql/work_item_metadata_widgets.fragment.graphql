@@ -19,7 +19,6 @@ fragment WorkItemMetadataWidgets on WorkItemWidget {
   }
   ... on WorkItemWidgetLabels {
     type
-    allowsScopedLabels
     labels {
       nodes {
         ...Label
