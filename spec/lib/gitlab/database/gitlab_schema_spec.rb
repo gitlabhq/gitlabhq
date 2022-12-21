@@ -8,13 +8,21 @@ RSpec.shared_examples 'validate path globs' do |path_globs|
   end
 end
 
+RSpec.shared_examples 'validate schema data' do |tables_and_views|
+  it 'all tables and views have assigned a known gitlab_schema' do
+    expect(tables_and_views).to all(
+      match([be_a(String), be_in(Gitlab::Database.schemas_to_base_models.keys.map(&:to_sym))])
+    )
+  end
+end
+
 RSpec.describe Gitlab::Database::GitlabSchema do
+  describe '.deleted_views_and_tables_to_schema' do
+    include_examples 'validate schema data', described_class.deleted_views_and_tables_to_schema
+  end
+
   describe '.views_and_tables_to_schema' do
-    it 'all tables and views have assigned a known gitlab_schema' do
-      expect(described_class.views_and_tables_to_schema).to all(
-        match([be_a(String), be_in(Gitlab::Database.schemas_to_base_models.keys.map(&:to_sym))])
-      )
-    end
+    include_examples 'validate schema data', described_class.views_and_tables_to_schema
 
     # This being run across different databases indirectly also tests
     # a general consistency of structure across databases
@@ -53,6 +61,14 @@ RSpec.describe Gitlab::Database::GitlabSchema do
 
   describe '.view_path_globs' do
     include_examples 'validate path globs', described_class.view_path_globs
+  end
+
+  describe '.deleted_tables_path_globs' do
+    include_examples 'validate path globs', described_class.deleted_tables_path_globs
+  end
+
+  describe '.deleted_views_path_globs' do
+    include_examples 'validate path globs', described_class.deleted_views_path_globs
   end
 
   describe '.tables_to_schema' do

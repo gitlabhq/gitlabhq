@@ -8,9 +8,9 @@ import ExpirationDatepicker from '~/members/components/table/expiration_datepick
 import MemberActionButtons from '~/members/components/table/member_action_buttons.vue';
 import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import MemberSource from '~/members/components/table/member_source.vue';
+import MemberActivity from '~/members/components/table/member_activity.vue';
 import MembersTable from '~/members/components/table/members_table.vue';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
-import UserDate from '~/vue_shared/components/user_date.vue';
 import {
   MEMBER_TYPES,
   MEMBER_STATE_CREATED,
@@ -106,16 +106,14 @@ describe('MembersTable', () => {
     };
 
     it.each`
-      field               | label               | member             | expectedComponent
-      ${'account'}        | ${'Account'}        | ${memberMock}      | ${MemberAvatar}
-      ${'source'}         | ${'Source'}         | ${memberMock}      | ${MemberSource}
-      ${'granted'}        | ${'Access granted'} | ${memberMock}      | ${CreatedAt}
-      ${'invited'}        | ${'Invited'}        | ${invite}          | ${CreatedAt}
-      ${'requested'}      | ${'Requested'}      | ${accessRequest}   | ${CreatedAt}
-      ${'maxRole'}        | ${'Max role'}       | ${memberCanUpdate} | ${RoleDropdown}
-      ${'expiration'}     | ${'Expiration'}     | ${memberMock}      | ${ExpirationDatepicker}
-      ${'userCreatedAt'}  | ${'Created on'}     | ${memberMock}      | ${UserDate}
-      ${'lastActivityOn'} | ${'Last activity'}  | ${memberMock}      | ${UserDate}
+      field           | label           | member             | expectedComponent
+      ${'account'}    | ${'Account'}    | ${memberMock}      | ${MemberAvatar}
+      ${'source'}     | ${'Source'}     | ${memberMock}      | ${MemberSource}
+      ${'invited'}    | ${'Invited'}    | ${invite}          | ${CreatedAt}
+      ${'requested'}  | ${'Requested'}  | ${accessRequest}   | ${CreatedAt}
+      ${'maxRole'}    | ${'Max role'}   | ${memberCanUpdate} | ${RoleDropdown}
+      ${'expiration'} | ${'Expiration'} | ${memberMock}      | ${ExpirationDatepicker}
+      ${'activity'}   | ${'Activity'}   | ${memberMock}      | ${MemberActivity}
     `('renders the $label field', ({ field, label, member, expectedComponent }) => {
       createComponent({
         members: [member],

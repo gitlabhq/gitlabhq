@@ -32,10 +32,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    isInvitedUser: {
-      type: Boolean,
-      required: true,
-    },
   },
   computed: {
     actionButtonComponent() {
@@ -60,6 +56,5 @@ export default {
     :member="member"
     :permissions="permissions"
     :is-current-user="isCurrentUser"
-    :is-invited-user="isInvitedUser"
   />
 </template>

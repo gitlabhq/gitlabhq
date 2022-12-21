@@ -8,6 +8,7 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
 
     let(:metadata_allowed_fields) do
       required_fields + %i[
+        feature_categories
         classes
         description
         introduced_by_url
@@ -138,4 +139,20 @@ RSpec.describe 'Tables documentation', feature_category: :database do
   required_fields = %i[feature_categories table_name gitlab_schema]
 
   include_examples 'validate dictionary', tables, directory_path, required_fields
+end
+
+RSpec.describe 'Deleted tables documentation', feature_category: :database do
+  directory_path = File.join('db', 'docs', 'deleted_tables')
+  tables = Dir.glob(File.join(directory_path, '*.yml')).map { |f| File.basename(f, '.yml') }.sort.uniq
+  required_fields = %i[table_name gitlab_schema removed_by_url removed_in_milestone]
+
+  include_examples 'validate dictionary', tables, directory_path, required_fields
+end
+
+RSpec.describe 'Deleted views documentation', feature_category: :database do
+  directory_path = File.join('db', 'docs', 'deleted_views')
+  views = Dir.glob(File.join(directory_path, '*.yml')).map { |f| File.basename(f, '.yml') }.sort.uniq
+  required_fields = %i[view_name gitlab_schema removed_by_url removed_in_milestone]
+
+  include_examples 'validate dictionary', views, directory_path, required_fields
 end

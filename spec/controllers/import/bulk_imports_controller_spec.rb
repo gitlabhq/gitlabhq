@@ -2,10 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::BulkImportsController do
+RSpec.describe Import::BulkImportsController, feature_category: :importers do
   let_it_be(:user) { create(:user) }
 
   before do
+    stub_application_setting(bulk_import_enabled: true)
+
     sign_in(user)
   end
 
@@ -326,9 +328,9 @@ RSpec.describe Import::BulkImportsController do
       end
     end
 
-    context 'when bulk_import feature flag is disabled' do
+    context 'when feature is disabled' do
       before do
-        stub_feature_flags(bulk_import: false)
+        stub_application_setting(bulk_import_enabled: false)
       end
 
       context 'POST configure' do

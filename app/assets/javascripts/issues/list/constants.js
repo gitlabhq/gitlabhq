@@ -360,13 +360,16 @@ export const filters = {
   },
   [TOKEN_TYPE_HEALTH]: {
     [API_PARAM]: {
-      [NORMAL_FILTER]: 'healthStatus',
-      [SPECIAL_FILTER]: 'healthStatus',
+      [NORMAL_FILTER]: 'healthStatusFilter',
+      [SPECIAL_FILTER]: 'healthStatusFilter',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'health_status',
         [SPECIAL_FILTER]: 'health_status',
+      },
+      [OPERATOR_NOT]: {
+        [NORMAL_FILTER]: 'not[health_status]',
       },
     },
   },

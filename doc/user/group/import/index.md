@@ -37,6 +37,7 @@ this feature, ask an administrator to [enable the feature flag](../../../adminis
 Prerequisites:
 
 - Network connection between instances or GitLab.com. Must support HTTPS.
+- Both GitLab instances have migration enabled in application settings by instance administrator.
 - Owner role on the top-level group to migrate.
 
 You can import top-level groups to:

@@ -56,7 +56,7 @@ RSpec.describe 'Groups > Members > Sort members', :js, feature_category: :subgro
     expect(first_row.text).to include(owner.name)
     expect(second_row.text).to include(developer.name)
 
-    expect_sort_by('Created on', :asc)
+    expect_sort_by('User created', :asc)
   end
 
   it 'sorts by user created on descending' do
@@ -65,7 +65,7 @@ RSpec.describe 'Groups > Members > Sort members', :js, feature_category: :subgro
     expect(first_row.text).to include(developer.name)
     expect(second_row.text).to include(owner.name)
 
-    expect_sort_by('Created on', :desc)
+    expect_sort_by('User created', :desc)
   end
 
   it 'sorts by last activity ascending' do

@@ -40,7 +40,6 @@ export default {
       :title="$options.title"
       :aria-label="$options.title"
       icon="check"
-      variant="confirm"
       type="submit"
     />
   </gl-form>

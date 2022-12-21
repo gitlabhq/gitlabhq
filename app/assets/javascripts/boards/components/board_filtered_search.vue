@@ -244,6 +244,13 @@ export default {
         });
       }
 
+      if (this.filterParams['not[healthStatus]']) {
+        filteredSearchValue.push({
+          type: TOKEN_TYPE_HEALTH,
+          value: { data: this.filterParams['not[healthStatus]'], operator: '!=' },
+        });
+      }
+
       if (search) {
         filteredSearchValue.push(search);
       }
@@ -285,6 +292,7 @@ export default {
             'not[my_reaction_emoji]': this.filterParams.not.myReactionEmoji,
             'not[iteration_id]': this.filterParams.not.iterationId,
             'not[release_tag]': this.filterParams.not.releaseTag,
+            'not[health_status]': this.filterParams.not.healthStatus,
           },
           undefined,
         );

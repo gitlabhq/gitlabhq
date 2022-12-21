@@ -20,6 +20,7 @@ export const FIELD_KEY_MAX_ROLE = 'maxRole';
 export const FIELD_KEY_USER_CREATED_AT = 'userCreatedAt';
 export const FIELD_KEY_LAST_ACTIVITY_ON = 'lastActivityOn';
 export const FIELD_KEY_EXPIRATION = 'expiration';
+export const FIELD_KEY_ACTIVITY = 'activity';
 export const FIELD_KEY_LAST_SIGN_IN = 'lastSignIn';
 export const FIELD_KEY_ACTIONS = 'actions';
 
@@ -41,8 +42,6 @@ export const FIELDS = [
   {
     key: FIELD_KEY_GRANTED,
     label: __('Access granted'),
-    thClass: 'col-meta',
-    tdClass: 'col-meta',
     sort: {
       asc: 'last_joined',
       desc: 'oldest_joined',
@@ -77,8 +76,14 @@ export const FIELDS = [
     tdClass: 'col-expiration',
   },
   {
+    key: FIELD_KEY_ACTIVITY,
+    label: s__('Members|Activity'),
+    thClass: 'col-activity',
+    tdClass: 'col-activity',
+  },
+  {
     key: FIELD_KEY_USER_CREATED_AT,
-    label: __('Created on'),
+    label: s__('Members|User created'),
     sort: {
       asc: 'oldest_created_user',
       desc: 'recent_created_user',

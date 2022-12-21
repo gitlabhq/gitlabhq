@@ -3,7 +3,7 @@
 class Import::BulkImportsController < ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
-  before_action :ensure_group_import_enabled
+  before_action :ensure_bulk_import_enabled
   before_action :verify_blocked_uri, only: :status
 
   feature_category :importers
@@ -118,8 +118,8 @@ class Import::BulkImportsController < ApplicationController
     ]
   end
 
-  def ensure_group_import_enabled
-    render_404 unless ::BulkImports::Features.enabled?
+  def ensure_bulk_import_enabled
+    render_404 unless Gitlab::CurrentSettings.bulk_import_enabled?
   end
 
   def access_token_key

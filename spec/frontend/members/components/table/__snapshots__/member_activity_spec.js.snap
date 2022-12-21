@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MemberActivity with a member that does not have all of the fields renders \`User created\` field 1`] = `
+<div>
+  <!---->
+   
+  <div>
+    <strong>
+      Access granted:
+    </strong>
+     
+    <span>
+      
+  Aug 06, 2020
+
+    </span>
+  </div>
+   
+  <!---->
+</div>
+`;
+
+exports[`MemberActivity with a member that has all fields renders \`User created\`, \`Access granted\`, and \`Last activity\` fields 1`] = `
+<div>
+  <div>
+    <strong>
+      User created:
+    </strong>
+     
+    <span>
+      
+  Mar 10, 2022
+
+    </span>
+  </div>
+   
+  <div>
+    <strong>
+      Access granted:
+    </strong>
+     
+    <span>
+      
+  Jul 17, 2020
+
+    </span>
+  </div>
+   
+  <div>
+    <strong>
+      Last activity:
+    </strong>
+     
+    <span>
+      
+  Mar 15, 2022
+
+    </span>
+  </div>
+</div>
+`;

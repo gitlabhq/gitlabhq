@@ -16,6 +16,7 @@ import {
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_WEIGHT,
+  TOKEN_TYPE_HEALTH,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const getIssuesQueryResponse = {
@@ -170,6 +171,8 @@ export const locationSearch = [
   'not[weight]=3',
   'crm_contact_id=123',
   'crm_organization_id=456',
+  'health_status=atRisk',
+  'not[health_status]=onTrack',
 ].join('&');
 
 export const locationSearchWithSpecialValues = [
@@ -182,6 +185,7 @@ export const locationSearchWithSpecialValues = [
   'milestone_title=Upcoming',
   'epic_id=None',
   'weight=None',
+  'health_status=None',
 ].join('&');
 
 export const filteredTokens = [
@@ -225,6 +229,8 @@ export const filteredTokens = [
   { type: TOKEN_TYPE_WEIGHT, value: { data: '3', operator: OPERATOR_NOT } },
   { type: TOKEN_TYPE_CONTACT, value: { data: '123', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_ORGANIZATION, value: { data: '456', operator: OPERATOR_IS } },
+  { type: TOKEN_TYPE_HEALTH, value: { data: 'atRisk', operator: OPERATOR_IS } },
+  { type: TOKEN_TYPE_HEALTH, value: { data: 'onTrack', operator: OPERATOR_NOT } },
   { type: FILTERED_SEARCH_TERM, value: { data: 'find' } },
   { type: FILTERED_SEARCH_TERM, value: { data: 'issues' } },
 ];
@@ -239,6 +245,7 @@ export const filteredTokensWithSpecialValues = [
   { type: TOKEN_TYPE_MILESTONE, value: { data: 'Upcoming', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_EPIC, value: { data: 'None', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_WEIGHT, value: { data: 'None', operator: OPERATOR_IS } },
+  { type: TOKEN_TYPE_HEALTH, value: { data: 'None', operator: OPERATOR_IS } },
 ];
 
 export const apiParams = {
@@ -255,6 +262,7 @@ export const apiParams = {
   weight: '1',
   crmContactId: '123',
   crmOrganizationId: '456',
+  healthStatusFilter: 'atRisk',
   not: {
     authorUsername: 'marge',
     assigneeUsernames: ['patty', 'selma'],
@@ -266,6 +274,7 @@ export const apiParams = {
     iterationId: ['20', '42'],
     epicId: '34',
     weight: '3',
+    healthStatusFilter: 'onTrack',
   },
   or: {
     authorUsernames: ['burns', 'smithers'],
@@ -283,6 +292,7 @@ export const apiParamsWithSpecialValues = {
   milestoneWildcardId: 'UPCOMING',
   epicId: 'None',
   weight: 'None',
+  healthStatusFilter: 'NONE',
 };
 
 export const urlParams = {
@@ -311,6 +321,8 @@ export const urlParams = {
   'not[weight]': '3',
   crm_contact_id: '123',
   crm_organization_id: '456',
+  health_status: 'atRisk',
+  'not[health_status]': 'onTrack',
 };
 
 export const urlParamsWithSpecialValues = {
@@ -323,6 +335,7 @@ export const urlParamsWithSpecialValues = {
   milestone_title: 'Upcoming',
   epic_id: 'None',
   weight: 'None',
+  health_status: 'None',
 };
 
 export const project1 = {

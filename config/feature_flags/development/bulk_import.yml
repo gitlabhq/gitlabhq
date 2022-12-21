@@ -1,8 +1,0 @@
----
-name: bulk_import
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42704
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/255310
-milestone: '13.5'
-type: development
-group: group::import
-default_enabled: true

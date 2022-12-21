@@ -13,6 +13,7 @@ import {
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
+  TOKEN_TYPE_HEALTH,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   ALTERNATIVE_FILTER,
@@ -267,8 +268,13 @@ const wildcardTokens = [TOKEN_TYPE_ITERATION, TOKEN_TYPE_MILESTONE, TOKEN_TYPE_R
 const isWildcardValue = (tokenType, value) =>
   wildcardTokens.includes(tokenType) && specialFilterValues.includes(value);
 
+const isHealthStatusSpecialFilter = (tokenType, value) =>
+  tokenType === TOKEN_TYPE_HEALTH && specialFilterValues.includes(value);
+
 const requiresUpperCaseValue = (tokenType, value) =>
-  tokenType === TOKEN_TYPE_TYPE || isWildcardValue(tokenType, value);
+  tokenType === TOKEN_TYPE_TYPE ||
+  isWildcardValue(tokenType, value) ||
+  isHealthStatusSpecialFilter(tokenType, value);
 
 const formatData = (token) => {
   if (requiresUpperCaseValue(token.type, token.value.data)) {

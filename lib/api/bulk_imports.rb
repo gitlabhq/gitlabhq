@@ -33,7 +33,7 @@ module API
     end
 
     before do
-      not_found! unless ::BulkImports::Features.enabled?
+      not_found! unless Gitlab::CurrentSettings.bulk_import_enabled?
 
       authenticate!
     end

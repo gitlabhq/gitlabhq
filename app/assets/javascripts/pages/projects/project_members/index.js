@@ -20,7 +20,7 @@ initImportProjectMembersTrigger();
 const SHARED_FIELDS = ['account', 'maxRole', 'expiration', 'actions'];
 initMembersApp(document.querySelector('.js-project-members-list-app'), {
   [MEMBER_TYPES.user]: {
-    tableFields: SHARED_FIELDS.concat(['source', 'granted', 'userCreatedAt', 'lastActivityOn']),
+    tableFields: SHARED_FIELDS.concat(['source', 'activity']),
     tableAttrs: { tr: { 'data-qa-selector': 'member_row' } },
     tableSortableFields: [
       'account',

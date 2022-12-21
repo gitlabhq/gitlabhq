@@ -95,7 +95,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
 
         context 'when table listed as a deleted table' do
           before do
-            stub_const("Gitlab::Database::GitlabSchema::DELETED_TABLES", { table_name.to_s => :gitlab_main })
+            allow(Gitlab::Database::GitlabSchema).to receive(:deleted_tables_to_schema).and_return(
+              { table_name.to_s => :gitlab_main }
+            )
           end
 
           it_behaves_like 'does not lock writes on table', Gitlab::Database.database_base_models[:ci]
@@ -132,7 +134,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
 
         context 'when table listed as a deleted table' do
           before do
-            stub_const("Gitlab::Database::GitlabSchema::DELETED_TABLES", { table_name.to_s => :gitlab_ci })
+            allow(Gitlab::Database::GitlabSchema).to receive(:deleted_tables_to_schema).and_return(
+              { table_name.to_s => :gitlab_ci }
+            )
           end
 
           it_behaves_like 'does not lock writes on table', Gitlab::Database.database_base_models[:main]

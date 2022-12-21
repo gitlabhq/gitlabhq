@@ -1,29 +1,24 @@
-import { within } from '@testing-library/dom';
-import { mount, createWrapper } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import CreatedAt from '~/members/components/table/created_at.vue';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 describe('CreatedAt', () => {
   // March 15th, 2020
   useFakeDate(2020, 2, 15);
 
   const date = '2020-03-01T00:00:00.000';
-  const dateTimeAgo = '2 weeks ago';
+  const formattedDate = 'Mar 01, 2020';
 
   let wrapper;
 
   const createComponent = (propsData) => {
-    wrapper = mount(CreatedAt, {
+    wrapper = mountExtended(CreatedAt, {
       propsData: {
         date,
         ...propsData,
       },
     });
   };
-
-  const getByText = (text, options) =>
-    createWrapper(within(wrapper.element).getByText(text, options));
 
   afterEach(() => {
     wrapper.destroy();
@@ -35,11 +30,7 @@ describe('CreatedAt', () => {
     });
 
     it('displays created at text', () => {
-      expect(getByText(dateTimeAgo).exists()).toBe(true);
-    });
-
-    it('uses `TimeAgoTooltip` component to display tooltip', () => {
-      expect(wrapper.findComponent(TimeAgoTooltip).exists()).toBe(true);
+      expect(wrapper.findByText(formattedDate).exists()).toBe(true);
     });
   });
 
@@ -52,7 +43,7 @@ describe('CreatedAt', () => {
         },
       });
 
-      const link = getByText('Administrator');
+      const link = wrapper.findByRole('link', { name: 'Administrator' });
 
       expect(link.exists()).toBe(true);
       expect(link.attributes('href')).toBe('https://gitlab.com/root');

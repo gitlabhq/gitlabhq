@@ -44,7 +44,6 @@ describe('InviteActionButtons', () => {
         title: 'Revoke invite',
         isAccessRequest: false,
         isInvite: true,
-        icon: 'remove',
       });
     });
   });

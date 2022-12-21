@@ -25,23 +25,7 @@ export default {
     },
     title: {
       type: String,
-      required: false,
-      default: null,
-    },
-    icon: {
-      type: String,
-      required: false,
-      default: undefined,
-    },
-    buttonText: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    buttonCategory: {
-      type: String,
-      required: false,
-      default: 'secondary',
+      required: true,
     },
     isAccessRequest: {
       type: Boolean,
@@ -89,13 +73,10 @@ export default {
 <template>
   <gl-button
     v-gl-tooltip
-    variant="danger"
-    :category="buttonCategory"
     :title="title"
     :aria-label="title"
-    :icon="icon"
+    icon="remove"
     data-qa-selector="delete_member_button"
     @click="showRemoveMemberModal(modalData)"
-    ><template v-if="buttonText">{{ buttonText }}</template></gl-button
-  >
+  />
 </template>

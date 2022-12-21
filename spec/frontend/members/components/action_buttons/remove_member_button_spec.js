@@ -79,18 +79,4 @@ describe('RemoveMemberButton', () => {
 
     expect(actions.showRemoveMemberModal).toHaveBeenCalledWith(expect.any(Object), modalData);
   });
-
-  describe('button optional properties', () => {
-    it('has default value for category and text', () => {
-      createComponent();
-      expect(findButton().props('category')).toBe('secondary');
-      expect(findButton().text()).toBe('');
-    });
-
-    it('allow changing value of button category and text', () => {
-      createComponent({ buttonCategory: 'primary', buttonText: 'Decline request' });
-      expect(findButton().props('category')).toBe('primary');
-      expect(findButton().text()).toBe('Decline request');
-    });
-  });
 });

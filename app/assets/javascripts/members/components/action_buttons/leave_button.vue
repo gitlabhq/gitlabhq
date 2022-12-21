@@ -33,7 +33,6 @@ export default {
       :title="$options.title"
       :aria-label="$options.title"
       icon="leave"
-      variant="danger"
     />
     <leave-modal :member="member" />
   </div>

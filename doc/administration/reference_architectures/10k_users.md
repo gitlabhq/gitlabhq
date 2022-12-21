@@ -1986,7 +1986,7 @@ On each node perform the following:
      {host: '10.6.0.53', port: 26379},
    ]
 
-   ## Second cluster that will host the persistent queues, shared state, and actionable
+   ## Second cluster that will host the persistent queues, shared state, and actioncable
    gitlab_rails['redis_queues_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
    gitlab_rails['redis_shared_state_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'
    gitlab_rails['redis_actioncable_instance'] = 'redis://:<REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER>@gitlab-redis-persistent'

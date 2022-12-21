@@ -17,42 +17,6 @@ module Gitlab
     module GitlabSchema
       DICTIONARY_PATH = 'db/docs/'
 
-      # These tables are deleted/renamed, but still referenced by migrations.
-      # This is needed for now, but should be removed in the future
-      DELETED_TABLES = {
-        # main tables
-        'alerts_service_data' => :gitlab_main,
-        'analytics_devops_adoption_segment_selections' => :gitlab_main,
-        'analytics_repository_file_commits' => :gitlab_main,
-        'analytics_repository_file_edits' => :gitlab_main,
-        'analytics_repository_files' => :gitlab_main,
-        'audit_events_archived' => :gitlab_main,
-        'backup_labels' => :gitlab_main,
-        'clusters_applications_fluentd' => :gitlab_main,
-        'forked_project_links' => :gitlab_main,
-        'issue_milestones' => :gitlab_main,
-        'merge_request_milestones' => :gitlab_main,
-        'namespace_onboarding_actions' => :gitlab_main,
-        'services' => :gitlab_main,
-        'terraform_state_registry' => :gitlab_main,
-        'tmp_fingerprint_sha256_migration' => :gitlab_main, # used by lib/gitlab/background_migration/migrate_fingerprint_sha256_within_keys.rb
-        'web_hook_logs_archived' => :gitlab_main,
-        'vulnerability_export_registry' => :gitlab_main,
-        'vulnerability_finding_fingerprints' => :gitlab_main,
-        'vulnerability_export_verification_status' => :gitlab_main,
-
-        # CI tables
-        'ci_build_trace_sections' => :gitlab_ci,
-        'ci_build_trace_section_names' => :gitlab_ci,
-        'ci_daily_report_results' => :gitlab_ci,
-        'ci_test_cases' => :gitlab_ci,
-        'ci_test_case_failures' => :gitlab_ci,
-
-        # leftovers from early implementation of partitioning
-        'audit_events_part_5fc467ac26' => :gitlab_main,
-        'web_hook_logs_part_0c5294f417' => :gitlab_main
-      }.freeze
-
       def self.table_schemas(tables)
         tables.map { |table| table_schema(table) }.to_set
       end
@@ -69,13 +33,13 @@ module Gitlab
         # strip partition number of a form `loose_foreign_keys_deleted_records_1`
         table_name.gsub!(/_[0-9]+$/, '')
 
-        # Tables that are properly mapped
+        # Tables and views that are properly mapped
         if gitlab_schema = views_and_tables_to_schema[table_name]
           return gitlab_schema
         end
 
-        # Tables that are deleted, but we still need to reference them
-        if gitlab_schema = DELETED_TABLES[table_name]
+        # Tables and views that are deleted, but we still need to reference them
+        if gitlab_schema = deleted_views_and_tables_to_schema[table_name]
           return gitlab_schema
         end
 
@@ -106,28 +70,50 @@ module Gitlab
         [Rails.root.join(DICTIONARY_PATH, 'views', '*.yml')]
       end
 
+      def self.deleted_views_path_globs
+        [Rails.root.join(DICTIONARY_PATH, 'deleted_views', '*.yml')]
+      end
+
+      def self.deleted_tables_path_globs
+        [Rails.root.join(DICTIONARY_PATH, 'deleted_tables', '*.yml')]
+      end
+
       def self.views_and_tables_to_schema
         @views_and_tables_to_schema ||= self.tables_to_schema.merge(self.views_to_schema)
       end
 
-      def self.tables_to_schema
-        @tables_to_schema ||= Dir.glob(self.dictionary_path_globs).each_with_object({}) do |file_path, dic|
-          data = YAML.load_file(file_path)
+      def self.deleted_views_and_tables_to_schema
+        @deleted_views_and_tables_to_schema ||= self.deleted_tables_to_schema.merge(self.deleted_views_to_schema)
+      end
 
-          dic[data['table_name']] = data['gitlab_schema'].to_sym
-        end
+      def self.deleted_tables_to_schema
+        @deleted_tables_to_schema ||= self.build_dictionary(self.deleted_tables_path_globs)
+      end
+
+      def self.deleted_views_to_schema
+        @deleted_views_to_schema ||= self.build_dictionary(self.deleted_views_path_globs)
+      end
+
+      def self.tables_to_schema
+        @tables_to_schema ||= self.build_dictionary(self.dictionary_path_globs)
       end
 
       def self.views_to_schema
-        @views_to_schema ||= Dir.glob(self.view_path_globs).each_with_object({}) do |file_path, dic|
-          data = YAML.load_file(file_path)
-
-          dic[data['view_name']] = data['gitlab_schema'].to_sym
-        end
+        @views_to_schema ||= self.build_dictionary(self.view_path_globs)
       end
 
       def self.schema_names
         @schema_names ||= self.views_and_tables_to_schema.values.to_set
+      end
+
+      private_class_method def self.build_dictionary(path_globs)
+        Dir.glob(path_globs).each_with_object({}) do |file_path, dic|
+          data = YAML.load_file(file_path)
+
+          key_name = data['table_name'] || data['view_name']
+
+          dic[key_name] = data['gitlab_schema'].to_sym
+        end
       end
     end
   end

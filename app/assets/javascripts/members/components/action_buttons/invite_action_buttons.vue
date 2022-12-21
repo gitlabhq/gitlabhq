@@ -41,8 +41,6 @@ export default {
       <remove-member-button
         :member-id="member.id"
         :message="message"
-        icon="remove"
-        button-category="primary"
         :title="s__('Member|Revoke invite')"
         is-invite
       />
