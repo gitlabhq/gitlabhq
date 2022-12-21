@@ -35,8 +35,19 @@ class Timelog < ApplicationRecord
     where('spent_at <= ?', end_time)
   end
 
+  scope :order_scope_asc, ->(field) { order(arel_table[field].asc.nulls_last) }
+  scope :order_scope_desc, ->(field) { order(arel_table[field].desc.nulls_last) }
+
   def issuable
     issue || merge_request
+  end
+
+  def self.sort_by_field(field, direction)
+    if direction == :asc
+      order_scope_asc(field)
+    else
+      order_scope_desc(field)
+    end
   end
 
   private

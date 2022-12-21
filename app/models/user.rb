@@ -265,6 +265,11 @@ class User < ApplicationRecord
 
   has_many :namespace_commit_emails
 
+  has_many :user_achievements, class_name: 'Achievements::UserAchievement', inverse_of: :user
+  has_many :awarded_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'awarded_by_user_id', inverse_of: :awarded_by_user
+  has_many :revoked_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'revoked_by_user_id', inverse_of: :revoked_by_user
+  has_many :achievements, through: :user_achievements, class_name: 'Achievements::Achievement', inverse_of: :users
+
   #
   # Validations
   #

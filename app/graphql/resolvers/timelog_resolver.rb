@@ -34,19 +34,23 @@ module Resolvers
              required: false,
              description: 'List timelogs for a user.'
 
+    argument :sort, Types::TimeTracking::TimelogSortEnum,
+             description: 'List timelogs in a particular order.',
+             required: false,
+             default_value: { field: 'spent_at', direction: :asc }
+
     def resolve_with_lookahead(**args)
       validate_args!(object, args)
 
-      timelogs = object&.timelogs || Timelog.limit(GitlabSchema.default_max_page_size)
+      timelogs = object&.timelogs || Timelog.all
 
-      if args.any?
-        args = parse_datetime_args(args)
+      args = parse_datetime_args(args)
 
-        timelogs = apply_user_filter(timelogs, args)
-        timelogs = apply_project_filter(timelogs, args)
-        timelogs = apply_time_filter(timelogs, args)
-        timelogs = apply_group_filter(timelogs, args)
-      end
+      timelogs = apply_user_filter(timelogs, args)
+      timelogs = apply_project_filter(timelogs, args)
+      timelogs = apply_time_filter(timelogs, args)
+      timelogs = apply_group_filter(timelogs, args)
+      timelogs = apply_sorting(timelogs, args)
 
       apply_lookahead(timelogs)
     end
@@ -60,7 +64,12 @@ module Resolvers
     end
 
     def validate_args!(object, args)
-      if args.empty? && object.nil?
+      # sort is always provided because of its default value so we
+      # should check the remaining args to make sure at least one filter
+      # argument was provided
+      cleaned_args = args.except(:sort)
+
+      if cleaned_args.empty? && object.nil?
         raise_argument_error('Provide at least one argument')
       elsif args[:start_time] && args[:start_date]
         raise_argument_error('Provide either a start date or time, but not both')
@@ -130,6 +139,15 @@ module Resolvers
       end
 
       timelogs
+    end
+
+    def apply_sorting(timelogs, args)
+      return timelogs unless args[:sort]
+
+      field = args[:sort][:field]
+      direction = args[:sort][:direction]
+
+      timelogs.sort_by_field(field, direction)
     end
 
     def raise_argument_error(message)
