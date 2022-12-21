@@ -815,7 +815,7 @@ class Group < Namespace
 
     case state
     when SR_DISABLED_AND_UNOVERRIDABLE then disable_shared_runners! # also disallows override
-    when SR_DISABLED_WITH_OVERRIDE then disable_shared_runners_and_allow_override!
+    when SR_DISABLED_WITH_OVERRIDE, SR_DISABLED_AND_OVERRIDABLE then disable_shared_runners_and_allow_override!
     when SR_ENABLED then enable_shared_runners! # set both to true
     end
   end
@@ -1055,7 +1055,7 @@ class Group < Namespace
   end
 
   def disable_shared_runners_and_allow_override!
-    # enabled -> disabled_with_override
+    # enabled -> disabled_and_overridable
     if shared_runners_enabled?
       update!(
         shared_runners_enabled: false,
@@ -1068,7 +1068,7 @@ class Group < Namespace
 
       all_projects.update_all(shared_runners_enabled: false)
 
-    # disabled_and_unoverridable -> disabled_with_override
+    # disabled_and_unoverridable -> disabled_and_overridable
     else
       update!(allow_descendants_override_disabled_shared_runners: true)
     end

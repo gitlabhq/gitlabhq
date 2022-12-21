@@ -33,9 +33,11 @@ class Namespace < ApplicationRecord
   NUMBER_OF_ANCESTORS_ALLOWED = 20
 
   SR_DISABLED_AND_UNOVERRIDABLE = 'disabled_and_unoverridable'
+  # DISABLED_WITH_OVERRIDE is deprecated in favour of DISABLED_AND_OVERRIDABLE.
   SR_DISABLED_WITH_OVERRIDE = 'disabled_with_override'
+  SR_DISABLED_AND_OVERRIDABLE = 'disabled_and_overridable'
   SR_ENABLED = 'enabled'
-  SHARED_RUNNERS_SETTINGS = [SR_DISABLED_AND_UNOVERRIDABLE, SR_DISABLED_WITH_OVERRIDE, SR_ENABLED].freeze
+  SHARED_RUNNERS_SETTINGS = [SR_DISABLED_AND_UNOVERRIDABLE, SR_DISABLED_WITH_OVERRIDE, SR_DISABLED_AND_OVERRIDABLE, SR_ENABLED].freeze
   URL_MAX_LENGTH = 255
 
   PATH_TRAILING_VIOLATIONS = %w[.git .atom .].freeze
@@ -556,7 +558,7 @@ class Namespace < ApplicationRecord
     if shared_runners_enabled
       SR_ENABLED
     elsif allow_descendants_override_disabled_shared_runners
-      SR_DISABLED_WITH_OVERRIDE
+      SR_DISABLED_AND_OVERRIDABLE
     else
       SR_DISABLED_AND_UNOVERRIDABLE
     end
@@ -566,10 +568,10 @@ class Namespace < ApplicationRecord
     case other_setting
     when SR_ENABLED
       false
-    when SR_DISABLED_WITH_OVERRIDE
+    when SR_DISABLED_WITH_OVERRIDE, SR_DISABLED_AND_OVERRIDABLE
       shared_runners_setting == SR_ENABLED
     when SR_DISABLED_AND_UNOVERRIDABLE
-      shared_runners_setting == SR_ENABLED || shared_runners_setting == SR_DISABLED_WITH_OVERRIDE
+      shared_runners_setting == SR_ENABLED || shared_runners_setting == SR_DISABLED_AND_OVERRIDABLE || shared_runners_setting == SR_DISABLED_WITH_OVERRIDE
     else
       raise ArgumentError
     end

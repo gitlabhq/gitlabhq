@@ -364,7 +364,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           let(:new_parent_group) { create(:group, shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: true) }
 
           it 'calls update service' do
-            expect(Groups::UpdateSharedRunnersService).to receive(:new).with(group, user, { shared_runners_setting: Namespace::SR_DISABLED_WITH_OVERRIDE }).and_call_original
+            expect(Groups::UpdateSharedRunnersService).to receive(:new).with(group, user, { shared_runners_setting: Namespace::SR_DISABLED_AND_OVERRIDABLE }).and_call_original
 
             transfer_service.execute(new_parent_group)
           end

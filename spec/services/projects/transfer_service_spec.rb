@@ -535,8 +535,8 @@ RSpec.describe Projects::TransferService do
     where(:project_shared_runners_enabled, :shared_runners_setting, :expected_shared_runners_enabled) do
       true  | :disabled_and_unoverridable | false
       false | :disabled_and_unoverridable | false
-      true  | :disabled_with_override     | true
-      false | :disabled_with_override     | false
+      true  | :disabled_and_overridable   | true
+      false | :disabled_and_overridable   | false
       true  | :shared_runners_enabled     | true
       false | :shared_runners_enabled     | false
     end

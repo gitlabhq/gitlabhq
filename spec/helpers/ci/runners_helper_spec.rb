@@ -103,7 +103,7 @@ RSpec.describe Ci::RunnersHelper do
       {
         runner_enabled_value: Namespace::SR_ENABLED,
         runner_disabled_value: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
-        runner_allow_override_value: Namespace::SR_DISABLED_WITH_OVERRIDE
+        runner_allow_override_value: Namespace::SR_DISABLED_AND_OVERRIDABLE
       }
     end
 
@@ -197,7 +197,7 @@ RSpec.describe Ci::RunnersHelper do
 
       where(:shared_runners_setting, :is_disabled_and_unoverridable) do
         :shared_runners_enabled     | "false"
-        :disabled_with_override     | "false"
+        :disabled_and_overridable   | "false"
         :disabled_and_unoverridable | "true"
       end
 

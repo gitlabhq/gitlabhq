@@ -74,4 +74,22 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection do
       expect(subject.map(&:name).sort).to eq(not_recently_reindexed.map(&:name).sort)
     end
   end
+
+  context 'with restricted tables' do
+    let!(:ci_builds) do
+      create(
+        :postgres_index_bloat_estimate,
+        index: create(:postgres_index, ondisk_size_bytes: 100.gigabytes, tablename: 'ci_builds'),
+        bloat_size_bytes: 20.gigabyte
+      )
+    end
+
+    context 'when executed on Saturdays', time_travel_to: '2022-12-17T09:44:07Z' do
+      it { expect(subject).to include(ci_builds.index) }
+    end
+
+    context 'when executed on Sundays', time_travel_to: '2022-12-18T09:44:07Z' do
+      it { expect(subject).not_to include(ci_builds.index) }
+    end
+  end
 end

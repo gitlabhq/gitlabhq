@@ -6637,8 +6637,8 @@ RSpec.describe Project, factory_default: :keep do
     where(:shared_runners_setting, :project_shared_runners_enabled, :valid_record) do
       :shared_runners_enabled     | true  | true
       :shared_runners_enabled     | false | true
-      :disabled_with_override     | true  | true
-      :disabled_with_override     | false | true
+      :disabled_and_overridable   | true  | true
+      :disabled_and_overridable   | false | true
       :disabled_and_unoverridable | true  | false
       :disabled_and_unoverridable | false | true
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::VersionChecker do
+RSpec.describe Gitlab::ImportExport::VersionChecker, feature_category: :import do
   include ImportExport::CommonUtil
 
   let!(:shared) { Gitlab::ImportExport::Shared.new(nil) }

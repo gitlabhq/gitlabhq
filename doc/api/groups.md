@@ -1099,8 +1099,9 @@ The `shared_runners_setting` attribute determines whether shared runners are ena
 | Value | Description |
 |-------|-------------------------------------------------------------------------------------------------------------|
 | `enabled`                      | Enables shared runners for all projects and subgroups in this group. |
-| `disabled_with_override`       | Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
+| `disabled_and_overridable`     | Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
 | `disabled_and_unoverridable`   | Disables shared runners for all projects and subgroups in this group, and prevents subgroups from overriding this setting. |
+| `disabled_with_override`       | (Deprecated. Use `disabled_and_overridable`) Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
 
 ### Upload a group avatar
 

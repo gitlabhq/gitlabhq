@@ -59,7 +59,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_mvc, project&.work_items_mvc_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
-    push_frontend_feature_flag(:use_iid_in_work_items_path, project)
+    push_frontend_feature_flag(:use_iid_in_work_items_path, project&.group)
     push_force_frontend_feature_flag(:work_items_create_from_markdown, project&.work_items_create_from_markdown_feature_flag_enabled?)
   end
 

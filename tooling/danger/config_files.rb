@@ -7,7 +7,7 @@ module Tooling
     module ConfigFiles
       SUGGEST_INTRODUCED_BY_COMMENT = <<~SUGGEST_COMMENT
         ```suggestion
-        introduced_by_url: "%<url>s"
+        introduced_by_url: %<url>
         ```
       SUGGEST_COMMENT
 

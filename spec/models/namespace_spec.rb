@@ -2114,7 +2114,7 @@ RSpec.describe Namespace do
     where(:shared_runners_enabled, :allow_descendants_override_disabled_shared_runners, :shared_runners_setting) do
       true  | true  | Namespace::SR_ENABLED
       true  | false | Namespace::SR_ENABLED
-      false | true  | Namespace::SR_DISABLED_WITH_OVERRIDE
+      false | true  | Namespace::SR_DISABLED_AND_OVERRIDABLE
       false | false | Namespace::SR_DISABLED_AND_UNOVERRIDABLE
     end
 
@@ -2133,12 +2133,15 @@ RSpec.describe Namespace do
     where(:shared_runners_enabled, :allow_descendants_override_disabled_shared_runners, :other_setting, :result) do
       true  | true  | Namespace::SR_ENABLED                    | false
       true  | true  | Namespace::SR_DISABLED_WITH_OVERRIDE     | true
+      true  | true  | Namespace::SR_DISABLED_AND_OVERRIDABLE   | true
       true  | true  | Namespace::SR_DISABLED_AND_UNOVERRIDABLE | true
       false | true  | Namespace::SR_ENABLED                    | false
       false | true  | Namespace::SR_DISABLED_WITH_OVERRIDE     | false
+      false | true  | Namespace::SR_DISABLED_AND_OVERRIDABLE   | false
       false | true  | Namespace::SR_DISABLED_AND_UNOVERRIDABLE | true
       false | false | Namespace::SR_ENABLED                    | false
       false | false | Namespace::SR_DISABLED_WITH_OVERRIDE     | false
+      false | false | Namespace::SR_DISABLED_AND_OVERRIDABLE   | false
       false | false | Namespace::SR_DISABLED_AND_UNOVERRIDABLE | false
     end
 

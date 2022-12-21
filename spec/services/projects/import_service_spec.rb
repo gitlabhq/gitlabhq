@@ -373,6 +373,28 @@ RSpec.describe Projects::ImportService do
 
           expect(result[:status]).to eq(:success)
         end
+
+        context 'when host resolves to an IPv6 address' do
+          before do
+            project.import_url = 'https://gitlab.com/gitlab-org/gitlab-development-kit'
+
+            allow(Gitlab::UrlBlocker).to receive(:validate!)
+             .with(project.import_url, ports: Project::VALID_IMPORT_PORTS, schemes: Project::VALID_IMPORT_PROTOCOLS, dns_rebind_protection: true)
+             .and_return([Addressable::URI.parse('https://[2606:4700:90:0:f22e:fbec:5bed:a9b9]/gitlab-org/gitlab-development-kit'), 'gitlab.com'])
+          end
+
+          it 'imports repository with url and additional resolved bare IPv6 address' do
+            expect(project.repository).to receive(:import_repository).with('https://gitlab.com/gitlab-org/gitlab-development-kit', resolved_address: '2606:4700:90:0:f22e:fbec:5bed:a9b9').and_return(true)
+
+            expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |service|
+              expect(service).to receive(:execute).and_return(status: :success)
+            end
+
+            result = subject.execute
+
+            expect(result[:status]).to eq(:success)
+          end
+        end
       end
 
       context 'when http url is provided' do

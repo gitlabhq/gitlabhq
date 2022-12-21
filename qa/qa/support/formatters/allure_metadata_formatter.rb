@@ -3,6 +3,14 @@
 module QA
   module Support
     module Formatters
+      # RSpec formatter to enhance metadata present in allure report
+      # Following additional data is added:
+      #   * quarantine issue links
+      #   * failure issues search link
+      #   * ci job link
+      #   * flaky status and test pass rate
+      #   * devops stage and group as epic and feature behaviour tags
+      #
       class AllureMetadataFormatter < ::RSpec::Core::Formatters::BaseFormatter
         include Support::InfluxdbTools
 
@@ -18,8 +26,6 @@ module QA
         # @param [RSpec::Core::Notifications::StartNotification] _start_notification
         # @return [void]
         def start(_start_notification)
-          return unless merge_request_iid # on main runs allure native history has pass rate already
-
           save_flaky_specs
           log(:debug, "Fetched #{flaky_specs.length} flaky testcases!")
         rescue StandardError => e
@@ -63,11 +69,11 @@ module QA
         # @param [RSpec::Core::Example] example
         # @return [void]
         def add_failure_issues_link(example)
-          spec_file = example.file_path.split('/').last
-          example.issue(
-            'Failure issues',
-            "https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&search=#{spec_file}"
-          )
+          return unless example.execution_result.status == :failed
+
+          search_query = ERB::Util.url_encode("Failure in #{example.file_path.gsub('./qa/specs/features/', '')}")
+          search_url = "https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&search=#{search_query}"
+          example.issue('Failure issues', search_url)
         rescue StandardError => e
           log(:error, "Failed to add failure issue link for example '#{example.description}', error: #{e}")
         end
@@ -89,10 +95,10 @@ module QA
         # @param [RSpec::Core::Example] example
         # @return [void]
         def set_flaky_status(example)
-          return unless merge_request_iid && flaky_specs.key?(example.metadata[:testcase])
+          return unless flaky_specs.key?(example.metadata[:testcase]) && example.execution_result.status != :pending
 
           example.set_flaky
-          example.parameter("pass_rate", "#{flaky_specs[example.metadata[:testcase]].round(1)}%")
+          example.parameter("pass_rate", "#{flaky_specs[example.metadata[:testcase]].round(0)}%")
           log(:debug, "Setting spec as flaky because it's pass rate is below 98%")
         rescue StandardError => e
           log(:error, "Failed to add spec pass rate data for example '#{example.description}', error: #{e}")

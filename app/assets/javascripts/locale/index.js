@@ -1,5 +1,5 @@
 import Jed from 'jed';
-import ensureSingleLine from './ensure_single_line';
+import ensureSingleLine from './ensure_single_line.cjs';
 import sprintf from './sprintf';
 
 const GITLAB_FALLBACK_LANGUAGE = 'en';

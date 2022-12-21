@@ -150,6 +150,14 @@ At this moment, GitLab.com has "social-network"-like capabilities that may not f
 
 We should evaluate if the SMB and mid market segment is interested in these features, or if not having them is acceptable in most cases.
 
+### Self-managed
+
+For reasons of consistency, it is expected that self-managed instances will
+adopt the pods architecture as well. To expand, self-managed instances can
+continue with just a single Pod while supporting the option of adding additional
+Pods. Organizations, and possible User decomposition will also be adopted for
+self-managed instances.
+
 ## High-level architecture problems to solve
 
 A number of technical issues need to be resolved to implement Pods (in no particular order). This section will be expanded.
@@ -325,6 +333,7 @@ This is the list of known affected features with the proposed solutions.
 - [Pods: Organizations](pods-feature-organizations.md)
 - [Pods: Router Endpoints Classification](pods-feature-router-endpoints-classification.md)
 - [Pods: Schema changes (Postgres and Elasticsearch migrations)](pods-feature-schema-changes.md)
+- [Pods: Backups](pods-feature-backups.md)
 - [Pods: Global Search](pods-feature-global-search.md)
 - [Pods: CI Runners](pods-feature-ci-runners.md)
 - [Pods: Admin Area](pods-feature-admin-area.md)

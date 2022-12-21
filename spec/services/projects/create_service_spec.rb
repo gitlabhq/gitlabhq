@@ -995,6 +995,7 @@ RSpec.describe Projects::CreateService, '#execute' do
         where(:shared_runners_setting, :desired_config_for_new_project, :expected_result_for_project) do
           Namespace::SR_ENABLED                    | nil | true
           Namespace::SR_DISABLED_WITH_OVERRIDE     | nil | false
+          Namespace::SR_DISABLED_AND_OVERRIDABLE   | nil | false
           Namespace::SR_DISABLED_AND_UNOVERRIDABLE | nil | false
         end
 
@@ -1017,6 +1018,8 @@ RSpec.describe Projects::CreateService, '#execute' do
           Namespace::SR_ENABLED                    | false | false
           Namespace::SR_DISABLED_WITH_OVERRIDE     | false | false
           Namespace::SR_DISABLED_WITH_OVERRIDE     | true  | true
+          Namespace::SR_DISABLED_AND_OVERRIDABLE   | false | false
+          Namespace::SR_DISABLED_AND_OVERRIDABLE   | true  | true
           Namespace::SR_DISABLED_AND_UNOVERRIDABLE | false | false
         end
 
