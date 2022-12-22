@@ -2,22 +2,22 @@
   .gl-display-flex.gl-flex-direction-column
     .gl-p-5.gl-display-flex
       .gl-md-display-flex.gl-text-left.gl-align-items-center.gl-flex-grow-1
-        - unless search_service.without_count?
-          = search_entries_info(search_service.search_objects, search_service.scope, params[:search])
-        - unless search_service.show_snippets?
-          - if search_service.project
-            - link_to_project = link_to(search_service.project.full_name, search_service.project, class: 'ml-md-1')
-            - if search_service.scope == 'blobs'
+        - unless @search_service_presenter.without_count?
+          = search_entries_info(@search_objects, @scope, @search_term)
+        - unless @search_service_presenter.show_snippets?
+          - if @project
+            - link_to_project = link_to(@project.full_name, @project, class: 'ml-md-1')
+            - if @scope == 'blobs'
               = _("in")
               .mx-md-1
-                #js-blob-ref-switcher{ data: { "project-id" => search_service.project.id, "ref" => repository_ref(search_service.project), "field-name": "repository_ref" } }
+                #js-blob-ref-switcher{ data: { "project-id" => @project.id, "ref" => repository_ref(@project), "field-name": "repository_ref" } }
               = s_('SearchCodeResults|of %{link_to_project}').html_safe % { link_to_project: link_to_project }
             - else
               = _("in project %{link_to_project}").html_safe % { link_to_project: link_to_project }
-          - elsif search_service.group
-            - link_to_group = link_to(search_service.group.name, search_service.group, class: 'ml-md-1')
+          - elsif @group
+            - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
             = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
-      - if search_service.show_sort_dropdown?
+      - if @search_service_presenter.show_sort_dropdown?
         .gl-md-display-flex.gl-flex-direction-column
           #js-search-sort{ data: { "search-sort-options" => search_sort_options.to_json } }
     %hr.gl-mb-5.gl-mt-0.gl-border-gray-100.gl-w-full

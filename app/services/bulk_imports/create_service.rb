@@ -43,7 +43,7 @@ module BulkImports
       BulkImportWorker.perform_async(bulk_import.id)
 
       ServiceResponse.success(payload: bulk_import)
-    rescue ActiveRecord::RecordInvalid => e
+    rescue ActiveRecord::RecordInvalid, BulkImports::NetworkError => e
       ServiceResponse.error(
         message: e.message,
         http_status: :unprocessable_entity

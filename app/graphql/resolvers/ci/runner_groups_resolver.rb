@@ -6,7 +6,7 @@ module Resolvers
       include Gitlab::Graphql::Authorize::AuthorizeResource
       include ResolvesGroups
 
-      type Types::GroupConnection, null: true
+      type 'Types::GroupConnection', null: true
 
       authorize :read_runner
       authorizes_object!

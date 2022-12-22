@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::CreateService do
+RSpec.describe BulkImports::CreateService, feature_category: :importers do
   let(:user) { create(:user) }
   let(:credentials) { { url: 'http://gitlab.example', access_token: 'token' } }
   let(:destination_group) { create(:group, path: 'destination1') }
@@ -100,6 +100,22 @@ RSpec.describe BulkImports::CreateService do
       expect(result).to be_a(ServiceResponse)
       expect(result).to be_error
       expect(result.message).to eq("Validation failed: Source full path can't be blank")
+    end
+
+    context 'when the token is invalid' do
+      before do
+        allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+          allow(client).to receive(:instance_version).and_raise(BulkImports::NetworkError, "401 Unauthorized")
+        end
+      end
+
+      it 'rescues the error and raises a ServiceResponse::Error' do
+        result = subject.execute
+
+        expect(result).to be_a(ServiceResponse)
+        expect(result).to be_error
+        expect(result.message).to eq("401 Unauthorized")
+      end
     end
 
     describe '#user-role' do

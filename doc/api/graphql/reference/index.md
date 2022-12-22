@@ -11184,7 +11184,7 @@ CI/CD variables for a project.
 | <a id="cirunnerdescription"></a>`description` | [`String`](#string) | Description of the runner. |
 | <a id="cirunnereditadminurl"></a>`editAdminUrl` | [`String`](#string) | Admin form URL of the runner. Only available for administrators. |
 | <a id="cirunnerexecutorname"></a>`executorName` | [`String`](#string) | Executor last advertised by the runner. |
-| <a id="cirunnergroups"></a>`groups` | [`GroupConnection`](#groupconnection) | Types::GroupConnection. (see [Connections](#connections)) |
+| <a id="cirunnergroups"></a>`groups` | [`GroupConnection`](#groupconnection) | Groups the runner is associated with. For group runners only. (see [Connections](#connections)) |
 | <a id="cirunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner. |
 | <a id="cirunneripaddress"></a>`ipAddress` | [`String`](#string) | IP address of the runner. |
 | <a id="cirunnerjobcount"></a>`jobCount` | [`Int`](#int) | Number of jobs processed by the runner (limited to 1000, plus one to indicate that more items exist). |

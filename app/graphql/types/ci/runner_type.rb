@@ -38,10 +38,9 @@ module Types
       field :executor_name, GraphQL::Types::String, null: true,
                                                     description: 'Executor last advertised by the runner.',
                                                     method: :executor_name
-      field :groups, 'Types::GroupConnection',
-            null: true,
-            resolver: ::Resolvers::Ci::RunnerGroupsResolver,
-            description: 'Groups the runner is associated with. For group runners only.'
+      field :groups, null: true,
+                     resolver: ::Resolvers::Ci::RunnerGroupsResolver,
+                     description: 'Groups the runner is associated with. For group runners only.'
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false,
                                                       description: 'ID of the runner.'
       field :ip_address, GraphQL::Types::String, null: true,

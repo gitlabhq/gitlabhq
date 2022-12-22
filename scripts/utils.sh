@@ -107,6 +107,37 @@ function install_junit_merge_gem() {
   run_timed_command "gem install junit_merge --no-document --version 0.1.2"
 }
 
+function fail_on_warnings() {
+  local cmd="$*"
+  local warning_file
+  warning_file="$(mktemp)"
+
+  local allowed_warning_file
+  allowed_warning_file="$(mktemp)"
+
+  eval "$cmd 2>$warning_file"
+  local ret=$?
+
+  # Filter out comments and empty lines from allowed warnings file.
+  grep --invert-match --extended-regexp "^#|^$" scripts/allowed_warnings.txt > "$allowed_warning_file"
+
+  local warnings
+  # Filter out allowed warnings from stderr.
+  # Turn grep errors into warnings so we fail later.
+  warnings=$(grep --invert-match --file "$allowed_warning_file" "$warning_file" 2>&1 || true)
+
+  rm -f "$warning_file" "$allowed_warning_file"
+
+  if [ "$warnings" != "" ]
+  then
+    echoerr "There were warnings:"
+    echoerr "$warnings"
+    return 1
+  fi
+
+  return $ret
+}
+
 function run_timed_command() {
   local cmd="${1}"
   local metric_name="${2:-no}"

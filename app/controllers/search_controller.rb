@@ -47,7 +47,7 @@ class SearchController < ApplicationController
   def show
     @project = search_service.project
     @group = search_service.group
-    @search_service = Gitlab::View::Presenter::Factory.new(search_service, current_user: current_user).fabricate!
+    @search_service_presenter = Gitlab::View::Presenter::Factory.new(search_service, current_user: current_user).fabricate!
 
     return unless search_term_valid?
 
@@ -56,14 +56,14 @@ class SearchController < ApplicationController
     @search_term = params[:search]
     @sort = params[:sort] || default_sort
 
-    @search_level = @search_service.level
+    @search_level = @search_service_presenter.level
     @search_type = search_type
 
     @global_search_duration_s = Benchmark.realtime do
-      @scope = @search_service.scope
-      @search_results = @search_service.search_results
-      @search_objects = @search_service.search_objects
-      @search_highlight = @search_service.search_highlight
+      @scope = @search_service_presenter.scope
+      @search_results = @search_service_presenter.search_results
+      @search_objects = @search_service_presenter.search_objects
+      @search_highlight = @search_service_presenter.search_highlight
     end
 
     Gitlab::Metrics::GlobalSearchSlis.record_apdex(

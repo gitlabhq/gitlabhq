@@ -1,0 +1,8 @@
+---
+name: send_traversal_ids_to_indexer
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107352
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/386465
+milestone: '15.8'
+type: development
+group: group::global search
+default_enabled: true

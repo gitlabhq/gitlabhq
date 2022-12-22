@@ -333,7 +333,7 @@ rspec:deprecations:
   script:
     - grep -h -R "keyword" deprecations/ | awk '{$1=$1};1' | sort | uniq -c | sort
     - grep -R "keyword" deprecations/ | wc
-    - run_timed_command "bundle exec rubocop --only Lint/LastKeywordArgument --parallel"
+    - run_timed_command "fail_on_warnings bundle exec rubocop --only Lint/LastKeywordArgument --parallel"
   artifacts:
     expire_in: 31d
     when: always
