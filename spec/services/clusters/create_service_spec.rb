@@ -54,7 +54,6 @@ RSpec.describe Clusters::CreateService do
       let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
       it 'creates another cluster' do
-        expect(ClusterProvisionWorker).to receive(:perform_async)
         expect { subject }.to change { Clusters::Cluster.count }.by(1)
       end
     end

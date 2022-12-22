@@ -37,9 +37,7 @@ RSpec.shared_context 'invalid cluster create params' do
 end
 
 RSpec.shared_examples 'create cluster service success' do
-  it 'creates a cluster object and performs a worker' do
-    expect(ClusterProvisionWorker).to receive(:perform_async)
-
+  it 'creates a cluster object' do
     expect { subject }
       .to change { Clusters::Cluster.count }.by(1)
       .and change { Clusters::Providers::Gcp.count }.by(1)
@@ -60,7 +58,6 @@ end
 
 RSpec.shared_examples 'create cluster service error' do
   it 'returns an error' do
-    expect(ClusterProvisionWorker).not_to receive(:perform_async)
     expect { subject }.to change { Clusters::Cluster.count }.by(0)
     expect(subject.errors[:"provider_gcp.gcp_project_id"]).to be_present
   end

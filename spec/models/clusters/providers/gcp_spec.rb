@@ -111,31 +111,6 @@ RSpec.describe Clusters::Providers::Gcp do
     end
   end
 
-  describe '#api_client' do
-    subject { gcp.api_client }
-
-    context 'when status is creating' do
-      let(:gcp) { build(:cluster_provider_gcp, :creating) }
-
-      it 'returns Cloud Platform API clinet' do
-        expect(subject).to be_an_instance_of(GoogleApi::CloudPlatform::Client)
-        expect(subject.access_token).to eq(gcp.access_token)
-      end
-    end
-
-    context 'when status is created' do
-      let(:gcp) { build(:cluster_provider_gcp, :created) }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when status is errored' do
-      let(:gcp) { build(:cluster_provider_gcp, :errored) }
-
-      it { is_expected.to be_nil }
-    end
-  end
-
   describe '#nullify_credentials' do
     let(:provider) { create(:cluster_provider_gcp, :creating) }
 

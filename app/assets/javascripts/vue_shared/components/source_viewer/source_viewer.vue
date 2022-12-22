@@ -11,6 +11,7 @@ import {
   EVENT_LABEL_FALLBACK,
   ROUGE_TO_HLJS_LANGUAGE_MAP,
   LINES_PER_CHUNK,
+  LEGACY_FALLBACKS,
 } from './constants';
 import Chunk from './components/chunk.vue';
 import { registerPlugins } from './plugins/index';
@@ -57,10 +58,11 @@ export default {
     },
     unsupportedLanguage() {
       const supportedLanguages = Object.keys(languageLoader);
-      return (
+      const unsupportedLanguage =
         !supportedLanguages.includes(this.language) &&
-        !supportedLanguages.includes(this.blob.language?.toLowerCase())
-      );
+        !supportedLanguages.includes(this.blob.language?.toLowerCase());
+
+      return LEGACY_FALLBACKS.includes(this.language) || unsupportedLanguage;
     },
     totalChunks() {
       return Object.keys(this.chunks).length;

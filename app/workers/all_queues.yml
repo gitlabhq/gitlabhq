@@ -951,11 +951,11 @@
 - :name: gcp_cluster:cluster_provision
   :worker_name: ClusterProvisionWorker
   :feature_category: :kubernetes_management
-  :has_external_dependencies: true
+  :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: false
+  :idempotent: true
   :tags: []
 - :name: gcp_cluster:cluster_update_app
   :worker_name: ClusterUpdateAppWorker
@@ -1059,11 +1059,11 @@
 - :name: gcp_cluster:wait_for_cluster_creation
   :worker_name: WaitForClusterCreationWorker
   :feature_category: :kubernetes_management
-  :has_external_dependencies: true
+  :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: false
+  :idempotent: true
   :tags: []
 - :name: github_gists_importer:github_gists_import_finish_import
   :worker_name: Gitlab::GithubGistsImport::FinishImportWorker

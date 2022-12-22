@@ -181,8 +181,6 @@ RSpec.describe Projects::ClustersController do
     describe 'functionality' do
       context 'when creates a cluster' do
         it 'creates a new cluster' do
-          expect(ClusterProvisionWorker).to receive(:perform_async)
-
           expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Platforms::Kubernetes.count }
 
@@ -210,8 +208,6 @@ RSpec.describe Projects::ClustersController do
         end
 
         it 'creates a new cluster' do
-          expect(ClusterProvisionWorker).to receive(:perform_async)
-
           expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Platforms::Kubernetes.count }
 

@@ -37,12 +37,6 @@ module Clusters
           greater_than: 0
         }
 
-      def api_client
-        return unless access_token
-
-        @api_client ||= GoogleApi::CloudPlatform::Client.new(access_token, nil)
-      end
-
       def nullify_credentials
         assign_attributes(
           access_token: nil,

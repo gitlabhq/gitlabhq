@@ -214,6 +214,52 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     end
   end
 
+  describe '.throttled_request?', :freeze_time do
+    let(:request) { instance_double('Rack::Request') }
+
+    context 'when request is not over the limit' do
+      it 'returns false and does not log the request' do
+        expect(subject).not_to receive(:log_request)
+
+        expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(false)
+      end
+    end
+
+    context 'when request is over the limit' do
+      before do
+        subject.throttled?(:test_action, scope: [user])
+      end
+
+      it 'returns true and logs the request' do
+        expect(subject).to receive(:log_request).with(request, :test_action_request_limit, user)
+
+        expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(true)
+      end
+
+      context 'when the bypass header is set' do
+        before do
+          allow(Gitlab::Throttle).to receive(:bypass_header).and_return('SOME_HEADER')
+        end
+
+        it 'skips rate limit if set to "1"' do
+          allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('1')
+
+          expect(subject).not_to receive(:log_request)
+
+          expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(false)
+        end
+
+        it 'does not skip rate limit if set to something else than "1"' do
+          allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('0')
+
+          expect(subject).to receive(:log_request).with(request, :test_action_request_limit, user)
+
+          expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(true)
+        end
+      end
+    end
+  end
+
   describe '.peek' do
     it 'peeks at the current state without changing its value' do
       freeze_time do

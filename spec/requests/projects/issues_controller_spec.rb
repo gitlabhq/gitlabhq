@@ -32,6 +32,28 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     end
   end
 
+  describe 'GET #index.json' do
+    let_it_be(:public_project) { create(:project, :public) }
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
+      let_it_be(:current_user) { create(:user) }
+
+      before do
+        sign_in current_user
+      end
+
+      def request
+        get project_issues_path(public_project, format: :json), params: { scope: 'all', search: 'test' }
+      end
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit_unauthenticated do
+      def request
+        get project_issues_path(public_project, format: :json), params: { scope: 'all', search: 'test' }
+      end
+    end
+  end
+
   describe 'GET #discussions' do
     before do
       login_as(user)

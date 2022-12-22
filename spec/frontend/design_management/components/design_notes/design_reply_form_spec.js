@@ -5,6 +5,7 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_m
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
+jest.mock('~/autosave');
 
 describe('Design reply form component', () => {
   let wrapper;
@@ -78,12 +79,11 @@ describe('Design reply form component', () => {
       createComponent({ discussionId });
       await nextTick();
 
-      // We discourage testing `wrapper.vm` properties but
-      // since `autosave` library instantiates on component
-      // there's no other way to test whether instantiation
-      // happened correctly or not.
-      expect(wrapper.vm.autosaveDiscussion).toBeInstanceOf(Autosave);
-      expect(wrapper.vm.autosaveDiscussion.key).toBe(`autosave/Discussion/6/${shortDiscussionId}`);
+      expect(Autosave).toHaveBeenCalledWith(expect.any(Element), [
+        'Discussion',
+        6,
+        shortDiscussionId,
+      ]);
     },
   );
 
@@ -141,7 +141,7 @@ describe('Design reply form component', () => {
     });
 
     it('emits submitForm event on Comment button click', async () => {
-      const autosaveResetSpy = jest.spyOn(wrapper.vm.autosaveDiscussion, 'reset');
+      const autosaveResetSpy = jest.spyOn(Autosave.prototype, 'reset');
 
       findSubmitButton().vm.$emit('click');
 
@@ -151,7 +151,7 @@ describe('Design reply form component', () => {
     });
 
     it('emits submitForm event on textarea ctrl+enter keydown', async () => {
-      const autosaveResetSpy = jest.spyOn(wrapper.vm.autosaveDiscussion, 'reset');
+      const autosaveResetSpy = jest.spyOn(Autosave.prototype, 'reset');
 
       findTextarea().trigger('keydown.enter', {
         ctrlKey: true,
@@ -163,7 +163,7 @@ describe('Design reply form component', () => {
     });
 
     it('emits submitForm event on textarea meta+enter keydown', async () => {
-      const autosaveResetSpy = jest.spyOn(wrapper.vm.autosaveDiscussion, 'reset');
+      const autosaveResetSpy = jest.spyOn(Autosave.prototype, 'reset');
 
       findTextarea().trigger('keydown.enter', {
         metaKey: true,
@@ -178,7 +178,7 @@ describe('Design reply form component', () => {
       findTextarea().setValue('test2');
 
       await nextTick();
-      expect(wrapper.emitted('input')).toEqual([['test'], ['test2']]);
+      expect(wrapper.emitted('input')).toEqual([['test2']]);
     });
 
     it('emits cancelForm event on Escape key if text was not changed', () => {
@@ -211,7 +211,7 @@ describe('Design reply form component', () => {
 
     it('emits cancelForm event when confirmed', async () => {
       confirmAction.mockResolvedValueOnce(true);
-      const autosaveResetSpy = jest.spyOn(wrapper.vm.autosaveDiscussion, 'reset');
+      const autosaveResetSpy = jest.spyOn(Autosave.prototype, 'reset');
 
       wrapper.setProps({ value: 'test3' });
       await nextTick();
@@ -228,7 +228,7 @@ describe('Design reply form component', () => {
 
     it("doesn't emit cancelForm event when not confirmed", async () => {
       confirmAction.mockResolvedValueOnce(false);
-      const autosaveResetSpy = jest.spyOn(wrapper.vm.autosaveDiscussion, 'reset');
+      const autosaveResetSpy = jest.spyOn(Autosave.prototype, 'reset');
 
       wrapper.setProps({ value: 'test3' });
       await nextTick();

@@ -42,6 +42,10 @@ RSpec.shared_examples 'issuables list meta-data' do |issuable_type, action = nil
     let(:result_issuable) { issuables.first }
     let(:search) { result_issuable.title }
 
+    before do
+      stub_application_setting(search_rate_limit: 0, search_rate_limit_unauthenticated: 0)
+    end
+
     # .simple_sorts is the same across all Sortable classes
     sorts = ::Issue.simple_sorts.keys + %w[popularity priority label_priority]
     sorts.each do |sort|

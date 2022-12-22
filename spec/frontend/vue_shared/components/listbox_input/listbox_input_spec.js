@@ -1,11 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlListbox } from '@gitlab/ui';
+import { GlFormGroup, GlListbox } from '@gitlab/ui';
 import ListboxInput from '~/vue_shared/components/listbox_input/listbox_input.vue';
 
 describe('ListboxInput', () => {
   let wrapper;
 
   // Props
+  const label = 'label';
   const name = 'name';
   const defaultToggleText = 'defaultToggleText';
   const items = [
@@ -23,12 +24,14 @@ describe('ListboxInput', () => {
   ];
 
   // Finders
+  const findGlFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findGlListbox = () => wrapper.findComponent(GlListbox);
   const findInput = () => wrapper.find('input');
 
   const createComponent = (propsData) => {
     wrapper = shallowMount(ListboxInput, {
       propsData: {
+        label,
         name,
         defaultToggleText,
         items,
@@ -37,13 +40,21 @@ describe('ListboxInput', () => {
     });
   };
 
-  describe('input attributes', () => {
+  describe('options', () => {
     beforeEach(() => {
       createComponent();
     });
 
+    it('passes the label to the form group', () => {
+      expect(findGlFormGroup().attributes('label')).toBe(label);
+    });
+
     it('sets the input name', () => {
       expect(findInput().attributes('name')).toBe(name);
+    });
+
+    it('is not filterable with few items', () => {
+      expect(findGlListbox().props('searchable')).toBe(false);
     });
   });
 
@@ -91,12 +102,29 @@ describe('ListboxInput', () => {
   });
 
   describe('search', () => {
-    beforeEach(() => {
-      createComponent();
+    it('is searchable when there are more than 10 items', () => {
+      createComponent({
+        items: [
+          {
+            text: 'Group 1',
+            options: [...Array(10).keys()].map((index) => ({
+              text: index + 1,
+              value: String(index + 1),
+            })),
+          },
+          {
+            text: 'Group 2',
+            options: [{ text: 'Item 11', value: '11' }],
+          },
+        ],
+      });
+
+      expect(findGlListbox().props('searchable')).toBe(true);
     });
 
     it('passes all items to GlListbox by default', () => {
       createComponent();
+
       expect(findGlListbox().props('items')).toStrictEqual(items);
     });
 

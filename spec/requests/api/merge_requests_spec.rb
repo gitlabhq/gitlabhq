@@ -55,6 +55,11 @@ RSpec.describe API::MergeRequests, feature_category: :source_code_management do
         let(:issuable) { merge_request }
         let(:result) { [merge_request_merged.id, merge_request_locked.id, merge_request_closed.id, merge_request.id] }
       end
+
+      it_behaves_like 'issuable API rate-limited search' do
+        let(:url) { endpoint_path }
+        let(:issuable) { merge_request }
+      end
     end
 
     context 'when authenticated' do
@@ -661,6 +666,11 @@ RSpec.describe API::MergeRequests, feature_category: :source_code_management do
         let(:url) { '/merge_requests' }
         let(:issuable) { merge_request }
         let(:result) { [merge_request_merged.id, merge_request_locked.id, merge_request_closed.id, merge_request.id] }
+      end
+
+      it_behaves_like 'issuable API rate-limited search' do
+        let(:url) { '/merge_requests' }
+        let(:issuable) { merge_request }
       end
 
       it "returns authentication error without any scope" do

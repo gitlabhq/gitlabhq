@@ -145,6 +145,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         let(:result) { issuable.id }
       end
 
+      it_behaves_like 'issuable API rate-limited search' do
+        let(:url) { '/issues' }
+        let(:issuable) { issue }
+      end
+
       it 'returns authentication error without any scope' do
         get api('/issues')
 

@@ -48,3 +48,5 @@ For more information, read [Gitaly touch points](gitaly_touch_points.md).
 
 Create: Source Code has over 100 REST endpoints, being a mixture of Grape API endpoints and Rails controller endpoints.
 For a detailed list, refer to [Source Code REST Endpoints](rest_endpoints.md).
+
+An alternative list of the [Source Code endpoints and other owned objects](https://gitlab-com.gitlab.io/gl-infra/platform/stage-groups-index/source-code.html) is available.

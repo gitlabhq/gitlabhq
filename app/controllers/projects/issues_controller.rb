@@ -27,6 +27,10 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :set_issuables_index, if: ->(c) {
     SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request?
   }
+  before_action :check_search_rate_limit!, if: ->(c) {
+    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request? &&
+      params[:search].present? && Feature.enabled?(:rate_limit_issuable_searches)
+  }
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]

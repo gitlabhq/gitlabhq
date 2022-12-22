@@ -10,24 +10,13 @@ module API
     # See app/controllers/concerns/check_rate_limit.rb for Rails controllers version
     module RateLimiter
       def check_rate_limit!(key, scope:, **options)
-        return if bypass_header_set?
-        return unless rate_limiter.throttled?(key, scope: scope, **options)
-
-        rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
+        return unless Gitlab::ApplicationRateLimiter.throttled_request?(
+          request, current_user, key, scope: scope, **options
+        )
 
         return yield if block_given?
 
         render_api_error!({ error: _('This endpoint has been requested too many times. Try again later.') }, 429)
-      end
-
-      private
-
-      def rate_limiter
-        ::Gitlab::ApplicationRateLimiter
-      end
-
-      def bypass_header_set?
-        ::Gitlab::Throttle.bypass_header.present? && request.get_header(Gitlab::Throttle.bypass_header) == '1'
       end
     end
   end

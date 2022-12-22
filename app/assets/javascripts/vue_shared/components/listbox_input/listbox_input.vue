@@ -1,25 +1,32 @@
 <script>
-import { GlListbox } from '@gitlab/ui';
+import { GlFormGroup, GlListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 
-const MIN_ITEMS_COUNT_FOR_SEARCHING = 20;
+const MIN_ITEMS_COUNT_FOR_SEARCHING = 10;
 
 export default {
   i18n: {
     noResultsText: __('No results found'),
   },
   components: {
+    GlFormGroup,
     GlListbox,
   },
   model: GlListbox.model,
   props: {
+    label: {
+      type: String,
+      required: false,
+      default: '',
+    },
     name: {
       type: String,
       required: true,
     },
     defaultToggleText: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     selected: {
       type: String,
@@ -95,7 +102,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <gl-form-group :label="label">
     <gl-listbox
       :selected="selected"
       :toggle-text="toggleText"
@@ -106,5 +113,5 @@ export default {
       @select="$emit($options.model.event, $event)"
     />
     <input ref="input" type="hidden" :name="name" :value="selected" />
-  </div>
+  </gl-form-group>
 </template>

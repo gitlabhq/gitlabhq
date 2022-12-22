@@ -695,6 +695,16 @@ module API
       unprocessable_entity!('User must be authenticated to use search')
     end
 
+    def validate_search_rate_limit!
+      return unless Feature.enabled?(:rate_limit_issuable_searches)
+
+      if current_user
+        check_rate_limit!(:search_rate_limit, scope: [current_user])
+      else
+        check_rate_limit!(:search_rate_limit_unauthenticated, scope: [ip_address])
+      end
+    end
+
     private
 
     # rubocop:disable Gitlab/ModuleWithInstanceVariables

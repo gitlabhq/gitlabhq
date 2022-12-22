@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import Autosave from '~/autosave';
 import AccessorUtilities from '~/lib/utils/accessor';
@@ -7,12 +6,19 @@ describe('Autosave', () => {
   useLocalStorageSpy();
 
   let autosave;
-  const field = $('<textarea></textarea>');
-  const checkbox = $('<input type="checkbox">');
+  const field = document.createElement('textarea');
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
   const key = 'key';
   const fallbackKey = 'fallbackKey';
   const lockVersionKey = 'lockVersionKey';
   const lockVersion = 1;
+  const getAutosaveKey = () => `autosave/${key}`;
+  const getAutosaveLockKey = () => `autosave/${key}/lockVersion`;
+
+  afterEach(() => {
+    autosave?.dispose?.();
+  });
 
   describe('class constructor', () => {
     beforeEach(() => {
@@ -43,18 +49,10 @@ describe('Autosave', () => {
   });
 
   describe('restore', () => {
-    beforeEach(() => {
-      autosave = {
-        field,
-        key,
-      };
-    });
-
     describe('if .isLocalStorageAvailable is `false`', () => {
       beforeEach(() => {
-        autosave.isLocalStorageAvailable = false;
-
-        Autosave.prototype.restore.call(autosave);
+        jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
+        autosave = new Autosave(field, key);
       });
 
       it('should not call .getItem', () => {
@@ -63,97 +61,73 @@ describe('Autosave', () => {
     });
 
     describe('if .isLocalStorageAvailable is `true`', () => {
-      beforeEach(() => {
-        autosave.isLocalStorageAvailable = true;
-      });
-
       it('should call .getItem', () => {
-        Autosave.prototype.restore.call(autosave);
-
-        expect(window.localStorage.getItem).toHaveBeenCalledWith(key);
+        autosave = new Autosave(field, key);
+        expect(window.localStorage.getItem.mock.calls).toEqual([[getAutosaveKey()], []]);
       });
 
-      it('triggers jquery event', () => {
-        jest.spyOn(autosave.field, 'trigger').mockImplementation(() => {});
+      describe('if saved value is present', () => {
+        const storedValue = 'bar';
 
-        Autosave.prototype.restore.call(autosave);
-
-        expect(field.trigger).toHaveBeenCalled();
-      });
-
-      it('triggers native event', () => {
-        const fieldElement = autosave.field.get(0);
-        const eventHandler = jest.fn();
-        fieldElement.addEventListener('change', eventHandler);
-
-        Autosave.prototype.restore.call(autosave);
-
-        expect(eventHandler).toHaveBeenCalledTimes(1);
-        fieldElement.removeEventListener('change', eventHandler);
-      });
-
-      describe('if field type is checkbox', () => {
         beforeEach(() => {
-          autosave = {
-            field: checkbox,
-            key,
-            isLocalStorageAvailable: true,
-            type: 'checkbox',
-          };
+          field.value = 'foo';
+          window.localStorage.setItem(getAutosaveKey(), storedValue);
         });
 
-        it('should restore', () => {
-          window.localStorage.setItem(key, true);
-          expect(checkbox.is(':checked')).toBe(false);
-          Autosave.prototype.restore.call(autosave);
-          expect(checkbox.is(':checked')).toBe(true);
+        it('restores the value', () => {
+          autosave = new Autosave(field, key);
+          expect(field.value).toEqual(storedValue);
         });
-      });
-    });
 
-    describe('if field gets deleted from DOM', () => {
-      beforeEach(() => {
-        autosave.field = $('.not-a-real-element');
-      });
+        it('triggers native event', () => {
+          const eventHandler = jest.fn();
+          field.addEventListener('change', eventHandler);
+          autosave = new Autosave(field, key);
 
-      it('does not trigger event', () => {
-        jest.spyOn(field, 'trigger');
+          expect(eventHandler).toHaveBeenCalledTimes(1);
+          field.removeEventListener('change', eventHandler);
+        });
 
-        expect(field.trigger).not.toHaveBeenCalled();
+        describe('if field type is checkbox', () => {
+          beforeEach(() => {
+            checkbox.checked = false;
+            window.localStorage.setItem(getAutosaveKey(), true);
+            autosave = new Autosave(checkbox, key);
+          });
+
+          it('should restore', () => {
+            expect(checkbox.checked).toBe(true);
+          });
+        });
       });
     });
   });
 
   describe('getSavedLockVersion', () => {
-    beforeEach(() => {
-      autosave = {
-        field,
-        key,
-        lockVersionKey,
-      };
-    });
-
     describe('if .isLocalStorageAvailable is `false`', () => {
       beforeEach(() => {
-        autosave.isLocalStorageAvailable = false;
-
-        Autosave.prototype.getSavedLockVersion.call(autosave);
+        jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
+        autosave = new Autosave(field, key);
       });
 
       it('should not call .getItem', () => {
+        autosave.getSavedLockVersion();
         expect(window.localStorage.getItem).not.toHaveBeenCalled();
       });
     });
 
     describe('if .isLocalStorageAvailable is `true`', () => {
       beforeEach(() => {
-        autosave.isLocalStorageAvailable = true;
+        autosave = new Autosave(field, key);
       });
 
       it('should call .getItem', () => {
-        Autosave.prototype.getSavedLockVersion.call(autosave);
-
-        expect(window.localStorage.getItem).toHaveBeenCalledWith(lockVersionKey);
+        autosave.getSavedLockVersion();
+        expect(window.localStorage.getItem.mock.calls).toEqual([
+          [getAutosaveKey()],
+          [],
+          [getAutosaveLockKey()],
+        ]);
       });
     });
   });
@@ -162,7 +136,7 @@ describe('Autosave', () => {
     beforeEach(() => {
       autosave = { reset: jest.fn() };
       autosave.field = field;
-      field.val('value');
+      field.value = 'value';
     });
 
     describe('if .isLocalStorageAvailable is `false`', () => {
@@ -200,14 +174,14 @@ describe('Autosave', () => {
       });
 
       it('should save true when checkbox on', () => {
-        checkbox.prop('checked', true);
+        checkbox.checked = true;
         Autosave.prototype.save.call(autosave);
         expect(window.localStorage.setItem).toHaveBeenCalledWith(key, true);
       });
 
       it('should call reset when checkbox off', () => {
         autosave.reset = jest.fn();
-        checkbox.prop('checked', false);
+        checkbox.checked = false;
         Autosave.prototype.save.call(autosave);
         expect(autosave.reset).toHaveBeenCalled();
         expect(window.localStorage.setItem).not.toHaveBeenCalled();

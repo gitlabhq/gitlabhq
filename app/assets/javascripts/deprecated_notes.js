@@ -575,7 +575,9 @@ export default class Notes {
     // reset text and preview
     form.find('.js-md-write-button').click();
     form.find('.js-note-text').val('').trigger('input');
-    form.find('.js-note-text').data('autosave').reset();
+    form.find('.js-note-text').each(function reset() {
+      this.$autosave.reset();
+    });
 
     const event = document.createEvent('Event');
     event.initEvent('autosize:update', true, false);
@@ -642,7 +644,9 @@ export default class Notes {
       // DiffNote
       form.find('#note_position').val(),
     ];
-    return new Autosave(textarea, key);
+    const textareaEl = textarea.get(0);
+    // eslint-disable-next-line no-new
+    if (textareaEl) new Autosave(textareaEl, key);
   }
 
   /**
@@ -1086,7 +1090,9 @@ export default class Notes {
     const row = form.closest('tr');
     const glForm = form.data('glForm');
     glForm.destroy();
-    form.find('.js-note-text').data('autosave').reset();
+    form.find('.js-note-text').each(function reset() {
+      this.$autosave.reset();
+    });
     // show the reply button (will only work for replies)
     form.prev('.discussion-reply-holder').show();
     if (row.is('.js-temp-notes-holder')) {

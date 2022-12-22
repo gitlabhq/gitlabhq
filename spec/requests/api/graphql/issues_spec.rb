@@ -177,6 +177,32 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     end
   end
 
+  context 'with rate limiting' do
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit, graphql: true do
+      let_it_be(:current_user) { developer }
+
+      let(:error_message) do
+        'This endpoint has been requested with the search argument too many times. Try again later.'
+      end
+
+      def request
+        post_graphql(query({ search: 'test' }), current_user: developer)
+      end
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit_unauthenticated, graphql: true do
+      let_it_be(:current_user) { nil }
+
+      let(:error_message) do
+        'This endpoint has been requested with the search argument too many times. Try again later.'
+      end
+
+      def request
+        post_graphql(query({ search: 'test' }))
+      end
+    end
+  end
+
   def execute_query
     post_query
   end

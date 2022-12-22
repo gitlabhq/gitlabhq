@@ -11,15 +11,24 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
   let_it_be(:group) { create(:group, :public) }
 
-  let(:user2)             { create(:user) }
-  let(:non_member)        { create(:user) }
+  let_it_be(:user2)       { create(:user) }
+  let_it_be(:non_member)  { create(:user) }
   let_it_be(:guest)       { create(:user) }
   let_it_be(:author)      { create(:author) }
   let_it_be(:assignee)    { create(:assignee) }
-  let(:admin)             { create(:user, :admin) }
-  let(:issue_title)       { 'foo' }
-  let(:issue_description) { 'closed' }
-  let!(:closed_issue) do
+  let_it_be(:admin)       { create(:user, :admin) }
+
+  let_it_be(:milestone) { create(:milestone, title: '1.0.0', project: project) }
+  let_it_be(:empty_milestone) do
+    create(:milestone, title: '2.0.0', project: project)
+  end
+
+  let(:no_milestone_title) { 'None' }
+  let(:any_milestone_title) { 'Any' }
+
+  let_it_be(:issue_title) { 'foo' }
+  let_it_be(:issue_description) { 'closed' }
+  let_it_be(:closed_issue) do
     create :closed_issue,
       author: user,
       assignees: [user],
@@ -31,7 +40,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       closed_at: 1.hour.ago
   end
 
-  let!(:confidential_issue) do
+  let_it_be(:confidential_issue) do
     create :issue,
       :confidential,
       project: project,
@@ -41,7 +50,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       updated_at: 2.hours.ago
   end
 
-  let!(:issue) do
+  let_it_be(:issue) do
     create :issue,
       author: user,
       assignees: [user],
@@ -53,22 +62,12 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       description: issue_description
   end
 
-  let_it_be(:label) do
-    create(:label, title: 'label', color: '#FFAABB', project: project)
-  end
+  let_it_be(:label) { create(:label, title: 'label', color: '#FFAABB', project: project) }
+  let_it_be(:label_link) { create(:label_link, label: label, target: issue) }
 
-  let!(:label_link) { create(:label_link, label: label, target: issue) }
-  let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
-  let_it_be(:empty_milestone) do
-    create(:milestone, title: '2.0.0', project: project)
-  end
+  let_it_be(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
-  let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
-
-  let(:no_milestone_title) { 'None' }
-  let(:any_milestone_title) { 'Any' }
-
-  let!(:merge_request1) do
+  let_it_be(:merge_request1) do
     create(:merge_request,
            :simple,
            author: user,
@@ -77,7 +76,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
            description: "closes #{issue.to_reference}")
   end
 
-  let!(:merge_request2) do
+  let_it_be(:merge_request2) do
     create(:merge_request,
            :simple,
            author: user,
@@ -101,7 +100,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
   shared_examples 'project issues statistics' do
     it 'returns project issues statistics' do
-      get api("/issues_statistics", user), params: params
+      get api("/projects/#{project.id}/issues_statistics", current_user), params: params
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['statistics']).not_to be_nil
@@ -138,6 +137,8 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'issues_statistics' do
+        let(:current_user) { nil }
+
         context 'no state is treated as all state' do
           let(:params) { {} }
           let(:counts) { { all: 2, closed: 1, opened: 1 } }
@@ -534,30 +535,32 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'issues_statistics' do
+      let(:current_user) { user }
+
       context 'no state is treated as all state' do
         let(:params) { {} }
-        let(:counts) { { all: 2, closed: 1, opened: 1 } }
+        let(:counts) { { all: 3, closed: 1, opened: 2 } }
 
         it_behaves_like 'project issues statistics'
       end
 
       context 'statistics when all state is passed' do
         let(:params) { { state: :all } }
-        let(:counts) { { all: 2, closed: 1, opened: 1 } }
+        let(:counts) { { all: 3, closed: 1, opened: 2 } }
 
         it_behaves_like 'project issues statistics'
       end
 
       context 'closed state is treated as all state' do
         let(:params) { { state: :closed } }
-        let(:counts) { { all: 2, closed: 1, opened: 1 } }
+        let(:counts) { { all: 3, closed: 1, opened: 2 } }
 
         it_behaves_like 'project issues statistics'
       end
 
       context 'opened state is treated as all state' do
         let(:params) { { state: :opened } }
-        let(:counts) { { all: 2, closed: 1, opened: 1 } }
+        let(:counts) { { all: 3, closed: 1, opened: 2 } }
 
         it_behaves_like 'project issues statistics'
       end
@@ -592,7 +595,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
       context 'sort does not affect statistics ' do
         let(:params) { { state: :opened, order_by: 'updated_at' } }
-        let(:counts) { { all: 2, closed: 1, opened: 1 } }
+        let(:counts) { { all: 3, closed: 1, opened: 2 } }
 
         it_behaves_like 'project issues statistics'
       end

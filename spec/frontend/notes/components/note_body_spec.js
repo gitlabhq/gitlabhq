@@ -7,10 +7,13 @@ import NoteAwardsList from '~/notes/components/note_awards_list.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import createStore from '~/notes/stores';
 import notes from '~/notes/stores/modules/index';
+import Autosave from '~/autosave';
 
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
+
+jest.mock('~/autosave');
 
 const createComponent = ({
   props = {},
@@ -84,13 +87,8 @@ describe('issue_note_body component', () => {
     });
 
     it('adds autosave', () => {
-      const autosaveKey = `autosave/Note/${note.noteable_type}/${note.id}`;
-
-      // While we discourage testing wrapper props
-      // here we aren't testing a component prop
-      // but instead an instance object property
-      // which is defined in `app/assets/javascripts/notes/mixins/autosave.js`
-      expect(wrapper.vm.autosave.key).toEqual(autosaveKey);
+      // passing undefined instead of an element because of shallowMount
+      expect(Autosave).toHaveBeenCalledWith(undefined, ['Note', note.noteable_type, note.id]);
     });
 
     describe('isInternalNote', () => {

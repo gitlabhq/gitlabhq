@@ -149,6 +149,7 @@ module API
       get feature_category: :code_review, urgency: :low do
         authenticate! unless params[:scope] == 'all'
         validate_anonymous_search_access! if params[:search].present?
+        validate_search_rate_limit! if declared_params[:search].present?
         merge_requests = find_merge_requests
 
         present merge_requests, serializer_options_for(merge_requests)
@@ -177,6 +178,7 @@ module API
       end
       get ":id/merge_requests", feature_category: :code_review, urgency: :low do
         validate_anonymous_search_access! if declared_params[:search].present?
+        validate_search_rate_limit! if declared_params[:search].present?
         merge_requests = find_merge_requests(group_id: user_group.id, include_subgroups: true)
 
         present merge_requests, serializer_options_for(merge_requests).merge(group: user_group)
@@ -244,6 +246,7 @@ module API
       get ":id/merge_requests", feature_category: :code_review, urgency: :low do
         authorize! :read_merge_request, user_project
         validate_anonymous_search_access! if declared_params[:search].present?
+        validate_search_rate_limit! if declared_params[:search].present?
 
         merge_requests = find_merge_requests(project_id: user_project.id)
 

@@ -1,5 +1,4 @@
 <script>
-import $ from 'jquery';
 import {
   GlDropdown,
   GlButton,
@@ -52,7 +51,7 @@ export default {
   },
   mounted() {
     this.autosave = new Autosave(
-      $(this.$refs.textarea),
+      this.$refs.textarea,
       `submit_review_dropdown/${this.getNoteableData.id}`,
     );
     this.noteData.noteable_type = this.noteableType;

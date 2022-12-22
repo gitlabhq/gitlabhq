@@ -1927,9 +1927,6 @@ msgstr ""
 msgid "AWS secret access key (Optional)"
 msgstr ""
 
-msgid "AWS service error: %{error}"
-msgstr ""
-
 msgid "Abort"
 msgstr ""
 
@@ -1976,9 +1973,6 @@ msgid "Access Tokens"
 msgstr ""
 
 msgid "Access denied for your LDAP account."
-msgstr ""
-
-msgid "Access denied: %{error}"
 msgstr ""
 
 msgid "Access expires"
@@ -4259,9 +4253,6 @@ msgid "An error occurred while adding formatted title for epic"
 msgstr ""
 
 msgid "An error occurred while approving, please try again."
-msgstr ""
-
-msgid "An error occurred while authorizing your role"
 msgstr ""
 
 msgid "An error occurred while checking group path. Please refresh and try again."
@@ -9578,21 +9569,6 @@ msgid "ClusterIntegration|Environment scope is required."
 msgstr ""
 
 msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for both new and existing GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
-msgstr ""
-
-msgid "ClusterIntegration|Failed to configure EKS provider: %{message}"
-msgstr ""
-
-msgid "ClusterIntegration|Failed to configure Google Kubernetes Engine Cluster: %{message}"
-msgstr ""
-
-msgid "ClusterIntegration|Failed to fetch CloudFormation stack: %{message}"
-msgstr ""
-
-msgid "ClusterIntegration|Failed to request to Google Cloud Platform: %{message}"
-msgstr ""
-
-msgid "ClusterIntegration|Failed to run Kubeclient: %{message}"
 msgstr ""
 
 msgid "ClusterIntegration|GitLab Integration"
@@ -16071,19 +16047,10 @@ msgstr ""
 msgid "Error: Gitaly is unavailable. Contact your administrator."
 msgstr ""
 
-msgid "Error: No AWS credentials were supplied"
-msgstr ""
-
-msgid "Error: No AWS provision role found for user"
-msgstr ""
-
 msgid "Error: Unable to create deploy freeze"
 msgstr ""
 
 msgid "Error: Unable to delete deploy freeze"
-msgstr ""
-
-msgid "Error: Unable to find AWS role for current user"
 msgstr ""
 
 msgid "ErrorTracking|Access token is %{token_in_code_tag}"
@@ -24104,9 +24071,6 @@ msgid "Kubernetes Clusters"
 msgstr ""
 
 msgid "Kubernetes cluster"
-msgstr ""
-
-msgid "Kubernetes cluster creation time exceeds timeout; %{timeout}"
 msgstr ""
 
 msgid "Kubernetes cluster integration and resources are being removed."

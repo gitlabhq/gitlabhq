@@ -3,6 +3,7 @@
 module IssuableCollections
   extend ActiveSupport::Concern
   include PaginatedCollection
+  include SearchRateLimitable
   include SortingHelper
   include SortingPreference
   include Gitlab::Utils::StrongMemoize

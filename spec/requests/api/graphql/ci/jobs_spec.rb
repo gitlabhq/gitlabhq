@@ -88,10 +88,10 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
         build_stage = create(:ci_stage, position: 2, name: 'build', project: project, pipeline: pipeline)
         test_stage = create(:ci_stage, position: 3, name: 'test', project: project, pipeline: pipeline)
 
-        create(:ci_build, pipeline: pipeline, name: 'docker 1 2', scheduling_type: :stage, stage: build_stage, stage_idx: build_stage.position)
-        create(:ci_build, pipeline: pipeline, name: 'docker 2 2', stage: build_stage, stage_idx: build_stage.position, scheduling_type: :dag)
-        create(:ci_build, pipeline: pipeline, name: 'rspec 1 2', scheduling_type: :stage, stage: test_stage, stage_idx: test_stage.position)
-        test_job = create(:ci_build, pipeline: pipeline, name: 'rspec 2 2', scheduling_type: :dag, stage: test_stage, stage_idx: test_stage.position)
+        create(:ci_build, pipeline: pipeline, name: 'docker 1 2', scheduling_type: :stage, ci_stage: build_stage, stage_idx: build_stage.position)
+        create(:ci_build, pipeline: pipeline, name: 'docker 2 2', ci_stage: build_stage, stage_idx: build_stage.position, scheduling_type: :dag)
+        create(:ci_build, pipeline: pipeline, name: 'rspec 1 2', scheduling_type: :stage, ci_stage: test_stage, stage_idx: test_stage.position)
+        test_job = create(:ci_build, pipeline: pipeline, name: 'rspec 2 2', scheduling_type: :dag, ci_stage: test_stage, stage_idx: test_stage.position)
 
         create(:ci_build_need, build: test_job, name: 'my test job')
       end

@@ -116,6 +116,7 @@ module API
     get '/issues_statistics' do
       authenticate! unless params[:scope] == 'all'
       validate_anonymous_search_access! if params[:search].present?
+      validate_search_rate_limit! if declared_params[:search].present?
 
       present issues_statistics, with: Grape::Presenters::Presenter
     end
@@ -134,6 +135,7 @@ module API
       get do
         authenticate! unless params[:scope] == 'all'
         validate_anonymous_search_access! if params[:search].present?
+        validate_search_rate_limit! if declared_params[:search].present?
         issues = paginate(find_issues)
 
         options = {
@@ -173,6 +175,7 @@ module API
       end
       get ":id/issues" do
         validate_anonymous_search_access! if declared_params[:search].present?
+        validate_search_rate_limit! if declared_params[:search].present?
         issues = paginate(find_issues(group_id: user_group.id, include_subgroups: true))
 
         options = {
@@ -192,6 +195,7 @@ module API
       end
       get ":id/issues_statistics" do
         validate_anonymous_search_access! if declared_params[:search].present?
+        validate_search_rate_limit! if declared_params[:search].present?
 
         present issues_statistics(group_id: user_group.id, include_subgroups: true), with: Grape::Presenters::Presenter
       end
@@ -211,6 +215,7 @@ module API
       end
       get ":id/issues" do
         validate_anonymous_search_access! if declared_params[:search].present?
+        validate_search_rate_limit! if declared_params[:search].present?
         issues = paginate(find_issues(project_id: user_project.id))
 
         options = {
@@ -230,6 +235,7 @@ module API
       end
       get ":id/issues_statistics" do
         validate_anonymous_search_access! if declared_params[:search].present?
+        validate_search_rate_limit! if declared_params[:search].present?
 
         present issues_statistics(project_id: user_project.id), with: Grape::Presenters::Presenter
       end
