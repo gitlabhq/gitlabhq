@@ -1,7 +1,7 @@
 import { pick } from 'lodash';
 import Vue from 'vue';
 import { BACKOFF_TIMEOUT } from '~/lib/utils/common_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import { dashboardEmptyStates, endpointKeys, initialStateKeys, metricStates } from '../constants';
 import * as types from './mutation_types';
 import { mapToDashboardViewModel, mapPanelToViewModel, normalizeQueryResponseData } from './utils';
@@ -45,7 +45,7 @@ const emptyStateFromError = (error) => {
   const { response } = error;
   if (response && response.status === httpStatusCodes.SERVICE_UNAVAILABLE) {
     return metricStates.CONNECTION_FAILED;
-  } else if (response && response.status === httpStatusCodes.BAD_REQUEST) {
+  } else if (response && response.status === HTTP_STATUS_BAD_REQUEST) {
     // Note: "error.response.data.error" may contain Prometheus error information
     return metricStates.BAD_QUERY;
   }

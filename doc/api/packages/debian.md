@@ -85,14 +85,14 @@ GET projects/:id/packages/debian/pool/:distribution/:letter/:package_name/:packa
 | `file_name`       | string | yes      | The filename. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/pool/my-distro/a/my-pkg/1.0.0/example_1.0.0~alpha2_amd64.deb"
+curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/debian/pool/my-distro/a/my-pkg/1.0.0/example_1.0.0~alpha2_amd64.deb"
 ```
 
 Write the output to a file:
 
 ```shell
 curl --header "Private-Token: <personal_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/1/packages/pool/my-distro/a/my-pkg/1.0.0/example_1.0.0~alpha2_amd64.deb" \
+     "https://gitlab.example.com/api/v4/projects/1/packages/debian/pool/my-distro/a/my-pkg/1.0.0/example_1.0.0~alpha2_amd64.deb" \
      --remote-name
 ```
 

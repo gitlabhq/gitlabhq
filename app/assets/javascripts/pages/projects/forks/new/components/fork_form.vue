@@ -97,7 +97,7 @@ export default {
           required: false,
           skipValidation: true,
         }),
-        visibility: initFormField({ value: this.getInitialVisibilityValue() }),
+        visibility: initFormField({ value: null }),
       },
     };
     return {
@@ -106,8 +106,39 @@ export default {
     };
   },
   computed: {
+    projectVisibilityLevel() {
+      return VISIBILITY_LEVELS_STRING_TO_INTEGER[this.projectVisibility];
+    },
+    namespaceVisibilityLevel() {
+      const visibility =
+        this.form.fields.namespace.value?.visibility || VISIBILITY_LEVEL_PUBLIC_STRING;
+      return VISIBILITY_LEVELS_STRING_TO_INTEGER[visibility];
+    },
+    visibilityLevelCap() {
+      return Math.min(this.projectVisibilityLevel, this.namespaceVisibilityLevel);
+    },
+    restrictedVisibilityLevelsSet() {
+      return new Set(this.restrictedVisibilityLevels);
+    },
     allowedVisibilityLevels() {
-      return this.getAllowedVisibilityLevels();
+      const allowedLevels = Object.entries(VISIBILITY_LEVELS_STRING_TO_INTEGER).reduce(
+        (levels, [levelName, levelValue]) => {
+          if (
+            !this.restrictedVisibilityLevelsSet.has(levelValue) &&
+            levelValue <= this.visibilityLevelCap
+          ) {
+            levels.push(levelName);
+          }
+          return levels;
+        },
+        [],
+      );
+
+      if (!allowedLevels.length) {
+        return [VISIBILITY_LEVEL_PRIVATE_STRING];
+      }
+
+      return allowedLevels;
     },
     visibilityLevels() {
       return [
@@ -143,12 +174,14 @@ export default {
       this.form.fields.slug.value = kebabCase(newVal);
     },
   },
+  created() {
+    this.form.fields.visibility.value = this.getMaximumAllowedVisibilityLevel(
+      VISIBILITY_LEVEL_PUBLIC_STRING,
+    );
+  },
   methods: {
     isVisibilityLevelDisabled(visibility) {
       return !this.allowedVisibilityLevels.includes(visibility);
-    },
-    getInitialVisibilityValue() {
-      return this.getMaximumAllowedVisibilityLevel(this.projectVisibility);
     },
     setNamespace(namespace) {
       this.form.fields.namespace.value = namespace;
@@ -157,42 +190,8 @@ export default {
         this.form.fields.visibility.value,
       );
     },
-    getProjectVisibilityLevel() {
-      return VISIBILITY_LEVELS_STRING_TO_INTEGER[this.projectVisibility];
-    },
-    getNamespaceVisibilityLevel() {
-      const visibility =
-        this.form?.fields?.namespace?.value?.visibility || VISIBILITY_LEVEL_PUBLIC_STRING;
-      return VISIBILITY_LEVELS_STRING_TO_INTEGER[visibility];
-    },
-    getVisibilityLevelCap() {
-      return Math.min(this.getProjectVisibilityLevel(), this.getNamespaceVisibilityLevel());
-    },
-    getRestrictedVisibilityLevelsSet() {
-      return new Set(this.restrictedVisibilityLevels);
-    },
-    getAllowedVisibilityLevels() {
-      const allowedLevels = Object.entries(VISIBILITY_LEVELS_STRING_TO_INTEGER).reduce(
-        (levels, [levelName, levelValue]) => {
-          if (
-            !this.getRestrictedVisibilityLevelsSet().has(levelValue) &&
-            levelValue <= this.getVisibilityLevelCap()
-          ) {
-            levels.push(levelName);
-          }
-          return levels;
-        },
-        [],
-      );
-
-      if (!allowedLevels.length) {
-        return [VISIBILITY_LEVEL_PRIVATE_STRING];
-      }
-
-      return allowedLevels;
-    },
     getMaximumAllowedVisibilityLevel(visibility) {
-      const allowedVisibilities = this.getAllowedVisibilityLevels().map(
+      const allowedVisibilities = this.allowedVisibilityLevels.map(
         (s) => VISIBILITY_LEVELS_STRING_TO_INTEGER[s],
       );
       const current = VISIBILITY_LEVELS_STRING_TO_INTEGER[visibility];

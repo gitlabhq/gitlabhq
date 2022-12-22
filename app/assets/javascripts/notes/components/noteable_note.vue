@@ -1,12 +1,12 @@
 <script>
 import { GlSprintf, GlAvatarLink, GlAvatar } from '@gitlab/ui';
-import $ from 'jquery';
 import { escape, isEmpty } from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
 import { createAlert } from '~/flash';
+import { isInViewport, scrollToElement } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_GONE } from '~/lib/utils/http_status';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -223,14 +223,14 @@ export default {
       if (noteId === this.note.id) {
         this.isEditing = true;
         this.setSelectedCommentPositionHover();
-        this.scrollToNoteIfNeeded($(this.$el));
+        this.scrollToNoteIfNeeded(this.$el);
       }
     });
   },
 
   mounted() {
     if (this.isTarget && this.shouldScrollToNote) {
-      this.scrollToNoteIfNeeded($(this.$el));
+      this.scrollToNoteIfNeeded(this.$el);
     }
   },
 
@@ -240,11 +240,15 @@ export default {
       'removeNote',
       'updateNote',
       'toggleResolveNote',
-      'scrollToNoteIfNeeded',
       'updateAssignees',
       'setSelectedCommentPositionHover',
       'updateDiscussionPosition',
     ]),
+    scrollToNoteIfNeeded(el) {
+      if (!isInViewport(el)) {
+        scrollToElement(el);
+      }
+    },
     editHandler() {
       this.isEditing = true;
       this.setSelectedCommentPositionHover();

@@ -1,5 +1,4 @@
-import httpStatusCodes from '~/lib/utils/http_status';
-
+import httpStatusCodes, { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import { dashboardEmptyStates, metricStates } from '~/monitoring/constants';
 import * as types from '~/monitoring/stores/mutation_types';
 import mutations from '~/monitoring/stores/mutations';
@@ -336,7 +335,7 @@ describe('Monitoring mutations', () => {
           metricId,
           error: {
             response: {
-              status: httpStatusCodes.BAD_REQUEST,
+              status: HTTP_STATUS_BAD_REQUEST,
             },
           },
         });

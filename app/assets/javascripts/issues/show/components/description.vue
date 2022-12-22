@@ -1,6 +1,5 @@
 <script>
 import { GlToast, GlTooltip, GlModalDirective } from '@gitlab/ui';
-import $ from 'jquery';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -301,20 +300,19 @@ export default {
 
     updateTaskStatusText() {
       const taskRegexMatches = this.taskStatus.match(/(\d+) of ((?!0)\d+)/);
-      const $issuableHeader = $('.issuable-meta');
-      const $tasks = $('#task_status', $issuableHeader);
-      const $tasksShort = $('#task_status_short', $issuableHeader);
+      const tasks = document.querySelector('.issuable-meta #task_status');
+      const tasksShort = document.querySelector('.issuable-meta #task_status_short');
+
+      if (!tasks || !tasksShort) return;
 
       if (taskRegexMatches) {
-        $tasks.text(this.taskStatus);
-        $tasksShort.text(
-          `${taskRegexMatches[1]}/${taskRegexMatches[2]} checklist item${
-            taskRegexMatches[2] > 1 ? 's' : ''
-          }`,
-        );
+        tasks.textContent = this.taskStatus;
+        tasksShort.textContent = `${taskRegexMatches[1]}/${taskRegexMatches[2]} checklist item${
+          taskRegexMatches[2] > 1 ? 's' : ''
+        }`;
       } else {
-        $tasks.text('');
-        $tasksShort.text('');
+        tasks.textContent = '';
+        tasksShort.textContent = '';
       }
     },
     renderTaskActions() {

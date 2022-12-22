@@ -1,6 +1,7 @@
 import axios from '~/lib/utils/axios_utils';
 import { backOff } from '~/lib/utils/common_utils';
 import statusCodes, {
+  HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_NO_CONTENT,
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
@@ -36,7 +37,7 @@ export const getPrometheusQueryData = (prometheusEndpoint, params, opts) =>
       // https://prometheus.io/docs/prometheus/latest/querying/api/#format-overview
       const { response = {} } = error;
       if (
-        response.status === statusCodes.BAD_REQUEST ||
+        response.status === HTTP_STATUS_BAD_REQUEST ||
         response.status === HTTP_STATUS_UNPROCESSABLE_ENTITY ||
         response.status === statusCodes.SERVICE_UNAVAILABLE
       ) {

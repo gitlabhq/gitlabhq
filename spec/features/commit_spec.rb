@@ -22,6 +22,8 @@ RSpec.describe 'Commit', feature_category: :source_code_management do
     end
 
     describe "commit details" do
+      subject { page }
+
       before do
         visit project_commit_path(project, commit)
       end
@@ -37,6 +39,8 @@ RSpec.describe 'Commit', feature_category: :source_code_management do
       it 'renders diff stats', :js do
         expect(page).to have_selector(".diff-stats")
       end
+
+      it_behaves_like 'code highlight'
     end
 
     describe "pagination" do

@@ -24,7 +24,7 @@ import {
 import eventHub from '~/invite_members/event_hub';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus, { HTTP_STATUS_CREATED } from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_CREATED } from '~/lib/utils/http_status';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import {
   displaySuccessfulInvitationAlert,
@@ -648,7 +648,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays the api error for invalid email syntax', async () => {
-          mockInvitationsApi(httpStatus.BAD_REQUEST, invitationsApiResponse.EMAIL_INVALID);
+          mockInvitationsApi(HTTP_STATUS_BAD_REQUEST, invitationsApiResponse.EMAIL_INVALID);
 
           clickInviteButton();
 
@@ -660,7 +660,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('clears the error when the modal is hidden', async () => {
-          mockInvitationsApi(httpStatus.BAD_REQUEST, invitationsApiResponse.EMAIL_INVALID);
+          mockInvitationsApi(HTTP_STATUS_BAD_REQUEST, invitationsApiResponse.EMAIL_INVALID);
 
           clickInviteButton();
 
@@ -715,7 +715,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays the invalid syntax error for bad request', async () => {
-          mockInvitationsApi(httpStatus.BAD_REQUEST, invitationsApiResponse.ERROR_EMAIL_INVALID);
+          mockInvitationsApi(HTTP_STATUS_BAD_REQUEST, invitationsApiResponse.ERROR_EMAIL_INVALID);
 
           clickInviteButton();
 
@@ -739,7 +739,7 @@ describe('InviteMembersModal', () => {
           createInviteMembersToGroupWrapper();
 
           await triggerMembersTokenSelect([user3, user4]);
-          mockInvitationsApi(httpStatus.BAD_REQUEST, invitationsApiResponse.ERROR_EMAIL_INVALID);
+          mockInvitationsApi(HTTP_STATUS_BAD_REQUEST, invitationsApiResponse.ERROR_EMAIL_INVALID);
 
           clickInviteButton();
 

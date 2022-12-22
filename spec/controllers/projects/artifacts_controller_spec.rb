@@ -423,6 +423,16 @@ RSpec.describe Projects::ArtifactsController do
         end
       end
 
+      context 'when artifacts archive is missing' do
+        let!(:job) { create(:ci_build, :success, pipeline: pipeline) }
+
+        it 'returns 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
       context 'fetching an artifact of different type' do
         before do
           job.job_artifacts.each(&:destroy)

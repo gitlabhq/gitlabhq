@@ -1020,9 +1020,6 @@ msgid_plural "%{selectedProjectsCount} projects"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{size} %{unit}"
-msgstr ""
-
 msgid "%{size} GiB"
 msgstr ""
 
@@ -14134,7 +14131,7 @@ msgstr ""
 msgid "DevOps adoption"
 msgstr ""
 
-msgid "DevOps metrics comparison (Alpha)"
+msgid "DevOps metrics comparison (Beta)"
 msgstr ""
 
 msgid "Developer"
@@ -44678,9 +44675,6 @@ msgstr ""
 msgid "UsageQuota|LFS storage"
 msgstr ""
 
-msgid "UsageQuota|Learn more about excess storage usage"
-msgstr ""
-
 msgid "UsageQuota|Learn more about usage quotas"
 msgstr ""
 
@@ -44711,13 +44705,7 @@ msgstr ""
 msgid "UsageQuota|Pipelines"
 msgstr ""
 
-msgid "UsageQuota|Purchase more storage"
-msgstr ""
-
 msgid "UsageQuota|Purchased storage"
-msgstr ""
-
-msgid "UsageQuota|Purchased storage available"
 msgstr ""
 
 msgid "UsageQuota|Purchased storage used"
@@ -44777,22 +44765,10 @@ msgstr ""
 msgid "UsageQuota|The table below shows usage since %{usageSince}"
 msgstr ""
 
-msgid "UsageQuota|This is the total amount of storage used across your projects within this namespace."
-msgstr ""
-
-msgid "UsageQuota|This is the total amount of storage used by projects above the free %{actualRepositorySizeLimit} storage limit."
-msgstr ""
-
 msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"
 msgstr ""
 
 msgid "UsageQuota|This table omits projects that used 0 CI/CD minutes or 0 shared runners duration"
-msgstr ""
-
-msgid "UsageQuota|Total excess storage used"
-msgstr ""
-
-msgid "UsageQuota|Total namespace storage used"
 msgstr ""
 
 msgid "UsageQuota|Uploads"
@@ -44822,9 +44798,6 @@ msgstr ""
 msgid "UsageQuota|Usage of resources across your projects"
 msgstr ""
 
-msgid "UsageQuota|Usage quotas help link"
-msgstr ""
-
 msgid "UsageQuota|User settings &gt; Usage quotas"
 msgstr ""
 
@@ -44843,13 +44816,7 @@ msgstr ""
 msgid "UsageQuota|You have reached the free storage limit on %{projectsLockedText}. To unlock them, purchase additional storage."
 msgstr ""
 
-msgid "UsageQuota|You used: %{usage} %{limit}"
-msgstr ""
-
 msgid "UsageQuota|Your purchased storage is running low. To avoid locked projects, purchase more storage."
-msgstr ""
-
-msgid "UsageQuota|out of %{formattedLimit} of your namespace storage"
 msgstr ""
 
 msgid "UsageTrends|Could not load the issues and merge requests chart. Please refresh the page to try again."

@@ -53,6 +53,7 @@ Prerequisites:
 
 - Review the list of [items that are exported](#items-that-are-exported). Not all items are exported.
 - You must have at least the Maintainer role for the project.
+- Users must [set a public email](../../profile/index.md#set-your-public-email) in the source GitLab instance that matches one of their verified emails in the target GitLab instance for the user mapping to work correctly.
 
 To export a project and its data, follow these steps:
 

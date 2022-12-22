@@ -1,7 +1,10 @@
 import { escape } from 'lodash';
 import { TEST_HOST } from 'spec/test_constants';
 import * as messages from '~/ide/stores/modules/terminal/messages';
-import httpStatus, { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
+import httpStatus, {
+  HTTP_STATUS_FORBIDDEN,
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+} from '~/lib/utils/http_status';
 import { sprintf } from '~/locale';
 
 const TEST_HELP_URL = `${TEST_HOST}/help`;
@@ -26,7 +29,7 @@ describe('IDE store terminal messages', () => {
     });
 
     it('returns permission error, with status FORBIDDEN', () => {
-      const result = messages.configCheckError(httpStatus.FORBIDDEN, TEST_HELP_URL);
+      const result = messages.configCheckError(HTTP_STATUS_FORBIDDEN, TEST_HELP_URL);
 
       expect(result).toBe(messages.ERROR_PERMISSION);
     });

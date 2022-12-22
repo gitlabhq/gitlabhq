@@ -1,5 +1,5 @@
 import Api from '~/api';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import * as terminalService from '../../../../services/terminals';
 import { CHECK_CONFIG, CHECK_RUNNERS, RETRY_RUNNERS_INTERVAL } from '../constants';
 import * as messages from '../messages';
@@ -18,7 +18,7 @@ export const receiveConfigCheckError = ({ commit, state }, e) => {
   const { status } = e.response;
   const { paths } = state;
 
-  const isVisible = status !== httpStatus.FORBIDDEN && status !== httpStatus.NOT_FOUND;
+  const isVisible = status !== HTTP_STATUS_FORBIDDEN && status !== httpStatus.NOT_FOUND;
   commit(types.SET_VISIBLE, isVisible);
 
   const message = messages.configCheckError(status, paths.webTerminalConfigHelpPath);

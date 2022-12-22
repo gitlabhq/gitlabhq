@@ -5,11 +5,12 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
+import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/work_item_links/work_item_link_child_metadata.vue';
+
 import { createAlert } from '~/flash';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
 
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
-import WorkItemLinkChildMetadata from '~/work_items/components/work_item_links/work_item_link_child_metadata.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import WorkItemLinksMenu from '~/work_items/components/work_item_links/work_item_links_menu.vue';
 import WorkItemTreeChildren from '~/work_items/components/work_item_links/work_item_tree_children.vue';
@@ -25,11 +26,9 @@ import {
   workItemObjectiveNoMetadata,
   confidentialWorkItemTask,
   closedWorkItemTask,
-  mockMilestone,
-  mockAssignees,
-  mockLabels,
   workItemHierarchyTreeResponse,
   workItemHierarchyTreeFailureResponse,
+  workItemObjectiveMetadataWidgets,
 } from '../../mock_data';
 
 jest.mock('~/flash');
@@ -148,11 +147,7 @@ describe('WorkItemLinkChild', () => {
       const metadataEl = findMetadataComponent();
       expect(metadataEl.exists()).toBe(true);
       expect(metadataEl.props()).toMatchObject({
-        allowsScopedLabels: true,
-        progress: 10,
-        milestone: mockMilestone,
-        assignees: mockAssignees,
-        labels: mockLabels,
+        metadataWidgets: workItemObjectiveMetadataWidgets,
       });
     });
 

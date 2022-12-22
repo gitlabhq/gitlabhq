@@ -3,7 +3,7 @@ import { GlBroadcastMessage, GlForm } from '@gitlab/ui';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import MessageForm from '~/admin/broadcast_messages/components/message_form.vue';
 import {
   BROADCAST_MESSAGES_PATH,
@@ -160,7 +160,7 @@ describe('MessageForm', () => {
 
     it('shows an error alert if the create request fails', async () => {
       createComponent({ broadcastMessage: { id: undefined } });
-      axiosMock.onPost(BROADCAST_MESSAGES_PATH).replyOnce(httpStatus.BAD_REQUEST);
+      axiosMock.onPost(BROADCAST_MESSAGES_PATH).replyOnce(HTTP_STATUS_BAD_REQUEST);
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await waitForPromises();
 
@@ -187,7 +187,7 @@ describe('MessageForm', () => {
     it('shows an error alert if the update request fails', async () => {
       const id = 1337;
       createComponent({ broadcastMessage: { id } });
-      axiosMock.onPost(`${BROADCAST_MESSAGES_PATH}/${id}`).replyOnce(httpStatus.BAD_REQUEST);
+      axiosMock.onPost(`${BROADCAST_MESSAGES_PATH}/${id}`).replyOnce(HTTP_STATUS_BAD_REQUEST);
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await waitForPromises();
 

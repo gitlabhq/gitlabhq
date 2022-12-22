@@ -5,6 +5,7 @@ import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import statusCodes, {
+  HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
@@ -983,7 +984,7 @@ describe('Monitoring store actions', () => {
     });
 
     it('Failed POST request throws an error', async () => {
-      mock.onPost(state.dashboardsEndpoint).reply(statusCodes.BAD_REQUEST);
+      mock.onPost(state.dashboardsEndpoint).reply(HTTP_STATUS_BAD_REQUEST);
 
       await expect(testAction(duplicateSystemDashboard, {}, state, [], [])).rejects.toEqual(
         'There was an error creating the dashboard.',
@@ -994,7 +995,7 @@ describe('Monitoring store actions', () => {
     it('Failed POST request throws an error with a description', async () => {
       const backendErrorMsg = 'This file already exists!';
 
-      mock.onPost(state.dashboardsEndpoint).reply(statusCodes.BAD_REQUEST, {
+      mock.onPost(state.dashboardsEndpoint).reply(HTTP_STATUS_BAD_REQUEST, {
         error: backendErrorMsg,
       });
 

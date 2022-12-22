@@ -19,6 +19,9 @@ module QA
         is_new_session: false
       )
     end
+    let!(:source_bulk_import_enabled) do
+      Runtime::ApplicationSettings.get_application_settings(api_client: source_admin_api_client)[:bulk_import_enabled]
+    end
     let!(:source_admin_user) do
       Resource::User.fabricate_via_api! do |usr|
         usr.api_client = source_admin_api_client
@@ -36,6 +39,9 @@ module QA
     # target instance objects
     #
     let!(:admin_api_client) { Runtime::API::Client.as_admin }
+    let!(:target_bulk_import_enabled) do
+      Runtime::ApplicationSettings.get_application_settings(api_client: admin_api_client)[:bulk_import_enabled]
+    end
     let!(:admin_user) do
       Resource::User.fabricate_via_api! do |usr|
         usr.api_client = admin_api_client
@@ -87,7 +93,8 @@ module QA
     end
 
     before do
-      Runtime::ApplicationSettings.set_application_settings(bulk_import_enabled: true)
+      enable_bulk_import(source_admin_api_client) unless source_bulk_import_enabled
+      enable_bulk_import(admin_api_client) unless target_bulk_import_enabled
 
       target_sandbox.add_member(user, Resource::Members::AccessLevel::OWNER)
     end
@@ -101,6 +108,10 @@ module QA
     ensure
       # make sure cleanup runs last
       cleanup!
+    end
+
+    def enable_bulk_import(api_client)
+      Runtime::ApplicationSettings.set_application_settings(api_client: api_client, bulk_import_enabled: true)
     end
   end
 end

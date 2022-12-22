@@ -942,6 +942,43 @@ export const workItemHierarchyResponse = {
   },
 };
 
+export const workItemObjectiveMetadataWidgets = {
+  ASSIGNEES: {
+    type: 'ASSIGNEES',
+    __typename: 'WorkItemWidgetAssignees',
+    canInviteMembers: true,
+    allowsMultipleAssignees: true,
+    assignees: {
+      __typename: 'UserCoreConnection',
+      nodes: mockAssignees,
+    },
+  },
+  HEALTH_STATUS: {
+    type: 'HEALTH_STATUS',
+    __typename: 'WorkItemWidgetHealthStatus',
+    healthStatus: 'onTrack',
+  },
+  LABELS: {
+    type: 'LABELS',
+    __typename: 'WorkItemWidgetLabels',
+    allowsScopedLabels: true,
+    labels: {
+      __typename: 'LabelConnection',
+      nodes: mockLabels,
+    },
+  },
+  MILESTONE: {
+    type: 'MILESTONE',
+    __typename: 'WorkItemWidgetMilestone',
+    milestone: mockMilestone,
+  },
+  PROGRESS: {
+    type: 'PROGRESS',
+    __typename: 'WorkItemWidgetProgress',
+    progress: 10,
+  },
+};
+
 export const workItemObjectiveWithChild = {
   id: 'gid://gitlab/WorkItem/12',
   iid: '12',
@@ -976,35 +1013,11 @@ export const workItemObjectiveWithChild = {
       },
       __typename: 'WorkItemWidgetHierarchy',
     },
-    {
-      type: 'PROGRESS',
-      __typename: 'WorkItemWidgetProgress',
-      progress: 10,
-    },
-    {
-      type: 'MILESTONE',
-      __typename: 'WorkItemWidgetMilestone',
-      milestone: mockMilestone,
-    },
-    {
-      type: 'ASSIGNEES',
-      __typename: 'WorkItemWidgetAssignees',
-      canInviteMembers: true,
-      allowsMultipleAssignees: true,
-      assignees: {
-        __typename: 'UserCoreConnection',
-        nodes: mockAssignees,
-      },
-    },
-    {
-      type: 'LABELS',
-      __typename: 'WorkItemWidgetLabels',
-      allowsScopedLabels: true,
-      labels: {
-        __typename: 'LabelConnection',
-        nodes: mockLabels,
-      },
-    },
+    workItemObjectiveMetadataWidgets.PROGRESS,
+    workItemObjectiveMetadataWidgets.HEALTH_STATUS,
+    workItemObjectiveMetadataWidgets.MILESTONE,
+    workItemObjectiveMetadataWidgets.ASSIGNEES,
+    workItemObjectiveMetadataWidgets.LABELS,
   ],
   __typename: 'WorkItem',
 };

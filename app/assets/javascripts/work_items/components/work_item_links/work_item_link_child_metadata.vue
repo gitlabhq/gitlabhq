@@ -1,21 +1,15 @@
 <script>
-import {
-  GlIcon,
-  GlLabel,
-  GlAvatar,
-  GlAvatarLink,
-  GlAvatarsInline,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlLabel, GlAvatar, GlAvatarLink, GlAvatarsInline, GlTooltipDirective } from '@gitlab/ui';
 
 import { s__, sprintf } from '~/locale';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
 import ItemMilestone from '~/issuable/components/issue_milestone.vue';
 
+import { WIDGET_TYPE_MILESTONE, WIDGET_TYPE_ASSIGNEES, WIDGET_TYPE_LABELS } from '../../constants';
+
 export default {
   components: {
-    GlIcon,
     GlLabel,
     GlAvatar,
     GlAvatarLink,
@@ -26,35 +20,24 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    allowsScopedLabels: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    progress: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    milestone: {
+    metadataWidgets: {
       type: Object,
       required: false,
-      default: null,
-    },
-    assignees: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    labels: {
-      type: Array,
-      required: false,
-      default: () => [],
+      default: () => ({}),
     },
   },
   computed: {
-    hasProgress() {
-      return Number.isInteger(this.progress);
+    milestone() {
+      return this.metadataWidgets[WIDGET_TYPE_MILESTONE]?.milestone;
+    },
+    assignees() {
+      return this.metadataWidgets[WIDGET_TYPE_ASSIGNEES]?.assignees?.nodes || [];
+    },
+    labels() {
+      return this.metadataWidgets[WIDGET_TYPE_LABELS]?.labels?.nodes || [];
+    },
+    allowsScopedLabels() {
+      return this.metadataWidgets[WIDGET_TYPE_LABELS]?.allowsScopedLabels;
     },
     assigneesCollapsedTooltip() {
       if (this.assignees.length > 2) {
@@ -83,16 +66,7 @@ export default {
 
 <template>
   <div class="gl-display-flex gl-flex-wrap gl-align-items-center">
-    <div
-      v-if="hasProgress"
-      v-gl-tooltip.bottom
-      :title="__('Progress')"
-      class="gl-display-flex gl-align-items-center gl-mr-5 gl-cursor-help gl-line-height-normal"
-      data-testid="item-progress"
-    >
-      <gl-icon name="progress" />
-      <span class="gl-text-primary gl-ml-2">{{ progress }}%</span>
-    </div>
+    <slot></slot>
     <item-milestone
       v-if="milestone"
       :milestone="milestone"

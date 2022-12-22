@@ -8,7 +8,7 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
 import PipelineNewForm from '~/pipeline_new/components/pipeline_new_form.vue';
 import ciConfigVariablesQuery from '~/pipeline_new/graphql/queries/ci_config_variables.graphql';
@@ -378,7 +378,7 @@ describe('Pipeline New Form', () => {
 
     describe('when the error response can be handled', () => {
       beforeEach(async () => {
-        mock.onPost(pipelinesPath).reply(httpStatusCodes.BAD_REQUEST, mockError);
+        mock.onPost(pipelinesPath).reply(HTTP_STATUS_BAD_REQUEST, mockError);
 
         findForm().vm.$emit('submit', dummySubmitEvent);
 
@@ -416,7 +416,7 @@ describe('Pipeline New Form', () => {
         beforeEach(async () => {
           mock
             .onPost(pipelinesPath)
-            .reply(httpStatusCodes.BAD_REQUEST, mockCreditCardValidationRequiredError);
+            .reply(HTTP_STATUS_BAD_REQUEST, mockCreditCardValidationRequiredError);
 
           window.gon = {
             subscriptions_url: TEST_HOST,

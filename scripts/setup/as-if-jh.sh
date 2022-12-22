@@ -21,8 +21,7 @@ download_jh_path() {
 
     curl --location --output "${output}" --header "Private-Token: ${ADD_JH_FILES_TOKEN}" --get --data-urlencode "sha=${JH_BRANCH}" --data-urlencode "path=${path}" "https://gitlab.com/api/v4/projects/${GITLAB_JH_MIRROR_PROJECT}/repository/archive"
 
-    tar -zxf "${output}"
+    tar -zxf "${output}" --strip-component 1
     rm "${output}"
-    mv gitlab-"${JH_BRANCH}"-*/"${path}" ./
   done
 }

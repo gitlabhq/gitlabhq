@@ -32,7 +32,7 @@ import {
 } from '~/alerts_settings/utils/error_messages';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes, { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
+import { HTTP_STATUS_FORBIDDEN, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import {
   createHttpVariables,
   updateHttpVariables,
@@ -365,7 +365,7 @@ describe('AlertsSettingsWrapper', () => {
       });
 
       it('shows an error alert when integration is not activated', async () => {
-        mock.onPost(/(.*)/).replyOnce(httpStatusCodes.FORBIDDEN);
+        mock.onPost(/(.*)/).replyOnce(HTTP_STATUS_FORBIDDEN);
         await wrapper.vm.testAlertPayload({ endpoint: '', data: '', token: '' });
         expect(createAlert).toHaveBeenCalledWith({
           message: INTEGRATION_INACTIVE_PAYLOAD_TEST_ERROR,

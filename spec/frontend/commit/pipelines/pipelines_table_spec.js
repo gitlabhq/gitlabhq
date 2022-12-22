@@ -7,7 +7,10 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import PipelinesTable from '~/commit/pipelines/pipelines_table.vue';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, {
+  HTTP_STATUS_BAD_REQUEST,
+  HTTP_STATUS_UNAUTHORIZED,
+} from '~/lib/utils/http_status';
 import { createAlert } from '~/flash';
 import { TOAST_MESSAGE } from '~/pipelines/constants';
 import axios from '~/lib/utils/axios_utils';
@@ -244,8 +247,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
         it.each`
           status                                   | message
-          ${httpStatusCodes.BAD_REQUEST}           | ${defaultMsg}
-          ${httpStatusCodes.UNAUTHORIZED}          | ${permissionsMsg}
+          ${HTTP_STATUS_BAD_REQUEST}               | ${defaultMsg}
+          ${HTTP_STATUS_UNAUTHORIZED}              | ${permissionsMsg}
           ${httpStatusCodes.INTERNAL_SERVER_ERROR} | ${defaultMsg}
         `('displays permissions error message', async ({ status, message }) => {
           const response = { response: { status } };

@@ -4,7 +4,7 @@ import * as actions from '~/error_tracking/store/list/actions';
 import * as types from '~/error_tracking/store/list/mutation_types';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 
 jest.mock('~/flash.js');
 
@@ -39,7 +39,7 @@ describe('error tracking actions', () => {
     });
 
     it('should show flash on API error', async () => {
-      mock.onGet().reply(httpStatusCodes.BAD_REQUEST);
+      mock.onGet().reply(HTTP_STATUS_BAD_REQUEST);
 
       await testAction(
         actions.startPolling,

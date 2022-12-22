@@ -237,6 +237,10 @@ module QA
         ENV['GITLAB_QA_PASSWORD_1']
       end
 
+      def gitlab_qa_access_token_1
+        ENV['GITLAB_QA_ACCESS_TOKEN_1']
+      end
+
       def gitlab_qa_username_2
         ENV['GITLAB_QA_USERNAME_2'] || 'gitlab-qa-user2'
       end

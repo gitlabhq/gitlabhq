@@ -12,6 +12,7 @@ module QA
       end
 
       let(:session) { SecureRandom.hex(5) }
+      let(:tag_name) { SecureRandom.hex(5) }
 
       it 'sends a push event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348945' do
         setup_webhook(push: true) do |webhook, smocker|
@@ -94,6 +95,32 @@ module QA
             expect(events.size).to be(2), "Should have 2 events: \n#{events.map(&:raw).join("\n")}"
             expect(issue_event).not_to be(nil), "Not issue event: \n#{events[0].raw}"
             expect(note_event).not_to be(nil), "Not note event: \n#{events[1].raw}"
+          end
+        end
+      end
+
+      it 'sends a tag event',
+         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/383577' do
+        setup_webhook(tag_push: true) do |webhook, smocker|
+          project_push = Resource::Repository::ProjectPush.fabricate! do |project_push|
+            project_push.project = webhook.project
+          end
+
+          Resource::Tag.fabricate_via_api! do |tag|
+            tag.project = project_push.project
+            tag.ref = project_push.branch_name
+            tag.name = tag_name
+          end
+
+          wait_until do
+            smocker.history(session).size == 1
+          end
+
+          events = smocker.history(session).map(&:as_hook_event)
+          aggregate_failures do
+            expect(events.size).to be(1), "Should have 1 event: \n#{events.map(&:raw).join("\n")}"
+            expect(events[0].project_name).to eql(webhook.project.name)
+            expect(events[0].tag?).to be(true), "Not tag event: \n#{events[0].raw}"
           end
         end
       end

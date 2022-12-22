@@ -463,16 +463,12 @@ describe('ForkForm component', () => {
         expect(urlUtility.redirectTo).not.toHaveBeenCalled();
       });
 
-      it('does not make POST request if no visbility is checked', async () => {
+      it('does not make POST request if no visibility is checked', async () => {
         jest.spyOn(axios, 'post');
 
-        setupComponent({
-          fields: {
-            visibility: {
-              value: null,
-            },
-          },
-        });
+        setupComponent();
+        wrapper.vm.form.fields.visibility.value = null;
+        await nextTick();
 
         await submitForm();
 

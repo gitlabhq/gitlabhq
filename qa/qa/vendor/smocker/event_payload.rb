@@ -41,7 +41,7 @@ module QA
         end
 
         def tag?
-          event == :tag
+          event == :tag_push
         end
 
         def wiki?

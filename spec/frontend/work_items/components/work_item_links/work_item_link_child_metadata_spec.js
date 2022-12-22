@@ -1,29 +1,26 @@
-import { GlIcon, GlLabel, GlAvatarsInline } from '@gitlab/ui';
+import { GlLabel, GlAvatarsInline } from '@gitlab/ui';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import ItemMilestone from '~/issuable/components/issue_milestone.vue';
 import WorkItemLinkChildMetadata from '~/work_items/components/work_item_links/work_item_link_child_metadata.vue';
 
-import { mockMilestone, mockAssignees, mockLabels } from '../../mock_data';
+import { workItemObjectiveMetadataWidgets } from '../../mock_data';
 
 describe('WorkItemLinkChildMetadata', () => {
+  const { MILESTONE, ASSIGNEES, LABELS } = workItemObjectiveMetadataWidgets;
+  const mockMilestone = MILESTONE.milestone;
+  const mockAssignees = ASSIGNEES.assignees.nodes;
+  const mockLabels = LABELS.labels.nodes;
   let wrapper;
 
-  const createComponent = ({
-    allowsScopedLabels = true,
-    progress = 10,
-    milestone = mockMilestone,
-    assignees = mockAssignees,
-    labels = mockLabels,
-  } = {}) => {
+  const createComponent = ({ metadataWidgets = workItemObjectiveMetadataWidgets } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinkChildMetadata, {
       propsData: {
-        allowsScopedLabels,
-        progress,
-        milestone,
-        assignees,
-        labels,
+        metadataWidgets,
+      },
+      slots: {
+        default: `<div data-testid="default-slot">Foo</div>`,
       },
     });
   };
@@ -32,13 +29,8 @@ describe('WorkItemLinkChildMetadata', () => {
     createComponent();
   });
 
-  it('renders item progress', () => {
-    const progressEl = wrapper.findByTestId('item-progress');
-
-    expect(progressEl.exists()).toBe(true);
-    expect(progressEl.attributes('title')).toBe('Progress');
-    expect(progressEl.text().trim()).toBe('10%');
-    expect(progressEl.findComponent(GlIcon).props('name')).toBe('progress');
+  it('renders default slot contents', () => {
+    expect(wrapper.findByTestId('default-slot').text()).toBe('Foo');
   });
 
   it('renders item milestone', () => {

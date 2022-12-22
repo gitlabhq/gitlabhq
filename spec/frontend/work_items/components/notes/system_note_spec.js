@@ -43,6 +43,7 @@ describe('system note component', () => {
           path: '/root',
         },
         bodyHtml: '<p dir="auto">closed</p>',
+        note_html: '<p dir="auto">closed</p>',
         systemNoteIconName: 'status_closed',
         createdAt: '2017-08-02T10:51:58.559Z',
       },

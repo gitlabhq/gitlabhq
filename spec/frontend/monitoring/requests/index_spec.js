@@ -3,7 +3,9 @@ import { backoffMockImplementation } from 'helpers/backoff_helper';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import statusCodes, {
+  HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_UNAUTHORIZED,
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
 import { getDashboard, getPrometheusQueryData } from '~/monitoring/requests';
@@ -107,7 +109,7 @@ describe('monitoring metrics_requests', () => {
 
     it('rejects after retrying twice and getting an HTTP 401 error', () => {
       // Mock multiple attempts while the cache is filling up and fails
-      mock.onGet(prometheusEndpoint).reply(statusCodes.UNAUTHORIZED, {
+      mock.onGet(prometheusEndpoint).reply(HTTP_STATUS_UNAUTHORIZED, {
         status: 'error',
         error: 'An error occurred',
       });
@@ -134,7 +136,7 @@ describe('monitoring metrics_requests', () => {
 
     it.each`
       code                                | reason
-      ${statusCodes.BAD_REQUEST}          | ${'Parameters are missing or incorrect'}
+      ${HTTP_STATUS_BAD_REQUEST}          | ${'Parameters are missing or incorrect'}
       ${HTTP_STATUS_UNPROCESSABLE_ENTITY} | ${"Expression can't be executed"}
       ${statusCodes.SERVICE_UNAVAILABLE}  | ${'Query timed out or aborted'}
     `('rejects with details: "$reason" after getting an HTTP $code error', ({ code, reason }) => {

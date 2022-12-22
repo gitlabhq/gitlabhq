@@ -6,7 +6,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import CodeCoverage from '~/pages/projects/graphs/components/code_coverage.vue';
 import { codeCoverageMockData, sortedDataByDates } from './mock_data';
 
@@ -84,7 +84,7 @@ describe('Code Coverage', () => {
   describe('when fetching data fails', () => {
     beforeEach(() => {
       mockAxios = new MockAdapter(axios);
-      mockAxios.onGet().replyOnce(httpStatusCodes.BAD_REQUEST);
+      mockAxios.onGet().replyOnce(HTTP_STATUS_BAD_REQUEST);
 
       createComponent();
 

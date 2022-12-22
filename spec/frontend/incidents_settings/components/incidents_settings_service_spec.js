@@ -3,7 +3,7 @@ import { createAlert } from '~/flash';
 import { ERROR_MSG } from '~/incidents_settings/constants';
 import IncidentsSettingsService from '~/incidents_settings/incidents_settings_service';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 
 jest.mock('~/flash');
@@ -34,7 +34,7 @@ describe('IncidentsSettingsService', () => {
     });
 
     it('should display a flash message on update error', () => {
-      mock.onPatch().reply(httpStatusCodes.BAD_REQUEST);
+      mock.onPatch().reply(HTTP_STATUS_BAD_REQUEST);
 
       return service.updateSettings({}).then(() => {
         expect(createAlert).toHaveBeenCalledWith({
