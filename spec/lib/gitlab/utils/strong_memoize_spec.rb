@@ -2,12 +2,13 @@
 
 require 'fast_spec_helper'
 require 'rspec-benchmark'
+require 'rspec-parameterized'
 
 RSpec.configure do |config|
   config.include RSpec::Benchmark::Matchers
 end
 
-RSpec.describe Gitlab::Utils::StrongMemoize do
+RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :not_owned do
   let(:klass) do
     strong_memoize_class = described_class
 
@@ -35,14 +36,9 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
       end
       strong_memoize_attr :method_name_attr
 
-      def different_method_name_attr
+      def enabled?
         trace << value
         value
-      end
-      strong_memoize_attr :different_method_name_attr, :different_member_name_attr
-
-      def enabled?
-        true
       end
       strong_memoize_attr :enabled?
 
@@ -80,6 +76,8 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
   subject(:object) { klass.new(value) }
 
   shared_examples 'caching the value' do
+    let(:member_name) { described_class.normalize_key(method_name) }
+
     it 'only calls the block once' do
       value0 = object.send(method_name)
       value1 = object.send(method_name)
@@ -103,7 +101,6 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
       context "with value #{value}" do
         let(:value) { value }
         let(:method_name) { :method_name }
-        let(:member_name) { :method_name }
 
         it_behaves_like 'caching the value'
 
@@ -176,31 +173,44 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
   end
 
   describe '#strong_memoized?' do
-    let(:value) { :anything }
+    shared_examples 'memoization check' do |method_name|
+      context "for #{method_name}" do
+        let(:value) { :anything }
 
-    subject { object.strong_memoized?(:method_name) }
+        subject { object.strong_memoized?(method_name) }
 
-    it 'returns false if the value is uncached' do
-      is_expected.to be(false)
+        it 'returns false if the value is uncached' do
+          is_expected.to be(false)
+        end
+
+        it 'returns true if the value is cached' do
+          object.public_send(method_name)
+
+          is_expected.to be(true)
+        end
+      end
     end
 
-    it 'returns true if the value is cached' do
-      object.method_name
-
-      is_expected.to be(true)
-    end
+    it_behaves_like 'memoization check', :method_name
+    it_behaves_like 'memoization check', :enabled?
   end
 
   describe '#clear_memoization' do
-    let(:value) { 'mepmep' }
+    shared_examples 'clearing memoization' do |method_name|
+      let(:member_name) { described_class.normalize_key(method_name) }
+      let(:value) { 'mepmep' }
 
-    it 'removes the instance variable' do
-      object.method_name
+      it 'removes the instance variable' do
+        object.public_send(method_name)
 
-      object.clear_memoization(:method_name)
+        object.clear_memoization(method_name)
 
-      expect(object.instance_variable_defined?(:@method_name)).to be(false)
+        expect(object.instance_variable_defined?(:"@#{member_name}")).to be(false)
+      end
     end
+
+    it_behaves_like 'clearing memoization', :method_name
+    it_behaves_like 'clearing memoization', :enabled?
   end
 
   describe '.strong_memoize_attr' do
@@ -209,7 +219,6 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
 
       context "memoized after method definition with value #{value}" do
         let(:method_name) { :method_name_attr }
-        let(:member_name) { :method_name_attr }
 
         it_behaves_like 'caching the value'
 
@@ -218,30 +227,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
         end
 
         it 'retains method arity' do
-          expect(klass.instance_method(member_name).arity).to eq(0)
-        end
-      end
-
-      context "memoized before method definition with different member name and value #{value}" do
-        let(:method_name) { :different_method_name_attr }
-        let(:member_name) { :different_member_name_attr }
-
-        it_behaves_like 'caching the value'
-
-        it 'calls the existing .method_added' do
-          expect(klass.method_added_list).to include(:different_method_name_attr)
-        end
-      end
-
-      context 'with valid method name' do
-        let(:method_name) { :enabled? }
-
-        context 'with invalid member name' do
-          let(:member_name) { :enabled? }
-
-          it 'is invalid' do
-            expect { object.send(method_name) { value } }.to raise_error /is not allowed as an instance variable name/
-          end
+          expect(klass.instance_method(method_name).arity).to eq(0)
         end
       end
     end
@@ -296,6 +282,43 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
             strong_memoize_attr :method_with_parameters
           end
         end.to raise_error(RuntimeError, expected_message)
+      end
+    end
+  end
+
+  describe '.normalize_key' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.normalize_key(input) }
+
+    where(:input, :output, :valid) do
+      :key    | :key    | true
+      "key"   | "key"   | true
+      :key?   | "key？" | true
+      "key?"  | "key？" | true
+      :key!   | "key！" | true
+      "key!"  | "key！" | true
+      # invalid cases caught elsewhere
+      :"ke?y" | :"ke?y" | false
+      "ke?y"  | "ke?y"  | false
+      :"ke!y" | :"ke!y" | false
+      "ke!y"  | "ke!y"  | false
+    end
+
+    with_them do
+      let(:ivar) { "@#{output}" }
+
+      it { is_expected.to eq(output) }
+
+      if params[:valid]
+        it 'is a valid ivar name' do
+          expect { instance_variable_defined?(ivar) }.not_to raise_error
+        end
+      else
+        it 'raises a NameError error' do
+          expect { instance_variable_defined?(ivar) }
+            .to raise_error(NameError, /not allowed as an instance/)
+        end
       end
     end
   end

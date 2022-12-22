@@ -6,7 +6,7 @@ module Backup
   class Database < Task
     extend ::Gitlab::Utils::Override
     include Backup::Helper
-    attr_reader :force
+    attr_reader :force, :config
 
     IGNORED_ERRORS = [
       # Ignore warnings
@@ -18,108 +18,98 @@ module Backup
     ].freeze
     IGNORED_ERRORS_REGEXP = Regexp.union(IGNORED_ERRORS).freeze
 
-    def initialize(progress, force:)
+    def initialize(database_name, progress, force:)
       super(progress)
+      @database_name = database_name
+      @config = base_model.connection_db_config.configuration_hash
       @force = force
     end
 
     override :dump
-    def dump(destination_dir, backup_id)
-      snapshot_ids = base_models_for_backup.each_with_object({}) do |(database_name, base_model), snapshot_ids|
-        base_model.connection.begin_transaction(isolation: :repeatable_read)
+    def dump(db_file_name, backup_id)
+      FileUtils.mkdir_p(File.dirname(db_file_name))
+      FileUtils.rm_f(db_file_name)
+      compress_rd, compress_wr = IO.pipe
+      compress_pid = spawn(gzip_cmd, in: compress_rd, out: [db_file_name, 'w', 0600])
+      compress_rd.close
 
-        snapshot_ids[database_name] =
-          base_model.connection.execute("SELECT pg_export_snapshot() as snapshot_id;").first['snapshot_id']
-      end
+      dump_pid =
+        case config[:adapter]
+        when "postgresql" then
+          progress.print "Dumping PostgreSQL database #{database} ... "
+          pg_env
+          pgsql_args = ["--clean"] # Pass '--clean' to include 'DROP TABLE' statements in the DB dump.
+          pgsql_args << '--if-exists'
 
-      FileUtils.mkdir_p(destination_dir)
-
-      snapshot_ids.each do |database_name, snapshot_id|
-        base_model = base_models_for_backup[database_name]
-
-        config = base_model.connection_db_config.configuration_hash
-
-        db_file_name = file_name(destination_dir, database_name)
-        FileUtils.rm_f(db_file_name)
-
-        pg_database = config[:database]
-
-        progress.print "Dumping PostgreSQL database #{pg_database} ... "
-        pg_env(config)
-        pgsql_args = ["--clean"] # Pass '--clean' to include 'DROP TABLE' statements in the DB dump.
-        pgsql_args << '--if-exists'
-        pgsql_args << "--snapshot=#{snapshot_ids[database_name]}"
-
-        if Gitlab.config.backup.pg_schema
-          pgsql_args << '-n'
-          pgsql_args << Gitlab.config.backup.pg_schema
-
-          Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
+          if Gitlab.config.backup.pg_schema
             pgsql_args << '-n'
-            pgsql_args << schema.to_s
+            pgsql_args << Gitlab.config.backup.pg_schema
+
+            Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
+              pgsql_args << '-n'
+              pgsql_args << schema.to_s
+            end
           end
+
+          Process.spawn('pg_dump', *pgsql_args, database, out: compress_wr)
         end
+      compress_wr.close
 
-        success = Backup::Dump::Postgres.new.dump(pg_database, db_file_name, pgsql_args)
-
-        base_model.connection.rollback_transaction
-
-        raise DatabaseBackupError.new(config, db_file_name) unless success
-
-        report_success(success)
-        progress.flush
+      success = [compress_pid, dump_pid].all? do |pid|
+        Process.waitpid(pid)
+        $?.success?
       end
+
+      report_success(success)
+      progress.flush
+
+      raise DatabaseBackupError.new(config, db_file_name) unless success
     end
 
     override :restore
-    def restore(destination_dir)
-      base_models_for_backup.each do |database_name, base_model|
-        config = base_model.connection_db_config.configuration_hash
+    def restore(db_file_name)
+      unless File.exist?(db_file_name)
+        raise(Backup::Error, "Source database file does not exist #{db_file_name}") if main_database?
 
-        db_file_name = file_name(destination_dir, database_name)
-        database = config[:database]
-
-        unless File.exist?(db_file_name)
-          raise(Backup::Error, "Source database file does not exist #{db_file_name}") if main_database?(database_name)
-
-          progress.puts "Source backup for the database #{@database_name} doesn't exist. Skipping the task"
-          return false
-        end
-
-        unless force
-          progress.puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.color(:yellow)
-          sleep(5)
-        end
-
-        # Drop all tables Load the schema to ensure we don't have any newer tables
-        # hanging out from a failed upgrade
-        drop_tables(database_name)
-
-        decompress_rd, decompress_wr = IO.pipe
-        decompress_pid = spawn(*%w(gzip -cd), out: decompress_wr, in: db_file_name)
-        decompress_wr.close
-
-        status, @errors =
-          case config[:adapter]
-          when "postgresql" then
-            progress.print "Restoring PostgreSQL database #{database} ... "
-            pg_env(config)
-            execute_and_track_errors(pg_restore_cmd(database), decompress_rd)
-          end
-        decompress_rd.close
-
-        Process.waitpid(decompress_pid)
-        success = $?.success? && status.success?
-
-        if @errors.present?
-          progress.print "------ BEGIN ERRORS -----\n".color(:yellow)
-          progress.print @errors.join.color(:yellow)
-          progress.print "------ END ERRORS -------\n".color(:yellow)
-        end
-
-        report_success(success)
-        raise Backup::Error, 'Restore failed' unless success
+        progress.puts "Source backup for the database #{@database_name} doesn't exist. Skipping the task"
+        return
       end
+
+      unless force
+        progress.puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.color(:yellow)
+        sleep(5)
+      end
+
+      # Drop all tables Load the schema to ensure we don't have any newer tables
+      # hanging out from a failed upgrade
+      puts_time 'Cleaning the database ... '.color(:blue)
+      Rake::Task['gitlab:db:drop_tables'].invoke
+      puts_time 'done'.color(:green)
+
+      decompress_rd, decompress_wr = IO.pipe
+      decompress_pid = spawn(*%w(gzip -cd), out: decompress_wr, in: db_file_name)
+      decompress_wr.close
+
+      status, @errors =
+        case config[:adapter]
+        when "postgresql" then
+          progress.print "Restoring PostgreSQL database #{database} ... "
+          pg_env
+          execute_and_track_errors(pg_restore_cmd, decompress_rd)
+        end
+      decompress_rd.close
+
+      Process.waitpid(decompress_pid)
+      success = $?.success? && status.success?
+
+      if @errors.present?
+        progress.print "------ BEGIN ERRORS -----\n".color(:yellow)
+        progress.print @errors.join.color(:yellow)
+        progress.print "------ END ERRORS -------\n".color(:yellow)
+      end
+
+      report_success(success)
+      raise Backup::Error, 'Restore failed' unless success
     end
 
     override :pre_restore_warning
@@ -154,22 +144,16 @@ module Backup
 
     protected
 
-    def base_models_for_backup
-      @base_models_for_backup ||= Gitlab::Database.database_base_models
+    def database
+      @config[:database]
     end
 
-    def main_database?(database_name)
-      database_name.to_sym == :main
+    def base_model
+      Gitlab::Database.database_base_models[@database_name]
     end
 
-    def file_name(base_dir, database_name)
-      prefix = if database_name.to_sym != :main
-                 "#{database_name}_"
-               else
-                 ''
-               end
-
-      File.join(base_dir, "#{prefix}database.sql.gz")
+    def main_database?
+      @database_name == :main
     end
 
     def ignore_error?(line)
@@ -205,7 +189,7 @@ module Backup
       end
     end
 
-    def pg_env(config)
+    def pg_env
       args = {
         username: 'PGUSER',
         host: 'PGHOST',
@@ -239,20 +223,7 @@ module Backup
 
     private
 
-    def drop_tables(database_name)
-      if Rake::Task.task_defined? "gitlab:db:drop_tables:#{database_name}"
-        puts_time 'Cleaning the database ... '.color(:blue)
-        Rake::Task["gitlab:db:drop_tables:#{database_name}"].invoke
-        puts_time 'done'.color(:green)
-      elsif !Gitlab::Database.has_config?(:ci)
-        # In single database, we do not have rake tasks per database
-        puts_time 'Cleaning the database ... '.color(:blue)
-        Rake::Task["gitlab:db:drop_tables"].invoke
-        puts_time 'done'.color(:green)
-      end
-    end
-
-    def pg_restore_cmd(database)
+    def pg_restore_cmd
       ['psql', database]
     end
   end

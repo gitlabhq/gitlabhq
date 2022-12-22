@@ -13862,6 +13862,12 @@ msgid_plural "Deployments|%{deployments} environments impacted."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Deployments|Define environments in the deploy stage(s) in %{code_open}.gitlab-ci.yml%{code_close} to track deployments here."
+msgstr ""
+
+msgid "Deployments|You don't have any deployments right now."
+msgstr ""
+
 msgid "Deployment|API"
 msgstr ""
 
@@ -49116,6 +49122,9 @@ msgstr ""
 msgid "ciReport|is loading, errors when loading results"
 msgstr ""
 
+msgid "ci_database"
+msgstr ""
+
 msgid "closed"
 msgstr ""
 
@@ -49197,9 +49206,6 @@ msgid "daily"
 msgstr ""
 
 msgid "data"
-msgstr ""
-
-msgid "database"
 msgstr ""
 
 msgid "date must not be after 9999-12-31"
@@ -49640,6 +49646,9 @@ msgid "loading"
 msgstr ""
 
 msgid "locked by %{path_lock_user_name} %{created_at}"
+msgstr ""
+
+msgid "main_database"
 msgstr ""
 
 msgid "manual"

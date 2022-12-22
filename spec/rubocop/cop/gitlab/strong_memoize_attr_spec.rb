@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Gitlab::StrongMemoizeAttr do
             def enabled?
               true
             end
-            strong_memoize_attr :enabled?, :enabled
+            strong_memoize_attr :enabled?
           end
         RUBY
       end

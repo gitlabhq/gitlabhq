@@ -49,7 +49,7 @@ class GitRefsFinder
   def regex_search?
     Regexp.union('^', '$', '*') === search
   end
-  strong_memoize_attr :regex_search?, :regex_search
+  strong_memoize_attr :regex_search?
 
   def unescape_regex_operators(regex_string)
     regex_string.sub('\^', '^').gsub('\*', '.*?').sub('\$', '$')

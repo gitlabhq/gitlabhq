@@ -59,7 +59,7 @@ class ProjectSetting < ApplicationRecord
       !!super
     end
   end
-  strong_memoize_attr :show_diff_preview_in_email?, :show_diff_preview_in_email
+  strong_memoize_attr :show_diff_preview_in_email?
 
   private
 

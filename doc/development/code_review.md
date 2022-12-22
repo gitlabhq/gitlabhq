@@ -234,6 +234,10 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
     - [When to use a feature flag](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags)
 1. You have informed the Infrastructure department of a default setting or new setting change per [definition of done](contributing/merge_request_workflow.md#definition-of-done), or decided that this is unnecessary.
 
+##### Compliance
+
+1. You have confirmed that the correct [MR type label](contributing/issue_workflow.md#type-labels) has been applied.
+
 ### The responsibility of the merge request author
 
 The responsibility to find the best solution and implement it lies with the
@@ -510,6 +514,7 @@ WARNING:
 Before taking the decision to merge:
 
 - Set the milestone.
+- Confirm that the correct [MR type label](contributing/issue_workflow.md#type-labels) is applied.
 - Consider warnings and errors from danger bot, code quality, and other reports.
   Unless a strong case can be made for the violation, these should be resolved
   before merging. A comment must be posted if the MR is merged with any failed job.

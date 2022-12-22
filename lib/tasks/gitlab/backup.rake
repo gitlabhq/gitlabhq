@@ -44,13 +44,15 @@ namespace :gitlab do
     namespace :db do
       task create: :gitlab_environment do
         lock do
-          Backup::Manager.new(progress).run_create_task('db')
+          Backup::Manager.new(progress).run_create_task('main_db')
+          Backup::Manager.new(progress).run_create_task('ci_db')
         end
       end
 
       task restore: :gitlab_environment do
         lock do
-          Backup::Manager.new(progress).run_restore_task('db')
+          Backup::Manager.new(progress).run_restore_task('main_db')
+          Backup::Manager.new(progress).run_restore_task('ci_db')
         end
       end
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Backup::Manager, feature_category: :backup_restore do
+RSpec.describe Backup::Manager do
   include StubENV
 
   let(:progress) { StringIO.new }
@@ -30,7 +30,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
           task: task,
           enabled: enabled,
           destination_path: 'my_task.tar.gz',
-          human_name: 'my task'
+          human_name: 'my task',
+          task_group: 'group1'
         )
       }
     end
@@ -56,6 +57,16 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     describe 'skipped' do
       it 'informs the user' do
         stub_env('SKIP', 'my_task')
+
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... [SKIPPED]')
+
+        subject.run_create_task('my_task')
+      end
+    end
+
+    describe 'task group skipped' do
+      it 'informs the user' do
+        stub_env('SKIP', 'group1')
 
         expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... [SKIPPED]')
 

@@ -855,6 +855,8 @@ you must fulfill the following requirements:
 1. All events listed at `events` attribute must have the same `aggregation` attribute.
 1. `time_frame` does not include `all` value, which is unavailable for Redis sourced aggregated metrics.
 
+While it is possible to aggregate EE-only events together with events that occur in all GitLab editions, it's important to remember that doing so may produce high variance between data collected from EE and CE GitLab instances.
+
 ### Database sourced aggregated metrics
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52784) in GitLab 13.9.

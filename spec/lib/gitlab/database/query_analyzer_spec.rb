@@ -10,7 +10,6 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
   before do
     allow(described_class.instance).to receive(:all_analyzers).and_return([analyzer, disabled_analyzer])
     allow(analyzer).to receive(:enabled?).and_return(true)
-    allow(analyzer).to receive(:raw?).and_return(false)
     allow(analyzer).to receive(:suppressed?).and_return(false)
     allow(analyzer).to receive(:begin!)
     allow(analyzer).to receive(:end!)
@@ -178,13 +177,6 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
       expect(analyzer).to receive(:suppressed?).and_return(true)
       expect(analyzer).to receive(:requires_tracking?).and_return(true)
       expect(analyzer).to receive(:analyze)
-
-      expect { process_sql("SELECT 1 FROM projects") }.not_to raise_error
-    end
-
-    it 'does call analyze with raw sql when raw? is true' do
-      expect(analyzer).to receive(:raw?).and_return(true)
-      expect(analyzer).to receive(:analyze).with('SELECT 1 FROM projects')
 
       expect { process_sql("SELECT 1 FROM projects") }.not_to raise_error
     end

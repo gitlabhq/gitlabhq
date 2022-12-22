@@ -5,21 +5,19 @@ module Gitlab
     module QueryAnalyzers
       class QueryRecorder < Base
         LOG_PATH = 'query_recorder/'
+        LIST_PARAMETER_REGEX = %r{\$\d+(?:\s*,\s*\$\d+)+}.freeze
+        SINGLE_PARAMETER_REGEX = %r{\$\d+}.freeze
 
         class << self
-          def raw?
-            true
-          end
-
           def enabled?
             # Only enable QueryRecorder in CI on database MRs or default branch
             ENV['CI_MERGE_REQUEST_LABELS']&.include?('database') ||
               (ENV['CI_COMMIT_REF_NAME'].present? && ENV['CI_COMMIT_REF_NAME'] == ENV['CI_DEFAULT_BRANCH'])
           end
 
-          def analyze(sql)
+          def analyze(parsed)
             payload = {
-              sql: sql
+              normalized: normalize_query(parsed.sql)
             }
 
             log_query(payload)
@@ -41,6 +39,12 @@ module Gitlab
             log_line = "#{Gitlab::Json.dump(payload)}\n"
 
             File.write(log_file, log_line, mode: 'a')
+          end
+
+          def normalize_query(query)
+            query
+              .gsub(LIST_PARAMETER_REGEX, '?,?,?') # Replace list parameters with ?,?,?
+              .gsub(SINGLE_PARAMETER_REGEX, '?')   # Replace single parameters with ?
           end
         end
       end

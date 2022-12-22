@@ -438,7 +438,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/environment_variables.md @axil
 /doc/administration/external_pipeline_validation.md @marcel.amirault
 /doc/administration/feature_flags.md @axil
-/doc/administration/file_hooks.md @aqualls
+/doc/administration/file_hooks.md @ashrafkhamis
 /doc/administration/geo/ @axil
 /doc/administration/geo/disaster_recovery/ @axil
 /doc/administration/geo/disaster_recovery/runbooks/ @axil
@@ -472,7 +472,9 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/monitoring/gitlab_self_monitoring_project/ @msedlakjakubowski
 /doc/administration/monitoring/ip_allowlist.md @jglassman1
 /doc/administration/monitoring/performance/ @msedlakjakubowski
+/doc/administration/monitoring/performance/performance_bar.md @jglassman1
 /doc/administration/monitoring/prometheus/ @msedlakjakubowski
+/doc/administration/monitoring/prometheus/gitlab_exporter.md @jglassman1
 /doc/administration/monitoring/prometheus/index.md @axil
 /doc/administration/monitoring/prometheus/web_exporter.md @jglassman1
 /doc/administration/nfs.md @axil
@@ -485,6 +487,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/pages/ @ashrafkhamis
 /doc/administration/polling.md @axil
 /doc/administration/postgresql/ @aqualls
+/doc/administration/postgresql/multiple_databases.md @jglassman1
 /doc/administration/raketasks/ @axil
 /doc/administration/raketasks/ldap.md @jglassman1
 /doc/administration/raketasks/praefect.md @eread
@@ -543,7 +546,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/error_tracking.md @msedlakjakubowski
 /doc/api/events.md @eread
 /doc/api/experiments.md @phillipwells
-/doc/api/feature_flag_specs.md @rdickenson
 /doc/api/feature_flag_user_lists.md @rdickenson
 /doc/api/feature_flags.md @rdickenson
 /doc/api/features.md @rdickenson
@@ -673,7 +675,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/wikis.md @ashrafkhamis
 /doc/architecture/blueprints/database/scalability/patterns/ @aqualls
 /doc/architecture/blueprints/database_scaling/ @aqualls
-/doc/architecture/blueprints/runner_tokens/ @fneill
 /doc/ci/ @marcel.amirault
 /doc/ci/caching/ @marcel.amirault
 /doc/ci/chatops/ @phillipwells
@@ -765,7 +766,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/graphql_guide/ @ashrafkhamis
 /doc/development/graphql_guide/batchloader.md @aqualls
 /doc/development/i18n/ @eread
-/doc/development/image_scaling.md @jglassman1
+/doc/development/image_scaling.md @lciutacu
 /doc/development/import_export.md @eread
 /doc/development/index.md @sselhorn
 /doc/development/integrations/codesandbox.md @sselhorn
@@ -783,6 +784,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/logging.md @msedlakjakubowski
 /doc/development/maintenance_mode.md @axil
 /doc/development/merge_request_concepts/ @aqualls
+/doc/development/merge_request_diffs.md @aqualls
 /doc/development/omnibus.md @axil
 /doc/development/packages/ @claytoncornell
 /doc/development/pages/ @ashrafkhamis
@@ -792,6 +794,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/project_templates.md @lciutacu
 /doc/development/prometheus_metrics.md @msedlakjakubowski
 /doc/development/real_time.md @msedlakjakubowski
+/doc/development/rubocop_development_guide.md @sselhorn
 /doc/development/sec/ @rdickenson
 /doc/development/sec/security_report_ingestion_overview.md @claytoncornell
 /doc/development/secure_coding_guidelines.md @sselhorn
@@ -825,6 +828,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/integration/datadog.md @ashrafkhamis
 /doc/integration/external-issue-tracker.md @ashrafkhamis
 /doc/integration/gitpod.md @ashrafkhamis
+/doc/integration/glab/ @aqualls
 /doc/integration/gmail_action_buttons_for_gitlab.md @ashrafkhamis
 /doc/integration/index.md @ashrafkhamis
 /doc/integration/jenkins.md @ashrafkhamis
@@ -864,22 +868,21 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/topics/plan_and_track.md @msedlakjakubowski
 /doc/tutorials/ @kpaizee
 /doc/update/ @axil
-/doc/update/mysql_to_postgresql.md @aqualls
+/doc/update/background_migrations.md @aqualls
 /doc/update/package/ @axil
-/doc/update/upgrading_postgresql_using_slony.md @aqualls
 /doc/user/admin_area/analytics/ @lciutacu
 /doc/user/admin_area/broadcast_messages.md @phillipwells
 /doc/user/admin_area/credentials_inventory.md @jglassman1
 /doc/user/admin_area/custom_project_templates.md @eread
 /doc/user/admin_area/diff_limits.md @aqualls
+/doc/user/admin_area/external_users.md @jglassman1
 /doc/user/admin_area/geo_sites.md @axil
 /doc/user/admin_area/labels.md @msedlakjakubowski
 /doc/user/admin_area/license.md @fneill
 /doc/user/admin_area/license_file.md @fneill
 /doc/user/admin_area/merge_requests_approvals.md @aqualls
 /doc/user/admin_area/moderate_users.md @jglassman1
-/doc/user/admin_area/monitoring/background_migrations.md @aqualls
-/doc/user/admin_area/monitoring/health_check.md @msedlakjakubowski
+/doc/user/admin_area/monitoring/ @msedlakjakubowski
 /doc/user/admin_area/reporting/git_abuse_rate_limit.md @phillipwells
 /doc/user/admin_area/reporting/spamcheck.md @axil
 /doc/user/admin_area/review_abuse_reports.md @jglassman1
@@ -902,6 +905,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/admin_area/settings/rate_limit_on_notes_creation.md @msedlakjakubowski
 /doc/user/admin_area/settings/rate_limit_on_pipelines_creation.md @marcel.amirault
 /doc/user/admin_area/settings/rate_limit_on_users_api.md @jglassman1
+/doc/user/admin_area/settings/terraform_limits.md @phillipwells
 /doc/user/admin_area/settings/third_party_offers.md @lciutacu
 /doc/user/admin_area/settings/usage_statistics.md @claytoncornell
 /doc/user/admin_area/settings/visibility_and_access_controls.md @aqualls
@@ -958,8 +962,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/group/repositories_analytics/ @marcel.amirault
 /doc/user/group/roadmap/ @msedlakjakubowski
 /doc/user/group/saml_sso/ @jglassman1
-/doc/user/group/settings/group_access_tokens.md @jglassman1
-/doc/user/group/settings/import_export.md @eread
+/doc/user/group/settings/ @jglassman1
 /doc/user/group/subgroups/ @lciutacu
 /doc/user/group/value_stream_analytics/ @lciutacu
 /doc/user/infrastructure/ @phillipwells
@@ -970,8 +973,10 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/infrastructure/clusters/manage/management_project_applications/ @phillipwells
 /doc/user/infrastructure/clusters/manage/management_project_applications/runner.md @fneill
 /doc/user/infrastructure/iac/ @phillipwells
-/doc/user/markdown.md @aqualls
+/doc/user/markdown.md @msedlakjakubowski
 /doc/user/namespace/ @lciutacu
+/doc/user/okrs.md @msedlakjakubowski
+/doc/user/operations_dashboard/ @rdickenson
 /doc/user/packages/ @claytoncornell
 /doc/user/packages/composer_repository/ @claytoncornell
 /doc/user/packages/conan_repository/ @claytoncornell
@@ -980,6 +985,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/packages/dependency_proxy/ @claytoncornell
 /doc/user/packages/generic_packages/ @claytoncornell
 /doc/user/packages/go_proxy/ @claytoncornell
+/doc/user/packages/gradle_repository/ @claytoncornell
 /doc/user/packages/harbor_container_registry/ @claytoncornell
 /doc/user/packages/helm_repository/ @claytoncornell
 /doc/user/packages/infrastructure_registry/ @claytoncornell
@@ -991,7 +997,9 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/packages/rubygems_registry/ @claytoncornell
 /doc/user/packages/terraform_module_registry/ @claytoncornell
 /doc/user/packages/workflows/ @claytoncornell
+/doc/user/packages/yarn_repository/ @claytoncornell
 /doc/user/permissions.md @jglassman1
+/doc/user/product_analytics/ @lciutacu
 /doc/user/profile/ @jglassman1
 /doc/user/profile/account/ @jglassman1
 /doc/user/profile/contributions_calendar.md @lciutacu
@@ -1036,6 +1044,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/repository/managing_large_repositories.md @axil
 /doc/user/project/repository/mirror/ @aqualls
 /doc/user/project/repository/reducing_the_repo_size_using_git.md @eread
+/doc/user/project/repository/ssh_signed_commits/ @aqualls
 /doc/user/project/repository/web_editor.md @ashrafkhamis
 /doc/user/project/repository/x509_signed_commits/ @aqualls
 /doc/user/project/requirements/ @msedlakjakubowski
@@ -1046,9 +1055,12 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/settings/project_access_tokens.md @jglassman1
 /doc/user/project/time_tracking.md @msedlakjakubowski
 /doc/user/project/web_ide/ @ashrafkhamis
+/doc/user/project/web_ide_beta/ @ashrafkhamis
 /doc/user/project/wiki/ @ashrafkhamis
 /doc/user/project/working_with_projects.md @lciutacu
 /doc/user/public_access.md @lciutacu
+/doc/user/read_only_namespaces.md @phillipwells
+/doc/user/report_abuse.md @phillipwells
 /doc/user/reserved_names.md @lciutacu
 /doc/user/search/ @ashrafkhamis
 /doc/user/shortcuts.md @ashrafkhamis

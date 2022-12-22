@@ -2,6 +2,8 @@ LATEST_SHA=$(git rev-parse HEAD)
 GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 BROKER_BASE_URL="http://localhost:9292"
 
+cd "${0%/*}"
+
 CONTRACTS=$(find ./contracts -name "*.json")
 ERROR=0
 

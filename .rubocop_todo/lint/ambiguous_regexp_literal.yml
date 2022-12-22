@@ -92,4 +92,5 @@ Lint/AmbiguousRegexpLiteral:
     - 'spec/support_specs/database/multiple_databases_helpers_spec.rb'
     - 'spec/tasks/gitlab/gitaly_rake_spec.rb'
     - 'spec/tasks/gitlab/workhorse_rake_spec.rb'
+    - 'spec/views/admin/dashboard/index.html.haml_spec.rb'
     - 'spec/views/devise/sessions/new.html.haml_spec.rb'

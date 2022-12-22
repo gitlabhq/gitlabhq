@@ -39,7 +39,7 @@ module RuboCop
         def_node_matcher :strong_memoize?, <<~PATTERN
           (block
             $(send nil? :strong_memoize
-              (sym $_)
+              (sym _)
             )
             (args)
             $_
@@ -47,21 +47,20 @@ module RuboCop
         PATTERN
 
         def on_block(node)
-          send_node, attr_name, body = strong_memoize?(node)
+          send_node, body = strong_memoize?(node)
           return unless send_node
 
-          corrector = autocorrect_pure_definitions(node.parent, attr_name, body) if node.parent.def_type?
+          corrector = autocorrect_pure_definitions(node.parent, body) if node.parent.def_type?
 
           add_offense(send_node, &corrector)
         end
 
         private
 
-        def autocorrect_pure_definitions(def_node, attr_name, body)
+        def autocorrect_pure_definitions(def_node, body)
           proc do |corrector|
             method_name = def_node.method_name
-            attr_suffix = ", :#{attr_name}" if attr_name != method_name
-            replacement = "\n#{indent(def_node)}strong_memoize_attr :#{method_name}#{attr_suffix}"
+            replacement = "\n#{indent(def_node)}strong_memoize_attr :#{method_name}"
 
             corrector.insert_after(def_node, replacement)
             corrector.replace(def_node.body, body.source)

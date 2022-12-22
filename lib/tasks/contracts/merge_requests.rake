@@ -21,6 +21,7 @@ namespace :contracts do
 
     Pact::VerificationTask.new(:get_diffs_metadata) do |pact|
       pact_helper_location = "pact_helpers/project/merge_requests/show/get_diffs_metadata_helper.rb"
+
       pact.uri(
         Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
         pact_helper: "#{provider}/#{pact_helper_location}"
@@ -38,7 +39,7 @@ namespace :contracts do
 
     desc 'Run all merge request contract tests'
     task 'test:merge_requests', :contract_merge_requests do |_t, arg|
-      errors = %w[diffs_batch diffs_metadata discussions].each_with_object([]) do |task, err|
+      errors = %w[get_diffs_batch get_diffs_metadata get_discussions].each_with_object([]) do |task, err|
         Rake::Task["contracts:merge_requests:pact:verify:#{task}"].execute
       rescue StandardError, SystemExit
         err << "contracts:merge_requests:pact:verify:#{task}"
