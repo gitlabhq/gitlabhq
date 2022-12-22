@@ -14,6 +14,8 @@ module Ci
     include EachBatch
     include Gitlab::Utils::StrongMemoize
 
+    enum accessibility: { public: 0, private: 1 }, _suffix: true
+
     NON_ERASABLE_FILE_TYPES = %w[trace].freeze
 
     REPORT_FILE_TYPES = {
@@ -344,6 +346,12 @@ module Ci
       strong_memoize(:store_after_commit) do
         trace? && JobArtifactUploader.direct_upload_enabled?
       end
+    end
+
+    def public_access?
+      return true unless Feature.enabled?(:non_public_artifacts, type: :development)
+
+      public_accessibility?
     end
 
     private

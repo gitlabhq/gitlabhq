@@ -102,6 +102,7 @@ func TestGetOpts(t *testing.T) {
 					MultipartUpload:  test.multipart,
 					CustomPutHeaders: test.customPutHeaders,
 					PutHeaders:       test.putHeaders,
+					SkipDelete:       true,
 				},
 			}
 			deadline := time.Now().Add(time.Duration(apiResponse.RemoteObject.Timeout) * time.Second)
@@ -111,6 +112,7 @@ func TestGetOpts(t *testing.T) {
 			require.Equal(t, apiResponse.TempPath, opts.LocalTempPath)
 			require.WithinDuration(t, deadline, opts.Deadline, time.Second)
 			require.Equal(t, apiResponse.RemoteObject.ID, opts.RemoteID)
+			require.Equal(t, apiResponse.RemoteObject.SkipDelete, opts.SkipDelete)
 			require.Equal(t, apiResponse.RemoteObject.GetURL, opts.RemoteURL)
 			require.Equal(t, apiResponse.RemoteObject.StoreURL, opts.PresignedPut)
 			require.Equal(t, apiResponse.RemoteObject.DeleteURL, opts.PresignedDelete)

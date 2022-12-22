@@ -1003,7 +1003,7 @@ rspec:
 
 - Combining reports in parent pipelines using [artifacts from child pipelines](#needspipelinejob) is
   not supported. Track progress on adding support in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215725).
-- To be able to browse the report output files, include the [`artifacts:paths`](#artifactspaths) keyword. This will upload and store the artifact twice.
+- To be able to browse the report output files, include the [`artifacts:paths`](#artifactspaths) keyword. This uploads and stores the artifact twice.
 - The test reports are collected regardless of the job results (success or failure).
   You can use [`artifacts:expire_in`](#artifactsexpire_in) to set up an expiration
   date for artifacts reports.

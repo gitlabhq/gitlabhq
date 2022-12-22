@@ -19,3 +19,7 @@ func (lf *LocalFile) Consume(_ context.Context, r io.Reader, _ time.Time) (int64
 	}
 	return n, err
 }
+
+func (lf *LocalFile) ConsumeWithoutDelete(outerCtx context.Context, reader io.Reader, deadLine time.Time) (_ int64, err error) {
+	return lf.Consume(outerCtx, reader, deadLine)
+}

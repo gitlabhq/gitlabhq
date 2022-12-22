@@ -40,6 +40,9 @@ CentOS 8 was EOL on December 31, 2021. In GitLab 14.5 and later,
 We officially support all distributions that are binary compatible with Red Hat Enterprise Linux.
 This gives users a path forward for their CentOS 8 builds at its end of life.
 
+NOTE:
+The [CentOS major version and a minor version](https://en.wikipedia.org/wiki/CentOS#CentOS_releases) up to CentOS8 ([when CentOS Stream](https://en.wikipedia.org/wiki/CentOS#CentOS_Stream) was released) correspond to the set of major version and update versions of RHEL.
+
 ## Update GitLab package sources after upgrading the OS
 
 After upgrading the Operating System (OS) as per its own documentation,

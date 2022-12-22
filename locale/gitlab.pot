@@ -10059,6 +10059,9 @@ msgstr ""
 msgid "Committed by"
 msgstr ""
 
+msgid "CommonJS module"
+msgstr ""
+
 msgid "Community forum"
 msgstr ""
 
@@ -14845,6 +14848,9 @@ msgid "Dynamic Application Security Testing (DAST)"
 msgstr ""
 
 msgid "E-mail:"
+msgstr ""
+
+msgid "ESM module"
 msgstr ""
 
 msgid "Each project can also have an issue tracker and a wiki."
@@ -20090,6 +20096,9 @@ msgid "HAR file URL"
 msgstr ""
 
 msgid "HAR file path or URL"
+msgstr ""
+
+msgid "HTML script tag"
 msgstr ""
 
 msgid "HTTP Archive (HAR)"
@@ -31608,13 +31617,52 @@ msgstr ""
 msgid "Proceed"
 msgstr ""
 
+msgid "Product Analytics|Add the NPM package to your package.json using your preferred package manager:"
+msgstr ""
+
+msgid "Product Analytics|Add the script to the page and assign the client SDK to window:"
+msgstr ""
+
 msgid "Product Analytics|Analyze your product with Product Analytics"
+msgstr ""
+
+msgid "Product Analytics|For the product analytics dashboard to start showing you some data, you need to add the analytics tracking code to your project."
+msgstr ""
+
+msgid "Product Analytics|Identifies the sender of tracking events"
+msgstr ""
+
+msgid "Product Analytics|Import the new package into your JS code:"
+msgstr ""
+
+msgid "Product Analytics|Instrument your application"
+msgstr ""
+
+msgid "Product Analytics|SDK App ID"
+msgstr ""
+
+msgid "Product Analytics|SDK Host"
 msgstr ""
 
 msgid "Product Analytics|Set up Product Analytics to track how your product is performing. Combine it with your GitLab data to better understand where you can improve your product and development processes."
 msgstr ""
 
 msgid "Product Analytics|Set up product analytics..."
+msgstr ""
+
+msgid "Product Analytics|Steps to add product analytics as a CommonJS module"
+msgstr ""
+
+msgid "Product Analytics|Steps to add product analytics as a HTML script tag"
+msgstr ""
+
+msgid "Product Analytics|Steps to add product analytics as an ESM module"
+msgstr ""
+
+msgid "Product Analytics|The host to send all tracking events to"
+msgstr ""
+
+msgid "Product Analytics|To instrument your application, select one of the options below. After an option has been instrumented and data is being collected, this page will progress to the next step."
 msgstr ""
 
 msgid "Product analytics"

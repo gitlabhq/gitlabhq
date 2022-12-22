@@ -1,4 +1,4 @@
-/* eslint-disable no-new, class-methods-use-this */
+/* eslint-disable class-methods-use-this */
 import $ from 'jquery';
 import Vue from 'vue';
 import { createAlert } from '~/flash';
@@ -134,8 +134,8 @@ function destroyPipelines(app) {
   return null;
 }
 
-function loadDiffs({ url, sticky }) {
-  return axios.get(`${url}.json${location.search}`).then(({ data }) => {
+function loadDiffs({ url, sticky, tabs }) {
+  return axios.get(url).then(({ data }) => {
     const $container = $('#diffs');
     $container.html(data.html);
     initDiffStatsDropdown(sticky);
@@ -143,7 +143,9 @@ function loadDiffs({ url, sticky }) {
     localTimeAgo(document.querySelectorAll('#diffs .js-timeago'));
     syntaxHighlight($('#diffs .js-syntax-highlight'));
 
-    new Diff();
+    tabs.createDiff();
+    tabs.setHubToDiff();
+
     scrollToContainer('#diffs');
 
     $('.diff-file').each((i, el) => {
@@ -204,6 +206,7 @@ export default class MergeRequestTabs {
 
     this.currentTab = null;
     this.diffsLoaded = false;
+    this.diffsClass = null;
     this.commitsLoaded = false;
     this.fixedLayoutPref = null;
     this.eventHub = createEventHub();
@@ -211,6 +214,7 @@ export default class MergeRequestTabs {
 
     this.setUrl = setUrl !== undefined ? setUrl : true;
     this.setCurrentAction = this.setCurrentAction.bind(this);
+    this.switchViewType = this.switchViewType.bind(this);
     this.tabShown = this.tabShown.bind(this);
     this.clickTab = this.clickTab.bind(this);
 
@@ -230,11 +234,13 @@ export default class MergeRequestTabs {
       this.tabShown(action, location.href);
       this.eventHub.$emit('MergeRequestTabChange', action);
     });
+    this.eventHub.$on('diff:switch-view-type', this.switchViewType);
   }
 
   // Used in tests
   unbindEvents() {
     $('.merge-request-tabs a[data-toggle="tabvue"]').off('click', this.clickTab);
+    this.eventHub.$off('diff:switch-view-type', this.switchViewType);
   }
 
   storeScroll() {
@@ -341,7 +347,7 @@ export default class MergeRequestTabs {
             in practice, this only occurs when comparing commits in
             the new merge request form page.
           */
-          this.loadDiff(href);
+          this.loadDiff({ endpoint: href, strip: true });
         }
         // this.hideSidebar();
         this.expandViewContainer();
@@ -503,17 +509,20 @@ export default class MergeRequestTabs {
   }
 
   // load the diff tab content from the backend
-  loadDiff(source) {
+  loadDiff({ endpoint, strip = true }) {
     if (this.diffsLoaded) {
       document.dispatchEvent(new CustomEvent('scroll'));
       return;
     }
 
+    // We extract pathname for the current Changes tab anchor href
+    // some pages like MergeRequestsController#new has query parameters on that anchor
+    const diffUrl = strip ? `${parseUrlPathname(endpoint)}.json${location.search}` : endpoint;
+
     loadDiffs({
-      // We extract pathname for the current Changes tab anchor href
-      // some pages like MergeRequestsController#new has query parameters on that anchor
-      url: parseUrlPathname(source),
+      url: diffUrl,
       sticky: computeTopOffset(this.mergeRequestTabs),
+      tabs: this,
     })
       .then(() => {
         if (this.isDiffAction(this.currentAction)) {
@@ -527,6 +536,21 @@ export default class MergeRequestTabs {
           message: __('An error occurred while fetching this tab.'),
         });
       });
+  }
+  switchViewType({ source }) {
+    this.diffsLoaded = false;
+
+    this.loadDiff({ endpoint: source, strip: false });
+  }
+  createDiff() {
+    if (!this.diffsClass) {
+      this.diffsClass = new Diff({ mergeRequestEventHub: this.eventHub });
+    }
+  }
+  setHubToDiff() {
+    if (this.diffsClass) {
+      this.diffsClass.mrHub = this.eventHub;
+    }
   }
 
   diffViewType() {

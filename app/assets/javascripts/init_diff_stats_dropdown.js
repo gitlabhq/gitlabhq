@@ -4,7 +4,7 @@ import { stickyMonitor } from './lib/utils/sticky';
 
 export const initDiffStatsDropdown = (stickyTop) => {
   if (stickyTop) {
-    stickyMonitor(document.querySelector('.js-diff-files-changed'), stickyTop);
+    stickyMonitor(document.querySelector('.js-diff-files-changed'), stickyTop, false);
   }
 
   const el = document.querySelector('.js-diff-stats-dropdown');

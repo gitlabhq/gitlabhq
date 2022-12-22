@@ -108,6 +108,7 @@ func (fh *FileHandler) GitLabFinalizeFields(prefix string) (map[string]string, e
 
 type consumer interface {
 	Consume(context.Context, io.Reader, time.Time) (int64, error)
+	ConsumeWithoutDelete(context.Context, io.Reader, time.Time) (int64, error)
 }
 
 // Upload persists the provided reader content to all the location specified in opts. A cleanup will be performed once ctx is Done
@@ -185,7 +186,12 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 		reader = hlr
 	}
 
-	fh.Size, err = uploadDestination.Consume(ctx, reader, opts.Deadline)
+	if opts.SkipDelete {
+		fh.Size, err = uploadDestination.ConsumeWithoutDelete(ctx, reader, opts.Deadline)
+	} else {
+		fh.Size, err = uploadDestination.Consume(ctx, reader, opts.Deadline)
+	}
+
 	if err != nil {
 		if (err == objectstore.ErrNotEnoughParts) || (hlr != nil && hlr.n < 0) {
 			err = ErrEntityTooLarge

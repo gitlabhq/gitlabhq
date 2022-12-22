@@ -134,13 +134,17 @@ func TestUpload(t *testing.T) {
 	tmpFolder := t.TempDir()
 
 	tests := []struct {
-		name   string
-		local  bool
-		remote remote
+		name       string
+		local      bool
+		remote     remote
+		skipDelete bool
 	}{
 		{name: "Local only", local: true},
 		{name: "Remote Single only", remote: remoteSingle},
 		{name: "Remote Multipart only", remote: remoteMultipart},
+		{name: "Local only With SkipDelete", local: true, skipDelete: true},
+		{name: "Remote Single only With SkipDelete", remote: remoteSingle, skipDelete: true},
+		{name: "Remote Multipart only With SkipDelete", remote: remoteMultipart, skipDelete: true},
 	}
 
 	for _, spec := range tests {
@@ -181,6 +185,12 @@ func TestUpload(t *testing.T) {
 
 			if spec.local {
 				opts.LocalTempPath = tmpFolder
+			}
+
+			opts.SkipDelete = spec.skipDelete
+
+			if opts.SkipDelete {
+				expectedDeletes = 0
 			}
 
 			ctx, cancel := context.WithCancel(context.Background())
@@ -343,31 +353,48 @@ func TestUploadWithUnknownGoCloudScheme(t *testing.T) {
 }
 
 func TestUploadMultipartInBodyFailure(t *testing.T) {
-	osStub, ts := test.StartObjectStore()
-	defer ts.Close()
-
-	// this is a broken path because it contains bucket name but no key
-	// this is the only way to get an in-body failure from our ObjectStoreStub
-	objectPath := "/bucket-but-no-object-key"
-	objectURL := ts.URL + objectPath
-	opts := UploadOpts{
-		RemoteID:                   "test-file",
-		RemoteURL:                  objectURL,
-		PartSize:                   test.ObjectSize,
-		PresignedParts:             []string{objectURL + "?partNumber=1", objectURL + "?partNumber=2"},
-		PresignedCompleteMultipart: objectURL + "?Signature=CompleteSignature",
-		Deadline:                   testDeadline(),
+	tests := []struct {
+		name       string
+		skipDelete bool
+	}{
+		{name: "With skipDelete false", skipDelete: false},
+		{name: "With skipDelete true", skipDelete: true},
 	}
 
-	osStub.InitiateMultipartUpload(objectPath)
+	for _, spec := range tests {
+		t.Run(spec.name, func(t *testing.T) {
+			osStub, ts := test.StartObjectStore()
+			defer ts.Close()
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+			// this is a broken path because it contains bucket name but no key
+			// this is the only way to get an in-body failure from our ObjectStoreStub
+			objectPath := "/bucket-but-no-object-key"
+			objectURL := ts.URL + objectPath
+			opts := UploadOpts{
+				RemoteID:                   "test-file",
+				RemoteURL:                  objectURL,
+				PartSize:                   test.ObjectSize,
+				PresignedParts:             []string{objectURL + "?partNumber=1", objectURL + "?partNumber=2"},
+				PresignedCompleteMultipart: objectURL + "?Signature=CompleteSignature",
+				PresignedDelete:            objectURL + "?Signature=AnotherSignature",
+				Deadline:                   testDeadline(),
+				SkipDelete:                 spec.skipDelete,
+			}
 
-	fh, err := Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
-	require.Nil(t, fh)
-	require.Error(t, err)
-	require.EqualError(t, err, test.MultipartUploadInternalError().Error())
+			osStub.InitiateMultipartUpload(objectPath)
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			fh, err := Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
+			require.Nil(t, fh)
+			require.Error(t, err)
+			require.EqualError(t, err, test.MultipartUploadInternalError().Error())
+
+			cancel() // this will trigger an async cleanup
+			requireObjectStoreDeletedAsync(t, 1, osStub)
+		})
+	}
 }
 
 func TestUploadRemoteFileWithLimit(t *testing.T) {

@@ -12946,6 +12946,7 @@ CREATE TABLE ci_job_artifacts (
     locked smallint DEFAULT 2,
     original_filename text,
     partition_id bigint DEFAULT 100 NOT NULL,
+    accessibility smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
     CONSTRAINT check_85573000db CHECK ((char_length(original_filename) <= 512))
 );
@@ -31702,8 +31703,6 @@ CREATE INDEX tmp_index_migrated_container_registries ON container_repositories U
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
-
-CREATE INDEX tmp_index_project_statistics_uploads_size ON project_statistics USING btree (project_id) WHERE (uploads_size <> 0);
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
 

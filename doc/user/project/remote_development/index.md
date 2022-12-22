@@ -157,5 +157,4 @@ Alternatively, you can pass the parameters from a URL and connect directly to th
 
 ## Related topics
 
-- [Web IDE](../web_ide/index.md)
 - [Web IDE Beta](../web_ide_beta/index.md)

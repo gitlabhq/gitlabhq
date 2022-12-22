@@ -134,6 +134,38 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
+  describe 'artifacts_public?' do
+    subject { artifact.public_access? }
+
+    context 'when job artifact created by default' do
+      let!(:artifact) { create(:ci_job_artifact) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when job artifact created as public' do
+      let!(:artifact) { create(:ci_job_artifact, :public) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when job artifact created as private' do
+      let!(:artifact) { build(:ci_job_artifact, :private) }
+
+      it { is_expected.to be_falsey }
+
+      context 'and the non_public_artifacts feature flag is disabled' do
+        let!(:artifact) { build(:ci_job_artifact, :private) }
+
+        before do
+          stub_feature_flags(non_public_artifacts: false)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
   describe '.file_types_for_report' do
     it 'returns the report file types for the report type' do
       expect(described_class.file_types_for_report(:test)).to match_array(%w[junit])

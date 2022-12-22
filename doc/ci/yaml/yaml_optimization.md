@@ -13,7 +13,7 @@ files by using:
 - YAML-specific features like [anchors (`&`)](#anchors), aliases (`*`), and map merging (`<<`).
   Read more about the various [YAML features](https://learnxinyminutes.com/docs/yaml/).
 - The [`extends` keyword](#use-extends-to-reuse-configuration-sections),
-  which is more flexible and readable. We recommend you use `extends` where possible.
+  which is more flexible and readable. You should use `extends` where possible.
 
 ## Anchors
 

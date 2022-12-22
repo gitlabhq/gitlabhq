@@ -39,6 +39,8 @@ type UploadOpts struct {
 	PresignedPut string
 	// PresignedDelete is a presigned S3 DeleteObject compatible URL.
 	PresignedDelete string
+	// Whether Workhorse needs to delete the temporary object or not.
+	SkipDelete bool
 	// HTTP headers to be sent along with PUT request
 	PutHeaders map[string]string
 	// Whether to ignore Rails pre-signed URLs and have Workhorse directly access object storage provider
@@ -95,6 +97,7 @@ func GetOpts(apiResponse *api.Response) (*UploadOpts, error) {
 		RemoteURL:          apiResponse.RemoteObject.GetURL,
 		PresignedPut:       apiResponse.RemoteObject.StoreURL,
 		PresignedDelete:    apiResponse.RemoteObject.DeleteURL,
+		SkipDelete:         apiResponse.RemoteObject.SkipDelete,
 		PutHeaders:         apiResponse.RemoteObject.PutHeaders,
 		UseWorkhorseClient: apiResponse.RemoteObject.UseWorkhorseClient,
 		RemoteTempObjectID: apiResponse.RemoteObject.RemoteTempObjectID,

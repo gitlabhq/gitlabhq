@@ -9,7 +9,8 @@ module QA
                    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383215',
                    type: :test_environment,
                    only: { subdomain: 'staging-ref' }
-                 } do
+                 },
+                 feature_flag: { name: 'show_pages_in_deployments_menu' } do
     # TODO: Convert back to :smoke once proved to be stable. Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300906
     describe 'Pages', product_group: :editor do
       let!(:project) do
@@ -29,12 +30,19 @@ module QA
       end
 
       before do
+        # Pages Menu Experiment currently progress https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98044
+        # Update spec along with Feature Flag Removal.
+        Runtime::Feature.disable(:show_pages_in_deployments_menu)
         Flow::Login.sign_in
         Resource::Runner.fabricate_via_api! do |runner|
           runner.project = project
           runner.executor = :docker
         end
         pipeline.visit!
+      end
+
+      after do
+        Runtime::Feature.enable(:show_pages_in_deployments_menu)
       end
 
       it 'creates a Pages website',
