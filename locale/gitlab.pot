@@ -16068,6 +16068,9 @@ msgstr ""
 msgid "Error: Couldn't load some or all of the changes."
 msgstr ""
 
+msgid "Error: Gitaly is unavailable. Contact your administrator."
+msgstr ""
+
 msgid "Error: No AWS credentials were supplied"
 msgstr ""
 

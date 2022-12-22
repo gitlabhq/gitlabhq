@@ -108,3 +108,12 @@ export const blobControlsDataMock = {
     },
   },
 };
+
+export const graphQLErrors = [
+  {
+    message: '14:failed to connect to all addresses.',
+    locations: [{ line: 16, column: 7 }],
+    path: ['project', 'repository', 'paginatedTree'],
+    extensions: { code: 'unavailable', gitaly_code: 14, service: 'git' },
+  },
+];

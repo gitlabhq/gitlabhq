@@ -21,8 +21,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     { trigger: { project: 'my/project', branch: 'master' } }
   end
 
-  it 'has many sourced pipelines' do
-    expect(bridge).to have_many(:sourced_pipelines)
+  it 'has one sourced pipeline' do
+    expect(bridge).to have_one(:sourced_pipeline)
   end
 
   it_behaves_like 'has ID tokens', :ci_bridge
@@ -32,24 +32,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   it 'has one downstream pipeline' do
     expect(bridge).to have_one(:sourced_pipeline)
     expect(bridge).to have_one(:downstream_pipeline)
-  end
-
-  describe '#sourced_pipelines' do
-    subject { bridge.sourced_pipelines }
-
-    it 'raises error' do
-      expect { subject }.to raise_error RuntimeError, 'Ci::Bridge does not have sourced_pipelines association'
-    end
-
-    context 'when ci_bridge_remove_sourced_pipelines is disabled' do
-      before do
-        stub_feature_flags(ci_bridge_remove_sourced_pipelines: false)
-      end
-
-      it 'returns the sourced_pipelines association' do
-        expect(bridge.sourced_pipelines).to eq([])
-      end
-    end
   end
 
   describe '#retryable?' do

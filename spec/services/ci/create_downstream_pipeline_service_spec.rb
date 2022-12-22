@@ -41,12 +41,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
 
   subject { service.execute(bridge) }
 
-  shared_context 'when ci_bridge_remove_sourced_pipelines is disabled' do
-    before do
-      stub_feature_flags(ci_bridge_remove_sourced_pipelines: false)
-    end
-  end
-
   context 'when downstream project has not been found' do
     let(:trigger) do
       { trigger: { project: 'unknown/project' } }
@@ -128,19 +122,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       expect(pipeline.source_bridge).to be_a ::Ci::Bridge
     end
 
-    context 'when ci_bridge_remove_sourced_pipelines is disabled' do
-      include_context 'when ci_bridge_remove_sourced_pipelines is disabled'
-
-      it 'creates a new pipeline in a downstream project' do
-        expect(pipeline.user).to eq bridge.user
-        expect(pipeline.project).to eq downstream_project
-        expect(bridge.sourced_pipelines.first.pipeline).to eq pipeline
-        expect(pipeline.triggered_by_pipeline).to eq upstream_pipeline
-        expect(pipeline.source_bridge).to eq bridge
-        expect(pipeline.source_bridge).to be_a ::Ci::Bridge
-      end
-    end
-
     it_behaves_like 'logs downstream pipeline creation' do
       let(:downstream_pipeline) { pipeline }
       let(:expected_root_pipeline) { upstream_pipeline }
@@ -179,31 +160,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         expect(subject).to be_error
         expect(subject.message).to eq("Already has a downstream pipeline")
       end
-
-      context 'when ci_bridge_remove_sourced_pipelines is disabled' do
-        include_context 'when ci_bridge_remove_sourced_pipelines is disabled'
-
-        before do
-          bridge.sourced_pipelines.create!(
-            source_pipeline: bridge.pipeline,
-            source_project: bridge.project,
-            project: bridge.project,
-            pipeline: create(:ci_pipeline, project: bridge.project)
-          )
-        end
-
-        it 'logs an error and exits' do
-          expect(Gitlab::ErrorTracking)
-            .to receive(:track_exception)
-            .with(
-              instance_of(described_class::DuplicateDownstreamPipelineError),
-              bridge_id: bridge.id, project_id: bridge.project.id)
-            .and_call_original
-          expect(Ci::CreatePipelineService).not_to receive(:new)
-          expect(subject).to be_error
-          expect(subject.message).to eq("Already has a downstream pipeline")
-        end
-      end
     end
 
     context 'when target ref is not specified' do
@@ -235,19 +191,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         expect(pipeline.triggered_by_pipeline).to eq upstream_pipeline
         expect(pipeline.source_bridge).to eq bridge
         expect(pipeline.source_bridge).to be_a ::Ci::Bridge
-      end
-
-      context 'when ci_bridge_remove_sourced_pipelines is disabled' do
-        include_context 'when ci_bridge_remove_sourced_pipelines is disabled'
-
-        it 'creates a new pipeline in a downstream project' do
-          expect(pipeline.user).to eq bridge.user
-          expect(pipeline.project).to eq downstream_project
-          expect(bridge.sourced_pipelines.first.pipeline).to eq pipeline
-          expect(pipeline.triggered_by_pipeline).to eq upstream_pipeline
-          expect(pipeline.source_bridge).to eq bridge
-          expect(pipeline.source_bridge).to be_a ::Ci::Bridge
-        end
       end
 
       it 'updates the bridge status when downstream pipeline gets processed' do
@@ -299,20 +242,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
             expect(pipeline.triggered_by_pipeline).to eq upstream_pipeline
             expect(pipeline.source_bridge).to eq bridge
             expect(pipeline.source_bridge).to be_a ::Ci::Bridge
-          end
-
-          context 'when ci_bridge_remove_sourced_pipelines is disabled' do
-            include_context 'when ci_bridge_remove_sourced_pipelines is disabled'
-
-            it 'creates a child pipeline in the same project' do
-              expect(pipeline.builds.map(&:name)).to match_array(%w[rspec echo])
-              expect(pipeline.user).to eq bridge.user
-              expect(pipeline.project).to eq bridge.project
-              expect(bridge.sourced_pipelines.first.pipeline).to eq pipeline
-              expect(pipeline.triggered_by_pipeline).to eq upstream_pipeline
-              expect(pipeline.source_bridge).to eq bridge
-              expect(pipeline.source_bridge).to be_a ::Ci::Bridge
-            end
           end
 
           it 'updates bridge status when downstream pipeline gets processed' do

@@ -1,8 +1,0 @@
----
-name: ci_bridge_remove_sourced_pipelines
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105708
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/384359
-milestone: '15.7'
-type: development
-group: group::pipeline authoring
-default_enabled: false
