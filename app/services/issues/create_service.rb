@@ -24,6 +24,9 @@ module Issues
       return error(_('Operation not allowed'), 403) unless @current_user.can?(authorization_action, @project)
 
       @issue = @build_service.execute
+      # issue_type is set in BuildService, so we can delete it from params, in later phase
+      # it can be set also from quick actions - in that case work_item_id is synced later again
+      params.delete(:issue_type)
 
       handle_move_between_ids(@issue)
 
@@ -68,6 +71,7 @@ module Issues
       handle_escalation_status_change(issue)
       create_timeline_event(issue)
       try_to_associate_contacts(issue)
+      change_additional_attributes(issue)
 
       super
     end
@@ -126,6 +130,15 @@ module Issues
       contacts.concat extra_params[:cc] unless extra_params[:cc].nil?
 
       set_crm_contacts(issue, contacts)
+    end
+
+    override :change_additional_attributes
+    def change_additional_attributes(issue)
+      super
+
+      # issue_type can be still set through quick actions, in that case
+      # we have to make sure to re-sync work_item_type with it
+      issue.work_item_type_id = find_work_item_type_id(params[:issue_type]) if params[:issue_type]
     end
   end
 end

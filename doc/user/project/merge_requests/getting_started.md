@@ -42,10 +42,6 @@ before concluding your work and merging the merge request.
 You can watch our [GitLab Flow video](https://www.youtube.com/watch?v=InKNIvky2KE) for
 a quick overview of working with merge requests.
 
-## How to create a merge request
-
-Learn the various ways to [create a merge request](creating_merge_requests.md).
-
 ## What you can do with merge requests
 
 When you start a new merge request, you can immediately include the following

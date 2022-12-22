@@ -2337,18 +2337,6 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           expect(json_response['commit_source']).to eq('gitaly')
         end
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(ssh_commit_signatures: false)
-        end
-
-        it 'returns 404' do
-          get api(route, current_user)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
     end
   end
 end

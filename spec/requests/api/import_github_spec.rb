@@ -157,54 +157,72 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
     let_it_be(:user) { create(:user) }
     let(:params) { { personal_access_token: token } }
 
-    context 'when gists import was started' do
+    context 'when feature github_import_gists is enabled' do
       before do
-        allow(Import::Github::GistsImportService)
-          .to receive(:new).with(user, client, access_params)
-          .and_return(double(execute: { status: :success }))
+        stub_feature_flags(github_import_gists: true)
       end
 
-      it 'returns 202' do
-        post api('/import/github/gists', user), params: params
+      context 'when gists import was started' do
+        before do
+          allow(Import::Github::GistsImportService)
+            .to receive(:new).with(user, client, access_params)
+            .and_return(double(execute: { status: :success }))
+        end
 
-        expect(response).to have_gitlab_http_status(:accepted)
+        it 'returns 202' do
+          post api('/import/github/gists', user), params: params
+
+          expect(response).to have_gitlab_http_status(:accepted)
+        end
+      end
+
+      context 'when gists import is in progress' do
+        before do
+          allow(Import::Github::GistsImportService)
+            .to receive(:new).with(user, client, access_params)
+            .and_return(double(execute: { status: :error, message: 'Import already in progress', http_status: :unprocessable_entity }))
+        end
+
+        it 'returns 422 error' do
+          post api('/import/github/gists', user), params: params
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['errors']).to eq('Import already in progress')
+        end
+      end
+
+      context 'when unauthenticated user' do
+        it 'returns 403 error' do
+          post api('/import/github/gists'), params: params
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      context 'when rate limit reached' do
+        before do
+          allow(Import::Github::GistsImportService)
+            .to receive(:new).with(user, client, access_params)
+            .and_raise(Gitlab::GithubImport::RateLimitError)
+        end
+
+        it 'returns 429 error' do
+          post api('/import/github/gists', user), params: params
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+        end
       end
     end
 
-    context 'when gists import is in progress' do
+    context 'when feature github_import_gists is disabled' do
       before do
-        allow(Import::Github::GistsImportService)
-          .to receive(:new).with(user, client, access_params)
-          .and_return(double(execute: { status: :error, message: 'Import already in progress', http_status: :unprocessable_entity }))
+        stub_feature_flags(github_import_gists: false)
       end
 
-      it 'returns 422 error' do
+      it 'returns 404 error' do
         post api('/import/github/gists', user), params: params
 
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(json_response['errors']).to eq('Import already in progress')
-      end
-    end
-
-    context 'when unauthenticated user' do
-      it 'returns 403 error' do
-        post api('/import/github/gists'), params: params
-
-        expect(response).to have_gitlab_http_status(:unauthorized)
-      end
-    end
-
-    context 'when rate limit reached' do
-      before do
-        allow(Import::Github::GistsImportService)
-          .to receive(:new).with(user, client, access_params)
-          .and_raise(Gitlab::GithubImport::RateLimitError)
-      end
-
-      it 'returns 429 error' do
-        post api('/import/github/gists', user), params: params
-
-        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

@@ -120,7 +120,7 @@ RSpec.describe MetricsServer, feature_category: :application_performance do # ru
             {
               'GOGC' => '10',
               'GME_MMAP_METRICS_DIR' => metrics_dir,
-              'GME_PROBES' => 'self,mmap',
+              'GME_PROBES' => 'self,mmap,mmap_stats',
               'GME_SERVER_HOST' => 'localhost',
               'GME_SERVER_PORT' => expected_port,
               'GME_LOG_LEVEL' => 'quiet'

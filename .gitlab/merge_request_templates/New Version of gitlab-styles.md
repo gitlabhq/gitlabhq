@@ -33,9 +33,7 @@ This MR can be reused to upgrade `gitlab-styles` in this project after a new ver
   - [ ] (Optional) Regenerate TODOs for new/changed cop rules
   - [ ] Make sure CI passes :green_heart: 
   - [ ] Let the MR being reviewed again and merged
-    - [ ] Make sure CI passes :green_heart: 
-    - [ ] Let the MR being reviewed again and merged
-    - [ ] (Optional) Refine this [MR template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/New%20Version%20of%20gitlab-styles.md).
+  - [ ] (Optional) Refine this [MR template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/New%20Version%20of%20gitlab-styles.md).
 
 ## MR acceptance checklist
 

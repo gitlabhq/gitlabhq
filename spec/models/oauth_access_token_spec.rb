@@ -53,4 +53,22 @@ RSpec.describe OauthAccessToken do
       expect(described_class.matching_token_for(app_one, token.resource_owner, token.scopes)).to be_nil
     end
   end
+
+  describe '#expires_in' do
+    context 'when token has expires_in value set' do
+      it 'uses the expires_in value' do
+        token = OauthAccessToken.new(expires_in: 1.minute)
+
+        expect(token.expires_in).to eq 1.minute
+      end
+    end
+
+    context 'when token has nil expires_in' do
+      it 'uses default value' do
+        token = OauthAccessToken.new(expires_in: nil)
+
+        expect(token.expires_in).to eq 2.hours
+      end
+    end
+  end
 end

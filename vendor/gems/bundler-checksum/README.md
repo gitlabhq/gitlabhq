@@ -9,7 +9,7 @@ Add the following to your Gemfile:
 ```
 if ENV['BUNDLER_CHECKSUM_VERIFICATION_OPT_IN'] # this verification is still experimental
   require 'bundler-checksum'
-  Bundler::Checksum.patch!
+  BundlerChecksum.patch!
 end
 ```
 

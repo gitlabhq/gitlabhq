@@ -1,0 +1,23 @@
+---
+# Cop supports --autocorrect.
+Performance/RedundantEqualityComparisonBlock:
+  Details: grace period
+  Exclude:
+    - 'app/graphql/types/work_item_id_type.rb'
+    - 'app/models/concerns/group_descendant.rb'
+    - 'app/models/concerns/id_in_ordered.rb'
+    - 'app/models/todo.rb'
+    - 'app/validators/feature_flag_strategies_validator.rb'
+    - 'ee/app/helpers/ee/dashboard_helper.rb'
+    - 'ee/lib/compliance_management/merge_request_approval_settings/resolver.rb'
+    - 'ee/lib/elastic/latest/user_instance_proxy.rb'
+    - 'ee/lib/gitlab/geo/geo_node_status_check.rb'
+    - 'ee/spec/lib/ee/sidebars/projects/panel_spec.rb'
+    - 'lib/gitlab/ci/config/yaml/tags/reference.rb'
+    - 'lib/gitlab/config/entry/validators.rb'
+    - 'lib/gitlab/i18n/translation_entry.rb'
+    - 'lib/gitlab/push_options.rb'
+    - 'lib/gitlab/utils/delegator_override.rb'
+    - 'lib/gitlab/view/presenter/base.rb'
+    - 'spec/lib/object_storage/direct_upload_spec.rb'
+    - 'spec/support/import_export/project_tree_expectations.rb'

@@ -351,6 +351,13 @@ Alternatively, you can use the `/promote` [quick action](../quick_actions.md#iss
 
 Read more about [promoting an issues to epics](../../group/epics/manage_epics.md#promote-an-issue-to-an-epic).
 
+## Promote an issue to an incident
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296787) in GitLab 14.5.
+> - Quick actions to set issue type as incident upon creation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/376760) in GitLab 15.8.
+
+You can use the `/promote_to_incident` [quick action](../quick_actions.md) to promote the issue to an [incident](../../../operations/incident_management/incidents.md).
+
 ## Add an issue to an iteration **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216158) in GitLab 13.2.

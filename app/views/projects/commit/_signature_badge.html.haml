@@ -24,7 +24,7 @@
     = render partial: "projects/commit/x509/certificate_details", locals: { signature: signature }
 
     = link_to(_('Learn more about X.509 signed commits'), help_page_path('user/project/repository/x509_signed_commits/index.md'), class: 'gl-link gl-display-block')
-  - elsif ::Feature.enabled?(:ssh_commit_signatures, signature.project) && signature.ssh?
+  - elsif signature.ssh?
     = _('SSH key fingerprint:')
     %span.gl-font-monospace= signature.key&.fingerprint_sha256 || _('Unknown')
 

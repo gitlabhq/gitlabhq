@@ -117,7 +117,7 @@ module Issues
 
     override :allowed_create_params
     def allowed_create_params(params)
-      super(params).except(:issue_type, :work_item_type_id, :work_item_type)
+      super(params).except(:work_item_type_id, :work_item_type)
     end
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Bundler::Checksum
+module BundlerChecksum
   module Command
     autoload :Init, File.expand_path("command/init", __dir__)
     autoload :Verify, File.expand_path("command/verify", __dir__)

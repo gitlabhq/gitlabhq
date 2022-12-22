@@ -359,10 +359,6 @@ class Commit
   end
 
   def has_signature?
-    if signature_type == :SSH && !ssh_signatures_enabled?
-      return false
-    end
-
     signature_type && signature_type != :NONE
   end
 
@@ -382,10 +378,6 @@ class Commit
     @signature_type ||= raw_signature_type || :NONE
   end
 
-  def ssh_signatures_enabled?
-    Feature.enabled?(:ssh_commit_signatures, project)
-  end
-
   def signature
     strong_memoize(:signature) do
       case signature_type
@@ -394,7 +386,7 @@ class Commit
       when :X509
         Gitlab::X509::Commit.new(self).signature
       when :SSH
-        Gitlab::Ssh::Commit.new(self).signature if ssh_signatures_enabled?
+        Gitlab::Ssh::Commit.new(self).signature
       else
         nil
       end

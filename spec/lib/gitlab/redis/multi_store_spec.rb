@@ -108,34 +108,59 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     end
   end
 
+  # rubocop:disable RSpec/MultipleMemoizedHelpers
   context 'with READ redis commands' do
     let_it_be(:key1) { "redis:{1}:key_a" }
     let_it_be(:key2) { "redis:{1}:key_b" }
     let_it_be(:value1) { "redis_value1" }
     let_it_be(:value2) { "redis_value2" }
     let_it_be(:skey) { "redis:set:key" }
+    let_it_be(:skey2) { "redis:set:key2" }
+    let_it_be(:smemberargs) { [skey, value1] }
+    let_it_be(:hkey) { "redis:hash:key" }
+    let_it_be(:hitem1) { "item1" }
     let_it_be(:keys) { [key1, key2] }
     let_it_be(:values) { [value1, value2] }
     let_it_be(:svalues) { [value2, value1] }
+    let_it_be(:hgetargs) { [hkey, hitem1] }
+    let_it_be(:hmgetval) { [value1] }
+    let_it_be(:mhmgetargs) { [hkey, hitem1] }
+    let_it_be(:hvalmapped) { { "item1" => value1 } }
+    let_it_be(:sscanargs) { [skey2, 0] }
+    let_it_be(:sscanval) { ["0", [value1]] }
 
+    # rubocop:disable  Layout/LineLength
     where(:case_name, :name, :args, :value, :block) do
-      'execute :get command'      | :get      | ref(:key1)  | ref(:value1)  | nil
-      'execute :mget command'     | :mget     | ref(:keys)  | ref(:values)  | nil
-      'execute :mget with block'  | :mget     | ref(:keys)  | ref(:values)  | ->(value) { value }
-      'execute :smembers command' | :smembers | ref(:skey)  | ref(:svalues) | nil
-      'execute :scard command'    | :scard    | ref(:skey)  | 2             | nil
+      'execute :get command'          | :get          | ref(:key1)        | ref(:value1)     | nil
+      'execute :mget command'         | :mget         | ref(:keys)        | ref(:values)     | nil
+      'execute :mget with block'      | :mget         | ref(:keys)        | ref(:values)     | ->(value) { value }
+      'execute :smembers command'     | :smembers     | ref(:skey)        | ref(:svalues)    | nil
+      'execute :scard command'        | :scard        | ref(:skey)        | 2                | nil
+      'execute :sismember command'    | :sismember    | ref(:smemberargs) | true             | nil
+      'execute :exists command'       | :exists       | ref(:key1)        | 1                | nil
+      'execute :exists? command'      | :exists?      | ref(:key1)        | true             | nil
+      'execute :hget command'         | :hget         | ref(:hgetargs)    | ref(:value1)     | nil
+      'execute :hlen command'         | :hlen         | ref(:hkey)        | 1                | nil
+      'execute :hgetall command'      | :hgetall      | ref(:hkey)        | ref(:hvalmapped) | nil
+      'execute :hexists command'      | :hexists      | ref(:hgetargs)    | true             | nil
+      'execute :hmget command'        | :hmget        | ref(:hgetargs)    | ref(:hmgetval)   | nil
+      'execute :mapped_hmget command' | :mapped_hmget | ref(:mhmgetargs)  | ref(:hvalmapped) | nil
+      'execute :sscan command'        | :sscan        | ref(:sscanargs)   | ref(:sscanval)   | nil
     end
+    # rubocop:enable  Layout/LineLength
 
     before(:all) do
       primary_store.set(key1, value1)
       primary_store.set(key2, value2)
-      primary_store.sadd?(skey, value1)
-      primary_store.sadd?(skey, value2)
+      primary_store.sadd?(skey, [value1, value2])
+      primary_store.sadd?(skey2, [value1])
+      primary_store.hset(hkey, hitem1, value1)
 
       secondary_store.set(key1, value1)
       secondary_store.set(key2, value2)
-      secondary_store.sadd?(skey, value1)
-      secondary_store.sadd?(skey, value2)
+      secondary_store.sadd?(skey, [value1, value2])
+      secondary_store.sadd?(skey2, [value1])
+      secondary_store.hset(hkey, hitem1, value1)
     end
 
     RSpec.shared_examples_for 'reads correct value' do
@@ -300,6 +325,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
     end
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   RSpec.shared_examples_for 'verify that store contains values' do |store|
     it "#{store} redis store contains correct values", :aggregate_errors do
@@ -316,9 +342,17 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     end
   end
 
+  # rubocop:disable RSpec/MultipleMemoizedHelpers
   context 'with WRITE redis commands' do
+    let_it_be(:ikey1) { "counter1" }
+    let_it_be(:ikey2) { "counter2" }
+    let_it_be(:iargs) { [ikey2, 3] }
+    let_it_be(:ivalue1) { "1" }
+    let_it_be(:ivalue2) { "3" }
     let_it_be(:key1) { "redis:{1}:key_a" }
     let_it_be(:key2) { "redis:{1}:key_b" }
+    let_it_be(:key3) { "redis:{1}:key_c" }
+    let_it_be(:key4) { "redis:{1}:key_d" }
     let_it_be(:value1) { "redis_value1" }
     let_it_be(:value2) { "redis_value2" }
     let_it_be(:key1_value1) { [key1, value1] }
@@ -331,27 +365,50 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     let_it_be(:skey_value1) { [skey, [value1]] }
     let_it_be(:skey_value2) { [skey, [value2]] }
     let_it_be(:script) { %(redis.call("set", "#{key1}", "#{value1}")) }
+    let_it_be(:hkey1) { "redis:{1}:hash_a" }
+    let_it_be(:hkey2) { "redis:{1}:hash_b" }
+    let_it_be(:item) { "item" }
+    let_it_be(:hdelarg) { [hkey1, item] }
+    let_it_be(:hsetarg) { [hkey2, item, value1] }
+    let_it_be(:mhsetarg) { [hkey2, { "item" => value1 }] }
+    let_it_be(:hgetarg) { [hkey2, item] }
+    let_it_be(:expireargs) { [key3, ttl] }
 
+    # rubocop:disable  Layout/LineLength
     where(:case_name, :name, :args, :expected_value, :verification_name, :verification_args) do
-      'execute :set command'       | :set      | ref(:key1_value1)      | ref(:value1)      | :get      | ref(:key1)
-      'execute :setnx command'     | :setnx    | ref(:key1_value2)      | ref(:value1)      | :get      | ref(:key2)
-      'execute :setex command'     | :setex    | ref(:key1_ttl_value1)  | ref(:ttl)         | :ttl      | ref(:key1)
-      'execute :sadd command'      | :sadd     | ref(:skey_value2)      | ref(:svalues1)    | :smembers | ref(:skey)
-      'execute :srem command'      | :srem     | ref(:skey_value1)      | []                | :smembers | ref(:skey)
-      'execute :del command'       | :del      | ref(:key2)             | nil               | :get      | ref(:key2)
-      'execute :flushdb command'   | :flushdb  | nil                    | 0                 | :dbsize   | nil
-      'execute :eval command'      | :eval     | ref(:script)           | ref(:value1)      | :get      | ref(:key1)
+      'execute :set command'          | :set            | ref(:key1_value1)      | ref(:value1)   | :get      | ref(:key1)
+      'execute :setnx command'        | :setnx          | ref(:key1_value2)      | ref(:value1)   | :get      | ref(:key2)
+      'execute :setex command'        | :setex          | ref(:key1_ttl_value1)  | ref(:ttl)      | :ttl      | ref(:key1)
+      'execute :sadd command'         | :sadd           | ref(:skey_value2)      | ref(:svalues1) | :smembers | ref(:skey)
+      'execute :srem command'         | :srem           | ref(:skey_value1)      | []             | :smembers | ref(:skey)
+      'execute :del command'          | :del            | ref(:key2)             | nil            | :get      | ref(:key2)
+      'execute :unlink command'       | :unlink         | ref(:key3)             | nil            | :get      | ref(:key3)
+      'execute :flushdb command'      | :flushdb        | nil                    | 0              | :dbsize   | nil
+      'execute :eval command'         | :eval           | ref(:script)           | ref(:value1)   | :get      | ref(:key1)
+      'execute :incr command'         | :incr           | ref(:ikey1)            | ref(:ivalue1)  | :get      | ref(:ikey1)
+      'execute :incrby command'       | :incrby         | ref(:iargs)            | ref(:ivalue2)  | :get      | ref(:ikey2)
+      'execute :hset command'         | :hset           | ref(:hsetarg)          | ref(:value1)   | :hget     | ref(:hgetarg)
+      'execute :hdel command'         | :hdel           | ref(:hdelarg)          | nil            | :hget     | ref(:hdelarg)
+      'execute :expire command'       | :expire         | ref(:expireargs)       | ref(:ttl)      | :ttl      | ref(:key3)
+      'execute :mapped_hmset command' | :mapped_hmset   | ref(:mhsetarg)         | ref(:value1)   | :hget     | ref(:hgetarg)
     end
+    # rubocop:enable  Layout/LineLength
 
     before do
       primary_store.flushdb
       secondary_store.flushdb
 
       primary_store.set(key2, value1)
+      primary_store.set(key3, value1)
+      primary_store.set(key4, value1)
       primary_store.sadd?(skey, value1)
+      primary_store.hset(hkey2, item, value1)
 
       secondary_store.set(key2, value1)
+      secondary_store.set(key3, value1)
+      secondary_store.set(key4, value1)
       secondary_store.sadd?(skey, value1)
+      secondary_store.hset(hkey2, item, value1)
     end
 
     with_them do
@@ -419,6 +476,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
     end
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   RSpec.shared_examples_for 'pipelined command' do |name|
     let_it_be(:key1) { "redis:{1}:key_a" }
@@ -575,119 +633,116 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     end
 
     let_it_be(:key) { "redis:counter" }
+    let_it_be(:item) { "item1" }
 
-    subject { multi_store.incr(key) }
+    subject { multi_store.command }
 
-    it 'responds to missing method' do
-      expect(multi_store).to receive(:respond_to_missing?).and_call_original
-
-      expect(multi_store.respond_to?(:incr)).to be(true)
-    end
-
-    it 'executes method missing' do
-      expect(multi_store).to receive(:method_missing)
-
-      subject
-    end
-
-    context 'when command is not in SKIP_LOG_METHOD_MISSING_FOR_COMMANDS' do
-      it 'logs MethodMissingError' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-          an_instance_of(Gitlab::Redis::MultiStore::MethodMissingError),
-          hash_including(command_name: :incr, instance_name: instance_name)
-        )
-
-        subject
-      end
-
-      it 'increments method missing counter' do
-        expect(counter).to receive(:increment).with(command: :incr, instance_name: instance_name)
-
-        subject
+    context 'when in test environment' do
+      it 'raises error' do
+        expect { subject }.to raise_error(instance_of(Gitlab::Redis::MultiStore::MethodMissingError))
       end
     end
 
-    context 'when command is in SKIP_LOG_METHOD_MISSING_FOR_COMMANDS' do
-      subject { multi_store.info }
-
-      it 'does not log MethodMissingError' do
-        expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
-
-        subject
-      end
-
-      it 'does not increment method missing counter' do
-        expect(counter).not_to receive(:increment)
-
-        subject
-      end
-    end
-
-    context 'with feature flag :use_primary_store_as_default_for_test_store is enabled' do
+    context 'when not in test environment' do
       before do
-        stub_feature_flags(use_primary_store_as_default_for_test_store: true)
+        stub_rails_env('production')
       end
 
-      it 'fallback and executes only on the secondary store', :aggregate_errors do
-        expect(primary_store).to receive(:incr).with(key).and_call_original
-        expect(secondary_store).not_to receive(:incr)
+      it 'responds to missing method' do
+        expect(multi_store).to receive(:respond_to_missing?).and_call_original
+
+        expect(multi_store.respond_to?(:command)).to be(true)
+      end
+
+      it 'executes method missing' do
+        expect(multi_store).to receive(:method_missing)
 
         subject
       end
 
-      it 'correct value is stored on the secondary store', :aggregate_errors do
-        subject
+      context 'when command is not in SKIP_LOG_METHOD_MISSING_FOR_COMMANDS' do
+        it 'logs MethodMissingError' do
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+            an_instance_of(Gitlab::Redis::MultiStore::MethodMissingError),
+            hash_including(command_name: :command, instance_name: instance_name)
+          )
 
-        expect(secondary_store.get(key)).to be_nil
-        expect(primary_store.get(key)).to eq('1')
-      end
-    end
+          subject
+        end
 
-    context 'with feature flag :use_primary_store_as_default_for_test_store is disabled' do
-      before do
-        stub_feature_flags(use_primary_store_as_default_for_test_store: false)
-      end
+        it 'increments method missing counter' do
+          expect(counter).to receive(:increment).with(command: :command, instance_name: instance_name)
 
-      it 'fallback and executes only on the secondary store', :aggregate_errors do
-        expect(secondary_store).to receive(:incr).with(key).and_call_original
-        expect(primary_store).not_to receive(:incr)
+          subject
+        end
 
-        subject
-      end
+        it 'fallback and executes only on the secondary store', :aggregate_errors do
+          expect(primary_store).to receive(:command).and_call_original
+          expect(secondary_store).not_to receive(:command)
 
-      it 'correct value is stored on the secondary store', :aggregate_errors do
-        subject
-
-        expect(primary_store.get(key)).to be_nil
-        expect(secondary_store.get(key)).to eq('1')
-      end
-    end
-
-    context 'when the command is executed within pipelined block' do
-      subject do
-        multi_store.pipelined do |pipeline|
-          pipeline.incr(key)
+          subject
         end
       end
 
-      it 'is executed only 1 time on each instance', :aggregate_errors do
-        expect(primary_store).to receive(:pipelined).once.and_call_original
-        expect(secondary_store).to receive(:pipelined).once.and_call_original
+      context 'when command is in SKIP_LOG_METHOD_MISSING_FOR_COMMANDS' do
+        subject { multi_store.info }
 
-        2.times do
-          expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
-            expect(pipeline).to receive(:incr).with(key).once
+        it 'does not log MethodMissingError' do
+          expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
+
+          subject
+        end
+
+        it 'does not increment method missing counter' do
+          expect(counter).not_to receive(:increment)
+
+          subject
+        end
+      end
+
+      context 'with feature flag :use_primary_store_as_default_for_test_store is enabled' do
+        before do
+          stub_feature_flags(use_primary_store_as_default_for_test_store: true)
+        end
+
+        it 'fallback and executes only on the secondary store', :aggregate_errors do
+          expect(primary_store).to receive(:command).and_call_original
+          expect(secondary_store).not_to receive(:command)
+
+          subject
+        end
+      end
+
+      context 'with feature flag :use_primary_store_as_default_for_test_store is disabled' do
+        before do
+          stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+        end
+
+        it 'fallback and executes only on the secondary store', :aggregate_errors do
+          expect(secondary_store).to receive(:command).and_call_original
+          expect(primary_store).not_to receive(:command)
+
+          subject
+        end
+      end
+
+      context 'when the command is executed within pipelined block' do
+        subject do
+          multi_store.pipelined(&:command)
+        end
+
+        it 'is executed only 1 time on each instance', :aggregate_errors do
+          expect(primary_store).to receive(:pipelined).once.and_call_original
+          expect(secondary_store).to receive(:pipelined).once.and_call_original
+
+          2.times do
+            expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
+              expect(pipeline).to receive(:command).once
+            end
           end
+
+          subject
         end
-
-        subject
-      end
-
-      it "both redis stores are containing correct values", :aggregate_errors do
-        subject
-
-        expect(primary_store.get(key)).to eq('1')
-        expect(secondary_store.get(key)).to eq('1')
       end
     end
   end

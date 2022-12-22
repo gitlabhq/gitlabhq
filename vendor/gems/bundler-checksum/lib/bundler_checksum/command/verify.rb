@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Bundler::Checksum::Command
+module BundlerChecksum::Command
   module Verify
     extend self
 
@@ -27,7 +27,7 @@ module Bundler::Checksum::Command
     private
 
     def local_checksums
-      ::Bundler::Checksum.checksums_from_file
+      ::BundlerChecksum.checksums_from_file
     end
 
     def validate_gem_checksum(gem_name, gem_version, gem_platform, local_checksum)

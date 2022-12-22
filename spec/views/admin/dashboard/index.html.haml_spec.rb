@@ -51,6 +51,16 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
     expect(rendered).not_to have_content "Users over License"
   end
 
+  it 'shows database versions for all database models' do
+    render
+
+    expect(rendered).to have_content /PostgreSQL \(main\).+?#{::Gitlab::Database::Reflection.new(ApplicationRecord).version}/
+
+    if Gitlab::Database.has_config?(:ci)
+      expect(rendered).to have_content /PostgreSQL \(ci\).+?#{::Gitlab::Database::Reflection.new(Ci::ApplicationRecord).version}/
+    end
+  end
+
   describe 'when show_version_check? is true' do
     before do
       allow(view).to receive(:show_version_check?).and_return(true)

@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 if ENV['BUNDLER_CHECKSUM_VERIFICATION_OPT_IN'] # this verification is still experimental
   $LOAD_PATH.unshift(File.expand_path("vendor/gems/bundler-checksum/lib", __dir__))
   require 'bundler-checksum'
-  Bundler::Checksum.patch!
+  BundlerChecksum.patch!
 end
 
 gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', require: false
@@ -395,7 +395,7 @@ group :development, :test do
   gem 'spring', '~> 4.1.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 9.1.0', require: false
+  gem 'gitlab-styles', '~> 9.2.0', require: false
 
   gem 'haml_lint', '~> 0.40.0', require: false
   gem 'bundler-audit', '~> 0.7.0.1', require: false

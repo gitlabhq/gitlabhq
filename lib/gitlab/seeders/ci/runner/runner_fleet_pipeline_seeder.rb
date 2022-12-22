@@ -41,13 +41,12 @@ module Gitlab
               remaining_job_count = create_pipelines_and_distribute_jobs(remaining_job_count, project_index: index, **d)
             end
 
-            if remaining_job_count > 0
-              create_pipeline(
+            while remaining_job_count > 0
+              remaining_job_count -= create_pipeline(
                 job_count: remaining_job_count,
                 **@projects_to_runners[PROJECT_JOB_DISTRIBUTION.length],
-                status: Random.rand(1..100) < 40 ? 'failed' : 'success'
+                status: random_pipeline_status
               )
-              remaining_job_count = 0
             end
 
             logger.info(
@@ -78,13 +77,12 @@ module Gitlab
             pipeline_count = [1, total_jobs / pipeline_job_count].max
 
             (1..pipeline_count).each do
-              create_pipeline(
+              remaining_job_count -= create_pipeline(
                 job_count: pipeline_job_count,
                 project_id: project_id,
                 runner_ids: runner_ids,
-                status: Random.rand(1..100) < 70 ? 'failed' : 'success'
+                status: random_pipeline_status
               )
-              remaining_job_count -= pipeline_job_count
             end
 
             remaining_job_count
@@ -98,10 +96,18 @@ module Gitlab
             raise ArgumentError('project_id') unless project_id
 
             sha = '00000000'
-            created_at = Random.rand(PIPELINE_CREATION_RANGE_MIN_IN_MINUTES..PIPELINE_CREATION_RANGE_MAX_IN_MINUTES)
-                               .minutes.ago
-            started_at = created_at + Random.rand(1..PIPELINE_START_RANGE_MAX_IN_MINUTES).seconds
-            finished_at = started_at + Random.rand(1..PIPELINE_FINISH_RANGE_MAX_IN_MINUTES).minutes
+            if ::Ci::HasStatus::ALIVE_STATUSES.include?(status) || ::Ci::HasStatus::COMPLETED_STATUSES.include?(status)
+              created_at = Random.rand(PIPELINE_CREATION_RANGE_MIN_IN_MINUTES..PIPELINE_CREATION_RANGE_MAX_IN_MINUTES)
+                                 .minutes.ago
+
+              if ::Ci::HasStatus::STARTED_STATUSES.include?(status) ||
+                  ::Ci::HasStatus::COMPLETED_STATUSES.include?(status)
+                started_at = created_at + Random.rand(1..PIPELINE_START_RANGE_MAX_IN_MINUTES).minutes
+                if ::Ci::HasStatus::COMPLETED_STATUSES.include?(status)
+                  finished_at = started_at + Random.rand(1..PIPELINE_FINISH_RANGE_MAX_IN_MINUTES).minutes
+                end
+              end
+            end
 
             pipeline = ::Ci::Pipeline.new(
               project_id: project_id,
@@ -117,19 +123,33 @@ module Gitlab
             pipeline.ensure_project_iid! # allocate an internal_id outside of pipeline creation transaction
             pipeline.save!
 
-            (1..job_count).each do |index|
-              create_build(pipeline, runner_ids.sample, job_status(pipeline.status, index, job_count), index)
+            if created_at.present?
+              (1..job_count).each do |index|
+                create_build(pipeline, runner_ids.sample, job_status(pipeline.status, index, job_count), index)
+              end
             end
 
-            pipeline
+            job_count
           end
 
           def create_build(pipeline, runner_id, job_status, index)
             started_at = pipeline.started_at
             finished_at = pipeline.finished_at
-            max_job_duration = [MAX_QUEUE_TIME_IN_SECONDS, finished_at - started_at].min
-            job_started_at = started_at + Random.rand(1..max_job_duration).seconds
-            job_finished_at = Random.rand(job_started_at..finished_at)
+
+            max_job_duration =
+              if finished_at
+                [MAX_QUEUE_TIME_IN_SECONDS, finished_at - started_at].min
+              else
+                Random.rand(1..5).seconds
+              end
+
+            job_created_at = pipeline.created_at
+            job_started_at = started_at + Random.rand(1..max_job_duration) if started_at
+            if finished_at
+              job_finished_at = Random.rand(job_started_at..finished_at)
+            elsif job_status == 'running'
+              job_finished_at = job_started_at + Random.rand(1..PIPELINE_FINISH_RANGE_MAX_IN_MINUTES).minutes
+            end
 
             build_attrs = {
               name: "Fake job #{index}",
@@ -139,8 +159,8 @@ module Gitlab
               pipeline_id: pipeline.id,
               runner_id: runner_id,
               project_id: pipeline.project_id,
-              created_at: started_at,
-              queued_at: started_at,
+              created_at: job_created_at,
+              queued_at: job_created_at,
               started_at: job_started_at,
               finished_at: job_finished_at
             }
@@ -149,11 +169,28 @@ module Gitlab
             ::Ci::Build.new(importing: true, **build_attrs).tap(&:save!)
           end
 
-          def job_status(pipeline_status, job_index, job_count)
-            return 'success' if pipeline_status == 'success'
-            return 'failed' if job_index == job_count # Ensure that a failed pipeline has at least 1 failed job
+          def random_pipeline_status
+            if Random.rand(1..4) == 4
+              %w[created pending canceled running].sample
+            elsif Random.rand(1..3) == 1
+              'success'
+            else
+              'failed'
+            end
+          end
 
-            Random.rand(0..1) == 0 ? 'failed' : 'success'
+          def job_status(pipeline_status, job_index, job_count)
+            return pipeline_status if %w[created pending success].include?(pipeline_status)
+
+            # Ensure that a failed/canceled pipeline has at least 1 failed/canceled job
+            if job_index == job_count && ::Ci::HasStatus::PASSED_WITH_WARNINGS_STATUSES.include?(pipeline_status)
+              return pipeline_status
+            end
+
+            possible_statuses = %w[failed success]
+            possible_statuses << pipeline_status if %w[canceled running].include?(pipeline_status)
+
+            possible_statuses.sample
           end
         end
       end

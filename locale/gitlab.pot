@@ -16905,9 +16905,6 @@ msgstr ""
 msgid "Failed to move this issue because target project doesn't exist."
 msgstr ""
 
-msgid "Failed to promote issue to incident"
-msgstr ""
-
 msgid "Failed to promote label due to internal error. Please contact administrators."
 msgstr ""
 

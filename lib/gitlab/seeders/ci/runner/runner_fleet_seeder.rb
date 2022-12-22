@@ -102,18 +102,20 @@ module Gitlab
           end
 
           def create_runners(gp)
+            instance_runners = []
             group_1_1_1_runners = []
             group_2_1_runners = []
             project_1_1_1_1_runners = []
             project_1_1_2_1_runners = []
             project_2_1_1_runners = []
+            instance_runners << create_runner(name: 'instance runner 1')
             project_1_1_1_1_shared_runner_1 =
               create_runner(name: 'project 1.1.1.1 shared runner 1', scope: gp[:project_1_1_1_1])
             project_1_1_1_1_runners << project_1_1_1_1_shared_runner_1
             project_1_1_2_1_runners << assign_runner(project_1_1_1_1_shared_runner_1, gp[:project_1_1_2_1])
             project_2_1_1_runners << assign_runner(project_1_1_1_1_shared_runner_1, gp[:project_2_1_1])
 
-            (2..@runner_count).each do
+            (3..@runner_count).each do
               case Random.rand(0..100)
               when 0..30
                 runner_name = "group 1.1.1 runner #{1 + group_1_1_1_runners.count}"
@@ -131,9 +133,11 @@ module Gitlab
             end
 
             { # use only the first 5 runners to assign CI jobs
-              project_1_1_1_1: (project_1_1_1_1_runners.map(&:id) + group_1_1_1_runners.map(&:id)).first(5),
-              project_1_1_2_1: project_1_1_2_1_runners.map(&:id).first(5),
-              project_2_1_1: (project_2_1_1_runners.map(&:id) + group_2_1_runners.map(&:id)).first(5)
+              project_1_1_1_1:
+                ((instance_runners + project_1_1_1_1_runners).map(&:id) + group_1_1_1_runners.map(&:id)).first(5),
+              project_1_1_2_1: (instance_runners + project_1_1_2_1_runners).map(&:id).first(5),
+              project_2_1_1:
+                ((instance_runners + project_2_1_1_runners).map(&:id) + group_2_1_runners.map(&:id)).first(5)
             }
           end
 
@@ -186,15 +190,22 @@ module Gitlab
             raise RuntimeError
           end
 
-          def create_runner(scope:, name:, **args)
+          def create_runner(name:, scope: nil, **args)
             name = generate_name(name)
 
-            logger.info(message: 'Creating runner', scope: scope.class.name, name: name)
+            scope_name = scope.class.name if scope
+            logger.info(message: 'Creating runner', scope: scope_name, name: name)
 
             executor = ::Ci::Runner::EXECUTOR_NAME_TO_TYPES.keys.sample
             args.merge!(additional_runner_args(name, executor))
 
-            response = ::Ci::Runners::RegisterRunnerService.new.execute(scope.runners_token, name: name, **args)
+            runners_token = if scope.nil?
+                              Gitlab::CurrentSettings.runners_registration_token
+                            else
+                              scope.runners_token
+                            end
+
+            response = ::Ci::Runners::RegisterRunnerService.new.execute(runners_token, name: name, **args)
             runner = response.payload[:runner]
 
             ::Ci::Runners::ProcessRunnerVersionUpdateWorker.new.perform(args[:version])

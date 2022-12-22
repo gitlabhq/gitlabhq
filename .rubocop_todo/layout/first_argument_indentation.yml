@@ -1,0 +1,26 @@
+---
+# Cop supports --autocorrect.
+Layout/FirstArgumentIndentation:
+  Details: grace period
+  Exclude:
+    - 'app/models/customer_relations/contact.rb'
+    - 'app/models/cycle_analytics/project_level_stage_adapter.rb'
+    - 'app/models/users/user_follow_user.rb'
+    - 'ee/lib/ee/gitlab/scim/group/deprovisioning_service.rb'
+    - 'ee/spec/controllers/groups/omniauth_callbacks_controller_spec.rb'
+    - 'ee/spec/controllers/registrations/company_controller_spec.rb'
+    - 'ee/spec/lib/gitlab/geo/log_cursor/daemon_spec.rb'
+    - 'ee/spec/services/audit_events/protected_branch_audit_event_service_spec.rb'
+    - 'ee/spec/services/security/report_summary_service_spec.rb'
+    - 'spec/components/previews/pajamas/alert_component_preview.rb'
+    - 'spec/components/previews/pajamas/banner_component_preview.rb'
+    - 'spec/components/previews/pajamas/button_component_preview.rb'
+    - 'spec/controllers/import/bitbucket_controller_spec.rb'
+    - 'spec/lib/gitlab/application_rate_limiter_spec.rb'
+    - 'spec/lib/gitlab/database/loose_foreign_keys_spec.rb'
+    - 'spec/lib/gitlab/import_export/shared_spec.rb'
+    - 'spec/models/loose_foreign_keys/deleted_record_spec.rb'
+    - 'spec/requests/api/graphql/ci/jobs_spec.rb'
+    - 'spec/services/protected_branches/api_service_spec.rb'
+    - 'spec/support/shared_examples/features/search/redacted_search_results_shared_examples.rb'
+    - 'spec/support/shared_examples/quick_actions/issuable/max_issuable_examples.rb'

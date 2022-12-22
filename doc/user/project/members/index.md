@@ -97,6 +97,9 @@ Each user's access is based on:
 - The role they're assigned in the group.
 - The maximum role you choose when you invite the group.
 
+If a user has a group role with fewer permissions than the maximum project role, the user keeps the permissions of their group role.
+For example, if you add a user with the Guest role to a project with a maximum role of Maintainer, the user has only the permissions of the Guest role.
+
 Prerequisites:
 
 - You must have the Maintainer or Owner role.

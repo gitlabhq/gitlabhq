@@ -1,0 +1,8 @@
+---
+# Cop supports --autocorrect.
+Performance/RedundantSplitRegexpArgument:
+  Details: grace period
+  Exclude:
+    - 'lib/file_size_validator.rb'
+    - 'lib/gitlab/git/raw_diff_change.rb'
+    - 'lib/kramdown/converter/commonmark.rb'

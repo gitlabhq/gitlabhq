@@ -111,6 +111,8 @@ module API
       requires :personal_access_token, type: String, desc: 'GitHub personal access token'
     end
     post 'import/github/gists' do
+      not_found! if Feature.disabled?(:github_import_gists)
+
       authorize! :create_snippet
 
       result = Import::Github::GistsImportService.new(current_user, client, access_params).execute

@@ -104,8 +104,8 @@ the tiers are no longer mentioned in GitLab documentation:
   - [External groups](../integration/saml.md#external-groups)
   - [Required groups](../integration/saml.md#required-groups)
 - Search:
-  - [Filtering merge requests by approvers](../user/project/merge_requests/index.md#filter-merge-requests-by-approvers)
-  - [Filtering merge requests by "approved by"](../user/project/merge_requests/index.md#filter-merge-requests-by-approved-by)
+  - [Filtering merge requests](../user/project/merge_requests/index.md#filter-the-list-of-merge-requests) by approvers
+  - [Filtering merge requests](../user/project/merge_requests/index.md#filter-the-list-of-merge-requests) by "approved by"
   - [Advanced Search (Elasticsearch)](../user/search/advanced_search.md)
 - [Service Desk](../user/project/service_desk.md)
 - [Storage usage statistics](../user/usage_quotas.md#storage-usage-statistics)

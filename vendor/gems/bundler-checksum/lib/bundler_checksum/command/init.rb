@@ -2,7 +2,7 @@
 
 require 'openssl'
 
-module Bundler::Checksum::Command
+module BundlerChecksum::Command
   module Init
     extend self
 
@@ -65,14 +65,14 @@ module Bundler::Checksum::Command
     def previous_checksums
       @previous_checksums ||=
         if File.exist?(checksum_file)
-          ::Bundler::Checksum.checksums_from_file
+          ::BundlerChecksum.checksums_from_file
         else
           []
         end
     end
 
     def checksum_file
-      ::Bundler::Checksum.checksum_file
+      ::BundlerChecksum.checksum_file
     end
 
     def lockfile

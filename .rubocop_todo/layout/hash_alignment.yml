@@ -1,6 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/HashAlignment:
+  Details: grace period
   Exclude:
     - 'ee/spec/lib/ee/gitlab/usage_data_spec.rb'
-    - 'spec/serializers/environment_serializer_spec.rb'

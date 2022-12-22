@@ -1,5 +1,4 @@
 import mermaid from 'mermaid';
-import mindmap from '@mermaid-js/mermaid-mindmap';
 import { getParameterByName } from '~/lib/utils/url_utility';
 
 const setIframeRenderedSize = (h, w) => {
@@ -13,10 +12,11 @@ const drawDiagram = (source) => {
     // eslint-disable-next-line no-unsanitized/property
     element.innerHTML = svgCode;
 
-    const { width, height } = element.firstElementChild.viewBox.baseVal;
+    const height = parseInt(element.firstElementChild.getAttribute('height'), 10);
+    const width = parseInt(element.firstElementChild.style.maxWidth, 10);
     setIframeRenderedSize(height, width);
   };
-  mermaid.mermaidAPI.renderAsync('mermaid', source, insertSvg);
+  mermaid.mermaidAPI.render('mermaid', source, insertSvg);
 };
 
 const darkModeEnabled = () => getParameterByName('darkMode') === 'true';
@@ -56,13 +56,7 @@ const addListener = () => {
     false,
   );
 };
-mermaid
-  .registerExternalDiagrams([mindmap])
-  .then(() => {
-    addListener();
-    initMermaid();
-  })
-  .catch((error) => {
-    throw error;
-  });
+
+addListener();
+initMermaid();
 export default {};

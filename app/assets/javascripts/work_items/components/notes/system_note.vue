@@ -16,6 +16,7 @@
  *   />
  */
 import { GlButton, GlSkeletonLoader, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import $ from 'jquery';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
@@ -76,18 +77,12 @@ export default {
     toggleIcon() {
       return this.expanded ? 'chevron-up' : 'chevron-down';
     },
-    noteElement() {
-      const node = document.createElement('template');
-      // eslint-disable-next-line no-unsanitized/method
-      node.insertAdjacentHTML('afterbegin', this.note.note_html);
-      return node;
-    },
-    unwrappedNoteHtml() {
-      return this.noteElement.children[0].innerHTML;
+    // following 2 methods taken from code in `collapseLongCommitList` of notes.js:
+    actionTextHtml() {
+      return $(this.note.bodyHtml).unwrap().html();
     },
     hasMoreCommits() {
-      const elements = this.noteElement.querySelectorAll('ul > *') || [];
-      return elements.length > MAX_VISIBLE_COMMIT_LIST_COUNT;
+      return $(this.note.bodyHtml).filter('ul').children().length > MAX_VISIBLE_COMMIT_LIST_COUNT;
     },
     descriptionVersion() {
       return this.descriptionVersions[this.note.description_version_id];
@@ -137,7 +132,7 @@ export default {
           :note-id="note.id"
           :is-system-note="true"
         >
-          <span ref="gfm-content" v-safe-html="unwrappedNoteHtml"></span>
+          <span ref="gfm-content" v-safe-html="actionTextHtml"></span>
           <template
             v-if="canSeeDescriptionVersion || note.outdated_line_change_path"
             #extra-controls

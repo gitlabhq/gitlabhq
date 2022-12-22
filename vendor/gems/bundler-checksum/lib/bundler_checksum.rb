@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'bundler'
-require 'bundler/checksum/version'
+require 'bundler_checksum/version'
 require 'json'
 
 module Bundler
@@ -27,7 +27,7 @@ module Bundler
       end
 
       def fetch_checksum_from_file(spec)
-        ::Bundler::Checksum.checksum_for(spec.name, spec.version.to_s, spec.platform.to_s)
+        ::BundlerChecksum.checksum_for(spec.name, spec.version.to_s, spec.platform.to_s)
       end
 
       # Modified from
@@ -74,37 +74,35 @@ module Bundler
   end
 end
 
-module Bundler
-  module Checksum
-    class << self
-      def checksum_file
-        @checksum_file ||= File.join(File.dirname(Bundler.default_gemfile), 'Gemfile.checksum')
+module BundlerChecksum
+  class << self
+    def checksum_file
+      @checksum_file ||= File.join(File.dirname(Bundler.default_gemfile), 'Gemfile.checksum')
+    end
+
+    def checksums_from_file
+      @checksums_from_file ||= JSON.parse(File.open(checksum_file).read, symbolize_names: true)
+    rescue JSON::ParserError => e
+      raise "Invalid checksum file: #{e.message}"
+    end
+
+    def checksum_for(gem_name, gem_version, gem_platform)
+      item = checksums_from_file.detect do |item|
+        item[:name] == gem_name &&
+          item[:platform] == gem_platform &&
+          item[:version] == gem_version
       end
 
-      def checksums_from_file
-        @checksums_from_file ||= JSON.parse(File.open(checksum_file).read, symbolize_names: true)
-      rescue JSON::ParserError => e
-        raise "Invalid checksum file: #{e.message}"
-      end
+      item&.fetch(:checksum)
+    end
 
-      def checksum_for(gem_name, gem_version, gem_platform)
-        item = checksums_from_file.detect do |item|
-          item[:name] == gem_name &&
-            item[:platform] == gem_platform &&
-            item[:version] == gem_version
-        end
+    def patch!
+      return if defined?(@patched) && @patched
+      @patched = true
 
-        item&.fetch(:checksum)
-      end
-
-      def patch!
-        return if defined?(@patched) && @patched
-        @patched = true
-
-        Bundler.ui.info "Patching bundler with bundler-checksum..."
-        require 'bundler/rubygems_gem_installer'
-        ::Bundler::RubyGemsGemInstaller.prepend(Bundler::Patches::RubyGemsInstallerPatch)
-      end
+      Bundler.ui.info "Patching bundler with bundler-checksum..."
+      require 'bundler/rubygems_gem_installer'
+      ::Bundler::RubyGemsGemInstaller.prepend(Bundler::Patches::RubyGemsInstallerPatch)
     end
   end
 end

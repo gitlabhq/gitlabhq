@@ -1,0 +1,142 @@
+- name: "Introducing the GitLab CLI"
+  description: |  # Do not modify this line, instead modify the lines below.
+    The command line is one of the most important tools in a software engineer's toolkit and the majority of their process and work revolve around tools available there. They customize their CLI with styles and extend it through applications to ensure maximum efficiency while performing tasks. The CLI is the backbone of scripts and workflows developers depend on to complete their work.
+
+    To support more developers where they're already working, we've adopted the open source project `glab`, which will form the foundation of GitLab's native CLI experience. The GitLab CLI brings GitLab together with Git and your code, with no application or tab switching required.
+
+    You can read about our adoption of `glab`, our partnership with 1Password, and how to contribute to the project in our [blog post](/blog/2022/12/07/introducing-the-gitlab-cli/).
+
+    A special thank you to [Clement Sam](https://gitlab.com/profclems) for creating `glab` and trusting us with its future.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/integration/glab/
+  image_url: https://about.gitlab.com/images/15_7/create-code-review-gitlab-cli-released.gif
+  published_at: 2022-12-22
+  release: 15.7
+- name: "Browser-based DAST general availability"
+  description: |  # Do not modify this line, instead modify the lines below.
+    After being available in Beta since GitLab 13.2, our proprietary browser-based DAST analyzer is now being released for general availability in GitLab 15.7.
+
+    This new analyzer has been developed completely in-house and makes use of a browser to authenticate, crawl, and scan web applications for vulnerabilities. Traditional DAST analyzers scan using a proxy-based approach to intercept requests and analyze them for vulnerabilities. Because of this, running DAST scans on applications that utilize modern JavaScript frameworks or are single page applications has been extremely difficult. Often, you do not get the full coverage of the application that you would expect. With the browser-based approach, we are able to execute JavaScript directly in the browser, as a user would, to ensure that your entire application is scanned for vulnerabilities. Using the new analyzer, we are able to cover more of the pages in an application, as well as reduce the number of false positives reported.
+
+    At this time, we will not be switching the default analyzer used in the [DAST.gitlab-ci.yml](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml) template to the browser-based analyzer, to allow users to make the switch manually and evaluate it for themselves. However, we plan to make the analyzer the default for all DAST scans at some point in the future. We encourage everyone to start to migrate to the new analyzer, so that when the default switch happens, it will not break any of your DAST scans. You can enable the browser-based analyzer by setting the `DAST_BROWSER_SCAN` to `true` in your `gitlab-ci.yml` configuration. Please note that not all legacy DAST analyzer variables will be used with this new analyzer. Any unsupported legacy DAST variables configured in your `gitlab-ci.yml` file will be ignored during the scan run.
+
+    We will continue to improve on this analyzer and have plans for many new features that the browser-based approach opens up to us. You can see our plans by looking at our [browser-based DAST epic](https://gitlab.com/groups/gitlab-org/-/epics/4248) and its issues. We would love to get feedback on this epic (or any child issues) about what is most important for you in your DAST scans.
+  stage: secure
+  self-managed: true
+  gitlab-com: false
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/dast/browser_based.html
+  image_url: https://about.gitlab.com/images/15_7/secure-browser-based-dast-ga.png
+  published_at: 2022-12-22
+  release: 15.7
+- name: "Support GitOps deployments from outside the default branch"
+  description: |  # Do not modify this line, instead modify the lines below.
+    In previous releases, the GitLab agent for Kubernetes was restricted to manifest files stored on your main branch. This model had known limitations. For example, you couldn't store the manifests of your next release on a release branch and test them in an ephemeral environment.
+
+    Now, you can specify a Git reference along with the manifest project configuration. Besides the main branch, you can sync your manifest files from another branch, a git tag, or a specific commit.
+  stage: configure
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/clusters/agent/gitops.html#gitops-configuration-reference
+  image_url: https://about.gitlab.com/images/15_7/gitops_deployments_outside.png
+  published_at: 2022-12-22
+  release: 15.7
+- name: "Experience the Web IDE Beta and Remote Development"
+  description: |  # Do not modify this line, instead modify the lines below.
+    We are thrilled to announce the availability of the Web IDE Beta, our next-generation web editor based on Visual Studio Code that delivers powerful new features, a more flexible and familiar interface, and the ability to connect directly to a Remote Development environment. Paired with a cloud runtime, the Web IDE Beta enables more advanced real-time development workflows. Take a look at just some of the new features available today!
+
+    The Web IDE Beta is so powerful we're making it the default Web IDE experience for GitLab.com, and we're eager for your feedback. The Web IDE will continue to be available while we iterate on the Beta. To stop using the Web IDE Beta, go to your [user preferences](https://gitlab.com/-/profile/preferences#web-ide) and select the **Opt out of the Web IDE Beta** checkbox.
+
+    Self-managed instances have access to the Web IDE Beta where it is behind a [feature flag](https://docs.gitlab.com/ee/user/project/web_ide_beta/) disabled by default in GitLab 15.7.
+
+    Learn more about the Web IDE Beta and what's coming next in our [recent blog post](/blog/2022/12/15/get-ready-for-new-gitlab-web-ide/).
+  stage: configure
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/web_ide_beta/
+  image_url: https://img.youtube.com/vi/q_xzzY9GT9c/hqdefault.jpg
+  published_at: 2022-12-22
+  release: 15.7
+- name: "Sign commits with your SSH key"
+  description: |  # Do not modify this line, instead modify the lines below.
+    Signing commits just got a lot simpler. Use SSH keys [to sign commits](https://docs.gitlab.com/ee/user/project/repository/ssh_signed_commits/), and provide others with confidence that a **Verified** commit was authored by you.
+
+    Previous methods for signing commits required a GPG key or an X.509 certificate, neither of which can be used to sign in to GitLab. Adding support for commit signing with SSH keys now makes it possible to reuse your authentication key pair to also sign your commits. If you already authenticate into GitLab with an SSH key, add three lines of code to your local Git configuration and all your future commits will be signed.
+
+    By default, all SSH keys currently in your profile can be used for both authentication and signing commits. To use a key for only one of the purposes, upload a new key.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/repository/ssh_signed_commits/
+  image_url: https://img.youtube.com/vi/IrK83nKi8HA/hqdefault.jpg
+  published_at: 2022-12-22
+  release: 15.7
+- name: "Share CI/CD access to the agent within a personal namespace"
+  description: |  # Do not modify this line, instead modify the lines below.
+    The GitLab agent for Kubernetes provides a more secure solution for managing your clusters with GitLab CI/CD.
+
+    You can use a single agent with multiple projects and groups by sharing access to the agent connection. In previous releases, you could not share access with personal namespaces. This release adds support for CI/CD connection sharing to personal namespaces. You can now use a single agent from any of the projects under your personal namespace.
+  stage: configure
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/clusters/agent/ci_cd_workflow.html#authorize-the-agent
+  image_url: https://about.gitlab.com/images/15_7/configure-allow-agent-cicd-access-sharing-within-a-personal-namesp.png
+  published_at: 2022-12-22
+  release: 15.7
+- name: "Select predefined CI/CD variables values from a dropdown list"
+  description: |  # Do not modify this line, instead modify the lines below.
+    Previously, you could [pre-fill CI/CD variables in the "Run pipeline" page](https://docs.gitlab.com/ee/ci/pipelines/index.html#prefill-variables-in-manual-pipelines), with a specific value. Unfortunately, if you had multiple options for the variable's value, you still had to manually input the option you wanted. This was an error-prone process because you could easily input an invalid value, or just mistype it.
+
+    In this release, we've added the ability to set a list of values which are surfaced in a drop-down list in the "Run pipeline" page. Now you can define the exact list of values that are valid for each CI/CD variable when running a pipeline manually, greatly simplifying your workflow when using manually-triggered pipelines.
+  stage: configure
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/pipelines/index.html#prefill-variables-in-manual-pipelines
+  image_url: https://about.gitlab.com/images/15_7/prefill.png
+  published_at: 2022-12-22
+  release: 15.7
+- name: "Self-managed support for the GitLab for Jira Cloud app"
+  description: |  # Do not modify this line, instead modify the lines below.
+    For self-managed GitLab, we're excited to announce support for the [GitLab for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud)!
+  stage: manage
+  self-managed: true
+  gitlab-com: false
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/integration/jira/connect-app.html#connect-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances
+  image_url: https://about.gitlab.com/images/15_7/jira_cloud_app_proxy_for_selfmanaged_gitlab_users.png
+  published_at: 2022-12-22
+  release: 15.7
+- name: "Retry a manual job with updated variables"
+  description: |  # Do not modify this line, instead modify the lines below.
+    When running manual jobs, users can specify the extra CI/CD variables to use in the job. However, if you wanted to retry the same job, you always had to use the same variables as the first time. If you wanted to run the job with different variables, you had to run a new pipeline.
+
+    In this release, we have added the ability to specify variables every time you run a manual job, including when retrying the job. This allows for greater flexibility and convenience as you can retry a manual job as often as you like with a different set of variables in every run.
+  stage: manage
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/jobs/index.html#specifying-variables-when-running-manual-jobs
+  image_url: https://img.youtube.com/vi/YTM_BYL3gXI/hqdefault.jpg
+  published_at: 2022-12-22
+  release: 15.7
+- name: "Support the `$` character in CI/CD variables"
+  description: |  # Do not modify this line, instead modify the lines below.
+    Previously, using the `$` character in a CI/CD variable always indicated the start of a reference another variable, which GitLab then tried to expand. As a result, you could not have a value with a `$` as part of the string unless it was [escaped](https://docs.gitlab.com/ee/ci/variables/#use-the--character-in-variables), which can be confusing.
+
+    In this release, we are introducing a new setting for project, group, and instance CI/CD variables. You can now toggle whether or not GitLab interprets the CI/CD variable as a raw string, or treats a `$` as the start of another variable that should be expanded.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/variables/#expand-cicd-variables
+  image_url: https://about.gitlab.com/images/15_7/raw.png
+  published_at: 2022-12-22
+  release: 15.7

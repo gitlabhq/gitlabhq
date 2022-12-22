@@ -26,7 +26,7 @@ module Gitlab
 
       class MethodMissingError < StandardError
         def message
-          'Method missing. Falling back to execute method on the redis secondary store.'
+          'Method missing. Falling back to execute method on the redis default store in Rails.env.production.'
         end
       end
 
@@ -39,22 +39,40 @@ module Gitlab
       SKIP_LOG_METHOD_MISSING_FOR_COMMANDS = %i(info).freeze
 
       READ_COMMANDS = %i(
+        exists
+        exists?
         get
+        hexists
+        hget
+        hgetall
+        hlen
+        hmget
+        mapped_hmget
         mget
-        smembers
         scard
+        sismember
+        smembers
+        sscan
+        ttl
       ).freeze
 
       WRITE_COMMANDS = %i(
-        set
-        setnx
-        setex
-        sadd
-        srem
         del
-        flushdb
-        rpush
         eval
+        expire
+        flushdb
+        hdel
+        hset
+        incr
+        incrby
+        mapped_hmset
+        rpush
+        sadd
+        set
+        setex
+        setnx
+        srem
+        unlink
       ).freeze
 
       PIPELINED_COMMANDS = %i(
@@ -192,6 +210,8 @@ module Gitlab
 
       def log_method_missing(command_name, *_args)
         return if SKIP_LOG_METHOD_MISSING_FOR_COMMANDS.include?(command_name)
+
+        raise MethodMissingError if Rails.env.test? || Rails.env.development?
 
         log_error(MethodMissingError.new, command_name)
         increment_method_missing_count(command_name)

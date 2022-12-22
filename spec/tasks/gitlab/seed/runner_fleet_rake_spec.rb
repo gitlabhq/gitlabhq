@@ -32,6 +32,7 @@ RSpec.describe 'gitlab:seed:runner_fleet rake task', :silence_stdout, feature_ca
         .to change { Group.count }.by(6)
         .and change { Project.count }.by(3)
         .and change { Ci::Runner.count }.by(runner_count)
+        .and change { Ci::Runner.instance_type.count }.by(1)
         .and change { Ci::Build.count }.by(job_count)
 
       expect(Group.search(registration_prefix).count).to eq 6

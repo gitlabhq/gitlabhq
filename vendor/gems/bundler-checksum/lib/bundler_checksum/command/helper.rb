@@ -3,7 +3,7 @@
 require 'json'
 require 'net/http'
 
-module Bundler::Checksum::Command
+module BundlerChecksum::Command
   module Helper
     extend self
 

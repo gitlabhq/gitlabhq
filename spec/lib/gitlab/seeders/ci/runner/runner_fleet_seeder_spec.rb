@@ -33,6 +33,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder, feature_categor
 
     it 'creates expected hierarchy', :aggregate_failures do
       expect { seed }.to change { Ci::Runner.count }.by(runner_count)
+        .and change { Ci::Runner.instance_type.count }.by(1)
         .and change { Project.count }.by(3)
         .and change { Group.count }.by(6)
 

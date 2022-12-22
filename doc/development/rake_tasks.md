@@ -99,6 +99,7 @@ graph TD
     P1121[Project 1.1.2.1<br><i>15% of jobs, sent to first 5 runners</i>]
     P211[Project 2.1.1<br><i>15% of jobs, sent to first 5 runners</i>]
 
+    IR1[Instance runner]
     P1111R1[Shared runner]
     P1111R[Project 1.1.1.1 runners<br>20% total runners]
     P1121R[Project 1.1.2.1 runners<br>49% total runners]
@@ -107,11 +108,14 @@ graph TD
 
     P1111 --> P1111R1
     P1111 --> G111R
+    P1111 --> IR1
     P1111 --> P1111R
     P1121 --> P1111R1
+    P1121 --> IR1
     P1121 --> P1121R
     P211 --> P1111R1
     P211 --> G21R
+    P211 --> IR1
 
     classDef groups fill:#09f6,color:#000000,stroke:#333,stroke-width:3px;
     classDef projects fill:#f96a,color:#000000,stroke:#333,stroke-width:2px;

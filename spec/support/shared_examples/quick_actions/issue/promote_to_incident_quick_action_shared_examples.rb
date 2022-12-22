@@ -36,5 +36,33 @@ RSpec.shared_examples 'promote_to_incident quick action' do
         expect(page).to have_content('Could not apply promote_to_incident command')
       end
     end
+
+    context 'on issue creation' do
+      it 'promotes issue to incident' do
+        visit new_project_issue_path(project)
+        fill_in('Title', with: 'Title')
+        fill_in('Description', with: '/promote_to_incident')
+        click_button('Create issue')
+
+        wait_for_all_requests
+
+        expect(page).to have_content("Incident created just now by #{user.name}")
+      end
+
+      context 'when incident is selected for issue type' do
+        it 'promotes issue to incident' do
+          visit new_project_issue_path(project)
+          fill_in('Title', with: 'Title')
+          find('.js-issuable-type-filter-dropdown-wrap').click
+          click_link('Incident')
+          fill_in('Description', with: '/promote_to_incident')
+          click_button('Create issue')
+
+          wait_for_all_requests
+
+          expect(page).to have_content("Incident created just now by #{user.name}")
+        end
+      end
+    end
   end
 end

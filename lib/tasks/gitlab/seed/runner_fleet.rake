@@ -3,8 +3,8 @@
 # Seed database with:
 #   1. 2 root groups, one with 2 sub-groups and another with 1 sub-group
 #   1. 1 project in each of the sub-groups
-#   1. 1 shared project runner, and 1 group runner in a couple of the sub-groups
-#   1. Successful and failed pipelines assigned to the first 5 runners of each group/project
+#   1. 1 instance runner, 1 shared project runner, and group/project runners in some groups/projects
+#   1. Successful and failed pipelines assigned to the first 5 available runners of each group/project
 #   1. 1 pipeline on one group runner with the remaining jobs
 #
 # @param username - user creating subgroups (i.e. GitLab admin)

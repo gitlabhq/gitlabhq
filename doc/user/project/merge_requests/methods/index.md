@@ -180,9 +180,9 @@ When a fast-forward merge is not possible, the user is given the option to rebas
 [Rebasing in (semi-)linear merge methods](#rebasing-in-semi-linear-merge-methods).
 
 NOTE:
-Projects using the fast-forward merge strategy can't filter merge requests
-[by deployment date](../index.md#filter-merge-requests-by-environment-or-deployment-date),
-because no merge commit is created.
+Projects that use the fast-forward merge strategy can't
+[filter merge requests](../index.md#filter-the-list-of-merge-requests)
+by deployment date, because no merge commit is created.
 
 When you visit the merge request page with `Fast-forward merge`
 method selected, you can accept it **only if a fast-forward merge is possible**.
