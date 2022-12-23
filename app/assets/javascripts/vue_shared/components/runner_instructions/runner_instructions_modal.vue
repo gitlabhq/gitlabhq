@@ -19,8 +19,8 @@ import {
   INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES,
   REGISTRATION_TOKEN_PLACEHOLDER,
 } from './constants';
-import getRunnerPlatformsQuery from './graphql/queries/get_runner_platforms.query.graphql';
-import getRunnerSetupInstructionsQuery from './graphql/queries/get_runner_setup.query.graphql';
+import getRunnerPlatformsQuery from './graphql/get_runner_platforms.query.graphql';
+import getRunnerSetupInstructionsQuery from './graphql/get_runner_setup.query.graphql';
 
 export default {
   components: {

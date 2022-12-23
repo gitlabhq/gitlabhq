@@ -7,7 +7,7 @@ RSpec.describe 'Runner Instructions (JavaScript fixtures)', feature_category: :r
   include JavaScriptFixturesHelpers
   include GraphqlHelpers
 
-  query_path = 'vue_shared/components/runner_instructions/graphql/queries'
+  query_path = 'vue_shared/components/runner_instructions/graphql'
 
   describe GraphQL::Query do
     describe 'get_runner_platforms.query.graphql', type: :request do

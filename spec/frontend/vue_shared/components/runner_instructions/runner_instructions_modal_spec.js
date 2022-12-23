@@ -6,15 +6,11 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import getRunnerPlatformsQuery from '~/vue_shared/components/runner_instructions/graphql/queries/get_runner_platforms.query.graphql';
-import getRunnerSetupInstructionsQuery from '~/vue_shared/components/runner_instructions/graphql/queries/get_runner_setup.query.graphql';
+import getRunnerPlatformsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_platforms.query.graphql';
+import getRunnerSetupInstructionsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_setup.query.graphql';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 
-import {
-  mockGraphqlRunnerPlatforms,
-  mockGraphqlInstructions,
-  mockGraphqlInstructionsWindows,
-} from './mock_data';
+import { mockRunnerPlatforms, mockInstructions, mockInstructionsWindows } from './mock_data';
 
 Vue.use(VueApollo);
 
@@ -80,8 +76,8 @@ describe('RunnerInstructionsModal component', () => {
   };
 
   beforeEach(() => {
-    runnerPlatformsHandler = jest.fn().mockResolvedValue(mockGraphqlRunnerPlatforms);
-    runnerSetupInstructionsHandler = jest.fn().mockResolvedValue(mockGraphqlInstructions);
+    runnerPlatformsHandler = jest.fn().mockResolvedValue(mockRunnerPlatforms);
+    runnerSetupInstructionsHandler = jest.fn().mockResolvedValue(mockInstructions);
   });
 
   afterEach(() => {
@@ -103,17 +99,17 @@ describe('RunnerInstructionsModal component', () => {
 
       const buttons = findPlatformButtons();
 
-      expect(buttons).toHaveLength(mockGraphqlRunnerPlatforms.data.runnerPlatforms.nodes.length);
+      expect(buttons).toHaveLength(mockRunnerPlatforms.data.runnerPlatforms.nodes.length);
     });
 
     it('should contain a number of dropdown items for the architecture options', () => {
       expect(findArchitectureDropdownItems()).toHaveLength(
-        mockGraphqlRunnerPlatforms.data.runnerPlatforms.nodes[0].architectures.nodes.length,
+        mockRunnerPlatforms.data.runnerPlatforms.nodes[0].architectures.nodes.length,
       );
     });
 
     describe('should display default instructions', () => {
-      const { installInstructions } = mockGraphqlInstructions.data.runnerSetup;
+      const { installInstructions } = mockInstructions.data.runnerSetup;
 
       it('runner instructions are requested', () => {
         expect(runnerSetupInstructionsHandler).toHaveBeenCalledWith({
@@ -139,10 +135,10 @@ describe('RunnerInstructionsModal component', () => {
 
     describe('after a platform and architecture are selected', () => {
       const windowsIndex = 2;
-      const { installInstructions } = mockGraphqlInstructionsWindows.data.runnerSetup;
+      const { installInstructions } = mockInstructionsWindows.data.runnerSetup;
 
       beforeEach(async () => {
-        runnerSetupInstructionsHandler.mockResolvedValue(mockGraphqlInstructionsWindows);
+        runnerSetupInstructionsHandler.mockResolvedValue(mockInstructionsWindows);
 
         findPlatformButtons().at(windowsIndex).vm.$emit('click');
         await waitForPromises();
@@ -157,7 +153,7 @@ describe('RunnerInstructionsModal component', () => {
 
       it('architecture download link is updated', () => {
         const architectures =
-          mockGraphqlRunnerPlatforms.data.runnerPlatforms.nodes[windowsIndex].architectures.nodes;
+          mockRunnerPlatforms.data.runnerPlatforms.nodes[windowsIndex].architectures.nodes;
 
         expect(findBinaryDownloadButton().attributes('href')).toBe(
           architectures[0].downloadLocation,
@@ -215,7 +211,7 @@ describe('RunnerInstructionsModal component', () => {
     it('register command is shown without a defined registration token', () => {
       const instructions = findRegisterCommand().text();
 
-      expect(instructions).toBe(mockGraphqlInstructions.data.runnerSetup.registerInstructions);
+      expect(instructions).toBe(mockInstructions.data.runnerSetup.registerInstructions);
     });
   });
 
