@@ -497,6 +497,18 @@ RSpec.describe ObjectStorage do
 
     subject { uploader_class.workhorse_authorize(has_length: has_length, maximum_size: maximum_size) }
 
+    context 'when FIPS is enabled', :fips_mode do
+      it 'response enables FIPS' do
+        expect(subject[:UploadHashFunctions]).to match_array(%w[sha1 sha256 sha512])
+      end
+    end
+
+    context 'when FIPS is disabled' do
+      it 'response disables FIPS' do
+        expect(subject[:UploadHashFunctions]).to be nil
+      end
+    end
+
     shared_examples 'returns the maximum size given' do
       it "returns temporary path" do
         expect(subject[:MaximumSize]).to eq(maximum_size)

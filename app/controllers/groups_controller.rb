@@ -8,7 +8,7 @@ class GroupsController < Groups::ApplicationController
   include RecordUserLastActivity
   include SendFileUpload
   include FiltersEvents
-  include Recaptcha::Verify
+  include Recaptcha::Adapters::ControllerMethods
   extend ::Gitlab::Utils::Override
 
   respond_to :html

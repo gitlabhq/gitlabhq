@@ -24,10 +24,10 @@ module HasUserType
   included do
     scope :humans, -> { where(user_type: :human) }
     scope :bots, -> { where(user_type: BOT_USER_TYPES) }
-    scope :without_bots, -> { humans.or(where.not(user_type: BOT_USER_TYPES)) }
+    scope :without_bots, -> { humans.or(where(user_type: USER_TYPES.keys - BOT_USER_TYPES)) }
     scope :non_internal, -> { humans.or(where(user_type: NON_INTERNAL_USER_TYPES)) }
-    scope :without_ghosts, -> { humans.or(where.not(user_type: :ghost)) }
-    scope :without_project_bot, -> { humans.or(where.not(user_type: :project_bot)) }
+    scope :without_ghosts, -> { humans.or(where(user_type: USER_TYPES.keys - ['ghost'])) }
+    scope :without_project_bot, -> { humans.or(where(user_type: USER_TYPES.keys - ['project_bot'])) }
     scope :human_or_service_user, -> { humans.or(where(user_type: :service_user)) }
 
     enum user_type: USER_TYPES

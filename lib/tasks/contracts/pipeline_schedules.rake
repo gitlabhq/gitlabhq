@@ -14,7 +14,7 @@ namespace :contracts do
       pact_helper_location = "pact_helpers/project/pipeline_schedules/edit/put_edit_a_pipeline_schedule_helper.rb"
 
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        Provider::ContractSourceHelper.contract_location(requester: :rake, file_path: pact_helper_location),
         pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end

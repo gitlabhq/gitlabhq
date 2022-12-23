@@ -123,30 +123,31 @@ class ProjectStatistics < ApplicationRecord
   # through counter_attribute_after_commit
   #
   # For non-counter attributes, storage_size is updated depending on key => [columns] in INCREMENTABLE_COLUMNS
-  def self.increment_statistic(project, key, amount)
+  def self.increment_statistic(project, key, increment)
     return if project.pending_delete?
 
     project.statistics.try do |project_statistics|
-      project_statistics.increment_statistic(key, amount)
+      project_statistics.increment_statistic(key, increment)
     end
   end
 
-  def self.bulk_increment_statistic(project, key, amounts)
+  def self.bulk_increment_statistic(project, key, increments)
     unless Feature.enabled?(:project_statistics_bulk_increment, type: :development)
-      return increment_statistic(project, key, amounts.sum)
+      total_amount = Gitlab::Counters::Increment.new(amount: increments.sum(&:amount))
+      return increment_statistic(project, key, total_amount)
     end
 
     return if project.pending_delete?
 
     project.statistics.try do |project_statistics|
-      project_statistics.bulk_increment_statistic(key, amounts)
+      project_statistics.bulk_increment_statistic(key, increments)
     end
   end
 
-  def increment_statistic(key, amount)
+  def increment_statistic(key, increment)
     raise ArgumentError, "Cannot increment attribute: #{key}" unless incrementable_attribute?(key)
 
-    increment_counter(key, amount)
+    increment_counter(key, increment)
   end
 
   def bulk_increment_statistic(key, increments)

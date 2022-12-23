@@ -63,6 +63,82 @@ RSpec.describe Noteable do
     end
   end
 
+  # rubocop:disable RSpec/MultipleMemoizedHelpers
+  describe '#commenters' do
+    shared_examples 'commenters' do
+      it 'does not automatically include the noteable author' do
+        expect(commenters).not_to include(noteable.author)
+      end
+
+      context 'with no user' do
+        it 'contains a distinct list of non-internal note authors' do
+          expect(commenters).to contain_exactly(commenter, another_commenter)
+        end
+      end
+
+      context 'with non project member' do
+        let(:current_user) { create(:user) }
+
+        it 'contains a distinct list of non-internal note authors' do
+          expect(commenters).to contain_exactly(commenter, another_commenter)
+        end
+
+        it 'does not include a commenter from another noteable' do
+          expect(commenters).not_to include(other_noteable_commenter)
+        end
+      end
+    end
+
+    let_it_be(:commenter) { create(:user) }
+    let_it_be(:another_commenter) { create(:user) }
+    let_it_be(:internal_commenter) { create(:user) }
+    let_it_be(:other_noteable_commenter) { create(:user) }
+
+    let(:current_user) {}
+    let(:commenters) { noteable.commenters(user: current_user) }
+
+    let!(:comments) { create_list(:note, 2, author: commenter, noteable: noteable, project: noteable.project) }
+    let!(:more_comments) { create_list(:note, 2, author: another_commenter, noteable: noteable, project: noteable.project) }
+
+    context 'when noteable is an issue' do
+      let(:noteable) { create(:issue) }
+
+      let!(:internal_comments) { create_list(:note, 2, author: internal_commenter, noteable: noteable, project: noteable.project, internal: true) }
+      let!(:other_noteable_comments) { create_list(:note, 2, author: other_noteable_commenter, noteable: create(:issue, project: noteable.project), project: noteable.project) }
+
+      it_behaves_like 'commenters'
+
+      context 'with reporter' do
+        let(:current_user) { create(:user) }
+
+        before do
+          noteable.project.add_reporter(current_user)
+        end
+
+        it 'contains a distinct list of non-internal note authors' do
+          expect(commenters).to contain_exactly(commenter, another_commenter, internal_commenter)
+        end
+
+        context 'with noteable author' do
+          let(:current_user) { noteable.author }
+
+          it 'contains a distinct list of non-internal note authors' do
+            expect(commenters).to contain_exactly(commenter, another_commenter, internal_commenter)
+          end
+        end
+      end
+    end
+
+    context 'when noteable is a merge request' do
+      let(:noteable) { create(:merge_request) }
+
+      let!(:other_noteable_comments) { create_list(:note, 2, author: other_noteable_commenter, noteable: create(:merge_request, source_project: noteable.project, source_branch: 'feat123'), project: noteable.project) }
+
+      it_behaves_like 'commenters'
+    end
+  end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
+
   describe '#discussion_ids_relation' do
     it 'returns ordered discussion_ids' do
       discussion_ids = subject.discussion_ids_relation.pluck(:discussion_id)

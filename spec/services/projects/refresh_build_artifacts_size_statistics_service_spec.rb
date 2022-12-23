@@ -29,6 +29,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
 
     let(:now) { Time.zone.now }
     let(:statistics) { project.statistics }
+    let(:increment) { Gitlab::Counters::Increment.new(amount: 30) }
 
     around do |example|
       freeze_time { example.run }
@@ -38,7 +39,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
       stub_const("#{described_class}::BATCH_SIZE", 3)
 
       stats = create(:project_statistics, project: project, build_artifacts_size: 120)
-      stats.increment_counter(:build_artifacts_size, 30)
+      stats.increment_counter(:build_artifacts_size, increment)
     end
 
     it 'resets the build artifacts size stats' do

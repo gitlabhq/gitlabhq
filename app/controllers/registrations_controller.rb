@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RegistrationsController < Devise::RegistrationsController
-  include Recaptcha::Verify
+  include Recaptcha::Adapters::ControllerMethods
   include AcceptsPendingInvitations
   include RecaptchaHelper
   include InvisibleCaptchaOnSignup

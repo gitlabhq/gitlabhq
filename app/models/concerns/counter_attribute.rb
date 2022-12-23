@@ -88,12 +88,12 @@ module CounterAttribute
   end
 
   def increment_counter(attribute, increment)
-    return if increment == 0
+    return if increment.amount == 0
 
     run_after_commit_or_now do
       new_value = counter(attribute).increment(increment)
 
-      log_increment_counter(attribute, increment, new_value)
+      log_increment_counter(attribute, increment.amount, new_value)
     end
   end
 
@@ -101,7 +101,7 @@ module CounterAttribute
     run_after_commit_or_now do
       new_value = counter(attribute).bulk_increment(increments)
 
-      log_increment_counter(attribute, increments.sum, new_value)
+      log_increment_counter(attribute, increments.sum(&:amount), new_value)
     end
   end
 

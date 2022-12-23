@@ -13,12 +13,13 @@ module Projects
       if batch.any?
         # We are doing the sum in ruby because the query takes too long when done in SQL
         total_artifacts_size = batch.sum { |artifact| artifact.size.to_i }
+        increment = Gitlab::Counters::Increment.new(amount: total_artifacts_size)
 
         Projects::BuildArtifactsSizeRefresh.transaction do
           # Mark the refresh ready for another worker to pick up and process the next batch
           refresh.requeue!(batch.last.id)
 
-          refresh.project.statistics.increment_counter(:build_artifacts_size, total_artifacts_size)
+          refresh.project.statistics.increment_counter(:build_artifacts_size, increment)
         end
       else
         # Remove the refresh job from the table if there are no more

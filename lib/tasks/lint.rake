@@ -34,11 +34,6 @@ unless Rails.env.production?
       exit(1)
     end
 
-    desc "GitLab | Lint | Lint docs Markdown files"
-    task :markdown do
-      sh "./scripts/lint-doc.sh"
-    end
-
     desc "GitLab | Lint | Run several lint checks"
     task :all do
       status = 0

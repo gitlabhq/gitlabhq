@@ -31,9 +31,9 @@ module Gitlab
         end
       end
 
-      def increment(amount)
+      def increment(increment)
         result = redis_state do |redis|
-          redis.incrby(key, amount)
+          redis.incrby(key, increment.amount)
         end
 
         FlushCounterIncrementsWorker.perform_in(WORKER_DELAY, counter_record.class.name, counter_record.id, attribute)
@@ -45,7 +45,7 @@ module Gitlab
         result = redis_state do |redis|
           redis.pipelined do |pipeline|
             increments.each do |increment|
-              pipeline.incrby(key, increment)
+              pipeline.incrby(key, increment.amount)
             end
           end
         end

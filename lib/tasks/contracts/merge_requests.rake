@@ -14,7 +14,7 @@ namespace :contracts do
       pact_helper_location = "pact_helpers/project/merge_requests/show/get_diffs_batch_helper.rb"
 
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        Provider::ContractSourceHelper.contract_location(requester: :rake, file_path: pact_helper_location),
         pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
@@ -23,7 +23,7 @@ namespace :contracts do
       pact_helper_location = "pact_helpers/project/merge_requests/show/get_diffs_metadata_helper.rb"
 
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        Provider::ContractSourceHelper.contract_location(requester: :rake, file_path: pact_helper_location),
         pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
@@ -32,7 +32,7 @@ namespace :contracts do
       pact_helper_location = "pact_helpers/project/merge_requests/show/get_discussions_helper.rb"
 
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        Provider::ContractSourceHelper.contract_location(requester: :rake, file_path: pact_helper_location),
         pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end

@@ -4,18 +4,22 @@ module Provider
   module ContractSourceHelper
     QA_PACT_BROKER_HOST = "http://localhost:9292/pacts"
     PREFIX_PATHS = {
-      rake: "../../../contracts/contracts/project",
+      rake: {
+        ce: "../../contracts/project",
+        ee: "../../../../ee/spec/contracts/contracts/project"
+      },
       spec: "../contracts/project"
     }.freeze
     SUB_PATH_REGEX = %r{project/(?<file_path>.*?)_helper.rb}.freeze
 
     class << self
-      def contract_location(requester, file_path)
+      def contract_location(requester:, file_path:, edition: :ce)
         raise ArgumentError, 'requester must be :rake or :spec' unless [:rake, :spec].include? requester
+        raise ArgumentError, 'edition must be :ce or :ee' unless [:ce, :ee].include? edition
 
         relevant_path = file_path.match(SUB_PATH_REGEX)[:file_path].split('/')
 
-        ENV["PACT_BROKER"] ? pact_broker_url(relevant_path) : local_contract_location(requester, relevant_path)
+        ENV["PACT_BROKER"] ? pact_broker_url(relevant_path) : local_contract_location(requester, relevant_path, edition)
       end
 
       def pact_broker_url(file_path)
@@ -36,9 +40,10 @@ module Provider
         "#{file_path[0].split('_').map(&:capitalize).join}%23#{file_path[1]}"
       end
 
-      def local_contract_location(requester, file_path)
+      def local_contract_location(requester, file_path, edition)
         contract_path = construct_local_contract_path(file_path)
-        prefix_path = requester == :rake ? File.expand_path(PREFIX_PATHS[requester], __dir__) : PREFIX_PATHS[requester]
+        prefix_path = PREFIX_PATHS[requester]
+        prefix_path = File.expand_path(prefix_path[edition], __dir__) if requester == :rake
 
         "#{prefix_path}#{contract_path}"
       end

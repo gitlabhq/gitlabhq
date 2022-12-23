@@ -664,6 +664,7 @@ project:
 - pipeline_metadata
 - disable_download_button
 - dependency_list_exports
+- sbom_occurrences
 award_emoji:
 - awardable
 - user

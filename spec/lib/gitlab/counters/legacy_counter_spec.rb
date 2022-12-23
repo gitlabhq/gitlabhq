@@ -7,38 +7,41 @@ RSpec.describe Gitlab::Counters::LegacyCounter do
 
   let(:counter_record) { create(:project_statistics) }
   let(:attribute) { :snippets_size }
-  let(:amount) { 123 }
+
+  let(:increment) { Gitlab::Counters::Increment.new(amount: 123) }
+  let(:other_increment) { Gitlab::Counters::Increment.new(amount: 100) }
 
   describe '#increment' do
     it 'increments the attribute in the counter record' do
-      expect { counter.increment(amount) }.to change { counter_record.reload.method(attribute).call }.by(amount)
+      expect { counter.increment(increment) }
+        .to change { counter_record.reload.method(attribute).call }.by(increment.amount)
     end
 
     it 'returns the value after the increment' do
-      counter.increment(100)
+      counter.increment(other_increment)
 
-      expect(counter.increment(amount)).to eq(100 + amount)
+      expect(counter.increment(increment)).to eq(other_increment.amount + increment.amount)
     end
 
     it 'executes after counter_record after commit callback' do
       expect(counter_record).to receive(:execute_after_commit_callbacks).and_call_original
 
-      counter.increment(amount)
+      counter.increment(increment)
     end
   end
 
   describe '#bulk_increment' do
-    let(:increments) { [123, 456] }
+    let(:increments) { [Gitlab::Counters::Increment.new(amount: 123), Gitlab::Counters::Increment.new(amount: 456)] }
 
     it 'increments the attribute in the counter record' do
       expect { counter.bulk_increment(increments) }
-        .to change { counter_record.reload.method(attribute).call }.by(increments.sum)
+        .to change { counter_record.reload.method(attribute).call }.by(increments.sum(&:amount))
     end
 
     it 'returns the value after the increment' do
-      counter.increment(100)
+      counter.increment(other_increment)
 
-      expect(counter.bulk_increment(increments)).to eq(100 + increments.sum)
+      expect(counter.bulk_increment(increments)).to eq(other_increment.amount + increments.sum(&:amount))
     end
 
     it 'executes after counter_record after commit callback' do

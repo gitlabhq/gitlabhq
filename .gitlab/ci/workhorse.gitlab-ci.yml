@@ -39,7 +39,6 @@ workhorse:test fips:
   extends: .workhorse:test
   image: registry.gitlab.com/gitlab-org/gitlab-omnibus-builder/ubuntu_20.04_fips:4.0.0
   variables:
-    WORKHORSE_TEST_FIPS_ENABLED: 1
     FIPS_MODE: 1
 
 workhorse:test race:

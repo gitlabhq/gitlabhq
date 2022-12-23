@@ -78,9 +78,10 @@ module UpdateProjectStatistics
       return if delta == 0
       return if project.nil?
 
+      increment = Gitlab::Counters::Increment.new(amount: delta, ref: id)
+
       run_after_commit do
-        ProjectStatistics.increment_statistic(
-          project, self.class.project_statistics_name, delta)
+        ProjectStatistics.increment_statistic(project, self.class.project_statistics_name, increment)
       end
     end
   end

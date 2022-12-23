@@ -71,7 +71,7 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
 
         before do
           stats = create(:project_statistics, project: refresh.project, build_artifacts_size: 120)
-          stats.increment_counter(:build_artifacts_size, 30)
+          stats.increment_counter(:build_artifacts_size, Gitlab::Counters::Increment.new(amount: 30))
         end
 
         it 'transitions the state to running' do

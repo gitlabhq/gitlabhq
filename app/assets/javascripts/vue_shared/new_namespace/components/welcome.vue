@@ -34,7 +34,7 @@ export default {
           :href="`#${panel.name}`"
           data-qa-selector="panel_link"
           :data-qa-panel-name="panel.name"
-          class="new-namespace-panel gl-display-flex gl-flex-shrink-0 gl-flex-direction-column gl-lg-flex-direction-row gl-align-items-center gl-rounded-base gl-border-gray-100 gl-border-solid gl-border-1 gl-w-full gl-py-6 gl-px-8 gl-hover-text-decoration-none!"
+          class="new-namespace-panel gl-display-flex gl-flex-shrink-0 gl-flex-direction-column gl-lg-flex-direction-row gl-align-items-center gl-rounded-base gl-border-gray-100 gl-border-solid gl-border-1 gl-w-full gl-py-6 gl-px-3 gl-hover-text-decoration-none!"
           @click="track('click_tab', { label: panel.name })"
         >
           <div

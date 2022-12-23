@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
+RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, feature_category: :vulnerability_management do
   let_it_be(:project) { create(:project) }
 
   let(:supported_dast_versions) { described_class::SUPPORTED_VERSIONS[:dast].join(', ') }

@@ -11,19 +11,19 @@ module Gitlab
         @current_value = counter_record.method(attribute).call
       end
 
-      def increment(amount)
-        updated = update_counter_record_attribute(amount)
+      def increment(increment)
+        updated = update_counter_record_attribute(increment.amount)
 
         if updated == 1
           counter_record.execute_after_commit_callbacks
-          @current_value += amount
+          @current_value += increment.amount
         end
 
         @current_value
       end
 
       def bulk_increment(increments)
-        total_increment = increments.sum
+        total_increment = increments.sum(&:amount)
 
         updated = update_counter_record_attribute(total_increment)
 

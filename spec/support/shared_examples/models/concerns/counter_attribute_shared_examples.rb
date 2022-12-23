@@ -14,13 +14,14 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
   counter_attributes.each do |attribute|
     describe attribute do
       describe '#increment_counter', :redis do
-        let(:increment) { 10 }
+        let(:amount) { 10 }
+        let(:increment) { Gitlab::Counters::Increment.new(amount: amount) }
         let(:counter_key) { model.counter(attribute).key }
 
         subject { model.increment_counter(attribute, increment) }
 
         context 'when attribute is a counter attribute' do
-          where(:increment) { [10, -3] }
+          where(:amount) { [10, -3] }
 
           with_them do
             it 'increments the counter in Redis and logs it' do
@@ -29,8 +30,8 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
                   message: 'Increment counter attribute',
                   attribute: attribute,
                   project_id: model.project_id,
-                  increment: increment,
-                  new_counter_value: 0 + increment,
+                  increment: amount,
+                  new_counter_value: 0 + amount,
                   current_db_value: model.read_attribute(attribute),
                   'correlation_id' => an_instance_of(String),
                   'meta.feature_category' => 'test',
@@ -42,7 +43,7 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
 
               Gitlab::Redis::SharedState.with do |redis|
                 counter = redis.get(counter_key)
-                expect(counter).to eq(increment.to_s)
+                expect(counter).to eq(amount.to_s)
               end
             end
 
@@ -59,8 +60,8 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
             end
           end
 
-          context 'when increment is 0' do
-            let(:increment) { 0 }
+          context 'when increment amount is 0' do
+            let(:amount) { 0 }
 
             it 'does nothing' do
               expect(FlushCounterIncrementsWorker).not_to receive(:perform_in)
@@ -73,8 +74,8 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
       end
 
       describe '#bulk_increment_counter', :redis do
-        let(:increments) { [10, 5] }
-        let(:total_amount) { increments.sum }
+        let(:increments) { [Gitlab::Counters::Increment.new(amount: 10), Gitlab::Counters::Increment.new(amount: 5)] }
+        let(:total_amount) { increments.sum(&:amount) }
         let(:counter_key) { model.counter(attribute).key }
 
         subject { model.bulk_increment_counter(attribute, increments) }
@@ -122,10 +123,11 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
   describe '#reset_counter!' do
     let(:attribute) { counter_attributes.first }
     let(:counter_key) { model.counter(attribute).key }
+    let(:increment) { Gitlab::Counters::Increment.new(amount: 10) }
 
     before do
       model.update!(attribute => 123)
-      model.increment_counter(attribute, 10)
+      model.increment_counter(attribute, increment)
     end
 
     subject { model.reset_counter!(attribute) }

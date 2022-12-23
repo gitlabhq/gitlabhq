@@ -65,7 +65,6 @@ docs-lint markdown:
     - .default-retry
     - .docs:rules:docs-lint
     - .docs-markdown-lint-image
-    - .yarn-cache
   stage: lint
   needs: []
   script:

@@ -4,7 +4,7 @@
 
     To support more developers where they're already working, we've adopted the open source project `glab`, which will form the foundation of GitLab's native CLI experience. The GitLab CLI brings GitLab together with Git and your code, with no application or tab switching required.
 
-    You can read about our adoption of `glab`, our partnership with 1Password, and how to contribute to the project in our [blog post](/blog/2022/12/07/introducing-the-gitlab-cli/).
+    You can read about our adoption of `glab`, our partnership with 1Password, and how to contribute to the project in our [blog post](https://about.gitlab.com/blog/2022/12/07/introducing-the-gitlab-cli/).
 
     A special thank you to [Clement Sam](https://gitlab.com/profclems) for creating `glab` and trusting us with its future.
   stage: create

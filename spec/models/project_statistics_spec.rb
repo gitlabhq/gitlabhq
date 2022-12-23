@@ -456,23 +456,25 @@ RSpec.describe ProjectStatistics do
 
   describe '.increment_statistic' do
     shared_examples 'a statistic that increases storage_size synchronously' do
+      let(:increment) { Gitlab::Counters::Increment.new(amount: 13) }
+
       it 'increases the statistic by that amount' do
-        expect { described_class.increment_statistic(project, stat, 13) }
+        expect { described_class.increment_statistic(project, stat, increment) }
           .to change { statistics.reload.send(stat) || 0 }
-          .by(13)
+          .by(increment.amount)
       end
 
       it 'increases also storage size by that amount' do
-        expect { described_class.increment_statistic(project, stat, 20) }
+        expect { described_class.increment_statistic(project, stat, increment) }
           .to change { statistics.reload.storage_size }
-          .by(20)
+          .by(increment.amount)
       end
 
       it 'schedules a namespace aggregation worker' do
         expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async)
          .with(statistics.project.namespace.id)
 
-        described_class.increment_statistic(project, stat, 20)
+        described_class.increment_statistic(project, stat, increment)
       end
 
       context 'when the project is pending delete' do
@@ -481,20 +483,22 @@ RSpec.describe ProjectStatistics do
         end
 
         it 'does not change the statistics' do
-          expect { described_class.increment_statistic(project, stat, 13) }
+          expect { described_class.increment_statistic(project, stat, increment) }
             .not_to change { statistics.reload.send(stat) }
         end
       end
     end
 
     shared_examples 'a statistic that increases storage_size asynchronously' do
+      let(:increment) { Gitlab::Counters::Increment.new(amount: 13) }
+
       it 'stores the increment temporarily in Redis', :clean_gitlab_redis_shared_state do
-        described_class.increment_statistic(project, stat, 13)
+        described_class.increment_statistic(project, stat, increment)
 
         Gitlab::Redis::SharedState.with do |redis|
           key = statistics.counter(stat).key
-          increment = redis.get(key)
-          expect(increment.to_i).to eq(13)
+          value = redis.get(key)
+          expect(value.to_i).to eq(increment.amount)
         end
       end
 
@@ -504,9 +508,9 @@ RSpec.describe ProjectStatistics do
           .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, described_class.name, statistics.id, stat)
           .and_call_original
 
-        expect { described_class.increment_statistic(project, stat, 20) }
-          .to change { statistics.reload.send(stat) }.by(20)
-          .and change { statistics.reload.send(:storage_size) }.by(20)
+        expect { described_class.increment_statistic(project, stat, increment) }
+          .to change { statistics.reload.send(stat) }.by(increment.amount)
+          .and change { statistics.reload.send(:storage_size) }.by(increment.amount)
       end
 
       context 'when the project is pending delete' do
@@ -515,7 +519,7 @@ RSpec.describe ProjectStatistics do
         end
 
         it 'does not change the statistics' do
-          expect { described_class.increment_statistic(project, stat, 13) }
+          expect { described_class.increment_statistic(project, stat, increment) }
             .not_to change { [statistics.reload.send(stat), statistics.reload.send(:storage_size)] }
         end
       end
@@ -540,9 +544,11 @@ RSpec.describe ProjectStatistics do
     end
 
     context 'when the amount is 0' do
+      let(:increment) { Gitlab::Counters::Increment.new(amount: 0) }
+
       it 'does not execute a query' do
         project
-        expect { described_class.increment_statistic(project, :build_artifacts_size, 0) }
+        expect { described_class.increment_statistic(project, :build_artifacts_size, increment) }
           .not_to exceed_query_limit(0)
       end
     end
@@ -556,8 +562,8 @@ RSpec.describe ProjectStatistics do
   end
 
   describe '.bulk_increment_statistic' do
-    let(:increments) { [10, 3] }
-    let(:total_amount) { increments.sum }
+    let(:increments) { [10, 3].map { |amount| Gitlab::Counters::Increment.new(amount: amount) } }
+    let(:total_amount) { increments.sum(&:amount) }
 
     shared_examples 'a statistic that increases storage_size synchronously' do
       it 'increases the statistic by that amount' do
@@ -636,7 +642,9 @@ RSpec.describe ProjectStatistics do
         end
 
         it 'calls increment_statistic on once with the sum of the increments' do
-          expect(statistics).to receive(:increment_statistic).with(stat, increments.sum).and_call_original
+          total_amount = increments.sum(&:amount)
+          expect(statistics)
+            .to receive(:increment_statistic).with(stat, have_attributes(amount: total_amount)).and_call_original
 
           described_class.bulk_increment_statistic(project, stat, increments)
         end

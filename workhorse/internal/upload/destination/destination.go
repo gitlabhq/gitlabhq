@@ -121,7 +121,7 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 	}
 	uploadStartTime := time.Now()
 	defer func() { fh.uploadDuration = time.Since(uploadStartTime).Seconds() }()
-	hashes := newMultiHash()
+	hashes := newMultiHash(opts.UploadHashFunctions)
 	reader = io.TeeReader(reader, hashes.Writer)
 
 	var clientMode string

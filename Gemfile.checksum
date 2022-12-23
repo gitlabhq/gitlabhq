@@ -464,7 +464,7 @@
 {"name":"rchardet","version":"1.8.0","platform":"ruby","checksum":"693acd5253d5ade81a51940697955f6dd4bb2f0d245bda76a8e23deec70a52c7"},
 {"name":"rdoc","version":"6.3.2","platform":"ruby","checksum":"def4a720235c27d56c176ae73555e647eb04ea58a8bbaa927f8f9f79de7805a6"},
 {"name":"re2","version":"1.6.0","platform":"ruby","checksum":"2e37f27971f6a76223eac688c04f3e48aea374f34b302ec22d75b4635cd64bc1"},
-{"name":"recaptcha","version":"4.13.1","platform":"ruby","checksum":"dc6c2cb78afa87034358b7ba1c6f7175972b5709fdf7500e2550623e119e3788"},
+{"name":"recaptcha","version":"5.12.3","platform":"ruby","checksum":"37d1894add9e70a54d0c6c7f0ecbeedffbfa7d075acfbd4c509818dfdebdb7ee"},
 {"name":"recursive-open-struct","version":"1.1.3","platform":"ruby","checksum":"a3538a72552fcebcd0ada657bdff313641a4a5fbc482c08cfb9a65acb1c9de5a"},
 {"name":"redcarpet","version":"3.5.1","platform":"ruby","checksum":"717f64cb6ec11c8d9ec9b521ed26ca2eeda68b4fe1fc3388a641176dbd47732f"},
 {"name":"redis","version":"4.8.0","platform":"ruby","checksum":"2000cf5014669c9dc821704b6d322a35a9a33852a95208911d9175d63b448a44"},

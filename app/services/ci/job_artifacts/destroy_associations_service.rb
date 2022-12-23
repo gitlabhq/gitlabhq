@@ -26,8 +26,8 @@ module Ci
       end
 
       def update_statistics
-        @statistics_updates.each do |project, changes|
-          ProjectStatistics.bulk_increment_statistic(project, Ci::JobArtifact.project_statistics_name, changes)
+        @statistics_updates.each do |project, increments|
+          ProjectStatistics.bulk_increment_statistic(project, Ci::JobArtifact.project_statistics_name, increments)
         end
       end
     end

@@ -73,8 +73,8 @@ module Ci
 
       # using ! here since this can't be called inside a transaction
       def update_project_statistics!
-        statistics_updates_per_project.each do |project, updates|
-          ProjectStatistics.bulk_increment_statistic(project, Ci::JobArtifact.project_statistics_name, updates)
+        statistics_updates_per_project.each do |project, increments|
+          ProjectStatistics.bulk_increment_statistic(project, Ci::JobArtifact.project_statistics_name, increments)
         end
       end
 
@@ -83,7 +83,8 @@ module Ci
           result = Hash.new { |updates, project| updates[project] = [] }
 
           @job_artifacts.each_with_object(result) do |job_artifact, result|
-            result[job_artifact.project] << -job_artifact.size.to_i
+            increment = Gitlab::Counters::Increment.new(amount: -job_artifact.size.to_i, ref: job_artifact.id)
+            result[job_artifact.project] << increment
           end
         end
       end

@@ -21380,7 +21380,8 @@ CREATE TABLE sbom_occurrences (
     pipeline_id bigint,
     source_id bigint,
     commit_sha bytea NOT NULL,
-    component_id bigint NOT NULL
+    component_id bigint NOT NULL,
+    uuid uuid NOT NULL
 );
 
 CREATE SEQUENCE sbom_occurrences_id_seq
@@ -30944,13 +30945,13 @@ CREATE INDEX index_sbom_occurrences_on_component_id ON sbom_occurrences USING bt
 
 CREATE INDEX index_sbom_occurrences_on_component_version_id ON sbom_occurrences USING btree (component_version_id);
 
-CREATE UNIQUE INDEX index_sbom_occurrences_on_ingestion_attributes ON sbom_occurrences USING btree (project_id, component_id, component_version_id, source_id, commit_sha);
-
 CREATE INDEX index_sbom_occurrences_on_pipeline_id ON sbom_occurrences USING btree (pipeline_id);
 
 CREATE INDEX index_sbom_occurrences_on_project_id ON sbom_occurrences USING btree (project_id);
 
 CREATE INDEX index_sbom_occurrences_on_source_id ON sbom_occurrences USING btree (source_id);
+
+CREATE UNIQUE INDEX index_sbom_occurrences_on_uuid ON sbom_occurrences USING btree (uuid);
 
 CREATE UNIQUE INDEX index_sbom_sources_on_source_type_and_source ON sbom_sources USING btree (source_type, source);
 
@@ -31312,7 +31313,7 @@ CREATE INDEX index_user_statuses_on_user_id ON user_statuses USING btree (user_i
 
 CREATE UNIQUE INDEX index_user_synced_attributes_metadata_on_user_id ON user_synced_attributes_metadata USING btree (user_id);
 
-CREATE INDEX index_users_for_active_billable ON users USING btree (id) WHERE (((state)::text = 'active'::text) AND ((user_type IS NULL) OR (user_type = ANY (ARRAY[NULL::integer, 6, 4]))) AND ((user_type IS NULL) OR (user_type <> ALL ('{1,2,3,4,5,6,7,8,9,11}'::smallint[]))));
+CREATE INDEX index_users_for_billable_users ON users USING btree (id) WHERE (((state)::text = 'active'::text) AND ((user_type IS NULL) OR (user_type = ANY (ARRAY[6, 4]))) AND ((user_type IS NULL) OR (user_type = ANY (ARRAY[4, 5]))));
 
 CREATE INDEX index_users_on_accepted_term_id ON users USING btree (accepted_term_id);
 

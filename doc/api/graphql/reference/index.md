@@ -10278,6 +10278,7 @@ Describes an alert from the project's Alert Management.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="alertmanagementalertassignees"></a>`assignees` | [`UserCoreConnection`](#usercoreconnection) | Assignees of the alert. (see [Connections](#connections)) |
+| <a id="alertmanagementalertcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="alertmanagementalertcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp the alert was created. |
 | <a id="alertmanagementalertdescription"></a>`description` | [`String`](#string) | Description of the alert. |
 | <a id="alertmanagementalertdetails"></a>`details` | [`JSON`](#json) | Alert details. |
@@ -10617,6 +10618,7 @@ Represents an epic on an issue board.
 | <a id="boardepicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that this epic is blocking. |
 | <a id="boardepicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
 | <a id="boardepiccolor"></a>`color` | [`String`](#string) | Color of the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
+| <a id="boardepiccommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="boardepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="boardepiccreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the epic was created. |
 | <a id="boardepicdefaultprojectforissuecreation"></a>`defaultProjectForIssueCreation` | [`Project`](#project) | Default Project for issue creation. Based on the project the user created the last issue in. |
@@ -12118,6 +12120,7 @@ A single design.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="designcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="designdiffrefs"></a>`diffRefs` | [`DiffRefs!`](#diffrefs) | Diff refs for this design. |
 | <a id="designdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="designevent"></a>`event` | [`DesignVersionEvent!`](#designversionevent) | How this design was changed in the current version. |
@@ -12619,6 +12622,7 @@ Represents an epic.
 | <a id="epicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that this epic is blocking. |
 | <a id="epicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
 | <a id="epiccolor"></a>`color` | [`String`](#string) | Color of the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
+| <a id="epiccommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="epicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="epiccreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the epic was created. |
 | <a id="epicdefaultprojectforissuecreation"></a>`defaultProjectForIssueCreation` | [`Project`](#project) | Default Project for issue creation. Based on the project the user created the last issue in. |
@@ -12860,6 +12864,7 @@ Relationship between an epic and an issue.
 | <a id="epicissueblockingcount"></a>`blockingCount` | [`Int!`](#int) | Count of issues this issue is blocking. |
 | <a id="epicissueclosedasduplicateof"></a>`closedAsDuplicateOf` | [`Issue`](#issue) | Issue this issue was closed as a duplicate of. |
 | <a id="epicissueclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the issue was closed. |
+| <a id="epicissuecommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="epicissueconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the issue is confidential. |
 | <a id="epicissuecreatenoteemail"></a>`createNoteEmail` | [`String`](#string) | User specific email address for the issue. |
 | <a id="epicissuecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the issue was created. |
@@ -14574,6 +14579,7 @@ Describes an issuable resource link for incident issues.
 | <a id="issueblockingcount"></a>`blockingCount` | [`Int!`](#int) | Count of issues this issue is blocking. |
 | <a id="issueclosedasduplicateof"></a>`closedAsDuplicateOf` | [`Issue`](#issue) | Issue this issue was closed as a duplicate of. |
 | <a id="issueclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the issue was closed. |
+| <a id="issuecommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="issueconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the issue is confidential. |
 | <a id="issuecreatenoteemail"></a>`createNoteEmail` | [`String`](#string) | User specific email address for the issue. |
 | <a id="issuecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the issue was created. |
@@ -15002,6 +15008,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestautomergeenabled"></a>`autoMergeEnabled` | [`Boolean!`](#boolean) | Indicates if auto merge is enabled for the merge request. |
 | <a id="mergerequestautomergestrategy"></a>`autoMergeStrategy` | [`String`](#string) | Selected auto merge strategy. |
 | <a id="mergerequestavailableautomergestrategies"></a>`availableAutoMergeStrategies` | [`[String!]`](#string) | Array of available auto merge strategies. |
+| <a id="mergerequestcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="mergerequestcommitcount"></a>`commitCount` | [`Int`](#int) | Number of commits in the merge request. |
 | <a id="mergerequestcommits"></a>`commits` | [`CommitConnection`](#commitconnection) | Merge request commits. (see [Connections](#connections)) |
 | <a id="mergerequestcommitswithoutmergecommits"></a>`commitsWithoutMergeCommits` | [`CommitConnection`](#commitconnection) | Merge request commits excluding merge commits. (see [Connections](#connections)) |
@@ -19428,6 +19435,7 @@ Represents a snippet entry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="snippetauthor"></a>`author` | [`UserCore`](#usercore) | Owner of the snippet. |
+| <a id="snippetcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="snippetcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp this snippet was created. |
 | <a id="snippetdescription"></a>`description` | [`String`](#string) | Description of the snippet. |
 | <a id="snippetdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
@@ -20298,6 +20306,7 @@ Represents a vulnerability.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="vulnerabilitycommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
 | <a id="vulnerabilityconfirmedby"></a>`confirmedBy` | [`UserCore`](#usercore) | User that confirmed the vulnerability. |
 | <a id="vulnerabilitydescription"></a>`description` | [`String`](#string) | Description of the vulnerability. |
@@ -24189,6 +24198,7 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="noteableinterfacecommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="noteableinterfacediscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="noteableinterfacenotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 

@@ -208,33 +208,53 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
     end
 
     context 'ProjectStatistics', :sidekiq_inline do
-      let(:artifact_with_file) { create(:ci_job_artifact, :zip) }
-      let(:artifact_with_file_2) { create(:ci_job_artifact, :zip, project: artifact_with_file.project) }
-      let(:artifact_without_file) { create(:ci_job_artifact) }
-      let(:affected_statistics) { artifact_with_file.project.statistics }
-      let(:unaffected_statistics) { artifact_without_file.project.statistics }
+      let_it_be(:project_1) { create(:project) }
+      let_it_be(:project_2) { create(:project) }
+
+      let(:artifact_with_file) { create(:ci_job_artifact, :zip, project: project_1) }
+      let(:artifact_with_file_2) { create(:ci_job_artifact, :zip, project: project_1) }
+      let(:artifact_without_file) { create(:ci_job_artifact, project: project_2) }
       let!(:artifacts) { Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_without_file.id, artifact_with_file_2.id]) }
 
       it 'updates project statistics by the relevant amount' do
         expected_amount = -(artifact_with_file.size + artifact_with_file_2.size)
 
         expect { execute }
-          .to change { affected_statistics.reload.build_artifacts_size }.by(expected_amount)
-          .and change { unaffected_statistics.reload.build_artifacts_size }.by(0)
+          .to change { project_1.statistics.reload.build_artifacts_size }.by(expected_amount)
+          .and change { project_2.statistics.reload.build_artifacts_size }.by(0)
+      end
+
+      it 'increments project statistics with artifact size as amount and job artifact id as ref' do
+        project_1_increments = [
+          have_attributes(amount: -artifact_with_file.size, ref: artifact_with_file.id),
+          have_attributes(amount: -artifact_with_file_2.file.size, ref: artifact_with_file_2.id)
+        ]
+        project_2_increments = [have_attributes(amount: 0, ref: artifact_without_file.id)]
+
+        expect(ProjectStatistics).to receive(:bulk_increment_statistic).with(project_1, :build_artifacts_size, match_array(project_1_increments))
+        expect(ProjectStatistics).to receive(:bulk_increment_statistic).with(project_2, :build_artifacts_size, match_array(project_2_increments))
+
+        execute
       end
 
       context 'with update_stats: false' do
         subject(:execute) { service.execute(update_stats: false) }
 
         it 'does not update project statistics' do
-          expect { execute }.not_to change { [affected_statistics.reload.build_artifacts_size, unaffected_statistics.reload.build_artifacts_size] }
+          expect { execute }.not_to change { [project_1.statistics.reload.build_artifacts_size, project_2.statistics.reload.build_artifacts_size] }
         end
 
         it 'returns statistic updates per project' do
+          project_1_updates = [
+            have_attributes(amount: -artifact_with_file.size, ref: artifact_with_file.id),
+            have_attributes(amount: -artifact_with_file_2.file.size, ref: artifact_with_file_2.id)
+          ]
+          project_2_updates = [have_attributes(amount: 0, ref: artifact_without_file.id)]
+
           expected_updates = {
             statistics_updates: {
-              artifact_with_file.project => match_array([-artifact_with_file.file.size, -artifact_with_file_2.file.size]),
-              artifact_without_file.project => [0]
+              project_1 => match_array(project_1_updates),
+              project_2 => project_2_updates
             }
           }
 

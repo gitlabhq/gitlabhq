@@ -4,8 +4,8 @@ class SessionsController < Devise::SessionsController
   include InternalRedirect
   include AuthenticatesWithTwoFactor
   include Devise::Controllers::Rememberable
-  include Recaptcha::ClientHelper
-  include Recaptcha::Verify
+  include Recaptcha::Adapters::ViewMethods
+  include Recaptcha::Adapters::ControllerMethods
   include RendersLdapServers
   include KnownSignIn
   include Gitlab::Utils::StrongMemoize

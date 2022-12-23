@@ -5,7 +5,7 @@ module Captcha
   # Encapsulates logic of checking captchas.
   #
   class CaptchaVerificationService
-    include Recaptcha::Verify
+    include Recaptcha::Adapters::ControllerMethods
 
     # Currently the only value that is used out of the request by the reCAPTCHA library
     # is 'remote_ip'. Therefore, we just create a struct to avoid passing the full request
@@ -45,7 +45,7 @@ module Captcha
 
     attr_reader :spam_params
 
-    # The recaptcha library's Recaptcha::Verify#verify_recaptcha method requires that
+    # The recaptcha library's Recaptcha::Adapters::ControllerMethods#verify_recaptcha method requires that
     # 'request' be a readable attribute - it doesn't support passing it as an options argument.
     attr_reader :request
   end

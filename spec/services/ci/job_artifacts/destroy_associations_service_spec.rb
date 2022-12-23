@@ -3,9 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobArtifacts::DestroyAssociationsService do
-  let_it_be(:artifact_1, refind: true) { create(:ci_job_artifact, :zip) }
-  let_it_be(:artifact_2, refind: true) { create(:ci_job_artifact, :zip) }
-  let_it_be(:artifact_3, refind: true) { create(:ci_job_artifact, :zip, project: artifact_1.project) }
+  let_it_be(:project_1) { create(:project) }
+  let_it_be(:project_2) { create(:project) }
+
+  let_it_be(:artifact_1, refind: true) { create(:ci_job_artifact, :zip, project: project_1) }
+  let_it_be(:artifact_2, refind: true) { create(:ci_job_artifact, :zip, project: project_2) }
+  let_it_be(:artifact_3, refind: true) { create(:ci_job_artifact, :zip, project: project_1) }
 
   let(:artifacts) { Ci::JobArtifact.where(id: [artifact_1.id, artifact_2.id, artifact_3.id]) }
   let(:service) { described_class.new(artifacts) }
@@ -35,10 +38,16 @@ RSpec.describe Ci::JobArtifacts::DestroyAssociationsService do
     end
 
     it 'updates project statistics' do
+      project1_increments = [
+        have_attributes(amount: -artifact_1.size, ref: artifact_1.id),
+        have_attributes(amount: -artifact_3.size, ref: artifact_3.id)
+      ]
+      project2_increments = [have_attributes(amount: -artifact_2.size, ref: artifact_2.id)]
+
       expect(ProjectStatistics).to receive(:bulk_increment_statistic).once
-        .with(artifact_1.project, :build_artifacts_size, match_array([-artifact_1.size, -artifact_3.size]))
+        .with(project_1, :build_artifacts_size, match_array(project1_increments))
       expect(ProjectStatistics).to receive(:bulk_increment_statistic).once
-        .with(artifact_2.project, :build_artifacts_size, match_array([-artifact_2.size]))
+        .with(project_2, :build_artifacts_size, match_array(project2_increments))
 
       service.update_statistics
     end

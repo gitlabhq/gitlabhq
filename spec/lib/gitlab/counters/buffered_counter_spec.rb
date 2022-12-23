@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
 
   subject(:counter) { described_class.new(counter_record, attribute) }
 
-  let(:counter_record) { create(:project_statistics) }
+  let_it_be(:counter_record) { create(:project_statistics) }
   let(:attribute) { :build_artifacts_size }
 
   describe '#get' do
@@ -25,48 +25,53 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
   end
 
   describe '#increment' do
-    it 'sets a new key by the given value' do
-      counter.increment(123)
+    let(:increment) { Gitlab::Counters::Increment.new(amount: 123) }
+    let(:other_increment) { Gitlab::Counters::Increment.new(amount: 100) }
 
-      expect(counter.get).to eq(123)
+    it 'sets a new key by the given value' do
+      counter.increment(increment)
+
+      expect(counter.get).to eq(increment.amount)
     end
 
     it 'increments an existing key by the given value' do
-      counter.increment(100)
-      counter.increment(123)
+      counter.increment(other_increment)
+      counter.increment(increment)
 
-      expect(counter.get).to eq(100 + 123)
+      expect(counter.get).to eq(other_increment.amount + increment.amount)
     end
 
-    it 'returns the new value' do
-      counter.increment(123)
+    it 'returns the value of the key after the increment' do
+      counter.increment(increment)
+      result = counter.increment(other_increment)
 
-      expect(counter.increment(23)).to eq(146)
+      expect(result).to eq(increment.amount + other_increment.amount)
     end
 
     it 'schedules a worker to commit the counter into database' do
       expect(FlushCounterIncrementsWorker).to receive(:perform_in)
         .with(described_class::WORKER_DELAY, counter_record.class.to_s, counter_record.id, attribute)
 
-      counter.increment(123)
+      counter.increment(increment)
     end
   end
 
   describe '#bulk_increment' do
-    let(:increments) { [123, 456] }
+    let(:other_increment) { Gitlab::Counters::Increment.new(amount: 1) }
+    let(:increments) { [Gitlab::Counters::Increment.new(amount: 123), Gitlab::Counters::Increment.new(amount: 456)] }
 
     it 'increments the key by the given values' do
       counter.bulk_increment(increments)
 
-      expect(counter.get).to eq(increments.sum)
+      expect(counter.get).to eq(increments.sum(&:amount))
     end
 
     it 'returns the value of the key after the increment' do
-      counter.increment(100)
+      counter.increment(other_increment)
 
       result = counter.bulk_increment(increments)
 
-      expect(result).to eq(100 + increments.sum)
+      expect(result).to eq(other_increment.amount + increments.sum(&:amount))
     end
 
     it 'schedules a worker to commit the counter into database' do
@@ -78,10 +83,12 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
   end
 
   describe '#reset!' do
+    let(:increment) { Gitlab::Counters::Increment.new(amount: 123) }
+
     before do
       allow(counter_record).to receive(:update!)
 
-      counter.increment(123)
+      counter.increment(increment)
     end
 
     it 'removes the key from Redis' do
@@ -113,7 +120,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
     end
 
     context 'when there is an amount to commit' do
-      let(:increments) { [10, -3] }
+      let(:increments) { [10, -3].map { |amt| Gitlab::Counters::Increment.new(amount: amt) } }
 
       before do
         increments.each { |i| counter.increment(i) }
@@ -121,7 +128,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
 
       it 'commits the increment into the database' do
         expect { counter.commit_increment! }
-          .to change { counter_record.reset.read_attribute(attribute) }.by(increments.sum)
+          .to change { counter_record.reset.read_attribute(attribute) }.by(increments.sum(&:amount))
       end
 
       it 'removes the increment entry from Redis' do
@@ -196,7 +203,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
 
         context 'when there are increments to flush' do
           before do
-            counter.increment(10)
+            counter.increment(Gitlab::Counters::Increment.new(amount: 10))
           end
 
           it 'executes the callbacks' do

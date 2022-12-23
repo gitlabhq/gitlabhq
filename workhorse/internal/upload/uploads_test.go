@@ -24,7 +24,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
 )
@@ -111,13 +110,7 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 
 		expectedLen := 12
 
-		if destination.FIPSEnabled() {
-			expectedLen--
-			require.Empty(t, r.FormValue("file.md5"), "file hash md5")
-		} else {
-			require.Equal(t, "098f6bcd4621d373cade4e832627b4f6", r.FormValue("file.md5"), "file hash md5")
-		}
-
+		require.Equal(t, "098f6bcd4621d373cade4e832627b4f6", r.FormValue("file.md5"), "file hash md5")
 		require.Len(t, r.MultipartForm.Value, expectedLen, "multipart form values")
 
 		w.WriteHeader(202)

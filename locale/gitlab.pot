@@ -48431,6 +48431,9 @@ msgstr ""
 msgid "Your username is %{username}."
 msgstr ""
 
+msgid "Your work"
+msgstr ""
+
 msgid "You’re about to permanently delete the %{issuableType} ‘%{strongOpen}%{issuableTitle}%{strongClose}’. To avoid data loss, consider %{strongOpen}closing this %{issuableType}%{strongClose} instead. Once deleted, it cannot be undone or recovered."
 msgstr ""
 

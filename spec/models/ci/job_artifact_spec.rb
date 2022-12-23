@@ -723,7 +723,7 @@ RSpec.describe Ci::JobArtifact do
 
       it 'updates project statistics' do
         expect(ProjectStatistics).to receive(:bulk_increment_statistic).once
-          .with(project, :build_artifacts_size, [-job_artifact.file.size])
+          .with(project, :build_artifacts_size, [have_attributes(amount: -job_artifact.file.size)])
 
         pipeline.destroy!
       end

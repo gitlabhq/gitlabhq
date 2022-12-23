@@ -17,7 +17,7 @@ module Gitlab
               secret_detection: %w[14.0.0 14.0.1 14.0.2 14.0.3 14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3 15.0.0 15.0.1 15.0.2 15.0.4]
             }.freeze
 
-            VERSIONS_TO_REMOVE_IN_16_0 = [].freeze
+            VERSIONS_TO_REMOVE_IN_16_0 = %w[14.0.0 14.0.1 14.0.2 14.0.3 14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3].freeze
 
             DEPRECATED_VERSIONS = {
               cluster_image_scanning: VERSIONS_TO_REMOVE_IN_16_0,
