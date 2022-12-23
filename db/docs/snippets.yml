@@ -5,7 +5,7 @@ classes:
 - ProjectSnippet
 - Snippet
 feature_categories:
-- snippets
+- source_code_management
 description: GitLab snippets allow you to store and share bits of code and text with other users. 
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9265de3d25715aeafd38a4ef41596dca058dc18c
 milestone: "1.0.1"

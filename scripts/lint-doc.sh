@@ -119,19 +119,24 @@ else
   fi
 fi
 
-function run_locally_or_in_docker() {
+function run_locally_or_in_container() {
   local cmd=$1
   local args=$2
 
   if hash ${cmd} 2>/dev/null
   then
     $cmd $args
-  elif hash docker 2>/dev/null
+  # When using software like Rancher Desktop, both nerdctl and docker binaries are available
+  # but only one is configured. To check which one to use, we need to probe each runtime
+  elif (hash nerdctl 2>/dev/null) && (nerdctl info 2>&1 1>/dev/null)
   then
-    docker run -t -v ${PWD}:/gitlab -w /gitlab --rm registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.16-vale-2.20.1-markdownlint-0.32.2 ${cmd} ${args}
+    nerdctl run -t -v "${PWD}:/gitlab" -w /gitlab --rm registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.16-vale-2.20.1-markdownlint-0.32.2 ${cmd} ${args}
+  elif (hash docker 2>/dev/null) && (docker info 2>&1 1>/dev/null)
+  then
+    docker run -t -v "${PWD}:/gitlab" -w /gitlab --rm registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.16-vale-2.20.1-markdownlint-0.32.2 ${cmd} ${args}
   else
     echo
-    echo "  ✖ ERROR: '${cmd}' not found. Install '${cmd}' or Docker to proceed." >&2
+    echo "  ✖ ERROR: '${cmd}' not found. Install '${cmd}' or a container runtime (Docker/Nerdctl) to proceed." >&2
     echo
     ((ERRORCODE++))
   fi
@@ -151,11 +156,19 @@ if [ -z "${MD_DOC_PATH}" ]
 then
   echo "Merged results pipeline detected, but no markdown files found. Skipping."
 else
-  run_locally_or_in_docker 'markdownlint' "--config .markdownlint.yml ${MD_DOC_PATH} --rules doc/.markdownlint/rules"
+  yarn markdownlint --config .markdownlint.yml ${MD_DOC_PATH} --rules doc/.markdownlint/rules
+
+  if [ $? -ne 0 ]
+  then
+    echo
+    echo '✖ ERROR: Markdownlint failed with errors.' >&2
+    echo
+    ((ERRORCODE++))
+  fi
 fi
 
 echo '=> Linting prose...'
-run_locally_or_in_docker 'vale' "--minAlertLevel error --output=doc/.vale/vale.tmpl ${MD_DOC_PATH}"
+run_locally_or_in_container 'vale' "--minAlertLevel error --output=doc/.vale/vale.tmpl ${MD_DOC_PATH}"
 
 if [ $ERRORCODE -ne 0 ]
 then

@@ -52,7 +52,7 @@ you can assign that runner to other projects.
 To enable a specific runner for more than one project:
 
 1. On the top bar, select **Main menu > Admin**.
-1. From the left sidebar, select **Overview > Runners**.
+1. From the left sidebar, select **CI/CD > Runners**.
 1. Select the runner you want to edit.
 1. In the top right, select **Edit** (**{pencil}**).
 1. Under **Restrict projects for this runner**, search for a project.

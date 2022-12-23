@@ -15,7 +15,7 @@ feature_categories:
 - code_review_workflow
 - portfolio_management
 - service_desk
-- snippets
+- source_code_management
 - team_planning
 description: The object at the core of comments, discussions and system notes shown on issues, MRs and epics
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9ba1224867665844b117fa037e1465bb706b3685

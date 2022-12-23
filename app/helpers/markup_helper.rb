@@ -65,7 +65,7 @@ module MarkupHelper
 
     tags = %w(a gl-emoji b strong i em pre code p span)
 
-    if Feature.disabled?(:two_line_mention_enabled)
+    if Feature.disabled?(:two_line_mention_enabled, current_user)
       includes_code = false
 
       if is_todo
@@ -91,7 +91,7 @@ module MarkupHelper
         )
     )
 
-    if is_todo && !includes_code && Feature.disabled?(:two_line_mention_enabled)
+    if is_todo && !includes_code && Feature.disabled?(:two_line_mention_enabled, current_user)
       text = "<span class=\"gl-relative\">\"</span>#{text}<span class=\"gl-relative\">\"</span>"
     end
     # since <img> tags are stripped, this can leave empty <a> tags hanging around

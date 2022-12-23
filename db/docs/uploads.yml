@@ -8,7 +8,7 @@ feature_categories:
 - importers
 - portfolio_management
 - projects
-- snippets
+- source_code_management
 - team_planning
 description: For tracking blob metadata. Single table inheritance is used to relate this table to many other tables.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/4c622b71fd284058deee483bf0009f8179b792bc

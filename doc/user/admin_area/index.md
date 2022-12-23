@@ -325,7 +325,31 @@ For each job, the following details are listed:
 | Timing   | Duration of the job, and how long ago the job completed.                |
 | Coverage | Percentage of tests coverage.                                           |
 
+### Administering Gitaly servers
+
+You can list all Gitaly servers in the GitLab instance from the Admin Area's **Gitaly Servers**
+page. For more details, see [Gitaly](../../administration/gitaly/index.md).
+
+To access the **Gitaly Servers** page:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Overview > Gitaly Servers**.
+
+For each Gitaly server, the following details are listed:
+
+| Field          | Description |
+|----------------|-------------|
+| Storage        | Repository storage |
+| Address        | Network address on which the Gitaly server is listening |
+| Server version | Gitaly version |
+| Git version    | Version of Git installed on the Gitaly server |
+| Up to date     | Indicates if the Gitaly server version is the latest version available. A green dot indicates the server is up to date. |
+
+## CI/CD section
+
 ### Administering runners
+
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/340859) from **Overview > Runners** to **CI/CD > Runners** in GitLab 15.8.
 
 You can administer all runners in the GitLab instance from the Admin Area's **Runners** page. See
 [GitLab Runner](https://docs.gitlab.com/runner/) for more information.
@@ -379,26 +403,6 @@ For each runner, the following attributes are listed:
 | Last contact | Timestamp indicating when the runner last contacted the GitLab instance. |
 
 You can also edit, pause, or remove each runner.
-
-### Administering Gitaly servers
-
-You can list all Gitaly servers in the GitLab instance from the Admin Area's **Gitaly Servers**
-page. For more details, see [Gitaly](../../administration/gitaly/index.md).
-
-To access the **Gitaly Servers** page:
-
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Overview > Gitaly Servers**.
-
-For each Gitaly server, the following details are listed:
-
-| Field          | Description |
-|----------------|-------------|
-| Storage        | Repository storage |
-| Address        | Network address on which the Gitaly server is listening |
-| Server version | Gitaly version |
-| Git version    | Version of Git installed on the Gitaly server |
-| Up to date     | Indicates if the Gitaly server version is the latest version available. A green dot indicates the server is up to date. |
 
 ## Monitoring section
 
