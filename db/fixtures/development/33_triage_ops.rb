@@ -7,7 +7,7 @@ class Gitlab::Seeder::TriageOps
   WEBHOOK_URL = 'http://0.0.0.0:$PORT$'
   WEBHOOK_TOKEN = "triage-ops-webhook-token"
 
-  WORK_TYPE_LABELS = %w(
+  WORK_TYPE_LABELS = <<~LABELS.split("\n")
     bug::availability
     bug::mobile
     bug::performance
@@ -25,9 +25,9 @@ class Gitlab::Seeder::TriageOps
     type::bug
     type::feature
     type::maintenance
-  )
+  LABELS
 
-  WORKFLOW_LABELS = %w(
+  WORKFLOW_LABELS = <<~LABELS.split("\n")
     workflow::blocked
     workflow::design
     workflow::in dev
@@ -41,7 +41,39 @@ class Gitlab::Seeder::TriageOps
     workflow::refinement
     workflow::validation backlog
     workflow::verification
-  )
+  LABELS
+
+  OTHER_LABELS = <<~LABELS.split("\n")
+    ep::contributor tooling
+    ep::meta
+    ep::metrics
+    ep::pipeline
+    ep::review-apps
+    ep::triage
+    master-broken::caching
+    master-broken::ci-config
+    master-broken::dependency-upgrade
+    master-broken::flaky-test
+    master-broken::fork-repo-test-gap
+    master-broken::infrastructure
+    master-broken::need-merge-train
+    master-broken::pipeline-skipped-before-merge
+    master-broken::test-selection-gap
+    master-broken::undetermined
+    pipeline:expedite
+    pipeline:expedite-master-fixing
+    pipeline:mr-approved
+    pipeline:run-all-jest
+    pipeline:run-all-rspec
+    pipeline:run-as-if-foss
+    pipeline:run-as-if-jh
+    pipeline:run-flaky-tests
+    pipeline:run-praefect-with-db
+    pipeline:run-review-app
+    pipeline:run-single-db
+    pipeline:skip-undercoverage
+    pipeline:update-cache
+  LABELS
 
   def seed!
     puts "Updating settings to allow web hooks to localhost"
@@ -75,6 +107,10 @@ class Gitlab::Seeder::TriageOps
         puts "Ensuring workflow type labels"
         ensure_labels_for(WORKFLOW_LABELS, 'gitlab-com')
         ensure_labels_for(WORKFLOW_LABELS, 'gitlab-org')
+
+        puts "Ensuring other labels"
+        ensure_labels_for(OTHER_LABELS, 'gitlab-com')
+        ensure_labels_for(OTHER_LABELS, 'gitlab-org')
       end
     end
   end

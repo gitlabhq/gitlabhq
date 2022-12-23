@@ -44,6 +44,7 @@ class Packages::PackageFile < ApplicationRecord
   scope :with_file_name_like, ->(file_name) { where(arel_table[:file_name].matches(file_name)) }
   scope :with_files_stored_locally, -> { where(file_store: ::Packages::PackageFileUploader::Store::LOCAL) }
   scope :with_format, ->(format) { where(::Packages::PackageFile.arel_table[:file_name].matches("%.#{format}")) }
+  scope :with_nuget_format, -> { with_format(Packages::Nuget::FORMAT) }
 
   scope :preload_package, -> { preload(:package) }
   scope :preload_pipelines, -> { preload(pipelines: :user) }

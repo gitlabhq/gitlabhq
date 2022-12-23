@@ -350,7 +350,7 @@
   variables:
     QEMU_IMAGE: tonistiigi/binfmt:qemu-v7.0.0
   before_script:
-    - source scripts/utils.sh
+    - !reference [.default-utils-before_script, before_script]
     - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
     - |
       if [[ "${ARCH}" =~ arm64 ]]; then

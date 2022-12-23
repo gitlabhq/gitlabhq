@@ -19,6 +19,7 @@ import { getParameterByName } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import {
+  sprintfWorkItem,
   i18n,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
@@ -206,6 +207,9 @@ export default {
     },
     canDelete() {
       return this.workItem?.userPermissions?.deleteWorkItem;
+    },
+    confidentialTooltip() {
+      return sprintfWorkItem(this.$options.i18n.confidentialTooltip, this.workItemType);
     },
     fullPath() {
       return this.workItem?.project.fullPath;
@@ -482,7 +486,7 @@ export default {
         <gl-badge
           v-if="workItem.confidential"
           v-gl-tooltip.bottom
-          :title="$options.i18n.confidentialTooltip"
+          :title="confidentialTooltip"
           variant="warning"
           icon="eye-slash"
           class="gl-mr-3 gl-cursor-help"

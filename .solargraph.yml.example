@@ -24,4 +24,4 @@ formatter:
   rubocop: # formatting
 require_paths: []
 plugins: []
-max_files: 15000
+max_files: 20000

@@ -90,7 +90,13 @@ bundle exec bin/qa Test::Instance::All {GDK IP ADDRESS}
 
 #### Run the end-to-end tests on GitLab in Docker
 
-1. [GitLab can be installed in Docker](https://docs.gitlab.com/ee/install/docker.html). You can use the following command to start an instance that you can visit at `http://127.0.0.1`:
+GitLab can be [installed in Docker](https://docs.gitlab.com/ee/install/docker.html).
+
+See the section above for situations that might require adjustment to the commands below or to the configuration of the GitLab instance. [You can find more information in the documentation](https://docs.gitlab.com/ee/install/docker.html).
+
+##### On a Unix like operating system
+
+1.  Use the following command to start an instance that you can visit at `http://127.0.0.1`:
 
    ```
    docker run \    
@@ -102,28 +108,53 @@ bundle exec bin/qa Test::Instance::All {GDK IP ADDRESS}
     gitlab/gitlab-ee:nightly
    ```
 
-  Notes:
-  - If you are on a Mac with [Apple Silicon](https://support.apple.com/en-us/HT211814), you will also need to add: `--platform=linux/amd64`
-  - If you are on Windows, please be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
+  Note: If you are on a Mac with [Apple Silicon](https://support.apple.com/en-us/HT211814), you will also need to add: `--platform=linux/amd64`
 
-
-2. Navigate to the QA folder and run the following commands.
+2. Once GitLab is up and accessible on `http://127.0.0.1`, in another shell tab, navigate to the `qa` directory of the checkout of the GitLab repository on your computer and run the following commands.
 
    ```bash
-   cd gitlab/qa
    bundle install
    export WEBDRIVER_HEADLESS=false
    export GITLAB_INITIAL_ROOT_PASSWORD=5iveL\!fe
    export QA_GITLAB_URL="http://127.0.0.1"
    ```
 
-3. Most tests that do not require special setup could then be run with the following command.
+3. Most tests that do not require special setup could then be run with the following command. We will run `log_in_spec.rb` in this example.
 
    ```bash
-   bundle exec rspec <path/to/spec.rb>
+   bundle exec rspec ./qa/specs/features/browser_ui/1_manage/login/log_in_spec.rb
    ```
 
-- Note: See the section above for situations that might require adjustment to the commands or to the configuration of the GitLab instance. [You can find more information in the documentation](https://docs.gitlab.com/ee/install/docker.html).
+##### On a Windows PC
+
+1. If you don't already have these, install:
+   * [Google Chrome](https://www.google.com/chrome/)
+   * [Docker Desktop](https://docs.docker.com/desktop/install/windows-install/)
+   * [Git](https://git-scm.com/download/win)
+   * [Ruby](https://rubyinstaller.org/downloads/). Please refer to the [`.ruby-version` file](../.ruby-version) for the exact version of Ruby to install.
+
+   Note: Please be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
+
+2. Use the following command to start an instance that you can visit at `http://127.0.0.1`. You might need to grant admin rights if asked:
+
+   ```
+   docker run --hostname 127.0.0.1 --publish 80:80 --publish 22:22 --name gitlab --shm-size 256m --env GITLAB_OMNIBUS_CONFIG="gitlab_rails['initial_root_password']='5iveL\!fe';" gitlab/gitlab-ee:nightly
+   ```
+
+3. Once GitLab is up and accessible on `http://127.0.0.1`, in another command prompt window, navigate to the `qa` directory of the checkout of the GitLab repository on your computer and run the following commands.
+
+   ```bash
+   bundle install
+   set WEBDRIVER_HEADLESS=false
+   set GITLAB_INITIAL_ROOT_PASSWORD=5iveL\!fe
+   set QA_GITLAB_URL=http://127.0.0.1
+   ```
+
+4. Most tests that do not require special setup could then be run with the following command. We will run `log_in_spec.rb` in this example.
+
+   ```bash
+   bundle exec rspec .\qa\specs\features\browser_ui\1_manage\login\log_in_spec.rb
+   ```
 
 #### Running EE tests
 

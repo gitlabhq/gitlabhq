@@ -236,6 +236,25 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   }
 }
 
+// Utils below are very specific so cannot be part of GitLab UI
+.gl-md-mt-5 {
+  @include gl-media-breakpoint-up(md) {
+    margin-top: $gl-spacing-scale-5;
+  }
+}
+
+.gl-sm-mr-0\! {
+  @include gl-media-breakpoint-down(md) {
+    margin-right: 0 !important;
+  }
+}
+
+.gl-sm-mb-5 {
+  @include gl-media-breakpoint-down(md) {
+    margin-bottom: $gl-spacing-scale-5;
+  }
+}
+
 
 .gl-gap-2 {
   gap: $gl-spacing-scale-2;

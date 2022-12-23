@@ -53,7 +53,7 @@
 
     Self-managed instances have access to the Web IDE Beta where it is behind a [feature flag](https://docs.gitlab.com/ee/user/project/web_ide_beta/) disabled by default in GitLab 15.7.
 
-    Learn more about the Web IDE Beta and what's coming next in our [recent blog post](/blog/2022/12/15/get-ready-for-new-gitlab-web-ide/).
+    Learn more about the Web IDE Beta and what's coming next in our [recent blog post](https://about.gitlab.com/blog/2022/12/15/get-ready-for-new-gitlab-web-ide/).
   stage: configure
   self-managed: true
   gitlab-com: true

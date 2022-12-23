@@ -41,7 +41,7 @@ export const i18n = {
   ),
   updateError: s__('WorkItem|Something went wrong while updating the work item. Please try again.'),
   confidentialTooltip: s__(
-    'WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this task.',
+    'WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this %{workItemType}.',
   ),
 };
 

@@ -19709,12 +19709,24 @@ CREATE VIEW postgres_foreign_keys AS
  SELECT pg_constraint.oid,
     pg_constraint.conname AS name,
     (((constrained_namespace.nspname)::text || '.'::text) || (constrained_table.relname)::text) AS constrained_table_identifier,
-    (((referenced_namespace.nspname)::text || '.'::text) || (referenced_table.relname)::text) AS referenced_table_identifier
-   FROM ((((pg_constraint
+    (((referenced_namespace.nspname)::text || '.'::text) || (referenced_table.relname)::text) AS referenced_table_identifier,
+    (constrained_table.relname)::text AS constrained_table_name,
+    (referenced_table.relname)::text AS referenced_table_name,
+    constrained_cols.constrained_columns,
+    referenced_cols.referenced_columns,
+    pg_constraint.confdeltype AS on_delete_action,
+    (pg_constraint.coninhcount > 0) AS is_inherited
+   FROM ((((((pg_constraint
      JOIN pg_class constrained_table ON ((constrained_table.oid = pg_constraint.conrelid)))
      JOIN pg_class referenced_table ON ((referenced_table.oid = pg_constraint.confrelid)))
      JOIN pg_namespace constrained_namespace ON ((constrained_table.relnamespace = constrained_namespace.oid)))
      JOIN pg_namespace referenced_namespace ON ((referenced_table.relnamespace = referenced_namespace.oid)))
+     CROSS JOIN LATERAL ( SELECT array_agg(pg_attribute.attname ORDER BY conkey.idx) AS array_agg
+           FROM (unnest(pg_constraint.conkey) WITH ORDINALITY conkey(attnum, idx)
+             JOIN pg_attribute ON (((pg_attribute.attnum = conkey.attnum) AND (pg_attribute.attrelid = constrained_table.oid))))) constrained_cols(constrained_columns))
+     CROSS JOIN LATERAL ( SELECT array_agg(pg_attribute.attname ORDER BY confkey.idx) AS array_agg
+           FROM (unnest(pg_constraint.confkey) WITH ORDINALITY confkey(attnum, idx)
+             JOIN pg_attribute ON (((pg_attribute.attnum = confkey.attnum) AND (pg_attribute.attrelid = referenced_table.oid))))) referenced_cols(referenced_columns))
   WHERE (pg_constraint.contype = 'f'::"char");
 
 CREATE VIEW postgres_index_bloat_estimates AS

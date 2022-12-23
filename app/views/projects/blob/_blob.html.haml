@@ -22,6 +22,7 @@
     #js-view-blob-app{ data: { blob_path: blob.path,
                               project_path: @project.full_path,
                               target_branch: project.empty_repo? ? ref : @ref,
+                              ref_type: @ref_type.to_s,
                               original_branch: @ref } }
       = gl_loading_icon(size: 'md')
   - else

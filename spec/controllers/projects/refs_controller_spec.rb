@@ -60,7 +60,7 @@ RSpec.describe Projects::RefsController, feature_category: :source_code_manageme
         'tree'           | nil     | lazy { project_tree_path(project, id) }
         'tree'           | 'heads' | lazy { project_tree_path(project, id) }
         'blob'           | nil     | lazy { project_blob_path(project, id) }
-        'blob'           | 'heads' | lazy { project_blob_path(project, id) }
+        'blob'           | 'heads' | lazy { project_blob_path(project, id, ref_type: 'heads') }
         'graph'          | nil     | lazy { project_network_path(project, id) }
         'graph'          | 'heads' | lazy { project_network_path(project, id, ref_type: 'heads') }
         'graphs'         | nil     | lazy { project_graph_path(project, id) }

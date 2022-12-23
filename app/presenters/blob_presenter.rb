@@ -56,23 +56,23 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def web_url
-    url_helpers.project_blob_url(project, ref_qualified_path)
+    url_helpers.project_blob_url(*path_params)
   end
 
   def web_path
-    url_helpers.project_blob_path(project, ref_qualified_path)
+    url_helpers.project_blob_path(*path_params)
   end
 
   def edit_blob_path
-    url_helpers.project_edit_blob_path(project, ref_qualified_path)
+    url_helpers.project_edit_blob_path(*path_params)
   end
 
   def raw_path
-    url_helpers.project_raw_path(project, ref_qualified_path)
+    url_helpers.project_raw_path(*path_params)
   end
 
   def replace_path
-    url_helpers.project_update_blob_path(project, ref_qualified_path)
+    url_helpers.project_update_blob_path(*path_params)
   end
 
   def pipeline_editor_path
@@ -164,6 +164,18 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
   private
 
+  def path_params
+    if Feature.enabled?(:use_ref_type_parameter, project) && ref_type
+      [project, ref_qualified_path, { ref_type: ref_type }]
+    else
+      [project, ref_qualified_path]
+    end
+  end
+
+  def ref_type
+    blob.try(:ref_type)
+  end
+
   def url_helpers
     Gitlab::Routing.url_helpers
   end
@@ -179,7 +191,12 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def ref_qualified_path
-    File.join(blob.commit_id, blob.path)
+    commit_id = blob.commit_id
+
+    # A hack to make the commit_id response from gitaly something controllers can handle
+    commit_id = commit_id.sub(%r{^refs/(heads|tags)/}, '') if ref_type && Feature.enabled?(:use_ref_type_parameter, project)
+
+    File.join(commit_id, blob.path)
   end
 
   def load_all_blob_data

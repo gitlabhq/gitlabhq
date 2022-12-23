@@ -2,15 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe GlobalPolicy do
+RSpec.describe GlobalPolicy, feature_category: :security_policies do
   include TermsHelper
 
+  let_it_be(:admin_user) { create(:admin) }
   let_it_be(:project_bot) { create(:user, :project_bot) }
   let_it_be(:migration_bot) { create(:user, :migration_bot) }
   let_it_be(:security_bot) { create(:user, :security_bot) }
-
-  let(:current_user) { create(:user) }
-  let(:user) { create(:user) }
+  let_it_be_with_reload(:current_user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   subject { described_class.new(current_user, [user]) }
 
@@ -27,7 +27,7 @@ RSpec.describe GlobalPolicy do
           stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
         end
 
-        it { is_expected.not_to be_allowed(:read_users_list) }
+        it { is_expected.to be_disallowed(:read_users_list) }
       end
 
       context "when the public level is not restricted" do
@@ -40,7 +40,7 @@ RSpec.describe GlobalPolicy do
     end
 
     context "for an admin" do
-      let_it_be(:current_user) { create(:admin) }
+      let(:current_user) { admin_user }
 
       context "when the public level is restricted" do
         before do
@@ -93,7 +93,7 @@ RSpec.describe GlobalPolicy do
     context 'when user does not have the ability to create group' do
       let(:current_user) { create(:user, can_create_group: false) }
 
-      it { is_expected.not_to be_allowed(:create_group) }
+      it { is_expected.to be_disallowed(:create_group) }
     end
   end
 
@@ -107,18 +107,18 @@ RSpec.describe GlobalPolicy do
     context 'when user does not have the ability to create group' do
       let(:current_user) { create(:user, can_create_group: false) }
 
-      it { is_expected.not_to be_allowed(:create_group_with_default_branch_protection) }
+      it { is_expected.to be_disallowed(:create_group_with_default_branch_protection) }
     end
   end
 
   describe 'custom attributes' do
     context 'regular user' do
-      it { is_expected.not_to be_allowed(:read_custom_attribute) }
-      it { is_expected.not_to be_allowed(:update_custom_attribute) }
+      it { is_expected.to be_disallowed(:read_custom_attribute) }
+      it { is_expected.to be_disallowed(:update_custom_attribute) }
     end
 
     context 'admin' do
-      let_it_be(:current_user) { create(:user, :admin) }
+      let(:current_user) { admin_user }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:read_custom_attribute) }
@@ -134,11 +134,11 @@ RSpec.describe GlobalPolicy do
 
   describe 'approving users' do
     context 'regular user' do
-      it { is_expected.not_to be_allowed(:approve_user) }
+      it { is_expected.to be_disallowed(:approve_user) }
     end
 
     context 'admin' do
-      let_it_be(:current_user) { create(:admin) }
+      let(:current_user) { admin_user }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:approve_user) }
@@ -152,11 +152,11 @@ RSpec.describe GlobalPolicy do
 
   describe 'rejecting users' do
     context 'regular user' do
-      it { is_expected.not_to be_allowed(:reject_user) }
+      it { is_expected.to be_disallowed(:reject_user) }
     end
 
     context 'admin' do
-      let_it_be(:current_user) { create(:admin) }
+      let(:current_user) { admin_user }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:reject_user) }
@@ -170,11 +170,11 @@ RSpec.describe GlobalPolicy do
 
   describe 'using project statistics filters' do
     context 'regular user' do
-      it { is_expected.not_to be_allowed(:use_project_statistics_filters) }
+      it { is_expected.to be_disallowed(:use_project_statistics_filters) }
     end
 
     context 'admin' do
-      let_it_be(:current_user) { create(:user, :admin) }
+      let(:current_user) { admin_user }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:use_project_statistics_filters) }
@@ -187,7 +187,7 @@ RSpec.describe GlobalPolicy do
   end
 
   shared_examples 'access allowed when terms accepted' do |ability|
-    it { is_expected.not_to be_allowed(ability) }
+    it { is_expected.to be_disallowed(ability) }
 
     it "allows #{ability} when the user accepted the terms" do
       accept_terms(current_user)
@@ -202,7 +202,7 @@ RSpec.describe GlobalPolicy do
     end
 
     context 'admin' do
-      let(:current_user) { create(:admin) }
+      let(:current_user) { admin_user }
 
       it { is_expected.to be_allowed(:access_api) }
     end
@@ -222,13 +222,13 @@ RSpec.describe GlobalPolicy do
     context 'migration bot' do
       let(:current_user) { migration_bot }
 
-      it { is_expected.not_to be_allowed(:access_api) }
+      it { is_expected.to be_disallowed(:access_api) }
     end
 
     context 'security bot' do
       let(:current_user) { security_bot }
 
-      it { is_expected.not_to be_allowed(:access_api) }
+      it { is_expected.to be_disallowed(:access_api) }
     end
 
     context 'user blocked pending approval' do
@@ -236,7 +236,7 @@ RSpec.describe GlobalPolicy do
         current_user.block_pending_approval
       end
 
-      it { is_expected.not_to be_allowed(:access_api) }
+      it { is_expected.to be_disallowed(:access_api) }
     end
 
     context 'with a deactivated user' do
@@ -244,7 +244,7 @@ RSpec.describe GlobalPolicy do
         current_user.deactivate!
       end
 
-      it { is_expected.not_to be_allowed(:access_api) }
+      it { is_expected.to be_disallowed(:access_api) }
     end
 
     context 'user with expired password' do
@@ -252,7 +252,7 @@ RSpec.describe GlobalPolicy do
         current_user.update!(password_expires_at: 2.minutes.ago)
       end
 
-      it { is_expected.not_to be_allowed(:access_api) }
+      it { is_expected.to be_disallowed(:access_api) }
 
       context 'when user is using ldap' do
         let(:current_user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
@@ -271,7 +271,7 @@ RSpec.describe GlobalPolicy do
       end
 
       context 'admin' do
-        let(:current_user) { create(:admin) }
+        let(:current_user) { admin_user }
 
         it_behaves_like 'access allowed when terms accepted', :access_api
       end
@@ -301,7 +301,7 @@ RSpec.describe GlobalPolicy do
           allow(User).to receive(:allow_unconfirmed_access_for).and_return(2.days)
         end
 
-        it { is_expected.not_to be_allowed(:access_api) }
+        it { is_expected.to be_disallowed(:access_api) }
       end
     end
   end
@@ -312,7 +312,7 @@ RSpec.describe GlobalPolicy do
     end
 
     describe 'admin' do
-      let(:current_user) { create(:admin) }
+      let(:current_user) { admin_user }
 
       it { is_expected.to be_allowed(:receive_notifications) }
     end
@@ -320,7 +320,7 @@ RSpec.describe GlobalPolicy do
     describe 'anonymous' do
       let(:current_user) { nil }
 
-      it { is_expected.not_to be_allowed(:receive_notifications) }
+      it { is_expected.to be_disallowed(:receive_notifications) }
     end
 
     describe 'blocked user' do
@@ -328,7 +328,7 @@ RSpec.describe GlobalPolicy do
         current_user.block
       end
 
-      it { is_expected.not_to be_allowed(:receive_notifications) }
+      it { is_expected.to be_disallowed(:receive_notifications) }
     end
 
     describe 'deactivated user' do
@@ -336,19 +336,19 @@ RSpec.describe GlobalPolicy do
         current_user.deactivate
       end
 
-      it { is_expected.not_to be_allowed(:receive_notifications) }
+      it { is_expected.to be_disallowed(:receive_notifications) }
     end
 
     context 'project bot' do
       let(:current_user) { project_bot }
 
-      it { is_expected.not_to be_allowed(:receive_notifications) }
+      it { is_expected.to be_disallowed(:receive_notifications) }
     end
 
     context 'migration bot' do
       let(:current_user) { migration_bot }
 
-      it { is_expected.not_to be_allowed(:receive_notifications) }
+      it { is_expected.to be_disallowed(:receive_notifications) }
     end
 
     context 'user blocked pending approval' do
@@ -356,7 +356,7 @@ RSpec.describe GlobalPolicy do
         current_user.block_pending_approval
       end
 
-      it { is_expected.not_to be_allowed(:receive_notifications) }
+      it { is_expected.to be_disallowed(:receive_notifications) }
     end
   end
 
@@ -366,7 +366,7 @@ RSpec.describe GlobalPolicy do
     end
 
     describe 'admin' do
-      let(:current_user) { create(:admin) }
+      let(:current_user) { admin_user }
 
       it { is_expected.to be_allowed(:access_git) }
     end
@@ -394,7 +394,7 @@ RSpec.describe GlobalPolicy do
         current_user.deactivate
       end
 
-      it { is_expected.not_to be_allowed(:access_git) }
+      it { is_expected.to be_disallowed(:access_git) }
     end
 
     describe 'inactive user' do
@@ -402,7 +402,7 @@ RSpec.describe GlobalPolicy do
         current_user.update!(confirmed_at: nil)
       end
 
-      it { is_expected.not_to be_allowed(:access_git) }
+      it { is_expected.to be_disallowed(:access_git) }
     end
 
     context 'when terms are enforced' do
@@ -438,7 +438,7 @@ RSpec.describe GlobalPolicy do
         current_user.block_pending_approval
       end
 
-      it { is_expected.not_to be_allowed(:access_git) }
+      it { is_expected.to be_disallowed(:access_git) }
     end
 
     context 'user with expired password' do
@@ -446,7 +446,7 @@ RSpec.describe GlobalPolicy do
         current_user.update!(password_expires_at: 2.minutes.ago)
       end
 
-      it { is_expected.not_to be_allowed(:access_git) }
+      it { is_expected.to be_disallowed(:access_git) }
 
       context 'when user is using ldap' do
         let(:current_user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
@@ -464,7 +464,7 @@ RSpec.describe GlobalPolicy do
     context 'anonymous' do
       let(:current_user) { nil }
 
-      it { is_expected.not_to be_allowed(:read_instance_metadata) }
+      it { is_expected.to be_disallowed(:read_instance_metadata) }
     end
   end
 
@@ -476,7 +476,7 @@ RSpec.describe GlobalPolicy do
     context 'when internal' do
       let(:current_user) { User.ghost }
 
-      it { is_expected.not_to be_allowed(:use_slash_commands) }
+      it { is_expected.to be_disallowed(:use_slash_commands) }
     end
 
     context 'when blocked' do
@@ -484,7 +484,7 @@ RSpec.describe GlobalPolicy do
         current_user.block
       end
 
-      it { is_expected.not_to be_allowed(:use_slash_commands) }
+      it { is_expected.to be_disallowed(:use_slash_commands) }
     end
 
     context 'when deactivated' do
@@ -492,7 +492,7 @@ RSpec.describe GlobalPolicy do
         current_user.deactivate
       end
 
-      it { is_expected.not_to be_allowed(:use_slash_commands) }
+      it { is_expected.to be_disallowed(:use_slash_commands) }
     end
 
     describe 'inactive user' do
@@ -500,7 +500,7 @@ RSpec.describe GlobalPolicy do
         current_user.update!(confirmed_at: nil)
       end
 
-      it { is_expected.not_to be_allowed(:use_slash_commands) }
+      it { is_expected.to be_disallowed(:use_slash_commands) }
     end
 
     context 'when access locked' do
@@ -508,7 +508,7 @@ RSpec.describe GlobalPolicy do
         current_user.lock_access!
       end
 
-      it { is_expected.not_to be_allowed(:use_slash_commands) }
+      it { is_expected.to be_disallowed(:use_slash_commands) }
     end
 
     context 'project bot' do
@@ -520,7 +520,7 @@ RSpec.describe GlobalPolicy do
     context 'migration bot' do
       let(:current_user) { migration_bot }
 
-      it { is_expected.not_to be_allowed(:use_slash_commands) }
+      it { is_expected.to be_disallowed(:use_slash_commands) }
     end
 
     context 'user blocked pending approval' do
@@ -528,7 +528,7 @@ RSpec.describe GlobalPolicy do
         current_user.block_pending_approval
       end
 
-      it { is_expected.not_to be_allowed(:use_slash_commands) }
+      it { is_expected.to be_disallowed(:use_slash_commands) }
     end
 
     context 'user with expired password' do
@@ -536,7 +536,7 @@ RSpec.describe GlobalPolicy do
         current_user.update!(password_expires_at: 2.minutes.ago)
       end
 
-      it { is_expected.not_to be_allowed(:use_slash_commands) }
+      it { is_expected.to be_disallowed(:use_slash_commands) }
 
       context 'when user is using ldap' do
         let(:current_user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
@@ -550,7 +550,7 @@ RSpec.describe GlobalPolicy do
     context 'when anonymous' do
       let(:current_user) { nil }
 
-      it { is_expected.not_to be_allowed(:create_snippet) }
+      it { is_expected.to be_disallowed(:create_snippet) }
     end
 
     context 'regular user' do
@@ -560,7 +560,7 @@ RSpec.describe GlobalPolicy do
     context 'when external' do
       let(:current_user) { build(:user, :external) }
 
-      it { is_expected.not_to be_allowed(:create_snippet) }
+      it { is_expected.to be_disallowed(:create_snippet) }
     end
   end
 
@@ -568,19 +568,19 @@ RSpec.describe GlobalPolicy do
     context 'project bot' do
       let(:current_user) { project_bot }
 
-      it { is_expected.not_to be_allowed(:log_in) }
+      it { is_expected.to be_disallowed(:log_in) }
     end
 
     context 'migration bot' do
       let(:current_user) { migration_bot }
 
-      it { is_expected.not_to be_allowed(:log_in) }
+      it { is_expected.to be_disallowed(:log_in) }
     end
 
     context 'security bot' do
       let(:current_user) { security_bot }
 
-      it { is_expected.not_to be_allowed(:log_in) }
+      it { is_expected.to be_disallowed(:log_in) }
     end
 
     context 'user blocked pending approval' do
@@ -588,7 +588,7 @@ RSpec.describe GlobalPolicy do
         current_user.block_pending_approval
       end
 
-      it { is_expected.not_to be_allowed(:log_in) }
+      it { is_expected.to be_disallowed(:log_in) }
     end
   end
 end

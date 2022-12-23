@@ -663,11 +663,6 @@ class Issue < ApplicationRecord
     author&.banned?
   end
 
-  # Necessary until all issues are backfilled and we add a NOT NULL constraint on the DB
-  def work_item_type
-    super || WorkItems::Type.default_by_type(issue_type)
-  end
-
   def expire_etag_cache
     key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
     Gitlab::EtagCaching::Store.new.touch(key)

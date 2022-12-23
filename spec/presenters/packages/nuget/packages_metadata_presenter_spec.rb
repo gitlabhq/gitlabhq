@@ -2,12 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::PackagesMetadataPresenter do
+RSpec.describe Packages::Nuget::PackagesMetadataPresenter, feature_category: :package_registry do
   include_context 'with expected presenters dependency groups'
 
   let_it_be(:project) { create(:project) }
   let_it_be(:packages) { create_list(:nuget_package, 5, :with_metadatum, name: 'Dummy.Package', project: project) }
-  let_it_be(:presenter) { described_class.new(packages) }
+
+  let(:presenter) { described_class.new(project.packages) }
 
   describe '#count' do
     subject { presenter.count }
@@ -26,6 +27,14 @@ RSpec.describe Packages::Nuget::PackagesMetadataPresenter do
 
         create_dependencies_for(pkg)
       end
+    end
+
+    it 'avoids N+1 database queries' do
+      control = ActiveRecord::QueryRecorder.new { described_class.new(project.packages).items }
+
+      create(:nuget_package, :with_metadatum, name: 'Dummy.Package', project: project)
+
+      expect { described_class.new(project.packages).items }.not_to exceed_query_limit(control)
     end
 
     it 'returns an array' do

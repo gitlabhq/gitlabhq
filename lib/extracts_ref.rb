@@ -68,6 +68,12 @@ module ExtractsRef
 
     return unless @ref.present?
 
+    commit
+  end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  def commit
     @commit = if ref_type && Feature.enabled?(:use_ref_type_parameter, @repo.project)
                 @fully_qualified_ref = %(refs/#{ref_type}/#{@ref})
                 @repo.commit(@fully_qualified_ref)

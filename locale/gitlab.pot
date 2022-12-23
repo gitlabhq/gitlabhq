@@ -47227,7 +47227,7 @@ msgstr ""
 msgid "WorkItem|Objective"
 msgstr ""
 
-msgid "WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this task."
+msgid "WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this %{workItemType}."
 msgstr ""
 
 msgid "WorkItem|Open"
@@ -47306,6 +47306,9 @@ msgid "WorkItem|Tasks"
 msgstr ""
 
 msgid "WorkItem|Test case"
+msgstr ""
+
+msgid "WorkItem|This objective is confidential and should only be visible to team members with at least Reporter access"
 msgstr ""
 
 msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."

@@ -36,6 +36,7 @@ class Packages::Package < ApplicationRecord
   # TODO: put the installable default scope on the :package_files association once the dependent: :destroy is removed
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/349191
   has_many :installable_package_files, -> { installable }, class_name: 'Packages::PackageFile', inverse_of: :package
+  has_many :installable_nuget_package_files, -> { installable.with_nuget_format }, class_name: 'Packages::PackageFile', inverse_of: :package
   has_many :dependency_links, inverse_of: :package, class_name: 'Packages::DependencyLink'
   has_many :tags, inverse_of: :package, class_name: 'Packages::Tag'
   has_one :conan_metadatum, inverse_of: :package, class_name: 'Packages::Conan::Metadatum'
@@ -128,6 +129,7 @@ class Packages::Package < ApplicationRecord
   scope :including_project_namespace_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }
   scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
+  scope :including_dependency_links_with_nuget_metadatum, -> { includes(dependency_links: [:dependency, :nuget_metadatum]) }
 
   scope :with_conan_channel, ->(package_channel) do
     joins(:conan_metadatum).where(packages_conan_metadata: { package_channel: package_channel })
@@ -149,12 +151,14 @@ class Packages::Package < ApplicationRecord
   end
   scope :preload_composer, -> { preload(:composer_metadatum) }
   scope :preload_npm_metadatum, -> { preload(:npm_metadatum) }
+  scope :preload_nuget_metadatum, -> { preload(:nuget_metadatum) }
   scope :preload_pypi_metadatum, -> { preload(:pypi_metadatum) }
 
   scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
   scope :has_version, -> { where.not(version: nil) }
   scope :preload_files, -> { preload(:installable_package_files) }
+  scope :preload_nuget_files, -> { preload(:installable_nuget_package_files) }
   scope :preload_pipelines, -> { preload(pipelines: :user) }
   scope :last_of_each_version, -> { where(id: all.select('MAX(id) AS id').group(:version)) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }

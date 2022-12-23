@@ -8,7 +8,7 @@ RSpec.describe Issue, feature_category: :project_management do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:reusable_project) { create(:project) }
+  let_it_be_with_reload(:reusable_project) { create(:project) }
 
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }

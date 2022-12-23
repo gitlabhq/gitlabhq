@@ -40,7 +40,7 @@ module QA
         def search_item(item_text)
           return super if use_select2?
 
-          find('div.gl-search-box-by-type input[type="Search"]').set(item_text)
+          find('div.gl-listbox-search input[type="Search"]').set(item_text)
           wait_for_search_to_complete
         end
 
