@@ -170,11 +170,13 @@ To prevent sharing outside of the group's hierarchy:
 
 ## Prevent a project from being shared with groups
 
-Prevent projects in a group from
-[sharing a project with another group](../project/members/share_project_with_groups.md)
-to enable tighter control over project access.
+[Sharing a project with another group](../project/members/share_project_with_groups.md)
+increases the number of users who can invite yet more members to the project.
+Each (sub)group can be an additional source of access permissions,
+which can be confusing and difficult to control.
 
-To prevent a project from being shared with other groups:
+To restrict the permission to invite project members to a single source,
+prevent a project from being shared with other groups:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.

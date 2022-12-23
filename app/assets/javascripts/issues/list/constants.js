@@ -159,7 +159,7 @@ export const TYPE_TOKEN_OBJECTIVE_OPTION = {
 };
 
 export const TYPE_TOKEN_KEY_RESULT_OPTION = {
-  icon: 'issue-type-key-result',
+  icon: 'issue-type-keyresult',
   title: 'key_result',
   value: 'key_result',
 };

@@ -9784,9 +9784,11 @@ The connection type for [`Timelog`](#timelog).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="timelogconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="timelogconnectionedges"></a>`edges` | [`[TimelogEdge]`](#timelogedge) | A list of edges. |
 | <a id="timelogconnectionnodes"></a>`nodes` | [`[Timelog]`](#timelog) | A list of nodes. |
 | <a id="timelogconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+| <a id="timelogconnectiontotalspenttime"></a>`totalSpentTime` | [`Int!`](#int) | Total time spent in seconds. |
 
 #### `TimelogEdge`
 
@@ -10276,7 +10278,6 @@ Describes an alert from the project's Alert Management.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="alertmanagementalertassignees"></a>`assignees` | [`UserCoreConnection`](#usercoreconnection) | Assignees of the alert. (see [Connections](#connections)) |
-| <a id="alertmanagementalertcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="alertmanagementalertcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp the alert was created. |
 | <a id="alertmanagementalertdescription"></a>`description` | [`String`](#string) | Description of the alert. |
 | <a id="alertmanagementalertdetails"></a>`details` | [`JSON`](#json) | Alert details. |
@@ -10616,7 +10617,6 @@ Represents an epic on an issue board.
 | <a id="boardepicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that this epic is blocking. |
 | <a id="boardepicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
 | <a id="boardepiccolor"></a>`color` | [`String`](#string) | Color of the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
-| <a id="boardepiccommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="boardepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="boardepiccreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the epic was created. |
 | <a id="boardepicdefaultprojectforissuecreation"></a>`defaultProjectForIssueCreation` | [`Project`](#project) | Default Project for issue creation. Based on the project the user created the last issue in. |
@@ -12118,7 +12118,6 @@ A single design.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="designdiffrefs"></a>`diffRefs` | [`DiffRefs!`](#diffrefs) | Diff refs for this design. |
 | <a id="designdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="designevent"></a>`event` | [`DesignVersionEvent!`](#designversionevent) | How this design was changed in the current version. |
@@ -12620,7 +12619,6 @@ Represents an epic.
 | <a id="epicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that this epic is blocking. |
 | <a id="epicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
 | <a id="epiccolor"></a>`color` | [`String`](#string) | Color of the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
-| <a id="epiccommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="epicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="epiccreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the epic was created. |
 | <a id="epicdefaultprojectforissuecreation"></a>`defaultProjectForIssueCreation` | [`Project`](#project) | Default Project for issue creation. Based on the project the user created the last issue in. |
@@ -12862,7 +12860,6 @@ Relationship between an epic and an issue.
 | <a id="epicissueblockingcount"></a>`blockingCount` | [`Int!`](#int) | Count of issues this issue is blocking. |
 | <a id="epicissueclosedasduplicateof"></a>`closedAsDuplicateOf` | [`Issue`](#issue) | Issue this issue was closed as a duplicate of. |
 | <a id="epicissueclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the issue was closed. |
-| <a id="epicissuecommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="epicissueconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the issue is confidential. |
 | <a id="epicissuecreatenoteemail"></a>`createNoteEmail` | [`String`](#string) | User specific email address for the issue. |
 | <a id="epicissuecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the issue was created. |
@@ -13195,6 +13192,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodecisecurefileregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodecisecurefileregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodecisecurefileregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodecisecurefileregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13213,6 +13211,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodecontainerrepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodecontainerrepositoryregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodecontainerrepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodecontainerrepositoryregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13235,6 +13234,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodedependencyproxyblobregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodedependencyproxyblobregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodedependencyproxyblobregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodedependencyproxyblobregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13257,6 +13257,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodedependencyproxymanifestregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodedependencyproxymanifestregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodedependencyproxymanifestregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodedependencyproxymanifestregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13275,6 +13276,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodegroupwikirepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodegroupwikirepositoryregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodegroupwikirepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodegroupwikirepositoryregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13293,6 +13295,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodejobartifactregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodejobartifactregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodejobartifactregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodejobartifactregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13311,6 +13314,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodelfsobjectregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodelfsobjectregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodelfsobjectregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodelfsobjectregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13329,6 +13333,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodemergerequestdiffregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodemergerequestdiffregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodemergerequestdiffregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodemergerequestdiffregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13347,6 +13352,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodepackagefileregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodepackagefileregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodepackagefileregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodepackagefileregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13365,6 +13371,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodepagesdeploymentregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodepagesdeploymentregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodepagesdeploymentregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodepagesdeploymentregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13383,6 +13390,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodepipelineartifactregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodepipelineartifactregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodepipelineartifactregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodepipelineartifactregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13401,6 +13409,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodesnippetrepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodesnippetrepositoryregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodesnippetrepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodesnippetrepositoryregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13419,6 +13428,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodeterraformstateversionregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodeterraformstateversionregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodeterraformstateversionregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodeterraformstateversionregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -13437,6 +13447,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodeuploadregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodeuploadregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodeuploadregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodeuploadregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
@@ -14563,7 +14574,6 @@ Describes an issuable resource link for incident issues.
 | <a id="issueblockingcount"></a>`blockingCount` | [`Int!`](#int) | Count of issues this issue is blocking. |
 | <a id="issueclosedasduplicateof"></a>`closedAsDuplicateOf` | [`Issue`](#issue) | Issue this issue was closed as a duplicate of. |
 | <a id="issueclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the issue was closed. |
-| <a id="issuecommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="issueconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the issue is confidential. |
 | <a id="issuecreatenoteemail"></a>`createNoteEmail` | [`String`](#string) | User specific email address for the issue. |
 | <a id="issuecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the issue was created. |
@@ -14992,7 +15002,6 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestautomergeenabled"></a>`autoMergeEnabled` | [`Boolean!`](#boolean) | Indicates if auto merge is enabled for the merge request. |
 | <a id="mergerequestautomergestrategy"></a>`autoMergeStrategy` | [`String`](#string) | Selected auto merge strategy. |
 | <a id="mergerequestavailableautomergestrategies"></a>`availableAutoMergeStrategies` | [`[String!]`](#string) | Array of available auto merge strategies. |
-| <a id="mergerequestcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="mergerequestcommitcount"></a>`commitCount` | [`Int`](#int) | Number of commits in the merge request. |
 | <a id="mergerequestcommits"></a>`commits` | [`CommitConnection`](#commitconnection) | Merge request commits. (see [Connections](#connections)) |
 | <a id="mergerequestcommitswithoutmergecommits"></a>`commitsWithoutMergeCommits` | [`CommitConnection`](#commitconnection) | Merge request commits excluding merge commits. (see [Connections](#connections)) |
@@ -19419,7 +19428,6 @@ Represents a snippet entry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="snippetauthor"></a>`author` | [`UserCore`](#usercore) | Owner of the snippet. |
-| <a id="snippetcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="snippetcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp this snippet was created. |
 | <a id="snippetdescription"></a>`description` | [`String`](#string) | Description of the snippet. |
 | <a id="snippetdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
@@ -20290,7 +20298,6 @@ Represents a vulnerability.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="vulnerabilitycommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
 | <a id="vulnerabilityconfirmedby"></a>`confirmedBy` | [`UserCore`](#usercore) | User that confirmed the vulnerability. |
 | <a id="vulnerabilitydescription"></a>`description` | [`String`](#string) | Description of the vulnerability. |
@@ -24182,7 +24189,6 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="noteableinterfacecommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="noteableinterfacediscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="noteableinterfacenotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 

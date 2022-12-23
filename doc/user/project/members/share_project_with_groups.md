@@ -28,7 +28,7 @@ Be aware of the restrictions that apply when you share projects with:
 
 ## Share projects with groups with a more restrictive visibility level
 
-You can share projects only down the group's organization structure. 
+You can share projects only down the group's organization structure.
 This means you can share a project with a group that has a more restrictive
 [visibility level](../../public_access.md#project-and-group-visibility) than the project,
 but not with a group that has a less restrictive visibility level.
@@ -77,9 +77,5 @@ To share a project with a group:
 1. Select **Invite**.
 
 ## Prevent project sharing
-
-You can prevent members of a group from
-[sharing a project with another group](../members/share_project_with_groups.md).
-This restriction allows for tighter control over project access.
 
 For more information, see [Prevent a project from being shared with groups](../../group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups).

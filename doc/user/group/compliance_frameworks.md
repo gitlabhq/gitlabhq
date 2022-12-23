@@ -237,7 +237,7 @@ can be configured to be:
 Generally, if a value in a compliance job:
 
 - Is set, it cannot be changed or overridden by project-level configurations.
-- Is not set, a project-level configuration may set.
+- Is not set, a project-level configuration may be set.
 
 Either might be wanted or not depending on your use case.
 
