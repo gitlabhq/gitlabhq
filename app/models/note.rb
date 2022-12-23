@@ -125,6 +125,7 @@ class Note < ApplicationRecord
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :system, -> { where(system: true) }
   scope :user, -> { where(system: false) }
+  scope :not_internal, -> { where(internal: false) }
   scope :common, -> { where(noteable_type: ["", nil]) }
   scope :fresh, -> { order_created_asc.with_order_id_asc }
   scope :updated_after, ->(time) { where('updated_at > ?', time) }

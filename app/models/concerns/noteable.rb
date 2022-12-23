@@ -205,6 +205,14 @@ module Noteable
     model_name.singular
   end
 
+  def commenters(user: nil)
+    eligable_notes = notes.user
+
+    eligable_notes = eligable_notes.not_internal unless user&.can?(:read_internal_note, self)
+
+    User.where(id: eligable_notes.select(:author_id).distinct)
+  end
+
   private
 
   # Synthetic system notes don't have discussion IDs because these are generated dynamically

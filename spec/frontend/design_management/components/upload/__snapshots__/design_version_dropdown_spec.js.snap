@@ -107,7 +107,11 @@ exports[`Design management design version dropdown component renders design vers
         </span>
       </span>
     </gl-listbox-item-stub>
+     
+    <!---->
   </ul>
+   
+  <!---->
    
   <!---->
    
@@ -221,7 +225,11 @@ exports[`Design management design version dropdown component renders design vers
         </span>
       </span>
     </gl-listbox-item-stub>
+     
+    <!---->
   </ul>
+   
+  <!---->
    
   <!---->
    

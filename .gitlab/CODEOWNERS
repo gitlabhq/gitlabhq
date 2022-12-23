@@ -505,7 +505,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/sidekiq/ @axil
 /doc/administration/sidekiq/sidekiq_memory_killer.md @jglassman1
 /doc/administration/smime_signing_email.md @axil
-/doc/administration/snippets/ @ashrafkhamis
+/doc/administration/snippets/ @aqualls
 /doc/administration/static_objects_external_storage.md @ashrafkhamis
 /doc/administration/system_hooks.md @ashrafkhamis
 /doc/administration/terraform_state.md @phillipwells
@@ -626,7 +626,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/project_level_variables.md @marcel.amirault
 /doc/api/project_relations_export.md @eread
 /doc/api/project_repository_storage_moves.md @eread
-/doc/api/project_snippets.md @ashrafkhamis
+/doc/api/project_snippets.md @aqualls
 /doc/api/project_statistics.md @aqualls
 /doc/api/project_templates.md @aqualls
 /doc/api/project_vulnerabilities.md @aqualls
@@ -652,8 +652,8 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/secure_files.md @marcel.amirault
 /doc/api/settings.md @jglassman1
 /doc/api/sidekiq_metrics.md @axil
-/doc/api/snippet_repository_storage_moves.md @ashrafkhamis
-/doc/api/snippets.md @ashrafkhamis
+/doc/api/snippet_repository_storage_moves.md @aqualls
+/doc/api/snippets.md @aqualls
 /doc/api/statistics.md @jglassman1
 /doc/api/status_checks.md @eread
 /doc/api/suggestions.md @aqualls
@@ -1064,7 +1064,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/reserved_names.md @lciutacu
 /doc/user/search/ @ashrafkhamis
 /doc/user/shortcuts.md @ashrafkhamis
-/doc/user/snippets.md @ashrafkhamis
+/doc/user/snippets.md @aqualls
 /doc/user/ssh.md @jglassman1
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @msedlakjakubowski

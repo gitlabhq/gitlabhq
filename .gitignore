@@ -42,6 +42,7 @@ eslint-report.html
 /config/initializers/relative_url.rb
 /config/resque.yml
 /config/redis.*.yml
+/config/redis.yml
 /config/unicorn.rb
 /config/puma.rb
 /config/secrets.yml

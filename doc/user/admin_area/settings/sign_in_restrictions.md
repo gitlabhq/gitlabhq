@@ -115,6 +115,9 @@ authentication steps.
 We may address these limitations in the future. For more information see the following epic:
 [Admin Mode for GitLab Administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158).
 
+Also, when GitLab Geo is enabled, you can't view the replication status of projects and designs while
+on a secondary node. A fix is proposed when projects ([issue 367926](https://gitlab.com/gitlab-org/gitlab/-/issues/367926)) and designs ([issue 355660](https://gitlab.com/gitlab-org/gitlab/-/issues/355660)) move to the new Geo framework.
+
 ### Troubleshooting Admin Mode
 
 If necessary, you can disable **Admin Mode** as an administrator by using one of these two methods:

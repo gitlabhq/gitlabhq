@@ -224,6 +224,8 @@ An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4623) to fix this 
 The only way to view designs replication data for a particular secondary site is to visit that secondary site directly. For example, `https://<IP of your secondary site>/admin/geo/replication/designs`.
 An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4624) to fix this limitation.
 
+Keep in mind that mentioned URLs don't work when [Admin Mode](../../user/admin_area/settings/sign_in_restrictions.md#admin-mode) is enabled.
+
 ## Setup instructions
 
 For setup instructions, see [Setting up Geo](setup/index.md).

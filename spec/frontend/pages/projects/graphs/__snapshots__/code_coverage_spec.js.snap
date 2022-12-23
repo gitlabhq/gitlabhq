@@ -73,7 +73,11 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
             karma
           
         </gl-listbox-item-stub>
+         
+        <!---->
       </ul>
+       
+      <!---->
        
       <!---->
        

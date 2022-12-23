@@ -7,6 +7,7 @@ RSpec.describe Types::Notes::NoteableInterface do
     expected_fields = %i[
       discussions
       notes
+      commenters
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
