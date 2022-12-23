@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring, quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383324',
-    type: :stale
-  } do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
     describe 'Pipeline with project file variables' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
 
@@ -31,19 +28,26 @@ module QA
               {
                 file_path: '.gitlab-ci.yml',
                 content: <<~YAML
+                  default:
+                    tags: [#{executor}]
+
                   variables:
                     EXTRA_ARGS: "-f $TEST_FILE"
                     DOCKER_REMOTE_ARGS: --tlscacert="$DOCKER_CA_CERT"
                     EXTRACTED_CRT_FILE: ${DOCKER_CA_CERT}.crt
                     MY_FILE_VAR: $TEST_FILE
 
-                  test:
-                    tags: [#{executor}]
+                  job_echo:
                     script:
                       - echo "run something $EXTRA_ARGS"
                       - echo "docker run $DOCKER_REMOTE_ARGS"
                       - echo "run --output=$EXTRACTED_CRT_FILE"
                       - echo "Will read private key from $MY_FILE_VAR"
+
+                  job_cat:
+                    script:
+                      - cat "$MY_FILE_VAR"
+                      - cat "$DOCKER_CA_CERT"
                 YAML
               }
             ]
@@ -53,8 +57,8 @@ module QA
 
       let(:add_file_variables) do
         {
-          'TEST_FILE' => 'hello, this is test',
-          'DOCKER_CA_CERT' => 'This is secret'
+          'TEST_FILE' => "hello, this is test\n",
+          'DOCKER_CA_CERT' => "This is secret\n"
         }.each do |file_name, content|
           add_file_variable_to_project(file_name, content)
         end
@@ -71,18 +75,37 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'shows in job log accordingly', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370791' do
+      it(
+        'does not expose file variable content with echo',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370791'
+      ) do
         job = Resource::Job.fabricate_via_api! do |job|
           job.project = project
-          job.id = project.job_by_name('test')[:id]
+          job.id = project.job_by_name('job_echo')[:id]
         end
 
         aggregate_failures do
           trace = job.trace
-          expect(trace).to have_content('run something -f hello, this is test')
-          expect(trace).to have_content('docker run --tlscacert="This is secret"')
-          expect(trace).to have_content('run --output=This is secret.crt')
-          expect(trace).to have_content('Will read private key from hello, this is test')
+          expect(trace).to include('run something -f', "#{project.name}.tmp/TEST_FILE")
+          expect(trace).to include('docker run --tlscacert=', "#{project.name}.tmp/DOCKER_CA_CERT")
+          expect(trace).to include('run --output=', "#{project.name}.tmp/DOCKER_CA_CERT.crt")
+          expect(trace).to include('Will read private key from', "#{project.name}.tmp/TEST_FILE")
+        end
+      end
+
+      it(
+        'can read file variable content with cat',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386409'
+      ) do
+        job = Resource::Job.fabricate_via_api! do |job|
+          job.project = project
+          job.id = project.job_by_name('job_cat')[:id]
+        end
+
+        aggregate_failures do
+          trace = job.trace
+          expect(trace).to have_content('hello, this is test')
+          expect(trace).to have_content('This is secret')
         end
       end
 

@@ -909,3 +909,7 @@ Cop/FeatureFlagUsage:
     - 'lib/gitlab/redis/**/*.rb'
     - 'lib/gitlab/patch/**/*.rb'
     - 'lib/gitlab/instrumentation/**/*.rb'
+
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/386618
+Layout/HashAlignment:
+  Enabled: false
