@@ -20,6 +20,12 @@ module QA
         @provider.validate_dependencies
         @provider.setup
 
+        @api_url = fetch_api_url
+
+        credentials = @provider.filter_credentials(fetch_credentials)
+        @ca_certificate = Base64.decode64(credentials.dig('data', 'ca.crt'))
+        @token = Base64.decode64(credentials.dig('data', 'token'))
+
         self
       end
 

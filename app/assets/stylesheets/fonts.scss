@@ -30,3 +30,9 @@ Usage:
   --default-mono-font: 'JetBrains Mono', 'Menlo';
   --default-regular-font: 'GitLab Sans', -apple-system;
 }
+
+// This isn't the best solution, but we needed a quick fix
+// https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107592/
+* {
+  font-variant-ligatures: none;
+}
