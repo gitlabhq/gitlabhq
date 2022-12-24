@@ -7,7 +7,7 @@
     %ul.content-list.commit-list
       = render partial: "search/results/commit", collection: @search_objects
   - else
-    .search-results
+    .search-results.js-search-results
       - if @scope == 'projects'
         .term
           = render 'shared/projects/list', projects: @search_objects, pipeline_status: false

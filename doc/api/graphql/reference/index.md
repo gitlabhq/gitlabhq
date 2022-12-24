@@ -18847,7 +18847,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="repositoryblobspaths"></a>`paths` | [`[String!]!`](#string) | Array of desired blob paths. |
 | <a id="repositoryblobsref"></a>`ref` | [`String`](#string) | Commit ref to get the blobs from. Default value is HEAD. |
-| <a id="repositoryblobsreftype"></a>`refType` | [`String`](#string) | Type of the ref. heads for branches and tags for tags. |
 
 ##### `Repository.branchNames`
 

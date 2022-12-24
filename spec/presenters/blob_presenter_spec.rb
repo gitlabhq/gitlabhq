@@ -31,32 +31,6 @@ RSpec.describe BlobPresenter do
     it { expect(presenter.replace_path).to eq("/#{project.full_path}/-/update/#{blob.commit_id}/#{blob.path}") }
   end
 
-  context 'when blob has ref_type' do
-    before do
-      blob.ref_type = 'heads'
-    end
-
-    describe '#web_url' do
-      it { expect(presenter.web_url).to eq("http://localhost/#{project.full_path}/-/blob/#{blob.commit_id}/#{blob.path}?ref_type=heads") }
-    end
-
-    describe '#web_path' do
-      it { expect(presenter.web_path).to eq("/#{project.full_path}/-/blob/#{blob.commit_id}/#{blob.path}?ref_type=heads") }
-    end
-
-    describe '#edit_blob_path' do
-      it { expect(presenter.edit_blob_path).to eq("/#{project.full_path}/-/edit/#{blob.commit_id}/#{blob.path}?ref_type=heads") }
-    end
-
-    describe '#raw_path' do
-      it { expect(presenter.raw_path).to eq("/#{project.full_path}/-/raw/#{blob.commit_id}/#{blob.path}?ref_type=heads") }
-    end
-
-    describe '#replace_path' do
-      it { expect(presenter.replace_path).to eq("/#{project.full_path}/-/update/#{blob.commit_id}/#{blob.path}?ref_type=heads") }
-    end
-  end
-
   describe '#can_current_user_push_to_branch' do
     let(:branch_exists) { true }
 

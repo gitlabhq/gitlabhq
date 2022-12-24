@@ -17,6 +17,8 @@ a database schema.
 - If your migration is a data migration then it **must** have a migration test.
 - Other migrations may have a migration test if necessary.
 
+We don't enforce tests on post migrations that only perform schema changes.
+
 ## How does it work?
 
 Adding a `:migration` tag to a test signature enables some custom RSpec

@@ -349,16 +349,6 @@ RSpec.describe Ci::BuildRunnerPresenter do
             public: false, masked: false }
         )
       end
-
-      it 'logs file_variable_is_referenced_in_another_variable' do
-        expect(Gitlab::AppJsonLogger).to receive(:info).with(
-          event: 'file_variable_is_referenced_in_another_variable',
-          project_id: project.id,
-          variable: 'file_var'
-        ).once
-
-        runner_variables
-      end
     end
 
     context 'when there is a raw variable to expand' do

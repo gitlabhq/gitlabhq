@@ -27,7 +27,8 @@ const router = new VueRouter({ mode: 'history' });
 const viewBlobEl = document.querySelector('#js-view-blob-app');
 
 if (viewBlobEl) {
-  const { blobPath, projectPath, targetBranch, originalBranch, refType } = viewBlobEl.dataset;
+  const { blobPath, projectPath, targetBranch, originalBranch } = viewBlobEl.dataset;
+
   // eslint-disable-next-line no-new
   new Vue({
     el: viewBlobEl,
@@ -37,7 +38,6 @@ if (viewBlobEl) {
     provide: {
       targetBranch,
       originalBranch,
-      refType,
     },
     render(createElement) {
       return createElement(BlobContentViewer, {

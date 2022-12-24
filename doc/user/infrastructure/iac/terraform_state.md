@@ -82,7 +82,9 @@ To configure GitLab CI/CD as a backend:
 
 The output from the above `terraform` commands should be viewable in the job logs.
 
-The `gitlab-terraform` CLI is a wrapper around the `terraform` CLI. You can [view the source code of `gitlab-terraform`](https://gitlab.com/gitlab-org/terraform-images/-/blob/master/src/bin/gitlab-terraform.sh) if you're interested.
+The `gitlab-terraform` CLI is a wrapper around the `terraform` CLI. For more information,
+see [GitLab Terraform helpers](gitlab_terraform_helpers.md),
+or [view the source code of `gitlab-terraform`](https://gitlab.com/gitlab-org/terraform-images/-/blob/master/src/bin/gitlab-terraform.sh).
 
 If you prefer to call the `terraform` commands explicitly, you can override
 the template, and instead, use it as reference for what you can achieve.

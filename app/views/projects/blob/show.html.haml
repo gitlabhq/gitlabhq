@@ -4,7 +4,7 @@
 - signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.full_path, project_id: @project.path, id: @last_commit, limit: 1)
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco', prefetch: true)
-- add_page_startup_graphql_call('repository/blob_info', { projectPath: @project.full_path, ref: current_ref, refType: @ref_type.to_s, filePath: @blob.path, shouldFetchRawText: @blob.rendered_as_text? && !@blob.rich_viewer })
+- add_page_startup_graphql_call('repository/blob_info', { projectPath: @project.full_path, ref: current_ref, filePath: @blob.path, shouldFetchRawText: @blob.rendered_as_text? && !@blob.rich_viewer })
 
 .js-signature-container{ data: { 'signatures-path': signatures_path } }
 

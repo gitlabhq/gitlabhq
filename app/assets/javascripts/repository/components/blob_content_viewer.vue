@@ -40,9 +40,6 @@ export default {
     originalBranch: {
       default: '',
     },
-    refType: {
-      default: '',
-    },
   },
   apollo: {
     projectInfo: {
@@ -79,7 +76,6 @@ export default {
           projectPath: this.projectPath,
           filePath: this.path,
           ref: this.originalBranch || this.ref,
-          refType: this.refType,
           shouldFetchRawText: Boolean(this.glFeatures.highlightJs),
         };
       },

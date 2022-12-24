@@ -62,7 +62,6 @@ class Projects::BlobController < Projects::ApplicationController
   def show
     conditionally_expand_blob(@blob)
 
-    @ref_type = ref_type
     respond_to do |format|
       format.html do
         show_html
@@ -147,8 +146,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def commit
-    @repo = @repository
-    super
+    @commit ||= @repository.commit(@ref)
+
     return render_404 unless @commit
   end
 

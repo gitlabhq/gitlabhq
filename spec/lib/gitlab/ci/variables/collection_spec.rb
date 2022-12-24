@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Collection do
+RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :pipeline_authoring do
   describe '.new' do
     it 'can be initialized with an array' do
       variable = { key: 'VAR', value: 'value', public: true, masked: false }
@@ -582,44 +582,6 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
 
         it 'preserves raw attribute' do
           expect(subject.pluck(:key, :raw).to_h).to eq(collection.pluck(:key, :raw).to_h)
-        end
-      end
-    end
-
-    context 'with the file_variable_is_referenced_in_another_variable logging' do
-      let(:collection) do
-        Gitlab::Ci::Variables::Collection.new
-                       .append(key: 'VAR1', value: 'test-1')
-                       .append(key: 'VAR2', value: '$VAR1')
-                       .append(key: 'VAR3', value: '$VAR1', raw: true)
-                       .append(key: 'FILEVAR4', value: 'file-test-4', file: true)
-                       .append(key: 'VAR5', value: '$FILEVAR4')
-                       .append(key: 'VAR6', value: '$FILEVAR4', raw: true)
-      end
-
-      subject(:sort_and_expand_all) { collection.sort_and_expand_all(project: project) }
-
-      context 'when a project is not passed' do
-        let(:project) {}
-
-        it 'does not log anything' do
-          expect(Gitlab::AppJsonLogger).not_to receive(:info)
-
-          sort_and_expand_all
-        end
-      end
-
-      context 'when a project is passed' do
-        let(:project) { create(:project) }
-
-        it 'logs file_variable_is_referenced_in_another_variable once for VAR5' do
-          expect(Gitlab::AppJsonLogger).to receive(:info).with(
-            event: 'file_variable_is_referenced_in_another_variable',
-            project_id: project.id,
-            variable: 'FILEVAR4'
-          ).once
-
-          sort_and_expand_all
         end
       end
     end

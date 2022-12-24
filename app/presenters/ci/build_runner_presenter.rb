@@ -38,8 +38,7 @@ module Ci
       variables
         .sort_and_expand_all(keep_undefined: true,
                              expand_file_refs: false,
-                             expand_raw_refs: !stop_expanding_raw_refs,
-                             project: project)
+                             expand_raw_refs: !stop_expanding_raw_refs)
         .to_runner_variables
     end
 

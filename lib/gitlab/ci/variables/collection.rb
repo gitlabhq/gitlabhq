@@ -73,7 +73,7 @@ module Gitlab
         end
 
         # `expand_raw_refs` will be deleted with the FF `ci_raw_variables_in_yaml_config`.
-        def expand_value(value, keep_undefined: false, expand_file_refs: true, expand_raw_refs: true, project: nil)
+        def expand_value(value, keep_undefined: false, expand_file_refs: true, expand_raw_refs: true)
           value.gsub(Item::VARIABLES_REGEXP) do
             match = Regexp.last_match # it is either a valid variable definition or a ($$ / %%)
             full_match = match[0]
@@ -88,15 +88,6 @@ module Gitlab
 
             if variable # VARIABLE_NAME is an existing variable
               if variable.file?
-                # Will be cleaned up with https://gitlab.com/gitlab-org/gitlab/-/issues/378266
-                if project
-                  # We only log if `project` exists to make sure it is called from `Ci::BuildRunnerPresenter`
-                  # when the variables are sent to Runner.
-                  Gitlab::AppJsonLogger.info(event: 'file_variable_is_referenced_in_another_variable',
-                                             project_id: project.id,
-                                             variable: variable_name)
-                end
-
                 expand_file_refs ? variable.value : full_match
               elsif variable.raw?
                 # With `full_match`, we defer the expansion of raw variables to the runner. If we expand them here,
@@ -116,7 +107,7 @@ module Gitlab
         end
 
         # `expand_raw_refs` will be deleted with the FF `ci_raw_variables_in_yaml_config`.
-        def sort_and_expand_all(keep_undefined: false, expand_file_refs: true, expand_raw_refs: true, project: nil)
+        def sort_and_expand_all(keep_undefined: false, expand_file_refs: true, expand_raw_refs: true)
           sorted = Sort.new(self)
           return self.class.new(self, sorted.errors) unless sorted.valid?
 
@@ -132,8 +123,7 @@ module Gitlab
             variable = item.to_runner_variable
             variable[:value] = new_collection.expand_value(variable[:value], keep_undefined: keep_undefined,
                                                                              expand_file_refs: expand_file_refs,
-                                                                             expand_raw_refs: expand_raw_refs,
-                                                                             project: project)
+                                                                             expand_raw_refs: expand_raw_refs)
             new_collection.append(variable)
           end
 

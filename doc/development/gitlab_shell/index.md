@@ -6,9 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Shell
 
-[![pipeline status](https://gitlab.com/gitlab-org/gitlab-shell/badges/main/pipeline.svg)](https://gitlab.com/gitlab-org/gitlab-shell/-/pipelines?ref=main)
-[![coverage report](https://gitlab.com/gitlab-org/gitlab-shell/badges/main/coverage.svg)](https://gitlab.com/gitlab-org/gitlab-shell/-/pipelines?ref=main)
-[![Code Climate](https://codeclimate.com/github/gitlabhq/gitlab-shell.svg)](https://codeclimate.com/github/gitlabhq/gitlab-shell)
+[![pipeline status](https://gitlab.com/gitlab-org/gitlab-shell/badges/main/pipeline.svg)](https://gitlab.com/gitlab-org/gitlab-shell/-/pipelines?ref=main) [![coverage report](https://gitlab.com/gitlab-org/gitlab-shell/badges/main/coverage.svg)](https://gitlab.com/gitlab-org/gitlab-shell/-/pipelines?ref=main) [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlab-shell.svg)](https://codeclimate.com/github/gitlabhq/gitlab-shell)
 
 GitLab Shell handles Git SSH sessions for GitLab and modifies the list of authorized keys.
 GitLab Shell is not a Unix shell nor a replacement for Bash or Zsh.
@@ -38,7 +36,7 @@ When you access the GitLab server over SSH, GitLab Shell then:
 1. Calls the GitLab Rails API to check if you are authorized, and what Gitaly server your repository is on.
 1. Copies data back and forth between the SSH client and the Gitaly server.
 
-If you access a GitLab server over HTTP(S) you end up in [`gitlab-workhorse`](https://gitlab.com/gitlab-org/gitlab/tree/master/workhorse).
+If you access a GitLab server over HTTP(S) you end up in [`gitlab-workhorse`](../workhorse/index.md).
 
 ### `git pull` over SSH
 
@@ -65,21 +63,87 @@ subgraph Gitaly
 end
 ```
 
-[Full feature list](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/doc/features.md)
+[Full feature list](features.md)
 
 ### Modifies `authorized_keys`
 
 GitLab Shell modifies the `authorized_keys` file on the client machine.
 
-## Rate Limiting
+## Contribute to GitLab Shell
 
-GitLab Shell performs rate-limiting by user account and project for Git operations. GitLab Shell accepts Git operation requests and then makes a call to the Rails rate-limiter (backed by Redis). If the `user + project` exceeds the rate limit then GitLab Shell then drop further connection requests for that `user + project`.
+To contribute to GitLab Shell:
 
-The rate-limiter is applied at the Git command (plumbing) level. Each command has a rate limit of 600 per minute. For example, `git push` has 600 per minute, and `git pull` has another 600 per minute.
+1. Check if GitLab API access, and Redis via the internal API, can be reached: `make check`
+1. Compile the `gitlab-shell` binaries, placing them into `bin/`: `make compile`
+1. Run `make install` to build the `gitlab-shell` binaries and install. them onto the file system.
+   The default location is `/usr/local`. To change it, set the `PREFIX` and `DESTDIR` environment variables.
+1. To install GitLab from source on a single machine, run `make setup`.
+   It compiles the GitLab Shell binaries, and ensures that various paths on the file system
+   exist with the correct permissions. Do not run this command unless your installation method
+   documentation instructs you to.
 
-Because they are using the same plumbing command, `git-upload-pack`, `git pull` and `git clone` are in effect the same command for the purposes of rate-limiting.
+For more information, see
+[CONTRIBUTING.md](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/CONTRIBUTING.md).
 
-Gitaly also has a rate-limiter in place, but calls are never made to Gitaly if the rate limit is exceeded in GitLab Shell (Rails).
+### Run tests
+
+When contributing, run tests:
+
+1. Run tests with `bundle install` and `make test`.
+1. Run Gofmt: `make verify`
+1. Run both test and verify (the default Makefile target):
+
+   ```shell
+   bundle install
+   make validate
+   ```
+
+1. If needed, configure Gitaly.
+
+### Configure Gitaly for local testing
+
+Some tests need a Gitaly server. The
+[`docker-compose.yml`](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/docker-compose.yml) file runs Gitaly on port 8075.
+To tell the tests where Gitaly is, set `GITALY_CONNECTION_INFO`:
+
+```plaintext
+export GITALY_CONNECTION_INFO='{"address": "tcp://localhost:8075", "storage": "default"}'
+make test
+```
+
+If no `GITALY_CONNECTION_INFO` is set, the test suite still runs, but any
+tests requiring Gitaly are skipped. The tests always run in the CI environment.
+
+## Rate limiting
+
+GitLab Shell performs rate-limiting by user account and project for Git operations.
+GitLab Shell accepts Git operation requests and then makes a call to the Rails
+rate-limiter, backed by Redis. If the `user + project` exceeds the rate limit,
+then GitLab Shell then drop further connection requests for that `user + project`.
+
+The rate-limiter is applied at the Git command (plumbing) level. Each command has
+a rate limit of 600 per minute. For example, `git push` has 600 per minute, and
+`git pull` has another 600 per minute.
+
+Because they are using the same plumbing command, `git-upload-pack`, `git pull`,
+and `git clone` are in effect the same command for the purposes of rate-limiting.
+
+Gitaly also has a rate-limiter in place, but calls are never made to Gitaly if
+the rate limit is exceeded in GitLab Shell (Rails).
+
+## Logs in GitLab Shell
+
+In general, you can determine the structure, but not content, of a GitLab Shell
+or `gitlab-sshd` session by inspecting the logs. Some guidelines:
+
+- We use [`gitlab.com/gitlab-org/labkit/log`](https://pkg.go.dev/gitlab.com/gitlab-org/labkit/log)
+  for logging.
+- Always include a correlation ID.
+- Log messages should be invariant and unique. Include accessory information in
+  fields, using `log.WithField`, `log.WithFields`, or `log.WithError`.
+- Log both success cases and error cases.
+- Logging too much is better than not logging enough. If a message seems too
+  verbose, consider reducing the log level before removing the message.
 
 ## GitLab SaaS
 
@@ -119,19 +183,40 @@ graph LR
     end
 ```
 
-## Releasing
+## GitLab Shell architecture
 
-See [PROCESS.md](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/PROCESS.md)
+```mermaid
+sequenceDiagram
+    participant Git on client
+    participant SSH server
+    participant AuthorizedKeysCommand
+    participant GitLab Shell
+    participant Rails
+    participant Gitaly
+    participant Git on server
 
-## Contributing
-
-- See [CONTRIBUTING.md](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/CONTRIBUTING.md).
-- See the [beginner's guide](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/doc/beginners_guide.md).
-
-## License
-
-See [LICENSE](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/LICENSE).
+    Note left of Git on client: git fetch
+    Git on client->>+SSH server: ssh git fetch-pack request
+    SSH server->>+AuthorizedKeysCommand: gitlab-shell-authorized-keys-check git AAAA...
+    AuthorizedKeysCommand->>+Rails: GET /internal/api/authorized_keys?key=AAAA...
+    Note right of Rails: Lookup key ID
+    Rails-->>-AuthorizedKeysCommand: 200 OK, command="gitlab-shell upload-pack key_id=1"
+    AuthorizedKeysCommand-->>-SSH server: command="gitlab-shell upload-pack key_id=1"
+    SSH server->>+GitLab Shell: gitlab-shell upload-pack key_id=1
+    GitLab Shell->>+Rails: GET /internal/api/allowed?action=upload_pack&key_id=1
+    Note right of Rails: Auth check
+    Rails-->>-GitLab Shell: 200 OK, { gitaly: ... }
+    GitLab Shell->>+Gitaly: SSHService.SSHUploadPack request
+    Gitaly->>+Git on server: git upload-pack request
+    Note over Git on client,Git on server: Bidirectional communication between Git client and server
+    Git on server-->>-Gitaly: git upload-pack response
+    Gitaly -->>-GitLab Shell: SSHService.SSHUploadPack response
+    GitLab Shell-->>-SSH server: gitlab-shell upload-pack response
+    SSH server-->>-Git on client: ssh git fetch-pack response
+```
 
 ## Related topics
 
-- [Using the GitLab Shell chart](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/doc/charts/gitlab/gitlab-shell/index.md)
+- [LICENSE](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/LICENSE).
+- [PROCESS.md](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/PROCESS.md)
+- [Using the GitLab Shell chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/)

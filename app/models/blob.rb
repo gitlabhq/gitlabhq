@@ -72,7 +72,6 @@ class Blob < SimpleDelegator
   ].freeze
 
   attr_reader :container
-  attr_accessor :ref_type
 
   delegate :repository, to: :container, allow_nil: true
   delegate :project, to: :repository, allow_nil: true
