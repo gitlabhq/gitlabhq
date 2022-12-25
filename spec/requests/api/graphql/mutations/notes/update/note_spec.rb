@@ -36,32 +36,49 @@ RSpec.describe 'Updating a Note', feature_category: :team_planning do
 
     it_behaves_like 'a Note mutation when the given resource id is not for a Note'
 
-    it_behaves_like 'a Note mutation updates a note successfully'
-    it_behaves_like 'a Note mutation update with errors'
-    it_behaves_like 'a Note mutation update only with quick actions'
+    it 'updates the Note' do
+      post_graphql_mutation(mutation, current_user: current_user)
 
-    context 'for work item' do
-      let(:noteable) { create(:work_item, :issue) }
-      let(:note) { create(:note, noteable: noteable, project: noteable.project, note: original_body) }
+      expect(note.reload.note).to eq(updated_body)
+    end
 
-      it_behaves_like 'a Note mutation updates a note successfully'
-      it_behaves_like 'a Note mutation update with errors'
-      it_behaves_like 'a Note mutation update only with quick actions'
+    it 'returns the updated Note' do
+      post_graphql_mutation(mutation, current_user: current_user)
 
-      context 'without notes widget' do
-        before do
-          stub_const('WorkItems::Type::BASE_TYPES', { issue: { name: 'NoNotesWidget', enum_value: 0 } })
-          stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', { issue: [::WorkItems::Widgets::Description] })
-        end
+      expect(mutation_response['note']['body']).to eq(updated_body)
+    end
 
-        it 'does not update the Note' do
-          post_graphql_mutation(mutation, current_user: current_user)
+    context 'when there are ActiveRecord validation errors' do
+      let(:params) { { body: '', confidential: true } }
 
-          expect(note.reload.note).to eq(original_body)
-        end
+      it_behaves_like 'a mutation that returns errors in the response',
+        errors: ["Note can't be blank", 'Confidential can not be changed for existing notes']
 
-        it_behaves_like 'a mutation that returns top-level errors',
-          errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+      it 'does not update the Note' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(note.reload.note).to eq(original_body)
+        expect(note.confidential).to be_falsey
+      end
+
+      it 'returns the original Note' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(mutation_response['note']['body']).to eq(original_body)
+        expect(mutation_response['note']['confidential']).to be_falsey
+      end
+    end
+
+    context 'when body only contains quick actions' do
+      let(:updated_body) { '/close' }
+
+      it 'returns a nil note and empty errors' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(mutation_response).to include(
+          'errors' => [],
+          'note' => nil
+        )
       end
     end
   end
