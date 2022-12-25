@@ -26,9 +26,7 @@ module Types
               null: true,
               description: 'User that made the last edit to the work item\'s description.'
 
-        markdown_field :description_html, null: true do |resolved_object|
-          resolved_object.work_item
-        end
+        markdown_field :description_html, null: true, &:work_item
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

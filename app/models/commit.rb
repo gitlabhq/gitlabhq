@@ -576,9 +576,7 @@ class Commit
   private
 
   def expire_note_etag_cache_for_related_mrs
-    MergeRequest.includes(target_project: :namespace).by_commit_sha(id).find_each do |mr|
-      mr.expire_note_etag_cache
-    end
+    MergeRequest.includes(target_project: :namespace).by_commit_sha(id).find_each(&:expire_note_etag_cache)
   end
 
   def commit_reference(from, referable_commit_id, full: false)

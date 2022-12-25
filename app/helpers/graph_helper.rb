@@ -14,7 +14,7 @@ module GraphHelper
   end
 
   def parents_zip_spaces(parents, parent_spaces)
-    ids = parents.map { |p| p.id }
+    ids = parents.map(&:id)
     ids.zip(parent_spaces)
   end
 

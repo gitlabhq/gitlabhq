@@ -30,7 +30,7 @@ module Mutations
 
       def resolve(project_path:, jira_project_key:, users_mapping:)
         project = authorized_find!(project_path)
-        mapping = users_mapping.to_ary.map { |map| map.to_hash }
+        mapping = users_mapping.to_ary.map(&:to_hash)
 
         service_response = ::JiraImport::StartImportService
                              .new(context[:current_user], project, jira_project_key, mapping)

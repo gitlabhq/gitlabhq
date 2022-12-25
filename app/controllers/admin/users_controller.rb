@@ -125,7 +125,7 @@ class Admin::UsersController < Admin::ApplicationController
   def unblock
     if user.ldap_blocked?
       redirect_back_or_admin_user(alert: _("This user cannot be unlocked manually from GitLab"))
-    elsif update_user { |user| user.activate }
+    elsif update_user(&:activate)
       redirect_back_or_admin_user(notice: _("Successfully unblocked"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not unblocked"))
@@ -153,7 +153,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def unlock
-    if update_user { |user| user.unlock_access! }
+    if update_user(&:unlock_access!)
       redirect_back_or_admin_user(notice: _("Successfully unlocked"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not unlocked"))
@@ -161,7 +161,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def confirm
-    if update_user { |user| user.force_confirm }
+    if update_user(&:force_confirm)
       redirect_back_or_admin_user(notice: _("Successfully confirmed"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not confirmed"))

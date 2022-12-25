@@ -18,7 +18,7 @@ module Mutations
 
         # Cannot use prepare to use `.to_h` on each input due to
         # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87472#note_945199865
-        widget_params.transform_values { |values| values.to_h }
+        widget_params.transform_values(&:to_h)
       end
     end
   end

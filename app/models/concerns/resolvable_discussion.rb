@@ -96,7 +96,7 @@ module ResolvableDiscussion
   def unresolve!
     return unless resolvable?
 
-    update { |notes| notes.unresolve! }
+    update(&:unresolve!)
   end
 
   def clear_memoized_values
