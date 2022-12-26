@@ -114,6 +114,12 @@ it does not have a static, hardcoded, manually updated `spec.txt`. Instead, the
 GLFM `spec.txt` is automatically generated based on other input files. This process
 is explained in detail in the [Implementation](#implementation) sections below.
 
+NOTE:
+As of December 2022, the HTML version of the [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/)
+is outdated, and does not match the [specification's `spec.txt`](https://github.com/github/cmark-gfm/blob/master/test/spec.txt).
+An issue has been [filed in the `cmark-gfm` project](https://github.com/github/cmark-gfm/issues/288)
+to report this.
+
 #### Official specifications vs internal extensions
 
 Within GFM and GLFM respectively, both GitHub and GitLab have two "sets" of Markdown they support:
