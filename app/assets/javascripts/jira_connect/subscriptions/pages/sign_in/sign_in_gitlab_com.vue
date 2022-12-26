@@ -1,6 +1,7 @@
 <script>
 import { s__ } from '~/locale';
 
+import { GITLAB_COM_BASE_PATH } from '~/jira_connect/subscriptions/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SubscriptionsList from '../../components/subscriptions_list.vue';
 
@@ -28,6 +29,7 @@ export default {
     signInButtonTextWithSubscriptions: s__('Integrations|Sign in to add namespaces'),
     signInText: s__('JiraService|Sign in to GitLab.com to get started.'),
   },
+  GITLAB_COM_BASE_PATH,
   methods: {
     onSignInError() {
       this.$emit('error');
@@ -43,6 +45,7 @@ export default {
       <div class="gl-display-flex gl-justify-content-end gl-mb-3">
         <sign-in-oauth-button
           v-if="useSignInOauthButton"
+          :gitlab-base-path="$options.GITLAB_COM_BASE_PATH"
           @sign-in="$emit('sign-in-oauth', $event)"
           @error="onSignInError"
         >
@@ -59,6 +62,7 @@ export default {
       <p class="gl-mb-7">{{ $options.i18n.signInText }}</p>
       <sign-in-oauth-button
         v-if="useSignInOauthButton"
+        :gitlab-base-path="$options.GITLAB_COM_BASE_PATH"
         @sign-in="$emit('sign-in-oauth', $event)"
         @error="onSignInError"
       />

@@ -4,6 +4,7 @@ import { GlButton } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 
 import {
+  GITLAB_COM_BASE_PATH,
   I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
   I18N_CUSTOM_SIGN_IN_BUTTON_TEXT,
   I18N_OAUTH_APPLICATION_ID_ERROR_MESSAGE,
@@ -40,8 +41,11 @@ export default {
     };
   },
   computed: {
+    isGitlabCom() {
+      return this.gitlabBasePath === GITLAB_COM_BASE_PATH;
+    },
     buttonText() {
-      if (!this.gitlabBasePath) {
+      if (this.isGitlabCom) {
         return I18N_DEFAULT_SIGN_IN_BUTTON_TEXT;
       }
 
@@ -71,9 +75,9 @@ export default {
       this.codeVerifier = createCodeVerifier();
       const codeChallenge = await createCodeChallenge(this.codeVerifier);
       try {
-        this.clientId = this.gitlabBasePath
-          ? await this.fetchOauthClientId()
-          : this.oauthMetadata?.oauth_token_payload?.client_id;
+        this.clientId = this.isGitlabCom
+          ? this.oauthMetadata?.oauth_token_payload?.client_id
+          : await this.fetchOauthClientId();
       } catch {
         throw new Error(I18N_OAUTH_APPLICATION_ID_ERROR_MESSAGE);
       }
@@ -92,7 +96,7 @@ export default {
       );
 
       // Rebase URL on the specified GitLab base path (if specified).
-      if (this.gitlabBasePath) {
+      if (!this.isGitlabCom) {
         const gitlabBasePathURL = new URL(this.gitlabBasePath);
         oauthAuthorizeURLWithChallenge.hostname = gitlabBasePathURL.hostname;
         oauthAuthorizeURLWithChallenge.pathname = `${
@@ -118,7 +122,7 @@ export default {
           this.setAlert({
             linkUrl: OAUTH_SELF_MANAGED_DOC_LINK,
             title: I18N_OAUTH_FAILED_TITLE,
-            message: this.gitlabBasePath ? I18N_OAUTH_FAILED_MESSAGE : '',
+            message: this.isGitlabCom ? '' : I18N_OAUTH_FAILED_MESSAGE,
             variant: 'danger',
           });
         }
