@@ -216,7 +216,7 @@ Returns [`Issue`](#issue).
 
 ### `Query.issues`
 
-Issues visible by the current user. Returns null if the `root_level_issues_query` feature flag is disabled.
+Find issues visible to the current user. At least one filter must be provided. Returns `null` if the `root_level_issues_query` feature flag is disabled.
 
 WARNING:
 **Introduced** in 15.6.

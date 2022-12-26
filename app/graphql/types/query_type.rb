@@ -86,8 +86,9 @@ module Types
           null: true,
           alpha: { milestone: '15.6' },
           resolver: Resolvers::IssuesResolver,
-          description: 'Issues visible by the current user.' \
-                       ' Returns null if the `root_level_issues_query` feature flag is disabled.'
+          description: 'Find issues visible to the current user.' \
+                       ' At least one filter must be provided.' \
+                       ' Returns `null` if the `root_level_issues_query` feature flag is disabled.'
 
     field :issue, Types::IssueType,
           null: true,

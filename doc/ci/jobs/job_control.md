@@ -125,7 +125,7 @@ job:
   rules:
     - if: $CI_COMMIT_BRANCH
       changes:
-        compare_to: refs/heads/main
+        compare_to: 'refs/heads/main'
         paths:
           - '*'
 ```

@@ -47933,6 +47933,9 @@ msgstr ""
 msgid "You must provide a valid current password"
 msgstr ""
 
+msgid "You must provide at least one filter argument for this query"
+msgstr ""
+
 msgid "You must provide your current password in order to change it."
 msgstr ""
 

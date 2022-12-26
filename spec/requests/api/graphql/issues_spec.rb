@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers
 RSpec.describe 'getting an issue list at root level', feature_category: :team_planning do
   include GraphqlHelpers
 
@@ -82,8 +83,11 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   end
 
   let_it_be(:issues, reload: true) { [issue_a, issue_b, issue_c, issue_d, issue_e] }
+  # we need to always provide at least one filter to the query so it doesn't fail
+  let_it_be(:base_params) { { iids: issues.map { |issue| issue.iid.to_s } } }
 
   let(:issue_filter_params) { {} }
+  let(:all_query_params) { base_params.merge(**issue_filter_params) }
   let(:current_user) { developer }
   let(:fields) do
     <<~QUERY
@@ -93,6 +97,16 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
 
   before_all do
     group2.add_reporter(reporter)
+  end
+
+  shared_examples 'query that requires at least one filter' do
+    it 'requires at least one filter to be provided to the query' do
+      post_graphql(query, current_user: developer)
+
+      expect(graphql_errors).to contain_exactly(
+        hash_including('message' => _('You must provide at least one filter argument for this query'))
+      )
+    end
   end
 
   context 'when the root_level_issues_query feature flag is disabled' do
@@ -105,6 +119,18 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
 
       expect(graphql_data).to eq('issues' => nil)
     end
+  end
+
+  context 'when no filters are provided' do
+    let(:all_query_params) { {} }
+
+    it_behaves_like 'query that requires at least one filter'
+  end
+
+  context 'when only non filter arguments are provided' do
+    let(:all_query_params) { { sort: :SEVERITY_ASC } }
+
+    it_behaves_like 'query that requires at least one filter'
   end
 
   # All new specs should be added to the shared example if the change also
@@ -158,7 +184,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     def pagination_query(params)
       graphql_query_for(
         :issues,
-        params,
+        base_params.merge(**params.to_h),
         "#{page_info} nodes { id }"
       )
     end
@@ -211,7 +237,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     post_graphql(query, current_user: request_user)
   end
 
-  def query(params = issue_filter_params)
+  def query(params = all_query_params)
     graphql_query_for(
       :issues,
       params,
@@ -219,3 +245,4 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     )
   end
 end
+# rubocop:enable RSpec/MultipleMemoizedHelpers
