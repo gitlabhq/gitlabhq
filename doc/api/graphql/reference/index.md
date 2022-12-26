@@ -1122,7 +1122,7 @@ Input type: `CiCdSettingsUpdateInput`
 | <a id="mutationcicdsettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full Path of the project the settings belong to. |
 | <a id="mutationcicdsettingsupdateinboundjobtokenscopeenabled"></a>`inboundJobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates CI/CD job tokens generated in other projects have restricted access to this project. |
 | <a id="mutationcicdsettingsupdatejobtokenscopeenabled"></a>`jobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates CI/CD job tokens generated in this project have restricted access to other projects. |
-| <a id="mutationcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates if the latest artifact should be kept for this project. |
+| <a id="mutationcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates if the latest artifact should be kept for the project. |
 | <a id="mutationcicdsettingsupdatemergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Indicates if merge pipelines are enabled for the project. |
 | <a id="mutationcicdsettingsupdatemergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Indicates if merge trains are enabled for the project. |
 
@@ -1506,7 +1506,7 @@ Input type: `CreateClusterAgentInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreateclusteragentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateclusteragentname"></a>`name` | [`String!`](#string) | Name of the cluster agent. |
-| <a id="mutationcreateclusteragentprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the associated project for this cluster agent. |
+| <a id="mutationcreateclusteragentprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the associated project for the cluster agent. |
 
 #### Fields
 
@@ -1723,7 +1723,7 @@ Input type: `CreateNoteInput`
 | <a id="mutationcreatenotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatenoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in 15.3. |
-| <a id="mutationcreatenotediscussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the discussion this note is in reply to. |
+| <a id="mutationcreatenotediscussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the discussion the note is in reply to. |
 | <a id="mutationcreatenoteinternal"></a>`internal` | [`Boolean`](#boolean) | Internal flag for a note. Default is false. |
 | <a id="mutationcreatenotemergerequestdiffheadsha"></a>`mergeRequestDiffHeadSha` | [`String`](#string) | SHA of the head commit which is used to ensure that the merge request has not been updated since the request was sent. |
 | <a id="mutationcreatenotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
@@ -3810,11 +3810,11 @@ Input type: `MergeRequestAcceptInput`
 | <a id="mutationmergerequestacceptcommitmessage"></a>`commitMessage` | [`String`](#string) | Custom merge commit message. |
 | <a id="mutationmergerequestacceptiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
 | <a id="mutationmergerequestacceptprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
-| <a id="mutationmergerequestacceptsha"></a>`sha` | [`String!`](#string) | HEAD SHA at the time when this merge was requested. |
+| <a id="mutationmergerequestacceptsha"></a>`sha` | [`String!`](#string) | HEAD SHA at the time when the merge was requested. |
 | <a id="mutationmergerequestacceptshouldremovesourcebranch"></a>`shouldRemoveSourceBranch` | [`Boolean`](#boolean) | Should the source branch be removed. |
 | <a id="mutationmergerequestacceptsquash"></a>`squash` | [`Boolean`](#boolean) | Squash commits on the source branch before merge. |
 | <a id="mutationmergerequestacceptsquashcommitmessage"></a>`squashCommitMessage` | [`String`](#string) | Custom squash commit message (if squash is true). |
-| <a id="mutationmergerequestacceptstrategy"></a>`strategy` | [`MergeStrategyEnum`](#mergestrategyenum) | How to merge this merge request. |
+| <a id="mutationmergerequestacceptstrategy"></a>`strategy` | [`MergeStrategyEnum`](#mergestrategyenum) | How to merge the merge request. |
 
 #### Fields
 
@@ -4407,7 +4407,7 @@ Input type: `ProjectCiCdSettingsUpdateInput`
 | <a id="mutationprojectcicdsettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full Path of the project the settings belong to. |
 | <a id="mutationprojectcicdsettingsupdateinboundjobtokenscopeenabled"></a>`inboundJobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates CI/CD job tokens generated in other projects have restricted access to this project. |
 | <a id="mutationprojectcicdsettingsupdatejobtokenscopeenabled"></a>`jobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates CI/CD job tokens generated in this project have restricted access to other projects. |
-| <a id="mutationprojectcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates if the latest artifact should be kept for this project. |
+| <a id="mutationprojectcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates if the latest artifact should be kept for the project. |
 | <a id="mutationprojectcicdsettingsupdatemergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Indicates if merge pipelines are enabled for the project. |
 | <a id="mutationprojectcicdsettingsupdatemergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Indicates if merge trains are enabled for the project. |
 
@@ -5401,7 +5401,7 @@ Input type: `UpdateBoardListInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdateboardlistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdateboardlistcollapsed"></a>`collapsed` | [`Boolean`](#boolean) | Indicates if the list is collapsed for this user. |
+| <a id="mutationupdateboardlistcollapsed"></a>`collapsed` | [`Boolean`](#boolean) | Indicates if the list is collapsed for the user. |
 | <a id="mutationupdateboardlistlistid"></a>`listId` | [`ListID!`](#listid) | Global ID of the list. |
 | <a id="mutationupdateboardlistposition"></a>`position` | [`Int`](#int) | Position of list within the board. |
 
@@ -5543,7 +5543,7 @@ Input type: `UpdateEpicBoardListInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdateepicboardlistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdateepicboardlistcollapsed"></a>`collapsed` | [`Boolean`](#boolean) | Indicates if the list is collapsed for this user. |
+| <a id="mutationupdateepicboardlistcollapsed"></a>`collapsed` | [`Boolean`](#boolean) | Indicates if the list is collapsed for the user. |
 | <a id="mutationupdateepicboardlistlistid"></a>`listId` | [`BoardsEpicListID!`](#boardsepiclistid) | Global ID of the epic list. |
 | <a id="mutationupdateepicboardlistposition"></a>`position` | [`Int`](#int) | Position of list within the board. |
 

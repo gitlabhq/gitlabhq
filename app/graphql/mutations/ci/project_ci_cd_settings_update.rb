@@ -15,7 +15,7 @@ module Mutations
 
       argument :keep_latest_artifact, GraphQL::Types::Boolean,
         required: false,
-        description: 'Indicates if the latest artifact should be kept for this project.'
+        description: 'Indicates if the latest artifact should be kept for the project.'
 
       argument :job_token_scope_enabled, GraphQL::Types::Boolean,
         required: false,

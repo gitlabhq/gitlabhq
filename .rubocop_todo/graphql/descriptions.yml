@@ -4,12 +4,6 @@ Graphql/Descriptions:
   Safe: false
   Details: grace period
   Exclude:
-    - 'app/graphql/mutations/boards/lists/base_update.rb'
-    - 'app/graphql/mutations/ci/project_ci_cd_settings_update.rb'
-    - 'app/graphql/mutations/clusters/agents/create.rb'
-    - 'app/graphql/mutations/merge_requests/accept.rb'
-    - 'app/graphql/mutations/notes/create/note.rb'
-    - 'app/graphql/mutations/releases/create.rb'
     - 'app/graphql/resolvers/admin/analytics/usage_trends/measurements_resolver.rb'
     - 'app/graphql/resolvers/alert_management/alert_resolver.rb'
     - 'app/graphql/resolvers/concerns/issues/sort_arguments.rb'

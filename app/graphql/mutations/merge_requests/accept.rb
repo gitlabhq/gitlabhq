@@ -21,14 +21,14 @@ module Mutations
                ::Types::MergeStrategyEnum,
                required: false,
                as: :auto_merge_strategy,
-               description: 'How to merge this merge request.'
+               description: 'How to merge the merge request.'
 
       argument :commit_message, ::GraphQL::Types::String,
                required: false,
                description: 'Custom merge commit message.'
       argument :sha, ::GraphQL::Types::String,
                required: true,
-               description: 'HEAD SHA at the time when this merge was requested.'
+               description: 'HEAD SHA at the time when the merge was requested.'
       argument :squash_commit_message, ::GraphQL::Types::String,
                required: false,
                description: 'Custom squash commit message (if squash is true).'
