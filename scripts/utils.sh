@@ -126,14 +126,21 @@ function fail_on_warnings() {
   # Turn grep errors into warnings so we fail later.
   warnings=$(grep --invert-match --file "$allowed_warning_file" "$warning_file" 2>&1 || true)
 
-  rm -f "$warning_file" "$allowed_warning_file"
+  rm -f "$allowed_warning_file"
 
   if [ "$warnings" != "" ]
   then
     echoerr "There were warnings:"
-    echoerr "$warnings"
+    echoerr "======================== Filtered warnings ====================================="
+    echo "$warnings"
+    echoerr "======================= Unfiltered warnings ===================================="
+    cat "$warning_file"
+    echoerr "================================================================================"
+    rm -f "$warning_file"
     return 1
   fi
+
+  rm -f "$warning_file"
 
   return $ret
 }
