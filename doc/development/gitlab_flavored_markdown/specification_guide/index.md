@@ -108,11 +108,6 @@ Here are the HTML-rendered versions of the specifications:
 - [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/) (rendered from the [source `spec.txt` for GFM specification](https://github.com/github/cmark-gfm/blob/master/test/spec.txt)), which extends the:
 - [CommonMark specification](https://spec.commonmark.org/0.30/) (rendered from the [source `spec.txt` for CommonMark specification](https://github.com/commonmark/commonmark-spec/blob/master/spec.txt))
 
-NOTE:
-The creation of the
-[HTML-rendered version of the GitLab Flavored Markdown (GLFM) specification](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_spec/spec.html)
-file is still pending.
-
 However, GLFM has more complex parsing, rendering, and testing requirements than
 GFM or CommonMark. Therefore,
 it does not have a static, hardcoded, manually updated `spec.txt`. Instead, the
