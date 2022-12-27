@@ -53,6 +53,7 @@ module Gitlab
         sismember
         smembers
         sscan
+        sscan_each
         ttl
       ).freeze
 

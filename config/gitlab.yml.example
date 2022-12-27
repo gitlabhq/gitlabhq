@@ -1266,6 +1266,11 @@ production: &base
     # The URL to the Kubernetes API proxy (used by GitLab users)
     # external_k8s_proxy_url: https://localhost:8154 # default: nil
 
+  suggested_reviewers:
+    # File that contains the secret key for verifying access to GitLab internal API for Suggested Reviewers.
+    # Default is '.gitlab_suggested_reviewers_secret' relative to Rails.root (i.e. root of the GitLab app).
+    # secret_file: /home/git/gitlab/.gitlab_suggested_reviewers_secret
+
   ## GitLab Elasticsearch settings
   elasticsearch:
     indexer_path: /home/git/gitlab-elasticsearch-indexer/

@@ -128,24 +128,27 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     let_it_be(:hvalmapped) { { "item1" => value1 } }
     let_it_be(:sscanargs) { [skey2, 0] }
     let_it_be(:sscanval) { ["0", [value1]] }
+    let_it_be(:sscan_eachargs) { sscanargs[0] }
+    let_it_be(:sscan_eachval) { sscanval[1] }
 
     # rubocop:disable  Layout/LineLength
     where(:case_name, :name, :args, :value, :block) do
-      'execute :get command'          | :get          | ref(:key1)        | ref(:value1)     | nil
-      'execute :mget command'         | :mget         | ref(:keys)        | ref(:values)     | nil
-      'execute :mget with block'      | :mget         | ref(:keys)        | ref(:values)     | ->(value) { value }
-      'execute :smembers command'     | :smembers     | ref(:skey)        | ref(:svalues)    | nil
-      'execute :scard command'        | :scard        | ref(:skey)        | 2                | nil
-      'execute :sismember command'    | :sismember    | ref(:smemberargs) | true             | nil
-      'execute :exists command'       | :exists       | ref(:key1)        | 1                | nil
-      'execute :exists? command'      | :exists?      | ref(:key1)        | true             | nil
-      'execute :hget command'         | :hget         | ref(:hgetargs)    | ref(:value1)     | nil
-      'execute :hlen command'         | :hlen         | ref(:hkey)        | 1                | nil
-      'execute :hgetall command'      | :hgetall      | ref(:hkey)        | ref(:hvalmapped) | nil
-      'execute :hexists command'      | :hexists      | ref(:hgetargs)    | true             | nil
-      'execute :hmget command'        | :hmget        | ref(:hgetargs)    | ref(:hmgetval)   | nil
-      'execute :mapped_hmget command' | :mapped_hmget | ref(:mhmgetargs)  | ref(:hvalmapped) | nil
-      'execute :sscan command'        | :sscan        | ref(:sscanargs)   | ref(:sscanval)   | nil
+      'execute :get command'          | :get          | ref(:key1)           | ref(:value1)        | nil
+      'execute :mget command'         | :mget         | ref(:keys)           | ref(:values)        | nil
+      'execute :mget with block'      | :mget         | ref(:keys)           | ref(:values)        | ->(value) { value }
+      'execute :smembers command'     | :smembers     | ref(:skey)           | ref(:svalues)       | nil
+      'execute :scard command'        | :scard        | ref(:skey)           | 2                   | nil
+      'execute :sismember command'    | :sismember    | ref(:smemberargs)    | true                | nil
+      'execute :exists command'       | :exists       | ref(:key1)           | 1                   | nil
+      'execute :exists? command'      | :exists?      | ref(:key1)           | true                | nil
+      'execute :hget command'         | :hget         | ref(:hgetargs)       | ref(:value1)        | nil
+      'execute :hlen command'         | :hlen         | ref(:hkey)           | 1                   | nil
+      'execute :hgetall command'      | :hgetall      | ref(:hkey)           | ref(:hvalmapped)    | nil
+      'execute :hexists command'      | :hexists      | ref(:hgetargs)       | true                | nil
+      'execute :hmget command'        | :hmget        | ref(:hgetargs)       | ref(:hmgetval)      | nil
+      'execute :mapped_hmget command' | :mapped_hmget | ref(:mhmgetargs)     | ref(:hvalmapped)    | nil
+      'execute :sscan command'        | :sscan        | ref(:sscanargs)      | ref(:sscanval)      | nil
+      'execute :sscan_each command'   | :sscan_each   | ref(:sscan_eachargs) | ref(:sscan_eachval) | nil
     end
     # rubocop:enable  Layout/LineLength
 
