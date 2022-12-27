@@ -20,6 +20,7 @@ export default {
       v-for="event in propsSource.triggerEvents"
       :key="`${currentKey}-trigger-fields-${event.name}`"
       :event="event"
+      :type="propsSource.type"
       class="gl-mb-3"
     />
   </div>

@@ -7,14 +7,14 @@
         %span.sidebar-context-title
           = _('Admin Area')
     %ul.sidebar-top-level-items{ data: { qa_selector: 'admin_overview_submenu_content' } }
-      = nav_link(controller: %w[dashboard admin admin/projects users groups admin/topics jobs gitaly_servers cohorts], html_options: {class: 'home'}) do
+      = nav_link(controller: %w[dashboard admin admin/projects users groups admin/topics gitaly_servers cohorts], html_options: {class: 'home'}) do
         = link_to admin_root_path, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('overview')
           %span.nav-item-name
             = _('Overview')
         %ul.sidebar-sub-level-items
-          = nav_link(controller: %w[dashboard admin admin/projects users groups jobs gitaly_servers cohorts], html_options: { class: "fly-out-top-item" }) do
+          = nav_link(controller: %w[dashboard admin admin/projects users groups gitaly_servers cohorts], html_options: { class: "fly-out-top-item" }) do
             = link_to admin_root_path do
               %strong.fly-out-top-item-name
                 = _('Overview')
@@ -39,23 +39,19 @@
             = link_to admin_topics_path, title: _('Topics') do
               %span
                 = _('Topics')
-          = nav_link path: 'jobs#index' do
-            = link_to admin_jobs_path, title: _('Jobs') do
-              %span
-                = _('Jobs')
           = nav_link(controller: :gitaly_servers) do
             = link_to admin_gitaly_servers_path, title: 'Gitaly Servers' do
               %span
                 = _('Gitaly Servers')
 
-      = nav_link(controller: :runners) do
+      = nav_link(controller: %w[runners jobs]) do
         = link_to admin_runners_path, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('rocket')
           %span.nav-item-name
             = _('CI/CD')
         %ul.sidebar-sub-level-items
-          = nav_link(controller: :runners, html_options: { class: "fly-out-top-item" }) do
+          = nav_link(controller: %w[runners jobs], html_options: { class: "fly-out-top-item" }) do
             = link_to admin_runners_path do
               %strong.fly-out-top-item-name
                 = _('CI/CD')
@@ -64,6 +60,10 @@
             = link_to admin_runners_path, title: _('Runners') do
               %span
                 = _('Runners')
+          = nav_link(controller: :jobs) do
+            = link_to admin_jobs_path, title: _('Jobs') do
+              %span
+                = _('Jobs')
 
       = nav_link(controller: admin_analytics_nav_links) do
         = link_to admin_dev_ops_reports_path, data: { qa_selector: 'admin_analytics_link' }, class: 'has-sub-items' do

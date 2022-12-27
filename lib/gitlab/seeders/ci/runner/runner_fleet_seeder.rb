@@ -23,7 +23,7 @@ module Gitlab
           # @option options [Integer] :runner_count number of runners to create across the groups and projects
           # @return [Array<Hash>] list of project IDs to respective runner IDs
           def initialize(logger = Gitlab::AppLogger, **options)
-            username = options.fetch(:username, DEFAULT_USERNAME)
+            username = options[:username] || DEFAULT_USERNAME
 
             @logger = logger
             @user = User.find_by_username(username)

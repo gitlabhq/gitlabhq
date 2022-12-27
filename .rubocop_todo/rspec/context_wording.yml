@@ -3074,7 +3074,6 @@ RSpec/ContextWording:
     - 'spec/support/shared_contexts/lib/gitlab/sidekiq_logging/structured_logger_shared_context.rb'
     - 'spec/support/shared_contexts/lib/gitlab/sidekiq_middleware/server_metrics_shared_context.rb'
     - 'spec/support/shared_contexts/mailers/notify_shared_context.rb'
-    - 'spec/support/shared_contexts/markdown_golden_master_shared_examples.rb'
     - 'spec/support/shared_contexts/merge_request_create_shared_context.rb'
     - 'spec/support/shared_contexts/merge_request_edit_shared_context.rb'
     - 'spec/support/shared_contexts/merge_requests_allowing_collaboration_shared_context.rb'

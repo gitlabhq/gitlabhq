@@ -292,7 +292,6 @@ Rails/Pluck:
     - 'spec/support/helpers/api_helpers.rb'
     - 'spec/support/helpers/graphql_helpers.rb'
     - 'spec/support/matchers/background_migrations_matchers.rb'
-    - 'spec/support/shared_contexts/markdown_golden_master_shared_examples.rb'
     - 'spec/support/shared_examples/graphql/mutation_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/container_repositories_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/custom_attributes_shared_examples.rb'

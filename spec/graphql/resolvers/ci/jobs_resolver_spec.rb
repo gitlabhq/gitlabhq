@@ -59,5 +59,18 @@ RSpec.describe Resolvers::Ci::JobsResolver do
         )
       end
     end
+
+    context 'when a job is manual' do
+      before_all do
+        create(:ci_build, name: 'Manual job', pipeline: pipeline, when: 'manual')
+      end
+
+      it "returns jobs with when set to 'manual'" do
+        jobs = resolve(described_class, obj: pipeline, arg_style: :internal, args: { when_executed: ['manual'] })
+        expect(jobs).to contain_exactly(
+          have_attributes(name: 'Manual job')
+        )
+      end
+    end
   end
 end

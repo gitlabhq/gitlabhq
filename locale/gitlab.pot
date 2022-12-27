@@ -22214,7 +22214,16 @@ msgstr ""
 msgid "IntegrationEvents|A confidential issue is created, updated, or closed"
 msgstr ""
 
+msgid "IntegrationEvents|A deployment is started or finished"
+msgstr ""
+
 msgid "IntegrationEvents|A merge request is created, updated, or merged"
+msgstr ""
+
+msgid "IntegrationEvents|A new, unique alert is recorded"
+msgstr ""
+
+msgid "IntegrationEvents|A new, unique, vulnerability is recorded. (Note: This feature requires an Ultimate plan)"
 msgstr ""
 
 msgid "IntegrationEvents|A pipeline status changes"
@@ -29514,12 +29523,6 @@ msgstr ""
 msgid "PackageRegistry|Helm"
 msgstr ""
 
-msgid "PackageRegistry|Help us learn about your registry migration needs"
-msgstr ""
-
-msgid "PackageRegistry|If you are interested in migrating packages from your private registry to the GitLab Package Registry, take our survey and tell us more about your needs."
-msgstr ""
-
 msgid "PackageRegistry|If you haven't already done so, you will need to add the below to your %{codeStart}.pypirc%{codeEnd} file."
 msgstr ""
 
@@ -29676,9 +29679,6 @@ msgid "PackageRegistry|Sorry, your filter produced no results"
 msgstr ""
 
 msgid "PackageRegistry|Source project located at %{link}"
-msgstr ""
-
-msgid "PackageRegistry|Take survey"
 msgstr ""
 
 msgid "PackageRegistry|Target SHA: %{sha}"

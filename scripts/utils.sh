@@ -132,9 +132,9 @@ function fail_on_warnings() {
   then
     echoerr "There were warnings:"
     echoerr "======================== Filtered warnings ====================================="
-    echo "$warnings"
+    echo "$warnings" >&2
     echoerr "======================= Unfiltered warnings ===================================="
-    cat "$warning_file"
+    cat "$warning_file" >&2
     echoerr "================================================================================"
     rm -f "$warning_file"
     return 1

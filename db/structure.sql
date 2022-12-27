@@ -29929,6 +29929,8 @@ CREATE UNIQUE INDEX index_members_on_invite_token ON members USING btree (invite
 
 CREATE INDEX index_members_on_member_namespace_id ON members USING btree (member_namespace_id);
 
+CREATE INDEX index_members_on_member_namespace_id_compound ON members USING btree (member_namespace_id, type, requested_at, id);
+
 CREATE INDEX index_members_on_member_role_id ON members USING btree (member_role_id);
 
 CREATE INDEX index_members_on_requested_at ON members USING btree (requested_at);

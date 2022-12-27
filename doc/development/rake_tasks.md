@@ -485,3 +485,26 @@ bundle exec rake gems:error_tracking_open_api:generate
 # Commit the changes
 git commit -m 'Update ErrorTrackingOpenAPI from OpenAPI definition' vendor/gems/error_tracking_open_api
 ```
+
+## Update banned SSH keys
+
+You can add [banned SSH keys](../security/ssh_keys_restrictions.md#block-banned-or-compromised-keys)
+from any Git repository by using the `gitlab:security:update_banned_ssh_keys` Rake task:
+
+1. Find a public remote Git repository containing SSH public keys.
+   The public key files must have the `.pub` file extension.
+1. Make sure that `/tmp/` directory has enough space to store the remote Git repository.
+1. To add the SSH keys to your banned-key list, run this command, replacing
+   `GIT_URL` and `OUTPUT_FILE` with appropriate values:
+
+   ```shell
+   # @param git_url - Remote Git URL.
+   # @param output_file - Update keys to an output file. Default is config/security/banned_ssh_keys.yml.
+
+   bundle exec rake "gitlab:security:update_banned_ssh_keys[GIT_URL, OUTPUT_FILE]"
+   ```
+
+This task clones the remote repository, recursively walks the file system looking for files
+ending in `.pub`, parses those files as SSH public keys, and then adds the public key fingerprints
+to `output_file`. The contents of `config/security/banned_ssh_keys.yml` is read by GitLab and kept
+in memory. It is not recommended to increase the size of this file beyond 1 megabyte in size.

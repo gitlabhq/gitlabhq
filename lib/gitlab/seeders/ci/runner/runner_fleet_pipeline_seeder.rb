@@ -29,7 +29,9 @@ module Gitlab
           # @param [Array<Hash>] projects_to_runners list of project IDs to respective runner IDs
           def initialize(logger = Gitlab::AppLogger, projects_to_runners:, job_count:)
             @logger = logger
-            @projects_to_runners = projects_to_runners
+            @projects_to_runners = projects_to_runners.map do |v|
+              { project_id: v[:project_id], runners: ::Ci::Runner.id_in(v[:runner_ids]).to_a }
+            end
             @job_count = job_count || DEFAULT_JOB_COUNT
           end
 
@@ -70,7 +72,7 @@ module Gitlab
             )
           end
 
-          def create_pipelines(remaining_job_count, project_id:, runner_ids:, total_jobs:, pipeline_job_count:)
+          def create_pipelines(remaining_job_count, project_id:, runners:, total_jobs:, pipeline_job_count:)
             pipeline_job_count = remaining_job_count if pipeline_job_count > remaining_job_count
             return 0 if pipeline_job_count == 0
 
@@ -80,7 +82,7 @@ module Gitlab
               remaining_job_count -= create_pipeline(
                 job_count: pipeline_job_count,
                 project_id: project_id,
-                runner_ids: runner_ids,
+                runners: runners,
                 status: random_pipeline_status
               )
             end
@@ -88,11 +90,11 @@ module Gitlab
             remaining_job_count
           end
 
-          def create_pipeline(job_count:, runner_ids:, project_id:, status: 'success', **attrs)
+          def create_pipeline(job_count:, runners:, project_id:, status: 'success', **attrs)
             logger.info(message: 'Creating pipeline with builds on project',
                         status: status, job_count: job_count, project_id: project_id, **attrs)
 
-            raise ArgumentError('runner_ids') unless runner_ids
+            raise ArgumentError('runners') unless runners
             raise ArgumentError('project_id') unless project_id
 
             sha = '00000000'
@@ -125,14 +127,14 @@ module Gitlab
 
             if created_at.present?
               (1..job_count).each do |index|
-                create_build(pipeline, runner_ids.sample, job_status(pipeline.status, index, job_count), index)
+                create_build(pipeline, runners.sample, job_status(pipeline.status, index, job_count), index)
               end
             end
 
             job_count
           end
 
-          def create_build(pipeline, runner_id, job_status, index)
+          def create_build(pipeline, runner, job_status, index)
             started_at = pipeline.started_at
             finished_at = pipeline.finished_at
 
@@ -151,14 +153,18 @@ module Gitlab
               job_finished_at = job_started_at + Random.rand(1..PIPELINE_FINISH_RANGE_MAX_IN_MINUTES).minutes
             end
 
+            # Do not use the first 2 runner tags
+            tags = runner.tags.offset(2).sample(Random.rand(1..5)) # rubocop: disable CodeReuse/ActiveRecord
+
             build_attrs = {
               name: "Fake job #{index}",
               scheduling_type: 'dag',
               ref: 'main',
               status: job_status,
               pipeline_id: pipeline.id,
-              runner_id: runner_id,
+              runner_id: runner.id,
               project_id: pipeline.project_id,
+              tag_list: tags,
               created_at: job_created_at,
               queued_at: job_created_at,
               started_at: job_started_at,

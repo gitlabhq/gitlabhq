@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 NULL_LOGGER = Gitlab::JsonLogger.new('/dev/null')
+TAG_LIST = Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder::TAG_LIST.to_set
 
 RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder, feature_category: :runner_fleet do
   subject(:seeder) do
@@ -10,7 +11,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder, feature
   end
 
   def runner_ids_for_project(runner_count, project)
-    create_list(:ci_runner, runner_count, :project, projects: [project]).map(&:id)
+    create_list(:ci_runner, runner_count, :project, projects: [project], tag_list: TAG_LIST.to_a.sample(5)).map(&:id)
   end
 
   let_it_be(:projects) { create_list(:project, 4) }
@@ -47,6 +48,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder, feature
       it 'creates expected jobs', :aggregate_failures do
         expect { seeder.seed }.to change { Ci::Build.count }.by(2)
           .and change { Ci::Pipeline.count }.by(2)
+        expect(Ci::Build.last(2).map(&:tag_list).map(&:to_set)).to all satisfy { |r| r.subset?(TAG_LIST) }
       end
     end
   end

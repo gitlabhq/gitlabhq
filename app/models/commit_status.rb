@@ -71,6 +71,7 @@ class CommitStatus < Ci::ApplicationRecord
   scope :scheduled_at_before, ->(date) {
     where('ci_builds.scheduled_at IS NOT NULL AND ci_builds.scheduled_at < ?', date)
   }
+  scope :with_when_executed, ->(when_executed) { where(when: when_executed) }
 
   # The scope applies `pluck` to split the queries. Use with care.
   scope :for_project_paths, -> (paths) do

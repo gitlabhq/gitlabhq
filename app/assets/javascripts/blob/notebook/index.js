@@ -1,13 +1,11 @@
 import Vue from 'vue';
 import NotebookViewer from './notebook_viewer.vue';
 
-export default () => {
-  const el = document.getElementById('js-notebook-viewer');
-
+export default ({ el = document.getElementById('js-notebook-viewer'), relativeRawPath }) => {
   return new Vue({
     el,
     provide: {
-      relativeRawPath: el.dataset.relativeRawPath,
+      relativeRawPath: relativeRawPath || el.dataset.relativeRawPath,
     },
     render(createElement) {
       return createElement(NotebookViewer, {

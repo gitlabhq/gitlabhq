@@ -184,9 +184,6 @@ export const PACKAGE_TYPES = [
   s__('PackageRegistry|Helm'),
 ];
 
-export const HIDE_PACKAGE_MIGRATION_SURVEY_COOKIE = 'hide_package_registry_migration_survey';
-export const SURVEY_LINK = 'https://gitlab.fra1.qualtrics.com/jfe/form/SV_cHomH9FPzOaiDTU';
-
 // links
 
 export const EMPTY_LIST_HELP_URL = helpPagePath('user/packages/package_registry/index');
