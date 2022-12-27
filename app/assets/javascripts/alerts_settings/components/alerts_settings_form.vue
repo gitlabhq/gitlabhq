@@ -503,6 +503,7 @@ export default {
               v-model="integrationForm.apiUrl"
               type="text"
               :placeholder="$options.placeholders.prometheus"
+              data-qa-selector="prometheus_url_field"
               @input="validateApiUrl"
             />
             <span class="gl-text-gray-400">

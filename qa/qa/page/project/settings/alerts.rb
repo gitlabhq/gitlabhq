@@ -23,6 +23,7 @@ module QA
             element :save_and_create_alert_button
             element :test_payload_field
             element :send_test_alert_button
+            element :prometheus_url_field
           end
 
           def enable_incident_for_alert
@@ -59,8 +60,20 @@ module QA
             click_element(:integration_name_field)
           end
 
+          def select_prometheus
+            click_element(:integration_type_dropdown)
+            find("option[value='PROMETHEUS']").click
+
+            # Click outside of the list to close it
+            click_element(:prometheus_url_field)
+          end
+
           def enter_integration_name(name)
             fill_element(:integration_name_field, name)
+          end
+
+          def fill_in_prometheus_url(url = Runtime::Scenario.gitlab_address)
+            fill_element(:prometheus_url_field, url)
           end
 
           def activate_integration

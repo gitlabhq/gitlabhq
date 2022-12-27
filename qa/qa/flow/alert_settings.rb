@@ -22,6 +22,22 @@ module QA
         end
       end
 
+      def setup_prometheus_and_send_alert(payload: nil)
+        payload ||= { title: random_word, description: random_word }
+        Page::Project::Menu.perform(&:go_to_monitor_settings)
+        Page::Project::Settings::Monitor.perform do |setting|
+          setting.expand_alerts do |alert|
+            alert.add_new_integration
+            alert.select_prometheus
+            alert.activate_integration
+            alert.fill_in_prometheus_url
+            alert.save_and_create_alert
+            alert.fill_in_test_payload(payload.to_json)
+            alert.send_test_alert
+          end
+        end
+      end
+
       private
 
       def random_word
