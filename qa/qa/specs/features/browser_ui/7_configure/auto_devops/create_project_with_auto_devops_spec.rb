@@ -2,7 +2,6 @@
 
 module QA
   RSpec.describe 'Configure',
-                 quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/381454', type: :flaky },
                  only: { subdomain: %i[staging staging-canary] }, product_group: :configure do
     describe 'Auto DevOps with a Kubernetes Agent' do
       let!(:app_project) do

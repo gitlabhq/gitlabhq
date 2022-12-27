@@ -124,7 +124,7 @@ function fail_on_warnings() {
   local warnings
   # Filter out allowed warnings from stderr.
   # Turn grep errors into warnings so we fail later.
-  warnings=$(grep --invert-match --file "$allowed_warning_file" "$warning_file" 2>&1 || true)
+  warnings=$(grep --invert-match --extended-regexp --file "$allowed_warning_file" "$warning_file" 2>&1 || true)
 
   rm -f "$allowed_warning_file"
 

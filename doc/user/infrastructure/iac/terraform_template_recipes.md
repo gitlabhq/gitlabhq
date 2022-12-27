@@ -181,3 +181,51 @@ deploy:
 ```
 
 For an example repository, see the [GitLab Terraform template usage project](https://gitlab.com/gitlab-org/configure/examples/terraform-template-usage).
+
+## Deploy Terraform to multiple environments
+
+You can run pipelines in multiple environments, each with a unique Terraform state.
+
+```yaml
+stages:
+  - validate
+  - test
+  - build
+  - deploy
+
+include:
+  - template: Terraform/Base.latest.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.latest.gitlab-ci.yml
+
+variables:
+  # x prevents TF_STATE_NAME from beeing empty for non environment jobs like validate
+  # wait for https://gitlab.com/groups/gitlab-org/-/epics/7437 to use variable defaults
+  TF_STATE_NAME: x${CI_ENVIRONMENT_NAME}
+  TF_CLI_ARGS_plan: "-var-file=vars/${CI_ENVIRONMENT_NAME}.tfvars"
+
+fmt:
+  extends: .terraform:fmt
+validate:
+  extends: .terraform:validate
+
+plan dev:
+  extends: .terraform:build
+  environment:
+    name: dev
+plan prod:
+  extends: .terraform:build
+  environment:
+    name: prod
+
+apply dev:
+  extends: .terraform:deploy
+  environment:
+    name: dev
+
+apply prod:
+  extends: .terraform:deploy
+  environment:
+    name: prod
+```
+
+This configuration is modified from the [base GitLab template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml).

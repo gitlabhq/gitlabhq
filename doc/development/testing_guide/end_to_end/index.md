@@ -207,11 +207,10 @@ For additional test results visibility, tests that run on pipelines generate
 and host [Allure](https://github.com/allure-framework/allure2) test reports.
 
 The `QA` framework is using the [Allure RSpec](https://github.com/allure-framework/allure-ruby/blob/master/allure-rspec/README.md)
-gem to generate source files for the `Allure` test report. An additional job
-in the pipeline:
+gem to generate source files for the `Allure` test report. An additional job in the pipeline:
 
 - Fetches these source files from all test jobs.
-- Generates and uploads the report to the `GCS` bucket `gitlab-qa-allure-report` under the project `gitlab-qa-resources`.
+- Generates and uploads the report to the `S3` bucket `gitlab-qa-allure-report` located in `AWS` group project `eng-quality-ops-ci-cd-shared-infra`.
 
 A common CI template for report uploading is stored in
 [`allure-report.yml`](https://gitlab.com/gitlab-org/quality/pipeline-common/-/blob/master/ci/allure-report.yml).
@@ -230,13 +229,13 @@ a link to the current test report.
 
 Each type of scheduled pipeline generates a static link for the latest test report according to its stage:
 
-- [`master`](https://storage.googleapis.com/gitlab-qa-allure-reports/e2e-package-and-test/master/index.html)
-- [`staging-full`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-full/master/index.html)
-- [`staging-sanity`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-sanity/master/index.html)
-- [`staging-sanity-no-admin`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-sanity-no-admin/master/index.html)
-- [`canary-sanity`](https://storage.googleapis.com/gitlab-qa-allure-reports/canary-sanity/master/index.html)
-- [`production`](https://storage.googleapis.com/gitlab-qa-allure-reports/production-full/master/index.html)
-- [`production-sanity`](https://storage.googleapis.com/gitlab-qa-allure-reports/production-sanity/master/index.html)
+- [`master`](http://gitlab-qa-allure-reports.s3.amazonaws.com/e2e-package-and-test/master/index.html)
+- [`staging-full`](http://gitlab-qa-allure-reports.s3.amazonaws.com/staging-full/master/index.html)
+- [`staging-sanity`](http://gitlab-qa-allure-reports.s3.amazonaws.com/staging-sanity/master/index.html)
+- [`staging-sanity-no-admin`](http://gitlab-qa-allure-reports.s3.amazonaws.com/staging-sanity-no-admin/master/index.html)
+- [`canary-sanity`](http://gitlab-qa-allure-reports.s3.amazonaws.com/canary-sanity/master/index.html)
+- [`production`](http://gitlab-qa-allure-reports.s3.amazonaws.com/production-full/master/index.html)
+- [`production-sanity`](http://gitlab-qa-allure-reports.s3.amazonaws.com/production-sanity/master/index.html)
 
 ## How do you run the tests?
 

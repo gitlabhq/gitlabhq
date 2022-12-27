@@ -1,11 +1,15 @@
 # List of ignored warnings used by `fail_on_warnings` in `scripts/utils.sh`.
-# Each line represents a match used by `grep --invert-match --file`.
+# Each line is a regexp and represents a match used by
+# `grep --invert-match --extended-regexp --file`.
 # Comments and empty lines are ignored.
 
 # https://github.com/browserslist/browserslist/blob/d0ec62eb48c41c218478cd3ac28684df051cc865/node.js#L329
 # warns if caniuse-lite package is older than 6 months. Ignore this
 # warning message so that GitLab backports don't fail.
-Browserslist: caniuse-lite is outdated. Please run next command `yarn upgrade`
+Browserslist: caniuse-lite is outdated\. Please run next command `yarn upgrade`
 
 # https://github.com/mime-types/mime-types-data/pull/50#issuecomment-1060908930
-Type application/netcdf is already registered as a variant of application/netcdf.
+Type application/netcdf is already registered as a variant of application/netcdf\.
+
+# This warning is emitted by scripts/static-analysis.
+\*\*\*\* .+ had the following warning\(s\):

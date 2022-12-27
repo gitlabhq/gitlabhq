@@ -1,6 +1,6 @@
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 1.7.0
+    ref: 1.14.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
