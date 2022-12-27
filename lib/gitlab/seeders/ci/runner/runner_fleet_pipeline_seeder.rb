@@ -153,7 +153,8 @@ module Gitlab
               job_finished_at = job_started_at + Random.rand(1..PIPELINE_FINISH_RANGE_MAX_IN_MINUTES).minutes
             end
 
-            # Do not use the first 2 runner tags
+            # Do not use the first 2 runner tags ('runner-fleet', "#{registration_prefix}runner").
+            #  See Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder#additional_runner_args
             tags = runner.tags.offset(2).sample(Random.rand(1..5)) # rubocop: disable CodeReuse/ActiveRecord
 
             build_attrs = {

@@ -14,10 +14,7 @@ RSpec.describe Members::UpdateService do
   let(:members) { source.members_and_requesters.where(user_id: member_users).to_a }
   let(:update_service) { described_class.new(current_user, params) }
   let(:params) { { access_level: access_level } }
-  let(:updated_members) do
-    result = subject
-    Array.wrap(result[:members] || result[:member])
-  end
+  let(:updated_members) { subject[:members] }
 
   before do
     member_users.first.tap do |member_user|
@@ -255,40 +252,6 @@ RSpec.describe Members::UpdateService do
     end
   end
 
-  context 'when :bulk_update_membership_roles feature flag is disabled' do
-    let(:member) { source.members_and_requesters.find_by!(user_id: member_user1.id) }
-    let(:members) { [member] }
-
-    subject { update_service.execute(member, permission: permission) }
-
-    shared_examples 'a service returning an error' do
-      before do
-        allow(member).to receive(:save) do
-          member.errors.add(:user_id)
-          member.errors.add(:access_level)
-        end
-          .and_return(false)
-      end
-
-      it_behaves_like 'returns error status when params are invalid'
-
-      it 'returns the error' do
-        response = subject
-
-        expect(response[:status]).to eq(:error)
-        expect(response[:message]).to eq('User is invalid and Access level is invalid')
-      end
-    end
-
-    before do
-      stub_feature_flags(bulk_update_membership_roles: false)
-    end
-
-    it_behaves_like 'current user cannot update the given members'
-    it_behaves_like 'updating a project'
-    it_behaves_like 'updating a group'
-  end
-
   subject { update_service.execute(members, permission: permission) }
 
   shared_examples 'a service returning an error' do
@@ -326,15 +289,14 @@ RSpec.describe Members::UpdateService do
   it_behaves_like 'updating a group'
 
   context 'with a single member' do
-    let(:member) { create(:group_member, group: group) }
-    let(:members) { member }
+    let(:members) { create(:group_member, group: group) }
 
     before do
       group.add_owner(current_user)
     end
 
     it 'returns the correct response' do
-      expect(subject[:member]).to eq(member)
+      expect(subject[:members]).to contain_exactly(members)
     end
   end
 

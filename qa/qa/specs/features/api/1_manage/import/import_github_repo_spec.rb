@@ -30,15 +30,18 @@ module QA
 
         def verify_status_data
           stats = imported_project.project_import_status.dig(:stats, :imported)
-          expect(stats).to include(
+          expect(stats).to eq(
             issue: 1,
+            issue_event: 16,
+            pull_request: 1,
+            pull_request_review: 2,
+            pull_request_review_request: 1,
+            diff_note: 1,
             label: 9,
             milestone: 1,
             note: 3,
-            pull_request: 1,
-            pull_request_review: 1,
-            diff_note: 1,
-            release: 1
+            release: 1,
+            protected_branch: 2
           )
         end
 
@@ -154,7 +157,10 @@ module QA
             [
               "*Created by: gitlab-qa-github*\n\n**Review:** Commented\n\nGood but needs some improvement",
               "*Created by: gitlab-qa-github*\n\n```suggestion:-0+0\nProject for GitHub import test to GitLab\r\n```",
-              "*Created by: gitlab-qa-github*\n\nSome test PR comment"
+              "*Created by: gitlab-qa-github*\n\nSome test PR comment",
+              "*Created by: gitlab-qa*\n\n**Review:** Approved",
+              "assigned to @#{user.username}",
+              "requested review from @#{user.username}"
             ]
           )
           expect(events).to match_array(
@@ -163,6 +169,19 @@ module QA
               { name: "add_milestone", label: "0.0.1" }
             ]
           )
+          # TODO: reenable once https://gitlab.com/gitlab-org/gitlab/-/issues/386714 fixed
+          # currently this doesn't work as expected if reviewer is not matched by public email
+          # event for assigning approver is created with reviewer being user doing import but mr actually doesn't
+          # contain reviewers or the approved state
+          #
+          # reviews = merge_request.reviews.map do |review|
+          #   {
+          #     id: review.dig(:user, :id),
+          #     username: review.dig(:user, :username),
+          #     state: review[:state]
+          #   }
+          # end
+          # expect(reviews).to eq([{ id: user.id, username: user.username, state: "approved" }])
         end
 
         def verify_release_import
@@ -183,7 +202,7 @@ module QA
         # @param [QA::Resource::Issuable] issuable
         # @return [Array]
         def fetch_events_and_comments(issuable)
-          comments = issuable.comments.map { |comment| comment[:body] }
+          comments = issuable.comments.pluck(:body)
           events = [
             *issuable.label_events.map { |e| { name: "#{e[:action]}_label", label: e.dig(:label, :name) } },
             *issuable.state_events.map { |e| { name: e[:state] } },

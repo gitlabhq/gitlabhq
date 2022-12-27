@@ -86,12 +86,6 @@ module QA
             raise
           end.not_to raise_error
         end
-
-        after do
-          parent_group_user.remove_via_api!
-          sub_group_project.remove_via_api!
-          sub_group.remove_via_api!
-        end
       end
 
       context 'when added to sub-group' do
@@ -166,12 +160,6 @@ module QA
             end
           end.to raise_error(Resource::ApiFabricator::ResourceFabricationFailedError,
             /403 Forbidden - You are not allowed to push into this branch/)
-        end
-
-        after do
-          sub_group_user.remove_via_api!
-          parent_group_project.remove_via_api!
-          sub_group.remove_via_api!
         end
       end
     end

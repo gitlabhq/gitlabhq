@@ -10,7 +10,7 @@ module Repositories
   class HousekeepingService < BaseService
     # Timeout set to 24h
     LEASE_TIMEOUT = 86400
-    PACK_REFS_PERIOD = 6
+    GC_PERIOD = 200
 
     class LeaseTaken < StandardError
       def to_s
@@ -74,21 +74,13 @@ module Repositories
 
       if pushes_since_gc % gc_period == 0
         :gc
-      elsif pushes_since_gc % full_repack_period == 0
-        :full_repack
-      elsif pushes_since_gc % repack_period == 0
-        :incremental_repack
       else
-        :pack_refs
+        :incremental_repack
       end
     end
 
     def period_match?
-      if Feature.enabled?(:optimized_housekeeping)
-        pushes_since_gc % repack_period == 0
-      else
-        [gc_period, full_repack_period, repack_period, PACK_REFS_PERIOD].any? { |period| pushes_since_gc % period == 0 }
-      end
+      [gc_period, repack_period].any? { |period| pushes_since_gc % period == 0 }
     end
 
     def housekeeping_enabled?
@@ -96,11 +88,7 @@ module Repositories
     end
 
     def gc_period
-      Gitlab::CurrentSettings.housekeeping_gc_period
-    end
-
-    def full_repack_period
-      Gitlab::CurrentSettings.housekeeping_full_repack_period
+      GC_PERIOD
     end
 
     def repack_period

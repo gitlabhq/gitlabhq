@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-class ResourceLabelEventPolicy < BasePolicy
+class ResourceLabelEventPolicy < ResourceEventPolicy
   condition(:can_read_label) { @subject.label_id.nil? || can?(:read_label, @subject.label) }
-  condition(:can_read_issuable) { can?(:"read_#{@subject.issuable.to_ability_name}", @subject.issuable) }
 
   rule { can_read_label }.policy do
     enable :read_label
@@ -10,5 +9,6 @@ class ResourceLabelEventPolicy < BasePolicy
 
   rule { can_read_label & can_read_issuable }.policy do
     enable :read_resource_label_event
+    enable :read_note
   end
 end

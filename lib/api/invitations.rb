@@ -90,7 +90,7 @@ module API
             .new(current_user, update_params)
             .execute(invite)
 
-          updated_member = result[:member]
+          updated_member = result[:members].first
 
           if result[:status] == :success
             present_members updated_member

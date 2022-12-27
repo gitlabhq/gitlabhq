@@ -51,12 +51,6 @@ module QA
             expect(file_form).to have_element(:commit_button)
           end
         end
-
-        after do
-          parent_group_user.remove_via_api!
-          sub_group_project.remove_via_api!
-          sub_group.remove_via_api!
-        end
       end
 
       context 'when added to sub-group' do
@@ -96,12 +90,6 @@ module QA
           Page::File::Show.perform(&:click_edit)
 
           expect(page).to have_text("You can’t edit files directly in this project.")
-        end
-
-        after do
-          sub_group_user.remove_via_api!
-          parent_group_project.remove_via_api!
-          sub_group.remove_via_api!
         end
       end
     end

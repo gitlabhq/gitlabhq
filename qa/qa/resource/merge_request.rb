@@ -6,27 +6,27 @@ module QA
       include ApprovalConfiguration
 
       attr_accessor :approval_rules,
-                    :source_branch,
-                    :target_new_branch,
-                    :update_existing_file,
-                    :assignee,
-                    :milestone,
-                    :labels,
-                    :file_name,
-                    :file_content,
-                    :reviewer_ids
+        :source_branch,
+        :target_new_branch,
+        :update_existing_file,
+        :assignee,
+        :milestone,
+        :labels,
+        :file_name,
+        :file_content,
+        :reviewer_ids
 
       attr_writer :no_preparation,
-                  :wait_for_merge,
-                  :template
+        :wait_for_merge,
+        :template
 
       attributes :iid,
-                 :title,
-                 :description,
-                 :merge_when_pipeline_succeeds,
-                 :merge_status,
-                 :state,
-                 :reviewers
+        :title,
+        :description,
+        :merge_when_pipeline_succeeds,
+        :merge_status,
+        :state,
+        :reviewers
 
       attribute :project do
         Project.fabricate_via_api! do |resource|
@@ -141,6 +141,13 @@ module QA
           title: title,
           reviewer_ids: reviewer_ids
         }
+      end
+
+      # Get merge request reviews
+      #
+      # @return [Array<Hash>]
+      def reviews
+        parse_body(api_get_from(api_reviewers_path))
       end
 
       def merge_via_api!

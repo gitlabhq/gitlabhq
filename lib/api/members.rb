@@ -151,7 +151,7 @@ module API
             .new(current_user, declared_params(include_missing: false))
             .execute(member)
 
-          updated_member = result[:member]
+          updated_member = result[:members].first
 
           if result[:status] == :success
             present_members updated_member

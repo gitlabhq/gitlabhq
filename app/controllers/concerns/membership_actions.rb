@@ -11,7 +11,7 @@ module MembershipActions
       .new(current_user, update_params)
       .execute(member)
 
-    member = result[:member]
+    member = result[:members].first
 
     member_data = if member.expires?
                     {

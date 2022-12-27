@@ -18416,9 +18416,6 @@ msgstr ""
 msgid "Git"
 msgstr ""
 
-msgid "Git GC period"
-msgstr ""
-
 msgid "Git LFS Rate Limits"
 msgstr ""
 
@@ -28443,16 +28440,7 @@ msgstr ""
 msgid "Number of Elasticsearch shards and replicas per index:"
 msgstr ""
 
-msgid "Number of Git pushes after which %{code_start}git gc%{code_end} is run."
-msgstr ""
-
 msgid "Number of Git pushes after which Gitaly is asked to optimize a repository."
-msgstr ""
-
-msgid "Number of Git pushes after which a full %{code_start}git repack%{code_end} is run."
-msgstr ""
-
-msgid "Number of Git pushes after which an incremental %{code_start}git repack%{code_end} is run."
 msgstr ""
 
 msgid "Number of LOCs per commit"

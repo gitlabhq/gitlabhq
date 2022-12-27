@@ -1,8 +1,0 @@
----
-name: optimized_housekeeping
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81465
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353607
-milestone: '14.9'
-type: development
-group: group::source code
-default_enabled: true

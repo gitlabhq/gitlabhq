@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::GitGarbageCollectWorker do
+RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
 
   it_behaves_like 'can collect git garbage' do
@@ -24,8 +24,7 @@ RSpec.describe Projects::GitGarbageCollectWorker do
     end
 
     context 'when the repository has joined a pool' do
-      let!(:pool) { create(:pool_repository, :ready) }
-      let(:project) { pool.source_project }
+      let_it_be(:pool) { create(:pool_repository, :ready, source_project: project) }
 
       it 'ensures the repositories are linked' do
         expect(project.pool_repository).to receive(:link_repository).once
