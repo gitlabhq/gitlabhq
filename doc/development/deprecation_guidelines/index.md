@@ -46,8 +46,6 @@ Most features should be deprecated and then removed.
   [semantic versioning policy](../../policy/maintenance.md).
 - Begins after removal date has passed.
 
-![Deprecation, End of Support, Removal process](img/deprecation_removal_process.png)
-
 **Breaking change**:
 
 A "breaking change" is any change that requires users to make a corresponding change to their code, settings, or workflow. "Users" might be humans, API clients, or even code classes that "use" another class. Examples of breaking changes include:
@@ -57,6 +55,8 @@ A "breaking change" is any change that requires users to make a corresponding ch
 - Removing a public method from a code class.
 
 A breaking change can be considered major if it affects many users, or represents a significant change in behavior.
+
+![Deprecation, End of Support, Removal process](img/deprecation_removal_process.png)
 
 ## When can a feature be deprecated?
 

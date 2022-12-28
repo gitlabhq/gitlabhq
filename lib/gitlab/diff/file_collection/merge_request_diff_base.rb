@@ -23,7 +23,9 @@ module Gitlab
           strong_memoize(:diff_files) do
             diff_files = super
 
-            diff_files.each { |diff_file| highlight_cache.decorate(diff_file) }
+            Gitlab::Metrics.measure(:diffs_highlight_cache_decorate) do
+              diff_files.each { |diff_file| highlight_cache.decorate(diff_file) }
+            end
 
             diff_files
           end

@@ -76,13 +76,12 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
       expect(response).to render_template('projects/ml/experiments/show')
     end
 
-    # MR removing this xit https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104166
-    xit 'does not perform N+1 sql queries' do
-      control_count = ActiveRecord::QueryRecorder.new { show_experiment }
+    it 'does not perform N+1 sql queries' do
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { show_experiment }
 
       create_list(:ml_candidates, 2, :with_metrics_and_params, experiment: experiment)
 
-      expect { show_experiment }.not_to exceed_all_query_limit(control_count).with_threshold(threshold)
+      expect { show_experiment }.not_to exceed_all_query_limit(control_count)
     end
 
     it_behaves_like '404 if feature flag disabled'

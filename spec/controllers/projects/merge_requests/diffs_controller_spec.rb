@@ -430,6 +430,16 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      it 'measures certain parts of the request' do
+        allow(Gitlab::Metrics).to receive(:measure).and_call_original
+        expect(Gitlab::Metrics).to receive(:measure).with(:diffs_unfoldable_positions).and_call_original
+        expect(Gitlab::Metrics).to receive(:measure).with(:diffs_unfold).and_call_original
+        expect(Gitlab::Metrics).to receive(:measure).with(:diffs_write_cache).and_call_original
+        expect(Gitlab::Metrics).to receive(:measure).with(:diffs_render).and_call_original
+
+        subject
+      end
+
       it 'tracks mr_diffs event' do
         expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
           .to receive(:track_mr_diffs_action)

@@ -19,6 +19,7 @@ module Projects
         return redirect_to project_ml_experiments_path(@project) unless @experiment.present?
 
         @candidates = @experiment.candidates&.including_metrics_and_params
+        @candidates.each(&:artifact_lazy)
       end
 
       private

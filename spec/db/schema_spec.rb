@@ -30,7 +30,7 @@ RSpec.describe 'Database schema' do
     award_emoji: %w[awardable_id user_id],
     aws_roles: %w[role_external_id],
     boards: %w[milestone_id iteration_id],
-    chat_names: %w[chat_id team_id user_id],
+    chat_names: %w[chat_id team_id user_id integration_id],
     chat_teams: %w[team_id],
     ci_build_needs: %w[partition_id],
     ci_build_pending_states: %w[partition_id],

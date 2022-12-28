@@ -153,6 +153,14 @@ The following metrics are available:
 | `cached_object_operations_total`                                      | Counter     | 15.3    | Total number of objects cached for specific web requests                                                                                                      | `controller`, `action`                                    |
 | `redis_hit_miss_operations_total`                                | Counter     | 15.6    | Total number of Redis cache hits and misses                                                                           | `cache_hit`, `caller_id`, `cache_identifier`, `feature_category`, `backing_resource` |
 | `redis_cache_generation_duration_seconds`                        | Histogram   | 15.6    | Time to generate Redis cache                                                                                          | `cache_hit`, `caller_id`, `cache_identifier`, `feature_category`, `backing_resource` |
+| `gitlab_diffs_reorder_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spend on reordering of diff files on diffs batch request | `controller`, `action` |
+| `gitlab_diffs_collection_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on querying merge request diff files on diffs batch request | `controller`, `action` |
+| `gitlab_diffs_comparison_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on getting comparison data on diffs batch request | `controller`, `action` |
+| `gitlab_diffs_unfoldable_positions_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on getting unfoldable note positions on diffs batch request | `controller`, `action` |
+| `gitlab_diffs_unfold_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on unfolding positions on diffs batch request | `controller`, `action` |
+| `gitlab_diffs_write_cache_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on caching highlighted lines and stats on diffs batch request | `controller`, `action` |
+| `gitlab_diffs_highlight_cache_decorate_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on setting highlighted lines from cache on diffs batch request | `controller`, `action` |
+| `gitlab_diffs_render_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on serializing and rendering diffs on diffs batch request | `controller`, `action` |
 
 ## Metrics controlled by a feature flag
 

@@ -92,7 +92,7 @@ module Registrations
     end
 
     # overridden in EE
-    def track_event(category)
+    def track_event(action)
     end
   end
 end

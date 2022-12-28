@@ -45,11 +45,11 @@ module Projects
 
         return unless artifact.present?
 
-        project_package_path(candidate.experiment.project, artifact)
+        project_package_path(candidate.project, artifact)
       end
 
       def link_to_details(candidate)
-        project_ml_candidate_path(candidate.experiment.project, candidate.iid)
+        project_ml_candidate_path(candidate.project, candidate.iid)
       end
 
       def link_to_experiment(candidate)

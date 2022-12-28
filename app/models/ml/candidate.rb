@@ -2,6 +2,8 @@
 
 module Ml
   class Candidate < ApplicationRecord
+    PACKAGE_PREFIX = 'ml_candidate_'
+
     enum status: { running: 0, scheduled: 1, finished: 2, failed: 3, killed: 4 }
 
     validates :iid, :experiment, presence: true
@@ -18,18 +20,29 @@ module Ml
 
     scope :including_metrics_and_params, -> { includes(:latest_metrics, :params) }
 
+    delegate :project_id, :project, to: :experiment
+
     def artifact_root
       "/#{package_name}/#{package_version}/"
     end
 
     def artifact
-      ::Packages::Generic::PackageFinder.new(experiment.project).execute!(package_name, package_version)
-    rescue ActiveRecord::RecordNotFound
-      nil
+      artifact_lazy&.itself
+    end
+
+    def artifact_lazy
+      BatchLoader.for(id).batch do |candidate_ids, loader|
+        Packages::Package
+          .joins("INNER JOIN ml_candidates ON packages_packages.name=(concat('#{PACKAGE_PREFIX}', ml_candidates.id))")
+          .where(ml_candidates: { id: candidate_ids })
+          .find_each do |package|
+            loader.call(package.name.delete_prefix(PACKAGE_PREFIX).to_i, package)
+          end
+      end
     end
 
     def package_name
-      "ml_candidate_#{iid}"
+      "#{PACKAGE_PREFIX}#{id}"
     end
 
     def package_version

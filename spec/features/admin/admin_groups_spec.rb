@@ -204,6 +204,17 @@ RSpec.describe 'Admin Groups', feature_category: :subgroups do
 
       expect(page).to have_content(new_admin_note_text)
     end
+
+    it 'hides removed note' do
+      group = create(:group, :private)
+      group.create_admin_note(note: 'A note by an administrator')
+
+      visit admin_group_edit_path(group)
+      fill_in 'group_admin_note_attributes_note', with: ''
+      click_button 'Save changes'
+
+      expect(page).not_to have_content(s_('Admin|Admin notes'))
+    end
   end
 
   describe 'add user into a group', :js do

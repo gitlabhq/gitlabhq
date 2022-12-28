@@ -36,7 +36,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     diff_options_hash[:paths] = params[:paths] if params[:paths]
 
     diffs = @compare.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options_hash)
-    unfoldable_positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user).unfoldable
+
+    unfoldable_positions = Gitlab::Metrics.measure(:diffs_unfoldable_positions) do
+      @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user).unfoldable
+    end
 
     options = {
       merge_request: @merge_request,
@@ -62,10 +65,17 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     return unless stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
 
-    diffs.unfold_diff_files(unfoldable_positions)
-    diffs.write_cache
+    Gitlab::Metrics.measure(:diffs_unfold) do
+      diffs.unfold_diff_files(unfoldable_positions)
+    end
 
-    render json: PaginatedDiffSerializer.new(current_user: current_user).represent(diffs, options)
+    Gitlab::Metrics.measure(:diffs_write_cache) do
+      diffs.write_cache
+    end
+
+    Gitlab::Metrics.measure(:diffs_render) do
+      render json: PaginatedDiffSerializer.new(current_user: current_user).represent(diffs, options)
+    end
   end
   # rubocop: enable Metrics/AbcSize
 

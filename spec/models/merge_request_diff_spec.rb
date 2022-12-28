@@ -412,7 +412,19 @@ RSpec.describe MergeRequestDiff do
     describe '#diffs_in_batch' do
       let(:diff_options) { {} }
 
+      shared_examples_for 'measuring diffs metrics' do
+        specify do
+          allow(Gitlab::Metrics).to receive(:measure).and_call_original
+          expect(Gitlab::Metrics).to receive(:measure).with(:diffs_reorder).and_call_original
+          expect(Gitlab::Metrics).to receive(:measure).with(:diffs_collection).and_call_original
+
+          diff_with_commits.diffs_in_batch(0, 10, diff_options: diff_options)
+        end
+      end
+
       shared_examples_for 'fetching full diffs' do
+        it_behaves_like 'measuring diffs metrics'
+
         it 'returns diffs from repository comparison' do
           expect_next_instance_of(Compare) do |comparison|
             expect(comparison).to receive(:diffs)
@@ -435,6 +447,13 @@ RSpec.describe MergeRequestDiff do
 
           expect(diffs.pagination_data).to eq(total_pages: nil)
         end
+
+        it 'measures diffs_comparison' do
+          allow(Gitlab::Metrics).to receive(:measure).and_call_original
+          expect(Gitlab::Metrics).to receive(:measure).with(:diffs_comparison).and_call_original
+
+          diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
+        end
       end
 
       context 'when no persisted files available' do
@@ -454,6 +473,8 @@ RSpec.describe MergeRequestDiff do
       end
 
       context 'when persisted files available' do
+        it_behaves_like 'measuring diffs metrics'
+
         it 'returns paginated diffs' do
           diffs = diff_with_commits.diffs_in_batch(0, 10, diff_options: diff_options)
 

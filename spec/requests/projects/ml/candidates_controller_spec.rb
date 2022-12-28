@@ -9,7 +9,6 @@ RSpec.describe Projects::Ml::CandidatesController, feature_category: :mlops do
   let_it_be(:candidate) { create(:ml_candidates, experiment: experiment, user: user) }
 
   let(:ff_value) { true }
-  let(:threshold) { 4 }
   let(:candidate_iid) { candidate.iid }
 
   before do
@@ -40,14 +39,13 @@ RSpec.describe Projects::Ml::CandidatesController, feature_category: :mlops do
       expect(response).to render_template('projects/ml/candidates/show')
     end
 
-    # MR removing this xit https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104166
-    xit 'does not perform N+1 sql queries' do
-      control_count = ActiveRecord::QueryRecorder.new { show_candidate }
+    it 'does not perform N+1 sql queries' do
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { show_candidate }
 
       create_list(:ml_candidate_params, 3, candidate: candidate)
       create_list(:ml_candidate_metrics, 3, candidate: candidate)
 
-      expect { show_candidate }.not_to exceed_all_query_limit(control_count).with_threshold(threshold)
+      expect { show_candidate }.not_to exceed_all_query_limit(control_count)
     end
 
     context 'when candidate does not exist' do

@@ -28664,11 +28664,9 @@ CREATE INDEX index_bulk_import_failures_on_correlation_id_value ON bulk_import_f
 
 CREATE INDEX index_bulk_imports_on_user_id ON bulk_imports USING btree (user_id);
 
-CREATE UNIQUE INDEX index_chat_names_on_integration_id_and_team_id_and_chat_id ON chat_names USING btree (integration_id, team_id, chat_id);
-
 CREATE INDEX index_chat_names_on_team_id_and_chat_id ON chat_names USING btree (team_id, chat_id);
 
-CREATE UNIQUE INDEX index_chat_names_on_user_id_and_integration_id ON chat_names USING btree (user_id, integration_id);
+CREATE INDEX index_chat_names_on_user_id ON chat_names USING btree (user_id);
 
 CREATE UNIQUE INDEX index_chat_teams_on_namespace_id ON chat_teams USING btree (namespace_id);
 
@@ -33629,9 +33627,6 @@ ALTER TABLE ONLY vulnerability_occurrences
 
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT fk_98f3d044fe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY chat_names
-    ADD CONSTRAINT fk_99a1348daf FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY notes
     ADD CONSTRAINT fk_99e097b079 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

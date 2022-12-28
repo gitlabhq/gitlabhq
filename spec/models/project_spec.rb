@@ -7022,8 +7022,8 @@ RSpec.describe Project, factory_default: :keep do
       create_list(:chat_name, 5, integration: integration)
     end
 
-    it 'removes chat names on removal' do
-      expect { subject.destroy! }.to change { ChatName.count }.by(-5)
+    it 'does not remove chat names on removal' do
+      expect { subject.destroy! }.not_to change { ChatName.count }
     end
   end
 

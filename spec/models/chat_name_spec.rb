@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ChatName do
+RSpec.describe ChatName, feature_category: :integrations do
   let_it_be(:chat_name) { create(:chat_name) }
 
   subject { chat_name }
@@ -15,13 +15,12 @@ RSpec.describe ChatName do
   it { is_expected.to validate_presence_of(:team_id) }
   it { is_expected.to validate_presence_of(:chat_id) }
 
-  it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(:integration_id) }
-  it { is_expected.to validate_uniqueness_of(:chat_id).scoped_to(:integration_id, :team_id) }
+  it { is_expected.to validate_uniqueness_of(:chat_id).scoped_to(:team_id) }
 
-  it 'is removed when the project is deleted' do
-    expect { subject.reload.integration.project.delete }.to change { ChatName.count }.by(-1)
+  it 'is not removed when the project is deleted' do
+    expect { subject.reload.integration.project.delete }.not_to change { ChatName.count }
 
-    expect(ChatName.where(id: subject.id)).not_to exist
+    expect(ChatName.where(id: subject.id)).to exist
   end
 
   describe '#update_last_used_at', :clean_gitlab_redis_shared_state do
