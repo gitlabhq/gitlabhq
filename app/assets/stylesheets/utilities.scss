@@ -255,6 +255,12 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   }
 }
 
+.gl-md-mb-3\! {
+  @include gl-media-breakpoint-up(md) {
+    margin-bottom: $gl-spacing-scale-3 !important;
+  }
+}
+
 
 .gl-gap-2 {
   gap: $gl-spacing-scale-2;

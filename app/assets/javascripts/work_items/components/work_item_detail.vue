@@ -623,10 +623,12 @@ export default {
       <work-item-tree
         v-if="workItemType === $options.WORK_ITEM_TYPE_VALUE_OBJECTIVE"
         :work-item-type="workItemType"
+        :parent-work-item-type="workItem.workItemType.name"
         :work-item-id="workItem.id"
         :children="children"
         :can-update="canUpdate"
         :project-path="fullPath"
+        :confidential="workItem.confidential"
         @addWorkItemChild="addChild"
         @removeChild="removeChild"
       />

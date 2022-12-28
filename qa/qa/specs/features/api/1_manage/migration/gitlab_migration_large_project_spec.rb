@@ -15,7 +15,8 @@ module QA
       let!(:gitlab_source_project) { ENV["QA_LARGE_IMPORT_REPO"] || "migration-test-project" }
       let!(:import_wait_duration) { { max_duration: (ENV["QA_LARGE_IMPORT_DURATION"] || 3600).to_i, sleep_interval: 30 } }
 
-      let!(:source_admin_user) { "no-op" }
+      # test uses production as source which doesn't have actual admin user
+      let!(:source_admin_user) { nil }
       let!(:source_admin_api_client) do
         Runtime::API::Client.new(
           source_gitlab_address,
@@ -227,8 +228,8 @@ module QA
         comment_diff = verify_comments(type, actual, expected)
 
         {
-          "missing_#{type}s": (expected.keys - actual.keys).map { |it| expected[it]&.slice(:title, :url) }.compact,
-          "extra_#{type}s": (actual.keys - expected.keys).map { |it| actual[it]&.slice(:title, :url) }.compact,
+          "missing_#{type}s": (expected.keys - actual.keys).filter_map { |it| expected[it]&.slice(:title, :url) },
+          "extra_#{type}s": (actual.keys - expected.keys).filter_map { |it| actual[it]&.slice(:title, :url) },
           "#{type}_comments": comment_diff
         }
       end

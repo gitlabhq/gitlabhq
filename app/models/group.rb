@@ -915,6 +915,10 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_create_from_markdown)
   end
 
+  def usage_quotas_enabled?
+    ::Feature.enabled?(:usage_quotas_for_all_editions, self) && root?
+  end
+
   # Check for enabled features, similar to `Project#feature_available?`
   # NOTE: We still want to keep this after removing `Namespace#feature_available?`.
   override :feature_available?

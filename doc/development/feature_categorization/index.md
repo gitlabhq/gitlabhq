@@ -206,6 +206,6 @@ RSpec.describe Utils, feature_category: :not_owned do
 
 ### Tooling feature category
 
-For Engineering Productivity internal tooling we use `feature_category: tooling`.
+For Engineering Productivity internal tooling we use `feature_category: :tooling`.
 
 For example in [`spec/tooling/danger/specs_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/tooling/danger/specs_spec.rb#L12).

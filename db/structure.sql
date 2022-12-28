@@ -15138,6 +15138,14 @@ CREATE SEQUENCE draft_notes_id_seq
 
 ALTER SEQUENCE draft_notes_id_seq OWNED BY draft_notes.id;
 
+CREATE TABLE elastic_group_index_statuses (
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    wiki_indexed_at timestamp with time zone,
+    last_wiki_commit bytea
+);
+
 CREATE TABLE elastic_index_settings (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25959,6 +25967,9 @@ ALTER TABLE ONLY dora_daily_metrics
 ALTER TABLE ONLY draft_notes
     ADD CONSTRAINT draft_notes_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY elastic_group_index_statuses
+    ADD CONSTRAINT elastic_group_index_statuses_pkey PRIMARY KEY (namespace_id);
+
 ALTER TABLE ONLY elastic_index_settings
     ADD CONSTRAINT elastic_index_settings_pkey PRIMARY KEY (id);
 
@@ -34590,6 +34601,9 @@ ALTER TABLE ONLY project_repository_storage_moves
 
 ALTER TABLE ONLY ml_candidate_metadata
     ADD CONSTRAINT fk_rails_5117dddf22 FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY elastic_group_index_statuses
+    ADD CONSTRAINT fk_rails_52b9969b12 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_configurations
     ADD CONSTRAINT fk_rails_536b96bff1 FOREIGN KEY (bulk_import_id) REFERENCES bulk_imports(id) ON DELETE CASCADE;

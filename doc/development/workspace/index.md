@@ -87,7 +87,7 @@ After this work completes, we must migrate data as described in
 ### Phase 2
 
 - [Phase 2 epic](https://gitlab.com/groups/gitlab-org/-/epics/6768).
-- **Goal**: Make `ProjectNamespace` the front entity to interact with instead of `Project`.
+- **Goal**: Link `ProjectNamespace` to other entities on the database level.
 
 In this phase:
 
@@ -97,6 +97,10 @@ In this phase:
 - Raise awareness to avoid regressions, and conflicting or duplicate work that
   can be dealt with before phase 3.
 
+### Phase 3
+
+- [Phase 3 epic](https://gitlab.com/groups/gitlab-org/-/epics/6585).
+- **Goal**: Achieve feature parity between the namespace types.
 Problems to solve as part of this phase:
 
 - Routes handling through `ProjectNamespace` rather than `Project`.
@@ -105,13 +109,48 @@ Problems to solve as part of this phase:
 - Import and export.
 - Other interactions between project namespace and project models.
 
-### Phase 3
-
-- [Phase 3 epic](https://gitlab.com/groups/gitlab-org/-/epics/6585).
-- **Goal**: Feature parity between the namespace types.
-
 Phase 3 is when the active migration of features from `Project` to `ProjectNamespace`,
 or directly to `Namespace`, happens.
+
+### How to plan features that interact with Group and ProjectNamespace
+
+As of now, every Project in the system has a record in the `namespaces` table. This makes it possible to
+use common interface to create features that are shared between Groups and Projects. Shared behavior can be added using
+a concerns mechanism. Because the `Namespace` model is responsible for `UserNamespace` methods as well, it is discouraged
+to use the `Namespace` model for shared behavior for Projects and Groups.
+
+#### Resource-based features
+
+To migrate resource-based features, existing functionality will need to be supported. This can be achieved in two Phases.
+
+**Phase 1 - Setup**
+
+- Link into the namespaces table
+  - Add a column to the table
+  - For example, in issues a `project id` points to the projects table. We need to establish a link to the `namespaces` table.
+  - Modify code so that any new record already has the correct data in it
+  - Backfill
+
+**Phase 2 - Prerequisite work**
+
+- Investigate the permission model as well as any performance concerns related to that.
+  - Permissions need to be checked and kept in place.
+- Investigate what other models need to support namespaces for functionality dependent on features you migrate in Phase 1.
+- Adjust CRUD services and APIs (REST and GraphQL) to point to the new column you added in Phase 1.
+- Consider performance when fetching resources.
+
+Introducing new functionality is very much dependent on every single team and feature.
+
+#### Settings-related features
+
+Right now, cascading settings are available for `NamespaceSettings`. By creating `ProjectNamespace`,
+we can use this framework to make sure that some settings are applicable on the project level as well.
+
+When working on settings, we need to make sure that:
+
+- They are not used in `join` queries or modify those queries.
+- Updating settings is taken into consideration.
+- If we want to move from project to project namespace, we follow a similar database process to the one described in [Phase 1](#phase-1).
 
 ## Related topics
 

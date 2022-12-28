@@ -11,7 +11,7 @@ Color_Off='\033[0m' # Text Reset
 
 function onexit_err() {
   local exit_status=${1:-$?}
-  printf "\n❌❌❌ ${BRed}GLFM snapshot tests failed!${Color_Off} ❌❌❌\n"
+  printf "\n❌❌❌ ${BRed}GLFM spec tests failed!${Color_Off} ❌❌❌\n"
   exit "${exit_status}"
 }
 trap onexit_err ERR

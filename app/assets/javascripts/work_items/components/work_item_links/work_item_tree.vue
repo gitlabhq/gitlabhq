@@ -40,9 +40,19 @@ export default {
       type: String,
       required: true,
     },
+    parentWorkItemType: {
+      type: String,
+      required: false,
+      default: '',
+    },
     workItemId: {
       type: String,
       required: true,
+    },
+    confidential: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     children: {
       type: Array,
@@ -221,8 +231,10 @@ export default {
         data-testid="add-tree-form"
         :issuable-gid="workItemId"
         :form-type="formType"
+        :parent-work-item-type="parentWorkItemType"
         :children-type="childType"
         :children-ids="childrenIds"
+        :parent-confidential="confidential"
         @addWorkItemChild="$emit('addWorkItemChild', $event)"
         @cancel="hideAddForm"
       />
@@ -233,6 +245,7 @@ export default {
         :can-update="canUpdate"
         :issuable-gid="workItemId"
         :child-item="child"
+        :confidential="child.confidential"
         :work-item-type="workItemType"
         :has-indirect-children="hasIndirectChildren"
         @mouseover="prefetchWorkItem(child)"

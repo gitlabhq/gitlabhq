@@ -3,6 +3,7 @@ query workItemLinksQuery($id: WorkItemID!) {
     id
     workItemType {
       id
+      name
     }
     title
     userPermissions {

@@ -1,5 +1,14 @@
 <script>
-import { GlAlert, GlFormGroup, GlForm, GlTokenSelector, GlButton, GlFormInput } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlFormGroup,
+  GlForm,
+  GlTokenSelector,
+  GlButton,
+  GlFormInput,
+  GlFormCheckbox,
+  GlTooltip,
+} from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -17,6 +26,8 @@ import {
   I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
   I18N_WORK_ITEM_ADD_BUTTON_LABEL,
   I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL,
+  I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL,
+  I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
   sprintfWorkItem,
 } from '../../constants';
 
@@ -28,6 +39,8 @@ export default {
     GlButton,
     GlFormGroup,
     GlFormInput,
+    GlFormCheckbox,
+    GlTooltip,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['projectPath', 'hasIterationsFeature'],
@@ -60,6 +73,11 @@ export default {
     formType: {
       type: String,
       required: true,
+    },
+    parentWorkItemType: {
+      type: String,
+      required: false,
+      default: '',
     },
     childrenType: {
       type: String,
@@ -108,6 +126,7 @@ export default {
       error: null,
       childToCreateTitle: null,
       workItemsToAdd: [],
+      confidential: this.parentConfidential,
     };
   },
   computed: {
@@ -119,7 +138,7 @@ export default {
         hierarchyWidget: {
           parentId: this.issuableGid,
         },
-        confidential: this.parentConfidential,
+        confidential: this.parentConfidential || this.confidential,
       };
 
       if (this.parentMilestoneId) {
@@ -162,6 +181,16 @@ export default {
       }
       return sprintfWorkItem(I18N_WORK_ITEM_ADD_BUTTON_LABEL, this.childrenTypeName);
     },
+    confidentialityCheckboxLabel() {
+      return sprintfWorkItem(I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL, this.childrenTypeName);
+    },
+    confidentialityCheckboxTooltip() {
+      return sprintfWorkItem(
+        I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
+        this.childrenTypeName,
+        this.parentWorkItemType,
+      );
+    },
     addOrCreateMethod() {
       return this.isCreateForm ? this.createChild : this.addChild;
     },
@@ -192,6 +221,11 @@ export default {
   },
   methods: {
     getIdFromGraphQLId,
+    getConfidentialityTooltipTarget() {
+      // We want tooltip to be anchored to `input` within checkbox component
+      // but `$el.querySelector('input')` doesn't work. 🤷‍♂️
+      return this.$refs.confidentialityCheckbox?.$el;
+    },
     unsetError() {
       this.error = null;
     },
@@ -299,8 +333,22 @@ export default {
         autofocus
       />
     </gl-form-group>
+    <gl-form-checkbox
+      ref="confidentialityCheckbox"
+      v-model="confidential"
+      name="isConfidential"
+      class="gl-md-mt-5 gl-mb-5 gl-md-mb-3!"
+      :disabled="parentConfidential"
+      >{{ confidentialityCheckboxLabel }}</gl-form-checkbox
+    >
+    <gl-tooltip
+      v-if="parentConfidential"
+      :target="getConfidentialityTooltipTarget"
+      triggers="hover"
+      >{{ confidentialityCheckboxTooltip }}</gl-tooltip
+    >
     <gl-token-selector
-      v-else
+      v-if="!isCreateForm"
       v-model="workItemsToAdd"
       :dropdown-items="availableWorkItems"
       :loading="isLoading"

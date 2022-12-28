@@ -93,7 +93,7 @@ module QA
     end
 
     before do
-      enable_bulk_import(source_admin_api_client) unless source_bulk_import_enabled
+      enable_bulk_import(source_admin_api_client) if source_admin_user && !source_bulk_import_enabled
       enable_bulk_import(admin_api_client) unless target_bulk_import_enabled
 
       target_sandbox.add_member(user, Resource::Members::AccessLevel::OWNER)

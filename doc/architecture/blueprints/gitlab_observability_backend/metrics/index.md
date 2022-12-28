@@ -673,10 +673,10 @@ Using PromQL directly could be a steep learning curve for users. It would be rea
 
 The following section enlists how we intend to implement the aforementioned proposal around building Metrics support into GitLab Observability Service. Each corresponding document and/or issue contains further details of how each next step is planned to be executed.
 
-- **[DONE]** [Research & draft design proposal and/or requirements](https://docs.google.com/document/d/1kHyIoWEcs14sh3CGfKGiI8QbCsdfIHeYkzVstenpsdE/edit?usp=sharing)
-- **[IN-PROGRESS]** [Submit system/schema designs (proposal) & gather feedback](https://docs.google.com/document/d/1kHyIoWEcs14sh3CGfKGiI8QbCsdfIHeYkzVstenpsdE/edit?usp=sharing)
-- **[IN-PROGRESS]** [Develop table definitions and/or storage interfaces](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/1666)
-- **[IN-PROGRESS]** [Prototype reference implementation, instrument key metrics](https://gitlab.com/gitlab-org/opstrace/opstrace/-/merge_requests/1823)
+- **DONE** [Research & draft design proposal and/or requirements](https://docs.google.com/document/d/1kHyIoWEcs14sh3CGfKGiI8QbCsdfIHeYkzVstenpsdE/edit?usp=sharing)
+- **IN-PROGRESS** [Submit system/schema designs (proposal) & gather feedback](https://docs.google.com/document/d/1kHyIoWEcs14sh3CGfKGiI8QbCsdfIHeYkzVstenpsdE/edit?usp=sharing)
+- **IN-PROGRESS** [Develop table definitions and/or storage interfaces](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/1666)
+- **IN-PROGRESS** [Prototype reference implementation, instrument key metrics](https://gitlab.com/gitlab-org/opstrace/opstrace/-/merge_requests/1823)
 - [Benchmark Clickhouse and/or proposed schemas, gather expert advice from Clickhouse Inc.](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/1666)
 - Develop write path(s) - `remote_write` API
 - Develop read path(s) - `remote_read` API, `PromQL`-based querier.

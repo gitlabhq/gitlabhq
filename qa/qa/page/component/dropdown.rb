@@ -25,6 +25,12 @@ module QA
           find('span.gl-dropdown-button-text').text
         end
 
+        def all_items
+          raise NotImplementedError if use_select2?
+
+          find_all("li.gl-dropdown-item").map(&:text)
+        end
+
         def clear_current_selection_if_present
           return super if use_select2?
 

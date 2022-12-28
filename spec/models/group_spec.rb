@@ -3560,4 +3560,26 @@ RSpec.describe Group do
       it { is_expected.to be_nil }
     end
   end
+
+  describe '#usage_quotas_enabled?', feature_category: :subscription_cost_management, unless: Gitlab.ee? do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:feature_enabled, :root_group, :result) do
+      false | true  | false
+      false | false | false
+      true  | false | false
+      true  | true  | true
+    end
+
+    with_them do
+      before do
+        stub_feature_flags(usage_quotas_for_all_editions: feature_enabled)
+        allow(group).to receive(:root?).and_return(root_group)
+      end
+
+      it 'returns the expected result' do
+        expect(group.usage_quotas_enabled?).to eq result
+      end
+    end
+  end
 end

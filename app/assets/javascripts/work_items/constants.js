@@ -73,12 +73,19 @@ export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{work
 export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__(
   'WorkItem|Search existing %{workItemType}s',
 );
+export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL = s__(
+  'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access',
+);
+export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP = s__(
+  'WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}.',
+);
 
-export const sprintfWorkItem = (msg, workItemTypeArg) => {
+export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') => {
   const workItemType = workItemTypeArg || s__('WorkItem|Work item');
   return capitalizeFirstCharacter(
     sprintf(msg, {
       workItemType: workItemType.toLocaleLowerCase(),
+      parentWorkItemType: parentWorkItemType.toLocaleLowerCase(),
     }),
   );
 };

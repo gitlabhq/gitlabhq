@@ -34,6 +34,8 @@ describe('WorkItemTree', () => {
 
   const createComponent = ({
     workItemType = 'Objective',
+    parentWorkItemType = 'Objective',
+    confidential = false,
     children = childrenWorkItems,
     apolloProvider = null,
   } = {}) => {
@@ -55,7 +57,9 @@ describe('WorkItemTree', () => {
         apolloProvider || createMockApollo([[workItemQuery, getWorkItemQueryHandler]]),
       propsData: {
         workItemType,
+        parentWorkItemType,
         workItemId: 'gid://gitlab/WorkItem/515',
+        confidential,
         children,
         projectPath: 'test/project',
       },
@@ -90,7 +94,11 @@ describe('WorkItemTree', () => {
   });
 
   it('renders all hierarchy widget children', () => {
-    expect(findWorkItemLinkChildItems()).toHaveLength(4);
+    const workItemLinkChildren = findWorkItemLinkChildItems();
+    expect(workItemLinkChildren).toHaveLength(4);
+    expect(workItemLinkChildren.at(0).props().childItem.confidential).toBe(
+      childrenWorkItems[0].confidential,
+    );
   });
 
   it('does not display form by default', () => {
@@ -110,8 +118,12 @@ describe('WorkItemTree', () => {
       await nextTick();
 
       expect(findForm().exists()).toBe(true);
-      expect(findForm().props('formType')).toBe(formType);
-      expect(findForm().props('childrenType')).toBe(childType);
+      expect(findForm().props()).toMatchObject({
+        formType,
+        childrenType: childType,
+        parentWorkItemType: 'Objective',
+        parentConfidential: false,
+      });
     },
   );
 

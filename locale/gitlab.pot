@@ -47081,6 +47081,9 @@ msgstr ""
 msgid "WorkItem|%{workItemType} deleted"
 msgstr ""
 
+msgid "WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}."
+msgstr ""
+
 msgid "WorkItem|Activity"
 msgstr ""
 
@@ -47294,6 +47297,9 @@ msgid "WorkItem|Tasks"
 msgstr ""
 
 msgid "WorkItem|Test case"
+msgstr ""
+
+msgid "WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access"
 msgstr ""
 
 msgid "WorkItem|This objective is confidential and should only be visible to team members with at least Reporter access"

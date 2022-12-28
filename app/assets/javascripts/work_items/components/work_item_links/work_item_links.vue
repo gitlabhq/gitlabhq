@@ -399,6 +399,7 @@ export default {
           :parent-iteration="issuableIteration"
           :parent-milestone="issuableMilestone"
           :form-type="formType"
+          :parent-work-item-type="workItem.workItemType.name"
           @cancel="hideAddForm"
           @addWorkItemChild="addChild"
         />

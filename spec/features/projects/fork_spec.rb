@@ -137,9 +137,9 @@ RSpec.describe 'Project fork', feature_category: :projects do
     let(:user) { create(:group_member, :maintainer, user: create(:user), group: group).user }
 
     def submit_form(group_obj = group)
-      find('[data-testid="select_namespace_dropdown"]').click
-      find('[data-testid="select_namespace_dropdown_search_field"]').fill_in(with: group_obj.name)
-      click_button group_obj.name
+      click_button(s_('ForkProject|Select a namespace'), disabled: false)
+      find('[data-testid="listbox-search-input"]').fill_in(with: group_obj.name)
+      find('.gl-dropdown-item-text-wrapper', text: group_obj.name).click
 
       click_button 'Fork project'
     end

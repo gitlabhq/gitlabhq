@@ -655,12 +655,17 @@ describe('WorkItemDetail component', () => {
     it('renders children tree when work item is an Objective', async () => {
       const objectiveWorkItem = workItemResponseFactory({
         workItemType: objectiveType,
+        confidential: true,
       });
       const handler = jest.fn().mockResolvedValue(objectiveWorkItem);
       createComponent({ handler });
       await waitForPromises();
 
       expect(findHierarchyTree().exists()).toBe(true);
+      expect(findHierarchyTree().props()).toMatchObject({
+        parentWorkItemType: objectiveType.name,
+        confidential: objectiveWorkItem.data.workItem.confidential,
+      });
     });
   });
 });

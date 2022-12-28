@@ -1,11 +1,18 @@
 import Vue from 'vue';
-import { GlForm, GlFormInput, GlTokenSelector } from '@gitlab/ui';
+import { GlForm, GlFormInput, GlFormCheckbox, GlTooltip, GlTokenSelector } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import { sprintf } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
-import { FORM_TYPES } from '~/work_items/constants';
+import {
+  FORM_TYPES,
+  WORK_ITEM_TYPE_ENUM_TASK,
+  WORK_ITEM_TYPE_VALUE_ISSUE,
+  I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL,
+  I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
+} from '~/work_items/constants';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
@@ -36,6 +43,8 @@ describe('WorkItemLinksForm', () => {
     workItemsMvcEnabled = false,
     parentIteration = null,
     formType = FORM_TYPES.create,
+    parentWorkItemType = WORK_ITEM_TYPE_VALUE_ISSUE,
+    childrenType = WORK_ITEM_TYPE_ENUM_TASK,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinksForm, {
       apolloProvider: createMockApollo([
@@ -48,6 +57,8 @@ describe('WorkItemLinksForm', () => {
         issuableGid: 'gid://gitlab/WorkItem/1',
         parentConfidential,
         parentIteration,
+        parentWorkItemType,
+        childrenType,
         formType,
       },
       provide: {
@@ -65,6 +76,7 @@ describe('WorkItemLinksForm', () => {
   const findForm = () => wrapper.findComponent(GlForm);
   const findTokenSelector = () => wrapper.findComponent(GlTokenSelector);
   const findInput = () => wrapper.findComponent(GlFormInput);
+  const findConfidentialCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findAddChildButton = () => wrapper.findByTestId('add-child-button');
 
   afterEach(() => {
@@ -122,6 +134,37 @@ describe('WorkItemLinksForm', () => {
           },
           confidential: true,
         },
+      });
+    });
+
+    describe('confidentiality checkbox', () => {
+      it('renders confidentiality checkbox', () => {
+        const confidentialCheckbox = findConfidentialCheckbox();
+
+        expect(confidentialCheckbox.exists()).toBe(true);
+        expect(wrapper.findComponent(GlTooltip).exists()).toBe(false);
+        expect(confidentialCheckbox.text()).toBe(
+          sprintf(I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL, {
+            workItemType: WORK_ITEM_TYPE_ENUM_TASK.toLocaleLowerCase(),
+          }),
+        );
+      });
+
+      it('renders confidentiality tooltip with checkbox checked and disabled when parent is confidential', () => {
+        createComponent({ parentConfidential: true });
+
+        const confidentialCheckbox = findConfidentialCheckbox();
+        const confidentialTooltip = wrapper.findComponent(GlTooltip);
+
+        expect(confidentialCheckbox.attributes('disabled')).toBe('true');
+        expect(confidentialCheckbox.attributes('checked')).toBe('true');
+        expect(confidentialTooltip.exists()).toBe(true);
+        expect(confidentialTooltip.text()).toBe(
+          sprintf(I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP, {
+            workItemType: WORK_ITEM_TYPE_ENUM_TASK.toLocaleLowerCase(),
+            parentWorkItemType: WORK_ITEM_TYPE_VALUE_ISSUE.toLocaleLowerCase(),
+          }),
+        );
       });
     });
   });
