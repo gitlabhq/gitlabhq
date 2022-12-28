@@ -46,6 +46,12 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review do
       service.execute
     end
 
+    it 'sends GraphQL triggers' do
+      expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(discussion.noteable)
+
+      service.execute
+    end
+
     context 'with a project that requires all discussion to be resolved' do
       before do
         project.update!(only_allow_merge_if_all_discussions_are_resolved: true)
@@ -119,6 +125,12 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review do
 
       it 'does not schedule an auto-merge' do
         expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+        service.execute
+      end
+
+      it 'does not send GraphQL triggers' do
+        expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated).with(discussion.noteable)
 
         service.execute
       end
