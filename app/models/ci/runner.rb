@@ -27,6 +27,11 @@ module Ci
       project_type: 3
     }
 
+    enum registration_type: {
+      registration_token: 0,
+      authenticated_user: 1
+    }
+
     enum executor_type: {
       unknown: 0,
       custom: 1,
@@ -76,6 +81,8 @@ module Ci
 
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
     has_one :runner_version, primary_key: :version, foreign_key: :version, class_name: 'Ci::RunnerVersion'
+
+    belongs_to :creator, class_name: 'User', optional: true
 
     before_save :ensure_token
 

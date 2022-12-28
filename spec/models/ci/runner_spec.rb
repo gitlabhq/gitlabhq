@@ -11,6 +11,13 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     let(:factory_name) { :ci_runner }
   end
 
+  context 'loose foreign key on ci_runners.creator_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:user) }
+      let!(:model) { create(:ci_runner, creator: parent) }
+    end
+  end
+
   describe 'groups association' do
     # Due to other associations such as projects this whole spec is allowed to
     # generate cross-database queries. So we have this temporary spec to

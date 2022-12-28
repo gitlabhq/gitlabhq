@@ -140,7 +140,7 @@ instance (for example if the runner is offline).
 
 In addition, we should add the following columns to `ci_runners`:
 
-- a `user_id` column to keep track of who created a runner;
+- a `creator_id` column to keep track of who created a runner;
 - a `registration_type` enum column to `ci_runners` to signal whether a runner has been created
   using the legacy `register` method, or the new UI-based method.
   Possible values are `:registration_token` and `:authenticated_user`.
@@ -150,7 +150,7 @@ In addition, we should add the following columns to `ci_runners`:
 ```sql
 CREATE TABLE ci_runner (
   ...
-  user_id bigint
+  creator_id bigint
   registration_type int8
 )
 ```

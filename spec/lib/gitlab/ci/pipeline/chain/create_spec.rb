@@ -63,11 +63,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
     end
 
     let(:job) do
-      build(:ci_build, stage: stage, pipeline: pipeline, project: project)
+      build(:ci_build, ci_stage: stage, pipeline: pipeline, project: project)
     end
 
     let(:bridge) do
-      build(:ci_bridge, stage: stage, pipeline: pipeline, project: project)
+      build(:ci_bridge, ci_stage: stage, pipeline: pipeline, project: project)
     end
 
     before do

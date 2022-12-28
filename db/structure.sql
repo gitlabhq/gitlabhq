@@ -13455,6 +13455,8 @@ CREATE TABLE ci_runners (
     maintainer_note text,
     token_expires_at timestamp with time zone,
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
+    registration_type smallint DEFAULT 0 NOT NULL,
+    creator_id bigint,
     CONSTRAINT check_ce275cee06 CHECK ((char_length(maintainer_note) <= 1024))
 );
 
@@ -28916,6 +28918,8 @@ CREATE INDEX index_ci_runners_on_created_at_and_id_desc ON ci_runners USING btre
 CREATE INDEX index_ci_runners_on_created_at_and_id_where_inactive ON ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
 
 CREATE INDEX index_ci_runners_on_created_at_desc_and_id_desc ON ci_runners USING btree (created_at DESC, id DESC);
+
+CREATE INDEX index_ci_runners_on_creator_id_where_creator_id_not_null ON ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
 
 CREATE INDEX index_ci_runners_on_description_trigram ON ci_runners USING gin (description gin_trgm_ops);
 
