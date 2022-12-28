@@ -325,6 +325,34 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
           it_behaves_like 'secondary store'
         end
+
+        context 'when use_primary_and_secondary_stores feature flag is disabled' do
+          before do
+            stub_feature_flags(use_primary_and_secondary_stores_for_test_store: false)
+          end
+
+          context 'when using secondary store as default' do
+            before do
+              stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+            end
+
+            it 'executes only on secondary redis store', :aggregate_errors do
+              expect(secondary_store).to receive(name).with(*args).and_call_original
+              expect(primary_store).not_to receive(name).with(*args).and_call_original
+
+              subject
+            end
+          end
+
+          context 'when using primary store as default' do
+            it 'executes only on primary redis store', :aggregate_errors do
+              expect(primary_store).to receive(name).with(*args).and_call_original
+              expect(secondary_store).not_to receive(name).with(*args).and_call_original
+
+              subject
+            end
+          end
+        end
       end
     end
   end
@@ -433,6 +461,34 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
           include_examples 'verify that store contains values', :primary_store
           include_examples 'verify that store contains values', :secondary_store
+        end
+
+        context 'when use_primary_and_secondary_stores feature flag is disabled' do
+          before do
+            stub_feature_flags(use_primary_and_secondary_stores_for_test_store: false)
+          end
+
+          context 'when using secondary store as default' do
+            before do
+              stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+            end
+
+            it 'executes only on secondary redis store', :aggregate_errors do
+              expect(secondary_store).to receive(name).with(*expected_args).and_call_original
+              expect(primary_store).not_to receive(name).with(*expected_args).and_call_original
+
+              subject
+            end
+          end
+
+          context 'when using primary store as default' do
+            it 'executes only on primary redis store', :aggregate_errors do
+              expect(primary_store).to receive(name).with(*expected_args).and_call_original
+              expect(secondary_store).not_to receive(name).with(*expected_args).and_call_original
+
+              subject
+            end
+          end
         end
 
         context 'when executing on the primary instance is raising an exception' do
@@ -615,6 +671,34 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           end
         end
       end
+
+      context 'when use_primary_and_secondary_stores feature flag is disabled' do
+        before do
+          stub_feature_flags(use_primary_and_secondary_stores_for_test_store: false)
+        end
+
+        context 'when using secondary store as default' do
+          before do
+            stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+          end
+
+          it 'executes on secondary store', :aggregate_errors do
+            expect(primary_store).not_to receive(:send).and_call_original
+            expect(secondary_store).to receive(:send).and_call_original
+
+            subject
+          end
+        end
+
+        context 'when using primary store as default' do
+          it 'executes on primary store', :aggregate_errors do
+            expect(secondary_store).not_to receive(:send).and_call_original
+            expect(primary_store).to receive(:send).and_call_original
+
+            subject
+          end
+        end
+      end
     end
   end
 
@@ -634,9 +718,6 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       secondary_store.flushdb
       allow(Gitlab::Metrics).to receive(:counter).and_return(counter)
     end
-
-    let_it_be(:key) { "redis:counter" }
-    let_it_be(:item) { "item1" }
 
     subject { multi_store.command }
 
@@ -704,10 +785,6 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       context 'with feature flag :use_primary_store_as_default_for_test_store is enabled' do
-        before do
-          stub_feature_flags(use_primary_store_as_default_for_test_store: true)
-        end
-
         it 'fallback and executes only on the secondary store', :aggregate_errors do
           expect(primary_store).to receive(:command).and_call_original
           expect(secondary_store).not_to receive(:command)

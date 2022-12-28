@@ -36,9 +36,9 @@ module Gitlab
       FAILED_TO_WRITE_ERROR_MESSAGE = 'Failed to write to the redis primary_store.'
       FAILED_TO_RUN_PIPELINE = 'Failed to execute pipeline on the redis primary_store.'
 
-      SKIP_LOG_METHOD_MISSING_FOR_COMMANDS = %i(info).freeze
+      SKIP_LOG_METHOD_MISSING_FOR_COMMANDS = %i[info].freeze
 
-      READ_COMMANDS = %i(
+      READ_COMMANDS = %i[
         exists
         exists?
         get
@@ -55,9 +55,9 @@ module Gitlab
         sscan
         sscan_each
         ttl
-      ).freeze
+      ].freeze
 
-      WRITE_COMMANDS = %i(
+      WRITE_COMMANDS = %i[
         del
         eval
         expire
@@ -74,12 +74,12 @@ module Gitlab
         setnx
         srem
         unlink
-      ).freeze
+      ].freeze
 
-      PIPELINED_COMMANDS = %i(
+      PIPELINED_COMMANDS = %i[
         pipelined
         multi
-      ).freeze
+      ].freeze
 
       # To transition between two Redis store, `primary_store` should be the target store,
       # and `secondary_store` should be the current store. Transition is controlled with feature flags:

@@ -42,10 +42,9 @@ export default {
       class="gl-mb-3"
       :status="pipelineStatus"
       :show-text="!isChildView"
-      :icon-classes="'gl-vertical-align-middle!'"
       data-qa-selector="pipeline_commit_status"
       @ciStatusBadgeClick="trackClick"
     />
-    <pipelines-timeago class="gl-mt-3" :pipeline="pipeline" />
+    <pipelines-timeago :pipeline="pipeline" />
   </div>
 </template>

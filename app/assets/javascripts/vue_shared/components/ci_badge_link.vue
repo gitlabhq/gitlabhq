@@ -66,6 +66,7 @@ export default {
 <template>
   <gl-link
     v-gl-tooltip
+    class="gl-display-inline-flex gl-align-items-center gl-line-height-0 gl-px-3 gl-py-2 gl-rounded-base"
     :class="cssClass"
     :title="title"
     data-qa-selector="status_badge_link"
@@ -75,7 +76,7 @@ export default {
     <ci-icon :status="status" :css-classes="iconClasses" />
 
     <template v-if="showText">
-      {{ status.text }}
+      <span class="gl-ml-2">{{ status.text }}</span>
     </template>
   </gl-link>
 </template>

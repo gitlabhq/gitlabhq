@@ -440,17 +440,13 @@ class Projects::IssuesController < Projects::ApplicationController
   def create_vulnerability_issue_feedback(issue); end
 
   def redirect_if_work_item
-    return unless allowed_work_item?
+    return unless use_work_items_path?(issue)
 
     if Feature.enabled?(:use_iid_in_work_items_path, project.group)
       redirect_to project_work_items_path(project, issue.iid, params: request.query_parameters.merge(iid_path: true))
     else
       redirect_to project_work_items_path(project, issue.id, params: request.query_parameters)
     end
-  end
-
-  def allowed_work_item?
-    issue.task?
   end
 end
 

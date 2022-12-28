@@ -69,7 +69,7 @@ export default {
   computed: {
     wrapperStyleClasses() {
       const status = this.status.group;
-      return `ci-status-icon ci-status-icon-${status} js-ci-status-icon-${status} gl-rounded-full gl-justify-content-center`;
+      return `ci-status-icon ci-status-icon-${status} js-ci-status-icon-${status} gl-rounded-full gl-justify-content-center gl-line-height-0`;
     },
     icon() {
       return this.isBorderless ? `${this.status.icon}_borderless` : this.status.icon;

@@ -63,18 +63,17 @@
     }
   }
 
+  @include media-breakpoint-down(md) {
+    .time-ago {
+      align-items: flex-end;
+    }
+  }
+
   .duration,
   .finished-at {
     color: $gl-text-color-secondary;
     margin: 0;
     white-space: nowrap;
-
-    svg {
-      width: 12px;
-      height: 12px;
-      vertical-align: middle;
-      margin-right: 4px;
-    }
   }
 
   .build-link a {
