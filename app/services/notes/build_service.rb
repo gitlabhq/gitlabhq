@@ -35,7 +35,7 @@ module Notes
       note.author = current_user
 
       parent_confidential = discussion&.confidential?
-      can_set_confidential = can?(current_user, :mark_note_as_confidential, note)
+      can_set_confidential = can?(current_user, :mark_note_as_internal, note)
 
       return discussion_not_found if parent_confidential && !can_set_confidential
 

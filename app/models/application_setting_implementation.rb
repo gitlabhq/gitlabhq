@@ -245,7 +245,8 @@ module ApplicationSettingImplementation
         users_get_by_id_limit: 300,
         users_get_by_id_limit_allowlist: [],
         can_create_group: true,
-        bulk_import_enabled: false
+        bulk_import_enabled: false,
+        allow_runner_registration_token: true
       }
     end
 

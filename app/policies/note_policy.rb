@@ -18,11 +18,11 @@ class NotePolicy < BasePolicy
 
   condition(:is_visible) { @subject.system_note_visible_for?(@user) }
 
-  condition(:confidential, scope: :subject) { @subject.confidential? }
+  condition(:internal, scope: :subject) { @subject.confidential? }
 
   # Should be matched with IssuablePolicy#read_internal_note
   # and EpicPolicy#read_internal_note
-  condition(:can_read_confidential) do
+  condition(:can_read_internal_note) do
     access_level >= Gitlab::Access::REPORTER || admin?
   end
 
@@ -59,11 +59,11 @@ class NotePolicy < BasePolicy
     enable :resolve_note
   end
 
-  rule { can_read_confidential }.policy do
-    enable :mark_note_as_confidential
+  rule { can_read_internal_note }.policy do
+    enable :mark_note_as_internal
   end
 
-  rule { confidential & ~can_read_confidential }.policy do
+  rule { internal & ~can_read_internal_note }.policy do
     prevent :read_note
     prevent :admin_note
     prevent :resolve_note

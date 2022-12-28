@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationSetting do
+RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
   using RSpec::Parameterized::TableSyntax
 
   subject(:setting) { described_class.create_from_defaults }
@@ -219,6 +219,10 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to allow_value(true).for(:bulk_import_enabled) }
     it { is_expected.to allow_value(false).for(:bulk_import_enabled) }
     it { is_expected.not_to allow_value(nil).for(:bulk_import_enabled) }
+
+    it { is_expected.to allow_value(true).for(:allow_runner_registration_token) }
+    it { is_expected.to allow_value(false).for(:allow_runner_registration_token) }
+    it { is_expected.not_to allow_value(nil).for(:allow_runner_registration_token) }
 
     context 'when deactivate_dormant_users is enabled' do
       before do

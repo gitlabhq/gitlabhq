@@ -83,7 +83,7 @@ class IssuePolicy < IssuablePolicy
   end
 
   rule { can?(:reporter_access) }.policy do
-    enable :mark_note_as_confidential
+    enable :mark_note_as_internal
   end
 end
 

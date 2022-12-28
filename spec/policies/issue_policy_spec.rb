@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssuePolicy do
+RSpec.describe IssuePolicy, feature_category: :team_planning do
   include_context 'ProjectPolicyTable context'
   include ExternalAuthorizationServiceHelpers
   include ProjectHelpers
@@ -86,7 +86,7 @@ RSpec.describe IssuePolicy do
 
     it 'allows guests to read issues' do
       expect(permissions(guest, issue)).to be_allowed(:read_issue, :read_issue_iid)
-      expect(permissions(guest, issue)).to be_disallowed(:update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :mark_note_as_confidential)
+      expect(permissions(guest, issue)).to be_disallowed(:update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :mark_note_as_internal)
 
       expect(permissions(guest, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid)
       expect(permissions(guest, issue_no_assignee)).to be_disallowed(:update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
@@ -97,7 +97,7 @@ RSpec.describe IssuePolicy do
     it 'allows reporters to read, update, admin and create confidential notes' do
       expect(permissions(reporter, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
       expect(permissions(reporter, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
-      expect(permissions(reporter, new_issue)).to be_allowed(:create_issue, :set_issue_metadata, :set_confidentiality, :mark_note_as_confidential)
+      expect(permissions(reporter, new_issue)).to be_allowed(:create_issue, :set_issue_metadata, :set_confidentiality, :mark_note_as_internal)
     end
 
     it 'allows reporters from group links to read, update, and admin issues' do

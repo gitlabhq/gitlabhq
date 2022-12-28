@@ -694,6 +694,10 @@ class ApplicationSetting < ApplicationRecord
             allow_nil: false,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  validates :allow_runner_registration_token,
+            allow_nil: false,
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
   before_validation :normalize_default_branch_name
