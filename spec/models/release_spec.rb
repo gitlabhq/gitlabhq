@@ -86,6 +86,10 @@ RSpec.describe Release do
     context 'when updating existing release without author' do
       let(:release) { create(:release, :legacy) }
 
+      before do
+        stub_feature_flags(validate_release_with_author: false)
+      end
+
       it 'updates successfully' do
         release.description += 'Update'
 
