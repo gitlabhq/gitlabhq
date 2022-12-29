@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
   include ::Gitlab::EndpointAttributes
   include FlocOptOut
   include CheckRateLimit
+  extend ContentSecurityPolicyPatch
 
   before_action :limit_session_time, if: -> { !current_user }
   before_action :authenticate_user!, except: [:route_not_found]

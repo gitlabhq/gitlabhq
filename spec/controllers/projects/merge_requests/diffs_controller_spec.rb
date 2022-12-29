@@ -213,7 +213,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
             commit: nil,
             latest_diff: true,
             only_context_commits: false,
-            merge_conflicts_in_diff: true,
             merge_ref_head_diff: false
           }
         end
@@ -281,7 +280,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
             commit: nil,
             latest_diff: true,
             only_context_commits: false,
-            merge_conflicts_in_diff: true,
             merge_ref_head_diff: nil
           }
         end
@@ -303,33 +301,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
             commit: merge_request.diff_head_commit,
             latest_diff: nil,
             only_context_commits: false,
-            merge_conflicts_in_diff: true,
-            merge_ref_head_diff: nil
-          }
-        end
-      end
-    end
-
-    context 'when display_merge_conflicts_in_diff is disabled' do
-      subject { go }
-
-      before do
-        stub_feature_flags(display_merge_conflicts_in_diff: false)
-      end
-
-      it_behaves_like 'serializes diffs metadata with expected arguments' do
-        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiff }
-        let(:expected_options) do
-          {
-            merge_request: merge_request,
-            merge_request_diff: merge_request.merge_request_diff,
-            merge_request_diffs: merge_request.merge_request_diffs,
-            start_version: nil,
-            start_sha: nil,
-            commit: nil,
-            latest_diff: true,
-            only_context_commits: false,
-            merge_conflicts_in_diff: false,
             merge_ref_head_diff: nil
           }
         end
@@ -498,7 +469,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         commit: nil,
         diff_view: :inline,
         merge_ref_head_diff: nil,
-        merge_conflicts_in_diff: true,
         pagination_data: {
           total_pages: nil
         }.merge(pagination_data)
@@ -612,21 +582,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
         let(:expected_options) { collection_arguments(total_pages: 20) }
-      end
-
-      it_behaves_like 'successful request'
-    end
-
-    context 'when display_merge_conflicts_in_diff is disabled' do
-      before do
-        stub_feature_flags(display_merge_conflicts_in_diff: false)
-      end
-
-      subject { go }
-
-      it_behaves_like 'serializes diffs with expected arguments' do
-        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-        let(:expected_options) { collection_arguments(total_pages: 20).merge(merge_conflicts_in_diff: false) }
       end
 
       it_behaves_like 'successful request'

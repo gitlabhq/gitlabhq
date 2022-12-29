@@ -9,13 +9,11 @@ RSpec.describe DiffsEntity do
 
   let(:request) { EntityRequest.new(project: project, current_user: user) }
   let(:merge_request_diffs) { merge_request.merge_request_diffs }
-  let(:merge_conflicts_in_diff) { false }
   let(:options) do
     {
       request: request,
       merge_request: merge_request,
-      merge_request_diffs: merge_request_diffs,
-      merge_conflicts_in_diff: merge_conflicts_in_diff
+      merge_request_diffs: merge_request_diffs
     }
   end
 
@@ -101,10 +99,9 @@ RSpec.describe DiffsEntity do
         subject[:diff_files]
       end
 
-      context 'when merge_conflicts_in_diff is true' do
+      context 'when there are conflicts' do
         let(:conflict_file) { double(path: diff_files.first.new_path, conflict_type: :both_modified) }
         let(:conflicts) { double(conflicts: double(files: [conflict_file]), can_be_resolved_in_ui?: false) }
-        let(:merge_conflicts_in_diff) { true }
 
         before do
           allow(merge_request).to receive(:cannot_be_merged?).and_return(true)

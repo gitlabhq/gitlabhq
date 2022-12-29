@@ -1,8 +1,0 @@
----
-name: display_merge_conflicts_in_diff
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45008
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/276918
-milestone: '13.5'
-type: development
-group: group::code review
-default_enabled: true

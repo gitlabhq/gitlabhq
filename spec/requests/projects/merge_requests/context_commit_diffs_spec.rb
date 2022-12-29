@@ -35,7 +35,6 @@ RSpec.describe 'Merge Requests Context Commit Diffs', feature_category: :code_re
         commit: nil,
         diff_view: :inline,
         merge_ref_head_diff: nil,
-        merge_conflicts_in_diff: true,
         pagination_data: {
           total_pages: nil
         }.merge(pagination_data)

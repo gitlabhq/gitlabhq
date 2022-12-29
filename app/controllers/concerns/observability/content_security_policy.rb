@@ -5,8 +5,14 @@ module Observability
     extend ActiveSupport::Concern
 
     included do
-      content_security_policy do |p|
-        next if p.directives.blank? || Gitlab::Observability.observability_url.blank?
+      content_security_policy_with_context do |p|
+        current_group = if defined?(group)
+                          group
+                        else
+                          defined?(project) ? project&.group : nil
+                        end
+
+        next if p.directives.blank? || !Gitlab::Observability.observability_enabled?(current_user, current_group)
 
         default_frame_src = p.directives['frame-src'] || p.directives['default-src']
 

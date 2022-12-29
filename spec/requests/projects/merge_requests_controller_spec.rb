@@ -8,6 +8,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
   let_it_be(:user) { merge_request.author }
 
   describe 'GET #show' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create :project, group: group }
+
+    let_it_be(:merge_request) { create :merge_request, source_project: project, author: user }
+
     before do
       login_as(user)
     end
@@ -43,7 +49,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
   describe 'GET #discussions' do
     let_it_be(:discussion) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
-    let_it_be(:discussion_reply) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project, in_reply_to: discussion) }
+    let_it_be(:discussion_reply) do
+      create(:discussion_note_on_merge_request, noteable: merge_request, project: project, in_reply_to: discussion)
+    end
+
     let_it_be(:state_event) { create(:resource_state_event, merge_request: merge_request) }
     let_it_be(:discussion_2) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
     let_it_be(:discussion_3) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
@@ -113,7 +122,8 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     context 'when private project' do
       let_it_be(:private_project) { create(:project, :private) }
 
-      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: false, ignore_metrics: true do
+      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: false,
+                                                                                           ignore_metrics: true do
         let(:url) { project_merge_requests_url(private_project, format: :atom) }
 
         before do

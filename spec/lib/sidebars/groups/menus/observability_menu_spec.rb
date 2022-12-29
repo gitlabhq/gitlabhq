@@ -20,23 +20,25 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu do
       allow(menu).to receive(:can?).and_call_original
     end
 
-    context 'when user can :read_observability' do
+    context 'when observability is enabled' do
       before do
-        allow(menu).to receive(:can?).with(user, :read_observability, group).and_return(true)
+        allow(Gitlab::Observability).to receive(:observability_enabled?).and_return(true)
       end
 
       it 'returns true' do
         expect(menu.render?).to eq true
+        expect(Gitlab::Observability).to have_received(:observability_enabled?).with(user, group)
       end
     end
 
-    context 'when user cannot :read_observability' do
+    context 'when observability is disabled' do
       before do
-        allow(menu).to receive(:can?).with(user, :read_observability, group).and_return(false)
+        allow(Gitlab::Observability).to receive(:observability_enabled?).and_return(false)
       end
 
       it 'returns false' do
         expect(menu.render?).to eq false
+        expect(Gitlab::Observability).to have_received(:observability_enabled?).with(user, group)
       end
     end
   end

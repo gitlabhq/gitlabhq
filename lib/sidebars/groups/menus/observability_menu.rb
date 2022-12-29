@@ -23,7 +23,7 @@ module Sidebars
 
         override :render?
         def render?
-          can?(context.current_user, :read_observability, context.group)
+          Gitlab::Observability.observability_enabled?(context.current_user, context.group)
         end
 
         private

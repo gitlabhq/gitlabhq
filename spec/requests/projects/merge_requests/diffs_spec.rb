@@ -33,7 +33,6 @@ RSpec.describe 'Merge Requests Diffs', feature_category: :code_review do
         commit: nil,
         diff_view: :inline,
         merge_ref_head_diff: nil,
-        merge_conflicts_in_diff: true,
         pagination_data: {
           total_pages: nil
         }.merge(pagination_data)
@@ -107,17 +106,6 @@ RSpec.describe 'Merge Requests Diffs', feature_category: :code_review do
               .to receive(:unfoldable)
               .and_return([unfoldable_position])
           end
-        end
-
-        it_behaves_like 'serializes diffs with expected arguments'
-      end
-
-      context 'with disabled display_merge_conflicts_in_diff feature' do
-        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-        let(:expected_options) { collection_arguments(total_pages: 20).merge(merge_conflicts_in_diff: false) }
-
-        before do
-          stub_feature_flags(display_merge_conflicts_in_diff: false)
         end
 
         it_behaves_like 'serializes diffs with expected arguments'
