@@ -13406,6 +13406,36 @@ CREATE SEQUENCE ci_resources_id_seq
 
 ALTER SEQUENCE ci_resources_id_seq OWNED BY ci_resources.id;
 
+CREATE TABLE ci_runner_machines (
+    id bigint NOT NULL,
+    runner_id bigint NOT NULL,
+    executor_type smallint,
+    machine_xid text NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    contacted_at timestamp with time zone,
+    version text,
+    revision text,
+    platform text,
+    architecture text,
+    ip_address text,
+    CONSTRAINT check_1537c1f66f CHECK ((char_length(platform) <= 255)),
+    CONSTRAINT check_6f45a91da7 CHECK ((char_length(version) <= 2048)),
+    CONSTRAINT check_84ed5d8703 CHECK ((char_length(machine_xid) <= 64)),
+    CONSTRAINT check_9b521b3105 CHECK ((char_length(architecture) <= 255)),
+    CONSTRAINT check_afb8efc1a2 CHECK ((char_length(revision) <= 255)),
+    CONSTRAINT check_f214590856 CHECK ((char_length(ip_address) <= 1024))
+);
+
+CREATE SEQUENCE ci_runner_machines_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_runner_machines_id_seq OWNED BY ci_runner_machines.id;
+
 CREATE TABLE ci_runner_namespaces (
     id integer NOT NULL,
     runner_id integer,
@@ -23927,6 +23957,8 @@ ALTER TABLE ONLY ci_resource_groups ALTER COLUMN id SET DEFAULT nextval('ci_reso
 
 ALTER TABLE ONLY ci_resources ALTER COLUMN id SET DEFAULT nextval('ci_resources_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_runner_machines ALTER COLUMN id SET DEFAULT nextval('ci_runner_machines_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_runner_namespaces ALTER COLUMN id SET DEFAULT nextval('ci_runner_namespaces_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_runner_projects ALTER COLUMN id SET DEFAULT nextval('ci_runner_projects_id_seq'::regclass);
@@ -25730,6 +25762,9 @@ ALTER TABLE ONLY ci_resource_groups
 
 ALTER TABLE ONLY ci_resources
     ADD CONSTRAINT ci_resources_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_runner_machines
+    ADD CONSTRAINT ci_runner_machines_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_runner_namespaces
     ADD CONSTRAINT ci_runner_namespaces_pkey PRIMARY KEY (id);
@@ -28931,6 +28966,10 @@ CREATE UNIQUE INDEX index_ci_resource_groups_on_project_id_and_key ON ci_resourc
 CREATE INDEX index_ci_resources_on_build_id ON ci_resources USING btree (build_id);
 
 CREATE UNIQUE INDEX index_ci_resources_on_resource_group_id_and_build_id ON ci_resources USING btree (resource_group_id, build_id);
+
+CREATE UNIQUE INDEX index_ci_runner_machines_on_runner_id_and_machine_xid ON ci_runner_machines USING btree (runner_id, machine_xid);
+
+CREATE INDEX index_ci_runner_machines_on_version ON ci_runner_machines USING btree (version);
 
 CREATE INDEX index_ci_runner_namespaces_on_namespace_id ON ci_runner_namespaces USING btree (namespace_id);
 
@@ -34781,6 +34820,9 @@ ALTER TABLE ONLY operations_feature_flags_clients
 
 ALTER TABLE ONLY namespace_admin_notes
     ADD CONSTRAINT fk_rails_666166ea7b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_runner_machines
+    ADD CONSTRAINT fk_rails_666b61f04f FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_cycle_analytics_project_value_streams
     ADD CONSTRAINT fk_rails_669f4ba293 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

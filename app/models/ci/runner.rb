@@ -13,6 +13,7 @@ module Ci
     include TaggableQueries
     include Presentable
     include EachBatch
+    include Ci::HasRunnerExecutor
 
     add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration
 
@@ -26,26 +27,6 @@ module Ci
       group_type: 2,
       project_type: 3
     }
-
-    enum registration_type: {
-      registration_token: 0,
-      authenticated_user: 1
-    }
-
-    enum executor_type: {
-      unknown: 0,
-      custom: 1,
-      shell: 2,
-      docker: 3,
-      docker_windows: 4,
-      docker_ssh: 5,
-      ssh: 6,
-      parallels: 7,
-      virtualbox: 8,
-      docker_machine: 9,
-      docker_ssh_machine: 10,
-      kubernetes: 11
-    }, _suffix: true
 
     # This `ONLINE_CONTACT_TIMEOUT` needs to be larger than
     #   `RUNNER_QUEUE_EXPIRY_TIME+UPDATE_CONTACT_COLUMN_EVERY`
@@ -73,6 +54,7 @@ module Ci
 
     TAG_LIST_MAX_LENGTH = 50
 
+    has_many :runner_machines, inverse_of: :runner
     has_many :builds
     has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects, disable_joins: true
