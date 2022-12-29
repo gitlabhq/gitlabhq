@@ -47,7 +47,7 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
   as the secondary.
 - Use clear and consistent [terminology](https://design.gitlab.com/content/terminology/).
 - Check grammar and spelling.
-- Consider help content and follow its [guidelines](https://design.gitlab.com/usability/helping-users/).
+- Consider help content and follow its [guidelines](https://design.gitlab.com/usability/contextual-help).
 - Request review from the [appropriate Technical Writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments),
   indicating any specific files or lines they should review, and how to preview
   or understand the location/context of the text from the user's perspective.
@@ -64,9 +64,9 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 Check visual design properties using your browser's _elements inspector_ ([Chrome](https://developer.chrome.com/docs/devtools/css/),
 [Firefox](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/open_the_inspector/index.html)).
 
-- Use recommended [colors](https://design.gitlab.com/product-foundations/colors/)
+- Use recommended [colors](https://design.gitlab.com/product-foundations/color)
   and [typography](https://design.gitlab.com/product-foundations/type-fundamentals/).
-- Follow [layout guidelines](https://design.gitlab.com/layout/grid/).
+- Follow [layout guidelines](https://design.gitlab.com/product-foundations/layout#grid).
 - Use existing [icons](https://gitlab-org.gitlab.io/gitlab-svgs/) and [illustrations](https://gitlab-org.gitlab.io/gitlab-svgs/illustrations/)
   or propose new ones according to [iconography](https://design.gitlab.com/product-foundations/iconography/)
   and [illustration](https://design.gitlab.com/product-foundations/illustration/)
@@ -81,9 +81,8 @@ Check states using your browser's _styles inspector_ to toggle CSS pseudo-classe
 like `:hover` and others ([Chrome](https://developer.chrome.com/docs/devtools/css/reference/#pseudo-class),
 [Firefox](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/examine_and_edit_css/index.html#viewing-common-pseudo-classes)).
 
-- Account for all applicable states ([error](https://design.gitlab.com/content/error-messages/),
-  rest, loading, focus, hover, selected, disabled).
-- Account for states dependent on data size ([empty](https://design.gitlab.com/regions/empty-states/),
+- Account for all applicable states (error, rest, loading, focus, hover, selected, disabled).
+- Account for states dependent on data size ([empty](https://design.gitlab.com/patterns/empty-states),
   some data, and lots of data).
 - Account for states dependent on user role, user preferences, and subscription.
 - Consider animations and transitions, and follow their [guidelines](https://design.gitlab.com/product-foundations/motion/).
@@ -126,7 +125,7 @@ When the design is ready, _before_ starting its implementation:
 
 At any moment, but usually _during_ or _after_ the design's implementation:
 
-- Contribute [issues to Pajamas](https://design.gitlab.com/get-started/contribute/#contribute-an-issue)
+- Contribute [issues to Pajamas](https://design.gitlab.com/get-started/contributing#contribute-an-issue)
   for additions or enhancements to the design system.
 - Create issues with the [`~UX debt`](issue_workflow.md#technical-and-ux-debt)
   label for intentional deviations from the agreed-upon UX requirements due to

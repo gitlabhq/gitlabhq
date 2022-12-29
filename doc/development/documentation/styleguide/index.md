@@ -17,7 +17,7 @@ In addition to this page, the following resources can help you craft and contrib
 - [Doc contribution guidelines](../index.md)
 - [Recommended word list](word_list.md)
 - [Doc style and consistency testing](../testing.md)
-- [Guidelines for UI error messages](https://design.gitlab.com/content/error-messages/)
+- [Guidelines for UI error messages](https://design.gitlab.com/content/voice-and-tone#clear-error-messages)
 - [Documentation global navigation](../site_architecture/global_nav.md)
 - [GitLab Handbook style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
 - [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/welcome/)
