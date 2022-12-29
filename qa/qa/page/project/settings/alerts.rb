@@ -95,6 +95,18 @@ module QA
           def send_test_alert
             click_element(:send_test_alert_button)
           end
+
+          def go_to_view_credentials
+            click_link_with_text('View credentials')
+          end
+
+          def webhook_url
+            find('input[id="url"]').value
+          end
+
+          def authorization_key
+            find('input[id="authorization-key"]').value
+          end
         end
       end
     end

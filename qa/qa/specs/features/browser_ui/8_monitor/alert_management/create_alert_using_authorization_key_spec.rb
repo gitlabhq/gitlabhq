@@ -3,8 +3,23 @@
 module QA
   RSpec.describe 'Monitor', product_group: :respond do
     describe 'Alert settings' do
-      shared_examples 'sends test alert' do
-        it 'creates new alert' do
+      shared_examples 'sends test alert using authorization key' do |type|
+        it 'creates new alert', :aggregate_failures do
+          response = RestClient.post(
+            credentials[:url],
+            payload.to_json,
+            { 'Content-Type': 'application/json', Authorization: "Bearer #{credentials[:auth_key]}" }
+          )
+
+          # With HTTP type, a successful request returns 200 and a JSON with the alert's title
+          # With Prometheus type, a successful request returns 201
+          if type == 'http'
+            expect(response.code).to eq 200
+            expect(JSON.parse(response).first['title']).to eq alert_title
+          else
+            expect(response.code).to eq 201
+          end
+
           Page::Project::Menu.perform(&:go_to_monitor_alerts)
           Page::Project::Monitor::Alerts::Index.perform do |index|
             expect(index).to have_alert_with_title(alert_title)
@@ -28,22 +43,22 @@ module QA
 
       context(
         'when using HTTP endpoint integration',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/382803'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386734'
       ) do
         let(:payload) do
           { title: alert_title, description: alert_title }
         end
 
-        before do
-          Flow::AlertSettings.setup_http_endpoint(payload: payload)
+        let(:credentials) do
+          Flow::AlertSettings.setup_http_endpoint(send: false)
         end
 
-        it_behaves_like 'sends test alert'
+        it_behaves_like 'sends test alert using authorization key', 'http'
       end
 
       context(
         'when using Prometheus integration',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/385792'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386735'
       ) do
         let(:payload) do
           {
@@ -72,11 +87,11 @@ module QA
           }
         end
 
-        before do
-          Flow::AlertSettings.setup_prometheus(payload: payload)
+        let(:credentials) do
+          Flow::AlertSettings.setup_prometheus(send: false)
         end
 
-        it_behaves_like 'sends test alert'
+        it_behaves_like 'sends test alert using authorization key'
       end
     end
   end

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::ContainerRegistryEvent, feature_category: :container_registry do
   let(:secret_token) { 'secret_token' }
-  let(:events) { [{ action: 'push' }] }
+  let(:events) { [{ action: 'push' }, { action: 'pull' }] }
   let(:registry_headers) { { 'Content-Type' => ::API::ContainerRegistryEvent::DOCKER_DISTRIBUTION_EVENTS_V1_JSON } }
 
   describe 'POST /container_registry_event/events' do
@@ -19,14 +19,15 @@ RSpec.describe API::ContainerRegistryEvent, feature_category: :container_registr
     end
 
     it 'returns 200 status and events are passed to event handler' do
-      event = spy(:event)
-      allow(::ContainerRegistry::Event).to receive(:new).and_return(event)
-      expect(event).to receive(:supported?).and_return(true)
+      allow_next_instance_of(::ContainerRegistry::Event) do |event|
+        if event.supported?
+          expect(event).to receive(:handle!).once
+          expect(event).to receive(:track!).once
+        end
+      end
 
       post_events
 
-      expect(event).to have_received(:handle!).once
-      expect(event).to have_received(:track!).once
       expect(response).to have_gitlab_http_status(:ok)
     end
 
