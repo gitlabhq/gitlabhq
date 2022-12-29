@@ -139,17 +139,15 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
 
       it 'can only remove non-Owner members' do
         page.within find_member_row(project_owner) do
-          expect(page).not_to have_button('Remove member')
+          expect(page).not_to have_selector user_action_dropdown
         end
 
-        # Open modal
-        page.within find_member_row(project_developer) do
-          click_button 'Remove member'
-        end
+        show_actions_for_username(project_developer)
+        click_button _('Remove member')
 
         within_modal do
           expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
-          click_button('Remove member')
+          click_button _('Remove member')
         end
 
         wait_for_requests
@@ -163,18 +161,12 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
       let(:current_user) { group_owner }
 
       it 'can remove any direct member' do
-        page.within find_member_row(project_owner) do
-          expect(page).to have_button('Remove member')
-        end
-
-        # Open modal
-        page.within find_member_row(project_owner) do
-          click_button 'Remove member'
-        end
+        show_actions_for_username(project_owner)
+        click_button _('Remove member')
 
         within_modal do
           expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
-          click_button('Remove member')
+          click_button _('Remove member')
         end
 
         wait_for_requests

@@ -22,13 +22,12 @@ RSpec.describe 'Projects > Settings > User manages project members', feature_cat
   it 'cancels a team member', :js do
     visit(project_project_members_path(project))
 
-    page.within find_member_row(user_dmitriy) do
-      click_button 'Remove member'
-    end
+    show_actions_for_username(user_dmitriy)
+    click_button _('Remove member')
 
     within_modal do
       expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
-      click_button('Remove member')
+      click_button _('Remove member')
     end
 
     visit(project_project_members_path(project))

@@ -1,25 +1,31 @@
 import { shallowMount } from '@vue/test-utils';
-import LeaveButton from '~/members/components/action_buttons/leave_button.vue';
-import RemoveMemberButton from '~/members/components/action_buttons/remove_member_button.vue';
-import UserActionButtons from '~/members/components/action_buttons/user_action_buttons.vue';
+import { sprintf } from '~/locale';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import LeaveGroupDropdownItem from '~/members/components/action_dropdowns/leave_group_dropdown_item.vue';
+import RemoveMemberDropdownItem from '~/members/components/action_dropdowns/remove_member_dropdown_item.vue';
+import UserActionDropdown from '~/members/components/action_dropdowns/user_action_dropdown.vue';
+import { I18N } from '~/members/components/action_dropdowns/constants';
 import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
 import { member, orphanedMember } from '../../mock_data';
 
-describe('UserActionButtons', () => {
+describe('UserActionDropdown', () => {
   let wrapper;
 
   const createComponent = (propsData = {}) => {
-    wrapper = shallowMount(UserActionButtons, {
+    wrapper = shallowMount(UserActionDropdown, {
       propsData: {
         member,
         isCurrentUser: false,
         isInvitedUser: false,
         ...propsData,
       },
+      directives: {
+        GlTooltip: createMockDirective(),
+      },
     });
   };
 
-  const findRemoveMemberButton = () => wrapper.findComponent(RemoveMemberButton);
+  const findRemoveMemberDropdownItem = () => wrapper.findComponent(RemoveMemberDropdownItem);
 
   afterEach(() => {
     wrapper.destroy();
@@ -34,16 +40,30 @@ describe('UserActionButtons', () => {
       });
     });
 
-    it('renders remove member button', () => {
-      expect(findRemoveMemberButton().exists()).toBe(true);
+    it('renders remove member dropdown with correct text', () => {
+      const removeMemberDropdownItem = findRemoveMemberDropdownItem();
+      expect(removeMemberDropdownItem.exists()).toBe(true);
+      expect(removeMemberDropdownItem.html()).toContain(I18N.removeMember);
+    });
+
+    it('displays a tooltip', () => {
+      const tooltip = getBinding(wrapper.element, 'gl-tooltip');
+      expect(tooltip).not.toBeUndefined();
+      expect(tooltip.value).toBe(I18N.actions);
     });
 
     it('sets props correctly', () => {
-      expect(findRemoveMemberButton().props()).toEqual({
+      expect(findRemoveMemberDropdownItem().props()).toEqual({
         memberId: member.id,
         memberType: 'GroupMember',
-        message: `Are you sure you want to remove ${member.user.name} from "${member.source.fullName}"?`,
-        title: UserActionButtons.i18n.title,
+        modalMessage: sprintf(
+          I18N.confirmNormalUserRemoval,
+          {
+            userName: member.user.name,
+            group: member.source.fullName,
+          },
+          false,
+        ),
         isAccessRequest: false,
         isInvite: false,
         userDeletionObstacles: {
@@ -62,14 +82,14 @@ describe('UserActionButtons', () => {
           },
         });
 
-        expect(findRemoveMemberButton().props('message')).toBe(
-          `Are you sure you want to remove this orphaned member from "${orphanedMember.source.fullName}"?`,
+        expect(findRemoveMemberDropdownItem().props('modalMessage')).toBe(
+          sprintf(I18N.confirmOrphanedUserRemoval, { group: orphanedMember.source.fullName }),
         );
       });
     });
 
     describe('when member is the current user', () => {
-      it('renders leave button', () => {
+      it('renders leave dropdown with correct text', () => {
         createComponent({
           isCurrentUser: true,
           permissions: {
@@ -77,20 +97,22 @@ describe('UserActionButtons', () => {
           },
         });
 
-        expect(wrapper.findComponent(LeaveButton).exists()).toBe(true);
+        const leaveGroupDropdownItem = wrapper.findComponent(LeaveGroupDropdownItem);
+        expect(leaveGroupDropdownItem.exists()).toBe(true);
+        expect(leaveGroupDropdownItem.html()).toContain(I18N.leaveGroup);
       });
     });
   });
 
   describe('when user does not have `canRemove` permissions', () => {
-    it('does not render remove member button', () => {
+    it('does not render remove member dropdown', () => {
       createComponent({
         permissions: {
           canRemove: false,
         },
       });
 
-      expect(findRemoveMemberButton().exists()).toBe(false);
+      expect(findRemoveMemberDropdownItem().exists()).toBe(false);
     });
   });
 
@@ -108,7 +130,7 @@ describe('UserActionButtons', () => {
     });
 
     it('sets member type correctly', () => {
-      expect(findRemoveMemberButton().props().memberType).toBe('GroupMember');
+      expect(findRemoveMemberDropdownItem().props().memberType).toBe('GroupMember');
     });
   });
 
@@ -126,7 +148,7 @@ describe('UserActionButtons', () => {
     });
 
     it('sets member type correctly', () => {
-      expect(findRemoveMemberButton().props().memberType).toBe('ProjectMember');
+      expect(findRemoveMemberDropdownItem().props().memberType).toBe('ProjectMember');
     });
   });
 });

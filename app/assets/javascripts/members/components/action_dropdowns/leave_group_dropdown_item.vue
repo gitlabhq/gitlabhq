@@ -1,20 +1,17 @@
 <script>
-import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlDropdownItem, GlModalDirective } from '@gitlab/ui';
 import { LEAVE_MODAL_ID } from '../../constants';
 import LeaveModal from '../modals/leave_modal.vue';
 
 export default {
-  name: 'LeaveButton',
-  title: __('Leave'),
+  name: 'LeaveGroupDropdownItem',
   modalId: LEAVE_MODAL_ID,
   components: {
-    GlButton,
+    GlDropdownItem,
     LeaveModal,
   },
   directives: {
     GlModal: GlModalDirective,
-    GlTooltip: GlTooltipDirective,
   },
   props: {
     member: {
@@ -26,14 +23,10 @@ export default {
 </script>
 
 <template>
-  <div>
-    <gl-button
-      v-gl-tooltip.hover
-      v-gl-modal="$options.modalId"
-      :title="$options.title"
-      :aria-label="$options.title"
-      icon="leave"
-    />
+  <gl-dropdown-item v-gl-modal="$options.modalId">
+    <span class="gl-text-red-500">
+      <slot></slot>
+    </span>
     <leave-modal :member="member" />
-  </div>
+  </gl-dropdown-item>
 </template>

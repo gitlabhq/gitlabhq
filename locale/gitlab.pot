@@ -25824,10 +25824,10 @@ msgstr ""
 msgid "Members|Are you sure you want to remove \"%{groupName}\"?"
 msgstr ""
 
-msgid "Members|Are you sure you want to remove %{usersName} from \"%{source}\"?"
+msgid "Members|Are you sure you want to remove %{userName} from \"%{group}\"?"
 msgstr ""
 
-msgid "Members|Are you sure you want to remove this orphaned member from \"%{source}\"?"
+msgid "Members|Are you sure you want to remove this orphaned member from \"%{group}\"?"
 msgstr ""
 
 msgid "Members|Are you sure you want to revoke the invitation for %{inviteEmail} to join \"%{source}\""

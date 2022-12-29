@@ -269,9 +269,12 @@ RSpec.describe 'Admin Groups', feature_category: :subgroups do
         expect(page).to have_content('Developer')
       end
 
-      find_member_row(current_user).click_button(title: 'Leave')
+      show_actions_for_username(current_user)
+      click_button _('Leave group')
 
-      accept_gl_confirm(button_text: 'Leave')
+      within_modal do
+        click_button _('Leave')
+      end
 
       wait_for_all_requests
 

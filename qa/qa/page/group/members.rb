@@ -22,8 +22,12 @@ module QA
           element :access_level_link
         end
 
-        view 'app/assets/javascripts/members/components/action_buttons/remove_member_button.vue' do
-          element :delete_member_button
+        view 'app/assets/javascripts/members/components/action_dropdowns/user_action_dropdown.vue' do
+          element :user_action_dropdown
+        end
+
+        view 'app/assets/javascripts/members/components/action_dropdowns/remove_member_dropdown_item.vue' do
+          element :delete_member_dropdown_item
         end
 
         view 'app/assets/javascripts/members/components/members_tabs.vue' do
@@ -41,7 +45,8 @@ module QA
 
         def remove_member(username)
           within_element(:member_row, text: username) do
-            click_element :delete_member_button
+            click_element :user_action_dropdown
+            click_element :delete_member_dropdown_item
           end
 
           within_element(:remove_member_modal) do
