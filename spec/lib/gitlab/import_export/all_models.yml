@@ -422,6 +422,7 @@ project:
 - wiki_page_hooks_integrations
 - deployment_hooks_integrations
 - alert_hooks_integrations
+- incident_hooks_integrations
 - vulnerability_hooks_integrations
 - campfire_integration
 - confluence_integration

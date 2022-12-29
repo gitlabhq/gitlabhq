@@ -132,6 +132,7 @@ class Integration < ApplicationRecord
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
   scope :deployment_hooks, -> { where(deployment_events: true, active: true) }
   scope :alert_hooks, -> { where(alert_events: true, active: true) }
+  scope :incident_hooks, -> { where(incident_events: true, active: true) }
   scope :deployment, -> { where(category: 'deployment') }
 
   class << self

@@ -153,6 +153,7 @@ RSpec.describe Integration do
     include_examples 'hook scope', 'confidential_note'
     include_examples 'hook scope', 'alert'
     include_examples 'hook scope', 'archive_trace'
+    include_examples 'hook scope', 'incident'
   end
 
   describe '#operating?' do

@@ -10967,6 +10967,21 @@ CREATE SEQUENCE analytics_cycle_analytics_stage_event_hashes_id_seq
 
 ALTER SEQUENCE analytics_cycle_analytics_stage_event_hashes_id_seq OWNED BY analytics_cycle_analytics_stage_event_hashes.id;
 
+CREATE TABLE analytics_dashboards_pointers (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    project_id bigint NOT NULL
+);
+
+CREATE SEQUENCE analytics_dashboards_pointers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE analytics_dashboards_pointers_id_seq OWNED BY analytics_dashboards_pointers.id;
+
 CREATE TABLE analytics_devops_adoption_segments (
     id bigint NOT NULL,
     last_recorded_at timestamp with time zone,
@@ -16712,6 +16727,7 @@ CREATE TABLE integrations (
     archive_trace_events boolean DEFAULT false NOT NULL,
     encrypted_properties bytea,
     encrypted_properties_iv bytea,
+    incident_events boolean DEFAULT false NOT NULL,
     CONSTRAINT check_a948a0aa7e CHECK ((char_length(type_new) <= 255))
 );
 
@@ -23743,6 +23759,8 @@ ALTER TABLE ONLY analytics_cycle_analytics_project_value_streams ALTER COLUMN id
 
 ALTER TABLE ONLY analytics_cycle_analytics_stage_event_hashes ALTER COLUMN id SET DEFAULT nextval('analytics_cycle_analytics_stage_event_hashes_id_seq'::regclass);
 
+ALTER TABLE ONLY analytics_dashboards_pointers ALTER COLUMN id SET DEFAULT nextval('analytics_dashboards_pointers_id_seq'::regclass);
+
 ALTER TABLE ONLY analytics_devops_adoption_segments ALTER COLUMN id SET DEFAULT nextval('analytics_devops_adoption_segments_id_seq'::regclass);
 
 ALTER TABLE ONLY analytics_devops_adoption_snapshots ALTER COLUMN id SET DEFAULT nextval('analytics_devops_adoption_snapshots_id_seq'::regclass);
@@ -25409,6 +25427,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_project_value_streams
 
 ALTER TABLE ONLY analytics_cycle_analytics_stage_event_hashes
     ADD CONSTRAINT analytics_cycle_analytics_stage_event_hashes_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY analytics_dashboards_pointers
+    ADD CONSTRAINT analytics_dashboards_pointers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY analytics_devops_adoption_segments
     ADD CONSTRAINT analytics_devops_adoption_segments_pkey PRIMARY KEY (id);
@@ -28462,6 +28483,10 @@ CREATE INDEX index_analytics_ca_project_stages_on_value_stream_id ON analytics_c
 CREATE UNIQUE INDEX index_analytics_ca_project_value_streams_on_project_id_and_name ON analytics_cycle_analytics_project_value_streams USING btree (project_id, name);
 
 CREATE INDEX index_analytics_cycle_analytics_group_stages_custom_only ON analytics_cycle_analytics_group_stages USING btree (id) WHERE (custom = true);
+
+CREATE UNIQUE INDEX index_analytics_dashboards_pointers_on_namespace_id ON analytics_dashboards_pointers USING btree (namespace_id);
+
+CREATE INDEX index_analytics_dashboards_pointers_on_project_id ON analytics_dashboards_pointers USING btree (project_id);
 
 CREATE INDEX index_application_settings_on_custom_project_templates_group_id ON application_settings USING btree (custom_project_templates_group_id);
 
@@ -34799,6 +34824,9 @@ ALTER TABLE ONLY users_security_dashboard_projects
 ALTER TABLE ONLY dast_sites
     ADD CONSTRAINT fk_rails_6febb6ea9c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY analytics_dashboards_pointers
+    ADD CONSTRAINT fk_rails_7027b7eaa9 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ci_builds_runner_session
     ADD CONSTRAINT fk_rails_70707857d3 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
@@ -35638,6 +35666,9 @@ ALTER TABLE ONLY security_orchestration_policy_rule_schedules
 
 ALTER TABLE ONLY dast_pre_scan_verifications
     ADD CONSTRAINT fk_rails_f08d9312a8 FOREIGN KEY (dast_profile_id) REFERENCES dast_profiles(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY analytics_dashboards_pointers
+    ADD CONSTRAINT fk_rails_f0e7c640c3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY prometheus_alerts
     ADD CONSTRAINT fk_rails_f0e8db86aa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

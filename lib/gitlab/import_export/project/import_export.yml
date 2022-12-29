@@ -776,6 +776,7 @@ excluded_attributes:
     - :wiki_page_hooks_integrations
     - :deployment_hooks_integrations
     - :alert_hooks_integrations
+    - :incident_hooks_integrations
     - :mirror
     - :runners_token
     - :runners_token_encrypted
