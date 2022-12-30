@@ -3,7 +3,6 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
-import { createAlert } from '~/flash';
 import GroupSelect from '~/vue_shared/components/group_select/group_select.vue';
 import {
   TOGGLE_TEXT,
@@ -12,8 +11,6 @@ import {
   QUERY_TOO_SHORT_MESSAGE,
 } from '~/vue_shared/components/group_select/constants';
 import waitForPromises from 'helpers/wait_for_promises';
-
-jest.mock('~/flash');
 
 describe('GroupSelect', () => {
   let wrapper;
@@ -26,6 +23,11 @@ describe('GroupSelect', () => {
   };
   const groupEndpoint = `/api/undefined/groups/${groupMock.id}`;
 
+  // Stubs
+  const GlAlert = {
+    template: '<div><slot /></div>',
+  };
+
   // Props
   const inputName = 'inputName';
   const inputId = 'inputId';
@@ -33,6 +35,7 @@ describe('GroupSelect', () => {
   // Finders
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findInput = () => wrapper.findByTestId('input');
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   // Helpers
   const createComponent = ({ props = {} } = {}) => {
@@ -41,6 +44,9 @@ describe('GroupSelect', () => {
         inputName,
         inputId,
         ...props,
+      },
+      stubs: {
+        GlAlert,
       },
     });
   };
@@ -94,13 +100,13 @@ describe('GroupSelect', () => {
           .reply(200, [{ full_name: 'notTheSelectedGroup', id: '2' }]);
         mock.onGet(groupEndpoint).reply(500);
         createComponent({ props: { initialSelection: groupMock.id } });
+
+        expect(findAlert().exists()).toBe(false);
+
         await waitForPromises();
 
-        expect(createAlert).toHaveBeenCalledWith({
-          message: FETCH_GROUP_ERROR,
-          error: expect.any(Error),
-          parent: wrapper.vm.$el,
-        });
+        expect(findAlert().exists()).toBe(true);
+        expect(findAlert().text()).toBe(FETCH_GROUP_ERROR);
       });
     });
   });
@@ -109,13 +115,12 @@ describe('GroupSelect', () => {
     mock.onGet('/api/undefined/groups.json').reply(500);
     createComponent();
     openListbox();
+    expect(findAlert().exists()).toBe(false);
+
     await waitForPromises();
 
-    expect(createAlert).toHaveBeenCalledWith({
-      message: FETCH_GROUPS_ERROR,
-      error: expect.any(Error),
-      parent: wrapper.vm.$el,
-    });
+    expect(findAlert().exists()).toBe(true);
+    expect(findAlert().text()).toBe(FETCH_GROUPS_ERROR);
   });
 
   describe('selection', () => {
@@ -186,7 +191,11 @@ describe('GroupSelect', () => {
       await waitForPromises();
 
       expect(mock.history.get).toHaveLength(2);
-      expect(mock.history.get[1].params).toStrictEqual({ search: searchString });
+      expect(mock.history.get[1].params).toStrictEqual({
+        page: 1,
+        per_page: 20,
+        search: searchString,
+      });
     });
 
     it('shows a notice if the search query is too short', async () => {
@@ -197,6 +206,90 @@ describe('GroupSelect', () => {
 
       expect(mock.history.get).toHaveLength(1);
       expect(findListbox().props('noResultsText')).toBe(QUERY_TOO_SHORT_MESSAGE);
+    });
+  });
+
+  describe('pagination', () => {
+    const searchString = 'searchString';
+
+    beforeEach(async () => {
+      let requestCount = 0;
+      mock.onGet('/api/undefined/groups.json').reply(({ params }) => {
+        requestCount += 1;
+        return [
+          200,
+          [
+            {
+              full_name: `Group [page: ${params.page} - search: ${params.search}]`,
+              id: requestCount,
+            },
+          ],
+          {
+            page: params.page,
+            'x-total-pages': 3,
+          },
+        ];
+      });
+      createComponent();
+      openListbox();
+      findListbox().vm.$emit('bottom-reached');
+      return waitForPromises();
+    });
+
+    it('fetches the next page when bottom is reached', async () => {
+      expect(mock.history.get).toHaveLength(2);
+      expect(mock.history.get[1].params).toStrictEqual({
+        page: 2,
+        per_page: 20,
+        search: '',
+      });
+    });
+
+    it('fetches the first page when the search query changes', async () => {
+      search(searchString);
+      await waitForPromises();
+
+      expect(mock.history.get).toHaveLength(3);
+      expect(mock.history.get[2].params).toStrictEqual({
+        page: 1,
+        per_page: 20,
+        search: searchString,
+      });
+    });
+
+    it('retains the search query when infinite scrolling', async () => {
+      search(searchString);
+      await waitForPromises();
+      findListbox().vm.$emit('bottom-reached');
+      await waitForPromises();
+
+      expect(mock.history.get).toHaveLength(4);
+      expect(mock.history.get[3].params).toStrictEqual({
+        page: 2,
+        per_page: 20,
+        search: searchString,
+      });
+    });
+
+    it('pauses infinite scroll after fetching the last page', async () => {
+      expect(findListbox().props('infiniteScroll')).toBe(true);
+
+      findListbox().vm.$emit('bottom-reached');
+      await waitForPromises();
+
+      expect(findListbox().props('infiniteScroll')).toBe(false);
+    });
+
+    it('resumes infinite scroll when search query changes', async () => {
+      findListbox().vm.$emit('bottom-reached');
+      await waitForPromises();
+
+      expect(findListbox().props('infiniteScroll')).toBe(false);
+
+      search(searchString);
+      await waitForPromises();
+
+      expect(findListbox().props('infiniteScroll')).toBe(true);
     });
   });
 });

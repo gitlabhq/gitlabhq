@@ -784,7 +784,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         end
       end
 
-      context 'when the target branch change' do
+      context 'when the target branch changes' do
         it 'calls MergeRequests::ResolveTodosService#async_execute' do
           expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
             expect(service).to receive(:async_execute)
