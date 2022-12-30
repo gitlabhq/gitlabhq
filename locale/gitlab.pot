@@ -18829,6 +18829,9 @@ msgstr ""
 msgid "Global Shortcuts"
 msgstr ""
 
+msgid "Global notification email"
+msgstr ""
+
 msgid "Global notification level"
 msgstr ""
 

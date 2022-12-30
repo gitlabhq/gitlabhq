@@ -14,4 +14,4 @@
 
   .table-section.section-30
     = form_for setting, url: profile_group_notifications_path(group), method: :put, html: { class: 'update-notifications gl-display-flex' } do |f|
-      = f.select :notification_email, @user.public_verified_emails, { include_blank: 'Global notification email' }, class: 'select2 js-group-notification-email'
+      .js-notification-email-listbox-input{ data: {  name: 'notification_setting[notification_email]', emails: @user.public_verified_emails.to_json, empty_value_text: _('Global notification email') , value: setting.notification_email } }

@@ -7,6 +7,7 @@ describe('ListboxInput', () => {
 
   // Props
   const label = 'label';
+  const decription = 'decription';
   const name = 'name';
   const defaultToggleText = 'defaultToggleText';
   const items = [
@@ -32,6 +33,7 @@ describe('ListboxInput', () => {
     wrapper = shallowMount(ListboxInput, {
       propsData: {
         label,
+        decription,
         name,
         defaultToggleText,
         items,
@@ -40,6 +42,23 @@ describe('ListboxInput', () => {
     });
   };
 
+  describe('wrapper', () => {
+    it.each`
+      description          | labelProp      | descriptionProp      | rendersGlFormGroup
+      ${'does not render'} | ${''}          | ${''}                | ${false}
+      ${'renders'}         | ${'labelProp'} | ${''}                | ${true}
+      ${'renders'}         | ${''}          | ${'descriptionProp'} | ${true}
+      ${'renders'}         | ${'labelProp'} | ${'descriptionProp'} | ${true}
+    `(
+      "$description a GlFormGroup when label is '$labelProp' and description is '$descriptionProp'",
+      ({ labelProp, descriptionProp, rendersGlFormGroup }) => {
+        createComponent({ label: labelProp, description: descriptionProp });
+
+        expect(findGlFormGroup().exists()).toBe(rendersGlFormGroup);
+      },
+    );
+  });
+
   describe('options', () => {
     beforeEach(() => {
       createComponent();
@@ -47,6 +66,10 @@ describe('ListboxInput', () => {
 
     it('passes the label to the form group', () => {
       expect(findGlFormGroup().attributes('label')).toBe(label);
+    });
+
+    it('passes the decription to the form group', () => {
+      expect(findGlFormGroup().attributes('decription')).toBe(decription);
     });
 
     it('sets the input name', () => {

@@ -19,6 +19,11 @@ export default {
       required: false,
       default: '',
     },
+    description: {
+      type: String,
+      required: false,
+      default: '',
+    },
     name: {
       type: String,
       required: true,
@@ -37,6 +42,11 @@ export default {
       type: GlListbox.props.items.type,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -44,6 +54,9 @@ export default {
     };
   },
   computed: {
+    wrapperComponent() {
+      return this.label || this.description ? 'gl-form-group' : 'div';
+    },
     allOptions() {
       const allOptions = [];
 
@@ -102,16 +115,17 @@ export default {
 </script>
 
 <template>
-  <gl-form-group :label="label">
+  <component :is="wrapperComponent" :label="label" :description="description">
     <gl-listbox
       :selected="selected"
       :toggle-text="toggleText"
       :items="filteredItems"
       :searchable="isSearchable"
       :no-results-text="$options.i18n.noResultsText"
+      :disabled="disabled"
       @search="search"
       @select="$emit($options.model.event, $event)"
     />
     <input ref="input" type="hidden" :name="name" :value="selected" />
-  </gl-form-group>
+  </component>
 </template>
