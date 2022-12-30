@@ -33,7 +33,6 @@ https://about.gitlab.com/handbook/product/gitlab-the-product/#definitions
 - No longer tested internally.
 - Will be removed in a future major release.
 - Begins after an end-of-support date has passed.
-- Ends after all relevant code has been removed.
 
 [Announcing an End of Support period](https://about.gitlab.com/handbook/marketing/blog/release-posts/#announcing-an-end-of-support-period)
 should only be used in special circumstances and is not recommended for general use.
@@ -42,6 +41,7 @@ Most features should be deprecated and then removed.
 **Removal**:
 
 - Feature usage impossible.
+- Feature no longer supported (if End of Support period hasn't already been announced).
 - Happens in a major release in line with our
   [semantic versioning policy](../../policy/maintenance.md).
 - Begins after removal date has passed.
