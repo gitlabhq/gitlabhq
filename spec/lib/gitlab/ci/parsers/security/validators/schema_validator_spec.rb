@@ -19,6 +19,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     }
   end
 
+  let(:analyzer_vendor) do
+    { 'name' => 'A DAST analyzer' }
+  end
+
+  let(:scanner_vendor) do
+    { 'name' => 'A DAST scanner' }
+  end
+
   let(:report_data) do
     {
       'scan' => {
@@ -26,7 +34,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
           'id' => 'my-dast-analyzer',
           'name' => 'My DAST analyzer',
           'version' => '0.1.0',
-          'vendor' => { 'name' => 'A DAST analyzer' }
+          'vendor' => analyzer_vendor
         },
         'end_time' => '2020-01-28T03:26:02',
         'scanned_resources' => [],
@@ -34,7 +42,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
           'id' => 'my-dast-scanner',
           'name' => 'My DAST scanner',
           'version' => '0.2.0',
-          'vendor' => { 'name' => 'A DAST scanner' }
+          'vendor' => scanner_vendor
         },
         'start_time' => '2020-01-28T03:26:01',
         'status' => 'success',
@@ -491,6 +499,22 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
         end
 
         it_behaves_like 'report with expected warnings'
+      end
+
+      context 'and the report passes schema validation as a GitLab-vendored analyzer' do
+        let(:analyzer_vendor) do
+          { 'name' => 'GitLab' }
+        end
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'and the report passes schema validation as a GitLab-vendored scanner' do
+        let(:scanner_vendor) do
+          { 'name' => 'GitLab' }
+        end
+
+        it { is_expected.to be_empty }
       end
     end
 

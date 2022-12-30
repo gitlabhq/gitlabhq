@@ -71,19 +71,6 @@ module Gitlab
         "#{type}_#{hashed_identifier}"
       end
 
-      def with_lock_retries(*args, **kwargs, &block)
-        raise_on_exhaustion = !!kwargs.delete(:raise_on_exhaustion)
-        merged_args = {
-          connection: connection,
-          klass: self.class,
-          logger: Gitlab::BackgroundMigration::Logger,
-          allow_savepoints: true
-        }.merge(kwargs)
-
-        Gitlab::Database::WithLockRetries.new(**merged_args)
-          .run(raise_on_exhaustion: raise_on_exhaustion, &block)
-      end
-
       def assert_not_in_transaction_block(scope:)
         return unless transaction_open?
 
