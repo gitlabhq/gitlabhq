@@ -241,6 +241,12 @@ This means that it uses configuration files to support providing GitLab-specific
 which is required by internal extension examples, such
 as [`glfm_example_metadata.yml`](#glfm_example_metadatayml).
 
+The design of the snapshot testing helps ensure the correctness of the user-facing GLFM Markdown.
+The testing thoroughly exercises the backend and frontend [parsers and renderers](#parsers-and-renderers)
+by using a [black-box testing](https://en.wikipedia.org/wiki/Black-box_testing) approach.
+It can be considered a type of high-level testing at the ["top of the testing pyramid"](https://martinfowler.com/articles/practical-test-pyramid.html)
+because of this comprehensive style.
+
 Regarding the terminology used for Markdown snapshot testing:
 
 <!-- vale gitlab.InclusionCultural = NO -->
@@ -1358,7 +1364,9 @@ This section describes how the scripts can be used to manage the GLFM specificat
 
 1. Run [`update-specification.rb`](#update-specificationrb-script) to update the GLFM specification [output specification files](#output-specification-files).
 1. Visually inspect and confirm any resulting changes to the [output specification files](#output-specification-files).
-1. Run [`run-spec-tests.sh`](#run-spec-testssh-script) to run the conformance tests against the canonicalized GLFM specification.
+1. Run [`run-spec-tests.sh`](#run-spec-testssh-script). This script is not yet implemented
+   and only prints a placeholder message. When implemented, it should run the conformance tests
+   against the canonicalized GLFM specification.
 1. Commit any changes to the [output specification files](#output-specification-files).
 
 ### Update the example snapshots and run snapshot tests

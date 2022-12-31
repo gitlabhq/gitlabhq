@@ -16,8 +16,16 @@ with `Group 1`, so that both members of `Group 1` and `Group 2` have access to t
 When a project is shared with a group:
 
 - All group members, including members of subgroups or projects that belong to the group,
-are assigned the same role in the project.
-Each member's role is displayed in **Project information > Members > Max role**.
+  are assigned the same role in the project.
+  Each member's role is displayed in **Project information > Members**, in the **Max role** column.
+  When sharing a project with a group, a user's assigned **Max role** is the lowest
+  of either:
+
+  - The role assigned in the group membership.
+  - The maximum role selected when sharing the project with the group.
+
+  Assigning a higher maximum role to the group doesn't give group users higher roles than
+  the roles already assigned to them in the group.
 - The group is listed in the **Groups** tab.
 - The project is listed on the group dashboard.
 
