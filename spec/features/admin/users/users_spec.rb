@@ -28,7 +28,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
       expect(page).to have_content(current_user.email)
       expect(page).to have_content(current_user.name)
-      expect(page).to have_content(current_user.created_at.strftime('%b %e, %Y'))
+      expect(page).to have_content(current_user.created_at.strftime('%b %d, %Y'))
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
       expect(page).to have_content('Projects')
