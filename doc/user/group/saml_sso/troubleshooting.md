@@ -281,3 +281,12 @@ this means:
 A GitLab group Owner can use the [SAML API](../../../api/saml.md) to update the user's SAML `extern_uid`.
 The `extern_uid` value must match the Name ID value sent by the SAML identity provider (IdP). Depending on the IdP configuration
 this may be a generated unique ID, an email address, or other value.
+
+## Message: "The member's email address is not linked to a SAML account" **(PREMIUM SAAS)**
+
+This error appears when you try to invite a user to a GitLab.com group (or subgroup or project within a group) that has [SAML SSO enforcement](index.md#sso-enforcement) enabled.
+
+If you see this message after trying to invite a user to a group:
+
+1. Ensure the user has been [added to the SAML identity provider](index.md#user-access-and-management).
+1. Ask the user to [link SAML to their existing GitLab.com account](index.md#linking-saml-to-your-existing-gitlabcom-account), if they have one. Otherwise, ask the user to create a GitLab.com account by [accessing GitLab.com through the identity provider's dashboard](index.md#user-access-and-management), or by [signing up manually](https://gitlab.com/users/sign_up) and linking SAML to their new account.

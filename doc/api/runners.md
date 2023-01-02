@@ -650,18 +650,18 @@ POST /runners
 
 | Attribute          | Type         | Required | Description                                                                                                                                                   |
 |--------------------|--------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `token`            | string       | yes      | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/379743): [Registration token](#registration-and-authentication-tokens). The registration token will be replaced by an authentication token in GitLab 16.0 |
-| `description`      | string       | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/379743): Runner's description |
+| `token`            | string       | yes      | [Registration token](#registration-and-authentication-tokens) |
+| `description`      | string       | no       | Runner's description |
 | `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version`, `platform`, and `architecture` are displayed in the Admin Area of the UI |
 | `active`           | boolean      | no       | Deprecated: Use `paused` instead. Specifies whether the runner is allowed to receive new jobs |
-| `paused`           | boolean      | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/379743): Specifies whether the runner should ignore new jobs |
-| `locked`           | boolean      | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/379743): Specifies whether the runner should be locked for the current project |
-| `run_untagged`     | boolean      | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/379743): Specifies whether the runner should handle untagged jobs |
-| `tag_list`         | string array | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/379743): A list of runner tags |
-| `access_level`     | string       | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/379743): The access level of the runner; `not_protected` or `ref_protected` |
-| `maximum_timeout`  | integer      | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/379743): Maximum timeout that limits the amount of time (in seconds) that runners can run jobs |
+| `paused`           | boolean      | no       | Specifies whether the runner should ignore new jobs |
+| `locked`           | boolean      | no       | Specifies whether the runner should be locked for the current project |
+| `run_untagged`     | boolean      | no       | Specifies whether the runner should handle untagged jobs |
+| `tag_list`         | string array | no       | A list of runner tags |
+| `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected` |
+| `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs |
 | `maintainer_note`  | string       | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350730), see `maintenance_note` |
-| `maintenance_note` | string       | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/379743): Free-form maintenance notes for the runner (1024 characters) |
+| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters) |
 
 ```shell
 curl --request POST "https://gitlab.example.com/api/v4/runners" \
