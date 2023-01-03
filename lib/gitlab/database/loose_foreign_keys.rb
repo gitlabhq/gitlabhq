@@ -22,7 +22,7 @@ module Gitlab
           {
             column: config.fetch('column'),
             on_delete: config.fetch('on_delete').to_sym,
-            gitlab_schema: GitlabSchema.table_schema(child_table_name)
+            gitlab_schema: GitlabSchema.table_schema!(child_table_name)
           }
         )
       end

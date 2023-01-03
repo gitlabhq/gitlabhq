@@ -51,6 +51,12 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection
           sql: "SELECT 1 FROM ci_builds",
           expect_error: /The query tried to access \["ci_builds"\]/,
           setup: -> (_) { skip_if_multiple_databases_not_setup }
+        },
+        "for query accessing unknown gitlab_schema" => {
+          model: ::ApplicationRecord,
+          sql: "SELECT 1 FROM new_table",
+          expect_error: /The query tried to access \["new_table"\] \(of undefined_new_table\)/,
+          setup: -> (_) { skip_if_multiple_databases_not_setup }
         }
       }
     end

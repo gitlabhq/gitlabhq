@@ -299,21 +299,21 @@ HELM_CMD=$(cat << EOF
     --set global.appConfig.sentry.dsn="${REVIEW_APPS_SENTRY_DSN}" \
     --set global.appConfig.sentry.environment="review" \
     --set gitlab.migrations.image.repository="${gitlab_toolbox_image_repository}" \
-    --set gitlab.migrations.image.tag="${CI_COMMIT_REF_SLUG}" \
+    --set gitlab.migrations.image.tag="${CI_COMMIT_SHA}" \
     --set gitlab.gitaly.image.repository="${gitlab_gitaly_image_repository}" \
     --set gitlab.gitaly.image.tag="${gitaly_image_tag}" \
     --set gitlab.gitlab-shell.image.repository="${gitlab_shell_image_repository}" \
     --set gitlab.gitlab-shell.image.tag="v${GITLAB_SHELL_VERSION}" \
     --set gitlab.sidekiq.annotations.commit="${CI_COMMIT_SHORT_SHA}" \
     --set gitlab.sidekiq.image.repository="${gitlab_sidekiq_image_repository}" \
-    --set gitlab.sidekiq.image.tag="${CI_COMMIT_REF_SLUG}" \
+    --set gitlab.sidekiq.image.tag="${CI_COMMIT_SHA}" \
     --set gitlab.webservice.annotations.commit="${CI_COMMIT_SHORT_SHA}" \
     --set gitlab.webservice.image.repository="${gitlab_webservice_image_repository}" \
-    --set gitlab.webservice.image.tag="${CI_COMMIT_REF_SLUG}" \
+    --set gitlab.webservice.image.tag="${CI_COMMIT_SHA}" \
     --set gitlab.webservice.workhorse.image="${gitlab_workhorse_image_repository}" \
-    --set gitlab.webservice.workhorse.tag="${CI_COMMIT_REF_SLUG}" \
+    --set gitlab.webservice.workhorse.tag="${CI_COMMIT_SHA}" \
     --set gitlab.toolbox.image.repository="${gitlab_toolbox_image_repository}" \
-    --set gitlab.toolbox.image.tag="${CI_COMMIT_REF_SLUG}"
+    --set gitlab.toolbox.image.tag="${CI_COMMIT_SHA}"
 EOF
 )
 

@@ -1177,6 +1177,7 @@ export const availableWorkItemsResponse = {
             title: 'Task 1',
             state: 'OPEN',
             createdAt: '2022-08-03T12:41:54Z',
+            confidential: false,
             __typename: 'WorkItem',
           },
           {
@@ -1184,6 +1185,15 @@ export const availableWorkItemsResponse = {
             title: 'Task 2',
             state: 'OPEN',
             createdAt: '2022-08-03T12:41:54Z',
+            confidential: false,
+            __typename: 'WorkItem',
+          },
+          {
+            id: 'gid://gitlab/WorkItem/460',
+            title: 'Task 3',
+            state: 'OPEN',
+            createdAt: '2022-08-03T12:41:54Z',
+            confidential: true,
             __typename: 'WorkItem',
           },
         ],

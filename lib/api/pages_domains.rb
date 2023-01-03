@@ -54,7 +54,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before do
@@ -63,6 +63,8 @@ module API
 
       desc 'Get all pages domains' do
         success Entities::PagesDomain
+        tags %w[pages_domains]
+        is_array true
       end
       params do
         use :pagination

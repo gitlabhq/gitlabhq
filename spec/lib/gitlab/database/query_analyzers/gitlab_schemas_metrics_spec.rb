@@ -53,6 +53,14 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics, query_ana
             gitlab_schemas: "gitlab_ci",
             db_config_name: "ci"
           }
+        },
+        "for query accessing gitlab_main and unknown schema" => {
+          model: ApplicationRecord,
+          sql: "SELECT 1 FROM projects LEFT JOIN not_in_schema ON not_in_schema.project_id=projects.id",
+          expectations: {
+            gitlab_schemas: "gitlab_main,undefined_not_in_schema",
+            db_config_name: "main"
+          }
         }
       }
     end

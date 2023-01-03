@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { GlForm, GlFormInput, GlFormCheckbox, GlTooltip, GlTokenSelector } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import { sprintf } from '~/locale';
+import { sprintf, s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -170,6 +170,16 @@ describe('WorkItemLinksForm', () => {
   });
 
   describe('adding an existing work item', () => {
+    const selectAvailableWorkItemTokens = async () => {
+      findTokenSelector().vm.$emit(
+        'input',
+        availableWorkItemsResponse.data.workspace.workItems.nodes,
+      );
+      findTokenSelector().vm.$emit('blur', new FocusEvent({ relatedTarget: null }));
+
+      await waitForPromises();
+    };
+
     beforeEach(async () => {
       await createComponent({ formType: FORM_TYPES.add });
     });
@@ -179,6 +189,7 @@ describe('WorkItemLinksForm', () => {
       expect(findTokenSelector().exists()).toBe(true);
       expect(findAddChildButton().text()).toBe('Add task');
       expect(findInput().exists()).toBe(false);
+      expect(findConfidentialCheckbox().exists()).toBe(false);
     });
 
     it('searches for available work items as prop when typing in input', async () => {
@@ -190,13 +201,7 @@ describe('WorkItemLinksForm', () => {
     });
 
     it('selects and adds children', async () => {
-      findTokenSelector().vm.$emit(
-        'input',
-        availableWorkItemsResponse.data.workspace.workItems.nodes,
-      );
-      findTokenSelector().vm.$emit('blur', new FocusEvent({ relatedTarget: null }));
-
-      await waitForPromises();
+      await selectAvailableWorkItemTokens();
 
       expect(findAddChildButton().text()).toBe('Add tasks');
       findForm().vm.$emit('submit', {
@@ -204,6 +209,31 @@ describe('WorkItemLinksForm', () => {
       });
       await waitForPromises();
       expect(updateMutationResolver).toHaveBeenCalled();
+    });
+
+    it('shows validation error when non-confidential child items are being added to confidential parent', async () => {
+      await createComponent({ formType: FORM_TYPES.add, parentConfidential: true });
+
+      await selectAvailableWorkItemTokens();
+
+      const validationEl = wrapper.findByTestId('work-items-invalid');
+      expect(validationEl.exists()).toBe(true);
+      expect(validationEl.text().trim()).toBe(
+        sprintf(
+          s__(
+            'WorkItem|%{invalidWorkItemsList} cannot be added: Cannot assign a non-confidential %{childWorkItemType} to a confidential parent %{parentWorkItemType}. Make the selected %{childWorkItemType} confidential and try again.',
+          ),
+          {
+            // Only non-confidential work items are shown in the error message
+            invalidWorkItemsList: availableWorkItemsResponse.data.workspace.workItems.nodes
+              .filter((wi) => !wi.confidential)
+              .map((wi) => wi.title)
+              .join(', '),
+            childWorkItemType: 'Task',
+            parentWorkItemType: 'Issue',
+          },
+        ),
+      );
     });
   });
 

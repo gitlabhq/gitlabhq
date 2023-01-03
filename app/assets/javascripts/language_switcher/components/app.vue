@@ -25,6 +25,9 @@ export default {
       setCookie(PREFERRED_LANGUAGE_COOKIE_KEY, code);
       window.location.reload();
     },
+    itemTestSelector(locale) {
+      return `language_switcher_lang_${locale}`;
+    },
   },
 };
 </script>
@@ -41,7 +44,10 @@ export default {
     @select="onLanguageSelected"
   >
     <template #list-item="{ item: locale }">
-      <span :data-testid="`language_switcher_lang_${locale.value}`">
+      <span
+        :data-testid="itemTestSelector(locale.value)"
+        :data-qa-selector="itemTestSelector(locale.value)"
+      >
         {{ locale.text }}
       </span>
     </template>

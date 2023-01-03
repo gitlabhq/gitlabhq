@@ -17,6 +17,25 @@ RSpec.shared_examples 'validate schema data' do |tables_and_views|
 end
 
 RSpec.describe Gitlab::Database::GitlabSchema do
+  shared_examples 'maps table name to table schema' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:name, :classification) do
+      'ci_builds'                       | :gitlab_ci
+      'my_schema.ci_builds'             | :gitlab_ci
+      'information_schema.columns'      | :gitlab_internal
+      'audit_events_part_5fc467ac26'    | :gitlab_main
+      '_test_gitlab_main_table'         | :gitlab_main
+      '_test_gitlab_ci_table'           | :gitlab_ci
+      '_test_my_table'                  | :gitlab_shared
+      'pg_attribute'                    | :gitlab_internal
+    end
+
+    with_them do
+      it { is_expected.to eq(classification) }
+    end
+  end
+
   describe '.deleted_views_and_tables_to_schema' do
     include_examples 'validate schema data', described_class.deleted_views_and_tables_to_schema
   end
@@ -97,25 +116,85 @@ RSpec.describe Gitlab::Database::GitlabSchema do
     end
   end
 
-  describe '.table_schema' do
-    using RSpec::Parameterized::TableSyntax
+  describe '.table_schemas' do
+    let(:tables) { %w[users projects ci_builds] }
 
-    where(:name, :classification) do
-      'ci_builds'                       | :gitlab_ci
-      'my_schema.ci_builds'             | :gitlab_ci
-      'information_schema.columns'      | :gitlab_internal
-      'audit_events_part_5fc467ac26'    | :gitlab_main
-      '_test_gitlab_main_table'         | :gitlab_main
-      '_test_gitlab_ci_table'           | :gitlab_ci
-      '_test_my_table'                  | :gitlab_shared
-      'pg_attribute'                    | :gitlab_internal
-      'my_other_table'                  | :undefined_my_other_table
+    subject { described_class.table_schemas(tables) }
+
+    it 'returns the matched schemas' do
+      expect(subject).to match_array %i[gitlab_main gitlab_ci].to_set
     end
 
-    with_them do
-      subject { described_class.table_schema(name) }
+    context 'when one of the tables does not have a matching table schema' do
+      let(:tables) { %w[users projects unknown ci_builds] }
 
-      it { is_expected.to eq(classification) }
+      context 'and undefined parameter is false' do
+        subject { described_class.table_schemas(tables, undefined: false) }
+
+        it 'includes a nil value' do
+          is_expected.to match_array [:gitlab_main, nil, :gitlab_ci].to_set
+        end
+      end
+
+      context 'and undefined parameter is true' do
+        subject { described_class.table_schemas(tables, undefined: true) }
+
+        it 'includes "undefined_<table_name>"' do
+          is_expected.to match_array [:gitlab_main, :undefined_unknown, :gitlab_ci].to_set
+        end
+      end
+
+      context 'and undefined parameter is not specified' do
+        it 'includes a nil value' do
+          is_expected.to match_array [:gitlab_main, :undefined_unknown, :gitlab_ci].to_set
+        end
+      end
+    end
+  end
+
+  describe '.table_schema' do
+    subject { described_class.table_schema(name) }
+
+    it_behaves_like 'maps table name to table schema'
+
+    context 'when mapping fails' do
+      let(:name) { 'unknown_table' }
+
+      context "and parameter 'undefined' is set to true" do
+        subject { described_class.table_schema(name, undefined: true) }
+
+        it { is_expected.to eq(:undefined_unknown_table) }
+      end
+
+      context "and parameter 'undefined' is set to false" do
+        subject { described_class.table_schema(name, undefined: false) }
+
+        it { is_expected.to be_nil }
+      end
+
+      context "and parameter 'undefined' is not set" do
+        subject { described_class.table_schema(name) }
+
+        it { is_expected.to eq(:undefined_unknown_table) }
+      end
+    end
+  end
+
+  describe '.table_schema!' do
+    subject { described_class.table_schema!(name) }
+
+    it_behaves_like 'maps table name to table schema'
+
+    context 'when mapping fails' do
+      let(:name) { 'non_existing_table' }
+
+      it "raises error" do
+        expect { subject }.to raise_error(
+          Gitlab::Database::GitlabSchema::UnknownSchemaError,
+          "Could not find gitlab schema for table #{name}: " \
+          "Any new tables must be added to the database dictionary"
+        )
+      end
     end
   end
 end

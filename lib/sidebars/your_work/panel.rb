@@ -22,6 +22,8 @@ module Sidebars
 
       def add_menus
         add_menu(Sidebars::YourWork::Menus::ProjectsMenu.new(context))
+        add_menu(Sidebars::YourWork::Menus::MilestonesMenu.new(context))
+        add_menu(Sidebars::YourWork::Menus::ActivityMenu.new(context))
       end
     end
   end

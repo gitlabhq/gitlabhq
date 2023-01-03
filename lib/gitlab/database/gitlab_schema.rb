@@ -15,10 +15,12 @@
 module Gitlab
   module Database
     module GitlabSchema
+      UnknownSchemaError = Class.new(StandardError)
+
       DICTIONARY_PATH = 'db/docs/'
 
-      def self.table_schemas(tables)
-        tables.map { |table| table_schema(table) }.to_set
+      def self.table_schemas(tables, undefined: true)
+        tables.map { |table| table_schema(table, undefined: undefined) }.to_set
       end
 
       def self.table_schema(name, undefined: true)
@@ -80,6 +82,13 @@ module Gitlab
 
       def self.views_and_tables_to_schema
         @views_and_tables_to_schema ||= self.tables_to_schema.merge(self.views_to_schema)
+      end
+
+      def self.table_schema!(name)
+        self.table_schema(name, undefined: false) || raise(
+          UnknownSchemaError,
+          "Could not find gitlab schema for table #{name}: Any new tables must be added to the database dictionary"
+        )
       end
 
       def self.deleted_views_and_tables_to_schema

@@ -5,31 +5,7 @@ export default {
   components: {
     ListboxInput,
   },
-  inject: {
-    label: {
-      from: 'label',
-      default: '',
-    },
-    name: {
-      from: 'name',
-    },
-    emails: {
-      from: 'emails',
-      default: () => [],
-    },
-    emptyValueText: {
-      from: 'emptyValueText',
-      required: true,
-    },
-    value: {
-      from: 'value',
-      default: '',
-    },
-    disabled: {
-      from: 'disabled',
-      default: false,
-    },
-  },
+  inject: ['label', 'name', 'emails', 'emptyValueText', 'value', 'disabled'],
   data() {
     return {
       selected: this.value,
