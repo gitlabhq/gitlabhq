@@ -99,6 +99,12 @@ module API
         find_project(params[:id]) || not_found!
         authorized_user_project(action: action)
       end
+
+      def validate_fips!
+        unprocessable_entity! if declared_params[:sha256_digest].blank?
+
+        true
+      end
     end
 
     params do
@@ -284,7 +290,7 @@ module API
 
           track_package_event('push_package', :pypi, project: project, user: current_user, namespace: project.namespace)
 
-          unprocessable_entity! if Gitlab::FIPS.enabled? && declared_params[:md5_digest].present?
+          validate_fips! if Gitlab::FIPS.enabled?
 
           ::Packages::Pypi::CreatePackageService
             .new(project, current_user, declared_params.merge(build: current_authenticated_job))

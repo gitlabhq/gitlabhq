@@ -14,23 +14,12 @@ class ScheduleVulnerabilitiesFeedbackMigration < Gitlab::Database::Migration[2.0
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      TABLE_NAME,
-      BATCH_COLUMN,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      max_batch_size: MAX_BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op
+    # Removing this migration due to subtransactions created. See discussion in
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/386494#note_1217986034
   end
 
   def down
-    delete_batched_background_migration(
-      MIGRATION,
-      TABLE_NAME,
-      BATCH_COLUMN,
-      []
-    )
+    # no-op
   end
 end

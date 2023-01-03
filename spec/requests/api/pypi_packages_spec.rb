@@ -256,19 +256,35 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
         let(:headers) { user_headers.merge(workhorse_headers) }
 
         it_behaves_like 'PyPI package creation', :developer, :created, true
+
+        context 'with FIPS mode', :fips_mode do
+          it_behaves_like 'PyPI package creation', :developer, :created, true, false
+        end
       end
 
-      context 'without md5_digest' do
+      context 'without sha256_digest' do
         let(:token) { personal_access_token.token }
         let(:user_headers) { basic_auth_header(user.username, token) }
         let(:headers) { user_headers.merge(workhorse_headers) }
         let(:params) { base_params.merge(content: temp_file(file_name)) }
 
         before do
-          params.delete(:md5_digest)
+          params.delete(:sha256_digest)
         end
 
-        it_behaves_like 'PyPI package creation', :developer, :created, true, false
+        it_behaves_like 'PyPI package creation', :developer, :created, true, true
+
+        context 'with FIPS mode', :fips_mode do
+          before do
+            project.add_developer(user)
+          end
+
+          it 'returns 422 and does not create a package' do
+            expect { subject }.not_to change { project.packages.pypi.count }
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+        end
       end
     end
 

@@ -14,17 +14,13 @@ RSpec.shared_examples 'PyPI package creation' do |user_type, status, add_member 
       expect(package.name).to eq params[:name]
       expect(package.version).to eq params[:version]
       expect(package.pypi_metadatum.required_python).to eq params[:requires_python]
+      expect(package.package_files.first.file_sha256).to eq params[:sha256_digest]
 
       if md5_digest
-        expect(package.package_files.first.file_md5).not_to be_nil
+        expect(package.package_files.first.file_md5).to be_present
       else
         expect(package.package_files.first.file_md5).to be_nil
       end
-    end
-
-    context 'with FIPS mode', :fips_mode do
-      it_behaves_like 'returning response status', :unprocessable_entity if md5_digest
-      it_behaves_like 'returning response status', status unless md5_digest
     end
   end
 
