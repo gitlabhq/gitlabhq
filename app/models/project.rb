@@ -291,17 +291,23 @@ class Project < ApplicationRecord
 
   has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
+
   has_many :project_members, -> { where(requested_at: nil) },
     as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
-
-  has_many :project_callouts, class_name: 'Users::ProjectCallout', foreign_key: :project_id
-
   alias_method :members, :project_members
-  has_many :users, through: :project_members
+  has_many :namespace_members, ->(project) { where(requested_at: nil).unscope(where: %i[source_id source_type]) },
+    primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project, class_name: 'ProjectMember'
 
   has_many :requesters, -> { where.not(requested_at: nil) },
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :namespace_requesters, ->(project) { where.not(requested_at: nil).unscope(where: %i[source_id source_type]) },
+    primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project, class_name: 'ProjectMember'
+
   has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
+
+  has_many :users, through: :project_members
+
+  has_many :project_callouts, class_name: 'Users::ProjectCallout', foreign_key: :project_id
 
   has_many :deploy_keys_projects, inverse_of: :project
   has_many :deploy_keys, through: :deploy_keys_projects

@@ -483,6 +483,8 @@ project:
 - project_repository
 - users
 - requesters
+- namespace_members
+- namespace_requesters
 - deploy_keys_projects
 - deploy_keys
 - users_star_projects

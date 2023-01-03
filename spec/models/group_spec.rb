@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Group do
+RSpec.describe Group, feature_category: :subgroups do
   include ReloadHelpers
   include StubGitlabCalls
 
@@ -11,9 +11,11 @@ RSpec.describe Group do
   describe 'associations' do
     it { is_expected.to have_many :projects }
     it { is_expected.to have_many(:group_members).dependent(:destroy) }
+    it { is_expected.to have_many(:namespace_members) }
     it { is_expected.to have_many(:users).through(:group_members) }
     it { is_expected.to have_many(:owners).through(:group_members) }
     it { is_expected.to have_many(:requesters).dependent(:destroy) }
+    it { is_expected.to have_many(:namespace_requesters) }
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
@@ -45,9 +47,101 @@ RSpec.describe Group do
     it { is_expected.to have_one(:group_feature) }
     it { is_expected.to have_one(:harbor_integration) }
 
-    describe '#members & #requesters' do
+    describe '#namespace_members' do
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
+
+      before do
+        group.request_access(requester)
+        group.add_developer(developer)
+      end
+
+      it 'includes the correct users' do
+        expect(group.namespace_members).to include Member.find_by(user: developer)
+        expect(group.namespace_members).not_to include Member.find_by(user: requester)
+      end
+
+      it 'is equivelent to #group_members' do
+        expect(group.namespace_members).to eq group.group_members
+      end
+
+      it_behaves_like 'query without source filters' do
+        subject { group.namespace_members }
+      end
+    end
+
+    describe '#namespace_requesters' do
+      let(:requester) { create(:user) }
+      let(:developer) { create(:user) }
+
+      before do
+        group.request_access(requester)
+        group.add_developer(developer)
+      end
+
+      it 'includes the correct users' do
+        expect(group.namespace_requesters).to include Member.find_by(user: requester)
+        expect(group.namespace_requesters).not_to include Member.find_by(user: developer)
+      end
+
+      it 'is equivalent to #requesters' do
+        expect(group.namespace_requesters).to eq group.requesters
+      end
+
+      it_behaves_like 'query without source filters' do
+        subject { group.namespace_requesters }
+      end
+    end
+
+    shared_examples 'polymorphic membership relationship' do
+      it do
+        expect(membership.attributes).to include(
+          'source_type' => 'Namespace',
+          'source_id' => group.id
+        )
+      end
+    end
+
+    shared_examples 'member_namespace membership relationship' do
+      it do
+        expect(membership.attributes).to include(
+          'member_namespace_id' => group.id
+        )
+      end
+    end
+
+    describe '#namespace_members setters' do
+      let(:user) { create(:user) }
+      let(:membership) { group.namespace_members.create!(user: user, access_level: Gitlab::Access::DEVELOPER) }
+
+      it { expect(membership).to be_instance_of(GroupMember) }
+      it { expect(membership.user).to eq user }
+      it { expect(membership.group).to eq group }
+      it { expect(membership.requested_at).to be_nil }
+
+      it_behaves_like 'polymorphic membership relationship'
+      it_behaves_like 'member_namespace membership relationship'
+    end
+
+    describe '#namespace_requesters setters' do
+      let(:requested_at) { Time.current }
+      let(:user) { create(:user) }
+      let(:membership) do
+        group.namespace_requesters.create!(user: user, requested_at: requested_at, access_level: Gitlab::Access::DEVELOPER)
+      end
+
+      it { expect(membership).to be_instance_of(GroupMember) }
+      it { expect(membership.user).to eq user }
+      it { expect(membership.group).to eq group }
+      it { expect(membership.requested_at).to eq requested_at }
+
+      it_behaves_like 'polymorphic membership relationship'
+      it_behaves_like 'member_namespace membership relationship'
+    end
+
+    describe '#members & #requesters' do
+      let_it_be(:requester) { create(:user) }
+      let_it_be(:developer) { create(:user) }
 
       before do
         group.request_access(requester)
