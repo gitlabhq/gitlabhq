@@ -6,6 +6,19 @@ module MergeRequests
 
     attr_reader :merge_request, :rebase_error
 
+    def validate(merge_request)
+      return error_response(_('Source branch does not exist')) unless
+        merge_request.source_branch_exists?
+
+      return error_response(_('Cannot push to source branch')) unless
+          user_access.can_push_to_branch?(merge_request.source_branch)
+
+      return error_response(_('Source branch is protected from force push')) unless
+          merge_request.permits_force_push?
+
+      ServiceResponse.success
+    end
+
     def execute(merge_request, skip_ci: false)
       @merge_request = merge_request
       @skip_ci = skip_ci
@@ -39,6 +52,14 @@ module MergeRequests
         else
           REBASE_ERROR
         end
+    end
+
+    def user_access
+      Gitlab::UserAccess.new(current_user, container: project)
+    end
+
+    def error_response(message)
+      ServiceResponse.error(message: message)
     end
   end
 end

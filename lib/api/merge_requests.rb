@@ -105,20 +105,12 @@ module API
         options
       end
 
-      def authorize_push_to_merge_request!(merge_request)
-        forbidden!('Source branch does not exist') unless
-          merge_request.source_branch_exists?
+      def authorize_merge_request_rebase!(merge_request)
+        result = ::MergeRequests::RebaseService
+          .new(project: merge_request.source_project, current_user: current_user)
+          .validate(merge_request)
 
-        user_access = Gitlab::UserAccess.new(
-          current_user,
-          container: merge_request.source_project
-        )
-
-        forbidden!('Cannot push to source branch') unless
-          user_access.can_push_to_branch?(merge_request.source_branch)
-
-        forbidden!('Source branch is protected from force push') unless
-          merge_request.permits_force_push?
+        forbidden!(result.message) if result.error?
       end
 
       def recheck_mergeability_of(merge_requests:)
@@ -727,7 +719,7 @@ module API
       put ':id/merge_requests/:merge_request_iid/rebase', feature_category: :code_review, urgency: :low do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
-        authorize_push_to_merge_request!(merge_request)
+        authorize_merge_request_rebase!(merge_request)
 
         merge_request.rebase_async(current_user.id, skip_ci: params[:skip_ci])
 

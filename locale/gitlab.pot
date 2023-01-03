@@ -7913,6 +7913,9 @@ msgstr ""
 msgid "Cannot promote issue due to insufficient permissions."
 msgstr ""
 
+msgid "Cannot push to source branch"
+msgstr ""
+
 msgid "Cannot refer to a group milestone by an internal id!"
 msgstr ""
 
@@ -39555,6 +39558,12 @@ msgid "Source IP"
 msgstr ""
 
 msgid "Source branch"
+msgstr ""
+
+msgid "Source branch does not exist"
+msgstr ""
+
+msgid "Source branch is protected from force push"
 msgstr ""
 
 msgid "Source branch will be deleted."

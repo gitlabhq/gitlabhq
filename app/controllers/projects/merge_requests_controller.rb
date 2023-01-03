@@ -515,15 +515,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def check_user_can_push_to_source_branch!
-    return access_denied! unless @merge_request.source_branch_exists?
+    result = MergeRequests::RebaseService
+      .new(project: @merge_request.source_project, current_user: current_user)
+      .validate(@merge_request)
 
-    access_check = ::Gitlab::UserAccess
-      .new(current_user, container: @merge_request.source_project)
-      .can_push_to_branch?(@merge_request.source_branch)
+    return if result.success?
 
-    access_denied! unless access_check
-
-    access_denied! unless merge_request.permits_force_push?
+    render json: { merge_error: result.message }, status: :forbidden
   end
 
   def merge_access_check

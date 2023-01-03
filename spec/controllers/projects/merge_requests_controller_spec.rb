@@ -2132,12 +2132,13 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         create(:protected_branch, project: project, name: merge_request.source_branch, allow_force_push: false)
       end
 
-      it 'returns 404' do
+      it 'returns 403' do
         expect_rebase_worker_for(user).never
 
         post_rebase
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['merge_error']).to eq('Source branch is protected from force push')
       end
     end
 
@@ -2153,12 +2154,13 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
           forked_project.add_reporter(user)
         end
 
-        it 'returns 404' do
+        it 'returns 403' do
           expect_rebase_worker_for(user).never
 
           post_rebase
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['merge_error']).to eq('Cannot push to source branch')
         end
       end
 

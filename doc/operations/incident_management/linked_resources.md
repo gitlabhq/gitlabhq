@@ -48,7 +48,7 @@ To add a linked resource:
 1. Complete the required fields.
 1. Select **Add**.
 
-### Using a quick action **(PREMIUM)**
+### Using a quick action
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374964) in GitLab 15.5.
 
@@ -66,7 +66,7 @@ The description shows instead of the URL in the **Linked resources** section of 
 /link https://example.link.us/j/123456789 multiple alerts firing
 ```
 
-### Link Zoom meetings from an incident **(PREMIUM)**
+### Link Zoom meetings from an incident
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230853) in GitLab 15.4.
 
