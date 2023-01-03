@@ -998,6 +998,70 @@ RSpec.describe Projects::EnvironmentsController do
     end
   end
 
+  describe '#append_info_to_payload' do
+    let(:search_param) { 'my search param' }
+
+    context 'when search_environment_logging feature is disabled' do
+      before do
+        stub_feature_flags(environments_search_logging: false)
+      end
+
+      it 'does not log search params in meta.environment.search' do
+        expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+          method.call(payload)
+
+          expect(payload[:metadata]['meta.environment.search']).to be_nil
+          expect(payload[:action]).to eq("search")
+          expect(payload[:controller]).to eq("Projects::EnvironmentsController")
+        end
+
+        get :search, params: environment_params(format: :json, search: search_param)
+      end
+
+      it 'logs params correctly when search params are missing' do
+        expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+          method.call(payload)
+
+          expect(payload[:metadata]['meta.environment.search']).to be_nil
+          expect(payload[:action]).to eq("search")
+          expect(payload[:controller]).to eq("Projects::EnvironmentsController")
+        end
+
+        get :search, params: environment_params(format: :json)
+      end
+    end
+
+    context 'when search_environment_logging feature is enabled' do
+      before do
+        stub_feature_flags(environments_search_logging: true)
+      end
+
+      it 'logs search params in meta.environment.search' do
+        expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+          method.call(payload)
+
+          expect(payload[:metadata]['meta.environment.search']).to eq(search_param)
+          expect(payload[:action]).to eq("search")
+          expect(payload[:controller]).to eq("Projects::EnvironmentsController")
+        end
+
+        get :search, params: environment_params(format: :json, search: search_param)
+      end
+
+      it 'logs params correctly when search params are missing' do
+        expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+          method.call(payload)
+
+          expect(payload[:metadata]['meta.environment.search']).to be_nil
+          expect(payload[:action]).to eq("search")
+          expect(payload[:controller]).to eq("Projects::EnvironmentsController")
+        end
+
+        get :search, params: environment_params(format: :json)
+      end
+    end
+  end
+
   def environment_params(opts = {})
     opts.reverse_merge(namespace_id: project.namespace,
                        project_id: project,

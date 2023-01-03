@@ -299,6 +299,16 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def authorize_update_environment!
     access_denied! unless can?(current_user, :update_environment, environment)
   end
+
+  def append_info_to_payload(payload)
+    super
+
+    return unless Feature.enabled?(:environments_search_logging) && params[:search]
+
+    # Merging to :metadata will ensure these are logged as top level keys
+    payload[:metadata] ||= {}
+    payload[:metadata]['meta.environment.search'] = params[:search]
+  end
 end
 
 Projects::EnvironmentsController.prepend_mod_with('Projects::EnvironmentsController')

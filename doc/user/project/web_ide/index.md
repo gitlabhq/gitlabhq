@@ -99,13 +99,9 @@ same core features for highlighting and linking to particular lines in the edite
 
 ## Schema based validation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218472) validation based on predefined schemas in GitLab 13.2 [with a flag](../../../administration/feature_flags.md) named `schema_linting`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available for your entire instance, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `schema_linting`.
-This feature cannot be enabled or disabled per-project.
-On GitLab.com, this feature is available.
-You should not use this feature for production environments.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218472) validation based on predefined schemas in GitLab 13.2 [with a flag](../../../administration/feature_flags.md) named `schema_linting`.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104399) in GitLab 15.7.
+> - On self-managed GitLab [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107488) in GitLab 15.8.
 
 The Web IDE provides validation support for certain JSON and YAML files using schemas
 based on the [JSON Schema Store](https://www.schemastore.org/json/).

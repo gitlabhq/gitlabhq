@@ -27,7 +27,6 @@ import { performanceMarkAndMeasure } from '~/performance/utils';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   leftSidebarViews,
   viewerTypes,
@@ -55,7 +54,6 @@ export default {
     DiffViewer,
     FileTemplatesBar,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     file: {
       type: Object,
@@ -474,7 +472,7 @@ export default {
         this.editor.registerCiSchema();
       };
 
-      if (this.isCiConfigFile && this.glFeatures.schemaLinting) {
+      if (this.isCiConfigFile) {
         registerLocalSchema();
       } else {
         if (this.CiSchemaExtension) {

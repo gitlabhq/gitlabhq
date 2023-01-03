@@ -26,14 +26,13 @@ describe('Pipeline Editor | Text editor component', () => {
     props: ['value', 'fileName', 'editorOptions', 'debounceValue'],
   };
 
-  const createComponent = (glFeatures = {}, mountFn = shallowMount) => {
+  const createComponent = (mountFn = shallowMount) => {
     wrapper = mountFn(TextEditor, {
       provide: {
         projectPath: mockProjectPath,
         projectNamespace: mockProjectNamespace,
         ciConfigPath: mockCiConfigPath,
         defaultBranch: mockDefaultBranch,
-        glFeatures,
       },
       propsData: {
         commitSha: mockCommitSha,
@@ -107,28 +106,14 @@ describe('Pipeline Editor | Text editor component', () => {
   });
 
   describe('CI schema', () => {
-    describe('when `schema_linting` feature flag is on', () => {
-      beforeEach(() => {
-        createComponent({ schemaLinting: true });
-        findEditor().vm.$emit(EDITOR_READY_EVENT, editorInstanceDetail);
-      });
-
-      it('configures editor with syntax highlight', () => {
-        expect(mockUse).toHaveBeenCalledTimes(1);
-        expect(mockRegisterCiSchema).toHaveBeenCalledTimes(1);
-      });
+    beforeEach(() => {
+      createComponent();
+      findEditor().vm.$emit(EDITOR_READY_EVENT, editorInstanceDetail);
     });
 
-    describe('when `schema_linting` feature flag is off', () => {
-      beforeEach(() => {
-        createComponent();
-        findEditor().vm.$emit(EDITOR_READY_EVENT, editorInstanceDetail);
-      });
-
-      it('does not call the register CI schema function', () => {
-        expect(mockUse).not.toHaveBeenCalled();
-        expect(mockRegisterCiSchema).not.toHaveBeenCalled();
-      });
+    it('configures editor with syntax highlight', () => {
+      expect(mockUse).toHaveBeenCalledTimes(1);
+      expect(mockRegisterCiSchema).toHaveBeenCalledTimes(1);
     });
   });
 });

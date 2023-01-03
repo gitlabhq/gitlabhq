@@ -17,9 +17,6 @@ the authoring experience of our CI/CD configuration files. With the CI/CD schema
 As the rules and keywords for configuring our CI/CD configuration files change, so too
 should our CI/CD schema.
 
-This feature is behind the [`schema_linting`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_flags/development/schema_linting.yml)
-feature flag for self-managed instances, and is enabled for GitLab.com.
-
 ## JSON Schemas
 
 The CI/CD schema follows the [JSON Schema Draft-07](https://json-schema.org/draft-07/json-schema-release-notes.html)
@@ -140,7 +137,6 @@ under the topmost **properties** key.
 
 ### Verify changes
 
-1. Enable the `schema_linting` feature flag.
 1. Go to **CI/CD** > **Editor**.
 1. Write your CI/CD configuration in the editor and verify that the schema validates
    it correctly.

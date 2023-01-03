@@ -10,7 +10,6 @@ class IdeController < ApplicationController
 
   before_action do
     push_frontend_feature_flag(:build_service_proxy)
-    push_frontend_feature_flag(:schema_linting)
     push_frontend_feature_flag(:reject_unsigned_commits_by_gitlab)
     define_index_vars
   end

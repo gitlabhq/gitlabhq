@@ -13377,6 +13377,9 @@ msgstr ""
 msgid "Dependencies|Dependency path"
 msgstr ""
 
+msgid "Dependencies|Error exporting the dependency list. Please reload the page."
+msgstr ""
+
 msgid "Dependencies|Export as JSON"
 msgstr ""
 

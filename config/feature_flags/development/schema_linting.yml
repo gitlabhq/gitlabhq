@@ -1,8 +1,0 @@
----
-name: schema_linting
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35838
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/255919
-milestone: '13.2'
-type: development
-group: group::editor
-default_enabled: true

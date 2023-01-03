@@ -2,7 +2,6 @@
 import { EDITOR_READY_EVENT } from '~/editor/constants';
 import { CiSchemaExtension } from '~/editor/extensions/source_editor_ci_schema_ext';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SOURCE_EDITOR_DEBOUNCE } from '../../constants';
 
 export default {
@@ -15,7 +14,6 @@ export default {
   components: {
     SourceEditor,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['ciConfigPath'],
   inheritAttrs: false,
   methods: {
@@ -23,10 +21,8 @@ export default {
       this.$emit('updateCiConfig', content);
     },
     registerCiSchema({ detail: { instance } }) {
-      if (this.glFeatures.schemaLinting) {
-        instance.use({ definition: CiSchemaExtension });
-        instance.registerCiSchema();
-      }
+      instance.use({ definition: CiSchemaExtension });
+      instance.registerCiSchema();
     },
   },
   readyEvent: EDITOR_READY_EVENT,
