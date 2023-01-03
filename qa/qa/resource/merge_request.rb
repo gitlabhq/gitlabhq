@@ -186,7 +186,7 @@ module QA
       def fabricate_large_merge_request
         @project = Resource::ImportProject.fabricate_via_browser_ui!
         # Setting the name here, since otherwise some tests will look for an existing file in
-        # the proejct without ever knowing what is in it.
+        # the project without ever knowing what is in it.
         @file_name = "added_file-00000000.txt"
         @source_branch = "large_merge_request"
         visit("#{project.web_url}/-/merge_requests/1")

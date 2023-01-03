@@ -435,9 +435,9 @@ module QA
         end
 
         def revert_change!
-          # retry when the modal doesn't appear for large MRs as the onClick listener is initialized after the click
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/366336
-          retry_on_exception do
+          # reload page when the revert modal occasionally doesn't appear in ee:large-setup job
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/386623 (transient issue)
+          retry_on_exception(reload: true) do
             click_element(:revert_button, Page::Component::CommitModal)
           end
           click_element(:submit_commit_button)

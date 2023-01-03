@@ -176,9 +176,19 @@ graph LR
     A --"artifact: list of test files"--> B & C
 ```
 
-## Faster feedback for merge requests that fix a broken `master`
+## Faster feedback for some merge requests
+
+### Broken Master Fixes
 
 When you need to [fix a broken `master`](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline:expedite` label to expedite the pipelines that run on the merge request.
+
+Note that the merge request also needs to have the `master:broken` or `master:foss-broken` label set.
+
+### Revert MRs
+
+To make your Revert MRs faster, use the [revert MR template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Revert%20To%20Resolve%20Incident.md) **before** you create your merge request. It will apply the `pipeline:expedite` label and others that will expedite the pipelines that run on the merge request.
+
+### The `~pipeline:expedite` label
 
 When this label is assigned, the following steps of the CI/CD pipeline are skipped:
 
@@ -187,8 +197,6 @@ When this label is assigned, the following steps of the CI/CD pipeline are skipp
 - The entire [Review Apps process](../testing_guide/review_apps.md).
 
 Apply the label to the merge request, and run a new pipeline for the MR.
-
-Note that the merge request also needs to have the `master:broken` or `master:foss-broken` label set.
 
 ## Test jobs
 

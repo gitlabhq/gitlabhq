@@ -1020,6 +1020,25 @@ module API
         end
       end
 
+      helpers do
+        def set_user_status(include_missing_params:)
+          forbidden! unless can?(current_user, :update_user_status, current_user)
+
+          if ::Users::SetStatusService.new(current_user, declared_params(include_missing: include_missing_params)).execute
+            present current_user.status, with: Entities::UserStatus
+          else
+            render_validation_error!(current_user.status)
+          end
+        end
+
+        params :set_user_status_params do
+          optional :emoji, type: String, desc: "The emoji to set on the status"
+          optional :message, type: String, desc: "The status message to set"
+          optional :availability, type: String, desc: "The availability of user to set"
+          optional :clear_status_after, type: String, desc: "Automatically clear emoji, message and availability fields after a certain time", values: UserStatus::CLEAR_STATUS_QUICK_OPTIONS.keys
+        end
+      end
+
       desc "Get the currently authenticated user's SSH keys" do
         success Entities::SSHKey
       end
@@ -1299,21 +1318,30 @@ module API
 
       desc 'Set the status of the current user' do
         success Entities::UserStatus
+        detail 'Any parameters that are not passed will be nullified.'
       end
       params do
-        optional :emoji, type: String, desc: "The emoji to set on the status"
-        optional :message, type: String, desc: "The status message to set"
-        optional :availability, type: String, desc: "The availability of user to set"
-        optional :clear_status_after, type: String, desc: "Automatically clear emoji, message and availability fields after a certain time", values: UserStatus::CLEAR_STATUS_QUICK_OPTIONS.keys
+        use :set_user_status_params
       end
       put "status", feature_category: :users do
-        forbidden! unless can?(current_user, :update_user_status, current_user)
+        set_user_status(include_missing_params: true)
+      end
 
-        if ::Users::SetStatusService.new(current_user, declared_params).execute
-          present current_user.status, with: Entities::UserStatus
-        else
-          render_validation_error!(current_user.status)
+      desc 'Set the status of the current user' do
+        success Entities::UserStatus
+        detail 'Any parameters that are not passed will be ignored.'
+      end
+      params do
+        use :set_user_status_params
+      end
+      patch "status", feature_category: :users do
+        if declared_params(include_missing: false).empty?
+          status :ok
+
+          break
         end
+
+        set_user_status(include_missing_params: false)
       end
 
       desc 'get the status of the current user' do

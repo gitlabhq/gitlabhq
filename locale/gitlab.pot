@@ -19249,6 +19249,12 @@ msgstr ""
 msgid "Group %{group_name} was successfully created."
 msgstr ""
 
+msgid "Group '%{group_name}' could not be updated."
+msgstr ""
+
+msgid "Group '%{group_name}' was successfully updated."
+msgstr ""
+
 msgid "Group Access Tokens"
 msgstr ""
 

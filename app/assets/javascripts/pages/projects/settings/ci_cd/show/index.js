@@ -11,6 +11,7 @@ import initSettingsPanels from '~/settings_panels';
 import { initTokenAccess } from '~/token_access';
 import { initCiSecureFiles } from '~/ci_secure_files';
 import initDeployTokens from '~/deploy_tokens';
+import { initProjectRunners } from '~/ci/runner/project_runners';
 
 // Initialize expandable settings panels
 initSettingsPanels();
@@ -37,11 +38,13 @@ document.querySelector('.js-toggle-extra-settings').addEventListener('click', (e
 registrySettingsApp();
 initDeployTokens();
 initDeployFreeze();
-
 initSettingsPipelinesTriggers();
 initArtifactsSettings();
+
+initProjectRunners();
 initSharedRunnersToggle();
 initInstallRunner();
 initRunnerAwsDeployments();
+
 initTokenAccess();
 initCiSecureFiles();

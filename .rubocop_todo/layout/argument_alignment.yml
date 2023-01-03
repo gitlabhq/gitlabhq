@@ -1096,7 +1096,6 @@ Layout/ArgumentAlignment:
     - 'spec/controllers/projects/clusters_controller_spec.rb'
     - 'spec/controllers/projects/commit_controller_spec.rb'
     - 'spec/controllers/projects/design_management/designs/raw_images_controller_spec.rb'
-    - 'spec/controllers/projects/design_management/designs/resized_image_controller_spec.rb'
     - 'spec/controllers/projects/environments_controller_spec.rb'
     - 'spec/controllers/projects/feature_flags_clients_controller_spec.rb'
     - 'spec/controllers/projects/forks_controller_spec.rb'

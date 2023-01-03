@@ -785,6 +785,7 @@ Set the status of the current user.
 
 ```plaintext
 PUT /user/status
+PATCH /user/status
 ```
 
 | Attribute            | Type   | Required | Description                                                                                                                                                                                                             |
@@ -793,7 +794,9 @@ PUT /user/status
 | `message`            | string | no       | Message to set as a status. It can also contain emoji codes. Cannot exceed 100 characters.                                                                                                                                                      |
 | `clear_status_after` | string | no       | Automatically clean up the status after a given time interval, allowed values: `30_minutes`, `3_hours`, `8_hours`, `1_day`, `3_days`, `7_days`, `30_days`
 
-When both parameters `emoji` and `message` are empty, the status is cleared. When the `clear_status_after` parameter is missing from the request, the previously set value for `"clear_status_after` is cleared.
+Difference between `PUT` and `PATCH`
+
+When using `PUT` any parameters that are not passed will be set to `null` and therefore cleared. When using `PATCH` any parameters that are not passed will be ignored. Explicitly pass `null` to clear a field.
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "clear_status_after=1_day" --data "emoji=coffee" \

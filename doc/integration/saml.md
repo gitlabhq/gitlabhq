@@ -200,6 +200,8 @@ You can configure GitLab to use multiple SAML IdPs if:
 - The `strategy_class` is explicitly set because it cannot be inferred from provider
   name.
 
+[SAML Group Sync](../user/group/saml_sso/group_sync.md) does not support multiple IdPs. For more information, see [issue 386605](https://gitlab.com/gitlab-org/gitlab/-/issues/386605).
+
 Example provider's configuration for installations from source:
 
 ```yaml

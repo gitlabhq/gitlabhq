@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::DesignManagement::Designs::ResizedImageController do
+RSpec.describe Projects::DesignManagement::Designs::ResizedImageController, feature_category: :design_management do
   include DesignManagementTestHelpers
 
   let_it_be(:project) { create(:project, :private) }
@@ -19,7 +19,7 @@ RSpec.describe Projects::DesignManagement::Designs::ResizedImageController do
   end
 
   describe 'GET #show' do
-    subject do
+    subject(:response) do
       get(:show,
         params: {
           namespace_id: project.namespace,
@@ -27,12 +27,12 @@ RSpec.describe Projects::DesignManagement::Designs::ResizedImageController do
           design_id: design_id,
           sha: sha,
           id: size
-      })
+        }
+      )
     end
 
     before do
       sign_in(viewer)
-      subject
     end
 
     context 'when the user does not have permission' do
@@ -68,8 +68,6 @@ RSpec.describe Projects::DesignManagement::Designs::ResizedImageController do
       let(:design_id) { 'foo' }
 
       specify do
-        subject
-
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
@@ -134,6 +132,24 @@ RSpec.describe Projects::DesignManagement::Designs::ResizedImageController do
 
         it 'returns a 404' do
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when multiple design versions have the same sha hash' do
+        let(:sha) { newest_version.sha }
+
+        before do
+          create(:design, :with_smaller_image_versions,
+                 issue: create(:issue, project: project),
+                 versions_count: 1,
+                 versions_sha: sha)
+        end
+
+        it 'serves the newest image' do
+          action = newest_version.actions.first
+
+          expect(response.header['ETag']).to eq(etag(action))
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end

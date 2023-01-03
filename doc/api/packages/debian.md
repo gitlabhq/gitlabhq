@@ -242,6 +242,37 @@ curl --header "Private-Token: <personal_access_token>" \
 
 This writes the downloaded file using the remote filename in the current directory.
 
+## Download a packages index by hash
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+
+Download a packages index by hash.
+
+```plaintext
+GET <route-prefix>/dists/*distribution/:component/binary-:architecture/by-hash/SHA256/:file_sha256
+
+```
+
+| Attribute         | Type   | Required | Description |
+| ----------------- | ------ | -------- | ----------- |
+| `distribution`    | string | yes      | The codename or suite of the Debian distribution. |
+| `component`       | string | yes      | The distribution component name. |
+| `architecture`    | string | yes      | The distribution architecture type. |
+
+```shell
+curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/binary-amd64/by-hash/SHA256/66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18"
+```
+
+Write the output to a file:
+
+```shell
+curl --header "Private-Token: <personal_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/binary-amd64/by-hash/SHA256/66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18" \
+     --remote-name
+```
+
+This writes the downloaded file using the remote filename in the current directory.
+
 ## Download a Debian Installer packages index
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
@@ -272,6 +303,36 @@ curl --header "Private-Token: <personal_access_token>" \
 
 This writes the downloaded file using the remote filename in the current directory.
 
+## Download a Debian Installer packages index by hash
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+
+Download a Debian Installer packages index by hash.
+
+```plaintext
+GET <route-prefix>/dists/*distribution/:component/debian-installer/binary-:architecture/by-hash/SHA256/:file_sha256
+```
+
+| Attribute         | Type   | Required | Description |
+| ----------------- | ------ | -------- | ----------- |
+| `distribution`    | string | yes      | The codename or suite of the Debian distribution. |
+| `component`       | string | yes      | The distribution component name. |
+| `architecture`    | string | yes      | The distribution architecture type. |
+
+```shell
+curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/debian-installer/binary-amd64/by-hash/SHA256/66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18"
+```
+
+Write the output to a file:
+
+```shell
+curl --header "Private-Token: <personal_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/debian-installer/binary-amd64/by-hash/SHA256/66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18" \
+     --remote-name
+```
+
+This writes the downloaded file using the remote filename in the current directory.
+
 ## Download a source packages index
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
@@ -296,6 +357,35 @@ Write the output to a file:
 ```shell
 curl --header "Private-Token: <personal_access_token>" \
      "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/source/Sources" \
+     --remote-name
+```
+
+This writes the downloaded file using the remote filename in the current directory.
+
+## Download a source packages index by hash
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+
+Download a source packages index by hash.
+
+```plaintext
+GET <route-prefix>/dists/*distribution/:component/source/by-hash/SHA256/:file_sha256
+```
+
+| Attribute         | Type   | Required | Description |
+| ----------------- | ------ | -------- | ----------- |
+| `distribution`    | string | yes      | The codename or suite of the Debian distribution. |
+| `component`       | string | yes      | The distribution component name. |
+
+```shell
+curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/source/by-hash/SHA256/66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18"
+```
+
+Write the output to a file:
+
+```shell
+curl --header "Private-Token: <personal_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/source/by-hash/SHA256/66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18" \
      --remote-name
 ```
 

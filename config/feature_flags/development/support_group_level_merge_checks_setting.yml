@@ -1,0 +1,8 @@
+---
+name: support_group_level_merge_checks_setting
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102864
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/377723
+milestone: '15.8'
+type: development
+group: group::compliance
+default_enabled: false

@@ -756,16 +756,13 @@ class Project < ApplicationRecord
     end
   end
 
-  # Defines instance methods:
+  # Define two instance methods:
   #
-  # - only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: false)
-  # - allow_merge_on_skipped_pipeline?(inherit_group_setting: false)
-  # - only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: false)
-  # - only_allow_merge_if_pipeline_succeeds_locked?
-  # - allow_merge_on_skipped_pipeline_locked?
-  # - only_allow_merge_if_all_discussions_are_resolved_locked?
+  # - [attribute]?(inherit_group_setting) Returns the final value after inheriting the parent group
+  # - [attribute]_locked?                 Returns true if the value is inherited from the parent group
+  #
+  # These functions will be overridden in EE to make sense afterwards
   def self.cascading_with_parent_namespace(attribute)
-    # method overriden in EE
     define_method("#{attribute}?") do |inherit_group_setting: false|
       self.public_send(attribute) # rubocop:disable GitlabSecurity/PublicSend
     end

@@ -50,7 +50,7 @@ You can run `gitlab-terraform` with the following commands.
 | `gitlab-terraform destroy`   | Yes                    | Yes                   | Runs `terraform destroy`.                                                                              |
 | `gitlab-terraform fmt`       | Yes                    | No                    | Runs `terraform fmt` in check mode.                                                                    |
 | `gitlab-terraform init`      | Yes                    | Not applicable        | Runs `terraform init`.                                                                                 |
-| `gitlab-terraforn plan`      | Yes                    | Yes                   | Runs `terraform plan` and produces a `plan.cache` file.                                                |
+| `gitlab-terraform plan`      | Yes                    | Yes                   | Runs `terraform plan` and produces a `plan.cache` file.                                                |
 | `gitlab-terraform plan-json` | No                     | No                    | Converts a `plan.cache` file into a GitLab Terraform report for a [MR integration](mr_integration.md). |
 | `gitlab-terraform validate`  | Yes                    | Yes (without backend) | Runs `terraform validate`.                                                                             |
 | `gitlab-terraform -- <cmd>`  | Yes                    | No                    | Runs `terraform <cmd>`, even if it is wrapped.                                                         |

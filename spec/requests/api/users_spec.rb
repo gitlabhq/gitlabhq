@@ -4045,60 +4045,164 @@ RSpec.describe API::Users, feature_category: :users do
     end
   end
 
-  describe 'GET /user/status' do
-    let(:path) { '/user/status' }
+  describe '/user/status' do
+    let(:user_status) { create(:user_status, clear_status_at: 8.hours.from_now) }
+    let(:user_with_status) { user_status.user }
+    let(:params) { {} }
+    let(:request_user) { user }
 
-    it_behaves_like 'rendering user status'
-  end
+    shared_examples '/user/status successful response' do
+      context 'when request is successful' do
+        let(:params) { { emoji: 'smirk', message: 'hello world' } }
 
-  describe 'PUT /user/status' do
-    it 'saves the status' do
-      put api('/user/status', user), params: { emoji: 'smirk', message: 'hello world' }
-
-      expect(response).to have_gitlab_http_status(:success)
-      expect(json_response['emoji']).to eq('smirk')
-    end
-
-    it 'renders errors when the status was invalid' do
-      put api('/user/status', user), params: { emoji: 'does not exist', message: 'hello world' }
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['message']['emoji']).to be_present
-    end
-
-    it 'deletes the status when passing empty values' do
-      put api('/user/status', user)
-
-      expect(response).to have_gitlab_http_status(:success)
-      expect(user.reload.status).to be_nil
-    end
-
-    context 'when clear_status_after is given' do
-      it 'sets the clear_status_at column' do
-        freeze_time do
-          expected_clear_status_at = 3.hours.from_now
-
-          put api('/user/status', user), params: { emoji: 'smirk', message: 'hello world', clear_status_after: '3_hours' }
+        it 'saves the status' do
+          set_user_status
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(user.status.reload.clear_status_at).to be_within(1.minute).of(expected_clear_status_at)
-          expect(Time.parse(json_response["clear_status_at"])).to be_within(1.minute).of(expected_clear_status_at)
+          expect(json_response['emoji']).to eq('smirk')
+          expect(json_response['message']).to eq('hello world')
+        end
+      end
+    end
+
+    shared_examples '/user/status unsuccessful response' do
+      context 'when request is unsuccessful' do
+        let(:params) { { emoji: 'does not exist', message: 'hello world' } }
+
+        it 'renders errors' do
+          set_user_status
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['emoji']).to be_present
+        end
+      end
+    end
+
+    shared_examples '/user/status passing nil for params' do
+      context 'when passing nil for params' do
+        let(:params) { { emoji: nil, message: nil, clear_status_after: nil } }
+        let(:request_user) { user_with_status }
+
+        it 'deletes the status' do
+          set_user_status
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(user_with_status.status).to be_nil
+        end
+      end
+    end
+
+    shared_examples '/user/status clear_status_after field' do
+      context 'when clear_status_after is valid', :freeze_time do
+        let(:params) { { emoji: 'smirk', message: 'hello world', clear_status_after: '3_hours' } }
+
+        it 'sets the clear_status_at column' do
+          expected_clear_status_at = 3.hours.from_now
+
+          set_user_status
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(user.status.clear_status_at).to be_like_time(expected_clear_status_at)
+          expect(Time.parse(json_response["clear_status_at"])).to be_like_time(expected_clear_status_at)
         end
       end
 
-      it 'unsets the clear_status_at column' do
-        user.create_status!(clear_status_at: 5.hours.ago)
+      context 'when clear_status_after is nil' do
+        let(:params) { { emoji: 'smirk', message: 'hello world', clear_status_after: nil } }
+        let(:request_user) { user_with_status }
 
-        put api('/user/status', user), params: { emoji: 'smirk', message: 'hello world', clear_status_after: nil }
+        it 'unsets the clear_status_at column' do
+          set_user_status
 
-        expect(response).to have_gitlab_http_status(:success)
-        expect(user.status.reload.clear_status_at).to be_nil
+          expect(response).to have_gitlab_http_status(:success)
+          expect(user_with_status.status.clear_status_at).to be_nil
+        end
       end
 
-      it 'raises error when unknown status value is given' do
-        put api('/user/status', user), params: { emoji: 'smirk', message: 'hello world', clear_status_after: 'wrong' }
+      context 'when clear_status_after is invalid' do
+        let(:params) { { emoji: 'smirk', message: 'hello world', clear_status_after: 'invalid' } }
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+        it 'raises error when unknown status value is given' do
+          set_user_status
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+    end
+
+    describe 'GET' do
+      let(:path) { '/user/status' }
+
+      it_behaves_like 'rendering user status'
+    end
+
+    describe 'PUT' do
+      subject(:set_user_status) { put api('/user/status', request_user), params: params }
+
+      include_examples '/user/status successful response'
+
+      include_examples '/user/status unsuccessful response'
+
+      include_examples '/user/status passing nil for params'
+
+      include_examples '/user/status clear_status_after field'
+
+      context 'when passing empty params' do
+        let(:request_user) { user_with_status }
+
+        it 'deletes the status' do
+          set_user_status
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(user_with_status.status).to be_nil
+        end
+      end
+
+      context 'when clear_status_after is not given' do
+        let(:params) { { emoji: 'smirk', message: 'hello world' } }
+        let(:request_user) { user_with_status }
+
+        it 'unsets clear_status_at column' do
+          set_user_status
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(user_with_status.status.clear_status_at).to be_nil
+        end
+      end
+    end
+
+    describe 'PATCH' do
+      subject(:set_user_status) { patch api('/user/status', request_user), params: params }
+
+      include_examples '/user/status successful response'
+
+      include_examples '/user/status unsuccessful response'
+
+      include_examples '/user/status passing nil for params'
+
+      include_examples '/user/status clear_status_after field'
+
+      context 'when passing empty params' do
+        let(:request_user) { user_with_status }
+
+        it 'does not update the status' do
+          set_user_status
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(user_with_status.status).to eq(user_status)
+        end
+      end
+
+      context 'when clear_status_after is not given' do
+        let(:params) { { emoji: 'smirk', message: 'hello world' } }
+        let(:request_user) { user_with_status }
+
+        it 'does not unset clear_status_at column' do
+          set_user_status
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(user_with_status.status.clear_status_at).not_to be_nil
+        end
       end
     end
   end

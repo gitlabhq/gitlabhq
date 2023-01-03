@@ -27,7 +27,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
   - [ ] Ensure it's approved by a maintainer.
 - [ ] Ensure this merge request and the related security issue have a `~severity::x` label
 
-**Note:** Reviewer/maintainer should not be a Release Manager.
+**Note:** Reviewer/maintainer should not be a [Release Manager].
 
 ## Maintainer checklist
 
@@ -45,3 +45,4 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 [Approval Guidelines]: https://docs.gitlab.com/ee/development/code_review.html#approval-guidelines
 [Canonical repository]: https://gitlab.com/gitlab-org/gitlab
 [`e2e:package-and-test` job]: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/#using-the-package-and-test-job
+[Release Manager]: https://about.gitlab.com/community/release-managers/
