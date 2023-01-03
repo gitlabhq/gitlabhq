@@ -157,7 +157,7 @@ When the transparent SSO enforcement feature flag is enabled, SSO is enforced as
 | Public                   | Off                 | Enforced           | Not enforced | Not enforced                 |
 | Public                   | On            | Enforced           | Enforced | Not enforced                 |
 
-An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add a similar SSO requirement for API activity.
+An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add a similar SSO requirement for API and GitLab Pages activities.
 
 SSO enforcement has the following effects when enabled:
 

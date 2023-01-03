@@ -120,6 +120,18 @@ test based on those. We try to be compatible with most external (not managed by
 Omnibus GitLab) databases (for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)),
 but we can't guarantee compatibility.
 
+#### Operating system locale compatibility and silent index corruption
+
+Changes to locale data in `glibc` means that PostgreSQL database files are not fully compatible
+between different OS releases.
+
+To avoid index corruption, [check for locale compatibility](../administration/geo/replication/troubleshooting.md#check-os-locale-data-compatibility)
+when:
+
+- Moving binary PostgreSQL data between servers.
+- Upgrading your Linux distribution.
+- Updating or changing third party container images.
+
 #### Gitaly Cluster database requirements
 
 [Read more in the Gitaly Cluster documentation](../administration/gitaly/praefect.md).

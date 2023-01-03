@@ -9,9 +9,7 @@
   = c.body do
     = _("Your GitLab instance allows anyone to register for an account, which is a security risk on public-facing GitLab instances. You should deactivate new sign ups if public users aren't expected to register for an account.")
   = c.actions do
-    = link_to general_admin_application_settings_path(anchor: 'js-signup-settings'), class: 'btn gl-alert-action btn-confirm btn-md gl-button' do
-      %span.gl-button-text
-        = _('Deactivate')
-    %button.btn.gl-alert-action.btn-default.btn-md.gl-button.js-close
-      %span.gl-button-text
-        = _('Acknowledge')
+    = render Pajamas::ButtonComponent.new(variant: :confirm, href: general_admin_application_settings_path(anchor: 'js-signup-settings')) do
+      = _('Deactivate')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-close gl-ml-3'}) do
+      = _('Acknowledge')

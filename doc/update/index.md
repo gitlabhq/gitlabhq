@@ -273,6 +273,10 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 15.8.0
+
+- Git 2.38.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../install/installation.md#git).
+
 ### 15.7.0
 
 - This version validates a `NOT NULL DB` constraint on the `issues.work_item_type_id` column.
@@ -764,7 +768,7 @@ for how to proceed.
   gitlab-psql`):
 
   ```sql
-  select status, count(*) from background_migration_jobs 
+  select status, count(*) from background_migration_jobs
   where class_name = 'MigrateMergeRequestDiffCommitUsers' group by status;
   ```
 

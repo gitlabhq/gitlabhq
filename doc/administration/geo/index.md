@@ -124,7 +124,9 @@ The following are required to run Geo:
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS
 - All sites must run [the same GitLab and PostgreSQL versions](setup/database.md#postgresql-replication).
-- If using different operating system versions between Geo sites, [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility) across Geo sites.
+  - If using different operating system versions between Geo sites,
+    [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility)
+    across Geo sites to avoid silent corruption of database indexes.
 
 Additionally, check the GitLab [minimum requirements](../../install/requirements.md),
 and use the latest version of GitLab for a better experience.
