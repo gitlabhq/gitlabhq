@@ -6840,6 +6840,7 @@ The connection type for [`CiRunner`](#cirunner).
 | ---- | ---- | ----------- |
 | <a id="cirunnerconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="cirunnerconnectionedges"></a>`edges` | [`[CiRunnerEdge]`](#cirunneredge) | A list of edges. |
+| <a id="cirunnerconnectionjobsstatistics"></a>`jobsStatistics` | [`CiJobsStatistics`](#cijobsstatistics) | Jobs statistics for jobs executed by a collection of runners. Available only to admins. |
 | <a id="cirunnerconnectionnodes"></a>`nodes` | [`[CiRunner]`](#cirunner) | A list of nodes. |
 | <a id="cirunnerconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
@@ -11118,6 +11119,30 @@ CI/CD variables for a GitLab instance.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cijobtokenscopetypeprojects"></a>`projects` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that can be accessed by CI Job tokens created by this project. (see [Connections](#connections)) |
+
+### `CiJobsDurationStatistics`
+
+Representation of duration statistics for a group of CI jobs.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobsdurationstatisticsp50"></a>`p50` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. 50th percentile. 50% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp75"></a>`p75` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. 75th percentile. 75% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp90"></a>`p90` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. 90th percentile. 90% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp95"></a>`p95` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. 95th percentile. 95% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp99"></a>`p99` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. 99th percentile. 99% of the durations are lower than this value. |
+
+### `CiJobsStatistics`
+
+Statistics for a group of CI jobs.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobsstatisticsqueuedduration"></a>`queuedDuration` **{warning-solid}** | [`CiJobsDurationStatistics`](#cijobsdurationstatistics) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. Statistics for amount of time that jobs were waiting to be picked up. |
 
 ### `CiManualVariable`
 

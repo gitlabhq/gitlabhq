@@ -8,3 +8,5 @@ module Types
     # rubocop: enable Graphql/AuthorizeTypes
   end
 end
+
+Types::Ci::RunnerCountableConnectionType.prepend_mod

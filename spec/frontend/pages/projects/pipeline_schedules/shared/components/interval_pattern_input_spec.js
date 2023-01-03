@@ -138,7 +138,7 @@ describe('Interval Pattern Input Component', () => {
         'Every day (at 4:00am)',
         'Every week (Monday at 4:00am)',
         'Every month (Day 1 at 4:00am)',
-        'Custom ( Cron syntax )',
+        'Custom ( Learn more. )',
       ]);
     });
   });

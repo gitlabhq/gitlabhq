@@ -68,13 +68,17 @@ following principles when upgrading those servers:
 If you're running Gitaly cluster, follow the [zero downtime process](zero_downtime.md#gitaly-or-gitaly-cluster)
 for Gitaly cluster.
 
-If you are using Amazon Machine Images (AMIs) on AWS, the Gitaly nodes
-**should not be upgraded via the AMI process**. Gitaly nodes should **only**
-be upgraded using the package upgrade because:
+If you are using Amazon Machine Images (AMIs) on AWS, you can either upgrade the Gitaly nodes
+through the AMI process, or upgrade the package itself:
 
-- Praefect tracks replicas of Git repositories by server hostname.
-- Redeployment using AMIs issues the nodes with new hostnames.
-- Even though the storage is the same, Gitaly cluster does not work after this.
+- If you're using the
+  [Elastic network interfaces (ENI)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html),
+  you can upgrade through the AMI process. With ENI, you can keep the private DNS names
+  through AMI instance changes, something that is crucial for Gitaly to work.
+- If you're **not** using ENI, you must upgrade Gitaly using the GitLab package.
+  This is because Gitaly Cluster tracks replicas of Git repositories by the server hostname,
+  and a redeployment using AMIs issues the nodes with new hostnames. Even though
+  the storage is the same, Gitaly Cluster does not work when the hostnames change.
 
 The Praefect nodes, however, can be upgraded via an AMI redeployment process:
 

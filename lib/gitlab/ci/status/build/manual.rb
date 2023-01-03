@@ -29,7 +29,11 @@ module Gitlab
           end
 
           def generic_permission_failure_message
-            _("This job does not run automatically and must be started manually, but you do not have access to it.")
+            if subject.outdated_deployment?
+              _("This deployment job does not run automatically and must be started manually, but it's older than the latest deployment, and therefore can't run.")
+            else
+              _("This job does not run automatically and must be started manually, but you do not have access to it.")
+            end
           end
         end
       end

@@ -30357,7 +30357,7 @@ msgstr ""
 msgid "PipelineEditor|Waiting for CI content to load..."
 msgstr ""
 
-msgid "PipelineScheduleIntervalPattern|Custom (%{linkStart}Cron syntax%{linkEnd})"
+msgid "PipelineScheduleIntervalPattern|Custom (%{linkStart}Learn more.%{linkEnd})"
 msgstr ""
 
 msgid "PipelineSchedules|Activated"
