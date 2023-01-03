@@ -13,7 +13,7 @@ module Gitlab
         end
 
         def jobs_by_migration_name
-          Gitlab::Database::SharedModel.using_connection(connection) do
+          set_shared_model_connection do
             Gitlab::Database::BackgroundMigration::BatchedMigration
               .executable
               .where('id > ?', from_id)
@@ -70,7 +70,7 @@ module Gitlab
         end
 
         def run_job(job)
-          Gitlab::Database::SharedModel.using_connection(connection) do
+          set_shared_model_connection do
             Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper.new(connection: connection).perform(job)
           end
         end
@@ -107,6 +107,16 @@ module Gitlab
         private
 
         attr_reader :from_id
+
+        def set_shared_model_connection(&block)
+          Gitlab::Database::SharedModel.using_connection(connection, &block)
+        end
+
+        def migration_meta(job)
+          set_shared_model_connection do
+            job.batched_migration.slice(:max_batch_size, :total_tuple_count, :interval)
+          end
+        end
       end
     end
   end

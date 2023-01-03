@@ -1,13 +1,13 @@
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlListbox, GlListboxItem } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 
 import RefsDropdown from '~/pipeline_new/components/refs_dropdown.vue';
 
-import { mockRefs, mockFilteredRefs } from '../mock_data';
+import { mockBranches, mockRefs, mockFilteredRefs, mockTags } from '../mock_data';
 
 const projectRefsEndpoint = '/root/project/refs';
 const refShortName = 'main';
@@ -19,11 +19,12 @@ describe('Pipeline New Form', () => {
   let wrapper;
   let mock;
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findRefsDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findDropdown = () => wrapper.findComponent(GlListbox);
+  const findRefsDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
+  const findSearchBox = () => wrapper.findByTestId('listbox-search-input');
+  const findListboxGroups = () => wrapper.findAll('ul[role="group"]');
 
-  const createComponent = (props = {}, mountFn = shallowMount) => {
+  const createComponent = (props = {}, mountFn = shallowMountExtended) => {
     wrapper = mountFn(RefsDropdown, {
       provide: {
         projectRefsEndpoint,
@@ -43,19 +44,12 @@ describe('Pipeline New Form', () => {
     mock.onGet(projectRefsEndpoint, { params: { search: '' } }).reply(httpStatusCodes.OK, mockRefs);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-
-    mock.restore();
-  });
-
   beforeEach(() => {
     createComponent();
   });
 
-  it('displays empty dropdown initially', async () => {
-    await findDropdown().vm.$emit('show');
+  it('displays empty dropdown initially', () => {
+    findDropdown().vm.$emit('shown');
 
     expect(findRefsDropdownItems()).toHaveLength(0);
   });
@@ -66,19 +60,19 @@ describe('Pipeline New Form', () => {
 
   describe('when user opens dropdown', () => {
     beforeEach(async () => {
-      await findDropdown().vm.$emit('show');
+      createComponent({}, mountExtended);
+      findDropdown().vm.$emit('shown');
       await waitForPromises();
     });
 
-    it('requests unfiltered tags and branches', async () => {
+    it('requests unfiltered tags and branches', () => {
       expect(mock.history.get).toHaveLength(1);
       expect(mock.history.get[0].url).toBe(projectRefsEndpoint);
       expect(mock.history.get[0].params).toEqual({ search: '' });
     });
 
-    it('displays dropdown with branches and tags', async () => {
+    it('displays dropdown with branches and tags', () => {
       const refLength = mockRefs.Tags.length + mockRefs.Branches.length;
-
       expect(findRefsDropdownItems()).toHaveLength(refLength);
     });
 
@@ -99,7 +93,8 @@ describe('Pipeline New Form', () => {
       const selectedIndex = 1;
 
       beforeEach(async () => {
-        await findRefsDropdownItems().at(selectedIndex).vm.$emit('click');
+        findRefsDropdownItems().at(selectedIndex).vm.$emit('select', 'refs/heads/branch-1');
+        await waitForPromises();
       });
 
       it('component emits @input', () => {
@@ -149,18 +144,21 @@ describe('Pipeline New Form', () => {
         })
         .reply(httpStatusCodes.OK, mockRefs);
 
-      createComponent({
-        value: {
-          shortName: mockShortName,
-          fullName: mockFullName,
+      createComponent(
+        {
+          value: {
+            shortName: mockShortName,
+            fullName: mockFullName,
+          },
         },
-      });
-      await findDropdown().vm.$emit('show');
+        mountExtended,
+      );
+      findDropdown().vm.$emit('shown');
       await waitForPromises();
     });
 
     it('branch is checked', () => {
-      expect(findRefsDropdownItems().at(selectedIndex).props('isChecked')).toBe(true);
+      expect(findRefsDropdownItems().at(selectedIndex).props('isSelected')).toBe(true);
     });
   });
 
@@ -170,7 +168,7 @@ describe('Pipeline New Form', () => {
         .onGet(projectRefsEndpoint, { params: { search: '' } })
         .reply(httpStatusCodes.INTERNAL_SERVER_ERROR);
 
-      await findDropdown().vm.$emit('show');
+      findDropdown().vm.$emit('shown');
       await waitForPromises();
     });
 
@@ -178,5 +176,28 @@ describe('Pipeline New Form', () => {
       expect(wrapper.emitted('loadingError')).toHaveLength(1);
       expect(wrapper.emitted('loadingError')[0]).toEqual([expect.any(Error)]);
     });
+  });
+
+  describe('should display branches and tags based on its length', () => {
+    it.each`
+      mockData                                    | expectedGroupLength | expectedListboxItemsLength
+      ${{ ...mockBranches, Tags: [] }}            | ${1}                | ${mockBranches.Branches.length}
+      ${{ Branches: [], ...mockTags }}            | ${1}                | ${mockTags.Tags.length}
+      ${{ ...mockRefs }}                          | ${2}                | ${mockBranches.Branches.length + mockTags.Tags.length}
+      ${{ Branches: undefined, Tags: undefined }} | ${0}                | ${0}
+    `(
+      'should render branches and tags based on presence',
+      async ({ mockData, expectedGroupLength, expectedListboxItemsLength }) => {
+        mock
+          .onGet(projectRefsEndpoint, { params: { search: '' } })
+          .reply(httpStatusCodes.OK, mockData);
+        createComponent({}, mountExtended);
+        findDropdown().vm.$emit('shown');
+        await waitForPromises();
+
+        expect(findListboxGroups()).toHaveLength(expectedGroupLength);
+        expect(findRefsDropdownItems()).toHaveLength(expectedListboxItemsLength);
+      },
+    );
   });
 });

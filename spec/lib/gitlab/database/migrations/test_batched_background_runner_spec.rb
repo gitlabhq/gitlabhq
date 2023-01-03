@@ -69,12 +69,27 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
     end
 
     context 'running a real background migration' do
+      let(:interval) { 5.minutes }
+      let(:meta) { { "max_batch_size" => nil, "total_tuple_count" => nil, "interval" => interval } }
+
+      let(:params) do
+        {
+          version: nil,
+          connection: connection,
+          meta: {
+            interval: 300,
+            max_batch_size: nil,
+            total_tuple_count: nil
+          }
+        }
+      end
+
       before do
         queue_migration('CopyColumnUsingBackgroundMigrationJob',
                         table_name, :id,
                         :id, :data,
                         batch_size: 100,
-                        job_interval: 5.minutes) # job_interval is skipped when testing
+                        job_interval: interval) # job_interval is skipped when testing
       end
 
       subject(:sample_migration) do
@@ -91,10 +106,9 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
                               }.by_at_most(-1)
       end
 
-      it 'uses the correct connection to instrument the background migration' do
+      it 'uses the correct params to instrument the background migration' do
         expect_next_instance_of(Gitlab::Database::Migrations::Instrumentation) do |instrumentation|
-          expect(instrumentation).to receive(:observe).with(hash_including(connection: connection))
-                                                      .at_least(:once).and_call_original
+          expect(instrumentation).to receive(:observe).with(hash_including(params)).at_least(:once).and_call_original
         end
 
         subject

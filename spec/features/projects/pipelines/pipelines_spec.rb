@@ -674,7 +674,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           click_button project.default_branch
           wait_for_requests
 
-          find('p', text: 'master').click
+          find('.gl-dropdown-item', text: 'master').click
           wait_for_requests
         end
 
@@ -789,7 +789,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           click_button project.default_branch
 
           page.within '[data-testid="ref-select"]' do
-            find('[data-testid="search-refs"]').native.send_keys('fix')
+            find('[data-testid="listbox-search-input"] input').native.send_keys('fix')
 
             page.within '.gl-dropdown-contents' do
               expect(page).to have_content('fix')

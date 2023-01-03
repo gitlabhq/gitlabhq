@@ -11,8 +11,8 @@ module Gitlab
           @result_dir = result_dir
         end
 
-        def observe(version:, name:, connection:, &block)
-          observation = Observation.new(version: version, name: name, success: false)
+        def observe(version:, name:, connection:, meta: {}, &block)
+          observation = Observation.new(version: version, name: name, success: false, meta: meta)
 
           per_migration_result_dir = File.join(@result_dir, name)
 

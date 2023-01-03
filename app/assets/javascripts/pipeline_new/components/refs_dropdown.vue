@@ -1,16 +1,13 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlDropdownSectionHeader, GlSearchBoxByType } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
-import { BRANCH_REF_TYPE, TAG_REF_TYPE, DEBOUNCE_REFS_SEARCH_MS } from '../constants';
-import formatRefs from '../utils/format_refs';
+import { DEBOUNCE_REFS_SEARCH_MS } from '../constants';
+import { formatListBoxItems, searchByFullNameInListboxOptions } from '../utils/format_refs';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownSectionHeader,
-    GlSearchBoxByType,
+    GlCollapsibleListbox,
   },
   inject: ['projectRefsEndpoint'],
   props: {
@@ -24,8 +21,7 @@ export default {
     return {
       isLoading: false,
       searchTerm: '',
-      branches: [],
-      tags: [],
+      listBoxItems: [],
     };
   },
   computed: {
@@ -34,14 +30,6 @@ export default {
     },
     refShortName() {
       return this.value.shortName;
-    },
-    hasTags() {
-      return this.tags.length > 0;
-    },
-  },
-  watch: {
-    searchTerm() {
-      this.debouncedLoadRefs();
     },
   },
   methods: {
@@ -58,8 +46,7 @@ export default {
           // Note: These keys are uppercase in API
           const { Branches = [], Tags = [] } = data;
 
-          this.branches = formatRefs(Branches, BRANCH_REF_TYPE);
-          this.tags = formatRefs(Tags, TAG_REF_TYPE);
+          this.listBoxItems = formatListBoxItems(Branches, Tags);
         })
         .catch((e) => {
           this.$emit('loadingError', e);
@@ -71,44 +58,30 @@ export default {
     debouncedLoadRefs: debounce(function debouncedLoadRefs() {
       this.loadRefs();
     }, DEBOUNCE_REFS_SEARCH_MS),
-    setRefSelected(ref) {
+    setRefSelected(refFullName) {
+      const ref = searchByFullNameInListboxOptions(refFullName, this.listBoxItems);
       this.$emit('input', ref);
     },
-    isSelected(ref) {
-      return ref.fullName === this.value.fullName;
+    setSearchTerm(searchQuery) {
+      this.searchTerm = searchQuery?.trim();
+      this.debouncedLoadRefs();
     },
   },
 };
 </script>
 <template>
-  <gl-dropdown :text="refShortName" block data-testid="ref-select" @show.once="loadRefs">
-    <gl-search-box-by-type
-      v-model.trim="searchTerm"
-      :is-loading="isLoading"
-      :placeholder="__('Search refs')"
-      data-testid="search-refs"
-    />
-    <gl-dropdown-section-header>{{ __('Branches') }}</gl-dropdown-section-header>
-    <gl-dropdown-item
-      v-for="branch in branches"
-      :key="branch.fullName"
-      class="gl-font-monospace"
-      is-check-item
-      :is-checked="isSelected(branch)"
-      @click="setRefSelected(branch)"
-    >
-      {{ branch.shortName }}
-    </gl-dropdown-item>
-    <gl-dropdown-section-header v-if="hasTags">{{ __('Tags') }}</gl-dropdown-section-header>
-    <gl-dropdown-item
-      v-for="tag in tags"
-      :key="tag.fullName"
-      class="gl-font-monospace"
-      is-check-item
-      :is-checked="isSelected(tag)"
-      @click="setRefSelected(tag)"
-    >
-      {{ tag.shortName }}
-    </gl-dropdown-item>
-  </gl-dropdown>
+  <gl-collapsible-listbox
+    class="gl-w-full gl-font-monospace"
+    data-testid="ref-select"
+    :items="listBoxItems"
+    :searchable="true"
+    :searching="isLoading"
+    :search-placeholder="__('Search refs')"
+    :selected="value.fullName"
+    toggle-class="gl-flex-direction-column gl-align-items-stretch!"
+    :toggle-text="refShortName"
+    @search="setSearchTerm"
+    @select="setRefSelected"
+    @shown.once="loadRefs"
+  />
 </template>

@@ -10,6 +10,7 @@ module Gitlab
         :walltime,
         :success,
         :total_database_size_change,
+        :meta,
         :query_statistics,
         keyword_init: true
       )
