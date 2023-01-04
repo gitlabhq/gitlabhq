@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::CreatePipelineWorker do
+RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :code_review_workflow do
   describe '#perform' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }

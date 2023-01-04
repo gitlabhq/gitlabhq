@@ -2,6 +2,7 @@
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import micromatch from 'micromatch';
+import { MODIFIER_KEY } from '~/constants';
 import { s__, sprintf } from '~/locale';
 import FileTree from '~/vue_shared/components/file_tree.vue';
 import DiffFileRow from './diff_file_row.vue';
@@ -65,8 +66,8 @@ export default {
       this.search = '';
     },
   },
-  searchPlaceholder: sprintf(s__('MergeRequest|Search (e.g. *.vue) (%{modifier_key}P)'), {
-    modifier_key: /Mac/i.test(navigator.userAgent) ? '⌘' : 'Ctrl+',
+  searchPlaceholder: sprintf(s__('MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)'), {
+    MODIFIER_KEY,
   }),
   DiffFileRow,
 };

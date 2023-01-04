@@ -1,0 +1,14 @@
+---
+# Warning: gitlab.GitLabFlavoredMarkdown
+#
+# Checks for unclear use of GLFM or GLM instead of GitLab/GitHub Flavored Markdown
+#
+# For a list of all options, see https://vale.sh/docs/topics/styles/
+extends: substitution
+message: "Use '%s' instead of '%s' when possible."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
+level: warning
+ignorecase: true
+swap:
+  GLFM: "GitLab Flavored Markdown"
+  GFM: "GitLab Flavored Markdown' or 'GitHub Flavored Markdown"

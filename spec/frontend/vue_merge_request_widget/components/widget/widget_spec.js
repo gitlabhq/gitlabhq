@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import * as Sentry from '@sentry/browser';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
@@ -26,8 +26,8 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
   const findHelpPopover = () => wrapper.findComponent(HelpPopover);
   const findDynamicScroller = () => wrapper.findByTestId('dynamic-content-scroller');
 
-  const createComponent = ({ propsData, slots } = {}) => {
-    wrapper = shallowMountExtended(Widget, {
+  const createComponent = ({ propsData, slots, mountFn = shallowMountExtended } = {}) => {
+    wrapper = mountFn(Widget, {
       propsData: {
         isCollapsible: false,
         loadingText: 'Loading widget',
@@ -425,6 +425,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
 
     beforeEach(() => {
       createComponent({
+        mountFn: mountExtended,
         propsData: {
           isCollapsible: true,
           content,
@@ -436,6 +437,12 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       findToggleButton().vm.$emit('click');
       await waitForPromises();
       expect(findDynamicScroller().props('items')).toEqual(content);
+    });
+
+    it('renders the dynamic content inside the dynamic scroller', async () => {
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+      expect(wrapper.findByText('Main text for the row').exists()).toBe(true);
     });
   });
 });

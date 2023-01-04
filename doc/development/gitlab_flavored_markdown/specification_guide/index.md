@@ -4,6 +4,8 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
+<!-- vale gitlab.GitLabFlavoredMarkdown = NO -->
+
 # GitLab Flavored Markdown (GLFM) Specification Guide **(FREE)**
 
 ## Summary

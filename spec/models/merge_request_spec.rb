@@ -4546,6 +4546,34 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
     end
 
+    describe 'transition to merged' do
+      context 'when reset_merge_error_on_transition feature flag is on' do
+        before do
+          stub_feature_flags(reset_merge_error_on_transition: true)
+        end
+
+        it 'resets the merge error' do
+          subject.update!(merge_error: 'temp')
+
+          expect { subject.mark_as_merged }.to change { subject.merge_error.present? }
+            .from(true)
+            .to(false)
+        end
+      end
+
+      context 'when reset_merge_error_on_transition feature flag is off' do
+        before do
+          stub_feature_flags(reset_merge_error_on_transition: false)
+        end
+
+        it 'does not reset the merge error' do
+          subject.update!(merge_error: 'temp')
+
+          expect { subject.mark_as_merged }.not_to change { subject.merge_error.present? }
+        end
+      end
+    end
+
     describe 'transition to cannot_be_merged' do
       let(:notification_service) { double(:notification_service) }
       let(:todo_service) { double(:todo_service) }

@@ -652,7 +652,7 @@ Supported attributes:
 | `latest_build_finished_at` | datetime | Timestamp of when the latest build for the merge request finished. |
 | `latest_build_started_at` | datetime | Timestamp of when the latest build for the merge request started. |
 | `merge_commit_sha` | string | SHA of the merge request commit. Returns `null` until merged. |
-| `merge_error` | string | Error message due to a merge error. |
+| `merge_error` | string | Error message shown when a merge has failed. To check mergeability, use `detailed_merge_status` instead  |
 | `merge_user` | object | The user who merged this merge request, the user who set it to merge when pipeline succeeds, or `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7. |
 | `merge_status` | string | Status of the merge request. Can be `unchecked`, `checking`, `can_be_merged`, `cannot_be_merged`, or `cannot_be_merged_recheck`. Affects the `has_conflicts` property. For important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. Use `detailed_merge_status` instead. |
 | `merge_when_pipeline_succeeds` | boolean | Indicates if the merge has been set to be merged when its pipeline succeeds. |

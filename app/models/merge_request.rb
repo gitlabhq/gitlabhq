@@ -193,6 +193,12 @@ class MergeRequest < ApplicationRecord
       merge_request.merge_error = nil
     end
 
+    before_transition any => :merged do |merge_request|
+      if ::Feature.enabled?(:reset_merge_error_on_transition, merge_request.project)
+        merge_request.merge_error = nil
+      end
+    end
+
     after_transition any => :opened do |merge_request|
       merge_request.run_after_commit do
         UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)

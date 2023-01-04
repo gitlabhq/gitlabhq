@@ -637,13 +637,12 @@ test:
     - pwd
 ```
 
-The `GIT_CLONE_PATH` has to always be within `$CI_BUILDS_DIR`. The directory set in `$CI_BUILDS_DIR`
+The `GIT_CLONE_PATH` must always be within `$CI_BUILDS_DIR`. The directory set in `$CI_BUILDS_DIR`
 is dependent on executor and configuration of [runners.builds_dir](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
 setting.
 
 This can only be used when `custom_build_dir` is enabled in the
 [runner's configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscustom_build_dir-section).
-This is the default configuration for the `docker` and `kubernetes` executors.
 
 #### Handling concurrency
 

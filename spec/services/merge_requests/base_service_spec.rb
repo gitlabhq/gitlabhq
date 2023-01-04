@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::BaseService do
+RSpec.describe MergeRequests::BaseService, feature_category: :code_review do
   include ProjectForksHelper
 
   let_it_be(:project) { create(:project, :repository) }
