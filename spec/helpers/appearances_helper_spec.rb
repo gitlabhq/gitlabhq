@@ -10,6 +10,20 @@ RSpec.describe AppearancesHelper do
     allow(helper).to receive(:current_user).and_return(user)
   end
 
+  describe '#appearance_short_name' do
+    it 'returns the default value' do
+      create(:appearance)
+
+      expect(helper.appearance_short_name).to match('GitLab')
+    end
+
+    it 'returns the customized value' do
+      create(:appearance, pwa_short_name: 'Short')
+
+      expect(helper.appearance_short_name).to match('Short')
+    end
+  end
+
   describe '.current_appearance' do
     it 'memoizes empty appearance' do
       expect(Appearance).to receive(:current).once

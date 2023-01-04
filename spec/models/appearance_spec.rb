@@ -14,7 +14,7 @@ RSpec.describe Appearance do
     subject(:appearance) { described_class.new }
 
     it { expect(appearance.title).to eq('') }
-    it { expect(appearance.short_title).to eq('') }
+    it { expect(appearance.pwa_short_name).to eq('') }
     it { expect(appearance.description).to eq('') }
     it { expect(appearance.new_project_guidelines).to eq('') }
     it { expect(appearance.profile_image_guidelines).to eq('') }

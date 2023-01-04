@@ -168,7 +168,7 @@ In the GitLab UI, with corpus management you can:
 
 When you download a corpus, the file is named `artifacts.zip`, regardless of the filename used when
 the corpus was initially uploaded. This file contains only the corpus, which is different to the
-artifacts files you can download from the CI/CD pipeline.
+artifacts files you can download from the CI/CD pipeline. Also, a project member with a Reporter or above privilege can download the corpus using the direct download link.
 
 ### View details of the corpus registry
 

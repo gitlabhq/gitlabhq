@@ -6,7 +6,7 @@ class Appearance < ApplicationRecord
   include WithUploads
 
   attribute :title, default: ''
-  attribute :short_title, default: ''
+  attribute :pwa_short_name, default: ''
   attribute :description, default: ''
   attribute :new_project_guidelines, default: ''
   attribute :profile_image_guidelines, default: ''

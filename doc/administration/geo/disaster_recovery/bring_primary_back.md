@@ -28,7 +28,7 @@ To bring the former **primary** site up to date:
 1. SSH into the former **primary** site that has fallen behind.
 1. Remove `/etc/gitlab/gitlab-cluster.json` if it exists.
 
-   If the site to be readded as a **secondary** site was promoted with the `gitlab-ctl geo promote` command, then it may contain a `/etc/gitlab/gitlab-cluster.json` file. For example during `gitlab-ctl reconfigure`, you may notice output like:
+   If the site to be re-added as a **secondary** site was promoted with the `gitlab-ctl geo promote` command, then it may contain a `/etc/gitlab/gitlab-cluster.json` file. For example during `gitlab-ctl reconfigure`, you may notice output like:
 
    ```plaintext
    The 'geo_primary_role' is defined in /etc/gitlab/gitlab-cluster.json as 'true' and overrides the setting in the /etc/gitlab/gitlab.rb

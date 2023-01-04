@@ -1,6 +1,6 @@
 {
   "name": "<%= Appearance.current&.title.presence || _('GitLab') %>",
-  "short_name": "<%= Appearance.current&.short_title.presence || _('GitLab') %>",
+  "short_name": "<%= appearance_short_name %>",
   "description": "<%= Appearance.current&.description.presence || _("The complete DevOps platform. One application with endless possibilities. Organizations rely on GitLab’s source code management, CI/CD, security, and more to deliver software rapidly.") %>",
   "start_url": "<%= explore_projects_path %>",
   "scope": "<%= root_path %>",

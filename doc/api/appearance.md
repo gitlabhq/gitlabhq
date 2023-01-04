@@ -29,7 +29,7 @@ Example response:
 ```json
 {
   "title": "GitLab Test Instance",
-  "short_title": "GitLab",
+  "pwa_short_name": "GitLab",
   "description": "gitlab-test.example.com",
   "logo": "/uploads/-/system/appearance/logo/1/logo.png",
   "header_logo": "/uploads/-/system/appearance/header_logo/1/header.png",
@@ -55,7 +55,7 @@ PUT /application/appearance
 | Attribute                         | Type    | Required | Description |
 | --------------------------------- | ------- | -------- | ----------- |
 | `title`                           | string  | no       | Instance title on the sign in / sign up page
-| `short_title`                     | string  | no       | Short title for progressive web app
+| `pwa_short_name`                  | string  | no       | Optional, short name for Progressive Web App
 | `description`                     | string  | no       | Markdown text shown on the sign in / sign up page
 | `logo`                            | mixed   | no       | Instance image used on the sign in / sign up page. See [Change logo](#change-logo)
 | `header_logo`                     | mixed   | no       | Instance image used for the main navigation bar
@@ -77,7 +77,7 @@ Example response:
 ```json
 {
   "title": "GitLab Test Instance",
-  "short_title": "GitLab",
+  "pwa_short_name": "GitLab",
   "description": "gitlab-test.example.com",
   "logo": "/uploads/-/system/appearance/logo/1/logo.png",
   "header_logo": "/uploads/-/system/appearance/header_logo/1/header.png",

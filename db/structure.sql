@@ -11079,9 +11079,9 @@ CREATE TABLE appearances (
     email_header_and_footer_enabled boolean DEFAULT false NOT NULL,
     profile_image_guidelines text,
     profile_image_guidelines_html text,
-    short_title text,
+    pwa_short_name text,
     CONSTRAINT appearances_profile_image_guidelines CHECK ((char_length(profile_image_guidelines) <= 4096)),
-    CONSTRAINT check_fdf3064682 CHECK ((char_length(short_title) <= 255))
+    CONSTRAINT check_5c3fd63577 CHECK ((char_length(pwa_short_name) <= 255))
 );
 
 CREATE SEQUENCE appearances_id_seq

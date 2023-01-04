@@ -44,7 +44,7 @@ export const initHeader = () => {
           cancelAutoStopPath: dataset.environmentCancelAutoStopPath,
           terminalPath: dataset.environmentTerminalPath,
           metricsPath: dataset.environmentMetricsPath,
-          updatePath: dataset.tnvironmentEditPath,
+          updatePath: dataset.environmentEditPath,
         },
       });
     },
