@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/269) in GitLab 13.2.
 
-Each Sidekiq worker, controller action, [test example](../testing_guide/best_practices.md#feature-category-metadata) or API endpoint
+Each Sidekiq worker, Batched Background migrations, controller action, [test example](../testing_guide/best_practices.md#feature-category-metadata) or API endpoint
 must declare a `feature_category` attribute. This attribute maps each
 of these to a [feature category](https://about.gitlab.com/handbook/product/categories/). This
 is done for error budgeting, alert routing, and team attribution.
@@ -75,6 +75,24 @@ When possible, workers marked as "not owned" use their caller's
 category (worker or HTTP endpoint) in metrics and logs.
 For instance, `ReactiveCachingWorker` can have multiple feature
 categories in metrics and logs.
+
+## Batched Background Migrations
+
+Long running migrations (as per the [time limits guidelines](../migration_style_guide.md#how-long-a-migration-should-take)) are pulled out as batched background migrations and they should have their 'feature_category' defined.
+
+_Example_:
+
+```ruby
+# File name: lib/gitlab/background_migration/my_background_migration_job.rb
+
+class MyBackgroundMigrationJob < BatchedMigrationJob
+  feature_category :gitaly
+
+  #...
+end
+```
+
+_Note_: [RuboCop::Cop::BackgroundMigration::FeatureCategory](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/background_migration/feature_category.rb) cop ensures a valid 'feature_category' is defined.
 
 ## Rails controllers
 

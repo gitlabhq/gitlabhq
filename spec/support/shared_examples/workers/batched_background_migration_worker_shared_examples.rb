@@ -256,6 +256,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
       Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
         job_arguments :matching_status
         operation_name :update_all
+        feature_category :code_review
 
         def perform
           each_sub_batch(
@@ -325,16 +326,16 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
       stub_const('Gitlab::BackgroundMigration::ExampleDataMigration', migration_class)
     end
 
-    shared_examples 'batched background migration execution' do
-      subject(:full_migration_run) do
-        # process all batches, then do an extra execution to mark the job as finished
-        (number_of_batches + 1).times do
-          described_class.new.perform
+    subject(:full_migration_run) do
+      # process all batches, then do an extra execution to mark the job as finished
+      (number_of_batches + 1).times do
+        described_class.new.perform
 
-          travel_to((migration.interval + described_class::INTERVAL_VARIANCE).seconds.from_now)
-        end
+        travel_to((migration.interval + described_class::INTERVAL_VARIANCE).seconds.from_now)
       end
+    end
 
+    shared_examples 'batched background migration execution' do
       it 'marks the migration record as finished' do
         expect { full_migration_run }.to change { migration.reload.status }.from(1).to(3) # active -> finished
       end
@@ -404,6 +405,15 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
       end
 
       it_behaves_like 'batched background migration execution'
+
+      it 'assigns proper feature category to the context and the worker' do
+        expected_feature_category = migration_class.feature_category.to_s
+
+        expect { full_migration_run }.to change {
+          Gitlab::ApplicationContext.current["meta.feature_category"]
+        }.to(expected_feature_category)
+         .and change { described_class.get_feature_category }.from(:database).to(expected_feature_category)
+      end
     end
 
     context 'when parallel execution is enabled', :sidekiq_inline do

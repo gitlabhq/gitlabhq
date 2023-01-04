@@ -152,6 +152,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
     it 'runs the job with the correct arguments' do
       expect(job_class).to receive(:new).with(no_args).and_return(job_instance)
+      expect(Gitlab::ApplicationContext).to receive(:push).with(feature_category: :database)
       expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
 
       perform

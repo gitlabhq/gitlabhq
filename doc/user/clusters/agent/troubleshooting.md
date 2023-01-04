@@ -229,3 +229,13 @@ This error occurs when the GitLab agent tries to update an object and the object
 - Add the required annotations manually.
 - Delete the object and let the agent recreate it.
 - Change your [`inventory_policy`](../../infrastructure/clusters/deploy/inventory_object.md#inventory_policy-options) setting.
+
+## Parse error during installation
+
+When you install the agent, you might encounter an error that states:
+
+```shell
+Error: parse error at (gitlab-agent/templates/observability-secret.yaml:1): unclosed action
+```
+
+This error is typically caused by an incompatible version of Helm. To resolve the issue, ensure that you are using a version of Helm [compatible with your version of Kubernetes](index.md#supported-cluster-versions).

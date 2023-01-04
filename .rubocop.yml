@@ -416,6 +416,11 @@ Migration/BatchMigrationsPostOnly:
     - 'db/migrate/*.rb'
     - 'db/post_migrate/*.rb'
 
+BackgroundMigration/FeatureCategory:
+  Enabled: true
+  Include:
+    - 'lib/gitlab/background_migration/*.rb'
+
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/373194
 Gitlab/RSpec/AvoidSetup:
   Enabled: true
