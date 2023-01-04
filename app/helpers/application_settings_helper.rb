@@ -448,7 +448,8 @@ module ApplicationSettingsHelper
       :invitation_flow_enforcement,
       :can_create_group,
       :bulk_import_enabled,
-      :allow_runner_registration_token
+      :allow_runner_registration_token,
+      :user_defaults_to_private_profile
     ].tap do |settings|
       next if Gitlab.com?
 

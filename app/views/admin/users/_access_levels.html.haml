@@ -10,6 +10,7 @@
 
       .form-group.gl-form-group{ role: 'group' }
         = f.gitlab_ui_checkbox_component :can_create_group, s_('AdminUsers|Can create group')
+        = f.gitlab_ui_checkbox_component :private_profile, s_('AdminUsers|Private profile')
 
       %fieldset.form-group.gl-form-group
         %legend.col-form-label.col-form-label

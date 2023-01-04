@@ -76,6 +76,10 @@
             %strong
               = @user.can_create_group ? _('Yes') : _('No')
           %li
+            %span.light= _('Private profile:')
+            %strong
+              = @user.private_profile ? _('Yes') : _('No')
+          %li
             %span.light= _('Personal projects limit:')
             %strong
               = @user.projects_limit

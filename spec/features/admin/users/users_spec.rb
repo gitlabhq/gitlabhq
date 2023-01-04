@@ -367,6 +367,8 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
         .to eq(Gitlab.config.gitlab.default_projects_limit)
       expect(user.can_create_group)
         .to eq(Gitlab::CurrentSettings.can_create_group)
+      expect(user.private_profile)
+        .to eq(Gitlab::CurrentSettings.user_defaults_to_private_profile)
     end
 
     it 'creates user with valid data' do
@@ -564,6 +566,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
         fill_in 'user_password', with: 'AValidPassword1'
         fill_in 'user_password_confirmation', with: 'AValidPassword1'
         choose 'user_access_level_admin'
+        check 'Private profile'
         click_button 'Save changes'
       end
 
@@ -577,6 +580,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
         expect(user.name).to eq('Big Bang')
         expect(user.admin?).to be_truthy
         expect(user.password_expires_at).to be <= Time.zone.now
+        expect(user.private_profile).to eq(true)
       end
     end
 

@@ -1454,6 +1454,46 @@ RSpec.describe API::Users, feature_category: :users do
 
       include_examples 'does not allow the "read_user" scope'
     end
+
+    context "`private_profile` attribute" do
+      context "based on the application setting" do
+        before do
+          stub_application_setting(user_defaults_to_private_profile: true)
+        end
+
+        let(:params) { attributes_for(:user) }
+
+        shared_examples_for 'creates the user with the value of `private_profile` based on the application setting' do
+          specify do
+            post api("/users", admin), params: params
+
+            expect(response).to have_gitlab_http_status(:created)
+            user = User.find_by(id: json_response['id'], private_profile: true)
+            expect(user).to be_present
+          end
+        end
+
+        context 'when the attribute is not overridden in params' do
+          it_behaves_like 'creates the user with the value of `private_profile` based on the application setting'
+        end
+
+        context 'when the attribute is overridden in params' do
+          it 'creates the user with the value of `private_profile` same as the value of the overridden param' do
+            post api("/users", admin), params: params.merge(private_profile: false)
+
+            expect(response).to have_gitlab_http_status(:created)
+            user = User.find_by(id: json_response['id'], private_profile: false)
+            expect(user).to be_present
+          end
+
+          context 'overridden as `nil`' do
+            let(:params) { attributes_for(:user, private_profile: nil) }
+
+            it_behaves_like 'creates the user with the value of `private_profile` based on the application setting'
+          end
+        end
+      end
+    end
   end
 
   describe "PUT /users/:id" do
@@ -1634,24 +1674,11 @@ RSpec.describe API::Users, feature_category: :users do
       expect(user.reload.external?).to be_truthy
     end
 
-    it "private profile is false by default" do
-      put api("/users/#{user.id}", admin), params: {}
-
-      expect(user.reload.private_profile).to eq(false)
-    end
-
     it "does have default values for theme and color-scheme ID" do
       put api("/users/#{user.id}", admin), params: {}
 
       expect(user.reload.theme_id).to eq(Gitlab::Themes.default.id)
       expect(user.reload.color_scheme_id).to eq(Gitlab::ColorSchemes.default.id)
-    end
-
-    it "updates private profile" do
-      put api("/users/#{user.id}", admin), params: { private_profile: true }
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(user.reload.private_profile).to eq(true)
     end
 
     it "updates viewing diffs file by file" do
@@ -1661,22 +1688,40 @@ RSpec.describe API::Users, feature_category: :users do
       expect(user.reload.user_preference.view_diffs_file_by_file?).to eq(true)
     end
 
-    it "updates private profile to false when nil is given" do
-      user.update!(private_profile: true)
+    context 'updating `private_profile`' do
+      it "updates private profile" do
+        current_value = user.private_profile
+        new_value = !current_value
 
-      put api("/users/#{user.id}", admin), params: { private_profile: nil }
+        put api("/users/#{user.id}", admin), params: { private_profile: new_value }
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(user.reload.private_profile).to eq(false)
-    end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(user.reload.private_profile).to eq(new_value)
+      end
 
-    it "does not modify private profile when field is not provided" do
-      user.update!(private_profile: true)
+      context 'when `private_profile` is set to `nil`' do
+        before do
+          stub_application_setting(user_defaults_to_private_profile: true)
+        end
 
-      put api("/users/#{user.id}", admin), params: {}
+        it "updates private_profile to value of the application setting" do
+          user.update!(private_profile: false)
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(user.reload.private_profile).to eq(true)
+          put api("/users/#{user.id}", admin), params: { private_profile: nil }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(user.reload.private_profile).to eq(true)
+        end
+      end
+
+      it "does not modify private profile when field is not provided" do
+        user.update!(private_profile: true)
+
+        put api("/users/#{user.id}", admin), params: {}
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(user.reload.private_profile).to eq(true)
+      end
     end
 
     it "does not modify theme or color-scheme ID when field is not provided" do

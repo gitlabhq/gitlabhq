@@ -13271,11 +13271,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `GeoNode.dependencyProxyManifestRegistries`
 
-Find Dependency Proxy Manifest registries on this Geo node. Ignored if `geo_dependency_proxy_manifest_replication` feature flag is disabled.
-
-WARNING:
-**Introduced** in 15.6.
-This feature is in Alpha. It can be changed or removed at any time.
+Find Dependency Proxy Manifest registries on this Geo node.
 
 Returns [`DependencyProxyManifestRegistryConnection`](#dependencyproxymanifestregistryconnection).
 

@@ -17,6 +17,7 @@ const NAMESPACE_TARGET_REGEX = /(\/-\/(blob|tree))\/.*?\/(.*)/;
  */
 export function generateRefDestinationPath(projectRootPath, selectedRef) {
   const currentPath = window.location.pathname;
+  const encodedHash = '%23';
   let namespace = '/-/tree';
   let target;
   const match = NAMESPACE_TARGET_REGEX.exec(currentPath);
@@ -27,7 +28,7 @@ export function generateRefDestinationPath(projectRootPath, selectedRef) {
   const destinationPath = joinPaths(
     projectRootPath,
     namespace,
-    encodeURIComponent(selectedRef),
+    encodeURI(selectedRef).replace(/#/g, encodedHash),
     target,
   );
 

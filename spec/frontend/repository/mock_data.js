@@ -87,8 +87,8 @@ export const applicationInfoMock = { gitpodEnabled: true };
 export const propsMock = { path: 'some_file.js', projectPath: 'some/path' };
 
 export const refMock = 'default-ref';
-export const refWithSpecialCharMock = 'selected-#-ref';
-export const encodedRefWithSpecialCharMock = encodeURIComponent(refWithSpecialCharMock);
+export const refWithSpecialCharMock = 'feat/selected-#-ref-#';
+export const encodedRefWithSpecialCharMock = 'feat/selected-%23-ref-%23';
 
 export const blobControlsDataMock = {
   id: '1234',

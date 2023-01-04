@@ -468,6 +468,7 @@ over `password`. In addition, `reset_password` and
 
 NOTE:
 From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29888/), `private_profile` defaults to `false`.
+From [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/231301), `private_profile` defaults to the value determined by [this](../user/admin_area/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default) setting.
 
 NOTE:
 From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35604), `bio` defaults to `""` instead of `null`.
@@ -498,7 +499,7 @@ Parameters:
 | `note`                               | No       | Administrator notes for this user                                                                                                                               |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
-| `private_profile`                    | No       | User's profile is private - true, false (default), or null (is converted to false)                                                                 |
+| `private_profile`                    | No       | User's profile is private - true or false. The default value is determined by [this](../user/admin_area/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default) setting. |
 | `projects_limit`                     | No       | Number of projects user can create                                                                                                                      |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `reset_password`                     | No       | Send user password reset link - true or false(default)                                                                                                  |
@@ -547,7 +548,7 @@ Parameters:
 | `note`                               | No       | Administration notes for this user                                                                                                                               |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
-| `private_profile`                    | No       | User's profile is private - true, false (default), or null (is converted to false)                                                                 |
+| `private_profile`                    | No       | User's profile is private - true or false.                                                                 |
 | `projects_limit`                     | No       | Limit projects each user can create                                                                                                                     |
 | `pronouns`                           | No       | Pronouns                                                                                                                                                |
 | `provider`                           | No       | External provider name                                                                                                                                  |

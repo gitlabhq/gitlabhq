@@ -390,13 +390,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       end
 
       format.patch do
-        break render_404 unless @merge_request.diff_refs
+        next render_404 unless @merge_request.diff_refs
 
         send_git_patch @project.repository, @merge_request.diff_refs
       end
 
       format.diff do
-        break render_404 unless @merge_request.diff_refs
+        next render_404 unless @merge_request.diff_refs
 
         send_git_diff @project.repository, @merge_request.diff_refs
       end

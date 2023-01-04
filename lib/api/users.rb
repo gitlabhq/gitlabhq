@@ -62,6 +62,7 @@ module API
           optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for user', documentation: { type: 'file' }
           optional :theme_id, type: Integer, desc: 'The GitLab theme for the user'
           optional :color_scheme_id, type: Integer, desc: 'The color scheme for the file viewer'
+          # TODO: Add `allow_blank: false` in 16.0. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/387005
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
           optional :note, type: String, desc: 'Admin note for this user'
           optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
@@ -294,6 +295,12 @@ module API
         authenticated_as_admin!
 
         params = declared_params(include_missing: false)
+
+        # TODO: Remove in 16.0. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/387005
+        if params.key?(:private_profile) && params[:private_profile].nil?
+          params[:private_profile] = Gitlab::CurrentSettings.user_defaults_to_private_profile
+        end
+
         user = ::Users::AuthorizedCreateService.new(current_user, params).execute
 
         if user.persisted?
@@ -341,6 +348,12 @@ module API
               .where.not(id: user.id).exists?
 
         user_params = declared_params(include_missing: false)
+
+        # TODO: Remove in 16.0. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/387005
+        if user_params.key?(:private_profile) && user_params[:private_profile].nil?
+          user_params[:private_profile] = Gitlab::CurrentSettings.user_defaults_to_private_profile
+        end
+
         admin_making_changes_for_another_user = (current_user != user)
 
         if user_params[:password].present?

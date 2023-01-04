@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Gitlab::StrongMemoizeAttr do
           class Foo
             def memoized_method
               strong_memoize(:memoized_method) do
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `strong_memoize_attr`, instead of using `strong_memoize` directly
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `strong_memoize_attr`, instead of using `strong_memoize` directly.
                 'This is a memoized method'
               end
             end
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Gitlab::StrongMemoizeAttr do
           class Foo
             def enabled?
               strong_memoize(:enabled) do
-              ^^^^^^^^^^^^^^^^^^^^^^^^ Use `strong_memoize_attr`, instead of using `strong_memoize` directly
+              ^^^^^^^^^^^^^^^^^^^^^^^^ Use `strong_memoize_attr`, instead of using `strong_memoize` directly.
                 true
               end
             end
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Gitlab::StrongMemoizeAttr do
             msg = 'This is a memoized method'
 
             strong_memoize(:memoized_method) do
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `strong_memoize_attr`, instead of using `strong_memoize` directly
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `strong_memoize_attr`, instead of using `strong_memoize` directly.
               msg
             end
           end
@@ -70,6 +70,20 @@ RSpec.describe RuboCop::Cop::Gitlab::StrongMemoizeAttr do
       RUBY
 
       expect_no_corrections
+    end
+  end
+
+  context 'when strong_memoize() is used in a method with parameters' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def memoized_method(param)
+            strong_memoize(:memoized_method) do
+              param.to_s
+            end
+          end
+        end
+      RUBY
     end
   end
 end

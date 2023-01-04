@@ -291,6 +291,16 @@ By default, new users can create top-level groups. GitLab administrators can pre
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Clear the **Allow new users to create top-level groups** checkbox.
 
+## Set profiles of new users to private by default
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231301) in GitLab 15.8.
+
+By default, newly created users have a public profile. GitLab administrators can set new users to have a private profile by default:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. Select the **Make new users' profiles private by default** checkbox.
+
 ## Troubleshooting
 
 ### 413 Request Entity Too Large

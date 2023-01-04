@@ -128,6 +128,10 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     it { is_expected.to validate_presence_of(:max_terraform_state_size_bytes) }
     it { is_expected.to validate_numericality_of(:max_terraform_state_size_bytes).only_integer.is_greater_than_or_equal_to(0) }
 
+    it { is_expected.to allow_value(true).for(:user_defaults_to_private_profile) }
+    it { is_expected.to allow_value(false).for(:user_defaults_to_private_profile) }
+    it { is_expected.not_to allow_value(nil).for(:user_defaults_to_private_profile) }
+
     it 'ensures max_pages_size is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
       is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than_or_equal_to(0)
                        .is_less_than(::Gitlab::Pages::MAX_SIZE / 1.megabyte)

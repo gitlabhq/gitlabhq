@@ -413,7 +413,7 @@ class ApplicationSetting < ApplicationRecord
   validates :invisible_captcha_enabled,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  validates :invitation_flow_enforcement, :can_create_group,
+  validates :invitation_flow_enforcement, :can_create_group, :user_defaults_to_private_profile,
             allow_nil: false,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 

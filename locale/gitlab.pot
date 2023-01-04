@@ -3352,6 +3352,9 @@ msgstr ""
 msgid "AdminUsers|Personal projects, group and user history will be left intact"
 msgstr ""
 
+msgid "AdminUsers|Private profile"
+msgstr ""
+
 msgid "AdminUsers|Quota of CI/CD minutes"
 msgstr ""
 
@@ -25247,6 +25250,9 @@ msgstr ""
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
 msgstr ""
 
+msgid "Make new users' profiles private by default"
+msgstr ""
+
 msgid "Make sure you choose a strong, unique password."
 msgstr ""
 
@@ -31633,6 +31639,9 @@ msgid "Private group(s)"
 msgstr ""
 
 msgid "Private profile"
+msgstr ""
+
+msgid "Private profile:"
 msgstr ""
 
 msgid "Private projects Minutes cost factor"

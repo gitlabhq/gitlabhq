@@ -1252,17 +1252,6 @@ RSpec.describe User do
   end
 
   describe 'before save hook' do
-    describe '#default_private_profile_to_false' do
-      let(:user) { create(:user, private_profile: true) }
-
-      it 'converts nil to false' do
-        user.private_profile = nil
-        user.save!
-
-        expect(user.private_profile).to eq false
-      end
-    end
-
     context 'when saving an external user' do
       let(:user)          { create(:user) }
       let(:external_user) { create(:user, external: true) }
@@ -2697,7 +2686,7 @@ RSpec.describe User do
         expect(user.can_create_group).to eq(Gitlab::CurrentSettings.can_create_group)
         expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
         expect(user.external).to be_falsey
-        expect(user.private_profile).to eq(false)
+        expect(user.private_profile).to eq(Gitlab::CurrentSettings.user_defaults_to_private_profile)
       end
     end
 

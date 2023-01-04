@@ -63,6 +63,7 @@ class User < ApplicationRecord
   attribute :admin, default: false
   attribute :external, default: -> { Gitlab::CurrentSettings.user_default_external }
   attribute :can_create_group, default: -> { Gitlab::CurrentSettings.can_create_group }
+  attribute :private_profile, default: -> { Gitlab::CurrentSettings.user_defaults_to_private_profile }
   attribute :can_create_team, default: false
   attribute :hide_no_ssh_key, default: false
   attribute :hide_no_password, default: false
@@ -309,7 +310,6 @@ class User < ApplicationRecord
   before_validation :sanitize_attrs
   before_validation :ensure_namespace_correct
   after_validation :set_username_errors
-  before_save :default_private_profile_to_false
   before_save :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
@@ -2294,12 +2294,6 @@ class User < ApplicationRecord
                     Group.joins(:shared_with_group_links)
                          .where(group_group_links: { shared_with_group_id: Group.from(cte_alias) })
                   ])
-  end
-
-  def default_private_profile_to_false
-    return unless private_profile_changed? && private_profile.nil?
-
-    self.private_profile = false
   end
 
   def has_current_license?

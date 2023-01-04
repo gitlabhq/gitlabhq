@@ -377,6 +377,7 @@ Getter
 Getters
 gettext
 GIDs
+gists
 Git
 Gitaly
 Gitea

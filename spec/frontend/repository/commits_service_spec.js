@@ -4,7 +4,7 @@ import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/co
 import httpStatus from '~/lib/utils/http_status';
 import { createAlert } from '~/flash';
 import { I18N_COMMIT_DATA_FETCH_ERROR } from '~/repository/constants';
-import { refWithSpecialCharMock, encodedRefWithSpecialCharMock } from './mock_data';
+import { refWithSpecialCharMock } from './mock_data';
 
 jest.mock('~/flash');
 
@@ -41,7 +41,8 @@ describe('commits service', () => {
   });
 
   it('encodes the path and ref', async () => {
-    const encodedUrl = `/some-project/-/refs/${encodedRefWithSpecialCharMock}/logs_tree/with%20%24peci%40l%20ch%40rs%2F`;
+    const encodedRef = encodeURIComponent(refWithSpecialCharMock);
+    const encodedUrl = `/some-project/-/refs/${encodedRef}/logs_tree/with%20%24peci%40l%20ch%40rs%2F`;
 
     await requestCommits(1, 'some-project', 'with $peci@l ch@rs/', refWithSpecialCharMock);
 

@@ -65,6 +65,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['can_create_group']).to eq(true)
       expect(json_response['jira_connect_application_key']).to eq(nil)
       expect(json_response['jira_connect_proxy_url']).to eq(nil)
+      expect(json_response['user_defaults_to_private_profile']).to eq(false)
     end
   end
 
@@ -167,7 +168,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             jira_connect_application_key: '123',
             jira_connect_proxy_url: 'http://example.com',
             bulk_import_enabled: false,
-            allow_runner_registration_token: true
+            allow_runner_registration_token: true,
+            user_defaults_to_private_profile: true
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -234,6 +236,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['jira_connect_proxy_url']).to eq('http://example.com')
         expect(json_response['bulk_import_enabled']).to be(false)
         expect(json_response['allow_runner_registration_token']).to be(true)
+        expect(json_response['user_defaults_to_private_profile']).to be(true)
       end
     end
 

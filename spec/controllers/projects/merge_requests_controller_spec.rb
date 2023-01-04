@@ -229,6 +229,16 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
         expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-diff:")
       end
+
+      context 'when there is no diff' do
+        it 'renders 404' do
+          merge_request.merge_request_diff.destroy!
+
+          go(format: :diff)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
     describe "as patch" do
@@ -236,6 +246,16 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         go(format: :patch)
 
         expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-format-patch:")
+      end
+
+      context 'when there is no diff' do
+        it 'renders 404' do
+          merge_request.merge_request_diff.destroy!
+
+          go(format: :patch)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
   end
