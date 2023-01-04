@@ -43,8 +43,8 @@ Use these variables to customize and deploy your build.
 | `CI_APPLICATION_TAG`                    | The tag of the container image being built or deployed, `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`. For more details, read [Custom container image](customize.md#custom-container-image). |
 | `DAST_AUTO_DEPLOY_IMAGE_VERSION`        | Customize the image version used for DAST deployments on the default branch. Should usually be the same as `AUTO_DEPLOY_IMAGE_VERSION`. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/releases). |
 | `DOCKERFILE_PATH`                       | From GitLab 13.2, allows overriding the [default Dockerfile path for the build stage](customize.md#custom-dockerfile) |
-| `HELM_RELEASE_NAME`                     | From GitLab 12.1, allows the `helm` release name to be overridden. Can be used to assign unique release names when deploying multiple projects to a single namespace. |
-| `HELM_UPGRADE_VALUES_FILE`              | From GitLab 12.6, allows the `helm upgrade` values file to be overridden. Defaults to `.gitlab/auto-deploy-values.yaml`. |
+| `HELM_RELEASE_NAME`                     | Allows the `helm` release name to be overridden. Can be used to assign unique release names when deploying multiple projects to a single namespace. |
+| `HELM_UPGRADE_VALUES_FILE`              | Allows the `helm upgrade` values file to be overridden. Defaults to `.gitlab/auto-deploy-values.yaml`. |
 | `HELM_UPGRADE_EXTRA_ARGS`               | Allows extra options in `helm upgrade` commands when deploying the application. Using quotes doesn't prevent word splitting. |
 | `INCREMENTAL_ROLLOUT_MODE`              | If present, can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. Set to `manual` for manual deployment jobs or `timed` for automatic rollout deployments with a 5 minute delay each one. |
 | `K8S_SECRET_*`                          | Any variable prefixed with [`K8S_SECRET_`](#configure-application-secret-variables) is made available by Auto DevOps as environment variables to the deployed application. |
@@ -55,7 +55,7 @@ Use these variables to customize and deploy your build.
 | `PRODUCTION_REPLICAS`                   | Number of replicas to deploy in the production environment. Takes precedence over `REPLICAS` and defaults to 1. For zero downtime upgrades, set to 2 or greater. |
 | `REPLICAS`                              | Number of replicas to deploy. Defaults to 1. Change this variable instead of [modifying](customize.md#customize-values-for-helm-chart) `replicaCount`. |
 | `ROLLOUT_RESOURCE_TYPE`                 | Allows specification of the resource type being deployed when using a custom Helm chart. Default value is `deployment`. |
-| `ROLLOUT_STATUS_DISABLED`               | From GitLab 12.0, used to disable rollout status check because it does not support all resource types, for example, `cronjob`. |
+| `ROLLOUT_STATUS_DISABLED`               | Used to disable rollout status check because it does not support all resource types, for example, `cronjob`. |
 | `STAGING_ENABLED`                       | Used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
 | `TRACE`                                 | Set to any value to make Helm commands produce verbose output. You can use this setting to help diagnose Auto DevOps deployment problems. |
 
@@ -73,7 +73,7 @@ Use these variables to integrate CI/CD with PostgreSQL databases.
 | `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/index.md#predefined-cicd-variables). Set it to use a custom database name. |
 | `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.16` for tests and deployments as of GitLab 13.0 (previously `9.6.2`). If `AUTO_DEVOPS_POSTGRES_CHANNEL` is set to `1`, deployments uses the default version `9.6.2`. |
 | `POSTGRES_HELM_UPGRADE_VALUES_FILE`     | In GitLab 13.8 and later, and when using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows the `helm upgrade` values file for PostgreSQL to be overridden. Defaults to `.gitlab/auto-deploy-postgres-values.yaml`. |
-| `POSTGRES_HELM_UPGRADE_EXTRA_ARGS`      | In GitLab 13.8 and later, and when using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows extra PostgreSQL options in `helm upgrade` commands when deploying the application. Note that using quotes doesn't prevent word splitting. |
+| `POSTGRES_HELM_UPGRADE_EXTRA_ARGS`      | In GitLab 13.8 and later, and when using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows extra PostgreSQL options in `helm upgrade` commands when deploying the application. Using quotes doesn't prevent word splitting. |
 | `POSTGRES_CHART_REPOSITORY`             | Helm Chart repository used to search for PostgreSQL chart. Defaults to `https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami`. |
 | `POSTGRES_CHART_VERSION`                | Helm Chart version used for PostgreSQL chart. Defaults to `8.2.1`. |
 
@@ -290,7 +290,7 @@ You can run the rollout jobs in any order. To scale down, rerun a
 lower percentage job.
 
 After you run the `rollout 100%` job, you cannot scale down, and must
-[rollback your deployment](../../ci/environments/index.md#retry-or-roll-back-a-deployment).
+[roll back your deployment](../../ci/environments/index.md#retry-or-roll-back-a-deployment).
 
 ### Example incremental rollout configurations
 
@@ -309,9 +309,6 @@ With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and without `STAGING_ENABLED`:
 With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and with `STAGING_ENABLED`:
 
 ![Rollout and staging enabled](img/rollout_staging_enabled.png)
-
-WARNING:
-This configuration is deprecated, and is scheduled to be removed in the future.
 
 ## Timed incremental rollout to production **(PREMIUM)**
 
