@@ -121,7 +121,7 @@ module IssuableLinks
     end
 
     def target_issuable_type
-      :issue
+      'issue'
     end
 
     def create_notes(issuable_link)

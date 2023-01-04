@@ -193,7 +193,7 @@ RSpec.describe WorkItems::CreateService do
         end
 
         it_behaves_like 'fails creating work item and returns errors' do
-          let(:error_message) { 'No matching task found. Make sure that you are adding a valid task ID.' }
+          let(:error_message) { 'No matching work item found. Make sure that you are adding a valid work item ID.' }
         end
       end
     end
