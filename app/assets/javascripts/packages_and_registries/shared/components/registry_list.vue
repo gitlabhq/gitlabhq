@@ -87,13 +87,15 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-justify-content-space-between gl-mb-3 gl-align-items-center">
-      <gl-form-checkbox v-if="!hiddenDelete" v-model="selectAll" class="gl-ml-2 gl-pt-2">
+    <div
+      v-if="!hiddenDelete"
+      class="gl-display-flex gl-justify-content-space-between gl-mb-3 gl-align-items-center"
+    >
+      <gl-form-checkbox v-model="selectAll" class="gl-ml-2 gl-pt-2">
         <span class="gl-font-weight-bold">{{ title }}</span>
       </gl-form-checkbox>
 
       <gl-button
-        v-if="!hiddenDelete"
         :disabled="disableDeleteButton"
         category="secondary"
         variant="danger"

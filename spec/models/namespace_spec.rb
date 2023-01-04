@@ -363,6 +363,10 @@ RSpec.describe Namespace do
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix.allow_nil }
     it { is_expected.to delegate_method(:avatar_url).to(:owner).allow_nil }
     it { is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy).to(:namespace_settings).allow_nil }
+    it { is_expected.to delegate_method(:runner_registration_enabled).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:runner_registration_enabled?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:allow_runner_registration_token).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:allow_runner_registration_token?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:maven_package_requests_forwarding).to(:package_settings) }
     it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:package_settings) }
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:package_settings) }
@@ -370,6 +374,16 @@ RSpec.describe Namespace do
     it do
       is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=).to(:namespace_settings)
                        .with_arguments(:args).allow_nil
+    end
+
+    it do
+      is_expected.to delegate_method(:runner_registration_enabled=).to(:namespace_settings)
+                       .with_arguments(:args)
+    end
+
+    it do
+      is_expected.to delegate_method(:allow_runner_registration_token=).to(:namespace_settings)
+                       .with_arguments(:args)
     end
   end
 

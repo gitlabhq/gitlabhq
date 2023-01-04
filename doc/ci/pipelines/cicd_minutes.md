@@ -255,9 +255,9 @@ calculations start again from `0`.
 
 For example, if you have a monthly quota of `10,000` CI/CD minutes:
 
-- On **1st April**, you have `10,000` minutes.
+- On **April 1**, you have `10,000` minutes.
 - During April, you use only `6,000` of the `10,000` minutes.
-- On **1st May**, the accumulated usage of minutes resets to `0`, and you have `10,000` minutes to use again
+- On **May 1**, the accumulated usage of minutes resets to `0`, and you have `10,000` minutes to use again
   during May.
 
 Usage data for the previous month is kept to show historical view of the consumption over time.
@@ -269,9 +269,9 @@ the next month.
 
 For example:
 
-- On **1st April**, you purchase `5,000` additional CI/CD minutes.
+- On **April 1**, you purchase `5,000` additional CI/CD minutes.
 - During April, you use only `3,000` of the `5,000` additional minutes.
-- On **1st May**, the unused minute roll over, so you have `2,000` additional minutes available for May.
+- On **May 1**, the unused minute roll over, so you have `2,000` additional minutes available for May.
 
 Additional CI/CD minutes are a one-time purchase and do not renew or refresh each month.
 

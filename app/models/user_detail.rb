@@ -22,13 +22,9 @@ class UserDetail < ApplicationRecord
   validates :website_url, length: { maximum: DEFAULT_FIELD_LENGTH }, url: true, allow_blank: true, if: :website_url_changed?
 
   before_validation :sanitize_attrs
-  before_save :prevent_nil_bio
+  before_save :prevent_nil_fields
 
   enum registration_objective: REGISTRATION_OBJECTIVE_PAIRS, _suffix: true
-
-  def self.user_fields_changed?(user)
-    (%w[linkedin skype twitter website_url location organization] & user.changed).any?
-  end
 
   def sanitize_attrs
     %i[linkedin skype twitter website_url].each do |attr|
@@ -41,25 +37,16 @@ class UserDetail < ApplicationRecord
     end
   end
 
-  def assign_changed_fields_from_user
-    self.linkedin = trim_field(user.linkedin) if user.linkedin_changed?
-    self.twitter = trim_field(user.twitter) if user.twitter_changed?
-    self.skype = trim_field(user.skype) if user.skype_changed?
-    self.website_url = trim_field(user.website_url) if user.website_url_changed?
-    self.location = trim_field(user.location) if user.location_changed?
-    self.organization = trim_field(user.organization) if user.organization_changed?
-  end
-
   private
 
-  def prevent_nil_bio
-    self.bio = '' if bio_changed? && bio.nil?
-  end
-
-  def trim_field(value)
-    return '' unless value
-
-    value.first(DEFAULT_FIELD_LENGTH)
+  def prevent_nil_fields
+    self.bio = '' if bio.nil?
+    self.linkedin = '' if linkedin.nil?
+    self.twitter = '' if twitter.nil?
+    self.skype = '' if skype.nil?
+    self.location = '' if location.nil?
+    self.organization = '' if organization.nil?
+    self.website_url = '' if website_url.nil?
   end
 end
 

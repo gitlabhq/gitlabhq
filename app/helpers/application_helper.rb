@@ -20,23 +20,15 @@ module ApplicationHelper
   def dispensable_render(...)
     render(...)
   rescue StandardError => e
-    if Feature.enabled?(:dispensable_render)
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
-      nil
-    else
-      raise e
-    end
+    Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+    nil
   end
 
   def dispensable_render_if_exists(...)
     render_if_exists(...)
   rescue StandardError => e
-    if Feature.enabled?(:dispensable_render)
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
-      nil
-    else
-      raise e
-    end
+    Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+    nil
   end
 
   def partial_exists?(partial)

@@ -280,7 +280,7 @@ work in every repository. They can only be re-enabled by an administrator user o
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87579) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `group_ip_restrictions_allow_global`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366445) in GitLab 15.4. [Feature flag `group_ip_restrictions_allow_global`](https://gitlab.com/gitlab-org/gitlab/-/issues/366445) removed.
 
-Administrators can set IP address ranges to be combined with [group-level IP restrictions](../../group/access_and_permissions.md#restrict-access-to-groups-by-ip-address).
+Administrators can set IP address ranges to be combined with [group-level IP restrictions](../../group/access_and_permissions.md#restrict-group-access-by-ip-address).
 Use globally-allowed IP addresses to allow aspects of the GitLab installation to work even when group-level IP address
 restrictions are set.
 

@@ -32,8 +32,13 @@ en:
         project_key: "Project name suffix"
       user/user_detail:
         job_title: 'Job title'
-      user/user_detail:
         bio: 'Bio'
+        linkedin: 'Linkedin'
+        twitter: 'Twitter'
+        skype: 'Skype'
+        location: 'Location'
+        organization: 'Organization'
+        website_url: 'Website url'
   views:
     pagination:
       previous: "Prev"

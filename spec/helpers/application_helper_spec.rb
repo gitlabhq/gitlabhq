@@ -604,16 +604,6 @@ RSpec.describe ApplicationHelper do
         it 'returns nil' do
           expect(helper.dispensable_render).to be_nil
         end
-
-        context 'when the feature flag is disabled' do
-          before do
-            stub_feature_flags(dispensable_render: false)
-          end
-
-          it 'raises an error' do
-            expect { helper.dispensable_render }.to raise_error(StandardError)
-          end
-        end
       end
     end
 
@@ -657,16 +647,6 @@ RSpec.describe ApplicationHelper do
 
         it 'returns nil' do
           expect(helper.dispensable_render_if_exists).to be_nil
-        end
-
-        context 'when the feature flag is disabled' do
-          before do
-            stub_feature_flags(dispensable_render: false)
-          end
-
-          it 'raises an error' do
-            expect { helper.dispensable_render_if_exists }.to raise_error(StandardError)
-          end
         end
       end
     end

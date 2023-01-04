@@ -63,6 +63,7 @@ module CachingArrayResolver
 
         queries.in_groups_of(max_union_size, false).each do |group|
           by_id = model_class
+            .select(all_fields, :union_member_idx)
             .from_union(tag(group), remove_duplicates: false)
             .preload(preload) # rubocop: disable CodeReuse/ActiveRecord
             .group_by { |r| r[primary_key] }

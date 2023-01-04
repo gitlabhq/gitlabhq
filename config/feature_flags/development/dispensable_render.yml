@@ -1,8 +1,0 @@
----
-name: dispensable_render
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81546
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/354337
-milestone: '14.9'
-type: development
-group: group::activation
-default_enabled: true

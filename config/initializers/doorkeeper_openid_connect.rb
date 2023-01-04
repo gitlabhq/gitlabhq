@@ -54,7 +54,7 @@ Doorkeeper::OpenidConnect.configure do
         end
       end
 
-      o.claim(:website)        { |user| user.full_website_url if user.website_url? }
+      o.claim(:website)        { |user| user.full_website_url if user.website_url.present? }
       o.claim(:profile)        { |user| Gitlab::Routing.url_helpers.user_url user }
       o.claim(:picture)        { |user| user.avatar_url(only_path: false) }
       o.claim(:groups)         { |user| user.membership_groups.joins(:route).with_route.map(&:full_path) }

@@ -136,6 +136,10 @@ class Namespace < ApplicationRecord
            to: :namespace_settings
   delegate :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
            to: :namespace_settings
+  delegate :allow_runner_registration_token,
+           :allow_runner_registration_token?,
+           :allow_runner_registration_token=,
+           to: :namespace_settings
   delegate :maven_package_requests_forwarding,
            :pypi_package_requests_forwarding,
            :npm_package_requests_forwarding,

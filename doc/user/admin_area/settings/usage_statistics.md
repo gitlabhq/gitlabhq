@@ -48,7 +48,7 @@ tier. Users can continue to access the features in a paid tier without sharing u
 ### Features available in 14.4 and later
 
 - [Repository size limit](../settings/account_and_limit_settings.md#repository-size-limit).
-- [Group access restriction by IP address](../../group/access_and_permissions.md#restrict-access-to-groups-by-ip-address).
+- [Group access restriction by IP address](../../group/access_and_permissions.md#restrict-group-access-by-ip-address).
 
 NOTE:
 Registration is not yet required for participation, but may be added in a future milestone.

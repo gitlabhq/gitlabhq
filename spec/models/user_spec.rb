@@ -101,6 +101,24 @@ RSpec.describe User do
 
     it { is_expected.to delegate_method(:requires_credit_card_verification).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:requires_credit_card_verification=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:linkedin).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:linkedin=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:twitter).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:twitter=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:skype).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:skype=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:website_url).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:website_url=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:location).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:location=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:organization).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:organization=).to(:user_detail).with_arguments(:args).allow_nil }
   end
 
   describe 'associations' do
@@ -173,17 +191,51 @@ RSpec.describe User do
         expect(create(:user).user_detail).not_to be_persisted
       end
 
-      it 'creates `user_detail` when `bio` is given' do
-        user = create(:user, bio: 'my bio')
+      shared_examples 'delegated field' do |field|
+        it 'creates `user_detail` when the field is given' do
+          user = create(:user, field => 'my field')
 
-        expect(user.user_detail).to be_persisted
-        expect(user.user_detail.bio).to eq('my bio')
+          expect(user.user_detail).to be_persisted
+          expect(user.user_detail[field]).to eq('my field')
+        end
+
+        it 'delegates to `user_detail`' do
+          user = create(:user, field => 'my field')
+
+          expect(user.public_send(field)).to eq(user.user_detail[field])
+        end
+
+        it 'creates `user_detail` when first updated' do
+          user = create(:user)
+
+          expect { user.update!(field => 'my field') }.to change { user.user_detail.persisted? }.from(false).to(true)
+        end
       end
 
-      it 'delegates `bio` to `user_detail`' do
-        user = create(:user, bio: 'my bio')
+      it_behaves_like 'delegated field', :bio
+      it_behaves_like 'delegated field', :linkedin
+      it_behaves_like 'delegated field', :twitter
+      it_behaves_like 'delegated field', :skype
+      it_behaves_like 'delegated field', :location
+      it_behaves_like 'delegated field', :organization
 
-        expect(user.bio).to eq(user.user_detail.bio)
+      it 'creates `user_detail` when `website_url` is given' do
+        user = create(:user, website_url: 'https://example.com')
+
+        expect(user.user_detail).to be_persisted
+        expect(user.user_detail.website_url).to eq('https://example.com')
+      end
+
+      it 'delegates `website_url` to `user_detail`' do
+        user = create(:user, website_url: 'http://example.com')
+
+        expect(user.website_url).to eq(user.user_detail.website_url)
+      end
+
+      it 'creates `user_detail` when `website_url` is first updated' do
+        user = create(:user)
+
+        expect { user.update!(website_url: 'https://example.com') }.to change { user.user_detail.persisted? }.from(false).to(true)
       end
 
       it 'delegates `pronouns` to `user_detail`' do
@@ -196,12 +248,6 @@ RSpec.describe User do
         user = create(:user, name: 'Example', pronunciation: 'uhg-zaam-pl')
 
         expect(user.pronunciation).to eq(user.user_detail.pronunciation)
-      end
-
-      it 'creates `user_detail` when `bio` is first updated' do
-        user = create(:user)
-
-        expect { user.update!(bio: 'my bio') }.to change { user.user_detail.persisted? }.from(false).to(true)
       end
     end
 
@@ -3648,19 +3694,14 @@ RSpec.describe User do
   describe '#sanitize_attrs' do
     let(:user) { build(:user, name: 'test <& user', skype: 'test&user') }
 
-    it 'encodes HTML entities in the Skype attribute' do
-      expect { user.sanitize_attrs }.to change { user.skype }.to('test&amp;user')
-    end
-
     it 'does not encode HTML entities in the name attribute' do
       expect { user.sanitize_attrs }.not_to change { user.name }
     end
 
     it 'sanitizes attr from html tags' do
-      user = create(:user, name: '<a href="//example.com">Test<a>', twitter: '<a href="//evil.com">https://twitter.com<a>')
+      user = create(:user, name: '<a href="//example.com">Test<a>')
 
       expect(user.name).to eq('Test')
-      expect(user.twitter).to eq('https://twitter.com')
     end
 
     it 'sanitizes attr from js scripts' do
@@ -5478,41 +5519,6 @@ RSpec.describe User do
             end.not_to change { user.namespace.updated_at }
           end
         end
-      end
-    end
-  end
-
-  describe '#ensure_user_detail_assigned' do
-    let(:user) { build(:user) }
-
-    context 'when no user detail field has been changed' do
-      before do
-        allow(UserDetail)
-          .to receive(:user_fields_changed?)
-          .and_return(false)
-      end
-
-      it 'does not assign user details before save' do
-        expect(user.user_detail)
-          .not_to receive(:assign_changed_fields_from_user)
-
-        user.save!
-      end
-    end
-
-    context 'when a user detail field has been changed' do
-      before do
-        allow(UserDetail)
-          .to receive(:user_fields_changed?)
-          .and_return(true)
-      end
-
-      it 'assigns user details before save' do
-        expect(user.user_detail)
-          .to receive(:assign_changed_fields_from_user)
-          .and_call_original
-
-        user.save!
       end
     end
   end

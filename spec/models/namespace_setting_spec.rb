@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NamespaceSetting, type: :model do
+RSpec.describe NamespaceSetting, feature_category: :subgroups, type: :model do
   it_behaves_like 'sanitizable', :namespace_settings, %i[default_branch_name]
 
   # Relationships
@@ -230,6 +230,80 @@ RSpec.describe NamespaceSetting, type: :model do
 
         it 'returns true' do
           expect(group.runner_registration_enabled?).to be_truthy
+        end
+      end
+    end
+  end
+
+  describe '#allow_runner_registration_token?' do
+    subject(:group_setting) { group.allow_runner_registration_token? }
+
+    context 'when a top-level group' do
+      let_it_be(:settings) { create(:namespace_settings) }
+      let_it_be(:group) { create(:group, namespace_settings: settings) }
+
+      before do
+        group.update!(allow_runner_registration_token: allow_runner_registration_token)
+      end
+
+      context 'when :allow_runner_registration_token is false' do
+        let(:allow_runner_registration_token) { false }
+
+        it 'returns false', :aggregate_failures do
+          is_expected.to be_falsey
+
+          expect(settings.allow_runner_registration_token).to be_falsey
+        end
+
+        it 'does not query the db' do
+          expect { group_setting }.not_to exceed_query_limit(0)
+        end
+      end
+
+      context 'when :allow_runner_registration_token is true' do
+        let(:allow_runner_registration_token) { true }
+
+        it 'returns true', :aggregate_failures do
+          is_expected.to be_truthy
+
+          expect(settings.allow_runner_registration_token).to be_truthy
+        end
+
+        context 'when disallowed by application setting' do
+          before do
+            stub_application_setting(allow_runner_registration_token: false)
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
+    end
+
+    context 'when a group has parent groups' do
+      let_it_be_with_refind(:parent) { create(:group) }
+      let_it_be_with_refind(:group) { create(:group, parent: parent) }
+
+      before do
+        parent.update!(allow_runner_registration_token: allow_runner_registration_token)
+      end
+
+      context 'when a parent group has runner registration disabled' do
+        let(:allow_runner_registration_token) { false }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when all parent groups have runner registration enabled' do
+        let(:allow_runner_registration_token) { true }
+
+        it { is_expected.to be_truthy }
+
+        context 'when disallowed by application setting' do
+          before do
+            stub_application_setting(allow_runner_registration_token: false)
+          end
+
+          it { is_expected.to be_falsey }
         end
       end
     end

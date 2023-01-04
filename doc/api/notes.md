@@ -174,7 +174,7 @@ Parameters:
 | `confidential` | boolean           | no       | **Deprecated:** will be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/notes?body=note"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/notes/636?body=note"
 ```
 
 ### Delete an issue note
@@ -300,7 +300,7 @@ Parameters:
 | `body`       | string         | yes      | The content of a note. Limited to 1,000,000 characters.                                                                      |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippets/11/notes?body=note"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippets/11/notes/1659?body=note"
 ```
 
 ### Delete a snippet note
@@ -428,7 +428,7 @@ Parameters:
 | `confidential`      | boolean           | no       | **Deprecated:** will be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes?body=note"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes/1?body=note"
 ```
 
 ### Delete a merge request note
@@ -561,7 +561,7 @@ Parameters:
 | `confidential` | boolean           | no       | **Deprecated:** will be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/notes?body=note"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/notes/1?body=note"
 ```
 
 ### Delete an epic note

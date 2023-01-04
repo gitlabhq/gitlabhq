@@ -935,7 +935,7 @@ RSpec.describe Gitlab::Auth::OAuth::User do
       end
 
       it "does not update the user location" do
-        expect(gl_user.location).to be_nil
+        expect(gl_user.location).to be_blank
         expect(gl_user.user_synced_attributes_metadata.location_synced).to be(false)
       end
     end

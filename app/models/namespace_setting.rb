@@ -69,6 +69,12 @@ class NamespaceSetting < ApplicationRecord
     !self.class.where(namespace_id: namespace.ancestors, runner_registration_enabled: false).exists?
   end
 
+  def allow_runner_registration_token?
+    settings = Gitlab::CurrentSettings.current_application_settings
+
+    settings.allow_runner_registration_token && namespace.root_ancestor.allow_runner_registration_token
+  end
+
   private
 
   def all_ancestors_allow_diff_preview_in_email?

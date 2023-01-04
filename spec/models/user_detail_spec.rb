@@ -68,26 +68,34 @@ RSpec.describe UserDetail do
     end
   end
 
-  describe '.user_fields_changed?' do
-    let(:user) { create(:user) }
+  describe '#save' do
+    let(:user_detail) do
+      create(:user_detail,
+             bio: 'bio',
+             linkedin: 'linkedin',
+             twitter: 'twitter',
+             skype: 'skype',
+             location: 'location',
+             organization: 'organization',
+             website_url: 'https://example.com')
+    end
 
-    context 'when user detail fields unchanged' do
-      it 'returns false' do
-        expect(described_class.user_fields_changed?(user)).to be false
-      end
-
-      %i[linkedin location organization skype twitter website_url].each do |attr|
-        context "when #{attr} is changed" do
-          before do
-            user[attr] = 'new value'
-          end
-
-          it 'returns true' do
-            expect(described_class.user_fields_changed?(user)).to be true
-          end
-        end
+    shared_examples 'prevents `nil` value' do |attr|
+      it 'converts `nil` to the empty string' do
+        user_detail[attr] = nil
+        expect { user_detail.save! }
+          .to change { user_detail[attr] }.to('')
+          .and not_change { user_detail.attributes.except(attr.to_s) }
       end
     end
+
+    it_behaves_like 'prevents `nil` value', :bio
+    it_behaves_like 'prevents `nil` value', :linkedin
+    it_behaves_like 'prevents `nil` value', :twitter
+    it_behaves_like 'prevents `nil` value', :skype
+    it_behaves_like 'prevents `nil` value', :location
+    it_behaves_like 'prevents `nil` value', :organization
+    it_behaves_like 'prevents `nil` value', :website_url
   end
 
   describe '#sanitize_attrs' do
@@ -136,46 +144,5 @@ RSpec.describe UserDetail do
 
       details.save!
     end
-  end
-
-  describe '#assign_changed_fields_from_user' do
-    let(:user_detail) { build(:user_detail) }
-
-    shared_examples 'syncs field with `user_details`' do |field|
-      it 'does not sync the field to `user_details` if unchanged' do
-        expect { user_detail.assign_changed_fields_from_user }
-          .to not_change { user_detail.public_send(field) }
-      end
-
-      it 'syncs the field to `user_details` if changed' do
-        user_detail.user[field] = "new_value"
-        expect { user_detail.assign_changed_fields_from_user }
-          .to change { user_detail.public_send(field) }
-          .to("new_value")
-      end
-
-      it 'truncates the field if too long' do
-        user_detail.user[field] = 'a' * (UserDetail::DEFAULT_FIELD_LENGTH + 1)
-        expect { user_detail.assign_changed_fields_from_user }
-          .to change { user_detail.public_send(field) }
-          .to('a' * UserDetail::DEFAULT_FIELD_LENGTH)
-      end
-
-      it 'properly syncs nil field to `user_details' do
-        user_detail.user[field] = 'Test'
-        user_detail.user.save!(validate: false)
-        user_detail.user[field] = nil
-        expect { user_detail.assign_changed_fields_from_user }
-          .to change { user_detail.public_send(field) }
-          .to('')
-      end
-    end
-
-    it_behaves_like 'syncs field with `user_details`', :linkedin
-    it_behaves_like 'syncs field with `user_details`', :location
-    it_behaves_like 'syncs field with `user_details`', :organization
-    it_behaves_like 'syncs field with `user_details`', :skype
-    it_behaves_like 'syncs field with `user_details`', :twitter
-    it_behaves_like 'syncs field with `user_details`', :website_url
   end
 end

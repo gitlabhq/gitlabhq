@@ -200,7 +200,7 @@ The following actions on groups generate group audit events:
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
 - Failed attempt to create a group deploy token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452)
   in GitLab 14.9.
-- [IP restrictions](../user/group/access_and_permissions.md#restrict-access-to-groups-by-ip-address) changed.
+- [IP restrictions](../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) changed.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) in GitLab 15.0.
 - Changes to push rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227629) in GitLab 15.0.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356152) in GitLab 15.1, changes to the following merge

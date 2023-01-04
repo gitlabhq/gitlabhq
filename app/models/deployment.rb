@@ -103,15 +103,6 @@ class Deployment < ApplicationRecord
       deployment.finished_at = Time.current
     end
 
-    after_transition any => :running do |deployment|
-      next unless deployment.project.ci_forward_deployment_enabled?
-      next if Feature.enabled?(:prevent_outdated_deployment_jobs, deployment.project)
-
-      deployment.run_after_commit do
-        Deployments::DropOlderDeploymentsWorker.perform_async(id)
-      end
-    end
-
     after_transition any => :running do |deployment, transition|
       deployment.run_after_commit do
         Deployments::HooksWorker.perform_async(deployment_id: id, status: transition.to, status_changed_at: Time.current)

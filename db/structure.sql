@@ -18260,6 +18260,7 @@ CREATE TABLE namespace_settings (
     only_allow_merge_if_all_discussions_are_resolved boolean DEFAULT false NOT NULL,
     default_compliance_framework_id bigint,
     runner_registration_enabled boolean DEFAULT true,
+    allow_runner_registration_token boolean DEFAULT true NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
 );
@@ -31748,8 +31749,6 @@ CREATE INDEX tmp_idx_for_feedback_comment_processing ON vulnerability_feedback U
 CREATE INDEX tmp_idx_for_vulnerability_feedback_migration ON vulnerability_feedback USING btree (id) WHERE ((migrated_to_state_transition = false) AND (feedback_type = 0));
 
 CREATE INDEX tmp_idx_vulnerabilities_on_id_where_report_type_7_99 ON vulnerabilities USING btree (id) WHERE (report_type = ANY (ARRAY[7, 99]));
-
-CREATE INDEX tmp_idx_where_user_details_fields_filled ON users USING btree (id) WHERE (((COALESCE(linkedin, ''::character varying))::text IS DISTINCT FROM ''::text) OR ((COALESCE(twitter, ''::character varying))::text IS DISTINCT FROM ''::text) OR ((COALESCE(skype, ''::character varying))::text IS DISTINCT FROM ''::text) OR ((COALESCE(website_url, ''::character varying))::text IS DISTINCT FROM ''::text) OR ((COALESCE(location, ''::character varying))::text IS DISTINCT FROM ''::text) OR ((COALESCE(organization, ''::character varying))::text IS DISTINCT FROM ''::text));
 
 CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
 

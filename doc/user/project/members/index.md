@@ -62,6 +62,12 @@ To add a user to a project:
 1. Enter an email address and select a [role](../../permissions.md).
 1. Optional. Select an **Access expiration date**.
    From that date onward, the user can no longer access the project.
+
+   WARNING:
+   If you give a member the Maintainer role and select an expiration date, that member
+   has full permissions for the time they are in the role. This includes the ability
+   to extend their own time in the Maintainer role.
+
 1. Select **Invite**.
 
 If the user has a GitLab account, they are added to the members list.

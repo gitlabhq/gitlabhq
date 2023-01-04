@@ -100,6 +100,8 @@ class User < ApplicationRecord
 
   MINIMUM_DAYS_CREATED = 7
 
+  ignore_columns %i[linkedin twitter skype website_url location organization], remove_with: '15.8', remove_after: '2023-01-22'
+
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
   # rubocop: disable CodeReuse/ServiceClass
@@ -303,8 +305,6 @@ class User < ApplicationRecord
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
                                                             message: ->(*) { _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } } }
 
-  validates :website_url, allow_blank: true, url: true, if: :website_url_changed?
-
   after_initialize :set_projects_limit
   before_validation :sanitize_attrs
   before_validation :ensure_namespace_correct
@@ -315,7 +315,6 @@ class User < ApplicationRecord
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   before_save :ensure_namespace_correct # in case validation is skipped
-  before_save :ensure_user_detail_assigned
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
@@ -377,6 +376,12 @@ class User < ApplicationRecord
   delegate :pronunciation, :pronunciation=, to: :user_detail, allow_nil: true
   delegate :registration_objective, :registration_objective=, to: :user_detail, allow_nil: true
   delegate :requires_credit_card_verification, :requires_credit_card_verification=, to: :user_detail, allow_nil: true
+  delegate :linkedin, :linkedin=, to: :user_detail, allow_nil: true
+  delegate :twitter, :twitter=, to: :user_detail, allow_nil: true
+  delegate :skype, :skype=, to: :user_detail, allow_nil: true
+  delegate :website_url, :website_url=, to: :user_detail, allow_nil: true
+  delegate :location, :location=, to: :user_detail, allow_nil: true
+  delegate :organization, :organization=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
@@ -1406,15 +1411,7 @@ class User < ApplicationRecord
   end
 
   def sanitize_attrs
-    sanitize_links
     sanitize_name
-  end
-
-  def sanitize_links
-    %i[skype linkedin twitter].each do |attr|
-      value = self[attr]
-      self[attr] = Sanitize.clean(value) if value.present?
-    end
   end
 
   def sanitize_name
@@ -1598,11 +1595,6 @@ class User < ApplicationRecord
       namespace = build_namespace(path: username, name: name, type: ::Namespaces::UserNamespace.sti_name)
       namespace.build_namespace_settings
     end
-  end
-
-  # Temporary, will be removed when user_detail fields are fully migrated
-  def ensure_user_detail_assigned
-    user_detail.assign_changed_fields_from_user if UserDetail.user_fields_changed?(self)
   end
 
   def set_username_errors
