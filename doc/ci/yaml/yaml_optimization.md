@@ -189,30 +189,6 @@ job2:
     - *some-script-after
 ```
 
-### YAML anchors for variables
-
-Use [YAML anchors](#anchors) with `variables` to repeat assignment
-of variables across multiple jobs. You can also use YAML anchors when a job
-requires a specific `variables` block that would otherwise override the global variables.
-
-The following example shows how override the `GIT_STRATEGY` variable without affecting
-the use of the `SAMPLE_VARIABLE` variable:
-
-```yaml
-# global variables
-variables: &global-variables
-  SAMPLE_VARIABLE: sample_variable_value
-  ANOTHER_SAMPLE_VARIABLE: another_sample_variable_value
-
-# a job that must set the GIT_STRATEGY variable, yet depend on global variables
-job_no_git_strategy:
-  stage: cleanup
-  variables:
-    <<: *global-variables
-    GIT_STRATEGY: none
-  script: echo $SAMPLE_VARIABLE
-```
-
 ## Use `extends` to reuse configuration sections
 
 You can use the [`extends` keyword](index.md#extends) to reuse configuration in

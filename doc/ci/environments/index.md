@@ -534,10 +534,6 @@ Also in the example, `GIT_STRATEGY` is set to `none`. If the
 `stop_review_app` job is [automatically triggered](../environments/index.md#stop-an-environment),
 the runner won't try to check out the code after the branch is deleted.
 
-The example also overwrites global variables. If your `stop` `environment` job depends
-on global variables, use [anchor variables](../yaml/yaml_optimization.md#yaml-anchors-for-variables) when you set the `GIT_STRATEGY`
-to change the job without overriding the global variables.
-
 The `stop_review_app` job **must** have the following keywords defined:
 
 - `when`, defined at either:

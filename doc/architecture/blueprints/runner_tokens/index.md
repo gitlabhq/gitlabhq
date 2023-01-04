@@ -148,26 +148,25 @@ In addition, we should add the following columns to `ci_runners`:
   future uses that may not be apparent.
 
 ```sql
-CREATE TABLE ci_runner (
+CREATE TABLE ci_runners (
   ...
   creator_id bigint
   registration_type int8
 )
 ```
 
-The `ci_builds_runner_session` (or `ci_builds` or `ci_builds_metadata`) shall reference
-`ci_runner_machines`.
+The `ci_builds_metadata` table shall reference `ci_runner_machines`.
 We might consider a more efficient way to store `contacted_at` than updating the existing record.
 
 ```sql
-CREATE TABLE ci_builds_runner_session (
+CREATE TABLE ci_builds_metadata (
     ...
     runner_machine_id bigint NOT NULL
 );
 
 CREATE TABLE ci_runner_machines (
-    id integer NOT NULL,
-    machine_id character varying UNIQUE NOT NULL,
+    id bigint NOT NULL,
+    machine_xid character varying UNIQUE NOT NULL,
     contacted_at timestamp without time zone,
     version character varying,
     revision character varying,
@@ -241,7 +240,7 @@ future after the legacy registration system is removed, and runners have been up
 versions.
 
 Job pings from such legacy runners results in a `ci_runner_machines` record containing a
-`<legacy>` `machine_id` field value.
+`<legacy>` `machine_xid` field value.
 
 Not using the unique system ID means that all connected runners with the same token are
 notified, instead of just the runner matching the exact system identifier. While not ideal, this is
@@ -320,9 +319,9 @@ using PAT tokens for example - such that every runner is associated with an owne
 |------------------|----------:|---------|
 | GitLab Rails app | | Create database migration to add columns to `ci_runners` table. |
 | GitLab Rails app | | Create database migration to add `ci_runner_machines` table. |
-| GitLab Rails app | | Create database migration to add `ci_runner_machines.machine_id` foreign key to `ci_builds_runner_session` table. |
+| GitLab Rails app | | Create database migration to add `ci_runner_machines.id` foreign key to `ci_builds_metadata` table. |
 | GitLab Rails app | | Create database migrations to add `allow_runner_registration_token` setting to `application_settings` and `namespace_settings` tables (default: `true`). |
-| GitLab Runner    | | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
+| GitLab Rails app | | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
 | GitLab Runner    | | Start sending `system_id` value in `POST /jobs/request` request and other follow-up requests that require identifying the unique system. |
 | GitLab Rails app | | Create service similar to `StaleGroupRunnersPruneCronWorker` service to clean up `ci_runner_machines` records instead of `ci_runners` records.<br/>Existing service continues to exist but focuses only on legacy runners. |
 

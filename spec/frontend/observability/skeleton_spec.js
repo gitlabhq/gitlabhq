@@ -1,96 +1,127 @@
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { nextTick } from 'vue';
+import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
-import ObservabilitySkeleton from '~/observability/components/skeleton/index.vue';
+import Skeleton from '~/observability/components/skeleton/index.vue';
 import DashboardsSkeleton from '~/observability/components/skeleton/dashboards.vue';
 import ExploreSkeleton from '~/observability/components/skeleton/explore.vue';
 import ManageSkeleton from '~/observability/components/skeleton/manage.vue';
 
-import { SKELETON_VARIANT } from '~/observability/constants';
+import { SKELETON_VARIANTS_BY_ROUTE, DEFAULT_TIMERS } from '~/observability/constants';
 
-describe('ObservabilitySkeleton component', () => {
+describe('Skeleton component', () => {
   let wrapper;
 
+  const SKELETON_VARIANTS = Object.values(SKELETON_VARIANTS_BY_ROUTE);
+
+  const findContentWrapper = () => wrapper.findByTestId('observability-wrapper');
+
+  const findExploreSkeleton = () => wrapper.findComponent(ExploreSkeleton);
+
+  const findDashboardsSkeleton = () => wrapper.findComponent(DashboardsSkeleton);
+
+  const findManageSkeleton = () => wrapper.findComponent(ManageSkeleton);
+
+  const findAlert = () => wrapper.findComponent(GlAlert);
+
   const mountComponent = ({ ...props } = {}) => {
-    wrapper = shallowMountExtended(ObservabilitySkeleton, {
+    wrapper = shallowMountExtended(Skeleton, {
       propsData: props,
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   describe('on mount', () => {
     beforeEach(() => {
-      jest.spyOn(global, 'setTimeout');
-      mountComponent();
+      mountComponent({ variant: 'explore' });
     });
 
-    it('should call setTimeout on mount and show ObservabilitySkeleton if Observability UI is not loaded yet', () => {
-      jest.runAllTimers();
+    describe('loading timers', () => {
+      it('show Skeleton if content is not loaded within CONTENT_WAIT_MS', async () => {
+        expect(findExploreSkeleton().exists()).toBe(false);
+        expect(findContentWrapper().isVisible()).toBe(false);
 
-      expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 500);
-      expect(wrapper.vm.loading).toBe(true);
-      expect(wrapper.vm.timerId).not.toBeNull();
+        jest.advanceTimersByTime(DEFAULT_TIMERS.CONTENT_WAIT_MS);
+
+        await nextTick();
+
+        expect(findExploreSkeleton().exists()).toBe(true);
+        expect(findContentWrapper().isVisible()).toBe(false);
+      });
+
+      it('does not show the skeleton if content has loaded within CONTENT_WAIT_MS', async () => {
+        expect(findExploreSkeleton().exists()).toBe(false);
+        expect(findContentWrapper().isVisible()).toBe(false);
+
+        wrapper.vm.onContentLoaded();
+
+        await nextTick();
+
+        expect(findContentWrapper().isVisible()).toBe(true);
+        expect(findExploreSkeleton().exists()).toBe(false);
+
+        jest.advanceTimersByTime(DEFAULT_TIMERS.CONTENT_WAIT_MS);
+
+        await nextTick();
+
+        expect(findContentWrapper().isVisible()).toBe(true);
+        expect(findExploreSkeleton().exists()).toBe(false);
+      });
     });
 
-    it('should call setTimeout on mount and dont show ObservabilitySkeleton if Observability UI is loaded', () => {
-      wrapper.vm.loading = false;
-      jest.runAllTimers();
+    describe('error timeout', () => {
+      it('shows the error dialog if content has not loaded within TIMEOUT_MS', async () => {
+        expect(findAlert().exists()).toBe(false);
+        jest.advanceTimersByTime(DEFAULT_TIMERS.TIMEOUT_MS);
 
-      expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 500);
-      expect(wrapper.vm.loading).toBe(false);
-      expect(wrapper.vm.timerId).not.toBeNull();
-    });
-  });
+        await nextTick();
 
-  describe('handleSkeleton', () => {
-    it('will not show the skeleton if Observability UI is loaded before', () => {
-      jest.spyOn(global, 'clearTimeout');
-      mountComponent();
-      wrapper.vm.handleSkeleton();
-      expect(clearTimeout).toHaveBeenCalledWith(wrapper.vm.timerId);
-    });
+        expect(findAlert().exists()).toBe(true);
+        expect(findContentWrapper().isVisible()).toBe(false);
+      });
 
-    it('will hide skeleton gracefully after 400ms if skeleton was present on screen before Observability UI', () => {
-      jest.spyOn(global, 'setTimeout');
-      mountComponent();
-      jest.runAllTimers();
-      wrapper.vm.handleSkeleton();
-      jest.runAllTimers();
+      it('does not show the error dialog if content has loaded within TIMEOUT_MS', async () => {
+        wrapper.vm.onContentLoaded();
+        jest.advanceTimersByTime(DEFAULT_TIMERS.TIMEOUT_MS);
 
-      expect(setTimeout).toHaveBeenCalledWith(wrapper.vm.hideSkeleton, 400);
-      expect(wrapper.vm.loading).toBe(false);
+        await nextTick();
+
+        expect(findAlert().exists()).toBe(false);
+        expect(findContentWrapper().isVisible()).toBe(true);
+      });
     });
   });
 
   describe('skeleton variant', () => {
     it.each`
       skeletonType    | condition                                         | variant
-      ${'dashboards'} | ${'variant is dashboards'}                        | ${SKELETON_VARIANT.DASHBOARDS}
-      ${'explore'}    | ${'variant is explore'}                           | ${SKELETON_VARIANT.EXPLORE}
-      ${'manage'}     | ${'variant is manage'}                            | ${SKELETON_VARIANT.MANAGE}
+      ${'dashboards'} | ${'variant is dashboards'}                        | ${SKELETON_VARIANTS[0]}
+      ${'explore'}    | ${'variant is explore'}                           | ${SKELETON_VARIANTS[1]}
+      ${'manage'}     | ${'variant is manage'}                            | ${SKELETON_VARIANTS[2]}
       ${'default'}    | ${'variant is not manage, dashboards or explore'} | ${'unknown'}
     `('should render $skeletonType skeleton if $condition', async ({ skeletonType, variant }) => {
       mountComponent({ variant });
-      const showsDefaultSkeleton = ![
-        SKELETON_VARIANT.DASHBOARDS,
-        SKELETON_VARIANT.EXPLORE,
-        SKELETON_VARIANT.MANAGE,
-      ].includes(variant);
-      expect(wrapper.findComponent(DashboardsSkeleton).exists()).toBe(
-        skeletonType === SKELETON_VARIANT.DASHBOARDS,
-      );
-      expect(wrapper.findComponent(ExploreSkeleton).exists()).toBe(
-        skeletonType === SKELETON_VARIANT.EXPLORE,
-      );
-      expect(wrapper.findComponent(ManageSkeleton).exists()).toBe(
-        skeletonType === SKELETON_VARIANT.MANAGE,
-      );
+      jest.advanceTimersByTime(DEFAULT_TIMERS.CONTENT_WAIT_MS);
+      await nextTick();
+      const showsDefaultSkeleton = !SKELETON_VARIANTS.includes(variant);
+
+      expect(findDashboardsSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANTS[0]);
+      expect(findExploreSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANTS[1]);
+      expect(findManageSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANTS[2]);
 
       expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(showsDefaultSkeleton);
+    });
+  });
+
+  describe('on destroy', () => {
+    it('should clear init timer and timeout timer', () => {
+      jest.spyOn(global, 'clearTimeout');
+      mountComponent();
+      wrapper.destroy();
+      expect(clearTimeout).toHaveBeenCalledTimes(2);
+      expect(clearTimeout.mock.calls).toEqual([
+        [wrapper.vm.loadingTimeout], // First call
+        [wrapper.vm.errorTimeout], // Second call
+      ]);
     });
   });
 });

@@ -57,18 +57,23 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
         tabindex="-1"
       >
         <gl-listbox-item-stub
+          data-testid="listbox-item-0"
           isselected="true"
         >
           
             rspec
           
         </gl-listbox-item-stub>
-        <gl-listbox-item-stub>
+        <gl-listbox-item-stub
+          data-testid="listbox-item-1"
+        >
           
             cypress
           
         </gl-listbox-item-stub>
-        <gl-listbox-item-stub>
+        <gl-listbox-item-stub
+          data-testid="listbox-item-2"
+        >
           
             karma
           

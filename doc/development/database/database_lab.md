@@ -75,6 +75,45 @@ the new index. `exec` does not return any results, only the time required to exe
 After many changes, such as after a destructive query or an ineffective index,
 you must start over. To reset your designated clone, run `reset`.
 
+#### Checking indexes
+
+Use Database Lab to check the status of an index with the meta-command `\d <index_name>`.
+
+Caveats:
+
+- Indexes are created in both the `main` and `ci` databases, so be sure to use the instance
+  that matches the table's `gitlab_schema`. For example, if the index is added to
+  [`ci_builds`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/docs/ci_builds.yml#L14),
+  use `gitlab-production-ci`.
+- Database Lab typically has a small delay of a few hours. If more up-to-date information
+  is required, you can instead request access to a replica [via Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Database_Console_via_Teleport.md)
+
+For example: `\d index_design_management_designs_on_project_id` produces:
+
+```plaintext
+Index "public.index_design_management_designs_on_project_id"
+   Column   |  Type   | Key? | Definition
+------------+---------+------+------------
+ project_id | integer | yes  | project_id
+btree, for table "public.design_management_designs"
+```
+
+In the case of an invalid index, the output ends with `invalid`, like:
+
+```plaintext
+Index "public.index_design_management_designs_on_project_id"
+   Column   |  Type   | Key? | Definition
+------------+---------+------+------------
+ project_id | integer | yes  | project_id
+btree, for table "public.design_management_designs", invalid
+```
+
+If the index doesn't exist, JoeBot throws an error like:
+
+```plaintext
+ERROR: psql error: psql:/tmp/psql-query-932227396:1: error: Did not find any relation named "no_index".
+```
+
 ### Migration testing
 
 For information on testing migrations, review our

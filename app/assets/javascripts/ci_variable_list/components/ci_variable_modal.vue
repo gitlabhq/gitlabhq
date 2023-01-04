@@ -352,7 +352,6 @@ export default {
             </template>
             <ci-environments-dropdown
               v-if="areScopedVariablesAvailable"
-              class="gl-w-full"
               :selected-environment-scope="variable.environmentScope"
               :environments="joinedEnvironments"
               @select-environment="setEnvironmentScope"

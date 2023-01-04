@@ -163,6 +163,13 @@ RSpec.describe ApplicationHelper do
       expect(timeago_element.attr('class')).to eq 'js-short-timeago'
       expect(timeago_element.next_element).to eq nil
     end
+
+    it 'returns blank if time is nil' do
+      el = helper.time_ago_with_tooltip(nil)
+
+      expect(el).to eq('')
+      expect(el.html_safe).to eq('')
+    end
   end
 
   describe '#active_when' do

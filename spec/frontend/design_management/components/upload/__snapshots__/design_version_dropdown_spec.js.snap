@@ -24,6 +24,7 @@ exports[`Design management design version dropdown component renders design vers
     tabindex="-1"
   >
     <gl-listbox-item-stub
+      data-testid="listbox-item-gid://gitlab/DesignManagement::Version/1"
       ischeckcentered="true"
     >
       <span
@@ -66,6 +67,7 @@ exports[`Design management design version dropdown component renders design vers
       </span>
     </gl-listbox-item-stub>
     <gl-listbox-item-stub
+      data-testid="listbox-item-gid://gitlab/DesignManagement::Version/2"
       ischeckcentered="true"
     >
       <span
@@ -142,6 +144,7 @@ exports[`Design management design version dropdown component renders design vers
     tabindex="-1"
   >
     <gl-listbox-item-stub
+      data-testid="listbox-item-gid://gitlab/DesignManagement::Version/1"
       ischeckcentered="true"
     >
       <span
@@ -184,6 +187,7 @@ exports[`Design management design version dropdown component renders design vers
       </span>
     </gl-listbox-item-stub>
     <gl-listbox-item-stub
+      data-testid="listbox-item-gid://gitlab/DesignManagement::Version/2"
       ischeckcentered="true"
     >
       <span

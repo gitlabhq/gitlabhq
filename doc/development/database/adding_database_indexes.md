@@ -294,16 +294,14 @@ end
 
 ### Verify the MR was deployed and the index exists in production
 
-You can verify if the post-deploy migration was executed on GitLab.com by:
-
-- Executing `/chatops run auto_deploy status <merge_sha>`. If the output returns `db/gprd`,
-  the post-deploy migration has been executed in the production database. More details in this
-  [guide](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
-- Use a meta-command in #database-lab, such as: `\d <index_name>`.
-  - Ensure that the index is not [`invalid`](https://www.postgresql.org/docs/12/sql-createindex.html#:~:text=The%20psql%20%5Cd%20command%20will%20report%20such%20an%20index%20as%20INVALID).
-- Ask someone in #database to check if the index exists.
-- With proper access, you can also verify directly on production or in a
-  production clone.
+1. Verify that the post-deploy migration was executed on GitLab.com using ChatOps with
+   `/chatops run auto_deploy status <merge_sha>`. If the output returns `db/gprd`,
+   the post-deploy migration has been executed in the production database. For more information, see
+   [How to determine if a post-deploy migration has been executed on GitLab.com](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
+1. In the case of an [index created asynchronously](#schedule-the-index-to-be-created), wait
+   until the next week so that the index can be created over a weekend.
+1. Use [Database Lab](database_lab.md) to check [if creation was successful](database_lab.md#checking-indexes).
+   Ensure the output does not indicate the index is `invalid`.
 
 ### Add a migration to create the index synchronously
 
@@ -394,15 +392,15 @@ You must test the database index changes locally before creating a merge request
 
 ### Verify the MR was deployed and the index no longer exists in production
 
-You can verify if the MR was deployed to GitLab.com with
-`/chatops run auto_deploy status <merge_sha>`. To verify the existence of
-the index, you can:
-
-- Use a meta-command in `#database-lab`, for example: `\d <index_name>`.
-- Make sure the index no longer exists
-- Ask someone in `#database` to check if the index exists.
-- If you have access, you can verify directly on production or in a
-  production clone.
+1. Verify that the post-deploy migration was executed on GitLab.com using ChatOps with
+   `/chatops run auto_deploy status <merge_sha>`. If the output returns `db/gprd`,
+   the post-deploy migration has been executed in the production database. For more information, see
+   [How to determine if a post-deploy migration has been executed on GitLab.com](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
+1. In the case of an [index removed asynchronously](#schedule-the-index-to-be-removed), wait
+   until the next week so that the index can be created over a weekend.
+1. Use Database Lab [to check if removal was successful](database_lab.md#checking-indexes).
+   [Database Lab](database_lab.md)
+   should report an error when trying to find the removed index. If not, the index may still exist.
 
 ### Add a migration to destroy the index synchronously
 

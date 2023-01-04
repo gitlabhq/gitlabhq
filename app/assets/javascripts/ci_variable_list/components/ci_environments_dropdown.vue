@@ -1,15 +1,14 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlDropdownDivider, GlSearchBoxByType } from '@gitlab/ui';
+import { GlDropdownDivider, GlDropdownItem, GlCollapsibleListbox } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { convertEnvironmentScope } from '../utils';
 
 export default {
   name: 'CiEnvironmentsDropdown',
   components: {
-    GlDropdown,
-    GlDropdownItem,
     GlDropdownDivider,
-    GlSearchBoxByType,
+    GlDropdownItem,
+    GlCollapsibleListbox,
   },
   props: {
     environments: {
@@ -24,6 +23,7 @@ export default {
   },
   data() {
     return {
+      selectedEnvironment: '',
       searchTerm: '',
     };
   },
@@ -33,9 +33,15 @@ export default {
     },
     filteredEnvironments() {
       const lowerCasedSearchTerm = this.searchTerm.toLowerCase();
-      return this.environments.filter((environment) => {
-        return environment.toLowerCase().includes(lowerCasedSearchTerm);
-      });
+
+      return this.environments
+        .filter((environment) => {
+          return environment.toLowerCase().includes(lowerCasedSearchTerm);
+        })
+        .map((environment) => ({
+          value: environment,
+          text: environment,
+        }));
     },
     shouldRenderCreateButton() {
       return this.searchTerm && !this.environments.includes(this.searchTerm);
@@ -47,44 +53,29 @@ export default {
   methods: {
     selectEnvironment(selected) {
       this.$emit('select-environment', selected);
-      this.clearSearch();
-    },
-    convertEnvironmentScopeValue(scope) {
-      return convertEnvironmentScope(scope);
+      this.selectedEnvironment = selected;
     },
     createEnvironmentScope() {
       this.$emit('create-environment-scope', this.searchTerm);
       this.selectEnvironment(this.searchTerm);
     },
-    isSelected(env) {
-      return this.selectedEnvironmentScope === env;
-    },
-    clearSearch() {
-      this.searchTerm = '';
-    },
   },
 };
 </script>
 <template>
-  <gl-dropdown :text="environmentScopeLabel" @show="clearSearch">
-    <gl-search-box-by-type v-model.trim="searchTerm" data-testid="ci-environment-search" />
-    <gl-dropdown-item
-      v-for="environment in filteredEnvironments"
-      :key="environment"
-      :is-checked="isSelected(environment)"
-      is-check-item
-      @click="selectEnvironment(environment)"
-    >
-      {{ convertEnvironmentScopeValue(environment) }}
-    </gl-dropdown-item>
-    <gl-dropdown-item v-if="!filteredEnvironments.length" ref="noMatchingResults">{{
-      __('No matching results')
-    }}</gl-dropdown-item>
-    <template v-if="shouldRenderCreateButton">
+  <gl-collapsible-listbox
+    v-model="selectedEnvironment"
+    searchable
+    :items="filteredEnvironments"
+    :toggle-text="environmentScopeLabel"
+    @search="searchTerm = $event.trim()"
+    @select="selectEnvironment"
+  >
+    <template v-if="shouldRenderCreateButton" #footer>
       <gl-dropdown-divider />
       <gl-dropdown-item data-testid="create-wildcard-button" @click="createEnvironmentScope">
         {{ composedCreateButtonLabel }}
       </gl-dropdown-item>
     </template>
-  </gl-dropdown>
+  </gl-collapsible-listbox>
 </template>

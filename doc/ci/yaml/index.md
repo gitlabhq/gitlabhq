@@ -4343,7 +4343,6 @@ deploy_review_job:
 
 **Related topics**:
 
-- You can use [YAML anchors for variables](yaml_optimization.md#yaml-anchors-for-variables).
 - [Predefined variables](../variables/predefined_variables.md) are variables the runner
   automatically creates and makes available in the job.
 - You can [configure runner behavior with variables](../runners/configure_runners.md#configure-runner-behavior-with-variables).

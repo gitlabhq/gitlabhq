@@ -24,8 +24,9 @@ RSpec.describe 'Project variables', :js, feature_category: :pipeline_authoring d
     page.within('#add-ci-variable') do
       fill_in 'Key', with: 'akey'
       find('#ci-variable-value').set('akey_value')
-      find('[data-testid="environment-scope"]').click
-      find('[data-testid="ci-environment-search"]').set('review/*')
+
+      click_button('All (default)')
+      fill_in 'Search', with: 'review/*'
       find('[data-testid="create-wildcard-button"]').click
 
       click_button('Add variable')

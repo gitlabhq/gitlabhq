@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DataBuilder::Build do
+RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
   let_it_be(:runner) { create(:ci_runner, :instance, :tagged_only) }
   let_it_be(:user) { create(:user, :public_email) }
-  let_it_be(:ci_build) { create(:ci_build, :running, runner: runner, user: user) }
+  let_it_be(:pipeline) { create(:ci_pipeline, name: 'Build pipeline') }
+  let_it_be(:ci_build) { create(:ci_build, :running, pipeline: pipeline, runner: runner, user: user) }
 
   describe '.build' do
     around do |example|
@@ -33,6 +34,7 @@ RSpec.describe Gitlab::DataBuilder::Build do
     it { expect(data[:project_name]).to eq(ci_build.project.full_name) }
     it { expect(data[:pipeline_id]).to eq(ci_build.pipeline.id) }
     it { expect(data[:retries_count]).to eq(ci_build.retries_count) }
+    it { expect(data[:commit][:name]).to eq(pipeline.name) }
 
     it {
       expect(data[:user]).to eq(
@@ -61,10 +63,10 @@ RSpec.describe Gitlab::DataBuilder::Build do
         described_class.build(b) # Don't use ci_build variable here since it has all associations loaded into memory
       end
 
-      expect(control.count).to eq(13)
+      expect(control.count).to eq(14)
     end
 
-    context 'when feature flag is disabled' do
+    context 'when job_webhook_retries_count feature flag is disabled' do
       before do
         stub_feature_flags(job_webhook_retries_count: false)
       end
@@ -79,7 +81,26 @@ RSpec.describe Gitlab::DataBuilder::Build do
           described_class.build(b) # Don't use ci_build variable here since it has all associations loaded into memory
         end
 
-        expect(control.count).to eq(12)
+        expect(control.count).to eq(13)
+      end
+    end
+
+    context 'when pipeline_name feature flag is disabled' do
+      before do
+        stub_feature_flags(pipeline_name: false)
+
+        ci_build # Make sure the Ci::Build model is created before recording.
+      end
+
+      it { expect(data[:commit]).not_to have_key(:name) }
+
+      it 'does not exceed number of expected queries' do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          b = Ci::Build.find(ci_build.id)
+          described_class.build(b) # Don't use ci_build variable here since it has all associations loaded into memory
+        end
+
+        expect(control.count).to eq(13)
       end
     end
 

@@ -66,16 +66,16 @@ In the hierarchy list, public groups with a private subgroup have an expand opti
 for all users that indicate there is a subgroup. When users who are not direct or inherited members of
 the private subgroup select expand (**{chevron-down}**), the nested subgroup does not display.
 
-If you prefer to keep information about the presence of nested subgroups private, we advise that you only
-add private subgroups to private parent groups.
+If you prefer to keep information about the presence of nested subgroups private, we advise that you
+add private subgroups only to private parent groups.
 
 ## Create a subgroup
 
 Prerequisites:
 
-- You must either:
-  - Have at least the Maintainer role for a group to create subgroups for it.
-  - Have the [role determined by a setting](#change-who-can-create-subgroups). These users can create
+- You must have either:
+  - At least the Maintainer role for a group to create subgroups for it.
+  - The [role determined by a setting](#change-who-can-create-subgroups). These users can create
     subgroups even if group creation is
     [disabled by an Administrator](../../admin_area/index.md#prevent-a-user-from-creating-groups) in the user's settings.
 
@@ -92,8 +92,9 @@ To create a subgroup:
 
 ### Change who can create subgroups
 
-To create a subgroup, you must have at least the Maintainer role on the group, depending on the group's setting. By
-default:
+Prerequisite:
+
+- You must have at least the Maintainer role on the group, depending on the group's setting.
 
 To change who can create subgroups on a group:
 
@@ -120,11 +121,11 @@ There is a bug that causes some pages in the parent group to be accessible by su
 When you add a member to a group, that member is also added to all subgroups. The user's permissions are inherited from
 the group's parent.
 
-Subgroup members can:
+Subgroup members can be:
 
-1. Be [direct members](../../project/members/index.md#add-users-to-a-project) of the subgroup.
-1. [Inherit membership](../../project/members/index.md#inherited-membership) of the subgroup from the subgroup's parent group.
-1. Be a member of a group that was [shared with the subgroup's top-level group](../manage.md#share-a-group-with-another-group).
+1. [Direct members](../../project/members/index.md#add-users-to-a-project) of the subgroup.
+1. [Inherited members](../../project/members/index.md#inherited-membership) of the subgroup from the subgroup's parent group.
+1. Members of a group that was [shared with the subgroup's top-level group](../manage.md#share-a-group-with-another-group).
 
 ```mermaid
 flowchart RL

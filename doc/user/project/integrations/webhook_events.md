@@ -1362,8 +1362,10 @@ Payload example:
 
 ## Job events
 
-- Number of retries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382046) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md)
+- Number of retries (`retries_count`) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382046) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md)
   named `job_webhook_retries_count`. Disabled by default.
+- Pipeline name (`commit.name`) [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107963) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md)
+  named `pipeline_name`. Enabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -1415,6 +1417,7 @@ Payload example:
   },
   "commit": {
     "id": 2366,
+    "name": "Build pipeline",
     "sha": "2293ada6b400935a1378653304eaf6221e0fdb8f",
     "message": "test\n",
     "author_name": "User",

@@ -34567,6 +34567,9 @@ msgstr ""
 msgid "Reload page"
 msgstr ""
 
+msgid "Reload the page to try again."
+msgstr ""
+
 msgid "Remediations"
 msgstr ""
 
@@ -44253,6 +44256,9 @@ msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unable to load the merge request widget. Try reloading the page."
+msgstr ""
+
+msgid "Unable to load the page"
 msgstr ""
 
 msgid "Unable to parse JSON"
