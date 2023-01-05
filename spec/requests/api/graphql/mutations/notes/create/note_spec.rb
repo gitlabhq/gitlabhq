@@ -102,6 +102,35 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
 
         it_behaves_like 'a Note mutation with confidential notes'
       end
+
+      context 'as work item' do
+        let(:noteable) { create(:work_item, :issue, project: project) }
+
+        context 'when using internal param' do
+          let(:variables_extra) { { internal: true } }
+
+          it_behaves_like 'a Note mutation with confidential notes'
+        end
+
+        context 'when using deprecated confidential param' do
+          let(:variables_extra) { { confidential: true } }
+
+          it_behaves_like 'a Note mutation with confidential notes'
+        end
+
+        context 'without notes widget' do
+          let(:variables_extra) { {} }
+
+          before do
+            stub_const('WorkItems::Type::BASE_TYPES', { issue: { name: 'NoNotesWidget', enum_value: 0 } })
+            stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', { issue: [::WorkItems::Widgets::Description] })
+          end
+
+          it_behaves_like 'a Note mutation that does not create a Note'
+          it_behaves_like 'a mutation that returns top-level errors',
+            errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+        end
+      end
     end
 
     context 'when body only contains quick actions' do

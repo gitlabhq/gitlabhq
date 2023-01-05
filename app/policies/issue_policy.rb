@@ -27,6 +27,23 @@ class IssuePolicy < IssuablePolicy
   desc "Issue is persisted"
   condition(:persisted, scope: :subject) { @subject.persisted? }
 
+  # accessing notes requires the notes widget to be available for work items(or issue)
+  condition(:notes_widget_enabled, scope: :subject) do
+    @subject.work_item_type.widgets.include?(::WorkItems::Widgets::Notes)
+  end
+
+  rule { ~notes_widget_enabled }.policy do
+    prevent :create_note
+    prevent :read_note
+    prevent :read_internal_note
+    prevent :set_note_created_at
+    prevent :mark_note_as_internal
+    # these actions on notes are not available on issues/work items yet,
+    # but preventing any action on work item notes as long as there is no notes widget seems reasonable
+    prevent :resolve_note
+    prevent :reposition_note
+  end
+
   rule { confidential & ~can_read_confidential }.policy do
     prevent(*create_read_update_admin_destroy(:issue))
     prevent :read_issue_iid

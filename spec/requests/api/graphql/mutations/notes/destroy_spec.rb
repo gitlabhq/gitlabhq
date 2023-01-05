@@ -5,14 +5,11 @@ require 'spec_helper'
 RSpec.describe 'Destroying a Note', feature_category: :team_planning do
   include GraphqlHelpers
 
-  let!(:note) { create(:note) }
-  let(:mutation) do
-    variables = {
-      id: GitlabSchema.id_from_object(note).to_s
-    }
-
-    graphql_mutation(:destroy_note, variables)
-  end
+  let(:noteable) { create(:work_item, :issue) }
+  let!(:note) { create(:note, noteable: noteable, project: noteable.project) }
+  let(:global_note_id) { GitlabSchema.id_from_object(note).to_s }
+  let(:variables) { { id: global_note_id } }
+  let(:mutation) { graphql_mutation(:destroy_note, variables) }
 
   def mutation_response
     graphql_mutation_response(:destroy_note)
@@ -46,6 +43,32 @@ RSpec.describe 'Destroying a Note', feature_category: :team_planning do
 
       expect(mutation_response).to have_key('note')
       expect(mutation_response['note']).to be_nil
+    end
+
+    context 'when note is system' do
+      let!(:note) { create(:note, :system) }
+
+      it 'does not destroy system note' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.not_to change { Note.count }
+      end
+    end
+
+    context 'without notes widget' do
+      before do
+        stub_const('WorkItems::Type::BASE_TYPES', { issue: { name: 'NoNotesWidget', enum_value: 0 } })
+        stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', { issue: [::WorkItems::Widgets::Description] })
+      end
+
+      it 'does not update the Note' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to not_change { Note.count }
+      end
+
+      it_behaves_like 'a mutation that returns top-level errors',
+        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
     end
   end
 end

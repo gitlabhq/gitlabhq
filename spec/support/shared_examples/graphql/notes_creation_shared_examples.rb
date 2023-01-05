@@ -20,7 +20,7 @@ RSpec.shared_examples 'a Note mutation when the user does not have permission' d
   it_behaves_like 'a Note mutation that does not create a Note'
 
   it_behaves_like 'a mutation that returns top-level errors',
-                  errors: ['The resource that you are attempting to access does not exist or you don\'t have permission to perform this action']
+    errors: ['The resource that you are attempting to access does not exist or you don\'t have permission to perform this action']
 end
 
 RSpec.shared_examples 'a Note mutation when there are active record validation errors' do |model: Note|
@@ -74,7 +74,7 @@ RSpec.shared_examples 'a Note mutation when there are rate limit validation erro
 
     it_behaves_like 'a Note mutation that does not create a Note'
     it_behaves_like 'a mutation that returns top-level errors',
-                    errors: ['This endpoint has been requested too many times. Try again later.']
+      errors: ['This endpoint has been requested too many times. Try again later.']
 
     context 'when the user is in the allowlist' do
       before do
@@ -95,5 +95,57 @@ RSpec.shared_examples 'a Note mutation with confidential notes' do
     expect(mutation_response).to have_key('note')
     expect(mutation_response['note']['confidential']).to eq(true)
     expect(mutation_response['note']['internal']).to eq(true)
+  end
+end
+
+RSpec.shared_examples 'a Note mutation updates a note successfully' do
+  it 'updates the Note' do
+    post_graphql_mutation(mutation, current_user: current_user)
+
+    expect(note.reload.note).to eq(updated_body)
+  end
+
+  it 'returns the updated Note' do
+    post_graphql_mutation(mutation, current_user: current_user)
+
+    expect(mutation_response['note']['body']).to eq(updated_body)
+  end
+end
+
+RSpec.shared_examples 'a Note mutation update with errors' do
+  context 'when there are ActiveRecord validation errors' do
+    let(:params) { { body: '', confidential: true } }
+
+    it_behaves_like 'a mutation that returns errors in the response',
+      errors: ["Note can't be blank", 'Confidential can not be changed for existing notes']
+
+    it 'does not update the Note' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(note.reload.note).to eq(original_body)
+      expect(note.confidential).to be_falsey
+    end
+
+    it 'returns the original Note' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(mutation_response['note']['body']).to eq(original_body)
+      expect(mutation_response['note']['confidential']).to be_falsey
+    end
+  end
+end
+
+RSpec.shared_examples 'a Note mutation update only with quick actions' do
+  context 'when body only contains quick actions' do
+    let(:updated_body) { '/close' }
+
+    it 'returns a nil note and empty errors' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(mutation_response).to include(
+        'errors' => [],
+        'note' => nil
+      )
+    end
   end
 end

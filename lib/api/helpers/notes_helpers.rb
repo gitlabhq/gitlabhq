@@ -90,7 +90,12 @@ module API
         params = finder_params_by_noteable_type_and_id(noteable_type, noteable_id)
 
         noteable = NotesFinder.new(current_user, params).target
-        noteable = nil unless can?(current_user, noteable_read_ability_name(noteable), noteable)
+
+        # Checking `read_note` permission here, because API code does not seem to use NoteFinder to find notes,
+        # but rather pulls notes directly through notes association, so there is no chance to check read_note
+        # permission at service level. With WorkItem model we need to make sure that it has WorkItem::Widgets::Note
+        # available in order to access notes.
+        noteable = nil unless can_read_notes?(noteable)
         noteable || not_found!(noteable_type)
       end
 
@@ -146,6 +151,13 @@ module API
 
       def disable_query_limiting
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/211538')
+      end
+
+      private
+
+      def can_read_notes?(noteable)
+        Ability.allowed?(current_user, noteable_read_ability_name(noteable), noteable) &&
+          Ability.allowed?(current_user, :read_note, noteable)
       end
     end
   end

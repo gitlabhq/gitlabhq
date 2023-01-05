@@ -18,6 +18,10 @@ RSpec.describe Notes::CreateService do
     end
 
     context "valid params" do
+      it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+        let(:action) { note }
+      end
+
       it 'returns a valid note' do
         expect(note).to be_valid
       end
@@ -230,6 +234,10 @@ RSpec.describe Notes::CreateService do
                          confidential: false)
             end
 
+            it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+              let(:action) { described_class.new(project_with_repo, user, new_opts).execute }
+            end
+
             it 'note is associated with a note diff file' do
               MergeRequests::MergeToRefService.new(project: merge_request.project, current_user: merge_request.author).execute(merge_request)
 
@@ -245,6 +253,16 @@ RSpec.describe Notes::CreateService do
                 expect(Discussions::CaptureDiffNotePositionService).not_to receive(:new)
 
                 described_class.new(project_with_repo, user, new_opts).execute(skip_capture_diff_note_position: true)
+              end
+            end
+
+            context 'when skip_merge_status_trigger execute option is set to true' do
+              it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+                let(:action) do
+                  described_class
+                    .new(project_with_repo, user, new_opts)
+                    .execute(skip_merge_status_trigger: true)
+                end
               end
             end
 

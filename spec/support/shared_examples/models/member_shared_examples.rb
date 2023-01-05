@@ -207,16 +207,14 @@ RSpec.shared_examples_for "member creation" do
         source.request_access(user)
       end
 
-      it 'does not add the requester as a regular member', :aggregate_failures do
+      it 'adds the requester as a member', :aggregate_failures do
         expect(source.users).not_to include(user)
-        expect(source.requesters.exists?(user_id: user)).to be_truthy
+        expect(source.requesters.exists?(user_id: user)).to eq(true)
 
-        expect do
-          described_class.add_member(source, user, :maintainer)
-        end.to raise_error(Gitlab::Access::AccessDeniedError)
+        described_class.add_member(source, user, :maintainer)
 
-        expect(source.users.reload).not_to include(user)
-        expect(source.requesters.reload.exists?(user_id: user)).to be_truthy
+        expect(source.users.reload).to include(user)
+        expect(source.requesters.reload.exists?(user_id: user)).to eq(false)
       end
     end
 
