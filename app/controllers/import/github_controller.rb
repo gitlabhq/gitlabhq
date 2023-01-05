@@ -150,7 +150,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def client_repos_response
-    @client_repos_response ||= client_proxy.repos(sanitized_filter_param, pagination_options)
+    @client_repos_response ||= client_proxy.repos(sanitized_filter_param, fetch_repos_options)
   end
 
   def client_repos
@@ -160,7 +160,11 @@ class Import::GithubController < Import::BaseController
   def sanitized_filter_param
     super
 
-    @filter = @filter&.tr(' ', '')&.tr(':', '')
+    @filter = sanitize_query_param(@filter)
+  end
+
+  def sanitize_query_param(value)
+    value.to_s.first(255).gsub(/[ :]/, '')
   end
 
   def verify_import_enabled
@@ -222,6 +226,10 @@ class Import::GithubController < Import::BaseController
     head :too_many_requests
   end
 
+  def fetch_repos_options
+    pagination_options.merge(relation_options)
+  end
+
   def pagination_options
     {
       before: params[:before].presence,
@@ -231,6 +239,13 @@ class Import::GithubController < Import::BaseController
       # https://gitlab.com/gitlab-org/gitlab/-/issues/385649
       page: [1, params[:page].to_i].max,
       per_page: PAGE_LENGTH
+    }
+  end
+
+  def relation_options
+    {
+      relation_type: params[:relation_type],
+      organization_login: sanitize_query_param(params[:organization_login])
     }
   end
 end

@@ -363,12 +363,7 @@ Threads on lines that don't change and top-level resolvable threads are not reso
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340172) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `paginated_mr_discussions`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.2.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.3.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature
-per project or for your entire instance, ask an administrator to
-[disable the feature flag](../../administration/feature_flags.md) named `paginated_mr_discussions`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370075) in GitLab 15.8. Feature flag `paginated_mr_discussions` removed.
 
 A merge request can have many discussions. Loading them all in a single request
 can be slow. To improve the performance of loading discussions, they are split into multiple

@@ -1442,7 +1442,7 @@ describe('Actions Notes Store', () => {
       return testAction(
         actions.fetchDiscussions,
         {},
-        { noteableType: notesConstants.MERGE_REQUEST_NOTEABLE_TYPE },
+        { noteableType: notesConstants.EPIC_NOTEABLE_TYPE },
         [
           { type: mutationTypes.ADD_OR_UPDATE_DISCUSSIONS, payload: { discussion } },
           { type: mutationTypes.SET_FETCHING_DISCUSSIONS, payload: false },
@@ -1472,9 +1472,7 @@ describe('Actions Notes Store', () => {
       );
     });
 
-    it('dispatches `fetchDiscussionsBatch` action if `paginatedMrDiscussions` feature flag is enabled', () => {
-      window.gon = { features: { paginatedMrDiscussions: true } };
-
+    it('dispatches `fetchDiscussionsBatch` action if noteable is a MergeRequest', () => {
       return testAction(
         actions.fetchDiscussions,
         { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },

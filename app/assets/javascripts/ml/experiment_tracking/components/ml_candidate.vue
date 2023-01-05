@@ -19,6 +19,25 @@ export default {
     artifactsLabel: __('Artifacts'),
     parametersLabel: __('Parameters'),
     metricsLabel: __('Metrics'),
+    metadataLabel: __('Metadata'),
+  },
+  computed: {
+    sections() {
+      return [
+        {
+          sectionName: this.$options.i18n.parametersLabel,
+          sectionValues: this.candidate.params,
+        },
+        {
+          sectionName: this.$options.i18n.metricsLabel,
+          sectionValues: this.candidate.metrics,
+        },
+        {
+          sectionName: this.$options.i18n.metadataLabel,
+          sectionValues: this.candidate.metadata,
+        },
+      ];
+    },
   },
 };
 </script>
@@ -67,27 +86,18 @@ export default {
           </td>
         </tr>
 
-        <tr class="divider"></tr>
+        <template v-for="{ sectionName, sectionValues } in sections">
+          <tr :key="sectionName" class="divider"></tr>
 
-        <tr v-for="(param, index) in candidate.params" :key="param.name">
-          <td v-if="index == 0" class="gl-text-secondary gl-font-weight-bold">
-            {{ $options.i18n.parametersLabel }}
-          </td>
-          <td v-else></td>
-          <td class="gl-font-weight-bold">{{ param.name }}</td>
-          <td>{{ param.value }}</td>
-        </tr>
-
-        <tr class="divider"></tr>
-
-        <tr v-for="(metric, index) in candidate.metrics" :key="metric.name">
-          <td v-if="index == 0" class="gl-text-secondary gl-font-weight-bold">
-            {{ $options.i18n.metricsLabel }}
-          </td>
-          <td v-else></td>
-          <td class="gl-font-weight-bold">{{ metric.name }}</td>
-          <td>{{ metric.value }}</td>
-        </tr>
+          <tr v-for="(item, index) in sectionValues" :key="item.name">
+            <td v-if="index === 0" class="gl-text-secondary gl-font-weight-bold">
+              {{ sectionName }}
+            </td>
+            <td v-else></td>
+            <td class="gl-font-weight-bold">{{ item.name }}</td>
+            <td>{{ item.value }}</td>
+          </tr>
+        </template>
       </tbody>
     </table>
   </div>

@@ -72,6 +72,19 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         end
       end
 
+      context 'by string' do
+        let(:params) { { search: 'add' } }
+
+        it 'returns all branches contain name' do
+          result = subject
+
+          result.each do |branch|
+            expect(branch.name).to include('add')
+          end
+          expect(result.count).to eq(5)
+        end
+      end
+
       context 'by provided names' do
         let(:params) { { names: %w[fix csv lfs does-not-exist] } }
 

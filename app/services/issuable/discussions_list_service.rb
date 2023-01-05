@@ -49,7 +49,6 @@ module Issuable
 
     def paginator
       return if params[:per_page].blank?
-      return if issuable.instance_of?(MergeRequest) && Feature.disabled?(:paginated_mr_discussions, issuable.project)
 
       strong_memoize(:paginator) do
         issuable

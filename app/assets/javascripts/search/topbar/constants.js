@@ -20,4 +20,4 @@ export const PROJECT_DATA = {
   fullName: 'name_with_namespace',
 };
 
-export const SYNTAX_OPTIONS_DOCUMENT = 'drawers/user/search/advanced_search.md';
+export const SYNTAX_OPTIONS_DOCUMENT = 'drawers/drawers/advanced_search_syntax.md';

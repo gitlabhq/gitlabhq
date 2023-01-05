@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::GetImportableDataService do
+RSpec.describe BulkImports::GetImportableDataService, feature_category: :importers do
   describe '#execute' do
     include_context 'bulk imports requests context', 'https://gitlab.example.com'
 
@@ -32,6 +32,18 @@ RSpec.describe BulkImports::GetImportableDataService do
           'full_path' => 'stub-group'
         }
       ]
+    end
+
+    let(:source_version) do
+      Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION,
+                              ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT)
+    end
+
+    before do
+      allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
+        allow(instance).to receive(:instance_version).and_return(source_version)
+        allow(instance).to receive(:instance_enterprise).and_return(false)
+      end
     end
 
     subject do

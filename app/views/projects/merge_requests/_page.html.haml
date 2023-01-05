@@ -69,7 +69,7 @@
               = render "projects/merge_requests/awards_block"
               = render "projects/merge_requests/widget"
               - if mr_action === "show"
-                - add_page_startup_api_call Feature.enabled?(:paginated_mr_discussions, @project) ? discussions_path(@merge_request, per_page: 20) : discussions_path(@merge_request)
+                - add_page_startup_api_call discussions_path(@merge_request, per_page: 20)
                 - add_page_startup_api_call widget_project_json_merge_request_path(@project, @merge_request, format: :json)
                 - add_page_startup_api_call cached_widget_project_json_merge_request_path(@project, @merge_request, format: :json)
               #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request).to_json,

@@ -91,22 +91,6 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         expect(discussions.count).to eq(1)
         expect(notes).to match([a_hash_including('id' => discussion_2.id.to_s)])
       end
-
-      context 'when paginated_mr_discussions is disabled' do
-        before do
-          stub_feature_flags(paginated_mr_discussions: false)
-        end
-
-        it 'returns all discussions and ignores per_page param' do
-          get_discussions(per_page: 2)
-
-          discussions = Gitlab::Json.parse(response.body)
-          notes = discussions.flat_map { |d| d['notes'] }
-
-          expect(discussions.count).to eq(4)
-          expect(notes.count).to eq(5)
-        end
-      end
     end
   end
 

@@ -163,8 +163,8 @@ exports[`MlCandidate renders correctly 1`] = `
           class="gl-text-secondary gl-font-weight-bold"
         >
           
-          Parameters
-        
+            Parameters
+          
         </td>
          
         <td
@@ -190,7 +190,6 @@ exports[`MlCandidate renders correctly 1`] = `
           3
         </td>
       </tr>
-       
       <tr
         class="divider"
       />
@@ -200,8 +199,8 @@ exports[`MlCandidate renders correctly 1`] = `
           class="gl-text-secondary gl-font-weight-bold"
         >
           
-          Metrics
-        
+            Metrics
+          
         </td>
          
         <td
@@ -225,6 +224,42 @@ exports[`MlCandidate renders correctly 1`] = `
          
         <td>
           .99
+        </td>
+      </tr>
+      <tr
+        class="divider"
+      />
+       
+      <tr>
+        <td
+          class="gl-text-secondary gl-font-weight-bold"
+        >
+          
+            Metadata
+          
+        </td>
+         
+        <td
+          class="gl-font-weight-bold"
+        >
+          FileName
+        </td>
+         
+        <td>
+          test.py
+        </td>
+      </tr>
+      <tr>
+        <td />
+         
+        <td
+          class="gl-font-weight-bold"
+        >
+          ExecutionTime
+        </td>
+         
+        <td>
+          .0856
         </td>
       </tr>
     </tbody>

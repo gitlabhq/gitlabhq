@@ -15,7 +15,7 @@ RSpec.shared_context 'bulk imports requests context' do |url|
   let(:request_headers) { { 'Content-Type' => 'application/json' } }
 
   before do
-    stub_request(:get, "#{url}/api/v4/version?page=1&per_page=20&private_token=demo-pat")
+    stub_request(:get, "#{url}/api/v4/version?private_token=demo-pat")
       .with(headers: request_headers)
       .to_return(
         status: 200,

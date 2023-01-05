@@ -56,11 +56,7 @@ export default {
   },
   watch: {
     discussionTabCounter(val) {
-      if (this.glFeatures.paginatedMrDiscussions) {
-        if (this.doneFetchingBatchDiscussions) {
-          this.discussionCounter = val;
-        }
-      } else {
+      if (this.doneFetchingBatchDiscussions) {
         this.discussionCounter = val;
       }
     },

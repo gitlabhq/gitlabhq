@@ -102,6 +102,18 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
             )
           end
 
+          let(:source_version) do
+            Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION,
+                                    ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT)
+          end
+
+          before do
+            allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
+              allow(instance).to receive(:instance_version).and_return(source_version)
+              allow(instance).to receive(:instance_enterprise).and_return(false)
+            end
+          end
+
           it 'returns serialized group data' do
             get_status
 
@@ -203,8 +215,15 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
         end
 
         context 'when connection error occurs' do
+          let(:source_version) do
+            Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION,
+                                    ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT)
+          end
+
           before do
             allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
+              allow(instance).to receive(:instance_version).and_return(source_version)
+              allow(instance).to receive(:instance_enterprise).and_return(false)
               allow(instance).to receive(:get).and_raise(BulkImports::Error)
             end
           end

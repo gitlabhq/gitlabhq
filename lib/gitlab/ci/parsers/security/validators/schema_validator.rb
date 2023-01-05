@@ -30,6 +30,8 @@ module Gitlab
               secret_detection: VERSIONS_TO_REMOVE_IN_16_0
             }.freeze
 
+            CURRENT_VERSIONS = SUPPORTED_VERSIONS.to_h { |k, v| [k, v - DEPRECATED_VERSIONS[k]] }
+
             class Schema
               def root_path
                 File.join(__dir__, 'schemas')
@@ -187,11 +189,15 @@ module Gitlab
             def add_deprecated_report_version_message
               log_warnings(problem_type: 'using_deprecated_schema_version')
 
-              template = _("Version %{report_version} for report type %{report_type} has been deprecated,"\
-              " supported versions for this report type are: %{supported_schema_versions}."\
-              " GitLab will attempt to parse and ingest this report if valid.")
+              template = _("version %{report_version} for report type %{report_type} is deprecated. "\
+              "However, GitLab will still attempt to parse and ingest this report. "\
+              "Upgrade the security report to one of the following versions: %{current_schema_versions}.")
 
-              message = format(template, report_version: report_version, report_type: report_type, supported_schema_versions: supported_schema_versions)
+              message = format(
+                template,
+                report_version: report_version,
+                report_type: report_type,
+                current_schema_versions: current_schema_versions)
 
               add_message_as(level: :deprecation_warning, message: message)
             end
@@ -210,6 +216,10 @@ module Gitlab
                 security_report_scanner_id: @scanner&.dig('id'),
                 security_report_scanner_version: @scanner&.dig('version')
               )
+            end
+
+            def current_schema_versions
+              CURRENT_VERSIONS[report_type].join(", ")
             end
 
             def supported_schema_versions

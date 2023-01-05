@@ -389,10 +389,7 @@ export default {
       () => {
         this.setDiscussions();
 
-        if (
-          this.$store.state.notes.doneFetchingBatchDiscussions &&
-          window.gon?.features?.paginatedMrDiscussions
-        ) {
+        if (this.$store.state.notes.doneFetchingBatchDiscussions) {
           this.unwatchDiscussions();
         }
       },
@@ -402,10 +399,6 @@ export default {
       () => `${this.retrievingBatches}:${this.$store.state.notes.discussions.length}`,
       () => {
         if (!this.retrievingBatches && this.$store.state.notes.discussions.length) {
-          if (!window.gon?.features?.paginatedMrDiscussions) {
-            this.unwatchDiscussions();
-          }
-
           this.unwatchRetrievingBatches();
         }
       },

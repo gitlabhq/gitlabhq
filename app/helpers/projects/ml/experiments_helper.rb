@@ -32,7 +32,8 @@ module Projects
             experiment_name: candidate.experiment.name,
             path_to_experiment: link_to_experiment(candidate),
             status: candidate.status
-          }
+          },
+          metadata: candidate.metadata
         }
 
         Gitlab::Json.generate(data)

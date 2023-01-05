@@ -3488,7 +3488,7 @@ any subkeys. All additional details and related topics are the same.
 
 **Possible inputs**:
 
-- An array of file paths. In GitLab 13.6 and later, [file paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
+- An array of file paths. [File paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
 
 **Example of `rules:changes:paths`**:
 

@@ -11,6 +11,7 @@ module Gitlab
       Gitlab::Redis::Cache,
       Gitlab::Redis::Queues,
       Gitlab::Redis::RateLimiting,
+      Gitlab::Redis::RepositoryCache,
       Gitlab::Redis::Sessions,
       Gitlab::Redis::SharedState,
       Gitlab::Redis::TraceChunks

@@ -1,8 +1,0 @@
----
-name: paginated_mr_discussions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88905
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364497
-milestone: '15.1'
-type: development
-group: group::code review
-default_enabled: true

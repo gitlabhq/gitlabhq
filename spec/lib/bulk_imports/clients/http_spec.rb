@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Clients::HTTP do
+RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
   include ImportSpecHelper
 
   let(:url) { 'http://gitlab.example' }
@@ -22,12 +22,6 @@ RSpec.describe BulkImports::Clients::HTTP do
     )
   end
 
-  before do
-    allow(Gitlab::HTTP).to receive(:get)
-      .with('http://gitlab.example/api/v4/version', anything)
-      .and_return(metadata_response)
-  end
-
   subject { described_class.new(url: url, token: token) }
 
   shared_examples 'performs network request' do
@@ -39,7 +33,7 @@ RSpec.describe BulkImports::Clients::HTTP do
 
     context 'error handling' do
       context 'when error occurred' do
-        it 'raises BulkImports::Error' do
+        it 'raises BulkImports::NetworkError' do
           allow(Gitlab::HTTP).to receive(method).and_raise(Errno::ECONNREFUSED)
 
           expect { subject.public_send(method, resource) }.to raise_exception(BulkImports::NetworkError)
@@ -47,7 +41,7 @@ RSpec.describe BulkImports::Clients::HTTP do
       end
 
       context 'when response is not success' do
-        it 'raises BulkImports::Error' do
+        it 'raises BulkImports::NetworkError' do
           response_double = double(code: 503, success?: false, parsed_response: 'Error', request: double(path: double(path: '/test')))
 
           allow(Gitlab::HTTP).to receive(method).and_return(response_double)
@@ -210,33 +204,149 @@ RSpec.describe BulkImports::Clients::HTTP do
 
   describe '#instance_version' do
     it 'returns version as an instance of Gitlab::VersionInfo' do
+      response = { version: version }
+
+      stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token')
+        .to_return(status: 200, body: response.to_json, headers: { 'Content-Type' => 'application/json' })
+
       expect(subject.instance_version).to eq(Gitlab::VersionInfo.parse(version))
     end
 
     context 'when /version endpoint is not available' do
       it 'requests /metadata endpoint' do
-        response_double = double(code: 404, success?: false, parsed_response: 'Not Found', request: double(path: double(path: '/version')))
+        response = { version: version }
 
-        allow(Gitlab::HTTP).to receive(:get)
-          .with('http://gitlab.example/api/v4/version', anything)
-          .and_return(response_double)
-
-        expect(Gitlab::HTTP).to receive(:get)
-          .with('http://gitlab.example/api/v4/metadata', anything)
-          .and_return(metadata_response)
+        stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
+        stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
+          .to_return(status: 200, body: response.to_json, headers: { 'Content-Type' => 'application/json' })
 
         expect(subject.instance_version).to eq(Gitlab::VersionInfo.parse(version))
+      end
+
+      context 'when /metadata endpoint returns a 401' do
+        it 'raises a BulkImports:Error' do
+          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
+          stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
+            .to_return(status: 401, body: "", headers: { 'Content-Type' => 'application/json' })
+
+          expect { subject.instance_version }.to raise_exception(BulkImports::Error, "Import aborted as the provided personal access token does not have the required 'api' scope.")
+        end
+      end
+
+      context 'when /metadata endpoint returns a 403' do
+        it 'raises a BulkImports:Error' do
+          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
+          stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
+            .to_return(status: 403, body: "", headers: { 'Content-Type' => 'application/json' })
+
+          expect { subject.instance_version }.to raise_exception(BulkImports::Error, "Import aborted as the provided personal access token does not have the required 'api' scope.")
+        end
+      end
+
+      context 'when /metadata endpoint returns a 404' do
+        it 'raises a BulkImports:Error' do
+          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
+          stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
+            .to_return(status: 404, body: "", headers: { 'Content-Type' => 'application/json' })
+
+          expect { subject.instance_version }.to raise_exception(BulkImports::Error, 'Import aborted as it was not possible to connect to the provided GitLab instance URL.')
+        end
+      end
+
+      context 'when /metadata endpoint returns any other BulkImports::NetworkError' do
+        it 'raises a BulkImports:NetworkError' do
+          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
+          stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
+            .to_return(status: 418, body: "", headers: { 'Content-Type' => 'application/json' })
+
+          expect { subject.instance_version }.to raise_exception(BulkImports::NetworkError)
+        end
+      end
+    end
+  end
+
+  describe '#validate_instance_version!' do
+    before do
+      allow(subject).to receive(:instance_version).and_return(source_version)
+    end
+
+    context 'when instance version is greater than or equal to the minimum major version' do
+      let(:source_version) { Gitlab::VersionInfo.new(14) }
+
+      it { expect(subject.validate_instance_version!).to eq(true) }
+    end
+
+    context 'when instance version is less than the minimum major version' do
+      let(:source_version) { Gitlab::VersionInfo.new(13, 10, 0) }
+
+      it { expect { subject.validate_instance_version! }.to raise_exception(BulkImports::Error) }
+    end
+  end
+
+  describe '#validate_import_scopes!' do
+    context 'when the source_version is < 15.5' do
+      let(:source_version) { Gitlab::VersionInfo.new(15, 0) }
+
+      it 'skips validation' do
+        allow(subject).to receive(:instance_version).and_return(source_version)
+
+        expect(subject.validate_import_scopes!).to eq(true)
+      end
+    end
+
+    context 'when source version is 15.5 or higher' do
+      let(:source_version) { Gitlab::VersionInfo.new(15, 6) }
+
+      before do
+        allow(subject).to receive(:instance_version).and_return(source_version)
+      end
+
+      context 'when an HTTP error is raised' do
+        let(:response) { { enterprise: false } }
+
+        it 'raises BulkImports::NetworkError' do
+          stub_request(:get, 'http://gitlab.example/api/v4/personal_access_tokens/self?private_token=token')
+            .to_return(status: 404)
+
+          expect { subject.validate_import_scopes! }.to raise_exception(BulkImports::NetworkError)
+        end
+      end
+
+      context 'when scopes are valid' do
+        it 'returns true' do
+          stub_request(:get, 'http://gitlab.example/api/v4/personal_access_tokens/self?private_token=token')
+            .to_return(status: 200, body: { 'scopes' => ['api'] }.to_json, headers: { 'Content-Type' => 'application/json' })
+
+          expect(subject.validate_import_scopes!).to eq(true)
+        end
+      end
+
+      context 'when scopes are invalid' do
+        it 'raises a BulkImports error' do
+          stub_request(:get, 'http://gitlab.example/api/v4/personal_access_tokens/self?private_token=token')
+            .to_return(status: 200, body: { 'scopes' => ['read_user'] }.to_json, headers: { 'Content-Type' => 'application/json' })
+
+          expect(subject.instance_version).to eq(Gitlab::VersionInfo.parse(source_version))
+          expect { subject.validate_import_scopes! }.to raise_exception(BulkImports::Error)
+        end
       end
     end
   end
 
   describe '#instance_enterprise' do
+    let(:response) { { enterprise: false } }
+
+    before do
+      stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token')
+        .to_return(status: 200, body: response.to_json, headers: { 'Content-Type' => 'application/json' })
+    end
+
     it 'returns source instance enterprise information' do
       expect(subject.instance_enterprise).to eq(false)
     end
 
     context 'when enterprise information is missing' do
-      let(:enterprise) { nil }
+      let(:response) { {} }
 
       it 'defaults to true' do
         expect(subject.instance_enterprise).to eq(true)
@@ -245,30 +355,24 @@ RSpec.describe BulkImports::Clients::HTTP do
   end
 
   describe '#compatible_for_project_migration?' do
+    before do
+      allow(subject).to receive(:instance_version).and_return(Gitlab::VersionInfo.parse(version))
+    end
+
     context 'when instance version is lower the the expected minimum' do
+      let(:version) { '14.3.0' }
+
       it 'returns false' do
         expect(subject.compatible_for_project_migration?).to be false
       end
     end
 
     context 'when instance version is at least the expected minimum' do
-      let(:version) { "14.4.4" }
+      let(:version) { '14.4.4' }
 
       it 'returns true' do
         expect(subject.compatible_for_project_migration?).to be true
       end
-    end
-  end
-
-  context 'when source instance is incompatible' do
-    let(:version) { '13.0.0' }
-
-    it 'raises an error' do
-      expect { subject.get(resource) }
-        .to raise_error(
-          ::BulkImports::Error,
-          "Unsupported GitLab Version. Minimum Supported Gitlab Version #{BulkImport::MIN_MAJOR_VERSION}."
-        )
     end
   end
 

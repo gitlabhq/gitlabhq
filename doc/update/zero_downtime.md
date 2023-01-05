@@ -456,7 +456,13 @@ Log in to your **primary** node, executing the following:
 1. To get the database migrations and latest code in place, run:
 
    ```shell
-   sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-ctl reconfigure
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. After the node is updated and reconfigure finished successfully, complete the migrations:
+
+   ```shell
+   sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-rake db:migrate
    ```
 
 ### Update the Geo secondary site
@@ -486,7 +492,13 @@ On each **secondary** node, executing the following:
 1. To get the database migrations and latest code in place, run:
 
    ```shell
-   sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-ctl reconfigure
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. After the node is updated and reconfigure finished successfully, complete the migrations:
+
+   ```shell
+   sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-rake db:migrate
    ```
 
 1. Run post-deployment database migrations, specific to the Geo database:
