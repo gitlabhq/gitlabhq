@@ -15,6 +15,7 @@ namespace :gitlab do
             table_name: table_name,
             connection: connection,
             database_name: database_name,
+            with_retries: true,
             logger: Logger.new($stdout),
             dry_run: ENV['DRY_RUN'] == 'true'
           )
@@ -39,6 +40,7 @@ namespace :gitlab do
             table_name: table_name,
             connection: connection,
             database_name: database_name,
+            with_retries: true,
             logger: Logger.new($stdout)
           )
 

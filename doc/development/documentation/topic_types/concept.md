@@ -10,8 +10,8 @@ A concept introduces a single feature or concept.
 
 A concept should answer the questions:
 
-- What is this?
-- Why would you use it?
+- **What** is this?
+- **Why** would you use it?
 
 Think of everything someone might want to know if they've never heard of this concept before.
 
@@ -24,12 +24,15 @@ Concepts should be in this format:
 ```markdown
 # Title (a noun, like "Widgets")
 
-A paragraph that explains what this thing is.
+A paragraph or two that explains what this thing is and why you would use it.
 
-Another paragraph that explains what this thing is.
+If you start to describe another concept, stop yourself.
+Each concept should be about **one concept only**.
 
-Remember, if you start to describe about another concept, stop yourself.
-Each concept should be about one concept only.
+If you start to describe **how to use the thing**, stop yourself.
+Task topics explain how to use something, not concept topics.
+
+Do not include links to related tasks. The navigation provides links to tasks.
 ```
 
 ## Concept topic titles

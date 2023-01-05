@@ -40,11 +40,12 @@ module Gitlab
             table_name: table_name,
             connection: connection,
             database_name: database_name,
+            with_retries: true,
             logger: logger,
             dry_run: dry_run
           )
 
-          unless lock_writes_manager.table_locked_for_writes?(table_name)
+          unless lock_writes_manager.table_locked_for_writes?
             raise "Table '#{table_name}' is not locked for writes. Run the rake task gitlab:db:lock_writes first"
           end
         end

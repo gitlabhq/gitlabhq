@@ -1159,7 +1159,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           Gitlab::Database::LockWritesManager.new(
             table_name: test_table,
             connection: model.connection,
-            database_name: 'main'
+            database_name: 'main',
+            with_retries: false
           )
         end
 
@@ -1340,7 +1341,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           Gitlab::Database::LockWritesManager.new(
             table_name: test_table,
             connection: model.connection,
-            database_name: 'main'
+            database_name: 'main',
+            with_retries: false
           )
         end
 

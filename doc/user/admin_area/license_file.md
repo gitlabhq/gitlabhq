@@ -75,7 +75,7 @@ and issue creation. Your instance becomes read-only and
 an expiration message displays to all administrators. You have a 14-day grace period
 before this occurs.
 
-To resume functionality, [renew your subscription](../../subscriptions/self_managed/index.md#renew-a-subscription).
+To resume functionality, [renew your subscription](../../subscriptions/self_managed/index.md#renew-subscription-manually).
 
 If the license has been expired for more than 30 days, you must purchase a [new subscription](../../subscriptions/self_managed/index.md) to resume functionality.
 

@@ -7,6 +7,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Storage usage quota **(FREE)**
 
+Storage usage statistics are available for projects and namespaces. You can use that information to
+manage storage usage within the applicable quotas.
+
+Statistics include:
+
+- Storage usage across projects in a namespace.
+- Storage usage that exceeds the storage quota.
+- Available purchased storage.
+
 ## View storage usage
 
 Prerequisites:

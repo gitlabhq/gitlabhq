@@ -3,27 +3,39 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
-  :reestablished_active_record_base, query_analyzers: false do
+  :reestablished_active_record_base, :delete, query_analyzers: false, feature_category: :pods do
   using RSpec::Parameterized::TableSyntax
 
   let(:schema_class) { Class.new(Gitlab::Database::Migration[2.1]) }
+  let(:skip_automatic_lock_on_writes) { false }
   let(:gitlab_main_table_name) { :_test_gitlab_main_table }
   let(:gitlab_ci_table_name) { :_test_gitlab_ci_table }
   let(:gitlab_geo_table_name) { :_test_gitlab_geo_table }
   let(:gitlab_shared_table_name) { :_test_table }
+
+  let(:renamed_gitlab_main_table_name) { :_test_gitlab_main_new_table }
+  let(:renamed_gitlab_ci_table_name) { :_test_gitlab_ci_new_table }
 
   before do
     stub_feature_flags(automatic_lock_writes_on_table: true)
     reconfigure_db_connection(model: ActiveRecord::Base, config_model: config_model)
   end
 
+  # Drop the created test tables, because we use non-transactional tests
+  after do
+    drop_table_if_exists(gitlab_main_table_name)
+    drop_table_if_exists(gitlab_ci_table_name)
+    drop_table_if_exists(gitlab_geo_table_name)
+    drop_table_if_exists(gitlab_shared_table_name)
+    drop_table_if_exists(renamed_gitlab_main_table_name)
+    drop_table_if_exists(renamed_gitlab_ci_table_name)
+  end
+
   shared_examples 'does not lock writes on table' do |config_model|
     let(:config_model) { config_model }
 
     it 'allows deleting records from the table' do
-      allow_next_instance_of(Gitlab::Database::LockWritesManager) do |instance|
-        expect(instance).not_to receive(:lock_writes)
-      end
+      expect(Gitlab::Database::LockWritesManager).not_to receive(:new)
 
       run_migration
 
@@ -37,8 +49,25 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
     let(:config_model) { config_model }
 
     it 'errors on deleting' do
-      allow_next_instance_of(Gitlab::Database::LockWritesManager) do |instance|
+      expect_next_instance_of(Gitlab::Database::LockWritesManager) do |instance|
         expect(instance).to receive(:lock_writes).and_call_original
+      end
+      expect(Gitlab::Database::WithLockRetries).not_to receive(:new)
+
+      run_migration
+
+      expect do
+        migration_class.connection.execute("DELETE FROM #{table_name}")
+      end.to raise_error(ActiveRecord::StatementInvalid, /is write protected/)
+    end
+  end
+
+  shared_examples 'locks writes on table using WithLockRetries' do |config_model|
+    let(:config_model) { config_model }
+
+    it 'locks the writes on the table using WithLockRetries' do
+      expect_next_instance_of(Gitlab::Database::WithLockRetries) do |instance|
+        expect(instance).to receive(:run).and_call_original
       end
 
       run_migration
@@ -50,21 +79,18 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
   end
 
   context 'when executing create_table migrations' do
-    let(:create_gitlab_main_table_migration_class) { create_table_migration(gitlab_main_table_name) }
-    let(:create_gitlab_ci_table_migration_class) { create_table_migration(gitlab_ci_table_name) }
-    let(:create_gitlab_shared_table_migration_class) { create_table_migration(gitlab_shared_table_name) }
-
     context 'when single database' do
       let(:config_model) { Gitlab::Database.database_base_models[:main] }
+      let(:create_gitlab_main_table_migration_class) { create_table_migration(gitlab_main_table_name) }
+      let(:create_gitlab_ci_table_migration_class) { create_table_migration(gitlab_ci_table_name) }
+      let(:create_gitlab_shared_table_migration_class) { create_table_migration(gitlab_shared_table_name) }
 
       before do
         skip_if_multiple_databases_are_setup
       end
 
       it 'does not lock any newly created tables' do
-        allow_next_instance_of(Gitlab::Database::LockWritesManager) do |instance|
-          expect(instance).not_to receive(:lock_writes)
-        end
+        expect(Gitlab::Database::LockWritesManager).not_to receive(:new)
 
         create_gitlab_main_table_migration_class.migrate(:up)
         create_gitlab_ci_table_migration_class.migrate(:up)
@@ -83,9 +109,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
         skip_if_multiple_databases_not_setup
       end
 
-      let(:skip_automatic_lock_on_writes) { false }
       let(:migration_class) { create_table_migration(table_name, skip_automatic_lock_on_writes) }
-      let(:run_migration) { migration_class.migrate(:up) }
+      let(:run_migration) do
+        migration_class.connection.transaction do
+          migration_class.migrate(:up)
+        end
+      end
 
       context 'for creating a gitlab_main table' do
         let(:table_name) { gitlab_main_table_name }
@@ -107,6 +136,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
           let(:skip_automatic_lock_on_writes) { true }
 
           it_behaves_like 'does not lock writes on table', Gitlab::Database.database_base_models[:ci]
+        end
+
+        context 'when migration does not run within a transaction' do
+          let(:run_migration) do
+            migration_class.migrate(:up)
+          end
+
+          it_behaves_like 'locks writes on table using WithLockRetries', Gitlab::Database.database_base_models[:ci]
         end
 
         context 'when the SKIP_AUTOMATIC_LOCK_ON_WRITES feature flag is set' do
@@ -206,11 +243,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
     end
 
     let(:migration_class) { rename_table_migration(old_table_name, table_name) }
-    let(:run_migration) { migration_class.migrate(:up) }
+    let(:run_migration) do
+      migration_class.connection.transaction do
+        migration_class.migrate(:up)
+      end
+    end
 
     context 'when a gitlab_main table' do
       let(:old_table_name) { gitlab_main_table_name }
-      let(:table_name) { :_test_gitlab_main_new_table }
+      let(:table_name) { renamed_gitlab_main_table_name }
       let(:database_base_model) { Gitlab::Database.database_base_models[:main] }
 
       it_behaves_like 'does not lock writes on table', Gitlab::Database.database_base_models[:main]
@@ -219,7 +260,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
 
     context 'when a gitlab_ci table' do
       let(:old_table_name) { gitlab_ci_table_name }
-      let(:table_name) { :_test_gitlab_ci_new_table }
+      let(:table_name) { renamed_gitlab_ci_table_name }
       let(:database_base_model) { Gitlab::Database.database_base_models[:ci] }
 
       it_behaves_like 'does not lock writes on table', Gitlab::Database.database_base_models[:ci]
@@ -240,9 +281,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
       end
 
       it 'does not lock any newly created tables' do
-        allow_next_instance_of(Gitlab::Database::LockWritesManager) do |instance|
-          expect(instance).not_to receive(:lock_writes)
-        end
+        expect(Gitlab::Database::LockWritesManager).not_to receive(:new)
 
         drop_gitlab_main_table_migration_class.connection.execute("CREATE TABLE #{gitlab_main_table_name}()")
         drop_gitlab_ci_table_migration_class.connection.execute("CREATE TABLE #{gitlab_ci_table_name}()")
@@ -272,7 +311,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
       end
 
       let(:migration_class) { drop_table_migration(table_name) }
-      let(:run_migration) { migration_class.migrate(:down) }
+      let(:run_migration) do
+        migration_class.connection.transaction do
+          migration_class.migrate(:down)
+        end
+      end
 
       context 'for re-creating a gitlab_main table' do
         let(:table_name) { gitlab_main_table_name }
@@ -297,14 +340,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
     end
   end
 
-  def create_table_migration(table_name, skip_lock_on_writes = false)
+  def create_table_migration(table_name, skip_automatic_lock_on_writes = false)
     migration_class = Class.new(schema_class) do
       class << self; attr_accessor :table_name; end
       def change
         create_table self.class.table_name
       end
     end
-    migration_class.skip_automatic_lock_on_writes = skip_lock_on_writes
+    migration_class.skip_automatic_lock_on_writes = skip_automatic_lock_on_writes
     migration_class.tap { |klass| klass.table_name = table_name }
   end
 
@@ -334,5 +377,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
 
   def geo_configured?
     !!ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: 'geo')
+  end
+
+  # To drop the test tables that have been created in the test migrations
+  def drop_table_if_exists(table_name)
+    Gitlab::Database.database_base_models.each_value do |model|
+      model.connection.execute("DROP TABLE IF EXISTS #{table_name}")
+    end
   end
 end

@@ -60,12 +60,15 @@ module Gitlab
           Gitlab::Database.gitlab_schemas_for_connection(connection).exclude?(table_schema)
         end
 
+        # with_retries creates new a transaction. So we set it to false if the connection is
+        # already has an open transaction, to avoid sub-transactions.
         def lock_writes_on_table(connection, table_name)
           database_name = Gitlab::Database.db_config_name(connection)
           LockWritesManager.new(
             table_name: table_name,
             connection: connection,
             database_name: database_name,
+            with_retries: !connection.transaction_open?,
             logger: Logger.new($stdout)
           ).lock_writes
         end

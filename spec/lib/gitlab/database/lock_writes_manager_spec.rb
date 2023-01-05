@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LockWritesManager do
+RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :pods do
   let(:connection) { ApplicationRecord.connection }
   let(:test_table) { '_test_table' }
   let(:logger) { instance_double(Logger) }
@@ -13,12 +13,14 @@ RSpec.describe Gitlab::Database::LockWritesManager do
       table_name: test_table,
       connection: connection,
       database_name: 'main',
+      with_retries: true,
       logger: logger,
       dry_run: dry_run
     )
   end
 
   before do
+    allow(connection).to receive(:execute).and_call_original
     allow(logger).to receive(:info)
 
     connection.execute(<<~SQL)
@@ -29,20 +31,24 @@ RSpec.describe Gitlab::Database::LockWritesManager do
     SQL
   end
 
+  after do
+    ApplicationRecord.connection.execute("DROP TABLE IF EXISTS #{test_table}")
+  end
+
   describe "#table_locked_for_writes?" do
     it 'returns false for a table that is not locked for writes' do
-      expect(subject.table_locked_for_writes?(test_table)).to eq(false)
+      expect(subject.table_locked_for_writes?).to eq(false)
     end
 
     it 'returns true for a table that is locked for writes' do
-      expect { subject.lock_writes }.to change { subject.table_locked_for_writes?(test_table) }.from(false).to(true)
+      expect { subject.lock_writes }.to change { subject.table_locked_for_writes? }.from(false).to(true)
     end
 
     context 'for detached partition tables in another schema' do
       let(:test_table) { 'gitlab_partitions_dynamic._test_table_20220101' }
 
       it 'returns true for a table that is locked for writes' do
-        expect { subject.lock_writes }.to change { subject.table_locked_for_writes?(test_table) }.from(false).to(true)
+        expect { subject.lock_writes }.to change { subject.table_locked_for_writes? }.from(false).to(true)
       end
     end
   end
@@ -83,21 +89,19 @@ RSpec.describe Gitlab::Database::LockWritesManager do
     it 'retries again if it receives a statement_timeout a few number of times' do
       error_message = "PG::QueryCanceled: ERROR: canceling statement due to statement timeout"
       call_count = 0
-      allow(connection).to receive(:execute) do |statement|
-        if statement.include?("CREATE TRIGGER")
-          call_count += 1
-          raise(ActiveRecord::QueryCanceled, error_message) if call_count.even?
-        end
+      expect(connection).to receive(:execute).twice.with(/^CREATE TRIGGER gitlab_schema_write_trigger_for_/) do
+        call_count += 1
+        raise(ActiveRecord::QueryCanceled, error_message) if call_count.odd?
       end
       subject.lock_writes
+
+      expect(call_count).to eq(2) # The first call fails, the 2nd call succeeds
     end
 
     it 'raises the exception if it happened many times' do
       error_message = "PG::QueryCanceled: ERROR: canceling statement due to statement timeout"
-      allow(connection).to receive(:execute) do |statement|
-        if statement.include?("CREATE TRIGGER")
-          raise(ActiveRecord::QueryCanceled, error_message)
-        end
+      allow(connection).to receive(:execute).with(/^CREATE TRIGGER gitlab_schema_write_trigger_for_/) do
+        raise(ActiveRecord::QueryCanceled, error_message)
       end
 
       expect do
@@ -152,6 +156,7 @@ RSpec.describe Gitlab::Database::LockWritesManager do
         table_name: test_table,
         connection: connection,
         database_name: 'main',
+        with_retries: true,
         logger: logger,
         dry_run: false
       ).lock_writes

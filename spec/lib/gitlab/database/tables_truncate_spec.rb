@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_base,
-               :suppress_gitlab_schemas_validate_connection do
+               :suppress_gitlab_schemas_validate_connection, feature_category: :pods do
   include MigrationsHelpers
 
   let(:min_batch_size) { 1 }
@@ -176,7 +176,8 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
           Gitlab::Database::LockWritesManager.new(
             table_name: table,
             connection: connection,
-            database_name: connection.pool.db_config.name
+            database_name: connection.pool.db_config.name,
+            with_retries: false
           ).lock_writes
         end
       end
