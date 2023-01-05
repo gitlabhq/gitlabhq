@@ -11367,6 +11367,9 @@ msgstr ""
 msgid "Country"
 msgstr ""
 
+msgid "Counts"
+msgstr ""
+
 msgid "Counts reflect children you may not have access to."
 msgstr ""
 
@@ -12261,6 +12264,9 @@ msgid "CycleAnalytics|not allowed for the given start event"
 msgstr ""
 
 msgid "CycleAnalytics|project dropdown filter"
+msgstr ""
+
+msgid "CycleAnalytics|the assigned object is not supported"
 msgstr ""
 
 msgid "DAG visualization requires at least 3 dependent jobs."
@@ -28984,6 +28990,9 @@ msgstr ""
 msgid "One or more of your personal access tokens has expired."
 msgstr ""
 
+msgid "One or more of your personal access tokens have expired."
+msgstr ""
+
 msgid "One or more of your personal access tokens will expire in %{days_to_expire} days or less:"
 msgstr ""
 
@@ -31725,7 +31734,22 @@ msgstr ""
 msgid "Product analytics"
 msgstr ""
 
+msgid "ProductAnalytics|Add another dimension"
+msgstr ""
+
 msgid "ProductAnalytics|Add to Dashboard"
+msgstr ""
+
+msgid "ProductAnalytics|All clicks compared"
+msgstr ""
+
+msgid "ProductAnalytics|All events compared"
+msgstr ""
+
+msgid "ProductAnalytics|All features"
+msgstr ""
+
+msgid "ProductAnalytics|All pages"
 msgstr ""
 
 msgid "ProductAnalytics|An error occured while loading the %{widgetTitle} widget."
@@ -31734,19 +31758,151 @@ msgstr ""
 msgid "ProductAnalytics|An error occurred while fetching data. Refresh the page to try again."
 msgstr ""
 
+msgid "ProductAnalytics|Any Click on elements"
+msgstr ""
+
 msgid "ProductAnalytics|Audience"
+msgstr ""
+
+msgid "ProductAnalytics|Browser"
+msgstr ""
+
+msgid "ProductAnalytics|Browser Family"
+msgstr ""
+
+msgid "ProductAnalytics|Choose a chart type on the right"
+msgstr ""
+
+msgid "ProductAnalytics|Choose a measurement to start"
+msgstr ""
+
+msgid "ProductAnalytics|Click Events"
+msgstr ""
+
+msgid "ProductAnalytics|Code"
+msgstr ""
+
+msgid "ProductAnalytics|Compares all events against each other"
+msgstr ""
+
+msgid "ProductAnalytics|Compares click events against each other"
+msgstr ""
+
+msgid "ProductAnalytics|Compares feature usage of all features against each other"
+msgstr ""
+
+msgid "ProductAnalytics|Compares pageviews of all pages against each other"
 msgstr ""
 
 msgid "ProductAnalytics|Dashboards are created by editing the projects dashboard files."
 msgstr ""
 
+msgid "ProductAnalytics|Data"
+msgstr ""
+
+msgid "ProductAnalytics|Data Table"
+msgstr ""
+
+msgid "ProductAnalytics|Dimensions"
+msgstr ""
+
+msgid "ProductAnalytics|Event Type"
+msgstr ""
+
+msgid "ProductAnalytics|Events"
+msgstr ""
+
+msgid "ProductAnalytics|Events grouped by %{granularity}"
+msgstr ""
+
+msgid "ProductAnalytics|Events over time"
+msgstr ""
+
+msgid "ProductAnalytics|Feature Usage"
+msgstr ""
+
+msgid "ProductAnalytics|Feature usage"
+msgstr ""
+
+msgid "ProductAnalytics|Host"
+msgstr ""
+
+msgid "ProductAnalytics|Language"
+msgstr ""
+
+msgid "ProductAnalytics|Line Chart"
+msgstr ""
+
+msgid "ProductAnalytics|Measure All tracked Events"
+msgstr ""
+
+msgid "ProductAnalytics|Measure all or specific Page Views"
+msgstr ""
+
+msgid "ProductAnalytics|Measuring"
+msgstr ""
+
 msgid "ProductAnalytics|New Analytics Widget Title"
+msgstr ""
+
+msgid "ProductAnalytics|OS"
+msgstr ""
+
+msgid "ProductAnalytics|OS Version"
+msgstr ""
+
+msgid "ProductAnalytics|On what do you want to get insights?"
+msgstr ""
+
+msgid "ProductAnalytics|Page Language"
+msgstr ""
+
+msgid "ProductAnalytics|Page Path"
+msgstr ""
+
+msgid "ProductAnalytics|Page Title"
+msgstr ""
+
+msgid "ProductAnalytics|Page Views"
+msgstr ""
+
+msgid "ProductAnalytics|Pages"
 msgstr ""
 
 msgid "ProductAnalytics|Product analytics dashboards"
 msgstr ""
 
+msgid "ProductAnalytics|Referer"
+msgstr ""
+
+msgid "ProductAnalytics|Resulting Data"
+msgstr ""
+
 msgid "ProductAnalytics|There is no data for this type of chart currently. Please see the Setup tab if you have not configured the product analytics tool already."
+msgstr ""
+
+msgid "ProductAnalytics|Track specific features"
+msgstr ""
+
+msgid "ProductAnalytics|URL"
+msgstr ""
+
+msgid "ProductAnalytics|User activity"
+msgstr ""
+
+msgid "ProductAnalytics|Users"
+msgstr ""
+
+msgid "ProductAnalytics|Viewport"
+msgstr ""
+
+msgid "ProductAnalytics|Visualization Type"
+msgstr ""
+
+msgid "ProductAnalytics|What do you want to measure?"
+msgstr ""
+
+msgid "ProductAnalytics|Widget"
 msgstr ""
 
 msgid "Productivity"
@@ -32632,6 +32788,9 @@ msgid "ProjectService|Trigger event when a pipeline status changes."
 msgstr ""
 
 msgid "ProjectService|Trigger event when a wiki page is created or updated."
+msgstr ""
+
+msgid "ProjectService|Trigger event when an incident is created."
 msgstr ""
 
 msgid "ProjectService|Trigger event when an issue is created, updated, or closed."
@@ -41662,6 +41821,9 @@ msgid_plural "The following personal access tokens: %{token_names} were revoked,
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "The following personal access tokens have expired:"
+msgstr ""
+
 msgid "The fork relationship has been removed."
 msgstr ""
 
@@ -48444,7 +48606,7 @@ msgstr ""
 msgid "Your password reset token has expired."
 msgstr ""
 
-msgid "Your personal access token has expired"
+msgid "Your personal access tokens have expired"
 msgstr ""
 
 msgid "Your personal access tokens will expire in %{days_to_expire} days or less"

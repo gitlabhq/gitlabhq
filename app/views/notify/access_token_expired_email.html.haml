@@ -1,7 +1,15 @@
 %p
   = _('Hi %{username}!') % { username: sanitize_name(@user.name) }
 %p
-  = _('One or more of your personal access tokens has expired.')
+  - if @token_names.empty?
+    = _('One or more of your personal access tokens has expired.')
+  - else
+    = _('The following personal access tokens have expired:')
+
+    %p
+      %ul
+        - @token_names.each do |token|
+          %li= token
 %p
-  - pat_link_start =  '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: @target_url }
+  - pat_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: @target_url }
   = html_escape(_('You can create a new one or check them in your %{pat_link_start}personal access tokens%{pat_link_end} settings.')) % { pat_link_start: pat_link_start, pat_link_end: '</a>'.html_safe }

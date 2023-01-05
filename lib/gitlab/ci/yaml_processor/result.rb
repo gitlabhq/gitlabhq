@@ -64,12 +64,7 @@ module Gitlab
         private
 
         def assign_valid_attributes
-          @root_variables = if YamlProcessor::FeatureFlags.enabled?(:ci_raw_variables_in_yaml_config)
-                              transform_to_array(@ci_config.variables_with_data)
-                            else
-                              transform_to_array(@ci_config.variables)
-                            end
-
+          @root_variables = transform_to_array(@ci_config.variables_with_data)
           @root_variables_with_prefill_data = @ci_config.variables_with_prefill_data
 
           @stages = @ci_config.stages

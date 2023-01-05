@@ -1047,7 +1047,7 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-2.0.1.tgz#b6b8d81780b9a9f6459f4bfe9226ac6aefaefe87"
   integrity sha512-aG20vknL4/YjQF9BSV7ts4EWm/yrjagAN7OWBNmlbEOUiu0llj4OGrFoOKK3g2vey4/p2omKCoHrWtPxSwV3HA==
 
-"@cubejs-client/core@^0.31.0":
+"@cubejs-client/core@^0.31.15":
   version "0.31.15"
   resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.31.15.tgz#db0ee90f5ba7f33a3fae6c81e5e13ab1cf2cd71b"
   integrity sha512-VQqvvJn++nqO8aOr/dFtyUURNFYAlP3XlDiupiGLXmSsuUn0BuozJQAmJ5XxPPhvz5k9qBko7KkZuC6ikZTdcA==
@@ -1058,6 +1058,15 @@
     ramda "^0.27.2"
     url-search-params-polyfill "^7.0.0"
     uuid "^8.3.2"
+
+"@cubejs-client/vue@^0.31.19":
+  version "0.31.19"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.31.19.tgz#cd8f588e14046091b085c3405f28a62f3e4d949d"
+  integrity sha512-SY2+flIZJARp0cpS7e9ewYwaYCqqh8ifyc11S55ENo2KJsyzdLELSIiTDqy6hppXqtALSOE4feW4Eb/blh6e0w==
+  dependencies:
+    "@cubejs-client/core" "^0.31.15"
+    core-js "^3.6.5"
+    ramda "^0.27.2"
 
 "@discoveryjs/json-ext@^0.5.0":
   version "0.5.6"

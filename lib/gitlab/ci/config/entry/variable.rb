@@ -54,9 +54,7 @@ module Gitlab
               validates :key, alphanumeric: true
               validates :config_value, alphanumeric: true, allow_nil: true
               validates :config_description, alphanumeric: true, allow_nil: true
-              validates :config_expand, boolean: true, allow_nil: true, if: -> {
-                                                                              ci_raw_variables_in_yaml_config_enabled?
-                                                                            }
+              validates :config_expand, boolean: true, allow_nil: true
               validates :config_options, array_of_strings: true, allow_nil: true
 
               validate do
@@ -82,16 +80,10 @@ module Gitlab
             end
 
             def value_with_data
-              if ci_raw_variables_in_yaml_config_enabled?
-                {
-                  value: config_value.to_s,
-                  raw: (!config_expand if has_config_expand?)
-                }.compact
-              else
-                {
-                  value: config_value.to_s
-                }.compact
-              end
+              {
+                value: config_value.to_s,
+                raw: (!config_expand if has_config_expand?)
+              }.compact
             end
 
             def value_with_prefill_data
@@ -99,10 +91,6 @@ module Gitlab
                 description: config_description,
                 options: config_options
               ).compact
-            end
-
-            def ci_raw_variables_in_yaml_config_enabled?
-              YamlProcessor::FeatureFlags.enabled?(:ci_raw_variables_in_yaml_config)
             end
           end
 

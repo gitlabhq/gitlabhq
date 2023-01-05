@@ -75,6 +75,7 @@ class Integration < ApplicationRecord
 
   attribute :active, default: false
   attribute :alert_events, default: true
+  attribute :incident_events, default: false
   attribute :category, default: 'common'
   attribute :commit_events, default: true
   attribute :confidential_issues_events, default: true

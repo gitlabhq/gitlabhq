@@ -134,6 +134,12 @@ RSpec.describe Integrations::BaseChatNotification do
 
           it_behaves_like 'notifies the chat integration'
         end
+
+        context 'Incident events' do
+          let(:data) { issue.to_hook_data(user).merge!({ object_kind: 'incident' }) }
+
+          it_behaves_like 'notifies the chat integration'
+        end
       end
 
       context 'when labels_to_be_notified_behavior is not defined' do

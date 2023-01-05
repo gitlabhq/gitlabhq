@@ -63,6 +63,12 @@ module API
           },
           {
             required: false,
+            name: :incident_channel,
+            type: String,
+            desc: 'The name of the channel to receive incident_events notifications'
+          },
+          {
+            required: false,
             name: :confidential_issue_channel,
             type: String,
             desc: 'The name of the channel to receive confidential_issues_events notifications'
@@ -113,6 +119,12 @@ module API
             name: :issues_events,
             type: Boolean,
             desc: 'Enable notifications for issues_events'
+          },
+          {
+            required: false,
+            name: :incident_events,
+            type: Boolean,
+            desc: 'Enable notifications for incident_events'
           },
           {
             required: false,

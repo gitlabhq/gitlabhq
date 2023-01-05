@@ -25,13 +25,15 @@
       .todo-body.gl-mb-2.gl-px-2.gl-display-flex.gl-align-items-flex-start.gl-lg-align-items-center
         .todo-avatar.gl-display-none.gl-sm-display-inline-block
           = author_avatar(todo, size: 24)
-        .todo-note{ :class => ("gl-display-flex gl-flex-direction-column" if todo.note.present? && two_line_mention) }
+        .todo-note
           - if todo_author_display?(todo)
-            .author-name.bold.gl-display-inline
+            .author-name.bold.gl-display-inline<
               - if todo.author
                 = link_to_author(todo, self_added: todo.self_added?)
               - else
                 = _('(removed)')
+              - if todo.note.present? && two_line_mention
+                \:
 
           %span.action-name{ data: { qa_selector: "todo_action_name_content" } }<
             - if two_line_mention
@@ -52,7 +54,8 @@
               \.
           - if todo.note.present?
             %span.action-description{ :class => ("gl-font-style-italic" if !two_line_mention) }<
-              = first_line_in_markdown(todo, :body, 100, is_todo: true, project: todo.project, group: todo.group)
+            - max_chars = two_line_mention ? 125 : 100
+            = first_line_in_markdown(todo, :body, max_chars, is_todo: true, project: todo.project, group: todo.group)
 
     .todo-timestamp.gl-white-space-nowrap.gl-sm-ml-3.gl-mt-2.gl-mb-2.gl-sm-my-0.gl-px-2.gl-sm-px-0
       %span.todo-timestamp.gl-font-sm.gl-text-gray-500

@@ -166,6 +166,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:wiki_page_hooks_integrations).class_name('Integration') }
     it { is_expected.to have_many(:deployment_hooks_integrations).class_name('Integration') }
     it { is_expected.to have_many(:alert_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:incident_hooks_integrations).class_name('Integration') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }

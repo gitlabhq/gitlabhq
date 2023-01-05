@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BranchesFinder do
+RSpec.describe BranchesFinder, feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
@@ -124,6 +124,34 @@ RSpec.describe BranchesFinder do
 
           expect(result.first.name).to eq('feature')
           expect(result.count).to eq(1)
+        end
+      end
+
+      context 'by invalid regex' do
+        let(:params)  { { regex: '[' } }
+
+        it { expect { subject }.to raise_error(RegexpError) }
+      end
+
+      context 'by `|` regex' do
+        let(:params)  { { regex: 'audio|add-ipython-files' } }
+
+        it 'filters branches' do
+          branches = subject
+          expect(branches.first.name).to eq('add-ipython-files')
+          expect(branches.second.name).to eq('audio')
+          expect(branches.count).to eq(2)
+        end
+      end
+
+      context 'by exclude name' do
+        let(:params) { { regex: '^[^a]' } }
+
+        it 'filters branches' do
+          result = subject
+          result.each do |branch|
+            expect(branch.name).not_to start_with('a')
+          end
         end
       end
 

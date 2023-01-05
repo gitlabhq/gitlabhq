@@ -312,6 +312,11 @@ module.exports = {
         test: /\.mjs$/,
         use: [],
       },
+      {
+        test: /(@cubejs-client\/vue).*\.(js)?$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+      },
       WEBPACK_USE_ESBUILD_LOADER && {
         test: /\.(js|cjs)$/,
         exclude: (modulePath) =>

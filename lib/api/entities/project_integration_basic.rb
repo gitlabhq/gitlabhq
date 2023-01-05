@@ -14,6 +14,7 @@ module API
       expose :commit_events, documentation: { type: 'boolean' }
       expose :push_events, documentation: { type: 'boolean' }
       expose :issues_events, documentation: { type: 'boolean' }
+      expose :incident_events, documentation: { type: 'boolean' }
       expose :confidential_issues_events, documentation: { type: 'boolean' }
       expose :merge_requests_events, documentation: { type: 'boolean' }
       expose :tag_push_events, documentation: { type: 'boolean' }

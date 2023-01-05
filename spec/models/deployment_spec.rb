@@ -402,6 +402,16 @@ RSpec.describe Deployment do
 
       it { is_expected.to be_falsey }
     end
+
+    context 'when environment is undefined' do
+      let(:deployment) { build(:deployment, :success, project: project, environment: environment) }
+
+      before do
+        deployment.environment = nil
+      end
+
+      it { is_expected.to be_falsey }
+    end
   end
 
   describe '#success?' do

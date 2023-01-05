@@ -91,10 +91,10 @@ class NotificationService
   end
 
   # Notify the user when at least one of their personal access tokens has expired today
-  def access_token_expired(user)
+  def access_token_expired(user, token_names = [])
     return unless user.can?(:receive_notifications)
 
-    mailer.access_token_expired_email(user).deliver_later
+    mailer.access_token_expired_email(user, token_names).deliver_later
   end
 
   # Notify the user when one of their personal access tokens is revoked

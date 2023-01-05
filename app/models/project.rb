@@ -270,6 +270,7 @@ class Project < ApplicationRecord
 
   has_many :integrations
   has_many :alert_hooks_integrations, -> { alert_hooks }, class_name: 'Integration'
+  has_many :incident_hooks_integrations, -> { incident_hooks }, class_name: 'Integration'
   has_many :archive_trace_hooks_integrations, -> { archive_trace_hooks }, class_name: 'Integration'
   has_many :confidential_issue_hooks_integrations, -> { confidential_issue_hooks }, class_name: 'Integration'
   has_many :confidential_note_hooks_integrations, -> { confidential_note_hooks }, class_name: 'Integration'

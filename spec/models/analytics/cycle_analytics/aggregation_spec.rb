@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
+RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model, feature_category: :value_stream_management do
   describe 'associations' do
-    it { is_expected.to belong_to(:group).required }
+    it { is_expected.to belong_to(:namespace).required }
   end
 
   describe 'validations' do
-    it { is_expected.not_to validate_presence_of(:group) }
+    it { is_expected.not_to validate_presence_of(:namespace) }
     it { is_expected.not_to validate_presence_of(:enabled) }
 
     %i[incremental_runtimes_in_seconds incremental_processed_records full_runtimes_in_seconds full_processed_records].each do |column|
@@ -17,6 +17,10 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
         expect(record).to be_invalid
         expect(record.errors).to have_key(column)
       end
+    end
+
+    it_behaves_like 'value stream analytics namespace models' do
+      let(:factory_name) { :cycle_analytics_aggregation }
     end
   end
 
@@ -126,19 +130,19 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
     end
   end
 
-  describe '#safe_create_for_group' do
+  describe '#safe_create_for_namespace' do
     let_it_be(:group) { create(:group) }
     let_it_be(:subgroup) { create(:group, parent: group) }
 
     it 'creates the aggregation record' do
-      record = described_class.safe_create_for_group(group)
+      record = described_class.safe_create_for_namespace(group)
 
       expect(record).to be_persisted
     end
 
     context 'when non top-level group is given' do
       it 'creates the aggregation record for the top-level group' do
-        record = described_class.safe_create_for_group(subgroup)
+        record = described_class.safe_create_for_namespace(subgroup)
 
         expect(record).to be_persisted
       end
@@ -146,11 +150,11 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
 
     context 'when the record is already present' do
       it 'does nothing' do
-        described_class.safe_create_for_group(group)
+        described_class.safe_create_for_namespace(group)
 
         expect do
-          described_class.safe_create_for_group(group)
-          described_class.safe_create_for_group(subgroup)
+          described_class.safe_create_for_namespace(group)
+          described_class.safe_create_for_namespace(subgroup)
         end.not_to change { described_class.count }
       end
     end

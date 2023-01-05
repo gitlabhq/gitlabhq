@@ -20,7 +20,6 @@ module Projects
       delete_service_result = ::Branches::DeleteService.new(project, user)
         .execute(branch_name)
 
-      return unless Feature.enabled?(:track_and_raise_delete_source_errors, project)
       # Only want to raise on 400 to avoid permission and non existant branch error
       return unless delete_service_result[:http_status] == 400
 

@@ -72,7 +72,6 @@ module Gitlab
           Collection.new(@variables.reject(&block))
         end
 
-        # `expand_raw_refs` will be deleted with the FF `ci_raw_variables_in_yaml_config`.
         def expand_value(value, keep_undefined: false, expand_file_refs: true, expand_raw_refs: true)
           value.gsub(Item::VARIABLES_REGEXP) do
             match = Regexp.last_match # it is either a valid variable definition or a ($$ / %%)
@@ -90,8 +89,18 @@ module Gitlab
               if variable.file?
                 expand_file_refs ? variable.value : full_match
               elsif variable.raw?
-                # With `full_match`, we defer the expansion of raw variables to the runner. If we expand them here,
-                # the runner will not know the expanded value is a raw variable and it tries to expand it again.
+                # Normally, it's okay to expand a raw variable if it's referenced in another variable because
+                # its rawness is not broken. However, the runner also tries to expand variables.
+                # Here, with `full_match`, we defer the expansion of raw variables to the runner.
+                # If we expand them here, the runner will not know that the expanded value is a raw variable
+                # and it tries to expand it again.
+                # Example: `A` is a normal variable with value `normal`.
+                #          `B` is a raw variable with value `raw-$A`.
+                #          `C` is a normal variable with value `$B`.
+                #          If we expanded `C` here, the runner would receive `C` as `raw-$A`. And since `A` is a normal
+                #          variable, the runner would expand it. So, the result would be `raw-normal`.
+                #          With `full_match`, the runner receives `C` as `$B`. And since `B` is a raw variable, the
+                #          runner expanded it as `raw-$A`, which is what we want.
                 # Discussion: https://gitlab.com/gitlab-org/gitlab/-/issues/353991#note_1103274951
                 expand_raw_refs ? variable.value : full_match
               else
@@ -106,7 +115,6 @@ module Gitlab
           end
         end
 
-        # `expand_raw_refs` will be deleted with the FF `ci_raw_variables_in_yaml_config`.
         def sort_and_expand_all(keep_undefined: false, expand_file_refs: true, expand_raw_refs: true)
           sorted = Sort.new(self)
           return self.class.new(self, sorted.errors) unless sorted.valid?

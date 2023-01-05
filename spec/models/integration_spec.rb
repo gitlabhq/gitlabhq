@@ -29,6 +29,7 @@ RSpec.describe Integration do
     it { is_expected.to be_tag_push_events }
     it { is_expected.to be_wiki_page_events }
     it { is_expected.not_to be_active }
+    it { is_expected.not_to be_incident_events }
     it { expect(subject.category).to eq(:common) }
   end
 

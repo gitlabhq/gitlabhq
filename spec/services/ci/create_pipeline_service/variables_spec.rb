@@ -60,27 +60,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
           { key: 'VAR8', value: "value 8 $CI_PIPELINE_ID", public: true, masked: false, raw: true }
         )
       end
-
-      context 'when the FF ci_raw_variables_in_yaml_config is disabled' do
-        before do
-          stub_feature_flags(ci_raw_variables_in_yaml_config: false)
-        end
-
-        it 'creates the pipeline with a job that has all variables expanded' do
-          expect(pipeline).to be_created_successfully
-
-          expect(Ci::BuildRunnerPresenter.new(rspec).runner_variables).to include(
-            { key: 'VAR1', value: "JOBID-#{rspec.id}", public: true, masked: false },
-            { key: 'VAR2', value: "PIPELINEID-#{pipeline.id} and JOBID-#{rspec.id}", public: true, masked: false },
-            { key: 'VAR3', value: "PIPELINEID-#{pipeline.id} and JOBID-#{rspec.id}", public: true, masked: false },
-            { key: 'VAR4', value: "JOBID-#{rspec.id}", public: true, masked: false },
-            { key: 'VAR5', value: "PIPELINEID-#{pipeline.id} and JOBID-#{rspec.id}", public: true, masked: false },
-            { key: 'VAR6', value: "PIPELINEID-#{pipeline.id} and JOBID-#{rspec.id}", public: true, masked: false },
-            { key: 'VAR7', value: "overridden value 7 #{pipeline.id}", public: true, masked: false },
-            { key: 'VAR8', value: "value 8 #{pipeline.id}", public: true, masked: false }
-          )
-        end
-      end
     end
 
     context 'when trigger variables have expand: true/false' do
@@ -108,22 +87,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
           { key: 'VAR2', value: "PIPELINEID-#{pipeline.id} and PROJECTID-$CI_PROJECT_ID" },
           { key: 'VAR3', value: "PIPELINEID-$CI_PIPELINE_ID and $VAR1", raw: true }
         )
-      end
-
-      context 'when the FF ci_raw_variables_in_yaml_config is disabled' do
-        before do
-          stub_feature_flags(ci_raw_variables_in_yaml_config: false)
-        end
-
-        it 'creates the pipeline with a job that has all variables expanded' do
-          expect(pipeline).to be_created_successfully
-
-          expect(child.downstream_variables).to include(
-            { key: 'VAR1', value: "PROJECTID-#{project.id}" },
-            { key: 'VAR2', value: "PIPELINEID-#{pipeline.id} and PROJECTID-$CI_PROJECT_ID" },
-            { key: 'VAR3', value: "PIPELINEID-#{pipeline.id} and PROJECTID-$CI_PROJECT_ID" }
-          )
-        end
       end
     end
   end

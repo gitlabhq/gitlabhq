@@ -1302,32 +1302,6 @@ module Gitlab
               'VAR3' => { value: 'value3', raw: true }
             )
           end
-
-          context 'when the FF ci_raw_variables_in_yaml_config is disabled' do
-            before do
-              stub_feature_flags(ci_raw_variables_in_yaml_config: false)
-            end
-
-            it 'returns variables without description and raw' do
-              expect(job_variables).to contain_exactly(
-                { key: 'VAR4', value: 'value4' },
-                { key: 'VAR5', value: 'value5' },
-                { key: 'VAR6', value: 'value6' }
-              )
-
-              expect(execute.root_variables).to contain_exactly(
-                { key: 'VAR1', value: 'value1' },
-                { key: 'VAR2', value: 'value2' },
-                { key: 'VAR3', value: 'value3' }
-              )
-
-              expect(execute.root_variables_with_prefill_data).to eq(
-                'VAR1' => { value: 'value1' },
-                'VAR2' => { value: 'value2', description: 'description2' },
-                'VAR3' => { value: 'value3' }
-              )
-            end
-          end
         end
       end
 

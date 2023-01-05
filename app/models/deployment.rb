@@ -294,7 +294,7 @@ class Deployment < ApplicationRecord
   end
 
   def older_than_last_successful_deployment?
-    last_deployment_id = environment.last_deployment&.id
+    last_deployment_id = environment&.last_deployment&.id
 
     return false unless last_deployment_id.present?
     return false if self.id == last_deployment_id

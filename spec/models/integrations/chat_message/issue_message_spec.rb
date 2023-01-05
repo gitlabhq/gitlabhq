@@ -7,6 +7,7 @@ RSpec.describe Integrations::ChatMessage::IssueMessage do
 
   let(:args) do
     {
+      object_kind: 'issue',
       user: {
         name: 'Test User',
         username: 'test.user',

@@ -9,6 +9,7 @@ module Integrations
       attr_reader :action
       attr_reader :state
       attr_reader :description
+      attr_reader :object_kind
 
       def initialize(params)
         super
@@ -21,6 +22,7 @@ module Integrations
         @action = obj_attr[:action]
         @state = obj_attr[:state]
         @description = obj_attr[:description] || ''
+        @object_kind = params[:object_kind]
       end
 
       def attachments
@@ -32,7 +34,7 @@ module Integrations
 
       def activity
         {
-          title: "Issue #{state} by #{strip_markup(user_combined_name)}",
+          title: "#{issue_type} #{state} by #{strip_markup(user_combined_name)}",
           subtitle: "in #{project_link}",
           text: issue_link,
           image: user_avatar
@@ -42,7 +44,7 @@ module Integrations
       private
 
       def message
-        "[#{project_link}] Issue #{issue_link} #{state} by #{strip_markup(user_combined_name)}"
+        "[#{project_link}] #{issue_type} #{issue_link} #{state} by #{strip_markup(user_combined_name)}"
       end
 
       def opened_issue?
@@ -68,6 +70,10 @@ module Integrations
 
       def issue_title
         "#{Issue.reference_prefix}#{issue_iid} #{strip_markup(title)}"
+      end
+
+      def issue_type
+        @issue_type ||= object_kind == 'incident' ? 'Incident' : 'Issue'
       end
     end
   end

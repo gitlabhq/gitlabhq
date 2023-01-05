@@ -375,23 +375,6 @@ RSpec.describe Ci::BuildRunnerPresenter do
             public: false, masked: false }
         )
       end
-
-      context 'when the FF ci_raw_variables_in_yaml_config is disabled' do
-        before do
-          stub_feature_flags(ci_raw_variables_in_yaml_config: false)
-        end
-
-        it 'returns expanded variables' do
-          expect(runner_variables).to include(
-            { key: 'regular_var', value: 'value 1',
-              public: false, masked: false },
-            { key: 'raw_var', value: 'value 2',
-              public: false, masked: false, raw: true },
-            { key: 'var_with_variables', value: 'value 3 and value 1 and value 2 and $undefined_var',
-              public: false, masked: false }
-          )
-        end
-      end
     end
   end
 

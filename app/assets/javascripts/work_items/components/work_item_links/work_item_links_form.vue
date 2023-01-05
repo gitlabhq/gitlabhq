@@ -173,6 +173,9 @@ export default {
     childrenTypeName() {
       return WORK_ITEMS_TYPE_MAP[this.childrenType]?.name;
     },
+    childrenTypeValue() {
+      return WORK_ITEMS_TYPE_MAP[this.childrenType]?.value;
+    },
     addOrCreateButtonLabel() {
       if (this.isCreateForm) {
         return sprintfWorkItem(I18N_WORK_ITEM_CREATE_BUTTON_LABEL, this.childrenTypeName);
@@ -198,7 +201,7 @@ export default {
       return this.isCreateForm ? this.createChild : this.addChild;
     },
     childWorkItemType() {
-      return this.workItemTypes.find((type) => type.name === this.childrenTypeName)?.id;
+      return this.workItemTypes.find((type) => type.name === this.childrenTypeValue)?.id;
     },
     parentIterationId() {
       return this.parentIteration?.id;

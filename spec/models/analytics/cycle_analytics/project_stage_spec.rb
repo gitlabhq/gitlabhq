@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Analytics::CycleAnalytics::ProjectStage do
   describe 'associations' do
-    it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:project).required }
   end
 
   it 'default stages must be valid' do

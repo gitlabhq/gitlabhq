@@ -97,6 +97,16 @@ module Issues
       hooks_scope = issue.confidential? ? :confidential_issue_hooks : :issue_hooks
       issue.project.execute_hooks(issue_data, hooks_scope)
       issue.project.execute_integrations(issue_data, hooks_scope)
+
+      execute_incident_hooks(issue, issue_data) if issue.incident?
+    end
+
+    # We can remove this code after proposal in
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/367550#proposal is updated.
+    def execute_incident_hooks(issue, issue_data)
+      issue_data[:object_kind] = 'incident'
+      issue_data[:event_type] = 'incident'
+      issue.project.execute_integrations(issue_data, :incident_hooks)
     end
 
     def update_project_counter_caches?(issue)

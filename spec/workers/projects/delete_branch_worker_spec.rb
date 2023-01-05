@@ -83,24 +83,6 @@ RSpec.describe Projects::DeleteBranchWorker, feature_category: :source_code_mana
             expect { worker.perform(project.id, user.id, branch) }.not_to raise_error
           end
         end
-
-        context 'when track_and_raise_delete_source_errors is disabled' do
-          let(:status_code) { 400 }
-
-          before do
-            stub_feature_flags(track_and_raise_delete_source_errors: false)
-          end
-
-          it 'does not track the exception' do
-            expect_next_instance_of(::Branches::DeleteService) do |instance|
-              expect(instance).to receive(:execute).with(branch).and_return(service_result)
-            end
-
-            expect(service_result).not_to receive(:track_and_raise_exception)
-
-            expect { worker.perform(project.id, user.id, branch) }.not_to raise_error
-          end
-        end
       end
     end
 

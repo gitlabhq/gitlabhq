@@ -25,7 +25,7 @@ RSpec.shared_examples 'value stream analytics stage' do
       stage = described_class.new(valid_params.except(:parent))
 
       expect(stage).to be_invalid
-      expect(stage.errors[parent_name]).to include("can't be blank")
+      expect(stage.errors[parent_name]).to include('must exist')
     end
 
     it 'validates presence of start_event_identifier' do

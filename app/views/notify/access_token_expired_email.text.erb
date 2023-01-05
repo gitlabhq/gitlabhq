@@ -1,5 +1,13 @@
 <%= _('Hi %{username}!') % { username: sanitize_name(@user.name) } %>
 
-<%= _('One or more of your personal access tokens has expired.') %>
+<%- if @token_names.empty? -%>
+<%= _('One or more of your personal access tokens have expired.') %>
+<%- else -%>
+<%= _('The following personal access tokens have expired:') %>
+
+<%- @token_names.each do |token| -%>
+  - <%= token %>
+<%- end -%>
+<%- end -%>
 
 <%= _('You can create a new one or check them in your personal access tokens settings %{pat_link}.') % { pat_link: @target_url } %>

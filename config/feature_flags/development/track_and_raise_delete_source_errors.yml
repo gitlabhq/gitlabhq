@@ -1,8 +1,0 @@
----
-name: track_and_raise_delete_source_errors
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103842
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382440
-milestone: '15.6'
-type: development
-group: group::code review
-default_enabled: false

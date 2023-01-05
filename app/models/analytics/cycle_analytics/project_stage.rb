@@ -5,8 +5,7 @@ module Analytics
     class ProjectStage < ApplicationRecord
       include Analytics::CycleAnalytics::Stage
 
-      validates :project, presence: true
-      belongs_to :project
+      belongs_to :project, optional: false
       belongs_to :value_stream, class_name: 'Analytics::CycleAnalytics::ProjectValueStream', foreign_key: :project_value_stream_id
 
       alias_attribute :parent, :project

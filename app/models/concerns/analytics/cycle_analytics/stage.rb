@@ -119,21 +119,23 @@ module Analytics
       end
 
       def validate_labels
-        validate_label_within_group(:start_event_label_id, start_event_label_id) if start_event_label_id_changed?
-        validate_label_within_group(:end_event_label_id, end_event_label_id) if end_event_label_id_changed?
+        validate_label_within_namespace(:start_event_label_id, start_event_label_id) if start_event_label_id_changed?
+        validate_label_within_namespace(:end_event_label_id, end_event_label_id) if end_event_label_id_changed?
       end
 
-      def validate_label_within_group(association_name, label_id)
+      def validate_label_within_namespace(association_name, label_id)
         return unless label_id
-        return unless group
 
-        unless label_available_for_group?(label_id)
+        unless label_available_for_namespace?(label_id)
           errors.add(association_name, s_('CycleAnalyticsStage|is not available for the selected group'))
         end
       end
 
-      def label_available_for_group?(label_id)
-        LabelsFinder.new(nil, { group_id: group.id, include_ancestor_groups: true, only_group_labels: true })
+      def label_available_for_namespace?(label_id)
+        subject = is_a?(::Analytics::CycleAnalytics::GroupStage) ? namespace : project.group
+        return unless subject
+
+        LabelsFinder.new(nil, { group_id: subject.id, include_ancestor_groups: true, only_group_labels: true })
           .execute(skip_authorization: true)
           .id_in(label_id)
           .exists?

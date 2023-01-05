@@ -10,7 +10,7 @@ module Integrations
 
     SUPPORTED_EVENTS = %w[
       push issue confidential_issue merge_request note confidential_note
-      tag_push pipeline wiki_page deployment
+      tag_push pipeline wiki_page deployment incident
     ].freeze
 
     SUPPORTED_EVENTS_FOR_LABEL_FILTER = %w[issue confidential_issue merge_request note confidential_note].freeze
@@ -224,6 +224,7 @@ module Integrations
       data.merge(project_url: project_url, project_name: project_name).with_indifferent_access
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def get_message(object_kind, data)
       case object_kind
       when "push", "tag_push"
@@ -240,8 +241,11 @@ module Integrations
         Integrations::ChatMessage::WikiPageMessage.new(data)
       when "deployment"
         Integrations::ChatMessage::DeploymentMessage.new(data) if notify_for_ref?(data)
+      when "incident"
+        Integrations::ChatMessage::IssueMessage.new(data) unless update?(data)
       end
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def build_event_channels
       event_channel_names.map do |channel_field|

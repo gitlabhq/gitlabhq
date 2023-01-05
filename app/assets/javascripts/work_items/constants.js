@@ -31,7 +31,12 @@ export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
 export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
 export const WORK_ITEM_TYPE_ENUM_KEY_RESULT = 'KEY_RESULT';
 
+export const WORK_ITEM_TYPE_VALUE_INCIDENT = 'Incident';
 export const WORK_ITEM_TYPE_VALUE_ISSUE = 'Issue';
+export const WORK_ITEM_TYPE_VALUE_TASK = 'Task';
+export const WORK_ITEM_TYPE_VALUE_TEST_CASE = 'Test case';
+export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirements';
+export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key result';
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 
 export const i18n = {
@@ -103,30 +108,37 @@ export const WORK_ITEMS_TYPE_MAP = {
   [WORK_ITEM_TYPE_ENUM_INCIDENT]: {
     icon: `issue-type-incident`,
     name: s__('WorkItem|Incident'),
+    value: WORK_ITEM_TYPE_VALUE_INCIDENT,
   },
   [WORK_ITEM_TYPE_ENUM_ISSUE]: {
     icon: `issue-type-issue`,
     name: s__('WorkItem|Issue'),
+    value: WORK_ITEM_TYPE_VALUE_ISSUE,
   },
   [WORK_ITEM_TYPE_ENUM_TASK]: {
     icon: `issue-type-task`,
     name: s__('WorkItem|Task'),
+    value: WORK_ITEM_TYPE_VALUE_TASK,
   },
   [WORK_ITEM_TYPE_ENUM_TEST_CASE]: {
     icon: `issue-type-test-case`,
     name: s__('WorkItem|Test case'),
+    value: WORK_ITEM_TYPE_VALUE_TEST_CASE,
   },
   [WORK_ITEM_TYPE_ENUM_REQUIREMENTS]: {
     icon: `issue-type-requirements`,
     name: s__('WorkItem|Requirements'),
+    value: WORK_ITEM_TYPE_VALUE_REQUIREMENTS,
   },
   [WORK_ITEM_TYPE_ENUM_OBJECTIVE]: {
     icon: `issue-type-objective`,
     name: s__('WorkItem|Objective'),
+    value: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   },
   [WORK_ITEM_TYPE_ENUM_KEY_RESULT]: {
     icon: `issue-type-keyresult`,
     name: s__('WorkItem|Key Result'),
+    value: WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   },
 };
 

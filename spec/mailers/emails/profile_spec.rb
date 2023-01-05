@@ -198,9 +198,10 @@ RSpec.describe Emails::Profile do
 
   describe 'user personal access token has expired' do
     let_it_be(:user) { create(:user) }
+    let_it_be(:pat) { create(:personal_access_token, user: user) }
 
     context 'when valid' do
-      subject { Notify.access_token_expired_email(user) }
+      subject { Notify.access_token_expired_email(user, [pat.name]) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -211,11 +212,12 @@ RSpec.describe Emails::Profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject /Your personal access token has expired/
+        is_expected.to have_subject /Your personal access tokens have expired/
       end
 
       it 'mentions the access token has expired' do
-        is_expected.to have_body_text /One or more of your personal access tokens has expired/
+        is_expected.to have_body_text /The following personal access tokens have expired:/
+        is_expected.to have_body_text /#{pat.name}/
       end
 
       it 'includes a link to personal access tokens page' do

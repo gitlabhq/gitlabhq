@@ -96,7 +96,7 @@ RSpec.describe Ci::NamespaceMirror do
     describe '.by_namespace_id' do
       subject(:result) { described_class.by_namespace_id(group2.id) }
 
-      it 'returns namesapce mirrors of namespace id' do
+      it 'returns namespace mirrors of namespace id' do
         expect(result).to contain_exactly(group2.ci_namespace_mirror)
       end
     end

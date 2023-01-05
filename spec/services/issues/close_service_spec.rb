@@ -140,7 +140,7 @@ RSpec.describe Issues::CloseService do
         end
 
         context 'when the escalation status did not change to resolved' do
-          let(:escalation_status) { instance_double('IncidentManagement::IssuableEscalationStatus', resolve: false) }
+          let(:escalation_status) { instance_double('IncidentManagement::IssuableEscalationStatus', resolve: false, status_name: 'acknowledged') }
 
           before do
             allow(issue).to receive(:incident_management_issuable_escalation_status).and_return(escalation_status)

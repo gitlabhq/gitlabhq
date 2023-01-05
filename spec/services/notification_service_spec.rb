@@ -337,11 +337,12 @@ RSpec.describe NotificationService, :mailer do
 
     describe '#access_token_expired' do
       let_it_be(:user) { create(:user) }
+      let_it_be(:pat) { create(:personal_access_token, user: user) }
 
-      subject { notification.access_token_expired(user) }
+      subject { notification.access_token_expired(user, pat.name) }
 
       it 'sends email to the token owner' do
-        expect { subject }.to have_enqueued_email(user, mail: "access_token_expired_email")
+        expect { subject }.to have_enqueued_email(user, pat.name, mail: "access_token_expired_email")
       end
 
       context 'when user is not allowed to receive notifications' do
@@ -350,7 +351,7 @@ RSpec.describe NotificationService, :mailer do
         end
 
         it 'does not send email to the token owner' do
-          expect { subject }.not_to have_enqueued_email(user, mail: "access_token_expired_email")
+          expect { subject }.not_to have_enqueued_email(user, pat.name, mail: "access_token_expired_email")
         end
       end
     end
