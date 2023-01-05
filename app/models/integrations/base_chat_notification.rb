@@ -76,21 +76,29 @@ module Integrations
 
     def default_fields
       [
-        { type: 'checkbox', name: 'notify_only_broken_pipelines', help: 'Do not send notifications for successful pipelines.' }.freeze,
+        {
+          type: 'checkbox',
+          section: SECTION_TYPE_CONFIGURATION,
+          name: 'notify_only_broken_pipelines',
+          help: 'Do not send notifications for successful pipelines.'
+        }.freeze,
         {
           type: 'select',
+          section: SECTION_TYPE_CONFIGURATION,
           name: 'branches_to_be_notified',
           title: s_('Integrations|Branches for which notifications are to be sent'),
           choices: self.class.branch_choices
         }.freeze,
         {
           type: 'text',
+          section: SECTION_TYPE_CONFIGURATION,
           name: 'labels_to_be_notified',
           placeholder: '~backend,~frontend',
           help: 'Send notifications for issue, merge request, and comment events with the listed labels only. Leave blank to receive notifications for all events.'
         }.freeze,
         {
           type: 'select',
+          section: SECTION_TYPE_CONFIGURATION,
           name: 'labels_to_be_notified_behavior',
           choices: [
             ['Match any of the labels', MATCH_ANY_LABEL],

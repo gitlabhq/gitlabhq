@@ -2,6 +2,13 @@
 
 require 'spec_helper'
 
+# This list is used to provide temporary exceptions for feature categories
+# that are transitioning and not yet in the feature_categories.yml file
+# any additions here should be accompanied by a link to an issue link
+VALID_FEATURE_CATEGORIES = [
+  'jihu' # https://gitlab.com/gitlab-org/database-team/team-tasks/-/issues/192
+].freeze
+
 RSpec.shared_examples 'validate dictionary' do |objects, directory_path, required_fields|
   context 'for each object' do
     let(:directory_path) {  directory_path }
@@ -41,6 +48,10 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
       metadata.select { |_, t| t.has_key?(:missing_required_fields) }.keys
     end
 
+    let(:objects_with_invalid_feature_category) do
+      metadata.select { |_, t| t.has_key?(:invalid_feature_category) }.keys
+    end
+
     it 'has a metadata file' do
       expect(objects_without_metadata).to be_empty, multiline_error(
         'Missing metadata files',
@@ -53,6 +64,14 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
         'Table metadata files with errors',
         :error,
         objects_without_valid_metadata
+      )
+    end
+
+    it 'has a valid feature category' do
+      expect(objects_with_invalid_feature_category).to be_empty, object_metadata_errors(
+        'Table metadata files with an invalid feature category',
+        :error,
+        objects_with_invalid_feature_category
       )
     end
 
@@ -83,6 +102,13 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
     Rails.root.join(object_metadata_file(object_name))
   end
 
+  def feature_categories_valid?(object_feature_categories)
+    return false unless object_feature_categories.present?
+
+    all_feature_categories = YAML.load_file(Rails.root.join('config/feature_categories.yml')) + VALID_FEATURE_CATEGORIES
+    object_feature_categories.all? { |category| all_feature_categories.include?(category) }
+  end
+
   def load_object_metadata(required_fields, object_name)
     result = {}
     begin
@@ -94,6 +120,16 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
       missing_required_fields = (required_fields - result[:metadata].reject { |_, v| v.blank? }.keys)
       unless missing_required_fields.empty?
         result[:missing_required_fields] = "missing required fields: #{missing_required_fields.join(', ')}"
+      end
+
+      if required_fields.include?(:feature_categories)
+        object_feature_categories = result.dig(:metadata, :feature_categories)
+
+        unless feature_categories_valid?(object_feature_categories)
+          result[:invalid_feature_category] =
+            "invalid feature category: #{object_feature_categories}" \
+            "Please use a category from https://about.gitlab.com/handbook/product/categories/#categories-a-z"
+        end
       end
     rescue Psych::SyntaxError => ex
       result[:error] = ex.message

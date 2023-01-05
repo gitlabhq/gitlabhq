@@ -137,16 +137,27 @@ You can choose to import these items, but this could significantly increase impo
 
 ### Select which repositories to import
 
+> Ability to cancel pending or active imports [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247325) in GitLab 15.7.
+
 After you have authorized access to your GitHub repositories, you are redirected to the GitHub importer page and
 your GitHub repositories are listed.
 
-1. By default, the proposed repository namespaces match the names as they exist in GitHub, but based on your permissions,
-   you can choose to edit these names before you proceed to import any of them.
-1. Select the **Import** button next to any number of repositories, or select **Import all repositories**. Additionally,
-   you can filter projects by name. If filter is applied, **Import all repositories** only imports matched repositories.
-1. The **Status** column shows the import status of each repository. You can choose to leave the page open and it will
-   update in real-time or you can return to it later.
-1. Once a repository has been imported, select its GitLab path to open its GitLab URL.
+By default, the proposed repository namespaces match the names as they exist in GitHub, but based
+on your permissions, you can choose to edit these names before you proceed to import any of them.
+
+To select which repositories to import, next to any number of repositories select **Import** or
+select **Import all repositories**.
+
+Additionally, you can filter projects by name. If a filter is applied, **Import all repositories**
+only imports matched repositories.
+
+The **Status** column shows the import status of each repository. You can choose to keep the page
+open and watch updates in real time or you can return to it later.
+
+To cancel imports that are pending or in progress, next to the imported project, select **Cancel**.
+If the import has already started, the imported files are kept.
+
+To open an repository in GitLab URL after it has been imported, select its GitLab path.
 
 ![GitHub importer page](img/import_projects_from_github_importer_v12_3.png)
 

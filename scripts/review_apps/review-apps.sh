@@ -373,9 +373,7 @@ function display_deployment_debug() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
 
   # Install dig to inspect DNS entries
-  #
-  # Silent install: see https://stackoverflow.com/a/52642167/1620195
-  apt-get -qq update && apt-get -qq install -y dnsutils < /dev/null > /dev/null
+  apk add -q bind-tools
 
   echoinfo "[debugging data] Check review-app webservice DNS entry:"
   dig +short $(echo "${CI_ENVIRONMENT_URL}" | sed 's~http[s]*://~~g')

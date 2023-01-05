@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.7.1 (2023-01-05)
+
+### Fixed (2 changes)
+
+- [Relax FIPS constraints on PyPi packages](gitlab-org/gitlab@e0bfadf38b0873119dab0abba92e07085658abcd) ([merge request](gitlab-org/gitlab!107993))
+- [Workaround a segfault due to array GC bug](gitlab-org/gitlab@85c7b6ad255c1638d54cb9953367e1e3e6b8396b) ([merge request](gitlab-org/gitlab!107993))
+
+### Performance (1 change)
+
+- [Remove vulnerability state migration](gitlab-org/gitlab@ef444959f787daa31d33e61fa94aa072be47a7b7) ([merge request](gitlab-org/gitlab!107993))
+
 ## 15.7.0 (2022-12-21)
 
 ### Added (182 changes)

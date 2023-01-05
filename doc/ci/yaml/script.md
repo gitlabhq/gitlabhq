@@ -284,3 +284,59 @@ job-fails:
     - (invalid-command xyz && invalid-command abc)
     - echo "The job failed already, and this is not executed."
 ```
+
+### Multiline commands not preserved by folded YAML multiline block scalar
+
+If you use the `- >` folded YAML multiline block scalar to split long commands,
+additional indentation causes the lines to be processed as individual commands.
+
+For example:
+
+```yaml
+script:
+  - >
+    RESULT=$(curl --silent
+      --header
+        "Authorization: Bearer $CI_JOB_TOKEN"
+      "${CI_API_V4_URL}/job"
+    )
+```
+
+This fails as the indentation causes the line breaks to be preserved:
+
+<!-- vale gitlab.CurlStringsQuoted = NO -->
+
+```plaintext
+$ RESULT=$(curl --silent # collapsed multi-line command
+curl: no URL specified!
+curl: try 'curl --help' or 'curl --manual' for more information
+/bin/bash: line 149: --header: command not found
+/bin/bash: line 150: https://gitlab.example.com/api/v4/job: No such file or directory
+```
+
+<!-- vale gitlab.CurlStringsQuoted = YES -->
+
+Resolve this by either:
+
+- Removing the extra indentation:
+
+  ```yaml
+  script:
+    - >
+      RESULT=$(curl --silent
+      --header
+      "Authorization: Bearer $CI_JOB_TOKEN"
+      "${CI_API_V4_URL}/job"
+      )
+  ```
+
+- Modifying the script so the extra line breaks are handled, for example using shell line continuation:
+
+  ```yaml
+  script:
+    - >
+      RESULT=$(curl --silent \
+        --header \
+          "Authorization: Bearer $CI_JOB_TOKEN" \
+        "${CI_API_V4_URL}/job")
+  ```

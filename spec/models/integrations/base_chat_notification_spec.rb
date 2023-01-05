@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::BaseChatNotification do
+RSpec.describe Integrations::BaseChatNotification, feature_category: :integrations do
   describe 'default values' do
     it { expect(subject.category).to eq(:chat) }
   end

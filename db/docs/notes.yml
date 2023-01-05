@@ -12,7 +12,7 @@ classes:
 - SyntheticNote
 - WeightNote
 feature_categories:
-- code_review_workflow
+- code_review
 - portfolio_management
 - service_desk
 - source_code_management

@@ -26755,6 +26755,12 @@ msgstr ""
 msgid "MilestoneCombobox|Select milestone"
 msgstr ""
 
+msgid "MilestonePage|Copy milestone ID"
+msgstr ""
+
+msgid "MilestonePage|Milestone ID: %{milestone_id}"
+msgstr ""
+
 msgid "MilestoneSidebar|Closed:"
 msgstr ""
 

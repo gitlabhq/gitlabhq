@@ -1,6 +1,11 @@
 .detail-page-description.milestone-detail
   %h2.gl-m-0{ data: { qa_selector: "milestone_title_content" } }
     = markdown_field(milestone, :title)
+    .gl-font-sm.gl-text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal{ data: { qa_selector: 'milestone_id_content' }, itemprop: 'identifier' }
+      - if can?(current_user, :read_milestone, @milestone)
+        %span.gl-display-inline-block.gl-vertical-align-middle
+          = s_('MilestonePage|Milestone ID: %{milestone_id}') % { milestone_id: @milestone.id }
+          = clipboard_button(title: s_('MilestonePage|Copy milestone ID'), text: @milestone.id)
 
   - if milestone.try(:description).present?
     %div{ data: { qa_selector: "milestone_description_content" } }

@@ -75,7 +75,9 @@ The following is hidden from your user profile page (`https://gitlab.example.com
 - Tabs for activity, groups, contributed projects, personal projects, starred projects, snippets
 
 NOTE:
-Making your user profile page private does not hide all your public resources from the REST or GraphQL APIs.
+Making your user profile page private does not hide all your public resources from
+the REST or GraphQL APIs. For example, the email address associated with your commit
+signature is accessible unless you [use an automatically-generated private commit email](#use-an-automatically-generated-private-commit-email).
 
 ### User visibility
 
