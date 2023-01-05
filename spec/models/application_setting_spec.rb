@@ -1483,10 +1483,4 @@ RSpec.describe ApplicationSetting do
       expect(setting.personal_access_token_prefix).to eql('glpat-')
     end
   end
-
-  describe '.personal_access_tokens_disabled?' do
-    it 'is false' do
-      expect(setting.personal_access_tokens_disabled?).to eq(false)
-    end
-  end
 end

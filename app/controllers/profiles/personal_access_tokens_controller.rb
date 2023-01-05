@@ -5,8 +5,6 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
 
   feature_category :authentication_and_authorization
 
-  before_action :check_personal_access_tokens_enabled
-
   def index
     set_index_vars
     scopes = params[:scopes].split(',').map(&:squish).select(&:present?).map(&:to_sym) unless params[:scopes].nil?
@@ -63,9 +61,5 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
 
   def represent(tokens)
     ::PersonalAccessTokenSerializer.new.represent(tokens)
-  end
-
-  def check_personal_access_tokens_enabled
-    render_404 if Gitlab::CurrentSettings.personal_access_tokens_disabled?
   end
 end

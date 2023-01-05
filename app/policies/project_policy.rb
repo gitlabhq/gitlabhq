@@ -805,7 +805,7 @@ class ProjectPolicy < BasePolicy
 
   rule { project_bot }.enable :project_bot_access
 
-  rule { can?(:read_all_resources) & resource_access_token_feature_available }.enable :read_resource_access_tokens
+  rule { can?(:read_all_resources) }.enable :read_resource_access_tokens
 
   rule { can?(:admin_project) & resource_access_token_feature_available }.policy do
     enable :read_resource_access_tokens

@@ -189,7 +189,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
         end
 
         it 'returns nil if valid feed_token and disabled' do
-          allow(Gitlab::CurrentSettings).to receive_messages(disable_feed_token: true)
+          stub_application_setting(disable_feed_token: true)
           set_param(:feed_token, user.feed_token)
 
           expect(find_user_from_feed_token(:rss)).to be_nil

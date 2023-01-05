@@ -45,9 +45,6 @@ For examples of how you can use a personal access token to authenticate with the
 Alternately, GitLab administrators can use the API to create [impersonation tokens](../../api/index.md#impersonation-tokens).
 Use impersonation tokens to automate authentication as a specific user.
 
-NOTE:
-Personal access tokens are not FIPS compliant and creation and use are disabled when [FIPS mode](../../development/fips_compliance.md) is enabled.
-
 ## Create a personal access token
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
