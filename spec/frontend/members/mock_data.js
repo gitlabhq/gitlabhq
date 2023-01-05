@@ -1,4 +1,8 @@
-import { MEMBER_TYPES, MEMBER_STATE_CREATED } from '~/members/constants';
+import {
+  MEMBER_TYPES,
+  MEMBER_STATE_CREATED,
+  MEMBER_MODEL_TYPE_GROUP_MEMBER,
+} from '~/members/constants';
 
 export const member = {
   requestedAt: null,
@@ -69,7 +73,7 @@ export const modalData = {
   isAccessRequest: true,
   isInvite: true,
   memberPath: '/groups/foo-bar/-/group_members/1',
-  memberType: 'GroupMember',
+  memberModelType: MEMBER_MODEL_TYPE_GROUP_MEMBER,
   message: 'Are you sure you want to remove John Smith?',
   userDeletionObstacles: { name: 'user', obstacles: [] },
 };

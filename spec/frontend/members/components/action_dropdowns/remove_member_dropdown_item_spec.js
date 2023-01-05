@@ -4,7 +4,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { modalData } from 'jest/members/mock_data';
 import RemoveMemberDropdownItem from '~/members/components/action_dropdowns/remove_member_dropdown_item.vue';
-import { MEMBER_TYPES } from '~/members/constants';
+import { MEMBER_TYPES, MEMBER_MODEL_TYPE_GROUP_MEMBER } from '~/members/constants';
 
 Vue.use(Vuex);
 
@@ -39,7 +39,7 @@ describe('RemoveMemberDropdownItem', () => {
       },
       propsData: {
         memberId: 1,
-        memberType: 'GroupMember',
+        memberModelType: MEMBER_MODEL_TYPE_GROUP_MEMBER,
         modalMessage: 'Are you sure you want to remove John Smith?',
         isAccessRequest: true,
         isInvite: true,

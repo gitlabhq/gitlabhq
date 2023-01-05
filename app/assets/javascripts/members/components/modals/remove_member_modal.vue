@@ -4,6 +4,7 @@ import { mapActions, mapState } from 'vuex';
 import csrf from '~/lib/utils/csrf';
 import { s__, __ } from '~/locale';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
+import { MEMBER_MODEL_TYPE_GROUP_MEMBER } from '../../constants';
 
 export default {
   actionCancel: {
@@ -27,8 +28,13 @@ export default {
       memberPath(state) {
         return state[this.namespace].removeMemberModalData.memberPath;
       },
-      memberType(state) {
-        return state[this.namespace].removeMemberModalData.memberType;
+      /**
+       * `GroupMember` (`app/models/members/group_member.rb`)
+       * or
+       * `ProjectMember` (`app/models/members/project_member.rb`).
+       */
+      memberModelType(state) {
+        return state[this.namespace].removeMemberModalData.memberModelType;
       },
       message(state) {
         return state[this.namespace].removeMemberModalData.message;
@@ -41,7 +47,7 @@ export default {
       },
     }),
     isGroupMember() {
-      return this.memberType === 'GroupMember';
+      return this.memberModelType === MEMBER_MODEL_TYPE_GROUP_MEMBER;
     },
     actionText() {
       if (this.isAccessRequest) {

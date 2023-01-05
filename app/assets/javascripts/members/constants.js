@@ -163,6 +163,12 @@ export const MEMBER_TYPES = {
   accessRequest: 'accessRequest',
 };
 
+// `app/models/members/group_member.rb`
+export const MEMBER_MODEL_TYPE_GROUP_MEMBER = 'GroupMember';
+
+// `app/models/members/project_member.rb`
+export const MEMBER_MODEL_TYPE_PROJECT_MEMBER = 'ProjectMember';
+
 export const TAB_QUERY_PARAM_VALUES = {
   group: 'groups',
   invite: 'invited',

@@ -3,7 +3,11 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import RemoveMemberModal from '~/members/components/modals/remove_member_modal.vue';
-import { MEMBER_TYPES } from '~/members/constants';
+import {
+  MEMBER_TYPES,
+  MEMBER_MODEL_TYPE_GROUP_MEMBER,
+  MEMBER_MODEL_TYPE_PROJECT_MEMBER,
+} from '~/members/constants';
 import { OBSTACLE_TYPES } from '~/vue_shared/components/user_deletion_obstacles/constants';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
 
@@ -55,16 +59,16 @@ describe('RemoveMemberModal', () => {
   });
 
   describe.each`
-    state                          | memberType         | isAccessRequest | isInvite | actionText               | removeSubMembershipsCheckboxExpected | unassignIssuablesCheckboxExpected | message                                                                                                           | userDeletionObstacles | isPartOfOncall
-    ${'removing a group member'}   | ${'GroupMember'}   | ${false}        | ${false} | ${'Remove member'}       | ${true}                              | ${true}                           | ${'Are you sure you want to remove Jane Doe from the Gitlab Org / Gitlab Test project?'}                          | ${{}}                 | ${false}
-    ${'removing a project member'} | ${'ProjectMember'} | ${false}        | ${false} | ${'Remove member'}       | ${false}                             | ${true}                           | ${'Are you sure you want to remove Jane Doe from the Gitlab Org / Gitlab Test project?'}                          | ${mockObstacles}      | ${true}
-    ${'denying an access request'} | ${'ProjectMember'} | ${true}         | ${false} | ${'Deny access request'} | ${false}                             | ${false}                          | ${"Are you sure you want to deny Jane Doe's request to join the Gitlab Org / Gitlab Test project?"}               | ${{}}                 | ${false}
-    ${'revoking invite'}           | ${'ProjectMember'} | ${false}        | ${true}  | ${'Revoke invite'}       | ${false}                             | ${false}                          | ${'Are you sure you want to revoke the invitation for foo@bar.com to join the Gitlab Org / Gitlab Test project?'} | ${mockObstacles}      | ${false}
+    state                          | memberModelType                     | isAccessRequest | isInvite | actionText               | removeSubMembershipsCheckboxExpected | unassignIssuablesCheckboxExpected | message                                                                                                           | userDeletionObstacles | isPartOfOncall
+    ${'removing a group member'}   | ${MEMBER_MODEL_TYPE_GROUP_MEMBER}   | ${false}        | ${false} | ${'Remove member'}       | ${true}                              | ${true}                           | ${'Are you sure you want to remove Jane Doe from the Gitlab Org / Gitlab Test project?'}                          | ${{}}                 | ${false}
+    ${'removing a project member'} | ${MEMBER_MODEL_TYPE_PROJECT_MEMBER} | ${false}        | ${false} | ${'Remove member'}       | ${false}                             | ${true}                           | ${'Are you sure you want to remove Jane Doe from the Gitlab Org / Gitlab Test project?'}                          | ${mockObstacles}      | ${true}
+    ${'denying an access request'} | ${MEMBER_MODEL_TYPE_PROJECT_MEMBER} | ${true}         | ${false} | ${'Deny access request'} | ${false}                             | ${false}                          | ${"Are you sure you want to deny Jane Doe's request to join the Gitlab Org / Gitlab Test project?"}               | ${{}}                 | ${false}
+    ${'revoking invite'}           | ${MEMBER_MODEL_TYPE_PROJECT_MEMBER} | ${false}        | ${true}  | ${'Revoke invite'}       | ${false}                             | ${false}                          | ${'Are you sure you want to revoke the invitation for foo@bar.com to join the Gitlab Org / Gitlab Test project?'} | ${mockObstacles}      | ${false}
   `(
     'when $state',
     ({
       actionText,
-      memberType,
+      memberModelType,
       isAccessRequest,
       isInvite,
       message,
@@ -79,7 +83,7 @@ describe('RemoveMemberModal', () => {
           isInvite,
           message,
           memberPath,
-          memberType,
+          memberModelType,
           userDeletionObstacles,
         });
       });

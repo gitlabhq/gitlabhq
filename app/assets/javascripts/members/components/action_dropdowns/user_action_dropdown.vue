@@ -83,7 +83,7 @@ export default {
       <remove-member-dropdown-item
         v-else
         :member-id="member.id"
-        :member-type="member.type"
+        :member-model-type="member.type"
         :user-deletion-obstacles="userDeletionObstaclesUserData"
         :modal-message="modalMessage"
         >{{ $options.i18n.removeMember }}</remove-member-dropdown-item

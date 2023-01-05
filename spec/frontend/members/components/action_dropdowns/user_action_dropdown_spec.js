@@ -5,6 +5,10 @@ import LeaveGroupDropdownItem from '~/members/components/action_dropdowns/leave_
 import RemoveMemberDropdownItem from '~/members/components/action_dropdowns/remove_member_dropdown_item.vue';
 import UserActionDropdown from '~/members/components/action_dropdowns/user_action_dropdown.vue';
 import { I18N } from '~/members/components/action_dropdowns/constants';
+import {
+  MEMBER_MODEL_TYPE_GROUP_MEMBER,
+  MEMBER_MODEL_TYPE_PROJECT_MEMBER,
+} from '~/members/constants';
 import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
 import { member, orphanedMember } from '../../mock_data';
 
@@ -55,7 +59,7 @@ describe('UserActionDropdown', () => {
     it('sets props correctly', () => {
       expect(findRemoveMemberDropdownItem().props()).toEqual({
         memberId: member.id,
-        memberType: 'GroupMember',
+        memberModelType: MEMBER_MODEL_TYPE_GROUP_MEMBER,
         modalMessage: sprintf(
           I18N.confirmNormalUserRemoval,
           {
@@ -121,7 +125,7 @@ describe('UserActionDropdown', () => {
       createComponent({
         member: {
           ...member,
-          type: 'GroupMember',
+          type: MEMBER_MODEL_TYPE_GROUP_MEMBER,
         },
         permissions: {
           canRemove: true,
@@ -130,7 +134,9 @@ describe('UserActionDropdown', () => {
     });
 
     it('sets member type correctly', () => {
-      expect(findRemoveMemberDropdownItem().props().memberType).toBe('GroupMember');
+      expect(findRemoveMemberDropdownItem().props().memberModelType).toBe(
+        MEMBER_MODEL_TYPE_GROUP_MEMBER,
+      );
     });
   });
 
@@ -139,7 +145,7 @@ describe('UserActionDropdown', () => {
       createComponent({
         member: {
           ...member,
-          type: 'ProjectMember',
+          type: MEMBER_MODEL_TYPE_PROJECT_MEMBER,
         },
         permissions: {
           canRemove: true,
@@ -148,7 +154,9 @@ describe('UserActionDropdown', () => {
     });
 
     it('sets member type correctly', () => {
-      expect(findRemoveMemberDropdownItem().props().memberType).toBe('ProjectMember');
+      expect(findRemoveMemberDropdownItem().props().memberModelType).toBe(
+        MEMBER_MODEL_TYPE_PROJECT_MEMBER,
+      );
     });
   });
 });

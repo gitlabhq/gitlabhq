@@ -14,11 +14,6 @@ export default {
       type: Number,
       required: true,
     },
-    memberType: {
-      type: String,
-      required: false,
-      default: null,
-    },
     message: {
       type: String,
       required: true,
@@ -54,7 +49,6 @@ export default {
         isAccessRequest: this.isAccessRequest,
         isInvite: this.isInvite,
         memberPath: this.memberPath.replace(':id', this.memberId),
-        memberType: this.memberType,
         message: this.message,
         userDeletionObstacles: this.userDeletionObstacles,
       };

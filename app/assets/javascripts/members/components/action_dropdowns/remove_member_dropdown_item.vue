@@ -11,7 +11,12 @@ export default {
       type: Number,
       required: true,
     },
-    memberType: {
+    /**
+     * `GroupMember` (`app/models/members/group_member.rb`)
+     * or
+     * `ProjectMember` (`app/models/members/project_member.rb`).
+     */
+    memberModelType: {
       type: String,
       required: false,
       default: null,
@@ -47,7 +52,7 @@ export default {
         isAccessRequest: this.isAccessRequest,
         isInvite: this.isInvite,
         memberPath: this.memberPath.replace(':id', this.memberId),
-        memberType: this.memberType,
+        memberModelType: this.memberModelType,
         message: this.modalMessage,
         userDeletionObstacles: this.userDeletionObstacles,
       };
