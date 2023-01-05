@@ -1,0 +1,22 @@
+---
+key_path: counts.instances_apple_app_store_active
+description: Count of instances with active integrations for Apple App Store
+product_section: dev
+product_stage: manage
+product_group: integrations
+product_category: integrations
+value_type: number
+status: active
+milestone: "15.8"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104888
+time_frame: all
+data_source: database
+data_category: optional
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

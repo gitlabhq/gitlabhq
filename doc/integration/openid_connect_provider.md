@@ -48,19 +48,20 @@ Similar URLs can be used for other GitLab instances.
 
 The following user information is shared with clients:
 
-| Claim            | Type      | Description |
-|:-----------------|:----------|:------------|
-| `sub`            | `string`  | The ID of the user |
-| `auth_time`      | `integer` | The timestamp for the user's last authentication |
-| `name`           | `string`  | The user's full name |
-| `nickname`       | `string`  | The user's GitLab username |
-| `email`          | `string`  | The user's email address<br>This is the user's *primary* email address if the application has access to the `email` claim and the user's *public* email address otherwise |
-| `email_verified` | `boolean` | Whether the user's email address was verified |
-| `website`        | `string`  | URL for the user's website |
-| `profile`        | `string`  | URL for the user's GitLab profile |
-| `picture`        | `string`  | URL for the user's GitLab avatar |
-| `groups`         | `array`   | Paths for the groups the user is a member of, either directly or through an ancestor group. |
-| `groups_direct`  | `array`   | Paths for the groups the user is a direct member of. |
+| Claim                | Type      | Description |
+|:---------------------|:----------|:------------|
+| `sub`                | `string`  | The ID of the user |
+| `auth_time`          | `integer` | The timestamp for the user's last authentication |
+| `name`               | `string`  | The user's full name |
+| `nickname`           | `string`  | The user's GitLab username |
+| `preferred_username` | `string`  | The user's GitLab username |
+| `email`              | `string`  | The user's email address<br>This is the user's *primary* email address if the application has access to the `email` claim and the user's *public* email address otherwise |
+| `email_verified`     | `boolean` | Whether the user's email address was verified |
+| `website`            | `string`  | URL for the user's website |
+| `profile`            | `string`  | URL for the user's GitLab profile |
+| `picture`            | `string`  | URL for the user's GitLab avatar |
+| `groups`             | `array`   | Paths for the groups the user is a member of, either directly or through an ancestor group. |
+| `groups_direct`      | `array`   | Paths for the groups the user is a direct member of. |
 | `https://gitlab.org/claims/groups/owner`      | `array`   | Names of the groups the user is a direct member of with Owner role |
 | `https://gitlab.org/claims/groups/maintainer` | `array`   | Names of the groups the user is a direct member of with Maintainer role |
 | `https://gitlab.org/claims/groups/developer`  | `array`   | Names of the groups the user is a direct member of with Developer role |

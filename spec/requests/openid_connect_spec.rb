@@ -32,6 +32,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :authentication_and_
     {
       'name' => 'Alice',
       'nickname' => 'alice',
+      'preferred_username' => 'alice',
       'email' => 'public@example.com',
       'email_verified' => true,
       'website' => 'https://example.com',

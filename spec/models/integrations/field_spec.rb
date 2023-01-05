@@ -83,6 +83,8 @@ RSpec.describe ::Integrations::Field do
             be false
           when :type
             eq 'text'
+          when :is_secret
+            eq true
           else
             be_nil
           end

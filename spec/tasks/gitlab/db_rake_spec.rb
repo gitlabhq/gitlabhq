@@ -22,7 +22,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
 
   describe 'mark_migration_complete' do
     context 'with a single database' do
-      let(:main_model) { ActiveRecord::Base }
+      let(:main_model) { ApplicationRecord }
 
       before do
         skip_if_multiple_databases_are_setup

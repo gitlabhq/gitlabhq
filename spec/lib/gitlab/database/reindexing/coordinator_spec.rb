@@ -2,13 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Reindexing::Coordinator do
+RSpec.describe Gitlab::Database::Reindexing::Coordinator, feature_category: :database do
   include Database::DatabaseHelpers
   include ExclusiveLeaseHelpers
 
-  let(:notifier) { instance_double(Gitlab::Database::Reindexing::GrafanaNotifier, notify_start: nil, notify_end: nil) }
   let(:index) { create(:postgres_index) }
   let(:connection) { index.connection }
+  let(:notifier) do
+    instance_double(Gitlab::Database::Reindexing::GrafanaNotifier, notify_start: nil, notify_end: nil)
+  end
 
   let!(:lease) { stub_exclusive_lease(lease_key, uuid, timeout: lease_timeout) }
   let(:lease_key) { "gitlab/database/reindexing/coordinator/#{Gitlab::Database::PRIMARY_DATABASE_NAME}" }
@@ -19,12 +21,9 @@ RSpec.describe Gitlab::Database::Reindexing::Coordinator do
     model = Gitlab::Database.database_base_models[Gitlab::Database::PRIMARY_DATABASE_NAME]
 
     Gitlab::Database::SharedModel.using_connection(model.connection) do
+      swapout_view_for_table(:postgres_indexes, connection: model.connection)
       example.run
     end
-  end
-
-  before do
-    swapout_view_for_table(:postgres_indexes)
   end
 
   describe '#perform' do

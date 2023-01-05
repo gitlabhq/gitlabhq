@@ -3613,6 +3613,9 @@ msgstr ""
 msgid "After it expires, you can't use merge approvals, epics, or many security features."
 msgstr ""
 
+msgid "After the Apple App Store Connect integration is activated, the following protected variables will be created for CI/CD use."
+msgstr ""
+
 msgid "After the export is complete, download the data file from a notification email or from this page. You can then import the data file from the %{strong_text_start}Create new group%{strong_text_end} page of another GitLab instance."
 msgstr ""
 
@@ -4705,6 +4708,18 @@ msgid "Append the comment with %{shrug}"
 msgstr ""
 
 msgid "Append the comment with %{tableflip}"
+msgstr ""
+
+msgid "AppleAppStore|The Apple App Store Connect Issuer ID."
+msgstr ""
+
+msgid "AppleAppStore|The Apple App Store Connect Key ID."
+msgstr ""
+
+msgid "AppleAppStore|The Apple App Store Connect Private Key."
+msgstr ""
+
+msgid "AppleAppStore|Use GitLab to build and release an app in the Apple App Store."
 msgstr ""
 
 msgid "Application"
@@ -22416,6 +22431,9 @@ msgid "Integrations|Includes commit title and branch."
 msgstr ""
 
 msgid "Integrations|Instance-level integration management"
+msgstr ""
+
+msgid "Integrations|Integration details"
 msgstr ""
 
 msgid "Integrations|Issues created in Jira are shown here once you have created the issues in project setup in Jira."
@@ -45027,6 +45045,9 @@ msgid "Use template"
 msgstr ""
 
 msgid "Use the %{strongStart}Test%{strongEnd} option above to create an event."
+msgstr ""
+
+msgid "Use the Apple App Store Connect integration to easily connect to the Apple App Store with Fastlane in CI/CD pipelines."
 msgstr ""
 
 msgid "Use the link below to confirm your email address (%{email})"

@@ -116,8 +116,9 @@ module UsageDataHelpers
   ).freeze
 
   def stub_usage_data_connections
-    allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
-    allow(::Ci::ApplicationRecord.connection).to receive(:transaction_open?).and_return(false) if ::Ci::ApplicationRecord.connection_class?
+    Gitlab::Database.database_base_models_with_gitlab_shared.each_value do |base_model|
+      allow(base_model.connection).to receive(:transaction_open?).and_return(false)
+    end
 
     allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
   end

@@ -20,6 +20,7 @@
 {"name":"akismet","version":"3.0.0","platform":"ruby","checksum":"74991b8e3d3257eeea996b47069abb8da2006c84a144255123e8dffd1c86b230"},
 {"name":"android_key_attestation","version":"0.3.0","platform":"ruby","checksum":"467eb01a99d2bb48ef9cf24cc13712669d7056cba5a52d009554ff037560570b"},
 {"name":"apollo_upload_server","version":"2.1.0","platform":"ruby","checksum":"e5f3c9dda0c2ca775d007072742b98d517dfd91a667111fedbcdc94dfabd904e"},
+{"name":"app_store_connect","version":"0.29.0","platform":"ruby","checksum":"01d7a923825a4221892099acb5a72f86f6ee7d8aa95815d3c459ba6816ea430f"},
 {"name":"arr-pm","version":"0.0.12","platform":"ruby","checksum":"fdff482f75239239201f4d667d93424412639aad0b3b0ad4d827e7c637e0ad39"},
 {"name":"asana","version":"0.10.13","platform":"ruby","checksum":"36d0d37f8dd6118a54580f1b80224875d7b6a9027598938e1722a508bfc2d7ac"},
 {"name":"asciidoctor","version":"2.0.17","platform":"ruby","checksum":"ed5b5e399e8d64994cc16f0983f993d6e33990909a8415b6fc8b786cdeb00f3d"},

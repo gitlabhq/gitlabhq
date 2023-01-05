@@ -5,6 +5,9 @@ module Integrations
     extend ActiveSupport::Concern
 
     ALLOWED_PARAMS_CE = [
+      :app_store_issuer_id,
+      :app_store_key_id,
+      :app_store_private_key,
       :active,
       :alert_events,
       :api_key,

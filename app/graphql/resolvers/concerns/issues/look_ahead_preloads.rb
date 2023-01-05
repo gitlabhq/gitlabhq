@@ -20,7 +20,7 @@ module Issues
     end
 
     def preloads
-      {
+      preload_hash = {
         alert_management_alert: [:alert_management_alert],
         assignees: [:assignees],
         participants: Issue.participant_includes,
@@ -28,6 +28,9 @@ module Issues
         customer_relations_contacts: { customer_relations_contacts: [:group] },
         escalation_status: [:incident_management_issuable_escalation_status]
       }
+      preload_hash[:type] = :work_item_type if Feature.enabled?(:issue_type_uses_work_item_types_table)
+
+      preload_hash
     end
   end
 end

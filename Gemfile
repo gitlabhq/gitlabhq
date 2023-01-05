@@ -574,6 +574,7 @@ gem 'arr-pm', '~> 0.0.12'
 
 # Apple plist parsing
 gem 'CFPropertyList'
+gem 'app_store_connect'
 
 # For phone verification
 gem 'telesignenterprise', '~> 2.2'

@@ -2,14 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Reindexing::IndexSelection do
+RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :database do
   include Database::DatabaseHelpers
 
   subject { described_class.new(Gitlab::Database::PostgresIndex.all).to_a }
 
+  let(:connection) { ApplicationRecord.connection }
+
   before do
-    swapout_view_for_table(:postgres_index_bloat_estimates)
-    swapout_view_for_table(:postgres_indexes)
+    swapout_view_for_table(:postgres_index_bloat_estimates, connection: connection)
+    swapout_view_for_table(:postgres_indexes, connection: connection)
 
     create_list(:postgres_index, 10, ondisk_size_bytes: 10.gigabytes).each_with_index do |index, i|
       create(:postgres_index_bloat_estimate, index: index, bloat_size_bytes: 2.gigabyte * (i + 1))
@@ -17,7 +19,7 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection do
   end
 
   def execute(sql)
-    ActiveRecord::Base.connection.execute(sql)
+    connection.execute(sql)
   end
 
   it 'orders by highest relative bloat first' do

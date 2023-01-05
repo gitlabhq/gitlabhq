@@ -52,6 +52,22 @@ sole discretion of GitLab Inc.
 
 <div class="deprecation removal-160 breaking-change">
 
+### Conan project-level search endpoint returns project-specific results
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+You can use the GitLab Conan repository with [project-level](https://docs.gitlab.com/ee/user/packages/conan_repository/#add-a-remote-for-your-project) or [instance-level](https://docs.gitlab.com/ee/user/packages/conan_repository/#add-a-remote-for-your-instance) endpoints. Each level supports the conan search command. However, the search endpoint for the project level is also returning packages from outside the target project.
+
+This unintended functionality is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. The search endpoint for the project level will only return packages from the target project.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Container Registry pull-through cache
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)

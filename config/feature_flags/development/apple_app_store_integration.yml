@@ -1,0 +1,8 @@
+---
+name: apple_app_store_integration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104888
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385335
+milestone: '15.8'
+type: development
+group: group::incubation
+default_enabled: false

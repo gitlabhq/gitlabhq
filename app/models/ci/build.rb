@@ -68,6 +68,7 @@ module Ci
     delegate :service_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
     delegate :harbor_integration, to: :project
+    delegate :apple_app_store_integration, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
     delegate :ensure_persistent_ref, to: :pipeline
     delegate :enable_debug_trace!, to: :metadata
@@ -587,6 +588,7 @@ module Ci
           .append(key: 'CI_REPOSITORY_URL', value: repo_url.to_s, public: false)
           .concat(deploy_token_variables)
           .concat(harbor_variables)
+          .concat(apple_app_store_variables)
       end
     end
 
@@ -628,6 +630,13 @@ module Ci
       return [] unless harbor_integration.try(:activated?)
 
       Gitlab::Ci::Variables::Collection.new(harbor_integration.ci_variables)
+    end
+
+    def apple_app_store_variables
+      return [] unless apple_app_store_integration.try(:activated?)
+      return [] unless pipeline.protected_ref?
+
+      Gitlab::Ci::Variables::Collection.new(apple_app_store_integration.ci_variables)
     end
 
     def features

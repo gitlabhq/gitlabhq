@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Integration.available_integration_names.each do |integration|
+Integration.available_integration_names(include_feature_flagged: true).each do |integration|
   RSpec.shared_context integration do
     include JiraIntegrationHelpers if integration == 'jira'
 
@@ -40,7 +40,7 @@ Integration.available_integration_names.each do |integration|
 
     let(:integration_attrs) do
       integration_attrs_list.inject({}) do |hash, k|
-        if k =~ /^(token*|.*_token|.*_key)/
+        if k =~ /^(token*|.*_token|.*_key)/ && k =~ /^[^app_store]/
           hash.merge!(k => 'secrettoken')
         elsif integration == 'confluence' && k == :confluence_url
           hash.merge!(k => 'https://example.atlassian.net/wiki')
@@ -68,6 +68,12 @@ Integration.available_integration_names.each do |integration|
           hash.merge!(k => "match_any")
         elsif integration == 'campfire' && k == :room
           hash.merge!(k => '1234')
+        elsif integration == 'apple_app_store' && k == :app_store_issuer_id
+          hash.merge!(k => 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee')
+        elsif integration == 'apple_app_store' && k == :app_store_private_key
+          hash.merge!(k => File.read('spec/fixtures/ssl_key.pem'))
+        elsif integration == 'apple_app_store' && k == :app_store_key_id
+          hash.merge!(k => 'ABC1')
         else
           hash.merge!(k => "someword")
         end

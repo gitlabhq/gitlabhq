@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Reindexing::ReindexAction do
+RSpec.describe Gitlab::Database::Reindexing::ReindexAction, feature_category: :database do
   include Database::DatabaseHelpers
 
   let(:index) { create(:postgres_index) }
 
   before_all do
-    swapout_view_for_table(:postgres_indexes)
+    swapout_view_for_table(:postgres_indexes, connection: ApplicationRecord.connection)
   end
 
   it { is_expected.to be_a Gitlab::Database::SharedModel }

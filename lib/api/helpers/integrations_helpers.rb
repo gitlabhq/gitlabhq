@@ -161,6 +161,26 @@ module API
 
       def self.integrations
         {
+          'apple-app-store' => [
+            {
+              required: true,
+              name: :app_store_issuer_id,
+              type: String,
+              desc: 'The Apple App Store Connect Issuer ID'
+            },
+            {
+              required: true,
+              name: :app_store_key_id,
+              type: String,
+              desc: 'The Apple App Store Connect Key ID'
+            },
+            {
+              required: true,
+              name: :app_store_private_key,
+              type: String,
+              desc: 'The Apple App Store Connect Private Key'
+            }
+          ],
           'asana' => [
             {
               required: true,
@@ -871,6 +891,7 @@ module API
 
       def self.integration_classes
         [
+          ::Integrations::AppleAppStore,
           ::Integrations::Asana,
           ::Integrations::Assembla,
           ::Integrations::Bamboo,

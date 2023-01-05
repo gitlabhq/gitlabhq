@@ -4,7 +4,7 @@ module Integrations
   class Field
     SECRET_NAME = %r/token|key|password|passphrase|secret/.freeze
 
-    BOOLEAN_ATTRIBUTES = %i[required api_only exposes_secrets].freeze
+    BOOLEAN_ATTRIBUTES = %i[required api_only is_secret exposes_secrets].freeze
 
     ATTRIBUTES = %i[
       section type placeholder choices value checkbox_label
@@ -17,12 +17,13 @@ module Integrations
 
     attr_reader :name, :integration_class
 
-    def initialize(name:, integration_class:, type: 'text', api_only: false, **attributes)
+    def initialize(name:, integration_class:, type: 'text', is_secret: true, api_only: false, **attributes)
       @name = name.to_s.freeze
       @integration_class = integration_class
 
-      attributes[:type] = SECRET_NAME.match?(@name) ? 'password' : type
+      attributes[:type] = SECRET_NAME.match?(@name) && is_secret ? 'password' : type
       attributes[:api_only] = api_only
+      attributes[:is_secret] = is_secret
       @attributes = attributes.freeze
 
       invalid_attributes = attributes.keys - ATTRIBUTES

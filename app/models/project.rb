@@ -170,6 +170,7 @@ class Project < ApplicationRecord
   end
 
   # Project integrations
+  has_one :apple_app_store_integration, class_name: 'Integrations::AppleAppStore'
   has_one :asana_integration, class_name: 'Integrations::Asana'
   has_one :assembla_integration, class_name: 'Integrations::Assembla'
   has_one :bamboo_integration, class_name: 'Integrations::Bamboo'

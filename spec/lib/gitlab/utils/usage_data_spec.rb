@@ -374,7 +374,7 @@ RSpec.describe Gitlab::Utils::UsageData do
 
     context 'when query timeout' do
       subject do
-        with_statement_timeout(0.001) do
+        with_statement_timeout(0.001, connection: ApplicationRecord.connection) do
           relation = AlertManagement::HttpIntegration.select('pg_sleep(0.002)')
           described_class.histogram(relation, column, buckets: 1..100)
         end

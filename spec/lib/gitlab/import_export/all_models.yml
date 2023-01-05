@@ -424,6 +424,7 @@ project:
 - alert_hooks_integrations
 - incident_hooks_integrations
 - vulnerability_hooks_integrations
+- apple_app_store_integration
 - campfire_integration
 - confluence_integration
 - datadog_integration

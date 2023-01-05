@@ -409,6 +409,7 @@ Database/MultipleDatabases:
     - 'ee/lib/ee/gitlab/background_migration/**/*.rb'
     - 'spec/lib/gitlab/background_migration/**/*.rb'
     - 'spec/lib/gitlab/database/**/*.rb'
+    - 'spec/tasks/gitlab/db_rake_spec.rb'
 
 Migration/BatchMigrationsPostOnly:
   Enabled: true

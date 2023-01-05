@@ -22776,6 +22776,7 @@ State of a Sentry error.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="servicetypeapple_app_store_service"></a>`APPLE_APP_STORE_SERVICE` | AppleAppStoreService type. |
 | <a id="servicetypeasana_service"></a>`ASANA_SERVICE` | AsanaService type. |
 | <a id="servicetypeassembla_service"></a>`ASSEMBLA_SERVICE` | AssemblaService type. |
 | <a id="servicetypebamboo_service"></a>`BAMBOO_SERVICE` | BambooService type. |

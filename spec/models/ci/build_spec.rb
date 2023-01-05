@@ -3546,6 +3546,52 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
       end
     end
 
+    context 'for the apple_app_store integration' do
+      let_it_be(:apple_app_store_integration) { create(:apple_app_store_integration) }
+
+      let(:apple_app_store_variables) do
+        [
+          { key: 'APP_STORE_CONNECT_API_KEY_ISSUER_ID', value: apple_app_store_integration.app_store_issuer_id, masked: true, public: false },
+          { key: 'APP_STORE_CONNECT_API_KEY_KEY', value: Base64.encode64(apple_app_store_integration.app_store_private_key), masked: true, public: false },
+          { key: 'APP_STORE_CONNECT_API_KEY_KEY_ID', value: apple_app_store_integration.app_store_key_id, masked: true, public: false }
+        ]
+      end
+
+      context 'when the apple_app_store exists' do
+        context 'when a build is protected' do
+          before do
+            allow(build.pipeline).to receive(:protected_ref?).and_return(true)
+            build.project.update!(apple_app_store_integration: apple_app_store_integration)
+          end
+
+          it 'includes apple_app_store variables' do
+            is_expected.to include(*apple_app_store_variables)
+          end
+        end
+
+        context 'when a build is not protected' do
+          before do
+            allow(build.pipeline).to receive(:protected_ref?).and_return(false)
+            build.project.update!(apple_app_store_integration: apple_app_store_integration)
+          end
+
+          it 'does not include the apple_app_store variables' do
+            expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_ISSUER_ID' }).to be_nil
+            expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY' }).to be_nil
+            expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY_ID' }).to be_nil
+          end
+        end
+      end
+
+      context 'when the apple_app_store integration does not exist' do
+        it 'does not include apple_app_store variables' do
+          expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_ISSUER_ID' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY_ID' }).to be_nil
+        end
+      end
+    end
+
     context 'when build has dependency which has dotenv variable' do
       let!(:prepare) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
       let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, options: { dependencies: [prepare.name] }) }

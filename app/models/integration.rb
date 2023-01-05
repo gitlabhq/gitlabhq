@@ -281,10 +281,13 @@ class Integration < ApplicationRecord
   # Returns a list of available integration names.
   # Example: ["asana", ...]
   # @deprecated
-  def self.available_integration_names(include_project_specific: true, include_dev: true)
+  # @param [Boolean] include_feature_flagged used only in specs
+  # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/386731
+  def self.available_integration_names(include_project_specific: true, include_dev: true, include_feature_flagged: false)
     names = integration_names
     names += project_specific_integration_names if include_project_specific
     names += dev_integration_names if include_dev
+    names << 'apple_app_store' if Feature.enabled?(:apple_app_store_integration) || include_feature_flagged
 
     names.sort_by(&:downcase)
   end

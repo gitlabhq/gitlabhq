@@ -188,7 +188,13 @@ RSpec.describe 'factories', :saas do
     before do
       factories_based_on_view.each do |factory|
         view = build(factory).class.table_name
-        swapout_view_for_table(view)
+        view_gitlab_schema = Gitlab::Database::GitlabSchema.table_schema(view)
+        Gitlab::Database.database_base_models.each_value.select do |base_model|
+          connection = base_model.connection
+          next unless Gitlab::Database.gitlab_schemas_for_connection(connection).include?(view_gitlab_schema)
+
+          swapout_view_for_table(view, connection: connection)
+        end
       end
     end
 

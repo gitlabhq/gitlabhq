@@ -172,6 +172,9 @@ GEM
     apollo_upload_server (2.1.0)
       actionpack (>= 4.2)
       graphql (>= 1.8)
+    app_store_connect (0.29.0)
+      activesupport (>= 6.0.0)
+      jwt (>= 1.4, <= 2.5.0)
     arr-pm (0.0.12)
     asana (0.10.13)
       faraday (~> 1.0)
@@ -1581,6 +1584,7 @@ DEPENDENCIES
   addressable (~> 2.8)
   akismet (~> 3.0)
   apollo_upload_server (~> 2.1.0)
+  app_store_connect
   arr-pm (~> 0.0.12)
   asana (~> 0.10.13)
   asciidoctor (~> 2.0.17)
