@@ -114,8 +114,10 @@ You can't use these keywords as job names:
 
 Job names must be 255 characters or fewer.
 
-Use unique names for your jobs. If multiple jobs have the same name,
+Use unique names for your jobs. If multiple jobs have the same name in a file,
 only one is added to the pipeline, and it's difficult to predict which one is chosen.
+If the same job name is used in one or more included files,
+[parameters are merged](../yaml/includes.md#override-included-configuration-values).
 
 ## Group jobs in a pipeline
 

@@ -41,6 +41,15 @@ GET /projects/:id/releases
 | `sort`        | string         | no       | The direction of the order. Either `desc` (default) for descending order or `asc` for ascending order. |
 | `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
 
+If successful, returns [`200 OK`](../../api/index.md#status-codes) and the following
+response attributes:
+
+| Attribute            | Type    | Description                           |
+|:---------------------|:--------|:------------------------------------- |
+| `[]._links`          | object  | Links of the release.                 |
+| `[]._links.self`     | string  | HTTP URL of the release.              |
+| `[]._links.edit_url` | string  | HTTP URL of the release's edit page.  |
+
 Example request:
 
 ```shell
@@ -226,7 +235,11 @@ Example response:
           "filepath": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json",
           "collected_at": "2019-01-03T01:55:18.203Z"
         }
-     ]
+      ],
+      "_links": {
+         "self": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1",
+         "edit_url": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/edit"
+      }
    }
 ]
 ```
@@ -246,6 +259,15 @@ GET /projects/:id/releases/:tag_name
 | `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).  |
 | `tag_name`                 | string         | yes      | The Git tag the release is associated with.                                         |
 | `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
+
+If successful, returns [`200 OK`](../../api/index.md#status-codes) and the following
+response attributes:
+
+| Attribute         | Type    | Description                           |
+|:------------------|:--------|:------------------------------------- |
+| `_links`          | object  | Links of the release.                 |
+| `_links.self`     | string  | HTTP URL of the release.              |
+| `_links.edit_url` | string  | HTTP URL of the release's edit page.  |
 
 Example request:
 
@@ -359,7 +381,11 @@ Example response:
        "sha": "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
        "filepath": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json",
        "collected_at": "2019-07-16T14:00:12.256Z"
-     }
+     },
+   "_links": {
+      "self": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1",
+      "edit_url": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/edit"
+    }
   ]
 }
 ```

@@ -151,19 +151,6 @@ module API
         present blame_ranges, with: Entities::BlameRange
       end
 
-      desc 'Get raw file metadata from repository'
-      params do
-        requires :file_path, type: String, file_path: true,
-                             desc: 'The url encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
-        optional :ref, type: String,
-                       desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
-      end
-      head ":id/repository/files/:file_path/raw", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
-        assign_file_vars!
-
-        set_http_headers(blob_data)
-      end
-
       desc 'Get raw file contents from the repository' do
         success File
       end

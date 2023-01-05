@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Helpers do
+RSpec.describe API::Helpers, feature_category: :not_owned do
   using RSpec::Parameterized::TableSyntax
 
   subject(:helper) { Class.new.include(described_class).new }
@@ -11,7 +11,7 @@ RSpec.describe API::Helpers do
     include Rack::Test::Methods
 
     let(:user) { build(:user, id: 42) }
-
+    let(:request) { instance_double(Rack::Request) }
     let(:helper) do
       Class.new(Grape::API::Instance) do
         helpers API::APIGuard::HelperMethods
@@ -797,12 +797,13 @@ RSpec.describe API::Helpers do
   describe '#present_artifacts_file!' do
     context 'with object storage' do
       let(:artifact) { create(:ci_job_artifact, :zip, :remote_store) }
+      let(:is_head_request) { false }
 
       subject { helper.present_artifacts_file!(artifact.file) }
 
       before do
         allow(helper).to receive(:env).and_return({})
-
+        allow(helper).to receive(:request).and_return(instance_double(Rack::Request, head?: is_head_request))
         stub_artifacts_object_storage(enabled: true)
       end
 
@@ -813,6 +814,18 @@ RSpec.describe API::Helpers do
         expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: false).and_call_original
 
         subject
+      end
+
+      context 'requested with HEAD' do
+        let(:is_head_request) { true }
+
+        it 'redirects to a CDN-fronted URL' do
+          expect(helper).to receive(:redirect)
+          expect(helper).to receive(:signed_head_url).and_call_original
+          expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: artifact.file.model).and_call_original
+
+          subject
+        end
       end
     end
   end

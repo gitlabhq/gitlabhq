@@ -739,7 +739,12 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
       it 'shows manual action empty state', :js do
         expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job requires a manual action')
-        expect(page).to have_content('This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.')
+        expect(page).to have_content(
+          _(
+            'This job does not start automatically and must be started manually. ' \
+            'You can add CI/CD variables below for last-minute configuration changes before starting the job.'
+          )
+        )
         expect(page).to have_button('Trigger this manual action')
       end
 
@@ -772,7 +777,12 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
 
         wait_for_requests
         expect(page).to have_content('This job requires a manual action')
-        expect(page).to have_content('This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.')
+        expect(page).to have_content(
+          _(
+            'This job does not start automatically and must be started manually. ' \
+            'You can add CI/CD variables below for last-minute configuration changes before starting the job.'
+          )
+        )
         expect(page).to have_button('Trigger this manual action')
       end
     end

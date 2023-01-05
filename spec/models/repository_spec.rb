@@ -534,21 +534,48 @@ RSpec.describe Repository do
   end
 
   describe '#find_commits_by_message' do
-    it 'returns commits with messages containing a given string' do
-      commit_ids = repository.find_commits_by_message('submodule').map(&:id)
+    subject(:find_commits_by_message) { repository.find_commits_by_message(query) }
 
-      expect(commit_ids).to include(
-        '5937ac0a7beb003549fc5fd26fc247adbce4a52e',
-        '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
-        'cfe32cf61b73a0d5e9f13e774abde7ff789b1660'
-      )
+    let(:commit_ids) { find_commits_by_message.map(&:id) }
+    let(:query) { 'submodule' }
+    let(:expected_commit_ids) do
+      %w[
+        5937ac0a7beb003549fc5fd26fc247adbce4a52e
+        6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        cfe32cf61b73a0d5e9f13e774abde7ff789b1660
+      ]
+    end
+
+    it 'returns commits with messages containing a given string' do
+      expect(commit_ids).to include(*expected_commit_ids)
       expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
     end
 
-    it 'is case insensitive' do
-      commit_ids = repository.find_commits_by_message('SUBMODULE').map(&:id)
+    context 'when query is in UPCASE' do
+      let(:query) { 'SUBMODULE' }
 
-      expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      it 'is case insensitive' do
+        expect(commit_ids).to include(*expected_commit_ids)
+      end
+    end
+
+    context 'when message has surrounding spaces' do
+      let(:query) { '  submodule  ' }
+
+      it 'removes spaces and returns commits by message' do
+        expect(commit_ids).to include(*expected_commit_ids)
+        expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+      end
+
+      context 'when feature flag "commit_search_trailing_spaces" is disabled' do
+        before do
+          stub_feature_flags(commit_search_trailing_spaces: false)
+        end
+
+        it 'returns an empty list' do
+          expect(commit_ids).to be_empty
+        end
+      end
     end
 
     describe 'when storage is broken', :broken_storage do

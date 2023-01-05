@@ -76,11 +76,11 @@ category (worker or HTTP endpoint) in metrics and logs.
 For instance, `ReactiveCachingWorker` can have multiple feature
 categories in metrics and logs.
 
-## Batched Background Migrations
+## Batched background migrations
 
-Long running migrations (as per the [time limits guidelines](../migration_style_guide.md#how-long-a-migration-should-take)) are pulled out as batched background migrations and they should have their 'feature_category' defined.
-
-_Example_:
+Long-running migrations (as per the [time limits guidelines](../migration_style_guide.md#how-long-a-migration-should-take))
+are pulled out as [batched background migrations](../database/batched_background_migrations.md).
+They should define a `feature_category`, like this:
 
 ```ruby
 # File name: lib/gitlab/background_migration/my_background_migration_job.rb
@@ -92,7 +92,8 @@ class MyBackgroundMigrationJob < BatchedMigrationJob
 end
 ```
 
-_Note_: [RuboCop::Cop::BackgroundMigration::FeatureCategory](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/background_migration/feature_category.rb) cop ensures a valid 'feature_category' is defined.
+NOTE:
+[`RuboCop::Cop::BackgroundMigration::FeatureCategory`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/background_migration/feature_category.rb) cop ensures a valid `feature_category` is defined.
 
 ## Rails controllers
 

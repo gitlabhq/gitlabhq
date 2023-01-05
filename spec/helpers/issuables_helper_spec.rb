@@ -112,19 +112,7 @@ RSpec.describe IssuablesHelper do
       context 'when assigned issues count is over 100' do
         let_it_be(:issues) { create_list(:issue, 101, project: project, assignees: [user]) }
 
-        before do
-          stub_feature_flags(limit_assigned_issues_count: false)
-        end
-
-        it { is_expected.to eq 101 }
-
-        context 'when FF limit_assigned_issues_count is enabled' do
-          before do
-            stub_feature_flags(limit_assigned_issues_count: true)
-          end
-
-          it { is_expected.to eq 100 }
-        end
+        it { is_expected.to eq 100 }
       end
     end
   end
@@ -142,19 +130,7 @@ RSpec.describe IssuablesHelper do
     context 'when assigned issues count is over 99' do
       let_it_be(:issues) { create_list(:issue, 100, project: project, assignees: [user]) }
 
-      before do
-        stub_feature_flags(limit_assigned_issues_count: false)
-      end
-
-      it { is_expected.to eq '100' }
-
-      context 'when FF limit_assigned_issues_count is enabled' do
-        before do
-          stub_feature_flags(limit_assigned_issues_count: true)
-        end
-
-        it { is_expected.to eq '99+' }
-      end
+      it { is_expected.to eq '99+' }
     end
   end
 

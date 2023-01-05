@@ -1,8 +1,0 @@
----
-name: use_api_for_payment_validation
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84292
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/357282
-milestone: '14.10'
-type: development
-group: group::purchase
-default_enabled: false

@@ -42690,6 +42690,9 @@ msgstr ""
 msgid "This job does not run automatically and must be started manually, but you do not have access to it."
 msgstr ""
 
+msgid "This job does not start automatically and must be started manually. You can add CI/CD variables below for last-minute configuration changes before starting the job."
+msgstr ""
+
 msgid "This job has been canceled"
 msgstr ""
 
@@ -42763,9 +42766,6 @@ msgid "This job is waiting for resource: "
 msgstr ""
 
 msgid "This job requires a manual action"
-msgstr ""
-
-msgid "This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes."
 msgstr ""
 
 msgid "This job will automatically run after its timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
@@ -47698,6 +47698,9 @@ msgid "You can invite a new member to %{project_name}."
 msgstr ""
 
 msgid "You can invite another group to %{project_name}."
+msgstr ""
+
+msgid "You can modify this job's CI/CD variables before running it again."
 msgstr ""
 
 msgid "You can move around the graph by using the arrow keys."

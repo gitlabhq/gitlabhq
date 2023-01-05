@@ -189,6 +189,8 @@ class Repository
       return []
     end
 
+    query = Feature.enabled?(:commit_search_trailing_spaces) ? query.strip : query
+
     commits = raw_repository.find_commits_by_message(query, ref, path, limit, offset).map do |c|
       commit(c)
     end

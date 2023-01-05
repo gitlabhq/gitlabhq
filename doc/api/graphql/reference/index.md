@@ -2027,6 +2027,7 @@ Input type: `DastScannerProfileCreateInput`
 | <a id="mutationdastscannerprofilecreatescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
 | <a id="mutationdastscannerprofilecreateshowdebugmessages"></a>`showDebugMessages` | [`Boolean`](#boolean) | Indicates if debug messages should be included in DAST console output. True to include the debug messages. |
 | <a id="mutationdastscannerprofilecreatespidertimeout"></a>`spiderTimeout` | [`Int`](#int) | Maximum number of minutes allowed for the spider to traverse the site. |
+| <a id="mutationdastscannerprofilecreatetaglist"></a>`tagList` | [`[String!]`](#string) | Indicates the runner tags associated with the scanner profile. |
 | <a id="mutationdastscannerprofilecreatetargettimeout"></a>`targetTimeout` | [`Int`](#int) | Maximum number of seconds allowed for the site under test to respond to a request. |
 | <a id="mutationdastscannerprofilecreateuseajaxspider"></a>`useAjaxSpider` | [`Boolean`](#boolean) | Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider. |
 
@@ -2073,6 +2074,7 @@ Input type: `DastScannerProfileUpdateInput`
 | <a id="mutationdastscannerprofileupdatescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
 | <a id="mutationdastscannerprofileupdateshowdebugmessages"></a>`showDebugMessages` | [`Boolean`](#boolean) | Indicates if debug messages should be included in DAST console output. True to include the debug messages. |
 | <a id="mutationdastscannerprofileupdatespidertimeout"></a>`spiderTimeout` | [`Int!`](#int) | Maximum number of minutes allowed for the spider to traverse the site. |
+| <a id="mutationdastscannerprofileupdatetaglist"></a>`tagList` | [`[String!]`](#string) | Indicates the runner tags associated with the scanner profile. |
 | <a id="mutationdastscannerprofileupdatetargettimeout"></a>`targetTimeout` | [`Int!`](#int) | Maximum number of seconds allowed for the site under test to respond to a request. |
 | <a id="mutationdastscannerprofileupdateuseajaxspider"></a>`useAjaxSpider` | [`Boolean`](#boolean) | Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider. |
 
@@ -11870,6 +11872,7 @@ Represents a DAST scanner profile.
 | <a id="dastscannerprofilescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
 | <a id="dastscannerprofileshowdebugmessages"></a>`showDebugMessages` | [`Boolean!`](#boolean) | Indicates if debug messages should be included in DAST console output. True to include the debug messages. |
 | <a id="dastscannerprofilespidertimeout"></a>`spiderTimeout` | [`Int`](#int) | Maximum number of minutes allowed for the spider to traverse the site. |
+| <a id="dastscannerprofiletaglist"></a>`tagList` | [`[String!]`](#string) | Runner tags associated with the scanner profile. |
 | <a id="dastscannerprofiletargettimeout"></a>`targetTimeout` | [`Int`](#int) | Maximum number of seconds allowed for the site under test to respond to a request. |
 | <a id="dastscannerprofileuseajaxspider"></a>`useAjaxSpider` | [`Boolean!`](#boolean) | Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider. |
 
