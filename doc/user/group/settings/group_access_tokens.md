@@ -48,9 +48,6 @@ You cannot use group access tokens to create other group, project, or personal a
 Group access tokens inherit the [default prefix setting](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.
 
-NOTE:
-Group access tokens are not FIPS compliant and creation and use are disabled when [FIPS mode](../../../development/fips_compliance.md) is enabled.
-
 ## Create a group access token using UI
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214045) in GitLab 14.7.

@@ -799,10 +799,6 @@ class ApplicationSetting < ApplicationRecord
     ::AsciidoctorExtensions::Kroki::SUPPORTED_DIAGRAM_NAMES.include?(diagram_type)
   end
 
-  def personal_access_tokens_disabled?
-    false
-  end
-
   private
 
   def parsed_grafana_url

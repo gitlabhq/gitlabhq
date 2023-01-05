@@ -10,18 +10,6 @@ RSpec.describe Admin::ImpersonationTokensController, :enable_admin_mode do
     sign_in(admin)
   end
 
-  context 'when impersonation is enabled' do
-    before do
-      stub_config_setting(impersonation_enabled: true)
-    end
-
-    it 'responds ok' do
-      get admin_user_impersonation_tokens_path(user_id: user.username)
-
-      expect(response).to have_gitlab_http_status(:ok)
-    end
-  end
-
   context "when impersonation is disabled" do
     before do
       stub_config_setting(impersonation_enabled: false)

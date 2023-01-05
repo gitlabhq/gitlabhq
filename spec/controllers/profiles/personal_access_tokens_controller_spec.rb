@@ -36,14 +36,6 @@ RSpec.describe Profiles::PersonalAccessTokensController do
       expect(created_token.expires_at).to eq(expires_at)
     end
 
-    it 'does not allow creation when personal access tokens are disabled' do
-      allow(::Gitlab::CurrentSettings).to receive_messages(personal_access_tokens_disabled?: true)
-
-      post :create, params: { personal_access_token: token_attributes }
-
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
-
     it_behaves_like "#create access token" do
       let(:url) { :create }
     end
@@ -76,14 +68,6 @@ RSpec.describe Profiles::PersonalAccessTokensController do
         name: eq(name),
         scopes: contain_exactly(:api, :read_user)
       )
-    end
-
-    it 'returns 404 when personal access tokens are disabled' do
-      allow(::Gitlab::CurrentSettings).to receive_messages(personal_access_tokens_disabled?: true)
-
-      get :index
-
-      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     context "access_token_pagination feature flag is enabled" do
