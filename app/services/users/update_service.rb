@@ -31,6 +31,7 @@ module Users
 
       assign_identity
       build_canonical_email
+      reset_unconfirmed_email
 
       if @user.save(validate: validate) && update_status
         notify_success(user_exists)
@@ -62,6 +63,13 @@ module Users
       return unless @user.email_changed?
 
       Users::UpdateCanonicalEmailService.new(user: @user).execute
+    end
+
+    def reset_unconfirmed_email
+      return unless @user.persisted?
+      return unless @user.email_changed?
+
+      @user.update_column(:unconfirmed_email, nil)
     end
 
     def update_status
