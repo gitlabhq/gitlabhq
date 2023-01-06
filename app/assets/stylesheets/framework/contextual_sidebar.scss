@@ -146,13 +146,12 @@
 }
 
 @mixin top-level-item {
+  @include gl-h-7;
   @include gl-px-4;
-  @include gl-py-3;
   @include gl-display-flex;
   @include gl-align-items-center;
   @include gl-rounded-base;
   @include gl-w-auto;
-  @include gl-line-height-normal;
   transition: none;
   margin: $sidebar-top-item-tb-margin $sidebar-top-item-lr-margin;
 

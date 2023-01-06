@@ -46,7 +46,6 @@ describe('BoardsSelector', () => {
         isProjectBoard: () => isProjectBoard,
       },
       state: {
-        boardType: isGroupBoard ? 'group' : 'project',
         board: mockBoard,
       },
     });
@@ -86,6 +85,7 @@ describe('BoardsSelector', () => {
   const createComponent = ({
     projectBoardsQueryHandler = projectBoardsQueryHandlerSuccess,
     projectRecentBoardsQueryHandler = projectRecentBoardsQueryHandlerSuccess,
+    isGroupBoard = false,
   } = {}) => {
     fakeApollo = createMockApollo([
       [projectBoardsQuery, projectBoardsQueryHandler],
@@ -109,6 +109,7 @@ describe('BoardsSelector', () => {
         multipleIssueBoardsAvailable: true,
         scopedIssueBoardFeatureEnabled: true,
         weights: [],
+        boardType: isGroupBoard ? 'group' : 'project',
       },
     });
   };
@@ -233,7 +234,7 @@ describe('BoardsSelector', () => {
         isProjectBoard: boardType === BoardType.project,
         isGroupBoard: boardType === BoardType.group,
       });
-      createComponent();
+      createComponent({ isGroupBoard: boardType === BoardType.group });
 
       await nextTick();
 

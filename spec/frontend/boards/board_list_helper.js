@@ -97,6 +97,7 @@ export default function createComponent({
     provide: {
       groupId: null,
       rootPath: '/',
+      fullPath: 'gitlab-org',
       boardId: '1',
       weightFeatureAvailable: false,
       boardWeight: null,

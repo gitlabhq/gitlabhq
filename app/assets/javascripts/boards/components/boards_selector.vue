@@ -49,6 +49,7 @@ export default {
     'hasMissingBoards',
     'scopedIssueBoardFeatureEnabled',
     'weights',
+    'boardType',
   ],
   props: {
     throttleDuration: {
@@ -74,7 +75,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['boardType', 'board', 'isBoardLoading']),
+    ...mapState(['board', 'isBoardLoading']),
     ...mapGetters(['isGroupBoard', 'isProjectBoard']),
     parentType() {
       return this.boardType;

@@ -61,6 +61,7 @@ describe('Board card', () => {
         rootPath: '/',
         scopedLabelsAvailable: false,
         isEpicBoard: false,
+        issuableType: 'issue',
         ...provide,
       },
     });

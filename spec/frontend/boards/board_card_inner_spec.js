@@ -60,7 +60,6 @@ describe('Board card component', () => {
       },
       state: {
         ...defaultStore.state,
-        issuableType: issuableTypes.issue,
         isShowingLabels: true,
       },
       getters: {
@@ -97,6 +96,7 @@ describe('Board card component', () => {
         rootPath: '/',
         scopedLabelsAvailable: false,
         isEpicBoard,
+        issuableType: issuableTypes.issue,
       },
     });
   };

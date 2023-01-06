@@ -1136,15 +1136,13 @@ kbd {
 }
 .nav-sidebar li > a,
 .nav-sidebar li > .fly-out-top-item-container {
+  height: 2rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
   display: flex;
   align-items: center;
   border-radius: 0.25rem;
   width: auto;
-  line-height: 1rem;
   margin: 1px 8px;
 }
 .nav-sidebar li.active > a {
@@ -1373,15 +1371,13 @@ kbd {
   margin-top: 0.25rem;
 }
 .nav-sidebar-inner-scroll > div.context-header a {
+  height: 2rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
   display: flex;
   align-items: center;
   border-radius: 0.25rem;
   width: auto;
-  line-height: 1rem;
   margin: 1px 8px;
   padding: 0.25rem;
   margin-bottom: 0.25rem;

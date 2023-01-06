@@ -894,3 +894,7 @@ to reconfigure, using the new and improved job definition default values.
 include:
   - template: Security/SAST.gitlab-ci.yml
 ```
+
+### MobSF job fails with error message `Reading from Info.plist`
+
+This error happens when `Info.plist` file is missing a `CFBundleIdentifier` key and string value.

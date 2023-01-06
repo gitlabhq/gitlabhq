@@ -14,7 +14,7 @@ const addListNewIssuesSpy = jest.fn().mockResolvedValue();
 const mockActions = { addListNewIssue: addListNewIssuesSpy };
 
 const createComponent = ({
-  state = { selectedProject: mockGroupProjects[0], fullPath: mockGroupProjects[0].fullPath },
+  state = { selectedProject: mockGroupProjects[0] },
   actions = mockActions,
   getters = { isGroupBoard: () => true, getBoardItemsByList: () => () => [] },
 } = {}) =>
@@ -29,6 +29,7 @@ const createComponent = ({
     },
     provide: {
       groupId: 1,
+      fullPath: mockGroupProjects[0].fullPath,
       weightFeatureAvailable: false,
       boardWeight: null,
     },
