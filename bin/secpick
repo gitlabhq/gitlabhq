@@ -36,11 +36,13 @@ module Secpick
     end
 
     def git_commands
-      ["git fetch #{@options[:remote]} #{stable_branch}",
-       "git checkout -B #{source_branch} #{@options[:remote]}/#{stable_branch} --no-track",
-       "git cherry-pick #{@options[:sha]}",
-       "git push #{@options[:remote]} #{source_branch} --no-verify",
-       "git checkout #{@options[:branch]}"]
+      [
+        fetch_stable_branch,
+        create_backport_branch,
+        cherry_pick_commit,
+        push_to_remote,
+        checkout_original_branch
+      ]
     end
 
     def gitlab_params
@@ -62,8 +64,10 @@ module Secpick
         puts "\nGit commands:".blue
         puts git_commands.join("\n")
 
-        puts "\nMerge request URL:".blue
-        puts new_mr_url
+        if !@options[:merge_request]
+          puts "\nMerge request URL:".blue
+          puts new_mr_url
+        end
 
         puts "\nMerge request params:".blue
         pp gitlab_params
@@ -74,7 +78,7 @@ module Secpick
         puts stdout.read&.green
         puts stderr.read&.red
 
-        if wait_thr.value.success?
+        if wait_thr.value.success? && !@options[:merge_request]
           puts "#{new_mr_url}?#{gitlab_params.to_query}".blue
         end
 
@@ -85,7 +89,7 @@ module Secpick
     end
 
     def self.options
-      { version: nil, branch: nil, sha: nil }.tap do |options|
+      { version: nil, branch: nil, sha: nil, merge_request: false }.tap do |options|
         parser = OptionParser.new do |opts|
           opts.banner = "Usage: #{$0} [options]"
           opts.on('-v', '--version 10.0', 'Version') do |version|
@@ -102,6 +106,10 @@ module Secpick
 
           opts.on('-r', '--remote dev', "Git remote name of security repo (optional, defaults to `#{DEFAULT_REMOTE}`)") do |remote|
             options[:remote] = remote
+          end
+
+          opts.on('--mr', '--merge-request', 'Create relevant security Merge Request targeting the stable branch') do
+            options[:merge_request] = true
           end
 
           opts.on('-d', '--dry-run', 'Only show Git commands, without calling them') do
@@ -128,6 +136,45 @@ module Secpick
 
         abort("Wrong version format #{options[:version].bold}".red) unless options[:version] =~ /\A\d*\-\d*\Z/
       end
+    end
+
+    private
+
+    def checkout_original_branch
+      "git checkout #{@options[:branch]}"
+    end
+
+    def push_to_remote
+      [
+        "git push #{@options[:remote]} #{source_branch} --no-verify",
+        *merge_request_push_options
+      ].join(' ')
+    end
+
+    def merge_request_push_options
+      return [] unless @options[:merge_request]
+
+      [
+        "-o mr.create",
+        "-o mr.target='#{stable_branch}'",
+        "-o mr.description='Please apply Security Release template. /milestone %#{milestone}'"
+      ]
+    end
+
+    def cherry_pick_commit
+      "git cherry-pick #{@options[:sha]}"
+    end
+
+    def create_backport_branch
+      "git checkout -B #{source_branch} #{@options[:remote]}/#{stable_branch} --no-track"
+    end
+
+    def fetch_stable_branch
+      "git fetch #{@options[:remote]} #{stable_branch}"
+    end
+
+    def milestone
+      @options[:version].gsub('-', '.')
     end
   end
 end
