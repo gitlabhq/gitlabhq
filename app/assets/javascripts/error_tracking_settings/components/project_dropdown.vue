@@ -1,11 +1,10 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { getDisplayName } from '../utils';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
   },
   props: {
     dropdownLabel: {
@@ -42,8 +41,21 @@ export default {
       required: true,
     },
   },
+  computed: {
+    listboxItems() {
+      return this.projects.map((project) => {
+        return {
+          text: getDisplayName(project),
+          value: project.id,
+        };
+      });
+    },
+  },
   methods: {
-    getDisplayName,
+    selectProject(id) {
+      const project = this.projects.find((p) => p.id === id);
+      this.$emit('select-project', project);
+    },
   },
 };
 </script>
@@ -52,22 +64,15 @@ export default {
   <div :class="{ 'gl-show-field-errors': isProjectInvalid }">
     <label class="label-bold" for="project-dropdown">{{ __('Project') }}</label>
     <div class="row">
-      <gl-dropdown
+      <gl-collapsible-listbox
         id="project-dropdown"
-        class="col-8 col-md-9 gl-pr-0"
+        class="gl-pl-5"
         :disabled="!hasProjects"
-        menu-class="w-100 mw-100"
-        toggle-class="dropdown-menu-toggle gl-field-error-outline"
-        :text="dropdownLabel"
-      >
-        <gl-dropdown-item
-          v-for="project in projects"
-          :key="`${project.organizationSlug}.${project.slug}`"
-          class="w-100"
-          @click="$emit('select-project', project)"
-          >{{ getDisplayName(project) }}</gl-dropdown-item
-        >
-      </gl-dropdown>
+        :items="listboxItems"
+        :selected="selectedProject && selectedProject.id"
+        :toggle-text="dropdownLabel"
+        @select="selectProject"
+      />
     </div>
     <p v-if="isProjectInvalid" class="js-project-dropdown-error gl-field-error">
       {{ invalidProjectLabel }}

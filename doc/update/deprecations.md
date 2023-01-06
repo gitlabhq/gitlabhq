@@ -100,6 +100,22 @@ The Container Registry pull-through cache is deprecated in GitLab 15.8 and will 
 
 <div class="deprecation removal-160 breaking-change">
 
+### Owner permissions are required to update Package settings
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+You must have Owner permissions to use the GitLab UI to update the `Packages and registries` settings for your groups. This includes [allowing or preventing duplicate package uploads](https://docs.gitlab.com/ee/user/packages/maven_repository/#do-not-allow-duplicate-maven-packages), [package request forwarding](https://docs.gitlab.com/ee/user/packages/maven_repository/#request-forwarding-to-maven-central), and [enabling lifecycle rules for the Dependency Proxy](https://docs.gitlab.com/ee/user/packages/dependency_proxy/reduce_dependency_proxy_storage.html). Currently, you can use the GraphQL API with Owner or Maintainer permissions to update these settings.
+
+In GitLab 16.0 and later, you must have Owner permissions to use the GraphQL API to change the `Packages and registries` settings.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Support for third party registries
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)

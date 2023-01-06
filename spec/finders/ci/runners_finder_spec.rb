@@ -630,16 +630,6 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
           expect(subject).to be_empty
         end
       end
-
-      context 'when on_demand_scans_runner_tags feature flag is disabled' do
-        before do
-          stub_feature_flags(on_demand_scans_runner_tags: false)
-        end
-
-        it 'returns no runners' do
-          expect(subject).to be_empty
-        end
-      end
     end
   end
 end

@@ -5,12 +5,14 @@ const defaultStore = createStore();
 
 export const projectList = [
   {
+    id: '1',
     name: 'name',
     slug: 'slug',
     organizationName: 'organizationName',
     organizationSlug: 'organizationSlug',
   },
   {
+    id: '2',
     name: 'name2',
     slug: 'slug2',
     organizationName: 'organizationName2',
@@ -19,6 +21,7 @@ export const projectList = [
 ];
 
 export const staleProject = {
+  id: '3',
   name: 'staleName',
   slug: 'staleSlug',
   organizationName: 'staleOrganizationName',
@@ -26,6 +29,7 @@ export const staleProject = {
 };
 
 export const normalizedProject = {
+  id: '5',
   name: 'name',
   slug: 'slug',
   organizationName: 'organization_name',
@@ -33,6 +37,7 @@ export const normalizedProject = {
 };
 
 export const sampleBackendProject = {
+  id: '5',
   name: normalizedProject.name,
   slug: normalizedProject.slug,
   organization_name: normalizedProject.organizationName,
@@ -45,6 +50,7 @@ export const sampleFrontendSettings = {
   integrated: false,
   token: 'token',
   selectedProject: {
+    id: '5',
     slug: normalizedProject.slug,
     name: normalizedProject.name,
     organizationName: normalizedProject.organizationName,
@@ -58,6 +64,7 @@ export const transformedSettings = {
   integrated: false,
   token: 'token',
   project: {
+    sentry_project_id: '5',
     slug: normalizedProject.slug,
     name: normalizedProject.name,
     organization_name: normalizedProject.organizationName,

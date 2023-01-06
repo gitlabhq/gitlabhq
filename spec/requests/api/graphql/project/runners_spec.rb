@@ -53,16 +53,4 @@ RSpec.describe 'Project.runners', feature_category: :runner do
       expect(graphql_data_at(:project, :runners, :nodes)).to be_empty
     end
   end
-
-  context 'when on_demand_scans_runner_tags feature flag is disabled' do
-    before do
-      stub_feature_flags(on_demand_scans_runner_tags: false)
-    end
-
-    it 'returns no runners' do
-      post_graphql(query, current_user: user)
-
-      expect(graphql_data_at(:project, :runners, :nodes)).to be_empty
-    end
-  end
 end
