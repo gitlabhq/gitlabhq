@@ -268,17 +268,35 @@ RSpec.describe UploadsController do
       end
 
       context "when not signed in" do
-        it "responds with status 200" do
-          get :show, params: { model: "user", mounted_as: "avatar", id: user.id, filename: "dk.png" }
+        context "when restricted visibility level is not set to public" do
+          before do
+            stub_application_setting(restricted_visibility_levels: [])
+          end
 
-          expect(response).to have_gitlab_http_status(:ok)
+          it "responds with status 200" do
+            get :show, params: { model: "user", mounted_as: "avatar", id: user.id, filename: "dk.png" }
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it_behaves_like 'content publicly cached' do
+            subject do
+              get :show, params: { model: 'user', mounted_as: 'avatar', id: user.id, filename: 'dk.png' }
+
+              response
+            end
+          end
         end
 
-        it_behaves_like 'content publicly cached' do
-          subject do
-            get :show, params: { model: 'user', mounted_as: 'avatar', id: user.id, filename: 'dk.png' }
+        context "when restricted visibility level is set to public" do
+          before do
+            stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+          end
 
-            response
+          it "responds with status 401" do
+            get :show, params: { model: "user", mounted_as: "avatar", id: user.id, filename: "dk.png" }
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
           end
         end
       end
