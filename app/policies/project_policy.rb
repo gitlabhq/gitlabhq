@@ -157,7 +157,9 @@ class ProjectPolicy < BasePolicy
   condition(:service_desk_enabled) { @subject.service_desk_enabled? }
 
   with_scope :subject
-  condition(:resource_access_token_feature_available) { resource_access_token_feature_available? }
+  condition(:resource_access_token_feature_available) do
+    resource_access_token_feature_available?
+  end
   condition(:resource_access_token_creation_allowed) { resource_access_token_creation_allowed? }
 
   # We aren't checking `:read_issue` or `:read_merge_request` in this case
@@ -922,12 +924,16 @@ class ProjectPolicy < BasePolicy
     true
   end
 
+  def resource_access_token_create_feature_available?
+    true
+  end
+
   def resource_access_token_creation_allowed?
     group = project.group
 
     return true unless group # always enable for projects in personal namespaces
 
-    resource_access_token_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
+    resource_access_token_create_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
   end
 
   def project
