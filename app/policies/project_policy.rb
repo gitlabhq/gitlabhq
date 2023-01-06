@@ -308,6 +308,8 @@ class ProjectPolicy < BasePolicy
   rule { guest & can?(:download_code) }.enable :build_download_code
   rule { guest & can?(:read_container_image) }.enable :build_read_container_image
 
+  rule { guest & ~public_project }.enable :read_grafana
+
   rule { can?(:reporter_access) }.policy do
     enable :admin_issue_board
     enable :download_code
@@ -340,6 +342,7 @@ class ProjectPolicy < BasePolicy
     enable :read_package
     enable :read_product_analytics
     enable :read_ci_cd_analytics
+    enable :read_grafana
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
