@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ErrorTracking::ListProjectsService, feature_category: :integrations do
+RSpec.describe ErrorTracking::ListProjectsService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project) }
 
@@ -51,33 +51,15 @@ RSpec.describe ErrorTracking::ListProjectsService, feature_category: :integratio
       end
 
       context 'masked param token' do
-        let(:params) { ActionController::Parameters.new(token: "*********", api_host: api_host) }
+        let(:params) { ActionController::Parameters.new(token: "*********", api_host: new_api_host) }
 
-        context 'with the current api host' do
-          let(:api_host) { 'https://sentrytest.gitlab.com' }
-
-          before do
-            expect(error_tracking_setting).to receive(:list_sentry_projects)
+        before do
+          expect(error_tracking_setting).to receive(:list_sentry_projects)
             .and_return({ projects: [] })
-          end
-
-          it 'uses database token' do
-            expect { subject.execute }.not_to change { error_tracking_setting.token }
-          end
         end
 
-        context 'with a new api host' do
-          let(:api_host) { new_api_host }
-
-          it 'returns an error' do
-            expect(result[:message]).to start_with('Token is a required field')
-            expect(error_tracking_setting).not_to be_valid
-            expect(error_tracking_setting).not_to receive(:list_sentry_projects)
-          end
-
-          it 'resets the token' do
-            expect { subject.execute }.to change { error_tracking_setting.token }.from(token).to(nil)
-          end
+        it 'uses database token' do
+          expect { subject.execute }.not_to change { error_tracking_setting.token }
         end
       end
 

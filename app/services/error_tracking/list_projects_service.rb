@@ -2,8 +2,6 @@
 
 module ErrorTracking
   class ListProjectsService < ErrorTracking::BaseService
-    MASKED_TOKEN_REGEX = /\A\*+\z/.freeze
-
     private
 
     def perform
@@ -23,31 +21,23 @@ module ErrorTracking
     def project_error_tracking_setting
       @project_error_tracking_setting ||= begin
         (super || project.build_error_tracking_setting).tap do |setting|
-          url_changed = !setting.api_url&.start_with?(params[:api_host])
-
           setting.api_url = ErrorTracking::ProjectErrorTrackingSetting.build_api_url_from(
             api_host: params[:api_host],
             organization_slug: 'org',
             project_slug: 'proj'
           )
 
-          setting.token = token(setting, url_changed)
+          setting.token = token(setting)
           setting.enabled = true
         end
       end
     end
 
-    def token(setting, url_changed)
-      return if url_changed && masked_token?
-
+    def token(setting)
       # Use param token if not masked, otherwise use database token
-      return params[:token] unless masked_token?
+      return params[:token] unless /\A\*+\z/.match?(params[:token])
 
       setting.token
-    end
-
-    def masked_token?
-      MASKED_TOKEN_REGEX.match?(params[:token])
     end
   end
 end
