@@ -4,6 +4,8 @@ module Gitlab
   module BackgroundMigration
     # rubocop: disable Style/Documentation
     class RecountEpicCacheCounts < Gitlab::BackgroundMigration::BatchedMigrationJob
+      feature_category :database
+
       def perform; end
     end
     # rubocop: enable Style/Documentation

@@ -6,6 +6,7 @@ module Gitlab
     class BackfillGroupFeatures < ::Gitlab::BackgroundMigration::BatchedMigrationJob
       job_arguments :batch_size
       operation_name :upsert_group_features
+      feature_category :database
 
       def perform
         each_sub_batch(

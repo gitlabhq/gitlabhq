@@ -5,6 +5,7 @@ module Gitlab
     # Add expiry to all OAuth access tokens
     class ExpireOAuthTokens < ::Gitlab::BackgroundMigration::BatchedMigrationJob
       operation_name :update_oauth_tokens
+      feature_category :database
 
       def perform
         each_sub_batch(

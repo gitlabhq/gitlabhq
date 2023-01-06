@@ -13,5 +13,6 @@ module Ci
     validates :platform, length: { maximum: 255 }
     validates :architecture, length: { maximum: 255 }
     validates :ip_address, length: { maximum: 1024 }
+    validates :config, json_schema: { filename: 'ci_runner_config' }
   end
 end

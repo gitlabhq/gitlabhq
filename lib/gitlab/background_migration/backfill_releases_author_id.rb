@@ -9,6 +9,7 @@ module Gitlab
     class BackfillReleasesAuthorId < BatchedMigrationJob
       operation_name :backfill_releases_author_id
       job_arguments :ghost_user_id
+      feature_category :database
 
       scope_to ->(relation) { relation.where(author_id: nil) }
 

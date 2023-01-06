@@ -273,6 +273,7 @@ module ApplicationSettingsHelper
       :housekeeping_full_repack_period,
       :housekeeping_gc_period,
       :housekeeping_incremental_repack_period,
+      :housekeeping_optimize_repository_period,
       :html_emails_enabled,
       :import_sources,
       :in_product_marketing_emails_enabled,

@@ -8,6 +8,7 @@ module Gitlab
       THRESHOLD_DATE = '2022-02-17 09:00:00'
 
       operation_name :disable_legacy_open_source_licence_for_recent_public_projects
+      feature_category :database
 
       # Migration only version of `project_settings` table
       class ProjectSetting < ApplicationRecord

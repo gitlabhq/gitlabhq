@@ -16,6 +16,7 @@ module Gitlab
     class CopyColumnUsingBackgroundMigrationJob < BatchedMigrationJob
       job_arguments :copy_from, :copy_to
       operation_name :update_all
+      feature_category :database
 
       def perform
         assignment_clauses = build_assignment_clauses(copy_from, copy_to)

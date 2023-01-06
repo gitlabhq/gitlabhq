@@ -13,6 +13,7 @@ module Gitlab
       scope_to ->(relation) { relation.where(confidential: true) }
 
       operation_name :delete_invalid_todos
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

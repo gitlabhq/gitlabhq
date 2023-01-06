@@ -10,7 +10,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
 
-    Feature.disable(:show_pages_in_deployments_menu, :project)
+    stub_feature_flags(show_pages_in_deployments_menu: false)
 
     project.add_maintainer(user)
 

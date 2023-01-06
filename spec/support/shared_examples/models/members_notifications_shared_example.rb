@@ -51,7 +51,7 @@ RSpec.shared_examples 'members notifications' do |entity_type|
     it "calls NotificationService.new_#{entity_type}_member" do
       expect(notification_service).to receive(:"new_#{entity_type}_member").with(member)
 
-      member.accept_request
+      member.accept_request(create(:user))
     end
   end
 

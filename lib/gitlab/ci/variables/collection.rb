@@ -72,6 +72,35 @@ module Gitlab
           Collection.new(@variables.reject(&block))
         end
 
+        def sort_and_expand_all(keep_undefined: false, expand_file_refs: true, expand_raw_refs: true)
+          sorted = Sort.new(self)
+          return self.class.new(self, sorted.errors) unless sorted.valid?
+
+          new_collection = self.class.new
+
+          sorted.tsort.each do |item|
+            unless item.depends_on
+              new_collection.append(item)
+              next
+            end
+
+            # expand variables as they are added
+            variable = item.to_runner_variable
+            variable[:value] = new_collection.expand_value(variable[:value], keep_undefined: keep_undefined,
+                                                                             expand_file_refs: expand_file_refs,
+                                                                             expand_raw_refs: expand_raw_refs)
+            new_collection.append(variable)
+          end
+
+          new_collection
+        end
+
+        def to_s
+          "#{@variables_by_key.keys}, @errors='#{@errors}'"
+        end
+
+        protected
+
         def expand_value(value, keep_undefined: false, expand_file_refs: true, expand_raw_refs: true)
           value.gsub(Item::VARIABLES_REGEXP) do
             match = Regexp.last_match # it is either a valid variable definition or a ($$ / %%)
@@ -115,34 +144,7 @@ module Gitlab
           end
         end
 
-        def sort_and_expand_all(keep_undefined: false, expand_file_refs: true, expand_raw_refs: true)
-          sorted = Sort.new(self)
-          return self.class.new(self, sorted.errors) unless sorted.valid?
-
-          new_collection = self.class.new
-
-          sorted.tsort.each do |item|
-            unless item.depends_on
-              new_collection.append(item)
-              next
-            end
-
-            # expand variables as they are added
-            variable = item.to_runner_variable
-            variable[:value] = new_collection.expand_value(variable[:value], keep_undefined: keep_undefined,
-                                                                             expand_file_refs: expand_file_refs,
-                                                                             expand_raw_refs: expand_raw_refs)
-            new_collection.append(variable)
-          end
-
-          new_collection
-        end
-
-        def to_s
-          "#{@variables_by_key.keys}, @errors='#{@errors}'"
-        end
-
-        protected
+        private
 
         attr_reader :variables
       end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::PagesController < Projects::ApplicationController
-  layout 'project_settings' if Feature.disabled?(:show_pages_in_deployments_menu, @project, type: :experiment)
+  layout :resolve_layout
 
   before_action :require_pages_enabled!
   before_action :authorize_read_pages!, only: [:show]
@@ -11,7 +11,7 @@ class Projects::PagesController < Projects::ApplicationController
   feature_category :pages
 
   before_action do
-    push_frontend_feature_flag(:show_pages_in_deployments_menu, project, type: :experiment)
+    push_frontend_feature_flag(:show_pages_in_deployments_menu, current_user, type: :experiment)
   end
 
   def new
@@ -67,6 +67,10 @@ class Projects::PagesController < Projects::ApplicationController
   end
 
   private
+
+  def resolve_layout
+    'project_settings' unless Feature.enabled?(:show_pages_in_deployments_menu, current_user, type: :experiment)
+  end
 
   def project_params
     params.require(:project).permit(project_params_attributes)

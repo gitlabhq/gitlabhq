@@ -5,6 +5,7 @@ module Gitlab
     # Deletes orphans records whenever report_type equals to scan_finding (i.e., 4)
     class DeleteOrphansApprovalProjectRules < BatchedMigrationJob
       operation_name :delete_all
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

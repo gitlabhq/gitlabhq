@@ -4,6 +4,8 @@ module Gitlab
   module BackgroundMigration
     # Back-fill storage_size for project_statistics
     class BackfillProjectStatisticsStorageSizeWithoutUploadsSize < Gitlab::BackgroundMigration::BatchedMigrationJob
+      feature_category :database
+
       def perform
         # no-op
       end

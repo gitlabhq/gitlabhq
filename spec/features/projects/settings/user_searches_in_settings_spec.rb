@@ -68,6 +68,7 @@ RSpec.describe 'User searches project settings', :js, feature_category: :project
 
   context 'in Pages page' do
     before do
+      stub_feature_flags(show_pages_in_deployments_menu: false)
       allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
 
       visit project_pages_path(project)

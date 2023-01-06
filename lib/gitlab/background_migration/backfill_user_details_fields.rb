@@ -11,6 +11,7 @@ module Gitlab
     # * organization
     class BackfillUserDetailsFields < BatchedMigrationJob
       operation_name :backfill_user_details_fields
+      feature_category :database
 
       def perform
         query = <<~SQL

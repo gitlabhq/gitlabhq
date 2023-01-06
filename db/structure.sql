@@ -13421,6 +13421,7 @@ CREATE TABLE ci_runner_machines (
     platform text,
     architecture text,
     ip_address text,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_1537c1f66f CHECK ((char_length(platform) <= 255)),
     CONSTRAINT check_6f45a91da7 CHECK ((char_length(version) <= 2048)),
     CONSTRAINT check_84ed5d8703 CHECK ((char_length(machine_xid) <= 64)),

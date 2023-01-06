@@ -10,6 +10,7 @@ module Gitlab
       SUB_BATCH_SIZE = 1_000
 
       operation_name :update_search_data
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

@@ -18,6 +18,7 @@ module Gitlab
       end
 
       operation_name :update_all
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

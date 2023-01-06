@@ -303,7 +303,7 @@ RSpec.describe Member do
       @requested_member = project.requesters.find_by(user_id: requested_user.id)
 
       accepted_request_user = create(:user).tap { |u| project.request_access(u) }
-      @accepted_request_member = project.requesters.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
+      @accepted_request_member = project.requesters.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request(@owner_user) }
       @member_with_minimal_access = create(:group_member, :minimal_access, source: group)
     end
 
@@ -777,18 +777,25 @@ RSpec.describe Member do
   describe '#accept_request' do
     let(:member) { create(:project_member, requested_at: Time.current.utc) }
 
-    it { expect(member.accept_request).to be_truthy }
+    it { expect(member.accept_request(@owner_user)).to be_truthy }
+    it { expect(member.accept_request(nil)).to be_truthy }
 
     it 'clears requested_at' do
-      member.accept_request
+      member.accept_request(@owner_user)
 
       expect(member.requested_at).to be_nil
+    end
+
+    it 'saves the approving user' do
+      member.accept_request(@owner_user)
+
+      expect(member.created_by).to eq(@owner_user)
     end
 
     it 'calls #after_accept_request' do
       expect(member).to receive(:after_accept_request)
 
-      member.accept_request
+      member.accept_request(@owner_user)
     end
   end
 

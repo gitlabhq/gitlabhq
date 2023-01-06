@@ -5,6 +5,7 @@ module Gitlab
     class DestroyInvalidMembers < Gitlab::BackgroundMigration::BatchedMigrationJob # rubocop:disable Style/Documentation
       scope_to ->(relation) { relation.where(member_namespace_id: nil) }
       operation_name :delete_all
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

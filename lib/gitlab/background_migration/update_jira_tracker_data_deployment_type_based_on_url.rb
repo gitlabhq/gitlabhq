@@ -4,6 +4,8 @@
 module Gitlab
   module BackgroundMigration
     class UpdateJiraTrackerDataDeploymentTypeBasedOnUrl < Gitlab::BackgroundMigration::BatchedMigrationJob
+      feature_category :database
+
       # rubocop: disable Gitlab/NamespacedClass
       class JiraTrackerData < ActiveRecord::Base
         self.table_name = "jira_tracker_data"

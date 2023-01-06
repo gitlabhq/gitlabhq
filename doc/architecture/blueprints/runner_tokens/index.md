@@ -174,6 +174,7 @@ CREATE TABLE ci_runner_machines (
     architecture character varying,
     ip_address character varying,
     executor_type smallint,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 ```
 

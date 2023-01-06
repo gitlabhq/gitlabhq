@@ -92,7 +92,7 @@ RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code 
       let(:commit) { project.commit(GpgHelpers::SIGNED_COMMIT_SHA) }
 
       it 'renders unverified badge' do
-        expect(title).to include('This commit was signed with an <strong>unverified</strong> signature.')
+        expect(title).to include('This commit was signed with an unverified signature.')
         expect(content).to include(commit.signature.gpg_key_primary_keyid)
       end
     end
@@ -101,7 +101,7 @@ RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code 
       let(:commit) { project.commit('7b5160f9bb23a3d58a0accdbe89da13b96b1ece9') }
 
       it 'renders unverified badge' do
-        expect(title).to include('This commit was signed with an <strong>unverified</strong> signature.')
+        expect(title).to include('This commit was signed with an unverified signature.')
         expect(content).to match(/SSH key fingerprint:[\s\S]+Unknown/)
       end
     end
@@ -112,7 +112,6 @@ RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code 
       it 'renders unverified badge' do
         expect(title).to include('This commit was signed with an <strong>unverified</strong> signature.')
         expect(content).to include(commit.signature.x509_certificate.subject_key_identifier.tr(":", " "))
-        expect(content).to include(commit.signature.x509_certificate.email)
       end
     end
   end

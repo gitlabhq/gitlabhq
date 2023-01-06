@@ -5,6 +5,8 @@ module Gitlab
     # This class doesn't update approval project rules
     # as this feature exists only in EE
     class FixApprovalProjectRulesWithoutProtectedBranches < BatchedMigrationJob
+      feature_category :database
+
       def perform; end
     end
   end

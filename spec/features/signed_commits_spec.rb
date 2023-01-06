@@ -94,8 +94,6 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
 
       within '.popover' do
         expect(page).to have_content 'This commit was signed with a verified signature, but the committer email is not associated with the GPG Key.'
-        expect(page).to have_content 'Bette Cartwright'
-        expect(page).to have_content '@bette.cartwright'
         expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
       end
     end
@@ -110,8 +108,6 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
 
       within '.popover' do
         expect(page).to have_content "This commit was signed with a different user's verified signature."
-        expect(page).to have_content 'Bette Cartwright'
-        expect(page).to have_content '@bette.cartwright'
         expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
       end
     end
@@ -138,9 +134,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
       page.find('.gpg-status-box', text: 'Verified').click
 
       within '.popover' do
-        expect(page).to have_content 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.'
-        expect(page).to have_content 'Nannie Bernhard'
-        expect(page).to have_content '@nannie.bernhard'
+        expect(page).to have_content 'This commit was signed with a verified signature and the committer email was verified to belong to the same user.'
         expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
       end
     end
@@ -162,9 +156,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
       page.find('.gpg-status-box', text: 'Verified').click
 
       within '.popover' do
-        expect(page).to have_content 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.'
-        expect(page).to have_content 'Nannie Bernhard'
-        expect(page).to have_content 'nannie.bernhard@example.com'
+        expect(page).to have_content 'This commit was signed with a verified signature and the committer email was verified to belong to the same user.'
         expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
       end
     end

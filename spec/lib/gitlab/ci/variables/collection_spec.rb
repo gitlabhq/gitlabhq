@@ -295,69 +295,6 @@ RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :pipeline_au
     end
   end
 
-  describe '#expand_value' do
-    let(:collection) do
-      Gitlab::Ci::Variables::Collection.new
-                     .append(key: 'CI_JOB_NAME', value: 'test-1')
-                     .append(key: 'CI_BUILD_ID', value: '1')
-                     .append(key: 'TEST1', value: 'test-3')
-                     .append(key: 'FILEVAR1', value: 'file value 1', file: true)
-    end
-
-    context 'table tests' do
-      using RSpec::Parameterized::TableSyntax
-
-      where do
-        {
-          "empty value": {
-            value: '',
-            result: ''
-          },
-          "simple expansions": {
-            value: 'key$TEST1-$CI_BUILD_ID',
-            result: 'keytest-3-1'
-          },
-          "complex expansion": {
-            value: 'key${TEST1}-${CI_JOB_NAME}',
-            result: 'keytest-3-test-1'
-          },
-          "missing variable not keeping original": {
-            value: 'key${MISSING_VAR}-${CI_JOB_NAME}',
-            result: 'key-test-1'
-          },
-          "missing variable keeping original": {
-            value: 'key${MISSING_VAR}-${CI_JOB_NAME}',
-            result: 'key${MISSING_VAR}-test-1',
-            keep_undefined: true
-          },
-          "escaped characters are kept intact": {
-            value: 'key-$TEST1-%%HOME%%-$${HOME}',
-            result: 'key-test-3-%%HOME%%-$${HOME}'
-          },
-          "file variable with expand_file_refs: true": {
-            value: 'key-$FILEVAR1-$TEST1',
-            result: 'key-file value 1-test-3'
-          },
-          "file variable with expand_file_refs: false": {
-            value: 'key-$FILEVAR1-$TEST1',
-            result: 'key-$FILEVAR1-test-3',
-            expand_file_refs: false
-          }
-        }
-      end
-
-      with_them do
-        let(:options) { { keep_undefined: keep_undefined, expand_file_refs: expand_file_refs }.compact }
-
-        subject(:expanded_result) { collection.expand_value(value, **options) }
-
-        it 'matches expected expansion' do
-          is_expected.to eq(result)
-        end
-      end
-    end
-  end
-
   describe '#sort_and_expand_all' do
     context 'table tests' do
       using RSpec::Parameterized::TableSyntax
@@ -368,6 +305,14 @@ RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :pipeline_au
             variables: [],
             keep_undefined: false,
             result: []
+          },
+          "empty string": {
+            variables: [
+              { key: 'variable', value: '' }
+            ],
+            result: [
+              { key: 'variable', value: '' }
+            ]
           },
           "simple expansions": {
             variables: [
@@ -560,13 +505,42 @@ RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :pipeline_au
               { key: 'variable2', value: '$variable3' },
               { key: 'variable3', value: 'key$variable$variable2' }
             ]
+          },
+          "file variables with expand_file_refs: true": {
+            variables: [
+              { key: 'file_var', value: 'secret content', file: true },
+              { key: 'variable1', value: 'var one' },
+              { key: 'variable2', value: 'var two $variable1 $file_var' }
+            ],
+            result: [
+              { key: 'file_var', value: 'secret content' },
+              { key: 'variable1', value: 'var one' },
+              { key: 'variable2', value: 'var two var one secret content' }
+            ]
+          },
+          "file variables with expand_file_refs: false": {
+            variables: [
+              { key: 'file_var', value: 'secret content', file: true },
+              { key: 'variable1', value: 'var one' },
+              { key: 'variable2', value: 'var two $variable1 $file_var' }
+            ],
+            expand_file_refs: false,
+            result: [
+              { key: 'file_var', value: 'secret content' },
+              { key: 'variable1', value: 'var one' },
+              { key: 'variable2', value: 'var two var one $file_var' }
+            ]
           }
         }
       end
 
       with_them do
         let(:collection) { Gitlab::Ci::Variables::Collection.new(variables) }
-        let(:options) { { keep_undefined: keep_undefined, expand_raw_refs: expand_raw_refs }.compact }
+        let(:options) do
+          { keep_undefined: keep_undefined,
+            expand_raw_refs: expand_raw_refs,
+            expand_file_refs: expand_file_refs }.compact
+        end
 
         subject(:expanded_result) { collection.sort_and_expand_all(**options) }
 
@@ -585,5 +559,21 @@ RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :pipeline_au
         end
       end
     end
+  end
+
+  describe '#to_s' do
+    let(:variables) do
+      [
+        { key: 'VAR', value: 'value', public: true },
+        { key: 'VAR2', value: 'value2', public: false }
+      ]
+    end
+
+    let(:errors) { 'circular variable reference detected' }
+    let(:collection) { Gitlab::Ci::Variables::Collection.new(variables, errors) }
+
+    subject(:result) { collection.to_s }
+
+    it { is_expected.to eq("[\"VAR\", \"VAR2\"], @errors='circular variable reference detected'") }
   end
 end

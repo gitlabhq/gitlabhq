@@ -14419,6 +14419,9 @@ msgstr ""
 msgid "Difference between start date and now"
 msgstr ""
 
+msgid "Different user's signature"
+msgstr ""
+
 msgid "DiffsCompareBaseBranch|(HEAD)"
 msgstr ""
 
@@ -17815,6 +17818,9 @@ msgstr ""
 msgid "GPG Keys"
 msgstr ""
 
+msgid "GPG key mismatch"
+msgstr ""
+
 msgid "GPG keys allow you to verify signed commits."
 msgstr ""
 
@@ -20895,9 +20901,6 @@ msgstr ""
 msgid "If no options are selected, only administrators can register runners."
 msgstr ""
 
-msgid "If none of the options work, try contacting a GitLab administrator."
-msgstr ""
-
 msgid "If the number of active users exceeds the user limit, you will be charged for the number of %{users_over_license_link} at your next license reconciliation."
 msgstr ""
 
@@ -20917,6 +20920,9 @@ msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commit
 msgstr ""
 
 msgid "If you add %{codeStart}needs%{codeEnd} to jobs in your pipeline you'll be able to view the %{codeStart}needs%{codeEnd} relationships between jobs in this tab as a %{linkStart}Directed Acyclic Graph (DAG)%{linkEnd}."
+msgstr ""
+
+msgid "If you are unable to sign in or recover your password, contact a GitLab administrator."
 msgstr ""
 
 msgid "If you did not initiate these sign-in attempts, please reach out to your administrator or enable two-factor authentication (2FA) on your account."
@@ -24449,6 +24455,9 @@ msgstr ""
 msgid "Learn More."
 msgstr ""
 
+msgid "Learn about signing commits"
+msgstr ""
+
 msgid "Learn about signing commits with SSH keys."
 msgstr ""
 
@@ -24516,9 +24525,6 @@ msgid "Learn more about seats owed"
 msgstr ""
 
 msgid "Learn more about shards and replicas in the %{configuration_link_start}Advanced Search configuration%{configuration_link_end} documentation. Changes don't take place until you %{recreated_link_start}recreate%{recreated_link_end} the index."
-msgstr ""
-
-msgid "Learn more about signing commits"
 msgstr ""
 
 msgid "Learn more in the"
@@ -27155,6 +27161,9 @@ msgid "Multiple IP address ranges are supported. Does not affect access to the g
 msgstr ""
 
 msgid "Multiple Prometheus integrations are not supported"
+msgstr ""
+
+msgid "Multiple signatures"
 msgstr ""
 
 msgid "Multiplier to apply to polling intervals. Decimal values are supported. Defaults to 1."
@@ -39077,9 +39086,6 @@ msgstr ""
 msgid "Sign-in count:"
 msgstr ""
 
-msgid "Sign-in failed because %{error}."
-msgstr ""
-
 msgid "Sign-in page"
 msgstr ""
 
@@ -42642,19 +42648,25 @@ msgstr ""
 msgid "This commit is part of merge request %{link_to_merge_request}. Comments created here will be created in the context of that merge request."
 msgstr ""
 
-msgid "This commit was signed with %{strong_open}multiple%{strong_close} signatures."
-msgstr ""
-
 msgid "This commit was signed with a %{strong_open}verified%{strong_close} signature and the committer email is verified to belong to the same user."
 msgstr ""
 
 msgid "This commit was signed with a different user's verified signature."
 msgstr ""
 
+msgid "This commit was signed with a verified signature and the committer email was verified to belong to the same user."
+msgstr ""
+
 msgid "This commit was signed with a verified signature, but the committer email is not associated with the GPG Key."
 msgstr ""
 
 msgid "This commit was signed with an %{strong_open}unverified%{strong_close} signature."
+msgstr ""
+
+msgid "This commit was signed with an unverified signature."
+msgstr ""
+
+msgid "This commit was signed with multiple signatures."
 msgstr ""
 
 msgid "This content could not be displayed because %{reason}. You can %{options} instead."
@@ -44234,9 +44246,6 @@ msgstr ""
 msgid "Try it out now"
 msgstr ""
 
-msgid "Try logging in using your username or email. If you have forgotten your password, try recovering it"
-msgstr ""
-
 msgid "Try out GitLab Pipelines"
 msgstr ""
 
@@ -44679,6 +44688,9 @@ msgid "Unused, previous indices: %{index_names} will be deleted after %{time} au
 msgstr ""
 
 msgid "Unverified"
+msgstr ""
+
+msgid "Unverified signature"
 msgstr ""
 
 msgid "Up to date"
@@ -45887,6 +45899,9 @@ msgid "VerificationReminder|You’ll now be able to take advantage of free CI/CD
 msgstr ""
 
 msgid "Verified"
+msgstr ""
+
+msgid "Verified commit"
 msgstr ""
 
 msgid "Verify SAML Configuration"

@@ -725,35 +725,7 @@ RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
     end
 
     context 'housekeeping settings' do
-      it { is_expected.not_to allow_value(0).for(:housekeeping_incremental_repack_period) }
-
-      it 'wants the full repack period to be at least the incremental repack period' do
-        subject.housekeeping_incremental_repack_period = 2
-        subject.housekeeping_full_repack_period = 1
-
-        expect(subject).not_to be_valid
-      end
-
-      it 'wants the gc period to be at least the full repack period' do
-        subject.housekeeping_full_repack_period = 100
-        subject.housekeeping_gc_period = 90
-
-        expect(subject).not_to be_valid
-      end
-
-      it 'allows the same period for incremental repack and full repack, effectively skipping incremental repack' do
-        subject.housekeeping_incremental_repack_period = 2
-        subject.housekeeping_full_repack_period = 2
-
-        expect(subject).to be_valid
-      end
-
-      it 'allows the same period for full repack and gc, effectively skipping full repack' do
-        subject.housekeeping_full_repack_period = 100
-        subject.housekeeping_gc_period = 100
-
-        expect(subject).to be_valid
-      end
+      it { is_expected.not_to allow_value(0).for(:housekeeping_optimize_repository_period) }
     end
 
     context 'gitaly timeouts' do

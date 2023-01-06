@@ -7,6 +7,7 @@ module Gitlab
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/300741 for more information.
     class BackfillEnvironmentTiers < BatchedMigrationJob
       operation_name :backfill_environment_tiers
+      feature_category :database
 
       # Equivalent to `Environment#guess_tier` pattern matching.
       PRODUCTION_TIER = 0

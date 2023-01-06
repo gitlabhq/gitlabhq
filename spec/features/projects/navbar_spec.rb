@@ -15,7 +15,7 @@ RSpec.describe 'Project navbar', feature_category: :projects do
   before do
     sign_in(user)
 
-    Feature.disable(:show_pages_in_deployments_menu, :project)
+    stub_feature_flags(show_pages_in_deployments_menu: false)
 
     stub_config(registry: { enabled: false })
     stub_feature_flags(harbor_registry_integration: false)

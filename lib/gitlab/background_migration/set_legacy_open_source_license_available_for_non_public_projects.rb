@@ -7,6 +7,7 @@ module Gitlab
       PUBLIC = 20
 
       operation_name :set_legacy_open_source_license_available
+      feature_category :database
 
       # Migration only version of `project_settings` table
       class ProjectSetting < ApplicationRecord

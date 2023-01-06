@@ -11,6 +11,7 @@ module Gitlab
       end
 
       operation_name :set_delayed_project_removal_to_null_for_user_namespace
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

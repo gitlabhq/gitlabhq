@@ -35,6 +35,7 @@ class ApplicationSetting < ApplicationRecord
   belongs_to :instance_group, class_name: "Group", foreign_key: 'instance_administrators_group_id'
   alias_attribute :instance_group_id, :instance_administrators_group_id
   alias_attribute :instance_administrators_group, :instance_group
+  alias_attribute :housekeeping_optimize_repository_period, :housekeeping_incremental_repack_period
 
   sanitizes! :default_branch_name
 
@@ -256,17 +257,9 @@ class ApplicationSetting < ApplicationRecord
             presence: { message: 'Domain denylist cannot be empty if denylist is enabled.' },
             if: :domain_denylist_enabled?
 
-  validates :housekeeping_incremental_repack_period,
+  validates :housekeeping_optimize_repository_period,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
-
-  validates :housekeeping_full_repack_period,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: :housekeeping_incremental_repack_period }
-
-  validates :housekeeping_gc_period,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: :housekeeping_full_repack_period }
 
   validates :terminal_max_session_time,
             presence: true,

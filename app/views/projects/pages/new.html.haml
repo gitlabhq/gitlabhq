@@ -1,4 +1,4 @@
-- if Feature.enabled?(:show_pages_in_deployments_menu, @project, type: :experiment)
+- if Feature.enabled?(:show_pages_in_deployments_menu, current_user, type: :experiment)
   - @breadcrumb_link = project_pages_path(@project)
   - breadcrumb_title s_('GitLabPages|Pages')
   - page_title s_('GitLabPages|Pages')

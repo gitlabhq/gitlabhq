@@ -5,6 +5,7 @@ module Gitlab
     # Removes obsolete wiki notes
     class RemoveSelfManagedWikiNotes < BatchedMigrationJob
       operation_name :delete_all
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

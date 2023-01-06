@@ -1,25 +1,21 @@
 - signature = local_assigns.fetch(:signature)
 - title = local_assigns.fetch(:title)
+- description = local_assigns.fetch(:description, nil)
 - label = local_assigns.fetch(:label)
 - css_class = local_assigns.fetch(:css_class)
-- icon = local_assigns.fetch(:icon)
-- show_user = local_assigns.fetch(:show_user, false)
 
 - css_classes = commit_signature_badge_classes(css_class)
 
 - title = capture do
   .gpg-popover-status
-    .gpg-popover-icon{ class: css_class }
-      = sprite_icon(icon)
     %div
-      = title
+      %strong
+        = title
+
+      %p.gl-my-3
+        = description
 
 - content = capture do
-  - if show_user
-    .clearfix
-      - uri_signature_badge_user = "projects/commit/#{'x509/' if signature.x509?}signature_badge_user"
-      = render partial: "#{uri_signature_badge_user}", locals: { signature: signature }
-
   - if signature.x509?
     = render partial: "projects/commit/x509/certificate_details", locals: { signature: signature }
 
@@ -28,12 +24,12 @@
     = _('SSH key fingerprint:')
     %span.gl-font-monospace= signature.key&.fingerprint_sha256 || _('Unknown')
 
-    = link_to(_('Learn about signing commits with SSH keys.'), help_page_path('user/project/repository/ssh_signed_commits/index.md'), class: 'gl-link gl-display-block')
+    = link_to(_('Learn about signing commits with SSH keys.'), help_page_path('user/project/repository/ssh_signed_commits/index.md'), class: 'gl-link gl-display-block gl-mt-3')
   - else
     = _('GPG Key ID:')
     %span.gl-font-monospace= signature.gpg_key_primary_keyid
 
-    = link_to(_('Learn more about signing commits'), help_page_path('user/project/repository/gpg_signed_commits/index.md'), class: 'gl-link gl-display-block')
+    = link_to(_('Learn about signing commits'), help_page_path('user/project/repository/gpg_signed_commits/index.md'), class: 'gl-link gl-display-block gl-mt-3')
 
 %a{ role: 'button', tabindex: 0, class: css_classes, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
   = label

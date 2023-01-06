@@ -16,5 +16,21 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
     it { is_expected.to validate_length_of(:platform).is_at_most(255) }
     it { is_expected.to validate_length_of(:architecture).is_at_most(255) }
     it { is_expected.to validate_length_of(:ip_address).is_at_most(1024) }
+
+    context 'when runner has config' do
+      it 'is valid' do
+        runner_machine = build(:ci_runner_machine, config: { gpus: "all" })
+
+        expect(runner_machine).to be_valid
+      end
+    end
+
+    context 'when runner has an invalid config' do
+      it 'is invalid' do
+        runner_machine = build(:ci_runner_machine, config: { test: 1 })
+
+        expect(runner_machine).not_to be_valid
+      end
+    end
   end
 end

@@ -11,7 +11,7 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu do
   subject { described_class.new(context) }
 
   before do
-    Feature.disable(:show_pages_in_deployments_menu, :project)
+    stub_feature_flags(show_pages_in_deployments_menu: false)
   end
 
   describe '#render?' do

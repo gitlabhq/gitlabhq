@@ -43,6 +43,11 @@ module API
 
       # This field is deprecated and always returns true
       expose(:housekeeping_bitmaps_enabled) { |_settings, _options| true }
+
+      # These fields are deprecated and always returns housekeeping_optimize_repository_period value
+      expose(:housekeeping_full_repack_period) { |settings, _options| settings.housekeeping_optimize_repository_period }
+      expose(:housekeeping_gc_period) { |settings, _options| settings.housekeeping_optimize_repository_period }
+      expose(:housekeeping_incremental_repack_period) { |settings, _options| settings.housekeeping_optimize_repository_period }
     end
   end
 end

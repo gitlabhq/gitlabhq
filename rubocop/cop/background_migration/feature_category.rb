@@ -12,12 +12,12 @@ module RuboCop
 
         FEATURE_CATEGORIES_FILE_PATH = "config/feature_categories.yml"
 
-        MSG = "'feature_category' should be defined to better assign the ownership for batched migration jobs. "\
-          "For more details refer: "\
-          "https://docs.gitlab.com/ee/development/feature_categorization/#batched-background-migrations"
+        MSG = "'feature_category' should be defined to better assign the ownership for batched migration jobs. " \
+              "For more details refer: " \
+              "https://docs.gitlab.com/ee/development/feature_categorization/#batched-background-migrations"
 
-        INVALID_FEATURE_CATEGORY_MSG = "'feature_category' is invalid. "\
-          "List of valid ones can be found in #{FEATURE_CATEGORIES_FILE_PATH}"
+        INVALID_FEATURE_CATEGORY_MSG = "'feature_category' is invalid. " \
+                                       "List of valid ones can be found in #{FEATURE_CATEGORIES_FILE_PATH}"
 
         RESTRICT_ON_SEND = [:feature_category].freeze
 

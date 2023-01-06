@@ -10,7 +10,7 @@ module Sidebars
           add_item(feature_flags_menu_item)
           add_item(releases_menu_item)
 
-          if Feature.enabled?(:show_pages_in_deployments_menu, context.project, type: :experiment)
+          if Feature.enabled?(:show_pages_in_deployments_menu, context.current_user, type: :experiment)
             add_item(pages_menu_item)
           end
 

@@ -4,6 +4,8 @@ module Gitlab
   module BackgroundMigration
     # Backfills the `members.member_namespace_id` column for `type=ProjectMember`
     class BackfillProjectMemberNamespaceId < Gitlab::BackgroundMigration::BatchedMigrationJob
+      feature_category :database
+
       def perform
         parent_batch_relation = relation_scoped_to_range(batch_table, batch_column, start_id, end_id)
 
