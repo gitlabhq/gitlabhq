@@ -106,7 +106,7 @@ module Gitlab
 
         def use_aggregated_backend?
           # for now it's only available on the group-level
-          group.present? && aggregation.enabled
+          group.present?
         end
 
         def aggregation_attributes

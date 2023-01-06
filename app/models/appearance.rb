@@ -23,6 +23,7 @@ class Appearance < ApplicationRecord
   cache_markdown_field :footer_message, pipeline: :broadcast_message
 
   validates :logo,        file_size: { maximum: 1.megabyte }
+  validates :pwa_icon,    file_size: { maximum: 1.megabyte }
   validates :header_logo, file_size: { maximum: 1.megabyte }
   validates :message_background_color, allow_blank: true, color: true
   validates :message_font_color, allow_blank: true, color: true
@@ -31,6 +32,7 @@ class Appearance < ApplicationRecord
   validate :single_appearance_row, on: :create
 
   mount_uploader :logo,         AttachmentUploader
+  mount_uploader :pwa_icon,     AttachmentUploader
   mount_uploader :header_logo,  AttachmentUploader
   mount_uploader :favicon,      FaviconUploader
 
@@ -47,6 +49,10 @@ class Appearance < ApplicationRecord
 
   def logo_path
     logo_system_path(logo, 'logo')
+  end
+
+  def pwa_icon_path
+    logo_system_path(pwa_icon, 'pwa_icon')
   end
 
   def header_logo_path

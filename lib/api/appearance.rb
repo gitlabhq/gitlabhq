@@ -30,6 +30,7 @@ module API
       optional :description, type: String, desc: 'Markdown text shown on the sign in / sign up page'
       # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
       optional :logo, type: File, desc: 'Instance image used on the sign in / sign up page' # rubocop:disable Scalability/FileUploads
+      optional :pwa_icon, type: File, desc: 'Icon used for Progressive Web App' # rubocop:disable Scalability/FileUploads
       optional :header_logo, type: File, desc: 'Instance image used for the main navigation bar' # rubocop:disable Scalability/FileUploads
       optional :favicon, type: File, desc: 'Instance favicon in .ico/.png format' # rubocop:disable Scalability/FileUploads
       optional :new_project_guidelines, type: String, desc: 'Markdown text shown on the new project page'

@@ -23,6 +23,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
         expect(json_response).to be_an Hash
         expect(json_response['description']).to eq('')
         expect(json_response['email_header_and_footer_enabled']).to be(false)
+        expect(json_response['pwa_icon']).to be_nil
         expect(json_response['favicon']).to be_nil
         expect(json_response['footer_message']).to eq('')
         expect(json_response['header_logo']).to be_nil
@@ -62,6 +63,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
           expect(json_response).to be_an Hash
           expect(json_response['description']).to eq('gitlab-test.example.com')
           expect(json_response['email_header_and_footer_enabled']).to be(false)
+          expect(json_response['pwa_icon']).to be_nil
           expect(json_response['favicon']).to be_nil
           expect(json_response['footer_message']).to eq('')
           expect(json_response['header_logo']).to be_nil
@@ -118,12 +120,14 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
           put api("/application/appearance", admin), params: {
             logo: fixture_file_upload("spec/fixtures/dk.png", "image/png"),
             header_logo: fixture_file_upload("spec/fixtures/dk.png", "image/png"),
+            pwa_icon: fixture_file_upload("spec/fixtures/dk.png", "image/png"),
             favicon: fixture_file_upload("spec/fixtures/dk.png", "image/png")
           }
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['logo']).to eq("/uploads/-/system/appearance/logo/#{appearance.id}/dk.png")
           expect(json_response['header_logo']).to eq("/uploads/-/system/appearance/header_logo/#{appearance.id}/dk.png")
+          expect(json_response['pwa_icon']).to eq("/uploads/-/system/appearance/pwa_icon/#{appearance.id}/dk.png")
           expect(json_response['favicon']).to eq("/uploads/-/system/appearance/favicon/#{appearance.id}/dk.png")
         end
 

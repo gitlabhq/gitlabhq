@@ -5,7 +5,7 @@ module UploadsActions
   include Gitlab::Utils::StrongMemoize
   include SendFileUpload
 
-  UPLOAD_MOUNTS = %w[avatar attachment file logo header_logo favicon].freeze
+  UPLOAD_MOUNTS = %w[avatar attachment file logo pwa_icon header_logo favicon].freeze
 
   included do
     prepend_before_action :set_request_format_from_path_extension

@@ -11080,8 +11080,10 @@ CREATE TABLE appearances (
     profile_image_guidelines text,
     profile_image_guidelines_html text,
     pwa_short_name text,
+    pwa_icon text,
     CONSTRAINT appearances_profile_image_guidelines CHECK ((char_length(profile_image_guidelines) <= 4096)),
-    CONSTRAINT check_5c3fd63577 CHECK ((char_length(pwa_short_name) <= 255))
+    CONSTRAINT check_5c3fd63577 CHECK ((char_length(pwa_short_name) <= 255)),
+    CONSTRAINT check_5e5b7ac344 CHECK ((char_length(pwa_icon) <= 1024))
 );
 
 CREATE SEQUENCE appearances_id_seq

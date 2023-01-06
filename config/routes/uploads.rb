@@ -19,7 +19,7 @@ scope path: :uploads do
   # Appearance
   get "-/system/:model/:mounted_as/:id/:filename",
       to: "uploads#show",
-      constraints: { model: /appearance/, mounted_as: /logo|header_logo|favicon/, filename: /.+/ },
+      constraints: { model: /appearance/, mounted_as: /logo|header_logo|pwa_icon|favicon/, filename: /.+/ },
       as: 'appearance_upload'
 
   # create uploads for models, snippets (notes) available for now

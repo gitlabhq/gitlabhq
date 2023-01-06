@@ -77,7 +77,7 @@ RSpec.describe Appearance do
     end
   end
 
-  %i(logo header_logo favicon).each do |logo_type|
+  %i(logo header_logo pwa_icon favicon).each do |logo_type|
     it_behaves_like 'logo paths', logo_type
   end
 

@@ -1002,12 +1002,12 @@ $tabs-holder-z-index: 250;
 
     .md-header {
       .gl-tab-nav-item {
-        @include gl-text-gray-900;
+        color: var(--gl-text-color, $gl-text-color);
         @include gl-pb-5;
 
         &:hover {
           @include gl-bg-none;
-          @include gl-text-gray-900;
+          color: var(--gl-text-color, $gl-text-color);
 
           &:not(.gl-tab-nav-item-active) {
             @include gl-inset-border-b-2-gray-200;
@@ -1017,7 +1017,7 @@ $tabs-holder-z-index: 250;
 
       .gl-tab-nav-item-active {
         @include gl-font-weight-bold;
-        @include gl-text-gray-900;
+        color: var(--gl-text-color, $gl-text-color);
         @include gl-inset-border-b-2-theme-accent;
 
         &:active,

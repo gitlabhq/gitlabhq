@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-TEMPLATE_MESSAGE = <<~MSG
+GITALY_COORDINATION_MESSAGE = <<~MSG
 This merge request requires coordination with gitaly deployments.
 Before merging this merge request we should verify that gitaly
 running in production already implements the new gRPC interface
@@ -18,5 +18,5 @@ changed_lines = helper.changed_lines('Gemfile.lock')
 if changed_lines.any? { |line| line =~ /^\+\s+gitaly \(/ }
   warn 'Changing gitaly gem can cause a multi-version incompatibility incident'
 
-  markdown(TEMPLATE_MESSAGE)
+  markdown(GITALY_COORDINATION_MESSAGE)
 end

@@ -11,6 +11,10 @@ module API
         appearance.logo.url
       end
 
+      expose :pwa_icon do |appearance, options|
+        appearance.pwa_icon.url
+      end
+
       expose :header_logo do |appearance, options|
         appearance.header_logo.url
       end

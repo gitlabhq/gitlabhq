@@ -669,6 +669,7 @@ In this example, `job1` and `job2` run in parallel:
 **Additional details**:
 
 - You can use `allow_failure` as a subkey of [`rules`](#rulesallow_failure).
+- If `allow_failure: true` is set, the job is always considered successful, and later jobs with [`when: on_failure`](#when) don't start if this job fails.
 - You can use `allow_failure: false` with a manual job to create a [blocking manual job](../jobs/job_control.md#types-of-manual-jobs).
   A blocked pipeline does not run any jobs in later stages until the manual job
   is started and completes successfully.
@@ -1299,6 +1300,11 @@ Untracked files include files that are:
 - Ignored due to [`.gitignore` configuration](https://git-scm.com/docs/gitignore).
 - Created, but not added to the checkout with [`git add`](https://git-scm.com/docs/git-add).
 
+Caching untracked files can create unexpectedly large caches if the job downloads:
+
+- Dependencies, like gems or node modules, which are usually untracked.
+- [Artifacts](#artifacts) from a different job. Files extracted from the artifacts are untracked by default.
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -1317,8 +1323,9 @@ rspec:
 
 **Additional details**:
 
-- You can combine `cache:untracked` with `cache:paths` to cache all untracked files
-  as well as files in the configured paths. This is useful for including files that are not tracked because of a `.gitignore` configuration. For example:
+- You can combine `cache:untracked` with `cache:paths` to cache all untracked files, as well as files in the configured paths.
+  Use `cache:paths` to cache any specific files, including tracked files, or files that are outside of the working directory,
+  and use `cache: untracked` to also cache all untracked files. For example:
 
   ```yaml
   rspec:
@@ -1328,6 +1335,9 @@ rspec:
       paths:
         - binaries/
   ```
+
+  In this example, the job caches all untracked files in the repository, as well as all the files in `binaries/`.
+  If there are untracked files in `binaries/`, they are covered by both keywords.
 
 #### `cache:unprotect`
 
@@ -4427,7 +4437,7 @@ the default value is `when: on_success`.
   or have `allow_failure: true`.
 - `manual`: Run the job only when [triggered manually](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
 - `always`: Run the job regardless of the status of jobs in earlier stages. Can also be used in `workflow:rules`.
-- `on_failure`: Run the job only when at least one job in an earlier stage fails.
+- `on_failure`: Run the job only when at least one job in an earlier stage fails. A job with `allow_failure: true` is always considered successful.
 - `delayed`: [Delay the execution of a job](../jobs/job_control.md#run-a-job-after-a-delay)
   for a specified duration.
 - `never`: Don't run the job. Can only be used in a [`rules`](#rules) section or `workflow: rules`.

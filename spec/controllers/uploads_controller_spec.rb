@@ -640,19 +640,17 @@ RSpec.describe UploadsController do
     end
 
     context 'Appearance' do
-      context 'when viewing a custom header logo' do
-        let!(:appearance) { create :appearance, header_logo: fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
-
+      shared_examples 'view custom logo' do |mounted_as|
         context 'when not signed in' do
           it 'responds with status 200' do
-            get :show, params: { model: 'appearance', mounted_as: 'header_logo', id: appearance.id, filename: 'dk.png' }
+            get :show, params: { model: 'appearance', mounted_as: mounted_as, id: appearance.id, filename: 'dk.png' }
 
             expect(response).to have_gitlab_http_status(:ok)
           end
 
           it_behaves_like 'content publicly cached' do
             subject do
-              get :show, params: { model: 'appearance', mounted_as: 'header_logo', id: appearance.id, filename: 'dk.png' }
+              get :show, params: { model: 'appearance', mounted_as: mounted_as, id: appearance.id, filename: 'dk.png' }
 
               response
             end
@@ -660,24 +658,22 @@ RSpec.describe UploadsController do
         end
       end
 
+      context 'when viewing a custom pwa icon' do
+        let!(:appearance) { create :appearance, pwa_icon: fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
+
+        it_behaves_like 'view custom logo', 'pwa_icon'
+      end
+
+      context 'when viewing a custom header logo' do
+        let!(:appearance) { create :appearance, header_logo: fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
+
+        it_behaves_like 'view custom logo', 'header_logo'
+      end
+
       context 'when viewing a custom logo' do
         let!(:appearance) { create :appearance, logo: fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
 
-        context 'when not signed in' do
-          it 'responds with status 200' do
-            get :show, params: { model: 'appearance', mounted_as: 'logo', id: appearance.id, filename: 'dk.png' }
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          it_behaves_like 'content publicly cached' do
-            subject do
-              get :show, params: { model: 'appearance', mounted_as: 'logo', id: appearance.id, filename: 'dk.png' }
-
-              response
-            end
-          end
-        end
+        it_behaves_like 'view custom logo', 'logo'
       end
     end
 
