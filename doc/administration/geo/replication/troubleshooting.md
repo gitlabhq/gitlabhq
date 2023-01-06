@@ -1100,6 +1100,10 @@ On the **primary** site:
 1. Ensure the **URL** field matches the value found in `/etc/gitlab/gitlab.rb`
    in `external_url "https://gitlab.example.com"` on the **Rails nodes of the secondary** site.
 
+### Authenticating with SAML on the secondary site always lands on the primary site
+
+This [problem is usually encountered when upgrading to GitLab 15.1](version_specific_upgrades.md#upgrading-to-151). To fix this problem, see [configuring instance-wide SAML in Geo with Single Sign-On](single_sign_on.md#configuring-instance-wide-saml).
+
 ## Fixing common errors
 
 This section documents common error messages reported in the Admin Area on the web interface, and how to fix them.

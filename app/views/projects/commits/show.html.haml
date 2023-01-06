@@ -10,7 +10,7 @@
     .nav-block
       .tree-ref-container
         .tree-ref-holder
-          #js-project-commits-ref-switcher{ data: { "project-id" => @project.id, "ref" => @ref, "commits_path": project_commits_path(@project) } }
+          #js-project-commits-ref-switcher{ data: { "project-id" => @project.id, "ref" => @ref, "commits_path": project_commits_path(@project), "ref_type": @ref_type.to_s } }
 
         %ul.breadcrumb.repo-breadcrumb
           = commits_breadcrumbs

@@ -687,3 +687,13 @@ For example:
 variables:
   TIMEOUT_SECONDS: 3600
 ```
+
+### Using Code Quality with Kubernetes CI executor
+
+Code Quality requires a Docker in Docker setup to work. The Kubernetes executor already [has support for this](https://docs.gitlab.com/runner/executors/kubernetes.md#using-dockerdind).
+
+To ensure Code Quality jobs can run on a Kubernetes executor:
+
+- If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
+- It is possible that the DinD service doesn't start up fully before the Code Quality job starts. This is a limitation documented in
+the [Kubernetes executor for GitLab Runner](https://docs.gitlab.com/runner/executors/kubernetes.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running) troubleshooting section.

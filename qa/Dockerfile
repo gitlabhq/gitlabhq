@@ -1,7 +1,7 @@
 ARG DOCKER_VERSION=20.10.14
 ARG CHROME_VERSION=106
 ARG QA_BUILD_TARGET=ee
-ARG RUBY_VERSION=2.7
+ARG RUBY_VERSION=3.0
 
 FROM registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23 AS foss
 LABEL maintainer="GitLab Quality Department <quality@gitlab.com>"

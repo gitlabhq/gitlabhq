@@ -432,17 +432,21 @@ running every day, updating cache.
 The default CI/CD configuration file is also set at `jh/.gitlab-ci.yml` so it
 runs exactly like [GitLab JH](https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml).
 
-## Ruby 3.0 jobs
+## Ruby 2.7 jobs
 
-You can add the `pipeline:run-in-ruby3` label to the merge request to switch
-the Ruby version used for running the whole test suite to 3.0. When you do
-this, the test suite will no longer run in Ruby 2.7 (default), and an
-additional job `verify-ruby-2.7` will also run and always fail to remind us to
-remove the label and run in Ruby 2.7 before merging the merge request.
+We're running Ruby 3.0 for the merge requests and the default branch. However,
+we're still running Ruby 2.7 for GitLab.com and there are older versions that
+we need to maintain. We need a way to still try out Ruby 2.7 in merge requests.
+
+You can add the `pipeline:run-in-ruby2` label to the merge request to switch
+the Ruby version used for running the whole test suite to 2.7. When you do
+this, the test suite will no longer run in Ruby 3.0 (default), and an
+additional job `verify-ruby-3.0` will also run and always fail to remind us to
+remove the label and run in Ruby 3.0 before merging the merge request.
 
 This should let us:
 
-- Test changes for Ruby 3.0
+- Test changes for Ruby 2.7
 - Make sure it will not break anything when it's merged into the default branch
 
 ## `undercover` RSpec test
@@ -473,9 +477,9 @@ If these commands return `undercover: ✅ No coverage is missing in latest chang
 
 ## Ruby versions testing
 
-Our test suite runs against Ruby 2 in merge requests and default branch pipelines.
+Our test suite runs against Ruby 3 in merge requests and default branch pipelines.
 
-We also run our test suite against Ruby 3 on another 2-hourly scheduled pipelines, as GitLab.com will soon run on Ruby 3.
+We also run our test suite against Ruby 2.7 on another 2-hourly scheduled pipelines, as GitLab.com still runs on Ruby 2.7.
 
 ## PostgreSQL versions testing
 
@@ -490,26 +494,26 @@ We also run our test suite against PG11 upon specific database library changes i
 
 | Where?                                                                                         | PostgreSQL version                              | Ruby version |
 |------------------------------------------------------------------------------------------------|-------------------------------------------------|--------------|
-| Merge requests                                                                                 | 12 (default version), 11 for DB library changes | 2.7 (default version) |
-| `master` branch commits                                                                        | 12 (default version), 11 for DB library changes | 2.7 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 12 (default version), 11 for DB library changes | 2.7 (default version) |
-| `maintenance` scheduled pipelines for the `ruby3` branch (every odd-numbered hour), see below. | 12 (default version), 11 for DB library changes | 3.0 (coded in the branch) |
-| `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 11, 13                    | 2.7 (default version) |
+| Merge requests                                                                                 | 12 (default version), 11 for DB library changes | 3.0 (default version) |
+| `master` branch commits                                                                        | 12 (default version), 11 for DB library changes | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 12 (default version), 11 for DB library changes | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 12 (default version), 11 for DB library changes | 2.7 |
+| `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 11, 13                    | 3.0 (default version) |
 
-There are 2 pipeline schedules used for testing Ruby 3. One is triggering a
-pipeline in `ruby3-sync` branch, which updates the `ruby3` branch with latest
+There are 2 pipeline schedules used for testing Ruby 2.7. One is triggering a
+pipeline in `ruby2-sync` branch, which updates the `ruby2` branch with latest
 `master`, and no pipelines will be triggered by this push. The other schedule
-is triggering a pipeline in `ruby3` 5 minutes after it, which is considered
+is triggering a pipeline in `ruby2` 5 minutes after it, which is considered
 the maintenance schedule to run test suites and update cache.
 
-Any changes in `ruby3` are only for running the pipeline. It should
-never be merged back to `master`. Any other Ruby 3 changes should go into
-`master` directly, which should be compatible with Ruby 2.7.
+Any changes in `ruby2` are only for running the pipeline. It should
+never be merged back to `master`. Any other Ruby 2.7 changes should go into
+`master` directly, which should be compatible with Ruby 3.
 
-Previously, `ruby3-sync` was using a project token stored in `RUBY3_SYNC_TOKEN`
-(now backed up in `RUBY3_SYNC_TOKEN_NOT_USED`), however due to various
+Previously, `ruby2-sync` was using a project token stored in `RUBY2_SYNC_TOKEN`
+(now backed up in `RUBY2_SYNC_TOKEN_NOT_USED`), however due to various
 permissions issues, we ended up using an access token from `gitlab-bot` so now
-`RUBY3_SYNC_TOKEN` is actually an access token from `gitlab-bot`.
+`RUBY2_SYNC_TOKEN` is actually an access token from `gitlab-bot`.
 
 ### Long-term plan
 

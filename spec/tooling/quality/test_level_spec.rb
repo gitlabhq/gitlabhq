@@ -4,9 +4,9 @@ require 'fast_spec_helper'
 
 require_relative '../../../tooling/quality/test_level'
 
-RSpec.describe Quality::TestLevel do
+RSpec.describe Quality::TestLevel, feature_category: :tooling do
   describe 'TEST_LEVEL_FOLDERS constant' do
-    it 'all directories it refers to exists', :aggregate_failures do
+    it 'ensures all directories it refers to exists', :aggregate_failures do
       ee_only_directories = %w[
         lib/ee/gitlab/background_migration
         elastic
@@ -227,6 +227,14 @@ RSpec.describe Quality::TestLevel do
       expect { subject.level_for('spec/unknown/foo_spec.rb') }
         .to raise_error(described_class::UnknownTestLevelError,
           %r{Test level for spec/unknown/foo_spec.rb couldn't be set. Please rename the file properly or change the test level detection regexes in .+/tooling/quality/test_level.rb.})
+    end
+
+    it 'ensures all spec/ folders are covered by a test level' do
+      Dir['{,ee/}spec/**/*/'].each do |path|
+        next if path =~ %r{\A(ee/)?spec/(benchmarks|docs_screenshots|fixtures|frontend_integration|support)/}
+
+        expect { subject.level_for(path) }.not_to raise_error
+      end
     end
   end
 

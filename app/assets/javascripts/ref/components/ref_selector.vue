@@ -15,6 +15,8 @@ import {
   REF_TYPE_BRANCHES,
   REF_TYPE_TAGS,
   REF_TYPE_COMMITS,
+  BRANCH_REF_TYPE,
+  TAG_REF_TYPE,
 } from '../constants';
 import createStore from '../stores';
 import RefResultsSection from './ref_results_section.vue';
@@ -49,6 +51,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    refType: {
+      type: String,
+      required: false,
+      default: null,
     },
     projectId: {
       type: String,
@@ -145,6 +152,12 @@ export default {
     },
     buttonText() {
       return this.selectedRefForDisplay || this.i18n.noRefSelected;
+    },
+    isTagRefType() {
+      return this.refType === TAG_REF_TYPE;
+    },
+    isBranchRefType() {
+      return this.refType === BRANCH_REF_TYPE;
     },
   },
   watch: {
@@ -273,6 +286,7 @@ export default {
             :show-header="showSectionHeaders"
             data-testid="branches-section"
             data-qa-selector="branches_section"
+            :should-show-check="!useSymbolicRefNames || isBranchRefType"
             @selected="selectRef($event)"
           />
 
@@ -289,6 +303,7 @@ export default {
             :error-message="i18n.tagsErrorMessage"
             :show-header="showSectionHeaders"
             data-testid="tags-section"
+            :should-show-check="!useSymbolicRefNames || isTagRefType"
             @selected="selectRef($event)"
           />
 

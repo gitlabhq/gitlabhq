@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a destroyable issuable link' do
+RSpec.shared_examples 'a destroyable issuable link' do |required_role: :reporter|
   context 'when successfully removes an issuable link' do
     before do
-      issuable_link.source.resource_parent.add_reporter(user)
-      issuable_link.target.resource_parent.add_reporter(user)
+      [issuable_link.target, issuable_link.source].each do |issuable|
+        issuable.resource_parent.try(:"add_#{required_role}", user)
+      end
     end
 
     it 'removes related issue' do

@@ -9,7 +9,7 @@ RSpec.describe IssueLinks::CreateService do
     let_it_be(:project) { create :project, namespace: namespace }
     let_it_be(:issuable) { create :issue, project: project }
     let_it_be(:issuable2) { create :issue, project: project }
-    let_it_be(:guest_issuable) { create :issue }
+    let_it_be(:restricted_issuable) { create :issue }
     let_it_be(:another_project) { create :project, namespace: project.namespace }
     let_it_be(:issuable3) { create :issue, project: another_project }
     let_it_be(:issuable_a) { create :issue, project: project }
@@ -23,7 +23,7 @@ RSpec.describe IssueLinks::CreateService do
 
     before do
       project.add_developer(user)
-      guest_issuable.project.add_guest(user)
+      restricted_issuable.project.add_guest(user)
       another_project.add_developer(user)
     end
 

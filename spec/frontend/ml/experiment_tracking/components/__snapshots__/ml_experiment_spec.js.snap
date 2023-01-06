@@ -96,7 +96,7 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
   <table
     aria-busy="false"
     aria-colcount="6"
-    class="table b-table gl-table gl-mt-0!"
+    class="table b-table gl-table gl-mt-0! table-sm"
     role="table"
   >
     <!---->
@@ -275,10 +275,150 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
           role="cell"
         />
       </tr>
+      <tr
+        class=""
+        role="row"
+      >
+        <td
+          aria-colindex="1"
+          class=""
+          role="cell"
+        >
+          0.5
+        </td>
+        <td
+          aria-colindex="2"
+          class=""
+          role="cell"
+        />
+        <td
+          aria-colindex="3"
+          class=""
+          role="cell"
+        >
+          0.3
+        </td>
+        <td
+          aria-colindex="4"
+          class=""
+          role="cell"
+        />
+        <td
+          aria-colindex="5"
+          class=""
+          role="cell"
+        >
+          <a
+            class="gl-link"
+            href="link_to_candidate3"
+          >
+            Details
+          </a>
+        </td>
+        <td
+          aria-colindex="6"
+          class=""
+          role="cell"
+        />
+      </tr>
+      <tr
+        class=""
+        role="row"
+      >
+        <td
+          aria-colindex="1"
+          class=""
+          role="cell"
+        >
+          0.5
+        </td>
+        <td
+          aria-colindex="2"
+          class=""
+          role="cell"
+        />
+        <td
+          aria-colindex="3"
+          class=""
+          role="cell"
+        >
+          0.3
+        </td>
+        <td
+          aria-colindex="4"
+          class=""
+          role="cell"
+        />
+        <td
+          aria-colindex="5"
+          class=""
+          role="cell"
+        >
+          <a
+            class="gl-link"
+            href="link_to_candidate4"
+          >
+            Details
+          </a>
+        </td>
+        <td
+          aria-colindex="6"
+          class=""
+          role="cell"
+        />
+      </tr>
+      <tr
+        class=""
+        role="row"
+      >
+        <td
+          aria-colindex="1"
+          class=""
+          role="cell"
+        >
+          0.5
+        </td>
+        <td
+          aria-colindex="2"
+          class=""
+          role="cell"
+        />
+        <td
+          aria-colindex="3"
+          class=""
+          role="cell"
+        >
+          0.3
+        </td>
+        <td
+          aria-colindex="4"
+          class=""
+          role="cell"
+        />
+        <td
+          aria-colindex="5"
+          class=""
+          role="cell"
+        >
+          <a
+            class="gl-link"
+            href="link_to_candidate5"
+          >
+            Details
+          </a>
+        </td>
+        <td
+          aria-colindex="6"
+          class=""
+          role="cell"
+        />
+      </tr>
       <!---->
       <!---->
     </tbody>
     <!---->
   </table>
+   
+  <!---->
 </div>
 `;

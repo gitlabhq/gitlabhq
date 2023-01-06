@@ -29,6 +29,8 @@ workflow:
   rules:
     # If `$FORCE_GITLAB_CI` is set, create a pipeline.
     - if: '$FORCE_GITLAB_CI'
+      variables:
+        RUBY_VERSION: "3.0"
     # As part of the process of creating RCs automatically, we update stable
     # branches with the changes of the most recent production deployment. The
     # merge requests used for this merge a branch release-tools/X into a stable
@@ -36,51 +38,69 @@ workflow:
     # they serve no purpose and will run anyway when the changes are merged.
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
       when: never
-    # For merge requests running exclusively in Ruby 3.0
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
+    # For merge requests running exclusively in Ruby 2.7
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby2/'
       variables:
-        RUBY_VERSION: "3.0"
-        PIPELINE_NAME: 'Ruby 3 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+        RUBY_VERSION: "2.7"
+        PIPELINE_NAME: 'Ruby 2 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
-        PIPELINE_NAME: '$CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+        RUBY_VERSION: "3.0"
+        OMNIBUS_GITLAB_RUBY3_BUILD: "true"
+        OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3"
+        PIPELINE_NAME: 'Ruby 3 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
     # For the scheduled pipelines, we set specific variables.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
+        RUBY_VERSION: "3.0"
+        OMNIBUS_GITLAB_RUBY3_BUILD: "true"
+        OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3"
         CRYSTALBALL: "true"
         CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
         PIPELINE_NAME: 'Scheduled $CI_COMMIT_BRANCH pipeline'
-    # Run pipelines for ruby3 branch
-    - if: '$CI_COMMIT_BRANCH == "ruby3" && $CI_PIPELINE_SOURCE == "schedule"'
+    # Run pipelines for ruby2 branch
+    - if: '$CI_COMMIT_BRANCH == "ruby2" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
-        RUBY_VERSION: "3.0"
+        RUBY_VERSION: "2.7"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "f_ruby3"
-        OMNIBUS_GITLAB_RUBY3_BUILD: "true"
-        OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3"
-        PIPELINE_NAME: 'Scheduled ruby 3 pipeline'
+        PIPELINE_NAME: 'Scheduled ruby 2 pipeline'
     # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 whichs prevents usage of dependency proxy
     # when pipeline is triggered by a project access token.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'
       variables:
+        RUBY_VERSION: "3.0"
+        OMNIBUS_GITLAB_RUBY3_BUILD: "true"
+        OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3"
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
     # For `$CI_DEFAULT_BRANCH` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       variables:
+        RUBY_VERSION: "3.0"
+        OMNIBUS_GITLAB_RUBY3_BUILD: "true"
+        OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3"
         CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
     # For tags, create a pipeline.
     - if: '$CI_COMMIT_TAG'
+      variables:
+        RUBY_VERSION: "2.7"
     # If `$GITLAB_INTERNAL` isn't set, don't create a pipeline.
     - if: '$GITLAB_INTERNAL == null'
       when: never
     # For stable, auto-deploy, and security branches, create a pipeline.
     - if: '$CI_COMMIT_BRANCH =~ /^[\d-]+-stable(-ee)?$/'
+      variables:
+        RUBY_VERSION: "2.7"
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
+      variables:
+        RUBY_VERSION: "2.7"
     - if: '$CI_COMMIT_BRANCH =~ /^security\//'
+      variables:
+        RUBY_VERSION: "2.7"
 
 variables:
   PG_VERSION: "12"

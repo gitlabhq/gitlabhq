@@ -68,12 +68,44 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
   describe 'GET show' do
     let(:params) { basic_params.merge(id: experiment.iid) }
 
-    before do
+    it 'renders the template' do
       show_experiment
+
+      expect(response).to render_template('projects/ml/experiments/show')
     end
 
-    it 'renders the template' do
-      expect(response).to render_template('projects/ml/experiments/show')
+    describe 'pagination' do
+      let_it_be(:candidates) { create_list(:ml_candidates, 5, experiment: experiment) }
+
+      before do
+        stub_const("Projects::Ml::ExperimentsController::MAX_CANDIDATES_PER_PAGE", 2)
+        candidates
+
+        show_experiment
+      end
+
+      context 'when out of bounds' do
+        let(:params) { basic_params.merge(id: experiment.iid, page: 10000) }
+
+        it 'redirects to last page' do
+          last_page = (experiment.candidates.size + 1) / 2
+
+          expect(response).to redirect_to(project_ml_experiment_path(project, experiment.iid, page: last_page))
+        end
+      end
+
+      context 'when bad page' do
+        let(:params) { basic_params.merge(id: experiment.iid, page: 's') }
+
+        it 'uses first page' do
+          expect(assigns(:pagination)).to include(
+            page: 1,
+            is_last_page: false,
+            per_page: 2,
+            total_items: experiment.candidates&.size
+          )
+        end
+      end
     end
 
     it 'does not perform N+1 sql queries' do
@@ -84,7 +116,11 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
       expect { show_experiment }.not_to exceed_all_query_limit(control_count)
     end
 
-    it_behaves_like '404 if feature flag disabled'
+    it_behaves_like '404 if feature flag disabled' do
+      before do
+        show_experiment
+      end
+    end
   end
 
   private
