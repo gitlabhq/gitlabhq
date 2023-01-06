@@ -184,16 +184,18 @@ module MergeRequests
         merge_request, merge_request.project, current_user, old_reviewers)
     end
 
-    def create_pipeline_for(merge_request, user, async: false)
+    def create_pipeline_for(merge_request, user, async: false, allow_duplicate: false)
+      create_pipeline_params = params.slice(:push_options).merge(allow_duplicate: allow_duplicate)
+
       if async
         MergeRequests::CreatePipelineWorker.perform_async(
           project.id,
           user.id,
           merge_request.id,
-          params.slice(:push_options).deep_stringify_keys)
+          create_pipeline_params.deep_stringify_keys)
       else
         MergeRequests::CreatePipelineService
-          .new(project: project, current_user: user, params: params.slice(:push_options))
+          .new(project: project, current_user: user, params: create_pipeline_params)
           .execute(merge_request)
       end
     end

@@ -66,7 +66,7 @@ module Integrations
 
     # rubocop: disable CodeReuse/ServiceClass
     def authorize_chat_name_url(params)
-      ChatNames::AuthorizeUserService.new(self, params).execute
+      ChatNames::AuthorizeUserService.new(params).execute
     end
     # rubocop: enable CodeReuse/ServiceClass
   end

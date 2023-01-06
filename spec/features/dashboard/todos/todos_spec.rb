@@ -15,6 +15,8 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
     project.add_developer(user)
   end
 
+  it_behaves_like 'a dashboard page with sidebar', :dashboard_todos_path, :todos
+
   context 'User does not have todos' do
     before do
       sign_in(user)

@@ -640,6 +640,7 @@ export default {
           :query-variables="queryVariables"
           :full-path="fullPath"
           :fetch-by-iid="fetchByIid"
+          :work-item-type="workItemType"
           class="gl-pt-5"
           @error="updateError = $event"
         />

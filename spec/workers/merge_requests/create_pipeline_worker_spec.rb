@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :code_review_workflow do
+RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :continuous_integration do
   describe '#perform' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }
@@ -17,7 +17,7 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :code_revi
           expect_next_instance_of(MergeRequests::CreatePipelineService,
             project: project,
             current_user: user,
-            params: { push_options: nil }) do |service|
+            params: { allow_duplicate: nil, push_options: nil }) do |service|
             expect(service).to receive(:execute).with(merge_request)
           end
 
@@ -38,7 +38,7 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :code_revi
             expect_next_instance_of(MergeRequests::CreatePipelineService,
               project: project,
               current_user: user,
-              params: { push_options: { ci: { skip: true } } }) do |service|
+              params: { allow_duplicate: nil, push_options: { ci: { skip: true } } }) do |service|
               expect(service).to receive(:execute).with(merge_request)
             end
 

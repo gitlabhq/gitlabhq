@@ -12594,8 +12594,7 @@ CREATE TABLE chat_names (
     last_used_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    integration_id integer,
-    CONSTRAINT check_2b0a0d0f0f CHECK ((integration_id IS NOT NULL))
+    integration_id integer
 );
 
 CREATE SEQUENCE chat_names_id_seq

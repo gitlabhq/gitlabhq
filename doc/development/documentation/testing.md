@@ -282,16 +282,16 @@ Vale returns three types of results:
 
 - **Error** - For branding guidelines, trademark guidelines, and anything that causes content on
   the docs site to render incorrectly.
-- **Warning** - For Technical Writing team style preferences.
-- **Suggestion** - For basic technical writing tenets and best practices.
+- **Warning** - For general style guide rules, tenets, and best practices.
+- **Suggestion** - For technical writing style preferences that may require refactoring of documentation or updates to an exceptions list.
 
 The result types have these attributes:
 
-| Result type  | Displayed in CI/CD job output | Causes CI/CD jobs to fail | Vale rule link |
-|--------------|-------------------------------|---------------------------|----------------|
-| `error`      | **{check-circle}** Yes        | **{check-circle}** Yes    | [Error-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Error%3A&group_id=9970&project_id=278964) |
-| `warning`    | **{dotted-circle}** No        | **{dotted-circle}** No    | [Warning-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Warning%3A&group_id=9970&project_id=278964) |
-| `suggestion` | **{dotted-circle}** No        | **{dotted-circle}** No    | [Suggestion-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Suggestion%3A&group_id=9970&project_id=278964) |
+| Result type  | Displays in CI/CD job output | Displays in MR diff | Causes CI/CD jobs to fail | Vale rule link |
+|--------------|------------------------------|---------------------|---------------------------|----------------|
+| `error`      | **{check-circle}** Yes       | **{check-circle}** Yes | **{check-circle}** Yes | [Error-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Error%3A&group_id=9970&project_id=278964) |
+| `warning`    | **{dotted-circle}** No       | **{check-circle}** Yes | **{dotted-circle}** No | [Warning-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Warning%3A&group_id=9970&project_id=278964) |
+| `suggestion` | **{dotted-circle}** No       | **{dotted-circle}** No | **{dotted-circle}** No | [Suggestion-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Suggestion%3A&group_id=9970&project_id=278964) |
 
 #### Vale spelling test
 
@@ -359,6 +359,10 @@ In general, follow these guidelines:
   - How often an author might ignore it because it's acceptable in the context.
     If the rule is too subjective, it cannot be adequately enforced and creates
     unnecessary additional warnings.
+
+  - Whether it's appropriate to display in the merge request diff in the GitLab UI.
+    If the rule is difficult to implement directly in the merge request (for example,
+    it requires page refactoring), set it to suggestion-level so it displays in local editors only.
 
 ### Install linters
 

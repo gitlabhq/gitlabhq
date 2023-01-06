@@ -234,6 +234,18 @@ RSpec.shared_context 'dashboard navbar structure' do
         nav_sub_items: []
       },
       {
+        nav_item: _("Issues"),
+        nav_sub_items: []
+      },
+      {
+        nav_item: _("Merge requests"),
+        nav_sub_items: []
+      },
+      {
+        nav_item: _("To-Do List"),
+        nav_sub_items: []
+      },
+      {
         nav_item: _("Milestones"),
         nav_sub_items: []
       },

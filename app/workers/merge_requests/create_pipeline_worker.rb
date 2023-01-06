@@ -25,11 +25,15 @@ module MergeRequests
       merge_request = MergeRequest.find_by_id(merge_request_id)
       return unless merge_request
 
+      allow_duplicate = params.with_indifferent_access[:allow_duplicate]
       push_options = params.with_indifferent_access[:push_options]
 
       MergeRequests::CreatePipelineService
-        .new(project: project, current_user: user, params: { push_options: push_options })
-        .execute(merge_request)
+        .new(
+          project: project,
+          current_user: user,
+          params: { allow_duplicate: allow_duplicate, push_options: push_options }
+        ).execute(merge_request)
 
       merge_request.update_head_pipeline
     end

@@ -7,7 +7,6 @@ class ChatName < ApplicationRecord
   belongs_to :user
 
   validates :user, presence: true
-  validates :integration, presence: true
   validates :team_id, presence: true
   validates :chat_id, presence: true
 

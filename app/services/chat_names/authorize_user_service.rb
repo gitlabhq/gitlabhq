@@ -4,8 +4,7 @@ module ChatNames
   class AuthorizeUserService
     include Gitlab::Routing
 
-    def initialize(integration, params)
-      @integration = integration
+    def initialize(params)
       @params = params
     end
 
@@ -29,7 +28,6 @@ module ChatNames
 
     def chat_name_params
       {
-        integration_id: @integration.id,
         team_id: @params[:team_id],
         team_domain: @params[:team_domain],
         chat_id: @params[:user_id],

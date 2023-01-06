@@ -11,7 +11,6 @@ RSpec.describe ChatName, feature_category: :integrations do
   it { is_expected.to belong_to(:user) }
 
   it { is_expected.to validate_presence_of(:user) }
-  it { is_expected.to validate_presence_of(:integration) }
   it { is_expected.to validate_presence_of(:team_id) }
   it { is_expected.to validate_presence_of(:chat_id) }
 

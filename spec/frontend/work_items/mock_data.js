@@ -1579,7 +1579,7 @@ export const mockWorkItemNotesResponse = {
                 notes: {
                   nodes: [
                     {
-                      id: 'gid://gitlab/MilestoneNote/not-persisted',
+                      id: 'gid://gitlab/MilestoneNote/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83864',
                       body: 'changed milestone to %5',
                       bodyHtml:
                         '<p data-sourcepos="1:1-1:23" dir="auto">changed milestone to <a href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container=body data-placement="top" title="" class="gfm gfm-milestone has-tooltip">%v4.0</a></p>',
@@ -1607,7 +1607,7 @@ export const mockWorkItemNotesResponse = {
                 notes: {
                   nodes: [
                     {
-                      id: 'gid://gitlab/WeightNote/not-persisted',
+                      id: 'gid://gitlab/WeightNote/0f2f195ec0d1ef95ee9d5b10446b8e96a9883864',
                       body: 'changed weight to 89',
                       bodyHtml: '<p dir="auto">changed weight to <strong>89</strong></p>',
                       systemNoteIconName: 'weight',
@@ -1785,6 +1785,140 @@ export const mockWorkItemNotesByIidResponse = {
         __typename: 'WorkItemConnection',
       },
       __typename: 'Project',
+    },
+  },
+};
+export const mockMoreWorkItemNotesResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/600',
+      iid: '60',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetIteration',
+        },
+        {
+          __typename: 'WorkItemWidgetWeight',
+        },
+        {
+          __typename: 'WorkItemWidgetAssignees',
+        },
+        {
+          __typename: 'WorkItemWidgetLabels',
+        },
+        {
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+        {
+          __typename: 'WorkItemWidgetStartAndDueDate',
+        },
+        {
+          __typename: 'WorkItemWidgetMilestone',
+        },
+        {
+          type: 'NOTES',
+          discussions: {
+            pageInfo: {
+              hasNextPage: true,
+              hasPreviousPage: false,
+              startCursor: null,
+              endCursor: 'endCursor',
+              __typename: 'PageInfo',
+            },
+            nodes: [
+              {
+                id:
+                  'gid://gitlab/IndividualNoteDiscussion/8bbc4890b6ff0f2cde93a5a0947cd2b8a13d3b6e',
+                notes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/Note/2428',
+                      body: 'added #31 as parent issue',
+                      bodyHtml:
+                        '<p data-sourcepos="1:1-1:25" dir="auto">added <a href="/flightjs/Flight/-/issues/31" data-reference-type="issue" data-original="#31" data-link="false" data-link-reference="false" data-project="6" data-issue="224" data-project-path="flightjs/Flight" data-iid="31" data-issue-type="issue" data-container=body data-placement="top" title="Perferendis est quae totam quia laborum tempore ut voluptatem." class="gfm gfm-issue">#31</a> as parent issue</p>',
+                      systemNoteIconName: 'link',
+                      createdAt: '2022-11-14T04:18:59Z',
+                      author: {
+                        avatarUrl:
+                          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                        id: 'gid://gitlab/User/1',
+                        name: 'Administrator',
+                        username: 'root',
+                        webUrl: 'http://127.0.0.1:3000/root',
+                        __typename: 'UserCore',
+                      },
+                      __typename: 'Note',
+                    },
+                  ],
+                  __typename: 'NoteConnection',
+                },
+                __typename: 'Discussion',
+              },
+              {
+                id:
+                  'gid://gitlab/IndividualNoteDiscussion/7b08b89a728a5ceb7de8334246837ba1d07270dc',
+                notes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/MilestoneNote/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83823',
+                      body: 'changed milestone to %5',
+                      bodyHtml:
+                        '<p data-sourcepos="1:1-1:23" dir="auto">changed milestone to <a href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container=body data-placement="top" title="" class="gfm gfm-milestone has-tooltip">%v4.0</a></p>',
+                      systemNoteIconName: 'clock',
+                      createdAt: '2022-11-14T04:18:59Z',
+                      author: {
+                        avatarUrl:
+                          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                        id: 'gid://gitlab/User/1',
+                        name: 'Administrator',
+                        username: 'root',
+                        webUrl: 'http://127.0.0.1:3000/root',
+                        __typename: 'UserCore',
+                      },
+                      __typename: 'Note',
+                    },
+                  ],
+                  __typename: 'NoteConnection',
+                },
+                __typename: 'Discussion',
+              },
+              {
+                id:
+                  'gid://gitlab/IndividualNoteDiscussion/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83864',
+                notes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WeightNote/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83864',
+                      body: 'changed weight to 89',
+                      bodyHtml: '<p dir="auto">changed weight to <strong>89</strong></p>',
+                      systemNoteIconName: 'weight',
+                      createdAt: '2022-11-25T07:16:20Z',
+                      author: {
+                        avatarUrl:
+                          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                        id: 'gid://gitlab/User/1',
+                        name: 'Administrator',
+                        username: 'root',
+                        webUrl: 'http://127.0.0.1:3000/root',
+                        __typename: 'UserCore',
+                      },
+                      __typename: 'Note',
+                    },
+                  ],
+                  __typename: 'NoteConnection',
+                },
+                __typename: 'Discussion',
+              },
+            ],
+            __typename: 'DiscussionConnection',
+          },
+          __typename: 'WorkItemWidgetNotes',
+        },
+      ],
+      __typename: 'WorkItem',
     },
   },
 };

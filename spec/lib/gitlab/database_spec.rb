@@ -302,6 +302,26 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.database_base_models_with_gitlab_shared' do
+    before do
+      Gitlab::Database.instance_variable_set(:@database_base_models_with_gitlab_shared, nil)
+    end
+
+    it 'memoizes the models' do
+      expect { Gitlab::Database.database_base_models_with_gitlab_shared }.to change { Gitlab::Database.instance_variable_get(:@database_base_models_with_gitlab_shared) }.from(nil)
+    end
+  end
+
+  describe '.database_base_models_using_load_balancing' do
+    before do
+      Gitlab::Database.instance_variable_set(:@database_base_models_using_load_balancing, nil)
+    end
+
+    it 'memoizes the models' do
+      expect { Gitlab::Database.database_base_models_using_load_balancing }.to change { Gitlab::Database.instance_variable_get(:@database_base_models_using_load_balancing) }.from(nil)
+    end
+  end
+
   describe '#true_value' do
     it 'returns correct value' do
       expect(described_class.true_value).to eq "'t'"
