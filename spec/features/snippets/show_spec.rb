@@ -24,4 +24,30 @@ RSpec.describe 'Snippet', :js, feature_category: :source_code_management do
 
     subject { visit snippet_path(snippet) }
   end
+
+  it_behaves_like 'a dashboard page with sidebar', :dashboard_snippets_path, :snippets
+
+  context 'when unauthenticated' do
+    it 'does not have the sidebar' do
+      visit snippet_path(snippet)
+
+      expect(page).to have_title _('Snippets')
+      expect(page).not_to have_css('aside.nav-sidebar')
+    end
+  end
+
+  context 'when authenticated as a different user' do
+    let_it_be(:different_user) { create(:user) }
+
+    before do
+      sign_in(different_user)
+    end
+
+    it 'does not have the sidebar' do
+      visit snippet_path(snippet)
+
+      expect(page).to have_title _('Snippets')
+      expect(page).not_to have_css('aside.nav-sidebar')
+    end
+  end
 end

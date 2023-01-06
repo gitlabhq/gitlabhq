@@ -238,6 +238,10 @@ RSpec.shared_context 'dashboard navbar structure' do
         nav_sub_items: []
       },
       {
+        nav_item: _("Snippets"),
+        nav_sub_items: []
+      },
+      {
         nav_item: _("Activity"),
         nav_sub_items: []
       }

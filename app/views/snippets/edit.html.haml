@@ -1,5 +1,5 @@
+- breadcrumb_title _("Edit Snippet")
 - page_title _("Edit"), "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
-- @content_class = "limit-container-width" unless fluid_layout
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco')
 

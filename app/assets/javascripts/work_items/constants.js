@@ -36,7 +36,7 @@ export const WORK_ITEM_TYPE_VALUE_ISSUE = 'Issue';
 export const WORK_ITEM_TYPE_VALUE_TASK = 'Task';
 export const WORK_ITEM_TYPE_VALUE_TEST_CASE = 'Test case';
 export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirements';
-export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key result';
+export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key Result';
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 
 export const i18n = {

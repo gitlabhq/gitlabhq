@@ -104,7 +104,7 @@ module QA
           raise ResourceNotFoundError, "Resource at #{request.mask_url} could not be found (#{response.code}): `#{response}`.\n#{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}"
         end
 
-        @api_fabrication_http_method = :get # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @api_fabrication_http_method ||= :get # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         response
       end

@@ -366,9 +366,10 @@ export default {
       });
 
       const newData = produce(sourceData, (draftState) => {
-        const widgetHierarchy = draftState.workItem.widgets.find(
-          (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
-        );
+        const widgets = this.fetchByIid
+          ? draftState.workspace.workItems.nodes[0].widgets
+          : draftState.workItem.widgets;
+        const widgetHierarchy = widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
 
         const index = widgetHierarchy.children.nodes.findIndex((child) => child.id === childId);
 
