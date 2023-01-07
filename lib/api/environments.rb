@@ -12,6 +12,8 @@ module API
     feature_category :continuous_delivery
     urgency :low
 
+    MIN_SEARCH_LENGTH = 3
+
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
@@ -29,7 +31,7 @@ module API
       params do
         use :pagination
         optional :name, type: String, desc: 'Return the environment with this name. Mutually exclusive with search'
-        optional :search, type: String, desc: 'Return list of environments matching the search criteria. Mutually exclusive with name'
+        optional :search, type: String, desc: "Return list of environments matching the search criteria. Mutually exclusive with name. Must be at least #{MIN_SEARCH_LENGTH} characters."
         optional :states,
           type: String,
           values: Environment.valid_states.map(&:to_s),
@@ -38,6 +40,10 @@ module API
       end
       get ':id/environments' do
         authorize! :read_environment, user_project
+
+        if Feature.enabled?(:environment_search_api_min_chars, user_project) && params[:search].present? && params[:search].length < MIN_SEARCH_LENGTH
+          bad_request!("Search query is less than #{MIN_SEARCH_LENGTH} characters")
+        end
 
         environments = ::Environments::EnvironmentsFinder.new(user_project, current_user, declared_params(include_missing: false)).execute
 

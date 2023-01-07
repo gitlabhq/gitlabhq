@@ -287,7 +287,9 @@ gitlab:setup:
       - log/*.log
 
 db:backup_and_restore:
-  extends: .db-job-base
+  extends:
+    - .db-job-base
+    - .rails:rules:db-backup
   variables:
     SETUP_DB: "false"
     GITLAB_ASSUME_YES: "1"
@@ -298,16 +300,12 @@ db:backup_and_restore:
     - bundle exec rake gitlab:backup:create
     - date
     - bundle exec rake gitlab:backup:restore
-  rules:
-    - changes:
-        - "lib/backup/**/*"
-        - "lib/tasks/gitlab/backup.rake"
 
 db:backup_and_restore single-db:
   extends:
     - db:backup_and_restore
     - .single-db
-    - .rails:rules:single-db
+    - .rails:rules:db-backup
 
 rspec:deprecations:
   extends:

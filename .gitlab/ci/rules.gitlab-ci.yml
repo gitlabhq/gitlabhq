@@ -350,6 +350,11 @@
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
 
+# DB backup patterns
+.db-backup-patterns: &db-backup-patterns
+  - "lib/backup/**/*"
+  - "lib/tasks/gitlab/backup.rake"
+
 .db-library-patterns: &db-library-patterns
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database{,_spec}.rb"
@@ -1167,6 +1172,16 @@
       changes: *db-patterns
     - <<: *if-default-branch-schedule-nightly
 
+.rails:rules:db-backup:
+  rules:
+    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-default-refs
+      changes: *db-backup-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - <<: *if-default-refs
+      changes: *db-patterns
+
 .rails:rules:praefect-with-db:
   rules:
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-praefect-with-db/'
@@ -1182,10 +1197,6 @@
     # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request
-      changes: *db-patterns
-    - <<: *if-automated-merge-request
-      changes: *db-patterns
-    - <<: *if-security-merge-request
       changes: *db-patterns
     - <<: *if-merge-request-not-approved
       when: never

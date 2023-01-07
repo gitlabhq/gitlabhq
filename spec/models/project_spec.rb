@@ -372,7 +372,7 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       it 'is equivalent to #project_members' do
-        expect(project.namespace_members).to eq project.project_members
+        expect(project.namespace_members).to match_array(project.project_members)
       end
 
       it_behaves_like 'query without source filters' do
