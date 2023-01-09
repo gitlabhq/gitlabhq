@@ -62,3 +62,11 @@ export const userDeletionObstacles = [
   { name: 'schedule1', type: OBSTACLE_TYPES.oncallSchedules },
   { name: 'policy1', type: OBSTACLE_TYPES.escalationPolicies },
 ];
+
+export const userStatus = {
+  emoji: 'basketball',
+  message: 'test',
+  availability: 'busy',
+  message_html: 'test',
+  clear_status_at: '2023-01-04T10:00:00.000Z',
+};

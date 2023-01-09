@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Reindexing
       class Coordinator
-        include ExclusiveLeaseGuard
+        include IndexingExclusiveLeaseGuard
 
         # Maximum lease time for the global Redis lease
         # This should be higher than the maximum time for any
@@ -36,21 +36,21 @@ module Gitlab
             Gitlab::AppLogger.info("Removing index #{index.identifier} which is a leftover, temporary index from previous reindexing activity")
 
             retries = Gitlab::Database::WithLockRetriesOutsideTransaction.new(
-              connection: index.connection,
+              connection: connection,
               timing_configuration: REMOVE_INDEX_RETRY_CONFIG,
               klass: self.class,
               logger: Gitlab::AppLogger
             )
 
             retries.run(raise_on_exhaustion: false) do
-              index.connection.tap do |conn|
-                conn.execute("DROP INDEX CONCURRENTLY IF EXISTS #{conn.quote_table_name(index.schema)}.#{conn.quote_table_name(index.name)}")
-              end
+              connection.execute("DROP INDEX CONCURRENTLY IF EXISTS #{full_index_name}")
             end
           end
         end
 
         private
+
+        delegate :connection, to: :index
 
         def with_notifications(action)
           notifier.notify_start(action)
@@ -73,8 +73,11 @@ module Gitlab
           TIMEOUT_PER_ACTION
         end
 
-        def lease_key
-          [super, index.connection_db_config.name].join('/')
+        def full_index_name
+          [
+            connection.quote_table_name(index.schema),
+            connection.quote_table_name(index.name)
+          ].join('.')
         end
       end
     end

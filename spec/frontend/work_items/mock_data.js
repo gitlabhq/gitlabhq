@@ -62,6 +62,7 @@ export const workItemQueryResponse = {
         __typename: 'Project',
         id: '1',
         fullPath: 'test-project-path',
+        archived: false,
       },
       workItemType: {
         __typename: 'WorkItemType',
@@ -156,6 +157,7 @@ export const updateWorkItemMutationResponse = {
           __typename: 'Project',
           id: '1',
           fullPath: 'test-project-path',
+          archived: false,
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -268,6 +270,7 @@ export const workItemResponseFactory = ({
   milestoneWidgetPresent = true,
   iterationWidgetPresent = true,
   healthStatusWidgetPresent = true,
+  notesWidgetPresent = true,
   confidential = false,
   canInviteMembers = false,
   allowsScopedLabels = false,
@@ -292,6 +295,7 @@ export const workItemResponseFactory = ({
         __typename: 'Project',
         id: '1',
         fullPath: 'test-project-path',
+        archived: false,
       },
       workItemType,
       userPermissions: {
@@ -380,6 +384,23 @@ export const workItemResponseFactory = ({
               healthStatus: 'onTrack',
             }
           : { type: 'MOCK TYPE' },
+        notesWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetNotes',
+              type: 'NOTES',
+              discussions: {
+                pageInfo: {
+                  hasNextPage: true,
+                  hasPreviousPage: false,
+                  startCursor: null,
+                  endCursor:
+                    'eyJjcmVhdGVkX2F0IjoiMjAyMi0xMS0xNCAwNDoxOTowMC4wOTkxMTcwMDAgKzAwMDAiLCJpZCI6IjQyNyIsIl9rZCI6Im4ifQ==',
+                  __typename: 'PageInfo',
+                },
+                nodes: [],
+              },
+            }
+          : { type: 'MOCK TYPE' },
         {
           __typename: 'WorkItemWidgetHierarchy',
           type: 'HIERARCHY',
@@ -409,6 +430,12 @@ export const workItemResponseFactory = ({
           },
           parent,
         },
+        notesWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetNotes',
+              type: 'NOTES',
+            }
+          : { type: 'MOCK TYPE' },
       ],
     },
   },
@@ -448,6 +475,7 @@ export const createWorkItemMutationResponse = {
           __typename: 'Project',
           id: '1',
           fullPath: 'test-project-path',
+          archived: false,
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -485,6 +513,7 @@ export const createWorkItemFromTaskMutationResponse = {
           __typename: 'Project',
           id: '1',
           fullPath: 'test-project-path',
+          archived: false,
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -524,6 +553,7 @@ export const createWorkItemFromTaskMutationResponse = {
           __typename: 'Project',
           id: '1',
           fullPath: 'test-project-path',
+          archived: false,
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -734,6 +764,7 @@ export const workItemHierarchyEmptyResponse = {
         __typename: 'Project',
         id: '1',
         fullPath: 'test-project-path',
+        archived: false,
       },
       userPermissions: {
         deleteWorkItem: false,
@@ -780,6 +811,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         __typename: 'Project',
         id: '1',
         fullPath: 'test-project-path',
+        archived: false,
       },
       confidential: false,
       widgets: [
@@ -920,6 +952,7 @@ export const workItemHierarchyResponse = {
         __typename: 'Project',
         id: '1',
         fullPath: 'test-project-path',
+        archived: false,
       },
       widgets: [
         {
@@ -992,6 +1025,7 @@ export const workItemObjectiveWithChild = {
     __typename: 'Project',
     id: '1',
     fullPath: 'test-project-path',
+    archived: false,
   },
   userPermissions: {
     deleteWorkItem: true,
@@ -1064,6 +1098,7 @@ export const workItemHierarchyTreeResponse = {
         __typename: 'Project',
         id: '1',
         fullPath: 'test-project-path',
+        archived: false,
       },
       widgets: [
         {
@@ -1146,6 +1181,7 @@ export const changeWorkItemParentMutationResponse = {
           __typename: 'Project',
           id: '1',
           fullPath: 'test-project-path',
+          archived: false,
         },
         widgets: [
           {
@@ -1919,6 +1955,15 @@ export const mockMoreWorkItemNotesResponse = {
         },
       ],
       __typename: 'WorkItem',
+    },
+  },
+};
+
+export const createWorkItemNoteResponse = {
+  data: {
+    createNote: {
+      errors: [],
+      __typename: 'CreateNotePayload',
     },
   },
 };

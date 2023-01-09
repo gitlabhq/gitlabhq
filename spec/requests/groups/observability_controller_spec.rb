@@ -91,4 +91,11 @@ RSpec.describe Groups::ObservabilityController, feature_category: :tracing do
 
     it_behaves_like 'observability route request'
   end
+
+  describe 'GET #datasources' do
+    let(:path) { group_observability_datasources_path(group) }
+    let(:expected_observability_path) { "#{observability_url}/-/#{group.id}/datasources" }
+
+    it_behaves_like 'observability route request'
+  end
 end

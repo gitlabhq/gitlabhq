@@ -474,27 +474,30 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
     end
   end
 
-  context 'User has a todo for an access requested raised for group membership' do
-    let_it_be(:group) { create(:group, :public) }
+  context 'User requested access' do
+    shared_examples 'has todo present with access request content' do
+      specify do
+        create(:todo, :member_access_requested,
+               user: user,
+               target: target,
+               author: author
+        )
+        target.add_owner(user)
 
-    let_it_be(:todo) do
-      create(:todo, :member_access_requested,
-             user: user,
-             target: group,
-             author: author,
-             group: group)
+        sign_in(user)
+        visit dashboard_todos_path
+
+        expect(page).to have_selector('.todos-list .todo', count: 1)
+        expect(page).to have_content "#{author.name} has requested access to #{target.class.name.downcase} #{target.name}"
+      end
     end
 
-    before do
-      group.add_owner(user)
-      sign_in(user)
-
-      visit dashboard_todos_path
-    end
-
-    it 'has todo present with access request content' do
-      expect(page).to have_selector('.todos-list .todo', count: 1)
-      expect(page).to have_content "#{author.name} has requested access to group #{group.name}"
+    context 'when user requests access to project or group' do
+      %i[project group].each do |target_type|
+        it_behaves_like 'has todo present with access request content' do
+          let_it_be(:target) { create(target_type, :public) }
+        end
+      end
     end
   end
 end

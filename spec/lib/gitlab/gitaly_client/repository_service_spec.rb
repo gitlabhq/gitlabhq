@@ -21,39 +21,6 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
-  describe '#garbage_collect' do
-    it 'sends a garbage_collect message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:garbage_collect)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(:garbage_collect_response))
-
-      client.garbage_collect(true, prune: true)
-    end
-  end
-
-  describe '#repack_full' do
-    it 'sends a repack_full message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:repack_full)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(:repack_full_response))
-
-      client.repack_full(true)
-    end
-  end
-
-  describe '#repack_incremental' do
-    it 'sends a repack_incremental message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:repack_incremental)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(:repack_incremental_response))
-
-      client.repack_incremental
-    end
-  end
-
   describe '#optimize_repository' do
     it 'sends a optimize_repository message' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)

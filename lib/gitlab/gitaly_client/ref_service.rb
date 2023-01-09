@@ -215,12 +215,6 @@ module Gitlab
         consume_list_refs_response(response)
       end
 
-      def pack_refs
-        request = Gitaly::PackRefsRequest.new(repository: @gitaly_repo)
-
-        gitaly_client_call(@storage, :ref_service, :pack_refs, request, timeout: GitalyClient.long_timeout)
-      end
-
       def find_refs_by_oid(oid:, limit:, ref_patterns: nil)
         request = Gitaly::FindRefsByOIDRequest.new(repository: @gitaly_repo, sort_field: :refname, oid: oid, limit: limit, ref_patterns: ref_patterns)
 

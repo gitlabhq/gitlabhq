@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Database::Reindexing::Coordinator, feature_category: :dat
   end
 
   let!(:lease) { stub_exclusive_lease(lease_key, uuid, timeout: lease_timeout) }
-  let(:lease_key) { "gitlab/database/reindexing/coordinator/#{Gitlab::Database::PRIMARY_DATABASE_NAME}" }
+  let(:lease_key) { "gitlab/database/indexing/actions/#{Gitlab::Database::PRIMARY_DATABASE_NAME}" }
   let(:lease_timeout) { 1.day }
   let(:uuid) { 'uuid' }
 

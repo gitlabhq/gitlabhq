@@ -43,6 +43,10 @@ RSpec.describe TodosHelper do
     create(:todo, target: group)
   end
 
+  let_it_be(:project_access_request_todo) do
+    create(:todo, target: project, action: Todo::MEMBER_ACCESS_REQUESTED)
+  end
+
   describe '#todos_count_format' do
     it 'shows fuzzy count for 100 or more items' do
       expect(helper.todos_count_format(100)).to eq '99+'
@@ -172,7 +176,17 @@ RSpec.describe TodosHelper do
       it 'responds with access requests tab' do
         path = helper.todo_target_path(group_access_request_todo)
 
-        access_request_path = Gitlab::Routing.url_helpers.group_group_members_url(group, tab: 'access_requests')
+        access_request_path = Gitlab::Routing.url_helpers.group_group_members_path(group, tab: 'access_requests')
+
+        expect(path).to eq(access_request_path)
+      end
+    end
+
+    context 'when a user requests access to project' do
+      it 'responds with access requests tab' do
+        path = helper.todo_target_path(project_access_request_todo)
+
+        access_request_path = Gitlab::Routing.url_helpers.project_project_members_path(project, tab: 'access_requests')
 
         expect(path).to eq(access_request_path)
       end
@@ -374,12 +388,20 @@ RSpec.describe TodosHelper do
     end
 
     context 'member access requested' do
-      context 'when source is group' do
+      context 'when target is group' do
         it 'returns group access message' do
           group_todo.action = Todo::MEMBER_ACCESS_REQUESTED
 
           expect(helper.todo_action_name(group_todo)).to eq(
             format(s_("Todos|has requested access to group %{which}"), which: _(group.name))
+          )
+        end
+      end
+
+      context 'when target is project' do
+        it 'returns project access message' do
+          expect(helper.todo_action_name(project_access_request_todo)).to eq(
+            format(s_("Todos|has requested access to project %{which}"), which: _(project.name))
           )
         end
       end

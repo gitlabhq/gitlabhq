@@ -80,6 +80,10 @@ RSpec.shared_examples 'groups routing' do
     expect(get("groups/#{group_path}/-/observability/explore")).to route_to('groups/observability#explore', group_id: group_path)
   end
 
+  it 'routes to the observability controller datasources method' do
+    expect(get("groups/#{group_path}/-/observability/datasources")).to route_to('groups/observability#datasources', group_id: group_path)
+  end
+
   it 'routes to the observability controller manage method' do
     expect(get("groups/#{group_path}/-/observability/manage")).to route_to('groups/observability#manage', group_id: group_path)
   end

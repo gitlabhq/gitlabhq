@@ -31,6 +31,12 @@ Rails experience is useful but not required.
 sudo gitlab-rails console
 ```
 
+**For Docker installations**
+
+```shell
+docker exec -it <container-id> gitlab-rails console
+```
+
 **For installations from source**
 
 ```shell

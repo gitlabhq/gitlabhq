@@ -28,7 +28,7 @@ module TodosHelper
     when Todo::UNMERGEABLE then s_('Todos|Could not merge')
     when Todo::MERGE_TRAIN_REMOVED then s_("Todos|Removed from Merge Train")
     when Todo::MEMBER_ACCESS_REQUESTED then format(
-      s_("Todos|has requested access to group %{which}"), which: _(todo.target.name)
+      s_("Todos|has requested access to %{what} %{which}"), what: _(todo.member_access_type), which: _(todo.target.name)
     )
     end
   end
@@ -99,7 +99,7 @@ module TodosHelper
       path_options[:only_path] = true
       Gitlab::UrlBuilder.build(todo.target, **path_options)
     elsif todo.member_access_requested?
-      todo.access_request_url
+      todo.access_request_url(only_path: true)
     else
       path = [todo.resource_parent, todo.target]
 

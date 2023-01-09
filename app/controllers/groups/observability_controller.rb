@@ -19,6 +19,10 @@ module Groups
       render_observability
     end
 
+    def datasources
+      render_observability
+    end
+
     private
 
     def render_observability

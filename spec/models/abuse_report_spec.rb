@@ -23,8 +23,13 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.to validate_presence_of(:reporter) }
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:message) }
-    it { is_expected.to validate_uniqueness_of(:user_id).with_message('has already been reported') }
     it { is_expected.to validate_presence_of(:category) }
+
+    it do
+      is_expected.to validate_uniqueness_of(:user_id)
+        .scoped_to(:reporter_id)
+        .with_message('You have already reported this user')
+    end
   end
 
   describe '#remove_user' do

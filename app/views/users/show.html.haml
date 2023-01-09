@@ -18,12 +18,7 @@
           icon: 'pencil',
           button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
       - elsif current_user
-        - if @user.abuse_report
-          = render Pajamas::ButtonComponent.new(variant: :danger,
-            icon: 'error',
-            button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Already reported for abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
-        - else
-          #js-report-abuse{ data: { form_submit_path: add_category_abuse_reports_path, user_id: @user.id, reported_from_url: user_url(@user) } }
+        #js-report-abuse{ data: { form_submit_path: add_category_abuse_reports_path, user_id: @user.id, reported_from_url: request.referer || user_url(@user) } }
       - verified_gpg_keys = @user.gpg_keys.select(&:verified?)
       - if verified_gpg_keys.any?
         = render Pajamas::ButtonComponent.new(href: user_gpg_keys_path,

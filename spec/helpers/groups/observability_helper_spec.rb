@@ -22,6 +22,11 @@ RSpec.describe Groups::ObservabilityHelper do
         allow(helper).to receive(:params).and_return({ action: 'explore' })
         expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/-/#{group.id}/explore")
       end
+
+      it 'returns the iframe src for action: datasources' do
+        allow(helper).to receive(:params).and_return({ action: 'datasources' })
+        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/-/#{group.id}/datasources")
+      end
     end
 
     context 'if observability_path exists in params' do
@@ -65,6 +70,11 @@ RSpec.describe Groups::ObservabilityHelper do
         allow(helper).to receive(:params).and_return({ action: 'explore' })
         expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/explore")
       end
+
+      it 'returns the iframe src without group.id for action: datasources' do
+        allow(helper).to receive(:params).and_return({ action: 'datasources' })
+        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/datasources")
+      end
     end
   end
 
@@ -76,12 +86,17 @@ RSpec.describe Groups::ObservabilityHelper do
 
     it 'returns the title for action: manage' do
       allow(helper).to receive(:params).and_return({ action: 'manage' })
-      expect(helper.observability_page_title).to eq("Manage Dashboards")
+      expect(helper.observability_page_title).to eq("Manage dashboards")
     end
 
     it 'returns the title for action: explore' do
       allow(helper).to receive(:params).and_return({ action: 'explore' })
       expect(helper.observability_page_title).to eq("Explore")
+    end
+
+    it 'returns the title for action: datasources' do
+      allow(helper).to receive(:params).and_return({ action: 'datasources' })
+      expect(helper.observability_page_title).to eq("Data sources")
     end
 
     it 'returns the default title for unknown action' do

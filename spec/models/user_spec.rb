@@ -251,22 +251,22 @@ RSpec.describe User do
       end
     end
 
-    describe '#abuse_report' do
+    describe '#abuse_reports' do
       let(:current_user) { create(:user) }
       let(:other_user) { create(:user) }
 
-      it { is_expected.to have_one(:abuse_report) }
+      it { is_expected.to have_many(:abuse_reports) }
 
       it 'refers to the abuse report whose user_id is the current user' do
         abuse_report = create(:abuse_report, reporter: other_user, user: current_user)
 
-        expect(current_user.abuse_report).to eq(abuse_report)
+        expect(current_user.abuse_reports.last).to eq(abuse_report)
       end
 
       it 'does not refer to the abuse report whose reporter_id is the current user' do
         create(:abuse_report, reporter: current_user, user: other_user)
 
-        expect(current_user.abuse_report).to be_nil
+        expect(current_user.abuse_reports.last).to be_nil
       end
 
       it 'does not update the user_id of an abuse report when the user is updated' do

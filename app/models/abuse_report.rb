@@ -13,7 +13,13 @@ class AbuseReport < ApplicationRecord
   validates :user, presence: true
   validates :message, presence: true
   validates :category, presence: true
-  validates :user_id, uniqueness: { message: 'has already been reported' }
+  validates :user_id,
+    uniqueness: {
+      scope: :reporter_id,
+      message: ->(object, data) do
+        _('You have already reported this user')
+      end
+    }
 
   scope :by_user, ->(user) { where(user_id: user) }
   scope :with_users, -> { includes(:reporter, :user) }

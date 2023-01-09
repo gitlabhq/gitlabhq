@@ -86,4 +86,18 @@ RSpec.describe RuboCop::Cop::Gitlab::StrongMemoizeAttr do
       RUBY
     end
   end
+
+  context 'when strong_memoize() is used in a singleton method' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def self.memoized_method
+            strong_memoize(:memoized_method) do
+              'this is a memoized method'
+            end
+          end
+        end
+      RUBY
+    end
+  end
 end

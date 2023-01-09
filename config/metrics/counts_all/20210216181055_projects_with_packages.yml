@@ -9,7 +9,7 @@ product_category: package registry
 value_type: number
 status: active
 time_frame: all
-data_source: redis
+data_source: database
 distribution:
 - ee
 - ce

@@ -54,7 +54,7 @@ module Glfm
       # Ensure that the diff output is flushed and output before we raise and exit.
       $stderr.flush
 
-      raise('ERROR: The generated files are not up to date.')
+      raise('ERROR: The generated files are not up to date.  The specification or examples may need to be updated. See https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#workflows')
     end
   end
 end

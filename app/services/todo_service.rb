@@ -220,7 +220,7 @@ class TodoService
     create_todos(reviewers, attributes, project.namespace, project)
   end
 
-  def create_member_access_request(member)
+  def create_member_access_request_todos(member)
     source = member.source
     attributes = attributes_for_access_request_todos(source, member.user, Todo::MEMBER_ACCESS_REQUESTED)
 
@@ -433,7 +433,12 @@ class TodoService
       note: note
     }
 
-    attributes[:group_id] = source.id unless source.instance_of? Project
+    if source.instance_of? Project
+      attributes[:project_id] = source.id
+      attributes[:group_id] = source.group.id if source.group.present?
+    else
+      attributes[:group_id] = source.id
+    end
 
     attributes
   end

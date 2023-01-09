@@ -79,11 +79,11 @@
     @include gl-py-0;
     @include gl-px-1;
     @include gl-m-0;
-    @include gl-bg-gray-50;
     @include gl-border-0;
     @include gl-rounded-base;
     @include gl-display-inline-flex;
-    @include gl-text-body;
+    background: var(--gray-50, $gray-50);
+    color: var(--gl-text-color, $gl-text-color);
   }
 
   .gl-label-scoped {

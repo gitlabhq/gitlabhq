@@ -633,7 +633,7 @@ export default {
         @addWorkItemChild="addChild"
         @removeChild="removeChild"
       />
-      <template v-if="workItemsMvc2Enabled">
+      <template v-if="workItemsMvcEnabled">
         <work-item-notes
           v-if="workItemNotes"
           :work-item-id="workItem.id"

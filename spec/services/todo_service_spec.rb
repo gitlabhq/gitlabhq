@@ -1259,92 +1259,85 @@ RSpec.describe TodoService do
     end
   end
 
-  describe '#create_member_access_request' do
-    context 'snowplow event tracking' do
-      it 'does not track snowplow event when todos are for access request for project', :snowplow do
-        user = create(:user)
-        project = create(:project)
-        requester = create(:project_member, project: project, user: assignee)
-        project.add_owner(user)
+  describe '#create_member_access_request_todos' do
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:project) { create(:project, :public, group: group) }
 
-        expect_no_snowplow_event
+    shared_examples 'member access request is raised' do
+      context 'when the source has more than 10 owners' do
+        it 'creates todos for 10 recently active source owners' do
+          users = create_list(:user, 12, :with_sign_ins)
+          users.each do |user|
+            source.add_owner(user)
+          end
+          ten_most_recently_active_source_owners = users.sort_by(&:last_sign_in_at).last(10)
+          excluded_source_owners = users - ten_most_recently_active_source_owners
 
-        service.create_member_access_request(requester)
+          service.create_member_access_request_todos(requester1)
+
+          ten_most_recently_active_source_owners.each do |owner|
+            expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester1.user).count).to eq 1
+          end
+
+          excluded_source_owners.each do |owner|
+            expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester1.user).count).to eq 0
+          end
+        end
+      end
+
+      context 'when total owners are less than 10' do
+        it 'creates todos for all source owners' do
+          users = create_list(:user, 4, :with_sign_ins)
+          users.map do |user|
+            source.add_owner(user)
+          end
+
+          service.create_member_access_request_todos(requester1)
+
+          users.each do |owner|
+            expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester1.user).count).to eq 1
+          end
+        end
+      end
+
+      context 'when multiple access requests are raised' do
+        it 'creates todos for 10 recently active source owners for multiple requests' do
+          users = create_list(:user, 12, :with_sign_ins)
+          users.each do |user|
+            source.add_owner(user)
+          end
+          ten_most_recently_active_source_owners = users.sort_by(&:last_sign_in_at).last(10)
+          excluded_source_owners = users - ten_most_recently_active_source_owners
+
+          service.create_member_access_request_todos(requester1)
+          service.create_member_access_request_todos(requester2)
+
+          ten_most_recently_active_source_owners.each do |owner|
+            expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester1.user).count).to eq 1
+            expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester2.user).count).to eq 1
+          end
+
+          excluded_source_owners.each do |owner|
+            expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester1.user).count).to eq 0
+            expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester2.user).count).to eq 0
+          end
+        end
       end
     end
 
-    context 'when the group has more than 10 owners' do
-      it 'creates todos for 10 recently active group owners' do
-        group = create(:group, :public)
-
-        users = create_list(:user, 12, :with_sign_ins)
-        users.each do |user|
-          group.add_owner(user)
-        end
-        ten_most_recently_active_group_owners = users.sort_by(&:last_sign_in_at).last(10)
-        excluded_group_owners = users - ten_most_recently_active_group_owners
-
-        requester = create(:group_member, group: group, user: assignee)
-
-        service.create_member_access_request(requester)
-
-        ten_most_recently_active_group_owners.each do |owner|
-          expect(Todo.where(user: owner, target: group, action: Todo::MEMBER_ACCESS_REQUESTED, author: assignee).count).to eq 1
-        end
-
-        excluded_group_owners.each do |owner|
-          expect(Todo.where(user: owner, target: group, action: Todo::MEMBER_ACCESS_REQUESTED, author: assignee).count).to eq 0
-        end
+    context 'when request is raised for group' do
+      it_behaves_like 'member access request is raised' do
+        let_it_be(:source) { create(:group, :public) }
+        let_it_be(:requester1) { create(:group_member, :access_request, group: source, user: assignee) }
+        let_it_be(:requester2) { create(:group_member, :access_request, group: source, user: non_member) }
       end
     end
 
-    context 'when total owners are less than 10' do
-      it 'creates todos for all group owners' do
-        group = create(:group, :public)
-
-        users = create_list(:user, 4, :with_sign_ins)
-        users.map do |user|
-          group.add_owner(user)
-        end
-
-        requester = create(:group_member, user: assignee, group: group)
-        requester.requested_at = Time.now.utc
-        requester.save!
-
-        service.create_member_access_request(requester)
-
-        users.each do |owner|
-          expect(Todo.where(user: owner, target: group, action: Todo::MEMBER_ACCESS_REQUESTED, author: assignee).count).to eq 1
-        end
-      end
-    end
-
-    context 'when multiple access requests are raised' do
-      it 'creates todos for 10 recently active group owners for multiple requests' do
-        group = create(:group, :public)
-
-        users = create_list(:user, 12, :with_sign_ins)
-        users.each do |user|
-          group.add_owner(user)
-        end
-        ten_most_recently_active_group_owners = users.sort_by(&:last_sign_in_at).last(10)
-        excluded_group_owners = users - ten_most_recently_active_group_owners
-
-        requester1 = create(:group_member, group: group, user: assignee)
-        requester2 = create(:group_member, group: group, user: non_member)
-
-        service.create_member_access_request(requester1)
-        service.create_member_access_request(requester2)
-
-        ten_most_recently_active_group_owners.each do |owner|
-          expect(Todo.where(user: owner, target: group, action: Todo::MEMBER_ACCESS_REQUESTED, author: assignee).count).to eq 1
-          expect(Todo.where(user: owner, target: group, action: Todo::MEMBER_ACCESS_REQUESTED, author: non_member).count).to eq 1
-        end
-
-        excluded_group_owners.each do |owner|
-          expect(Todo.where(user: owner, target: group, action: Todo::MEMBER_ACCESS_REQUESTED, author: assignee).count).to eq 0
-          expect(Todo.where(user: owner, target: group, action: Todo::MEMBER_ACCESS_REQUESTED, author: non_member).count).to eq 0
-        end
+    context 'when request is raised for project' do
+      it_behaves_like 'member access request is raised' do
+        let_it_be(:source) { create(:project, :public) }
+        let_it_be(:requester1) { create(:project_member, :access_request, project: source, user: assignee) }
+        let_it_be(:requester2) { create(:project_member, :access_request, project: source, user: non_member) }
       end
     end
   end

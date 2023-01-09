@@ -22,6 +22,7 @@ import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
+import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -81,6 +82,7 @@ describe('WorkItemDetail component', () => {
   const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
   const findWorkItemType = () => wrapper.find('[data-testid="work-item-type"]');
   const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
+  const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
 
   const createComponent = ({
     isModal = false,
@@ -666,6 +668,26 @@ describe('WorkItemDetail component', () => {
         parentWorkItemType: objectiveType.name,
         confidential: objectiveWorkItem.data.workItem.confidential,
       });
+    });
+  });
+
+  describe('notes widget', () => {
+    it('does not render notes by default', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findNotesWidget().exists()).toBe(false);
+    });
+
+    it('renders notes when the work_items_mvc flag is on', async () => {
+      const notesWorkItem = workItemResponseFactory({
+        notesWidgetPresent: true,
+      });
+      const handler = jest.fn().mockResolvedValue(notesWorkItem);
+      createComponent({ workItemsMvcEnabled: true, handler });
+      await waitForPromises();
+
+      expect(findNotesWidget().exists()).toBe(true);
     });
   });
 });

@@ -409,17 +409,6 @@ RSpec.describe Gitlab::GitalyClient::RefService do
     end
   end
 
-  describe '#pack_refs' do
-    it 'sends a pack_refs message' do
-      expect_any_instance_of(Gitaly::RefService::Stub)
-        .to receive(:pack_refs)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(:pack_refs_response))
-
-      client.pack_refs
-    end
-  end
-
   describe '#find_refs_by_oid' do
     let(:oid) { project.repository.commit.id }
 

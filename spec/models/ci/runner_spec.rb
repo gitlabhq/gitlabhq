@@ -1097,6 +1097,23 @@ RSpec.describe Ci::Runner, feature_category: :runner do
 
         expect(runner.runner_version).to be_nil
       end
+
+      context 'with only ip_address specified', :freeze_time do
+        subject(:heartbeat) do
+          runner.heartbeat(ip_address: '1.1.1.1')
+        end
+
+        it 'updates only ip_address' do
+          attrs = Gitlab::Json.dump(ip_address: '1.1.1.1', contacted_at: Time.current)
+
+          Gitlab::Redis::Cache.with do |redis|
+            redis_key = runner.send(:cache_attribute_key)
+            expect(redis).to receive(:set).with(redis_key, attrs, any_args)
+          end
+
+          heartbeat
+        end
+      end
     end
 
     context 'when database was not updated recently' do

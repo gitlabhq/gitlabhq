@@ -93,7 +93,8 @@ module NavbarStructureHelper
         nav_sub_items: [
           _('Dashboards'),
           _('Explore'),
-          _('Manage Dashboards')
+          _('Data sources'),
+          _('Manage dashboards')
         ]
       }
     )

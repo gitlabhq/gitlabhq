@@ -21,7 +21,7 @@ If you do not use both of these environments, use the [Jira DVCS Connector](dvcs
 We recommend the GitLab.com for Jira Cloud app, because data is
 synchronized in real time. The DVCS connector updates data only once per hour.
 
-The user configuring the GitLab.com for Jira Cloud app must have
+To configure the GitLab.com for Jira Cloud app, you must have
 at least the Maintainer role in the GitLab.com namespace.
 
 This integration method supports [Smart Commits](dvcs.md#smart-commits).
@@ -41,14 +41,15 @@ To install the GitLab.com for Jira Cloud app:
    This page is always available under **Jira Settings > Apps > Manage apps**.
 
    ![Start GitLab.com app configuration on Jira Cloud](img/jira_dev_panel_setup_com_2.png)
-1. If not already signed in to GitLab.com, you must sign in as a user with
-   the Maintainer role to add namespaces.
+1. To add namespaces, ensure you're signed in to GitLab.com
+   as a user with at least the Maintainer role.
 
    ![Sign in to GitLab.com in GitLab.com for Jira Cloud app](img/jira_dev_panel_setup_com_3_v13_9.png)
 1. To open the list of available namespaces, select **Add namespace**.
 
-1. Identify the namespace you want to link, and select **Link**. Only Jira site
-   administrators are permitted to add or remove namespaces for an installation.
+1. Identify the namespace you want to link, and select **Link**.
+   - You must have at least the Maintainer role for the namespace.
+   - Only Jira site administrators can add or remove namespaces for an installation.
 
    ![Link namespace in GitLab.com for Jira Cloud app](img/jira_dev_panel_setup_com_4_v13_9.png)
 

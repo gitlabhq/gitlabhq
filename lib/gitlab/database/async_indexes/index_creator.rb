@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module AsyncIndexes
       class IndexCreator
-        include ExclusiveLeaseGuard
+        include IndexingExclusiveLeaseGuard
 
         TIMEOUT_PER_ACTION = 1.day
         STATEMENT_TIMEOUT = 20.hours
@@ -45,10 +45,6 @@ module Gitlab
 
         def lease_timeout
           TIMEOUT_PER_ACTION
-        end
-
-        def lease_key
-          [super, async_index.connection_db_config.name].join('/')
         end
 
         def set_statement_timeout

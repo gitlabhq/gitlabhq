@@ -99,7 +99,7 @@ gitlab:
         cpu: 746m
         memory: 2809Mi
       limits:
-        cpu: 1300m
+        cpu: 1400m
         memory: 4214Mi
     minReplicas: 1
     maxReplicas: 1

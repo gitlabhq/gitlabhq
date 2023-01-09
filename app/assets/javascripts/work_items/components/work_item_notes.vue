@@ -6,6 +6,7 @@ import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
 import { i18n, DEFAULT_PAGE_SIZE_NOTES } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
 import { getWorkItemNotesQuery } from '~/work_items/utils';
+import WorkItemCommentForm from './work_item_comment_form.vue';
 
 export default {
   i18n: {
@@ -17,13 +18,26 @@ export default {
     height: 40,
   },
   components: {
-    SystemNote,
     GlSkeletonLoader,
     ActivityFilter,
     GlIntersectionObserver,
+    SystemNote,
+    WorkItemCommentForm,
   },
   props: {
     workItemId: {
+      type: String,
+      required: true,
+    },
+    queryVariables: {
+      type: Object,
+      required: true,
+    },
+    fullPath: {
+      type: String,
+      required: true,
+    },
+    workItemType: {
       type: String,
       required: true,
     },
@@ -31,14 +45,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    queryVariables: {
-      type: Object,
-      required: true,
-    },
-    workItemType: {
-      type: String,
-      required: true,
     },
   },
   data() {
@@ -56,6 +62,9 @@ export default {
     },
     pageInfo() {
       return this.workItemNotes?.pageInfo;
+    },
+    avatarUrl() {
+      return window.gon.current_user_avatar_url;
     },
     hasNextPage() {
       return this.pageInfo?.hasNextPage;
@@ -195,6 +204,12 @@ export default {
             :key="note.notes.nodes[0].id"
             :note="note.notes.nodes[0]"
             :data-testid="note.notes.nodes[0].id"
+          />
+          <work-item-comment-form
+            :query-variables="queryVariables"
+            :full-path="fullPath"
+            :work-item-id="workItemId"
+            @error="$emit('error', $event)"
           />
         </ul>
       </template>

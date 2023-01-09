@@ -2,6 +2,8 @@
 
 class AbuseReportsController < ApplicationController
   before_action :set_user, :set_ref_url, only: [:new, :add_category]
+  before_action :save_origin_url, only: [:new, :add_category]
+  before_action :set_origin_url, only: [:create]
 
   feature_category :insider_threat
 
@@ -54,5 +56,14 @@ class AbuseReportsController < ApplicationController
 
   def set_ref_url
     @ref_url = params.fetch(:ref_url, '')
+  end
+
+  def save_origin_url
+    @origin_url = params.fetch(:ref_url, request.referer)
+    session[:abuse_report_origin_url] = @origin_url
+  end
+
+  def set_origin_url
+    @origin_url = session[:abuse_report_origin_url]
   end
 end

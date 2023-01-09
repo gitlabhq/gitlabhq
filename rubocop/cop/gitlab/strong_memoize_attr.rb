@@ -53,6 +53,9 @@ module RuboCop
           # Don't flag methods with parameters.
           return if send_node.each_ancestor(:def).first&.arguments&.any?
 
+          # Don't flag singleton methods.
+          return if send_node.each_ancestor(:defs).any?
+
           corrector = autocorrect_pure_definitions(node.parent, body) if node.parent.def_type?
 
           add_offense(send_node, &corrector)

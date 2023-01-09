@@ -210,6 +210,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'Deployments::LinkMergeRequestWorker' => 3,
         'Deployments::SuccessWorker' => 3,
         'Deployments::UpdateEnvironmentWorker' => 3,
+        'Deployments::ApprovalWorker' => 3,
         'DesignManagement::CopyDesignCollectionWorker' => 3,
         'DesignManagement::NewVersionWorker' => 3,
         'DestroyPagesDeploymentsWorker' => 3,

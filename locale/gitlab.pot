@@ -2209,6 +2209,9 @@ msgstr ""
 msgid "Add a collapsible section"
 msgstr ""
 
+msgid "Add a comment"
+msgstr ""
+
 msgid "Add a comment to this line"
 msgstr ""
 
@@ -4951,6 +4954,9 @@ msgid "Applying suggestion..."
 msgstr ""
 
 msgid "Applying suggestions..."
+msgstr ""
+
+msgid "Approval options"
 msgstr ""
 
 msgid "Approval rules"
@@ -13821,6 +13827,9 @@ msgstr ""
 msgid "Deployment frequency"
 msgstr ""
 
+msgid "DeploymentApprovals|Allow pipeline triggerer to approve deployment."
+msgstr ""
+
 msgid "DeploymentApprovals|Approvals"
 msgstr ""
 
@@ -13834,6 +13843,12 @@ msgid "DeploymentApprovals|Developers + Maintainers"
 msgstr ""
 
 msgid "DeploymentApprovals|Maintainers"
+msgstr ""
+
+msgid "DeploymentApprovals|Set how approval rules are applied to deployments in protected environments."
+msgstr ""
+
+msgid "DeploymentApprovals|When a pipeline runs, deployment jobs will automatically be approved in the pipeline if the triggerer is allowed to approve."
 msgstr ""
 
 msgid "DeploymentApproval| Current approvals: %{current}"
@@ -25298,9 +25313,6 @@ msgstr ""
 msgid "Manage %{workspace} labels"
 msgstr ""
 
-msgid "Manage Dashboards"
-msgstr ""
-
 msgid "Manage Web IDE features."
 msgstr ""
 
@@ -27228,22 +27240,34 @@ msgid_plural "NamespaceStorageSize|%{namespace_name} contains %{locked_project_c
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "NamespaceStorageSize|%{namespace_name} is now read-only. You cannot: %{base_message}"
+msgid "NamespaceStorageSize|%{namespace_name} is now read-only. Projects under this namespace are locked and actions are restricted."
 msgstr ""
 
-msgid "NamespaceStorageSize|If you reach 100%% storage capacity, you will not be able to: %{base_message}"
+msgid "NamespaceStorageSize|If %{namespace_name} exceeds the storage quota, all projects in the namespace will be locked and actions will be restricted."
 msgstr ""
 
-msgid "NamespaceStorageSize|Please purchase additional storage to unlock your projects over the free %{free_size_limit} project limit. You can't %{base_message}"
+msgid "NamespaceStorageSize|If you reach 100%% storage capacity, you will not be able to: %{repository_limits_description}"
 msgstr ""
 
-msgid "NamespaceStorageSize|You have consumed all of your additional storage, please purchase more to unlock your projects over the free %{free_size_limit} limit. You can't %{base_message}"
+msgid "NamespaceStorageSize|Manage your storage usage or, if you are a namespace Owner, purchase additional storage."
 msgstr ""
 
-msgid "NamespaceStorageSize|You have reached %{usage_in_percent} of %{namespace_name}'s storage capacity (%{used_storage} of %{storage_limit})"
+msgid "NamespaceStorageSize|Please purchase additional storage to unlock your projects over the free %{free_size_limit} project limit. You can't %{repository_limits_description}"
+msgstr ""
+
+msgid "NamespaceStorageSize|Which actions are restricted?"
+msgstr ""
+
+msgid "NamespaceStorageSize|Which actions become restricted?"
+msgstr ""
+
+msgid "NamespaceStorageSize|You have consumed all of your additional storage, please purchase more to unlock your projects over the free %{free_size_limit} limit. You can't %{repository_limits_description}"
 msgstr ""
 
 msgid "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on one or more projects."
+msgstr ""
+
+msgid "NamespaceStorageSize|You have used %{usage_in_percent} of the storage quota for %{namespace_name} (%{used_storage} of %{storage_limit})"
 msgstr ""
 
 msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
@@ -28579,6 +28603,18 @@ msgid "Objective"
 msgstr ""
 
 msgid "Observability"
+msgstr ""
+
+msgid "Observability|Dashboards"
+msgstr ""
+
+msgid "Observability|Data sources"
+msgstr ""
+
+msgid "Observability|Explore"
+msgstr ""
+
+msgid "Observability|Manage dashboards"
 msgstr ""
 
 msgid "Oct"
@@ -43836,7 +43872,7 @@ msgstr ""
 msgid "Todos|added a to-do item"
 msgstr ""
 
-msgid "Todos|has requested access to group %{which}"
+msgid "Todos|has requested access to %{what} %{which}"
 msgstr ""
 
 msgid "Todos|mentioned %{who}"
@@ -45467,9 +45503,6 @@ msgid "UserProfile|(Busy)"
 msgstr ""
 
 msgid "UserProfile|Activity"
-msgstr ""
-
-msgid "UserProfile|Already reported for abuse"
 msgstr ""
 
 msgid "UserProfile|Blocked user"
@@ -47961,7 +47994,7 @@ msgstr ""
 msgid "You cannot add any more epics. This epic already has maximum number of child epics."
 msgstr ""
 
-msgid "You cannot approve your own deployment."
+msgid "You cannot approve your own deployment. This configuration can be adjusted in the protected environment settings."
 msgstr ""
 
 msgid "You cannot combine replace_ids with add_ids or remove_ids"
@@ -48082,6 +48115,9 @@ msgid "You have %{pendingMembersCount} pending member that needs approval."
 msgid_plural "You have %{pendingMembersCount} pending members that need approval."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "You have already reported this user"
+msgstr ""
 
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."
 msgstr ""

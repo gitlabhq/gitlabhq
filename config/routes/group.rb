@@ -126,6 +126,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     namespace :observability do
       get 'dashboards'
       get 'explore'
+      get 'datasources'
       get 'manage'
     end
 

@@ -7,7 +7,7 @@
   = _("A member of the abuse team will review your report as soon as possible.")
 %hr
 = gitlab_ui_form_for @abuse_report, html: { class: 'js-quick-submit js-requires-input'} do |f|
-  = form_errors(@abuse_report)
+  = form_errors(@abuse_report, custom_message: [:user_id])
 
   = f.hidden_field :user_id
   = f.hidden_field :category
@@ -27,3 +27,4 @@
 
   .form-actions
     = f.submit _("Send report"), pajamas_button: true
+    = link_to _('Cancel'), @origin_url, class: "gl-button btn btn-default btn-cancel"

@@ -5,15 +5,19 @@ module Groups
     ACTION_TO_PATH = {
       'dashboards' => {
         path: '/',
-        title: -> { _('Dashboards') }
+        title: -> { s_('Observability|Dashboards') }
       },
       'manage' => {
         path: '/dashboards',
-        title: -> { _('Manage Dashboards') }
+        title: -> { s_('Observability|Manage dashboards') }
       },
       'explore' => {
         path: '/explore',
-        title: -> { _('Explore') }
+        title: -> { s_('Observability|Explore') }
+      },
+      'datasources' => {
+        path: '/datasources',
+        title: -> { s_('Observability|Data sources') }
       }
     }.freeze
 

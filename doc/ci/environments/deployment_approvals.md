@@ -113,6 +113,23 @@ NOTE:
 To protect, update, or unprotect an environment, you must have at least the
 Maintainer role.
 
+### Optional settings
+
+#### Allow self-approval
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381418) in GitLab 15.8.
+
+By default, a user who triggered a deployment pipeline can't self-approve the deployment jobs.
+You can allow the self-approval by the following settings:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Protected environments**.
+1. From the **Approval options**, check **Allow pipeline triggerer to approve deployment**.
+
+By enabling this, when a pipeline runs, deployment jobs will automatically be approved in the pipeline
+if the triggerer is allowed to approve, otherwise nothing happens.
+
 ## Approve or reject a deployment
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/) in GitLab 14.9

@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexCreator do
     let(:connection) { model.connection }
 
     let!(:lease) { stub_exclusive_lease(lease_key, :uuid, timeout: lease_timeout) }
-    let(:lease_key) { "gitlab/database/async_indexes/index_creator/#{Gitlab::Database::PRIMARY_DATABASE_NAME}" }
+    let(:lease_key) { "gitlab/database/indexing/actions/#{Gitlab::Database::PRIMARY_DATABASE_NAME}" }
     let(:lease_timeout) { described_class::TIMEOUT_PER_ACTION }
 
     around do |example|

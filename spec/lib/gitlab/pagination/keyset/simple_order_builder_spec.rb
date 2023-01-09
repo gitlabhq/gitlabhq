@@ -92,34 +92,6 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
     end
   end
 
-  context "NULLS order given as as an Arel literal" do
-    context 'when NULLS LAST order is given without a tie-breaker' do
-      let(:scope) { Project.order(Project.arel_table[:created_at].asc.nulls_last) }
-
-      it 'sets the column definition for created_at appropriately' do
-        expect(column_definition.attribute_name).to eq('created_at')
-      end
-
-      it 'orders by primary key' do
-        expect(sql_with_order)
-          .to end_with('ORDER BY "projects"."created_at" ASC NULLS LAST, "projects"."id" DESC')
-      end
-    end
-
-    context 'when NULLS FIRST order is given with a tie-breaker' do
-      let(:scope) { Issue.order(Issue.arel_table[:relative_position].desc.nulls_first).order(id: :asc) }
-
-      it 'sets the column definition for created_at appropriately' do
-        expect(column_definition.attribute_name).to eq('relative_position')
-      end
-
-      it 'orders by the given primary key' do
-        expect(sql_with_order)
-          .to end_with('ORDER BY "issues"."relative_position" DESC NULLS FIRST, "issues"."id" ASC')
-      end
-    end
-  end
-
   context "NULLS order given as as an Arel node" do
     context 'when NULLS LAST order is given without a tie-breaker' do
       let(:scope) { Project.order(Project.arel_table[:created_at].asc.nulls_last) }

@@ -3,7 +3,9 @@ import {
   newDateAsLocaleTime,
   nSecondsAfter,
   nSecondsBefore,
+  isToday,
 } from '~/lib/utils/datetime/date_calculation_utility';
+import { useFakeDate } from 'helpers/fake_date';
 
 describe('newDateAsLocaleTime', () => {
   it.each`
@@ -64,5 +66,21 @@ describe('nSecondsBefore', () => {
     ${start} | ${86400} | ${new Date('2022-03-21T01:23:45.678Z')}
   `('returns $expected given $string', ({ date, seconds, expected }) => {
     expect(nSecondsBefore(date, seconds)).toEqual(expected);
+  });
+});
+
+describe('isToday', () => {
+  useFakeDate(2022, 11, 5);
+
+  describe('when date is today', () => {
+    it('returns `true`', () => {
+      expect(isToday(new Date(2022, 11, 5))).toBe(true);
+    });
+  });
+
+  describe('when date is not today', () => {
+    it('returns `false`', () => {
+      expect(isToday(new Date(2022, 11, 6))).toBe(false);
+    });
   });
 });
