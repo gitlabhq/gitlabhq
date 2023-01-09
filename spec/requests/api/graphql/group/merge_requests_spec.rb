@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # Based on ee/spec/requests/api/epics_spec.rb
 # Should follow closely in order to ensure all situations are covered
-RSpec.describe 'Query.group.mergeRequests', feature_category: :code_review do
+RSpec.describe 'Query.group.mergeRequests', feature_category: :code_review_workflow do
   include GraphqlHelpers
 
   let_it_be(:group)     { create(:group) }

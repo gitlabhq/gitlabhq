@@ -3,7 +3,7 @@ table_name: approvers
 classes:
 - Approver
 feature_categories:
-- code_review
+- code_review_workflow
 - source_code_management
 description: Approvers of given merge request
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3cc78d89984d9c9df8372c52b7bba38e6226f9f2

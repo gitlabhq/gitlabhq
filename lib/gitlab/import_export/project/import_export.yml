@@ -137,6 +137,7 @@ included_attributes:
   ci_cd_settings:
     - :group_runners_enabled
     - :runner_token_expiration_interval
+    - :default_git_depth
   metrics_setting:
     - :dashboard_timezone
     - :external_dashboard_url
@@ -719,7 +720,6 @@ included_attributes:
     - :feature_flags_access_level
     - :releases_access_level
     - :infrastructure_access_level
-    - :allow_merge_on_skipped_pipeline
     - :auto_devops_deploy_strategy
     - :auto_devops_enabled
     - :container_registry_enabled
@@ -728,13 +728,14 @@ included_attributes:
     - :merge_method
     - :merge_requests_enabled
     - :snippets_enabled
-    - :squash_option
     - :topics
     - :visibility
     - :wiki_enabled
     - :build_git_strategy
     - :build_enabled
     - :security_and_compliance_enabled
+    - :allow_merge_on_skipped_pipeline
+    - :squash_option
   resource_milestone_events:
     - :user_id
     - :action
@@ -1072,6 +1073,9 @@ excluded_attributes:
     - :sequence
 
 methods:
+  project:
+    - :allow_merge_on_skipped_pipeline
+    - :squash_option
   notes:
     - :type
   labels:
@@ -1180,6 +1184,7 @@ ee:
       - :reject_unsigned_commits
       - :commit_committer_check
       - :regexp_uses_re2
+      - :reject_non_dco_commits
     unprotect_access_levels:
       - :access_level
       - :user_id

@@ -1,0 +1,6 @@
+mutation playPipelineSchedule($id: CiPipelineScheduleID!) {
+  pipelineSchedulePlay(input: { id: $id }) {
+    clientMutationId
+    errors
+  }
+}

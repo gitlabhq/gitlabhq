@@ -306,7 +306,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def persist_accepted_terms_if_required(user)
-    return unless Feature.enabled?(:update_oauth_registration_flow)
     return unless user.persisted?
     return unless Gitlab::CurrentSettings.current_application_settings.enforce_terms?
 

@@ -3,7 +3,7 @@
 class Groups::AutocompleteSourcesController < Groups::ApplicationController
   feature_category :subgroups, [:members]
   feature_category :team_planning, [:issues, :labels, :milestones, :commands]
-  feature_category :code_review, [:merge_requests]
+  feature_category :code_review_workflow, [:merge_requests]
 
   urgency :low, [:issues, :labels, :milestones, :commands, :merge_requests, :members]
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanupDraftDataFromFaultyRegex, feature_category: :code_review do
+RSpec.describe CleanupDraftDataFromFaultyRegex, feature_category: :code_review_workflow do
   let(:merge_requests) { table(:merge_requests) }
 
   let!(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }

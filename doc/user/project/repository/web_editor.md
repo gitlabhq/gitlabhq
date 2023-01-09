@@ -90,38 +90,23 @@ You don't need to construct these lines manually. Instead, you can:
 
 ## Upload a file
 
-The ability to create a file is great when the content is text. However, this
-doesn't work well for binary data such as images, PDFs, or other binary file types. In
-this case, you need to upload a file.
+To upload a binary file in the Web Editor:
 
-From a project's files page, select the '+' button to the right of the branch
-selector. Choose **Upload file** from the dropdown:
-
-![Upload file dropdown list](img/web_editor_upload_file_dropdown_v14_1.png)
-
-After the upload dialog pops up, there are two ways to upload your file. Either
-drag and drop a file on the popup or use the **click to upload** link. After you
-select a file to upload, a file preview displays.
-
-Enter a commit message, choose a branch, and select **Upload file** when you are
-ready.
-
-![Upload file dialog](img/web_editor_upload_file_dialog_v14_1.png)
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the project page, next to the branch name, select the plus icon (**{plus}**).
+1. From the dropdown list, select **Upload file**.
+1. Complete the fields. To create a merge request with the uploaded file, ensure the **Start a new merge request with these changes** toggle is turned on.
+1. Select **Upload file**.
 
 ## Create a directory
 
-To keep files in the repository organized it is often helpful to create a new
-directory.
+To create a directory in the Web Editor:
 
-From a project's files page, select the plus button (`+`) to the right of the branch selector.
-Choose **New directory** from the dropdown.
-
-![New directory dropdown list](img/web_editor_new_directory_dropdown_v14_1.png)
-
-In the new directory dialog, enter a directory name, a commit message, and choose
-the target branch. Select **Create directory** to finish.
-
-![New directory dialog](img/web_editor_new_directory_dialog_v14_1.png)
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the project page, next to the branch name, select the plus icon (**{plus}**).
+1. From the dropdown list, select **New directory**.
+1. Complete the fields. To create a merge request with the new directory, ensure the **Start a new merge request with these changes** toggle is turned on.
+1. Select **Create directory**.
 
 ## Create a new branch
 
@@ -209,24 +194,16 @@ modify files.
 
 ![New push widget](img/web_editor_new_push_widget.png)
 
-## Create a new tag
+## Create a tag
 
-Tags help you mark major milestones such as production releases and
-release candidates. You can create a tag from a branch or a commit
-SHA:
+You can create tags to mark milestones such as production releases and
+release candidates. To create a tag in the Web Editor:
 
-1. From a project's files page, choose **New tag** from the dropdown list.
-
-   ![New tag dropdown list](img/web_editor_new_tag_dropdown.png)
-
-1. Give the tag a name such as `v1.0.0`.
-1. Choose the branch or SHA from which you want to create this new tag.
-1. Optional. Add a message and release notes. The release notes section supports
-   Markdown format.
-1. Optional. Upload an attachment.
-1. Select **Create tag**. GitLab redirects you to the tag list page.
-
-   ![New tag page](img/web_editor_new_tag_page.png)
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the project page, next to the branch name, select the plus icon (**{plus}**).
+1. From the dropdown list, select **New tag**.
+1. Complete the fields. From the **Create from** dropdown list, select an existing branch, tag, or commit SHA.
+1. Select **Create tag**.
 
 ## Tips
 

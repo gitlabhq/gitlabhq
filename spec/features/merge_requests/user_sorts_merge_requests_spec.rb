@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User sorts merge requests', :js, feature_category: :code_review do
+RSpec.describe 'User sorts merge requests', :js, feature_category: :code_review_workflow do
   include CookieHelper
   include Spec::Support::Helpers::Features::SortingHelpers
 

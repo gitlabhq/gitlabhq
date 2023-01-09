@@ -3,7 +3,7 @@ table_name: merge_request_diffs
 classes:
 - MergeRequestDiff
 feature_categories:
-- code_review
+- code_review_workflow
 description: Store information about the changes made within a git push for a merge request
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/c983e8eb3d9cac01090b8657735544f71f891576
 milestone: '6.6'

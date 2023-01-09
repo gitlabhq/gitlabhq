@@ -1,9 +1,19 @@
 <script>
-import { GlAlert, GlBadge, GlButton, GlLoadingIcon, GlTabs, GlTab } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlBadge,
+  GlButton,
+  GlLoadingIcon,
+  GlTabs,
+  GlTab,
+  GlSprintf,
+  GlLink,
+} from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 import { queryToObject } from '~/lib/utils/url_utility';
 import deletePipelineScheduleMutation from '../graphql/mutations/delete_pipeline_schedule.mutation.graphql';
+import playPipelineScheduleMutation from '../graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '../graphql/mutations/take_ownership.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
 import PipelineSchedulesTable from './table/pipeline_schedules_table.vue';
@@ -16,11 +26,15 @@ export default {
     scheduleDeleteError: s__(
       'PipelineSchedules|There was a problem deleting the pipeline schedule.',
     ),
+    schedulePlayError: s__('PipelineSchedules|There was a problem playing the pipeline schedule.'),
     takeOwnershipError: s__(
       'PipelineSchedules|There was a problem taking ownership of the pipeline schedule.',
     ),
     newSchedule: s__('PipelineSchedules|New schedule'),
     deleteSuccess: s__('PipelineSchedules|Pipeline schedule successfully deleted.'),
+    playSuccess: s__(
+      'PipelineSchedules|Successfully scheduled a pipeline to run. Go to the %{linkStart}Pipelines page%{linkEnd} for details. ',
+    ),
   },
   components: {
     DeletePipelineScheduleModal,
@@ -30,11 +44,16 @@ export default {
     GlLoadingIcon,
     GlTabs,
     GlTab,
+    GlSprintf,
+    GlLink,
     PipelineSchedulesTable,
     TakeOwnershipModal,
   },
   inject: {
     fullPath: {
+      default: '',
+    },
+    pipelinesPath: {
       default: '',
     },
   },
@@ -68,6 +87,7 @@ export default {
       },
       scope,
       hasError: false,
+      playSuccess: false,
       errorMessage: '',
       scheduleId: null,
       showDeleteModal: false,
@@ -185,6 +205,27 @@ export default {
         this.reportError(this.$options.i18n.takeOwnershipError);
       }
     },
+    async playPipelineSchedule(id) {
+      try {
+        const {
+          data: {
+            pipelineSchedulePlay: { errors },
+          },
+        } = await this.$apollo.mutate({
+          mutation: playPipelineScheduleMutation,
+          variables: { id },
+        });
+
+        if (errors.length > 0) {
+          throw new Error();
+        } else {
+          this.playSuccess = true;
+        }
+      } catch {
+        this.playSuccess = false;
+        this.reportError(this.$options.i18n.schedulePlayError);
+      }
+    },
     fetchPipelineSchedulesByStatus(scope) {
       this.scope = scope;
       this.$apollo.queries.schedules.refetch();
@@ -195,62 +236,69 @@ export default {
 
 <template>
   <div>
-    <gl-alert v-if="hasError" class="gl-mb-2" variant="danger" @dismiss="hasError = false">
+    <gl-alert v-if="hasError" class="gl-my-3" variant="danger" @dismiss="hasError = false">
       {{ errorMessage }}
     </gl-alert>
 
-    <template v-else>
-      <gl-tabs
-        sync-active-tab-with-query-params
-        query-param-name="scope"
-        nav-class="gl-flex-grow-1 gl-align-items-center"
-      >
-        <gl-tab
-          v-for="tab in tabs"
-          :key="tab.text"
-          :title-link-attributes="tab.attrs"
-          :query-param-value="tab.scope"
-          @click="fetchPipelineSchedulesByStatus(tab.scope)"
-        >
-          <template #title>
-            <span>{{ tab.text }}</span>
-
-            <template v-if="tab.showBadge">
-              <gl-loading-icon v-if="tab.scope === scope && isLoading" class="gl-ml-2" />
-
-              <gl-badge v-else-if="tab.count" size="sm" class="gl-tab-counter-badge">
-                {{ tab.count }}
-              </gl-badge>
-            </template>
-          </template>
-
-          <gl-loading-icon v-if="isLoading" size="lg" />
-          <pipeline-schedules-table
-            v-else
-            :schedules="schedules.list"
-            @showTakeOwnershipModal="setTakeOwnershipModal"
-            @showDeleteModal="setDeleteModal"
-          />
-        </gl-tab>
-
-        <template #tabs-end>
-          <gl-button variant="confirm" class="gl-ml-auto" data-testid="new-schedule-button">
-            {{ $options.i18n.newSchedule }}
-          </gl-button>
+    <gl-alert v-if="playSuccess" class="gl-my-3" variant="info" @dismiss="playSuccess = false">
+      <gl-sprintf :message="$options.i18n.playSuccess">
+        <template #link="{ content }">
+          <gl-link :href="pipelinesPath" class="gl-text-decoration-none!">{{ content }}</gl-link>
         </template>
-      </gl-tabs>
+      </gl-sprintf>
+    </gl-alert>
 
-      <take-ownership-modal
-        :visible="showTakeOwnershipModal"
-        @takeOwnership="takeOwnership"
-        @hideModal="hideModal"
-      />
+    <gl-tabs
+      sync-active-tab-with-query-params
+      query-param-name="scope"
+      nav-class="gl-flex-grow-1 gl-align-items-center"
+    >
+      <gl-tab
+        v-for="tab in tabs"
+        :key="tab.text"
+        :title-link-attributes="tab.attrs"
+        :query-param-value="tab.scope"
+        @click="fetchPipelineSchedulesByStatus(tab.scope)"
+      >
+        <template #title>
+          <span>{{ tab.text }}</span>
 
-      <delete-pipeline-schedule-modal
-        :visible="showDeleteModal"
-        @deleteSchedule="deleteSchedule"
-        @hideModal="hideModal"
-      />
-    </template>
+          <template v-if="tab.showBadge">
+            <gl-loading-icon v-if="tab.scope === scope && isLoading" class="gl-ml-2" />
+
+            <gl-badge v-else-if="tab.count" size="sm" class="gl-tab-counter-badge">
+              {{ tab.count }}
+            </gl-badge>
+          </template>
+        </template>
+
+        <gl-loading-icon v-if="isLoading" size="lg" />
+        <pipeline-schedules-table
+          v-else
+          :schedules="schedules.list"
+          @showTakeOwnershipModal="setTakeOwnershipModal"
+          @showDeleteModal="setDeleteModal"
+          @playPipelineSchedule="playPipelineSchedule"
+        />
+      </gl-tab>
+
+      <template #tabs-end>
+        <gl-button variant="confirm" class="gl-ml-auto" data-testid="new-schedule-button">
+          {{ $options.i18n.newSchedule }}
+        </gl-button>
+      </template>
+    </gl-tabs>
+
+    <take-ownership-modal
+      :visible="showTakeOwnershipModal"
+      @takeOwnership="takeOwnership"
+      @hideModal="hideModal"
+    />
+
+    <delete-pipeline-schedule-modal
+      :visible="showDeleteModal"
+      @deleteSchedule="deleteSchedule"
+      @hideModal="hideModal"
+    />
   </div>
 </template>

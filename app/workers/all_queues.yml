@@ -698,7 +698,7 @@
   :tags: []
 - :name: cronjob:remove_unreferenced_lfs_objects
   :worker_name: RemoveUnreferencedLfsObjectsWorker
-  :feature_category: :git_lfs
+  :feature_category: :source_code_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -725,7 +725,7 @@
   :tags: []
 - :name: cronjob:schedule_merge_request_cleanup_refs
   :worker_name: ScheduleMergeRequestCleanupRefsWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -734,7 +734,7 @@
   :tags: []
 - :name: cronjob:schedule_migrate_external_diffs
   :worker_name: ScheduleMigrateExternalDiffsWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -779,7 +779,7 @@
   :tags: []
 - :name: cronjob:stuck_merge_jobs
   :worker_name: StuckMergeJobsWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2345,7 +2345,7 @@
   :tags: []
 - :name: create_note_diff_file
   :worker_name: CreateNoteDiffFileWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2363,7 +2363,7 @@
   :tags: []
 - :name: delete_diff_files
   :worker_name: DeleteDiffFilesWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2750,7 +2750,7 @@
   :tags: []
 - :name: merge_request_cleanup_refs
   :worker_name: MergeRequestCleanupRefsWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2759,7 +2759,7 @@
   :tags: []
 - :name: merge_request_mergeability_check
   :worker_name: MergeRequestMergeabilityCheckWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2768,7 +2768,7 @@
   :tags: []
 - :name: merge_requests_close_issue
   :worker_name: MergeRequests::CloseIssueWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2777,7 +2777,7 @@
   :tags: []
 - :name: merge_requests_create_approval_event
   :worker_name: MergeRequests::CreateApprovalEventWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2786,7 +2786,7 @@
   :tags: []
 - :name: merge_requests_create_approval_note
   :worker_name: MergeRequests::CreateApprovalNoteWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2804,7 +2804,7 @@
   :tags: []
 - :name: merge_requests_execute_approval_hooks
   :worker_name: MergeRequests::ExecuteApprovalHooksWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2813,7 +2813,7 @@
   :tags: []
 - :name: merge_requests_handle_assignees_change
   :worker_name: MergeRequests::HandleAssigneesChangeWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown
@@ -2822,7 +2822,7 @@
   :tags: []
 - :name: merge_requests_resolve_todos
   :worker_name: MergeRequests::ResolveTodosWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown
@@ -2831,7 +2831,7 @@
   :tags: []
 - :name: merge_requests_resolve_todos_after_approval
   :worker_name: MergeRequests::ResolveTodosAfterApprovalWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2840,7 +2840,7 @@
   :tags: []
 - :name: merge_requests_update_head_pipeline
   :worker_name: MergeRequests::UpdateHeadPipelineWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :cpu
@@ -2867,7 +2867,7 @@
   :tags: []
 - :name: migrate_external_diffs
   :worker_name: MigrateExternalDiffsWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2903,7 +2903,7 @@
   :tags: []
 - :name: new_merge_request
   :worker_name: NewMergeRequestWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :cpu
@@ -3362,7 +3362,7 @@
   :tags: []
 - :name: update_merge_requests
   :worker_name: UpdateMergeRequestsWorker
-  :feature_category: :code_review
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :cpu

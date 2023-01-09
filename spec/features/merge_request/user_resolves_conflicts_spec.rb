@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category: :code_review do
+RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category: :code_review_workflow do
   include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
 
   let(:project) { create(:project, :repository) }

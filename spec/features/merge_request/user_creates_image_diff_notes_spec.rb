@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User creates image diff notes', :js, feature_category: :code_review do
+RSpec.describe 'Merge request > User creates image diff notes', :js, feature_category: :code_review_workflow do
   include NoteInteractionHelpers
 
   let(:project) { create(:project, :public, :repository) }

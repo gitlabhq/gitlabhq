@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User comments on a commit', :js, feature_category: :code_review do
+RSpec.describe 'User comments on a commit', :js, feature_category: :code_review_workflow do
   include MergeRequestDiffHelpers
   include RepoHelpers
 

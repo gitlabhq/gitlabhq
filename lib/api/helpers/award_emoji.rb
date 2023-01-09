@@ -6,7 +6,7 @@ module API
       def self.awardables
         [
           { type: 'issue', resource: :projects, find_by: :iid, feature_category: :team_planning },
-          { type: 'merge_request', resource: :projects, find_by: :iid, feature_category: :code_review },
+          { type: 'merge_request', resource: :projects, find_by: :iid, feature_category: :code_review_workflow },
           { type: 'snippet', resource: :projects, find_by: :id, feature_category: :source_code_management }
         ]
       end

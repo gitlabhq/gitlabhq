@@ -11,7 +11,7 @@ module API
 
     {
       Issue => :team_planning,
-      MergeRequest => :code_review
+      MergeRequest => :code_review_workflow
     }.each do |eventable_type, feature_category|
       parent_type = eventable_type.parent_class.to_s.underscore
       eventables_str = eventable_type.to_s.underscore.pluralize

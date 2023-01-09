@@ -43,6 +43,16 @@ export const deleteMutationResponse = {
   },
 };
 
+export const playMutationResponse = {
+  data: {
+    pipelineSchedulePlay: {
+      clientMutationId: null,
+      errors: [],
+      __typename: 'PipelineSchedulePlayPayload',
+    },
+  },
+};
+
 export const takeOwnershipMutationResponse = {
   data: {
     pipelineScheduleTakeOwnership: {

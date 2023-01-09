@@ -69,7 +69,7 @@ class User < ApplicationRecord
   attribute :hide_no_password, default: false
   attribute :project_view, default: :files
   attribute :notified_of_own_activity, default: false
-  attribute :preferred_language, default: -> { I18n.default_locale }
+  attribute :preferred_language, default: -> { Gitlab::CurrentSettings.default_preferred_language }
   attribute :theme_id, default: -> { gitlab_config.default_theme }
 
   attr_encrypted :otp_secret,
@@ -541,9 +541,7 @@ class User < ApplicationRecord
   strip_attributes! :name
 
   def preferred_language
-    read_attribute('preferred_language') ||
-      I18n.default_locale.to_s.presence_in(Gitlab::I18n.available_locales) ||
-      default_preferred_language
+    read_attribute('preferred_language').presence || Gitlab::CurrentSettings.default_preferred_language
   end
 
   def active_for_authentication?
@@ -2225,11 +2223,6 @@ class User < ApplicationRecord
     return false unless otp_backup_codes&.any?
 
     otp_backup_codes.first.start_with?("$pbkdf2-sha512$")
-  end
-
-  # To enable JiHu repository to modify the default language options
-  def default_preferred_language
-    'en'
   end
 
   # rubocop: disable CodeReuse/ServiceClass

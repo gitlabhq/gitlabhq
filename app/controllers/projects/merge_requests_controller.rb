@@ -54,7 +54,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   after_action :log_merge_request_show, only: [:show, :diffs]
 
-  feature_category :code_review, [
+  feature_category :code_review_workflow, [
     :assign_related_issues, :bulk_update, :cancel_auto_merge,
     :commit_change_content, :commits, :context_commits, :destroy,
     :discussions, :edit, :index, :merge, :rebase, :remove_wip,

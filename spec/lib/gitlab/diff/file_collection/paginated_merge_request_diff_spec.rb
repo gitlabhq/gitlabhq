@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff, feature_category: :code_review do
+RSpec.describe Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
   let(:page) { 1 }
   let(:per_page) { 10 }

@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RescheduleMergeRequestDiffUsersBackgroundMigration, :migration, feature_category: :code_review do
+RSpec.describe RescheduleMergeRequestDiffUsersBackgroundMigration,
+               :migration, feature_category: :code_review_workflow do
   let(:migration) { described_class.new }
 
   describe '#up' do

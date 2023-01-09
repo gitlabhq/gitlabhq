@@ -7,7 +7,7 @@ class DeleteDiffFilesWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: 3
 
-  feature_category :code_review
+  feature_category :code_review_workflow
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(merge_request_diff_id)

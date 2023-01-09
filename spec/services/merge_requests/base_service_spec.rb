@@ -10,7 +10,7 @@ module MergeRequests
   end
 end
 
-RSpec.describe MergeRequests::BaseService, feature_category: :code_review do
+RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   let_it_be(:project) { create(:project, :repository) }

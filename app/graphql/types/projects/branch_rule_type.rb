@@ -5,7 +5,6 @@ module Types
     class BranchRuleType < BaseObject
       graphql_name 'BranchRule'
       description 'List of branch rules for a project, grouped by branch name.'
-      accepts ::ProtectedBranch
       authorize :read_protected_branch
 
       alias_method :branch_rule, :object
@@ -22,6 +21,12 @@ module Types
             calls_gitaly: true,
             description: "Check if this branch rule protects the project's default branch."
 
+      field :is_protected,
+            type: GraphQL::Types::Boolean,
+            null: false,
+            method: :protected?,
+            description: "Check if this branch rule protects access for the branch."
+
       field :matching_branches_count,
             type: GraphQL::Types::Int,
             null: false,
@@ -30,9 +35,8 @@ module Types
 
       field :branch_protection,
             type: Types::BranchRules::BranchProtectionType,
-            null: false,
-            description: 'Branch protections configured for this branch rule.',
-            method: :itself
+            null: true,
+            description: 'Branch protections configured for this branch rule.'
 
       field :created_at,
             Types::TimeType,
@@ -43,10 +47,6 @@ module Types
             Types::TimeType,
             null: false,
             description: 'Timestamp of when the branch rule was last updated.'
-
-      def matching_branches_count
-        branch_rule.matching(branch_rule.project.repository.branch_names).count
-      end
     end
   end
 end

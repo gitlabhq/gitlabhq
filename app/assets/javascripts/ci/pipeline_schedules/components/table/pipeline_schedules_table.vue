@@ -96,6 +96,7 @@ export default {
         :schedule="item"
         @showTakeOwnershipModal="$emit('showTakeOwnershipModal', $event)"
         @showDeleteModal="$emit('showDeleteModal', $event)"
+        @playPipelineSchedule="$emit('playPipelineSchedule', $event)"
       />
     </template>
   </gl-table-lite>

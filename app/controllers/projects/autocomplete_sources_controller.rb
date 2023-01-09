@@ -5,7 +5,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   before_action :authorize_read_crm_contact!, only: :contacts
 
   feature_category :team_planning, [:issues, :labels, :milestones, :commands, :contacts]
-  feature_category :code_review, [:merge_requests]
+  feature_category :code_review_workflow, [:merge_requests]
   feature_category :users, [:members]
   feature_category :source_code_management, [:snippets]
 

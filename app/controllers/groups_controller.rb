@@ -55,7 +55,7 @@ class GroupsController < Groups::ApplicationController
   ]
 
   feature_category :team_planning, [:issues, :issues_calendar, :preview_markdown]
-  feature_category :code_review, [:merge_requests, :unfoldered_environment_names]
+  feature_category :code_review_workflow, [:merge_requests, :unfoldered_environment_names]
   feature_category :projects, [:projects]
   feature_category :importers, [:export, :download_export]
   urgency :low, [:export, :download_export]

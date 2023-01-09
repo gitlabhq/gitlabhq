@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User creates MR', feature_category: :code_review do
+RSpec.describe 'Merge request > User creates MR', feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   before do

@@ -21,9 +21,9 @@ module Integrations
           return error('Testing not available for this event')
         end
 
-        return error(data[:error]) if data[:error].present?
-
         integration.test(data)
+      rescue ArgumentError => e
+        error(e.message)
       end
 
       private

@@ -37,3 +37,14 @@
     }
   }
 }
+
+.approvers-select {
+  .dropdown-menu {
+    @include gl-w-full;
+    @include gl-max-w-none;
+  }
+
+  .gl-dropdown-item-check-icon {
+    @include gl-display-none;
+  }
+}

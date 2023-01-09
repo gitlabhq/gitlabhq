@@ -2,7 +2,7 @@
 table_name: approval_merge_request_rules_approved_approvers
 classes: []
 feature_categories:
-- code_review
+- code_review_workflow
 description: Join table for approved approvers and ApprovalMergeRequestRule
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8497
 milestone: '11.7'

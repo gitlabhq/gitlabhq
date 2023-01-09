@@ -3,7 +3,6 @@ table_name: lfs_objects_projects
 classes:
 - LfsObjectsProject
 feature_categories:
-- git_lfs
 - source_code_management
 description: Join table relating lfs_objects and projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1727

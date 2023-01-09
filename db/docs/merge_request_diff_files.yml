@@ -3,7 +3,7 @@ table_name: merge_request_diff_files
 classes:
 - MergeRequestDiffFile
 feature_categories:
-- code_review
+- code_review_workflow
 description: Store file related information within a merge request diff
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12047
 milestone: '9.4'

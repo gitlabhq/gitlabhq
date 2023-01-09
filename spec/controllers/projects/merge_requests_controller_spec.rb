@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::MergeRequestsController, feature_category: :code_review do
+RSpec.describe Projects::MergeRequestsController, feature_category: :code_review_workflow do
   include ProjectForksHelper
   include Gitlab::Routing
   using RSpec::Parameterized::TableSyntax

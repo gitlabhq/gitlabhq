@@ -4,6 +4,7 @@ module Projects
   module Settings
     class CiCdController < Projects::ApplicationController
       include RunnerSetupScripts
+      include ZuoraCSP
 
       NUMBER_OF_RUNNERS_PER_PAGE = 20
 

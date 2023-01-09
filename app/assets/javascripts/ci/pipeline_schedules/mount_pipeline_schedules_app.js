@@ -18,7 +18,7 @@ export default () => {
     return false;
   }
 
-  const { fullPath } = containerEl.dataset;
+  const { fullPath, pipelinesPath } = containerEl.dataset;
 
   return new Vue({
     el: containerEl,
@@ -26,6 +26,7 @@ export default () => {
     apolloProvider,
     provide: {
       fullPath,
+      pipelinesPath,
     },
     render(createElement) {
       return createElement(PipelineSchedules);

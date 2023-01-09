@@ -1,8 +1,0 @@
----
-name: update_oauth_registration_flow
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85871
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364342
-milestone: '15.2'
-type: development
-group: group::acquisition
-default_enabled: false

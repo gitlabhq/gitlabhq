@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_review do
+RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_review_workflow do
   include IssuablesHelper
 
   let(:user) { create(:user) }

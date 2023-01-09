@@ -8,7 +8,7 @@ require 'spec_helper'
 # Because this kind of spec takes more time to run there is no need to add new ones
 # for each existing quick action unless they test something not tested by existing tests.
 RSpec.describe 'Merge request > User uses quick actions', :js, :use_clean_rails_redis_caching,
-feature_category: :code_review do
+feature_category: :code_review_workflow do
   include Spec::Support::Helpers::Features::NotesHelpers
 
   let(:project) { create(:project, :public, :repository) }

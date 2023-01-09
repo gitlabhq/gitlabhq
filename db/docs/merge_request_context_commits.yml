@@ -3,7 +3,7 @@ table_name: merge_request_context_commits
 classes:
 - MergeRequestContextCommit
 feature_categories:
-- code_review
+- code_review_workflow
 description: Store context commit related data for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23701
 milestone: '12.8'

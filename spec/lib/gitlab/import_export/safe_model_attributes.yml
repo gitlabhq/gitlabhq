@@ -702,7 +702,9 @@ Badge:
 ProjectCiCdSetting:
 - group_runners_enabled
 - runner_token_expiration_interval
+- default_git_depth
 ProjectSetting:
+- squash_option
 - allow_merge_on_skipped_pipeline
 - only_allow_merge_if_all_status_checks_passed
 - has_confluence
@@ -916,6 +918,7 @@ PushRule:
   - reject_unsigned_commits
   - commit_committer_check
   - regexp_uses_re2
+  - reject_non_dco_commits
 MergeRequest::CleanupSchedule:
 - id
 - scheduled_at

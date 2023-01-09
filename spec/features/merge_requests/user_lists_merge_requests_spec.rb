@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge requests > User lists merge requests', feature_category: :code_review do
+RSpec.describe 'Merge requests > User lists merge requests', feature_category: :code_review_workflow do
   include MergeRequestHelpers
   include SortingHelper
 

@@ -385,7 +385,7 @@ RSpec.describe EmailsHelper do
 
       context 'with no html tag' do
         let(:expected_output) do
-          'Reviewer changed to John'
+          'John was added as a reviewer.<br>'
         end
 
         it 'returns the expected output' do
@@ -395,7 +395,7 @@ RSpec.describe EmailsHelper do
 
       context 'with <strong> tag' do
         let(:expected_output) do
-          'Reviewer changed to <strong>John</strong>'
+          '<strong>John</strong> was added as a reviewer.<br>'
         end
 
         it 'returns the expected output' do
@@ -410,7 +410,7 @@ RSpec.describe EmailsHelper do
 
       context 'with no html tag' do
         let(:expected_output) do
-          'Reviewer changed from John and Mary to Ted'
+          'Ted was added as a reviewer.<br>John and Mary were removed from reviewers.'
         end
 
         it 'returns the expected output' do
@@ -420,7 +420,7 @@ RSpec.describe EmailsHelper do
 
       context 'with <strong> tag' do
         let(:expected_output) do
-          'Reviewer changed from <strong>John and Mary</strong> to <strong>Ted</strong>'
+          '<strong>Ted</strong> was added as a reviewer.<br><strong>John and Mary</strong> were removed from reviewers.'
         end
 
         it 'returns the expected output' do
@@ -435,7 +435,7 @@ RSpec.describe EmailsHelper do
 
       context 'with no html tag' do
         let(:expected_output) do
-          'Reviewer changed from John and Mary to Unassigned'
+          'All reviewers were removed.'
         end
 
         it 'returns the expected output' do
@@ -445,7 +445,7 @@ RSpec.describe EmailsHelper do
 
       context 'with <strong> tag' do
         let(:expected_output) do
-          'Reviewer changed from <strong>John and Mary</strong> to <strong>Unassigned</strong>'
+          'All reviewers were removed.'
         end
 
         it 'returns the expected output' do
@@ -460,7 +460,7 @@ RSpec.describe EmailsHelper do
       let(:fishy_user) { build(:user, name: "<script>alert('hi')</script>") }
 
       let(:expected_output) do
-        'Reviewer changed to <strong>&lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;</strong>'
+        '<strong>&lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;</strong> was added as a reviewer.<br>'
       end
 
       it 'escapes the html tag' do
@@ -476,7 +476,7 @@ RSpec.describe EmailsHelper do
       let(:fishy_user) { build(:user, name: "example.com") }
 
       let(:expected_output) do
-        'Reviewer changed to example_com'
+        'example_com was added as a reviewer.<br>'
       end
 
       it "sanitizes user's name" do

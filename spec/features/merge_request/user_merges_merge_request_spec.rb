@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User merges a merge request", :js, feature_category: :code_review do
+RSpec.describe "User merges a merge request", :js, feature_category: :code_review_workflow do
   let(:user) { project.first_owner }
 
   before do

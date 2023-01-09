@@ -182,7 +182,7 @@ RSpec.describe User do
       it { expect(user.hide_no_password).to be_falsey }
       it { expect(user.project_view).to eq('files') }
       it { expect(user.notified_of_own_activity).to be_falsey }
-      it { expect(user.preferred_language).to eq(I18n.default_locale.to_s) }
+      it { expect(user.preferred_language).to eq(Gitlab::CurrentSettings.default_preferred_language) }
       it { expect(user.theme_id).to eq(described_class.gitlab_config.default_theme) }
     end
 
@@ -458,18 +458,25 @@ RSpec.describe User do
     end
 
     describe 'preferred_language' do
-      context 'when its value is nil in the database' do
-        let(:user) { build(:user, preferred_language: nil) }
+      subject(:preferred_language) { user.preferred_language }
 
-        it 'falls back to I18n.default_locale when empty in the database' do
-          expect(user.preferred_language).to eq I18n.default_locale.to_s
-        end
+      context 'when preferred_language is set' do
+        let(:user) { build(:user, preferred_language: 'de_DE') }
 
-        it 'falls back to english when I18n.default_locale is not an available language' do
-          allow(I18n).to receive(:default_locale) { :kl }
-          default_preferred_language = user.send(:default_preferred_language)
+        it { is_expected.to eq 'de_DE' }
+      end
 
-          expect(user.preferred_language).to eq default_preferred_language
+      context 'when preferred_language is nil' do
+        let(:user) { build(:user) }
+
+        it { is_expected.to eq 'en' }
+
+        context 'when Gitlab::CurrentSettings.default_preferred_language is set' do
+          before do
+            allow(::Gitlab::CurrentSettings).to receive(:default_preferred_language).and_return('zh_CN')
+          end
+
+          it { is_expected.to eq 'zh_CN' }
         end
       end
     end

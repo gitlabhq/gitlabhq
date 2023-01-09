@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleCleanupOrphanedLfsObjectsProjects, schema: 20210511165250, feature_category: :git_lfs do
+RSpec.describe ScheduleCleanupOrphanedLfsObjectsProjects, schema: 20210511165250, feature_category: :source_code_management do
   let(:lfs_objects_projects) { table(:lfs_objects_projects) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }

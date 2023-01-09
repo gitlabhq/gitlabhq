@@ -16,7 +16,7 @@ class DashboardController < Dashboard::ApplicationController
 
   feature_category :users, [:activity]
   feature_category :team_planning, [:issues, :issues_calendar]
-  feature_category :code_review, [:merge_requests]
+  feature_category :code_review_workflow, [:merge_requests]
 
   urgency :low, [:merge_requests, :activity]
   urgency :low, [:issues, :issues_calendar]

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User views diff by commit', :js, feature_category: :code_review do
+RSpec.describe 'User views diff by commit', :js, feature_category: :code_review_workflow do
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
   end

@@ -66,7 +66,7 @@ Gitlab::Metrics::Sli::Apdex.initialize_sli(:received_email, [
     email_type: :service_desk
   },
   {
-    feature_category: :code_review,
+    feature_category: :code_review_workflow,
     email_type: :create_merge_request
   }
 ])

@@ -69,12 +69,6 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
 
       before do
         create(:protected_branch, project: project)
-        allow_next_instance_of(Resolvers::ProjectResolver) do |resolver|
-          allow(resolver).to receive(:resolve)
-            .with(full_path: project.full_path)
-            .and_return(project)
-        end
-        allow(project.repository).to receive(:branch_names).and_call_original
       end
 
       it 'avoids N+1 queries', :use_sql_query_cache, :aggregate_failures do
@@ -93,7 +87,6 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
         end.not_to exceed_all_query_limit(control)
 
         expect_n_matching_branches_count_fields(3)
-        expect(project.repository).to have_received(:branch_names).at_least(2).times
       end
 
       def expect_n_matching_branches_count_fields(count)
@@ -110,16 +103,16 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
       let_it_be(:branch_name_b) { 'diff-*' }
       let_it_be(:branch_rules) { [branch_rule_a, branch_rule_b] }
       let_it_be(:branch_rule_a) do
-        create(:protected_branch, project: project, name: branch_name_a, id: 9999)
+        create(:protected_branch, project: project, name: branch_name_a)
       end
 
       let_it_be(:branch_rule_b) do
-        create(:protected_branch, project: project, name: branch_name_b, id: 10000)
+        create(:protected_branch, project: project, name: branch_name_b)
       end
 
-      # branchRules are returned in reverse order, newest first, sorted by primary_key.
-      let(:branch_rule_b_data) { branch_rules_data.dig(0, 'node') }
+      # branchRules are returned in alphabetical order
       let(:branch_rule_a_data) { branch_rules_data.dig(1, 'node') }
+      let(:branch_rule_b_data) { branch_rules_data.dig(0, 'node') }
 
       before do
         post_graphql(query, current_user: current_user, variables: variables)
@@ -128,22 +121,28 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
       it_behaves_like 'a working graphql query'
 
       it 'includes all fields', :use_sql_query_cache, :aggregate_failures do
-        expect(branch_rule_a_data['name']).to eq(branch_name_a)
-        expect(branch_rule_a_data['isDefault']).to be(true).or be(false)
-        expect(branch_rule_a_data['branchProtection']).to be_present
-        expect(branch_rule_a_data['matchingBranchesCount']).to eq(1)
-        expect(branch_rule_a_data['createdAt']).to be_present
-        expect(branch_rule_a_data['updatedAt']).to be_present
+        expect(branch_rule_a_data).to include(
+          'name' => branch_name_a,
+          'isDefault' => be_boolean,
+          'isProtected' => true,
+          'matchingBranchesCount' => 1,
+          'branchProtection' => be_kind_of(Hash),
+          'createdAt' => be_kind_of(String),
+          'updatedAt' => be_kind_of(String)
+        )
 
         wildcard_count = TestEnv::BRANCH_SHA.keys.count do |branch_name|
           branch_name.starts_with?('diff-')
         end
-        expect(branch_rule_b_data['name']).to eq(branch_name_b)
-        expect(branch_rule_b_data['isDefault']).to be(true).or be(false)
-        expect(branch_rule_b_data['branchProtection']).to be_present
-        expect(branch_rule_b_data['matchingBranchesCount']).to eq(wildcard_count)
-        expect(branch_rule_b_data['createdAt']).to be_present
-        expect(branch_rule_b_data['updatedAt']).to be_present
+        expect(branch_rule_b_data).to include(
+          'name' => branch_name_b,
+          'isDefault' => be_boolean,
+          'isProtected' => true,
+          'matchingBranchesCount' => wildcard_count,
+          'branchProtection' => be_kind_of(Hash),
+          'createdAt' => be_kind_of(String),
+          'updatedAt' => be_kind_of(String)
+        )
       end
 
       context 'when limiting the number of results' do

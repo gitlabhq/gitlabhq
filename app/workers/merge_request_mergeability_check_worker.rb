@@ -7,7 +7,7 @@ class MergeRequestMergeabilityCheckWorker
 
   sidekiq_options retry: 3
 
-  feature_category :code_review
+  feature_category :code_review_workflow
   idempotent!
 
   def logger

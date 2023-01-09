@@ -3,7 +3,7 @@ table_name: merge_request_cleanup_schedules
 classes:
 - MergeRequest::CleanupSchedule
 feature_categories:
-- code_review
+- code_review_workflow
 description: Store refs cleanup schedules for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46758
 milestone: '13.6'

@@ -3,7 +3,7 @@ table_name: merge_requests_closing_issues
 classes:
 - MergeRequestsClosingIssues
 feature_categories:
-- code_review
+- code_review_workflow
 description: Store the events of merge request closing any issues
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5986
 milestone: '8.12'

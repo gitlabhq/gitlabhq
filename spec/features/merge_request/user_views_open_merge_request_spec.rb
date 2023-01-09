@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User views an open merge request', feature_category: :code_review do
+RSpec.describe 'User views an open merge request', feature_category: :code_review_workflow do
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project, description: '# Description header')
   end

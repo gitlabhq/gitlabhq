@@ -9,8 +9,8 @@ module API
         {
           Issue => :team_planning,
           Snippet => :source_code_management,
-          MergeRequest => :code_review,
-          Commit => :code_review
+          MergeRequest => :code_review_workflow,
+          Commit => :code_review_workflow
         }
       end
     end

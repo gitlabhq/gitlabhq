@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_category: :code_review do
+RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_category: :code_review_workflow do
   let(:project) { create(:project, :public, :repository) }
   let(:protected_branch) { create(:protected_branch, :maintainers_can_push, name: 'master', project: project) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project, target_branch: protected_branch.name) }

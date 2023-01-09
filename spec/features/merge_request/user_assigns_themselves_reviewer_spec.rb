@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User assigns themselves as a reviewer', feature_category: :code_review do
+RSpec.describe 'Merge request > User assigns themselves as a reviewer', feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, :simple, source_project: project, author: user, description: "test mr") }

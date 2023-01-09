@@ -204,6 +204,8 @@ To enable security training for vulnerabilities in your project:
 1. On the tab bar, select **Vulnerability Management**.
 1. To enable a security training provider, turn on the toggle.
 
+Security training uses content from third-party vendors. You must have an internet connection to use this feature.
+
 ## View security training for a vulnerability
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.

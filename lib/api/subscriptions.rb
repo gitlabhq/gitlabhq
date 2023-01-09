@@ -15,7 +15,7 @@ module API
         entity: Entities::MergeRequest,
         source: Project,
         finder: ->(id) { find_merge_request_with_access(id, :update_merge_request) },
-        feature_category: :code_review
+        feature_category: :code_review_workflow
       },
       {
         type: 'issues',

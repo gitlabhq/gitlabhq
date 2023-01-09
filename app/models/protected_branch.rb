@@ -8,11 +8,9 @@ class ProtectedBranch < ApplicationRecord
 
   validate :validate_either_project_or_top_group
 
-  scope :requiring_code_owner_approval,
-        -> { where(code_owner_approval_required: true) }
-
-  scope :allowing_force_push,
-        -> { where(allow_force_push: true) }
+  scope :requiring_code_owner_approval, -> { where(code_owner_approval_required: true) }
+  scope :allowing_force_push, -> { where(allow_force_push: true) }
+  scope :sorted_by_name, -> { order(name: :asc) }
 
   protected_ref_access_levels :merge, :push
 

@@ -3,7 +3,7 @@ table_name: merge_request_diff_commit_users
 classes:
 - MergeRequest::DiffCommitUser
 feature_categories:
-- code_review
+- code_review_workflow
 description: Store commit user information for merge request diffs
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63669
 milestone: '14.1'

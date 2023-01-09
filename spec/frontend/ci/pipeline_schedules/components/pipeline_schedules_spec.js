@@ -10,12 +10,14 @@ import DeletePipelineScheduleModal from '~/ci/pipeline_schedules/components/dele
 import TakeOwnershipModal from '~/ci/pipeline_schedules/components/take_ownership_modal.vue';
 import PipelineSchedulesTable from '~/ci/pipeline_schedules/components/table/pipeline_schedules_table.vue';
 import deletePipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/mutations/delete_pipeline_schedule.mutation.graphql';
+import playPipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '~/ci/pipeline_schedules/graphql/mutations/take_ownership.mutation.graphql';
 import getPipelineSchedulesQuery from '~/ci/pipeline_schedules/graphql/queries/get_pipeline_schedules.query.graphql';
 import {
   mockGetPipelineSchedulesGraphQLResponse,
   mockPipelineScheduleNodes,
   deleteMutationResponse,
+  playMutationResponse,
   takeOwnershipMutationResponse,
 } from '../mock_data';
 
@@ -33,6 +35,8 @@ describe('Pipeline schedules app', () => {
 
   const deleteMutationHandlerSuccess = jest.fn().mockResolvedValue(deleteMutationResponse);
   const deleteMutationHandlerFailed = jest.fn().mockRejectedValue(new Error('GraphQL error'));
+  const playMutationHandlerSuccess = jest.fn().mockResolvedValue(playMutationResponse);
+  const playMutationHandlerFailed = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const takeOwnershipMutationHandlerSuccess = jest
     .fn()
     .mockResolvedValue(takeOwnershipMutationResponse);
@@ -178,6 +182,45 @@ describe('Pipeline schedules app', () => {
       await nextTick();
 
       expect(findDeleteModal().props('visible')).toBe(false);
+    });
+  });
+
+  describe('playing a pipeline schedule', () => {
+    it('shows play mutation error alert', async () => {
+      createComponent([
+        [getPipelineSchedulesQuery, successHandler],
+        [playPipelineScheduleMutation, playMutationHandlerFailed],
+      ]);
+
+      await waitForPromises();
+
+      findTable().vm.$emit('playPipelineSchedule');
+
+      await waitForPromises();
+
+      expect(findAlert().text()).toBe('There was a problem playing the pipeline schedule.');
+    });
+
+    it('plays pipeline schedule', async () => {
+      createComponent([
+        [getPipelineSchedulesQuery, successHandler],
+        [playPipelineScheduleMutation, playMutationHandlerSuccess],
+      ]);
+
+      await waitForPromises();
+
+      const scheduleId = mockPipelineScheduleNodes[0].id;
+
+      findTable().vm.$emit('playPipelineSchedule', scheduleId);
+
+      await waitForPromises();
+
+      expect(playMutationHandlerSuccess).toHaveBeenCalledWith({
+        id: scheduleId,
+      });
+      expect(findAlert().text()).toBe(
+        'Successfully scheduled a pipeline to run. Go to the Pipelines page for details.',
+      );
     });
   });
 

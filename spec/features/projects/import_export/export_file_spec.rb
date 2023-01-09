@@ -20,7 +20,9 @@ RSpec.describe 'Import/Export - project export integration test', :js, feature_c
     }
   end
 
-  let(:safe_hashes) { { yaml_variables: %w[key value public] } }
+  let(:safe_hashes) do
+    { yaml_variables: %w[key value public] }
+  end
 
   let(:project) { setup_project }
 

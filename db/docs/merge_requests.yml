@@ -3,7 +3,7 @@ table_name: merge_requests
 classes:
 - MergeRequest
 feature_categories:
-- code_review
+- code_review_workflow
 description: This is the main table that stores information about project merge requests.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/6d460aa2d6b3959593c168eed181516036525393
 milestone: "<6.0"

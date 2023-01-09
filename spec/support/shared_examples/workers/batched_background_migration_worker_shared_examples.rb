@@ -256,7 +256,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
       Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
         job_arguments :matching_status
         operation_name :update_all
-        feature_category :code_review
+        feature_category :code_review_workflow
 
         def perform
           each_sub_batch(

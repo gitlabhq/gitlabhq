@@ -8069,13 +8069,10 @@ msgstr ""
 msgid "Change your password or recover your current one"
 msgstr ""
 
-msgid "ChangeReviewer|Reviewer changed from %{old} to %{new}"
+msgid "ChangeReviewer|%{added_reviewers_text}%{removed_reviewers_text}"
 msgstr ""
 
-msgid "ChangeReviewer|Reviewer changed to %{new}"
-msgstr ""
-
-msgid "ChangeReviewer|Unassigned"
+msgid "ChangeReviewer|All reviewers were removed."
 msgstr ""
 
 msgid "ChangeTypeAction|Cherry-pick"
@@ -30567,6 +30564,9 @@ msgstr ""
 msgid "PipelineSchedules|Save pipeline schedule"
 msgstr ""
 
+msgid "PipelineSchedules|Successfully scheduled a pipeline to run. Go to the %{linkStart}Pipelines page%{linkEnd} for details. "
+msgstr ""
+
 msgid "PipelineSchedules|Successfully taken ownership from %{owner}."
 msgstr ""
 
@@ -30583,6 +30583,9 @@ msgid "PipelineSchedules|There was a problem deleting the pipeline schedule."
 msgstr ""
 
 msgid "PipelineSchedules|There was a problem fetching pipeline schedules."
+msgstr ""
+
+msgid "PipelineSchedules|There was a problem playing the pipeline schedule."
 msgstr ""
 
 msgid "PipelineSchedules|There was a problem taking ownership of the pipeline schedule."

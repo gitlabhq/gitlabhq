@@ -6,7 +6,7 @@ require 'spec_helper'
 # updated.
 # This can occur when the fork a merge request is created from is in the process
 # of being destroyed.
-RSpec.describe 'User views merged merge request from deleted fork', feature_category: :code_review do
+RSpec.describe 'User views merged merge request from deleted fork', feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   let(:project) { create(:project, :repository) }

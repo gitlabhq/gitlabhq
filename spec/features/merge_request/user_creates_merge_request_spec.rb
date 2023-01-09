@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User creates a merge request', :js, feature_category: :code_review do
+RSpec.describe 'User creates a merge request', :js, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   shared_examples 'creates a merge request' do

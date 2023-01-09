@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_review do
+RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_review_workflow do
   let(:merge_commit_template) { nil }
   let(:squash_commit_template) { nil }
   let(:project) do

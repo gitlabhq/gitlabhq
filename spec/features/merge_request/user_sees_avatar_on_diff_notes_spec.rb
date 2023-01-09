@@ -3,7 +3,7 @@
 require 'spec_helper'
 include Spec::Support::Helpers::ModalHelpers # rubocop:disable  Style/MixinUsage
 
-RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_category: :code_review do
+RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_category: :code_review_workflow do
   include NoteInteractionHelpers
   include Spec::Support::Helpers::ModalHelpers
   include MergeRequestDiffHelpers
