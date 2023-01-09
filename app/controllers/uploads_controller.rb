@@ -52,6 +52,8 @@ class UploadsController < ApplicationController
       # access to itself when a secret is given.
       # For instance, user avatars are readable by anyone,
       # while temporary, user snippet uploads are not.
+      return false if !current_user && public_visibility_restricted?
+
       !secret? || can?(current_user, :update_user, model)
     when Appearance
       true

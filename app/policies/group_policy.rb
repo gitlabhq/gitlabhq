@@ -273,6 +273,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { can?(:admin_group) & resource_access_token_feature_available }.policy do
     enable :read_resource_access_tokens
     enable :destroy_resource_access_tokens
+  end
+
+  rule { can?(:admin_group) & resource_access_token_creation_allowed }.policy do
     enable :admin_setting_to_allow_project_access_token_creation
   end
 
@@ -338,12 +341,16 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     true
   end
 
+  def resource_access_token_create_feature_available?
+    true
+  end
+
   def can_read_group_member?
     !(@subject.private? && access_level == GroupMember::NO_ACCESS)
   end
 
   def resource_access_token_creation_allowed?
-    resource_access_token_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
+    resource_access_token_create_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
   end
 
   def valid_dependency_proxy_deploy_token

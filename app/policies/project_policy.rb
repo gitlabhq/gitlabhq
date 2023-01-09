@@ -157,7 +157,9 @@ class ProjectPolicy < BasePolicy
   condition(:service_desk_enabled) { @subject.service_desk_enabled? }
 
   with_scope :subject
-  condition(:resource_access_token_feature_available) { resource_access_token_feature_available? }
+  condition(:resource_access_token_feature_available) do
+    resource_access_token_feature_available?
+  end
   condition(:resource_access_token_creation_allowed) { resource_access_token_creation_allowed? }
 
   # We aren't checking `:read_issue` or `:read_merge_request` in this case
@@ -308,6 +310,8 @@ class ProjectPolicy < BasePolicy
   rule { guest & can?(:download_code) }.enable :build_download_code
   rule { guest & can?(:read_container_image) }.enable :build_read_container_image
 
+  rule { guest & ~public_project }.enable :read_grafana
+
   rule { can?(:reporter_access) }.policy do
     enable :admin_issue_board
     enable :download_code
@@ -340,6 +344,7 @@ class ProjectPolicy < BasePolicy
     enable :read_package
     enable :read_product_analytics
     enable :read_ci_cd_analytics
+    enable :read_grafana
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -919,12 +924,16 @@ class ProjectPolicy < BasePolicy
     true
   end
 
+  def resource_access_token_create_feature_available?
+    true
+  end
+
   def resource_access_token_creation_allowed?
     group = project.group
 
     return true unless group # always enable for projects in personal namespaces
 
-    resource_access_token_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
+    resource_access_token_create_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
   end
 
   def project
