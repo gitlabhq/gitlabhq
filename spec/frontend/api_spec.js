@@ -5,6 +5,7 @@ import httpStatus, {
   HTTP_STATUS_ACCEPTED,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_NOT_FOUND,
 } from '~/lib/utils/http_status';
 
 jest.mock('~/flash');
@@ -1715,12 +1716,12 @@ describe('Api', () => {
     it('returns 404 for non-existing branch', () => {
       jest.spyOn(axios, 'get');
 
-      mock.onGet(expectedUrl).replyOnce(httpStatus.NOT_FOUND, {
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_NOT_FOUND, {
         message: '404 Not found',
       });
 
       return Api.projectProtectedBranch(dummyProjectId, branchName).catch((error) => {
-        expect(error.response.status).toBe(httpStatus.NOT_FOUND);
+        expect(error.response.status).toBe(HTTP_STATUS_NOT_FOUND);
         expect(axios.get).toHaveBeenCalledWith(expectedUrl);
       });
     });

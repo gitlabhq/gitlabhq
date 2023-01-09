@@ -248,7 +248,10 @@ class IssuableFinder
   end
 
   def init_collection
-    klass.all
+    return klass.all if params.user_can_see_all_issuables?
+
+    # Only admins and auditors can see hidden issuables, for other users we filter out hidden issuables
+    klass.without_hidden
   end
 
   def default_or_simple_sort?

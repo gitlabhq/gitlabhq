@@ -993,4 +993,29 @@ RSpec.describe MergeRequestsFinder do
       end
     end
   end
+
+  context 'when the author of a merge request is banned', feature_category: :insider_threat do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:banned_user) { create(:user, :banned) }
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:banned_merge_request) { create(:merge_request, author: banned_user, source_project: project) }
+
+    subject { described_class.new(user).execute }
+
+    it { is_expected.not_to include(banned_merge_request) }
+
+    context 'when the user is an admin', :enable_admin_mode do
+      let_it_be(:user) { create(:user, :admin) }
+
+      it { is_expected.to include(banned_merge_request) }
+    end
+
+    context 'when the `hide_merge_requests_from_banned_users` feature flag is disabled' do
+      before do
+        stub_feature_flags(hide_merge_requests_from_banned_users: false)
+      end
+
+      it { is_expected.to include(banned_merge_request) }
+    end
+  end
 end

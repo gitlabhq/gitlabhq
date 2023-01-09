@@ -7,6 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes, {
   HTTP_STATUS_CONFLICT,
   HTTP_STATUS_METHOD_NOT_ALLOWED,
+  HTTP_STATUS_NOT_FOUND,
 } from '~/lib/utils/http_status';
 
 jest.mock('~/captcha/wait_for_captcha_to_be_solved');
@@ -73,7 +74,7 @@ describe('registerCaptchaModalInterceptor', () => {
       await expect(() => axios[method]('/endpoint-with-unrelated-error')).rejects.toThrow(
         expect.objectContaining({
           response: expect.objectContaining({
-            status: httpStatusCodes.NOT_FOUND,
+            status: HTTP_STATUS_NOT_FOUND,
             data: AXIOS_RESPONSE,
           }),
         }),

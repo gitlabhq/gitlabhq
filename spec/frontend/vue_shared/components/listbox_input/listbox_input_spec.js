@@ -23,6 +23,7 @@ describe('ListboxInput', () => {
       options: [{ text: 'Item 3', value: '3' }],
     },
   ];
+  const id = 'id';
 
   // Finders
   const findGlFormGroup = () => wrapper.findComponent(GlFormGroup);
@@ -38,6 +39,9 @@ describe('ListboxInput', () => {
         defaultToggleText,
         items,
         ...propsData,
+      },
+      attrs: {
+        id,
       },
     });
   };
@@ -78,6 +82,10 @@ describe('ListboxInput', () => {
 
     it('is not filterable with few items', () => {
       expect(findGlListbox().props('searchable')).toBe(false);
+    });
+
+    it('passes attributes to the root element', () => {
+      expect(findGlFormGroup().attributes('id')).toBe(id);
     });
   });
 

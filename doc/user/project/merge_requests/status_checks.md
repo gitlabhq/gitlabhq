@@ -151,11 +151,17 @@ the status check and it **will not** be recoverable.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327634) in GitLab 14.1.
 > - UI [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91504) in GitLab 15.2.
+> - Ability to retry failed external status checks [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383200) in GitLab 15.8.
 
 The status checks widget displays in merge requests and displays the following statuses:
 
 - **pending** (**{status-neutral}**), while GitLab waits for a response from an external status check.
 - **success** (**{status-success}**) or **failed** (**{status-failed}**), when GitLab receives a response from an external status check.
+
+To retry a failed status check:
+
+1. Expand the merge request widget to show the list of external status checks.
+1. Select **Retry** (**{retry}**) on the failed external status check row. The status check is put back into a pending state.
 
 An organization might have a policy that does not allow merging merge requests if
 external status checks do not pass. However, the details in the widget are for informational

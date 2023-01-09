@@ -1,0 +1,49 @@
+%table.table.gl-text-gray-500
+  %tr
+    %td.gl-p-5!
+      = s_('AdminArea|Users without a Group and Project')
+      = render_if_exists 'admin/dashboard/included_free_in_license_tooltip'
+    %td.gl-text-right{ class: 'gl-p-5!' }
+      = @users_statistics&.without_groups_and_projects
+  = render_if_exists 'admin/dashboard/minimal_access_stats_row', users_statistics: @users_statistics
+  %tr
+    %td.gl-p-5!
+      = s_('AdminArea|Users with highest role')
+      %strong
+        = s_('AdminArea|Reporter')
+    %td.gl-text-right{ class: 'gl-p-5!' }
+      = @users_statistics&.with_highest_role_reporter
+  %tr
+    %td.gl-p-5!
+      = s_('AdminArea|Users with highest role')
+      %strong
+        = s_('AdminArea|Developer')
+    %td.gl-text-right{ class: 'gl-p-5!' }
+      = @users_statistics&.with_highest_role_developer
+  %tr
+    %td.gl-p-5!
+      = s_('AdminArea|Users with highest role')
+      %strong
+        = s_('AdminArea|Maintainer')
+    %td.gl-text-right{ class: 'gl-p-5!' }
+      = @users_statistics&.with_highest_role_maintainer
+  %tr
+    %td.gl-p-5!
+      = s_('AdminArea|Users with highest role')
+      %strong
+        = s_('AdminArea|Owner')
+    %td.gl-text-right{ class: 'gl-p-5!' }
+      = @users_statistics&.with_highest_role_owner
+  %tr
+    %td.gl-p-5!
+      = s_('AdminArea|Users with highest role')
+      %strong
+        = s_('AdminArea|Guest')
+      = render_if_exists 'admin/dashboard/included_free_in_license_tooltip'
+    %td.gl-text-right{ class: 'gl-p-5!' }
+      = @users_statistics&.with_highest_role_guest
+  %tr
+    %td.gl-p-5!
+      = s_('AdminArea|Bots')
+    %td.gl-text-right{ class: 'gl-p-5!' }
+      = @users_statistics&.bots

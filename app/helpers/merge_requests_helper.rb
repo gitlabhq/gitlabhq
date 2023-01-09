@@ -276,6 +276,12 @@ module MergeRequestsHelper
 
     data
   end
+
+  def hidden_merge_request_icon(merge_request)
+    return unless merge_request.hidden?
+
+    hidden_issuable_icon(merge_request)
+  end
 end
 
 MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

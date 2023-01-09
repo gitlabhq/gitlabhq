@@ -236,6 +236,10 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   }
 }
 
+.gl-mt-n5 {
+  margin-top: -$gl-spacing-scale-5;
+}
+
 // Utils below are very specific so cannot be part of GitLab UI
 .gl-md-mt-5 {
   @include gl-media-breakpoint-up(md) {

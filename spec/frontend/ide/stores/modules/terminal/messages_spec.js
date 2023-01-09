@@ -1,8 +1,9 @@
 import { escape } from 'lodash';
 import { TEST_HOST } from 'spec/test_constants';
 import * as messages from '~/ide/stores/modules/terminal/messages';
-import httpStatus, {
+import {
   HTTP_STATUS_FORBIDDEN,
+  HTTP_STATUS_NOT_FOUND,
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
 import { sprintf } from '~/locale';
@@ -35,7 +36,7 @@ describe('IDE store terminal messages', () => {
     });
 
     it('returns unexpected error, with unexpected status', () => {
-      const result = messages.configCheckError(httpStatus.NOT_FOUND, TEST_HELP_URL);
+      const result = messages.configCheckError(HTTP_STATUS_NOT_FOUND, TEST_HELP_URL);
 
       expect(result).toBe(messages.UNEXPECTED_ERROR_CONFIG);
     });

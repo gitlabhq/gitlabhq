@@ -115,7 +115,7 @@ export default {
 </script>
 
 <template>
-  <component :is="wrapperComponent" :label="label" :description="description">
+  <component :is="wrapperComponent" :label="label" :description="description" v-bind="$attrs">
     <gl-listbox
       :selected="selected"
       :toggle-text="toggleText"

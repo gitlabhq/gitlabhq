@@ -75,9 +75,7 @@ module IssuesHelper
   def hidden_issue_icon(issue)
     return unless issue_hidden?(issue)
 
-    content_tag(:span, class: 'has-tooltip', title: _('This issue is hidden because its author has been banned')) do
-      sprite_icon('spam', css_class: 'gl-vertical-align-text-bottom')
-    end
+    hidden_issuable_icon(issue)
   end
 
   def award_user_list(awards, current_user, limit: 10)

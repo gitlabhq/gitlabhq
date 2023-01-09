@@ -14,25 +14,14 @@ RSpec.describe Import::PhabricatorController do
 
     context 'when the import source is not available' do
       before do
-        stub_feature_flags(phabricator_import: true)
         stub_application_setting(import_sources: [])
       end
 
       it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
-    context 'when the feature is disabled' do
+    context 'when the import source is available' do
       before do
-        stub_feature_flags(phabricator_import: false)
-        stub_application_setting(import_sources: ['phabricator'])
-      end
-
-      it { is_expected.to have_gitlab_http_status(:not_found) }
-    end
-
-    context 'when the import is available' do
-      before do
-        stub_feature_flags(phabricator_import: true)
         stub_application_setting(import_sources: ['phabricator'])
       end
 

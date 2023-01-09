@@ -9,6 +9,12 @@ module ListboxInputHelper
     end
   end
 
+  def listbox_input_value(value, from:)
+    open_listbox_input(from) do
+      find("[role='option'][data-testid='listbox-item-#{value}']").click
+    end
+  end
+
   def open_listbox_input(selector)
     page.within(selector) do
       page.find('button[aria-haspopup="listbox"]').click

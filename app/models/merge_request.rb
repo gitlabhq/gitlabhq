@@ -442,6 +442,14 @@ class MergeRequest < ApplicationRecord
     )
   end
 
+  scope :without_hidden, -> {
+    if Feature.enabled?(:hide_merge_requests_from_banned_users)
+      where_not_exists(Users::BannedUser.where('merge_requests.author_id = banned_users.user_id'))
+    else
+      all
+    end
+  }
+
   def self.total_time_to_merge
     join_metrics
       .merge(MergeRequest::Metrics.with_valid_time_to_merge)
@@ -2005,6 +2013,10 @@ class MergeRequest < ApplicationRecord
 
   def can_suggest_reviewers?
     false # overridden in EE
+  end
+
+  def hidden?
+    Feature.enabled?(:hide_merge_requests_from_banned_users) && author&.banned?
   end
 
   private

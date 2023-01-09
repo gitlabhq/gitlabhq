@@ -2590,13 +2590,16 @@ msgstr ""
 msgid "AdminArea|All users created in the instance, including users who are not %{billable_users_link_start}billable users%{billable_users_link_end}."
 msgstr ""
 
-msgid "AdminArea|Billable users"
-msgstr ""
-
 msgid "AdminArea|Blocked users"
 msgstr ""
 
 msgid "AdminArea|Bots"
+msgstr ""
+
+msgid "AdminArea|Breakdown of Billable users"
+msgstr ""
+
+msgid "AdminArea|Breakdown of Non-Billable users"
 msgstr ""
 
 msgid "AdminArea|Components"
@@ -2680,7 +2683,16 @@ msgstr ""
 msgid "AdminArea|Stopping jobs failed"
 msgstr ""
 
+msgid "AdminArea|Total Billable users"
+msgstr ""
+
+msgid "AdminArea|Total Non-Billable users"
+msgstr ""
+
 msgid "AdminArea|Total users"
+msgstr ""
+
+msgid "AdminArea|Totals"
 msgstr ""
 
 msgid "AdminArea|Updated %{last_update_time}"
@@ -2708,6 +2720,12 @@ msgid "AdminArea|View latest users"
 msgstr ""
 
 msgid "AdminArea|You’re about to stop all jobs. This will halt all current jobs that are running."
+msgstr ""
+
+msgid "AdminArea|active users + blocked users"
+msgstr ""
+
+msgid "AdminArea|total billable + total non-billable"
 msgstr ""
 
 msgid "AdminDashboard|Error loading the statistics. Please try again"
@@ -3310,7 +3328,7 @@ msgstr ""
 msgid "AdminUsers|Is using seat"
 msgstr ""
 
-msgid "AdminUsers|Issues authored by this user are hidden from other users."
+msgid "AdminUsers|Issues and merge requests authored by this user are hidden from other users."
 msgstr ""
 
 msgid "AdminUsers|It's you!"
@@ -42580,6 +42598,9 @@ msgid "Third Party Advisory Link"
 msgstr ""
 
 msgid "This %{issuableDisplayName} is locked. Only project members can comment."
+msgstr ""
+
+msgid "This %{issuable} is hidden because its author has been banned"
 msgstr ""
 
 msgid "This %{issuable} is locked. Only %{strong_open}project members%{strong_close} can comment."

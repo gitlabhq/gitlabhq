@@ -430,13 +430,13 @@ To learn more, read through the documentation on
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
 
-Owners can add members with a "minimal access" role to a parent group. Such users don't automatically have access to
+Owners can add members with a "minimal access" role to a root group. Such users don't automatically have access to
 projects and subgroups underneath. Owners must explicitly add these "minimal access" users to the specific subgroups and
 projects.
 
 You can use minimal access to give the same member more than one role in a group:
 
-1. Add the member to the parent group with a minimal access role.
+1. Add the member to the root group with a minimal access role.
 1. Invite the member as a direct member with a specific role in any subgroup or project in that group.
 
 Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), when minimal access users:

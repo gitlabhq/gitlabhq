@@ -195,6 +195,11 @@ class IssuableFinder
       project || group
     end
 
+    def user_can_see_all_issuables?
+      Ability.allowed?(current_user, :read_all_resources)
+    end
+    strong_memoize_attr :user_can_see_all_issuables?
+
     private
 
     def projects_public_or_visible_to_user

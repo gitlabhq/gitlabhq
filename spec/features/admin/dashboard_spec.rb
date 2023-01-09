@@ -49,8 +49,7 @@ RSpec.describe 'admin visits dashboard' do
       end
 
       expect(page).to have_content('Blocked users 7')
-      expect(page).to have_content('Total users 78')
-      expect(page).to have_content('Active users 71')
+      expect(page).to have_content('Total users (active users + blocked users) 78')
     end
   end
 

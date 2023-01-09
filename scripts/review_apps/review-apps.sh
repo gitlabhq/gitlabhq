@@ -362,11 +362,28 @@ function verify_deploy() {
 
   if [[ "${deployed}" == "true" ]]; then
     echoinfo "[$(date '+%H:%M:%S')] Review app is deployed to ${CI_ENVIRONMENT_URL}"
-    return 0
   else
     echoerr "[$(date '+%H:%M:%S')] Review app is not available at ${CI_ENVIRONMENT_URL}: see the logs from cURL above for more details"
     return 1
   fi
+}
+
+# We need to be able to access the GitLab API to run this method.
+# Since we are creating a personal access token in `disable_sign_ups`,
+# This method should be executed after it.
+function verify_commit_sha() {
+  echoinfo "[$(date '+%H:%M:%S')] Checking the correct commit is deployed in the review-app:"
+  echo "Expected commit sha: ${CI_COMMIT_SHA}"
+
+  review_app_revision=$(curl --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/metadata" | jq -r .revision)
+  echo "review-app revision: ${review_app_revision}"
+
+  if [[ "${CI_COMMIT_SHA}" != "${review_app_revision}"* ]]; then
+    echoerr "[$(date '+%H:%M:%S')] Review app revision is not the same as the current commit!"
+    return 1
+  fi
+
+  return 0
 }
 
 function display_deployment_debug() {

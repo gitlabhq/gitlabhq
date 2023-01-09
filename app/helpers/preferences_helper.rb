@@ -17,8 +17,11 @@ module PreferencesHelper
     dashboards -= excluded_dashboard_choices
 
     dashboards.map do |key|
-      # Use `fetch` so `KeyError` gets raised when a key is missing
-      [localized_dashboard_choices.fetch(key), key]
+      {
+        # Use `fetch` so `KeyError` gets raised when a key is missing
+        text: localized_dashboard_choices.fetch(key),
+        value: key
+      }
     end
   end
 
@@ -99,10 +102,12 @@ module PreferencesHelper
   end
 
   def language_choices
-    options_for_select(
-      selectable_locales_with_translation_level(Gitlab::I18n::MINIMUM_TRANSLATION_LEVEL).sort,
-      current_user.preferred_language
-    )
+    selectable_locales_with_translation_level(Gitlab::I18n::MINIMUM_TRANSLATION_LEVEL).sort.map do |lang, key|
+      {
+        text: lang,
+        value: key
+      }
+    end
   end
 
   def default_preferred_language_choices

@@ -4,7 +4,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import CustomNotificationsModal from '~/notifications/components/custom_notifications_modal.vue';
 import NotificationsDropdown from '~/notifications/components/notifications_dropdown.vue';
 import NotificationsDropdownItem from '~/notifications/components/notifications_dropdown_item.vue';
@@ -245,7 +245,7 @@ describe('NotificationsDropdown', () => {
     });
 
     it("won't update the selectedNotificationLevel and shows a toast message when the request fails and", async () => {
-      mockAxios.onPut('/api/v4/notification_settings').reply(httpStatus.NOT_FOUND, {});
+      mockAxios.onPut('/api/v4/notification_settings').reply(HTTP_STATUS_NOT_FOUND, {});
       wrapper = createComponent();
 
       await clickDropdownItemAt(1);

@@ -179,6 +179,7 @@ A component YAML file:
 - Should be **validated statically** (for example: using JSON schema validators).
 
 ```yaml
+---
 spec:
   inputs:
     website:
@@ -189,7 +190,8 @@ spec:
         - unit
         - integration
         - system
-content: { ... }
+---
+# content of the component
 ```
 
 Components that are released in the catalog must have a `README.md` file at the root directory of the repository.
@@ -293,11 +295,12 @@ NOTE:
 Nesting of components is not permitted.
 This limitation encourages cohesion at project level and keeps complexity low.
 
-## Input parameters `spec:inputs:` parameters
+## `spec:inputs:` parameters
 
 If the component takes any input parameters they must be specified according to the following schema:
 
 ```yaml
+---
 spec:
   inputs:
     website: # by default all declared inputs are mandatory.
@@ -308,7 +311,14 @@ spec:
         - unit
         - integration
         - system
+---
+# content of the component
+my-job:
+  script: echo
 ```
+
+The YAML in this case contains 2 documents. The first document represents the specifications while the
+second document represents the content.
 
 When using the component we pass the input parameters as follows:
 
@@ -327,27 +337,28 @@ possible [inputs provided upstream](#input-parameters-for-pipelines).
 Input parameters are validated as soon as possible:
 
 1. Read the file `gitlab-template.yml` inside `org/my-component`.
-1. Parse `spec:inputs` and validate the parameters against this schema.
-1. If successfully validated, proceed with parsing `content:`. Return an error otherwise.
-1. Interpolate input parameters inside the component's `content:`.
+1. Parse `spec:inputs` from the specifications and validate the parameters against this schema.
+1. If successfully validated, proceed with parsing the content. Return an error otherwise.
+1. Interpolate input parameters inside the component's content.
 
 ```yaml
+---
 spec:
   inputs:
     environment:
       options: [test, staging, production]
-content:
-  "run-tests-$[[ inputs.environment ]]":
-    script: ./run-test
+---
+"run-tests-$[[ inputs.environment ]]":
+  script: ./run-test
 
-  scan-website:
-    script: ./scan-website $[[ inputs.environment ]]
-    rules:
-      - if: $[[ inputs.environment ]] == 'staging'
-      - if: $[[ inputs.environment ]] == 'production'
+scan-website:
+  script: ./scan-website $[[ inputs.environment ]]
+  rules:
+    - if: $[[ inputs.environment ]] == 'staging'
+    - if: $[[ inputs.environment ]] == 'production'
 ```
 
-With `$[[ inputs.XXX ]]` inputs are interpolated immediately after parsing the `content:`.
+With `$[[ inputs.XXX ]]` inputs are interpolated immediately after parsing the content.
 
 ### Why input parameters and not environment variables?
 
@@ -391,17 +402,19 @@ include:
       foo: bar
 ```
 
-Then the configuration being included must specify the inputs:
+Then the configuration being included must specify the inputs by defining a specification section in the YAML:
 
 ```yaml
+---
 spec:
   inputs:
     foo:
-
+---
 # rest of the configuration
 ```
 
-If a YAML includes content using `with:` but the including YAML doesn't specify `inputs:`, an error should be raised.
+If a YAML includes content using `with:` but the including YAML doesn't define `inputs:` in the specifications,
+an error should be raised.
 
 |`with:`| `inputs:` | result |
 | --- | --- | --- |
@@ -433,9 +446,10 @@ deploy-app:
       deploy_environment: staging
 ```
 
-To solve the problem of `Run Pipeline` UI form we could fully leverage the `spec:inputs` schema:
+To solve the problem of `Run Pipeline` UI form we could fully leverage the `inputs` specifications:
 
 ```yaml
+---
 spec:
   inputs:
     concurrency:
@@ -448,9 +462,11 @@ spec:
         - canary     # 2nd option
         - production # 3rd option
       default: staging # selected by default in the UI.
-                     # if `default:` is not specified, the user must explicitly select
-                     # an option.
+                      # if `default:` is not specified, the user must explicitly select
+                      # an option.
       description: Deployment environment # optional: render as input label.
+---
+# rest of the pipeline config
 ```
 
 ## Limits

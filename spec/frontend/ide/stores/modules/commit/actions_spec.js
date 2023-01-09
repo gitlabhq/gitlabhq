@@ -366,17 +366,38 @@ describe('IDE commit module actions', () => {
       });
 
       describe('merge request', () => {
-        it('redirects to new merge request page', async () => {
-          jest.spyOn(eventHub, '$on').mockImplementation();
+        it.each`
+          branchName   | targetBranchName | branchNameInURL | targetBranchInURL
+          ${'foo'}     | ${'main'}        | ${'foo'}        | ${'main'}
+          ${'foo#bar'} | ${'main'}        | ${'foo%23bar'}  | ${'main'}
+          ${'foo#bar'} | ${'not#so#main'} | ${'foo%23bar'}  | ${'not%23so%23main'}
+        `(
+          'redirects to the correct new MR page when new branch is "$branchName" and target branch is "$targetBranchName"',
+          async ({ branchName, targetBranchName, branchNameInURL, targetBranchInURL }) => {
+            Object.assign(store.state.projects.abcproject, {
+              branches: {
+                [targetBranchName]: {
+                  name: targetBranchName,
+                  workingReference: '1',
+                  commit: {
+                    id: TEST_COMMIT_SHA,
+                  },
+                  can_push: true,
+                },
+              },
+            });
+            store.state.currentBranchId = targetBranchName;
+            store.state.commit.newBranchName = branchName;
 
-          store.state.commit.commitAction = COMMIT_TO_NEW_BRANCH;
-          store.state.commit.shouldCreateMR = true;
+            store.state.commit.commitAction = COMMIT_TO_NEW_BRANCH;
+            store.state.commit.shouldCreateMR = true;
 
-          await store.dispatch('commit/commitChanges');
-          expect(visitUrl).toHaveBeenCalledWith(
-            `webUrl/-/merge_requests/new?merge_request[source_branch]=${store.getters['commit/placeholderBranchName']}&merge_request[target_branch]=main&nav_source=webide`,
-          );
-        });
+            await store.dispatch('commit/commitChanges');
+            expect(visitUrl).toHaveBeenCalledWith(
+              `webUrl/-/merge_requests/new?merge_request[source_branch]=${branchNameInURL}&merge_request[target_branch]=${targetBranchInURL}&nav_source=webide`,
+            );
+          },
+        );
 
         it('does not redirect to new merge request page when shouldCreateMR is not checked', async () => {
           jest.spyOn(eventHub, '$on').mockImplementation();

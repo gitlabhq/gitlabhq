@@ -1,7 +1,10 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes, { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
+import httpStatusCodes, {
+  HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_NOT_FOUND,
+} from '~/lib/utils/http_status';
 import pollUntilComplete from '~/lib/utils/poll_until_complete';
 
 const endpoint = `${TEST_HOST}/foo`;
@@ -66,7 +69,7 @@ describe('pollUntilComplete', () => {
     const errorMessage = 'error message';
 
     beforeEach(() => {
-      mock.onGet(endpoint).replyOnce(httpStatusCodes.NOT_FOUND, errorMessage);
+      mock.onGet(endpoint).replyOnce(HTTP_STATUS_NOT_FOUND, errorMessage);
     });
 
     it('rejects with the error response', () =>

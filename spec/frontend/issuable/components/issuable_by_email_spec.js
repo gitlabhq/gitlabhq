@@ -5,7 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 
 const initialEmail = 'user@gitlab.com';
 
@@ -144,7 +144,7 @@ describe('IssuableByEmail', () => {
       });
 
       it('should show a toast message when the request fails', async () => {
-        mockAxios.onPut(resetPath).reply(httpStatus.NOT_FOUND, {});
+        mockAxios.onPut(resetPath).reply(HTTP_STATUS_NOT_FOUND, {});
 
         wrapper = createComponent({
           issuableType: 'issue',

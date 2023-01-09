@@ -16,7 +16,7 @@
   .detail-page-header.border-bottom-0.pt-0.pb-0.gl-display-block{ class: "gl-md-display-flex! #{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }
     .detail-page-header-body
       .issuable-meta.gl-display-flex
-        #js-issuable-header-warnings
+        #js-issuable-header-warnings{ data: { hidden: @merge_request.hidden?.to_s } }
         %h1.title.page-title.gl-font-size-h-display.gl-my-0.gl-display-inline-block{ data: { qa_selector: 'title_content' } }
           = markdown_field(@merge_request, :title)
 

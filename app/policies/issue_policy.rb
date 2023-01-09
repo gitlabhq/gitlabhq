@@ -21,9 +21,6 @@ class IssuePolicy < IssuablePolicy
   desc "Issue is confidential"
   condition(:confidential, scope: :subject) { @subject.confidential? }
 
-  desc "Issue is hidden"
-  condition(:hidden, scope: :subject) { @subject.hidden? }
-
   desc "Issue is persisted"
   condition(:persisted, scope: :subject) { @subject.persisted? }
 

@@ -603,6 +603,7 @@ ee:importers:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Import
+    QA_MOCK_GITHUB: "false"
     GITLAB_QA_OPTS: --set-feature-flags bulk_import_projects=enabled
   rules:
     - !reference [.rules:test:qa, rules]

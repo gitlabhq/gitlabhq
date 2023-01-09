@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User visits the profile preferences page', :js, feature_category: :users do
-  include Select2Helper
+  include ListboxInputHelper
 
   let(:user) { create(:user) }
 
@@ -30,7 +30,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
 
   describe 'User changes their default dashboard', :js do
     it 'creates a flash message' do
-      select2('stars', from: '#user_dashboard')
+      listbox_input_value 'stars', from: '#user_dashboard'
       click_button 'Save changes'
 
       wait_for_requests
@@ -39,7 +39,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
     end
 
     it 'updates their preference' do
-      select2('stars', from: '#user_dashboard')
+      listbox_input_value 'stars', from: '#user_dashboard'
       click_button 'Save changes'
 
       wait_for_requests
@@ -58,7 +58,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
 
   describe 'User changes their language', :js do
     it 'creates a flash message', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/31404' do
-      select2('en', from: '#user_preferred_language')
+      listbox_input_value 'en', from: '#user_preferred_language'
       click_button 'Save changes'
 
       wait_for_requests
@@ -68,7 +68,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
 
     it 'updates their preference' do
       wait_for_requests
-      select2('pt_BR', from: '#user_preferred_language')
+      listbox_input_value 'pt_BR', from: '#user_preferred_language'
       click_button 'Save changes'
 
       wait_for_requests

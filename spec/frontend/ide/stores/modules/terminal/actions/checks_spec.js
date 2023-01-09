@@ -10,8 +10,9 @@ import {
 import * as messages from '~/ide/stores/modules/terminal/messages';
 import * as mutationTypes from '~/ide/stores/modules/terminal/mutation_types';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus, {
+import {
   HTTP_STATUS_FORBIDDEN,
+  HTTP_STATUS_NOT_FOUND,
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
 
@@ -105,7 +106,7 @@ describe('IDE store terminal check actions', () => {
       );
     });
 
-    [HTTP_STATUS_FORBIDDEN, httpStatus.NOT_FOUND].forEach((status) => {
+    [HTTP_STATUS_FORBIDDEN, HTTP_STATUS_NOT_FOUND].forEach((status) => {
       it(`hides tab, when status is ${status}`, () => {
         const payload = { response: { status } };
 

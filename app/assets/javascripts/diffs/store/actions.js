@@ -9,7 +9,7 @@ import { createAlert, VARIANT_WARNING } from '~/flash';
 import { diffViewerModes } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
 
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
@@ -232,7 +232,7 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
     .catch((error) => {
       worker.terminate();
 
-      if (error.response.status === httpStatusCodes.NOT_FOUND) {
+      if (error.response.status === HTTP_STATUS_NOT_FOUND) {
         createAlert({
           message: __('Building your merge request. Wait a few moments, then refresh this page.'),
           variant: VARIANT_WARNING,
