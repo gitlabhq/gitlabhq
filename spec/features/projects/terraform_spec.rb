@@ -56,9 +56,9 @@ RSpec.describe 'Terraform', :js, feature_category: :projects do
       end
 
       context 'when clicking on the delete button' do
-        let(:additional_state) { create(:terraform_state, project: project) }
+        let!(:additional_state) { create(:terraform_state, project: project) }
 
-        it 'removes the state', :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/333640' do
+        it 'removes the state', :aggregate_failures do
           visit project_terraform_index_path(project)
 
           expect(page).to have_content(additional_state.name)
@@ -69,7 +69,12 @@ RSpec.describe 'Terraform', :js, feature_category: :projects do
           click_button 'Remove'
 
           expect(page).to have_content("#{additional_state.name} successfully removed")
-          expect { additional_state.reload }.to raise_error ActiveRecord::RecordNotFound
+
+          find("[data-testid='remove-icon']").hover
+          expect(page).to have_content("Deletion in progress")
+
+          additional_state.reload
+          expect(additional_state.deleted_at).not_to be_nil
         end
       end
 
