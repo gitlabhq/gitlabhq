@@ -41,6 +41,7 @@ class WebHook < ApplicationRecord
   after_initialize :initialize_url_variables
 
   before_validation :reset_token
+  before_validation :reset_url_variables, unless: ->(hook) { hook.is_a?(ServiceHook) }
   before_validation :set_branch_filter_nil, \
     if: -> { branch_filter_strategy_all_branches? && enhanced_webhook_support_regex? }
   validates :push_events_branch_filter, \
@@ -222,6 +223,10 @@ class WebHook < ApplicationRecord
 
   def reset_token
     self.token = nil if url_changed? && !encrypted_token_changed?
+  end
+
+  def reset_url_variables
+    self.url_variables = {} if url_changed? && !encrypted_url_variables_changed?
   end
 
   def next_failure_count
