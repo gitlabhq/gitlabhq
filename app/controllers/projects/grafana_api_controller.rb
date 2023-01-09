@@ -4,6 +4,8 @@ class Projects::GrafanaApiController < Projects::ApplicationController
   include RenderServiceResults
   include MetricsDashboard
 
+  before_action :authorize_read_grafana!, only: :proxy
+
   feature_category :metrics
   urgency :low
 
