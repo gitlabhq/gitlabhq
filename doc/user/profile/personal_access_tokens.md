@@ -31,7 +31,7 @@ Personal access tokens are:
 - Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) is enabled.
 - Used with a GitLab username to authenticate with GitLab features that require usernames. For example,
   [GitLab-managed Terraform state backend](../infrastructure/iac/terraform_state.md#use-your-gitlab-backend-as-a-remote-data-source)
-  and [Docker container registry](../packages/container_registry/index.md#authenticate-with-the-container-registry),
+  and [Docker container registry](../packages/container_registry/authenticate_with_container_registry.md),
 - Similar to [project access tokens](../project/settings/project_access_tokens.md) and [group access tokens](../group/settings/group_access_tokens.md), but are attached
   to a user rather than a project or group.
 

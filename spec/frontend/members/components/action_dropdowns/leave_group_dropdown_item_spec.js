@@ -4,7 +4,7 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import LeaveGroupDropdownItem from '~/members/components/action_dropdowns/leave_group_dropdown_item.vue';
 import LeaveModal from '~/members/components/modals/leave_modal.vue';
 import { LEAVE_MODAL_ID } from '~/members/constants';
-import { member } from '../../mock_data';
+import { member, permissions } from '../../mock_data';
 
 describe('LeaveGroupDropdownItem', () => {
   let wrapper;
@@ -14,6 +14,7 @@ describe('LeaveGroupDropdownItem', () => {
     wrapper = shallowMount(LeaveGroupDropdownItem, {
       propsData: {
         member,
+        permissions,
         ...propsData,
       },
       directives: {
@@ -42,7 +43,7 @@ describe('LeaveGroupDropdownItem', () => {
   it('contains LeaveModal component', () => {
     const leaveModal = wrapper.findComponent(LeaveModal);
 
-    expect(leaveModal.props('member')).toEqual(member);
+    expect(leaveModal.props()).toEqual({ member, permissions });
   });
 
   it('binds to the LeaveModal component', () => {

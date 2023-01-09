@@ -444,7 +444,7 @@ This error occurs in the following scenarios:
   password. For 2FA-enabled users, a [personal access token](../personal_access_tokens.md) (PAT)
   must be used instead of a password. To authenticate:
   - Git requests over HTTP(S), a PAT with `read_repository` or `write_repository` scope is required.
-  - [GitLab Container Registry](../../packages/container_registry/index.md#authenticate-with-the-container-registry) requests, a PAT
+  - [GitLab Container Registry](../../packages/container_registry/authenticate_with_container_registry.md) requests, a PAT
     with `read_registry` or `write_registry` scope is required.
   - [Dependency Proxy](../../packages/dependency_proxy/index.md#authenticate-with-the-dependency-proxy) requests, a PAT with
     `read_registry` and `write_registry` scopes is required.

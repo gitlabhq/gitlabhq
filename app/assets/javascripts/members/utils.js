@@ -51,6 +51,9 @@ export const canRemove = (member) => {
   return isDirectMember(member) && member.canRemove;
 };
 
+export const canRemoveBlockedByLastOwner = (member, canManageMembers) =>
+  isDirectMember(member) && canManageMembers && member.isLastOwner;
+
 export const canResend = (member) => {
   return Boolean(member.invite?.canResend);
 };

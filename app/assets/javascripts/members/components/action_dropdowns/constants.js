@@ -11,4 +11,8 @@ export const I18N = {
   confirmOrphanedUserRemoval: s__(
     'Members|Are you sure you want to remove this orphaned member from "%{group}"?',
   ),
+  personalProjectOwnerCannotBeRemoved: s__("Members|A personal project's owner cannot be removed."),
+  lastGroupOwnerCannotBeRemoved: s__(
+    'Members|A group must have at least one owner. To remove the member, assign a new owner.',
+  ),
 };

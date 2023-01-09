@@ -52,11 +52,29 @@ module Gitlab
     private_class_method :interceptors
 
     def self.channel_args
-      # These values match the go Gitaly client
-      # https://gitlab.com/gitlab-org/gitaly/-/blob/bf9f52bc/client/dial.go#L78
       {
+        # These keepalive values match the go Gitaly client
+        # https://gitlab.com/gitlab-org/gitaly/-/blob/bf9f52bc/client/dial.go#L78
         'grpc.keepalive_time_ms': 20000,
-        'grpc.keepalive_permit_without_calls': 1
+        'grpc.keepalive_permit_without_calls': 1,
+        # Enable client-side automatic retry. After enabled, gRPC requests will be retried when there are connectivity
+        # problems with the target host. Only transparent failures, which mean requests fail before leaving clients, are
+        # eligible. Other cases are configurable via retry policy in service config (below). In theory, we can auto-retry
+        # read-only RPCs. Gitaly defines a custom field in service proto. Unfortunately, gRPC ruby doesn't support
+        # descriptor reflection.
+        # For more information please visit https://github.com/grpc/proposal/blob/master/A6-client-retries.md
+        'grpc.enable_retries': 1,
+        # Service config is a mechanism for grpc to control the behavior of gRPC client. It defines the client-side
+        # balancing strategy and retry policy. The config receives a raw JSON string. The format is defined here:
+        # https://github.com/grpc/grpc-proto/blob/master/grpc/service_config/service_config.proto
+        'grpc.service_config': {
+          # By default, gRPC uses pick_first strategy. This strategy establishes one single connection to the first
+          # target returned by the name resolver. We would like to use round_robin load-balancing strategy so that
+          # grpc creates multiple subchannels to all targets retrurned by the resolver. Requests are distributed to
+          # those subchannels in a round-robin fashion.
+          # More about client-side load-balancing: https://gitlab.com/groups/gitlab-org/-/epics/8971#note_1207008162
+          "loadBalancingConfig": [{ "round_robin": {} }]
+        }.to_json
       }
     end
     private_class_method :channel_args

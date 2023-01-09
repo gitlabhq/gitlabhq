@@ -74,6 +74,7 @@ describe('UserActionDropdown', () => {
           name: member.user.name,
           obstacles: parseUserDeletionObstacles(member.user),
         },
+        preventRemoval: false,
       });
     });
 
@@ -117,6 +118,63 @@ describe('UserActionDropdown', () => {
       });
 
       expect(findRemoveMemberDropdownItem().exists()).toBe(false);
+    });
+  });
+
+  describe('when user can remove but it is blocked by last owner', () => {
+    const permissions = {
+      canRemove: false,
+      canRemoveBlockedByLastOwner: true,
+    };
+
+    it('renders remove member dropdown', () => {
+      createComponent({
+        permissions,
+      });
+
+      expect(findRemoveMemberDropdownItem().exists()).toBe(true);
+    });
+
+    describe('when member model type is `GroupMember`', () => {
+      it('passes correct message to the modal', () => {
+        createComponent({
+          permissions,
+        });
+
+        expect(findRemoveMemberDropdownItem().props('modalMessage')).toBe(
+          I18N.lastGroupOwnerCannotBeRemoved,
+        );
+      });
+    });
+
+    describe('when member model type is `ProjectMember`', () => {
+      it('passes correct message to the modal', () => {
+        createComponent({
+          member: {
+            ...member,
+            type: MEMBER_MODEL_TYPE_PROJECT_MEMBER,
+          },
+          permissions,
+        });
+
+        expect(findRemoveMemberDropdownItem().props('modalMessage')).toBe(
+          I18N.personalProjectOwnerCannotBeRemoved,
+        );
+      });
+    });
+
+    describe('when member is the current user', () => {
+      it('renders leave dropdown with correct props', () => {
+        createComponent({
+          isCurrentUser: true,
+          permissions,
+        });
+
+        expect(wrapper.findComponent(LeaveGroupDropdownItem).props()).toEqual({
+          member,
+          permissions,
+        });
+      });
     });
   });
 

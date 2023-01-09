@@ -40,6 +40,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    preventRemoval: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapState({
@@ -55,6 +60,7 @@ export default {
         memberModelType: this.memberModelType,
         message: this.modalMessage,
         userDeletionObstacles: this.userDeletionObstacles,
+        preventRemoval: this.preventRemoval,
       };
     },
   },

@@ -18,6 +18,10 @@ export default {
       type: Object,
       required: true,
     },
+    permissions: {
+      type: Object,
+      required: true,
+    },
   },
 };
 </script>
@@ -27,6 +31,6 @@ export default {
     <span class="gl-text-red-500">
       <slot></slot>
     </span>
-    <leave-modal :member="member" />
+    <leave-modal :member="member" :permissions="permissions" />
   </gl-dropdown-item>
 </template>

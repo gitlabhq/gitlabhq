@@ -81,7 +81,7 @@ To enable container scanning in your pipeline, you need the following:
 - Docker `18.09.03` or higher installed on the same computer as the runner. If you're using the
   shared runners on GitLab.com, then this is already the case.
 - An image matching the [supported distributions](#supported-distributions).
-- [Build and push](../../packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd)
+- [Build and push](../../packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
   the Docker image to your project's container registry.
 - If you're using a third-party container registry, you might need to provide authentication
   credentials through the `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD` [configuration variables](#available-cicd-variables).

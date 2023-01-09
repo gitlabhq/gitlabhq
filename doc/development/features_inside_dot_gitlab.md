@@ -15,7 +15,7 @@ When implementing new features, please refer to these existing features to avoid
 - [GitLab agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/configuration_repository.md#layout): `.gitlab/agents/`.
 - [CODEOWNERS](../user/project/code_owners.md#set-up-code-owners): `.gitlab/CODEOWNERS`.
 - [Route Maps](../ci/review_apps/index.md#route-maps): `.gitlab/route-map.yml`.
-- [Customize Auto DevOps Helm Values](../topics/autodevops/customize.md#customize-values-for-helm-chart): `.gitlab/auto-deploy-values.yaml`.
+- [Customize Auto DevOps Helm Values](../topics/autodevops/customize.md#customize-helm-chart-values): `.gitlab/auto-deploy-values.yaml`.
 - [Insights](../user/project/insights/index.md#configure-project-insights): `.gitlab/insights.yml`.
 - [Service Desk Templates](../user/project/service_desk.md#using-customized-email-templates): `.gitlab/service_desk_templates/`.
 - [Web IDE](../user/project/web_ide/index.md#web-ide-configuration-file): `.gitlab/.gitlab-webide.yml`.

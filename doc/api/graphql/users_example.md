@@ -12,7 +12,6 @@ You can run the same query directly via a HTTP endpoint, using `cURL`. For more 
 guidance on getting started from the [command line](getting_started.md#command-line).
 
 The [example users query](#set-up-the-graphiql-explorer) looks for a subset of users in
-o
 a GitLab instance either by username or
 [Global ID](../../development/api_graphql_styleguide.md#global-ids).
 The query includes:

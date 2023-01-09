@@ -451,7 +451,7 @@ To use Auto Deploy on a Kubernetes 1.16+ cluster:
 1. If you are deploying your application for the first time in GitLab 13.0 or
    later, no configuration should be required.
 
-1. In GitLab 12.10 and earlier, set the following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
+1. In GitLab 12.10 and earlier, set the following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-helm-chart-values):
 
    ```yaml
    deploymentApiVersion: apps/v1
@@ -535,7 +535,7 @@ you must:
 
 After configuring your worker to respond to health checks, run a Sidekiq
 worker for your Rails application. You can enable workers by setting the
-following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
+following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-helm-chart-values):
 
 ```yaml
 workers:

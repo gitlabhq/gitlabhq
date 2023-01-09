@@ -2,6 +2,10 @@
 import { GlDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
+import {
+  MEMBER_MODEL_TYPE_GROUP_MEMBER,
+  MEMBER_MODEL_TYPE_PROJECT_MEMBER,
+} from '~/members/constants';
 import { I18N } from './constants';
 import LeaveGroupDropdownItem from './leave_group_dropdown_item.vue';
 import RemoveMemberDropdownItem from './remove_member_dropdown_item.vue';
@@ -37,6 +41,16 @@ export default {
     modalMessage() {
       const { user, source } = this.member;
 
+      if (this.permissions.canRemoveBlockedByLastOwner) {
+        if (this.member.type === MEMBER_MODEL_TYPE_PROJECT_MEMBER) {
+          return I18N.personalProjectOwnerCannotBeRemoved;
+        }
+
+        if (this.member.type === MEMBER_MODEL_TYPE_GROUP_MEMBER) {
+          return I18N.lastGroupOwnerCannotBeRemoved;
+        }
+      }
+
       if (user) {
         return sprintf(
           this.$options.i18n.confirmNormalUserRemoval,
@@ -54,7 +68,10 @@ export default {
       };
     },
     showDropdown() {
-      return this.permissions.canRemove || this.showLdapOverride;
+      return this.showLeaveOrRemove || this.showLdapOverride;
+    },
+    showLeaveOrRemove() {
+      return this.permissions.canRemove || this.permissions.canRemoveBlockedByLastOwner;
     },
     showLdapOverride() {
       return this.permissions.canOverride && !this.member.isOverridden;
@@ -76,8 +93,8 @@ export default {
     data-testid="user-action-dropdown"
     data-qa-selector="user_action_dropdown"
   >
-    <template v-if="permissions.canRemove">
-      <leave-group-dropdown-item v-if="isCurrentUser" :member="member">{{
+    <template v-if="showLeaveOrRemove">
+      <leave-group-dropdown-item v-if="isCurrentUser" :member="member" :permissions="permissions">{{
         $options.i18n.leaveGroup
       }}</leave-group-dropdown-item>
       <remove-member-dropdown-item
@@ -86,6 +103,7 @@ export default {
         :member-model-type="member.type"
         :user-deletion-obstacles="userDeletionObstaclesUserData"
         :modal-message="modalMessage"
+        :prevent-removal="permissions.canRemoveBlockedByLastOwner"
         >{{ $options.i18n.removeMember }}</remove-member-dropdown-item
       >
     </template>

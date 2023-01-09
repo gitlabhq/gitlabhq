@@ -69,6 +69,9 @@ describe('RemoveMemberDropdownItem', () => {
   it('calls Vuex action to show `remove member` modal when clicked', () => {
     findDropdownItem().vm.$emit('click');
 
-    expect(actions.showRemoveMemberModal).toHaveBeenCalledWith(expect.any(Object), modalData);
+    expect(actions.showRemoveMemberModal).toHaveBeenCalledWith(expect.any(Object), {
+      ...modalData,
+      preventRemoval: false,
+    });
   });
 });

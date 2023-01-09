@@ -17,7 +17,7 @@ export const member = {
     fullName: 'Foo Bar',
     webUrl: 'https://gitlab.com/groups/foo-bar',
   },
-  type: 'GroupMember',
+  type: MEMBER_MODEL_TYPE_GROUP_MEMBER,
   state: MEMBER_STATE_CREATED,
   user: {
     id: 123,
@@ -131,3 +131,10 @@ export const dataAttribute = JSON.stringify({
   source_id: 234,
   can_manage_members: true,
 });
+
+export const permissions = {
+  canRemove: true,
+  canRemoveBlockedByLastOwner: false,
+  canResend: true,
+  canUpdate: true,
+};

@@ -13,6 +13,7 @@ import {
   isDirectMember,
   isCurrentUser,
   canRemove,
+  canRemoveBlockedByLastOwner,
   canResend,
   canUpdate,
   canOverride,
@@ -126,6 +127,17 @@ describe('Members Utils', () => {
       ${{ ...memberMock, canRemove: false }}     | ${false}
     `('returns $expected', ({ member, expected }) => {
       expect(canRemove(member)).toBe(expected);
+    });
+  });
+
+  describe('canRemoveBlockedByLastOwner', () => {
+    it.each`
+      member                                        | canManageMembers | expected
+      ${{ ...directMember, isLastOwner: true }}     | ${true}          | ${true}
+      ${{ ...inheritedMember, isLastOwner: false }} | ${true}          | ${false}
+      ${{ ...directMember, isLastOwner: true }}     | ${false}         | ${false}
+    `('returns $expected', ({ member, canManageMembers, expected }) => {
+      expect(canRemoveBlockedByLastOwner(member, canManageMembers)).toBe(expected);
     });
   });
 

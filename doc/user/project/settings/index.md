@@ -239,7 +239,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the [group](../../group/manage.md#create-a-group) to which you are transferring.
 - You must be the Owner of the project you transfer.
 - The group must allow creation of new projects.
-- The project must not contain any [container images](../../packages/container_registry/index.md#known-issues).
+- The project must not contain any [container images](../../packages/container_registry/index.md#move-or-rename-container-registry-repositories).
 - Remove any npm packages. If you transfer a project to a different root namespace, the project must not contain any npm packages. When you update the path of a user or group, or transfer a subgroup or project, you must remove any npm packages first. You cannot update the root namespace of a project with npm packages. Make sure you update your .npmrc files to follow the naming convention and run npm publish if necessary.
 
 To transfer a project:

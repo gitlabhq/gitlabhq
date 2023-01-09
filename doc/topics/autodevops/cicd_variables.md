@@ -22,7 +22,7 @@ Use these variables to customize and deploy your build.
 | `AUTO_DEVOPS_ATOMIC_RELEASE`            | As of GitLab 13.0, Auto DevOps uses [`--atomic`](https://v2.helm.sh/docs/helm/#options-43) for Helm deployments by default. Set this variable to `false` to disable the use of `--atomic` |
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED`   | Set to `false` to use Herokuish instead of Cloud Native Buildpacks with Auto Build. [More details](stages.md#auto-build-using-cloud-native-buildpacks). |
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`   | The builder used when building with Cloud Native Buildpacks. The default builder is `heroku/buildpacks:18`. [More details](stages.md#auto-build-using-cloud-native-buildpacks). |
-| `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Using quotes doesn't prevent word splitting. [More details](customize.md#passing-arguments-to-docker-build). |
+| `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Using quotes doesn't prevent word splitting. [More details](customize.md#pass-arguments-to-docker-build). |
 | `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI/CD variable names](customize.md#forward-cicd-variables-to-the-build-environment) to be forwarded to the build environment (the buildpack builder or `docker build`). |
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_PORT`      | In GitLab 15.0 and later, port exposed by the generated Docker image. Set to `false` to prevent exposing any ports. Defaults to `5000`. |
 | `AUTO_DEVOPS_CHART`                     | Helm Chart used to deploy your apps. Defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app). |
@@ -42,7 +42,7 @@ Use these variables to customize and deploy your build.
 | `CI_APPLICATION_REPOSITORY`             | The repository of container image being built or deployed, `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`. For more details, read [Custom container image](customize.md#custom-container-image). |
 | `CI_APPLICATION_TAG`                    | The tag of the container image being built or deployed, `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`. For more details, read [Custom container image](customize.md#custom-container-image). |
 | `DAST_AUTO_DEPLOY_IMAGE_VERSION`        | Customize the image version used for DAST deployments on the default branch. Should usually be the same as `AUTO_DEPLOY_IMAGE_VERSION`. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/releases). |
-| `DOCKERFILE_PATH`                       | From GitLab 13.2, allows overriding the [default Dockerfile path for the build stage](customize.md#custom-dockerfile) |
+| `DOCKERFILE_PATH`                       | From GitLab 13.2, allows overriding the [default Dockerfile path for the build stage](customize.md#custom-dockerfiles) |
 | `HELM_RELEASE_NAME`                     | Allows the `helm` release name to be overridden. Can be used to assign unique release names when deploying multiple projects to a single namespace. |
 | `HELM_UPGRADE_VALUES_FILE`              | Allows the `helm upgrade` values file to be overridden. Defaults to `.gitlab/auto-deploy-values.yaml`. |
 | `HELM_UPGRADE_EXTRA_ARGS`               | Allows extra options in `helm upgrade` commands when deploying the application. Using quotes doesn't prevent word splitting. |
@@ -53,7 +53,7 @@ Use these variables to customize and deploy your build.
 | `KUBE_NAMESPACE`                        | The namespace used for deployments. When using certificate-based clusters, [this value should not be overwritten directly](../../user/project/clusters/deploy_to_cluster.md#custom-namespace). |
 | `KUBECONFIG`                            | The kubeconfig to use for deployments. User-provided values take priority over GitLab-provided values. |
 | `PRODUCTION_REPLICAS`                   | Number of replicas to deploy in the production environment. Takes precedence over `REPLICAS` and defaults to 1. For zero downtime upgrades, set to 2 or greater. |
-| `REPLICAS`                              | Number of replicas to deploy. Defaults to 1. Change this variable instead of [modifying](customize.md#customize-values-for-helm-chart) `replicaCount`. |
+| `REPLICAS`                              | Number of replicas to deploy. Defaults to 1. Change this variable instead of [modifying](customize.md#customize-helm-chart-values) `replicaCount`. |
 | `ROLLOUT_RESOURCE_TYPE`                 | Allows specification of the resource type being deployed when using a custom Helm chart. Default value is `deployment`. |
 | `ROLLOUT_STATUS_DISABLED`               | Used to disable rollout status check because it does not support all resource types, for example, `cronjob`. |
 | `STAGING_ENABLED`                       | Used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |

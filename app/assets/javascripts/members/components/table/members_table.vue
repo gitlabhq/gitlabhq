@@ -2,7 +2,14 @@
 import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
-import { canUnban, canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members/utils';
+import {
+  canUnban,
+  canOverride,
+  canRemove,
+  canRemoveBlockedByLastOwner,
+  canResend,
+  canUpdate,
+} from 'ee_else_ce/members/utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import {
   FIELD_KEY_ACTIONS,
@@ -43,7 +50,7 @@ export default {
     LdapOverrideConfirmationModal: () =>
       import('ee_component/members/components/ldap/ldap_override_confirmation_modal.vue'),
   },
-  inject: ['namespace', 'currentUserId'],
+  inject: ['namespace', 'currentUserId', 'canManageMembers'],
   props: {
     tabQueryParamValue: {
       type: String,
@@ -84,6 +91,7 @@ export default {
     hasActionButtons(member) {
       return (
         canRemove(member) ||
+        canRemoveBlockedByLastOwner(member, this.canManageMembers) ||
         canResend(member) ||
         canUpdate(member, this.currentUserId) ||
         canOverride(member) ||

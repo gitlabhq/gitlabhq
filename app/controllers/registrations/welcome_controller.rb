@@ -26,13 +26,14 @@ module Registrations
 
         return redirect_to issues_dashboard_path(assignee_username: current_user.username) if show_tasks_to_be_done?
 
-        return redirect_to update_success_path if show_signup_onboarding?
+        return redirect_to update_success_path if redirect_to_signup_onboarding?
 
         members = current_user.members
 
         if registering_from_invite?(members)
           redirect_to members_activity_path(members), notice: helpers.invite_accepted_notice(members.last)
         else
+          # subscription registrations goes through here as well
           redirect_to path_for_signed_in_user(current_user)
         end
       else
@@ -79,7 +80,7 @@ module Registrations
     end
 
     # overridden in EE
-    def show_signup_onboarding?
+    def redirect_to_signup_onboarding?
       false
     end
 

@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"io"
+	"path/filepath"
 	"strings"
 )
 
@@ -116,7 +117,7 @@ func (d *Docs) addMetadata(line []byte) error {
 		return err
 	}
 
-	d.Root = strings.TrimSpace(metadata.Root) + "/"
+	d.Root = strings.TrimSpace(metadata.Root)
 
 	return nil
 }
@@ -127,7 +128,12 @@ func (d *Docs) addDocument(line []byte) error {
 		return err
 	}
 
-	d.Entries[doc.Id] = strings.TrimPrefix(doc.Uri, d.Root)
+	relativePath, err := filepath.Rel(d.Root, doc.Uri)
+	if err != nil {
+		relativePath = doc.Uri
+	}
+
+	d.Entries[doc.Id] = relativePath
 
 	return nil
 }

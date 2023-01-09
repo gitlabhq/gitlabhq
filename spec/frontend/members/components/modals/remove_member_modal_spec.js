@@ -137,4 +137,28 @@ describe('RemoveMemberModal', () => {
       });
     },
   );
+
+  describe('when removal is prevented', () => {
+    const message =
+      'A group must have at least one owner. To remove the member, assign a new owner.';
+
+    beforeEach(() => {
+      createComponent({
+        actionText: 'Remove member',
+        memberModelType: MEMBER_MODEL_TYPE_GROUP_MEMBER,
+        isAccessRequest: false,
+        isInvite: false,
+        message,
+        preventRemoval: true,
+      });
+    });
+
+    it('does not show primary action button', () => {
+      expect(findGlModal().props('actionPrimary')).toBe(null);
+    });
+
+    it('only shows the message', () => {
+      expect(findGlModal().text()).toBe(message);
+    });
+  });
 });

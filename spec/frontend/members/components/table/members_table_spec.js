@@ -63,6 +63,7 @@ describe('MembersTable', () => {
       provide: {
         sourceId: 1,
         currentUserId: 1,
+        canManageMembers: true,
         namespace: MEMBER_TYPES.invite,
         ...provide,
       },
@@ -200,16 +201,23 @@ describe('MembersTable', () => {
         canRemove: true,
       };
 
+      const memberCanRemoveBlockedLastOwner = {
+        ...directMember,
+        canRemove: false,
+        isLastOwner: true,
+      };
+
       const memberNoPermissions = {
         ...memberMock,
         id: 2,
       };
 
       describe.each`
-        permission     | members
-        ${'canUpdate'} | ${[memberNoPermissions, memberCanUpdate]}
-        ${'canRemove'} | ${[memberNoPermissions, memberCanRemove]}
-        ${'canResend'} | ${[memberNoPermissions, invite]}
+        permission                       | members
+        ${'canUpdate'}                   | ${[memberNoPermissions, memberCanUpdate]}
+        ${'canRemove'}                   | ${[memberNoPermissions, memberCanRemove]}
+        ${'canRemoveBlockedByLastOwner'} | ${[memberNoPermissions, memberCanRemoveBlockedLastOwner]}
+        ${'canResend'}                   | ${[memberNoPermissions, invite]}
       `('when one of the members has $permission permissions', ({ members }) => {
         it('renders the "Actions" field', () => {
           createComponent({ members, tableFields: ['actions'] });
@@ -228,10 +236,11 @@ describe('MembersTable', () => {
       });
 
       describe.each`
-        permission     | members
-        ${'canUpdate'} | ${[memberMock]}
-        ${'canRemove'} | ${[memberMock]}
-        ${'canResend'} | ${[{ ...invite, invite: { ...invite.invite, canResend: false } }]}
+        permission                       | members
+        ${'canUpdate'}                   | ${[memberMock]}
+        ${'canRemove'}                   | ${[memberMock]}
+        ${'canRemoveBlockedByLastOwner'} | ${[memberMock]}
+        ${'canResend'}                   | ${[{ ...invite, invite: { ...invite.invite, canResend: false } }]}
       `('when none of the members have $permission permissions', ({ members }) => {
         it('does not render the "Actions" field', () => {
           createComponent({ members, tableFields: ['actions'] });

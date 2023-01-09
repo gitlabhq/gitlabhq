@@ -25905,6 +25905,15 @@ msgstr ""
 msgid "Members|2FA"
 msgstr ""
 
+msgid "Members|A group must have at least one owner. To leave this group, assign a new owner."
+msgstr ""
+
+msgid "Members|A group must have at least one owner. To remove the member, assign a new owner."
+msgstr ""
+
+msgid "Members|A personal project's owner cannot be removed."
+msgstr ""
+
 msgid "Members|Access granted"
 msgstr ""
 
@@ -25942,6 +25951,9 @@ msgid "Members|Are you sure you want to revoke the invitation for %{inviteEmail}
 msgstr ""
 
 msgid "Members|Are you sure you want to withdraw your access request for \"%{source}\""
+msgstr ""
+
+msgid "Members|Cannot leave \"%{source}\""
 msgstr ""
 
 msgid "Members|Direct"
@@ -26008,6 +26020,9 @@ msgid "Members|Search invited"
 msgstr ""
 
 msgid "Members|User created"
+msgstr ""
+
+msgid "Members|You cannot remove yourself from a personal project."
 msgstr ""
 
 msgid "Member|Deny access"
@@ -36161,7 +36176,7 @@ msgstr ""
 msgid "Runners|Executor"
 msgstr ""
 
-msgid "Runners|Existing runners are not affected. To permit runner registration for all groups, enable this setting in the Admin Area in Settings &gt CI/CD."
+msgid "Runners|Existing runners are not affected. To permit runner registration for all groups, enable this setting in the Admin Area in Settings &gt; CI/CD."
 msgstr ""
 
 msgid "Runners|Filter projects"

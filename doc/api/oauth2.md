@@ -417,7 +417,7 @@ Standard OAuth 2.0 tokens support different degrees of access to GitLab
 registries, as they:
 
 - Do not allow users to authenticate to:
-  - The GitLab [Container registry](../user/packages/container_registry/index.md#authenticate-with-the-container-registry).
+  - The GitLab [Container registry](../user/packages/container_registry/authenticate_with_container_registry.md).
   - Packages listed in the GitLab [Package registry](../user/packages/package_registry/index.md).
 - Allow users to get, list, and delete registries through
   the [Container registry API](container_registry.md).

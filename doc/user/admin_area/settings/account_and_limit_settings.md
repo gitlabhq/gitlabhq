@@ -102,7 +102,8 @@ to find tokens more quickly, or for use with automation tools.
 
 The default prefix is `glpat-` but administrators can change it.
 
-[Project access tokens](../../project/settings/project_access_tokens.md) also inherit this prefix.
+[Project access tokens](../../project/settings/project_access_tokens.md) and
+[group access tokens](../../group/settings/group_access_tokens.md) also inherit this prefix.
 
 ### Set a prefix
 

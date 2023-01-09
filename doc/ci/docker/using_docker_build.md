@@ -872,7 +872,7 @@ build:
 ## Use the GitLab Container Registry
 
 After you've built a Docker image, you can push it up to the built-in
-[GitLab Container Registry](../../user/packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd).
+[GitLab Container Registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd).
 
 ## Troubleshooting
 

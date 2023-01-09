@@ -1,11 +1,14 @@
 import { GlModal, GlForm } from '@gitlab/ui';
-import { within } from '@testing-library/dom';
-import { mount, createWrapper } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import LeaveModal from '~/members/components/modals/leave_modal.vue';
-import { LEAVE_MODAL_ID, MEMBER_TYPES } from '~/members/constants';
+import {
+  LEAVE_MODAL_ID,
+  MEMBER_TYPES,
+  MEMBER_MODEL_TYPE_PROJECT_MEMBER,
+} from '~/members/constants';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
 import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
 import { member } from '../../mock_data';
@@ -31,14 +34,17 @@ describe('LeaveModal', () => {
     });
   };
 
-  const createComponent = (propsData = {}, state) => {
-    wrapper = mount(LeaveModal, {
+  const createComponent = async (propsData = {}, state) => {
+    wrapper = mountExtended(LeaveModal, {
       store: createStore(state),
       provide: {
         namespace: MEMBER_TYPES.user,
       },
       propsData: {
         member,
+        permissions: {
+          canRemove: true,
+        },
         ...propsData,
       },
       attrs: {
@@ -46,39 +52,98 @@ describe('LeaveModal', () => {
         visible: true,
       },
     });
+
+    await nextTick();
   };
 
-  const findModal = () => wrapper.findComponent(GlModal);
+  const findModal = () => extendedWrapper(wrapper.findComponent(GlModal));
   const findForm = () => findModal().findComponent(GlForm);
   const findUserDeletionObstaclesList = () => findModal().findComponent(UserDeletionObstaclesList);
-
-  const getByText = (text, options) =>
-    createWrapper(within(findModal().element).getByText(text, options));
-
-  beforeEach(async () => {
-    createComponent();
-    await nextTick();
-  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('sets modal ID', () => {
+  it('sets modal ID', async () => {
+    await createComponent();
+
     expect(findModal().props('modalId')).toBe(LEAVE_MODAL_ID);
   });
 
-  it('displays modal title', () => {
-    expect(getByText(`Leave "${member.source.fullName}"`).exists()).toBe(true);
+  describe('when leave is allowed', () => {
+    it('displays modal title', async () => {
+      await createComponent();
+
+      expect(findModal().findByText(`Leave "${member.source.fullName}"`).exists()).toBe(true);
+    });
+
+    it('displays modal body', async () => {
+      await createComponent();
+
+      expect(
+        findModal()
+          .findByText(`Are you sure you want to leave "${member.source.fullName}"?`)
+          .exists(),
+      ).toBe(true);
+    });
   });
 
-  it('displays modal body', () => {
-    expect(getByText(`Are you sure you want to leave "${member.source.fullName}"?`).exists()).toBe(
-      true,
-    );
+  describe('when leave is blocked by last owner', () => {
+    const permissions = {
+      canRemove: false,
+      canRemoveBlockedByLastOwner: true,
+    };
+
+    it('does not show primary action button', async () => {
+      await createComponent({
+        permissions,
+      });
+
+      expect(findModal().props('actionPrimary')).toBe(null);
+    });
+
+    it('displays modal title', async () => {
+      await createComponent({
+        permissions,
+      });
+
+      expect(findModal().findByText(`Cannot leave "${member.source.fullName}"`).exists()).toBe(
+        true,
+      );
+    });
+
+    describe('when member model type is `GroupMember`', () => {
+      it('displays modal body', async () => {
+        await createComponent({
+          permissions,
+        });
+
+        expect(
+          findModal().findByText(LeaveModal.i18n.preventedBodyGroupMemberModelType).exists(),
+        ).toBe(true);
+      });
+    });
+
+    describe('when member model type is `ProjectMember`', () => {
+      it('displays modal body', async () => {
+        await createComponent({
+          member: {
+            ...member,
+            type: MEMBER_MODEL_TYPE_PROJECT_MEMBER,
+          },
+          permissions,
+        });
+
+        expect(
+          findModal().findByText(LeaveModal.i18n.preventedBodyProjectMemberModelType).exists(),
+        ).toBe(true);
+      });
+    });
   });
 
-  it('displays form with correct action and inputs', () => {
+  it('displays form with correct action and inputs', async () => {
+    await createComponent();
+
     const form = findForm();
 
     expect(form.attributes('action')).toBe('/groups/foo-bar/-/group_members/leave');
@@ -89,7 +154,9 @@ describe('LeaveModal', () => {
   });
 
   describe('User deletion obstacles list', () => {
-    it("displays obstacles list when member's user is part of on-call management", () => {
+    it("displays obstacles list when member's user is part of on-call management", async () => {
+      await createComponent();
+
       const obstaclesList = findUserDeletionObstaclesList();
       expect(obstaclesList.exists()).toBe(true);
       expect(obstaclesList.props()).toMatchObject({
@@ -105,17 +172,18 @@ describe('LeaveModal', () => {
       delete memberWithoutOncall.user.oncallSchedules;
       delete memberWithoutOncall.user.escalationPolicies;
 
-      createComponent({ member: memberWithoutOncall });
-      await nextTick();
+      await createComponent({ member: memberWithoutOncall });
 
       expect(findUserDeletionObstaclesList().exists()).toBe(false);
     });
   });
 
-  it('submits the form when "Leave" button is clicked', () => {
+  it('submits the form when "Leave" button is clicked', async () => {
+    await createComponent();
+
     const submitSpy = jest.spyOn(findForm().element, 'submit');
 
-    getByText('Leave').trigger('click');
+    findModal().findByText('Leave').trigger('click');
 
     expect(submitSpy).toHaveBeenCalled();
 

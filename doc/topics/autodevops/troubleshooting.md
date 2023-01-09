@@ -230,7 +230,7 @@ LAST SEEN   TYPE      REASON                   OBJECT                           
 ```
 
 To change the port used for the liveness checks, pass
-[custom values to the Helm chart](customize.md#customize-values-for-helm-chart)
+[custom values to the Helm chart](customize.md#customize-helm-chart-values)
 used by Auto DevOps:
 
 1. Create a directory and file at the root of your repository named `.gitlab/auto-deploy-values.yaml`.
