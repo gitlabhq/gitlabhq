@@ -12,16 +12,57 @@
     "only_protected_branches"
   ],
   "properties": {
-    "id": { "type": "integer" },
-    "enabled": { "type": "boolean" },
-    "url": { "type": "string" },
-    "update_status": { "type": "string" },
-    "last_update_at": { "type": ["string", "null"] },
-    "last_update_started_at": { "type": ["string", "null"] },
-    "last_successful_update_at": { "type": ["string", "null"] },
-    "last_error": { "type": ["string", "null"] },
-    "only_protected_branches": { "type": "boolean" },
-    "keep_divergent_refs": { "type": ["boolean", "null"] }
+    "id": {
+      "type": "integer"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "url": {
+      "type": "string"
+    },
+    "update_status": {
+      "type": "string"
+    },
+    "last_update_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_update_started_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_successful_update_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_error": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "only_protected_branches": {
+      "type": "boolean"
+    },
+    "mirror_branch_regex": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "keep_divergent_refs": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    }
   },
   "additionalProperties": false
 }

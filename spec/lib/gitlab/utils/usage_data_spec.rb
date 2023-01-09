@@ -31,9 +31,9 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
   end
 
-  describe '.with_duration' do
+  describe '.with_metadata' do
     it 'yields passed block' do
-      expect { |block| described_class.with_duration(&block) }.to yield_with_no_args
+      expect { |block| described_class.with_metadata(&block) }.to yield_with_no_args
     end
   end
 
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
 
     it 'records duration' do
-      expect(described_class).to receive(:with_duration)
+      expect(described_class).to receive(:with_metadata)
       allow(relation).to receive(:count).and_return(1)
 
       described_class.count(relation, batch: false)
@@ -82,7 +82,7 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
 
     it 'records duration' do
-      expect(described_class).to receive(:with_duration)
+      expect(described_class).to receive(:with_metadata)
       allow(relation).to receive(:distinct_count_by).and_return(1)
 
       described_class.distinct_count(relation, batch: false)
@@ -242,7 +242,7 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
 
     it 'records duration' do
-      expect(described_class).to receive(:with_duration)
+      expect(described_class).to receive(:with_metadata)
       allow(Gitlab::Database::BatchCount).to receive(:batch_sum).and_return(1)
 
       described_class.sum(relation, :column)
@@ -272,7 +272,7 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
 
     it 'records duration' do
-      expect(described_class).to receive(:with_duration)
+      expect(described_class).to receive(:with_metadata)
 
       allow(Gitlab::Database::BatchCount).to receive(:batch_average).and_return(1)
 
@@ -367,7 +367,7 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
 
     it 'records duration' do
-      expect(described_class).to receive(:with_duration)
+      expect(described_class).to receive(:with_metadata)
 
       described_class.histogram(relation, column, buckets: 1..100)
     end
@@ -425,7 +425,7 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
 
     it 'records duration' do
-      expect(described_class).to receive(:with_duration)
+      expect(described_class).to receive(:with_metadata)
 
       described_class.add
     end
@@ -455,7 +455,7 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
 
     it 'records duration' do
-      expect(described_class).to receive(:with_duration)
+      expect(described_class).to receive(:with_metadata)
 
       described_class.alt_usage_data
     end
@@ -471,7 +471,7 @@ RSpec.describe Gitlab::Utils::UsageData do
 
   describe '#redis_usage_data' do
     it 'records duration' do
-      expect(described_class).to receive(:with_duration)
+      expect(described_class).to receive(:with_metadata)
 
       described_class.redis_usage_data
     end
@@ -520,7 +520,7 @@ RSpec.describe Gitlab::Utils::UsageData do
 
   describe '#with_prometheus_client' do
     it 'records duration' do
-      expect(described_class).to receive(:with_duration)
+      expect(described_class).to receive(:with_metadata)
 
       described_class.with_prometheus_client { |client| client }
     end

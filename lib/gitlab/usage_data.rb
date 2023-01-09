@@ -344,6 +344,11 @@ module Gitlab
       def jira_usage
         # Jira Cloud does not support custom domains as per https://jira.atlassian.com/browse/CLOUD-6999
         # so we can just check for subdomains of atlassian.net
+        jira_integration_data_hash = jira_integration_data
+        if jira_integration_data_hash.nil?
+          return { projects_jira_server_active: FALLBACK, projects_jira_cloud_active: FALLBACK }
+        end
+
         results = {
           projects_jira_server_active: 0,
           projects_jira_cloud_active: 0,
@@ -351,14 +356,10 @@ module Gitlab
           projects_jira_dvcs_server_active: count(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false))
         }
 
-        jira_integration_data_hash = jira_integration_data
         results[:projects_jira_server_active] = jira_integration_data_hash[:projects_jira_server_active]
         results[:projects_jira_cloud_active] = jira_integration_data_hash[:projects_jira_cloud_active]
 
         results
-      rescue ActiveRecord::StatementInvalid => error
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
-        { projects_jira_server_active: FALLBACK, projects_jira_cloud_active: FALLBACK }
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -602,13 +603,18 @@ module Gitlab
         }
       end
 
-      def with_duration
+      def with_metadata
         result = nil
+        error = nil
+
         duration = Benchmark.realtime do
           result = yield
+        rescue StandardError => e
+          error = e
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         end
 
-        ::Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator.new(result, duration)
+        ::Gitlab::Usage::ServicePing::LegacyMetricMetadataDecorator.new(result, duration, error: error)
       end
 
       private

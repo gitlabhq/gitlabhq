@@ -7517,7 +7517,7 @@
 - './spec/lib/gitlab/usage/metric_spec.rb'
 - './spec/lib/gitlab/usage/metrics/query_spec.rb'
 - './spec/lib/gitlab/usage/service_ping/instrumented_payload_spec.rb'
-- './spec/lib/gitlab/usage/service_ping/legacy_metric_timing_decorator_spec.rb'
+- './spec/lib/gitlab/usage/service_ping/legacy_metric_metadata_decorator_spec.rb'
 - './spec/lib/gitlab/usage/service_ping/payload_keys_processor_spec.rb'
 - './spec/lib/gitlab/usage/service_ping_report_spec.rb'
 - './spec/lib/gitlab/user_access_snippet_spec.rb'

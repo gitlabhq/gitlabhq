@@ -11,9 +11,9 @@ RSpec.describe Gitlab::UsageDataQueries do
     end
   end
 
-  describe '.with_duration' do
+  describe '.with_metadata' do
     it 'yields passed block' do
-      expect { |block| described_class.with_duration(&block) }.to yield_with_no_args
+      expect { |block| described_class.with_metadata(&block) }.to yield_with_no_args
     end
   end
 

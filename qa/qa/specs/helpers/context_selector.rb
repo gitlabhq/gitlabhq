@@ -27,7 +27,7 @@ module QA
           uri = URI(Runtime::Scenario.gitlab_address)
 
           options.each do |option|
-            opts[:domain] = 'gitlab' if option == :production
+            opts[:domain] = production_domain if option == :production
 
             next unless option.is_a?(Hash)
 
@@ -74,6 +74,10 @@ module QA
 
         def pipeline_from_project_name(project_name)
           project_name.to_s.start_with?('gitlab-qa') ? Runtime::Env.default_branch : project_name
+        end
+
+        def production_domain
+          GitlabEdition.jh? ? 'jihulab' : 'gitlab'
         end
       end
     end

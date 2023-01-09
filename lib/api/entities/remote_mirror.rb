@@ -16,3 +16,5 @@ module API
     end
   end
 end
+
+API::Entities::RemoteMirror.prepend_mod

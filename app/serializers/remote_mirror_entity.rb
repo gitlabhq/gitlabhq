@@ -13,3 +13,5 @@ class RemoteMirrorEntity < Grape::Entity
     remote_mirror.ssh_known_hosts_fingerprints.as_json
   end
 end
+
+RemoteMirrorEntity.prepend_mod

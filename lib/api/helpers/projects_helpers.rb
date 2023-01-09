@@ -205,6 +205,9 @@ module API
       def filter_attributes_using_license!(attrs)
       end
 
+      def filter_attributes_under_feature_flag!(attrs, project)
+      end
+
       def validate_git_import_url!(import_url)
         return if import_url.blank?
 

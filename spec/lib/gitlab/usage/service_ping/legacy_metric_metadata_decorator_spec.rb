@@ -2,24 +2,29 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator do
+RSpec.describe Gitlab::Usage::ServicePing::LegacyMetricMetadataDecorator, feature_category: :service_ping do
   using RSpec::Parameterized::TableSyntax
 
   let(:duration) { 123 }
 
-  where(:metric_value, :metric_class) do
-    1       | Integer
-    "value" | String
-    true    | TrueClass
-    false   | FalseClass
-    nil     | NilClass
+  where(:metric_value, :error, :metric_class) do
+    1       | nil | Integer
+    "value" | nil | String
+    true    | nil | TrueClass
+    false   | nil | FalseClass
+    nil     | nil | NilClass
+    nil     | StandardError.new | NilClass
   end
 
   with_them do
-    let(:decorated_object) { described_class.new(metric_value, duration) }
+    let(:decorated_object) { described_class.new(metric_value, duration, error: error) }
 
     it 'exposes a duration with the correct value' do
       expect(decorated_object.duration).to eq(duration)
+    end
+
+    it 'exposes error with the correct value' do
+      expect(decorated_object.error).to eq(error)
     end
 
     it 'imitates wrapped class', :aggregate_failures do

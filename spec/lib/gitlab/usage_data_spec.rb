@@ -1122,12 +1122,20 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
-  describe ".with_duration" do
+  describe ".with_metadata" do
     it 'records duration' do
-      expect(::Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator)
-        .to receive(:new).with(2, kind_of(Float))
+      result = described_class.with_metadata { 1 + 1 }
 
-      described_class.with_duration { 1 + 1 }
+      expect(result.duration).to be_an(Float)
+    end
+
+    it 'records error and returns nil', :aggregated_errors do
+      allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+      result = described_class.with_metadata { raise }
+
+      expect(result.error).to be_an(StandardError)
+      expect(result).to be_nil
     end
   end
 
