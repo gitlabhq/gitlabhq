@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.5.7 (2023-01-09)
+
+### Security (10 changes)
+
+- [Avoid regex with potential for poorly performing backtracking](gitlab-org/security/gitlab@c3f8d8c93e99ac3f226668086bfbf21739b02a0e) ([merge request](gitlab-org/security/gitlab!2989))
+- [Protect web-hook url variables after changing URL](gitlab-org/security/gitlab@8a18fea752a2759938b4c3d28516b6ed9386404f) ([merge request](gitlab-org/security/gitlab!2978))
+- [Limit the size of user agent to reduce ReDos attack](gitlab-org/security/gitlab@293db707009b7dd133a9a55b25892506013062fd) ([merge request](gitlab-org/security/gitlab!2991))
+- [Only allow safe params for diff helper](gitlab-org/security/gitlab@0c5de464c1d062103d6bc81cca45f7298929ca68) ([merge request](gitlab-org/security/gitlab!2951))
+- [Protect Sentry auth-token after changing URL](gitlab-org/security/gitlab@a2c3380748eb3aa36f23c74f1666c741fafec635) ([merge request](gitlab-org/security/gitlab!2986))
+- [Delete project specific licenses when license policy is deleted](gitlab-org/security/gitlab@312a28196df206b501861b6528b4b6fcaf7cc686) ([merge request](gitlab-org/security/gitlab!2896))
+- [Restrict user avatar availability based on visibility restrictions](gitlab-org/security/gitlab@f7b5c0a57b64c15edb0f555dd53c26b9d6147f0e) ([merge request](gitlab-org/security/gitlab!2973))
+- [Policy change to read and destroy token without license for .com](gitlab-org/security/gitlab@b51bc20ba07d8ef3d339aeacd1b0f904521f4158) ([merge request](gitlab-org/security/gitlab!2914))
+- [Restrict Grafana API access on public projects](gitlab-org/security/gitlab@d9798aa2d31ddef9ed6fedfc7b32bc8a8bac76bc) ([merge request](gitlab-org/security/gitlab!2959))
+- [Fix "Race condition enables verified email forgery"](gitlab-org/security/gitlab@95e65f637ed193b9c8b3c39af58a9bc0d552bad2) ([merge request](gitlab-org/security/gitlab!2962))
+
 ## 15.5.6 (2022-12-07)
 
 No changes.

@@ -1,7 +1,7 @@
 - confirmation_link = confirmation_url(@resource, confirmation_token: @token)
 - if @resource.unconfirmed_email.present? || !@resource.created_recently?
   #content
-    = email_default_heading(@resource.unconfirmed_email || @resource.email)
+    = email_default_heading(@email)
     %p= _('Click the link below to confirm your email address.')
     #cta
       = link_to _('Confirm your email address'), confirmation_link

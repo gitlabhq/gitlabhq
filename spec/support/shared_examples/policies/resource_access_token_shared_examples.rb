@@ -71,26 +71,3 @@ RSpec.shared_examples 'Self-managed Core resource access tokens' do
     end
   end
 end
-
-RSpec.shared_examples 'GitLab.com Core resource access tokens' do
-  before do
-    allow(::Gitlab).to receive(:com?).and_return(true)
-    stub_ee_application_setting(should_check_namespace_plan: true)
-  end
-
-  context 'with owner access' do
-    let(:current_user) { owner }
-
-    context 'create resource access tokens' do
-      it { is_expected.not_to be_allowed(:create_resource_access_tokens) }
-    end
-
-    context 'read resource access tokens' do
-      it { is_expected.not_to be_allowed(:read_resource_access_tokens) }
-    end
-
-    context 'destroy resource access tokens' do
-      it { is_expected.not_to be_allowed(:destroy_resource_access_tokens) }
-    end
-  end
-end

@@ -77,6 +77,34 @@ RSpec.describe Users::UpdateService do
           subject
         end
 
+        context 'when race condition' do
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/382957
+          it 'updates email for stale user', :aggregate_failures do
+            unconfirmed_email = 'unconfirmed-email-user-has-access-to@example.com'
+            forgery_email = 'forgery@example.com'
+
+            user.update!(email: unconfirmed_email)
+
+            stale_user = User.find(user.id)
+
+            service1 = described_class.new(stale_user, { email: unconfirmed_email }.merge(user: stale_user))
+
+            service2 = described_class.new(user, { email: forgery_email }.merge(user: user))
+
+            service2.execute
+            reloaded_user = User.find(user.id)
+            expect(reloaded_user.unconfirmed_email).to eq(forgery_email)
+            expect(stale_user.confirmation_token).not_to eq(user.confirmation_token)
+            expect(reloaded_user.confirmation_token).to eq(user.confirmation_token)
+
+            service1.execute
+            reloaded_user = User.find(user.id)
+            expect(reloaded_user.unconfirmed_email).to eq(unconfirmed_email)
+            expect(stale_user.confirmation_token).not_to eq(user.confirmation_token)
+            expect(reloaded_user.confirmation_token).to eq(stale_user.confirmation_token)
+          end
+        end
+
         context 'when check_password is true' do
           def update_user(user, opts)
             described_class.new(user, opts.merge(user: user)).execute(check_password: true)
@@ -139,7 +167,22 @@ RSpec.describe Users::UpdateService do
             update_user(user, job_title: 'supreme leader of the universe')
           end.not_to change { user.user_canonical_email }
         end
+
+        it 'does not reset unconfirmed email' do
+          unconfirmed_email = 'unconfirmed-email@example.com'
+          user.update!(email: unconfirmed_email)
+
+          expect do
+            update_user(user, job_title: 'supreme leader of the universe')
+          end.not_to change { user.unconfirmed_email }
+        end
       end
+    end
+
+    it 'does not try to reset unconfirmed email for a new user' do
+      expect do
+        update_user(build(:user), job_title: 'supreme leader of the universe')
+      end.not_to raise_error
     end
 
     def update_user(user, opts)
