@@ -250,31 +250,31 @@ epics:
 
 | Type | Event | Sent to |
 |------|-------|---------|
-| Epic | Closed | Subscribers and participants mentioned. |
+| Epic | Closed | Subscribers and participants. |
 | Epic | New | Anyone mentioned by username in the description, with notification level "Mention" or higher. |
 | Epic | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
-| Epic | Reopened | Subscribers and participants mentioned. |
-| Issue | Closed | Subscribers and participants mentioned. |
+| Epic | Reopened | Subscribers and participants. |
+| Issue | Closed | Subscribers and participants. |
 | Issue | Due | Participants and Custom notification level with this event selected. |
-| Issue | Milestone changed | Subscribers and participants mentioned. |
-| Issue | Milestone removed | Subscribers and participants mentioned. |
+| Issue | Milestone changed | Subscribers and participants. |
+| Issue | Milestone removed | Subscribers and participants. |
 | Issue | New | Anyone mentioned by username in the description, with notification level "Mention" or higher. |
 | Issue | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
 | Issue | Title or description changed | Any new mentions by username. |
 | Issue | Reassigned | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
-| Issue | Reopened | Subscribers and participants mentioned. |
-| Merge Request | Closed | Subscribers and participants mentioned. |
+| Issue | Reopened | Subscribers and participants. |
+| Merge Request | Closed | Subscribers and participants. |
 | Merge Request | Conflict | Author and any user that has set the merge request to automatically merge when pipeline succeeds. |
 | Merge Request | [Marked as ready](../project/merge_requests/drafts.md) | Watchers and participants. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15332) in GitLab 13.10._ |
-| Merge Request | Merged | Subscribers and participants mentioned. |
+| Merge Request | Merged | Subscribers and participants. |
 | Merge Request | Merged when pipeline succeeds | Author, Participants, Watchers, Subscribers, and Custom notification level with this event selected. Custom notification level is ignored for Author, Watchers and Subscribers. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4._ |
-| Merge Request | Milestone changed | Subscribers and participants mentioned. |
-| Merge Request | Milestone removed | Subscribers and participants mentioned. |
+| Merge Request | Milestone changed | Subscribers and participants. |
+| Merge Request | Milestone removed | Subscribers and participants. |
 | Merge Request | New | Anyone mentioned by username in the description, with notification level "Mention" or higher. |
 | Merge Request | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
 | Merge Request | Pushed | Participants and Custom notification level with this event selected. |
 | Merge Request | Reassigned | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
-| Merge Request | Reopened | Subscribers and participants mentioned. |
+| Merge Request | Reopened | Subscribers and participants. |
 | Merge Request | Title or description changed | Any new mentions by username. |
 | Pipeline | Failed | The author of the pipeline. |
 | Pipeline | Fixed | The author of the pipeline. Enabled by default. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24309) in GitLab 13.1._ |

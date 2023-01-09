@@ -38,23 +38,34 @@ module Gitlab
 
       SKIP_LOG_METHOD_MISSING_FOR_COMMANDS = %i[info].freeze
 
-      READ_COMMANDS = %i[
-        exists
-        exists?
-        get
-        hexists
-        hget
-        hgetall
-        hlen
-        hmget
-        mapped_hmget
-        mget
-        scard
-        sismember
-        smembers
-        sscan
-        ttl
-      ].freeze
+      # Define valid empty responses for each read command to check for
+      # cache hit. The only other acceptable value is nil, in the case of errors being
+      # raised.
+      #
+      # If a command has no empty response, set an empty array as its value.
+      #
+      # Ref: https://www.rubydoc.info/github/redis/redis-rb/Redis/Commands
+      #
+      READ_COMMANDS_EMPTY_RESPONSE_HASH = {
+        exists: [0],
+        exists?: [false],
+        get: [nil],
+        hexists: [false],
+        hget: [nil],
+        hgetall: [{}],
+        hlen: [0],
+        scard: [0],
+        sismember: [false],
+        smembers: [[]],
+        sscan: [['0', []]],
+        ttl: [0, -2],
+
+        # response container may contain nil values
+        # cache-hit checker will run .compact before comparison
+        hmget: [[]],
+        mapped_hmget: [{}],
+        mget: [[]]
+      }.freeze
 
       WRITE_COMMANDS = %i[
         del
@@ -99,7 +110,7 @@ module Gitlab
       end
 
       # rubocop:disable GitlabSecurity/PublicSend
-      READ_COMMANDS.each do |name|
+      READ_COMMANDS_EMPTY_RESPONSE_HASH.each_key do |name|
         define_method(name) do |*args, &block|
           if use_primary_and_secondary_stores?
             read_command(name, *args, &block)
@@ -241,7 +252,15 @@ module Gitlab
             multi_store_error_message: FAILED_TO_READ_ERROR_MESSAGE)
         end
 
-        value || fallback_read(command_name, *args, &block)
+        return value if cache_hit?(command_name, value)
+
+        fallback_read(command_name, *args, &block)
+      end
+
+      def cache_hit?(command, value)
+        empty_responses = READ_COMMANDS_EMPTY_RESPONSE_HASH[command]
+        compacted = value.is_a?(Array) || value.is_a?(Hash) ? value.compact : value
+        empty_responses.exclude?(compacted) && !value.nil?
       end
 
       def fallback_read(command_name, *args, &block)

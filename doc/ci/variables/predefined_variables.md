@@ -135,10 +135,10 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_TEMPLATE_REGISTRY_HOST`              | 15.3   | all    | The host of the registry used by CI/CD templates. Defaults to `registry.gitlab.com`. |
 | `GITLAB_CI`                              | all    | all    | Available for all jobs executed in CI/CD. `true` when available. |
 | `GITLAB_FEATURES`                        | 10.6   | all    | The comma-separated list of licensed features available for the GitLab instance and license. |
-| `GITLAB_USER_EMAIL`                      | 8.12   | all    | The email of the user who started the job. |
-| `GITLAB_USER_ID`                         | 8.12   | all    | The ID of the user who started the job. |
-| `GITLAB_USER_LOGIN`                      | 10.0   | all    | The username of the user who started the job. |
-| `GITLAB_USER_NAME`                       | 10.0   | all    | The name of the user who started the job. |
+| `GITLAB_USER_EMAIL`                      | 8.12   | all    | The email of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the email of the user who started the job. |
+| `GITLAB_USER_ID`                         | 8.12   | all    | The ID of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the ID of the user who started the job. |
+| `GITLAB_USER_LOGIN`                      | 10.0   | all    | The username of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the username of the user who started the job. |
+| `GITLAB_USER_NAME`                       | 10.0   | all    | The name of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the name of the user who started the job. |
 | `TRIGGER_PAYLOAD`                        | 13.9   | all    | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/index.md#use-a-webhook-payload). |
 
 ## Predefined variables for merge request pipelines

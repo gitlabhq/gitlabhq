@@ -149,7 +149,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     end
     # rubocop:enable  Layout/LineLength
 
-    before(:all) do
+    before do
       primary_store.set(key1, value1)
       primary_store.set(key2, value2)
       primary_store.sadd?(skey, [value1, value2])
@@ -161,6 +161,11 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       secondary_store.sadd?(skey, [value1, value2])
       secondary_store.sadd?(skey2, [value1])
       secondary_store.hset(hkey, hitem1, value1)
+    end
+
+    after do
+      primary_store.flushdb
+      secondary_store.flushdb
     end
 
     RSpec.shared_examples_for 'reads correct value' do
@@ -270,9 +275,10 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           include_examples 'fallback read from the secondary store'
         end
 
-        context 'when reading from primary instance return no value' do
+        context 'when reading from empty primary instance' do
           before do
-            allow(primary_store).to receive(name).and_return(nil)
+            # this ensures a cache miss without having to stub primary store
+            primary_store.flushdb
           end
 
           include_examples 'fallback read from the secondary store'

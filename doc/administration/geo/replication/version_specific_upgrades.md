@@ -6,6 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Version-specific upgrade instructions **(PREMIUM SELF)**
 
+NOTE:
+We're in the process of merging all the version-specific upgrade information
+into a single page. See [epic 9581](https://gitlab.com/groups/gitlab-org/-/epics/9581)
+for more information. For the time being, visit the
+[general upgrade page](../../../update/index.md)
+for the newest Geo version-specific upgrade instructions.
+
 Review this page for upgrade instructions for your version. These steps
 accompany the [general steps](upgrading_the_geo_sites.md#general-upgrade-steps)
 for upgrading Geo sites.
