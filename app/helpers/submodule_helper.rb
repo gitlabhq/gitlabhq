@@ -17,46 +17,56 @@ module SubmoduleHelper
       url = File.join(Gitlab.config.gitlab.url, repository.project.full_path)
     end
 
-    if url =~ %r{([^/:]+)/([^/]+(?:\.git)?)\Z}
-      namespace = Regexp.last_match(1)
-      project = Regexp.last_match(2)
-      gitlab_hosts = [Gitlab.config.gitlab.url,
-                      Gitlab.config.gitlab_shell.ssh_path_prefix]
+    namespace, project = extract_namespace_project(url)
 
-      gitlab_hosts.each do |host|
-        if url.start_with?(host)
-          namespace, _, project = url.sub(host, '').rpartition('/')
-          break
-        end
-      end
+    if namespace.blank? || project.blank?
+      return [sanitize_submodule_url(url), nil, nil]
+    end
 
-      namespace.delete_prefix!('/')
-      project.rstrip!
-      project.delete_suffix!('.git')
-
-      if self_url?(url, namespace, project)
-        [
-          url_helpers.namespace_project_path(namespace, project),
-          url_helpers.namespace_project_tree_path(namespace, project, submodule_item_id),
-          (url_helpers.namespace_project_compare_path(namespace, project, to: submodule_item_id, from: old_submodule_item_id) if old_submodule_item_id)
-        ]
-      elsif relative_self_url?(url)
-        relative_self_links(url, submodule_item_id, old_submodule_item_id, repository.project)
-      elsif gist_github_dot_com_url?(url)
-        gist_github_com_tree_links(namespace, project, submodule_item_id)
-      elsif github_dot_com_url?(url)
-        github_com_tree_links(namespace, project, submodule_item_id, old_submodule_item_id)
-      elsif gitlab_dot_com_url?(url)
-        gitlab_com_tree_links(namespace, project, submodule_item_id, old_submodule_item_id)
-      else
-        [sanitize_submodule_url(url), nil, nil]
-      end
+    if self_url?(url, namespace, project)
+      [
+        url_helpers.namespace_project_path(namespace, project),
+        url_helpers.namespace_project_tree_path(namespace, project, submodule_item_id),
+        (url_helpers.namespace_project_compare_path(namespace, project, to: submodule_item_id, from: old_submodule_item_id) if old_submodule_item_id)
+      ]
+    elsif relative_self_url?(url)
+      relative_self_links(url, submodule_item_id, old_submodule_item_id, repository.project)
+    elsif gist_github_dot_com_url?(url)
+      gist_github_com_tree_links(namespace, project, submodule_item_id)
+    elsif github_dot_com_url?(url)
+      github_com_tree_links(namespace, project, submodule_item_id, old_submodule_item_id)
+    elsif gitlab_dot_com_url?(url)
+      gitlab_com_tree_links(namespace, project, submodule_item_id, old_submodule_item_id)
     else
       [sanitize_submodule_url(url), nil, nil]
     end
   end
 
   protected
+
+  def extract_namespace_project(url)
+    namespace_fragment, _, project = url.rpartition('/')
+    namespace = namespace_fragment.rpartition(%r{[:/]}).last
+
+    return [nil, nil] unless project.present? && namespace.present?
+
+    gitlab_hosts = [Gitlab.config.gitlab.url,
+                    Gitlab.config.gitlab_shell.ssh_path_prefix]
+
+    matching_host = gitlab_hosts.find do |host|
+      url.start_with?(host)
+    end
+
+    if matching_host
+      namespace, _, project = url.delete_prefix(matching_host).rpartition('/')
+    end
+
+    namespace.delete_prefix!('/')
+    project.rstrip!
+    project.delete_suffix!('.git')
+
+    [namespace, project]
+  end
 
   def gist_github_dot_com_url?(url)
     url =~ %r{gist\.github\.com[/:][^/]+/[^/]+\Z}
