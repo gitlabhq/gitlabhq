@@ -67,7 +67,7 @@ class ActiveSession
   def self.set(user, request)
     Gitlab::Redis::Sessions.with do |redis|
       session_private_id = request.session.id.private_id
-      client = DeviceDetector.new(request.user_agent)
+      client = Gitlab::SafeDeviceDetector.new(request.user_agent)
       timestamp = Time.current
       expiry = Settings.gitlab['session_expire_delay'] * 60
 

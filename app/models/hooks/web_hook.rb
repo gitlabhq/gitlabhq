@@ -42,6 +42,7 @@ class WebHook < ApplicationRecord
 
   after_initialize :initialize_url_variables
   before_validation :reset_token
+  before_validation :reset_url_variables, unless: ->(hook) { hook.is_a?(ServiceHook) }
 
   scope :executable, -> do
     next all unless Feature.enabled?(:web_hooks_disable_failed)
@@ -203,6 +204,10 @@ class WebHook < ApplicationRecord
 
   def reset_token
     self.token = nil if url_changed? && !encrypted_token_changed?
+  end
+
+  def reset_url_variables
+    self.url_variables = {} if url_changed? && !encrypted_url_variables_changed?
   end
 
   def web_hooks_disable_failed?
