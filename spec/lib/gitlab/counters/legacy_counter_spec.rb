@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Counters::LegacyCounter do
   subject(:counter) { described_class.new(counter_record, attribute) }
 
-  let(:counter_record) { create(:project_statistics) }
+  let_it_be(:counter_record, reload: true) { create(:project_statistics) }
+
   let(:attribute) { :snippets_size }
 
   let(:increment) { Gitlab::Counters::Increment.new(amount: 123) }
@@ -48,18 +49,6 @@ RSpec.describe Gitlab::Counters::LegacyCounter do
       expect(counter_record).to receive(:execute_after_commit_callbacks).and_call_original
 
       counter.bulk_increment(increments)
-    end
-  end
-
-  describe '#reset!' do
-    before do
-      allow(counter_record).to receive(:update!)
-    end
-
-    it 'resets the record to 0' do
-      expect(counter_record).to receive(:update!).with(attribute => 0)
-
-      counter.reset!
     end
   end
 end

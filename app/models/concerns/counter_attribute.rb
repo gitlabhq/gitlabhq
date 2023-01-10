@@ -111,12 +111,20 @@ module CounterAttribute
     end
   end
 
-  def reset_counter!(attribute)
+  def initiate_refresh!(attribute)
+    raise ArgumentError, %(attribute "#{attribute}" cannot be refreshed) unless counter_attribute_enabled?(attribute)
+
     detect_race_on_record(log_fields: { caller: __method__, attributes: attribute }) do
-      counter(attribute).reset!
+      counter(attribute).initiate_refresh!
     end
 
     log_clear_counter(attribute)
+  end
+
+  def finalize_refresh(attribute)
+    raise ArgumentError, %(attribute "#{attribute}" cannot be refreshed) unless counter_attribute_enabled?(attribute)
+
+    counter(attribute).finalize_refresh
   end
 
   def execute_after_commit_callbacks
@@ -130,11 +138,17 @@ module CounterAttribute
   def build_counter_for(attribute)
     raise ArgumentError, %(attribute "#{attribute}" does not exist) unless has_attribute?(attribute)
 
-    if counter_attribute_enabled?(attribute)
-      Gitlab::Counters::BufferedCounter.new(self, attribute)
-    else
-      Gitlab::Counters::LegacyCounter.new(self, attribute)
-    end
+    return legacy_counter(attribute) unless counter_attribute_enabled?(attribute)
+
+    buffered_counter(attribute)
+  end
+
+  def legacy_counter(attribute)
+    Gitlab::Counters::LegacyCounter.new(self, attribute)
+  end
+
+  def buffered_counter(attribute)
+    Gitlab::Counters::BufferedCounter.new(self, attribute)
   end
 
   def database_lock_key

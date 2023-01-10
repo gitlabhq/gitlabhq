@@ -982,6 +982,11 @@ msgstr ""
 msgid "%{reportType} detected no new vulnerabilities."
 msgstr ""
 
+msgid "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approval%{approvalEnd} from: %{approverType}%{approvers}"
+msgid_plural "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approvals%{approvalEnd} from: %{approverType}%{approvers}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
 msgstr ""
 
@@ -1124,11 +1129,6 @@ msgstr ""
 
 msgid "%{text} is available"
 msgstr ""
-
-msgid "%{thenLabelStart}Then%{thenLabelEnd} Require %{approvalsRequired} approval from %{approverType}%{approvers}"
-msgid_plural "%{thenLabelStart}Then%{thenLabelEnd} Require %{approvalsRequired} approvals from %{approverType}%{approvers}"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "%{timebox_type} does not support burnup charts"
 msgstr ""
@@ -37435,6 +37435,9 @@ msgstr ""
 msgid "SecurityOrchestration|Add action"
 msgstr ""
 
+msgid "SecurityOrchestration|Add new approver"
+msgstr ""
+
 msgid "SecurityOrchestration|Add rule"
 msgstr ""
 
@@ -37793,6 +37796,9 @@ msgid "SecurityOrchestration|branches"
 msgstr ""
 
 msgid "SecurityOrchestration|group level branch"
+msgstr ""
+
+msgid "SecurityOrchestration|or from: %{approverType}%{approvers}"
 msgstr ""
 
 msgid "SecurityOrchestration|scanner finds"

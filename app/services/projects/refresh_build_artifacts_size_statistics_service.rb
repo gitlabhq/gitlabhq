@@ -6,25 +6,24 @@ module Projects
 
     def execute
       refresh = Projects::BuildArtifactsSizeRefresh.process_next_refresh!
-      return unless refresh
+
+      return unless refresh&.running?
 
       batch = refresh.next_batch(limit: BATCH_SIZE).to_a
 
       if batch.any?
-        # We are doing the sum in ruby because the query takes too long when done in SQL
-        total_artifacts_size = batch.sum { |artifact| artifact.size.to_i }
-        increment = Gitlab::Counters::Increment.new(amount: total_artifacts_size)
+        increments = batch.map do |artifact|
+          Gitlab::Counters::Increment.new(amount: artifact.size.to_i, ref: artifact.id)
+        end
 
         Projects::BuildArtifactsSizeRefresh.transaction do
           # Mark the refresh ready for another worker to pick up and process the next batch
           refresh.requeue!(batch.last.id)
 
-          refresh.project.statistics.increment_counter(:build_artifacts_size, increment)
+          ProjectStatistics.bulk_increment_statistic(refresh.project, :build_artifacts_size, increments)
         end
       else
-        # Remove the refresh job from the table if there are no more
-        # remaining job artifacts to calculate for the given project.
-        refresh.destroy!
+        refresh.schedule_finalize!
       end
 
       refresh

@@ -754,7 +754,6 @@ deploystacks:
         STACK: [monitoring, backup]
       - PROVIDER: [gcp, vultr]
         STACK: [data]
-  environment: $PROVIDER/$STACK
 ```
 
 This example generates 6 parallel `deploystacks` trigger jobs, each with different values

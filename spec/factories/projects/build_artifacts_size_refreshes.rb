@@ -18,6 +18,10 @@ FactoryBot.define do
       refresh_started_at { Time.zone.now }
     end
 
+    trait :finalizing do
+      state { Projects::BuildArtifactsSizeRefresh::STATES[:finalizing] }
+    end
+
     trait :stale do
       running
       refresh_started_at { 30.days.ago }

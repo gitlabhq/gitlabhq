@@ -35,10 +35,6 @@ module Gitlab
         @current_value
       end
 
-      def reset!
-        counter_record.update!(attribute => 0)
-      end
-
       private
 
       def update_counter_record_attribute(amount)

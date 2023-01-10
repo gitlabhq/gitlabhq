@@ -590,6 +590,13 @@ you can pull from the Container Registry, but you cannot push.
 
 #### Moving to Azure Object Storage
 
+> The default configuration for the storage driver will be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0.
+
+<!--- start_remove The following content will be removed on remove_date: '2023-10-22' -->
+WARNING:
+The default configuration for the storage driver will be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0. The storage driver will use `/` as the default root directory. You can add `trimlegacyrootprefix: false` to your current configuration now to avoid any disruptions. For more information, see the [Container Registry configuration](https://gitlab.com/gitlab-org/container-registry/-/tree/master/docs-gitlab#azure-storage-driver) documentation.
+<!--- end_remove -->
+
 When moving from an existing file system or another object storage provider to Azure Object Storage, you must configure the registry to use the standard root directory.
 This configuration is done by setting [`trimlegacyrootprefix: true]`](https://gitlab.com/gitlab-org/container-registry/-/blob/a3f64464c3ec1c5a599c0a2daa99ebcbc0100b9a/docs-gitlab/README.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
 Without this configuration, the Azure storage driver uses `//` instead of `/` as the first section of the root path, rendering the migrated images inaccessible.
@@ -757,6 +764,8 @@ If Registry is enabled in your GitLab instance, but you don't need it for your
 project, you can [disable it from your project's settings](../../user/project/settings/index.md#configure-project-visibility-features-and-permissions).
 
 ## Use an external container registry with GitLab as an auth endpoint
+
+> Support for external container registries in GitLab is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/376217) in GitLab 15.8 and will be removed in GitLab 16.0.
 
 If you use an external container registry, some features associated with the
 container registry may be unavailable or have [inherent risks](../../user/packages/container_registry/reduce_container_registry_storage.md#use-with-external-container-registries).

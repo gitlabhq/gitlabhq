@@ -24,8 +24,6 @@ As a GitLab administrator, you can install the agent server:
 - For [Omnibus installations](#for-omnibus).
 - For [GitLab Helm Chart installations](#for-gitlab-helm-chart).
 
-Or, you can [use an external agent server](#use-an-external-installation).
-
 ### For Omnibus
 
 You can enable the agent server for [Omnibus](https://docs.gitlab.com/omnibus/) package installations on a single node, or on multiple nodes at once.
@@ -60,6 +58,11 @@ To enable the agent server on multiple nodes:
      'SSL_CERT_DIR' => "/opt/gitlab/embedded/ssl/certs/",
      'OWN_PRIVATE_API_URL' => 'grpc://<ip_or_hostname_of_this_host>:8155'
    }
+
+   gitlab_rails['gitlab_kas_enabled'] = true
+   gitlab_rails['gitlab_kas_external_url'] = 'wss://gitlab.example.com/-/kubernetes-agent/'
+   gitlab_rails['gitlab_kas_internal_url'] = 'grpc://kas.internal.gitlab.example.com'
+   gitlab_rails['gitlab_kas_external_k8s_proxy_url'] = 'https://gitlab.example.com/-/kubernetes-agent/'
    ```
 
    In this configuration:
@@ -68,8 +71,10 @@ To enable the agent server on multiple nodes:
    - `OWN_PRIVATE_API_URL` is the environment variable used by the KAS process for service discovery. You can set it to a hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster.
    - `gitlab_kas['api_secret_key']` is the shared secret used for authentication between KAS and GitLab. This value must be Base64-encoded and exactly 32 bytes long.
    - `gitlab_kas['private_api_secret_key']` is the shared secret used for authentication between different KAS instances. This value must be Base64-encoded and exactly 32 bytes long.
+   - `gitlab_rails['gitlab_kas_external_url']` is the user-facing URL for the in-cluster `agentk`.
+   - `gitlab_rails['gitlab_kas_internal_url']` is the internal URL the GitLab backend uses to communicate with KAS.
+   - `gitlab_rails['gitlab_kas_external_k8s_proxy_url']` is the user-facing URL for Kubernetes API proxying.
 
-1. For each application node, follow the steps in [Use an external installation](../clusters/kas.md#use-an-external-installation). If the agent server is enabled on the application node, do not include `gitlab_kas['enable'] = false` in the configuration for that node.
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 ### For GitLab Helm Chart
@@ -99,30 +104,6 @@ For GitLab [Helm Chart](https://docs.gitlab.com/charts/) installations:
    ```
 
 For details, see [how to use the GitLab-KAS chart](https://docs.gitlab.com/charts/charts/gitlab/kas/).
-
-### Use an external installation
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299850) in GitLab 13.10.
-
-Instead of installing the agent server, you can configure GitLab to use an external agent server.
-
-If you used the GitLab Helm Chart to install GitLab, see
-[how to configure your external agent server](https://docs.gitlab.com/charts/charts/globals.html#external-kas).
-
-If you used the Omnibus packages:
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the paths to your external agent server:
-
-   ```ruby
-   gitlab_kas['enable'] = false
-   gitlab_kas['api_secret_key'] = 'Your shared secret between GitLab and KAS'
-
-   gitlab_rails['gitlab_kas_enabled'] = true
-   gitlab_rails['gitlab_kas_external_url'] = 'wss://kas.gitlab.example.com' # User-facing URL for the in-cluster agentk
-   gitlab_rails['gitlab_kas_internal_url'] = 'grpc://kas.internal.gitlab.example.com' # Internal URL for the GitLab backend
-   ```
-
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 ## Troubleshooting
 

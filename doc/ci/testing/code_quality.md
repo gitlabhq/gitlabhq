@@ -630,7 +630,9 @@ This can be due to multiple reasons:
 
 ### Only a single Code Quality report is displayed, but more are defined
 
-GitLab only uses the Code Quality artifact from the latest created job (with the largest job ID).
+Starting [in GitLab 15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/340525), Code Quality combines the results from all jobs in a pipeline.
+
+In previous versions, GitLab only uses the Code Quality artifact from the latest created job (with the largest job ID).
 If multiple jobs in a pipeline generate a code quality artifact, those of earlier jobs are ignored.
 To avoid confusion, configure only one job to generate a `gl-code-quality-report.json`.
 

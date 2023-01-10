@@ -33,7 +33,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   end
 
   def commands
-    render json: autocomplete_service.commands(target, params[:type])
+    render json: autocomplete_service.commands(target)
   end
 
   def snippets

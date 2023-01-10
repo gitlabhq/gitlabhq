@@ -120,40 +120,6 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
     end
   end
 
-  describe '#reset_counter!' do
-    let(:attribute) { counter_attributes.first }
-    let(:counter_key) { model.counter(attribute).key }
-    let(:increment) { Gitlab::Counters::Increment.new(amount: 10) }
-
-    before do
-      model.update!(attribute => 123)
-      model.increment_counter(attribute, increment)
-    end
-
-    subject { model.reset_counter!(attribute) }
-
-    it 'resets the attribute value to 0 and clears existing counter', :aggregate_failures do
-      expect { subject }.to change { model.reload.send(attribute) }.from(123).to(0)
-
-      Gitlab::Redis::SharedState.with do |redis|
-        key_exists = redis.exists?(counter_key)
-        expect(key_exists).to be_falsey
-      end
-    end
-
-    it_behaves_like 'obtaining lease to update database' do
-      context 'when the execution raises error' do
-        before do
-          allow(model).to receive(:update!).and_raise(StandardError, 'Something went wrong')
-        end
-
-        it 'reraises error' do
-          expect { subject }.to raise_error(StandardError, 'Something went wrong')
-        end
-      end
-    end
-  end
-
   describe '#update_counters_with_lease' do
     let(:increments) { { build_artifacts_size: 1, packages_size: 2 } }
 

@@ -2334,6 +2334,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: counters_cleanup_refresh
+  :worker_name: Counters::CleanupRefreshWorker
+  :feature_category: :not_owned
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: create_commit_signature
   :worker_name: CreateCommitSignatureWorker
   :feature_category: :source_code_management
@@ -3068,6 +3077,15 @@
   :feature_category: :source_code_management
   :has_external_dependencies: false
   :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: projects_finalize_project_statistics_refresh
+  :worker_name: Projects::FinalizeProjectStatisticsRefreshWorker
+  :feature_category: :not_owned
+  :has_external_dependencies: false
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true

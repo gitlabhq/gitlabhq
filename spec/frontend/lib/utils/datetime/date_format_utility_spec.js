@@ -149,17 +149,17 @@ describe('durationTimeFormatted', () => {
 describe('formatUtcOffset', () => {
   it.each`
     offset       | expected
-    ${-32400}    | ${'- 9'}
-    ${'-12600'}  | ${'- 3.5'}
-    ${0}         | ${'0'}
-    ${'10800'}   | ${'+ 3'}
-    ${19800}     | ${'+ 5.5'}
-    ${0}         | ${'0'}
-    ${[]}        | ${'0'}
-    ${{}}        | ${'0'}
-    ${true}      | ${'0'}
-    ${null}      | ${'0'}
-    ${undefined} | ${'0'}
+    ${-32400}    | ${'-9'}
+    ${'-12600'}  | ${'-3.5'}
+    ${0}         | ${' 0'}
+    ${'10800'}   | ${'+3'}
+    ${19800}     | ${'+5.5'}
+    ${0}         | ${' 0'}
+    ${[]}        | ${' 0'}
+    ${{}}        | ${' 0'}
+    ${true}      | ${' 0'}
+    ${null}      | ${' 0'}
+    ${undefined} | ${' 0'}
   `('returns $expected given $offset', ({ offset, expected }) => {
     expect(utils.formatUtcOffset(offset)).toEqual(expected);
   });

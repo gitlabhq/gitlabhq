@@ -113,6 +113,8 @@
   - 1
 - - container_repository_delete
   - 1
+- - counters_cleanup_refresh
+  - 1
 - - create_commit_signature
   - 2
 - - create_github_webhook
@@ -408,6 +410,8 @@
 - - projects_after_import
   - 1
 - - projects_delete_branch
+  - 1
+- - projects_finalize_project_statistics_refresh
   - 1
 - - projects_git_garbage_collect
   - 1

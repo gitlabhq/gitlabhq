@@ -23,7 +23,7 @@ module Projects
       MergeRequestsFinder.new(current_user, project_id: project.id, state: 'opened').execute.select([:iid, :title])
     end
 
-    def commands(noteable, type)
+    def commands(noteable)
       return [] unless noteable && current_user
 
       QuickActions::InterpretService.new(project, current_user).available_commands(noteable)

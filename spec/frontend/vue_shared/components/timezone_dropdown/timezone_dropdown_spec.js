@@ -105,7 +105,7 @@ describe('Deploy freeze timezone dropdown', () => {
     });
 
     it('renders selected time zone as dropdown label', () => {
-      expect(wrapper.findComponent(GlDropdown).props().text).toBe('[UTC + 2] Berlin');
+      expect(wrapper.findComponent(GlDropdown).props().text).toBe('[UTC+2] Berlin');
     });
   });
 });

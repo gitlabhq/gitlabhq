@@ -14,10 +14,11 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
   end
 
   describe 'scopes' do
-    let_it_be(:refresh_1) { create(:project_build_artifacts_size_refresh, :running, updated_at: (described_class::STALE_WINDOW + 1.second).ago) }
+    let_it_be(:refresh_1) { create(:project_build_artifacts_size_refresh, :stale) }
     let_it_be(:refresh_2) { create(:project_build_artifacts_size_refresh, :running, updated_at: 1.hour.ago) }
     let_it_be(:refresh_3) { create(:project_build_artifacts_size_refresh, :pending) }
     let_it_be(:refresh_4) { create(:project_build_artifacts_size_refresh, :created) }
+    let_it_be(:refresh_5) { create(:project_build_artifacts_size_refresh, :finalizing) }
 
     describe 'stale' do
       it 'returns records in running state and has not been updated for more than 2 hours' do
@@ -26,14 +27,22 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
     end
 
     describe 'remaining' do
-      it 'returns stale, created, and pending records' do
+      it 'returns stale, created and pending records' do
         expect(described_class.remaining).to match_array([refresh_1, refresh_3, refresh_4])
+      end
+
+      it 'does not include finalizing' do
+        expect(described_class.processing_queue).not_to include(refresh_5)
       end
     end
 
     describe 'processing_queue' do
       it 'prioritizes pending -> stale -> created' do
         expect(described_class.processing_queue).to eq([refresh_3, refresh_1, refresh_4])
+      end
+
+      it 'does not include finalizing' do
+        expect(described_class.processing_queue).not_to include(refresh_5)
       end
     end
   end
@@ -58,10 +67,7 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         let_it_be_with_reload(:refresh) do
           create(
             :project_build_artifacts_size_refresh,
-            :created,
-            updated_at: 2.days.ago,
-            refresh_started_at: nil,
-            last_job_artifact_id: nil
+            :created
           )
         end
 
@@ -70,8 +76,8 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         let(:statistics) { refresh.project.statistics }
 
         before do
-          stats = create(:project_statistics, project: refresh.project, build_artifacts_size: 120)
-          stats.increment_counter(:build_artifacts_size, Gitlab::Counters::Increment.new(amount: 30))
+          statistics.update!(build_artifacts_size: 120)
+          statistics.increment_counter(:build_artifacts_size, Gitlab::Counters::Increment.new(amount: 30))
         end
 
         it 'transitions the state to running' do
@@ -91,11 +97,11 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         end
 
         it 'resets the build artifacts size stats' do
-          expect { refresh.process! }.to change { statistics.build_artifacts_size }.to(0)
+          expect { refresh.process! }.to change { statistics.reload.build_artifacts_size }.from(120).to(0)
         end
 
-        it 'resets the counter attribute to zero' do
-          expect { refresh.process! }.to change { statistics.counter(:build_artifacts_size).get }.to(0)
+        it 'resets the buffered counter value to zero' do
+          expect { refresh.process! }.to change { Gitlab::Counters::BufferedCounter.new(statistics, :build_artifacts_size).get }.to(0)
         end
       end
 
@@ -170,6 +176,22 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         expect { refresh.requeue!(last_job_artifact_id) }.to change { refresh.reload.last_job_artifact_id.to_i }.to(last_job_artifact_id)
       end
     end
+
+    describe '#schedule_finalize!' do
+      let!(:refresh) { create(:project_build_artifacts_size_refresh, :running) }
+
+      it 'transitions refresh state from running to finalizing' do
+        expect { refresh.schedule_finalize! }.to change { refresh.reload.state }.to(described_class::STATES[:finalizing])
+      end
+
+      it 'schedules Projects::FinalizeProjectStatisticsRefreshWorker' do
+        expect(Projects::FinalizeProjectStatisticsRefreshWorker)
+          .to receive(:perform_in)
+          .with(described_class::FINALIZE_DELAY, refresh.class.to_s, refresh.id)
+
+        refresh.schedule_finalize!
+      end
+    end
   end
 
   describe '.process_next_refresh!' do
@@ -207,6 +229,26 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         refresh_started_at: nil,
         state: described_class::STATES[:created]
       )
+    end
+  end
+
+  describe '#finalize!' do
+    let!(:refresh) { create(:project_build_artifacts_size_refresh, :finalizing) }
+
+    let(:statistics) { refresh.project.statistics }
+
+    before do
+      allow(statistics).to receive(:finalize_refresh)
+    end
+
+    it 'stores the refresh amount into the buffered counter' do
+      expect(statistics).to receive(:finalize_refresh).with(described_class::COUNTER_ATTRIBUTE_NAME)
+
+      refresh.finalize!
+    end
+
+    it 'destroys the refresh record' do
+      expect { refresh.finalize! }.to change { described_class.count }.by(-1)
     end
   end
 

@@ -21165,6 +21165,7 @@ Access level to a resource.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="accesslevelenumadmin"></a>`ADMIN` | Admin access. |
 | <a id="accesslevelenumdeveloper"></a>`DEVELOPER` | Developer access. |
 | <a id="accesslevelenumguest"></a>`GUEST` | Guest access. |
 | <a id="accesslevelenummaintainer"></a>`MAINTAINER` | Maintainer access. |
