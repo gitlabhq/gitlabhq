@@ -39,7 +39,7 @@ RSpec.describe 'Database schema' do
     ci_build_trace_metadata: %w[partition_id],
     ci_builds: %w[erased_by_id trigger_request_id partition_id],
     ci_builds_runner_session: %w[partition_id],
-    p_ci_builds_metadata: %w[partition_id],
+    p_ci_builds_metadata: %w[partition_id runner_machine_id], # NOTE: FK will be added in follow-up https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108167
     ci_job_artifacts: %w[partition_id],
     ci_job_variables: %w[partition_id],
     ci_namespace_monthly_usages: %w[namespace_id],

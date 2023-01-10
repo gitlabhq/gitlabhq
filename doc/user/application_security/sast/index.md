@@ -345,7 +345,7 @@ To override the automatic update behavior, set the `SAST_ANALYZER_IMAGE_TAG` CI/
 in your CI/CD configuration file after you include the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml).
 
 Only set this variable within a specific job.
-If you set it [at the top level](../../../ci/variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file), the version you set will be used for other SAST analyzers.
+If you set it [at the top level](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set will be used for other SAST analyzers.
 
 You can set the tag to:
 
@@ -528,7 +528,7 @@ variables:
       -----END CERTIFICATE-----
 ```
 
-The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
 #### Docker images
 
@@ -601,7 +601,7 @@ flags are added to the scanner's CLI options.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18193) in GitLab 12.5.
 
 In addition to the aforementioned SAST configuration CI/CD variables,
-all [custom variables](../../../ci/variables/index.md#custom-cicd-variables) are propagated
+all [custom variables](../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui) are propagated
 to the underlying SAST analyzer images if
 [the SAST vendored template](#configuration) is used.
 

@@ -210,7 +210,7 @@ Do not share the secret access key in a public place. You must save it in a secu
 
 ### Setup credentials in GitLab to let pipeline jobs access to ECS
 
-You can register the access information in [GitLab Environment Variables](../../variables/index.md#custom-cicd-variables).
+You can register the access information in [GitLab CI/CD Variables](../../variables/index.md).
 These variables are injected into the pipeline jobs and can access the ECS API.
 
 1. Go to **ecs-demo** project on GitLab.

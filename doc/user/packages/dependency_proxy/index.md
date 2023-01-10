@@ -169,7 +169,7 @@ build:
     -  docker build -t test .
 ```
 
-You can also use [custom CI/CD variables](../../../ci/variables/index.md#custom-cicd-variables) to store and access your personal access token or deploy token.
+You can also use [custom CI/CD variables](../../../ci/variables/index.md#for-a-project) to store and access your personal access token or deploy token.
 
 ### Store a Docker image in Dependency Proxy cache
 

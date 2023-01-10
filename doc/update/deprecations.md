@@ -100,6 +100,20 @@ The Container Registry pull-through cache is deprecated in GitLab 15.8 and will 
 
 <div class="deprecation removal-160 breaking-change">
 
+### Dependency Scanning support for Java 13, 14, 15, and 16
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+GitLab has deprecated Dependency Scanning support for Java versions 13, 14, 15, and 16 and plans to remove that support in the upcoming GitLab 16.0 release. This is consistent with [Oracle's support policy](https://www.oracle.com/java/technologies/java-se-support-roadmap.html) as Oracle Premier and Extended Support for these versions has ended. This also allows GitLab to focus Dependency Scanning Java support on LTS versions moving forward.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Owner permissions are required to update Package settings
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)

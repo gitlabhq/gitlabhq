@@ -3379,8 +3379,8 @@ Use `rules:if` clauses to specify when to add a job to a pipeline:
 - If an `if` statement is true, but it's combined with `when: never`, do not add the job to the pipeline.
 - If no `if` statements are true, do not add the job to the pipeline.
 
-`if` clauses are evaluated based on the values of [predefined CI/CD variables](../variables/predefined_variables.md)
-or [custom CI/CD variables](../variables/index.md#custom-cicd-variables), with
+`if` clauses are evaluated based on the values of [CI/CD variables](../variables/index.md)
+or [predefined CI/CD variables](../variables/predefined_variables.md), with
 [some exceptions](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Keyword type**: Job-specific and pipeline-specific. You can use it as part of a job
@@ -4299,8 +4299,8 @@ child3:
 
 ### `variables`
 
-[CI/CD variables](../variables/index.md) are configurable values that are passed to jobs.
-Use `variables` to create [custom variables](../variables/index.md#custom-cicd-variables).
+Use `variables` to define [CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file),
+which are configurable values that are passed to jobs.
 
 Variables are always available in `script`, `before_script`, and `after_script` commands.
 You can also use variables as inputs in some job keywords.

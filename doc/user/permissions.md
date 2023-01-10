@@ -276,7 +276,7 @@ More details about the permissions for some project-level features follow.
 | View pipeline details page                                                                                                | ✓ (*1*)    | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
 | View pipelines page                                                                                                       | ✓ (*1*)    | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
 | View pipelines tab in MR                                                                                                  | ✓ (*3*)    | ✓ (*3*) | ✓        | ✓         | ✓          | ✓     |
-| [View vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |            | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
+| [View vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |       | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
 | View and download project-level [Secure Files](../api/secure_files.md)                                                    |            |         |          | ✓         | ✓          | ✓     |
 | Cancel and retry jobs                                                                                                     |            |         |          | ✓         | ✓          | ✓     |
 | Create new [environments](../ci/environments/index.md)                                                                    |            |         |          | ✓         | ✓          | ✓     |
@@ -284,7 +284,7 @@ More details about the permissions for some project-level features follow.
 | Run CI/CD pipeline                                                                                                        |            |         |          | ✓         | ✓          | ✓     |
 | Run CI/CD pipeline for a protected branch                                                                                 |            |         |          | ✓ (*5*)   | ✓ (*5*)    | ✓     |
 | Stop [environments](../ci/environments/index.md)                                                                          |            |         |          | ✓         | ✓          | ✓     |
-| View a job with [debug logging](../ci/variables/index.md#debug-logging)                                                   |            |         |          | ✓         | ✓          | ✓     |
+| View a job with [debug logging](../ci/variables/index.md#enable-debug-logging)                                            |            |         |          | ✓         | ✓          | ✓     |
 | Use pipeline editor                                                                                                       |            |         |          | ✓         | ✓          | ✓     |
 | Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                  |            |         |          | ✓         | ✓          | ✓     |
 | Add specific runners to project                                                                                           |            |         |          |           | ✓          | ✓     |

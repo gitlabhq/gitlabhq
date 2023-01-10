@@ -190,7 +190,7 @@ limitations with the Auto DevOps scripting environment.
 
 Add replica variables when you want to scale your deployments:
 
-1. Add a replica variable as a [project CI/CD variable](../../ci/variables/index.md#add-a-cicd-variable-to-a-project).
+1. Add a replica variable as a [project CI/CD variable](../../ci/variables/index.md#for-a-project).
 1. To scale your application, redeploy it.
 
    WARNING:

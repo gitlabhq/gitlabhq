@@ -425,7 +425,7 @@ container_scanning:
         -----END CERTIFICATE-----
 ```
 
-The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
 ### Vulnerability allowlisting **(ULTIMATE)**
 
@@ -637,7 +637,7 @@ container_scanning:
     CS_IMAGE: "gcr.io/path-to-you-registry/image:tag"
 ```
 
-Before you commit this configuration, [add a CI/CD variable](../../../ci/variables/index.md#add-a-cicd-variable-to-a-project)
+Before you commit this configuration, [add a CI/CD variable](../../../ci/variables/index.md#for-a-project)
 for `GCP_CREDENTIALS` containing the JSON key, as described in the
 [Google Cloud Platform Container Registry documentation](https://cloud.google.com/container-registry/docs/advanced-authentication#json-key).
 Also:

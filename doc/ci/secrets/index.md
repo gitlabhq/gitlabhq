@@ -83,7 +83,7 @@ To configure your Vault server:
 
 1. Configure roles on your Vault server, restricting roles to a project or namespace,
    as described in [Configure Vault server roles](#configure-vault-server-roles) on this page.
-1. [Create the following CI/CD variables](../variables/index.md#custom-cicd-variables)
+1. [Create the following CI/CD variables](../variables/index.md#for-a-project)
    to provide details about your Vault server:
    - `VAULT_SERVER_URL` - The URL of your Vault server, such as `https://vault.example.com:8200`.
      Required.

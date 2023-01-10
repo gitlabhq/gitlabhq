@@ -290,9 +290,9 @@ smoke-test-job:
 
 In `include` sections in your `.gitlab-ci.yml` file, you can use:
 
-- [Project variables](../variables/index.md#add-a-cicd-variable-to-a-project).
-- [Group variables](../variables/index.md#add-a-cicd-variable-to-a-group).
-- [Instance variables](../variables/index.md#add-a-cicd-variable-to-an-instance).
+- [Project variables](../variables/index.md#for-a-project).
+- [Group variables](../variables/index.md#for-a-group).
+- [Instance variables](../variables/index.md#for-an-instance).
 - Project [predefined variables](../variables/predefined_variables.md).
 - In GitLab 14.2 and later, the `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
 

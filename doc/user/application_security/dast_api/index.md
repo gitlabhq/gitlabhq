@@ -828,7 +828,7 @@ provide a script that performs an authentication flow or calculates the token.
 is an authentication method built into the HTTP protocol and used in conjunction with
 [transport layer security (TLS)](https://en.wikipedia.org/wiki/Transport_Layer_Security).
 
-We recommended that you [create a CI/CD variable](../../../ci/variables/index.md#custom-cicd-variables)
+We recommended that you [create a CI/CD variable](../../../ci/variables/index.md#for-a-project)
 for the password (for example, `TEST_API_PASSWORD`), and set it to be masked. You can create CI/CD
 variables from the GitLab project's page at **Settings > CI/CD**, in the **Variables** section.
 Because of the [limitations on masked variables](../../../ci/variables/index.md#mask-a-cicd-variable),
@@ -876,7 +876,7 @@ outgoing HTTP requests.
 
 Follow these steps to provide the Bearer token with `DAST_API_OVERRIDES_ENV`:
 
-1. [Create a CI/CD variable](../../../ci/variables/index.md#custom-cicd-variables),
+1. [Create a CI/CD variable](../../../ci/variables/index.md#for-a-project),
    for example `TEST_API_BEARERAUTH`, with the value
    `{"headers":{"Authorization":"Bearer dXNlcm5hbWU6cGFzc3dvcmQ="}}` (substitute your token). You
    can create CI/CD variables from the GitLab projects page at **Settings > CI/CD**, in the
@@ -1271,7 +1271,7 @@ variables:
 ```
 
 In this example `.gitlab-ci.yml`, the `SECRET_OVERRIDES` variable provides the JSON. This is a
-[group or instance level CI/CD variable defined in the UI](../../../ci/variables/index.md#add-a-cicd-variable-to-an-instance):
+[group or instance level CI/CD variable defined in the UI](../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui):
 
 ```yaml
 stages:
@@ -1528,7 +1528,7 @@ variables:
 
 ### Example: Using a masked CI/CD variable
 
-The following `.gitlab-ci.yml` sample assumes the [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable) `SECRET_REQUEST_HEADERS_BASE64` is defined as a [group or instance level CI/CD variable defined in the UI](../../../ci/variables/index.md#add-a-cicd-variable-to-an-instance). The value of `SECRET_REQUEST_HEADERS_BASE64` is set to `WC1BQ01FLVNlY3JldDogc31jcnt0ISwgWC1BQ01FLVRva2VuOiA3MDVkMTZmNWUzZmI=`, which is the Base64-encoded text version of `X-ACME-Secret: s3cr3t!, X-ACME-Token: 705d16f5e3fb`. Then, it can be used as follows:
+The following `.gitlab-ci.yml` sample assumes the [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable) `SECRET_REQUEST_HEADERS_BASE64` is defined as a [group or instance level CI/CD variable defined in the UI](../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui). The value of `SECRET_REQUEST_HEADERS_BASE64` is set to `WC1BQ01FLVNlY3JldDogc31jcnt0ISwgWC1BQ01FLVRva2VuOiA3MDVkMTZmNWUzZmI=`, which is the Base64-encoded text version of `X-ACME-Secret: s3cr3t!, X-ACME-Token: 705d16f5e3fb`. Then, it can be used as follows:
 
 ```yaml
 stages:

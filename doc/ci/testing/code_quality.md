@@ -253,7 +253,7 @@ to learn more about how to define one.
 To disable the `code_quality` job, add `CODE_QUALITY_DISABLED` as a custom CI/CD variable.
 This can be done:
 
-- For [the whole project](../variables/index.md#custom-cicd-variables).
+- For [the whole project](../variables/index.md#for-a-project).
 - For a single pipeline run:
 
   1. Go to **CI/CD > Pipelines**
@@ -390,7 +390,7 @@ code_quality:
     CODECLIMATE_REGISTRY_PASSWORD: $DOCKERHUB_PASSWORD
 ```
 
-You should add the username and password as [protected CI/CD variables](../variables/index.md#add-a-cicd-variable-to-a-project)
+You should add the username and password as [protected CI/CD variables](../variables/index.md#for-a-project)
 in the project.
 
 ## Configuring jobs using variables

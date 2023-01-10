@@ -315,7 +315,7 @@ Other commonly used variables for `if` clauses:
 - `if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TITLE =~ /Merge branch.*/`:
    If the commit branch is the default branch and the commit message title matches a regular expression.
    For example, the default commit message for a merge commit starts with `Merge branch`.
-- `if: $CUSTOM_VARIABLE !~ /regex-expression/`: If the [custom variable](../variables/index.md#custom-cicd-variables)
+- `if: $CUSTOM_VARIABLE !~ /regex-expression/`: If the [custom variable](../variables/index.md)
   `CUSTOM_VARIABLE` does **not** match a regular expression.
 - `if: $CUSTOM_VARIABLE == "value1"`: If the custom variable `CUSTOM_VARIABLE` is
   exactly `value1`.
