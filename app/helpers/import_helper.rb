@@ -62,7 +62,7 @@ module ImportHelper
   def import_configure_github_admin_message
     github_integration_link = link_to 'GitHub integration', help_page_path('integration/github')
 
-    if current_user.admin?
+    if current_user.can_admin_all_resources?
       _('Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token.').html_safe % { github_integration_link: github_integration_link }
     else
       _('Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token.').html_safe % { github_integration_link: github_integration_link }

@@ -284,8 +284,24 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         allow(self).to receive(:current_user).and_return(admin)
       end
 
-      it "includes admin sections" do
-        expect(search_autocomplete_opts("admin").size).to eq(1)
+      context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+        it 'includes admin sections' do
+          expect(search_autocomplete_opts('admin').size).to eq(1)
+        end
+      end
+
+      context 'when admin mode setting is enabled' do
+        context 'when in admin mode', :enable_admin_mode do
+          it 'includes admin sections' do
+            expect(search_autocomplete_opts('admin').size).to eq(1)
+          end
+        end
+
+        context 'when not in admin mode' do
+          it 'does not include admin sections' do
+            expect(search_autocomplete_opts('admin').size).to eq(0)
+          end
+        end
       end
     end
   end

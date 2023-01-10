@@ -92,81 +92,32 @@ RSpec.describe Users::CalloutsHelper do
     end
   end
 
-  describe '.show_registration_enabled_user_callout?' do
+  describe '.show_registration_enabled_user_callout?', :do_not_mock_admin_mode_setting do
     let_it_be(:admin) { create(:user, :admin) }
 
     subject { helper.show_registration_enabled_user_callout? }
 
-    context 'when on gitlab.com' do
-      before do
-        allow(::Gitlab).to receive(:com?).and_return(true)
-        allow(helper).to receive(:current_user).and_return(admin)
-        stub_application_setting(signup_enabled: true)
-        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
-        allow(helper.controller).to receive(:controller_path).and_return("admin/users")
-      end
+    using RSpec::Parameterized::TableSyntax
 
-      it { is_expected.to be false }
+    where(:gitlab_com, :current_user, :signup_enabled, :user_dismissed, :controller_path, :expected_result) do
+      false | ref(:admin) | true  | false | 'admin/users'     | true
+      true  | ref(:admin) | true  | false | 'admin/users'     | false
+      false | ref(:user)  | true  | false | 'admin/users'     | false
+      false | ref(:admin) | false | false | 'admin/users'     | false
+      false | ref(:admin) | true  | true  | 'admin/users'     | false
+      false | ref(:admin) | true  | false | 'projects/issues' | false
     end
 
-    context 'when `current_user` is not an admin' do
+    with_them do
       before do
-        allow(::Gitlab).to receive(:com?).and_return(false)
-        allow(helper).to receive(:current_user).and_return(user)
-        stub_application_setting(signup_enabled: true)
-        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
-        allow(helper.controller).to receive(:controller_path).and_return("admin/users")
+        allow(::Gitlab).to receive(:com?).and_return(gitlab_com)
+        allow(helper).to receive(:current_user).and_return(current_user)
+        stub_application_setting(signup_enabled: signup_enabled)
+        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { user_dismissed }
+        allow(helper.controller).to receive(:controller_path).and_return(controller_path)
       end
 
-      it { is_expected.to be false }
-    end
-
-    context 'when signup is disabled' do
-      before do
-        allow(::Gitlab).to receive(:com?).and_return(false)
-        allow(helper).to receive(:current_user).and_return(admin)
-        stub_application_setting(signup_enabled: false)
-        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
-        allow(helper.controller).to receive(:controller_path).and_return("admin/users")
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when user has dismissed callout' do
-      before do
-        allow(::Gitlab).to receive(:com?).and_return(false)
-        allow(helper).to receive(:current_user).and_return(admin)
-        stub_application_setting(signup_enabled: true)
-        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { true }
-        allow(helper.controller).to receive(:controller_path).and_return("admin/users")
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when controller path is not allowed' do
-      before do
-        allow(::Gitlab).to receive(:com?).and_return(false)
-        allow(helper).to receive(:current_user).and_return(admin)
-        stub_application_setting(signup_enabled: true)
-        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
-        allow(helper.controller).to receive(:controller_path).and_return("projects/issues")
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when not gitlab.com, `current_user` is an admin, signup is enabled, user has not dismissed callout, and controller path is allowed' do
-      before do
-        allow(::Gitlab).to receive(:com?).and_return(false)
-        allow(helper).to receive(:current_user).and_return(admin)
-        stub_application_setting(signup_enabled: true)
-        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
-        allow(helper.controller).to receive(:controller_path).and_return("admin/users")
-      end
-
-      it { is_expected.to be true }
+      it { is_expected.to be expected_result }
     end
   end
 
@@ -190,7 +141,7 @@ RSpec.describe Users::CalloutsHelper do
     end
   end
 
-  describe '.show_security_newsletter_user_callout?' do
+  describe '.show_security_newsletter_user_callout?', :do_not_mock_admin_mode_setting do
     let_it_be(:admin) { create(:user, :admin) }
 
     subject { helper.show_security_newsletter_user_callout? }

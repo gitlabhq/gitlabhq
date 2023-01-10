@@ -217,7 +217,7 @@ GET /groups/:id/descendant_groups
   {
     "id": 2,
     "name": "Bar Group",
-    "path": "foo/bar",
+    "path": "bar",
     "description": "A subgroup of Foo Group",
     "visibility": "public",
     "share_with_group_lock": false,
@@ -242,7 +242,7 @@ GET /groups/:id/descendant_groups
   {
     "id": 3,
     "name": "Baz Group",
-    "path": "foo/bar/baz",
+    "path": "baz",
     "description": "A subgroup of Bar Group",
     "visibility": "public",
     "share_with_group_lock": false,
@@ -1025,7 +1025,7 @@ Example response:
   "web_url": "http://gitlab.example.com/groups/h5bp",
   "request_access_enabled": false,
   "full_name": "Foobar Group",
-  "full_path": "foo-bar",
+  "full_path": "h5bp",
   "file_template_project_id": 1,
   "parent_id": null,
   "created_at": "2020-01-15T12:36:29.590Z",

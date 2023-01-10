@@ -1,0 +1,28 @@
+query securityReportsDownloadPaths(
+  $projectPath: ID!
+  $iid: String!
+  $reportTypes: [SecurityReportTypeEnum!]
+) {
+  project(fullPath: $projectPath) {
+    id
+    mergeRequest(iid: $iid) {
+      id
+      headPipeline {
+        id
+        jobs(securityReportTypes: $reportTypes) {
+          nodes {
+            id
+            name
+            artifacts {
+              # eslint-disable-next-line @graphql-eslint/require-id-when-available
+              nodes {
+                downloadPath
+                fileType
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

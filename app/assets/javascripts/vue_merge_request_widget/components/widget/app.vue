@@ -1,5 +1,11 @@
 <script>
 export default {
+  components: {
+    MrSecurityWidget: () =>
+      import(
+        '~/vue_merge_request_widget/extensions/security_reports/mr_widget_security_reports.vue'
+      ),
+  },
   props: {
     mr: {
       type: Object,
@@ -8,7 +14,9 @@ export default {
   },
   computed: {
     widgets() {
-      return [].filter((w) => w);
+      return [window.gon?.features?.refactorSecurityExtension && 'MrSecurityWidget'].filter(
+        (w) => w,
+      );
     },
   },
 };

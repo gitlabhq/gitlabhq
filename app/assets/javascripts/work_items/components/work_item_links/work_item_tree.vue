@@ -251,6 +251,7 @@ export default {
         @mouseover="prefetchWorkItem(child)"
         @mouseout="clearPrefetching"
         @removeChild="$emit('removeChild', $event)"
+        @click="$emit('show-modal', $event, $event.childItem || child)"
       />
     </div>
   </div>

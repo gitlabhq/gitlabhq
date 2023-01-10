@@ -4,7 +4,7 @@ import { SEVERITY_ICONS_MR_WIDGET } from '~/ci/reports/codequality_report/consta
 import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import { parseCodeclimateMetrics } from '~/ci/reports/codequality_report/store/utils/codequality_parser';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { i18n } from './constants';
+import { i18n, codeQualityPrefixes } from './constants';
 
 export default {
   name: 'WidgetCodeQuality',
@@ -25,13 +25,13 @@ export default {
         return i18n.loading;
       } else if (newErrors.length >= 1 && resolvedErrors.length >= 1) {
         return i18n.improvementAndDegradationCopy(
-          i18n.pluralReport(resolvedErrors),
-          i18n.pluralReport(newErrors),
+          i18n.findings(resolvedErrors, codeQualityPrefixes.fixed),
+          i18n.findings(newErrors, codeQualityPrefixes.new),
         );
       } else if (resolvedErrors.length >= 1) {
-        return i18n.improvedCopy(i18n.singularReport(resolvedErrors));
+        return i18n.singularCopy(i18n.findings(resolvedErrors, codeQualityPrefixes.fixed));
       } else if (newErrors.length >= 1) {
-        return i18n.degradedCopy(i18n.singularReport(newErrors));
+        return i18n.singularCopy(i18n.findings(newErrors, codeQualityPrefixes.new));
       }
       return i18n.noChanges;
     },

@@ -20,6 +20,7 @@ describe('Branch rule', () => {
   };
 
   const findDefaultBadge = () => wrapper.findByText(i18n.defaultLabel);
+  const findProtectedBadge = () => wrapper.findByText(i18n.protectedLabel);
   const findBranchName = () => wrapper.findByText(branchRulePropsMock.name);
   const findProtectionDetailsList = () => wrapper.findByRole('list');
   const findProtectionDetailsListItems = () => wrapper.findAllByRole('listitem');
@@ -32,17 +33,23 @@ describe('Branch rule', () => {
   });
 
   describe('badges', () => {
-    it('renders default badge', () => {
+    it('renders both default and protected badges', () => {
       expect(findDefaultBadge().exists()).toBe(true);
+      expect(findProtectedBadge().exists()).toBe(true);
     });
 
     it('does not render default badge if isDefault is set to false', () => {
       createComponent({ isDefault: false });
       expect(findDefaultBadge().exists()).toBe(false);
     });
+
+    it('does not render default badge if branchProtection is null', () => {
+      createComponent(branchRuleWithoutDetailsPropsMock);
+      expect(findProtectedBadge().exists()).toBe(false);
+    });
   });
 
-  it('does not render the protection details list if no details are present', () => {
+  it('does not render the protection details list when branchProtection is null', () => {
     createComponent(branchRuleWithoutDetailsPropsMock);
     expect(findProtectionDetailsList().exists()).toBe(false);
   });

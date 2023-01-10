@@ -49,4 +49,20 @@ RSpec.describe ImportHelper do
       expect(helper.provider_project_link_url(host_url, full_path)).to match('http://provider.com/repo/path')
     end
   end
+
+  describe '#import_configure_github_admin_message' do
+    subject { helper.import_configure_github_admin_message }
+
+    it 'returns note for admin' do
+      allow(helper).to receive(:current_user) { instance_double('User', can_admin_all_resources?: true) }
+
+      is_expected.to have_text('Note: As an administrator')
+    end
+
+    it 'returns note for other user' do
+      allow(helper).to receive(:current_user) { instance_double('User', can_admin_all_resources?: false) }
+
+      is_expected.to have_text('Note: Consider asking your GitLab administrator')
+    end
+  end
 end

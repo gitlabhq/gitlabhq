@@ -63,6 +63,7 @@ export default {
       :child-item="child"
       :work-item-type="workItemType"
       @removeChild="updateWorkItem"
+      @click="$emit('click', Object.assign($event, { childItem: child }))"
     />
   </div>
 </template>

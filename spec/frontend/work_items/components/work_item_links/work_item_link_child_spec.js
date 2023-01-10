@@ -261,5 +261,14 @@ describe('WorkItemLinkChild', () => {
         message: 'Something went wrong while fetching children.',
       });
     });
+
+    it('click event on child emits `click` event', async () => {
+      findExpandButton().vm.$emit('click');
+      await waitForPromises();
+
+      findTreeChildren().vm.$emit('click', 'event');
+
+      expect(wrapper.emitted('click')).toEqual([['event']]);
+    });
   });
 });

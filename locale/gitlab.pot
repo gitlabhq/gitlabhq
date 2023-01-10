@@ -358,11 +358,6 @@ msgid_plural "%d personal projects will be removed and cannot be restored."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d point"
-msgid_plural "%d points"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d previously merged commit"
 msgid_plural "%d previously merged commits"
 msgstr[0] ""
@@ -1094,8 +1089,8 @@ msgid_plural "%{strong_start}%{count} members%{strong_end} must approve to merge
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{strong_start}%{errors}%{strong_end} point"
-msgid_plural "%{strong_start}%{errors}%{strong_end} points"
+msgid "%{strong_start}%{errors}%{strong_end} %{prefix} finding"
+msgid_plural "%{strong_start}%{errors}%{strong_end} %{prefix} findings"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -7110,6 +7105,9 @@ msgstr ""
 msgid "BranchRules|default"
 msgstr ""
 
+msgid "BranchRules|protected"
+msgstr ""
+
 msgid "Branches"
 msgstr ""
 
@@ -9842,6 +9840,12 @@ msgid "Code Owners"
 msgstr ""
 
 msgid "Code Quality"
+msgstr ""
+
+msgid "Code Quality scans found %{degradation} and fixed %{improvement}."
+msgstr ""
+
+msgid "Code Quality scans found %{findings}."
 msgstr ""
 
 msgid "Code Review"
@@ -24665,6 +24669,9 @@ msgstr ""
 msgid "LearnGitlab|- Included in trial"
 msgstr ""
 
+msgid "LearnGitlab|Contact your administrator to enable this action."
+msgstr ""
+
 msgid "LearnGitlab|Contact your administrator to start a free Ultimate trial."
 msgstr ""
 
@@ -36041,6 +36048,11 @@ msgid_plural "Runners|%d selected runners deleted"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Runners|%{highlightStart}%{duration}%{highlightEnd} second"
+msgid_plural "Runners|%{highlightStart}%{duration}%{highlightEnd} seconds"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Runners|%{link_start}These runners%{link_end} are available to all groups and projects."
 msgstr ""
 
@@ -36230,6 +36242,9 @@ msgstr ""
 msgid "Runners|Instance"
 msgstr ""
 
+msgid "Runners|Instance: Median job queued time"
+msgstr ""
+
 msgid "Runners|Jobs"
 msgstr ""
 
@@ -36412,6 +36427,9 @@ msgstr ""
 msgid "Runners|Runner is stale; last contact was %{timeAgo}"
 msgstr ""
 
+msgid "Runners|Runner performance insights"
+msgstr ""
+
 msgid "Runners|Runner registration"
 msgstr ""
 
@@ -36431,6 +36449,9 @@ msgid "Runners|Runners are the agents that run your CI/CD jobs. Follow the %{lin
 msgstr ""
 
 msgid "Runners|Runners are the agents that run your CI/CD jobs. To register new runners, please contact your administrator."
+msgstr ""
+
+msgid "Runners|Runners performance"
 msgstr ""
 
 msgid "Runners|Running"
@@ -36522,6 +36543,9 @@ msgstr ""
 msgid "Runners|Token expiry"
 msgstr ""
 
+msgid "Runners|Understand how long it takes for runners to pick up a job. %{linkStart}How is this calculated?%{linkEnd}"
+msgstr ""
+
 msgid "Runners|Unselect all"
 msgstr ""
 
@@ -36562,6 +36586,9 @@ msgid "Runners|Version %{version}"
 msgstr ""
 
 msgid "Runners|View installation instructions"
+msgstr ""
+
+msgid "Runners|View metrics"
 msgstr ""
 
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. %{percentage} spot."

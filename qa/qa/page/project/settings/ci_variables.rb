@@ -7,7 +7,7 @@ module QA
         class CiVariables < Page::Base
           include QA::Page::Settings::Common
 
-          view 'app/assets/javascripts/ci_variable_list/components/ci_variable_modal.vue' do
+          view 'app/assets/javascripts/ci/ci_variable_list/components/ci_variable_modal.vue' do
             element :ci_variable_key_field
             element :ci_variable_value_field
             element :ci_variable_save_button

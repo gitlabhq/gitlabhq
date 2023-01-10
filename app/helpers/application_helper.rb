@@ -236,7 +236,7 @@ module ApplicationHelper
   end
 
   def instance_review_permitted?
-    ::Gitlab::CurrentSettings.instance_review_permitted? && current_user&.admin?
+    ::Gitlab::CurrentSettings.instance_review_permitted? && current_user&.can_read_all_resources?
   end
 
   def static_objects_external_storage_enabled?

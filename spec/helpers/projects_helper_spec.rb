@@ -1086,7 +1086,7 @@ RSpec.describe ProjectsHelper do
 
     context 'as a user' do
       it 'returns a link to contact an administrator' do
-        allow(user).to receive(:admin?).and_return(false)
+        allow(user).to receive(:can_admin_all_resources?).and_return(false)
 
         expect(subject).to have_text("To enable importing projects from #{import_method}, ask your GitLab administrator to configure OAuth integration")
       end
@@ -1094,7 +1094,7 @@ RSpec.describe ProjectsHelper do
 
     context 'as an administrator' do
       it 'returns a link to configure bitbucket' do
-        allow(user).to receive(:admin?).and_return(true)
+        allow(user).to receive(:can_admin_all_resources?).and_return(true)
 
         expect(subject).to have_text("To enable importing projects from #{import_method}, as administrator you need to configure OAuth integration")
       end

@@ -60,8 +60,7 @@ include:
     - !reference [.base-script, script]
     - rspec_paralellized_job "--tag ~quarantine --tag ~level:migration"
   allow_failure:
-    # the exit code listed here must match the one defined for the variable SUCCESSFULLY_RETRIED_TEST_EXIT_CODE
-    exit_codes: 137
+    exit_codes: !reference [.rspec-base, variables, SUCCESSFULLY_RETRIED_TEST_EXIT_CODE]
 
 .base-artifacts:
   artifacts:

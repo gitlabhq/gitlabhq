@@ -1,7 +1,7 @@
 import initArtifactsSettings from '~/artifacts_settings';
 import SecretValues from '~/behaviors/secret_values';
 import initSettingsPipelinesTriggers from '~/ci_settings_pipeline_triggers';
-import initVariableList from '~/ci_variable_list';
+import initVariableList from '~/ci/ci_variable_list';
 import initDeployFreeze from '~/deploy_freeze';
 import registrySettingsApp from '~/packages_and_registries/settings/project/registry_settings_bundle';
 import { initRunnerAwsDeployments } from '~/pages/shared/mount_runner_aws_deployments';

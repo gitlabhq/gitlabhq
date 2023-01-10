@@ -264,6 +264,7 @@ export default {
       :work-item-type="workItemType"
       :children="children"
       @removeChild="fetchChildren"
+      @click="$emit('click', $event)"
     />
   </div>
 </template>

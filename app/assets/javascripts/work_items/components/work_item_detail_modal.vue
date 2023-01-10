@@ -3,7 +3,6 @@ import { GlAlert, GlModal } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import deleteWorkItemFromTaskMutation from '../graphql/delete_task_from_work_item.mutation.graphql';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
-import WorkItemDetail from './work_item_detail.vue';
 
 export default {
   i18n: {
@@ -12,7 +11,7 @@ export default {
   components: {
     GlAlert,
     GlModal,
-    WorkItemDetail,
+    WorkItemDetail: () => import('./work_item_detail.vue'),
   },
   props: {
     workItemId: {
@@ -46,11 +45,17 @@ export default {
       default: null,
     },
   },
-  emits: ['workItemDeleted', 'close'],
+  emits: ['workItemDeleted', 'close', 'update-modal'],
   data() {
     return {
       error: undefined,
+      updatedWorkItemId: null,
     };
+  },
+  computed: {
+    displayedWorkItemId() {
+      return this.updatedWorkItemId || this.workItemId;
+    },
   },
   methods: {
     deleteWorkItem() {
@@ -116,6 +121,7 @@ export default {
         });
     },
     closeModal() {
+      this.updatedWorkItemId = null;
       this.error = '';
       this.$emit('close');
     },
@@ -127,6 +133,10 @@ export default {
     },
     show() {
       this.$refs.modal.show();
+    },
+    updateModal($event, workItemId) {
+      this.updatedWorkItemId = workItemId;
+      this.$emit('update-modal', $event, workItemId);
     },
   },
 };
@@ -149,11 +159,12 @@ export default {
     <work-item-detail
       is-modal
       :work-item-parent-id="issueGid"
-      :work-item-id="workItemId"
+      :work-item-id="displayedWorkItemId"
       :work-item-iid="workItemIid"
       class="gl-p-5 gl-mt-n3"
       @close="hide"
       @deleteWorkItem="deleteWorkItem"
+      @update-modal="updateModal"
     />
   </gl-modal>
 </template>

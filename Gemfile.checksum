@@ -310,7 +310,7 @@
 {"name":"kramdown","version":"2.3.2","platform":"ruby","checksum":"cb4530c2e9d16481591df2c9336723683c354e5416a5dd3e447fa48215a6a71c"},
 {"name":"kramdown-parser-gfm","version":"1.1.0","platform":"ruby","checksum":"fb39745516427d2988543bf01fc4cf0ab1149476382393e0e9c48592f6581729"},
 {"name":"launchy","version":"2.5.0","platform":"ruby","checksum":"954243c4255920982ce682f89a42e76372dba94770bf09c23a523e204bdebef5"},
-{"name":"lefthook","version":"1.2.6","platform":"ruby","checksum":"8d8ab03a559d1f5d40b4416072edf5ebb22eddfc74b75479458edd5318a3de63"},
+{"name":"lefthook","version":"1.2.7","platform":"ruby","checksum":"82736715006361aac32b9ae36086288691c024ff471a9df056d09535e5546ca3"},
 {"name":"letter_opener","version":"1.7.0","platform":"ruby","checksum":"095bc0d58e006e5b43ea7d219e64ecf2de8d1f7d9dafc432040a845cf59b4725"},
 {"name":"letter_opener_web","version":"2.0.0","platform":"ruby","checksum":"33860ad41e1785d75456500e8ca8bba8ed71ee6eaf08a98d06bbab67c5577b6f"},
 {"name":"libyajl2","version":"1.2.0","platform":"ruby","checksum":"1117cd1e48db013b626e36269bbf1cef210538ca6d2e62d3fa3db9ded005b258"},

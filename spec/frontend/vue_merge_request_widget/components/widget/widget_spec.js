@@ -73,6 +73,13 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(findStatusIcon().props()).toMatchObject({ iconName: 'failed', isLoading: false });
     });
 
+    it('displays the error text when :has-error is true', () => {
+      createComponent({
+        propsData: { hasError: true, errorText: 'API error' },
+      });
+      expect(wrapper.findByText('API error').exists()).toBe(true);
+    });
+
     it('displays loading icon until request is made and then displays status icon when the request is complete', async () => {
       const fetchCollapsedData = jest
         .fn()

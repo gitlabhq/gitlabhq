@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Value Streams Dashboard **(PREMIUM)**
 
-> Introduced in GitLab 15.8 as a [Closed Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#closed-beta) feature.
+> Introduced in GitLab 15.8 as a Closed [Beta](../../policy/alpha-beta-support.md#beta-features) feature.
 
 You can leave feedback on dashboard bugs or functionality in [issue 381787](https://gitlab.com/gitlab-org/gitlab/-/issues/381787).
 
@@ -31,7 +31,7 @@ The Value Streams Dashboard allows you to:
 - Aggregate data records from different APIs.
 - Track software performance (DORA) and flow of value (VSA) across the organization.
 
-## DevSecOps metrics comparison
+## DevOps metrics comparison
 
 The DevOps metrics comparison displays DORA4 and flow metrics for a group or project in the
 month-to-date, last month, the month before, and the past 180 days.
@@ -59,4 +59,3 @@ For example, the parameter `query=gitlab-org/gitlab-foss,gitlab-org/gitlab,gitla
 - `gitlab-org` group
 - `gitlab-ui` project
 - `gitlab-org/plan-stage` subgroup
-- Select which groups, subgroups, or projects to display on the page. Each of them has its own widget.

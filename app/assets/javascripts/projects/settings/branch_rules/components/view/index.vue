@@ -56,6 +56,7 @@ export default {
       },
       update({ project: { branchRules } }) {
         const branchRule = branchRules.nodes.find((rule) => rule.name === this.branch);
+        this.branchRule = branchRule;
         this.branchProtection = branchRule?.branchProtection;
         this.approvalRules = branchRule?.approvalRules;
         this.statusChecks = branchRule?.externalStatusChecks?.nodes || [];
@@ -69,6 +70,7 @@ export default {
       branchProtection: {},
       approvalRules: {},
       statusChecks: [],
+      branchRule: {},
       matchingBranchesCount: null,
     };
   },
@@ -88,12 +90,12 @@ export default {
     },
     allowedToMergeHeader() {
       return sprintf(this.$options.i18n.allowedToMergeHeader, {
-        total: this.mergeAccessLevels.total,
+        total: this.mergeAccessLevels?.total || 0,
       });
     },
     allowedToPushHeader() {
       return sprintf(this.$options.i18n.allowedToPushHeader, {
-        total: this.pushAccessLevels.total,
+        total: this.pushAccessLevels?.total || 0,
       });
     },
     approvalsHeader() {
@@ -141,7 +143,7 @@ export default {
 
 <template>
   <gl-loading-icon v-if="$apollo.loading" />
-  <div v-else-if="!branchProtection">{{ $options.i18n.noData }}</div>
+  <div v-else-if="!branchRule">{{ $options.i18n.noData }}</div>
   <div v-else>
     <strong data-testid="branch-title">{{ branchTitle }}</strong>
     <p v-if="!allBranches" class="gl-mb-3 gl-text-gray-400">

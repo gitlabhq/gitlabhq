@@ -1,0 +1,26 @@
+#import "~/ci/ci_variable_list/graphql/fragments/ci_variable.fragment.graphql"
+
+mutation updateGroupVariable($variable: CiVariable!, $endpoint: String!, $fullPath: ID!, $id: ID!) {
+  ciVariableMutation: updateGroupVariable(
+    variable: $variable
+    endpoint: $endpoint
+    fullPath: $fullPath
+    id: $id
+  ) @client {
+    group {
+      id
+      ciVariables {
+        nodes {
+          ...BaseCiVariable
+          ... on CiGroupVariable {
+            environmentScope
+            masked
+            protected
+            raw
+          }
+        }
+      }
+    }
+    errors
+  }
+}

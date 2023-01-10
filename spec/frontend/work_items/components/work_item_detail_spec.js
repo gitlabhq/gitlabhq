@@ -12,6 +12,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { stubComponent } from 'helpers/stub_component';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
@@ -23,6 +24,7 @@ import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
+import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -64,6 +66,7 @@ describe('WorkItemDetail component', () => {
   const assigneesSubscriptionHandler = jest
     .fn()
     .mockResolvedValue(workItemAssigneesSubscriptionResponse);
+  const showModalHandler = jest.fn();
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -83,6 +86,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemType = () => wrapper.find('[data-testid="work-item-type"]');
   const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
+  const findModal = () => wrapper.findComponent(WorkItemDetailModal);
 
   const createComponent = ({
     isModal = false,
@@ -131,6 +135,11 @@ describe('WorkItemDetail component', () => {
       stubs: {
         WorkItemWeight: true,
         WorkItemIteration: true,
+        WorkItemDetailModal: stubComponent(WorkItemDetailModal, {
+          methods: {
+            show: showModalHandler,
+          },
+        }),
       },
     });
   };
@@ -654,19 +663,68 @@ describe('WorkItemDetail component', () => {
       expect(findHierarchyTree().exists()).toBe(false);
     });
 
-    it('renders children tree when work item is an Objective', async () => {
+    describe('work item has children', () => {
       const objectiveWorkItem = workItemResponseFactory({
         workItemType: objectiveType,
         confidential: true,
       });
       const handler = jest.fn().mockResolvedValue(objectiveWorkItem);
-      createComponent({ handler });
-      await waitForPromises();
 
-      expect(findHierarchyTree().exists()).toBe(true);
-      expect(findHierarchyTree().props()).toMatchObject({
-        parentWorkItemType: objectiveType.name,
-        confidential: objectiveWorkItem.data.workItem.confidential,
+      it('renders children tree when work item is an Objective', async () => {
+        createComponent({ handler });
+        await waitForPromises();
+
+        expect(findHierarchyTree().exists()).toBe(true);
+      });
+
+      it('renders a modal', async () => {
+        createComponent({ handler });
+        await waitForPromises();
+
+        expect(findModal().exists()).toBe(true);
+      });
+
+      it('opens the modal with the child when `show-modal` is emitted', async () => {
+        createComponent({ handler });
+        await waitForPromises();
+
+        const event = {
+          preventDefault: jest.fn(),
+        };
+
+        findHierarchyTree().vm.$emit('show-modal', event, { id: 'childWorkItemId' });
+        await waitForPromises();
+
+        expect(wrapper.findComponent(WorkItemDetailModal).props().workItemId).toBe(
+          'childWorkItemId',
+        );
+        expect(showModalHandler).toHaveBeenCalled();
+      });
+
+      describe('work item is rendered in a modal and has children', () => {
+        beforeEach(async () => {
+          createComponent({
+            isModal: true,
+            handler,
+          });
+
+          await waitForPromises();
+        });
+
+        it('does not render a new modal', () => {
+          expect(findModal().exists()).toBe(false);
+        });
+
+        it('emits `update-modal` when `show-modal` is emitted', async () => {
+          const event = {
+            preventDefault: jest.fn(),
+          };
+
+          findHierarchyTree().vm.$emit('show-modal', event, { id: 'childWorkItemId' });
+          await waitForPromises();
+
+          expect(wrapper.emitted('update-modal')).toBeDefined();
+        });
       });
     });
   });

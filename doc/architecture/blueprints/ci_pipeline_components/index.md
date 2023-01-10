@@ -134,6 +134,24 @@ For best experience with any systems made of components it's fundamental that co
   The version identifies the exact interface and behavior of the component.
 - **Resolvable**: when a component depends on another component, this dependency must be explicit and trackable.
 
+### Predictable components
+
+Eventually, we want to make CI Catalog Components predictable. Including a
+component by its path, using a fixed `@` version, should always return the same
+configuration, regardless of a context from which it is getting included from.
+The resulting configuration should be the same for a given component version
+and the set of inputs passed using `with:` keyword, hence it should be
+[deterministic](https://en.wikipedia.org/wiki/Deterministic_algorithm).
+
+A component should not produce side effects by being included and should be
+[referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency).
+
+Making components predictable is a process, and we may not be able to achieve
+this without significantly redesigning CI templates, what could be disruptive
+for users and customers right now. The predictability, determinism, referential
+transparency and making CI components predictable is still important for us,
+but we may be unable to achieve it early iterations.
+
 ## Structure of a component
 
 A pipeline component is identified by the path to a repository or directory that defines it
@@ -143,7 +161,8 @@ For example: `gitlab-org/dast@1.0`.
 
 ### The component path
 
-A component path must contain at least the component YAML and optionally a related `README.md` documentation file.
+A component path must contain at least the component YAML and optionally a
+related `README.md` documentation file.
 
 The component path can be:
 

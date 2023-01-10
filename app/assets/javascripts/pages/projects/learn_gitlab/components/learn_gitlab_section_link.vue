@@ -22,7 +22,7 @@ export default {
     GlTooltip,
   },
   i18n: {
-    contactAdmin: s__('LearnGitlab|Contact your administrator to start a free Ultimate trial.'),
+    contactAdmin: s__('LearnGitlab|Contact your administrator to enable this action.'),
     viewAdminList: s__('LearnGitlab|View administrator list'),
     watchHow: __('Watch how'),
   },
@@ -49,6 +49,9 @@ export default {
     },
     openInNewTab() {
       return ACTION_LABELS[this.action]?.openInNewTab === true || this.value.openInNewTab === true;
+    },
+    popoverText() {
+      return this.value.message || this.$options.i18n.contactAdmin;
     },
   },
   methods: {
@@ -101,7 +104,7 @@ export default {
           category="tertiary"
           icon="question-o"
           class="ml-auto"
-          :aria-label="$options.i18n.contactAdmin"
+          :aria-label="popoverText"
           size="small"
           data-testid="contact-admin-popover-trigger"
         />
@@ -111,7 +114,7 @@ export default {
           triggers="hover focus"
           data-testid="contact-admin-popover"
         >
-          <p>{{ $options.i18n.contactAdmin }}</p>
+          <p>{{ popoverText }}</p>
           <gl-link
             :href="value.url"
             class="font-size-inherit"

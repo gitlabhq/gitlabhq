@@ -967,6 +967,23 @@ To determine which runners need to be upgraded:
 
 1. Filter the list by status to view which individual runners need to be upgraded.
 
+## View statistics for runner performance **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377963) in GitLab 15.8.
+
+As an administrator, you can view runner statistics to learn about the runner fleet performance.
+
+1. Select **Main menu > Admin** and on the left sidebar, select **CI/CD > Runners**.
+1. Select **View metrics** under **Runners performance**.
+
+The **Median job queued time** value is calculated by sampling the queue duration of the
+most recent 100 jobs that were run by Instance runners. Jobs from only the latest 5000
+runners are considered.
+
+The median is a value that falls into the 50th percentile: half of the jobs
+queued for longer than the median value, and half of the jobs queued for less than the
+median value.
+
 ## Authentication token security
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.

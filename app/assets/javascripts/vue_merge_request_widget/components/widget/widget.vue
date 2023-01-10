@@ -42,7 +42,8 @@ export default {
      */
     value: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
     loadingText: {
       type: String,
@@ -56,7 +57,8 @@ export default {
     },
     fetchCollapsedData: {
       type: Function,
-      required: true,
+      required: false,
+      default: undefined,
     },
     fetchExpandedData: {
       type: Function,
@@ -119,6 +121,12 @@ export default {
       required: false,
       default: null,
     },
+    // When this is provided, the widget will display an error message in the summary section.
+    hasError: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -138,8 +146,17 @@ export default {
     summaryStatusIcon() {
       return this.summaryError ? this.$options.failedStatusIcon : this.statusIconName;
     },
+    hasActionButtons() {
+      return this.actionButtons.length > 0 || Boolean(this.$scopedSlots['action-buttons']);
+    },
   },
   watch: {
+    hasError: {
+      handler(newValue) {
+        this.summaryError = newValue ? this.errorText : null;
+      },
+      immediate: true,
+    },
     isLoading(newValue) {
       this.$emit('is-loading', newValue);
     },
@@ -154,7 +171,9 @@ export default {
     this.telemetryHub?.viewed();
 
     try {
-      await this.fetch(this.fetchCollapsedData, FETCH_TYPE_COLLAPSED);
+      if (this.fetchCollapsedData) {
+        await this.fetch(this.fetchCollapsedData, FETCH_TYPE_COLLAPSED);
+      }
     } catch {
       this.summaryError = this.errorText;
     }
@@ -258,7 +277,7 @@ export default {
             v-if="helpPopover"
             icon="information-o"
             :options="helpPopover.options"
-            :class="{ 'gl-mr-3': actionButtons.length > 0 }"
+            :class="{ 'gl-mr-3': hasActionButtons }"
           >
             <template v-if="helpPopover.content">
               <p
@@ -275,12 +294,14 @@ export default {
               >
             </template>
           </help-popover>
-          <action-buttons
-            v-if="actionButtons.length > 0"
-            :widget="widgetName"
-            :tertiary-buttons="actionButtons"
-            @clickedAction="onActionClick"
-          />
+          <slot name="action-buttons">
+            <action-buttons
+              v-if="actionButtons.length > 0"
+              :widget="widgetName"
+              :tertiary-buttons="actionButtons"
+              @clickedAction="onActionClick"
+            />
+          </slot>
         </div>
         <div
           v-if="isCollapsible"

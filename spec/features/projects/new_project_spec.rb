@@ -552,7 +552,7 @@ RSpec.describe 'New project', :js, feature_category: :projects do
       it_behaves_like 'has instructions to enable OAuth'
     end
 
-    context 'as an admin' do
+    context 'as an admin', :do_not_mock_admin_mode_setting do
       let(:user) { create(:admin) }
       let(:oauth_config_instructions) { 'To enable importing projects from Bitbucket, as administrator you need to configure OAuth integration' }
 
@@ -571,7 +571,7 @@ RSpec.describe 'New project', :js, feature_category: :projects do
       it_behaves_like 'has instructions to enable OAuth'
     end
 
-    context 'as an admin' do
+    context 'as an admin', :do_not_mock_admin_mode_setting do
       let(:user) { create(:admin) }
       let(:oauth_config_instructions) { 'To enable importing projects from GitLab.com, as administrator you need to configure OAuth integration' }
 

@@ -1,0 +1,134 @@
+<script>
+import { GlDropdown, GlDropdownItem, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { s__, sprintf } from '~/locale';
+import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
+import securityReportMergeRequestDownloadPathsQuery from './graphql/security_report_merge_request_download_paths.query.graphql';
+
+export default {
+  name: 'WidgetSecurityReportsCE',
+  components: {
+    MrWidget,
+    GlDropdown,
+    GlDropdownItem,
+  },
+  directives: {
+    GlTooltip,
+  },
+  i18n: {
+    apiError: s__(
+      'SecurityReports|Failed to get security report information. Please reload the page or try again later.',
+    ),
+    scansHaveRun: s__('SecurityReports|Security scans have run'),
+  },
+  props: {
+    mr: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      hasError: false,
+    };
+  },
+  reportTypes: ['sast', 'secret_detection'],
+  apollo: {
+    reportArtifacts: {
+      query: securityReportMergeRequestDownloadPathsQuery,
+      variables() {
+        return {
+          projectPath: this.mr.targetProjectFullPath,
+          iid: String(this.mr.iid),
+          reportTypes: this.$options.reportTypes.map((r) => r.toUpperCase()),
+        };
+      },
+      update(data) {
+        const artifacts = [];
+
+        (data?.project?.mergeRequest?.headPipeline?.jobs?.nodes || []).forEach((reportType) => {
+          reportType.artifacts?.nodes.forEach((artifact) => {
+            if (artifact.fileType !== 'TRACE') {
+              artifacts.push({
+                name: reportType.name,
+                id: reportType.id,
+                path: artifact.downloadPath,
+              });
+            }
+          });
+        });
+
+        return artifacts;
+      },
+      error() {
+        this.hasError = true;
+      },
+    },
+  },
+  computed: {
+    artifacts() {
+      return this.reportArtifacts || [];
+    },
+  },
+  methods: {
+    handleIsLoading(value) {
+      this.isLoading = value;
+    },
+
+    artifactText({ name }) {
+      return sprintf(s__('SecurityReports|Download %{artifactName}'), {
+        artifactName: name,
+      });
+    },
+  },
+  widgetHelpPopover: {
+    options: { title: s__('ciReport|Security scan results') },
+    content: {
+      text: s__(
+        'ciReport|New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch.',
+      ),
+      learnMorePath: helpPagePath('user/application_security/index', {
+        anchor: 'view-security-scan-information-in-merge-requests',
+      }),
+    },
+  },
+  icons: EXTENSION_ICONS,
+};
+</script>
+
+<template>
+  <mr-widget
+    :has-error="hasError"
+    :error-text="$options.i18n.apiError"
+    :status-icon-name="$options.icons.warning"
+    :widget-name="$options.name"
+    :is-collapsible="false"
+    :help-popover="$options.widgetHelpPopover"
+    :summary="$options.i18n.scansHaveRun"
+    @is-loading="handleIsLoading"
+  >
+    <template v-if="artifacts.length > 0" #action-buttons>
+      <div class="gl-ml-3">
+        <gl-dropdown
+          v-gl-tooltip
+          icon="download"
+          size="small"
+          category="tertiary"
+          variant="confirm"
+          right
+        >
+          <gl-dropdown-item
+            v-for="artifact in artifacts"
+            :key="artifact.path"
+            :href="artifact.path"
+            :data-testid="`download-${artifact.name}`"
+            download
+          >
+            {{ artifactText(artifact) }}
+          </gl-dropdown-item>
+        </gl-dropdown>
+      </div>
+    </template>
+  </mr-widget>
+</template>

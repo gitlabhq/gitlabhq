@@ -134,6 +134,17 @@ describe('WorkItemTree', () => {
     expect(wrapper.emitted('removeChild')).toEqual([['gid://gitlab/WorkItem/2']]);
   });
 
+  it('emits `show-modal` on `click` event', () => {
+    const firstChild = findWorkItemLinkChildItems().at(0);
+    const event = {
+      childItem: 'gid://gitlab/WorkItem/2',
+    };
+
+    firstChild.vm.$emit('click', event);
+
+    expect(wrapper.emitted('show-modal')).toEqual([[event, event.childItem]]);
+  });
+
   it.each`
     description            | workItemType   | prefetch
     ${'prefetches'}        | ${'Issue'}     | ${true}

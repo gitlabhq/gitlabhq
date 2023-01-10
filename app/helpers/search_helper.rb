@@ -49,7 +49,7 @@ module SearchHelper
     search_pattern = Regexp.new(Regexp.escape(term), "i")
 
     generic_results = project_autocomplete + default_autocomplete + help_autocomplete
-    generic_results.concat(default_autocomplete_admin) if current_user.admin?
+    generic_results.concat(default_autocomplete_admin) if current_user.can_read_all_resources?
     generic_results.select { |result| result[:label] =~ search_pattern }
   end
 

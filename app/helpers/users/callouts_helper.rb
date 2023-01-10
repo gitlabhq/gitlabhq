@@ -49,7 +49,7 @@ module Users
 
     def show_registration_enabled_user_callout?
       !Gitlab.com? &&
-        current_user&.admin? &&
+        current_user&.can_admin_all_resources? &&
         signup_enabled? &&
         !user_dismissed?(REGISTRATION_ENABLED_CALLOUT) &&
         REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS.any? { |path| controller.controller_path.match?(path) }
@@ -59,7 +59,7 @@ module Users
     end
 
     def show_security_newsletter_user_callout?
-      current_user&.admin? &&
+      current_user&.can_admin_all_resources? &&
         !user_dismissed?(SECURITY_NEWSLETTER_CALLOUT)
     end
 

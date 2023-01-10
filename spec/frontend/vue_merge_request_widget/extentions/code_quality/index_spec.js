@@ -8,7 +8,10 @@ import extensionsContainer from '~/vue_merge_request_widget/components/extension
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import codeQualityExtension from '~/vue_merge_request_widget/extensions/code_quality';
 import httpStatusCodes, { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
-import { i18n } from '~/vue_merge_request_widget/extensions/code_quality/constants';
+import {
+  i18n,
+  codeQualityPrefixes,
+} from '~/vue_merge_request_widget/extensions/code_quality/constants';
 import {
   codeQualityResponseNewErrors,
   codeQualityResponseResolvedAndNewErrors,
@@ -90,7 +93,12 @@ describe('Code Quality extension', () => {
 
       await waitForPromises();
       expect(wrapper.text()).toBe(
-        i18n.degradedCopy(i18n.singularReport(codeQualityResponseNewErrors.new_errors)),
+        i18n
+          .singularCopy(
+            i18n.findings(codeQualityResponseNewErrors.new_errors, codeQualityPrefixes.new),
+          )
+          .replace(/%{strong_start}/g, '')
+          .replace(/%{strong_end}/g, ''),
       );
 
       expect(isCollapsable()).toBe(true);
@@ -106,8 +114,14 @@ describe('Code Quality extension', () => {
       expect(wrapper.text()).toBe(
         i18n
           .improvementAndDegradationCopy(
-            i18n.pluralReport(codeQualityResponseResolvedAndNewErrors.resolved_errors),
-            i18n.pluralReport(codeQualityResponseResolvedAndNewErrors.new_errors),
+            i18n.findings(
+              codeQualityResponseResolvedAndNewErrors.resolved_errors,
+              codeQualityPrefixes.fixed,
+            ),
+            i18n.findings(
+              codeQualityResponseResolvedAndNewErrors.new_errors,
+              codeQualityPrefixes.new,
+            ),
           )
           .replace(/%{strong_start}/g, '')
           .replace(/%{strong_end}/g, ''),
