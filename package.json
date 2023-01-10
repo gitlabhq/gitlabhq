@@ -122,7 +122,7 @@
     "dateformat": "^5.0.1",
     "deckar01-task_list": "^2.3.1",
     "diff": "^3.4.0",
-    "dompurify": "^2.4.2",
+    "dompurify": "^2.4.3",
     "dropzone": "^4.2.0",
     "editorconfig": "^0.15.3",
     "emoji-regex": "^10.0.0",

@@ -5,7 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import WikiContent from '~/pages/shared/wikis/components/wiki_content.vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 
@@ -88,7 +88,7 @@ describe('pages/shared/wikis/components/wiki_content', () => {
 
   describe('when loading content fails', () => {
     beforeEach(() => {
-      mock.onGet(PATH).replyOnce(httpStatus.INTERNAL_SERVER_ERROR, '');
+      mock.onGet(PATH).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, '');
       buildWrapper();
       return waitForPromises();
     });

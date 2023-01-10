@@ -247,8 +247,8 @@ works.
 
 ### Puma per worker maximum memory
 
-By default, each Puma worker is limited to 1024 MB of memory.
-This setting [can be adjusted](../administration/operations/puma.md#change-the-memory-limit-setting) and should be considered
+By default, each Puma worker is limited to 1.2 GB of memory.
+You can [adjust this memory setting](../administration/operations/puma.md#reducing-memory-use) and should do so
 if you must increase the number of Puma workers.
 
 ## Redis and Sidekiq

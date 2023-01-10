@@ -1,17 +1,14 @@
 import { GlAlert, GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
-
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { stubComponent } from 'helpers/stub_component';
 import ListPage from '~/packages_and_registries/package_registry/pages/list.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import OriginalPackageList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
 import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
-import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 import {
   PROJECT_RESOURCE_TYPE,
   GROUP_RESOURCE_TYPE,
@@ -62,7 +59,6 @@ describe('PackagesListApp', () => {
   const findListComponent = () => wrapper.findComponent(PackageList);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findDeletePackage = () => wrapper.findComponent(DeletePackage);
-  const findDeletePackagesModal = () => wrapper.findComponent(DeleteModal);
 
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(packagesListQuery()),
@@ -87,11 +83,6 @@ describe('PackagesListApp', () => {
         GlLink,
         PackageList,
         DeletePackage,
-        DeleteModal: stubComponent(DeleteModal, {
-          methods: {
-            show: jest.fn(),
-          },
-        }),
       },
     });
   };
@@ -296,18 +287,6 @@ describe('PackagesListApp', () => {
   describe('bulk delete package', () => {
     const items = [{ id: '1' }, { id: '2' }];
 
-    it('deletePackage is bound to package-list package:delete event', async () => {
-      mountComponent();
-
-      await waitForFirstRequest();
-
-      findListComponent().vm.$emit('delete', [{ id: '1' }, { id: '2' }]);
-
-      await waitForPromises();
-
-      expect(findDeletePackagesModal().props('itemsToBeDeleted')).toEqual(items);
-    });
-
     it('calls mutation with the right values and shows success alert', async () => {
       const mutationResolver = jest.fn().mockResolvedValue(packagesDestroyMutation());
       mountComponent({
@@ -317,8 +296,6 @@ describe('PackagesListApp', () => {
       await waitForFirstRequest();
 
       findListComponent().vm.$emit('delete', items);
-
-      findDeletePackagesModal().vm.$emit('confirm');
 
       expect(mutationResolver).toHaveBeenCalledWith({
         ids: items.map((item) => item.id),
@@ -340,8 +317,6 @@ describe('PackagesListApp', () => {
       await waitForFirstRequest();
 
       findListComponent().vm.$emit('delete', items);
-
-      findDeletePackagesModal().vm.$emit('confirm');
 
       await waitForPromises();
 

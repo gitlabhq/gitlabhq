@@ -7,7 +7,10 @@ import axios from '~/lib/utils/axios_utils';
 import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import codeQualityExtension from '~/vue_merge_request_widget/extensions/code_quality';
-import httpStatusCodes, { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
+import httpStatusCodes, {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_NO_CONTENT,
+} from '~/lib/utils/http_status';
 import {
   i18n,
   codeQualityPrefixes,
@@ -76,7 +79,7 @@ describe('Code Quality extension', () => {
     });
 
     it('displays failed loading text', async () => {
-      mockApi(httpStatusCodes.INTERNAL_SERVER_ERROR);
+      mockApi(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       createComponent();
 

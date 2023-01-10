@@ -63,6 +63,14 @@ describe('DeleteModal', () => {
     expect(wrapper.emitted('confirm')).toHaveLength(1);
   });
 
+  it('emits cancel when cancel event is emitted', () => {
+    expect(wrapper.emitted('cancel')).toBeUndefined();
+
+    findModal().vm.$emit('cancel');
+
+    expect(wrapper.emitted('cancel')).toHaveLength(1);
+  });
+
   it('show calls gl-modal show', () => {
     findModal().vm.show();
 

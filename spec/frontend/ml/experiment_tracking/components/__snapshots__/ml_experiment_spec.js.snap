@@ -95,8 +95,8 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
    
   <table
     aria-busy="false"
-    aria-colcount="6"
-    class="table b-table gl-table gl-mt-0! table-sm"
+    aria-colcount="9"
+    class="table b-table gl-table gl-mt-0! ml-candidate-table table-sm"
     role="table"
   >
     <!---->
@@ -117,7 +117,7 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
           scope="col"
         >
           <div>
-            L1 Ratio
+            Name
           </div>
         </th>
         <th
@@ -127,7 +127,7 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
           scope="col"
         >
           <div>
-            Rmse
+            Created at
           </div>
         </th>
         <th
@@ -137,7 +137,7 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
           scope="col"
         >
           <div>
-            Auc
+            User
           </div>
         </th>
         <th
@@ -147,11 +147,41 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
           scope="col"
         >
           <div>
-            Mae
+            L1 Ratio
           </div>
         </th>
         <th
           aria-colindex="5"
+          class=""
+          role="columnheader"
+          scope="col"
+        >
+          <div>
+            Rmse
+          </div>
+        </th>
+        <th
+          aria-colindex="6"
+          class=""
+          role="columnheader"
+          scope="col"
+        >
+          <div>
+            Auc
+          </div>
+        </th>
+        <th
+          aria-colindex="7"
+          class=""
+          role="columnheader"
+          scope="col"
+        >
+          <div>
+            Mae
+          </div>
+        </th>
+        <th
+          aria-colindex="8"
           aria-label="Details"
           class=""
           role="columnheader"
@@ -160,7 +190,7 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
           <div />
         </th>
         <th
-          aria-colindex="6"
+          aria-colindex="9"
           aria-label="Artifact"
           class=""
           role="columnheader"
@@ -183,39 +213,97 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
           class=""
           role="cell"
         >
-          0.4
+          <div
+            title="aCandidate"
+          >
+            aCandidate
+          </div>
         </td>
         <td
           aria-colindex="2"
           class=""
           role="cell"
         >
-          1
+          <time
+            class=""
+            datetime="2023-01-05T14:07:02.975Z"
+            title="2023-01-05T14:07:02.975Z"
+          >
+            in 2 years
+          </time>
         </td>
         <td
           aria-colindex="3"
           class=""
           role="cell"
-        />
+        >
+          <a
+            class="gl-link"
+            href="/root"
+            title="root"
+          >
+            @root
+          </a>
+        </td>
         <td
           aria-colindex="4"
           class=""
           role="cell"
-        />
+        >
+          <div
+            title="0.4"
+          >
+            0.4
+          </div>
+        </td>
         <td
           aria-colindex="5"
+          class=""
+          role="cell"
+        >
+          <div
+            title="1"
+          >
+            1
+          </div>
+        </td>
+        <td
+          aria-colindex="6"
+          class=""
+          role="cell"
+        >
+          <div
+            title=""
+          >
+            
+          </div>
+        </td>
+        <td
+          aria-colindex="7"
+          class=""
+          role="cell"
+        >
+          <div
+            title=""
+          >
+            
+          </div>
+        </td>
+        <td
+          aria-colindex="8"
           class=""
           role="cell"
         >
           <a
             class="gl-link"
             href="link_to_candidate1"
+            title="Details"
           >
             Details
           </a>
         </td>
         <td
-          aria-colindex="6"
+          aria-colindex="9"
           class=""
           role="cell"
         >
@@ -224,6 +312,7 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
             href="link_to_artifact"
             rel="noopener"
             target="_blank"
+            title="Artifacts"
           >
             Artifacts
           </a>
@@ -238,42 +327,104 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
           class=""
           role="cell"
         >
-          0.5
+          <div
+            title=""
+          >
+            
+          </div>
         </td>
         <td
           aria-colindex="2"
           class=""
           role="cell"
-        />
+        >
+          <time
+            class=""
+            datetime="2023-01-05T14:07:02.975Z"
+            title="2023-01-05T14:07:02.975Z"
+          >
+            in 2 years
+          </time>
+        </td>
         <td
           aria-colindex="3"
           class=""
           role="cell"
         >
-          0.3
+          <div>
+            -
+          </div>
         </td>
         <td
           aria-colindex="4"
           class=""
           role="cell"
-        />
+        >
+          <div
+            title="0.5"
+          >
+            0.5
+          </div>
+        </td>
         <td
           aria-colindex="5"
+          class=""
+          role="cell"
+        >
+          <div
+            title=""
+          >
+            
+          </div>
+        </td>
+        <td
+          aria-colindex="6"
+          class=""
+          role="cell"
+        >
+          <div
+            title="0.3"
+          >
+            0.3
+          </div>
+        </td>
+        <td
+          aria-colindex="7"
+          class=""
+          role="cell"
+        >
+          <div
+            title=""
+          >
+            
+          </div>
+        </td>
+        <td
+          aria-colindex="8"
           class=""
           role="cell"
         >
           <a
             class="gl-link"
             href="link_to_candidate2"
+            title="Details"
           >
             Details
           </a>
         </td>
         <td
-          aria-colindex="6"
+          aria-colindex="9"
           class=""
           role="cell"
-        />
+        >
+          <div
+            title="Artifacts"
+          >
+            
+        -
+      
+          </div>
+        </td>
       </tr>
       <tr
         class=""
@@ -284,42 +435,104 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
           class=""
           role="cell"
         >
-          0.5
+          <div
+            title=""
+          >
+            
+          </div>
         </td>
         <td
           aria-colindex="2"
           class=""
           role="cell"
-        />
+        >
+          <time
+            class=""
+            datetime="2023-01-05T14:07:02.975Z"
+            title="2023-01-05T14:07:02.975Z"
+          >
+            in 2 years
+          </time>
+        </td>
         <td
           aria-colindex="3"
           class=""
           role="cell"
         >
-          0.3
+          <div>
+            -
+          </div>
         </td>
         <td
           aria-colindex="4"
           class=""
           role="cell"
-        />
+        >
+          <div
+            title="0.5"
+          >
+            0.5
+          </div>
+        </td>
         <td
           aria-colindex="5"
+          class=""
+          role="cell"
+        >
+          <div
+            title=""
+          >
+            
+          </div>
+        </td>
+        <td
+          aria-colindex="6"
+          class=""
+          role="cell"
+        >
+          <div
+            title="0.3"
+          >
+            0.3
+          </div>
+        </td>
+        <td
+          aria-colindex="7"
+          class=""
+          role="cell"
+        >
+          <div
+            title=""
+          >
+            
+          </div>
+        </td>
+        <td
+          aria-colindex="8"
           class=""
           role="cell"
         >
           <a
             class="gl-link"
             href="link_to_candidate3"
+            title="Details"
           >
             Details
           </a>
         </td>
         <td
-          aria-colindex="6"
+          aria-colindex="9"
           class=""
           role="cell"
-        />
+        >
+          <div
+            title="Artifacts"
+          >
+            
+        -
+      
+          </div>
+        </td>
       </tr>
       <tr
         class=""
@@ -330,42 +543,104 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
           class=""
           role="cell"
         >
-          0.5
+          <div
+            title=""
+          >
+            
+          </div>
         </td>
         <td
           aria-colindex="2"
           class=""
           role="cell"
-        />
+        >
+          <time
+            class=""
+            datetime="2023-01-05T14:07:02.975Z"
+            title="2023-01-05T14:07:02.975Z"
+          >
+            in 2 years
+          </time>
+        </td>
         <td
           aria-colindex="3"
           class=""
           role="cell"
         >
-          0.3
+          <div>
+            -
+          </div>
         </td>
         <td
           aria-colindex="4"
           class=""
           role="cell"
-        />
+        >
+          <div
+            title="0.5"
+          >
+            0.5
+          </div>
+        </td>
         <td
           aria-colindex="5"
+          class=""
+          role="cell"
+        >
+          <div
+            title=""
+          >
+            
+          </div>
+        </td>
+        <td
+          aria-colindex="6"
+          class=""
+          role="cell"
+        >
+          <div
+            title="0.3"
+          >
+            0.3
+          </div>
+        </td>
+        <td
+          aria-colindex="7"
+          class=""
+          role="cell"
+        >
+          <div
+            title=""
+          >
+            
+          </div>
+        </td>
+        <td
+          aria-colindex="8"
           class=""
           role="cell"
         >
           <a
             class="gl-link"
             href="link_to_candidate4"
+            title="Details"
           >
             Details
           </a>
         </td>
         <td
-          aria-colindex="6"
+          aria-colindex="9"
           class=""
           role="cell"
-        />
+        >
+          <div
+            title="Artifacts"
+          >
+            
+        -
+      
+          </div>
+        </td>
       </tr>
       <tr
         class=""
@@ -376,42 +651,104 @@ exports[`MlExperiment with candidates renders correctly 1`] = `
           class=""
           role="cell"
         >
-          0.5
+          <div
+            title=""
+          >
+            
+          </div>
         </td>
         <td
           aria-colindex="2"
           class=""
           role="cell"
-        />
+        >
+          <time
+            class=""
+            datetime="2023-01-05T14:07:02.975Z"
+            title="2023-01-05T14:07:02.975Z"
+          >
+            in 2 years
+          </time>
+        </td>
         <td
           aria-colindex="3"
           class=""
           role="cell"
         >
-          0.3
+          <div>
+            -
+          </div>
         </td>
         <td
           aria-colindex="4"
           class=""
           role="cell"
-        />
+        >
+          <div
+            title="0.5"
+          >
+            0.5
+          </div>
+        </td>
         <td
           aria-colindex="5"
+          class=""
+          role="cell"
+        >
+          <div
+            title=""
+          >
+            
+          </div>
+        </td>
+        <td
+          aria-colindex="6"
+          class=""
+          role="cell"
+        >
+          <div
+            title="0.3"
+          >
+            0.3
+          </div>
+        </td>
+        <td
+          aria-colindex="7"
+          class=""
+          role="cell"
+        >
+          <div
+            title=""
+          >
+            
+          </div>
+        </td>
+        <td
+          aria-colindex="8"
           class=""
           role="cell"
         >
           <a
             class="gl-link"
             href="link_to_candidate5"
+            title="Details"
           >
             Details
           </a>
         </td>
         <td
-          aria-colindex="6"
+          aria-colindex="9"
           class=""
           role="cell"
-        />
+        >
+          <div
+            title="Artifacts"
+          >
+            
+        -
+      
+          </div>
+        </td>
       </tr>
       <!---->
       <!---->

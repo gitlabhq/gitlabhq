@@ -8,7 +8,10 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes, { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
+import httpStatusCodes, {
+  HTTP_STATUS_BAD_REQUEST,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+} from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
 import PipelineNewForm from '~/pipeline_new/components/pipeline_new_form.vue';
 import ciConfigVariablesQuery from '~/pipeline_new/graphql/queries/ci_config_variables.graphql';
@@ -365,7 +368,7 @@ describe('Pipeline New Form', () => {
       beforeEach(() => {
         mock
           .onGet(projectRefsEndpoint, { params: { search: '' } })
-          .reply(httpStatusCodes.INTERNAL_SERVER_ERROR);
+          .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
         findRefsDropdown().vm.$emit('loadingError');
       });
@@ -449,9 +452,7 @@ describe('Pipeline New Form', () => {
 
     describe('when the error response cannot be handled', () => {
       beforeEach(async () => {
-        mock
-          .onPost(pipelinesPath)
-          .reply(httpStatusCodes.INTERNAL_SERVER_ERROR, 'something went wrong');
+        mock.onPost(pipelinesPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, 'something went wrong');
 
         findForm().vm.$emit('submit', dummySubmitEvent);
 

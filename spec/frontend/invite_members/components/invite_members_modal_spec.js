@@ -24,7 +24,11 @@ import {
 import eventHub from '~/invite_members/event_hub';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus, { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_CREATED } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_BAD_REQUEST,
+  HTTP_STATUS_CREATED,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+} from '~/lib/utils/http_status';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import {
   displaySuccessfulInvitationAlert,
@@ -549,7 +553,7 @@ describe('InviteMembersModal', () => {
 
         it('displays the generic error for http server error', async () => {
           mockInvitationsApi(
-            httpStatus.INTERNAL_SERVER_ERROR,
+            HTTP_STATUS_INTERNAL_SERVER_ERROR,
             'Request failed with status code 500',
           );
 

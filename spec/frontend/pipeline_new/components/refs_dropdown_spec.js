@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 
 import RefsDropdown from '~/pipeline_new/components/refs_dropdown.vue';
 
@@ -166,7 +166,7 @@ describe('Pipeline New Form', () => {
     beforeEach(async () => {
       mock
         .onGet(projectRefsEndpoint, { params: { search: '' } })
-        .reply(httpStatusCodes.INTERNAL_SERVER_ERROR);
+        .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       findDropdown().vm.$emit('shown');
       await waitForPromises();

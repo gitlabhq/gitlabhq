@@ -215,7 +215,7 @@ To access private container registries, the GitLab Runner process can use:
 
 To define which option should be used, the runner process reads the configuration in this order:
 
-- A `DOCKER_AUTH_CONFIG` [CI/CD variable](../variables/index.md).
+- A `DOCKER_AUTH_CONFIG` [CI/CD variable](../variables/index.md) of the [type `Variable`](../variables/index.md#cicd-variable-types).
 - A `DOCKER_AUTH_CONFIG` environment variable set in the runner's `config.toml` file.
 - A `config.json` file in `$HOME/.docker` directory of the user running the process.
   If the `--user` flag is provided to run the child processes as unprivileged user,

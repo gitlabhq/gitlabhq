@@ -5,6 +5,7 @@ import * as commonUtils from '~/lib/utils/common_utils';
 import statusCodes, {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_SERVICE_UNAVAILABLE,
   HTTP_STATUS_UNAUTHORIZED,
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
@@ -138,7 +139,7 @@ describe('monitoring metrics_requests', () => {
       code                                | reason
       ${HTTP_STATUS_BAD_REQUEST}          | ${'Parameters are missing or incorrect'}
       ${HTTP_STATUS_UNPROCESSABLE_ENTITY} | ${"Expression can't be executed"}
-      ${statusCodes.SERVICE_UNAVAILABLE}  | ${'Query timed out or aborted'}
+      ${HTTP_STATUS_SERVICE_UNAVAILABLE}  | ${'Query timed out or aborted'}
     `('rejects with details: "$reason" after getting an HTTP $code error', ({ code, reason }) => {
       mock.onGet(prometheusEndpoint).reply(code, {
         status: 'error',

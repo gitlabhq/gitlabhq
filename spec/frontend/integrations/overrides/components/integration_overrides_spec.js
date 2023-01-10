@@ -8,7 +8,7 @@ import IntegrationOverrides from '~/integrations/overrides/components/integratio
 import IntegrationTabs from '~/integrations/overrides/components/integration_tabs.vue';
 
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 
@@ -125,7 +125,7 @@ describe('IntegrationOverrides', () => {
   describe('when request fails', () => {
     beforeEach(async () => {
       jest.spyOn(Sentry, 'captureException');
-      mockAxios.onGet(defaultProps.overridesPath).reply(httpStatus.INTERNAL_SERVER_ERROR);
+      mockAxios.onGet(defaultProps.overridesPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       createComponent();
       await waitForPromises();

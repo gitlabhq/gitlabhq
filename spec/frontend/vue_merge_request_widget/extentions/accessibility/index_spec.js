@@ -6,7 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import accessibilityExtension from '~/vue_merge_request_widget/extensions/accessibility';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { accessibilityReportResponseErrors, accessibilityReportResponseSuccess } from './mock_data';
 
 describe('Accessibility extension', () => {
@@ -53,7 +53,7 @@ describe('Accessibility extension', () => {
     });
 
     it('displays failed loading text', async () => {
-      mockApi(httpStatusCodes.INTERNAL_SERVER_ERROR);
+      mockApi(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       createComponent();
 

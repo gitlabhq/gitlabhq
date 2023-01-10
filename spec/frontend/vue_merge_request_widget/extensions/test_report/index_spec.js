@@ -8,7 +8,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
-import httpStatusCodes, { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
+import httpStatusCodes, {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_NO_CONTENT,
+} from '~/lib/utils/http_status';
 import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
 
 import { failedReport } from 'jest/ci/reports/mock_data/mock_data';
@@ -91,7 +94,7 @@ describe('Test report extension', () => {
     });
 
     it('with an error response, displays failed to load text', async () => {
-      mockApi(httpStatusCodes.INTERNAL_SERVER_ERROR);
+      mockApi(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       createComponent();
 
       await waitForPromises();

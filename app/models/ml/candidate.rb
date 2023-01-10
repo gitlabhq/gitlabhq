@@ -18,7 +18,7 @@ module Ml
 
     attribute :iid, default: -> { SecureRandom.uuid }
 
-    scope :including_metrics_and_params, -> { includes(:latest_metrics, :params) }
+    scope :including_relationships, -> { includes(:latest_metrics, :params, :user) }
 
     delegate :project_id, :project, to: :experiment
 

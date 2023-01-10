@@ -4,6 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import httpStatus, {
   HTTP_STATUS_ACCEPTED,
   HTTP_STATUS_CREATED,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_NO_CONTENT,
   HTTP_STATUS_NOT_FOUND,
 } from '~/lib/utils/http_status';
@@ -699,7 +700,7 @@ describe('Api', () => {
 
     describe('when an error occurs while fetching an issue template', () => {
       it('rejects the Promise', () => {
-        mock.onGet(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+        mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
         return new Promise((resolve) => {
           Api.issueTemplate(namespace, project, templateKey, templateType, () => {
@@ -737,7 +738,7 @@ describe('Api', () => {
 
     describe('when an error occurs while fetching issue templates', () => {
       it('rejects the Promise', () => {
-        mock.onGet(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+        mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
         Api.issueTemplates(namespace, project, templateType, () => {
           expect(mock.history.get).toHaveLength(1);
@@ -1032,7 +1033,7 @@ describe('Api', () => {
 
       describe('when an error occurs while fetching releases', () => {
         it('rejects the Promise', () => {
-          mock.onGet(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+          mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
           return Api.releases(dummyProjectPath).catch(() => {
             expect(mock.history.get).toHaveLength(1);
@@ -1056,7 +1057,7 @@ describe('Api', () => {
 
       describe('when an error occurs while fetching the release', () => {
         it('rejects the Promise', () => {
-          mock.onGet(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+          mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
           return Api.release(dummyProjectPath, dummyTagName).catch(() => {
             expect(mock.history.get).toHaveLength(1);
@@ -1084,7 +1085,7 @@ describe('Api', () => {
 
       describe('when an error occurs while creating the release', () => {
         it('rejects the Promise', () => {
-          mock.onPost(expectedUrl, release).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+          mock.onPost(expectedUrl, release).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
           return Api.createRelease(dummyProjectPath, release).catch(() => {
             expect(mock.history.post).toHaveLength(1);
@@ -1112,7 +1113,7 @@ describe('Api', () => {
 
       describe('when an error occurs while updating the release', () => {
         it('rejects the Promise', () => {
-          mock.onPut(expectedUrl, release).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+          mock.onPut(expectedUrl, release).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
           return Api.updateRelease(dummyProjectPath, dummyTagName, release).catch(() => {
             expect(mock.history.put).toHaveLength(1);
@@ -1140,7 +1141,7 @@ describe('Api', () => {
 
       describe('when an error occurs while creating the Release', () => {
         it('rejects the Promise', () => {
-          mock.onPost(expectedUrl, expectedLink).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+          mock.onPost(expectedUrl, expectedLink).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
           return Api.createReleaseLink(dummyProjectPath, dummyTagName, expectedLink).catch(() => {
             expect(mock.history.post).toHaveLength(1);
@@ -1165,7 +1166,7 @@ describe('Api', () => {
 
       describe('when an error occurs while deleting the Release', () => {
         it('rejects the Promise', () => {
-          mock.onDelete(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+          mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
           return Api.deleteReleaseLink(dummyProjectPath, dummyTagName, dummyLinkId).catch(() => {
             expect(mock.history.delete).toHaveLength(1);
@@ -1207,7 +1208,7 @@ describe('Api', () => {
 
     describe('when an error occurs while getting a raw file', () => {
       it('rejects the Promise', () => {
-        mock.onPost(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+        mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
         return Api.getRawFile(dummyProjectPath, dummyFilePath).catch(() => {
           expect(mock.history.get).toHaveLength(1);
@@ -1239,7 +1240,7 @@ describe('Api', () => {
 
     describe('when an error occurs while getting a raw file', () => {
       it('rejects the Promise', () => {
-        mock.onPost(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+        mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
         return Api.createProjectMergeRequest(dummyProjectPath).catch(() => {
           expect(mock.history.post).toHaveLength(1);

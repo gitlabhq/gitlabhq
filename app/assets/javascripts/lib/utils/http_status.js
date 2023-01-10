@@ -18,13 +18,13 @@ export const HTTP_STATUS_BAD_REQUEST = 400;
 export const HTTP_STATUS_UNAUTHORIZED = 401;
 export const HTTP_STATUS_FORBIDDEN = 403;
 export const HTTP_STATUS_NOT_FOUND = 404;
+export const HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
+export const HTTP_STATUS_SERVICE_UNAVAILABLE = 503;
 
 // TODO move the rest of the status codes to primitive constants
 // https://docs.gitlab.com/ee/development/fe_guide/style/javascript.html#export-constants-as-primitives
 const httpStatusCodes = {
   OK: 200,
-  INTERNAL_SERVER_ERROR: 500,
-  SERVICE_UNAVAILABLE: 503,
 };
 
 export const successCodes = [

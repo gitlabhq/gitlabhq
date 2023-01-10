@@ -121,12 +121,13 @@ RSpec.describe Ml::Candidate, factory_default: :keep do
     end
   end
 
-  describe "#including_metrics_and_params" do
-    subject { described_class.including_metrics_and_params.find_by(id: candidate.id) }
+  describe "#including_relationships" do
+    subject { described_class.including_relationships.find_by(id: candidate.id) }
 
     it 'loads latest metrics and params', :aggregate_failures do
       expect(subject.association_cached?(:latest_metrics)).to be(true)
       expect(subject.association_cached?(:params)).to be(true)
+      expect(subject.association_cached?(:user)).to be(true)
     end
   end
 end

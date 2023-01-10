@@ -1,8 +1,9 @@
 import axios from '~/lib/utils/axios_utils';
 import { backOff } from '~/lib/utils/common_utils';
-import statusCodes, {
+import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_SERVICE_UNAVAILABLE,
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
 import { PROMETHEUS_TIMEOUT } from '../constants';
@@ -39,7 +40,7 @@ export const getPrometheusQueryData = (prometheusEndpoint, params, opts) =>
       if (
         response.status === HTTP_STATUS_BAD_REQUEST ||
         response.status === HTTP_STATUS_UNPROCESSABLE_ENTITY ||
-        response.status === statusCodes.SERVICE_UNAVAILABLE
+        response.status === HTTP_STATUS_SERVICE_UNAVAILABLE
       ) {
         const { data } = response;
         if (data?.status === 'error' && data?.error) {

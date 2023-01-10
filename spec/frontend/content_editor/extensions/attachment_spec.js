@@ -8,7 +8,7 @@ import Video from '~/content_editor/extensions/video';
 import Link from '~/content_editor/extensions/link';
 import Loading from '~/content_editor/extensions/loading';
 import { VARIANT_DANGER } from '~/flash';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 import {
@@ -167,7 +167,7 @@ describe('content_editor/extensions/attachment', () => {
 
       describe('when uploading request fails', () => {
         beforeEach(() => {
-          mock.onPost().reply(httpStatus.INTERNAL_SERVER_ERROR);
+          mock.onPost().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
         });
 
         it('resets the doc to original state', async () => {
@@ -246,7 +246,7 @@ describe('content_editor/extensions/attachment', () => {
 
       describe('when uploading request fails', () => {
         beforeEach(() => {
-          mock.onPost().reply(httpStatus.INTERNAL_SERVER_ERROR);
+          mock.onPost().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
         });
 
         it('resets the doc to orginal state', async () => {

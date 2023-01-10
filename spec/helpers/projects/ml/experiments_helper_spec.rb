@@ -18,7 +18,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
   end
 
   let_it_be(:candidate1) do
-    create(:ml_candidates, experiment: experiment, user: project.creator).tap do |c|
+    create(:ml_candidates, experiment: experiment, user: project.creator, name: 'candidate1').tap do |c|
       c.params.build([{ name: 'param2', value: 'p3' }, { name: 'param3', value: 'p4' }])
       c.metrics.create!(name: 'metric3', value: 0.4)
     end
@@ -27,18 +27,39 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
   let_it_be(:candidates) { [candidate0, candidate1] }
 
   describe '#candidates_table_items' do
-    subject { helper.candidates_table_items(candidates) }
+    subject { Gitlab::Json.parse(helper.candidates_table_items(candidates)) }
 
-    it 'creates the correct model for the table' do
-      expected_value = [
+    it 'creates the correct model for the table', :aggregate_failures do
+      expected_values = [
         { 'param1' => 'p1', 'param2' => 'p2', 'metric1' => '0.1000', 'metric2' => '0.2000', 'metric3' => '0.3000',
           'artifact' => "/#{project.full_path}/-/packages/#{candidate0.artifact.id}",
-          'details' => "/#{project.full_path}/-/ml/candidates/#{candidate0.iid}" },
+          'details' => "/#{project.full_path}/-/ml/candidates/#{candidate0.iid}",
+          'name' => candidate0.name,
+          'created_at' => candidate0.created_at.strftime('%Y-%m-%dT%H:%M:%S.%LZ'),
+          'user' => { 'username' => candidate0.user.username, 'path' => "/#{candidate0.user.username}" } },
         { 'param2' => 'p3', 'param3' => 'p4', 'metric3' => '0.4000',
-          'artifact' => nil, 'details' => "/#{project.full_path}/-/ml/candidates/#{candidate1.iid}" }
+          'artifact' => nil, 'details' => "/#{project.full_path}/-/ml/candidates/#{candidate1.iid}",
+          'name' => candidate1.name,
+          'created_at' => candidate1.created_at.strftime('%Y-%m-%dT%H:%M:%S.%LZ'),
+          'user' => { 'username' => candidate1.user.username, 'path' => "/#{candidate1.user.username}" } }
       ]
 
-      expect(Gitlab::Json.parse(subject)).to match_array(expected_value)
+      subject.sort_by! { |s| s[:name] }
+
+      expect(subject[0]).to eq(expected_values[0])
+      expect(subject[1]).to eq(expected_values[1])
+    end
+
+    context 'when candidate does not have user' do
+      let(:candidates) { [candidate0] }
+
+      before do
+        allow(candidate0).to receive(:user).and_return(nil)
+      end
+
+      it 'has the user property, but is nil' do
+        expect(subject[0]['user']).to be_nil
+      end
     end
   end
 

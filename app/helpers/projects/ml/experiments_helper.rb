@@ -11,7 +11,10 @@ module Projects
             **candidate.params.to_h { |p| [p.name, p.value] },
             **candidate.latest_metrics.to_h { |m| [m.name, number_with_precision(m.value, precision: 4)] },
             artifact: link_to_artifact(candidate),
-            details: link_to_details(candidate)
+            details: link_to_details(candidate),
+            name: candidate.name,
+            created_at: candidate.created_at,
+            user: user_info(candidate)
           }
         end
 
@@ -57,6 +60,17 @@ module Projects
         experiment = candidate.experiment
 
         project_ml_experiment_path(experiment.project, experiment.iid)
+      end
+
+      def user_info(candidate)
+        user = candidate.user
+
+        return unless user.present?
+
+        {
+          username: user.username,
+          path: user_path(user)
+        }
       end
     end
   end

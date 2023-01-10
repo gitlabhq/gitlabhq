@@ -110,6 +110,11 @@ export const FETCH_PACKAGE_PIPELINES_ERROR_MESSAGE = s__(
 export const FETCH_PACKAGE_METADATA_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while fetching the package metadata.',
 );
+
+export const DELETE_PACKAGES_TRACKING_ACTION = 'delete_packages';
+export const REQUEST_DELETE_PACKAGES_TRACKING_ACTION = 'request_delete_packages';
+export const CANCEL_DELETE_PACKAGES_TRACKING_ACTION = 'cancel_delete_packages';
+
 export const DELETE_PACKAGES_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting packages.',
 );

@@ -7,8 +7,9 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import PipelinesTable from '~/commit/pipelines/pipelines_table.vue';
-import httpStatusCodes, {
+import {
   HTTP_STATUS_BAD_REQUEST,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_UNAUTHORIZED,
 } from '~/lib/utils/http_status';
 import { createAlert } from '~/flash';
@@ -246,10 +247,10 @@ describe('Pipelines table in Commits and Merge requests', () => {
           'An error occurred while trying to run a new pipeline for this merge request.';
 
         it.each`
-          status                                   | message
-          ${HTTP_STATUS_BAD_REQUEST}               | ${defaultMsg}
-          ${HTTP_STATUS_UNAUTHORIZED}              | ${permissionsMsg}
-          ${httpStatusCodes.INTERNAL_SERVER_ERROR} | ${defaultMsg}
+          status                               | message
+          ${HTTP_STATUS_BAD_REQUEST}           | ${defaultMsg}
+          ${HTTP_STATUS_UNAUTHORIZED}          | ${permissionsMsg}
+          ${HTTP_STATUS_INTERNAL_SERVER_ERROR} | ${defaultMsg}
         `('displays permissions error message', async ({ status, message }) => {
           const response = { response: { status } };
 

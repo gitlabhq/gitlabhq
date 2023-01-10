@@ -14,24 +14,22 @@ features of GitLab.
 
 To reduce memory use, Puma forks worker processes. Each time a worker is created,
 it shares memory with the primary process. The worker uses additional memory only
-when it changes or adds to its memory pages.
+when it changes or adds to its memory pages. This can lead to Puma workers using
+more physical memory over time as workers handle additional web requests. The amount of memory
+used over time depends on the use of GitLab. The more features used by GitLab users,
+the higher the expected memory use over time.
 
-Memory use increases over time, but you can use Puma Worker Killer to recover memory.
+To stop uncontrolled memory growth, the GitLab Rails application runs a supervision thread
+that automatically restarts workers if they exceed a given resident set size (RSS) threshold
+for a certain amount of time.
 
-By default:
-
-- The [Puma Worker Killer](https://github.com/schneems/puma_worker_killer) restarts a worker if it
-  exceeds a [memory limit](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/cluster/puma_worker_killer_initializer.rb).
-- Rolling restarts of Puma workers are performed every 12 hours.
-
-### Change the memory limit setting
-
-To change the memory limit setting:
+GitLab sets a default of `1200Mb` for the memory limit. To override the default value,
+set `per_worker_max_memory_mb` to the new RSS limit in megabytes:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   puma['per_worker_max_memory_mb'] = 1024
+   puma['per_worker_max_memory_mb'] = 1024 # 1GB
    ```
 
 1. Reconfigure GitLab:
@@ -40,48 +38,40 @@ To change the memory limit setting:
    sudo gitlab-ctl reconfigure
    ```
 
-When workers are killed and replaced, capacity to run GitLab is reduced,
-and CPU is consumed. Set `per_worker_max_memory_mb` to a higher value if the worker killer
-is replacing workers too often.
+When workers are restarted, capacity to run GitLab is reduced for a short
+period of time. Set `per_worker_max_memory_mb` to a higher value if workers are replaced too often.
 
 Worker count is calculated based on CPU cores. A small GitLab deployment
 with 4-8 workers may experience performance issues if workers are being restarted
 too often (once or more per minute).
 
-A higher value of `1200` or more would be beneficial if the server has free memory.
+A higher value of `1200` or more could be beneficial if the server has free memory.
 
-### Monitor worker memory
+### Monitor worker restarts
 
-The worker killer checks memory every 20 seconds.
+GitLab emits log events if workers are restarted due to high memory use.
 
-To monitor the worker killer, use [the Puma log](../logs/index.md#puma_stdoutlog) `/var/log/gitlab/puma/puma_stdout.log`.
-For example:
+The following is an example of one of these log events in `/var/log/gitlab/gitlab-rails/application_json.log`:
 
-```plaintext
-PumaWorkerKiller: Out of memory. 4 workers consuming total: 4871.23828125 MB
-out of max: 4798.08 MB. Sending TERM to pid 26668 consuming 1001.00390625 MB.
+```json
+{
+  "severity": "WARN",
+  "time": "2023-01-04T09:45:16.173Z",
+  "correlation_id": null,
+  "pid": 2725,
+  "worker_id": "puma_0",
+  "memwd_handler_class": "Gitlab::Memory::Watchdog::PumaHandler",
+  "memwd_sleep_time_s": 5,
+  "memwd_rss_bytes": 1077682176,
+  "memwd_max_rss_bytes": 629145600,
+  "memwd_max_strikes": 5,
+  "memwd_cur_strikes": 6,
+  "message": "rss memory limit exceeded"
+}
 ```
 
-From this output:
-
-- The formula that calculates the maximum memory value results in workers
-  being killed before they reach the `per_worker_max_memory_mb` value.
-- In GitLab 13.4 and earlier, the default values for the formula were 550 MB for the primary
-  and 850 MB for each worker.
-- In GitLab 13.5 and later, the values are primary: 800 MB, worker: 1024 MB.
-- The threshold for workers to be killed is set at 98% of the limit:
-
-  ```plaintext
-  0.98 * ( 800 + ( worker_processes * 1024MB ) )
-  ```
-
-- In the log output above, `0.98 * ( 800 + ( 4 * 1024 ) )` returns the
-  `max: 4798.08 MB` value.
-
-Increasing the maximum to `1200`, for example, would set a `max: 5488 MB` value.
-
-Workers use additional memory on top of the shared memory. The amount of memory
-depends on a site's use of GitLab.
+`memwd_rss_bytes` is the actual amount of memory consumed, and `memwd_max_rss_bytes` is the
+RSS limit set through `per_worker_max_memory_mb`.
 
 ## Change the worker timeout
 
@@ -146,7 +136,7 @@ for details.
 When running Puma in single mode, some features are not supported:
 
 - [Phased restart](https://gitlab.com/gitlab-org/gitlab/-/issues/300665)
-- [Puma Worker Killer](https://gitlab.com/gitlab-org/gitlab/-/issues/300664)
+- [Memory killers](#reducing-memory-use)
 
 To learn more, visit [epic 5303](https://gitlab.com/groups/gitlab-org/-/epics/5303).
 

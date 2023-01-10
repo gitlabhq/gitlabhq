@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
-import { createAlert, VARIANT_INFO } from '~/flash';
+import { createAlert, VARIANT_INFO, VARIANT_SUCCESS, VARIANT_DANGER } from '~/flash';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/constants';
@@ -20,7 +20,6 @@ import DeletePackage from '~/packages_and_registries/package_registry/components
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import PackageList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
-import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 
 export default {
   components: {
@@ -31,14 +30,12 @@ export default {
     PackageList,
     PackageTitle,
     PackageSearch,
-    DeleteModal,
     DeletePackage,
   },
   inject: ['emptyListIllustration', 'isGroupPage', 'fullPath'],
   data() {
     return {
       alertVariables: null,
-      itemsToBeDeleted: [],
       packages: {},
       sort: '',
       filters: {},
@@ -117,15 +114,13 @@ export default {
         historyReplaceState(cleanUrl);
       }
     },
-    async confirmDelete() {
-      const { itemsToBeDeleted } = this;
-      this.itemsToBeDeleted = [];
+    async deletePackages(packageEntities) {
       this.mutationLoading = true;
       try {
         const { data } = await this.$apollo.mutate({
           mutation: destroyPackagesMutation,
           variables: {
-            ids: itemsToBeDeleted.map((i) => i.id),
+            ids: packageEntities.map((i) => i.id),
           },
           awaitRefetchQueries: true,
           refetchQueries: [
@@ -140,21 +135,17 @@ export default {
           throw new Error(data.destroyPackages.errors[0]);
         }
         this.showAlert({
-          variant: 'success',
+          variant: VARIANT_SUCCESS,
           message: DELETE_PACKAGES_SUCCESS_MESSAGE,
         });
       } catch {
         this.showAlert({
-          variant: 'danger',
+          variant: VARIANT_DANGER,
           message: DELETE_PACKAGES_ERROR_MESSAGE,
         });
       } finally {
         this.mutationLoading = false;
       }
-    },
-    showDeletePackagesModal(toBeDeleted) {
-      this.itemsToBeDeleted = toBeDeleted;
-      this.$refs.deletePackagesModal.show();
     },
     handleSearchUpdate({ sort, filters }) {
       this.sort = sort;
@@ -236,7 +227,7 @@ export default {
           @prev-page="fetchPreviousPage"
           @next-page="fetchNextPage"
           @package:delete="deletePackage"
-          @delete="showDeletePackagesModal"
+          @delete="deletePackages"
         >
           <template #empty-state>
             <gl-empty-state :title="emptyStateTitle" :svg-path="emptyListIllustration">
@@ -255,11 +246,5 @@ export default {
         </package-list>
       </template>
     </delete-package>
-
-    <delete-modal
-      ref="deletePackagesModal"
-      :items-to-be-deleted="itemsToBeDeleted"
-      @confirm="confirmDelete"
-    />
   </div>
 </template>

@@ -25,7 +25,7 @@ import CodeIntelligence from '~/code_navigation/components/app.vue';
 import * as urlUtility from '~/lib/utils/url_utility';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import LineHighlighter from '~/blob/line_highlighter';
 import { LEGACY_FILE_TYPES } from '~/repository/constants';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
@@ -368,7 +368,7 @@ describe('Blob content viewer component', () => {
 
     it('does not load a CodeIntelligence component when no viewers are loaded', async () => {
       const url = 'some_file.js?format=json&viewer=rich';
-      mockAxios.onGet(url).replyOnce(httpStatusCodes.INTERNAL_SERVER_ERROR);
+      mockAxios.onGet(url).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       await createComponent({ blob: { ...richViewerMock, fileType: 'unknown' } });
 
       expect(findCodeIntelligence().exists()).toBe(false);

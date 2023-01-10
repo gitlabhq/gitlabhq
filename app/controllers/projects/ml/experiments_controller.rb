@@ -23,7 +23,7 @@ module Projects
         page = 1 if page == 0
 
         @candidates = @experiment.candidates
-                                 .including_metrics_and_params
+                                 .including_relationships
                                  .page(page)
                                  .per(MAX_CANDIDATES_PER_PAGE)
 

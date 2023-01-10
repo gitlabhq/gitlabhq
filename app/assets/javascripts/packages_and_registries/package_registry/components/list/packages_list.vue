@@ -5,10 +5,14 @@ import DeletePackageModal from '~/packages_and_registries/shared/components/dele
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
+import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 import {
   DELETE_PACKAGE_TRACKING_ACTION,
+  DELETE_PACKAGES_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
+  REQUEST_DELETE_PACKAGES_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
+  CANCEL_DELETE_PACKAGES_TRACKING_ACTION,
   PACKAGE_ERROR_STATUS,
 } from '~/packages_and_registries/package_registry/constants';
 import { packageTypeToTrackCategory } from '~/packages_and_registries/package_registry/utils';
@@ -18,6 +22,7 @@ export default {
   name: 'PackagesList',
   components: {
     GlAlert,
+    DeleteModal,
     DeletePackageModal,
     PackagesListLoader,
     PackagesListRow,
@@ -44,6 +49,7 @@ export default {
   data() {
     return {
       itemToBeDeleted: null,
+      itemsToBeDeleted: [],
       errorPackages: [],
     };
   },
@@ -92,7 +98,18 @@ export default {
         this.setItemToBeDeleted(item);
         return;
       }
-      this.$emit('delete', items);
+      this.itemsToBeDeleted = items;
+      this.track(REQUEST_DELETE_PACKAGES_TRACKING_ACTION);
+      this.$refs.deletePackagesModal.show();
+    },
+    deleteItemsConfirmation() {
+      this.$emit('delete', this.itemsToBeDeleted);
+      this.track(DELETE_PACKAGES_TRACKING_ACTION);
+      this.itemsToBeDeleted = [];
+    },
+    deleteItemsCanceled() {
+      this.track(CANCEL_DELETE_PACKAGES_TRACKING_ACTION);
+      this.itemsToBeDeleted = [];
     },
     deleteItemConfirmation() {
       this.$emit('package:delete', this.itemToBeDeleted);
@@ -158,6 +175,13 @@ export default {
         :item-to-be-deleted="itemToBeDeleted"
         @ok="deleteItemConfirmation"
         @cancel="deleteItemCanceled"
+      />
+
+      <delete-modal
+        ref="deletePackagesModal"
+        :items-to-be-deleted="itemsToBeDeleted"
+        @confirm="deleteItemsConfirmation"
+        @cancel="deleteItemsCanceled"
       />
     </template>
   </div>
