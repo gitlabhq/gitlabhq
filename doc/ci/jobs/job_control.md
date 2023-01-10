@@ -985,8 +985,11 @@ Expressions evaluate as `true` if:
 
 For example:
 
-- `$VARIABLE =~ /^content.*/`
-- `$VARIABLE_1 !~ /^content.*/`
+- `if: $VARIABLE =~ /^content.*/`
+- `if: $VARIABLE !~ /^content.*/`
+
+Single-character regular expressions, like `/./`, are not supported and
+produce an `invalid expression syntax` error.
 
 Pattern matching is case-sensitive by default. Use the `i` flag modifier to make a
 pattern case-insensitive. For example: `/pattern/i`.

@@ -71,24 +71,12 @@ module Groups
       end
 
       def tree_exporter
-        tree_exporter_class.new(
+        Gitlab::ImportExport::Group::TreeSaver.new(
           group: group,
           current_user: current_user,
           shared: shared,
           params: params
         )
-      end
-
-      def tree_exporter_class
-        if ndjson?
-          Gitlab::ImportExport::Group::TreeSaver
-        else
-          Gitlab::ImportExport::Group::LegacyTreeSaver
-        end
-      end
-
-      def ndjson?
-        ::Feature.enabled?(:group_export_ndjson, group&.parent)
       end
 
       def version_saver

@@ -423,7 +423,7 @@
   canonical: |
     <p>## foo</p>
   static: |-
-    <p data-sourcepos="1:1-1:27" dir="auto"><span>#</span># foo</p>
+    <p data-sourcepos="1:1-1:28" dir="auto"><span>#</span># foo</p>
   wysiwyg: |-
     <p>## foo</p>
 04_02_00__leaf_blocks__atx_headings__005:
@@ -533,11 +533,11 @@
     <h2>foo ###</h2>
     <h1>foo #</h1>
   static: |-
-    <h3 data-sourcepos="1:1-1:32" dir="auto">
+    <h3 data-sourcepos="1:1-1:33" dir="auto">
     <a id="user-content-foo-" class="anchor" href="#foo-" aria-hidden="true"></a>foo <span>#</span>##</h3>
-    <h2 data-sourcepos="2:1-2:31" dir="auto">
+    <h2 data-sourcepos="2:1-2:32" dir="auto">
     <a id="user-content-foo--1" class="anchor" href="#foo--1" aria-hidden="true"></a>foo #<span>#</span>#</h2>
-    <h1 data-sourcepos="3:1-3:28" dir="auto">
+    <h1 data-sourcepos="3:1-3:29" dir="auto">
     <a id="user-content-foo--2" class="anchor" href="#foo--2" aria-hidden="true"></a>foo <span>#</span>
     </h1>
   wysiwyg: |-
@@ -4785,7 +4785,7 @@
   canonical: |
     <p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</p>
   static: |-
-    <p data-sourcepos="1:1-1:224" dir="auto"><span>!</span>"<span>#</span><span>$</span><span>%</span><span>&amp;</span>'()*+,-./:;&lt;=&gt;?<span>@</span>[\]<span>^</span>_`{|}<span>~</span></p>
+    <p data-sourcepos="1:1-1:232" dir="auto"><span>!</span>"<span>#</span><span>$</span><span>%</span><span>&amp;</span>'()*+,-./:;&lt;=&gt;?<span>@</span>[\]<span>^</span>_`{|}<span>~</span></p>
   wysiwyg: |-
     <p>!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</p>
 06_02_00__inlines__backslash_escapes__002:
@@ -4804,7 +4804,7 @@
     [foo]: /url &quot;not a reference&quot;
     &amp;ouml; not a character entity</p>
   static: |-
-    <p data-sourcepos="1:1-9:50" dir="auto">*not emphasized*
+    <p data-sourcepos="1:1-9:51" dir="auto">*not emphasized*
     &lt;br/&gt; not a tag
     <a href="/foo">not a link</a>
     `not code`
@@ -6639,7 +6639,7 @@
   canonical: |
     <p>[bar][foo!]</p>
   static: |-
-    <p data-sourcepos="1:1-1:32" dir="auto">[bar][foo<span>!</span>]</p>
+    <p data-sourcepos="1:1-1:33" dir="auto">[bar][foo<span>!</span>]</p>
   wysiwyg: |-
     <p>[bar][foo!]</p>
     <pre>[foo!]: /url</pre>
@@ -7043,7 +7043,7 @@
   canonical: |
     <p>!<a href="/url" title="title">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:27" dir="auto"><span>!</span><a href="/url" title="title">foo</a></p>
+    <p data-sourcepos="1:1-1:28" dir="auto"><span>!</span><a href="/url" title="title">foo</a></p>
   wysiwyg: |-
     <p>!<a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
     <pre>[foo]: /url "title"</pre>

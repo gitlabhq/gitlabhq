@@ -21,10 +21,20 @@ YAML has a feature called 'anchors' that you can use to duplicate
 content across your document.
 
 Use anchors to duplicate or inherit properties. Use anchors with [hidden jobs](../jobs/index.md#hide-jobs)
-to provide templates for your jobs. When there are duplicate keys, GitLab
-performs a reverse deep merge based on the keys.
+to provide templates for your jobs. When there are duplicate keys, the latest included key wins, overriding the other keys.
 
-You can use YAML anchors to merge YAML arrays.
+In certain cases (see [YAML anchors for scripts](#yaml-anchors-for-scripts)), you can use YAML anchors to build arrays with multiple components defined elsewhere. For example:
+
+```yaml
+.default_scripts: &default_scripts
+  - ./default-script1.sh
+  - ./default-script2.sh
+
+job1:
+  script:
+    - *default_scripts
+    - ./job-script.sh
+```
 
 You can't use YAML anchors across multiple files when using the [`include`](index.md#include)
 keyword. Anchors are only valid in the file they were defined in. To reuse configuration
@@ -43,12 +53,12 @@ with their own custom `script` defined:
     - redis
 
 test1:
-  <<: *job_configuration           # Merge the contents of the 'job_configuration' alias
+  <<: *job_configuration           # Add the contents of the 'job_configuration' alias
   script:
     - test1 project
 
 test2:
-  <<: *job_configuration           # Merge the contents of the 'job_configuration' alias
+  <<: *job_configuration           # Add the contents of the 'job_configuration' alias
   script:
     - test2 project
 ```
@@ -307,8 +317,9 @@ to the contents of the `script`:
 ### Merge details
 
 You can use `extends` to merge hashes but not arrays.
-The algorithm used for merge is "closest scope wins," so
-keys from the last member always override anything defined on other
+The algorithm used for merge is "closest scope wins". When there are
+duplicate keys, GitLab performs a reverse deep merge based on the keys.
+Keys from the last member always override anything defined on other
 levels. For example:
 
 ```yaml

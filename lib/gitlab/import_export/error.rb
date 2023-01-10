@@ -17,6 +17,10 @@ module Gitlab
       def self.file_compression_error
         self.new('File compression/decompression failed')
       end
+
+      def self.incompatible_import_file_error
+        self.new('The import file is incompatible')
+      end
     end
   end
 end

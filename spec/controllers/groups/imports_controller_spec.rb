@@ -45,7 +45,7 @@ RSpec.describe Groups::ImportsController do
         it 'sets a flash error' do
           get :show, params: { group_id: group }
 
-          expect(flash[:alert]).to eq 'Failed to import group.'
+          expect(flash[:alert]).to eq 'Failed to import group: '
         end
       end
 

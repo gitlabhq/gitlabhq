@@ -10,6 +10,10 @@ module Banzai
     # This way CommonMark will properly handle the backslash escaped chars
     # but we will maintain knowledge (the sequence) that it was a literal.
     #
+    # This processing is also important for the handling of escaped characters
+    # in LaTeX math. These will need to be converted back into their escaped
+    # versions if they are detected in math blocks.
+    #
     # We need to surround the character, not just prefix it.  It could
     # get converted into an entity by CommonMark and we wouldn't know how many
     # characters there are.  The entire literal needs to be surrounded with
@@ -24,9 +28,33 @@ module Banzai
     # This filter does the initial surrounding, and MarkdownPostEscapeFilter
     # does the conversion into span tags.
     class MarkdownPreEscapeFilter < HTML::Pipeline::TextFilter
-      # We just need to target those that are special GitLab references
-      REFERENCE_CHARACTERS = '@#!$&~%^'
-      ASCII_PUNCTUATION    = %r{(\\[#{REFERENCE_CHARACTERS}])}.freeze
+      # Table of characters that need this special handling. It consists of the
+      # GitLab special reference characters and special LaTeX characters.
+      #
+      # The `token` is used when we do the initial replacement - for example converting
+      # `\$` into `cmliteral-\+a-cmliteral`. We don't simply replace `\$` with `$`,
+      # because this can cause difficulties in parsing math blocks that use `$` as a
+      # delimiter.  We also include a character that _can_ be escaped, `\+`.  By examining
+      # the text once it's been passed to markdown, we can determine that `cmliteral-\+a-cmliteral`
+      # was in a block that markdown did _not_ escape the character, for example an inline
+      # code block or some other element.  In this case, we must convert back to the
+      # original escaped version, `\$`.  However if we detect `cmliteral-+a-cmliteral`,
+      # then we know markdown considered it an escaped character, and we should replace it
+      # with the non-escaped version, `$`.
+      # See the MarkdownPostEscapeFilter for how this is done.
+      ESCAPABLE_CHARS = [
+        { char: '$', escaped: '\$', token: '\+a', reference: true, latex: true },
+        { char: '%', escaped: '\%', token: '\+b', reference: true, latex: true },
+        { char: '#', escaped: '\#', token: '\+c', reference: true, latex: true },
+        { char: '&', escaped: '\&', token: '\+d', reference: true, latex: true },
+        { char: '@', escaped: '\@', token: '\+h', reference: true, latex: false },
+        { char: '!', escaped: '\!', token: '\+i', reference: true, latex: false },
+        { char: '~', escaped: '\~', token: '\+j', reference: true, latex: false },
+        { char: '^', escaped: '\^', token: '\+k', reference: true, latex: false }
+      ].freeze
+
+      TARGET_CHARS         = ESCAPABLE_CHARS.pluck(:char).join.freeze
+      ASCII_PUNCTUATION    = %r{(\\[#{TARGET_CHARS}])}.freeze
       LITERAL_KEYWORD      = 'cmliteral'
 
       def call
@@ -35,7 +63,10 @@ module Banzai
           # are found, we can bypass the post filter
           result[:escaped_literals] = true
 
-          "#{LITERAL_KEYWORD}-#{match}-#{LITERAL_KEYWORD}"
+          escaped_item = ESCAPABLE_CHARS.find { |item| item[:escaped] == match }
+          token = escaped_item ? escaped_item[:token] : match
+
+          "#{LITERAL_KEYWORD}-#{token}-#{LITERAL_KEYWORD}"
         end
       end
     end

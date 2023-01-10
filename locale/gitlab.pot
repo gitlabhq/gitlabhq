@@ -19504,7 +19504,7 @@ msgstr ""
 msgid "GroupActivityMetrics|Recent activity"
 msgstr ""
 
-msgid "GroupImport|Failed to import group."
+msgid "GroupImport|Failed to import group: %{error}"
 msgstr ""
 
 msgid "GroupImport|Group '%{group_name}' is being imported."

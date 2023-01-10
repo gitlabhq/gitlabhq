@@ -2,24 +2,25 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline do
+RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
 
   describe 'backslash escapes', :aggregate_failures do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:issue)   { create(:issue, project: project) }
 
-    it 'converts all reference punctuation to literals' do
-      reference_chars = Banzai::Filter::MarkdownPreEscapeFilter::REFERENCE_CHARACTERS
-      markdown = reference_chars.split('').map { |char| char.prepend("\\") }.join
-      punctuation = Banzai::Filter::MarkdownPreEscapeFilter::REFERENCE_CHARACTERS.split('')
-      punctuation = punctuation.delete_if { |char| char == '&' }
-      punctuation << '&amp;'
+    it 'converts all escapable punctuation to literals' do
+      markdown = Banzai::Filter::MarkdownPreEscapeFilter::ESCAPABLE_CHARS.pluck(:escaped).join
 
       result = described_class.call(markdown, project: project)
       output = result[:output].to_html
 
-      punctuation.each { |char| expect(output).to include("<span>#{char}</span>") }
+      Banzai::Filter::MarkdownPreEscapeFilter::ESCAPABLE_CHARS.pluck(:char).each do |char|
+        char = '&amp;' if char == '&'
+
+        expect(output).to include("<span>#{char}</span>")
+      end
+
       expect(result[:escaped_literals]).to be_truthy
     end
 
@@ -33,12 +34,12 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline do
       end.compact
 
       reference_chars.all? do |char|
-        Banzai::Filter::MarkdownPreEscapeFilter::REFERENCE_CHARACTERS.include?(char)
+        Banzai::Filter::MarkdownPreEscapeFilter::TARGET_CHARS.include?(char)
       end
     end
 
-    it 'does not convert non-reference punctuation to spans' do
-      markdown = %q(\"\'\*\+\,\-\.\/\:\;\<\=\>\?\[\]\_\`\{\|\}) + %q[\(\)\\\\]
+    it 'does not convert non-reference/latex punctuation to spans' do
+      markdown = %q(\"\'\*\+\,\-\.\/\:\;\<\=\>\?\[\]\`\|) + %q[\(\)\\\\]
 
       result = described_class.call(markdown, project: project)
       output = result[:output].to_html
@@ -55,7 +56,7 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline do
       expect(result[:escaped_literals]).to be_falsey
     end
 
-    describe 'backslash escapes do not work in code blocks, code spans, autolinks, or raw HTML' do
+    describe 'backslash escapes are untouched in code blocks, code spans, autolinks, or raw HTML' do
       where(:markdown, :expected) do
         %q(`` \@\! ``)       | %q(<code>\@\!</code>)
         %q(    \@\!)         | %Q(<code>\\@\\!\n</code>)

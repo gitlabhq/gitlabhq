@@ -361,6 +361,34 @@ RSpec.describe User do
         end
       end
     end
+
+    describe 'confirmation instructions for unconfirmed email' do
+      let(:unconfirmed_email) { 'first-unconfirmed-email@example.com' }
+      let(:another_unconfirmed_email) { 'another-unconfirmed-email@example.com' }
+
+      context 'when email is changed to another before performing the job that sends confirmation instructions for previous email change request' do
+        it "mentions the recipient's email in the message body", :aggregate_failures do
+          same_user = User.find(user.id)
+          same_user.update!(email: unconfirmed_email)
+
+          user.update!(email: another_unconfirmed_email)
+
+          perform_enqueued_jobs
+
+          confirmation_instructions_for_unconfirmed_email = ActionMailer::Base.deliveries.find do |message|
+            message.subject == 'Confirmation instructions' && message.to.include?(unconfirmed_email)
+          end
+          expect(confirmation_instructions_for_unconfirmed_email.html_part.body.encoded).to match same_user.unconfirmed_email
+          expect(confirmation_instructions_for_unconfirmed_email.text_part.body.encoded).to match same_user.unconfirmed_email
+
+          confirmation_instructions_for_another_unconfirmed_email = ActionMailer::Base.deliveries.find do |message|
+            message.subject == 'Confirmation instructions' && message.to.include?(another_unconfirmed_email)
+          end
+          expect(confirmation_instructions_for_another_unconfirmed_email.html_part.body.encoded).to match user.unconfirmed_email
+          expect(confirmation_instructions_for_another_unconfirmed_email.text_part.body.encoded).to match user.unconfirmed_email
+        end
+      end
+    end
   end
 
   describe 'validations' do

@@ -213,6 +213,11 @@ To help avoid abuse, by default, users are rate limited to:
 
 ## Version history
 
+### 15.8+
+
+Starting with GitLab 15.8, importing groupgs from a JSON export is no longer supported. Groups need to be imported
+in NDJSON format.
+
 ### 14.0+
 
 In GitLab 14.0, the JSON format is no longer supported for project and group exports. To allow for a

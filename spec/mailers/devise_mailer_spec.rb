@@ -11,7 +11,7 @@ RSpec.describe DeviseMailer do
     subject { described_class.confirmation_instructions(user, 'faketoken', {}) }
 
     context "when confirming a new account" do
-      let(:user) { build(:user, created_at: 1.minute.ago, unconfirmed_email: nil) }
+      let(:user) { create(:user, created_at: 1.minute.ago) }
 
       it "shows the expected text" do
         expect(subject.body.encoded).to have_text "Welcome"
@@ -20,7 +20,13 @@ RSpec.describe DeviseMailer do
     end
 
     context "when confirming the unconfirmed_email" do
-      let(:user) { build(:user, unconfirmed_email: 'jdoe@example.com') }
+      subject { described_class.confirmation_instructions(user, user.confirmation_token, { to: user.unconfirmed_email }) }
+
+      let(:user) { create(:user) }
+
+      before do
+        user.update!(email: 'unconfirmed-email@example.com')
+      end
 
       it "shows the expected text" do
         expect(subject.body.encoded).not_to have_text "Welcome"
@@ -30,7 +36,7 @@ RSpec.describe DeviseMailer do
     end
 
     context "when re-confirming the primary email after a security issue" do
-      let(:user) { build(:user, created_at: 10.days.ago, unconfirmed_email: nil) }
+      let(:user) { create(:user, created_at: Devise.confirm_within.ago) }
 
       it "shows the expected text" do
         expect(subject.body.encoded).not_to have_text "Welcome"

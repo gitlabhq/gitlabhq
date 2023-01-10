@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Environment, :use_clean_rails_memory_store_caching do
+RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_category: :continuous_delivery do
   include ReactiveCachingHelpers
   using RSpec::Parameterized::TableSyntax
   include RepoHelpers
@@ -2027,6 +2027,42 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
         .and_return([freeze_period])
 
       subject
+    end
+  end
+
+  describe '#deployed_and_updated_before' do
+    subject do
+      described_class.deployed_and_updated_before(project_id, before)
+    end
+
+    let(:project_id) { project.id }
+    let(:before) { 1.week.ago.to_date.to_s }
+    let(:environment) { create(:environment, project: project, updated_at: 2.weeks.ago) }
+    let!(:stale_deployment) { create(:deployment, environment: environment, updated_at: 2.weeks.ago) }
+
+    it 'excludes environments with recent deployments' do
+      create(:deployment, environment: environment, updated_at: Date.current)
+
+      is_expected.to match_array([])
+    end
+
+    it 'includes environments with no deployments' do
+      environment1 = create(:environment, project: project, updated_at: 2.weeks.ago)
+
+      is_expected.to match_array([environment, environment1])
+    end
+
+    it 'excludes environments that have been recently updated with no deployments' do
+      create(:environment, project: project)
+
+      is_expected.to match_array([environment])
+    end
+
+    it 'excludes environments that have been recently updated with stale deployments' do
+      environment1 = create(:environment, project: project)
+      create(:deployment, environment: environment1, updated_at: 2.weeks.ago)
+
+      is_expected.to match_array([environment])
     end
   end
 end

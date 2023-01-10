@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHook do
+RSpec.describe WebHook, feature_category: :integrations do
   include AfterNextHelpers
 
   let_it_be(:project) { create(:project) }
@@ -222,6 +222,32 @@ RSpec.describe WebHook do
         expect(hook).to be_valid
         expect(hook.token).to eq('token')
         expect(hook.url).to eq('https://webhook.example.com/new-hook')
+      end
+    end
+
+    describe 'before_validation :reset_url_variables' do
+      subject(:hook) { build_stubbed(:project_hook, :url_variables, project: project, url: 'http://example.com/{abc}') }
+
+      it 'resets url variables if url changed' do
+        hook.url = 'http://example.com/new-hook'
+
+        expect(hook).to be_valid
+        expect(hook.url_variables).to eq({})
+      end
+
+      it 'resets url variables if url is changed but url variables stayed the same' do
+        hook.url = 'http://test.example.com/{abc}'
+
+        expect(hook).not_to be_valid
+        expect(hook.url_variables).to eq({})
+      end
+
+      it 'does not reset url variables if both url and url variables are changed' do
+        hook.url = 'http://example.com/{one}/{two}'
+        hook.url_variables = { 'one' => 'foo', 'two' => 'bar' }
+
+        expect(hook).to be_valid
+        expect(hook.url_variables).to eq({ 'one' => 'foo', 'two' => 'bar' })
       end
     end
 

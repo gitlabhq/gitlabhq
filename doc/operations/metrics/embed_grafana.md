@@ -55,9 +55,10 @@ To set up the Grafana API in Grafana:
 1. Select **Save Changes**.
 
 NOTE:
-If the Grafana integration is enabled, any user with read access to the GitLab
-project can query metrics from the Prometheus instance. All requests proxied
-through GitLab are authenticated with the same Grafana Administrator API token.
+If the Grafana integration is enabled, users with the Reporter role on public
+projects and the Guest role on non-public projects can query metrics from the
+Prometheus instance. All requests proxied through GitLab are authenticated with
+the same Grafana Administrator API token.
 
 ### Generate a link to a panel
 
