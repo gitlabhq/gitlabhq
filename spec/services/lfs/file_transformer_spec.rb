@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Lfs::FileTransformer do
+RSpec.describe Lfs::FileTransformer, feature_category: :git_lfs do
   let(:project) { create(:project, :repository, :wiki_repo) }
   let(:repository) { project.repository }
   let(:file_content) { 'Test file content' }
@@ -13,6 +13,10 @@ RSpec.describe Lfs::FileTransformer do
 
   describe '#new_file' do
     context 'with lfs disabled' do
+      before do
+        allow(project).to receive(:lfs_enabled?).and_return(false)
+      end
+
       it 'skips gitattributes check' do
         expect(repository.raw).not_to receive(:blob_at)
 
@@ -96,6 +100,38 @@ RSpec.describe Lfs::FileTransformer do
             subject.new_file(file_path, file)
 
             expect(project.lfs_objects_projects.first.repository_type).to eq('design')
+          end
+        end
+
+        context 'when content type detection enabled' do
+          let(:detect_content_type) { true }
+
+          before do
+            allow(Gitlab::Utils::MimeType).to receive(:from_string).with(file_content).and_return(mime_type)
+          end
+
+          context 'when mime type detected' do
+            let(:mime_type) { 'image/tiff' }
+
+            it 'creates a file with custom content type' do
+              expect(CarrierWaveStringFile).to receive(:new_file).with({
+                file_content: file_content,
+                filename: anything,
+                content_type: mime_type
+              })
+
+              subject.new_file(file_path, file, detect_content_type: detect_content_type)
+            end
+          end
+
+          context 'when mime type not detected' do
+            let(:mime_type) { nil }
+
+            it 'creates a file with default content type' do
+              expect(CarrierWaveStringFile).to receive(:new).with(file_content)
+
+              subject.new_file(file_path, file, detect_content_type: detect_content_type)
+            end
           end
         end
       end

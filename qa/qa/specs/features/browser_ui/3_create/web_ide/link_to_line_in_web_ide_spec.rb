@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :project }, product_group: :editor do
+  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :global }, product_group: :editor do
     describe 'Link to line in Web IDE' do
       let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
       let(:project) do
@@ -11,12 +11,12 @@ module QA
       end
 
       before do
-        Runtime::Feature.disable(:vscode_web_ide, project: project)
+        Runtime::Feature.disable(:vscode_web_ide)
         Flow::Login.sign_in
       end
 
       after do
-        Runtime::Feature.enable(:vscode_web_ide, project: project)
+        Runtime::Feature.enable(:vscode_web_ide)
         project.remove_via_api!
       end
 

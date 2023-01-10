@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :project }, product_group: :editor do
+  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :global }, product_group: :editor do
     describe 'Open a fork in Web IDE',
       skip: {
         issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/351696",
@@ -15,11 +15,11 @@ module QA
       end
 
       before do
-        Runtime::Feature.disable(:vscode_web_ide, project: parent_project)
+        Runtime::Feature.disable(:vscode_web_ide)
       end
 
       after do
-        Runtime::Feature.enable(:vscode_web_ide, project: parent_project)
+        Runtime::Feature.enable(:vscode_web_ide)
       end
 
       context 'when a user does not have permissions to commit to the project' do

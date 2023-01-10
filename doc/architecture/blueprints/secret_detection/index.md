@@ -1,6 +1,6 @@
 ---
 status: proposed
-creation-date: 2022-11-25
+creation-date: "2022-11-25"
 authors: [ "@theoretick" ]
 coach: "@DylanGriffith"
 approvers: [ "@connorgilbert", "@amarpatel" ]

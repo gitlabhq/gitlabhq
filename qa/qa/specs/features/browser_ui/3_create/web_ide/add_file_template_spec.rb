@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :project }, product_group: :editor do
+  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :global }, product_group: :editor do
     describe 'Web IDE file templates' do
       include Runtime::Fixtures
 
@@ -11,11 +11,11 @@ module QA
           project.description = 'Add file templates via the Web IDE'
           project.initialize_with_readme = true
         end
-        Runtime::Feature.disable(:vscode_web_ide, project: @project)
+        Runtime::Feature.disable(:vscode_web_ide)
       end
 
       after(:all) do
-        Runtime::Feature.enable(:vscode_web_ide, project: @project)
+        Runtime::Feature.enable(:vscode_web_ide)
       end
 
       templates = [

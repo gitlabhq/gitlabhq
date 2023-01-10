@@ -62,14 +62,38 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsWorker do
   describe '#max_running_jobs' do
     subject { worker.max_running_jobs }
 
-    it { is_expected.to eq(10) }
+    before do
+      stub_feature_flags(
+        projects_build_artifacts_size_refresh: false,
+        projects_build_artifacts_size_refresh_medium: false,
+        projects_build_artifacts_size_refresh_high: false
+      )
+    end
 
-    context 'when projects_build_artifacts_size_refresh flag is disabled' do
+    it { is_expected.to eq(0) }
+
+    context 'when projects_build_artifacts_size_refresh flag is enabled' do
       before do
-        stub_feature_flags(projects_build_artifacts_size_refresh: false)
+        stub_feature_flags(projects_build_artifacts_size_refresh: true)
       end
 
-      it { is_expected.to eq(0) }
+      it { is_expected.to eq(described_class::MAX_RUNNING_LOW) }
+    end
+
+    context 'when projects_build_artifacts_size_refresh_medium flag is enabled' do
+      before do
+        stub_feature_flags(projects_build_artifacts_size_refresh_medium: true)
+      end
+
+      it { is_expected.to eq(described_class::MAX_RUNNING_MEDIUM) }
+    end
+
+    context 'when projects_build_artifacts_size_refresh_high flag is enabled' do
+      before do
+        stub_feature_flags(projects_build_artifacts_size_refresh_high: true)
+      end
+
+      it { is_expected.to eq(described_class::MAX_RUNNING_HIGH) }
     end
   end
 end

@@ -10,12 +10,12 @@ module QA
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338179',
       type: :bug
     },
-    feature_flag: { name: 'vscode_web_ide', scope: :project },
+    feature_flag: { name: 'vscode_web_ide', scope: :global },
     product_group: :editor
   ) do
     describe 'Web IDE web terminal' do
       before do
-        Runtime::Feature.disable(:vscode_web_ide, project: project)
+        Runtime::Feature.disable(:vscode_web_ide)
         project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'web-terminal-project'
         end
@@ -58,7 +58,7 @@ module QA
       end
 
       after do
-        Runtime::Feature.enable(:vscode_web_ide, project: project)
+        Runtime::Feature.enable(:vscode_web_ide)
         @runner.remove_via_api! if @runner
       end
 

@@ -19,6 +19,7 @@ import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules
 import PipelineSchedulesTable from './table/pipeline_schedules_table.vue';
 import TakeOwnershipModal from './take_ownership_modal.vue';
 import DeletePipelineScheduleModal from './delete_pipeline_schedule_modal.vue';
+import PipelineScheduleEmptyState from './pipeline_schedules_empty_state.vue';
 
 export default {
   i18n: {
@@ -48,6 +49,7 @@ export default {
     GlLink,
     PipelineSchedulesTable,
     TakeOwnershipModal,
+    PipelineScheduleEmptyState,
   },
   inject: {
     fullPath: {
@@ -249,6 +251,7 @@ export default {
     </gl-alert>
 
     <gl-tabs
+      v-if="isLoading || count > 0"
       sync-active-tab-with-query-params
       query-param-name="scope"
       nav-class="gl-flex-grow-1 gl-align-items-center"
@@ -288,6 +291,8 @@ export default {
         </gl-button>
       </template>
     </gl-tabs>
+
+    <pipeline-schedule-empty-state v-else-if="!isLoading && count === 0" />
 
     <take-ownership-modal
       :visible="showTakeOwnershipModal"

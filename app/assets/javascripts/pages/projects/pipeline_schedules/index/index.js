@@ -67,10 +67,9 @@ function initTakeownershipModal() {
   });
 }
 
-initPipelineSchedulesCallout();
-
 if (gon.features?.pipelineSchedulesVue) {
   initPipelineSchedulesApp();
 } else {
+  initPipelineSchedulesCallout();
   initTakeownershipModal();
 }

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create', :skip_live_env, except: { job: 'review-qa-*' },
-                                           feature_flag: { name: 'vscode_web_ide', scope: :project },
+                                           feature_flag: { name: 'vscode_web_ide', scope: :global },
                                            product_group: :editor do
     describe 'Git Server Hooks' do
       let(:file_path) { File.absolute_path(File.join('qa', 'fixtures', 'web_ide', 'README.md')) }
@@ -16,13 +16,13 @@ module QA
       end
 
       before do
-        Runtime::Feature.disable(:vscode_web_ide, project: project)
+        Runtime::Feature.disable(:vscode_web_ide)
         Flow::Login.sign_in
         project.visit!
       end
 
       after do
-        Runtime::Feature.enable(:vscode_web_ide, project: project)
+        Runtime::Feature.enable(:vscode_web_ide)
       end
 
       context 'Custom error messages' do

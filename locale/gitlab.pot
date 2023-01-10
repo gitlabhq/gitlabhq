@@ -30504,6 +30504,9 @@ msgstr ""
 msgid "PipelineScheduleIntervalPattern|Custom (%{linkStart}Learn more.%{linkEnd})"
 msgstr ""
 
+msgid "PipelineSchedules|A scheduled pipeline starts automatically at regular intervals, like daily or weekly. The pipeline: "
+msgstr ""
+
 msgid "PipelineSchedules|Activated"
 msgstr ""
 
@@ -30514,6 +30517,12 @@ msgid "PipelineSchedules|All"
 msgstr ""
 
 msgid "PipelineSchedules|Are you sure you want to delete this pipeline schedule?"
+msgstr ""
+
+msgid "PipelineSchedules|Can have custom CI/CD variables."
+msgstr ""
+
+msgid "PipelineSchedules|Create a new pipeline schedule"
 msgstr ""
 
 msgid "PipelineSchedules|Cron timezone"
@@ -30537,6 +30546,9 @@ msgstr ""
 msgid "PipelineSchedules|Last Pipeline"
 msgstr ""
 
+msgid "PipelineSchedules|Learn more in the %{linkStart}scheduled pipelines documentation.%{linkEnd}"
+msgstr ""
+
 msgid "PipelineSchedules|New schedule"
 msgstr ""
 
@@ -30555,10 +30567,19 @@ msgstr ""
 msgid "PipelineSchedules|Pipeline schedule successfully deleted."
 msgstr ""
 
+msgid "PipelineSchedules|Pipeline schedules"
+msgstr ""
+
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr ""
 
 msgid "PipelineSchedules|Run pipeline schedule"
+msgstr ""
+
+msgid "PipelineSchedules|Runs for a specific branch or tag."
+msgstr ""
+
+msgid "PipelineSchedules|Runs with the same project permissions as the schedule owner."
 msgstr ""
 
 msgid "PipelineSchedules|Save pipeline schedule"

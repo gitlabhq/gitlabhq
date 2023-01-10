@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :project }, product_group: :editor do
+  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :global }, product_group: :editor do
     describe 'Upload a file in Web IDE' do
       let(:file_path) { File.absolute_path(File.join('qa', 'fixtures', 'web_ide', file_name)) }
 
@@ -13,7 +13,7 @@ module QA
       end
 
       before do
-        Runtime::Feature.disable(:vscode_web_ide, project: project)
+        Runtime::Feature.disable(:vscode_web_ide)
         Flow::Login.sign_in
 
         project.visit!
@@ -21,7 +21,7 @@ module QA
       end
 
       after do
-        Runtime::Feature.enable(:vscode_web_ide, project: project)
+        Runtime::Feature.enable(:vscode_web_ide)
       end
 
       context 'when a file with the same name already exists' do

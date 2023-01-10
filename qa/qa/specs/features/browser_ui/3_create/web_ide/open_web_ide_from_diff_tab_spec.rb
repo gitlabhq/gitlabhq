@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :project }, product_group: :editor do
+  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :global }, product_group: :editor do
     describe 'Open Web IDE from Diff Tab' do
       files = [
         {
@@ -44,13 +44,13 @@ module QA
       end
 
       before do
-        Runtime::Feature.disable(:vscode_web_ide, project: project)
+        Runtime::Feature.disable(:vscode_web_ide)
         Flow::Login.sign_in
         merge_request.visit!
       end
 
       after do
-        Runtime::Feature.enable(:vscode_web_ide, project: project)
+        Runtime::Feature.enable(:vscode_web_ide)
       end
 
       it 'opens and edits a multi-file merge request in Web IDE from Diff Tab', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347724' do

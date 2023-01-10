@@ -1,4 +1,4 @@
-import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlLink, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { trimText } from 'helpers/text_helper';
@@ -19,6 +19,7 @@ import {
   deleteMutationResponse,
   playMutationResponse,
   takeOwnershipMutationResponse,
+  emptyPipelineSchedulesResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -31,6 +32,7 @@ describe('Pipeline schedules app', () => {
   let wrapper;
 
   const successHandler = jest.fn().mockResolvedValue(mockGetPipelineSchedulesGraphQLResponse);
+  const successEmptyHandler = jest.fn().mockResolvedValue(emptyPipelineSchedulesResponse);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
   const deleteMutationHandlerSuccess = jest.fn().mockResolvedValue(deleteMutationResponse);
@@ -64,14 +66,18 @@ describe('Pipeline schedules app', () => {
 
   const findTable = () => wrapper.findComponent(PipelineSchedulesTable);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findDeleteModal = () => wrapper.findComponent(DeletePipelineScheduleModal);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTakeOwnershipModal = () => wrapper.findComponent(TakeOwnershipModal);
   const findTabs = () => wrapper.findComponent(GlTabs);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findLink = () => wrapper.findComponent(GlLink);
   const findNewButton = () => wrapper.findByTestId('new-schedule-button');
   const findAllTab = () => wrapper.findByTestId('pipeline-schedules-all-tab');
   const findActiveTab = () => wrapper.findByTestId('pipeline-schedules-active-tab');
   const findInactiveTab = () => wrapper.findByTestId('pipeline-schedules-inactive-tab');
+  const findSchedulesCharacteristics = () =>
+    wrapper.findByTestId('pipeline-schedules-characteristics');
 
   afterEach(() => {
     wrapper.destroy();
@@ -318,6 +324,26 @@ describe('Pipeline schedules app', () => {
       await findAllTab().trigger('click');
 
       expect(wrapper.vm.$apollo.queries.schedules.refetch).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Empty pipeline schedules response', () => {
+    it('should show an empty state', async () => {
+      createComponent([[getPipelineSchedulesQuery, successEmptyHandler]]);
+
+      await waitForPromises();
+
+      const schedulesCharacteristics = findSchedulesCharacteristics();
+
+      expect(findEmptyState().exists()).toBe(true);
+      expect(schedulesCharacteristics.text()).toContain('Runs for a specific branch or tag.');
+      expect(schedulesCharacteristics.text()).toContain('Can have custom CI/CD variables.');
+      expect(schedulesCharacteristics.text()).toContain(
+        'Runs with the same project permissions as the schedule owner.',
+      );
+
+      expect(findLink().exists()).toBe(true);
+      expect(findLink().text()).toContain('scheduled pipelines documentation.');
     });
   });
 });
