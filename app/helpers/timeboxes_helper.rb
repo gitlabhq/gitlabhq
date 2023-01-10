@@ -16,6 +16,18 @@ module TimeboxesHelper
     end
   end
 
+  def milestone_badge_variant(milestone)
+    if milestone.closed?
+      :danger
+    elsif milestone.expired?
+      :warning
+    elsif milestone.upcoming?
+      :neutral
+    else
+      :success
+    end
+  end
+
   def milestones_filter_path(opts = {})
     if @project
       project_milestones_path(@project, opts)

@@ -240,7 +240,10 @@
               ]
             },
             "coverage_report": {
-              "type": "object",
+              "type": [
+                "object",
+                "null"
+              ],
               "description": "Used to collect coverage reports from the job.",
               "properties": {
                 "coverage_format": {

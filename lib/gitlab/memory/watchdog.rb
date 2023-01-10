@@ -65,7 +65,7 @@ module Gitlab
         while @alive
           sleep(sleep_time_seconds)
 
-          monitor if Feature.enabled?(:gitlab_memory_watchdog, type: :ops)
+          monitor
         end
 
         event_reporter.stopped(log_labels(memwd_reason: @stop_reason).compact)

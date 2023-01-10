@@ -105,16 +105,6 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
           watchdog.call
         end
 
-        context 'when gitlab_memory_watchdog ops toggle is off' do
-          before do
-            stub_feature_flags(gitlab_memory_watchdog: false)
-          end
-
-          it 'does not trigger any monitor' do
-            expect(configuration).not_to receive(:monitors)
-          end
-        end
-
         context 'when process does not exceed threshold' do
           it 'does not report violations event' do
             expect(reporter).not_to receive(:threshold_violated)

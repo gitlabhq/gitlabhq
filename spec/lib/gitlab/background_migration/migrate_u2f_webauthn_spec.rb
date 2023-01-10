@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require 'webauthn/u2f_migrator'
 
-RSpec.describe Gitlab::BackgroundMigration::MigrateU2fWebauthn, :migration, schema: 20210301200959 do
+RSpec.describe Gitlab::BackgroundMigration::MigrateU2fWebauthn, :migration, schema: 20210602155110 do
   let(:users) { table(:users) }
 
   let(:user) { users.create!(email: 'email@email.com', name: 'foo', username: 'foo', projects_limit: 0) }

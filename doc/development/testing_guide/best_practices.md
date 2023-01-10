@@ -833,7 +833,7 @@ To resolve, use `let`, or change the factory to not use stubs.
 
 ### Time-sensitive tests
 
-[`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/v6.0.3.1/classes/ActiveSupport/Testing/TimeHelpers.html)
+[`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/classes/ActiveSupport/Testing/TimeHelpers.html)
 can be used to verify things that are time-sensitive. Any test that exercises or verifies something time-sensitive
 should make use of these helpers to prevent transient test failures.
 
@@ -854,7 +854,7 @@ end
 #### RSpec helpers
 
 You can use the `:freeze_time` and `:time_travel_to` RSpec metadata tag helpers to help reduce the amount of
-boilerplate code needed to wrap entire specs with the [`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/v6.0.3.1/classes/ActiveSupport/Testing/TimeHelpers.html)
+boilerplate code needed to wrap entire specs with the [`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/classes/ActiveSupport/Testing/TimeHelpers.html)
 methods.
 
 ```ruby
@@ -874,7 +874,7 @@ end
 ```
 
 [Under the hood](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/time_travel.rb), these helpers use the `around(:each)` hook and the block syntax of the
-[`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/v6.0.3.1/classes/ActiveSupport/Testing/TimeHelpers.html)
+[`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/classes/ActiveSupport/Testing/TimeHelpers.html)
 methods:
 
 ```ruby

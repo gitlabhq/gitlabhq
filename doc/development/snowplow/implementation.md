@@ -115,7 +115,7 @@ You can also use it on HAML templates:
 ```
 
 If you use the GitLab helper method [`nav_link`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/tab_helper.rb#L76), you must wrap `html_options` under the `html_options` keyword argument. If you
-use the `ActionView` helper method [`link_to`](https://api.rubyonrails.org/v5.2.3/classes/ActionView/Helpers/UrlHelper.html#method-i-link_to), you don't need to wrap `html_options`.
+use the `ActionView` helper method [`link_to`](https://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-link_to), you don't need to wrap `html_options`.
 
 ```ruby
 # Bad

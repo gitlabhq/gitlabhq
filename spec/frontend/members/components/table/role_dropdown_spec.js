@@ -36,6 +36,10 @@ describe('RoleDropdown', () => {
     wrapper = mount(RoleDropdown, {
       provide: {
         namespace: MEMBER_TYPES.user,
+        group: {
+          name: 'groupname',
+          path: '/grouppath/',
+        },
       },
       propsData: {
         member,
@@ -125,10 +129,10 @@ describe('RoleDropdown', () => {
         expect($toast.show).toHaveBeenCalledWith('Role updated successfully.');
       });
 
-      it('disables dropdown while waiting for `updateMemberRole` to resolve', async () => {
+      it('puts dropdown in loading state while waiting for `updateMemberRole` to resolve', async () => {
         await getDropdownItemByText('Developer').trigger('click');
 
-        expect(findDropdown().props('disabled')).toBe(true);
+        expect(findDropdown().props('loading')).toBe(true);
       });
 
       it('enables dropdown after `updateMemberRole` resolves', async () => {

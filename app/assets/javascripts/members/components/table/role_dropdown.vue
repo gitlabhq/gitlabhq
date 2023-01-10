@@ -13,7 +13,7 @@ export default {
     GlDropdownItem,
     LdapDropdownItem: () => import('ee_component/members/components/ldap/ldap_dropdown_item.vue'),
   },
-  inject: ['namespace'],
+  inject: ['namespace', 'group'],
   props: {
     member: {
       type: Object,
@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     disabled() {
-      return this.busy || (this.permissions.canOverride && !this.member.isOverridden);
+      return this.permissions.canOverride && !this.member.isOverridden;
     },
   },
   mounted() {
@@ -52,21 +52,29 @@ export default {
         return dispatch(`${this.namespace}/updateMemberRole`, payload);
       },
     }),
-    async handleOverageConfirm(currentAccessLevel, value) {
+    async handleOverageConfirm(currentRoleValue, newRoleValue, newRoleName) {
       return guestOverageConfirmAction({
-        currentAccessIntValue: currentAccessLevel,
-        dropdownIntValue: value,
+        currentRoleValue,
+        newRoleValue,
+        newRoleName,
+        group: this.group,
+        memberId: this.member.id,
+        memberType: this.namespace,
       });
     },
-    async handleSelect(value, name) {
-      const currentAccessLevel = this.member.accessLevel.integerValue;
-      if (value === currentAccessLevel) {
+    async handleSelect(newRoleValue, newRoleName) {
+      const currentRoleValue = this.member.accessLevel.integerValue;
+      if (newRoleValue === currentRoleValue) {
         return;
       }
 
       this.busy = true;
 
-      const confirmed = await this.handleOverageConfirm(currentAccessLevel, value);
+      const confirmed = await this.handleOverageConfirm(
+        currentRoleValue,
+        newRoleValue,
+        newRoleName,
+      );
       if (!confirmed) {
         this.busy = false;
         return;
@@ -74,7 +82,7 @@ export default {
 
       this.updateMemberRole({
         memberId: this.member.id,
-        accessLevel: { integerValue: value, stringValue: name },
+        accessLevel: { integerValue: newRoleValue, stringValue: newRoleName },
       })
         .then(() => {
           this.$toast.show(s__('Members|Role updated successfully.'));
@@ -97,6 +105,7 @@ export default {
     :text="member.accessLevel.stringValue"
     :header-text="__('Change role')"
     :disabled="disabled"
+    :loading="busy"
   >
     <gl-dropdown-item
       v-for="(value, name) in member.validRoles"

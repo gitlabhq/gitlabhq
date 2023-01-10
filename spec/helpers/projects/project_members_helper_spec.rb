@@ -6,7 +6,7 @@ RSpec.describe Projects::ProjectMembersHelper do
   include MembersPresentation
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, group: create(:group)) }
 
   before do
     allow(helper).to receive(:current_user).and_return(current_user)
@@ -42,7 +42,9 @@ RSpec.describe Projects::ProjectMembersHelper do
         expected = {
           source_id: project.id,
           can_manage_members: true,
-          can_manage_access_requests: true
+          can_manage_access_requests: true,
+          group_name: project.group.name,
+          group_path: project.group.path
         }.as_json
 
         expect(subject).to include(expected)
@@ -138,8 +140,8 @@ RSpec.describe Projects::ProjectMembersHelper do
 
           where(:include_relations, :result) do
             [:inherited, :direct] | lazy { [group_link_7, group_link_4, group_link_9, group_link_5, group_link_3].map(&:id) }
-            [:inherited]          | lazy { [group_link_1, group_link_4, group_link_5, group_link_3].map(&:id) }
-            [:direct]             | lazy { [group_link_7, group_link_8, group_link_9].map(&:id) }
+            [:inherited] | lazy { [group_link_1, group_link_4, group_link_5, group_link_3].map(&:id) }
+            [:direct] | lazy { [group_link_7, group_link_8, group_link_9].map(&:id) }
           end
 
           with_them do

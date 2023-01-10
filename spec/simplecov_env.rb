@@ -57,6 +57,7 @@ module SimpleCovEnv
       add_filter '/vendor/ruby/'
       add_filter '/bin/'
       add_filter 'db/fixtures/development/' # Matches EE files as well
+      add_filter %r|db/migrate/\d{14}_init_schema\.rb\z|
 
       add_group 'Channels',     'app/channels' # Matches EE files as well
       add_group 'Controllers',  'app/controllers' # Matches EE files as well

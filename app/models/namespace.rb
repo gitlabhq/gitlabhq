@@ -11,16 +11,11 @@ class Namespace < ApplicationRecord
   include FeatureGate
   include FromUnion
   include Gitlab::Utils::StrongMemoize
-  include IgnorableColumns
   include Namespaces::Traversal::Recursive
   include Namespaces::Traversal::Linear
   include EachBatch
   include BlocksUnsafeSerialization
   include Ci::NamespaceSettings
-
-  # Temporary column used for back-filling project namespaces.
-  # Remove it once the back-filling of all project namespaces is done.
-  ignore_column :tmp_project_id, remove_with: '14.7', remove_after: '2022-01-22'
 
   # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794

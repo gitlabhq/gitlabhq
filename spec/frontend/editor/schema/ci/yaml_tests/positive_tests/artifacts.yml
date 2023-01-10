@@ -1,5 +1,14 @@
-# valid artifact:reports:cyclonedx
+# valid artifacts:when
+artifacts-when-on-failure:
+  artifacts:
+    when: on_failure
 
+artifacts-no-when:
+  artifacts:
+    paths:
+      - binaries/
+
+# valid artifact:reports:cyclonedx
 cyclonedx string path:
   artifacts:
     reports:
@@ -24,12 +33,15 @@ cylonedx mixed list of string paths and globs:
         - ./foo
         - "bar/*.baz"
 
-# valid artifacts:when
-artifacts-when-on-failure:
+# valid artifacts:reports:coverage_report
+coverage-report-cobertura:
   artifacts:
-    when: on_failure
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
 
-artifacts-no-when:
+coverage-report-null:
   artifacts:
-    paths:
-      - binaries/
+    reports:
+      coverage_report: null

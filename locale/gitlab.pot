@@ -44049,6 +44049,9 @@ msgstr ""
 msgid "Token valid until revoked"
 msgstr ""
 
+msgid "TokenRevocation|This Personal Access Token has been automatically revoked on detection. Consider investigating and rotating before marking this vulnerability as resolved."
+msgstr ""
+
 msgid "Tokens|Scopes set the permission levels granted to the token."
 msgstr ""
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::DropInvalidVulnerabilities, schema: 20210301200959 do
+RSpec.describe Gitlab::BackgroundMigration::DropInvalidVulnerabilities, schema: 20210602155110 do
   let!(:background_migration_jobs) { table(:background_migration_jobs) }
   let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let!(:users) { table(:users) }

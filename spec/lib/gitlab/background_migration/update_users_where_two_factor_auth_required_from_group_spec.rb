@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::UpdateUsersWhereTwoFactorAuthRequiredFromGroup, :migration, schema: 20210519154058 do
+RSpec.describe Gitlab::BackgroundMigration::UpdateUsersWhereTwoFactorAuthRequiredFromGroup, :migration, schema: 20210602155110 do
   include MigrationHelpers::NamespacesHelpers
 
   let(:group_with_2fa_parent) { create_namespace('parent', Gitlab::VisibilityLevel::PRIVATE, require_two_factor_authentication: true) }

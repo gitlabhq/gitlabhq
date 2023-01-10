@@ -1,7 +1,7 @@
 <%= _('Hi %{username}!') % { username: sanitize_name(@user.name) } %>
 
 <%= _('A personal access token, named %{token_name}, has been revoked.') % { token_name: @token_name } %>
-<% if @source == 'secret_detection' %>
+<% if @source == :secret_detection %>
 
 <%= _('We found your token in a public project and have automatically revoked it to protect your account.') %>
 <% end %>

@@ -476,36 +476,6 @@ RSpec.describe IssuesHelper do
     end
   end
 
-  describe '#status_box_variant' do
-    context 'when object is expired' do
-      it 'returns warning badge' do
-        milestone = build(:milestone, due_date: Date.today.prev_month)
-        expect(helper.status_box_variant(milestone)).to eq('warning')
-      end
-    end
-
-    context 'when object is closed' do
-      it 'returns danger badge' do
-        milestone = build(:milestone, :closed)
-        expect(helper.status_box_variant(milestone)).to eq('danger')
-      end
-    end
-
-    context 'when object is upcoming' do
-      it 'returns neutral badge' do
-        milestone = build(:milestone, start_date: Date.today.next_month)
-        expect(helper.status_box_variant(milestone)).to eq('neutral')
-      end
-    end
-
-    context 'when object is opened' do
-      it 'returns success badge' do
-        milestone = build(:milestone)
-        expect(helper.status_box_variant(milestone)).to eq('success')
-      end
-    end
-  end
-
   describe '#issue_hidden?' do
     context 'when issue is hidden' do
       let_it_be(:banned_user) { build(:user, :banned) }

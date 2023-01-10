@@ -1,6 +1,6 @@
 .detail-page-header.milestone-page-header
-  = render Pajamas::BadgeComponent.new(variant: status_box_variant(milestone), class: 'gl-mr-3') do
-    = milestone_status_string(milestone)
+  = gl_badge_tag milestone_status_string(milestone), { variant: milestone_badge_variant(milestone) }, { class: 'gl-mr-3' }
+
   .header-text-content
     %span.identifier
       %strong

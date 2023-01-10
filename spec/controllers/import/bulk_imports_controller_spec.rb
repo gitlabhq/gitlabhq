@@ -18,6 +18,13 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
       end
 
       describe 'POST configure' do
+        before do
+          allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
+            allow(instance).to receive(:validate_instance_version!).and_return(true)
+            allow(instance).to receive(:validate_import_scopes!).and_return(true)
+          end
+        end
+
         context 'when no params are passed in' do
           it 'clears out existing session' do
             post :configure
@@ -30,8 +37,57 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
           end
         end
 
+        context 'when URL is invalid' do
+          it 'redirects to initial import page' do
+            token = 'token'
+            url = 'http://192.168.0.1'
+
+            post :configure, params: { bulk_import_gitlab_access_token: token, bulk_import_gitlab_url: url }
+
+            expect(response).to redirect_to new_group_path(anchor: 'import-group-pane')
+            expect(flash[:alert]).to include('Specified URL cannot be used')
+          end
+        end
+
+        context 'when token scope is invalid' do
+          before do
+            allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
+              allow(instance).to receive(:validate_instance_version!).and_return(true)
+              allow(instance).to receive(:validate_import_scopes!).and_raise(BulkImports::Error.new('Error!'))
+            end
+          end
+
+          it 'redirects to initial import page' do
+            token = 'token'
+            url = 'https://gitlab.example'
+
+            post :configure, params: { bulk_import_gitlab_access_token: token, bulk_import_gitlab_url: url }
+
+            expect(response).to redirect_to new_group_path(anchor: 'import-group-pane')
+            expect(flash[:alert]).to include('Error!')
+          end
+        end
+
+        context 'when instance version is incompatible' do
+          before do
+            allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
+              allow(instance).to receive(:validate_instance_version!).and_raise(BulkImports::Error.new('Error!'))
+            end
+          end
+
+          it 'redirects to initial import page' do
+            token = 'token'
+            url = 'https://gitlab.example'
+
+            post :configure, params: { bulk_import_gitlab_access_token: token, bulk_import_gitlab_url: url }
+
+            expect(response).to redirect_to new_group_path(anchor: 'import-group-pane')
+            expect(flash[:alert]).to include('Error!')
+          end
+        end
+
         it 'sets the session variables' do
-          token = 'token'
+          token = 'invalid token'
           url = 'https://gitlab.example'
 
           post :configure, params: { bulk_import_gitlab_access_token: token, bulk_import_gitlab_url: url }

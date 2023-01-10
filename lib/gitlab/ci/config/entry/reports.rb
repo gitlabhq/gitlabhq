@@ -54,7 +54,7 @@ module Gitlab
           end
 
           def value
-            @config.transform_values do |value|
+            @config.compact.transform_values do |value|
               if value.is_a?(Hash)
                 value
               else

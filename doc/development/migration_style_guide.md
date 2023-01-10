@@ -253,7 +253,7 @@ Therefore, either:
 
 For example, if you create an empty table and need to build an index for it,
 it is recommended to use a regular single-transaction migration and the default
-rails schema statement: [`add_index`](https://api.rubyonrails.org/v5.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_index).
+rails schema statement: [`add_index`](https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_index).
 This is a blocking operation, but it doesn't cause problems because the table is not yet used,
 and therefore it does not have any records yet.
 

@@ -7,7 +7,8 @@ module BulkImports
     end
 
     def self.scope_validation_failure
-      self.new("Import aborted as the provided personal access token does not have the required 'api' scope.")
+      self.new("Import aborted as the provided personal access token does not have the required 'api' scope or " \
+               "is no longer valid.")
     end
 
     def self.invalid_url

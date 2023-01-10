@@ -1,5 +1,17 @@
-# invalid artifact:reports:cyclonedx
+# invalid artifacts:when
+artifacts-when-unknown:
+  artifacts:
+    when: unknown
 
+artifacts-when-array:
+  artifacts:
+    when: [always]
+
+artifacts-when-boolean:
+  artifacts:
+    when: true
+
+# invalid artifact:reports:cyclonedx
 cyclonedx no paths:
   artifacts:
     reports:
@@ -17,15 +29,8 @@ cyclonedx not an array or string:
           - foo
           - bar
 
-# invalid artifacts:when
-artifacts-when-unknown:
+# invalid artifacts:reports:coverage_report
+coverage-report-is-string:
   artifacts:
-    when: unknown
-
-artifacts-when-array:
-  artifacts:
-    when: [always]
-
-artifacts-when-boolean:
-  artifacts:
-    when: true
+    reports:
+      coverage_report: cobertura

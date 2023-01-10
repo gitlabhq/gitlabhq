@@ -35,18 +35,6 @@ module IssuesHelper
     end
   end
 
-  def status_box_variant(item)
-    if item.try(:expired?)
-      'warning'
-    elsif item.closed?
-      'danger'
-    elsif item.try(:upcoming?)
-      'neutral'
-    else
-      'success'
-    end
-  end
-
   def issue_status_visibility(issue, status_box:)
     case status_box
     when :open

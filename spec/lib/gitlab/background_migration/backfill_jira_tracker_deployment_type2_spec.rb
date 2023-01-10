@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillJiraTrackerDeploymentType2, :migration, schema: 20210301200959 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillJiraTrackerDeploymentType2, :migration, schema: 20210602155110 do
   let!(:jira_integration_temp) { described_class::JiraServiceTemp }
   let!(:jira_tracker_data_temp) { described_class::JiraTrackerDataTemp }
   let!(:atlassian_host) { 'https://api.atlassian.net' }

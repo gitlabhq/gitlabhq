@@ -74,7 +74,8 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
           expect(result).to be_error
           expect(result.message)
             .to eq(
-              "Import aborted as the provided personal access token does not have the required 'api' scope."
+              "Import aborted as the provided personal access token does not have the required 'api' scope or is " \
+              "no longer valid."
             )
         end
       end

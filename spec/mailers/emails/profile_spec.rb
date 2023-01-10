@@ -281,7 +281,7 @@ RSpec.describe Emails::Profile do
     end
 
     context 'when source is provided' do
-      subject { Notify.access_token_revoked_email(user, token.name, 'secret_detection') }
+      subject { Notify.access_token_revoked_email(user, token.name, :secret_detection) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'

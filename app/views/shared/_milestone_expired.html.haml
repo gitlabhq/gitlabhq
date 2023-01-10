@@ -1,6 +1,1 @@
-- if milestone.expired? && !milestone.closed?
-  = gl_badge_tag _('Expired'), { variant: :warning }, { class: "gl-mb-2" }
-- if milestone.upcoming?
-  = gl_badge_tag _('Upcoming'), { variant: :info }, { class: "gl-mb-2" }
-- if milestone.closed?
-  = gl_badge_tag _('Closed'), { variant: :danger }, { class: "gl-mb-2" }
+= gl_badge_tag milestone_status_string(milestone), { variant: milestone_badge_variant(milestone) }, { class: 'gl-mb-2' }

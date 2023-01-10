@@ -531,7 +531,7 @@ export const getOverlappingDaysInPeriods = (givenPeriodLeft = {}, givenPeriodRig
 
 /**
  * Mimics the behaviour of the rails distance_of_time_in_words function
- * https://api.rubyonrails.org/v6.0.1/classes/ActionView/Helpers/DateHelper.html#method-i-distance_of_time_in_words
+ * https://api.rubyonrails.org/classes/ActionView/Helpers/DateHelper.html#method-i-distance_of_time_in_words
  * 0 < -> 29 secs                                         => less than a minute
  * 30 secs < -> 1 min, 29 secs                            => 1 minute
  * 1 min, 30 secs < -> 44 mins, 29 secs                   => [2..44] minutes

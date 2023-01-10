@@ -17,6 +17,9 @@ class Import::BulkImportsController < ApplicationController
     session[access_token_key] = configure_params[access_token_key]&.strip
     session[url_key] = configure_params[url_key]
 
+    verify_blocked_uri && performed? && return
+    validate_configure_params!
+
     redirect_to status_import_bulk_imports_url(namespace_id: params[:namespace_id])
   end
 
@@ -98,6 +101,16 @@ class Import::BulkImportsController < ApplicationController
 
   def configure_params
     params.permit(access_token_key, url_key)
+  end
+
+  def validate_configure_params!
+    client = BulkImports::Clients::HTTP.new(
+      url: credentials[:url],
+      token: credentials[:access_token]
+    )
+
+    client.validate_instance_version!
+    client.validate_import_scopes!
   end
 
   def create_params
