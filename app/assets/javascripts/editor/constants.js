@@ -1,6 +1,8 @@
-import { MODIFIER_KEY } from '~/constants';
+import { getModifierKey } from '~/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__, __, sprintf } from '~/locale';
+
+const modifierKey = getModifierKey();
 
 export const URI_PREFIX = 'gitlab';
 export const CONTENT_UPDATE_DEBOUNCE = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
@@ -67,7 +69,7 @@ export const EXTENSION_MARKDOWN_BUTTONS = [
   {
     id: 'bold',
     label: sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), {
-      modifierKey: MODIFIER_KEY,
+      modifierKey,
     }),
     data: {
       mdTag: '**',
@@ -77,7 +79,7 @@ export const EXTENSION_MARKDOWN_BUTTONS = [
   {
     id: 'italic',
     label: sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), {
-      modifierKey: MODIFIER_KEY,
+      modifierKey,
     }),
     data: {
       mdTag: '_',
@@ -87,7 +89,7 @@ export const EXTENSION_MARKDOWN_BUTTONS = [
   {
     id: 'strikethrough',
     label: sprintf(s__('MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)'), {
-      modifierKey: MODIFIER_KEY,
+      modifierKey,
     }),
     data: {
       mdTag: '~~',
@@ -113,7 +115,7 @@ export const EXTENSION_MARKDOWN_BUTTONS = [
   {
     id: 'link',
     label: sprintf(s__('MarkdownEditor|Add a link (%{modifier_key}K)'), {
-      modifierKey: MODIFIER_KEY,
+      modifierKey,
     }),
     data: {
       mdTag: '[{text}](url)',

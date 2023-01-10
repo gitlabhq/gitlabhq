@@ -20,6 +20,11 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
   end
 
   describe 'validations' do
+    let(:http)  { 'http://gitlab.com' }
+    let(:https) { 'https://gitlab.com' }
+    let(:ftp)   { 'ftp://example.com' }
+    let(:javascript) { 'javascript:alert(window.opener.document.location)' }
+
     it { is_expected.to validate_presence_of(:reporter) }
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:message) }
@@ -28,8 +33,16 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it do
       is_expected.to validate_uniqueness_of(:user_id)
         .scoped_to(:reporter_id)
-        .with_message('You have already reported this user')
+        .with_message('has already been reported for abuse')
     end
+
+    it { is_expected.to validate_length_of(:reported_from_url).is_at_most(512).allow_blank }
+    it { is_expected.to allow_value(http).for(:reported_from_url) }
+    it { is_expected.to allow_value(https).for(:reported_from_url) }
+    it { is_expected.not_to allow_value(ftp).for(:reported_from_url) }
+    it { is_expected.not_to allow_value(javascript).for(:reported_from_url) }
+    it { is_expected.to allow_value('http://localhost:9000').for(:reported_from_url) }
+    it { is_expected.to allow_value('https://gitlab.com').for(:reported_from_url) }
   end
 
   describe '#remove_user' do

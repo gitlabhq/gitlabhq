@@ -785,7 +785,7 @@ The documentation will mention that the old Global ID style is now deprecated.
 ## Mark schema items as Alpha
 
 You can mark GraphQL schema items (fields, arguments, enum values, and mutations) as
-[Alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga).
+[Alpha](../policy/alpha-beta-support.md#alpha-features).
 
 An item marked as Alpha is [exempt from the deprecation process](#breaking-change-exemptions) and can be removed
 at any time without notice. Mark an item as Alpha when it is

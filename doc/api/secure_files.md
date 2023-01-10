@@ -7,11 +7,10 @@ type: reference, api
 
 # Project-level Secure Files API **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78227) in GitLab 14.8. [Deployed behind the `ci_secure_files` flag](../administration/feature_flags.md), disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78227) in GitLab 14.8. [Deployed behind the `ci_secure_files` flag](../administration/feature_flags.md), disabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) in GitLab 15.7.
 
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `ci_secure_files`. Limited to 100 secure files per project. Files must be smaller than 5 MB. The feature is not ready for production use.
+Limited to 100 secure files per project. Files must be smaller than 5 MB. Project-level Secure Files is an experimental feature developed by [GitLab Incubation Engineering](https://about.gitlab.com/handbook/engineering/incubation/).
 
 ## List project secure files
 

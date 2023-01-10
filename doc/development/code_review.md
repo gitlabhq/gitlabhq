@@ -200,7 +200,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 
 ##### Performance, reliability, and availability
 
-1. You are confident that this MR does not harm performance, or you have asked a reviewer to help assess the performance impact. ([Merge request performance guidelines](merge_request_performance_guidelines.md))
+1. You are confident that this MR does not harm performance, or you have asked a reviewer to help assess the performance impact. ([Merge request performance guidelines](merge_request_concepts/performance.md))
 1. You have added [information for database reviewers in the MR description](database_review.md#required), or you have decided that it is unnecessary.
     - [Does this MR have database-related changes?](database_review.md)
 1. You have considered the availability and reliability risks of this change.

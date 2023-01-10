@@ -357,10 +357,28 @@ module Gitlab
       end
 
       def foreign_key_exists?(source, target = nil, **options)
-        foreign_keys(source).any? do |foreign_key|
-          tables_match?(target.to_s, foreign_key.to_table.to_s) &&
-            options_match?(foreign_key.options, options)
+        # This if block is necessary because foreign_key_exists? is called in down migrations that may execute before
+        # the postgres_foreign_keys view had necessary columns added, or even before the view existed.
+        # In that case, we revert to the previous behavior of this method.
+        # The behavior in the if block has a bug: it always returns false if the fk being checked has multiple columns.
+        # This can be removed after init_schema.rb passes 20221122210711_add_columns_to_postgres_foreign_keys.rb
+        # Tracking issue: https://gitlab.com/gitlab-org/gitlab/-/issues/386796
+        if ActiveRecord::Migrator.current_version < 20221122210711
+          return foreign_keys(source).any? do |foreign_key|
+            tables_match?(target.to_s, foreign_key.to_table.to_s) &&
+                options_match?(foreign_key.options, options)
+          end
         end
+
+        fks = Gitlab::Database::PostgresForeignKey.by_constrained_table_name(source)
+
+        fks = fks.by_referenced_table_name(target) if target
+        fks = fks.by_name(options[:name]) if options[:name]
+        fks = fks.by_constrained_columns(options[:column]) if options[:column]
+        fks = fks.by_referenced_columns(options[:primary_key]) if options[:primary_key]
+        fks = fks.by_on_delete_action(options[:on_delete]) if options[:on_delete]
+
+        fks.exists?
       end
 
       # Returns the name for a concurrent foreign key.

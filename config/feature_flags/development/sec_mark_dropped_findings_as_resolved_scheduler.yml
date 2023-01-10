@@ -1,0 +1,8 @@
+---
+name: sec_mark_dropped_findings_as_resolved_scheduler
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108486
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387577
+milestone: '15.8'
+type: development
+group: group::static analysis
+default_enabled: false

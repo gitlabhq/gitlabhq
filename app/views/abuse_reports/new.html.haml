@@ -1,30 +1,36 @@
 - page_title _("Report abuse to administrator")
-%h1.page-title.gl-font-size-h-display
-  = _("Report abuse to administrator")
-%p
-  = _("Use this form to report to the administrator users who create spam issues, comments or behave inappropriately.")
-%p
-  = _("A member of the abuse team will review your report as soon as possible.")
-%hr
-= gitlab_ui_form_for @abuse_report, html: { class: 'js-quick-submit js-requires-input'} do |f|
-  = form_errors(@abuse_report, custom_message: [:user_id])
+.row
+  .col-lg-8
+    %h1.page-title.gl-font-size-h-display
+      = _("Report abuse to administrator")
+    %p
+      = _("Please use this form to report to the administrator users who create spam issues, comments or behave inappropriately.")
+      = _("A member of the abuse team will review your report as soon as possible.")
+
+= gitlab_ui_form_for @abuse_report, html: { class: 'js-quick-submit'} do |f|
+  = form_errors(@abuse_report)
 
   = f.hidden_field :user_id
   = f.hidden_field :category
+
   .form-group.row
-    .col-sm-2.col-form-label
-      = f.label :user_id
-    .col-sm-10
+    .col-lg-8
+      = f.label :reported_user
+
       - name = "#{@abuse_report.user.name} (@#{@abuse_report.user.username})"
       = text_field_tag :user_name, name, class: "form-control", readonly: true
   .form-group.row
-    .col-sm-2.col-form-label
-      = f.label :message
-    .col-sm-10
-      = f.text_area :message, class: "form-control", rows: 2, required: true, value: sanitize(@ref_url)
+    .col-lg-8
+      = f.label :reported_from
+      = f.text_field :reported_from_url, class: "form-control", readonly: true
+  .form-group.row
+    .col-lg-8
+      = f.label :reason
+      = f.text_area :message, class: "form-control", rows: 4, required: true
       .form-text.text-muted
-        = _("Explain the problem. If appropriate, provide a link to the relevant issue or comment.")
+        = _("Explain why you're reporting the user.")
 
-  .form-actions
-    = f.submit _("Send report"), pajamas_button: true
-    = link_to _('Cancel'), @origin_url, class: "gl-button btn btn-default btn-cancel"
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm) do
+    = _('Send report')
+  = render Pajamas::ButtonComponent.new(href: @abuse_report.reported_from_url, button_options: { class: 'gl-ml-3' }) do
+    = _('Cancel')

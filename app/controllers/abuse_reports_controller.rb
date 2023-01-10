@@ -1,20 +1,22 @@
 # frozen_string_literal: true
 
 class AbuseReportsController < ApplicationController
-  before_action :set_user, :set_ref_url, only: [:new, :add_category]
-  before_action :save_origin_url, only: [:new, :add_category]
-  before_action :set_origin_url, only: [:create]
+  before_action :set_user, only: [:new, :add_category]
 
   feature_category :insider_threat
 
   def new
-    @abuse_report = AbuseReport.new(user_id: @user.id)
+    @abuse_report = AbuseReport.new(
+      user_id: @user.id,
+      reported_from_url: params.fetch(:ref_url, '')
+    )
   end
 
   def add_category
     @abuse_report = AbuseReport.new(
       user_id: @user.id,
-      category: report_params[:category]
+      category: report_params[:category],
+      reported_from_url: report_params[:reported_from_url]
     )
 
     render :new
@@ -39,7 +41,7 @@ class AbuseReportsController < ApplicationController
   private
 
   def report_params
-    params.require(:abuse_report).permit(:message, :user_id, :category)
+    params.require(:abuse_report).permit(:message, :user_id, :category, :reported_from_url)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -53,17 +55,4 @@ class AbuseReportsController < ApplicationController
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def set_ref_url
-    @ref_url = params.fetch(:ref_url, '')
-  end
-
-  def save_origin_url
-    @origin_url = params.fetch(:ref_url, request.referer)
-    session[:abuse_report_origin_url] = @origin_url
-  end
-
-  def set_origin_url
-    @origin_url = session[:abuse_report_origin_url]
-  end
 end

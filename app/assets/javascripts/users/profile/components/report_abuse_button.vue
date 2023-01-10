@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
@@ -34,6 +35,9 @@ export default {
     closeDrawer() {
       this.open = false;
     },
+    hideTooltips() {
+      this.$root.$emit(BV_HIDE_TOOLTIP);
+    },
   },
 };
 </script>
@@ -45,6 +49,7 @@ export default {
       :aria-label="buttonTooltipText"
       icon="error"
       @click="openDrawer"
+      @mouseout="hideTooltips"
     />
     <abuse-category-selector :show-drawer="open" @close-drawer="closeDrawer" />
   </span>

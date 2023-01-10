@@ -185,7 +185,7 @@ you must also add the full paths as shown below:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. If you're using [Pages Access Control](#access-control), update the redirect URI in the GitLab Pages
-[System OAuth application](../../integration/oauth_provider.md#instance-wide-applications)
+[System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
 to use the HTTPS protocol.
 
 WARNING:
@@ -384,7 +384,7 @@ then you need to also add the full paths as shown below:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. If you're using [Pages Access Control](#access-control), update the redirect URI in the GitLab Pages
-[System OAuth application](../../integration/oauth_provider.md#instance-wide-applications)
+[System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
 to use the HTTPS protocol.
 
 ### Custom domain verification
@@ -1428,7 +1428,7 @@ Once added, reconfigure with `sudo gitlab-ctl reconfigure` and restart GitLab wi
 
 You may see this error if `pages_external_url` was updated at some point of time. Verify the following:
 
-1. The **Callback URL**/Redirect URI in the GitLab Pages [System OAuth application](../../integration/oauth_provider.md#instance-wide-applications)
+1. The **Callback URL**/Redirect URI in the GitLab Pages [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
 is using the protocol (HTTP or HTTPS) that `pages_external_url` is configured to use.
 1. The domain and path components of `Redirect URI` are valid: they should look like `projects.<pages_external_url>/auth`.
 

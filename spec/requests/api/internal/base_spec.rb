@@ -453,16 +453,10 @@ RSpec.describe API::Internal::Base, feature_category: :authentication_and_author
         expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
       end
 
-      context 'when rate_limit_gitlab_shell feature flag is disabled' do
-        before do
-          stub_feature_flags(rate_limit_gitlab_shell: false)
-        end
+      it 'is not throttled by rate limiter' do
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
 
-        it 'is not throttled by rate limiter' do
-          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
-
-          subject
-        end
+        subject
       end
 
       context 'when the IP is in a trusted range' do

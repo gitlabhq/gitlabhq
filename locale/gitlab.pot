@@ -16662,7 +16662,7 @@ msgstr ""
 msgid "Expires:"
 msgstr ""
 
-msgid "Explain the problem. If appropriate, provide a link to the relevant issue or comment."
+msgid "Explain why you're reporting the user."
 msgstr ""
 
 msgid "Explore"
@@ -24423,9 +24423,6 @@ msgstr ""
 msgid "Last successful update %{time}."
 msgstr ""
 
-msgid "Last time verified"
-msgstr ""
-
 msgid "Last update"
 msgstr ""
 
@@ -31423,6 +31420,9 @@ msgstr ""
 msgid "Please type %{phrase_code} to proceed or close this modal to cancel."
 msgstr ""
 
+msgid "Please use this form to report to the administrator users who create spam issues, comments or behave inappropriately."
+msgstr ""
+
 msgid "Please wait a few moments while we load the file history for this line."
 msgstr ""
 
@@ -35845,9 +35845,6 @@ msgid "Results limit reached"
 msgstr ""
 
 msgid "Resume"
-msgstr ""
-
-msgid "Resync"
 msgstr ""
 
 msgid "Retrieving the compliance report failed. Refresh the page and try again."
@@ -45380,9 +45377,6 @@ msgstr ""
 msgid "Use the search bar on the top of this page"
 msgstr ""
 
-msgid "Use this form to report to the administrator users who create spam issues, comments or behave inappropriately."
-msgstr ""
-
 msgid "Use this token to validate received payloads."
 msgstr ""
 
@@ -48215,9 +48209,6 @@ msgid_plural "You have %{pendingMembersCount} pending members that need approval
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "You have already reported this user"
-msgstr ""
-
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."
 msgstr ""
 
@@ -49819,6 +49810,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "has already been linked to another vulnerability"
+msgstr ""
+
+msgid "has already been reported for abuse"
 msgstr ""
 
 msgid "has already been taken"

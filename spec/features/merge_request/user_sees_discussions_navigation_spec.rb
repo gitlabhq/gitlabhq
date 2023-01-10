@@ -194,29 +194,10 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
   end
 
   def goto_next_thread
-    begin
-      # this is required when moved_mr_sidebar is enabled
-      page.within('.issue-sticky-header') do
-        click_button 'Go to next unresolved thread'
-      end
-    rescue StandardError
-      click_button 'Go to next unresolved thread'
-    end
-    wait_for_scroll_end
+    click_button 'Go to next unresolved thread'
   end
 
   def goto_previous_thread
-    begin
-      page.within('.issue-sticky-header') do
-        click_button 'Go to previous unresolved thread'
-      end
-    rescue StandardError
-      click_button 'Go to previous unresolved thread'
-    end
-    wait_for_scroll_end
-  end
-
-  def wait_for_scroll_end
-    sleep(1)
+    click_button 'Go to previous unresolved thread'
   end
 end

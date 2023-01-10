@@ -195,7 +195,7 @@ the contribution acceptance criteria below:
    and testing future changes.
 1. Changes do not degrade performance:
    - Avoid repeated polling of endpoints that require a significant amount of overhead.
-   - Check for N+1 queries via the SQL log or [`QueryRecorder`](../merge_request_performance_guidelines.md).
+   - Check for N+1 queries via the SQL log or [`QueryRecorder`](../merge_request_concepts/performance.md).
    - Avoid repeated access of the file system.
    - Use [polling with ETag caching](../polling.md) if needed to support real-time features.
 1. If the merge request adds any new libraries (like gems or JavaScript libraries),
@@ -223,7 +223,7 @@ requirements.
 
 1. Working and clean code that is commented where needed.
 1. The change is evaluated to [limit the impact of far-reaching work](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work).
-1. [Performance guidelines](../merge_request_performance_guidelines.md) have been followed.
+1. [Performance guidelines](../merge_request_concepts/performance.md) have been followed.
 1. [Secure coding guidelines](https://gitlab.com/gitlab-com/gl-security/security-guidelines) have been followed.
 1. [Application and rate limit guidelines](../merge_request_application_and_rate_limit_guidelines.md) have been followed.
 1. [Documented](../documentation/index.md) in the `/doc` directory.

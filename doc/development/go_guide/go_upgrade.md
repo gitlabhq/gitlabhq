@@ -193,7 +193,7 @@ be included in the relevant issues as part of the definition of done:
 Upstream component maintainers must validate their Go-based projects using:
 
 - Established unit tests in the codebase.
-- Procedures established in [Merge Request Performance Guidelines](../merge_request_performance_guidelines.md).
+- Procedures established in [Merge Request Performance Guidelines](../merge_request_concepts/performance.md).
 - Procedures established in [Performance, Reliability, and Availability guidelines](../code_review.md#performance-reliability-and-availability).
 
 Upstream component maintainers should consider validating their Go-based

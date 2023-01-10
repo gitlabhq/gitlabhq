@@ -1169,7 +1169,7 @@ RSpec.describe API::Projects do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
-    it "assigns attributes to project", :aggregate_failures do
+    it 'assigns attributes to project', :aggregate_failures do
       project = attributes_for(:project, {
         path: 'camelCasePath',
         issues_enabled: false,
@@ -1198,6 +1198,11 @@ RSpec.describe API::Projects do
         attrs[:feature_flags_access_level] = 'disabled'
         attrs[:infrastructure_access_level] = 'disabled'
         attrs[:monitor_access_level] = 'disabled'
+        attrs[:snippets_access_level] = 'disabled'
+        attrs[:wiki_access_level] = 'disabled'
+        attrs[:builds_access_level] = 'disabled'
+        attrs[:merge_requests_access_level] = 'disabled'
+        attrs[:issues_access_level] = 'disabled'
       end
 
       post api('/projects', user), params: project
@@ -1228,6 +1233,11 @@ RSpec.describe API::Projects do
       expect(project.project_feature.feature_flags_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.infrastructure_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.monitor_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.builds_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.issues_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.snippets_access_level).to eq(ProjectFeature::DISABLED)
     end
 
     it 'assigns container_registry_enabled to project', :aggregate_failures do

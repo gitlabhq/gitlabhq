@@ -59,7 +59,7 @@ resources which the `application` can access. Upon creation, you obtain the
 **must be kept secure**. It is also advantageous to keep the _Application ID_
 secret when your application architecture allows.
 
-For a list of scopes in GitLab, see [the provider documentation](../integration/oauth_provider.md#authorized-applications).
+For a list of scopes in GitLab, see [the provider documentation](../integration/oauth_provider.md#view-all-authorized-applications).
 
 ### Prevent CSRF attacks
 
@@ -116,7 +116,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
 
    This page asks the user to approve the request from the app to access their
    account based on the scopes specified in `REQUESTED_SCOPES`. The user is then
-   redirected back to the specified `REDIRECT_URI`. The [scope parameter](../integration/oauth_provider.md#authorized-applications)
+   redirected back to the specified `REDIRECT_URI`. The [scope parameter](../integration/oauth_provider.md#view-all-authorized-applications)
    is a space-separated list of scopes associated with the user.
    For example,`scope=read_user+profile` requests the `read_user` and `profile` scopes.
    The redirect includes the authorization `code`, for example:
@@ -196,7 +196,7 @@ be used as a CSRF token.
 
    This page asks the user to approve the request from the app to access their
    account based on the scopes specified in `REQUESTED_SCOPES`. The user is then
-   redirected back to the specified `REDIRECT_URI`. The [scope parameter](../integration/oauth_provider.md#authorized-applications)
+   redirected back to the specified `REDIRECT_URI`. The [scope parameter](../integration/oauth_provider.md#view-all-authorized-applications)
    is a space-separated list of scopes associated with the user.
    For example,`scope=read_user+profile` requests the `read_user` and `profile` scopes.
    The redirect includes the authorization `code`, for example:
@@ -352,7 +352,7 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/ap
 
 ## Access Git over HTTPS with `access token`
 
-A token with [scope](../integration/oauth_provider.md#authorized-applications)
+A token with [scope](../integration/oauth_provider.md#view-all-authorized-applications)
 `read_repository` or `write_repository` can access Git over HTTPS. Use the token as the password.
 The username must be `oauth2`, not your username:
 

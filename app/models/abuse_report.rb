@@ -17,9 +17,18 @@ class AbuseReport < ApplicationRecord
     uniqueness: {
       scope: :reporter_id,
       message: ->(object, data) do
-        _('You have already reported this user')
+        _('has already been reported for abuse')
       end
     }
+
+  validates :reported_from_url,
+            allow_blank: true,
+            length: { maximum: 512 },
+            addressable_url: {
+              dns_rebind_protection: true,
+              blocked_message: 'is an invalid URL. You can try reporting the abuse again, ' \
+                               'or contact a GitLab administrator for help.'
+            }
 
   scope :by_user, ->(user) { where(user_id: user) }
   scope :with_users, -> { includes(:reporter, :user) }
@@ -37,6 +46,14 @@ class AbuseReport < ApplicationRecord
 
   # For CacheMarkdownField
   alias_method :author, :reporter
+
+  HUMANIZED_ATTRIBUTES = {
+    reported_from_url: "Reported from"
+  }.freeze
+
+  def self.human_attribute_name(attr, options = {})
+    HUMANIZED_ATTRIBUTES[attr.to_sym] || super
+  end
 
   def remove_user(deleted_by:)
     user.delete_async(deleted_by: deleted_by, params: { hard_delete: true })

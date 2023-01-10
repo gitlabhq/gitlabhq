@@ -6,17 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Configure GitLab as an OAuth 2.0 authentication identity provider
 
-This document describes how you can use GitLab as an OAuth 2.0 authentication identity provider.
-
-- OAuth 2 applications can be created and managed using the GitLab UI (described below)
-  or managed using the [Applications API](../api/applications.md).
-- After an application is created, external services can manage access tokens using the
-  [OAuth 2 API](../api/oauth2.md).
-- To allow users to sign in to GitLab using third-party OAuth 2 providers, see
-  [OmniAuth documentation](omniauth.md).
-
-## Introduction to OAuth
-
 [OAuth 2](https://oauth.net/2/) provides to client applications a 'secure delegated
 access' to server resources on behalf of a resource owner. OAuth 2 allows
 authorization servers to issue access tokens to third-party clients with the approval
@@ -33,21 +22,30 @@ to repositories without sharing user credentials to your GitLab.com account.
 
 GitLab supports several ways of adding a new OAuth 2 application to an instance:
 
-- [User owned applications](#user-owned-applications)
-- [Group owned applications](#group-owned-applications)
-- [Instance-wide applications](#instance-wide-applications)
+- [User owned applications](#create-a-user-owned-application)
+- [Group owned applications](#create-a-group-owned-application)
+- [Instance-wide applications](#create-an-instance-wide-application)
 
 The only difference between these methods is the [permission](../user/permissions.md)
 levels. The default callback URL is `https://your-gitlab.example.com/users/auth/gitlab/callback` (you can also use a non-SSL URL, but you should use SSL URLs).
 
-## User owned applications
+This document describes how you can use GitLab as an OAuth 2.0 authentication identity provider.
+
+- OAuth 2 applications can be created and managed using the GitLab UI (described below)
+  or managed using the [Applications API](../api/applications.md).
+- After an application is created, external services can manage access tokens using the
+  [OAuth 2 API](../api/oauth2.md).
+- To allow users to sign in to GitLab using third-party OAuth 2 providers, see
+  [OmniAuth documentation](omniauth.md).
+
+## Create a user-owned application
 
 To add a new application for your user:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Applications**.
-1. Enter a **Name**, **Redirect URI** and OAuth 2 scopes as defined in [Authorized Applications](#authorized-applications).
+1. Enter a **Name**, **Redirect URI** and OAuth 2 scopes as defined in [Authorized Applications](#view-all-authorized-applications).
    The **Redirect URI** is the URL where users are sent after they authorize with GitLab.
 1. Select **Save application**. GitLab provides:
 
@@ -57,7 +55,7 @@ To add a new application for your user:
      - By selecting **Copy** in the **Secret** field
        [in GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/332844).
 
-## Group owned applications
+## Create a group-owned application
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16227) in GitLab 13.11.
 
@@ -65,7 +63,7 @@ To add a new application for a group:
 
 1. Go to the desired group.
 1. On the left sidebar, select **Settings > Applications**.
-1. Enter a **Name**, **Redirect URI** and OAuth 2 scopes as defined in [Authorized Applications](#authorized-applications).
+1. Enter a **Name**, **Redirect URI** and OAuth 2 scopes as defined in [Authorized Applications](#view-all-authorized-applications).
    The **Redirect URI** is the URL where users are sent after they authorize with GitLab.
 1. Select **Save application**. GitLab provides:
 
@@ -75,7 +73,7 @@ To add a new application for a group:
      - By selecting **Copy** in the **Secret** field
        [in GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/332844).
 
-## Instance-wide applications
+## Create an instance-wide application
 
 To create an application for your GitLab instance:
 
@@ -86,22 +84,7 @@ To create an application for your GitLab instance:
 When creating application in the **Admin Area** , you can mark it as _trusted_.
 The user authorization step is automatically skipped for this application.
 
-## Access token expiration
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21745) in GitLab 14.3, with the ability to opt out.
-> - Ability to opt-out of expiring access token [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in GitLab 15.0.
-
-WARNING:
-The ability to opt-out of expiring access tokens was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/340848)
-in GitLab 14.3 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in 15.0. All
-existing integrations must be updated to support access token refresh.
-
-Access tokens expire after two hours. Integrations that use access tokens must generate new ones at least every
-two hours.
-
-When applications are deleted, all grants and tokens associated with the application are also deleted.
-
-## Authorized applications
+## View all authorized applications
 
 To see all the application you've authorized with your GitLab credentials:
 
@@ -127,6 +110,21 @@ application can perform. Available scopes are depicted in the following table.
 | `email`            |  Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
 
 At any time you can revoke any access by selecting **Revoke**.
+
+## Access token expiration
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21745) in GitLab 14.3, with the ability to opt out.
+> - Ability to opt-out of expiring access token [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in GitLab 15.0.
+
+WARNING:
+The ability to opt out of expiring access tokens was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/340848)
+in GitLab 14.3 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in 15.0. All
+existing integrations must be updated to support access token refresh.
+
+Access tokens expire after two hours. Integrations that use access tokens must generate new ones at least every
+two hours.
+
+When applications are deleted, all grants and tokens associated with the application are also deleted.
 
 ## Hashed OAuth application secrets
 

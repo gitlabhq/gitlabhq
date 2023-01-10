@@ -353,15 +353,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(:too_many_requests)
       end
 
-      context "when hotlinking detection is enabled" do
-        before do
-          stub_feature_flags(repository_archive_hotlinking_interception: true)
-        end
-
-        it_behaves_like "hotlink interceptor" do
-          let(:http_request) do
-            get api(route, current_user), headers: headers
-          end
+      it_behaves_like "hotlink interceptor" do
+        let(:http_request) do
+          get api(route, current_user), headers: headers
         end
       end
     end

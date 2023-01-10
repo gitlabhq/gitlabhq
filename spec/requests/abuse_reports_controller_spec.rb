@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AbuseReportsController, feature_category: :users do
+RSpec.describe AbuseReportsController, feature_category: :insider_threat do
   let(:reporter) { create(:user) }
   let(:user)     { create(:user) }
   let(:attrs) do
@@ -16,6 +16,18 @@ RSpec.describe AbuseReportsController, feature_category: :users do
   end
 
   describe 'GET new' do
+    let(:ref_url) { 'http://example.com' }
+
+    it 'sets the instance variables' do
+      get new_abuse_report_path(user_id: user.id, ref_url: ref_url)
+
+      expect(assigns(:abuse_report)).to be_kind_of(AbuseReport)
+      expect(assigns(:abuse_report)).to have_attributes(
+        user_id: user.id,
+        reported_from_url: ref_url
+      )
+    end
+
     context 'when the user has already been deleted' do
       it 'redirects the reporter to root_path' do
         user_id = user.id
@@ -47,7 +59,9 @@ RSpec.describe AbuseReportsController, feature_category: :users do
 
     context 'when user is reported for abuse' do
       let(:ref_url) { 'http://example.com' }
-      let(:request_params) { { user_id: user.id, abuse_report: { category: abuse_category }, ref_url: ref_url } }
+      let(:request_params) do
+        { user_id: user.id, abuse_report: { category: abuse_category, reported_from_url: ref_url } }
+      end
 
       it 'renders new template' do
         subject
@@ -62,9 +76,9 @@ RSpec.describe AbuseReportsController, feature_category: :users do
         expect(assigns(:abuse_report)).to be_kind_of(AbuseReport)
         expect(assigns(:abuse_report)).to have_attributes(
           user_id: user.id,
-          category: abuse_category
+          category: abuse_category,
+          reported_from_url: ref_url
         )
-        expect(assigns(:ref_url)).to eq(ref_url)
       end
     end
 

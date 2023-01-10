@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PersonalAccessToken do
+RSpec.describe PersonalAccessToken, feature_category: :authentication_and_authorization do
   subject { described_class }
 
   describe '.build' do
@@ -210,6 +210,12 @@ RSpec.describe PersonalAccessToken do
       expect(personal_access_token).to be_valid
     end
 
+    it "allows creating a token with `admin_mode` scope" do
+      personal_access_token.scopes = [:api, :admin_mode]
+
+      expect(personal_access_token).to be_valid
+    end
+
     context 'when registry is disabled' do
       before do
         stub_container_registry_config(enabled: false)
@@ -337,6 +343,29 @@ RSpec.describe PersonalAccessToken do
 
       it 'returns ordered list in combination of expires_at ascending and id descending' do
         expect(described_class.order_expires_at_asc_id_desc).to eq [earlier_token_2, earlier_token, later_token]
+      end
+    end
+  end
+
+  # During the implementation of Admin Mode for API, tokens of
+  # administrators should automatically get the `admin_mode` scope as well
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/42692
+  describe '`admin_mode scope' do
+    subject { create(:personal_access_token, user: user, scopes: ['api']) }
+
+    context 'with administrator user' do
+      let_it_be(:user) { create(:user, :admin) }
+
+      it 'adds `admin_mode` scope before created' do
+        expect(subject.scopes).to contain_exactly('api', 'admin_mode')
+      end
+    end
+
+    context 'with normal user' do
+      let_it_be(:user) { create(:user) }
+
+      it 'does not add `admin_mode` scope before created' do
+        expect(subject.scopes).to contain_exactly('api')
       end
     end
   end

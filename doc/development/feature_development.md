@@ -108,7 +108,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Performance guidelines](performance.md) for writing code, benchmarks, and
   certain patterns to avoid.
 - [Caching guidelines](caching.md) for using caching in Rails under a GitLab environment.
-- [Merge request performance guidelines](merge_request_performance_guidelines.md)
+- [Merge request performance guidelines](merge_request_concepts/performance.md)
   for ensuring merge requests do not negatively impact GitLab performance
 - [Profiling](profiling.md) a URL or tracking down N+1 queries using Bullet.
 - [Cached queries guidelines](cached_queries.md), for tracking down N+1 queries

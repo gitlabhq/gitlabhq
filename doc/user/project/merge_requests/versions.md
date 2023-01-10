@@ -64,7 +64,7 @@ branches. The new mode is available from the comparison target drop down
 by selecting **main (HEAD)**. In GitLab 13.9, it
 [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/198458) the
 old default comparison. For technical details, additional information is available in the
-[developer documentation](../../../development/diffs.md#merge-request-diffs-against-the-head-of-the-target-branch).
+[developer documentation](../../../development/merge_request_concepts/diffs/index.md#merge-request-diffs-against-the-head-of-the-target-branch).
 
 ![Merge request versions compare HEAD](img/versions_compare_head_v12_10.png)
 

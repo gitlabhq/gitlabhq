@@ -10603,7 +10603,9 @@ CREATE TABLE abuse_reports (
     updated_at timestamp without time zone,
     message_html text,
     cached_markdown_version integer,
-    category smallint DEFAULT 1 NOT NULL
+    category smallint DEFAULT 1 NOT NULL,
+    reported_from_url text DEFAULT ''::text NOT NULL,
+    CONSTRAINT check_ab1260fa6c CHECK ((char_length(reported_from_url) <= 512))
 );
 
 CREATE SEQUENCE abuse_reports_id_seq

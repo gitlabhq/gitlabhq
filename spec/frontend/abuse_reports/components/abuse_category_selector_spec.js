@@ -112,7 +112,7 @@ describe('AbuseCategorySelector', () => {
     it('renders referer as a hidden fields', () => {
       expect(findReferer().attributes()).toMatchObject({
         type: 'hidden',
-        name: 'ref_url',
+        name: 'abuse_report[reported_from_url]',
         value: REPORTED_FROM_URL,
       });
     });

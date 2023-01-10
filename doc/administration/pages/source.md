@@ -445,7 +445,7 @@ Pages access control is disabled by default. To enable it:
    ```
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source).
-1. Create a new [system OAuth application](../../integration/oauth_provider.md#user-owned-applications).
+1. Create a new [system OAuth application](../../integration/oauth_provider.md#create-a-user-owned-application).
    This should be called `GitLab Pages` and have a `Redirect URL` of
    `https://projects.example.io/auth`. It does not need to be a "trusted"
    application, but it does need the `api` scope.

@@ -5,5 +5,6 @@ FactoryBot.define do
     reporter factory: :user
     user
     message { 'User sends spam' }
+    reported_from_url { 'http://gitlab.com' }
   end
 end

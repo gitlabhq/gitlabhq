@@ -209,6 +209,7 @@ export default {
             :query-variables="queryVariables"
             :full-path="fullPath"
             :work-item-id="workItemId"
+            :fetch-by-iid="fetchByIid"
             @error="$emit('error', $event)"
           />
         </ul>

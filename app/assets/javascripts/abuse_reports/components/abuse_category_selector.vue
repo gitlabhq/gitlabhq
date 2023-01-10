@@ -72,7 +72,12 @@ export default {
         <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
 
         <input type="hidden" name="user_id" :value="userId" data-testid="input-user-id" />
-        <input type="hidden" name="ref_url" :value="reportedFromUrl" data-testid="input-referer" />
+        <input
+          type="hidden"
+          name="abuse_report[reported_from_url]"
+          :value="reportedFromUrl"
+          data-testid="input-referer"
+        />
 
         <gl-form-group :label="$options.i18n.label">
           <gl-form-radio-group

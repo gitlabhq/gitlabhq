@@ -120,12 +120,6 @@ include:
     - .rspec-base
     - .use-pg12-es7-ee
 
-.rspec-ee-base-pg12-es7:
-  extends:
-    - .rspec-base
-    - .use-pg12-es7-ee
-    - .rails:rules:run-search-tests
-
 .rspec-ee-base-pg12-es8:
   extends:
     - .rspec-base

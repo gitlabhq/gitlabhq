@@ -29,7 +29,7 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
     describe '#fields' do
       it 'returns custom fields' do
         expect(apple_app_store_integration.fields.pluck(:name)).to eq(%w[app_store_issuer_id app_store_key_id
-                                                                         app_store_private_key])
+          app_store_private_key])
       end
     end
 

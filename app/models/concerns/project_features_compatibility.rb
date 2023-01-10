@@ -124,8 +124,13 @@ module ProjectFeaturesCompatibility
   private
 
   def write_feature_attribute_boolean(field, value)
-    access_level = Gitlab::Utils.to_boolean(value) ? ProjectFeature::ENABLED : ProjectFeature::DISABLED
-    write_feature_attribute_raw(field, access_level)
+    value_type = Gitlab::Utils.to_boolean(value)
+    if value_type.in?([true, false])
+      access_level = value_type ? ProjectFeature::ENABLED : ProjectFeature::DISABLED
+      write_feature_attribute_raw(field, access_level)
+    else
+      write_feature_attribute_string(field, value)
+    end
   end
 
   def write_feature_attribute_string(field, value)

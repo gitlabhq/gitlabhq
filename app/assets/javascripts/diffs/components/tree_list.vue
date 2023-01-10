@@ -2,10 +2,12 @@
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import micromatch from 'micromatch';
-import { MODIFIER_KEY } from '~/constants';
+import { getModifierKey } from '~/constants';
 import { s__, sprintf } from '~/locale';
 import FileTree from '~/vue_shared/components/file_tree.vue';
 import DiffFileRow from './diff_file_row.vue';
+
+const MODIFIER_KEY = getModifierKey();
 
 export default {
   directives: {

@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
 import ReportAbuseButton from '~/users/profile/components/report_abuse_button.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
@@ -67,6 +68,16 @@ describe('ReportAbuseButton', () => {
       await findAbuseCategorySelector().vm.$emit('close-drawer');
 
       expect(findAbuseCategorySelector().props('showDrawer')).toBe(false);
+    });
+  });
+
+  describe('when user hovers out of the button', () => {
+    it(`should emit ${BV_HIDE_TOOLTIP} to close the tooltip`, () => {
+      jest.spyOn(wrapper.vm.$root, '$emit');
+
+      findReportAbuseButton().vm.$emit('mouseout');
+
+      expect(wrapper.vm.$root.$emit).toHaveBeenCalledWith(BV_HIDE_TOOLTIP);
     });
   });
 });
