@@ -32002,6 +32002,9 @@ msgstr ""
 msgid "ProductAnalytics|Resulting Data"
 msgstr ""
 
+msgid "ProductAnalytics|Single Statistic"
+msgstr ""
+
 msgid "ProductAnalytics|There is no data for this type of chart currently. Please see the Setup tab if you have not configured the product analytics tool already."
 msgstr ""
 

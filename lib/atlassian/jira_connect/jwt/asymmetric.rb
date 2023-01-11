@@ -82,7 +82,7 @@ module Atlassian
 
         def public_key_cdn_url_setting
           @public_key_cdn_url_setting ||=
-            if Gitlab::CurrentSettings.jira_connect_proxy_url
+            if Gitlab::CurrentSettings.jira_connect_proxy_url.present?
               Gitlab::Utils.append_path(Gitlab::CurrentSettings.jira_connect_proxy_url, PROXY_PUBLIC_KEY_PATH)
             end
         end

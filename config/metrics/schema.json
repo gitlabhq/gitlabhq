@@ -1,69 +1,138 @@
 {
   "type": "object",
-  "required": ["key_path", "description", "value_type", "status", "product_group", "product_section", "product_stage", "time_frame", "data_source", "distribution", "tier", "data_category", "milestone"],
+  "required": [
+    "key_path",
+    "description",
+    "value_type",
+    "status",
+    "product_group",
+    "product_section",
+    "product_stage",
+    "time_frame",
+    "data_source",
+    "distribution",
+    "tier",
+    "data_category",
+    "milestone"
+  ],
   "properties": {
     "key_path": {
       "type": "string"
     },
     "name": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "pattern": "^([a-z]+_)*[a-z]+$"
     },
     "description": {
       "type": "string"
     },
     "product_section": {
-      "type": ["string"]
+      "type": [
+        "string"
+      ]
     },
     "product_stage": {
-      "type": ["string"]
+      "type": [
+        "string"
+      ]
     },
     "product_group": {
       "type": "string",
       "pattern": "^$|^([a-z]+_)*[a-z]+$"
     },
     "product_category": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "value_type": {
       "type": "string",
-      "enum": ["string", "number", "boolean", "object"]
+      "enum": [
+        "string",
+        "number",
+        "boolean",
+        "object"
+      ]
     },
     "status": {
-      "type": ["string"],
-      "enum": ["active", "removed", "broken"]
+      "type": [
+        "string"
+      ],
+      "enum": [
+        "active",
+        "removed",
+        "broken"
+      ]
     },
     "milestone": {
-      "type": ["string"],
+      "type": [
+        "string"
+      ],
       "pattern": "^<?[0-9]+\\.[0-9]+$"
     },
     "milestone_removed": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "pattern": "^[0-9]+\\.[0-9]+$"
     },
     "introduced_by_url": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "removed_by_url": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "repair_issue_url": {
-      "type": ["string"]
+      "type": [
+        "string"
+      ]
     },
     "options": {
       "type": "object"
     },
     "time_frame": {
       "type": "string",
-      "enum": ["7d", "28d", "all", "none"]
+      "enum": [
+        "7d",
+        "28d",
+        "all",
+        "none"
+      ]
     },
     "data_source": {
       "type": "string",
-      "enum": ["database", "redis", "redis_hll", "prometheus", "system", "license"]
+      "enum": [
+        "database",
+        "redis",
+        "redis_hll",
+        "prometheus",
+        "system",
+        "license"
+      ]
     },
     "data_category": {
       "type": "string",
-      "enum": ["Operational", "Optional", "Subscription", "Standard", "operational", "optional", "subscription", "standard"]
+      "enum": [
+        "Operational",
+        "Optional",
+        "Subscription",
+        "Standard",
+        "operational",
+        "optional",
+        "subscription",
+        "standard"
+      ]
     },
     "instrumentation_class": {
       "type": "string",
@@ -73,21 +142,38 @@
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["ee", "ce"]
+        "enum": [
+          "ee",
+          "ce"
+        ]
       }
     },
     "performance_indicator_type": {
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["gmau", "smau", "paid_gmau", "umau"]
+        "enum": [
+          "gmau",
+          "smau",
+          "paid_gmau",
+          "umau",
+          "customer_health_score"
+        ]
       }
     },
     "tier": {
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["free", "starter", "premium", "ultimate", "bronze", "silver", "gold"]
+        "enum": [
+          "free",
+          "starter",
+          "premium",
+          "ultimate",
+          "bronze",
+          "silver",
+          "gold"
+        ]
       }
     },
     "skip_validation": {
@@ -101,11 +187,15 @@
     {
       "if": {
         "properties": {
-          "status": { "const": "broken" }
+          "status": {
+            "const": "broken"
+          }
         }
       },
       "then": {
-        "required": ["repair_issue_url"]
+        "required": [
+          "repair_issue_url"
+        ]
       }
     }
   ]

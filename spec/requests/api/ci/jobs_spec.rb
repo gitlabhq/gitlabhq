@@ -487,6 +487,76 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
   end
 
+  describe 'GET /projects/:id/jobs offset pagination' do
+    before do
+      running_job
+    end
+
+    it 'returns one record for the first page' do
+      get api("/projects/#{project.id}/jobs", api_user), params: { per_page: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.size).to eq(1)
+      expect(json_response.first['id']).to eq(running_job.id)
+    end
+
+    it 'returns second record when passed in offset and per_page params' do
+      get api("/projects/#{project.id}/jobs", api_user), params: { page: 2, per_page: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.size).to eq(1)
+      expect(json_response.first['id']).to eq(job.id)
+    end
+  end
+
+  describe 'GET /projects/:id/jobs keyset pagination' do
+    before do
+      running_job
+    end
+
+    it 'returns first page with cursor to next page' do
+      get api("/projects/#{project.id}/jobs", api_user), params: { pagination: 'keyset', per_page: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.size).to eq(1)
+      expect(json_response.first['id']).to eq(running_job.id)
+      expect(response.headers["Link"]).to include("cursor")
+      next_cursor = response.headers["Link"].match("(?<cursor_data>cursor=.*?)&")["cursor_data"]
+
+      get api("/projects/#{project.id}/jobs", api_user), params: { pagination: 'keyset', per_page: 1 }.merge(Rack::Utils.parse_query(next_cursor))
+
+      expect(response).to have_gitlab_http_status(:ok)
+      json_response = Gitlab::Json.parse(response.body)
+      expect(json_response.size).to eq(1)
+      expect(json_response.first['id']).to eq(job.id)
+      expect(response.headers).not_to include("Link")
+    end
+
+    it 'respects scope filters' do
+      get api("/projects/#{project.id}/jobs", api_user), params: { pagination: 'keyset', scope: ['success'] }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.size).to eq(1)
+      expect(json_response.first['id']).to eq(job.id)
+      expect(response.headers).not_to include("Link")
+    end
+
+    context 'with :jobs_api_keyset_pagination disabled' do
+      before do
+        stub_feature_flags(jobs_api_keyset_pagination: false)
+      end
+
+      it 'defaults to offset pagination' do
+        get api("/projects/#{project.id}/jobs", api_user), params: { pagination: 'keyset', per_page: 1 }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(running_job.id)
+        expect(response.headers["Link"]).not_to include("cursor")
+      end
+    end
+  end
+
   describe 'GET /projects/:id/jobs rate limited' do
     let(:query) { {} }
 

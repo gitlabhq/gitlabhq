@@ -53,11 +53,15 @@ module API
 
           authorize_read_builds!
 
-          builds = user_project.builds.order('id DESC')
+          builds = user_project.builds.order(id: :desc)
           builds = filter_builds(builds, params[:scope])
           builds = builds.preload(:user, :job_artifacts_archive, :job_artifacts, :runner, :tags, pipeline: :project)
 
-          present paginate(builds, without_count: true), with: Entities::Ci::Job
+          if Feature.enabled?(:jobs_api_keyset_pagination, user_project)
+            present paginate_with_strategies(builds, paginator_params: { without_count: true }), with: Entities::Ci::Job
+          else
+            present paginate(builds, without_count: true), with: Entities::Ci::Job
+          end
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

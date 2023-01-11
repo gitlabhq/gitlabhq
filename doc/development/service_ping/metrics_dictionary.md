@@ -45,7 +45,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `data_category`     | yes      | `string`; [categories](#data-category) of the metric, may be set to `operational`, `optional`, `subscription`, `standard`. The default value is `optional`.|
 | `instrumentation_class` | yes   | `string`; [the class that implements the metric](metrics_instrumentation.md).  |
 | `distribution`      | yes      | `array`; may be set to one of `ce, ee` or `ee`. The [distribution](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the tracked feature is available.  |
-| `performance_indicator_type`  | no      | `array`; may be set to one of [`gmau`, `smau`, `paid_gmau`, or `umau`](https://about.gitlab.com/handbook/business-technology/data-team/data-catalog/xmau-analysis/). |
+| `performance_indicator_type`  | no      | `array`; may be set to one of [`gmau`, `smau`, `paid_gmau`, `umau` or `customer_health_score`](https://about.gitlab.com/handbook/business-technology/data-team/data-catalog/xmau-analysis/). |
 | `tier`              | yes      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tier]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
 | `milestone`         | yes       | The milestone when the metric is introduced and when it's available to self-managed instances with the official GitLab release. |
 | `milestone_removed` | no       | The milestone when the metric is removed. |
@@ -126,7 +126,7 @@ A metric's time frame is calculated based on the `time_frame` field and the `dat
 For `redis_hll` metrics, the type of aggregation is also taken into consideration. In this context, the term "aggregation" refers to [chosen events data storage interval](implement.md#add-new-events), and is **NOT** related to the Aggregated Metrics feature.
 For more information about the aggregation type of each feature, see the [`common.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml). Weeks run from Monday to Sunday.
 
-| data_source            | time_frame | aggregation    | Description                                     | 
+| data_source            | time_frame | aggregation    | Description                                     |
 |------------------------|------------|----------------|-------------------------------------------------|
 | any                    | `none`     | not applicable | A type of data that’s not tracked over time, such as settings and configuration information |
 | `database`             | `all`      | not applicable | The whole time the metric has been active (all-time interval) |

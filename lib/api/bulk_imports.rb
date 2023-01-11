@@ -61,12 +61,26 @@ module API
                    type: String,
                    desc: 'Source entity type (only `group_entity` is supported)',
                    values: %w[group_entity]
-          requires :source_full_path, type: String, desc: 'Source full path of the entity to import'
-          requires :destination_namespace, type: String, desc: 'Destination namespace for the entity'
-          optional :destination_slug, type: String, desc: 'Destination slug for the entity'
+          requires :source_full_path,
+                   type: String,
+                   desc: 'Relative path of the source entity to import',
+                   source_full_path: true,
+                   documentation: { example: "'source/full/path' not 'https://example.com/source/full/path'" }
+          requires :destination_namespace,
+                   type: String,
+                   desc: 'Destination namespace for the entity',
+                   destination_namespace_path: true,
+                   documentation: { example: "'destination_namespace' or 'destination/namespace'" }
+          optional :destination_slug,
+                   type: String,
+                   desc: 'Destination slug for the entity',
+                   destination_slug_path: true,
+                   documentation: { example: "'destination_slug' not 'destination/slug'" }
           optional :destination_name,
                    type: String,
-                   desc: 'Deprecated: Use :destination_slug instead. Destination slug for the entity'
+                   desc: 'Deprecated: Use :destination_slug instead. Destination slug for the entity',
+                   destination_slug_path: true,
+                   documentation: { example: "'destination_slug' not 'destination/slug'" }
 
           mutually_exclusive :destination_slug, :destination_name
           at_least_one_of :destination_slug, :destination_name

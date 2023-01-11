@@ -3,13 +3,14 @@
 module API
   module Helpers
     module PaginationStrategies
-      def paginate_with_strategies(relation, request_scope = nil)
+      # paginator_params are only currently supported with offset pagination
+      def paginate_with_strategies(relation, request_scope = nil, paginator_params: {})
         paginator = paginator(relation, request_scope)
 
         result = if block_given?
-                   yield(paginator.paginate(relation))
+                   yield(paginator.paginate(relation, **paginator_params))
                  else
-                   paginator.paginate(relation)
+                   paginator.paginate(relation, **paginator_params)
                  end
 
         result.tap do |records, _|

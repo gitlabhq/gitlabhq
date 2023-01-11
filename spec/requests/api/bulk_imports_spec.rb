@@ -174,6 +174,43 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       end
     end
 
+    context 'when the source_full_path is invalid' do
+      it 'returns invalid error' do
+        params[:entities][0][:source_full_path] = 'http://example.com/full_path'
+
+        request
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq("entities[0][source_full_path] must be a relative path and not include protocol, sub-domain, " \
+                                             "or domain information. E.g. 'source/full/path' not 'https://example.com/source/full/path'")
+      end
+    end
+
+    context 'when the destination_namespace is invalid' do
+      it 'returns invalid error' do
+        params[:entities][0][:destination_namespace] = "?not a destination-namespace"
+
+        request
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq("entities[0][destination_namespace] cannot start with a dash or forward slash, " \
+                                             "or end with a period or forward slash. It can only contain alphanumeric " \
+                                             "characters, periods, underscores, forward slashes and dashes. " \
+                                             "E.g. 'destination_namespace' or 'destination/namespace'")
+      end
+    end
+
+    context 'when the destination_slug is invalid' do
+      it 'returns invalid error' do
+        params[:entities][0][:destination_slug] = 'des?tin?atoi-slugg'
+
+        request
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to include("entities[0][destination_slug] cannot start with a dash " \
+                                                  "or forward slash, or end with a period or forward slash. " \
+                                                  "It can only contain alphanumeric characters, periods, underscores, and dashes. " \
+                                                  "E.g. 'destination_namespace' not 'destination/namespace'")
+      end
+    end
+
     context 'when provided url is blocked' do
       let(:params) do
         {

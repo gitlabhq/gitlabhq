@@ -43,6 +43,14 @@ RSpec.describe API::Helpers::PaginationStrategies do
 
       expect(result).to eq(return_value)
     end
+
+    context "with paginator_params" do
+      it 'correctly passes multiple parameters' do
+        expect(paginator).to receive(:paginate).with(relation, parameter_one: true, parameter_two: 'two')
+
+        subject.paginate_with_strategies(relation, nil, paginator_params: { parameter_one: true, parameter_two: 'two' })
+      end
+    end
   end
 
   describe '#paginator' do

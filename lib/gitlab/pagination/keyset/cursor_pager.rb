@@ -10,7 +10,7 @@ module Gitlab
           @cursor_based_request_context = cursor_based_request_context
         end
 
-        def paginate(relation)
+        def paginate(relation, _params = {})
           @paginator ||= relation.keyset_paginate(
             per_page: cursor_based_request_context.per_page,
             cursor: cursor_based_request_context.cursor
