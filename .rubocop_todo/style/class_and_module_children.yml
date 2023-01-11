@@ -78,7 +78,6 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/groups/milestones_controller.rb'
     - 'app/controllers/groups/runners_controller.rb'
     - 'app/controllers/groups/uploads_controller.rb'
-    - 'app/controllers/import/available_namespaces_controller.rb'
     - 'app/controllers/import/base_controller.rb'
     - 'app/controllers/import/bitbucket_controller.rb'
     - 'app/controllers/import/bitbucket_server_controller.rb'

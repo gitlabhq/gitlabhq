@@ -51,7 +51,7 @@ RSpec.describe Gitlab::SubmoduleLinks do
           expect(subject.compare).to be_nil
         end
 
-        cache_store = links.instance_variable_get("@cache_store")
+        cache_store = links.instance_variable_get(:@cache_store)
 
         expect(cache_store[ref]).to eq({ "gitlab-foss" => "git@gitlab.com:gitlab-org/gitlab-foss.git" })
       end

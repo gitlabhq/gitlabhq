@@ -1,8 +1,6 @@
 - title: 'Single merge request changes API endpoint'
   announcement_milestone: '15.7'
-  announcement_date: '2022-12-22'
   removal_milestone: '16.0'
-  removal_date: '2023-05-22'
   breaking_change: true
   body: |
     The endpoint to get [changes from a single merge request](https://docs.gitlab.com/ee/api/merge_requests.html#get-single-merge-request-changes) has been deprecated in favor the [list merge request diffs](https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-request-diffs) endpoint. API users are encouraged to switch to the new diffs endpoint instead. The `changes from a single merge request` endpoint will be removed in v5 of the GitLab REST API.

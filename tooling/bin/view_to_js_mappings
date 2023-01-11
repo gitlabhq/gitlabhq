@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/tooling/view_to_js_mappings'
+
+changes       = ARGV.shift
+output_file   = ARGV.shift
+changed_files = File.read(changes).split(' ')
+
+File.write(output_file, Tooling::ViewToJsMappings.new.execute(changed_files).join(' '))

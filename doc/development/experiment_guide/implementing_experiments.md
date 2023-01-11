@@ -138,7 +138,7 @@ communicate about experiments as something that's wider than just user behavior.
 NOTE:
 Using `actor:` uses cookies if the `current_user` is nil. If you don't need
 cookies though - meaning that the exposed functionality would only be visible to
-signed in users - `{ user: current_user }` would be just as effective.
+authenticated users - `{ user: current_user }` would be just as effective.
 
 WARNING:
 The caching of variant assignment is done by using this context, and so consider

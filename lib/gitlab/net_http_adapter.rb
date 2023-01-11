@@ -6,7 +6,7 @@ module Gitlab
   # Net::HTTP#request usually calls Net::HTTP#connect but the Webmock overwrite doesn't.
   # This makes sure that, in a test environment, the superclass is the Webmock overwrite.
   parent_class = if defined?(WebMock) && Rails.env.test?
-                   WebMock::HttpLibAdapters::NetHttpAdapter.instance_variable_get('@webMockNetHTTP')
+                   WebMock::HttpLibAdapters::NetHttpAdapter.instance_variable_get(:@webMockNetHTTP)
                  else
                    Net::HTTP
                  end

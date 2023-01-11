@@ -18869,6 +18869,18 @@ msgstr ""
 msgid "Gitea Import"
 msgstr ""
 
+msgid "GithubImporter|Gist with id %{gist_id} failed due to error: %{error}."
+msgstr ""
+
+msgid "GithubImporter|GitHub Gists import finished with errors"
+msgstr ""
+
+msgid "GithubImporter|GitHub gists that were not imported:"
+msgstr ""
+
+msgid "GithubImporter|GitHub gists with more than 10 files must be manually migrated."
+msgstr ""
+
 msgid "GithubImporter|Issue attachments"
 msgstr ""
 
@@ -18884,10 +18896,19 @@ msgstr ""
 msgid "GithubImporter|PR reviews"
 msgstr ""
 
+msgid "GithubImporter|Please follow %{import_snippets_link_start}Import GitHub gists into GitLab snippets%{import_snippets_link_end} for more details."
+msgstr ""
+
+msgid "GithubImporter|Please follow %{import_snippets_url} for more details."
+msgstr ""
+
 msgid "GithubImporter|Pull requests"
 msgstr ""
 
 msgid "GithubImporter|Release attachments"
+msgstr ""
+
+msgid "GithubImporter|Your import of GitHub gists into GitLab snippets is complete."
 msgstr ""
 
 msgid "GithubIntegration|Create a %{token_link_start}personal access token%{token_link_end} with %{status_html} access granted and paste it here."
@@ -19898,7 +19919,7 @@ msgstr ""
 msgid "GroupSettings|Select the project containing the %{code_start}.gitlab/insights.yml%{code_end} file"
 msgstr ""
 
-msgid "GroupSettings|Select the project containing your custom Insights file. %{help_link_start}What is Insights?%{help_link_end}"
+msgid "GroupSettings|Select the project containing your custom Insights file."
 msgstr ""
 
 msgid "GroupSettings|Set a size limit for all content in each Pages site in this group. %{link_start}Learn more.%{link_end}"
@@ -19932,6 +19953,9 @@ msgid "GroupSettings|Users can create %{link_start_project}project access tokens
 msgstr ""
 
 msgid "GroupSettings|What are badges?"
+msgstr ""
+
+msgid "GroupSettings|What is Insights?"
 msgstr ""
 
 msgid "GroupSettings|When the number of active users exceeds this number, additional users must be %{user_cap_docs_link_start}approved by an owner%{user_cap_docs_link_end}. Leave empty if you don't want to enforce approvals."
@@ -28669,7 +28693,7 @@ msgstr ""
 msgid "Observability|Data sources"
 msgstr ""
 
-msgid "Observability|Explore"
+msgid "Observability|Explore telemetry data"
 msgstr ""
 
 msgid "Observability|Manage dashboards"
@@ -48257,6 +48281,9 @@ msgid_plural "You have %{pendingMembersCount} pending members that need approval
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "You have already reported this user"
+msgstr ""
+
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."
 msgstr ""
 
@@ -49858,9 +49885,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "has already been linked to another vulnerability"
-msgstr ""
-
-msgid "has already been reported for abuse"
 msgstr ""
 
 msgid "has already been taken"

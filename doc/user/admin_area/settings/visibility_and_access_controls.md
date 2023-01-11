@@ -118,7 +118,7 @@ To set the default [visibility levels for new projects](../../public_access.md):
 1. Select the desired default project visibility:
    - **Private** - Project access must be granted explicitly to each user. If this
      project is part of a group, access is granted to members of the group.
-   - **Internal** - The project can be accessed by any logged in user except external users.
+   - **Internal** - The project can be accessed by any authenticated user except external users.
    - **Public** - The project can be accessed without any authentication.
 1. Select **Save changes**.
 
@@ -146,7 +146,7 @@ To set the default visibility levels for new groups:
 1. Expand the **Visibility and access controls** section.
 1. Select the desired default group visibility:
    - **Private** - The group and its projects can only be viewed by members.
-   - **Internal** - The group and any internal projects can be viewed by any logged in user except external users.
+   - **Internal** - The group and any internal projects can be viewed by any authenticated user except external users.
    - **Public** - The group and any public projects can be viewed without any authentication.
 1. Select **Save changes**.
 
@@ -163,7 +163,7 @@ To restrict visibility levels for projects, snippets, and selected pages:
 1. Expand the **Visibility and access controls** section.
 1. In the **Restricted visibility levels** section, select the desired visibility levels to restrict.
    If you restrict the **Public** level:
-   - User profiles are only visible to logged in users via the Web interface.
+   - User profiles are only visible to authenticated users via the Web interface.
    - User attributes via the GraphQL API are:
      - Not visible in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88020).
      - Only visible to authenticated users between [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33195) and GitLab 15.0.

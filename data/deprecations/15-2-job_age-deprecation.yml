@@ -19,9 +19,7 @@
 #
 - title: "Remove `job_age` parameter from `POST /jobs/request` Runner endpoint"  # (required) The name of the feature to be deprecated
   announcement_milestone: "15.2"  # (required) The milestone when this feature was first announced as deprecated.
-  announcement_date: "2022-07-22"  # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
-  removal_date: "2023-05-22"  # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: jheimbuck_gl  # (required) GitLab username of the person reporting the deprecation
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
@@ -34,7 +32,6 @@
 # OPTIONAL FIELDS
 #
   end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
-  end_of_support_date:  # (optional) The date of the milestone release when support for this feature will end.
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url:  # (optional) This is a link to the current documentation page
   image_url:  # (optional) This is a link to a thumbnail image depicting the feature

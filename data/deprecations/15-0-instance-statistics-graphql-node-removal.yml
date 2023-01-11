@@ -1,8 +1,6 @@
 - title: "Querying Usage Trends via the `instanceStatisticsMeasurements` GraphQL node"
   announcement_milestone: "14.8"
-  announcement_date: "2022-02-22"
   removal_milestone: "15.0"
-  removal_date: "2022-05-22"
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
     The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTrendsMeasurements` in 13.10 and the old field name has been marked as deprecated. To fix the existing GraphQL queries, replace `instanceStatisticsMeasurements` with `usageTrendsMeasurements`.

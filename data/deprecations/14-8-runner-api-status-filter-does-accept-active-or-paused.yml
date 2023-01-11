@@ -1,8 +1,6 @@
 - title: "GraphQL API Runner will not accept `status` filter values of `active` or `paused`"
   announcement_milestone: "14.8"  # The milestone when this feature was first announced as deprecated.
-  announcement_date: "2022-02-22"
   removal_milestone: "16.0"
-  removal_date: "2023-05-22"
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
     The GitLab Runner GraphQL endpoints will stop accepting `paused` or `active` as a status value in GitLab 16.0.

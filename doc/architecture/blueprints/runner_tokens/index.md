@@ -40,7 +40,7 @@ We call this new mechanism the "next GitLab Runner Token architecture".
 
 The proposal addresses the issues of a _single token per scope_ and _token storage_
 by eliminating the need for a registration token. Runner creation happens
-in the GitLab Runners settings page for the given scope, in the context of the logged-in user,
+in the GitLab Runners settings page for the given scope, in the context of the authenticated user,
 which provides traceability. The page provides instructions to configure the newly-created
 runner in supported environments using the existing `gitlab-runner register` command.
 

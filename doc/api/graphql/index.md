@@ -144,10 +144,10 @@ Query         | Description
 `group`       | Basic group information and epics.
 `user`        | Information about a particular user.
 `namespace`   | The namespace and the `projects` in it.
-`currentUser` | Information about the signed-in user.
+`currentUser` | Information about the authenticated user.
 `users`       | Information about a collection of users.
 `metaData`    | Metadata about GitLab and the GraphQL API.
-`snippets`    | Snippets visible to the signed-in user.
+`snippets`    | Snippets visible to the authenticated user.
 
 New associations and root level objects are regularly added.
 See the [GraphQL API Reference](reference/index.md) for up-to-date information.

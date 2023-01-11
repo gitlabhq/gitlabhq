@@ -1,8 +1,6 @@
 - title: "Legacy database configuration"
   announcement_milestone: "14.3"
-  announcement_date: "2021-09-22"
   removal_milestone: "15.0"
-  removal_date: "2022-05-22"  # the date of the milestone release when this feature is planned to be removed
   breaking_change: true
   body: |
     The syntax of [GitLabs database](https://docs.gitlab.com/omnibus/settings/database.html)

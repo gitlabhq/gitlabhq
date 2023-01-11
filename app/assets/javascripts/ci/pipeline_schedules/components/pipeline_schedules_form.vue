@@ -71,7 +71,7 @@ export default {
       timezone: this.cronTimezone,
       formCiVariables: {},
       // TODO: Add the GraphQL query to help populate the predefined variables
-      // app/assets/javascripts/pipeline_new/components/pipeline_new_form.vue#131
+      // app/assets/javascripts/ci/pipeline_new/components/pipeline_new_form.vue#131
       predefinedValueOptions: {},
     };
   },

@@ -485,7 +485,7 @@ this:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32095) in GitLab 12.7.
 
 You can enforce [Access Control](#access-control) for all GitLab Pages websites hosted
-on your GitLab instance. By doing so, only logged-in users have access to them.
+on your GitLab instance. By doing so, only authenticated users have access to them.
 This setting overrides Access Control set by users in individual projects.
 
 This can be helpful to restrict information published with Pages websites to the users

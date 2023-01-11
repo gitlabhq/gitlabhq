@@ -88,6 +88,68 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
         end
       end
 
+      context 'when existing ci config contains anchors/aliases' do
+        let(:params) { {} }
+        let(:unsupported_yaml) do
+          <<-YAML
+          image: python:latest
+
+          cache: &global_cache
+            key: 'common-cache'
+            paths:
+              - .cache/pip
+              - venv/
+
+          test:
+            cache:
+              <<: *global_cache
+              key: 'custom-cache'
+            script:
+              - python setup.py test
+              - pip install tox flake8  # you can also use tox
+              - tox -e py36,flake8
+          YAML
+        end
+
+        it 'fails with error' do
+          expect(project).to receive(:ci_config_for).and_return(unsupported_yaml)
+
+          expect { result }.to raise_error(Gitlab::Graphql::Errors::MutationError, '.gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually.')
+        end
+      end
+
+      context 'when parsing existing ci config gives a Psych error' do
+        let(:params) { {} }
+        let(:invalid_yaml) do
+          <<-YAML
+          image: python:latest
+
+          test:
+            script:
+              - python setup.py test
+              - pip install tox flake8  # you can also use tox
+              - tox -e py36,flake8
+          YAML
+        end
+
+        it 'fails with error' do
+          expect(project).to receive(:ci_config_for).and_return(invalid_yaml)
+          expect(YAML).to receive(:safe_load).and_raise(Psych::Exception)
+
+          expect { result }.to raise_error(Gitlab::Graphql::Errors::MutationError, /merge request creation mutation failed/)
+        end
+      end
+
+      context 'when parsing existing ci config gives any other error' do
+        let(:params) { {} }
+        let_it_be(:repository) { project.repository }
+
+        it 'is successful' do
+          expect(repository).to receive(:root_ref_sha).and_raise(StandardError)
+          expect(result.status).to eq(:success)
+        end
+      end
+
       unless skip_w_params
         context 'with parameters' do
           let(:params) { non_empty_params }

@@ -16,7 +16,7 @@ when you go to **New project > Create from template** and select the **Instance*
 Every project in the group, but not its subgroups, can be selected when a new project
 is created, based on the user's access permissions:
 
-- Public projects can be selected by any signed-in user as a template for a new project,
+- Public projects can be selected by any authenticated user as a template for a new project,
   if all enabled [project features](../project/settings/index.md#configure-project-visibility-features-and-permissions)
   except for **GitLab Pages** and **Security & Compliance** are set to **Everyone With Access**.
   The same applies to internal projects.

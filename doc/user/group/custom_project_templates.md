@@ -40,7 +40,7 @@ Projects in nested subgroups are not included in the template list.
 
 ## Which projects are available as templates
 
-- Public and internal projects can be selected by any signed-in user as a template for a new project,
+- Public and internal projects can be selected by any authenticated user as a template for a new project,
   if all [project features](../project/settings/index.md#configure-project-visibility-features-and-permissions)
   except for **GitLab Pages** and **Security & Compliance** are set to **Everyone With Access**.
 - Private projects can be selected only by users who are members of the projects.

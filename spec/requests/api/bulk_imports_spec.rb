@@ -198,6 +198,17 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       end
     end
 
+    context 'when the destination_namespace is an empty string' do
+      it 'accepts the param and starts a new migration' do
+        params[:entities][0][:destination_namespace] = ''
+
+        request
+        expect(response).to have_gitlab_http_status(:created)
+
+        expect(json_response['status']).to eq('created')
+      end
+    end
+
     context 'when the destination_slug is invalid' do
       it 'returns invalid error' do
         params[:entities][0][:destination_slug] = 'des?tin?atoi-slugg'

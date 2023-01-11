@@ -5,7 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
-import RefsDropdown from '~/pipeline_new/components/refs_dropdown.vue';
+import RefsDropdown from '~/ci/pipeline_new/components/refs_dropdown.vue';
 
 import { mockBranches, mockRefs, mockFilteredRefs, mockTags } from '../mock_data';
 

@@ -19,7 +19,7 @@ This integration can help you if you need GitLab CI/CD and a container image rep
 In the Harbor instance, ensure that:
 
 - The project to be integrated has been created.
-- The signed-in user has permission to pull, push, and edit images in the Harbor project.
+- The authenticated user has permission to pull, push, and edit images in the Harbor project.
 
 ## Configure GitLab
 

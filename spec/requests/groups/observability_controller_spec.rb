@@ -71,20 +71,6 @@ RSpec.describe Groups::ObservabilityController, feature_category: :tracing do
     end
   end
 
-  describe 'GET #dashboards' do
-    let(:path) { group_observability_dashboards_path(group) }
-    let(:expected_observability_path) { "#{observability_url}/-/#{group.id}/" }
-
-    it_behaves_like 'observability route request'
-  end
-
-  describe 'GET #manage' do
-    let(:path) { group_observability_manage_path(group) }
-    let(:expected_observability_path) { "#{observability_url}/-/#{group.id}/dashboards" }
-
-    it_behaves_like 'observability route request'
-  end
-
   describe 'GET #explore' do
     let(:path) { group_observability_explore_path(group) }
     let(:expected_observability_path) { "#{observability_url}/-/#{group.id}/explore" }

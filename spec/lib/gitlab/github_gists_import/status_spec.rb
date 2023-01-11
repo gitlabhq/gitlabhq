@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubGistsImport::Status, :clean_gitlab_redis_cache, feature_category: :importer do
+RSpec.describe Gitlab::GithubGistsImport::Status, :clean_gitlab_redis_cache, feature_category: :importers do
   subject(:import_status) { described_class.new(user.id) }
 
   let_it_be(:user) { create(:user) }

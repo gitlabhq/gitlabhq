@@ -1,8 +1,6 @@
 - title: "Update to the Container Registry group-level API"
   announcement_milestone: "14.5"  # The milestone when this feature was first announced as deprecated.
-  announcement_date: "2021-11-22"
   removal_milestone: "15.0"  # the milestone when this feature is planned to be removed
-  removal_date: "2022-05-22"  # the date of the milestone release when this feature is planned to be removed
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
     In milestone 15.0, support for the `tags` and `tags_count` parameters will be removed from the Container Registry API that [gets registry repositories from a group](../api/container_registry.md#within-a-group).

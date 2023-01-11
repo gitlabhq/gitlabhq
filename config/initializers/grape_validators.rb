@@ -11,6 +11,6 @@ Grape::Validations.register_validator(:untrusted_regexp, ::API::Validations::Val
 Grape::Validations.register_validator(:email_or_email_list, ::API::Validations::Validators::EmailOrEmailList)
 Grape::Validations.register_validator(:iteration_id, ::API::Validations::Validators::IntegerOrCustomValue)
 Grape::Validations.register_validator(:project_portable, ::API::Validations::Validators::ProjectPortable)
-Grape::Validations.register_validator(:source_full_path, ::API::Validations::Validators::BulkImports::DestinationNamespacePath) # rubocop: disable Layout/LineLength
-Grape::Validations.register_validator(:destination_path, ::API::Validations::Validators::BulkImports::DestinationSlugPath) # rubocop: disable Layout/LineLength
+Grape::Validations.register_validator(:destination_namespace_path, ::API::Validations::Validators::BulkImports::DestinationNamespacePath) # rubocop: disable Layout/LineLength
+Grape::Validations.register_validator(:destination_slug_path, ::API::Validations::Validators::BulkImports::DestinationSlugPath) # rubocop: disable Layout/LineLength
 Grape::Validations.register_validator(:source_full_path, ::API::Validations::Validators::BulkImports::SourceFullPath)

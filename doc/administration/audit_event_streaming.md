@@ -373,7 +373,7 @@ Streamed audit events have a predictable schema in the body of the response.
 > - [Added `details.author_class` field](https://gitlab.com/gitlab-org/gitlab/-/issues/363876) in GitLab 15.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101583) in GitLab 15.6. Feature flag `audit_event_streaming_git_operations` removed.
 
-Streaming audit events can be sent when signed-in users push, pull, or clone a project's remote Git repositories:
+Streaming audit events can be sent when authenticated users push, pull, or clone a project's remote Git repositories:
 
 - [Using SSH](../user/ssh.md).
 - Using HTTP or HTTPS.

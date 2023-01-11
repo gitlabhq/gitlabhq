@@ -18,14 +18,15 @@ module Gitlab
 
       INTERVAL = 30.seconds.to_i
       BLOCKING_WAIT_TIME = 5
+      GISTS_ERRORS_BY_ID = 'gitlab:github-gists-import:%{user_id}:errors'
 
       def perform(user_id, waiter_key, remaining)
         waiter = wait_for_jobs(waiter_key, remaining)
 
         if waiter.nil?
           Gitlab::GithubGistsImport::Status.new(user_id).finish!
-
           Gitlab::GithubImport::Logger.info(user_id: user_id, message: 'GitHub Gists import finished')
+          send_email_if_errors(user_id)
         else
           self.class.perform_in(INTERVAL, user_id, waiter.key, waiter.jobs_remaining)
         end
@@ -40,6 +41,17 @@ module Gitlab
         return if waiter.jobs_remaining == 0
 
         waiter
+      end
+
+      def send_email_if_errors(user_id)
+        key = format(GISTS_ERRORS_BY_ID, user_id: user_id)
+        errors = ::Gitlab::Cache::Import::Caching.values_from_hash(key)
+
+        return if errors.blank?
+
+        Notify.github_gists_import_errors_email(user_id, errors).deliver_now
+      ensure
+        ::Gitlab::Cache::Import::Caching.expire(key, ::Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT)
       end
     end
   end

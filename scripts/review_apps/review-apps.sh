@@ -372,13 +372,24 @@ function verify_deploy() {
 # Since we are creating a personal access token in `disable_sign_ups`,
 # This method should be executed after it.
 function verify_commit_sha() {
-  echoinfo "[$(date '+%H:%M:%S')] Checking the correct commit is deployed in the review-app:"
-  echo "Expected commit sha: ${CI_COMMIT_SHA}"
+  local verify_success="false"
 
-  review_app_revision=$(curl --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/metadata" | jq -r .revision)
-  echo "review-app revision: ${review_app_revision}"
+  for i in {1..60}; do # try for 2 minutes in case review-apps containers are restarting
+    echoinfo "[$(date '+%H:%M:%S')] Checking the correct commit is deployed in the review-app:"
+    echo "Expected commit sha: ${CI_COMMIT_SHA}"
 
-  if [[ "${CI_COMMIT_SHA}" != "${review_app_revision}"* ]]; then
+    review_app_revision=$(curl --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/metadata" | jq -r .revision)
+    echo "review-app revision: ${review_app_revision}"
+
+    if [[ "${CI_COMMIT_SHA}" == "${review_app_revision}"* ]]; then
+      verify_success="true"
+      break
+    fi
+
+    sleep 2
+  done
+
+  if [[ "${verify_success}" != "true" ]]; then
     echoerr "[$(date '+%H:%M:%S')] Review app revision is not the same as the current commit!"
     return 1
   fi

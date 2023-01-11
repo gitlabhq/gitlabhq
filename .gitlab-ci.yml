@@ -126,22 +126,23 @@ variables:
   RUBY_VERSION: "2.7"
   GO_VERSION: "1.18"
 
-  TMP_TEST_FOLDER: "${CI_PROJECT_DIR}/tmp/tests"
-  GITLAB_WORKHORSE_FOLDER: "gitlab-workhorse"
-  TMP_TEST_GITLAB_WORKHORSE_PATH: "${TMP_TEST_FOLDER}/${GITLAB_WORKHORSE_FOLDER}"
-  KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
-  RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
-  RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
-  RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
   FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
-  RSPEC_CHANGED_FILES_PATH: rspec/changed_files.txt
-  RSPEC_MATCHING_TESTS_PATH: rspec/matching_tests.txt
-  RSPEC_MATCHING_TESTS_FOSS_PATH: rspec/matching_tests-foss.txt
-  RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
-  RSPEC_FOSS_IMPACT_PIPELINE_YML: rspec-foss-impact-pipeline.yml
+  GITLAB_WORKHORSE_FOLDER: "gitlab-workhorse"
   JUNIT_RESULT_FILE: rspec/junit_rspec.xml
   JUNIT_RETRY_FILE: rspec/junit_rspec-retry.xml
+  KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
+  RSPEC_CHANGED_FILES_PATH: rspec/changed_files.txt
+  RSPEC_FOSS_IMPACT_PIPELINE_YML: rspec-foss-impact-pipeline.yml
+  RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
+  RSPEC_MATCHING_JS_FILES_PATH: rspec/js_matching_files.txt
+  RSPEC_MATCHING_TESTS_FOSS_PATH: rspec/matching_tests-foss.txt
+  RSPEC_MATCHING_TESTS_PATH: rspec/matching_tests.txt
+  RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
+  RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
+  RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
+  TMP_TEST_FOLDER: "${CI_PROJECT_DIR}/tmp/tests"
+  TMP_TEST_GITLAB_WORKHORSE_PATH: "${TMP_TEST_FOLDER}/${GITLAB_WORKHORSE_FOLDER}"
 
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"

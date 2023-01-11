@@ -7,6 +7,7 @@ module Gitlab
         attr_reader :gist, :user
 
         FileCountLimitError = Class.new(StandardError)
+        FILE_COUNT_LIMIT_MESSAGE = 'Snippet maximum file count exceeded'
 
         # gist - An instance of `Gitlab::GithubGistsImport::Representation::Gist`.
         def initialize(gist, user_id)
@@ -76,7 +77,7 @@ module Gitlab
         def fail_and_track(snippet)
           remove_snippet_and_repository(snippet)
 
-          ServiceResponse.error(message: 'Snippet max file count exceeded').track_exception(as: FileCountLimitError)
+          ServiceResponse.error(message: FILE_COUNT_LIMIT_MESSAGE).track_exception(as: FileCountLimitError)
         end
       end
     end

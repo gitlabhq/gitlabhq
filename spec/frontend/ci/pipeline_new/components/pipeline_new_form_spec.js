@@ -14,10 +14,10 @@ import {
   HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
-import PipelineNewForm from '~/pipeline_new/components/pipeline_new_form.vue';
-import ciConfigVariablesQuery from '~/pipeline_new/graphql/queries/ci_config_variables.graphql';
-import { resolvers } from '~/pipeline_new/graphql/resolvers';
-import RefsDropdown from '~/pipeline_new/components/refs_dropdown.vue';
+import PipelineNewForm from '~/ci/pipeline_new/components/pipeline_new_form.vue';
+import ciConfigVariablesQuery from '~/ci/pipeline_new/graphql/queries/ci_config_variables.graphql';
+import { resolvers } from '~/ci/pipeline_new/graphql/resolvers';
+import RefsDropdown from '~/ci/pipeline_new/components/refs_dropdown.vue';
 import {
   mockCreditCardValidationRequiredError,
   mockCiConfigVariablesResponse,

@@ -32,8 +32,8 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
 
     it do
       is_expected.to validate_uniqueness_of(:user_id)
-        .scoped_to(:reporter_id)
-        .with_message('has already been reported for abuse')
+        .scoped_to([:reporter_id, :category])
+        .with_message('You have already reported this user')
     end
 
     it { is_expected.to validate_length_of(:reported_from_url).is_at_most(512).allow_blank }

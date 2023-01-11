@@ -1438,7 +1438,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /**/javascripts/jobs/ @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/pipelines/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/pipeline_new/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci/pipeline_schedules/ @gitlab-org/ci-cd/verify/frontend
 /ee/app/assets/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/token_access/ @gitlab-org/ci-cd/verify/frontend

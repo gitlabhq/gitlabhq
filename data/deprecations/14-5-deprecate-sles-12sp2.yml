@@ -1,8 +1,6 @@
 - title: "Support for SLES 12 SP2"  # The name of the feature to be deprecated
   announcement_milestone: "14.5"  # The milestone when this feature was first announced as deprecated.
-  announcement_date: "2021-11-22"
   removal_milestone: "15.0"  # the milestone when this feature is planned to be removed
-  removal_date: "2022-05-22"  # the date of the milestone release when this feature is planned to be removed
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
     Long term service and support (LTSS) for SUSE Linux Enterprise Server (SLES) 12 SP2 [ended on March 31, 2021](https://www.suse.com/lifecycle/). The CA certificates on SP2 include the expired DST root certificate, and it's not getting new CA certificate package updates. We have implemented some [workarounds](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/merge_requests/191), but we will not be able to continue to keep the build running properly.

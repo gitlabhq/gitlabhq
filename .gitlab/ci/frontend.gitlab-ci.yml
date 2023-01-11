@@ -212,7 +212,7 @@ jest minimal:
     - !reference [jest, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:minimal"; fi
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:minimal"; fi
 
 jest as-if-foss:
   extends:
@@ -231,7 +231,7 @@ jest minimal as-if-foss:
     - "rspec-all frontend_fixture as-if-foss"
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:minimal"; fi
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:minimal"; fi
 
 jest-integration:
   extends:

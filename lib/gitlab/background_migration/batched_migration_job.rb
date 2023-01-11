@@ -27,7 +27,7 @@ module Gitlab
         end
 
         def operation_name(operation)
-          define_method('operation_name') do
+          define_method(:operation_name) do
             operation
           end
         end

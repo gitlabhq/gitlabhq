@@ -51,10 +51,10 @@ RSpec.describe Gitlab::HTTP do
       end
 
       @original_net_http = Net.send(:remove_const, :HTTP)
-      @webmock_net_http = WebMock::HttpLibAdapters::NetHttpAdapter.instance_variable_get('@webMockNetHTTP')
+      @webmock_net_http = WebMock::HttpLibAdapters::NetHttpAdapter.instance_variable_get(:@webMockNetHTTP)
 
       Net.send(:const_set, :HTTP, mocked_http)
-      WebMock::HttpLibAdapters::NetHttpAdapter.instance_variable_set('@webMockNetHTTP', mocked_http)
+      WebMock::HttpLibAdapters::NetHttpAdapter.instance_variable_set(:@webMockNetHTTP, mocked_http)
 
       # Reload Gitlab::NetHttpAdapter
       Gitlab.send(:remove_const, :NetHttpAdapter)
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::HTTP do
     after(:all) do
       Net.send(:remove_const, :HTTP)
       Net.send(:const_set, :HTTP, @original_net_http)
-      WebMock::HttpLibAdapters::NetHttpAdapter.instance_variable_set('@webMockNetHTTP', @webmock_net_http)
+      WebMock::HttpLibAdapters::NetHttpAdapter.instance_variable_set(:@webMockNetHTTP, @webmock_net_http)
 
       # Reload Gitlab::NetHttpAdapter
       Gitlab.send(:remove_const, :NetHttpAdapter)

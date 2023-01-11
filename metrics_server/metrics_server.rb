@@ -38,8 +38,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
     def spawn(target, metrics_dir:, **options)
       return spawn_ruby_server(target, metrics_dir: metrics_dir, **options) unless new_metrics_server?
 
-      name = settings_key(target)
-      settings = ::Settings.monitoring[name]
+      settings = settings_value(target)
       path = options[:path]&.then { |p| Pathname.new(p) } || Pathname.new('')
       cmd = path.join('gitlab-metrics-exporter').to_path
       env = {
@@ -51,7 +50,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
       }
 
       if settings['log_enabled']
-        env['GME_LOG_FILE'] = File.join(Rails.root, 'log', "#{name}.log")
+        env['GME_LOG_FILE'] = File.join(Rails.root, 'log', "#{name(target)}.log")
         env['GME_LOG_LEVEL'] = 'info'
       else
         env['GME_LOG_LEVEL'] = 'quiet'
@@ -106,7 +105,26 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
       pid
     end
 
+    def name(target)
+      case target
+      when 'puma' then 'web_exporter'
+      when 'sidekiq' then 'sidekiq_exporter'
+      else ensure_valid_target!(target)
+      end
+    end
+
     private
+
+    # We need to use `.` (dot) notation to access the updates we did in `config/initializers/1_settings.rb`
+    # For that reason, avoid using `[]` ("optional/dynamic settings notation") to resolve it dynamically.
+    # Refer to https://gitlab.com/gitlab-org/gitlab/-/issues/386865
+    def settings_value(target)
+      case target
+      when 'puma' then ::Settings.monitoring.web_exporter
+      when 'sidekiq' then ::Settings.monitoring.sidekiq_exporter
+      else ensure_valid_target!(target)
+      end
+    end
 
     def new_metrics_server?
       Gitlab::Utils.to_boolean(ENV['GITLAB_GOLANG_METRICS_SERVER'])
@@ -114,14 +132,6 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
 
     def ensure_valid_target!(target)
       raise "Target must be one of [puma,sidekiq]" unless %w(puma sidekiq).include?(target)
-    end
-
-    def settings_key(target)
-      case target
-      when 'puma' then 'web_exporter'
-      when 'sidekiq' then 'sidekiq_exporter'
-      else ensure_valid_target!(target)
-      end
     end
   end
 
@@ -152,7 +162,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
       when 'puma'
         Gitlab::Metrics::Exporter::WebExporter.instance(**default_opts)
       when 'sidekiq'
-        settings = Settings.new(Settings.monitoring[name])
+        settings = Settings.new(Settings.monitoring.sidekiq_exporter)
         Gitlab::Metrics::Exporter::SidekiqExporter.instance(settings, **default_opts)
       end
 
@@ -160,9 +170,6 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
   end
 
   def name
-    case @target
-    when 'puma' then 'web_exporter'
-    when 'sidekiq' then 'sidekiq_exporter'
-    end
+    self.class.name(@target)
   end
 end

@@ -91,7 +91,7 @@ RSpec.describe Groups::ObservabilityHelper do
 
     it 'returns the title for action: explore' do
       allow(helper).to receive(:params).and_return({ action: 'explore' })
-      expect(helper.observability_page_title).to eq("Explore")
+      expect(helper.observability_page_title).to eq("Explore telemetry data")
     end
 
     it 'returns the title for action: datasources' do

@@ -6,10 +6,8 @@ module Sidebars
       class ObservabilityMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          add_item(dashboards_menu_item)
           add_item(explore_menu_item)
           add_item(datasources_menu_item)
-          add_item(manage_menu_item)
         end
 
         override :title
@@ -40,7 +38,7 @@ module Sidebars
 
         def explore_menu_item
           ::Sidebars::MenuItem.new(
-            title: s_('Observability|Explore'),
+            title: s_('Observability|Explore telemetry data'),
             link: group_observability_explore_path(context.group),
             active_routes: { path: 'groups/observability#explore' },
             item_id: :explore

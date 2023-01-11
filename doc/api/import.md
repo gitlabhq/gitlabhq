@@ -127,6 +127,8 @@ ask an administrator to [enable the feature flag](../administration/feature_flag
 You can use the GitLab API to import personal GitHub gists (with up to 10 files) into personal GitLab snippets.
 GitHub gists with more than 10 files are skipped. You should manually migrate these GitHub gists.
 
+If any gists couldn't be imported, an email is sent with a list of gists that were not imported.
+
 ```plaintext
 POST /import/github/gists
 ```

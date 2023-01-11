@@ -730,7 +730,7 @@ parameters:
 
 ## User status
 
-Get the status of the signed in user.
+Get the status of the authenticated user.
 
 ```plaintext
 GET /user/status
@@ -946,7 +946,7 @@ Example response:
 
 ## User counts
 
-Get the counts (same as in top right menu) of the signed in user.
+Get the counts (same as in top right menu) of the authenticated user.
 
 | Attribute                         | Type   | Description                                                                  |
 | --------------------------------- | ------ | ---------------------------------------------------------------------------- |

@@ -137,17 +137,20 @@ detect-tests:
         tooling/bin/find_tests ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_TESTS_PATH};
         tooling/bin/find_changes ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_TESTS_PATH} ${FRONTEND_FIXTURES_MAPPING_PATH};
         filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TESTS_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
+        tooling/bin/view_to_js_mappings ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_JS_FILES_PATH};
         echoinfo "Changed files: $(cat $RSPEC_CHANGED_FILES_PATH)";
         echoinfo "Related RSpec tests: $(cat $RSPEC_MATCHING_TESTS_PATH)";
         echoinfo "Related FOSS RSpec tests: $(cat $RSPEC_MATCHING_TESTS_FOSS_PATH)";
+        echoinfo "Related JS files: $(cat $RSPEC_MATCHING_JS_FILES_PATH)";
       fi
   artifacts:
     expire_in: 7d
     paths:
-      - ${RSPEC_CHANGED_FILES_PATH}
-      - ${RSPEC_MATCHING_TESTS_PATH}
-      - ${RSPEC_MATCHING_TESTS_FOSS_PATH}
       - ${FRONTEND_FIXTURES_MAPPING_PATH}
+      - ${RSPEC_CHANGED_FILES_PATH}
+      - ${RSPEC_MATCHING_JS_FILES_PATH}
+      - ${RSPEC_MATCHING_TESTS_FOSS_PATH}
+      - ${RSPEC_MATCHING_TESTS_PATH}
 
 detect-previous-failed-tests:
   extends:

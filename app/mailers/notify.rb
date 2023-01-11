@@ -24,6 +24,7 @@ class Notify < ApplicationMailer
   include Emails::InProductMarketing
   include Emails::AdminNotification
   include Emails::IdentityVerification
+  include Emails::Imports
 
   helper TimeboxesHelper
   helper MergeRequestsHelper

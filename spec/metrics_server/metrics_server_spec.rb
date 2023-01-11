@@ -99,20 +99,22 @@ RSpec.describe MetricsServer, feature_category: :application_performance do # ru
         context 'for Golang server' do
           let(:log_enabled) { false }
           let(:settings) do
-            {
-              'web_exporter' => {
-                'enabled' => true,
-                'address' => 'localhost',
-                'port' => '8083',
-                'log_enabled' => log_enabled
-              },
-              'sidekiq_exporter' => {
-                'enabled' => true,
-                'address' => 'localhost',
-                'port' => '8082',
-                'log_enabled' => log_enabled
+            Settingslogic.new(
+              {
+                'web_exporter' => {
+                  'enabled' => true,
+                  'address' => 'localhost',
+                  'port' => '8083',
+                  'log_enabled' => log_enabled
+                },
+                'sidekiq_exporter' => {
+                  'enabled' => true,
+                  'address' => 'localhost',
+                  'port' => '8082',
+                  'log_enabled' => log_enabled
+                }
               }
-            }
+            )
           end
 
           let(:expected_port) { target == 'puma' ? '8083' : '8082' }
@@ -175,11 +177,13 @@ RSpec.describe MetricsServer, feature_category: :application_performance do # ru
 
           context 'when TLS settings are present' do
             before do
-              %w(web_exporter sidekiq_exporter).each do |key|
-                settings[key]['tls_enabled'] = true
-                settings[key]['tls_cert_path'] = '/path/to/cert.pem'
-                settings[key]['tls_key_path'] = '/path/to/key.pem'
-              end
+              settings.web_exporter['tls_enabled'] = true
+              settings.web_exporter['tls_cert_path'] = '/path/to/cert.pem'
+              settings.web_exporter['tls_key_path'] = '/path/to/key.pem'
+
+              settings.sidekiq_exporter['tls_enabled'] = true
+              settings.sidekiq_exporter['tls_cert_path'] = '/path/to/cert.pem'
+              settings.sidekiq_exporter['tls_key_path'] = '/path/to/key.pem'
             end
 
             it 'sets the correct environment variables' do
@@ -300,12 +304,12 @@ RSpec.describe MetricsServer, feature_category: :application_performance do # ru
   end
 
   context 'for sidekiq' do
-    let(:settings) { { "sidekiq_exporter" => { "enabled" => true } } }
+    let(:settings) { Settingslogic.new({ "sidekiq_exporter" => { "enabled" => true } }) }
 
     before do
       allow(::Settings).to receive(:monitoring).and_return(settings)
       allow(Gitlab::Metrics::Exporter::SidekiqExporter).to receive(:instance).with(
-        settings['sidekiq_exporter'], gc_requests: true, synchronous: true
+        settings.sidekiq_exporter, gc_requests: true, synchronous: true
       ).and_return(exporter_double)
     end
 
@@ -355,6 +359,30 @@ RSpec.describe MetricsServer, feature_category: :application_performance do # ru
         expect(Process).to receive(:spawn).and_return(42)
 
         described_class.start_for_sidekiq(metrics_dir: '/path/to/metrics')
+      end
+    end
+  end
+
+  describe '.name' do
+    subject { described_class.name(target) }
+
+    context 'for puma' do
+      let(:target) { 'puma' }
+
+      it { is_expected.to eq 'web_exporter' }
+    end
+
+    context 'for sidekiq' do
+      let(:target) { 'sidekiq' }
+
+      it { is_expected.to eq 'sidekiq_exporter' }
+    end
+
+    context 'for invalid target' do
+      let(:target) { 'invalid' }
+
+      it 'raises error' do
+        expect { subject }.to raise_error(RuntimeError, "Target must be one of [puma,sidekiq]")
       end
     end
   end

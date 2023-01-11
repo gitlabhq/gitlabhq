@@ -1,8 +1,6 @@
 - title: "Sidekiq metrics and health checks configuration"
   announcement_milestone: "14.7"
-  announcement_date: "2021-01-22"
   removal_milestone: "15.0"
-  removal_date: "2022-05-22"
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
     Exporting Sidekiq metrics and health checks using a single process and port is deprecated.

@@ -1,8 +1,6 @@
 - title: "Self-managed certificate-based integration with Kubernetes"
   announcement_milestone: "14.5"
-  announcement_date: "2021-11-15"
   removal_milestone: "17.0"
-  removal_date: "2024-05-22"  # the date of the milestone release when this feature is planned to be removed
   breaking_change: true
   body: |
     The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).

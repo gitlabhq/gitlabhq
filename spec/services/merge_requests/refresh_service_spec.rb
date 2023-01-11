@@ -138,7 +138,7 @@ RSpec.describe MergeRequests::RefreshService do
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
 
         expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }.to change {
-          refresh_service.instance_variable_get("@source_merge_requests").first.merge_request_diff
+          refresh_service.instance_variable_get(:@source_merge_requests).first.merge_request_diff
         }
       end
 
@@ -799,7 +799,7 @@ RSpec.describe MergeRequests::RefreshService do
       it 'does not mark as draft based on commits that do not belong to an MR' do
         allow(refresh_service).to receive(:find_new_commits)
 
-        refresh_service.instance_variable_set("@commits",
+        refresh_service.instance_variable_set(:@commits,
           [
             double(
               id: 'aaaaaaa',

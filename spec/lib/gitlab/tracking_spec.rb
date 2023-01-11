@@ -10,11 +10,11 @@ RSpec.describe Gitlab::Tracking do
     stub_application_setting(snowplow_cookie_domain: '.gitfoo.com')
     stub_application_setting(snowplow_app_id: '_abc123_')
 
-    described_class.instance_variable_set("@tracker", nil)
+    described_class.instance_variable_set(:@tracker, nil)
   end
 
   after do
-    described_class.instance_variable_set("@tracker", nil)
+    described_class.instance_variable_set(:@tracker, nil)
   end
 
   describe '.options' do

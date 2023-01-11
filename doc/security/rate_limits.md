@@ -124,7 +124,7 @@ The **rate limit** is 20 calls per minute per IP address.
 There is a rate limit on how frequently a username can be changed. This is enforced to mitigate misuse of the feature. For example, to mass discover
 which usernames are in use.
 
-The **rate limit** is 10 calls per minute per signed-in user.
+The **rate limit** is 10 calls per minute per authenticated user.
 
 ### Username exists
 
@@ -146,7 +146,7 @@ The feature is not ready for production use.
 
 There is a rate limit for the endpoint `project/:id/jobs`, which is enforced to reduce timeouts when retrieving jobs.
 
-The **rate limit** is 600 calls per minute per signed-in user.
+The **rate limit** is 600 calls per minute per authenticated user.
 
 ## Troubleshooting
 

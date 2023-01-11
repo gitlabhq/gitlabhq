@@ -1,8 +1,6 @@
 - title: "Redis 5 deprecated"  # (required) The name of the feature to be deprecated
   announcement_milestone: "15.3"  # (required) The milestone when this feature was first announced as deprecated.
-  announcement_date: "2022-08-22"  # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
-  removal_date: "2023-05-22"  # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: tnir
   stage: Enablement
@@ -12,5 +10,4 @@
     Redis 5 has reached the end of life in April 2022 and will no longer be supported as of GitLab 15.6.
     If you are using your own Redis 5.0 instance, you should upgrade it to Redis 6.0 or higher before upgrading to GitLab 16.0 or higher.
   end_of_support_milestone: "15.6"
-  end_of_support_date: "2022-11-22"
   documentation_url: https://docs.gitlab.com/ee/install/requirements.html

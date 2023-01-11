@@ -16,7 +16,7 @@ To view projects, on the top bar, select **Main menu > Projects > View all proje
 NOTE:
 The **Explore projects** tab is visible to unauthenticated users unless the
 [**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
-is restricted. Then the tab is visible only to signed-in users.
+is restricted. Then the tab is visible only to authenticated users.
 
 ### Who can view the Projects page
 

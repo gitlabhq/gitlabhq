@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :importer do
+RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :importers do
   subject { described_class.new }
 
   let_it_be(:user) { create(:user) }

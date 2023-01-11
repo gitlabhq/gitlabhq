@@ -20,13 +20,7 @@ module Security
       end
 
       def action
-        existing_content = begin
-          existing_gitlab_ci_content # this can fail on the very first commit
-        rescue StandardError
-          nil
-        end
-
-        Security::CiConfiguration::SastBuildAction.new(project.auto_devops_enabled?, params, existing_content, project.ci_config_path).generate
+        Security::CiConfiguration::SastBuildAction.new(project.auto_devops_enabled?, params, existing_gitlab_ci_content, project.ci_config_path).generate
       end
 
       def next_branch
@@ -39,6 +33,10 @@ module Security
 
       def description
         _('Configure SAST in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings.')
+      end
+
+      def name
+        'SAST'
       end
     end
   end

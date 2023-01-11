@@ -15,9 +15,9 @@ class AbuseReport < ApplicationRecord
   validates :category, presence: true
   validates :user_id,
     uniqueness: {
-      scope: :reporter_id,
+      scope: [:reporter_id, :category],
       message: ->(object, data) do
-        _('has already been reported for abuse')
+        _('You have already reported this user')
       end
     }
 

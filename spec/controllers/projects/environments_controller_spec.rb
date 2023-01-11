@@ -1010,7 +1010,7 @@ RSpec.describe Projects::EnvironmentsController do
         expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
           method.call(payload)
 
-          expect(payload[:metadata]['meta.environment.search']).to be_nil
+          expect(payload[:metadata]).not_to have_key('meta.environment.search')
           expect(payload[:action]).to eq("search")
           expect(payload[:controller]).to eq("Projects::EnvironmentsController")
         end
@@ -1022,12 +1022,24 @@ RSpec.describe Projects::EnvironmentsController do
         expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
           method.call(payload)
 
-          expect(payload[:metadata]['meta.environment.search']).to be_nil
+          expect(payload[:metadata]).not_to have_key('meta.environment.search')
           expect(payload[:action]).to eq("search")
           expect(payload[:controller]).to eq("Projects::EnvironmentsController")
         end
 
         get :search, params: environment_params(format: :json)
+      end
+
+      it 'logs params correctly when search params is empty string' do
+        expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+          method.call(payload)
+
+          expect(payload[:metadata]).not_to have_key('meta.environment.search')
+          expect(payload[:action]).to eq("search")
+          expect(payload[:controller]).to eq("Projects::EnvironmentsController")
+        end
+
+        get :search, params: environment_params(format: :json, search: "")
       end
     end
 
@@ -1052,12 +1064,24 @@ RSpec.describe Projects::EnvironmentsController do
         expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
           method.call(payload)
 
-          expect(payload[:metadata]['meta.environment.search']).to be_nil
+          expect(payload[:metadata]).not_to have_key('meta.environment.search')
           expect(payload[:action]).to eq("search")
           expect(payload[:controller]).to eq("Projects::EnvironmentsController")
         end
 
         get :search, params: environment_params(format: :json)
+      end
+
+      it 'logs params correctly when search params is empty string' do
+        expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+          method.call(payload)
+
+          expect(payload[:metadata]).not_to have_key('meta.environment.search')
+          expect(payload[:action]).to eq("search")
+          expect(payload[:controller]).to eq("Projects::EnvironmentsController")
+        end
+
+        get :search, params: environment_params(format: :json, search: "")
       end
     end
   end

@@ -20,7 +20,7 @@ Valid values for snippet visibility levels are:
 | Visibility | Description                                         |
 |:-----------|:----------------------------------------------------|
 | `private`  | Snippet is visible only to the snippet creator.     |
-| `internal` | Snippet is visible for any logged in user except [external users](../user/admin_area/external_users.md).          |
+| `internal` | Snippet is visible for any authenticated user except [external users](../user/admin_area/external_users.md).          |
 | `public`   | Snippet can be accessed without any authentication. |
 
 ## List all snippets for a user

@@ -1,8 +1,6 @@
 - title: "Support for third party registries"  # (required) Actionable title. e.g., The `confidential` field for a `Note` is deprecated. Use `internal` instead.
   announcement_milestone: "15.8"  # (required) The milestone when this feature was first announced as deprecated.
-  announcement_date: "2023-01-22"  # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
-  removal_date: "2023-05-22"  # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: trizzi  # (required) GitLab username of the person reporting the deprecation
   stage: Package  # (required) String value of the stage that the feature was created in. e.g., Growth

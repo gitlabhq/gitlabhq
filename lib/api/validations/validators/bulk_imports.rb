@@ -19,6 +19,8 @@ module API
 
         class DestinationNamespacePath < Grape::Validations::Base
           def validate_param!(attr_name, params)
+            return if params[attr_name].blank?
+
             unless params[attr_name] =~ Gitlab::Regex.bulk_import_namespace_path_regex # rubocop: disable Style/GuardClause
               raise Grape::Exceptions::Validation.new(
                 params: [@scope.full_name(attr_name)],

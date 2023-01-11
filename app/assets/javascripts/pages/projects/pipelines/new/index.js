@@ -1,3 +1,3 @@
-import initNewPipelineForm from '~/pipeline_new/index';
+import initNewPipelineForm from '~/ci/pipeline_new/index';
 
 initNewPipelineForm();

@@ -1,8 +1,6 @@
 - title: "Known host required for GitLab Runner SSH executor"
   announcement_milestone: "14.5"  # The milestone when this feature was first announced as deprecated.
-  announcement_date: "2021-11-22"
   removal_milestone: "15.0"  # the milestone when this feature is planned to be removed
-  removal_date: "2022-05-22"
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
     In [GitLab 14.3](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3074), we added a configuration setting in the GitLab Runner `config.toml` file. This setting, [`[runners.ssh.disable_strict_host_key_checking]`](https://docs.gitlab.com/runner/executors/ssh.html#security), controls whether or not to use strict host key checking with the SSH executor.

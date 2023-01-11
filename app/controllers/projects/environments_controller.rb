@@ -303,7 +303,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def append_info_to_payload(payload)
     super
 
-    return unless Feature.enabled?(:environments_search_logging) && params[:search]
+    return unless Feature.enabled?(:environments_search_logging) && params[:search].present?
 
     # Merging to :metadata will ensure these are logged as top level keys
     payload[:metadata] ||= {}

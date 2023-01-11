@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cac
         described_class.load_in_batch_for_projects([project])
 
         # Don't call the accessor that would lazy load the variable
-        project_pipeline_status = project.instance_variable_get('@pipeline_status')
+        project_pipeline_status = project.instance_variable_get(:@pipeline_status)
 
         expect(project_pipeline_status).to be_a(described_class)
         expect(project_pipeline_status).to be_loaded

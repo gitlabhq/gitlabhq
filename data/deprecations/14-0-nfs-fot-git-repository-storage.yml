@@ -1,8 +1,6 @@
 - title: "NFS for Git repository storage"  # The name of the feature to be deprecated
   announcement_milestone: "14.0"  # The milestone when this feature was first announced as deprecated.
-  announcement_date: "2021-06-22"  # The date of the milestone release when this feature was first announced as deprecated
   removal_milestone: "15.6"  # The milestone when this feature is planned to be removed
-  removal_date: "2022-11-22"  # (optional - may be required in the future) YYYY-MM-DD format - the date of the milestone release when this feature is planned to be removed
   breaking_change: false
   body: |  # Do not modify this line, instead modify the lines below.
     With the general availability of Gitaly Cluster ([introduced in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/)), we have deprecated development (bugfixes, performance improvements, etc) for NFS for Git repository storage in GitLab 14.0. We will continue to provide technical support for NFS for Git repositories throughout 14.x, but we will remove all support for NFS on November 22, 2022. This was originally planned for May 22, 2022, but in an effort to allow continued maturity of Gitaly Cluster, we have chosen to extend our deprecation of support date. Please see our official [Statement of Support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs) for further information.

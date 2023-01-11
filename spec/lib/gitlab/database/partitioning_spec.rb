@@ -10,15 +10,15 @@ RSpec.describe Gitlab::Database::Partitioning do
 
   around do |example|
     previously_registered_models = described_class.registered_models.dup
-    described_class.instance_variable_set('@registered_models', Set.new)
+    described_class.instance_variable_set(:@registered_models, Set.new)
 
     previously_registered_tables = described_class.registered_tables.dup
-    described_class.instance_variable_set('@registered_tables', Set.new)
+    described_class.instance_variable_set(:@registered_tables, Set.new)
 
     example.run
 
-    described_class.instance_variable_set('@registered_models', previously_registered_models)
-    described_class.instance_variable_set('@registered_tables', previously_registered_tables)
+    described_class.instance_variable_set(:@registered_models, previously_registered_models)
+    described_class.instance_variable_set(:@registered_tables, previously_registered_tables)
   end
 
   describe '.register_models' do

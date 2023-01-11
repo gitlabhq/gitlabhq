@@ -193,7 +193,7 @@ Get details of a runner.
 At least the Maintainer role is required to get runner details at the
 project and group level.
 
-Instance-level runner details via this endpoint are available to all signed in users.
+Instance-level runner details via this endpoint are available to all authenticated users.
 
 ```plaintext
 GET /runners/:id

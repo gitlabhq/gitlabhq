@@ -9,11 +9,11 @@ module Gitlab
       def self.included(klass)
         klass.extend(ClassMethods)
 
-        klass.const_set('OLD_GRAPHQL_NAME_MAP', klass::DEPRECATIONS.index_by do |d|
+        klass.const_set(:OLD_GRAPHQL_NAME_MAP, klass::DEPRECATIONS.index_by do |d|
           klass.map_graphql_name(d.old_name)
         end.freeze)
-        klass.const_set('OLD_NAME_MAP', klass::DEPRECATIONS.index_by(&:old_name).freeze)
-        klass.const_set('NEW_NAME_MAP', klass::DEPRECATIONS.index_by(&:new_name).freeze)
+        klass.const_set(:OLD_NAME_MAP, klass::DEPRECATIONS.index_by(&:old_name).freeze)
+        klass.const_set(:NEW_NAME_MAP, klass::DEPRECATIONS.index_by(&:new_name).freeze)
       end
 
       module ClassMethods

@@ -32,7 +32,7 @@ RSpec.describe API::Helpers::PackagesHelpers do
       it 'calls authorize! with correct subject' do
         expect(helper).to receive(:authorize!).with(:read_package, have_attributes(id: subject.id, class: expected_class))
 
-        expect(helper.send('authorize_read_package!', subject)).to eq nil
+        expect(helper.send(:authorize_read_package!, subject)).to eq nil
       end
     end
   end

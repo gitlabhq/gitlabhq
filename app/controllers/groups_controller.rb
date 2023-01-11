@@ -256,7 +256,7 @@ class GroupsController < Groups::ApplicationController
 
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)
-      'application'
+      'dashboard'
     elsif [:edit, :update, :projects].include?(action_name.to_sym)
       'group_settings'
     else

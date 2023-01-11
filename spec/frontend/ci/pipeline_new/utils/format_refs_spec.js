@@ -1,9 +1,9 @@
-import { BRANCH_REF_TYPE, TAG_REF_TYPE } from '~/pipeline_new/constants';
+import { BRANCH_REF_TYPE, TAG_REF_TYPE } from '~/ci/pipeline_new/constants';
 import {
   formatRefs,
   formatListBoxItems,
   searchByFullNameInListboxOptions,
-} from '~/pipeline_new/utils/format_refs';
+} from '~/ci/pipeline_new/utils/format_refs';
 import { mockBranchRefs, mockTagRefs } from '../mock_data';
 
 describe('Format refs util', () => {

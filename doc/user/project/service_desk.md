@@ -111,6 +111,12 @@ With Service Desk, you can use templates for:
 - [New note emails](#new-note-email)
 - [New Service Desk issues](#new-service-desk-issues)
 
+#### Email header and footer **(FREE SELF)**
+
+Instance administrators can add a small header or footer to the GitLab instance and make them
+visible in the email template. For more information, see
+[System header and footer messages](../admin_area/appearance.md#system-header-and-footer-messages).
+
 #### Thank you email
 
 When a user submits an issue through Service Desk, GitLab sends a **thank you email**.

@@ -1,8 +1,6 @@
 - title: "Dependency Scanning support for Java 13, 14, 15, and 16"
   announcement_milestone: "15.8"
-  announcement_date: "2023-01-22"
   removal_milestone: "16.0"
-  removal_date: "2023-05-22"
   breaking_change: true
   reporter: sam.white
   stage: secure

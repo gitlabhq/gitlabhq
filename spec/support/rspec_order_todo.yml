@@ -3560,7 +3560,6 @@
 - './spec/controllers/groups/variables_controller_spec.rb'
 - './spec/controllers/health_check_controller_spec.rb'
 - './spec/controllers/help_controller_spec.rb'
-- './spec/controllers/import/available_namespaces_controller_spec.rb'
 - './spec/controllers/import/bitbucket_controller_spec.rb'
 - './spec/controllers/import/bitbucket_server_controller_spec.rb'
 - './spec/controllers/import/bulk_imports_controller_spec.rb'

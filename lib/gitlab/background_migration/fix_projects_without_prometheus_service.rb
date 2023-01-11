@@ -186,7 +186,7 @@ module Gitlab
       end
 
       def migrate_instance_cluster?
-        if instance_variable_defined?('@migrate_instance_cluster')
+        if instance_variable_defined?(:@migrate_instance_cluster)
           @migrate_instance_cluster
         else
           @migrate_instance_cluster = Migratable::Cluster.instance_type.has_prometheus_application?

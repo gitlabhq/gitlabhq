@@ -191,8 +191,7 @@ If the current version is `v12p1`, and we need to create a new version for `v12p
 NOTE:
 This only supported for indices created with GitLab 13.0 or greater.
 
-Migrations are stored in the [`ee/elastic/migrate/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/elastic/migrate) folder with `YYYYMMDDHHMMSS_migration_name.rb`
-filename format, which is similar to Rails database migrations:
+In the [`ee/elastic/migrate/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/elastic/migrate) folder, create a new file with the filename format `YYYYMMDDHHMMSS_migration_name.rb`. This format is the same for Rails database migrations.
 
 ```ruby
 # frozen_string_literal: true
@@ -224,6 +223,102 @@ To update Elastic index mappings, apply the configuration to the respective file
 
 Migrations can be built with a retry limit and have the ability to be [failed and marked as halted](https://gitlab.com/gitlab-org/gitlab/-/blob/66e899b6637372a4faf61cfd2f254cbdd2fb9f6d/ee/lib/elastic/migration.rb#L40).
 Any data or index cleanup needed to support migration retries should be handled within the migration.
+
+### Migration helpers
+
+The following migration helpers are available in `ee/app/workers/concerns/elastic/`:
+
+#### `Elastic::MigrationBackfillHelper`
+
+Backfills a specific field in an index. In most cases, the mapping for the field should already be added.
+
+Requires the `index_name` and `field_name` methods.
+
+<details><summary>Example</summary>
+
+```ruby
+class MigrationName < Elastic::Migration
+  include Elastic::MigrationBackfillHelper
+
+  private
+
+  def index_name
+    Issue.__elasticsearch__.index_name
+  end
+
+  def field_name
+    :schema_version
+  end
+end
+```
+
+</details>
+
+#### `Elastic::MigrationUpdateMappingsHelper`
+
+Updates a mapping in an index by calling `put_mapping` with the mapping specified.
+
+Requires the `index_name` and `new_mappings` methods.
+
+<details><summary>Example</summary>
+
+```ruby
+class MigrationName < Elastic::Migration
+  include Elastic::MigrationUpdateMappingsHelper
+
+  private
+
+  def index_name
+    Issue.__elasticsearch__.index_name
+  end
+
+  def new_mappings
+    {
+      schema_version: {
+        type: 'short'
+      }
+    }
+  end
+end
+```
+
+</details>
+
+#### `Elastic::MigrationObsolete`
+
+Marks a migration as obsolete when it's no longer required.
+
+<details><summary>Example</summary>
+
+```ruby
+class MigrationName < Elastic::Migration
+  include Elastic::MigrationObsolete
+end
+```
+
+</details>
+
+#### `Elastic::MigrationHelper`
+
+Contains methods you can use when a migration doesn't fit the previous examples.
+
+<details><summary>Example</summary>
+
+```ruby
+class MigrationName < Elastic::Migration
+  include Elastic::MigrationHelper
+
+  def migrate
+  ...
+  end
+
+  def completed?
+  ...
+  end
+end
+```
+
+</details>
 
 ### Migration options supported by the `Elastic::MigrationWorker`
 

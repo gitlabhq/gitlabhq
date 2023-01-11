@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::Github::GistsImportService, feature_category: :importer do
+RSpec.describe Import::Github::GistsImportService, feature_category: :importers do
   subject(:import) { described_class.new(user, client, params) }
 
   let_it_be(:user) { create(:user) }

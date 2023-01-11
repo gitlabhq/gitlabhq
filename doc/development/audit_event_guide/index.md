@@ -243,5 +243,5 @@ development.
 
 We intentionally do not translate audit event messages because translated messages would be saved in the database and served to users, regardless of their locale settings.
 
-This could mean, for example, that we use the locale for the currently logged in user to record an audit event message and stream the message to an external streaming
+This could mean, for example, that we use the locale for the currently authenticated user to record an audit event message and stream the message to an external streaming
 destination in the wrong language for that destination. Users could find that confusing.

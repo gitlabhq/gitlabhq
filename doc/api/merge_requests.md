@@ -671,7 +671,7 @@ Supported attributes:
 | `squash` | boolean | Indicates if squash on merge is enabled. |
 | `squash_commit_sha` | string | SHA of the squash commit. Empty until merged. |
 | `state` | string | State of the merge request. Can be `opened`, `closed`, `merged` or `locked`. |
-| `subscribed` | boolean | Indicates if the currently logged in user is subscribed to this merge request. |
+| `subscribed` | boolean | Indicates if the currently authenticated user is subscribed to this merge request. |
 | `target_branch` | string | Target branch of the merge request. |
 | `target_project_id` | integer | ID of the merge request target project. |
 | `task_completion_status` | object | Completion status of tasks. |

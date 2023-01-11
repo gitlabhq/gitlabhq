@@ -3,9 +3,7 @@
 #
 - title: "Security report schemas version 14.x.x"  # (required) the name of the feature being removed. Avoid the words `deprecation`, `deprecate`, `removal`, and `remove` in this field because these are implied.
   announcement_milestone: "15.3"  # (required) The milestone when this feature was deprecated.
-  announcement_date: "2022-08-22"  # (required) The date of the milestone release when this feature was deprecated. This should almost always be the 22nd of a month (YYYY-MM-DD), unless you did an out of band blog post.
   removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
-  removal_date: "2023-05-22"  # (required) This should almost always be the 22nd of a month (YYYY-MM-DD), the date of the milestone release when this feature will be removed.
   breaking_change: true  # (required) Change to true if this removal is a breaking change.
   reporter: matt_wilson  # (required) GitLab username of the person reporting the removal
   stage: Secure  # (required) String value of the stage that the feature was created in. e.g., Growth
@@ -22,7 +20,6 @@
 # OPTIONAL FIELDS
 #
   end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
-  end_of_support_date:  # (optional) The date of the milestone release when support for this feature will end.
   tiers: [Ultimate]  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url:  # (optional) This is a link to the current documentation page
   image_url:  # (optional) This is a link to a thumbnail image depicting the feature

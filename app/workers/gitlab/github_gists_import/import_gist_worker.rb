@@ -6,6 +6,8 @@ module Gitlab
       include ApplicationWorker
       include Gitlab::NotifyUponDeath
 
+      GISTS_ERRORS_BY_ID = 'gitlab:github-gists-import:%{user_id}:errors'
+
       data_consistency :always
       queue_namespace  :github_gists_importer
       feature_category :importers
@@ -33,16 +35,16 @@ module Gitlab
         ::Gitlab::GithubGistsImport::Importer::GistImporter
       end
 
-      def with_logging(user_id, gist_id)
-        info(user_id, 'start importer', gist_id)
+      def with_logging(user_id, github_identifiers)
+        info(user_id, 'start importer', github_identifiers)
 
         yield
 
-        info(user_id, 'importer finished', gist_id)
+        info(user_id, 'importer finished', github_identifiers)
       end
 
-      def log_and_track_error(user_id, exception, gist_id)
-        error(user_id, exception.message, gist_id)
+      def log_and_track_error(user_id, exception, github_identifiers)
+        error(user_id, exception.message, github_identifiers)
 
         Gitlab::ErrorTracking.track_exception(exception,
           import_type: :github_gists,
@@ -50,15 +52,17 @@ module Gitlab
         )
       end
 
-      def error(user_id, error_message, gist_id)
+      def error(user_id, error_message, github_identifiers)
         attributes = {
           user_id: user_id,
-          github_identifiers: gist_id,
+          github_identifiers: github_identifiers,
           message: 'importer failed',
           'error.message': error_message
         }
 
         Gitlab::GithubImport::Logger.error(structured_payload(attributes))
+
+        cache_error_for_email(user_id, github_identifiers[:id], error_message)
       end
 
       def info(user_id, message, gist_id)
@@ -69,6 +73,12 @@ module Gitlab
         }
 
         Gitlab::GithubImport::Logger.info(structured_payload(attributes))
+      end
+
+      def cache_error_for_email(user_id, gist_id, error_message)
+        key = format(GISTS_ERRORS_BY_ID, user_id: user_id)
+
+        ::Gitlab::Cache::Import::Caching.hash_add(key, gist_id, error_message)
       end
     end
   end

@@ -68,7 +68,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
       fill_and_submit_form
 
-      expect(page).to have_content 'User has already been reported for abuse'
+      expect(page).to have_content 'You have already reported this user'
     end
 
     it 'allows multiple users to report a user' do

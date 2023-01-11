@@ -1,4 +1,4 @@
-import filterVariables from '~/pipeline_new/utils/filter_variables';
+import filterVariables from '~/ci/pipeline_new/utils/filter_variables';
 import { mockVariables } from '../mock_data';
 
 describe('Filter variables utility function', () => {

@@ -16,7 +16,7 @@ The visibility level is determined by the `visibility` field in the project.
 Values for the project visibility level are:
 
 - `private`: project access must be granted explicitly to each user.
-- `internal`: the project can be cloned by any signed-in user except [external users](../user/admin_area/external_users.md).
+- `internal`: the project can be cloned by any authenticated user except [external users](../user/admin_area/external_users.md).
 - `public`: the project can be accessed without any authentication.
 
 For more, read [Project visibility](../user/public_access.md).

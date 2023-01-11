@@ -1,8 +1,6 @@
 - title: "CiCdSettingsUpdate mutation renamed to ProjectCiCdSettingsUpdate"
   announcement_milestone: "15.0"
-  announcement_date: "2022-05-22"
   removal_milestone: "16.0"
-  removal_date: "2023-05-22"
   breaking_change: true
   reporter: pedropombeiro
   stage: Verify

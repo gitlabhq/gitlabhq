@@ -1,8 +1,6 @@
 - title: "merge_status API field"
   announcement_milestone: "15.6"
-  announcement_date: "2022-11-22"
   removal_milestone: "16.0"
-  removal_date: "2023-05-22"
   breaking_change: true
   body: |
     The `merge_status` field in the [merge request API](https://docs.gitlab.com/ee/api/merge_requests.html#merge-status) has been deprecated in favor of the `detailed_merge_status` field which more correctly identifies all of the potential statuses that a merge request can be in. API users are encouraged to use the new `detailed_merge_status` field instead. The `merge_status` field will be removed in v5 of the GitLab REST API.

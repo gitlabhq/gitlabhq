@@ -132,7 +132,7 @@ For example, set a value of 15% to enable the feature for 15% of authenticated u
 
 The rollout percentage can be from 0% to 100%.
 
-Stickiness (consistent application behavior for the same user) is guaranteed for logged-in users,
+Stickiness (consistent application behavior for the same user) is guaranteed for authenticated users,
 but not anonymous users.
 
 Note that [percent rollout](#percent-rollout) with a consistency based on **User IDs** has the same

@@ -124,10 +124,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :email_campaigns, only: :index
 
     namespace :observability do
-      get 'dashboards'
       get 'explore'
       get 'datasources'
-      get 'manage'
     end
 
     namespace :harbor do

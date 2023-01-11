@@ -32,19 +32,19 @@ They are listed in the public access directory (`/public`) for all users.
 
 Public groups can have public, internal, or private subgroups.
 
-**Any signed-in user** has the Guest role on the repository.
+**Any authenticated user** has the Guest role on the repository.
 
 NOTE:
 By default, `/public` is visible to unauthenticated users. However, if the
 [**Public** visibility level](admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
-is restricted, `/public` is visible only to signed-in users.
+is restricted, `/public` is visible only to authenticated users.
 
 ## Internal projects and groups **(FREE SELF)**
 
-Internal projects can be cloned by any signed-in user except
+Internal projects can be cloned by any authenticated user except
 [external users](admin_area/external_users.md).
 
-They are also listed in the public access directory (`/public`), but only for signed-in users.
+They are also listed in the public access directory (`/public`), but only for authenticated users.
 
 Internal groups can have internal or private subgroups.
 

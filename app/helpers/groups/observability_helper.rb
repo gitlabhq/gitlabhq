@@ -13,7 +13,7 @@ module Groups
       },
       'explore' => {
         path: '/explore',
-        title: -> { s_('Observability|Explore') }
+        title: -> { s_('Observability|Explore telemetry data') }
       },
       'datasources' => {
         path: '/datasources',
