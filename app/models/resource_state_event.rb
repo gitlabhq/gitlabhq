@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ResourceStateEvent < ResourceEvent
-  include IssueResourceEvent
   include MergeRequestResourceEvent
   include Importable
 
@@ -24,6 +23,10 @@ class ResourceStateEvent < ResourceEvent
 
   def for_issue?
     issue_id.present?
+  end
+
+  def synthetic_note_class
+    StateNote
   end
 
   private

@@ -30,6 +30,7 @@ import initLogoAnimation from './logo';
 import initBreadcrumbs from './breadcrumb';
 import initPersistentUserCallouts from './persistent_user_callouts';
 import { initUserTracking, initDefaultTrackers } from './tracking';
+import { initSidebarTracking } from './pages/shared/nav/sidebar_tracking';
 import initServicePingConsent from './service_ping_consent';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
@@ -99,6 +100,7 @@ function deferredInitialisation() {
   initBroadcastNotifications();
   initPersistentUserCallouts();
   initDefaultTrackers();
+  initSidebarTracking();
   initFeatureHighlight();
   initCopyCodeButton();
   initGitlabVersionCheck();

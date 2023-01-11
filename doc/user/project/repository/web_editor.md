@@ -4,63 +4,49 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Web Editor **(FREE)**
+# Web Editor **(FREE)**
 
-Sometimes it's easier to make quick changes directly from the GitLab interface
-than to clone the project and use the Git command-line tool. In this feature
-highlight, we look at how you can create a new file, directory, branch, or
-tag from the file browser. All of these actions are available from a single
-dropdown list.
+You can use the Web Editor to make changes directly from the UI instead of
+cloning a project and using the command line.
+From any project page, you can create a file, directory, branch, or tag.
 
 ## Create a file
 
-From a project's files page, select the '+' button to the right of the branch selector.
-Choose **New file** from the dropdown list.
-![New file dropdown list](img/web_editor_new_file_dropdown_v14_1.png)
+To create a text file in the Web Editor:
 
-Enter a filename in the **Filename** box. Then, add file content in the editor
-area. Add a descriptive commit message and choose a branch. The branch field
-defaults to the branch you were viewing in the file browser. If you enter
-a new branch name, a checkbox displays, allowing you to start a new merge
-request after you commit the changes.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the project page, next to the branch name, select the plus icon (**{plus}**).
+1. From the dropdown list, select **New file**.
+1. Complete the fields.
+   - From the **Select a template type** dropdown list, you can apply a template to the new file.
+   - To create a merge request with the new file, ensure the **Start a new merge request with these changes** checkbox is selected.
+1. Select **Commit changes**.
 
-When you are satisfied with your new file, select **Commit Changes** at the bottom.
+## Edit a file
 
-![Create file editor](img/web_editor_new_file_editor_v14_1.png)
+To edit a file in the Web Editor:
 
-### Shortcuts
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. Go to your file.
+1. Next to the display buttons, select **Edit**.
 
-You can use shortcuts when editing a file through the Web Editor. It uses the same shortcuts
-as the Web IDE. For details, read the documentation for [Command Palette](../web_ide/index.md#command-palette).
+### Keyboard shortcuts
 
-### Template dropdowns
-
-When starting a new project, there are some common files that the new project
-might need. GitLab displays a message to help you:
-
-![First file for your project](img/web_editor_template_dropdown_first_file_v14_1.png)
-
-When selecting either `LICENSE` or `.gitignore` and so on, a dropdown displays
-to provide you a template that may be suitable for your project:
-
-![MIT license selected](img/web_editor_template_dropdown_mit_license_v14_1.png)
-
-The license, changelog, contribution guide, or `.gitlab-ci.yml` file can also
-be added through a button on the project page. In this example, the license
-has already been created, which creates a link to the license itself.
-
-![New file button](img/web_editor_template_dropdown_buttons.png)
-
-NOTE:
-The **Set up CI/CD** button does not appear on an empty repository. For the button
-to display, add a file to your repository.
+When you [edit a file](#edit-a-file) in the Web Editor, you can use the same keyboard shortcuts for the Web IDE.
+See the [available shortcuts](../../shortcuts.md#web-ide).
 
 ## Preview Markdown
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378966) in GitLab 15.6.
 
-To preview Markdown content in the Web Editor, select the **Preview** tab.
-In this tab, you can see a live Markdown preview that updates as you type alongside your content.
+To preview Markdown content in the Web Editor:
+
+1. [Edit a file](#edit-a-file).
+1. Do one of the following:
+   - Select the **Preview** tab.
+   - From the context menu, select **Preview Markdown**.
+
+In the **Preview** tab, you can see a live Markdown preview alongside your content.
 
 To close the preview panel, do one of the following:
 
@@ -72,21 +58,16 @@ To close the preview panel, do one of the following:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56159) in GitLab 13.10 for GitLab SaaS instances.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56159) in GitLab 13.11 for self-managed instances.
 
-Web Editor enables you to highlight a single line by adding specially formatted
-hash information to the file path segment of the URL. For example, the file path segment
-`MY_FILE.js#L3` instructs the Web Editor to highlight line 3.
+To highlight single or multiple lines in the Web Editor, add hash
+information to the filename segment of the URL. For example:
 
-The Web Editor also enables you to highlight multiple lines using a similar pattern. In
-this case, the file path segment `MY_FILE.js#L3-10` instructs the Web Editor to
-highlight lines 3 to 10 of the file.
+- `MY_FILE.js#L3` highlights line 3 in `MY_FILE.js`.
+- `MY_FILE.js#L3-10` highlights lines 3 to 10 in `MY_FILE.js`.
 
-You don't need to construct these lines manually. Instead, you can:
+To highlight a single line, you can also:
 
-1. Hover over the number of a line you want to be highlighted when sharing.
-1. Right-click the number with your mouse.
-1. Select **Copy Link Address** in the context menu.
-
-   ![Link to a line](img/web_editor_line_link_v13_10.png)
+1. [Edit a file](#edit-a-file).
+1. Select a line number.
 
 ## Upload a file
 

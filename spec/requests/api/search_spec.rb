@@ -377,6 +377,26 @@ RSpec.describe API::Search, feature_category: :global_search do
         end
       end
 
+      context 'global search is disabled for the given scope' do
+        it 'returns forbidden response' do
+          allow_next_instance_of(SearchService) do |instance|
+            allow(instance).to receive(:global_search_enabled_for_scope?).and_return false
+          end
+          get api(endpoint, user), params: { search: 'awesome', scope: 'issues' }
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'global search is enabled for the given scope' do
+        it 'returns forbidden response' do
+          allow_next_instance_of(SearchService) do |instance|
+            allow(instance).to receive(:global_search_enabled_for_scope?).and_return true
+          end
+          get api(endpoint, user), params: { search: 'awesome', scope: 'issues' }
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
       it 'increments the custom search sli error rate with error false if no error occurred' do
         expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_error_rate).with(
           error: false,

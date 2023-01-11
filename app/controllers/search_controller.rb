@@ -212,24 +212,7 @@ class SearchController < ApplicationController
   def check_scope_global_search_enabled
     return unless search_service.global_search?
 
-    search_allowed = case params[:scope]
-                     when 'blobs'
-                       Feature.enabled?(:global_search_code_tab, current_user, type: :ops)
-                     when 'commits'
-                       Feature.enabled?(:global_search_commits_tab, current_user, type: :ops)
-                     when 'issues'
-                       Feature.enabled?(:global_search_issues_tab, current_user, type: :ops)
-                     when 'merge_requests'
-                       Feature.enabled?(:global_search_merge_requests_tab, current_user, type: :ops)
-                     when 'wiki_blobs'
-                       Feature.enabled?(:global_search_wiki_tab, current_user, type: :ops)
-                     when 'users'
-                       Feature.enabled?(:global_search_users_tab, current_user, type: :ops)
-                     else
-                       true
-                     end
-
-    return if search_allowed
+    return if search_service.global_search_enabled_for_scope?
 
     redirect_to search_path, alert: _('Global Search is disabled for this scope')
   end

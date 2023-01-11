@@ -264,7 +264,6 @@ to fetch configuration from a project that is renamed or moved.
 - [Repository API](../../../api/repositories.md).
 - [Find files](file_finder.md) in a repository.
 - [Branches](branches/index.md).
-- [File templates](web_editor.md#template-dropdowns).
 - [Create a directory](web_editor.md#create-a-directory).
 - [Start a merge request](web_editor.md#tips).
 - [Find file history](git_history.md).

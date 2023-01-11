@@ -971,10 +971,11 @@ To determine which runners need to be upgraded:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377963) in GitLab 15.8.
 
-As an administrator, you can view runner statistics to learn about the runner fleet performance.
+As an administrator, you can view runner statistics to learn about the performance of your runner fleet.
 
-1. Select **Main menu > Admin** and on the left sidebar, select **CI/CD > Runners**.
-1. Select **View metrics** under **Runners performance**.
+1. Select **Main menu > Admin**.
+1. On the left sidebar, select **CI/CD > Runners**.
+1. Select **View metrics**.
 
 The **Median job queued time** value is calculated by sampling the queue duration of the
 most recent 100 jobs that were run by Instance runners. Jobs from only the latest 5000

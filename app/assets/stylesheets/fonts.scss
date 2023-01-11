@@ -26,6 +26,29 @@ Usage:
   src: font-url('jetbrains-mono/JetBrainsMono.woff2') format('woff2');
 }
 
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-display: optional;
+  font-weight: bold;
+  src: font-url('jetbrains-mono/JetBrainsMono-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-display: optional;
+  font-weight: normal;
+  font-style: italic;
+  src: font-url('jetbrains-mono/JetBrainsMono-Italic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-display: optional;
+  font-weight: bold;
+  font-style: italic;
+  src: font-url('jetbrains-mono/JetBrainsMono-BoldItalic.woff2') format('woff2');
+}
+
 :root {
   --default-mono-font: 'JetBrains Mono', 'Menlo';
   --default-regular-font: 'GitLab Sans', -apple-system;

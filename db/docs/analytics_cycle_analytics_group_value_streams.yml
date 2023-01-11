@@ -1,7 +1,7 @@
 ---
 table_name: analytics_cycle_analytics_group_value_streams
 classes:
-- Analytics::CycleAnalytics::GroupValueStream
+- Analytics::CycleAnalytics::ValueStream
 feature_categories:
 - value_stream_management
 description: Store group level Value Stream objects.

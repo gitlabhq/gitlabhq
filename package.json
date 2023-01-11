@@ -133,7 +133,7 @@
     "fuzzaldrin-plus": "^0.6.0",
     "graphql": "^15.7.2",
     "graphql-tag": "^2.11.0",
-    "gridstack": "^7.0.0",
+    "gridstack": "^7.1.2",
     "highlight.js": "^11.5.1",
     "immer": "^9.0.15",
     "ipaddr.js": "^1.9.1",

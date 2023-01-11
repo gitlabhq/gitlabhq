@@ -59,6 +59,7 @@ The following triggers are available for Slack notifications:
 |--------------------------------------------------------------------------|------------------------------------------------------|
 | **Push**                                                                 | A push to the repository.                            |
 | **Issue**                                                                | An issue is created, updated, or closed.             |
+| **Incident**                                                             | An incident is created, updated, or closed.          |
 | **Confidential issue**                                                   | A confidential issue is created, updated, or closed. |
 | **Merge request**                                                        | A merge request is created, updated, or merged.      |
 | **Note**                                                                 | A comment is added.                                  |

@@ -2,7 +2,6 @@
 
 class ResourceLabelEvent < ResourceEvent
   include CacheMarkdownField
-  include IssueResourceEvent
   include MergeRequestResourceEvent
 
   cache_markdown_field :reference
@@ -37,6 +36,10 @@ class ResourceLabelEvent < ResourceEvent
 
   def issuable
     issue || merge_request
+  end
+
+  def synthetic_note_class
+    LabelNote
   end
 
   def project

@@ -161,3 +161,15 @@ RSpec.shared_examples 'a resource event for merge requests' do
     end
   end
 end
+
+RSpec.shared_examples 'a note for work item resource event' do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:work_item) { create(:work_item, :task, project: project, author: user) }
+
+  it 'builds synthetic note with correct synthetic_note_class' do
+    event = build(described_class.name.underscore.to_sym, issue: work_item)
+
+    expect(event.work_item_synthetic_system_note.class.name).to eq(event.synthetic_note_class.name)
+  end
+end

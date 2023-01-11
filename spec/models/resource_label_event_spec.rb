@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceLabelEvent, type: :model do
+RSpec.describe ResourceLabelEvent, feature_category: :team_planing, type: :model do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
@@ -15,6 +15,7 @@ RSpec.describe ResourceLabelEvent, type: :model do
   it_behaves_like 'a resource event'
   it_behaves_like 'a resource event for issues'
   it_behaves_like 'a resource event for merge requests'
+  it_behaves_like 'a note for work item resource event'
 
   describe 'associations' do
     it { is_expected.to belong_to(:label) }
@@ -152,6 +153,21 @@ RSpec.describe ResourceLabelEvent, type: :model do
       event_2 = create(:resource_label_event, issue: issue, label: label, user: issue.author, created_at: now.advance(seconds: 0.001))
 
       expect(event_1.discussion_id).not_to eq(event_2.discussion_id)
+    end
+  end
+
+  context 'with multiple label events' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:work_item) { create(:work_item, :task, project: project, author: user) }
+    let_it_be(:events) { create_pair(:resource_label_event, issue: work_item) }
+
+    it 'builds synthetic note' do
+      first_event = events.first
+      synthetic_note = first_event.work_item_synthetic_system_note(events: events)
+
+      expect(synthetic_note.class.name).to eq(first_event.synthetic_note_class.name)
+      expect(synthetic_note.events).to match_array(events)
     end
   end
 end

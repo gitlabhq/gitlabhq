@@ -396,13 +396,13 @@ ee:update-major:
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
 
-ee:gitab-pages:
+ee:gitlab-pages:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::GitlabPages
   rules:
     - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Integration::GitlabPages/
+    - if: $QA_SUITES =~ /Test::Instance::GitlabPages/
     - !reference [.rules:test:manual, rules]
 
 ee:gitaly-cluster:
@@ -440,7 +440,7 @@ ee:jira:
     JIRA_ADMIN_PASSWORD: $QA_JIRA_ADMIN_PASSWORD
   rules:
     - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Integration::Jira/
+    - if: $QA_SUITES =~ /Test::Instance::Jira/
     - !reference [.rules:test:manual, rules]
 
 ee:integrations:
@@ -557,7 +557,7 @@ ee:cloud-activation:
     QA_RSPEC_TAGS: --tag cloud_activation
   rules:
     - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Integration::CloudActivation/
+    - if: $QA_SUITES =~ /Test::Instance::CloudActivation/
     - !reference [.rules:test:manual, rules]
 
 ee:large-setup:

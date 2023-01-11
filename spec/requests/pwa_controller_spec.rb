@@ -28,6 +28,23 @@ RSpec.describe PwaController, feature_category: :navigation do
         expect(response).to have_gitlab_http_status(:success)
       end
     end
+
+    context 'when user is signed in' do
+      before do
+        user = create(:user)
+        allow(user).to receive(:role_required?).and_return(true)
+
+        sign_in(user)
+      end
+
+      it 'skips the required signup info storing of user location' do
+        expect_next_instance_of(described_class) do |instance|
+          expect(instance).not_to receive(:store_location_for).with(:user, manifest_path(format: :json))
+        end
+
+        get manifest_path(format: :json)
+      end
+    end
   end
 
   describe 'GET #offline' do

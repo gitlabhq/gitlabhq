@@ -3,6 +3,8 @@
 class ResourceEvent < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include Importable
+  include IssueResourceEvent
+  include WorkItemResourceEvent
 
   self.abstract_class = true
 
@@ -16,6 +18,10 @@ class ResourceEvent < ApplicationRecord
     strong_memoize(:discussion_id) do
       Digest::SHA1.hexdigest(discussion_id_key.join("-"))
     end
+  end
+
+  def issuable
+    raise NoMethodError, 'must implement `issuable` method'
   end
 
   private

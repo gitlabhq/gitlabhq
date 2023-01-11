@@ -7,14 +7,29 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/gitlab_flow.html'
 
 # Introduction to GitLab Flow **(FREE)**
 
-Git allows a wide variety of branching strategies and workflows.
-Because of this, many organizations end up with workflows that are too complicated, not clearly defined, or not integrated with issue tracking systems.
-Therefore, we propose GitLab flow as a clearly defined set of best practices.
-It combines [feature-driven development](https://en.wikipedia.org/wiki/Feature-driven_development) and [feature branches](https://martinfowler.com/bliki/FeatureBranch.html) with issue tracking.
+With Git, you can use a variety of branching strategies and workflows.
 
-Organizations coming to Git from other version control systems frequently find it hard to develop a productive workflow.
-This article describes GitLab flow, which integrates the Git workflow with an issue tracking system.
-It offers a transparent and effective way to work with Git:
+Because the default workflow is not specifically defined, many organizations
+end up with workflows that are too complicated, not clearly defined, or
+not integrated with their issue tracking systems.
+
+Your organization can use GitLab with any workflow you choose.
+
+However, if you are looking for guidance on best practices, you can use
+the GitLab Flow. This workflow combines [feature-driven development](https://en.wikipedia.org/wiki/Feature-driven_development)
+and [feature branches](https://martinfowler.com/bliki/FeatureBranch.html) with issue tracking.
+
+While this workflow used at GitLab, you can choose whichever workflow
+suits your organization best.
+
+## Git workflow
+
+Most version control systems have only one step: committing from the working copy to a shared server.
+
+When you convert to Git, you have to get used to the fact that it takes three steps to share a commit with colleagues.
+
+In Git, you add files from the working copy to the staging area. After that, you commit them to your local repository.
+The third step is pushing to a shared remote repository.
 
 ```mermaid
 graph LR
@@ -25,27 +40,18 @@ graph LR
     end
 ```
 
-When converting to Git, you have to get used to the fact that it takes three steps to share a commit with colleagues.
-Most version control systems have only one step: committing from the working copy to a shared server.
-In Git, you add files from the working copy to the staging area. After that, you commit them to your local repository.
-The third step is pushing to a shared remote repository.
 After getting used to these three steps, the next challenge is the branching model.
 
 Because many organizations new to Git have no conventions for how to work with it, their repositories can quickly become messy.
 The biggest problem is that many long-running branches emerge that all contain part of the changes.
 People have a hard time figuring out which branch has the latest code, or which branch to deploy to production.
 Frequently, the reaction to this problem is to adopt a standardized pattern such as [Git flow](https://nvie.com/posts/a-successful-git-branching-model/) and [GitHub flow](https://scottchacon.com/2011/08/31/github-flow.html).
-We think there is still room for improvement. In this document, we describe a set of practices we call GitLab flow.
 
-For a video introduction of how this works in GitLab, see [GitLab Flow](https://youtu.be/InKNIvky2KE).
+We think there is still room for improvement, and so we've proposed a set of practices called the GitLab Flow.
 
-## Git flow and its problems
+For a video introduction of this workflow in GitLab, see [GitLab Flow](https://youtu.be/InKNIvky2KE).
 
-<!-- vale gitlab.Spelling = NO -->
-
-![Git Flow timeline by Vincent Driessen, used with permission](img/gitlab_flow_gitdashflow.png)
-
-<!-- vale gitlab.Spelling = YES -->
+## Problems with the Git flow
 
 Git flow was one of the first proposals to use Git branches, and it has received
 a lot of attention. It suggests a `main` branch and a separate `develop` branch,
@@ -67,6 +73,12 @@ Though specialized tools do exist to solve this, they require documentation and 
 Frequently, developers make mistakes such as merging changes only into `main` and not into the `develop` branch.
 The reason for these errors is that Git flow is too complicated for most use cases.
 For example, many projects do releases but don't need to do hotfixes.
+
+<!-- vale gitlab.Spelling = NO -->
+
+![Git Flow timeline by Vincent Driessen, used with permission](img/gitlab_flow_gitdashflow.png)
+
+<!-- vale gitlab.Spelling = YES -->
 
 ## GitHub flow as a simpler alternative
 
@@ -100,22 +112,22 @@ While this is possible in some cases, such as SaaS applications, there are some 
 - You have deployment windows - for example, workdays from 10 AM to 4 PM when the
   operations team is at full capacity - but you also merge code at other times.
 
-In these cases, you can make a production branch that reflects the deployed code.
-You can deploy a new version by merging `development` into the production branch:
+In these cases, you can create a production branch that reflects the deployed code.
+You can deploy a new version by merging `main` into the `production` branch. 
+While not shown in the graph below, the work on the `main` branch works just like in GitHub flow, i.e. with feature-branches being merged into `main`.
 
 ```mermaid
 graph TD
     subgraph Production branch in GitLab Flow
-    A[development] ==>B[development]
-    B ==> C[development]
-    C ==> D[development]
+    A[main branch] ==>B[development]
+    B ==> C[main branch]
+    C ==> D[main branch]
 
     E[production] ====> F[production]
     C --> |deployment| F
-    D ==> G[development]
-    F ==> H[production]
+    D ==> G[main branch]
+    F ==> H[main branch]
     end
-```
 
 If you need to know what code is in production, you can check out the production branch to see.
 The approximate time of deployment is visible as the merge commit in the version control system.

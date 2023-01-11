@@ -684,8 +684,6 @@ timelogs:
 - note
 push_event_payload:
 - event
-issuable_severity:
-- issue
 issue_assignees:
 - issue
 - assignee
@@ -710,6 +708,7 @@ metrics:
 resource_label_events:
 - user
 - issue
+- work_item
 - merge_request
 - epic
 - label
@@ -862,11 +861,13 @@ approvals:
 resource_milestone_events:
   - user
   - issue
+  - work_item
   - merge_request
   - milestone
 resource_state_events:
   - user
   - issue
+  - work_item
   - merge_request
   - source_merge_request
   - epic
@@ -879,6 +880,7 @@ iteration:
 resource_iteration_events:
   - user
   - issue
+  - work_item
   - merge_request
   - iteration
 iterations_cadence:

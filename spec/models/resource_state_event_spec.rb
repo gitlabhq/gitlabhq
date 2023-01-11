@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceStateEvent, type: :model do
+RSpec.describe ResourceStateEvent, feature_category: :team_planing, type: :model do
   subject { build(:resource_state_event, issue: issue) }
 
   let(:issue) { create(:issue) }
@@ -11,6 +11,7 @@ RSpec.describe ResourceStateEvent, type: :model do
   it_behaves_like 'a resource event'
   it_behaves_like 'a resource event for issues'
   it_behaves_like 'a resource event for merge requests'
+  it_behaves_like 'a note for work item resource event'
 
   describe 'validations' do
     describe 'Issuable validation' do

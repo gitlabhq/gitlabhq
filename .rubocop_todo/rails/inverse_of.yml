@@ -33,6 +33,7 @@ Rails/InverseOf:
     - 'app/models/concerns/awardable.rb'
     - 'app/models/concerns/commit_signature.rb'
     - 'app/models/concerns/with_uploads.rb'
+    - 'app/models/concerns/work_item_resource_event.rb'
     - 'app/models/custom_emoji.rb'
     - 'app/models/customer_relations/contact.rb'
     - 'app/models/customer_relations/organization.rb'
