@@ -25,7 +25,9 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   let_it_be(:instance_name) { 'TestStore' }
   let_it_be(:multi_store) { described_class.new(primary_store, secondary_store, instance_name) }
 
-  subject { multi_store.send(name, *args) }
+  subject do
+    multi_store.send(name, *args)
+  end
 
   before do
     skip_feature_flags_yaml_validation
@@ -110,6 +112,10 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
   # rubocop:disable RSpec/MultipleMemoizedHelpers
   context 'with READ redis commands' do
+    subject do
+      multi_store.send(name, *args, **kwargs)
+    end
+
     let_it_be(:key1) { "redis:{1}:key_a" }
     let_it_be(:key2) { "redis:{1}:key_b" }
     let_it_be(:value1) { "redis_value1" }
@@ -118,7 +124,11 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     let_it_be(:skey2) { "redis:set:key2" }
     let_it_be(:smemberargs) { [skey, value1] }
     let_it_be(:hkey) { "redis:hash:key" }
+    let_it_be(:hkey2) { "redis:hash:key2" }
+    let_it_be(:zkey) { "redis:sortedset:key" }
+    let_it_be(:zkey2) { "redis:sortedset:key2" }
     let_it_be(:hitem1) { "item1" }
+    let_it_be(:hitem2) { "item2" }
     let_it_be(:keys) { [key1, key2] }
     let_it_be(:values) { [value1, value2] }
     let_it_be(:svalues) { [value2, value1] }
@@ -128,24 +138,39 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     let_it_be(:hvalmapped) { { "item1" => value1 } }
     let_it_be(:sscanargs) { [skey2, 0] }
     let_it_be(:sscanval) { ["0", [value1]] }
+    let_it_be(:sscan_eachval) { [value1] }
+    let_it_be(:sscan_each_arg) { { match: '*1*' } }
+    let_it_be(:hscan_eachval) { [[hitem1, value1]] }
+    let_it_be(:zscan_eachval) { [[value1, 1.0]] }
+    let_it_be(:scan_each_arg) { { match: 'redis*' } }
+    let_it_be(:scan_each_val) { [key1, key2, skey, skey2, hkey, hkey2, zkey, zkey2] }
 
     # rubocop:disable  Layout/LineLength
-    where(:case_name, :name, :args, :value, :block) do
-      'execute :get command'          | :get          | ref(:key1)        | ref(:value1)     | nil
-      'execute :mget command'         | :mget         | ref(:keys)        | ref(:values)     | nil
-      'execute :mget with block'      | :mget         | ref(:keys)        | ref(:values)     | ->(value) { value }
-      'execute :smembers command'     | :smembers     | ref(:skey)        | ref(:svalues)    | nil
-      'execute :scard command'        | :scard        | ref(:skey)        | 2                | nil
-      'execute :sismember command'    | :sismember    | ref(:smemberargs) | true             | nil
-      'execute :exists command'       | :exists       | ref(:key1)        | 1                | nil
-      'execute :exists? command'      | :exists?      | ref(:key1)        | true             | nil
-      'execute :hget command'         | :hget         | ref(:hgetargs)    | ref(:value1)     | nil
-      'execute :hlen command'         | :hlen         | ref(:hkey)        | 1                | nil
-      'execute :hgetall command'      | :hgetall      | ref(:hkey)        | ref(:hvalmapped) | nil
-      'execute :hexists command'      | :hexists      | ref(:hgetargs)    | true             | nil
-      'execute :hmget command'        | :hmget        | ref(:hgetargs)    | ref(:hmgetval)   | nil
-      'execute :mapped_hmget command' | :mapped_hmget | ref(:mhmgetargs)  | ref(:hvalmapped) | nil
-      'execute :sscan command'        | :sscan        | ref(:sscanargs)   | ref(:sscanval)   | nil
+    where(:case_name, :name, :args, :value, :kwargs, :block) do
+      'execute :get command'          | :get          | ref(:key1)        | ref(:value1)     | {} | nil
+      'execute :mget command'         | :mget         | ref(:keys)        | ref(:values)     | {} | nil
+      'execute :mget with block'      | :mget         | ref(:keys)        | ref(:values)     | {} | ->(value) { value }
+      'execute :smembers command'     | :smembers     | ref(:skey)        | ref(:svalues)    | {} | nil
+      'execute :scard command'        | :scard        | ref(:skey)        | 2                | {} | nil
+      'execute :sismember command'    | :sismember    | ref(:smemberargs) | true             | {} | nil
+      'execute :exists command'       | :exists       | ref(:key1)        | 1                | {} | nil
+      'execute :exists? command'      | :exists?      | ref(:key1)        | true             | {} | nil
+      'execute :hget command'         | :hget         | ref(:hgetargs)    | ref(:value1)     | {} | nil
+      'execute :hlen command'         | :hlen         | ref(:hkey)        | 1                | {} | nil
+      'execute :hgetall command'      | :hgetall      | ref(:hkey)        | ref(:hvalmapped) | {} | nil
+      'execute :hexists command'      | :hexists      | ref(:hgetargs)    | true             | {} | nil
+      'execute :hmget command'        | :hmget        | ref(:hgetargs)    | ref(:hmgetval)   | {} | nil
+      'execute :mapped_hmget command' | :mapped_hmget | ref(:mhmgetargs)  | ref(:hvalmapped) | {} | nil
+      'execute :sscan command'        | :sscan        | ref(:sscanargs)   | ref(:sscanval)   | {} | nil
+
+      # we run *scan_each here as they are reads too
+      'execute :scan_each command'    | :scan_each    | nil         | ref(:scan_each_val) | ref(:scan_each_arg)  | nil
+      'execute :sscan_each command'   | :sscan_each   | ref(:skey2) | ref(:sscan_eachval) | {}                   | nil
+      'execute :sscan_each w block'   | :sscan_each   | ref(:skey)  | ref(:sscan_eachval) | ref(:sscan_each_arg) | nil
+      'execute :hscan_each command'   | :hscan_each   | ref(:hkey)  | ref(:hscan_eachval) | {}                   | nil
+      'execute :hscan_each w block'   | :hscan_each   | ref(:hkey2) | ref(:hscan_eachval) | ref(:sscan_each_arg) | nil
+      'execute :zscan_each command'   | :zscan_each   | ref(:zkey)  | ref(:zscan_eachval) | {}                   | nil
+      'execute :zscan_each w block'   | :zscan_each   | ref(:zkey2) | ref(:zscan_eachval) | ref(:sscan_each_arg) | nil
     end
     # rubocop:enable  Layout/LineLength
 
@@ -155,12 +180,18 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       primary_store.sadd?(skey, [value1, value2])
       primary_store.sadd?(skey2, [value1])
       primary_store.hset(hkey, hitem1, value1)
+      primary_store.hset(hkey2, hitem1, value1, hitem2, value2)
+      primary_store.zadd(zkey, 1, value1)
+      primary_store.zadd(zkey2, [[1, value1], [2, value2]])
 
       secondary_store.set(key1, value1)
       secondary_store.set(key2, value2)
       secondary_store.sadd?(skey, [value1, value2])
       secondary_store.sadd?(skey2, [value1])
       secondary_store.hset(hkey, hitem1, value1)
+      secondary_store.hset(hkey2, hitem1, value1, hitem2, value2)
+      secondary_store.zadd(zkey, 1, value1)
+      secondary_store.zadd(zkey2, [[1, value1], [2, value2]])
     end
 
     after do
@@ -187,7 +218,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       it 'fallback and execute on secondary instance' do
-        expect(secondary_store).to receive(name).with(*args).and_call_original
+        expect(secondary_store).to receive(name).with(*expected_args).and_call_original
 
         subject
       end
@@ -211,7 +242,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
       context 'when fallback read from the secondary instance raises an exception' do
         before do
-          allow(secondary_store).to receive(name).with(*args).and_raise(StandardError)
+          allow(secondary_store).to receive(name).with(*expected_args).and_raise(StandardError)
         end
 
         it 'fails with exception' do
@@ -222,7 +253,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
     RSpec.shared_examples_for 'secondary store' do
       it 'execute on the secondary instance' do
-        expect(secondary_store).to receive(name).with(*args).and_call_original
+        expect(secondary_store).to receive(name).with(*expected_args).and_call_original
 
         subject
       end
@@ -238,6 +269,8 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
     with_them do
       describe name.to_s do
+        let(:expected_args) { kwargs&.present? ? [*args, { **kwargs }] : Array(args) }
+
         before do
           allow(primary_store).to receive(name).and_call_original
           allow(secondary_store).to receive(name).and_call_original
@@ -245,7 +278,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
         context 'when reading from the primary is successful' do
           it 'returns the correct value' do
-            expect(primary_store).to receive(name).with(*args).and_call_original
+            expect(primary_store).to receive(name).with(*expected_args).and_call_original
 
             subject
           end
@@ -261,7 +294,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
         context 'when reading from primary instance is raising an exception' do
           before do
-            allow(primary_store).to receive(name).with(*args).and_raise(StandardError)
+            allow(primary_store).to receive(name).with(*expected_args).and_raise(StandardError)
             allow(Gitlab::ErrorTracking).to receive(:log_exception)
           end
 
@@ -287,7 +320,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
         context 'when the command is executed within pipelined block' do
           subject do
             multi_store.pipelined do |pipeline|
-              pipeline.send(name, *args)
+              pipeline.send(name, *args, **kwargs)
             end
           end
 
@@ -297,7 +330,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
             2.times do
               expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
-                expect(pipeline).to receive(name).with(*args).once.and_call_original
+                expect(pipeline).to receive(name).with(*expected_args).once.and_call_original
               end
             end
 
@@ -307,7 +340,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
         if params[:block]
           subject do
-            multi_store.send(name, *args, &block)
+            multi_store.send(name, *expected_args, &block)
           end
 
           context 'when block is provided' do
@@ -340,8 +373,8 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
             end
 
             it 'executes only on secondary redis store', :aggregate_errors do
-              expect(secondary_store).to receive(name).with(*args).and_call_original
-              expect(primary_store).not_to receive(name).with(*args).and_call_original
+              expect(secondary_store).to receive(name).with(*expected_args).and_call_original
+              expect(primary_store).not_to receive(name).with(*expected_args).and_call_original
 
               subject
             end
@@ -349,8 +382,8 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
           context 'when using primary store as default' do
             it 'executes only on primary redis store', :aggregate_errors do
-              expect(primary_store).to receive(name).with(*args).and_call_original
-              expect(secondary_store).not_to receive(name).with(*args).and_call_original
+              expect(primary_store).to receive(name).with(*expected_args).and_call_original
+              expect(secondary_store).not_to receive(name).with(*expected_args).and_call_original
 
               subject
             end
@@ -360,6 +393,86 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     end
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers
+
+  context 'with nested command in block' do
+    let(:skey) { "test_set" }
+    let(:values) { %w[{x}a {x}b {x}c] }
+
+    before do
+      primary_store.set('{x}a', 1)
+      primary_store.set('{x}b', 2)
+      primary_store.set('{x}c', 3)
+
+      secondary_store.set('{x}a', 10)
+      secondary_store.set('{x}b', 20)
+      secondary_store.set('{x}c', 30)
+    end
+
+    subject do
+      multi_store.mget(values) do |v|
+        multi_store.sadd(skey, v)
+        multi_store.scard(skey)
+        v # mget receiving block returns the last line of the block for cache-hit check
+      end
+    end
+
+    RSpec.shared_examples_for 'primary instance executes block' do
+      it 'ensures primary instance is executing the block' do
+        expect(primary_store).to receive(:send).with(:mget, values).and_call_original
+        expect(primary_store).to receive(:send).with(:sadd, skey, %w[1 2 3]).and_call_original
+        expect(primary_store).to receive(:send).with(:scard, skey).and_call_original
+
+        expect(secondary_store).not_to receive(:send).with(:mget, values).and_call_original
+        expect(secondary_store).not_to receive(:send).with(:sadd, skey, %w[1 2 3]).and_call_original
+        expect(secondary_store).not_to receive(:send).with(:scard, skey).and_call_original
+
+        subject
+      end
+    end
+
+    context 'when using both stores' do
+      context 'when primary instance is default store' do
+        it_behaves_like 'primary instance executes block'
+      end
+
+      context 'when secondary instance is default store' do
+        before do
+          stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+        end
+
+        # multistore read still favours the primary store
+        it_behaves_like 'primary instance executes block'
+      end
+    end
+
+    context 'when using 1 store only' do
+      before do
+        stub_feature_flags(use_primary_and_secondary_stores_for_test_store: false)
+      end
+
+      context 'when primary instance is default store' do
+        it_behaves_like 'primary instance executes block'
+      end
+
+      context 'when secondary instance is default store' do
+        before do
+          stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+        end
+
+        it 'ensures only secondary instance is executing the block' do
+          expect(secondary_store).to receive(:send).with(:mget, values).and_call_original
+          expect(secondary_store).to receive(:send).with(:sadd, skey, %w[10 20 30]).and_call_original
+          expect(secondary_store).to receive(:send).with(:scard, skey).and_call_original
+
+          expect(primary_store).not_to receive(:send).with(:mget, values).and_call_original
+          expect(primary_store).not_to receive(:send).with(:sadd, skey, %w[10 20 30]).and_call_original
+          expect(primary_store).not_to receive(:send).with(:scard, skey).and_call_original
+
+          subject
+        end
+      end
+    end
+  end
 
   RSpec.shared_examples_for 'verify that store contains values' do |store|
     it "#{store} redis store contains correct values", :aggregate_errors do
@@ -539,6 +652,120 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     end
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers
+
+  context 'with ENUMERATOR_COMMANDS redis commands' do
+    let_it_be(:hkey) { "redis:hash" }
+    let_it_be(:skey) { "redis:set" }
+    let_it_be(:zkey) { "redis:sortedset" }
+    let_it_be(:rvalue) { "value1" }
+    let_it_be(:scan_kwargs) { { match: 'redis:hash' } }
+
+    where(:case_name, :name, :args, :kwargs) do
+      'execute :scan_each command'    | :scan_each    | nil         | ref(:scan_kwargs)
+      'execute :sscan_each command'   | :sscan_each   | ref(:skey)  | {}
+      'execute :hscan_each command'   | :hscan_each   | ref(:hkey)  | {}
+      'execute :zscan_each command'   | :zscan_each   | ref(:zkey)  | {}
+    end
+
+    before(:all) do
+      primary_store.hset(hkey, rvalue, 1)
+      primary_store.sadd?(skey, rvalue)
+      primary_store.zadd(zkey, 1, rvalue)
+
+      secondary_store.hset(hkey, rvalue, 1)
+      secondary_store.sadd?(skey, rvalue)
+      secondary_store.zadd(zkey, 1, rvalue)
+    end
+
+    RSpec.shared_examples_for 'enumerator commands execution' do |both_stores, default_primary|
+      context 'without block passed in' do
+        subject do
+          multi_store.send(name, *args, **kwargs)
+        end
+
+        it 'returns an enumerator' do
+          expect(subject).to be_instance_of(Enumerator)
+        end
+      end
+
+      context 'with block passed in' do
+        subject do
+          multi_store.send(name, *args, **kwargs) { |key| multi_store.incr(rvalue) }
+        end
+
+        it 'returns nil' do
+          expect(subject).to eq(nil)
+        end
+
+        it 'runs block on correct Redis instance' do
+          if both_stores
+            expect(primary_store).to receive(name).with(*expected_args).and_call_original
+            expect(secondary_store).not_to receive(name)
+
+            expect(primary_store).to receive(:incr).with(rvalue)
+            expect(secondary_store).to receive(:incr).with(rvalue)
+          elsif default_primary
+            expect(primary_store).to receive(name).with(*expected_args).and_call_original
+            expect(primary_store).to receive(:incr).with(rvalue)
+
+            expect(secondary_store).not_to receive(name)
+            expect(secondary_store).not_to receive(:incr).with(rvalue)
+          else
+            expect(secondary_store).to receive(name).with(*expected_args).and_call_original
+            expect(secondary_store).to receive(:incr).with(rvalue)
+
+            expect(primary_store).not_to receive(name)
+            expect(primary_store).not_to receive(:incr).with(rvalue)
+          end
+
+          subject
+        end
+      end
+    end
+
+    with_them do
+      describe name.to_s do
+        let(:expected_args) { kwargs.present? ? [*args, { **kwargs }] : Array(args) }
+
+        before do
+          allow(primary_store).to receive(name).and_call_original
+          allow(secondary_store).to receive(name).and_call_original
+        end
+
+        context 'when only using 1 store' do
+          before do
+            stub_feature_flags(use_primary_and_secondary_stores_for_test_store: false)
+          end
+
+          context 'when using secondary store as default' do
+            before do
+              stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+            end
+
+            it_behaves_like 'enumerator commands execution', false, false
+          end
+
+          context 'when using primary store as default' do
+            it_behaves_like 'enumerator commands execution', false, true
+          end
+        end
+
+        context 'when using both stores' do
+          context 'when using secondary store as default' do
+            before do
+              stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+            end
+
+            it_behaves_like 'enumerator commands execution', true, false
+          end
+
+          context 'when using primary store as default' do
+            it_behaves_like 'enumerator commands execution', true, true
+          end
+        end
+      end
+    end
+  end
 
   RSpec.shared_examples_for 'pipelined command' do |name|
     let_it_be(:key1) { "redis:{1}:key_a" }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Integration.available_integration_names(include_feature_flagged: true).each do |integration|
+Integration.available_integration_names.each do |integration|
   RSpec.shared_context integration do
     include JiraIntegrationHelpers if integration == 'jira'
 

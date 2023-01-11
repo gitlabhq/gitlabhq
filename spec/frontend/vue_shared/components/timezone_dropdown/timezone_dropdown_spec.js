@@ -1,4 +1,5 @@
 import { GlDropdownItem, GlDropdown } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import { formatTimezone } from '~/lib/utils/datetime_utility';
@@ -106,6 +107,13 @@ describe('Deploy freeze timezone dropdown', () => {
 
     it('renders selected time zone as dropdown label', () => {
       expect(wrapper.findComponent(GlDropdown).props().text).toBe('[UTC+2] Berlin');
+    });
+
+    it('adds a checkmark to the selected option', async () => {
+      const selectedTZOption = findAllDropdownItems().at(0);
+      selectedTZOption.vm.$emit('click');
+      await nextTick();
+      expect(selectedTZOption.attributes('ischecked')).toBe('true');
     });
   });
 });

@@ -1292,9 +1292,6 @@ msgstr ""
 msgid "(No changes)"
 msgstr ""
 
-msgid "(UTC %{offset}) %{timezone}"
-msgstr ""
-
 msgid "(Unlimited pipeline minutes)"
 msgstr ""
 
@@ -18869,6 +18866,15 @@ msgstr ""
 msgid "Gitea Import"
 msgstr ""
 
+msgid "GithubImporter|Issue attachments"
+msgstr ""
+
+msgid "GithubImporter|Merge request attachments"
+msgstr ""
+
+msgid "GithubImporter|Note attachments"
+msgstr ""
+
 msgid "GithubImporter|PR mergers"
 msgstr ""
 
@@ -18876,6 +18882,9 @@ msgid "GithubImporter|PR reviews"
 msgstr ""
 
 msgid "GithubImporter|Pull requests"
+msgstr ""
+
+msgid "GithubImporter|Release attachments"
 msgstr ""
 
 msgid "GithubIntegration|Create a %{token_link_start}personal access token%{token_link_end} with %{status_html} access granted and paste it here."
@@ -21238,6 +21247,9 @@ msgid_plural "Importing %d repositories"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Importing GitLab projects? Migrating GitLab projects when migrating groups by direct transfer is in Beta. %{link_start}Learn more.%{link_end}"
+msgstr ""
+
 msgid "Importing..."
 msgstr ""
 
@@ -22857,6 +22869,9 @@ msgstr ""
 msgid "InviteMembersModal|GitLab is better with colleagues!"
 msgstr ""
 
+msgid "InviteMembersModal|GitLab will enforce this limit in the future. If you are over %{dashboardLimit} users when enforcement begins, your namespace will be placed in a %{freeUserLimitLinkStart}read-only state%{freeUserLimitLinkEnd}. To avoid being placed in a read-only state, reduce your namespace to %{dashboardLimit} users or less, or purchase a paid tier."
+msgstr ""
+
 msgid "InviteMembersModal|How about inviting a colleague or two to join you?"
 msgstr ""
 
@@ -22935,6 +22950,9 @@ msgid "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{
 msgstr ""
 
 msgid "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}"
+msgstr ""
+
+msgid "InviteMembersModal|Your namespace %{namespaceName} is over the %{dashboardLimit} user limit."
 msgstr ""
 
 msgid "InviteMembers|Invite a group"

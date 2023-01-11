@@ -38,33 +38,37 @@ module Gitlab
 
       SKIP_LOG_METHOD_MISSING_FOR_COMMANDS = %i[info].freeze
 
-      # Define valid empty responses for each read command to check for
-      # cache hit. The only other acceptable value is nil, in the case of errors being
-      # raised.
+      # For ENUMERATOR_CACHE_HIT_VALIDATOR and READ_CACHE_HIT_VALIDATOR,
+      # we define procs to validate cache hit. The only other acceptable value is nil,
+      # in the case of errors being raised.
       #
-      # If a command has no empty response, set an empty array as its value.
+      # If a command has no empty response, set ->(val) { true }
       #
       # Ref: https://www.rubydoc.info/github/redis/redis-rb/Redis/Commands
       #
-      READ_COMMANDS_EMPTY_RESPONSE_HASH = {
-        exists: [0],
-        exists?: [false],
-        get: [nil],
-        hexists: [false],
-        hget: [nil],
-        hgetall: [{}],
-        hlen: [0],
-        scard: [0],
-        sismember: [false],
-        smembers: [[]],
-        sscan: [['0', []]],
-        ttl: [0, -2],
+      ENUMERATOR_CACHE_HIT_VALIDATOR = {
+        scan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
+        hscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
+        sscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
+        zscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? }
+      }.freeze
 
-        # response container may contain nil values
-        # cache-hit checker will run .compact before comparison
-        hmget: [[]],
-        mapped_hmget: [{}],
-        mget: [[]]
+      READ_CACHE_HIT_VALIDATOR = {
+        exists: ->(val) { val != 0 },
+        exists?: ->(val) { val },
+        get: ->(val) { !val.nil? },
+        hexists: ->(val) { val },
+        hget: ->(val) { !val.nil? },
+        hgetall:  ->(val) { val.is_a?(Hash) && !val.empty? },
+        hlen: ->(val) { val != 0 },
+        hmget: ->(val) { val.is_a?(Array) && !val.compact.empty? },
+        mapped_hmget: ->(val) { val.is_a?(Hash) && !val.compact.empty? },
+        mget: ->(val) { val.is_a?(Array) && !val.compact.empty? },
+        scard: ->(val) { val != 0 },
+        sismember: ->(val) { val },
+        smembers: ->(val) { val.is_a?(Array) && !val.empty? },
+        sscan: ->(val) { val != ['0', []] },
+        ttl: ->(val) { val != 0 && val != -2 }
       }.freeze
 
       WRITE_COMMANDS = %i[
@@ -110,12 +114,12 @@ module Gitlab
       end
 
       # rubocop:disable GitlabSecurity/PublicSend
-      READ_COMMANDS_EMPTY_RESPONSE_HASH.each_key do |name|
-        define_method(name) do |*args, &block|
+      READ_CACHE_HIT_VALIDATOR.each_key do |name|
+        define_method(name) do |*args, **kwargs, &block|
           if use_primary_and_secondary_stores?
-            read_command(name, *args, &block)
+            read_command(name, *args, **kwargs, &block)
           else
-            default_store.send(name, *args, &block)
+            default_store.send(name, *args, **kwargs, &block)
           end
         end
       end
@@ -127,6 +131,20 @@ module Gitlab
           else
             default_store.send(name, *args, **kwargs, &block)
           end
+        end
+      end
+
+      ENUMERATOR_CACHE_HIT_VALIDATOR.each_key do |name|
+        define_method(name) do |*args, **kwargs, &block|
+          enumerator = if use_primary_and_secondary_stores?
+                         read_command(name, *args, **kwargs)
+                       else
+                         default_store.send(name, *args, **kwargs)
+                       end
+
+          return enumerator if block.nil?
+
+          enumerator.each(&block)
         end
       end
 
@@ -228,11 +246,11 @@ module Gitlab
         increment_method_missing_count(command_name)
       end
 
-      def read_command(command_name, *args, &block)
+      def read_command(command_name, *args, **kwargs, &block)
         if @instance
-          send_command(@instance, command_name, *args, &block)
+          send_command(@instance, command_name, *args, **kwargs, &block)
         else
-          read_one_with_fallback(command_name, *args, &block)
+          read_one_with_fallback(command_name, *args, **kwargs, &block)
         end
       end
 
@@ -244,9 +262,9 @@ module Gitlab
         end
       end
 
-      def read_one_with_fallback(command_name, *args, &block)
+      def read_one_with_fallback(command_name, *args, **kwargs, &block)
         begin
-          value = send_command(primary_store, command_name, *args, &block)
+          value = send_command(primary_store, command_name, *args, **kwargs, &block)
         rescue StandardError => e
           log_error(e, command_name,
             multi_store_error_message: FAILED_TO_READ_ERROR_MESSAGE)
@@ -254,17 +272,18 @@ module Gitlab
 
         return value if cache_hit?(command_name, value)
 
-        fallback_read(command_name, *args, &block)
+        fallback_read(command_name, *args, **kwargs, &block)
       end
 
       def cache_hit?(command, value)
-        empty_responses = READ_COMMANDS_EMPTY_RESPONSE_HASH[command]
-        compacted = value.is_a?(Array) || value.is_a?(Hash) ? value.compact : value
-        empty_responses.exclude?(compacted) && !value.nil?
+        validator = READ_CACHE_HIT_VALIDATOR[command] || ENUMERATOR_CACHE_HIT_VALIDATOR[command]
+        return false unless validator
+
+        !value.nil? && validator.call(value)
       end
 
-      def fallback_read(command_name, *args, &block)
-        value = send_command(secondary_store, command_name, *args, &block)
+      def fallback_read(command_name, *args, **kwargs, &block)
+        value = send_command(secondary_store, command_name, *args, **kwargs, &block)
 
         if value
           log_error(ReadFromPrimaryError.new, command_name)

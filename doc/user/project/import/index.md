@@ -17,15 +17,16 @@ If you want to bring existing projects to GitLab or copy GitLab projects to a di
 
 For any type of source and target, you can migrate projects:
 
-- As part of a [GitLab group migration](../../group/import/index.md). You can't migrate only chosen projects,
-  but you can migrate many projects at once within a group.
+- When [migrating groups by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended), which allows you to migrate all
+  projects in a group at once. Migrating projects by direct transfer is in [Beta](../../../policy/alpha-beta-support.md#beta-features). The feature is not ready
+  for production use.
 - Using [file exports](../settings/import_export.md). With this method you can migrate projects one by one. No network
   connection between instances is required.
 
 If you only need to migrate Git repositories, you can [import each project by URL](repo_by_url.md). However, you can't
 import issues and merge requests this way. To retain metadata like issues and merge requests, either:
 
-- [Migrate projects with groups](../../group/import/index.md).
+- [Migrate projects with groups by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended). This feature is in [Beta](../../../policy/alpha-beta-support.md#beta-features). It is not ready for production use.
 - Use [file exports](../settings/import_export.md) to import projects.
 
 Keep in mind the limitations of [migrating using file exports](../settings/import_export.md#items-that-are-exported).

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Registrations::WelcomeController do
+RSpec.describe Registrations::WelcomeController, feature_category: :authentication_and_authorization do
   let(:user) { create(:user) }
 
   describe '#welcome' do
@@ -47,7 +47,7 @@ RSpec.describe Registrations::WelcomeController do
       it { is_expected.to render_template(:show) }
     end
 
-    context '2FA is required from group' do
+    context 'when 2FA is required from group' do
       before do
         user = create(:user, require_two_factor_authentication_from_group: true)
         sign_in(user)
@@ -99,7 +99,7 @@ RSpec.describe Registrations::WelcomeController do
         end
 
         context 'when tasks to be done are assigned' do
-          let!(:member1) { create(:group_member, user: user, tasks_to_be_done: %w(ci code)) }
+          let!(:member1) { create(:group_member, user: user, tasks_to_be_done: %w[ci code]) }
 
           it { is_expected.to redirect_to(issues_dashboard_path(assignee_username: user.username)) }
         end

@@ -365,7 +365,7 @@ describe('InviteMembersModal', () => {
 
   describe('rendering the user limit notification', () => {
     it('shows the user limit notification alert when reached limit', () => {
-      const usersLimitDataset = { reachedLimit: true };
+      const usersLimitDataset = { alertVariant: 'reached' };
 
       createInviteMembersToProjectWrapper(usersLimitDataset);
 
@@ -373,7 +373,15 @@ describe('InviteMembersModal', () => {
     });
 
     it('shows the user limit notification alert when close to dashboard limit', () => {
-      const usersLimitDataset = { closeToDashboardLimit: true };
+      const usersLimitDataset = { alertVariant: 'close' };
+
+      createInviteMembersToProjectWrapper(usersLimitDataset);
+
+      expect(findUserLimitAlert().exists()).toBe(true);
+    });
+
+    it('shows the user limit notification alert when :preview_free_user_cap is enabled', () => {
+      const usersLimitDataset = { alertVariant: 'notification' };
 
       createInviteMembersToProjectWrapper(usersLimitDataset);
 

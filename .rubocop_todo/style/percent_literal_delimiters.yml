@@ -627,7 +627,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/controllers/projects/pipelines_controller_spec.rb'
     - 'spec/controllers/projects/settings/ci_cd_controller_spec.rb'
     - 'spec/controllers/projects_controller_spec.rb'
-    - 'spec/controllers/registrations/welcome_controller_spec.rb'
     - 'spec/controllers/search_controller_spec.rb'
     - 'spec/controllers/snippets_controller_spec.rb'
     - 'spec/db/docs_spec.rb'

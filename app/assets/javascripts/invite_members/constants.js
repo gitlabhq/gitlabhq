@@ -139,6 +139,9 @@ export const GROUP_MODAL_LABELS = {
 export const LEARN_GITLAB = 'learn_gitlab';
 export const ON_SHOW_TRACK_LABEL = 'over_limit_modal_viewed';
 
+export const INFO_ALERT_TITLE = s__(
+  'InviteMembersModal|Your namespace %{namespaceName} is over the %{dashboardLimit} user limit.',
+);
 export const WARNING_ALERT_TITLE = s__(
   'InviteMembersModal|You only have space for %{count} more %{members} in %{name}',
 );
@@ -148,6 +151,7 @@ export const DANGER_ALERT_TITLE = s__(
 
 export const REACHED_LIMIT_VARIANT = 'reached';
 export const CLOSE_TO_LIMIT_VARIANT = 'close';
+export const NOTIFICATION_LIMIT_VARIANT = 'notification';
 
 export const REACHED_LIMIT_MESSAGE = s__(
   'InviteMembersModal|To invite new users to this namespace, you must remove existing users. You can still add existing namespace users.',
@@ -161,4 +165,8 @@ export const REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE = REACHED_LIMIT_MESSAGE.co
 
 export const CLOSE_TO_LIMIT_MESSAGE = s__(
   'InviteMembersModal|To get more members an owner of the group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier.',
+);
+
+export const NOTIFICATION_LIMIT_MESSAGE = s__(
+  'InviteMembersModal|GitLab will enforce this limit in the future. If you are over %{dashboardLimit} users when enforcement begins, your namespace will be placed in a %{freeUserLimitLinkStart}read-only state%{freeUserLimitLinkEnd}. To avoid being placed in a read-only state, reduce your namespace to %{dashboardLimit} users or less, or purchase a paid tier.',
 );

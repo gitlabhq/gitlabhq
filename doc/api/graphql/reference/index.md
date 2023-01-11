@@ -5727,7 +5727,7 @@ Input type: `UpdateRequirementInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdaterequirementclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdaterequirementdescription"></a>`description` | [`String`](#string) | Description of the requirement. |
-| <a id="mutationupdaterequirementiid"></a>`iid` | [`String`](#string) | IID of the requirement to update. |
+| <a id="mutationupdaterequirementiid"></a>`iid` **{warning-solid}** | [`String`](#string) | **Deprecated:** Use work_item_iid instead. Deprecated in 15.8. |
 | <a id="mutationupdaterequirementlasttestreportstate"></a>`lastTestReportState` | [`TestReportState`](#testreportstate) | Creates a test report for the requirement with the given state. |
 | <a id="mutationupdaterequirementprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path the requirement is associated with. |
 | <a id="mutationupdaterequirementstate"></a>`state` | [`RequirementState`](#requirementstate) | State of the requirement. |
@@ -18193,8 +18193,8 @@ Returns [`Requirement`](#requirement).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectrequirementauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Filter requirements by author username. |
-| <a id="projectrequirementiid"></a>`iid` | [`ID`](#id) | IID of the requirement, for example, "1". |
-| <a id="projectrequirementiids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of requirements, for example, `[1, 2]`. |
+| <a id="projectrequirementiid"></a>`iid` **{warning-solid}** | [`ID`](#id) | **Deprecated** in 15.8. Use work_item_iid instead. |
+| <a id="projectrequirementiids"></a>`iids` **{warning-solid}** | [`[ID!]`](#id) | **Deprecated** in 15.8. Use work_item_iids instead. |
 | <a id="projectrequirementlasttestreportstate"></a>`lastTestReportState` | [`RequirementStatusFilter`](#requirementstatusfilter) | State of latest requirement test report. |
 | <a id="projectrequirementsearch"></a>`search` | [`String`](#string) | Search query for requirement title. |
 | <a id="projectrequirementsort"></a>`sort` | [`Sort`](#sort) | List requirements by sort order. |
@@ -18217,8 +18217,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectrequirementsauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Filter requirements by author username. |
-| <a id="projectrequirementsiid"></a>`iid` | [`ID`](#id) | IID of the requirement, for example, "1". |
-| <a id="projectrequirementsiids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of requirements, for example, `[1, 2]`. |
+| <a id="projectrequirementsiid"></a>`iid` **{warning-solid}** | [`ID`](#id) | **Deprecated** in 15.8. Use work_item_iid instead. |
+| <a id="projectrequirementsiids"></a>`iids` **{warning-solid}** | [`[ID!]`](#id) | **Deprecated** in 15.8. Use work_item_iids instead. |
 | <a id="projectrequirementslasttestreportstate"></a>`lastTestReportState` | [`RequirementStatusFilter`](#requirementstatusfilter) | State of latest requirement test report. |
 | <a id="projectrequirementssearch"></a>`search` | [`String`](#string) | Search query for requirement title. |
 | <a id="projectrequirementssort"></a>`sort` | [`Sort`](#sort) | List requirements by sort order. |
@@ -18992,7 +18992,7 @@ Represents a requirement.
 | <a id="requirementdescription"></a>`description` | [`String`](#string) | Description of the requirement. |
 | <a id="requirementdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="requirementid"></a>`id` | [`ID!`](#id) | ID of the requirement. |
-| <a id="requirementiid"></a>`iid` | [`ID!`](#id) | Internal ID of the requirement. |
+| <a id="requirementiid"></a>`iid` **{warning-solid}** | [`ID!`](#id) | **Deprecated** in 15.8. Use work_item_iid instead. |
 | <a id="requirementlasttestreportmanuallycreated"></a>`lastTestReportManuallyCreated` | [`Boolean`](#boolean) | Indicates if latest test report was created by user. |
 | <a id="requirementlasttestreportstate"></a>`lastTestReportState` | [`TestReportState`](#testreportstate) | Latest requirement test report state. |
 | <a id="requirementproject"></a>`project` | [`Project!`](#project) | Project to which the requirement belongs. |

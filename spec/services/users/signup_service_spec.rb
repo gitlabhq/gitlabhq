@@ -10,7 +10,7 @@ RSpec.describe Users::SignupService do
       it 'updates the name attribute' do
         result = update_user(user, name: 'New Name')
 
-        expect(result).to eq(status: :success)
+        expect(result.success?).to be(true)
         expect(user.reload.name).to eq('New Name')
       end
 
@@ -18,8 +18,8 @@ RSpec.describe Users::SignupService do
         result = update_user(user, name: '')
 
         expect(user.reload.name).not_to be_blank
-        expect(result[:status]).to eq(:error)
-        expect(result[:message]).to include("Name can't be blank")
+        expect(result.success?).to be(false)
+        expect(result.message).to include("Name can't be blank")
       end
     end
 
@@ -27,7 +27,7 @@ RSpec.describe Users::SignupService do
       it 'updates the role attribute' do
         result = update_user(user, role: 'development_team_lead')
 
-        expect(result).to eq(status: :success)
+        expect(result.success?).to be(true)
         expect(user.reload.role).to eq('development_team_lead')
       end
 
@@ -35,8 +35,8 @@ RSpec.describe Users::SignupService do
         result = update_user(user, role: '')
 
         expect(user.reload.role).not_to be_blank
-        expect(result[:status]).to eq(:error)
-        expect(result[:message]).to eq("Role can't be blank")
+        expect(result.success?).to be(false)
+        expect(result.message).to eq("Role can't be blank")
       end
     end
 
@@ -44,7 +44,7 @@ RSpec.describe Users::SignupService do
       it 'updates the setup_for_company attribute' do
         result = update_user(user, setup_for_company: 'false')
 
-        expect(result).to eq(status: :success)
+        expect(result.success?).to be(true)
         expect(user.reload.setup_for_company).to be(false)
       end
 
@@ -57,8 +57,8 @@ RSpec.describe Users::SignupService do
           result = update_user(user, setup_for_company: '')
 
           expect(user.reload.setup_for_company).not_to be_blank
-          expect(result[:status]).to eq(:error)
-          expect(result[:message]).to eq("Setup for company can't be blank")
+          expect(result.success?).to be(false)
+          expect(result.message).to eq("Setup for company can't be blank")
         end
       end
 
@@ -66,7 +66,7 @@ RSpec.describe Users::SignupService do
         it 'returns success when setup_for_company is blank' do
           result = update_user(user, setup_for_company: '')
 
-          expect(result).to eq(status: :success)
+          expect(result.success?).to be(true)
           expect(user.reload.setup_for_company).to be(nil)
         end
       end

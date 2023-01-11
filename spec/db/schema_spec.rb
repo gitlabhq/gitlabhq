@@ -170,8 +170,7 @@ RSpec.describe 'Database schema' do
             let(:ignored_columns) { ignored_fk_columns(table) }
 
             it 'do have the foreign keys' do
-              foreign_keys_columns_with_id = foreign_keys_columns.select { |column_name| column_name.ends_with?('_id') }
-              expect(column_names_with_id - ignored_columns).to include(*foreign_keys_columns_with_id)
+              expect(column_names_with_id - ignored_columns).to match_array(foreign_keys_columns)
             end
 
             it 'and having foreign key are not in the ignore list' do

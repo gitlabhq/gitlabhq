@@ -1940,240 +1940,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_63 (
 );
 ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_63 FOR VALUES WITH (modulus 64, remainder 63);
 
-CREATE TABLE pm_package_version_licenses (
-    pm_package_version_id bigint NOT NULL,
-    pm_license_id bigint NOT NULL,
-    purl_type smallint NOT NULL
-)
-PARTITION BY LIST (purl_type);
-
-CREATE TABLE gitlab_partitions_static.pm_package_version_licenses_1 (
-    pm_package_version_id bigint NOT NULL,
-    pm_license_id bigint NOT NULL,
-    purl_type smallint NOT NULL
-);
-ALTER TABLE ONLY pm_package_version_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_1 FOR VALUES IN ('1');
-
-CREATE TABLE gitlab_partitions_static.pm_package_version_licenses_2 (
-    pm_package_version_id bigint NOT NULL,
-    pm_license_id bigint NOT NULL,
-    purl_type smallint NOT NULL
-);
-ALTER TABLE ONLY pm_package_version_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_2 FOR VALUES IN ('2');
-
-CREATE TABLE gitlab_partitions_static.pm_package_version_licenses_3 (
-    pm_package_version_id bigint NOT NULL,
-    pm_license_id bigint NOT NULL,
-    purl_type smallint NOT NULL
-);
-ALTER TABLE ONLY pm_package_version_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_3 FOR VALUES IN ('3');
-
-CREATE TABLE gitlab_partitions_static.pm_package_version_licenses_4 (
-    pm_package_version_id bigint NOT NULL,
-    pm_license_id bigint NOT NULL,
-    purl_type smallint NOT NULL
-);
-ALTER TABLE ONLY pm_package_version_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_4 FOR VALUES IN ('4');
-
-CREATE TABLE gitlab_partitions_static.pm_package_version_licenses_5 (
-    pm_package_version_id bigint NOT NULL,
-    pm_license_id bigint NOT NULL,
-    purl_type smallint NOT NULL
-);
-ALTER TABLE ONLY pm_package_version_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_5 FOR VALUES IN ('5');
-
-CREATE TABLE gitlab_partitions_static.pm_package_version_licenses_6 (
-    pm_package_version_id bigint NOT NULL,
-    pm_license_id bigint NOT NULL,
-    purl_type smallint NOT NULL
-);
-ALTER TABLE ONLY pm_package_version_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_6 FOR VALUES IN ('6');
-
-CREATE TABLE gitlab_partitions_static.pm_package_version_licenses_7 (
-    pm_package_version_id bigint NOT NULL,
-    pm_license_id bigint NOT NULL,
-    purl_type smallint NOT NULL
-);
-ALTER TABLE ONLY pm_package_version_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_7 FOR VALUES IN ('7');
-
-CREATE TABLE gitlab_partitions_static.pm_package_version_licenses_8 (
-    pm_package_version_id bigint NOT NULL,
-    pm_license_id bigint NOT NULL,
-    purl_type smallint NOT NULL
-);
-ALTER TABLE ONLY pm_package_version_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_8 FOR VALUES IN ('8');
-
-CREATE TABLE pm_package_versions (
-    id bigint NOT NULL,
-    pm_package_id bigint NOT NULL,
-    purl_type smallint NOT NULL,
-    version text NOT NULL,
-    CONSTRAINT check_7ed2cc733f CHECK ((char_length(version) <= 255))
-)
-PARTITION BY LIST (purl_type);
-
-CREATE SEQUENCE pm_package_versions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE pm_package_versions_id_seq OWNED BY pm_package_versions.id;
-
-CREATE TABLE gitlab_partitions_static.pm_package_versions_1 (
-    id bigint DEFAULT nextval('pm_package_versions_id_seq'::regclass) NOT NULL,
-    pm_package_id bigint NOT NULL,
-    purl_type smallint NOT NULL,
-    version text NOT NULL,
-    CONSTRAINT check_7ed2cc733f CHECK ((char_length(version) <= 255))
-);
-ALTER TABLE ONLY pm_package_versions ATTACH PARTITION gitlab_partitions_static.pm_package_versions_1 FOR VALUES IN ('1');
-
-CREATE TABLE gitlab_partitions_static.pm_package_versions_2 (
-    id bigint DEFAULT nextval('pm_package_versions_id_seq'::regclass) NOT NULL,
-    pm_package_id bigint NOT NULL,
-    purl_type smallint NOT NULL,
-    version text NOT NULL,
-    CONSTRAINT check_7ed2cc733f CHECK ((char_length(version) <= 255))
-);
-ALTER TABLE ONLY pm_package_versions ATTACH PARTITION gitlab_partitions_static.pm_package_versions_2 FOR VALUES IN ('2');
-
-CREATE TABLE gitlab_partitions_static.pm_package_versions_3 (
-    id bigint DEFAULT nextval('pm_package_versions_id_seq'::regclass) NOT NULL,
-    pm_package_id bigint NOT NULL,
-    purl_type smallint NOT NULL,
-    version text NOT NULL,
-    CONSTRAINT check_7ed2cc733f CHECK ((char_length(version) <= 255))
-);
-ALTER TABLE ONLY pm_package_versions ATTACH PARTITION gitlab_partitions_static.pm_package_versions_3 FOR VALUES IN ('3');
-
-CREATE TABLE gitlab_partitions_static.pm_package_versions_4 (
-    id bigint DEFAULT nextval('pm_package_versions_id_seq'::regclass) NOT NULL,
-    pm_package_id bigint NOT NULL,
-    purl_type smallint NOT NULL,
-    version text NOT NULL,
-    CONSTRAINT check_7ed2cc733f CHECK ((char_length(version) <= 255))
-);
-ALTER TABLE ONLY pm_package_versions ATTACH PARTITION gitlab_partitions_static.pm_package_versions_4 FOR VALUES IN ('4');
-
-CREATE TABLE gitlab_partitions_static.pm_package_versions_5 (
-    id bigint DEFAULT nextval('pm_package_versions_id_seq'::regclass) NOT NULL,
-    pm_package_id bigint NOT NULL,
-    purl_type smallint NOT NULL,
-    version text NOT NULL,
-    CONSTRAINT check_7ed2cc733f CHECK ((char_length(version) <= 255))
-);
-ALTER TABLE ONLY pm_package_versions ATTACH PARTITION gitlab_partitions_static.pm_package_versions_5 FOR VALUES IN ('5');
-
-CREATE TABLE gitlab_partitions_static.pm_package_versions_6 (
-    id bigint DEFAULT nextval('pm_package_versions_id_seq'::regclass) NOT NULL,
-    pm_package_id bigint NOT NULL,
-    purl_type smallint NOT NULL,
-    version text NOT NULL,
-    CONSTRAINT check_7ed2cc733f CHECK ((char_length(version) <= 255))
-);
-ALTER TABLE ONLY pm_package_versions ATTACH PARTITION gitlab_partitions_static.pm_package_versions_6 FOR VALUES IN ('6');
-
-CREATE TABLE gitlab_partitions_static.pm_package_versions_7 (
-    id bigint DEFAULT nextval('pm_package_versions_id_seq'::regclass) NOT NULL,
-    pm_package_id bigint NOT NULL,
-    purl_type smallint NOT NULL,
-    version text NOT NULL,
-    CONSTRAINT check_7ed2cc733f CHECK ((char_length(version) <= 255))
-);
-ALTER TABLE ONLY pm_package_versions ATTACH PARTITION gitlab_partitions_static.pm_package_versions_7 FOR VALUES IN ('7');
-
-CREATE TABLE gitlab_partitions_static.pm_package_versions_8 (
-    id bigint DEFAULT nextval('pm_package_versions_id_seq'::regclass) NOT NULL,
-    pm_package_id bigint NOT NULL,
-    purl_type smallint NOT NULL,
-    version text NOT NULL,
-    CONSTRAINT check_7ed2cc733f CHECK ((char_length(version) <= 255))
-);
-ALTER TABLE ONLY pm_package_versions ATTACH PARTITION gitlab_partitions_static.pm_package_versions_8 FOR VALUES IN ('8');
-
-CREATE TABLE pm_packages (
-    id bigint NOT NULL,
-    purl_type smallint NOT NULL,
-    name text NOT NULL,
-    CONSTRAINT check_9df27a82fe CHECK ((char_length(name) <= 255))
-)
-PARTITION BY LIST (purl_type);
-
-CREATE SEQUENCE pm_packages_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE pm_packages_id_seq OWNED BY pm_packages.id;
-
-CREATE TABLE gitlab_partitions_static.pm_packages_1 (
-    id bigint DEFAULT nextval('pm_packages_id_seq'::regclass) NOT NULL,
-    purl_type smallint NOT NULL,
-    name text NOT NULL,
-    CONSTRAINT check_9df27a82fe CHECK ((char_length(name) <= 255))
-);
-ALTER TABLE ONLY pm_packages ATTACH PARTITION gitlab_partitions_static.pm_packages_1 FOR VALUES IN ('1');
-
-CREATE TABLE gitlab_partitions_static.pm_packages_2 (
-    id bigint DEFAULT nextval('pm_packages_id_seq'::regclass) NOT NULL,
-    purl_type smallint NOT NULL,
-    name text NOT NULL,
-    CONSTRAINT check_9df27a82fe CHECK ((char_length(name) <= 255))
-);
-ALTER TABLE ONLY pm_packages ATTACH PARTITION gitlab_partitions_static.pm_packages_2 FOR VALUES IN ('2');
-
-CREATE TABLE gitlab_partitions_static.pm_packages_3 (
-    id bigint DEFAULT nextval('pm_packages_id_seq'::regclass) NOT NULL,
-    purl_type smallint NOT NULL,
-    name text NOT NULL,
-    CONSTRAINT check_9df27a82fe CHECK ((char_length(name) <= 255))
-);
-ALTER TABLE ONLY pm_packages ATTACH PARTITION gitlab_partitions_static.pm_packages_3 FOR VALUES IN ('3');
-
-CREATE TABLE gitlab_partitions_static.pm_packages_4 (
-    id bigint DEFAULT nextval('pm_packages_id_seq'::regclass) NOT NULL,
-    purl_type smallint NOT NULL,
-    name text NOT NULL,
-    CONSTRAINT check_9df27a82fe CHECK ((char_length(name) <= 255))
-);
-ALTER TABLE ONLY pm_packages ATTACH PARTITION gitlab_partitions_static.pm_packages_4 FOR VALUES IN ('4');
-
-CREATE TABLE gitlab_partitions_static.pm_packages_5 (
-    id bigint DEFAULT nextval('pm_packages_id_seq'::regclass) NOT NULL,
-    purl_type smallint NOT NULL,
-    name text NOT NULL,
-    CONSTRAINT check_9df27a82fe CHECK ((char_length(name) <= 255))
-);
-ALTER TABLE ONLY pm_packages ATTACH PARTITION gitlab_partitions_static.pm_packages_5 FOR VALUES IN ('5');
-
-CREATE TABLE gitlab_partitions_static.pm_packages_6 (
-    id bigint DEFAULT nextval('pm_packages_id_seq'::regclass) NOT NULL,
-    purl_type smallint NOT NULL,
-    name text NOT NULL,
-    CONSTRAINT check_9df27a82fe CHECK ((char_length(name) <= 255))
-);
-ALTER TABLE ONLY pm_packages ATTACH PARTITION gitlab_partitions_static.pm_packages_6 FOR VALUES IN ('6');
-
-CREATE TABLE gitlab_partitions_static.pm_packages_7 (
-    id bigint DEFAULT nextval('pm_packages_id_seq'::regclass) NOT NULL,
-    purl_type smallint NOT NULL,
-    name text NOT NULL,
-    CONSTRAINT check_9df27a82fe CHECK ((char_length(name) <= 255))
-);
-ALTER TABLE ONLY pm_packages ATTACH PARTITION gitlab_partitions_static.pm_packages_7 FOR VALUES IN ('7');
-
-CREATE TABLE gitlab_partitions_static.pm_packages_8 (
-    id bigint DEFAULT nextval('pm_packages_id_seq'::regclass) NOT NULL,
-    purl_type smallint NOT NULL,
-    name text NOT NULL,
-    CONSTRAINT check_9df27a82fe CHECK ((char_length(name) <= 255))
-);
-ALTER TABLE ONLY pm_packages ATTACH PARTITION gitlab_partitions_static.pm_packages_8 FOR VALUES IN ('8');
-
 CREATE TABLE product_analytics_events_experimental (
     id bigint NOT NULL,
     project_id integer NOT NULL,
@@ -19883,6 +19649,43 @@ CREATE SEQUENCE pm_licenses_id_seq
 
 ALTER SEQUENCE pm_licenses_id_seq OWNED BY pm_licenses.id;
 
+CREATE TABLE pm_package_version_licenses (
+    pm_package_version_id bigint NOT NULL,
+    pm_license_id bigint NOT NULL
+);
+
+CREATE TABLE pm_package_versions (
+    id bigint NOT NULL,
+    pm_package_id bigint,
+    version text NOT NULL,
+    CONSTRAINT check_2d8a88cfcc CHECK ((char_length(version) <= 255))
+);
+
+CREATE SEQUENCE pm_package_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE pm_package_versions_id_seq OWNED BY pm_package_versions.id;
+
+CREATE TABLE pm_packages (
+    id bigint NOT NULL,
+    purl_type smallint NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_3a3aedb8ba CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE pm_packages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE pm_packages_id_seq OWNED BY pm_packages.id;
+
 CREATE TABLE pool_repositories (
     id bigint NOT NULL,
     shard_id integer NOT NULL,
@@ -25419,87 +25222,6 @@ ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_62
 ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_63
     ADD CONSTRAINT issue_search_data_63_pkey PRIMARY KEY (project_id, issue_id);
 
-ALTER TABLE ONLY pm_package_version_licenses
-    ADD CONSTRAINT pm_package_version_licenses_pkey PRIMARY KEY (pm_package_version_id, pm_license_id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_version_licenses_1
-    ADD CONSTRAINT pm_package_version_licenses_1_pkey PRIMARY KEY (pm_package_version_id, pm_license_id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_version_licenses_2
-    ADD CONSTRAINT pm_package_version_licenses_2_pkey PRIMARY KEY (pm_package_version_id, pm_license_id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_version_licenses_3
-    ADD CONSTRAINT pm_package_version_licenses_3_pkey PRIMARY KEY (pm_package_version_id, pm_license_id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_version_licenses_4
-    ADD CONSTRAINT pm_package_version_licenses_4_pkey PRIMARY KEY (pm_package_version_id, pm_license_id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_version_licenses_5
-    ADD CONSTRAINT pm_package_version_licenses_5_pkey PRIMARY KEY (pm_package_version_id, pm_license_id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_version_licenses_6
-    ADD CONSTRAINT pm_package_version_licenses_6_pkey PRIMARY KEY (pm_package_version_id, pm_license_id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_version_licenses_7
-    ADD CONSTRAINT pm_package_version_licenses_7_pkey PRIMARY KEY (pm_package_version_id, pm_license_id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_version_licenses_8
-    ADD CONSTRAINT pm_package_version_licenses_8_pkey PRIMARY KEY (pm_package_version_id, pm_license_id, purl_type);
-
-ALTER TABLE ONLY pm_package_versions
-    ADD CONSTRAINT pm_package_versions_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_versions_1
-    ADD CONSTRAINT pm_package_versions_1_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_versions_2
-    ADD CONSTRAINT pm_package_versions_2_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_versions_3
-    ADD CONSTRAINT pm_package_versions_3_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_versions_4
-    ADD CONSTRAINT pm_package_versions_4_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_versions_5
-    ADD CONSTRAINT pm_package_versions_5_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_versions_6
-    ADD CONSTRAINT pm_package_versions_6_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_versions_7
-    ADD CONSTRAINT pm_package_versions_7_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_package_versions_8
-    ADD CONSTRAINT pm_package_versions_8_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY pm_packages
-    ADD CONSTRAINT pm_packages_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_packages_1
-    ADD CONSTRAINT pm_packages_1_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_packages_2
-    ADD CONSTRAINT pm_packages_2_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_packages_3
-    ADD CONSTRAINT pm_packages_3_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_packages_4
-    ADD CONSTRAINT pm_packages_4_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_packages_5
-    ADD CONSTRAINT pm_packages_5_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_packages_6
-    ADD CONSTRAINT pm_packages_6_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_packages_7
-    ADD CONSTRAINT pm_packages_7_pkey PRIMARY KEY (id, purl_type);
-
-ALTER TABLE ONLY gitlab_partitions_static.pm_packages_8
-    ADD CONSTRAINT pm_packages_8_pkey PRIMARY KEY (id, purl_type);
-
 ALTER TABLE ONLY product_analytics_events_experimental
     ADD CONSTRAINT product_analytics_events_experimental_pkey PRIMARY KEY (id, project_id);
 
@@ -26970,6 +26692,15 @@ ALTER TABLE ONLY plans
 ALTER TABLE ONLY pm_licenses
     ADD CONSTRAINT pm_licenses_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY pm_package_version_licenses
+    ADD CONSTRAINT pm_package_version_licenses_pkey PRIMARY KEY (pm_package_version_id, pm_license_id);
+
+ALTER TABLE ONLY pm_package_versions
+    ADD CONSTRAINT pm_package_versions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY pm_packages
+    ADD CONSTRAINT pm_packages_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY pool_repositories
     ADD CONSTRAINT pool_repositories_pkey PRIMARY KEY (id);
 
@@ -28334,78 +28065,6 @@ CREATE INDEX issue_search_data_63_issue_id_idx ON gitlab_partitions_static.issue
 
 CREATE INDEX issue_search_data_63_search_vector_idx ON gitlab_partitions_static.issue_search_data_63 USING gin (search_vector);
 
-CREATE INDEX i_pm_package_version_licenses_for_selects_on_licenses ON ONLY pm_package_version_licenses USING btree (pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_1_pm_license_id_idx ON gitlab_partitions_static.pm_package_version_licenses_1 USING btree (pm_license_id);
-
-CREATE INDEX i_pm_package_version_licenses_for_inserts ON ONLY pm_package_version_licenses USING btree (purl_type, pm_package_version_id, pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_1_purl_type_pm_package_version__idx ON gitlab_partitions_static.pm_package_version_licenses_1 USING btree (purl_type, pm_package_version_id, pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_2_pm_license_id_idx ON gitlab_partitions_static.pm_package_version_licenses_2 USING btree (pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_2_purl_type_pm_package_version__idx ON gitlab_partitions_static.pm_package_version_licenses_2 USING btree (purl_type, pm_package_version_id, pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_3_pm_license_id_idx ON gitlab_partitions_static.pm_package_version_licenses_3 USING btree (pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_3_purl_type_pm_package_version__idx ON gitlab_partitions_static.pm_package_version_licenses_3 USING btree (purl_type, pm_package_version_id, pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_4_pm_license_id_idx ON gitlab_partitions_static.pm_package_version_licenses_4 USING btree (pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_4_purl_type_pm_package_version__idx ON gitlab_partitions_static.pm_package_version_licenses_4 USING btree (purl_type, pm_package_version_id, pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_5_pm_license_id_idx ON gitlab_partitions_static.pm_package_version_licenses_5 USING btree (pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_5_purl_type_pm_package_version__idx ON gitlab_partitions_static.pm_package_version_licenses_5 USING btree (purl_type, pm_package_version_id, pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_6_pm_license_id_idx ON gitlab_partitions_static.pm_package_version_licenses_6 USING btree (pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_6_purl_type_pm_package_version__idx ON gitlab_partitions_static.pm_package_version_licenses_6 USING btree (purl_type, pm_package_version_id, pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_7_pm_license_id_idx ON gitlab_partitions_static.pm_package_version_licenses_7 USING btree (pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_7_purl_type_pm_package_version__idx ON gitlab_partitions_static.pm_package_version_licenses_7 USING btree (purl_type, pm_package_version_id, pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_8_pm_license_id_idx ON gitlab_partitions_static.pm_package_version_licenses_8 USING btree (pm_license_id);
-
-CREATE INDEX pm_package_version_licenses_8_purl_type_pm_package_version__idx ON gitlab_partitions_static.pm_package_version_licenses_8 USING btree (purl_type, pm_package_version_id, pm_license_id);
-
-CREATE UNIQUE INDEX i_pm_package_versions_for_inserts ON ONLY pm_package_versions USING btree (pm_package_id, version, purl_type);
-
-CREATE UNIQUE INDEX pm_package_versions_1_pm_package_id_version_purl_type_idx ON gitlab_partitions_static.pm_package_versions_1 USING btree (pm_package_id, version, purl_type);
-
-CREATE UNIQUE INDEX pm_package_versions_2_pm_package_id_version_purl_type_idx ON gitlab_partitions_static.pm_package_versions_2 USING btree (pm_package_id, version, purl_type);
-
-CREATE UNIQUE INDEX pm_package_versions_3_pm_package_id_version_purl_type_idx ON gitlab_partitions_static.pm_package_versions_3 USING btree (pm_package_id, version, purl_type);
-
-CREATE UNIQUE INDEX pm_package_versions_4_pm_package_id_version_purl_type_idx ON gitlab_partitions_static.pm_package_versions_4 USING btree (pm_package_id, version, purl_type);
-
-CREATE UNIQUE INDEX pm_package_versions_5_pm_package_id_version_purl_type_idx ON gitlab_partitions_static.pm_package_versions_5 USING btree (pm_package_id, version, purl_type);
-
-CREATE UNIQUE INDEX pm_package_versions_6_pm_package_id_version_purl_type_idx ON gitlab_partitions_static.pm_package_versions_6 USING btree (pm_package_id, version, purl_type);
-
-CREATE UNIQUE INDEX pm_package_versions_7_pm_package_id_version_purl_type_idx ON gitlab_partitions_static.pm_package_versions_7 USING btree (pm_package_id, version, purl_type);
-
-CREATE UNIQUE INDEX pm_package_versions_8_pm_package_id_version_purl_type_idx ON gitlab_partitions_static.pm_package_versions_8 USING btree (pm_package_id, version, purl_type);
-
-CREATE UNIQUE INDEX i_pm_packages_for_inserts ON ONLY pm_packages USING btree (purl_type, name);
-
-CREATE UNIQUE INDEX pm_packages_1_purl_type_name_idx ON gitlab_partitions_static.pm_packages_1 USING btree (purl_type, name);
-
-CREATE UNIQUE INDEX pm_packages_2_purl_type_name_idx ON gitlab_partitions_static.pm_packages_2 USING btree (purl_type, name);
-
-CREATE UNIQUE INDEX pm_packages_3_purl_type_name_idx ON gitlab_partitions_static.pm_packages_3 USING btree (purl_type, name);
-
-CREATE UNIQUE INDEX pm_packages_4_purl_type_name_idx ON gitlab_partitions_static.pm_packages_4 USING btree (purl_type, name);
-
-CREATE UNIQUE INDEX pm_packages_5_purl_type_name_idx ON gitlab_partitions_static.pm_packages_5 USING btree (purl_type, name);
-
-CREATE UNIQUE INDEX pm_packages_6_purl_type_name_idx ON gitlab_partitions_static.pm_packages_6 USING btree (purl_type, name);
-
-CREATE UNIQUE INDEX pm_packages_7_purl_type_name_idx ON gitlab_partitions_static.pm_packages_7 USING btree (purl_type, name);
-
-CREATE UNIQUE INDEX pm_packages_8_purl_type_name_idx ON gitlab_partitions_static.pm_packages_8 USING btree (purl_type, name);
-
 CREATE INDEX index_product_analytics_events_experimental_project_and_time ON ONLY product_analytics_events_experimental USING btree (project_id, collector_tstamp);
 
 CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx10 ON gitlab_partitions_static.product_analytics_events_experimental_10 USING btree (project_id, collector_tstamp);
@@ -28597,6 +28256,10 @@ CREATE INDEX i_dast_pre_scan_verification_steps_on_pre_scan_verification_id ON d
 CREATE INDEX i_dast_scanner_profiles_tags_on_scanner_profiles_id ON dast_scanner_profiles_tags USING btree (dast_scanner_profile_id);
 
 CREATE UNIQUE INDEX i_pm_licenses_on_spdx_identifier ON pm_licenses USING btree (spdx_identifier);
+
+CREATE UNIQUE INDEX i_pm_package_versions_on_package_id_and_version ON pm_package_versions USING btree (pm_package_id, version);
+
+CREATE UNIQUE INDEX i_pm_packages_purl_type_and_name ON pm_packages USING btree (purl_type, name);
 
 CREATE INDEX idx_analytics_devops_adoption_segments_on_namespace_id ON analytics_devops_adoption_segments USING btree (namespace_id);
 
@@ -30912,6 +30575,12 @@ CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON plan_limits USING btree (pla
 
 CREATE UNIQUE INDEX index_plans_on_name ON plans USING btree (name);
 
+CREATE INDEX index_pm_package_version_licenses_on_pm_license_id ON pm_package_version_licenses USING btree (pm_license_id);
+
+CREATE INDEX index_pm_package_version_licenses_on_pm_package_version_id ON pm_package_version_licenses USING btree (pm_package_version_id);
+
+CREATE INDEX index_pm_package_versions_on_pm_package_id ON pm_package_versions USING btree (pm_package_id);
+
 CREATE UNIQUE INDEX index_pool_repositories_on_disk_path ON pool_repositories USING btree (disk_path);
 
 CREATE INDEX index_pool_repositories_on_shard_id ON pool_repositories USING btree (shard_id);
@@ -33170,118 +32839,6 @@ ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.iss
 
 ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_63_search_vector_idx;
 
-ALTER INDEX pm_package_version_licenses_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_1_pkey;
-
-ALTER INDEX i_pm_package_version_licenses_for_selects_on_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_1_pm_license_id_idx;
-
-ALTER INDEX i_pm_package_version_licenses_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_1_purl_type_pm_package_version__idx;
-
-ALTER INDEX pm_package_version_licenses_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_2_pkey;
-
-ALTER INDEX i_pm_package_version_licenses_for_selects_on_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_2_pm_license_id_idx;
-
-ALTER INDEX i_pm_package_version_licenses_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_2_purl_type_pm_package_version__idx;
-
-ALTER INDEX pm_package_version_licenses_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_3_pkey;
-
-ALTER INDEX i_pm_package_version_licenses_for_selects_on_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_3_pm_license_id_idx;
-
-ALTER INDEX i_pm_package_version_licenses_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_3_purl_type_pm_package_version__idx;
-
-ALTER INDEX pm_package_version_licenses_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_4_pkey;
-
-ALTER INDEX i_pm_package_version_licenses_for_selects_on_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_4_pm_license_id_idx;
-
-ALTER INDEX i_pm_package_version_licenses_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_4_purl_type_pm_package_version__idx;
-
-ALTER INDEX pm_package_version_licenses_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_5_pkey;
-
-ALTER INDEX i_pm_package_version_licenses_for_selects_on_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_5_pm_license_id_idx;
-
-ALTER INDEX i_pm_package_version_licenses_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_5_purl_type_pm_package_version__idx;
-
-ALTER INDEX pm_package_version_licenses_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_6_pkey;
-
-ALTER INDEX i_pm_package_version_licenses_for_selects_on_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_6_pm_license_id_idx;
-
-ALTER INDEX i_pm_package_version_licenses_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_6_purl_type_pm_package_version__idx;
-
-ALTER INDEX pm_package_version_licenses_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_7_pkey;
-
-ALTER INDEX i_pm_package_version_licenses_for_selects_on_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_7_pm_license_id_idx;
-
-ALTER INDEX i_pm_package_version_licenses_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_7_purl_type_pm_package_version__idx;
-
-ALTER INDEX pm_package_version_licenses_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_8_pkey;
-
-ALTER INDEX i_pm_package_version_licenses_for_selects_on_licenses ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_8_pm_license_id_idx;
-
-ALTER INDEX i_pm_package_version_licenses_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_version_licenses_8_purl_type_pm_package_version__idx;
-
-ALTER INDEX pm_package_versions_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_versions_1_pkey;
-
-ALTER INDEX i_pm_package_versions_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_versions_1_pm_package_id_version_purl_type_idx;
-
-ALTER INDEX pm_package_versions_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_versions_2_pkey;
-
-ALTER INDEX i_pm_package_versions_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_versions_2_pm_package_id_version_purl_type_idx;
-
-ALTER INDEX pm_package_versions_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_versions_3_pkey;
-
-ALTER INDEX i_pm_package_versions_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_versions_3_pm_package_id_version_purl_type_idx;
-
-ALTER INDEX pm_package_versions_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_versions_4_pkey;
-
-ALTER INDEX i_pm_package_versions_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_versions_4_pm_package_id_version_purl_type_idx;
-
-ALTER INDEX pm_package_versions_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_versions_5_pkey;
-
-ALTER INDEX i_pm_package_versions_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_versions_5_pm_package_id_version_purl_type_idx;
-
-ALTER INDEX pm_package_versions_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_versions_6_pkey;
-
-ALTER INDEX i_pm_package_versions_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_versions_6_pm_package_id_version_purl_type_idx;
-
-ALTER INDEX pm_package_versions_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_versions_7_pkey;
-
-ALTER INDEX i_pm_package_versions_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_versions_7_pm_package_id_version_purl_type_idx;
-
-ALTER INDEX pm_package_versions_pkey ATTACH PARTITION gitlab_partitions_static.pm_package_versions_8_pkey;
-
-ALTER INDEX i_pm_package_versions_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_package_versions_8_pm_package_id_version_purl_type_idx;
-
-ALTER INDEX pm_packages_pkey ATTACH PARTITION gitlab_partitions_static.pm_packages_1_pkey;
-
-ALTER INDEX i_pm_packages_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_packages_1_purl_type_name_idx;
-
-ALTER INDEX pm_packages_pkey ATTACH PARTITION gitlab_partitions_static.pm_packages_2_pkey;
-
-ALTER INDEX i_pm_packages_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_packages_2_purl_type_name_idx;
-
-ALTER INDEX pm_packages_pkey ATTACH PARTITION gitlab_partitions_static.pm_packages_3_pkey;
-
-ALTER INDEX i_pm_packages_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_packages_3_purl_type_name_idx;
-
-ALTER INDEX pm_packages_pkey ATTACH PARTITION gitlab_partitions_static.pm_packages_4_pkey;
-
-ALTER INDEX i_pm_packages_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_packages_4_purl_type_name_idx;
-
-ALTER INDEX pm_packages_pkey ATTACH PARTITION gitlab_partitions_static.pm_packages_5_pkey;
-
-ALTER INDEX i_pm_packages_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_packages_5_purl_type_name_idx;
-
-ALTER INDEX pm_packages_pkey ATTACH PARTITION gitlab_partitions_static.pm_packages_6_pkey;
-
-ALTER INDEX i_pm_packages_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_packages_6_purl_type_name_idx;
-
-ALTER INDEX pm_packages_pkey ATTACH PARTITION gitlab_partitions_static.pm_packages_7_pkey;
-
-ALTER INDEX i_pm_packages_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_packages_7_purl_type_name_idx;
-
-ALTER INDEX pm_packages_pkey ATTACH PARTITION gitlab_partitions_static.pm_packages_8_pkey;
-
-ALTER INDEX i_pm_packages_for_inserts ATTACH PARTITION gitlab_partitions_static.pm_packages_8_purl_type_name_idx;
-
 ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx10;
 
 ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx11;
@@ -34893,6 +34450,9 @@ ALTER TABLE ONLY issuable_severities
 ALTER TABLE ONLY saml_providers
     ADD CONSTRAINT fk_rails_306d459be7 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY pm_package_version_licenses
+    ADD CONSTRAINT fk_rails_30ddb7f837 FOREIGN KEY (pm_package_version_id) REFERENCES pm_package_versions(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY resource_state_events
     ADD CONSTRAINT fk_rails_3112bba7dc FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -35354,6 +34914,9 @@ ALTER TABLE ONLY merge_request_context_commit_diff_files
 
 ALTER TABLE ONLY group_crm_settings
     ADD CONSTRAINT fk_rails_74fdf2f13d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY pm_package_version_licenses
+    ADD CONSTRAINT fk_rails_7520ea026d FOREIGN KEY (pm_license_id) REFERENCES pm_licenses(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY clusters_applications_ingress
     ADD CONSTRAINT fk_rails_753a7b41c1 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
@@ -35937,6 +35500,9 @@ ALTER TABLE ONLY resource_iteration_events
 ALTER TABLE ONLY member_roles
     ADD CONSTRAINT fk_rails_cf0ee35814 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY pm_package_versions
+    ADD CONSTRAINT fk_rails_cf94c3e601 FOREIGN KEY (pm_package_id) REFERENCES pm_packages(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY upload_states
     ADD CONSTRAINT fk_rails_d00f153613 FOREIGN KEY (upload_id) REFERENCES uploads(id) ON DELETE CASCADE;
 
@@ -36267,20 +35833,11 @@ ALTER TABLE ONLY timelogs
 ALTER TABLE ONLY u2f_registrations
     ADD CONSTRAINT fk_u2f_registrations_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
-ALTER TABLE pm_package_versions
-    ADD CONSTRAINT fkey_fb6234c446 FOREIGN KEY (pm_package_id, purl_type) REFERENCES pm_packages(id, purl_type) ON DELETE CASCADE;
-
 ALTER TABLE issue_search_data
     ADD CONSTRAINT issue_search_data_issue_id_fkey FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE issue_search_data
     ADD CONSTRAINT issue_search_data_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE pm_package_version_licenses
-    ADD CONSTRAINT pm_package_licenses_fkey FOREIGN KEY (pm_license_id) REFERENCES pm_licenses(id) ON DELETE CASCADE;
-
-ALTER TABLE pm_package_version_licenses
-    ADD CONSTRAINT pm_package_versions_fkey FOREIGN KEY (pm_package_version_id, purl_type) REFERENCES pm_package_versions(id, purl_type) ON DELETE CASCADE;
 
 ALTER TABLE product_analytics_events_experimental
     ADD CONSTRAINT product_analytics_events_experimental_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -49,7 +49,6 @@ Style/EmptyMethod:
     - 'app/controllers/projects/terraform_controller.rb'
     - 'app/controllers/projects/triggers_controller.rb'
     - 'app/controllers/pwa_controller.rb'
-    - 'app/controllers/registrations/welcome_controller.rb'
     - 'app/controllers/search_controller.rb'
     - 'app/experiments/security_actions_continuous_onboarding_experiment.rb'
     - 'app/graphql/resolvers/concerns/caching_array_resolver.rb'

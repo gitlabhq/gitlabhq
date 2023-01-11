@@ -42,7 +42,9 @@ describe('RelatedMergeRequests', () => {
       const assignees = [{ name: 'foo' }, { name: 'bar' }];
 
       describe('when there is assignees array', () => {
-        it('should return assignees array', () => {
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/387756
+        // eslint-disable-next-line jest/no-disabled-tests
+        it.skip('should return assignees array', () => {
           const mr = { assignees };
 
           expect(wrapper.vm.getAssignees(mr)).toEqual(assignees);

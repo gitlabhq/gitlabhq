@@ -5,13 +5,13 @@
 }
 
 .timezone-dropdown {
-  .dropdown-menu {
-    @include gl-w-full;
-  }
-
   .gl-dropdown-item-text-primary {
     @include gl-overflow-hidden;
     @include gl-text-overflow-ellipsis;
+  }
+
+  .btn-block {
+    margin-bottom: 0;
   }
 }
 
@@ -20,7 +20,7 @@
 }
 
 .invalid-dropdown {
-  .gl-dropdown-toggle {
+  .gl-button.gl-dropdown-toggle {
     @include inset-border-1-red-500;
 
     &:hover {

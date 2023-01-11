@@ -1615,7 +1615,9 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    []
+    disabled_integrations = []
+    disabled_integrations << 'apple_app_store' unless Feature.enabled?(:apple_app_store_integration, self)
+    disabled_integrations
   end
 
   def find_or_initialize_integration(name)
