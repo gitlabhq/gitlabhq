@@ -8,7 +8,7 @@ module QA
       end
 
       after(:context) do
-        Vendor::Smocker::SmockerApi.teardown!
+        Service::DockerRun::Smocker.teardown!
       end
 
       let(:session) { SecureRandom.hex(5) }
@@ -72,7 +72,7 @@ module QA
       end
 
       it 'sends an issues and note event',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349723' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349723' do
         setup_webhook(issues: true, note: true) do |webhook, smocker|
           issue = Resource::Issue.fabricate_via_api! do |issue_init|
             issue_init.project = webhook.project
@@ -100,7 +100,7 @@ module QA
       end
 
       it 'sends a tag event',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/383577' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/383577' do
         setup_webhook(tag_push: true) do |webhook, smocker|
           project_push = Resource::Repository::ProjectPush.fabricate! do |project_push|
             project_push.project = webhook.project
@@ -128,7 +128,7 @@ module QA
       private
 
       def setup_webhook(**event_args)
-        Vendor::Smocker::SmockerApi.init(wait: 10) do |smocker|
+        Service::DockerRun::Smocker.init(wait: 10) do |smocker|
           smocker.register(session: session)
 
           webhook = Resource::ProjectWebHook.fabricate_via_api! do |hook|

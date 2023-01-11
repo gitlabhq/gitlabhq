@@ -34,7 +34,7 @@ module QA
         # Update spec along with Feature Flag Removal.
         Runtime::Feature.disable(:show_pages_in_deployments_menu)
         Flow::Login.sign_in
-        Resource::Runner.fabricate_via_api! do |runner|
+        Resource::ProjectRunner.fabricate_via_api! do |runner|
           runner.project = project
           runner.executor = :docker
         end

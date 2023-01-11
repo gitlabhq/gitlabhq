@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import BoardApp from '~/boards/components/board_app.vue';
 import '~/boards/filters/due_date_filters';
-import { issuableTypes } from '~/boards/constants';
+import { BoardType, issuableTypes } from '~/boards/constants';
 import store from '~/boards/stores';
 import {
   NavigationType,
@@ -31,17 +31,19 @@ function mountBoardApp(el) {
     ...convertObjectPropsToCamelCase(rawFilterParams),
   };
 
+  const boardType = el.dataset.parent;
+
   store.dispatch('fetchBoard', {
     fullPath,
     fullBoardId: fullBoardId(boardId),
-    boardType: el.dataset.parent,
+    boardType,
   });
 
   store.dispatch('setInitialBoardData', {
     boardId,
     fullBoardId: fullBoardId(boardId),
     fullPath,
-    boardType: el.dataset.parent,
+    boardType,
     disabled: parseBoolean(el.dataset.disabled) || true,
     issuableType: issuableTypes.issue,
   });
@@ -61,7 +63,9 @@ function mountBoardApp(el) {
       fullPath,
       initialFilterParams,
       boardBaseUrl: el.dataset.boardBaseUrl,
-      boardType: el.dataset.parent,
+      boardType,
+      isGroupBoard: boardType === BoardType.group,
+      isProjectBoard: boardType === BoardType.project,
       currentUserId: gon.current_user_id || null,
       boardWeight: el.dataset.boardWeight ? parseInt(el.dataset.boardWeight, 10) : null,
       labelsManagePath: el.dataset.labelsManagePath,

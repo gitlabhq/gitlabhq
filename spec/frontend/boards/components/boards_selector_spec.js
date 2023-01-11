@@ -10,7 +10,6 @@ import groupBoardsQuery from '~/boards/graphql/group_boards.query.graphql';
 import projectBoardsQuery from '~/boards/graphql/project_boards.query.graphql';
 import groupRecentBoardsQuery from '~/boards/graphql/group_recent_boards.query.graphql';
 import projectRecentBoardsQuery from '~/boards/graphql/project_recent_boards.query.graphql';
-import defaultStore from '~/boards/stores';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import {
@@ -28,22 +27,18 @@ import {
 const throttleDuration = 1;
 
 Vue.use(VueApollo);
+Vue.use(Vuex);
 
 describe('BoardsSelector', () => {
   let wrapper;
   let fakeApollo;
   let store;
 
-  const createStore = ({ isGroupBoard = false, isProjectBoard = false } = {}) => {
+  const createStore = () => {
     store = new Vuex.Store({
-      ...defaultStore,
       actions: {
         setError: jest.fn(),
         setBoardConfig: jest.fn(),
-      },
-      getters: {
-        isGroupBoard: () => isGroupBoard,
-        isProjectBoard: () => isProjectBoard,
       },
       state: {
         board: mockBoard,
@@ -86,6 +81,7 @@ describe('BoardsSelector', () => {
     projectBoardsQueryHandler = projectBoardsQueryHandlerSuccess,
     projectRecentBoardsQueryHandler = projectRecentBoardsQueryHandlerSuccess,
     isGroupBoard = false,
+    isProjectBoard = false,
   } = {}) => {
     fakeApollo = createMockApollo([
       [projectBoardsQuery, projectBoardsQueryHandler],
@@ -110,6 +106,8 @@ describe('BoardsSelector', () => {
         scopedIssueBoardFeatureEnabled: true,
         weights: [],
         boardType: isGroupBoard ? 'group' : 'project',
+        isGroupBoard,
+        isProjectBoard,
       },
     });
   };
@@ -121,8 +119,8 @@ describe('BoardsSelector', () => {
 
   describe('template', () => {
     beforeEach(() => {
-      createStore({ isProjectBoard: true });
-      createComponent();
+      createStore();
+      createComponent({ isProjectBoard: true });
     });
 
     describe('loading', () => {
@@ -230,11 +228,11 @@ describe('BoardsSelector', () => {
       ${BoardType.group}   | ${groupBoardsQueryHandlerSuccess}   | ${projectBoardsQueryHandlerSuccess}
       ${BoardType.project} | ${projectBoardsQueryHandlerSuccess} | ${groupBoardsQueryHandlerSuccess}
     `('fetches $boardType boards', async ({ boardType, queryHandler, notCalledHandler }) => {
-      createStore({
-        isProjectBoard: boardType === BoardType.project,
+      createStore();
+      createComponent({
         isGroupBoard: boardType === BoardType.group,
+        isProjectBoard: boardType === BoardType.project,
       });
-      createComponent({ isGroupBoard: boardType === BoardType.group });
 
       await nextTick();
 

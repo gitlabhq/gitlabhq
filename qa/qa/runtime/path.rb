@@ -8,6 +8,10 @@ module QA
       def qa_root
         ::File.expand_path('../../', __dir__)
       end
+
+      def fixtures_path
+        ::File.expand_path('../fixtures', __dir__)
+      end
     end
   end
 end

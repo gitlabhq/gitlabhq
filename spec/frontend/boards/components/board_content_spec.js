@@ -71,6 +71,7 @@ describe('BoardContent', () => {
         issuableType,
         isIssueBoard,
         isEpicBoard,
+        isGroupBoard: true,
         isApolloBoard,
       },
       store,

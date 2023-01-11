@@ -62,6 +62,47 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Validators::CyclonedxSchemaValidator,
       it { is_expected.to be_valid }
     end
 
+    context 'when components have licenses' do
+      let(:components) do
+        [
+          {
+            "type" => "library",
+            "name" => "activesupport",
+            "version" => "5.1.4",
+            "licenses" => [
+              { "license" => { "id" => "MIT" } }
+            ]
+          }
+        ]
+      end
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when components have a signature' do
+      let(:components) do
+        [
+          {
+            "type" => "library",
+            "name" => "activesupport",
+            "version" => "5.1.4",
+            "signature" => {
+              "algorithm" => "ES256",
+              "publicKey" => {
+                "kty" => "EC",
+                "crv" => "P-256",
+                "x" => "6BKxpty8cI-exDzCkh-goU6dXq3MbcY0cd1LaAxiNrU",
+                "y" => "mCbcvUzm44j3Lt2b5BPyQloQ91tf2D2V-gzeUxWaUdg"
+              },
+              "value" => "ybT1qz5zHNi4Ndc6y7Zhamuf51IqXkPkZwjH1XcC-KSuBiaQplTw6Jasf2MbCLg3CF7PAdnMO__WSLwvI5r2jA"
+            }
+          }
+        ]
+      end
+
+      it { is_expected.to be_valid }
+    end
+
     context "when components are not valid" do
       let(:components) do
         [

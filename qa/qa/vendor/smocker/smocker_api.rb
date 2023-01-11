@@ -17,36 +17,21 @@ module QA
               body: '{}'
         YAML
 
-        # @param wait [Integer] seconds to wait for server
-        # @yieldparam [SmockerApi] the api object ready for interaction
-        def self.init(**wait_args)
-          if @container.nil?
-            @container = Service::DockerRun::Smocker.new
-            @container.register!
-            @container.wait_for_running
-          end
-
-          yield new(@container, **wait_args)
-        end
-
-        def self.teardown!
-          @container&.remove!
-          @container = nil
-        end
-
-        def initialize(container, **wait_args)
-          @container = container
-          wait_for_ready(**wait_args)
+        def initialize(host:, public_port: 8080, admin_port: 8081, tls: false)
+          @host = host
+          @public_port = public_port
+          @admin_port = admin_port
+          @scheme = tls ? "https" : "http"
         end
 
         # @return [String] Base url of mock endpoint
         def base_url
-          @container.base_url
+          @base_url ||= "#{scheme}://#{host}:#{public_port}"
         end
 
         # @return [String] Url of admin endpoint
         def admin_url
-          @container.admin_url
+          @admin_url ||= "#{scheme}://#{host}:#{admin_port}"
         end
 
         # @param endpoint [String] path for mock endpoint
@@ -129,6 +114,8 @@ module QA
         end
 
         private
+
+        attr_reader :host, :public_port, :admin_port, :scheme
 
         def build_params(**args)
           args.each_with_object([]) do |(k, v), memo|

@@ -9,7 +9,7 @@ import { s__ } from '~/locale';
 import { formatBoardLists } from 'ee_else_ce/boards/boards_util';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { defaultSortableOptions } from '~/sortable/constants';
-import { DraggableItemTypes, BoardType, listsQuery } from 'ee_else_ce/boards/constants';
+import { DraggableItemTypes, listsQuery } from 'ee_else_ce/boards/constants';
 import BoardColumn from './board_column.vue';
 
 export default {
@@ -35,6 +35,7 @@ export default {
     'issuableType',
     'isIssueBoard',
     'isEpicBoard',
+    'isGroupBoard',
     'isApolloBoard',
   ],
   props: {
@@ -89,8 +90,8 @@ export default {
     queryVariables() {
       return {
         ...(this.isIssueBoard && {
-          isGroup: this.boardType === BoardType.group,
-          isProject: this.boardType === BoardType.project,
+          isGroup: this.isGroupBoard,
+          isProject: !this.isGroupBoard,
         }),
         fullPath: this.fullPath,
         boardId: this.boardId,

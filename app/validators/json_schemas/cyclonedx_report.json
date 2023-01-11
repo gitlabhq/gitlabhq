@@ -3,7 +3,7 @@
   "$id": "http://cyclonedx.org/schema/bom-1.4.schema.json",
   "type": "object",
   "title": "CycloneDX Software Bill of Materials Standard",
-  "$comment" : "CycloneDX JSON schema is published under the terms of the Apache License 2.0.",
+  "$comment": "CycloneDX JSON schema is published under the terms of the Apache License 2.0.",
   "required": [
     "bomFormat",
     "specVersion",
@@ -29,13 +29,17 @@
       "type": "string",
       "title": "CycloneDX Specification Version",
       "description": "The version of the CycloneDX specification a BOM conforms to (starting at version 1.2).",
-      "examples": ["1.4"]
+      "examples": [
+        "1.4"
+      ]
     },
     "serialNumber": {
       "type": "string",
       "title": "BOM Serial Number",
       "description": "Every BOM generated SHOULD have a unique serial number, even if the contents of the BOM have not changed over time. If specified, the serial number MUST conform to RFC-4122. Use of serial numbers are RECOMMENDED.",
-      "examples": ["urn:uuid:3e671687-395b-41f5-a30f-a58921a69b79"],
+      "examples": [
+        "urn:uuid:3e671687-395b-41f5-a30f-a58921a69b79"
+      ],
       "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
     },
     "version": {
@@ -43,7 +47,9 @@
       "title": "BOM Version",
       "description": "Whenever an existing BOM is modified, either manually or through automated processes, the version of the BOM SHOULD be incremented by 1. When a system is presented with multiple BOMs with identical serial numbers, the system SHOULD use the most recent version of the BOM. The default version is '1'.",
       "default": 1,
-      "examples": [1]
+      "examples": [
+        1
+      ]
     },
     "metadata": {
       "$ref": "#/definitions/metadata",
@@ -53,7 +59,9 @@
     "components": {
       "type": "array",
       "additionalItems": false,
-      "items": {"$ref": "#/definitions/component"},
+      "items": {
+        "$ref": "#/definitions/component"
+      },
       "uniqueItems": true,
       "title": "Components",
       "description": "A list of software and hardware components."
@@ -61,7 +69,9 @@
     "services": {
       "type": "array",
       "additionalItems": false,
-      "items": {"$ref": "#/definitions/service"},
+      "items": {
+        "$ref": "#/definitions/service"
+      },
       "uniqueItems": true,
       "title": "Services",
       "description": "A list of services. This may include microservices, function-as-a-service, and other types of network or intra-process services."
@@ -69,14 +79,18 @@
     "externalReferences": {
       "type": "array",
       "additionalItems": false,
-      "items": {"$ref": "#/definitions/externalReference"},
+      "items": {
+        "$ref": "#/definitions/externalReference"
+      },
       "title": "External References",
       "description": "External references provide a way to document systems, sites, and information that may be relevant but which are not included with the BOM."
     },
     "dependencies": {
       "type": "array",
       "additionalItems": false,
-      "items": {"$ref": "#/definitions/dependency"},
+      "items": {
+        "$ref": "#/definitions/dependency"
+      },
       "uniqueItems": true,
       "title": "Dependencies",
       "description": "Provides the ability to document dependency relationships."
@@ -84,7 +98,9 @@
     "compositions": {
       "type": "array",
       "additionalItems": false,
-      "items": {"$ref": "#/definitions/compositions"},
+      "items": {
+        "$ref": "#/definitions/compositions"
+      },
       "uniqueItems": true,
       "title": "Compositions",
       "description": "Compositions describe constituent parts (including components, services, and dependency relationships) and their completeness."
@@ -92,7 +108,9 @@
     "vulnerabilities": {
       "type": "array",
       "additionalItems": false,
-      "items": {"$ref": "#/definitions/vulnerability"},
+      "items": {
+        "$ref": "#/definitions/vulnerability"
+      },
       "uniqueItems": true,
       "title": "Vulnerabilities",
       "description": "Vulnerabilities identified in components or services."
@@ -124,14 +142,18 @@
           "title": "Creation Tools",
           "description": "The tool(s) used in the creation of the BOM.",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/tool"}
+          "items": {
+            "$ref": "#/definitions/tool"
+          }
         },
-        "authors" :{
+        "authors": {
           "type": "array",
           "title": "Authors",
           "description": "The person(s) who created the BOM. Authors are common in BOMs created through manual processes. BOMs created through automated means may not have authors.",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/organizationalContact"}
+          "items": {
+            "$ref": "#/definitions/organizationalContact"
+          }
         },
         "component": {
           "title": "Component",
@@ -152,14 +174,18 @@
           "type": "array",
           "title": "BOM License(s)",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/licenseChoice"}
+          "items": {
+            "$ref": "#/definitions/licenseChoice"
+          }
         },
         "properties": {
           "type": "array",
           "title": "Properties",
           "description": "Provides the ability to document properties in a name-value store. This provides flexibility to include data not officially supported in the standard without having to use additional namespaces or create extensions. Unlike key-value stores, properties support duplicate names, each potentially having different values. Property names of interest to the general public are encouraged to be registered in the [CycloneDX Property Taxonomy](https://github.com/CycloneDX/cyclonedx-property-taxonomy). Formal registration is OPTIONAL.",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/property"}
+          "items": {
+            "$ref": "#/definitions/property"
+          }
         }
       }
     },
@@ -187,14 +213,18 @@
         "hashes": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/hash"},
+          "items": {
+            "$ref": "#/definitions/hash"
+          },
           "title": "Hashes",
           "description": "The hashes of the tool (if applicable)."
         },
         "externalReferences": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/externalReference"},
+          "items": {
+            "$ref": "#/definitions/externalReference"
+          },
           "title": "External References",
           "description": "External references provide a way to document systems, sites, and information that may be relevant but which are not included with the BOM."
         }
@@ -222,14 +252,18 @@
           },
           "title": "URL",
           "description": "The URL of the organization. Multiple URLs are allowed.",
-          "examples": ["https://example.com"]
+          "examples": [
+            "https://example.com"
+          ]
         },
         "contact": {
           "type": "array",
           "title": "Contact",
           "description": "A contact at the organization. Multiple contacts are allowed.",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/organizationalContact"}
+          "items": {
+            "$ref": "#/definitions/organizationalContact"
+          }
         }
       }
     },
@@ -243,20 +277,26 @@
           "type": "string",
           "title": "Name",
           "description": "The name of a contact",
-          "examples": ["Contact name"]
+          "examples": [
+            "Contact name"
+          ]
         },
         "email": {
           "type": "string",
           "format": "idn-email",
           "title": "Email Address",
           "description": "The email address of the contact.",
-          "examples": ["firstname.lastname@example.com"]
+          "examples": [
+            "firstname.lastname@example.com"
+          ]
         },
         "phone": {
           "type": "string",
           "title": "Phone",
           "description": "The phone number of the contact.",
-          "examples": ["800-555-1212"]
+          "examples": [
+            "800-555-1212"
+          ]
         }
       }
     },
@@ -283,13 +323,17 @@
           ],
           "title": "Component Type",
           "description": "Specifies the type of component. For software components, classify as application if no more specific appropriate classification is available or cannot be determined for the component. Types include:\n\n* __application__ = A software application. Refer to [https://en.wikipedia.org/wiki/Application_software](https://en.wikipedia.org/wiki/Application_software) for information about applications.\n* __framework__ = A software framework. Refer to [https://en.wikipedia.org/wiki/Software_framework](https://en.wikipedia.org/wiki/Software_framework) for information on how frameworks vary slightly from libraries.\n* __library__ = A software library. Refer to [https://en.wikipedia.org/wiki/Library_(computing)](https://en.wikipedia.org/wiki/Library_(computing))\n for information about libraries. All third-party and open source reusable components will likely be a library. If the library also has key features of a framework, then it should be classified as a framework. If not, or is unknown, then specifying library is RECOMMENDED.\n* __container__ = A packaging and/or runtime format, not specific to any particular technology, which isolates software inside the container from software outside of a container through virtualization technology. Refer to [https://en.wikipedia.org/wiki/OS-level_virtualization](https://en.wikipedia.org/wiki/OS-level_virtualization)\n* __operating-system__ = A software operating system without regard to deployment model (i.e. installed on physical hardware, virtual machine, image, etc) Refer to [https://en.wikipedia.org/wiki/Operating_system](https://en.wikipedia.org/wiki/Operating_system)\n* __device__ = A hardware device such as a processor, or chip-set. A hardware device containing firmware SHOULD include a component for the physical hardware itself, and another component of type 'firmware' or 'operating-system' (whichever is relevant), describing information about the software running on the device.\n* __firmware__ = A special type of software that provides low-level control over a devices hardware. Refer to [https://en.wikipedia.org/wiki/Firmware](https://en.wikipedia.org/wiki/Firmware)\n* __file__ = A computer file. Refer to [https://en.wikipedia.org/wiki/Computer_file](https://en.wikipedia.org/wiki/Computer_file) for information about files.",
-          "examples": ["library"]
+          "examples": [
+            "library"
+          ]
         },
         "mime-type": {
           "type": "string",
           "title": "Mime-Type",
           "description": "The optional mime-type of the component. When used on file components, the mime-type can provide additional context about the kind of file being represented such as an image, font, or executable. Some library or framework components may also have an associated mime-type.",
-          "examples": ["image/jpeg"],
+          "examples": [
+            "image/jpeg"
+          ],
           "pattern": "^[-+a-z0-9.]+/[-+a-z0-9.]+$"
         },
         "bom-ref": {
@@ -306,31 +350,41 @@
           "type": "string",
           "title": "Component Author",
           "description": "The person(s) or organization(s) that authored the component",
-          "examples": ["Acme Inc"]
+          "examples": [
+            "Acme Inc"
+          ]
         },
         "publisher": {
           "type": "string",
           "title": "Component Publisher",
           "description": "The person(s) or organization(s) that published the component",
-          "examples": ["Acme Inc"]
+          "examples": [
+            "Acme Inc"
+          ]
         },
         "group": {
           "type": "string",
           "title": "Component Group",
           "description": "The grouping name or identifier. This will often be a shortened, single name of the company or project that produced the component, or the source package or domain name. Whitespace and special characters should be avoided. Examples include: apache, org.apache.commons, and apache.org.",
-          "examples": ["com.acme"]
+          "examples": [
+            "com.acme"
+          ]
         },
         "name": {
           "type": "string",
           "title": "Component Name",
           "description": "The name of the component. This will often be a shortened, single name of the component. Examples: commons-lang3 and jquery",
-          "examples": ["tomcat-catalina"]
+          "examples": [
+            "tomcat-catalina"
+          ]
         },
         "version": {
           "type": "string",
           "title": "Component Version",
           "description": "The component version. The version should ideally comply with semantic versioning but is not enforced.",
-          "examples": ["9.0.14"]
+          "examples": [
+            "9.0.14"
+          ]
         },
         "description": {
           "type": "string",
@@ -352,31 +406,41 @@
           "type": "array",
           "title": "Component Hashes",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/hash"}
+          "items": {
+            "$ref": "#/definitions/hash"
+          }
         },
         "licenses": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/licenseChoice"},
+          "items": {
+            "$ref": "#/definitions/licenseChoice"
+          },
           "title": "Component License(s)"
         },
         "copyright": {
           "type": "string",
           "title": "Component Copyright",
           "description": "A copyright notice informing users of the underlying claims to copyright ownership in a published work.",
-          "examples": ["Acme Inc"]
+          "examples": [
+            "Acme Inc"
+          ]
         },
         "cpe": {
           "type": "string",
           "title": "Component Common Platform Enumeration (CPE)",
           "description": "Specifies a well-formed CPE name that conforms to the CPE 2.2 or 2.3 specification. See [https://nvd.nist.gov/products/cpe](https://nvd.nist.gov/products/cpe)",
-          "examples": ["cpe:2.3:a:acme:component_framework:-:*:*:*:*:*:*:*"]
+          "examples": [
+            "cpe:2.3:a:acme:component_framework:-:*:*:*:*:*:*:*"
+          ]
         },
         "purl": {
           "type": "string",
           "title": "Component Package URL (purl)",
           "description": "Specifies the package-url (purl). The purl, if specified, MUST be valid and conform to the specification defined at: [https://github.com/package-url/purl-spec](https://github.com/package-url/purl-spec)",
-          "examples": ["pkg:maven/com.acme/tomcat-catalina@9.0.14?packaging=jar"]
+          "examples": [
+            "pkg:maven/com.acme/tomcat-catalina@9.0.14?packaging=jar"
+          ]
         },
         "swid": {
           "$ref": "#/definitions/swid",
@@ -399,35 +463,45 @@
               "title": "Ancestors",
               "description": "Describes zero or more components in which a component is derived from. This is commonly used to describe forks from existing projects where the forked version contains a ancestor node containing the original component it was forked from. For example, Component A is the original component. Component B is the component being used and documented in the BOM. However, Component B contains a pedigree node with a single ancestor documenting Component A - the original component from which Component B is derived from.",
               "additionalItems": false,
-              "items": {"$ref": "#/definitions/component"}
+              "items": {
+                "$ref": "#/definitions/component"
+              }
             },
             "descendants": {
               "type": "array",
               "title": "Descendants",
               "description": "Descendants are the exact opposite of ancestors. This provides a way to document all forks (and their forks) of an original or root component.",
               "additionalItems": false,
-              "items": {"$ref": "#/definitions/component"}
+              "items": {
+                "$ref": "#/definitions/component"
+              }
             },
             "variants": {
               "type": "array",
               "title": "Variants",
               "description": "Variants describe relations where the relationship between the components are not known. For example, if Component A contains nearly identical code to Component B. They are both related, but it is unclear if one is derived from the other, or if they share a common ancestor.",
               "additionalItems": false,
-              "items": {"$ref": "#/definitions/component"}
+              "items": {
+                "$ref": "#/definitions/component"
+              }
             },
             "commits": {
               "type": "array",
               "title": "Commits",
               "description": "A list of zero or more commits which provide a trail describing how the component deviates from an ancestor, descendant, or variant.",
               "additionalItems": false,
-              "items": {"$ref": "#/definitions/commit"}
+              "items": {
+                "$ref": "#/definitions/commit"
+              }
             },
             "patches": {
               "type": "array",
               "title": "Patches",
               "description": ">A list of zero or more patches describing how the component deviates from an ancestor, descendant, or variant. Patches may be complimentary to commits or may be used in place of commits.",
               "additionalItems": false,
-              "items": {"$ref": "#/definitions/patch"}
+              "items": {
+                "$ref": "#/definitions/patch"
+              }
             },
             "notes": {
               "type": "string",
@@ -439,14 +513,18 @@
         "externalReferences": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/externalReference"},
+          "items": {
+            "$ref": "#/definitions/externalReference"
+          },
           "title": "External References",
           "description": "External references provide a way to document systems, sites, and information that may be relevant but which are not included with the BOM."
         },
         "components": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/component"},
+          "items": {
+            "$ref": "#/definitions/component"
+          },
           "uniqueItems": true,
           "title": "Components",
           "description": "A list of software and hardware components included in the parent component. This is not a dependency tree. It provides a way to specify a hierarchical representation of component assemblies, similar to system &#8594; subsystem &#8594; parts assembly in physical supply chains."
@@ -466,7 +544,9 @@
           "title": "Properties",
           "description": "Provides the ability to document properties in a name-value store. This provides flexibility to include data not officially supported in the standard without having to use additional namespaces or create extensions. Unlike key-value stores, properties support duplicate names, each potentially having different values. Property names of interest to the general public are encouraged to be registered in the [CycloneDX Property Taxonomy](https://github.com/CycloneDX/cyclonedx-property-taxonomy). Formal registration is OPTIONAL.",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/property"}
+          "items": {
+            "$ref": "#/definitions/property"
+          }
         },
         "signature": {
           "$ref": "#/definitions/signature",
@@ -594,7 +674,9 @@
     "hash-content": {
       "type": "string",
       "title": "Hash Content (value)",
-      "examples": ["3942447fac867ae5cdb3229b658f4d48"],
+      "examples": [
+        "3942447fac867ae5cdb3229b658f4d48"
+      ],
       "pattern": "^([a-fA-F0-9]{32}|[a-fA-F0-9]{40}|[a-fA-F0-9]{64}|[a-fA-F0-9]{96}|[a-fA-F0-9]{128})$"
     },
     "license": {
@@ -602,25 +684,565 @@
       "title": "License Object",
       "oneOf": [
         {
-          "required": ["id"]
+          "required": [
+            "id"
+          ]
         },
         {
-          "required": ["name"]
+          "required": [
+            "name"
+          ]
         }
       ],
       "additionalProperties": false,
       "properties": {
         "id": {
-          "$ref": "spdx.schema.json",
           "title": "License ID (SPDX)",
           "description": "A valid SPDX license ID",
-          "examples": ["Apache-2.0"]
+          "examples": [
+            "Apache-2.0"
+          ],
+          "type": "string",
+          "enum": [
+            "CC-BY-NC-ND-2.0",
+            "SGI-B-2.0",
+            "LPPL-1.3c",
+            "NIST-PD-fallback",
+            "libtiff",
+            "XSkat",
+            "PDDL-1.0",
+            "KiCad-libraries-exception",
+            "CC-BY-NC-SA-1.0",
+            "GFDL-1.1-no-invariants-only",
+            "Xerox",
+            "LPPL-1.1",
+            "VOSTROM",
+            "UCL-1.0",
+            "ADSL",
+            "OSL-2.0",
+            "AAL",
+            "FDK-AAC",
+            "W3C-20150513",
+            "AFL-1.1",
+            "W3C",
+            "Sleepycat",
+            "CECILL-1.1",
+            "mpich2",
+            "SISSL",
+            "NLOD-1.0",
+            "ANTLR-PD",
+            "GPL-3.0-only",
+            "gnuplot",
+            "NLOD-2.0",
+            "BSD-3-Clause-Open-MPI",
+            "LiLiQ-P-1.1",
+            "BSD-3-Clause-Clear",
+            "FSFUL",
+            "CC-BY-NC-SA-2.0-UK",
+            "CERN-OHL-S-2.0",
+            "Spencer-94",
+            "CERN-OHL-1.2",
+            "GFDL-1.1-or-later",
+            "AGPL-1.0-or-later",
+            "Wsuipa",
+            "AML",
+            "BSD-2-Clause",
+            "DSDP",
+            "CC-BY-2.5",
+            "MIT-CMU",
+            "Beerware",
+            "Sendmail",
+            "TU-Berlin-1.0",
+            "CNRI-Jython",
+            "mplus",
+            "CPOL-1.02",
+            "BSD-3-Clause-No-Nuclear-License-2014",
+            "ISC",
+            "CC-BY-SA-4.0",
+            "Eurosym",
+            "LGPL-3.0-only",
+            "OLDAP-1.3",
+            "GFDL-1.1-invariants-or-later",
+            "Glulxe",
+            "SimPL-2.0",
+            "CDLA-Permissive-2.0",
+            "GPL-2.0-with-font-exception",
+            "OGL-UK-2.0",
+            "CC-BY-SA-3.0-DE",
+            "CC-BY-ND-1.0",
+            "GFDL-1.1",
+            "CC-BY-4.0",
+            "OpenSSL",
+            "TU-Berlin-2.0",
+            "DOC",
+            "GFDL-1.2-no-invariants-or-later",
+            "QPL-1.0",
+            "OLDAP-2.8",
+            "OML",
+            "OLDAP-2.7",
+            "NIST-PD",
+            "Bitstream-Vera",
+            "GFDL-1.2-or-later",
+            "OFL-1.1-RFN",
+            "Bahyph",
+            "Barr",
+            "COIL-1.0",
+            "GFDL-1.3",
+            "CECILL-B",
+            "JPNIC",
+            "Zed",
+            "ICU",
+            "CC-BY-NC-SA-2.5",
+            "CC-BY-ND-3.0-DE",
+            "bzip2-1.0.5",
+            "SPL-1.0",
+            "YPL-1.0",
+            "OSET-PL-2.1",
+            "Noweb",
+            "RPSL-1.0",
+            "BSD-3-Clause-LBNL",
+            "CDLA-Sharing-1.0",
+            "CECILL-1.0",
+            "AMPAS",
+            "APAFML",
+            "CC-BY-ND-3.0",
+            "D-FSL-1.0",
+            "CC-BY-NC-3.0",
+            "libpng-2.0",
+            "PolyForm-Noncommercial-1.0.0",
+            "dvipdfm",
+            "GFDL-1.3-or-later",
+            "OGTSL",
+            "NPL-1.1",
+            "GPL-3.0",
+            "CERN-OHL-P-2.0",
+            "BlueOak-1.0.0",
+            "AGPL-3.0-or-later",
+            "blessing",
+            "ImageMagick",
+            "APSL-2.0",
+            "MIT-advertising",
+            "curl",
+            "CC0-1.0",
+            "Zimbra-1.4",
+            "SSPL-1.0",
+            "psutils",
+            "CC-BY-SA-2.0-UK",
+            "PSF-2.0",
+            "Net-SNMP",
+            "NAIST-2003",
+            "GFDL-1.2-invariants-or-later",
+            "SGI-B-1.0",
+            "NBPL-1.0",
+            "GFDL-1.2-invariants-only",
+            "W3C-19980720",
+            "OFL-1.0-no-RFN",
+            "NetCDF",
+            "TMate",
+            "NOSL",
+            "CNRI-Python-GPL-Compatible",
+            "BSD-1-Clause",
+            "CC-BY-NC-SA-3.0-DE",
+            "BSD-3-Clause-Modification",
+            "GLWTPL",
+            "GFDL-1.3-only",
+            "OLDAP-2.2",
+            "CC-BY-ND-4.0",
+            "CC-BY-NC-ND-3.0-DE",
+            "EUPL-1.0",
+            "Linux-OpenIB",
+            "LGPL-2.0-or-later",
+            "OSL-1.1",
+            "Spencer-86",
+            "LGPL-2.0",
+            "CC-PDDC",
+            "CC-BY-NC-ND-3.0",
+            "CDL-1.0",
+            "Elastic-2.0",
+            "CC-BY-2.0",
+            "BSD-3-Clause-No-Military-License",
+            "IJG",
+            "LPPL-1.3a",
+            "SAX-PD",
+            "BitTorrent-1.0",
+            "OLDAP-2.0",
+            "Giftware",
+            "C-UDA-1.0",
+            "LGPL-2.0+",
+            "Rdisc",
+            "GPL-2.0-with-classpath-exception",
+            "CC-BY-3.0-US",
+            "CDDL-1.0",
+            "Xnet",
+            "CPL-1.0",
+            "LGPL-3.0-or-later",
+            "NASA-1.3",
+            "BUSL-1.1",
+            "etalab-2.0",
+            "MIT-open-group",
+            "OLDAP-1.4",
+            "GFDL-1.1-invariants-only",
+            "RPL-1.1",
+            "CC-BY-NC-ND-2.5",
+            "FSFULLR",
+            "Saxpath",
+            "NTP-0",
+            "SISSL-1.2",
+            "GPL-3.0-or-later",
+            "Apache-1.1",
+            "CC-BY-SA-2.1-JP",
+            "AGPL-3.0-only",
+            "GPL-2.0-with-autoconf-exception",
+            "Artistic-2.0",
+            "App-s2p",
+            "Unicode-DFS-2015",
+            "diffmark",
+            "SNIA",
+            "CC-BY-SA-2.5",
+            "Linux-man-pages-copyleft",
+            "HPND-sell-variant",
+            "ZPL-2.1",
+            "BSD-4-Clause-UC",
+            "LAL-1.2",
+            "AGPL-1.0-only",
+            "MIT-enna",
+            "Condor-1.1",
+            "Naumen",
+            "GFDL-1.3-no-invariants-or-later",
+            "RPL-1.5",
+            "PolyForm-Small-Business-1.0.0",
+            "EFL-1.0",
+            "MirOS",
+            "CC-BY-2.5-AU",
+            "Afmparse",
+            "MPL-2.0-no-copyleft-exception",
+            "LiLiQ-Rplus-1.1",
+            "AFL-1.2",
+            "OSL-1.0",
+            "GPL-1.0-only",
+            "APSL-1.0",
+            "OGL-Canada-2.0",
+            "CPAL-1.0",
+            "Latex2e",
+            "Zend-2.0",
+            "Unlicense",
+            "xpp",
+            "CC-BY-NC-1.0",
+            "GPL-3.0-with-autoconf-exception",
+            "CC-BY-NC-SA-3.0",
+            "TCP-wrappers",
+            "SCEA",
+            "SSH-short",
+            "CC-BY-3.0-NL",
+            "SchemeReport",
+            "CC-BY-3.0",
+            "MPL-2.0",
+            "Unicode-TOU",
+            "CC-BY-NC-ND-1.0",
+            "Entessa",
+            "BSD-3-Clause-No-Nuclear-License",
+            "SWL",
+            "GFDL-1.2-no-invariants-only",
+            "Parity-7.0.0",
+            "OLDAP-2.2.1",
+            "SGI-B-1.1",
+            "FTL",
+            "OLDAP-2.4",
+            "CC-BY-NC-4.0",
+            "bzip2-1.0.6",
+            "copyleft-next-0.3.0",
+            "MakeIndex",
+            "NRL",
+            "GFDL-1.3-invariants-or-later",
+            "CC-BY-NC-2.0",
+            "SugarCRM-1.1.3",
+            "AFL-2.1",
+            "GPL-2.0-only",
+            "GFDL-1.3-invariants-only",
+            "TORQUE-1.1",
+            "Ruby",
+            "X11",
+            "Borceux",
+            "Libpng",
+            "X11-distribute-modifications-variant",
+            "Frameworx-1.0",
+            "NCGL-UK-2.0",
+            "CECILL-2.1",
+            "CC-BY-3.0-AT",
+            "CNRI-Python",
+            "NCSA",
+            "gSOAP-1.3b",
+            "EUPL-1.1",
+            "AMDPLPA",
+            "Imlib2",
+            "CDDL-1.1",
+            "WTFPL",
+            "LPL-1.0",
+            "EPL-1.0",
+            "BSD-3-Clause-Attribution",
+            "OSL-3.0",
+            "RHeCos-1.1",
+            "PHP-3.0",
+            "BSD-Protection",
+            "CC-BY-NC-3.0-DE",
+            "APL-1.0",
+            "EUDatagrid",
+            "GPL-1.0",
+            "SHL-0.5",
+            "CC-BY-SA-2.0",
+            "CC-BY-SA-3.0-AT",
+            "CC-BY-NC-SA-3.0-IGO",
+            "Adobe-2006",
+            "Newsletr",
+            "Nunit",
+            "Multics",
+            "OGL-UK-1.0",
+            "Vim",
+            "eCos-2.0",
+            "Zimbra-1.3",
+            "eGenix",
+            "IBM-pibs",
+            "BitTorrent-1.1",
+            "OFL-1.1-no-RFN",
+            "psfrag",
+            "CC-BY-ND-2.0",
+            "SHL-0.51",
+            "FreeBSD-DOC",
+            "Python-2.0",
+            "Mup",
+            "BSD-4-Clause-Shortened",
+            "CC-BY-NC-SA-4.0",
+            "HPND",
+            "OLDAP-2.6",
+            "MPL-1.1",
+            "GPL-2.0-with-GCC-exception",
+            "HaskellReport",
+            "ECL-1.0",
+            "LGPL-2.1-or-later",
+            "OFL-1.0",
+            "APSL-1.1",
+            "MITNFA",
+            "CECILL-2.0",
+            "Crossword",
+            "Aladdin",
+            "Baekmuk",
+            "XFree86-1.1",
+            "GPL-1.0-or-later",
+            "CERN-OHL-W-2.0",
+            "CC-BY-SA-1.0",
+            "NTP",
+            "PHP-3.01",
+            "OCLC-2.0",
+            "CC-BY-3.0-DE",
+            "CC-BY-NC-2.5",
+            "Zlib",
+            "CATOSL-1.1",
+            "LGPL-3.0+",
+            "CAL-1.0",
+            "NPL-1.0",
+            "SMLNJ",
+            "GPL-2.0+",
+            "OLDAP-2.5",
+            "JasPer-2.0",
+            "GPL-2.0-or-later",
+            "BSD-2-Clause-Patent",
+            "MS-RL",
+            "CUA-OPL-1.0",
+            "IPA",
+            "NLPL",
+            "O-UDA-1.0",
+            "MIT-Modern-Variant",
+            "OLDAP-1.2",
+            "BSD-2-Clause-FreeBSD",
+            "Info-ZIP",
+            "CC-BY-NC-SA-2.0-FR",
+            "0BSD",
+            "Unicode-DFS-2016",
+            "OFL-1.0-RFN",
+            "Intel",
+            "AFL-2.0",
+            "GL2PS",
+            "TAPR-OHL-1.0",
+            "Apache-1.0",
+            "MTLL",
+            "Motosoto",
+            "RSA-MD",
+            "Community-Spec-1.0",
+            "ODC-By-1.0",
+            "zlib-acknowledgement",
+            "DL-DE-BY-2.0",
+            "VSL-1.0",
+            "LiLiQ-R-1.1",
+            "OPL-1.0",
+            "GPL-3.0+",
+            "MulanPSL-2.0",
+            "APSL-1.2",
+            "OGDL-Taiwan-1.0",
+            "RSCPL",
+            "OGC-1.0",
+            "EFL-2.0",
+            "CAL-1.0-Combined-Work-Exception",
+            "MS-PL",
+            "Plexus",
+            "Sendmail-8.23",
+            "Cube",
+            "JSON",
+            "EUPL-1.2",
+            "Adobe-Glyph",
+            "FreeImage",
+            "Watcom-1.0",
+            "Jam",
+            "Hippocratic-2.1",
+            "OLDAP-2.0.1",
+            "CC-BY-NC-SA-2.0",
+            "Nokia",
+            "OCCT-PL",
+            "ErlPL-1.1",
+            "TOSL",
+            "OSL-2.1",
+            "ClArtistic",
+            "xinetd",
+            "GPL-3.0-with-GCC-exception",
+            "ODbL-1.0",
+            "MIT",
+            "LGPL-2.1+",
+            "LGPL-2.1-only",
+            "CrystalStacker",
+            "ECL-2.0",
+            "LPPL-1.0",
+            "iMatix",
+            "CC-BY-NC-ND-3.0-IGO",
+            "BSD-Source-Code",
+            "Parity-6.0.0",
+            "TCL",
+            "Arphic-1999",
+            "CC-BY-SA-3.0",
+            "Caldera",
+            "AGPL-1.0",
+            "IPL-1.0",
+            "LAL-1.3",
+            "EPICS",
+            "NGPL",
+            "DRL-1.0",
+            "BSD-2-Clause-NetBSD",
+            "ZPL-1.1",
+            "GD",
+            "LPPL-1.2",
+            "Dotseqn",
+            "Spencer-99",
+            "OLDAP-2.3",
+            "YPL-1.1",
+            "Fair",
+            "Qhull",
+            "GFDL-1.1-no-invariants-or-later",
+            "CECILL-C",
+            "MulanPSL-1.0",
+            "OLDAP-1.1",
+            "OLDAP-2.1",
+            "LPL-1.02",
+            "UPL-1.0",
+            "Abstyles",
+            "ZPL-2.0",
+            "MIT-0",
+            "LGPL-2.0-only",
+            "GFDL-1.3-no-invariants-only",
+            "AGPL-3.0",
+            "EPL-2.0",
+            "AFL-3.0",
+            "CDLA-Permissive-1.0",
+            "Artistic-1.0",
+            "CC-BY-NC-ND-4.0",
+            "HTMLTIDY",
+            "Glide",
+            "FSFAP",
+            "LGPLLR",
+            "OGL-UK-3.0",
+            "GFDL-1.2",
+            "SSH-OpenSSH",
+            "GFDL-1.1-only",
+            "MIT-feh",
+            "MPL-1.0",
+            "PostgreSQL",
+            "OLDAP-2.2.2",
+            "SMPPL",
+            "OFL-1.1",
+            "Leptonica",
+            "CERN-OHL-1.1",
+            "BSD-3-Clause-No-Nuclear-Warranty",
+            "CC-BY-ND-2.5",
+            "CC-BY-1.0",
+            "GFDL-1.2-only",
+            "OPUBL-1.0",
+            "libselinux-1.0",
+            "BSD-3-Clause",
+            "ANTLR-PD-fallback",
+            "copyleft-next-0.3.1",
+            "GPL-1.0+",
+            "wxWindows",
+            "LGPL-3.0",
+            "LGPL-2.1",
+            "StandardML-NJ",
+            "BSD-4-Clause",
+            "GPL-2.0-with-bison-exception",
+            "Apache-2.0",
+            "Artistic-1.0-cl8",
+            "GPL-2.0",
+            "Intel-ACPI",
+            "BSL-1.0",
+            "Artistic-1.0-Perl",
+            "BSD-2-Clause-Views",
+            "Interbase-1.0",
+            "NPOSL-3.0",
+            "FLTK-exception",
+            "Bootloader-exception",
+            "WxWindows-exception-3.1",
+            "Linux-syscall-note",
+            "Qt-LGPL-exception-1.1",
+            "LLVM-exception",
+            "PS-or-PDF-font-exception-20170817",
+            "GCC-exception-3.1",
+            "Autoconf-exception-3.0",
+            "LGPL-3.0-linking-exception",
+            "GCC-exception-2.0",
+            "Bison-exception-2.2",
+            "openvpn-openssl-exception",
+            "Libtool-exception",
+            "Autoconf-exception-2.0",
+            "GPL-3.0-linking-source-exception",
+            "GPL-CC-1.0",
+            "OCaml-LGPL-linking-exception",
+            "Universal-FOSS-exception-1.0",
+            "i2p-gpl-java-exception",
+            "CLISP-exception-2.0",
+            "OCCT-exception-1.0",
+            "Qwt-exception-1.0",
+            "gnu-javamail-exception",
+            "u-boot-exception-2.0",
+            "freertos-exception-2.0",
+            "Qt-GPL-exception-1.0",
+            "OpenJDK-assembly-exception-1.0",
+            "SHL-2.1",
+            "mif-exception",
+            "Fawkes-Runtime-exception",
+            "Swift-exception",
+            "GPL-3.0-linking-exception",
+            "SHL-2.0",
+            "Classpath-exception-2.0",
+            "LZMA-exception",
+            "Font-exception-2.0",
+            "Nokia-Qt-exception-1.1",
+            "DigiRule-FOSS-exception",
+            "eCos-exception-2.0",
+            "389-exception"
+          ]
         },
         "name": {
           "type": "string",
           "title": "License Name",
           "description": "If SPDX does not define the license used, this field may be used to provide the license name",
-          "examples": ["Acme Software License"]
+          "examples": [
+            "Acme Software License"
+          ]
         },
         "text": {
           "title": "License text",
@@ -631,7 +1253,9 @@
           "type": "string",
           "title": "License URL",
           "description": "The URL to the license file. If specified, a 'license' externalReference should also be specified for completeness",
-          "examples": ["https://www.apache.org/licenses/LICENSE-2.0.txt"],
+          "examples": [
+            "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          ],
           "format": "iri-reference"
         }
       }
@@ -653,12 +1277,16 @@
           ]
         }
       },
-      "oneOf":[
+      "oneOf": [
         {
-          "required": ["license"]
+          "required": [
+            "license"
+          ]
         },
         {
-          "required": ["expression"]
+          "required": [
+            "expression"
+          ]
         }
       ]
     },
@@ -724,7 +1352,9 @@
         "resolves": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/issue"},
+          "items": {
+            "$ref": "#/definitions/issue"
+          },
           "title": "Resolves",
           "description": "A collection of issues the patch resolves"
         }
@@ -810,7 +1440,9 @@
           },
           "title": "References",
           "description": "A collection of URL's for reference. Multiple URLs are allowed.",
-          "examples": ["https://example.com"]
+          "examples": [
+            "https://example.com"
+          ]
         }
       }
     },
@@ -886,7 +1518,9 @@
         "hashes": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/hash"},
+          "items": {
+            "$ref": "#/definitions/hash"
+          },
           "title": "Hashes",
           "description": "The hashes of the external reference (if applicable)."
         }
@@ -940,19 +1574,25 @@
           "type": "string",
           "title": "Service Group",
           "description": "The grouping name, namespace, or identifier. This will often be a shortened, single name of the company or project that produced the service or domain name. Whitespace and special characters should be avoided.",
-          "examples": ["com.acme"]
+          "examples": [
+            "com.acme"
+          ]
         },
         "name": {
           "type": "string",
           "title": "Service Name",
           "description": "The name of the service. This will often be a shortened, single name of the service.",
-          "examples": ["ticker-service"]
+          "examples": [
+            "ticker-service"
+          ]
         },
         "version": {
           "type": "string",
           "title": "Service Version",
           "description": "The service version.",
-          "examples": ["1.0.0"]
+          "examples": [
+            "1.0.0"
+          ]
         },
         "description": {
           "type": "string",
@@ -967,7 +1607,9 @@
           },
           "title": "Endpoints",
           "description": "The endpoint URIs of the service. Multiple endpoints are allowed.",
-          "examples": ["https://example.com/api/v1/ticker"]
+          "examples": [
+            "https://example.com/api/v1/ticker"
+          ]
         },
         "authenticated": {
           "type": "boolean",
@@ -982,27 +1624,35 @@
         "data": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/dataClassification"},
+          "items": {
+            "$ref": "#/definitions/dataClassification"
+          },
           "title": "Data Classification",
           "description": "Specifies the data classification."
         },
         "licenses": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/licenseChoice"},
+          "items": {
+            "$ref": "#/definitions/licenseChoice"
+          },
           "title": "Component License(s)"
         },
         "externalReferences": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/externalReference"},
+          "items": {
+            "$ref": "#/definitions/externalReference"
+          },
           "title": "External References",
           "description": "External references provide a way to document systems, sites, and information that may be relevant but which are not included with the BOM."
         },
         "services": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/service"},
+          "items": {
+            "$ref": "#/definitions/service"
+          },
           "uniqueItems": true,
           "title": "Services",
           "description": "A list of services included or deployed behind the parent service. This is not a dependency tree. It provides a way to specify a hierarchical representation of service assemblies."
@@ -1017,7 +1667,9 @@
           "title": "Properties",
           "description": "Provides the ability to document properties in a name-value store. This provides flexibility to include data not officially supported in the standard without having to use additional namespaces or create extensions. Unlike key-value stores, properties support duplicate names, each potentially having different values. Property names of interest to the general public are encouraged to be registered in the [CycloneDX Property Taxonomy](https://github.com/CycloneDX/cyclonedx-property-taxonomy). Formal registration is OPTIONAL.",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/property"}
+          "items": {
+            "$ref": "#/definitions/property"
+          }
         },
         "signature": {
           "$ref": "#/definitions/signature",
@@ -1058,7 +1710,6 @@
       "title": "Data flow direction",
       "description": "Specifies the flow direction of the data. Direction is relative to the service. Inbound flow states that data enters the service. Outbound flow states that data leaves the service. Bi-directional states that data flows both ways, and unknown states that the direction is not known."
     },
-
     "copyright": {
       "type": "object",
       "title": "Copyright",
@@ -1073,7 +1724,6 @@
         }
       }
     },
-
     "componentEvidence": {
       "type": "object",
       "title": "Evidence",
@@ -1083,13 +1733,17 @@
         "licenses": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/licenseChoice"},
+          "items": {
+            "$ref": "#/definitions/licenseChoice"
+          },
           "title": "Component License(s)"
         },
         "copyright": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/copyright"},
+          "items": {
+            "$ref": "#/definitions/copyright"
+          },
           "title": "Copyright"
         }
       }
@@ -1258,14 +1912,18 @@
         "resolves": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/issue"},
+          "items": {
+            "$ref": "#/definitions/issue"
+          },
           "title": "Resolves",
           "description": "A collection of issues that have been resolved."
         },
         "notes": {
           "type": "array",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/note"},
+          "items": {
+            "$ref": "#/definitions/note"
+          },
           "title": "Notes",
           "description": "Zero or more release notes containing the locale and content. Multiple note objects may be specified to support release notes in a wide variety of languages."
         },
@@ -1274,7 +1932,9 @@
           "title": "Properties",
           "description": "Provides the ability to document properties in a name-value store. This provides flexibility to include data not officially supported in the standard without having to use additional namespaces or create extensions. Unlike key-value stores, properties support duplicate names, each potentially having different values. Property names of interest to the general public are encouraged to be registered in the [CycloneDX Property Taxonomy](https://github.com/CycloneDX/cyclonedx-property-taxonomy). Formal registration is OPTIONAL.",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/property"}
+          "items": {
+            "$ref": "#/definitions/property"
+          }
         }
       }
     },
@@ -1282,7 +1942,9 @@
       "type": "object",
       "title": "Advisory",
       "description": "Title and location where advisory information can be obtained. An advisory is a notification of a threat to a component, service, or system.",
-      "required": ["url"],
+      "required": [
+        "url"
+      ],
       "additionalProperties": false,
       "properties": {
         "title": {
@@ -1488,7 +2150,9 @@
           "type": "array",
           "title": "CWEs",
           "description": "List of Common Weaknesses Enumerations (CWEs) codes that describes this vulnerability. For example 399 (of https://cwe.mitre.org/data/definitions/399.html)",
-          "examples": [399],
+          "examples": [
+            399
+          ],
           "additionalItems": false,
           "items": {
             "$ref": "#/definitions/cwe"
@@ -1567,7 +2231,9 @@
           "title": "Creation Tools",
           "description": "The tool(s) used to identify, confirm, or score the vulnerability.",
           "additionalItems": false,
-          "items": {"$ref": "#/definitions/tool"}
+          "items": {
+            "$ref": "#/definitions/tool"
+          }
         },
         "analysis": {
           "type": "object",
@@ -1627,10 +2293,14 @@
                 "items": {
                   "oneOf": [
                     {
-                      "required": ["version"]
+                      "required": [
+                        "version"
+                      ]
                     },
                     {
-                      "required": ["range"]
+                      "required": [
+                        "range"
+                      ]
                     }
                   ],
                   "additionalProperties": false,
@@ -1689,9 +2359,256 @@
       "maxLength": 1024
     },
     "signature": {
-      "$ref": "jsf-0.82.schema.json#/definitions/signature",
       "title": "Signature",
-      "description": "Enveloped signature in [JSON Signature Format (JSF)](https://cyberphone.github.io/doc/security/jsf.html)."
+      "description": "Enveloped signature in [JSON Signature Format (JSF)](https://cyberphone.github.io/doc/security/jsf.html).",
+      "type": "object",
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "signers": {
+              "type": "array",
+              "title": "Signature",
+              "description": "Unique top level property for Multiple Signatures. (multisignature)",
+              "additionalItems": false,
+              "items": {
+                "$ref": "#/definitions/signer"
+              }
+            }
+          }
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "chain": {
+              "type": "array",
+              "title": "Signature",
+              "description": "Unique top level property for Signature Chains. (signaturechain)",
+              "additionalItems": false,
+              "items": {
+                "$ref": "#/definitions/signer"
+              }
+            }
+          }
+        },
+        {
+          "title": "Signature",
+          "description": "Unique top level property for simple signatures. (signaturecore)",
+          "$ref": "#/definitions/signer"
+        }
+      ]
+    },
+    "signer": {
+      "type": "object",
+      "title": "Signature",
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "oneOf": [
+            {
+              "type": "string",
+              "title": "Algorithm",
+              "description": "Signature algorithm. The currently recognized JWA [RFC7518] and RFC8037 [RFC8037] asymmetric key algorithms. Note: Unlike RFC8037 [RFC8037] JSF requires explicit Ed* algorithm names instead of \"EdDSA\".",
+              "enum": [
+                "RS256",
+                "RS384",
+                "RS512",
+                "PS256",
+                "PS384",
+                "PS512",
+                "ES256",
+                "ES384",
+                "ES512",
+                "Ed25519",
+                "Ed448",
+                "HS256",
+                "HS384",
+                "HS512"
+              ]
+            },
+            {
+              "type": "string",
+              "title": "Algorithm",
+              "description": "Signature algorithm. Note: If proprietary signature algorithms are added, they must be expressed as URIs.",
+              "format": "uri"
+            }
+          ]
+        },
+        "keyId": {
+          "type": "string",
+          "title": "Key ID",
+          "description": "Optional. Application specific string identifying the signature key."
+        },
+        "publicKey": {
+          "title": "Public key",
+          "description": "Optional. Public key object.",
+          "$ref": "#/definitions/publicKey"
+        },
+        "certificatePath": {
+          "type": "array",
+          "title": "Certificate path",
+          "description": "Optional. Sorted array of X.509 [RFC5280] certificates, where the first element must contain the signature certificate. The certificate path must be contiguous but is not required to be complete.",
+          "additionalItems": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "excludes": {
+          "type": "array",
+          "title": "Excludes",
+          "description": "Optional. Array holding the names of one or more application level properties that must be excluded from the signature process. Note that the \"excludes\" property itself, must also be excluded from the signature process. Since both the \"excludes\" property and the associated data it points to are unsigned, a conforming JSF implementation must provide options for specifying which properties to accept.",
+          "additionalItems": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "value": {
+          "type": "string",
+          "title": "Signature",
+          "description": "The signature data. Note that the binary representation must follow the JWA [RFC7518] specifications."
+        }
+      }
+    },
+    "keyType": {
+      "type": "string",
+      "title": "Key type",
+      "description": "Key type indicator.",
+      "enum": [
+        "EC",
+        "OKP",
+        "RSA"
+      ]
+    },
+    "publicKey": {
+      "title": "Public key",
+      "description": "Optional. Public key object.",
+      "type": "object",
+      "required": [
+        "kty"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "kty": {
+          "$ref": "#/definitions/keyType"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kty": {
+                "const": "EC"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "kty",
+              "crv",
+              "x",
+              "y"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kty": {
+                "$ref": "#/definitions/keyType"
+              },
+              "crv": {
+                "type": "string",
+                "title": "Curve name",
+                "description": "EC curve name.",
+                "enum": [
+                  "P-256",
+                  "P-384",
+                  "P-521"
+                ]
+              },
+              "x": {
+                "type": "string",
+                "title": "Coordinate",
+                "description": "EC curve point X. The length of this field must be the full size of a coordinate for the curve specified in the \"crv\" parameter. For example, if the value of \"crv\" is \"P-521\", the decoded argument must be 66 bytes."
+              },
+              "y": {
+                "type": "string",
+                "title": "Coordinate",
+                "description": "EC curve point Y. The length of this field must be the full size of a coordinate for the curve specified in the \"crv\" parameter. For example, if the value of \"crv\" is \"P-256\", the decoded argument must be 32 bytes."
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kty": {
+                "const": "OKP"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "kty",
+              "crv",
+              "x"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kty": {
+                "$ref": "#/definitions/keyType"
+              },
+              "crv": {
+                "type": "string",
+                "title": "Curve name",
+                "description": "EdDSA curve name.",
+                "enum": [
+                  "Ed25519",
+                  "Ed448"
+                ]
+              },
+              "x": {
+                "type": "string",
+                "title": "Coordinate",
+                "description": "EdDSA curve point X. The length of this field must be the full size of a coordinate for the curve specified in the \"crv\" parameter. For example, if the value of \"crv\" is \"Ed25519\", the decoded argument must be 32 bytes."
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kty": {
+                "const": "RSA"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "kty",
+              "n",
+              "e"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kty": {
+                "$ref": "#/definitions/keyType"
+              },
+              "n": {
+                "type": "string",
+                "title": "Modulus",
+                "description": "RSA modulus."
+              },
+              "e": {
+                "type": "string",
+                "title": "Exponent",
+                "description": "RSA exponent."
+              }
+            }
+          }
+        }
+      ]
     }
   }
 }

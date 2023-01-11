@@ -294,3 +294,7 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 .gl-max-w-0 {
   max-width: 0;
 }
+
+.gl-isolate {
+  isolation: isolate;
+}

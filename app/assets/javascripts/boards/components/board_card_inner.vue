@@ -8,7 +8,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { sortBy } from 'lodash';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
@@ -43,7 +43,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [boardCardInner],
-  inject: ['rootPath', 'scopedLabelsAvailable', 'isEpicBoard', 'issuableType'],
+  inject: ['rootPath', 'scopedLabelsAvailable', 'isEpicBoard', 'issuableType', 'isGroupBoard'],
   props: {
     item: {
       type: Object,
@@ -78,7 +78,6 @@ export default {
   },
   computed: {
     ...mapState(['isShowingLabels', 'allowSubEpics']),
-    ...mapGetters(['isProjectBoard']),
     cappedAssignees() {
       // e.g. maxRender is 4,
       // Render up to all 4 assignees if there are only 4 assigness
@@ -158,7 +157,7 @@ export default {
       return Math.round((this.item.descendantWeightSum.closedIssues / this.totalWeight) * 100);
     },
     showReferencePath() {
-      return !this.isProjectBoard && this.itemReferencePath;
+      return this.isGroupBoard && this.itemReferencePath;
     },
     avatarSize() {
       return { default: 16, lg: 24 };

@@ -58,8 +58,6 @@ export default function createComponent({
       ...state,
     },
     getters: {
-      isGroupBoard: () => false,
-      isProjectBoard: () => true,
       isEpicBoard: () => false,
       ...getters,
     },
@@ -104,6 +102,8 @@ export default function createComponent({
       canAdminList: true,
       isIssueBoard: true,
       isEpicBoard: false,
+      isGroupBoard: false,
+      isProjectBoard: true,
       ...provide,
     },
     stubs,

@@ -1,9 +1,7 @@
 import { find } from 'lodash';
-import { BoardType, inactiveId, issuableTypes } from '../constants';
+import { inactiveId, issuableTypes } from '../constants';
 
 export default {
-  isGroupBoard: (state) => state.boardType === BoardType.group,
-  isProjectBoard: (state) => state.boardType === BoardType.project,
   isSidebarOpen: (state) => state.activeId !== inactiveId,
   isSwimlanesOn: () => false,
   getBoardItemById: (state) => (id) => {

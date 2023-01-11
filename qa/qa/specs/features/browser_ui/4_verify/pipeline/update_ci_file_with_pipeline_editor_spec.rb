@@ -12,7 +12,7 @@ module QA
       end
 
       let!(:runner) do
-        Resource::Runner.fabricate_via_api! do |runner|
+        Resource::ProjectRunner.fabricate_via_api! do |runner|
           runner.project = project
           runner.name = random_test_string
           runner.tags = [random_test_string]

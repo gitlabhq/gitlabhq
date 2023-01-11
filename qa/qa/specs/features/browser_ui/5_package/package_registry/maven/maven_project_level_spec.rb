@@ -33,7 +33,7 @@ module QA
       end
 
       let(:runner) do
-        Resource::Runner.fabricate! do |runner|
+        Resource::ProjectRunner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"
           runner.tags = ["runner-for-#{package_project.name}"]
           runner.executor = :docker
@@ -173,11 +173,11 @@ module QA
       end
 
       let(:runner) do
-        Resource::Runner.fabricate! do |runner|
+        Resource::GroupRunner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"
           runner.tags = ["runner-for-#{imported_project.name}"]
           runner.executor = :docker
-          runner.token = group.reload!.runners_token
+          runner.group = group
         end
       end
 

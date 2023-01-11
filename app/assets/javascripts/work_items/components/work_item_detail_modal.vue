@@ -161,7 +161,7 @@ export default {
       :work-item-parent-id="issueGid"
       :work-item-id="displayedWorkItemId"
       :work-item-iid="workItemIid"
-      class="gl-p-5 gl-mt-n3"
+      class="gl-p-5 gl-mt-n3 gl-reset-bg gl-isolate"
       @close="hide"
       @deleteWorkItem="deleteWorkItem"
       @update-modal="updateModal"

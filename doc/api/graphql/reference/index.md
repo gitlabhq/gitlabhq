@@ -5727,11 +5727,12 @@ Input type: `UpdateRequirementInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdaterequirementclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdaterequirementdescription"></a>`description` | [`String`](#string) | Description of the requirement. |
-| <a id="mutationupdaterequirementiid"></a>`iid` | [`String!`](#string) | IID of the requirement to update. |
+| <a id="mutationupdaterequirementiid"></a>`iid` | [`String`](#string) | IID of the requirement to update. |
 | <a id="mutationupdaterequirementlasttestreportstate"></a>`lastTestReportState` | [`TestReportState`](#testreportstate) | Creates a test report for the requirement with the given state. |
 | <a id="mutationupdaterequirementprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path the requirement is associated with. |
 | <a id="mutationupdaterequirementstate"></a>`state` | [`RequirementState`](#requirementstate) | State of the requirement. |
 | <a id="mutationupdaterequirementtitle"></a>`title` | [`String`](#string) | Title of the requirement. |
+| <a id="mutationupdaterequirementworkitemiid"></a>`workItemIid` | [`String`](#string) | IID of the requirement work item to update. |
 
 #### Fields
 

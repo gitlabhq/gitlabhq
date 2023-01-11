@@ -18,7 +18,7 @@ module QA
       end
 
       let!(:runner) do
-        Resource::Runner.fabricate! do |runner|
+        Resource::ProjectRunner.fabricate! do |runner|
           runner.project = project
           runner.name = "runner-for-#{project.name}"
           runner.tags = ["runner-for-#{project.name}"]

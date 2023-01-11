@@ -9,7 +9,7 @@ import {
   GlModalDirective,
 } from '@gitlab/ui';
 import { throttle } from 'lodash';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 
 import BoardForm from 'ee_else_ce/boards/components/board_form.vue';
 
@@ -50,6 +50,7 @@ export default {
     'scopedIssueBoardFeatureEnabled',
     'weights',
     'boardType',
+    'isGroupBoard',
   ],
   props: {
     throttleDuration: {
@@ -76,7 +77,6 @@ export default {
 
   computed: {
     ...mapState(['board', 'isBoardLoading']),
-    ...mapGetters(['isGroupBoard', 'isProjectBoard']),
     parentType() {
       return this.boardType;
     },

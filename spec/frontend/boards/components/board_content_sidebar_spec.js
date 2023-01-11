@@ -34,7 +34,6 @@ describe('BoardContentSidebar', () => {
         groupPathForActiveIssue: () => mockIssueGroupPath,
         projectPathForActiveIssue: () => mockIssueProjectPath,
         isSidebarOpen: () => true,
-        isGroupBoard: () => false,
         ...mockGetters,
       },
       actions: mockActions,
@@ -55,6 +54,7 @@ describe('BoardContentSidebar', () => {
         rootPath: '/',
         groupId: 1,
         issuableType: issuableTypes.issue,
+        isGroupBoard: false,
       },
       store,
       stubs: {

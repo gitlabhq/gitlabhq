@@ -29,9 +29,6 @@ describe('Board card', () => {
         ...initialState,
       },
       actions: mockActions,
-      getters: {
-        isProjectBoard: () => false,
-      },
     });
   };
 
@@ -62,6 +59,8 @@ describe('Board card', () => {
         scopedLabelsAvailable: false,
         isEpicBoard: false,
         issuableType: 'issue',
+        isProjectBoard: false,
+        isGroupBoard: true,
         ...provide,
       },
     });

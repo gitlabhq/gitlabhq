@@ -37,7 +37,7 @@ module QA
           )
         end
 
-        @runner = Resource::Runner.fabricate_via_api! do |runner|
+        @runner = Resource::ProjectRunner.fabricate_via_api! do |runner|
           runner.project = project
           runner.name = "qa-runner-#{Time.now.to_i}"
           runner.tags = %w[web-ide]

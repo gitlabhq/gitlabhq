@@ -36,6 +36,8 @@ module QA
         end
 
         def register!
+          raise("Missing runner token value!") unless token
+
           cmd = <<~CMD.tr("\n", ' ')
             docker run -d --rm --network #{runner_network} --name #{@name}
             #{'-v /var/run/docker.sock:/var/run/docker.sock' if @executor == :docker}

@@ -1,6 +1,6 @@
 <script>
 import { GlModal, GlAlert } from '@gitlab/ui';
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl, updateHistory, getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
@@ -51,6 +51,12 @@ export default {
     boardBaseUrl: {
       default: '',
     },
+    isGroupBoard: {
+      default: false,
+    },
+    isProjectBoard: {
+      default: false,
+    },
   },
   props: {
     canAdminBoard: {
@@ -84,7 +90,6 @@ export default {
   },
   computed: {
     ...mapState(['error']),
-    ...mapGetters(['isGroupBoard', 'isProjectBoard']),
     isNewForm() {
       return this.currentPage === formType.new;
     },

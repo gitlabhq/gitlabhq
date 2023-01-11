@@ -6,7 +6,7 @@ import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdow
 import { __, sprintf } from '~/locale';
 import BoardSidebarTimeTracker from '~/boards/components/sidebar/board_sidebar_time_tracker.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
-import { ISSUABLE, INCIDENT, issuableTypes } from '~/boards/constants';
+import { BoardType, ISSUABLE, INCIDENT, issuableTypes } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
@@ -68,11 +68,13 @@ export default {
     issuableType: {
       default: issuableTypes.issue,
     },
+    isGroupBoard: {
+      default: false,
+    },
   },
   inheritAttrs: false,
   computed: {
     ...mapGetters([
-      'isGroupBoard',
       'isSidebarOpen',
       'activeBoardItem',
       'groupPathForActiveIssue',
@@ -94,14 +96,17 @@ export default {
     fullPath() {
       return this.activeBoardItem?.referencePath?.split('#')[0] || '';
     },
+    parentType() {
+      return this.isGroupBoard ? BoardType.group : BoardType.project;
+    },
     createLabelTitle() {
       return sprintf(__('Create %{workspace} label'), {
-        workspace: this.isGroupBoard ? 'group' : 'project',
+        workspace: this.parentType,
       });
     },
     manageLabelTitle() {
       return sprintf(__('Manage %{workspace} labels'), {
-        workspace: this.isGroupBoard ? 'group' : 'project',
+        workspace: this.parentType,
       });
     },
     attrWorkspacePath() {

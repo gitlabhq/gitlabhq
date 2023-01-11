@@ -39,7 +39,7 @@ module QA
         end
 
         let!(:runner) do
-          Resource::Runner.fabricate! do |runner|
+          Resource::ProjectRunner.fabricate! do |runner|
             runner.name = "qa-runner-#{Time.now.to_i}"
             runner.tags = ["runner-for-#{project.name}"]
             runner.executor = :docker
