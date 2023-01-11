@@ -60,16 +60,15 @@ export default {
     isEpicBoard: {
       default: false,
     },
+    disabled: {
+      default: true,
+    },
   },
   props: {
     list: {
       type: Object,
       default: () => ({}),
       required: false,
-    },
-    disabled: {
-      type: Boolean,
-      required: true,
     },
     isSwimlanesHeader: {
       type: Boolean,

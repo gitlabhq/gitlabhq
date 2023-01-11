@@ -3289,7 +3289,9 @@ Use `retry:when` with `retry:max` to retry jobs for only specific failure cases.
 
 - `always`: Retry on any failure (default).
 - `unknown_failure`: Retry when the failure reason is unknown.
-- `script_failure`: Retry when the script failed.
+- `script_failure`: Retry when:
+  - The script failed.
+  - The runner failed to pull the Docker image. For `docker`, `docker+machine`, `kubernetes` [executors](https://docs.gitlab.com/runner/executors/).
 - `api_failure`: Retry on API failure.
 - `stuck_or_timeout_failure`: Retry when the job got stuck or timed out.
 - `runner_system_failure`: Retry if there is a runner system failure (for example, job setup failed).

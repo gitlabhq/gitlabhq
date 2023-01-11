@@ -34,7 +34,6 @@ describe('Board Column Component', () => {
     wrapper = shallowMount(BoardColumn, {
       store,
       propsData: {
-        disabled: false,
         list: listMock,
       },
     });

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectImportState, type: :model do
+RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
   let_it_be(:correlation_id) { 'cid' }
   let_it_be(:import_state, refind: true) { create(:import_state, correlation_id_value: correlation_id) }
 
@@ -17,22 +17,19 @@ RSpec.describe ProjectImportState, type: :model do
   end
 
   describe 'Project import job' do
-    let_it_be(:import_state) { create(:import_state, import_url: generate(:url)) }
-    let_it_be(:project) { import_state.project }
+    let_it_be(:project) { create(:project) }
+
+    let(:import_state) { create(:import_state, import_url: generate(:url), project: project) }
+    let(:jid) { '551d3ceac5f67a116719ce41' }
 
     before do
-      allow_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:import_repository)
-        .with(project.import_url, http_authorization_header: '', mirror: false, resolved_address: '').and_return(true)
-
       # Works around https://github.com/rspec/rspec-mocks/issues/910
       allow(Project).to receive(:find).with(project.id).and_return(project)
-      expect(project).to receive(:after_import).and_call_original
+      allow(project).to receive(:add_import_job).and_return(jid)
     end
 
     it 'imports a project', :sidekiq_might_not_need_inline do
-      expect(RepositoryImportWorker).to receive(:perform_async).and_call_original
-
-      expect { import_state.schedule }.to change { import_state.status }.from('none').to('finished')
+      expect { import_state.schedule }.to change { import_state.status }.from('none').to('scheduled')
     end
 
     it 'records job and correlation IDs', :sidekiq_might_not_need_inline do
@@ -40,7 +37,8 @@ RSpec.describe ProjectImportState, type: :model do
 
       import_state.schedule
 
-      expect(import_state.jid).to be_an_instance_of(String)
+      expect(project).to have_received(:add_import_job)
+      expect(import_state.jid).to eq(jid)
       expect(import_state.correlation_id).to eq(correlation_id)
     end
   end

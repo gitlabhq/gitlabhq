@@ -12,10 +12,14 @@ Migration/UpdateLargeTable:
     - :ci_builds_metadata
     - :ci_build_trace_metadata
     - :ci_job_artifacts
-    - :ci_pipeline_messages
+    - :ci_job_artifact_states
+    - :ci_job_variables
+    - :ci_namespace_mirrors
     - :ci_pipelines
     - :ci_pipelines_config
+    - :ci_pipeline_messages
     - :ci_pipeline_variables
+    - :ci_refs
     - :ci_stages
     - :deployments
     - :description_versions

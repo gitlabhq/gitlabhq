@@ -12,6 +12,30 @@ You can customize components of Auto DevOps to fit your needs. For example, you 
 - Enable staging and canary deployments with a custom [CI/CD configuration](#customize-gitlab-ciyml).
 - Extend Auto DevOps with the [GitLab API](#extend-auto-devops-with-the-api).
 
+## Auto DevOps banner
+
+When Auto DevOps is not enabled, a banner displays for users with at
+least the Maintainer role:
+
+![Auto DevOps banner](img/autodevops_banner_v12_6.png)
+
+The banner can be disabled for:
+
+- A user, when they dismiss it themselves.
+- A project, by explicitly [disabling Auto DevOps](index.md#enable-or-disable-auto-devops).
+- An entire GitLab instance:
+  - By an administrator running the following in a Rails console:
+
+    ```ruby
+    Feature.enable(:auto_devops_banner_disabled)
+    ```
+
+  - Through the REST API with an administrator access token:
+
+    ```shell
+    curl --data "value=true" --header "PRIVATE-TOKEN: <personal_access_token>" "https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled"
+    ```
+
 ## Custom buildpacks
 
 You can customize your buildpacks when either:
@@ -58,7 +82,7 @@ To use only a single custom buildpack, you should provide the project CI/CD vari
 
 ## Custom Dockerfiles
 
-> Support for `DOCKERFILE_PATH` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35662) in GitLab 13.2
+> `DOCKERFILE_PATH` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35662) in GitLab 13.2.
 
 If you have a Dockerfile in the root of your project repository, Auto
 DevOps builds a Docker image based on the Dockerfile. This can be
@@ -198,7 +222,7 @@ To override settings like `replicaCount`, use the `REPLICAS` [build and deployme
 
 ### Customize `helm upgrade`
 
-The `helm upgrade` command is used by the [auto-deploy-image](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image).
+The [auto-deploy-image](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image) uses the `helm upgrade` command.
 To customize this command, pass it options with the `HELM_UPGRADE_EXTRA_ARGS` CI/CD variable.
 
 For example, to disable pre- and post-upgrade hooks when `helm upgrade` runs:
@@ -239,28 +263,14 @@ To remove behaviors from the Auto DevOps pipeline:
 into your project.
 1. Edit your copy of the template as needed.
 
-## Use multiple Kubernetes clusters
-
-See [Multiple Kubernetes clusters for Auto DevOps](multiple_clusters_auto_devops.md).
-
-## Customizing the Kubernetes namespace
-
-In GitLab 14.5 and earlier, you could use `environment:kubernetes:namespace`
-to specify a namespace for the environment.
-However, this feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8),
-along with certificate-based integration.
-
-You should now use the `KUBE_NAMESPACE` environment variable and
-[limit its environment scope](../../ci/environments/index.md#scope-environments-with-specs).
-
-## Use individual components of Auto DevOps
+### Use individual components of Auto DevOps
 
 If you only require a subset of the features offered by Auto DevOps,
 you can include individual Auto DevOps jobs in your own
 `.gitlab-ci.yml`. Be sure to also define the stage required by each
 job in your `.gitlab-ci.yml` file.
 
-For example, to make use of [Auto Build](stages.md#auto-build), you can add the following to
+For example, to use [Auto Build](stages.md#auto-build), you can add the following to
 your `.gitlab-ci.yml`:
 
 ```yaml
@@ -278,11 +288,25 @@ From [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213336),
 Auto DevOps templates that use the [`only`](../../ci/yaml/index.md#only--except) or
 [`except`](../../ci/yaml/index.md#only--except) syntax have switched
 to the [`rules`](../../ci/yaml/index.md#rules) syntax.
-If your `.gitlab-ci.yml` extends these Auto DevOps templates and overrides the `only` or
-`except` keywords, you must migrate your templates to use the
+If your `.gitlab-ci.yml` extends these Auto DevOps templates and overrides `only` or
+`except`, migrate your templates to the
 [`rules`](../../ci/yaml/index.md#rules) syntax.
-If you cannot migrate just yet, you can alternatively pin your templates to
+If you cannot migrate, you can pin your templates to
 the [GitLab 12.10 based templates](https://gitlab.com/gitlab-org/auto-devops-v12-10).
+
+## Use multiple Kubernetes clusters
+
+See [Multiple Kubernetes clusters for Auto DevOps](multiple_clusters_auto_devops.md).
+
+## Customizing the Kubernetes namespace
+
+In GitLab 14.5 and earlier, you could use `environment:kubernetes:namespace`
+to specify a namespace for the environment.
+However, this feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8),
+along with certificate-based integration.
+
+You should now use the `KUBE_NAMESPACE` environment variable and
+[limit its environment scope](../../ci/environments/index.md#scope-environments-with-specs).
 
 ## Use images hosted in a local Docker registry
 
@@ -307,10 +331,13 @@ You can configure many Auto DevOps jobs to run in an [offline environment](../..
 
 ## PostgreSQL database support
 
-To support applications requiring a database,
-[PostgreSQL](https://www.postgresql.org/) is provisioned by default. The credentials to access
-the database are preconfigured, but can be customized by setting the associated
-[CI/CD variables](cicd_variables.md). You can use these credentials to define a `DATABASE_URL`:
+To support applications that require a database,
+[PostgreSQL](https://www.postgresql.org/) is provisioned by default.
+The credentials to access the database are preconfigured.
+
+To customize the credentials, set the associated
+[CI/CD variables](cicd_variables.md). You can also
+define a custom `DATABASE_URL`:
 
 ```yaml
 postgres://user:password@postgres-host:postgres-port/postgres-database
@@ -318,23 +345,20 @@ postgres://user:password@postgres-host:postgres-port/postgres-database
 
 ### Upgrading PostgreSQL
 
-The version of the chart used to provision PostgreSQL:
+GitLab uses chart version 8.2.1 to provision PostgreSQL by default.
+You can set the version from 0.7.1 to 8.2.1.
 
-- Is 8.2.1 in GitLab 13.0 and later, but can be set back to 0.7.1 if needed.
-- Can be set to from 0.7.1 to 8.2.1 in GitLab 12.9 and 12.10.
-- Is 0.7.1 in GitLab 12.8 and earlier.
-
-GitLab encourages users to [migrate their database](upgrading_postgresql.md)
+If you use an older chart version, you should [migrate your database](upgrading_postgresql.md)
 to the newer PostgreSQL.
 
 The CI/CD variable `AUTO_DEVOPS_POSTGRES_CHANNEL` that controls default provisioned
-PostgreSQL was changed to `2` in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/210499).
+PostgreSQL changed to `2` in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/210499).
 To use the old PostgreSQL, set the `AUTO_DEVOPS_POSTGRES_CHANNEL` variable to
 `1`.
 
 ### Customize values for PostgreSQL Helm Chart
 
-> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/issues/113) in auto-deploy-image v2, in GitLab 13.8.
+> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/issues/113) in GitLab 13.8 with auto-deploy-image v2.
 
 To set custom values, do one of the following:
 
@@ -347,9 +371,9 @@ To set custom values, do one of the following:
 
 ### Use external PostgreSQL database providers
 
-Auto DevOps provides out-of-the-box support for a PostgreSQL container for
-production environments. However, you might want to use an external managed provider (such as
-AWS Relational Database Service) for PostgreSQL.
+Auto DevOps provides out-of-the-box support for a PostgreSQL container
+for production environments. However, you might want to use an
+external managed provider like AWS Relational Database Service.
 
 To use an external managed provider:
 
@@ -368,27 +392,3 @@ To use an external managed provider:
    ```
 
 1. Ensure your Kubernetes cluster has network access to where PostgreSQL is hosted.
-
-## Auto DevOps banner
-
-The following Auto DevOps banner displays for users with Maintainer or greater
-permissions on new projects when Auto DevOps is not enabled:
-
-![Auto DevOps banner](img/autodevops_banner_v12_6.png)
-
-The banner can be disabled for:
-
-- A user, when they dismiss it themselves.
-- A project, by explicitly [disabling Auto DevOps](index.md#enable-or-disable-auto-devops).
-- An entire GitLab instance:
-  - By an administrator running the following in a Rails console:
-
-    ```ruby
-    Feature.enable(:auto_devops_banner_disabled)
-    ```
-
-  - Through the REST API with an administrator access token:
-
-    ```shell
-    curl --data "value=true" --header "PRIVATE-TOKEN: <personal_access_token>" "https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled"
-    ```

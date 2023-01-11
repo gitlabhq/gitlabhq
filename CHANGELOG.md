@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.7.3 (2023-01-11)
+
+### Fixed (3 changes)
+
+- [Reset Container Repository Sync status on secondary](gitlab-org/gitlab@5a6d024e199c9ab9fd39df2db44a133c022eadd5) ([merge request](gitlab-org/gitlab!108679))
+- [Enforce memory-watchdog by default](gitlab-org/gitlab@6f7fcb0f50330af46a5f7311796e5375d6d59816) ([merge request](gitlab-org/gitlab!108679))
+- [Geo: Container Repository push events don't work](gitlab-org/gitlab@721227d157cd2f4fd842e5dcf54180bcc470336a) ([merge request](gitlab-org/gitlab!108679))
+
 ## 15.7.2 (2023-01-09)
 
 ### Security (9 changes)

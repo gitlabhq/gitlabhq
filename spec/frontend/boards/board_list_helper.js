@@ -86,7 +86,6 @@ export default function createComponent({
     apolloProvider: fakeApollo,
     store,
     propsData: {
-      disabled: false,
       list,
       boardItems: [issue],
       canAdminList: true,
@@ -104,6 +103,7 @@ export default function createComponent({
       isEpicBoard: false,
       isGroupBoard: false,
       isProjectBoard: true,
+      disabled: false,
       ...provide,
     },
     stubs,

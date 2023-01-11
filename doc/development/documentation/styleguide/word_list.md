@@ -186,6 +186,10 @@ Instead, use **assign**. For example:
 - Assign the issue to an epic.
 - Assign a user to the issue.
 
+## authenticated user
+
+Use **authenticated user** instead of other variations, like **signed in user** or **logged in user**.
+
 ## below
 
 Try to avoid **below** when referring to an example or table in a documentation page. If required, use **following** instead. For example:
@@ -691,6 +695,10 @@ Do not use **limitations**. Use **known issues** instead.
 
 Do not use **log in** or **log on**. Use [sign in](#sign-in) instead. If the user interface has **Log in**, you can use it.
 
+## logged-in user, logged in user
+
+Use **authenticated user** instead of **logged-in user** or **logged in user**.
+
 ## lower
 
 Do not use **lower** when talking about version numbers.
@@ -1074,6 +1082,10 @@ You can use **single sign-on**.
 ## sign up
 
 Use **register** instead of **sign up** when talking about creating an account.
+
+## signed-in user, signed in user
+
+Use **authenticated user** instead of **signed-in user** or **signed in user**.
 
 ## simply, simple
 

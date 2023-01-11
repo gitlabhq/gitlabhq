@@ -49,7 +49,6 @@ describe('Board card', () => {
       propsData: {
         list: mockLabelList,
         item,
-        disabled: false,
         index: 0,
         ...propsData,
       },
@@ -61,6 +60,7 @@ describe('Board card', () => {
         issuableType: 'issue',
         isProjectBoard: false,
         isGroupBoard: true,
+        disabled: false,
         ...provide,
       },
     });

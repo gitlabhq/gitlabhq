@@ -479,6 +479,16 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       end
     end
 
+    shared_examples_for "creates a new pipeline" do
+      it "creates a new pipeline" do
+        expect(MergeRequests::CreatePipelineWorker)
+          .to receive(:perform_async)
+          .with(project.id, user.id, merge_request.id, { "allow_duplicate" => true })
+
+        update_merge_request(target_branch: new_target_branch)
+      end
+    end
+
     shared_examples_for 'correct merge behavior' do
       let(:opts) do
         {
@@ -799,6 +809,10 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
           update_merge_request({ target_branch: "target" })
         end
+
+        it_behaves_like "creates a new pipeline" do
+          let(:new_target_branch) { "target" }
+        end
       end
 
       context 'when auto merge is enabled and target branch changed' do
@@ -812,6 +826,10 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           end
 
           update_merge_request({ target_branch: 'target' })
+        end
+
+        it_behaves_like "creates a new pipeline" do
+          let(:new_target_branch) { "target" }
         end
       end
     end
@@ -1236,6 +1254,10 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
         expect { update_merge_request(target_branch: 'master', target_branch_was_deleted: true) }
           .to change { merge_request.reload.target_branch }.from('mr-a').to('master')
+      end
+
+      it_behaves_like "creates a new pipeline" do
+        let(:new_target_branch) { "target" }
       end
     end
 

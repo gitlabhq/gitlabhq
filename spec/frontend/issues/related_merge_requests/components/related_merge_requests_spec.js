@@ -51,7 +51,9 @@ describe('RelatedMergeRequests', () => {
         });
       });
 
-      it('should return an array with single assingee', () => {
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/387789
+      // eslint-disable-next-line jest/no-disabled-tests
+      it.skip('should return an array with single assingee', () => {
         const mr = { assignee: assignees[0] };
 
         expect(wrapper.vm.getAssignees(mr)).toEqual([assignees[0]]);

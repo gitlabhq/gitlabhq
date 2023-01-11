@@ -35,3 +35,10 @@ To determine whether you're viewing a group or personal namespace, you can view 
 | A user named `alex`. | `https://gitlab.example.com/alex` | `alex` |
 | A group named `alex-team`. | `https://gitlab.example.com/alex-team` | `alex-team` |
 | A group named `alex-team` with a subgroup named `marketing`. |  `https://gitlab.example.com/alex-team/marketing` | `alex-team/marketing` |
+
+## Naming limitations for namespaces
+
+When choosing a name for your namespace, keep in mind the [character limitations](../reserved_names.md#limitations-on-project-and-group-names) and [reserved group names](../reserved_names.md#reserved-group-names).
+
+NOTE:
+If your namespace contains a `.`, you will encounter issues with the validation of your SSL certificates and the source path when [publishing Terraform modules](../packages/terraform_module_registry/index.md#publish-a-terraform-module).

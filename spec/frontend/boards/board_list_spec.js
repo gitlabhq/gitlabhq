@@ -267,7 +267,7 @@ describe('Board list component', () => {
     describe('when dragging is not allowed', () => {
       beforeEach(() => {
         wrapper = createComponent({
-          componentProps: {
+          provide: {
             disabled: true,
           },
         });

@@ -36,13 +36,10 @@ export default {
     'isIssueBoard',
     'isEpicBoard',
     'isGroupBoard',
+    'disabled',
     'isApolloBoard',
   ],
   props: {
-    disabled: {
-      type: Boolean,
-      required: true,
-    },
     boardId: {
       type: String,
       required: true,
@@ -177,7 +174,6 @@ export default {
         ref="board"
         :list="list"
         :data-draggable-item-type="$options.draggableItemTypes.list"
-        :disabled="disabled"
         :class="{ 'gl-xs-display-none!': addColumnFormVisible }"
       />
 
@@ -191,7 +187,6 @@ export default {
       ref="swimlanes"
       :lists="boardListsToUse"
       :can-admin-list="canAdminList"
-      :disabled="disabled"
       :style="{ height: boardHeight }"
     />
 
