@@ -22,7 +22,7 @@ import {
   billingPlanNames,
 } from '~/integrations/constants';
 import { createStore } from '~/integrations/edit/store';
-import httpStatus, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import {
   mockIntegrationProps,
@@ -458,9 +458,9 @@ describe('IntegrationForm', () => {
       describe.each`
         scenario                                                | replyStatus                          | errorMessage   | serviceResponse | expectToast                           | expectSentry
         ${'when "test settings" request fails'}                 | ${HTTP_STATUS_INTERNAL_SERVER_ERROR} | ${undefined}   | ${undefined}    | ${I18N_DEFAULT_ERROR_MESSAGE}         | ${true}
-        ${'when "test settings" returns an error'}              | ${httpStatus.OK}                     | ${'an error'}  | ${undefined}    | ${'an error'}                         | ${false}
-        ${'when "test settings" returns an error with details'} | ${httpStatus.OK}                     | ${'an error.'} | ${'extra info'} | ${'an error. extra info'}             | ${false}
-        ${'when "test settings" succeeds'}                      | ${httpStatus.OK}                     | ${undefined}   | ${undefined}    | ${I18N_SUCCESSFUL_CONNECTION_MESSAGE} | ${false}
+        ${'when "test settings" returns an error'}              | ${HTTP_STATUS_OK}                    | ${'an error'}  | ${undefined}    | ${'an error'}                         | ${false}
+        ${'when "test settings" returns an error with details'} | ${HTTP_STATUS_OK}                    | ${'an error.'} | ${'extra info'} | ${'an error. extra info'}             | ${false}
+        ${'when "test settings" succeeds'}                      | ${HTTP_STATUS_OK}                    | ${undefined}   | ${undefined}    | ${I18N_SUCCESSFUL_CONNECTION_MESSAGE} | ${false}
       `(
         '$scenario',
         ({ replyStatus, errorMessage, serviceResponse, expectToast, expectSentry }) => {
@@ -526,7 +526,7 @@ describe('IntegrationForm', () => {
 
     describe('when "reset settings" succeeds', () => {
       beforeEach(async () => {
-        mockAxios.onPost(mockResetPath).replyOnce(httpStatus.OK);
+        mockAxios.onPost(mockResetPath).replyOnce(HTTP_STATUS_OK);
         createComponent({
           customStateProps: {
             resetPath: mockResetPath,

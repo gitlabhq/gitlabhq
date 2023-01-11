@@ -31,6 +31,18 @@ module SidebarsHelper
     Sidebars::Groups::Context.new(**context_data)
   end
 
+  def super_sidebar_context(user)
+    {
+      name: user.name,
+      username: user.username,
+      avatar_url: user.avatar_url,
+      assigned_open_issues_count: user.assigned_open_issues_count,
+      assigned_open_merge_requests_count: user.assigned_open_merge_requests_count,
+      todos_pending_count: user.todos_pending_count,
+      issues_dashboard_path: issues_dashboard_path(assignee_username: user.username)
+    }
+  end
+
   private
 
   def sidebar_attributes_for_object(object)

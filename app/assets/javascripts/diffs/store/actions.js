@@ -9,7 +9,7 @@ import { createAlert, VARIANT_WARNING } from '~/flash';
 import { diffViewerModes } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
 
-import httpStatusCodes, { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
+import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
@@ -248,7 +248,7 @@ export const fetchCoverageFiles = ({ commit, state }) => {
     data: state.endpointCoverage,
     method: 'getCoverageReports',
     successCallback: ({ status, data }) => {
-      if (status === httpStatusCodes.OK) {
+      if (status === HTTP_STATUS_OK) {
         commit(types.SET_COVERAGE_DATA, data);
 
         coveragePoll.stop();

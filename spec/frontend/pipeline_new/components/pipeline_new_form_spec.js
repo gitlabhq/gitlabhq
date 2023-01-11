@@ -8,9 +8,10 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes, {
+import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
 import PipelineNewForm from '~/pipeline_new/components/pipeline_new_form.vue';
@@ -111,7 +112,7 @@ describe('Pipeline New Form', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
     mockCiConfigVariables = jest.fn();
-    mock.onGet(projectRefsEndpoint).reply(httpStatusCodes.OK, mockRefs);
+    mock.onGet(projectRefsEndpoint).reply(HTTP_STATUS_OK, mockRefs);
 
     dummySubmitEvent = {
       preventDefault: jest.fn(),
@@ -176,7 +177,7 @@ describe('Pipeline New Form', () => {
   describe('Pipeline creation', () => {
     beforeEach(async () => {
       mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
-      mock.onPost(pipelinesPath).reply(httpStatusCodes.OK, newPipelinePostResponse);
+      mock.onPost(pipelinesPath).reply(HTTP_STATUS_OK, newPipelinePostResponse);
     });
 
     it('does not submit the native HTML form', async () => {

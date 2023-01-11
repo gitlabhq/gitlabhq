@@ -7,9 +7,10 @@ import axios from '~/lib/utils/axios_utils';
 import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import codeQualityExtension from '~/vue_merge_request_widget/extensions/code_quality';
-import httpStatusCodes, {
+import {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 import {
   i18n,
@@ -62,7 +63,7 @@ describe('Code Quality extension', () => {
 
   describe('summary', () => {
     it('displays loading text', () => {
-      mockApi(httpStatusCodes.OK, codeQualityResponseNewErrors);
+      mockApi(HTTP_STATUS_OK, codeQualityResponseNewErrors);
 
       createComponent();
 
@@ -90,7 +91,7 @@ describe('Code Quality extension', () => {
     });
 
     it('displays correct single Report', async () => {
-      mockApi(httpStatusCodes.OK, codeQualityResponseNewErrors);
+      mockApi(HTTP_STATUS_OK, codeQualityResponseNewErrors);
 
       createComponent();
 
@@ -108,7 +109,7 @@ describe('Code Quality extension', () => {
     });
 
     it('displays quality improvement and degradation', async () => {
-      mockApi(httpStatusCodes.OK, codeQualityResponseResolvedAndNewErrors);
+      mockApi(HTTP_STATUS_OK, codeQualityResponseResolvedAndNewErrors);
 
       createComponent();
       await waitForPromises();
@@ -133,7 +134,7 @@ describe('Code Quality extension', () => {
     });
 
     it('displays no detected errors', async () => {
-      mockApi(httpStatusCodes.OK, codeQualityResponseNoErrors);
+      mockApi(HTTP_STATUS_OK, codeQualityResponseNoErrors);
 
       createComponent();
 
@@ -146,7 +147,7 @@ describe('Code Quality extension', () => {
 
   describe('expanded data', () => {
     beforeEach(async () => {
-      mockApi(httpStatusCodes.OK, codeQualityResponseResolvedAndNewErrors);
+      mockApi(HTTP_STATUS_OK, codeQualityResponseResolvedAndNewErrors);
 
       createComponent();
 

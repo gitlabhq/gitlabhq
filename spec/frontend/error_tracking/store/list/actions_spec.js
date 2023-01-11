@@ -4,7 +4,7 @@ import * as actions from '~/error_tracking/store/list/actions';
 import * as types from '~/error_tracking/store/list/mutation_types';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes, { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/flash.js');
 
@@ -23,7 +23,7 @@ describe('error tracking actions', () => {
     it('should start polling for data', () => {
       const payload = { errors: [{ id: 1 }, { id: 2 }] };
 
-      mock.onGet().reply(httpStatusCodes.OK, payload);
+      mock.onGet().reply(HTTP_STATUS_OK, payload);
       return testAction(
         actions.startPolling,
         {},

@@ -5,7 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import WikiContent from '~/pages/shared/wikis/components/wiki_content.vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 
@@ -59,7 +59,7 @@ describe('pages/shared/wikis/components/wiki_content', () => {
     const content = 'content';
 
     beforeEach(() => {
-      mock.onGet(PATH, { params: { render_html: true } }).replyOnce(httpStatus.OK, { content });
+      mock.onGet(PATH, { params: { render_html: true } }).replyOnce(HTTP_STATUS_OK, { content });
       buildWrapper();
       return waitForPromises();
     });

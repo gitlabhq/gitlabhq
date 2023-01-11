@@ -8,7 +8,7 @@ import IntegrationOverrides from '~/integrations/overrides/components/integratio
 import IntegrationTabs from '~/integrations/overrides/components/integration_tabs.vue';
 
 import axios from '~/lib/utils/axios_utils';
-import httpStatus, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 
@@ -39,7 +39,7 @@ describe('IntegrationOverrides', () => {
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
-    mockAxios.onGet(defaultProps.overridesPath).reply(httpStatus.OK, mockOverrides, {
+    mockAxios.onGet(defaultProps.overridesPath).reply(HTTP_STATUS_OK, mockOverrides, {
       'X-TOTAL': mockOverrides.length,
       'X-PAGE': 1,
     });
@@ -150,7 +150,7 @@ describe('IntegrationOverrides', () => {
   describe('pagination', () => {
     describe('when total items does not exceed the page limit', () => {
       it('does not render', async () => {
-        mockAxios.onGet(defaultProps.overridesPath).reply(httpStatus.OK, [mockOverrides[0]], {
+        mockAxios.onGet(defaultProps.overridesPath).reply(HTTP_STATUS_OK, [mockOverrides[0]], {
           'X-TOTAL': DEFAULT_PER_PAGE - 1,
           'X-PAGE': 1,
         });
@@ -169,7 +169,7 @@ describe('IntegrationOverrides', () => {
 
       beforeEach(async () => {
         createComponent({ stubs: { UrlSync } });
-        mockAxios.onGet(defaultProps.overridesPath).reply(httpStatus.OK, [mockOverrides[0]], {
+        mockAxios.onGet(defaultProps.overridesPath).reply(HTTP_STATUS_OK, [mockOverrides[0]], {
           'X-TOTAL': DEFAULT_PER_PAGE * 2,
           'X-PAGE': mockPage,
         });

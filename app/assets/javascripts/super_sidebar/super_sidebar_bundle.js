@@ -6,7 +6,7 @@ export const initSuperSidebar = () => {
 
   if (!el) return false;
 
-  const { rootPath, toggleNewNavEndpoint } = el.dataset;
+  const { rootPath, sidebar, toggleNewNavEndpoint } = el.dataset;
 
   return new Vue({
     el,
@@ -16,7 +16,11 @@ export const initSuperSidebar = () => {
       toggleNewNavEndpoint,
     },
     render(h) {
-      return h(SuperSidebar);
+      return h(SuperSidebar, {
+        props: {
+          sidebarData: JSON.parse(sidebar),
+        },
+      });
     },
   });
 };

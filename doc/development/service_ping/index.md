@@ -4,7 +4,7 @@ group: Product Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Service Ping Guide **(FREE SELF)**
+# Service Ping Guide
 
 > - Introduced in GitLab Ultimate 11.2, more statistics.
 > - In GitLab 14.1, [renamed from Usage Ping to Service Ping](https://gitlab.com/groups/gitlab-org/-/epics/5990). In 14.0 and earlier, use the Usage Ping documentation for the Rails commands appropriate to your version.

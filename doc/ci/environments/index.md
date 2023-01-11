@@ -436,6 +436,8 @@ There are multiple ways to clean up [dynamic environments](#create-a-dynamic-env
 - If you do _NOT_ use [merge request pipelines](../pipelines/merge_request_pipelines.md), GitLab stops an environment [when the associated feature branch is deleted](#stop-an-environment-when-a-branch-is-deleted).
 - If you set [an expiry period to an environment](../yaml/index.md#environmentauto_stop_in), GitLab stops an environment [when it's expired](#stop-an-environment-after-a-certain-time-period).
 
+To stop stale environments, you can [use the API](../../api/environments.md#stop-stale-environments).
+
 #### Stop an environment when a branch is deleted
 
 You can configure environments to stop when a branch is deleted.

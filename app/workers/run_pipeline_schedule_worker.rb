@@ -19,6 +19,12 @@ class RunPipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
 
     return unless schedule && schedule.project && user
 
+    if Feature.enabled?(:ci_use_run_pipeline_schedule_worker)
+      return if schedule.next_run_at > Time.current
+
+      update_next_run_at_for(schedule)
+    end
+
     run_pipeline_schedule(schedule, user)
   end
 
@@ -36,6 +42,12 @@ class RunPipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
   end
 
   private
+
+  def update_next_run_at_for(schedule)
+    # Ensure `next_run_at` is set properly before creating a pipeline.
+    # Otherwise, multiple pipelines could be created in a short interval.
+    schedule.schedule_next_run!
+  end
 
   def error(schedule, error)
     failed_creation_counter.increment

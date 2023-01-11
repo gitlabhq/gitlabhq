@@ -4,7 +4,7 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Approval Rules development guide **(FREE)**
+# Approval Rules development guide
 
 This document explains the backend design and flow of all related functionality
 about [merge request approval rules](../user/project/merge_requests/approvals/index.md).

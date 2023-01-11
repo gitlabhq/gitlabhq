@@ -5,7 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import httpStatus, { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
+import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import CustomNotificationsModal from '~/notifications/components/custom_notifications_modal.vue';
 import { i18n } from '~/notifications/constants';
 
@@ -138,7 +138,7 @@ describe('CustomNotificationsModal', () => {
 
           mockAxios
             .onGet(endpointUrl)
-            .reply(httpStatus.OK, mockNotificationSettingsResponses.default);
+            .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.default);
 
           wrapper = createComponent({ injectedProperties });
 
@@ -155,7 +155,7 @@ describe('CustomNotificationsModal', () => {
 
         mockAxios
           .onGet(endpointUrl)
-          .reply(httpStatus.OK, mockNotificationSettingsResponses.default);
+          .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.default);
 
         wrapper = createComponent();
 
@@ -201,11 +201,11 @@ describe('CustomNotificationsModal', () => {
         async ({ projectId, groupId, endpointUrl }) => {
           mockAxios
             .onGet(endpointUrl)
-            .reply(httpStatus.OK, mockNotificationSettingsResponses.default);
+            .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.default);
 
           mockAxios
             .onPut(endpointUrl)
-            .reply(httpStatus.OK, mockNotificationSettingsResponses.updated);
+            .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.updated);
 
           const injectedProperties = {
             projectId,

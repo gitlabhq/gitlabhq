@@ -127,6 +127,10 @@ module Gitlab
               .observe({ plan: project.actual_plan_name }, jobs_count)
           end
 
+          def observe_pipeline_includes_count(pipeline)
+            logger.observe(:pipeline_includes_count, pipeline.config_metadata&.[](:includes)&.count, once: true)
+          end
+
           def increment_pipeline_failure_reason_counter(reason)
             metrics.pipeline_failure_reason_counter
               .increment(reason: (reason || :unknown_failure).to_s)

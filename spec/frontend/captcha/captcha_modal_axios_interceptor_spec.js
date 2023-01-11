@@ -4,10 +4,11 @@ import { registerCaptchaModalInterceptor } from '~/captcha/captcha_modal_axios_i
 import UnsolvedCaptchaError from '~/captcha/unsolved_captcha_error';
 import { waitForCaptchaToBeSolved } from '~/captcha/wait_for_captcha_to_be_solved';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes, {
+import {
   HTTP_STATUS_CONFLICT,
   HTTP_STATUS_METHOD_NOT_ALLOWED,
   HTTP_STATUS_NOT_FOUND,
+  HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 
 jest.mock('~/captcha/wait_for_captcha_to_be_solved');
@@ -47,7 +48,7 @@ describe('registerCaptchaModalInterceptor', () => {
       } = config.headers;
 
       if (captchaResponse === CAPTCHA_RESPONSE && spamLogId === SPAM_LOG_ID) {
-        return [httpStatusCodes.OK, { ...data, method: config.method, CAPTCHA_SUCCESS }];
+        return [HTTP_STATUS_OK, { ...data, method: config.method, CAPTCHA_SUCCESS }];
       }
 
       return [HTTP_STATUS_CONFLICT, NEEDS_CAPTCHA_RESPONSE];
@@ -65,7 +66,7 @@ describe('registerCaptchaModalInterceptor', () => {
     it('successful requests are passed through', async () => {
       const { data, status } = await axios[method]('/endpoint-without-captcha');
 
-      expect(status).toEqual(httpStatusCodes.OK);
+      expect(status).toEqual(HTTP_STATUS_OK);
       expect(data).toEqual(AXIOS_RESPONSE);
       expect(mock.history[method]).toHaveLength(1);
     });

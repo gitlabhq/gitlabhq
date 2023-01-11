@@ -78,7 +78,7 @@ namespace :tw do
       CodeOwnerRule.new('Tutorials', '@kpaizee'),
       CodeOwnerRule.new('Utilization', '@fneill'),
       CodeOwnerRule.new('Vulnerability Research', '@claytoncornell'),
-      CodeOwnerRule.new('Workspace', '@lciutacu')
+      CodeOwnerRule.new('Organization', '@lciutacu')
     ].freeze
 
     ERRORS_EXCLUDED_FILES = [

@@ -142,7 +142,7 @@ A deactivated user:
 
 - Cannot access Git repositories or the API.
 - Does not receive any notifications from GitLab.
-- Does not be able to use [slash commands](../../integration/slash_commands.md).
+- Cannot use [slash commands](../../integration/slash_commands.md).
 - Does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
 
 Personal projects, and group and user history of the deactivated user are left intact.

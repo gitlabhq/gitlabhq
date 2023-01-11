@@ -25,7 +25,7 @@ import CodeIntelligence from '~/code_navigation/components/app.vue';
 import * as urlUtility from '~/lib/utils/url_utility';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import httpStatusCodes, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import LineHighlighter from '~/blob/line_highlighter';
 import { LEGACY_FILE_TYPES } from '~/repository/constants';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
@@ -256,19 +256,19 @@ describe('Blob content viewer component', () => {
       );
 
       it('loads the LineHighlighter', async () => {
-        mockAxios.onGet(legacyViewerUrl).replyOnce(httpStatusCodes.OK, 'test');
+        mockAxios.onGet(legacyViewerUrl).replyOnce(HTTP_STATUS_OK, 'test');
         await createComponent({ blob: { ...simpleViewerMock, fileType, highlightJs } });
         expect(LineHighlighter).toHaveBeenCalled();
       });
 
       it('does not load the LineHighlighter for RichViewers', async () => {
-        mockAxios.onGet(legacyViewerUrl).replyOnce(httpStatusCodes.OK, 'test');
+        mockAxios.onGet(legacyViewerUrl).replyOnce(HTTP_STATUS_OK, 'test');
         await createComponent({ blob: { ...richViewerMock, fileType, highlightJs } });
         expect(LineHighlighter).not.toHaveBeenCalled();
       });
 
       it('scrolls to the hash', async () => {
-        mockAxios.onGet(legacyViewerUrl).replyOnce(httpStatusCodes.OK, 'test');
+        mockAxios.onGet(legacyViewerUrl).replyOnce(HTTP_STATUS_OK, 'test');
         await createComponent({ blob: { ...simpleViewerMock, fileType, highlightJs } });
         expect(handleLocationHash).toHaveBeenCalled();
       });

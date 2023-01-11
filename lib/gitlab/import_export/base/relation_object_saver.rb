@@ -71,6 +71,8 @@ module Gitlab
 
                 invalid_subrelations << invalid_record unless invalid_record.persisted?
               end
+
+              relation_object.save
             end
           end
         end

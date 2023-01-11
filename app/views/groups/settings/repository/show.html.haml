@@ -8,5 +8,7 @@
   = render "shared/deploy_tokens/index", group_or_project: @group, description: deploy_token_description
   = render "default_branch", group: @group
 
+= render_if_exists "protected_branches/protected_branches", protected_branch_entity: @group
+
 - if can?(current_user, :change_push_rules, @group)
   = render "push_rules"

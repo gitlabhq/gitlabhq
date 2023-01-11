@@ -4,7 +4,7 @@ import { noop } from 'lodash';
 import { useFakeDate } from 'helpers/fake_date';
 import testAction from 'helpers/vuex_action_helper';
 import { members, group, modalData } from 'jest/members/mock_data';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   updateMemberRole,
   showRemoveGroupLinkModal,
@@ -44,7 +44,7 @@ describe('Vuex members actions', () => {
 
       describe('successful request', () => {
         it(`commits ${types.RECEIVE_MEMBER_ROLE_SUCCESS} mutation`, async () => {
-          mock.onPut().replyOnce(httpStatusCodes.OK);
+          mock.onPut().replyOnce(HTTP_STATUS_OK);
 
           await testAction(updateMemberRole, payload, state, [
             {
@@ -83,7 +83,7 @@ describe('Vuex members actions', () => {
       describe('successful request', () => {
         describe('changing expiration date', () => {
           it(`commits ${types.RECEIVE_MEMBER_EXPIRATION_SUCCESS} mutation`, async () => {
-            mock.onPut().replyOnce(httpStatusCodes.OK);
+            mock.onPut().replyOnce(HTTP_STATUS_OK);
 
             await testAction(updateMemberExpiration, { memberId, expiresAt }, state, [
               {
@@ -98,7 +98,7 @@ describe('Vuex members actions', () => {
 
         describe('removing the expiration date', () => {
           it(`commits ${types.RECEIVE_MEMBER_EXPIRATION_SUCCESS} mutation`, async () => {
-            mock.onPut().replyOnce(httpStatusCodes.OK);
+            mock.onPut().replyOnce(HTTP_STATUS_OK);
 
             await testAction(updateMemberExpiration, { memberId, expiresAt: null }, state, [
               {

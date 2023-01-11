@@ -1,5 +1,5 @@
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from './http_status';
+import { HTTP_STATUS_OK } from './http_status';
 import Poll from './poll';
 
 /**
@@ -30,7 +30,7 @@ export default (url, config = {}) =>
       data: { url, config },
       method: 'axiosGet',
       successCallback: (response) => {
-        if (response.status === httpStatusCodes.OK) {
+        if (response.status === HTTP_STATUS_OK) {
           resolve(response);
           eTagPoll.stop();
         }

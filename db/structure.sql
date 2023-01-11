@@ -28907,6 +28907,8 @@ CREATE INDEX index_ci_pipeline_metadata_on_project_id ON ci_pipeline_metadata US
 
 CREATE UNIQUE INDEX index_ci_pipeline_schedule_variables_on_schedule_id_and_key ON ci_pipeline_schedule_variables USING btree (pipeline_schedule_id, key);
 
+CREATE INDEX index_ci_pipeline_schedules_on_id_and_next_run_at_and_active ON ci_pipeline_schedules USING btree (id, next_run_at) WHERE (active = true);
+
 CREATE INDEX index_ci_pipeline_schedules_on_next_run_at_and_active ON ci_pipeline_schedules USING btree (next_run_at, active);
 
 CREATE INDEX index_ci_pipeline_schedules_on_owner_id ON ci_pipeline_schedules USING btree (owner_id);

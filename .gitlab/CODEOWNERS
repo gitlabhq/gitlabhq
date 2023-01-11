@@ -633,7 +633,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/project_statistics.md @aqualls
 /doc/api/project_templates.md @aqualls
 /doc/api/project_vulnerabilities.md @aqualls
-/doc/api/projects.md @msedlakjakubowski
+/doc/api/projects.md @lciutacu
 /doc/api/protected_branches.md @aqualls
 /doc/api/protected_environments.md @rdickenson
 /doc/api/protected_tags.md @aqualls
@@ -766,6 +766,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/gitaly.md @eread
 /doc/development/gitlab_flavored_markdown/ @ashrafkhamis
 /doc/development/gitlab_flavored_markdown/specification_guide/ @ashrafkhamis
+/doc/development/gitlab_shell/ @aqualls
 /doc/development/graphql_guide/ @ashrafkhamis
 /doc/development/graphql_guide/batchloader.md @aqualls
 /doc/development/i18n/ @eread

@@ -18,7 +18,7 @@ module Environments
         )
       end
 
-      ServiceResponse.success(message: 'Successfully scheduled stale environments to stop')
+      ServiceResponse.success(message: 'Successfully requested stop for all stale environments')
     end
   end
 end

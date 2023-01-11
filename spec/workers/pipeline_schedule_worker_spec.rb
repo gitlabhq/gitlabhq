@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PipelineScheduleWorker do
+RSpec.describe PipelineScheduleWorker, :sidekiq_inline, feature_category: :continuous_integration do
   include ExclusiveLeaseHelpers
 
   subject { described_class.new.perform }
@@ -30,7 +30,7 @@ RSpec.describe PipelineScheduleWorker do
       project.add_maintainer(user)
     end
 
-    context 'when there is a scheduled pipeline within next_run_at', :sidekiq_inline do
+    context 'when there is a scheduled pipeline within next_run_at' do
       shared_examples 'successful scheduling' do
         it 'creates a new pipeline' do
           expect { subject }.to change { project.ci_pipelines.count }.by(1)
@@ -49,7 +49,19 @@ RSpec.describe PipelineScheduleWorker do
         end
       end
 
-      it_behaves_like 'successful scheduling'
+      shared_examples 'successful scheduling with/without ci_use_run_pipeline_schedule_worker' do
+        it_behaves_like 'successful scheduling'
+
+        context 'when feature flag ci_use_run_pipeline_schedule_worker is disabled' do
+          before do
+            stub_feature_flags(ci_use_run_pipeline_schedule_worker: false)
+          end
+
+          it_behaves_like 'successful scheduling'
+        end
+      end
+
+      it_behaves_like 'successful scheduling with/without ci_use_run_pipeline_schedule_worker'
 
       context 'when the latest commit contains [ci skip]' do
         before do
@@ -58,7 +70,7 @@ RSpec.describe PipelineScheduleWorker do
             .and_return('some commit [ci skip]')
         end
 
-        it_behaves_like 'successful scheduling'
+        it_behaves_like 'successful scheduling with/without ci_use_run_pipeline_schedule_worker'
       end
     end
 
@@ -121,6 +133,15 @@ RSpec.describe PipelineScheduleWorker do
 
     it 'does not raise an exception' do
       expect { subject }.not_to raise_error
+    end
+  end
+
+  context 'when max retry attempts reach' do
+    let!(:lease) { stub_exclusive_lease_taken(described_class.name.underscore) }
+
+    it 'does not raise error' do
+      expect(lease).to receive(:try_obtain).exactly(described_class::LOCK_RETRY + 1).times
+      expect { subject }.to raise_error(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
     end
   end
 end

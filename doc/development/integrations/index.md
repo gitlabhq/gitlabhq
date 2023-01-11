@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "GitLab's development guidelines for Integrations"
 ---
 
-# Integrations development guide **(FREE)**
+# Integrations development guide
 
 This page provides development guidelines for implementing [GitLab integrations](../../user/project/integrations/index.md),
 which are part of our [main Rails project](https://gitlab.com/gitlab-org/gitlab).

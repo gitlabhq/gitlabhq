@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "GitLab's development guidelines for Wikis"
 ---
 
-# Wikis development guide **(FREE)**
+# Wikis development guide
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227027) in GitLab 13.5.
 

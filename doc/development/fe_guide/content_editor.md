@@ -4,7 +4,7 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Content Editor development guidelines **(FREE)**
+# Content Editor development guidelines
 
 The Content Editor is a UI component that provides a WYSIWYG editing
 experience for [GitLab Flavored Markdown](../../user/markdown.md) in the GitLab application.

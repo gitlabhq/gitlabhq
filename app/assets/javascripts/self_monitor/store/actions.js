@@ -1,6 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { backOff } from '~/lib/utils/common_utils';
-import statusCodes, { HTTP_STATUS_ACCEPTED } from '~/lib/utils/http_status';
+import { HTTP_STATUS_ACCEPTED, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { __, s__ } from '~/locale';
 import * as types from './mutation_types';
 
@@ -43,7 +43,7 @@ export const requestCreateProject = ({ dispatch, state, commit }) => {
 export const requestCreateProjectStatus = ({ dispatch, state }, jobId) => {
   backOffRequest(() => axios.get(state.createProjectStatusEndpoint, { params: { job_id: jobId } }))
     .then((resp) => {
-      if (resp.status === statusCodes.OK) {
+      if (resp.status === HTTP_STATUS_OK) {
         dispatch('requestCreateProjectSuccess', resp.data);
       }
     })
@@ -95,7 +95,7 @@ export const requestDeleteProject = ({ dispatch, state, commit }) => {
 export const requestDeleteProjectStatus = ({ dispatch, state }, jobId) => {
   backOffRequest(() => axios.get(state.deleteProjectStatusEndpoint, { params: { job_id: jobId } }))
     .then((resp) => {
-      if (resp.status === statusCodes.OK) {
+      if (resp.status === HTTP_STATUS_OK) {
         dispatch('requestDeleteProjectSuccess', resp.data);
       }
     })

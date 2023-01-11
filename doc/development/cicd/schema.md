@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, howto
 ---
 
-# Contribute to the CI/CD Schema **(FREE)**
+# Contribute to the CI/CD Schema
 
 The [pipeline editor](../../ci/pipeline_editor/index.md) uses a CI/CD schema to enhance
 the authoring experience of our CI/CD configuration files. With the CI/CD schema, the editor can:

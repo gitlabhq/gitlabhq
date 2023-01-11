@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 <!-- vale gitlab.GitLabFlavoredMarkdown = NO -->
 
-# GitLab Flavored Markdown (GLFM) Specification Guide **(FREE)**
+# GitLab Flavored Markdown (GLFM) Specification Guide
 
 ## Summary
 

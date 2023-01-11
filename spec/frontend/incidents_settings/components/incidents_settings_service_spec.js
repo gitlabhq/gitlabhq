@@ -3,7 +3,7 @@ import { createAlert } from '~/flash';
 import { ERROR_MSG } from '~/incidents_settings/constants';
 import IncidentsSettingsService from '~/incidents_settings/incidents_settings_service';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes, { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 
 jest.mock('~/flash');
@@ -26,7 +26,7 @@ describe('IncidentsSettingsService', () => {
 
   describe('updateSettings', () => {
     it('should refresh the page on successful update', () => {
-      mock.onPatch().reply(httpStatusCodes.OK);
+      mock.onPatch().reply(HTTP_STATUS_OK);
 
       return service.updateSettings({}).then(() => {
         expect(refreshCurrentPage).toHaveBeenCalled();
@@ -47,7 +47,7 @@ describe('IncidentsSettingsService', () => {
   describe('resetWebhookUrl', () => {
     it('should make a call for webhook update', () => {
       jest.spyOn(axios, 'post');
-      mock.onPost().reply(httpStatusCodes.OK);
+      mock.onPost().reply(HTTP_STATUS_OK);
 
       return service.resetWebhookUrl().then(() => {
         expect(axios.post).toHaveBeenCalledWith(webhookUpdateEndpoint);

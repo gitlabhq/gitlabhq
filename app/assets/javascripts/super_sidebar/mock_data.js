@@ -1,16 +1,5 @@
 import { s__ } from '~/locale';
 
-export const user = {
-  name: 'GitLab Bot',
-  avatar_url: '',
-};
-
-export const counts = {
-  assigned_issues: 0,
-  assigned_merge_requests: 4,
-  pending_todos: 12,
-};
-
 export const context = {
   title: 'Typeahead.js',
   link: '/',

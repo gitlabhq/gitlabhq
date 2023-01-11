@@ -1,9 +1,10 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes, {
+import {
   HTTP_STATUS_NO_CONTENT,
   HTTP_STATUS_NOT_FOUND,
+  HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 import pollUntilComplete from '~/lib/utils/poll_until_complete';
 
@@ -27,7 +28,7 @@ describe('pollUntilComplete', () => {
 
   describe('given an immediate success response', () => {
     beforeEach(() => {
-      mock.onGet(endpoint).replyOnce(httpStatusCodes.OK, mockData);
+      mock.onGet(endpoint).replyOnce(HTTP_STATUS_OK, mockData);
     });
 
     it('resolves with the response', () =>
@@ -42,7 +43,7 @@ describe('pollUntilComplete', () => {
         .onGet(endpoint)
         .replyOnce(HTTP_STATUS_NO_CONTENT, undefined, pollIntervalHeader)
         .onGet(endpoint)
-        .replyOnce(httpStatusCodes.OK, mockData);
+        .replyOnce(HTTP_STATUS_OK, mockData);
     });
 
     it('calls the endpoint until it succeeds, and resolves with the response', () =>
@@ -81,7 +82,7 @@ describe('pollUntilComplete', () => {
   describe('given params', () => {
     const params = { foo: 'bar' };
     beforeEach(() => {
-      mock.onGet(endpoint, { params }).replyOnce(httpStatusCodes.OK, mockData);
+      mock.onGet(endpoint, { params }).replyOnce(HTTP_STATUS_OK, mockData);
     });
 
     it('requests the expected URL', () =>

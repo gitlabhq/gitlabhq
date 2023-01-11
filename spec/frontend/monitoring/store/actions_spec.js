@@ -4,9 +4,10 @@ import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
-import statusCodes, {
+import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_CREATED,
+  HTTP_STATUS_OK,
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
 import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
@@ -1117,7 +1118,7 @@ describe('Monitoring store actions', () => {
 
       mock
         .onPost(panelPreviewEndpoint, { panel_yaml: mockYmlContent })
-        .reply(statusCodes.OK, mockPanel);
+        .reply(HTTP_STATUS_OK, mockPanel);
 
       testAction(
         fetchPanelPreview,

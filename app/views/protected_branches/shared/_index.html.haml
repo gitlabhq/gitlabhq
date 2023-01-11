@@ -1,3 +1,4 @@
+- can_admin_entity = protected_branch_can_admin_entity?(protected_branch_entity)
 - expanded = expanded_by_default?
 
 %section.settings.no-animate#js-protected-branches-settings{ class: ('expanded' if expanded), data: { qa_selector: 'protected_branches_settings_content' } }
@@ -14,7 +15,7 @@
       = s_("ProtectedBranch|By default, protected branches restrict who can modify the branch.")
       = link_to s_("ProtectedBranch|Learn more."), help_page_path("user/project/protected_branches", anchor: "who-can-modify-a-protected-branch")
 
-    - if can? current_user, :admin_project, @project
+    - if can_admin_entity
       = content_for :create_protected_branch
 
     = content_for :branches_list

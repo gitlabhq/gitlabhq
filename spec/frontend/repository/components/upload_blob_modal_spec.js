@@ -5,7 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
@@ -158,7 +158,7 @@ describe('UploadBlobModal', () => {
         describe('successful response', () => {
           beforeEach(async () => {
             mock = new MockAdapter(axios);
-            mock.onPost(initialProps.path).reply(httpStatusCodes.OK, { filePath: 'blah' });
+            mock.onPost(initialProps.path).reply(HTTP_STATUS_OK, { filePath: 'blah' });
 
             findModal().vm.$emit('primary', mockEvent);
 

@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/commits_service';
-import httpStatus, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { createAlert } from '~/flash';
 import { I18N_COMMIT_DATA_FETCH_ERROR } from '~/repository/constants';
 import { refWithSpecialCharMock } from './mock_data';
@@ -15,7 +15,7 @@ describe('commits service', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    mock.onGet(url).reply(httpStatus.OK, [], {});
+    mock.onGet(url).reply(HTTP_STATUS_OK, [], {});
 
     jest.spyOn(axios, 'get');
   });

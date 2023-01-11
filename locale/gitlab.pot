@@ -34009,6 +34009,9 @@ msgstr ""
 msgid "ProtectedBranch|Branch"
 msgstr ""
 
+msgid "ProtectedBranch|Branch does not exist."
+msgstr ""
+
 msgid "ProtectedBranch|Branch will be writable for developers. Are you sure?"
 msgstr ""
 
@@ -34040,6 +34043,9 @@ msgid "ProtectedBranch|New Protected Tag"
 msgstr ""
 
 msgid "ProtectedBranch|No tags are protected."
+msgstr ""
+
+msgid "ProtectedBranch|Only %{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported."
 msgstr ""
 
 msgid "ProtectedBranch|Protect"
@@ -43876,6 +43882,9 @@ msgid "To widen your search, change or remove filters above."
 msgstr ""
 
 msgid "To-Do List"
+msgstr ""
+
+msgid "To-Do list"
 msgstr ""
 
 msgid "To-do item successfully marked as done."

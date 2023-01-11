@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/analytics/cycle_analytics/store/actions';
 import * as getters from '~/analytics/cycle_analytics/store/getters';
-import httpStatusCodes, { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   allowedStages,
   selectedStage,
@@ -197,7 +197,7 @@ describe('Project Value Stream Analytics actions', () => {
         selectedStage,
       };
       mock = new MockAdapter(axios);
-      mock.onGet(mockStagePath).reply(httpStatusCodes.OK, reviewEvents, headers);
+      mock.onGet(mockStagePath).reply(HTTP_STATUS_OK, reviewEvents, headers);
     });
 
     it(`commits the 'RECEIVE_STAGE_DATA_SUCCESS' mutation`, () =>
@@ -223,7 +223,7 @@ describe('Project Value Stream Analytics actions', () => {
           selectedStage,
         };
         mock = new MockAdapter(axios);
-        mock.onGet(mockStagePath).reply(httpStatusCodes.OK, { error: tooMuchDataError });
+        mock.onGet(mockStagePath).reply(HTTP_STATUS_OK, { error: tooMuchDataError });
       });
 
       it(`commits the 'RECEIVE_STAGE_DATA_ERROR' mutation`, () =>
@@ -269,7 +269,7 @@ describe('Project Value Stream Analytics actions', () => {
         endpoints: mockEndpoints,
       };
       mock = new MockAdapter(axios);
-      mock.onGet(mockValueStreamPath).reply(httpStatusCodes.OK);
+      mock.onGet(mockValueStreamPath).reply(HTTP_STATUS_OK);
     });
 
     it(`commits the 'REQUEST_VALUE_STREAMS' mutation`, () =>
@@ -337,7 +337,7 @@ describe('Project Value Stream Analytics actions', () => {
         selectedValueStream,
       };
       mock = new MockAdapter(axios);
-      mock.onGet(mockValueStreamPath).reply(httpStatusCodes.OK);
+      mock.onGet(mockValueStreamPath).reply(HTTP_STATUS_OK);
     });
 
     it(`commits the 'REQUEST_VALUE_STREAM_STAGES' and 'RECEIVE_VALUE_STREAM_STAGES_SUCCESS' mutations`, () =>
@@ -392,7 +392,7 @@ describe('Project Value Stream Analytics actions', () => {
         stages: allowedStages,
       };
       mock = new MockAdapter(axios);
-      mock.onGet(mockValueStreamPath).reply(httpStatusCodes.OK);
+      mock.onGet(mockValueStreamPath).reply(HTTP_STATUS_OK);
     });
 
     it(`commits the 'REQUEST_STAGE_MEDIANS' and 'RECEIVE_STAGE_MEDIANS_SUCCESS' mutations`, () =>
@@ -446,11 +446,11 @@ describe('Project Value Stream Analytics actions', () => {
       mock = new MockAdapter(axios);
       mock
         .onGet(mockValueStreamPath)
-        .replyOnce(httpStatusCodes.OK, { count: 1 })
+        .replyOnce(HTTP_STATUS_OK, { count: 1 })
         .onGet(mockValueStreamPath)
-        .replyOnce(httpStatusCodes.OK, { count: 2 })
+        .replyOnce(HTTP_STATUS_OK, { count: 2 })
         .onGet(mockValueStreamPath)
-        .replyOnce(httpStatusCodes.OK, { count: 3 });
+        .replyOnce(HTTP_STATUS_OK, { count: 3 });
     });
 
     it(`commits the 'REQUEST_STAGE_COUNTS' and 'RECEIVE_STAGE_COUNTS_SUCCESS' mutations`, () =>

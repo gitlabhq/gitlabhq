@@ -6,7 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import accessibilityExtension from '~/vue_merge_request_widget/extensions/accessibility';
-import httpStatusCodes, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { accessibilityReportResponseErrors, accessibilityReportResponseSuccess } from './mock_data';
 
 describe('Accessibility extension', () => {
@@ -45,7 +45,7 @@ describe('Accessibility extension', () => {
 
   describe('summary', () => {
     it('displays loading text', () => {
-      mockApi(httpStatusCodes.OK, accessibilityReportResponseErrors);
+      mockApi(HTTP_STATUS_OK, accessibilityReportResponseErrors);
 
       createComponent();
 
@@ -63,7 +63,7 @@ describe('Accessibility extension', () => {
     });
 
     it('displays detected errors and is expandable', async () => {
-      mockApi(httpStatusCodes.OK, accessibilityReportResponseErrors);
+      mockApi(HTTP_STATUS_OK, accessibilityReportResponseErrors);
 
       createComponent();
 
@@ -76,7 +76,7 @@ describe('Accessibility extension', () => {
     });
 
     it('displays no detected errors and is not expandable', async () => {
-      mockApi(httpStatusCodes.OK, accessibilityReportResponseSuccess);
+      mockApi(HTTP_STATUS_OK, accessibilityReportResponseSuccess);
 
       createComponent();
 
@@ -91,7 +91,7 @@ describe('Accessibility extension', () => {
 
   describe('expanded data', () => {
     beforeEach(async () => {
-      mockApi(httpStatusCodes.OK, accessibilityReportResponseErrors);
+      mockApi(HTTP_STATUS_OK, accessibilityReportResponseErrors);
 
       createComponent();
 

@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 import RefsDropdown from '~/pipeline_new/components/refs_dropdown.vue';
 
@@ -41,7 +41,7 @@ describe('Pipeline New Form', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet(projectRefsEndpoint, { params: { search: '' } }).reply(httpStatusCodes.OK, mockRefs);
+    mock.onGet(projectRefsEndpoint, { params: { search: '' } }).reply(HTTP_STATUS_OK, mockRefs);
   });
 
   beforeEach(() => {
@@ -111,7 +111,7 @@ describe('Pipeline New Form', () => {
       beforeEach(async () => {
         mock
           .onGet(projectRefsEndpoint, { params: { search: mockSearchTerm } })
-          .reply(httpStatusCodes.OK, mockFilteredRefs);
+          .reply(HTTP_STATUS_OK, mockFilteredRefs);
 
         await findSearchBox().vm.$emit('input', mockSearchTerm);
         await waitForPromises();
@@ -142,7 +142,7 @@ describe('Pipeline New Form', () => {
         .onGet(projectRefsEndpoint, {
           params: { ref: mockFullName },
         })
-        .reply(httpStatusCodes.OK, mockRefs);
+        .reply(HTTP_STATUS_OK, mockRefs);
 
       createComponent(
         {
@@ -188,9 +188,7 @@ describe('Pipeline New Form', () => {
     `(
       'should render branches and tags based on presence',
       async ({ mockData, expectedGroupLength, expectedListboxItemsLength }) => {
-        mock
-          .onGet(projectRefsEndpoint, { params: { search: '' } })
-          .reply(httpStatusCodes.OK, mockData);
+        mock.onGet(projectRefsEndpoint, { params: { search: '' } }).reply(HTTP_STATUS_OK, mockData);
         createComponent({}, mountExtended);
         findDropdown().vm.$emit('shown');
         await waitForPromises();

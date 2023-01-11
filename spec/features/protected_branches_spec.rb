@@ -117,7 +117,7 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
         set_protected_branch_name('some-branch')
         click_on "Protect"
 
-        within(".protected-branches-list") { expect(page).to have_content('Branch was deleted') }
+        within(".protected-branches-list") { expect(page).to have_content('Branch does not exist') }
       end
     end
 

@@ -6,7 +6,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes, { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import CodeCoverage from '~/pages/projects/graphs/components/code_coverage.vue';
 import { codeCoverageMockData, sortedDataByDates } from './mock_data';
 
@@ -49,7 +49,7 @@ describe('Code Coverage', () => {
   describe('when fetching data is successful', () => {
     beforeEach(() => {
       mockAxios = new MockAdapter(axios);
-      mockAxios.onGet().replyOnce(httpStatusCodes.OK, codeCoverageMockData);
+      mockAxios.onGet().replyOnce(HTTP_STATUS_OK, codeCoverageMockData);
 
       createComponent();
 
@@ -108,7 +108,7 @@ describe('Code Coverage', () => {
   describe('when fetching data succeed but returns an empty state', () => {
     beforeEach(() => {
       mockAxios = new MockAdapter(axios);
-      mockAxios.onGet().replyOnce(httpStatusCodes.OK, []);
+      mockAxios.onGet().replyOnce(HTTP_STATUS_OK, []);
 
       createComponent();
 
@@ -136,7 +136,7 @@ describe('Code Coverage', () => {
   describe('dropdown options', () => {
     beforeEach(() => {
       mockAxios = new MockAdapter(axios);
-      mockAxios.onGet().replyOnce(httpStatusCodes.OK, codeCoverageMockData);
+      mockAxios.onGet().replyOnce(HTTP_STATUS_OK, codeCoverageMockData);
 
       createComponent();
 
@@ -153,7 +153,7 @@ describe('Code Coverage', () => {
   describe('interactions', () => {
     beforeEach(() => {
       mockAxios = new MockAdapter(axios);
-      mockAxios.onGet().replyOnce(httpStatusCodes.OK, codeCoverageMockData);
+      mockAxios.onGet().replyOnce(HTTP_STATUS_OK, codeCoverageMockData);
 
       createComponent();
 

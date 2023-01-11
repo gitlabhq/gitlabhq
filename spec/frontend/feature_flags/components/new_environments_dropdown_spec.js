@@ -4,7 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import NewEnvironmentsDropdown from '~/feature_flags/components/new_environments_dropdown.vue';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 const TEST_HOST = '/test';
 const TEST_SEARCH = 'production';
@@ -74,7 +74,7 @@ describe('New Environments Dropdown', () => {
   describe('with results', () => {
     let items;
     beforeEach(() => {
-      axiosMock.onGet(TEST_HOST).reply(httpStatusCodes.OK, ['prod', 'production']);
+      axiosMock.onGet(TEST_HOST).reply(HTTP_STATUS_OK, ['prod', 'production']);
       wrapper.findComponent(GlSearchBoxByType).vm.$emit('focus');
       wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', 'prod');
       return axios.waitForAll().then(() => {

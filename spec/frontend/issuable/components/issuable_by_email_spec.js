@@ -5,7 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
-import httpStatus, { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
+import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 const initialEmail = 'user@gitlab.com';
 
@@ -130,7 +130,7 @@ describe('IssuableByEmail', () => {
       });
 
       it('should update the email when the request succeeds', async () => {
-        mockAxios.onPut(resetPath).reply(httpStatus.OK, { new_address: 'foo@bar.com' });
+        mockAxios.onPut(resetPath).reply(HTTP_STATUS_OK, { new_address: 'foo@bar.com' });
 
         wrapper = createComponent({
           issuableType: 'issue',

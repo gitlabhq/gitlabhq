@@ -1126,10 +1126,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/favicon-overlay/-/favicon-overlay-2.0.0.tgz#2f32d0b6a4d5b8ac44e2927083d9ab478a78c984"
   integrity sha512-GNcORxXJ98LVGzOT9dDYKfbheqH6lNgPDD72lyXRnQIH7CjgGyos8i17aSBPq1f4s3zF3PyedFiAR4YEZbva2Q==
 
-"@gitlab/fonts@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.0.1.tgz#5bcdf85d240fb053a7606a4cb79ab1c9b643f148"
-  integrity sha512-0e2a7x4A9ngEO/SsV/OQZYvuEAfLxKlS5Smn2zg+XI/6WlyFWNjmxDvdD58zav9Pjar1jrNPWMDLtGqV4U+QxQ==
+"@gitlab/fonts@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.1.0.tgz#141db7d7c8e72113307614932d64103d3a68668c"
+  integrity sha512-5XNDJke0ElrMRG5iLWOirFRSLQhf9oNpPx5uie1j2l8QU6RLkMAE0nXG6cwJ82mgAV49ZcqLXXSopWvuUg8Y9Q==
 
 "@gitlab/stylelint-config@4.1.0":
   version "4.1.0"

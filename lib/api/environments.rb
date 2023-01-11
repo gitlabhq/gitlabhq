@@ -188,6 +188,35 @@ module API
         present environment, with: Entities::Environment, current_user: current_user
       end
 
+      desc 'Stop stale environments' do
+        detail 'It returns `200` if stale environment check was scheduled successfully'
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' }
+        ]
+        tags %w[environments]
+      end
+      params do
+        requires :before,
+                 type: DateTime,
+                 desc: 'Stop all environments that were last modified or deployed to before this date.'
+      end
+      post ':id/environments/stop_stale' do
+        authorize! :stop_environment, user_project
+
+        bad_request!('Invalid Date') if params[:before] < 10.years.ago || params[:before] > 1.week.ago
+
+        service_response = ::Environments::StopStaleService.new(user_project, current_user, params.slice(:before)).execute
+
+        if service_response.error?
+          status 400
+        else
+          status 200
+        end
+
+        present message: service_response.message
+      end
+
       desc 'Get a specific environment' do
         success Entities::Environment
         failure [

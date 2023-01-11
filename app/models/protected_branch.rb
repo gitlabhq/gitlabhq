@@ -104,6 +104,10 @@ class ProtectedBranch < ApplicationRecord
     name == project.default_branch
   end
 
+  def entity
+    group || project
+  end
+
   private
 
   def validate_either_project_or_top_group
@@ -111,7 +115,7 @@ class ProtectedBranch < ApplicationRecord
       errors.add(:base, _('must be associated with a Group or a Project'))
     elsif project && group
       errors.add(:base, _('cannot be associated with both a Group and a Project'))
-    elsif group && group.root_ancestor != group
+    elsif group && group.subgroup?
       errors.add(:base, _('cannot be associated with a subgroup'))
     end
   end

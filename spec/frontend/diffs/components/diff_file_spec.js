@@ -18,7 +18,7 @@ import createDiffsStore from '~/diffs/store/modules';
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
 import { scrollToElement } from '~/lib/utils/common_utils';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import createNotesStore from '~/notes/stores/modules';
 import { getDiffFileMock } from '../mock_data/diff_file';
 import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
@@ -436,7 +436,7 @@ describe('DiffFile', () => {
     describe('loading', () => {
       it('should have loading icon while loading a collapsed diffs', async () => {
         const { load_collapsed_diff_url } = store.state.diffs.diffFiles[0];
-        axiosMock.onGet(load_collapsed_diff_url).reply(httpStatus.OK, getReadableFile());
+        axiosMock.onGet(load_collapsed_diff_url).reply(HTTP_STATUS_OK, getReadableFile());
         makeFileAutomaticallyCollapsed(store);
         wrapper.vm.requestDiff();
 
@@ -517,7 +517,7 @@ describe('DiffFile', () => {
       viewer: { name: 'collapsed', automaticallyCollapsed: true },
     };
 
-    axiosMock.onGet(file.load_collapsed_diff_url).reply(httpStatus.OK, getReadableFile());
+    axiosMock.onGet(file.load_collapsed_diff_url).reply(HTTP_STATUS_OK, getReadableFile());
 
     ({ wrapper, store } = createComponent({ file, props: { viewDiffsFileByFile: true } }));
 

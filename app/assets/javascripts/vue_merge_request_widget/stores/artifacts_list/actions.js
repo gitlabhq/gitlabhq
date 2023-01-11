@@ -1,6 +1,6 @@
 import Visibility from 'visibilityjs';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 
 import * as types from './mutation_types';
@@ -63,7 +63,7 @@ export const fetchArtifacts = ({ state, dispatch }) => {
 
 export const receiveArtifactsSuccess = ({ commit }, response) => {
   // With 204 we keep polling and don't update the state
-  if (response.status === httpStatusCodes.OK) {
+  if (response.status === HTTP_STATUS_OK) {
     commit(types.RECEIVE_ARTIFACTS_SUCCESS, response.data);
   }
 };

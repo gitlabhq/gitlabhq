@@ -1,6 +1,6 @@
 <script>
 import { GlCollapse } from '@gitlab/ui';
-import { user, counts, context } from '../mock_data';
+import { context } from '../mock_data';
 import UserBar from './user_bar.vue';
 import ContextSwitcherToggle from './context_switcher_toggle.vue';
 import ContextSwitcher from './context_switcher.vue';
@@ -8,14 +8,18 @@ import BottomBar from './bottom_bar.vue';
 
 export default {
   context,
-  user,
-  counts,
   components: {
     GlCollapse,
     UserBar,
     ContextSwitcherToggle,
     ContextSwitcher,
     BottomBar,
+  },
+  props: {
+    sidebarData: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -30,7 +34,7 @@ export default {
     class="super-sidebar gl-fixed gl-bottom-0 gl-left-0 gl-display-flex gl-flex-direction-column gl-bg-gray-10 gl-border-r gl-border-gray-a-08 gl-z-index-9999"
     data-testid="super-sidebar"
   >
-    <user-bar :user="$options.user" :counts="$options.counts" />
+    <user-bar :sidebar-data="sidebarData" />
     <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden">
       <div class="gl-flex-grow-1 gl-overflow-auto">
         <context-switcher-toggle :context="$options.context" :expanded="contextSwitcherOpened" />

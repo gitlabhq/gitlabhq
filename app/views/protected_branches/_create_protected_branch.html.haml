@@ -11,4 +11,4 @@
                     dropdown_class: 'dropdown-menu-selectable capitalize-header', dropdown_qa_selector: 'allowed_to_push_dropdown_content' , dropdown_testid: 'allowed-to-push-dropdown',
                     data: { field_name: 'protected_branch[push_access_levels_attributes][0][access_level]', input_id: 'push_access_levels_attributes', qa_selector: 'allowed_to_push_dropdown' }})
 
-= render 'protected_branches/shared/create_protected_branch'
+= render 'protected_branches/shared/create_protected_branch', protected_branch_entity: protected_branch_entity

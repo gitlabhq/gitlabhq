@@ -8,7 +8,7 @@ import Video from '~/content_editor/extensions/video';
 import Link from '~/content_editor/extensions/link';
 import Loading from '~/content_editor/extensions/loading';
 import { VARIANT_DANGER } from '~/flash';
-import httpStatus, { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 import {
@@ -132,7 +132,7 @@ describe('content_editor/extensions/attachment', () => {
         };
 
         beforeEach(() => {
-          mock.onPost().reply(httpStatus.OK, successResponse);
+          mock.onPost().reply(HTTP_STATUS_OK, successResponse);
         });
 
         it('inserts a media content with src set to the encoded content and uploading true', async () => {
@@ -209,7 +209,7 @@ describe('content_editor/extensions/attachment', () => {
         };
 
         beforeEach(() => {
-          mock.onPost().reply(httpStatus.OK, successResponse);
+          mock.onPost().reply(HTTP_STATUS_OK, successResponse);
         });
 
         it('inserts a loading mark', async () => {

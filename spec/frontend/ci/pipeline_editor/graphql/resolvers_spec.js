@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 import { mockLintResponse } from '../mock_data';
 
@@ -20,7 +20,7 @@ describe('~/ci/pipeline_editor/graphql/resolvers', () => {
 
       beforeEach(async () => {
         mock = new MockAdapter(axios);
-        mock.onPost(endpoint).reply(httpStatus.OK, mockLintResponse);
+        mock.onPost(endpoint).reply(HTTP_STATUS_OK, mockLintResponse);
 
         result = await resolvers.Mutation.lintCI(null, {
           endpoint,

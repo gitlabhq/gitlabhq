@@ -1,4 +1,5 @@
 export const HTTP_STATUS_ABORTED = 0;
+export const HTTP_STATUS_OK = 200;
 export const HTTP_STATUS_CREATED = 201;
 export const HTTP_STATUS_ACCEPTED = 202;
 export const HTTP_STATUS_NON_AUTHORITATIVE_INFORMATION = 203;
@@ -28,7 +29,7 @@ const httpStatusCodes = {
 };
 
 export const successCodes = [
-  httpStatusCodes.OK,
+  HTTP_STATUS_OK,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_ACCEPTED,
   HTTP_STATUS_NON_AUTHORITATIVE_INFORMATION,

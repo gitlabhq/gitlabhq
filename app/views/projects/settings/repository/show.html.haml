@@ -13,7 +13,7 @@
 -# The shared parts of the views can be found in the `shared` directory.
 -# Those are used throughout the actual views. These `shared` views are then
 -# reused in EE.
-= render "projects/settings/repository/protected_branches"
+= render "projects/settings/repository/protected_branches", protected_branch_entity: @project
 = render "shared/deploy_tokens/index", group_or_project: @project, description: deploy_token_description
 = render @deploy_keys
 = render "projects/cleanup/show"

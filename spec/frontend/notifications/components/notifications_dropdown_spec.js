@@ -4,7 +4,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
-import httpStatus, { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
+import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import CustomNotificationsModal from '~/notifications/components/custom_notifications_modal.vue';
 import NotificationsDropdown from '~/notifications/components/notifications_dropdown.vue';
 import NotificationsDropdownItem from '~/notifications/components/notifications_dropdown_item.vue';
@@ -98,7 +98,7 @@ describe('NotificationsDropdown', () => {
 
       it('opens the modal when the user clicks the button', async () => {
         jest.spyOn(axios, 'put');
-        mockAxios.onPut('/api/v4/notification_settings').reply(httpStatus.OK, {});
+        mockAxios.onPut('/api/v4/notification_settings').reply(HTTP_STATUS_OK, {});
 
         wrapper = createComponent({
           initialNotificationLevel: 'custom',
@@ -233,7 +233,7 @@ describe('NotificationsDropdown', () => {
     );
 
     it('updates the selectedNotificationLevel and marks the item with a checkmark', async () => {
-      mockAxios.onPut('/api/v4/notification_settings').reply(httpStatus.OK, {});
+      mockAxios.onPut('/api/v4/notification_settings').reply(HTTP_STATUS_OK, {});
       wrapper = createComponent();
 
       const dropdownItem = findDropdownItemAt(1);
@@ -257,7 +257,7 @@ describe('NotificationsDropdown', () => {
     });
 
     it('opens the modal when the user clicks on the "Custom" dropdown item', async () => {
-      mockAxios.onPut('/api/v4/notification_settings').reply(httpStatus.OK, {});
+      mockAxios.onPut('/api/v4/notification_settings').reply(HTTP_STATUS_OK, {});
       wrapper = createComponent();
 
       await clickDropdownItemAt(5);

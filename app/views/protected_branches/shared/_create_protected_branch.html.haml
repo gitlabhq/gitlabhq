@@ -1,4 +1,4 @@
-= gitlab_ui_form_for [@project, @protected_branch], html: { class: 'new-protected-branch js-new-protected-branch' } do |f|
+= gitlab_ui_form_for [protected_branch_entity, @protected_branch], html: { class: 'new-protected-branch js-new-protected-branch' } do |f|
   %input{ type: 'hidden', name: 'update_section', value: 'js-protected-branches-settings' }
   = render Pajamas::CardComponent.new(card_options: { class: "gl-mb-5" }) do |c|
     - c.header do
@@ -8,11 +8,18 @@
       .form-group.row
         = f.label :name, s_('ProtectedBranch|Branch:'), class: 'col-sm-12'
         .col-sm-12
-          = render partial: "protected_branches/shared/dropdown", locals: { f: f, toggle_classes: 'gl-w-full! gl-form-input-lg' }
+          - if protected_branch_entity.is_a?(Group)
+            = f.text_field :name, placeholder: 'prod*', class: 'form-control gl-w-full! gl-form-input-lg'
+          - else
+            = render partial: "protected_branches/shared/dropdown", locals: { f: f, toggle_classes: 'gl-w-full! gl-form-input-lg' }
           .form-text.text-muted
             - wildcards_url = help_page_url('user/project/protected_branches', anchor: 'configure-multiple-protected-branches-by-using-a-wildcard')
             - wildcards_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: wildcards_url }
-            = (s_("ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported.") % { wildcards_link_start: wildcards_link_start, wildcards_link_end: '</a>', code_tag_start: '<code>', code_tag_end: '</code>' }).html_safe
+            - placeholders = { wildcards_link_start: wildcards_link_start, wildcards_link_end: '</a>', code_tag_start: '<code>', code_tag_end: '</code>' }
+            - if protected_branch_entity.is_a?(Group)
+              = (s_("ProtectedBranch|Only %{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported.") % placeholders).html_safe
+            - else
+              = (s_("ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported.") % placeholders).html_safe
       .form-group.row
         = f.label :merge_access_levels_attributes, s_("ProtectedBranch|Allowed to merge:"), class: 'col-sm-12'
         .col-sm-12
@@ -30,6 +37,6 @@
             - force_push_docs_url = help_page_url('topics/git/git_rebase', anchor: 'force-push')
             - force_push_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: force_push_docs_url }
             = (s_("ProtectedBranch|Allow all users with push access to %{tag_start}force push%{tag_end}.") % { tag_start: force_push_link_start, tag_end: '</a>' }).html_safe
-      = render_if_exists 'protected_branches/ee/code_owner_approval_form', f: f
+      = render_if_exists 'protected_branches/ee/code_owner_approval_form', f: f, protected_branch_entity: protected_branch_entity
     - c.footer do
       = f.submit s_('ProtectedBranch|Protect'), disabled: true, data: { qa_selector: 'protect_button' }, pajamas_button: true

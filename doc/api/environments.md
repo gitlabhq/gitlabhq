@@ -412,3 +412,28 @@ Example response:
   "updated_at": "2019-05-27T18:55:13.252Z"
 }
 ```
+
+## Stop stale environments
+
+Issue stop request to all environments that were last modified or deployed to before a specified date. Excludes protected environments. Returns `200` if stop request was successful and `400` if the before date is invalid. For details of exactly when the environment is stopped, see [Stop an environment](../ci/environments/index.md#stop-an-environment).
+
+```plaintext
+POST /projects/:id/environments/stop_stale
+```
+
+| Attribute | Type           | Required | Description                                                                                                                                                                                    |
+|-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user                                                                                 |
+| `before`  | date           | yes      | Stop environments that have been modified or deployed to before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Valid inputs are between 10 years ago and 1 week ago |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/stop_stale?before=10%2F10%2F2021"
+```
+
+Example response:
+
+```json
+{
+  "message": "Successfully requested stop for all stale environments"
+}
+```
