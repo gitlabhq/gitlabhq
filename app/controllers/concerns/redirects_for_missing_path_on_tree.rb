@@ -8,7 +8,7 @@ module RedirectsForMissingPathOnTree
   private
 
   def missing_path_on_ref(path, ref)
-    _('"%{path}" did not exist on "%{ref}"') % { path: truncate_path(path), ref: ref }
+    format(_('"%{path}" did not exist on "%{ref}"'), path: truncate_path(path), ref: ref)
   end
 
   def truncate_path(path)

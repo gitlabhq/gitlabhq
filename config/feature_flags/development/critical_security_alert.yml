@@ -1,0 +1,8 @@
+---
+name: critical_security_alert
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108732
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387719
+milestone: '15.8'
+type: development
+group: group::distribution
+default_enabled: false

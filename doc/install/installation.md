@@ -344,6 +344,12 @@ In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 14.0 and later
    sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS btree_gist;"
    ```
 
+1. Create the `plpgsql` extension:
+
+   ```shell
+   sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS plpgsql;"
+   ```
+
 1. Create the GitLab production database and grant all privileges on the database:
 
    ```shell
@@ -380,6 +386,24 @@ In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 14.0 and later
    SELECT true AS enabled
    FROM pg_available_extensions
    WHERE name = 'btree_gist'
+   AND installed_version IS NOT NULL;
+   ```
+
+   If the extension is enabled this produces the following output:
+
+   ```plaintext
+   enabled
+   ---------
+    t
+   (1 row)
+   ```
+
+1. Check if the `plpgsql` extension is enabled:
+
+   ```sql
+   SELECT true AS enabled
+   FROM pg_available_extensions
+   WHERE name = 'plpgsql'
    AND installed_version IS NOT NULL;
    ```
 

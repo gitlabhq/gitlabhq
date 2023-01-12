@@ -25,8 +25,9 @@ module EnforcesTwoFactorAuthentication
       case self
       when GraphqlController
         render_error(
-          _("Authentication error: enable 2FA in your profile settings to continue using GitLab: %{mfa_help_page}") %
-          { mfa_help_page: mfa_help_page_url },
+          format(
+            _("Authentication error: enable 2FA in your profile settings to continue using GitLab: %{mfa_help_page}"),
+             mfa_help_page: mfa_help_page_url),
           status: :unauthorized
         )
       else

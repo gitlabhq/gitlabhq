@@ -38,8 +38,10 @@ export default {
     statusIcon() {
       if (this.collapsedData.newErrors.length >= 1) {
         return EXTENSION_ICONS.warning;
+      } else if (this.collapsedData.resolvedErrors.length >= 1) {
+        return EXTENSION_ICONS.success;
       }
-      return EXTENSION_ICONS.success;
+      return EXTENSION_ICONS.neutral;
     },
   },
   methods: {

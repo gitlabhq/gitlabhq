@@ -1,4 +1,4 @@
-import { GlAlert, GlModal, GlButton, GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlModal, GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
@@ -7,10 +7,12 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import getRunnerPlatformsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_platforms.query.graphql';
-import getRunnerSetupInstructionsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_setup.query.graphql';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
+import RunnerCliInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_cli_instructions.vue';
+import RunnerDockerInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_docker_instructions.vue';
+import RunnerKubernetesInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_kubernetes_instructions.vue';
 
-import { mockRunnerPlatforms, mockInstructions, mockInstructionsWindows } from './mock_data';
+import { mockRunnerPlatforms } from './mock_data';
 
 Vue.use(VueApollo);
 
@@ -36,24 +38,16 @@ describe('RunnerInstructionsModal component', () => {
   let wrapper;
   let fakeApollo;
   let runnerPlatformsHandler;
-  let runnerSetupInstructionsHandler;
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findModal = () => wrapper.findComponent(GlModal);
   const findPlatformButtonGroup = () => wrapper.findByTestId('platform-buttons');
   const findPlatformButtons = () => findPlatformButtonGroup().findAllComponents(GlButton);
-  const findArchitectureDropdownItems = () => wrapper.findAllByTestId('architecture-dropdown-item');
-  const findBinaryDownloadButton = () => wrapper.findByTestId('binary-download-button');
-  const findBinaryInstructions = () => wrapper.findByTestId('binary-instructions');
-  const findRegisterCommand = () => wrapper.findByTestId('register-command');
+  const findRunnerCliInstructions = () => wrapper.findComponent(RunnerCliInstructions);
 
   const createComponent = ({ props, shown = true, ...options } = {}) => {
-    const requestHandlers = [
-      [getRunnerPlatformsQuery, runnerPlatformsHandler],
-      [getRunnerSetupInstructionsQuery, runnerSetupInstructionsHandler],
-    ];
+    const requestHandlers = [[getRunnerPlatformsQuery, runnerPlatformsHandler]];
 
     fakeApollo = createMockApollo(requestHandlers);
 
@@ -77,7 +71,6 @@ describe('RunnerInstructionsModal component', () => {
 
   beforeEach(() => {
     runnerPlatformsHandler = jest.fn().mockResolvedValue(mockRunnerPlatforms);
-    runnerSetupInstructionsHandler = jest.fn().mockResolvedValue(mockInstructions);
   });
 
   afterEach(() => {
@@ -102,87 +95,12 @@ describe('RunnerInstructionsModal component', () => {
       expect(buttons).toHaveLength(mockRunnerPlatforms.data.runnerPlatforms.nodes.length);
     });
 
-    it('should contain a number of dropdown items for the architecture options', () => {
-      expect(findArchitectureDropdownItems()).toHaveLength(
-        mockRunnerPlatforms.data.runnerPlatforms.nodes[0].architectures.nodes.length,
+    it('should display architecture options', () => {
+      const { architectures } = findRunnerCliInstructions().props('platform');
+
+      expect(architectures).toEqual(
+        mockRunnerPlatforms.data.runnerPlatforms.nodes[0].architectures.nodes,
       );
-    });
-
-    describe('should display default instructions', () => {
-      const { installInstructions } = mockInstructions.data.runnerSetup;
-
-      it('runner instructions are requested', () => {
-        expect(runnerSetupInstructionsHandler).toHaveBeenCalledWith({
-          platform: 'linux',
-          architecture: 'amd64',
-        });
-      });
-
-      it('binary instructions are shown', async () => {
-        const instructions = findBinaryInstructions().text();
-
-        expect(instructions).toBe(installInstructions.trim());
-      });
-
-      it('register command is shown with a replaced token', async () => {
-        const command = findRegisterCommand().text();
-
-        expect(command).toBe(
-          'sudo gitlab-runner register --url http://localhost/ --registration-token MY_TOKEN',
-        );
-      });
-    });
-
-    describe('after a platform and architecture are selected', () => {
-      const windowsIndex = 2;
-      const { installInstructions } = mockInstructionsWindows.data.runnerSetup;
-
-      beforeEach(async () => {
-        runnerSetupInstructionsHandler.mockResolvedValue(mockInstructionsWindows);
-
-        findPlatformButtons().at(windowsIndex).vm.$emit('click');
-        await waitForPromises();
-      });
-
-      it('runner instructions are requested', () => {
-        expect(runnerSetupInstructionsHandler).toHaveBeenLastCalledWith({
-          platform: 'windows',
-          architecture: 'amd64',
-        });
-      });
-
-      it('architecture download link is updated', () => {
-        const architectures =
-          mockRunnerPlatforms.data.runnerPlatforms.nodes[windowsIndex].architectures.nodes;
-
-        expect(findBinaryDownloadButton().attributes('href')).toBe(
-          architectures[0].downloadLocation,
-        );
-      });
-
-      it('other binary instructions are shown', () => {
-        const instructions = findBinaryInstructions().text();
-
-        expect(instructions).toBe(installInstructions.trim());
-      });
-
-      it('register command is shown', () => {
-        const command = findRegisterCommand().text();
-
-        expect(command).toBe(
-          './gitlab-runner.exe register --url http://localhost/ --registration-token MY_TOKEN',
-        );
-      });
-
-      it('runner instructions are requested with another architecture', async () => {
-        findArchitectureDropdownItems().at(1).vm.$emit('click');
-        await waitForPromises();
-
-        expect(runnerSetupInstructionsHandler).toHaveBeenLastCalledWith({
-          platform: 'windows',
-          architecture: '386',
-        });
-      });
     });
 
     describe('when the modal resizes', () => {
@@ -202,16 +120,14 @@ describe('RunnerInstructionsModal component', () => {
     });
   });
 
-  describe('when a register token is not known', () => {
+  describe.each([null, 'DEFINED'])('when registration token is %p', (token) => {
     beforeEach(async () => {
-      createComponent({ props: { registrationToken: undefined } });
+      createComponent({ props: { registrationToken: token } });
       await waitForPromises();
     });
 
     it('register command is shown without a defined registration token', () => {
-      const instructions = findRegisterCommand().text();
-
-      expect(instructions).toBe(mockInstructions.data.runnerSetup.registerInstructions);
+      expect(findRunnerCliInstructions().props('registrationToken')).toBe(token);
     });
   });
 
@@ -221,21 +137,33 @@ describe('RunnerInstructionsModal component', () => {
       await waitForPromises();
     });
 
-    it('runner instructions for the default selected platform are requested', () => {
-      expect(runnerSetupInstructionsHandler).toHaveBeenLastCalledWith({
-        platform: 'osx',
-        architecture: 'amd64',
-      });
+    it('should preselect', () => {
+      const selected = findPlatformButtons()
+        .filter((btn) => btn.props('selected'))
+        .at(0);
+
+      expect(selected.text()).toBe('macOS');
     });
 
-    it('sets the focus on the default selected platform', () => {
-      const findOsxPlatformButton = () => wrapper.findComponent({ ref: 'osx' });
+    it('runner instructions for the default selected platform are requested', () => {
+      const { name } = findRunnerCliInstructions().props('platform');
 
-      findOsxPlatformButton().element.focus = jest.fn();
+      expect(name).toBe('osx');
+    });
+  });
 
-      findModal().vm.$emit('shown');
+  describe.each`
+    platform        | component
+    ${'docker'}     | ${RunnerDockerInstructions}
+    ${'kubernetes'} | ${RunnerKubernetesInstructions}
+  `('with platform "$platform"', ({ platform, component }) => {
+    beforeEach(async () => {
+      createComponent({ props: { defaultPlatformName: platform } });
+      await waitForPromises();
+    });
 
-      expect(findOsxPlatformButton().element.focus).toHaveBeenCalled();
+    it(`runner instructions for ${platform} are shown`, () => {
+      expect(wrapper.findComponent(component).exists()).toBe(true);
     });
   });
 
@@ -247,7 +175,6 @@ describe('RunnerInstructionsModal component', () => {
 
     it('does not fetch instructions', () => {
       expect(runnerPlatformsHandler).not.toHaveBeenCalled();
-      expect(runnerSetupInstructionsHandler).not.toHaveBeenCalled();
     });
   });
 
@@ -255,43 +182,41 @@ describe('RunnerInstructionsModal component', () => {
     it('should show a skeleton loader', async () => {
       createComponent();
       await nextTick();
-      await nextTick();
 
       expect(findSkeletonLoader().exists()).toBe(true);
-      expect(findGlLoadingIcon().exists()).toBe(false);
-
-      // wait on fetch of both `platforms` and `instructions`
-      await nextTick();
-      await nextTick();
-
-      expect(findGlLoadingIcon().exists()).toBe(true);
     });
 
     it('once loaded, should not show a loading state', async () => {
       createComponent();
-
       await waitForPromises();
 
       expect(findSkeletonLoader().exists()).toBe(false);
-      expect(findGlLoadingIcon().exists()).toBe(false);
     });
   });
 
-  describe('when instructions cannot be loaded', () => {
-    beforeEach(async () => {
-      runnerSetupInstructionsHandler.mockRejectedValue();
+  describe('errors', () => {
+    it('should show an alert when platforms cannot be loaded', async () => {
+      runnerPlatformsHandler.mockRejectedValue();
 
       createComponent();
       await waitForPromises();
-    });
 
-    it('should show alert', () => {
       expect(findAlert().exists()).toBe(true);
     });
 
-    it('should not show instructions', () => {
-      expect(findBinaryInstructions().exists()).toBe(false);
-      expect(findRegisterCommand().exists()).toBe(false);
+    it('should show alert when instructions cannot be loaded', async () => {
+      createComponent();
+      await waitForPromises();
+
+      findRunnerCliInstructions().vm.$emit('error');
+      await waitForPromises();
+
+      expect(findAlert().exists()).toBe(true);
+
+      findAlert().vm.$emit('dismiss');
+      await nextTick();
+
+      expect(findAlert().exists()).toBe(false);
     });
   });
 
@@ -308,14 +233,16 @@ describe('RunnerInstructionsModal component', () => {
 
     describe('show()', () => {
       let mockShow;
+      let mockClose;
 
       beforeEach(() => {
         mockShow = jest.fn();
+        mockClose = jest.fn();
 
         createComponent({
           shown: false,
           stubs: {
-            GlModal: getGlModalStub({ show: mockShow }),
+            GlModal: getGlModalStub({ show: mockShow, close: mockClose }),
           },
         });
       });
@@ -324,6 +251,12 @@ describe('RunnerInstructionsModal component', () => {
         wrapper.vm.show();
 
         expect(mockShow).toHaveBeenCalledTimes(1);
+      });
+
+      it('delegates close()', () => {
+        wrapper.vm.close();
+
+        expect(mockClose).toHaveBeenCalledTimes(1);
       });
     });
   });

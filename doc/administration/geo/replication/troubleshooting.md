@@ -1317,6 +1317,18 @@ registry = Geo::PackageFileRegistry.find(registry_id)
 registry.replicator.send(:download)
 ```
 
+#### Find registry records of blobs that failed to sync
+
+```ruby
+Geo::PackageFileRegistry.failed
+```
+
+#### Find registry records of blobs that are missing on the primary site
+
+```ruby
+Geo::PackageFileRegistry.where(last_sync_failure: 'The file is missing on the Geo primary site')
+```
+
 #### Verify package files on the secondary manually
 
 This iterates over all package files on the secondary, looking at the
@@ -1344,7 +1356,7 @@ status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
 status
 ```
 
-### Reverify all uploads (or any SSF data type which is verified)
+#### Reverify all uploads (or any SSF data type which is verified)
 
 1. SSH into a GitLab Rails node in the primary Geo site.
 1. Open [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
@@ -1398,21 +1410,6 @@ model_record.replicator.send(:sync_repository)
 ```ruby
 registry = Geo::SnippetRepositoryRegistry.find(registry_id)
 registry.replicator.send(:sync_repository)
-```
-
-### Find failed artifacts
-
-[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-to run the following commands:
-
-```ruby
-Geo::JobArtifactRegistry.failed
-```
-
-#### Find `ID` of synced artifacts that are missing on primary
-
-```ruby
-Geo::JobArtifactRegistry.synced.missing_on_primary.pluck(:artifact_id)
 ```
 
 ### Project or project wiki repositories

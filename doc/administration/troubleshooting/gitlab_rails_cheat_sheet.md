@@ -74,7 +74,7 @@ Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md
 
 ### Artifacts
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#find-failed-artifacts).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#find-registry-records-of-blobs-that-failed-to-sync).
 
 ### Repository verification failures
 

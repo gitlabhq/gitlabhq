@@ -27,6 +27,12 @@ FactoryBot.define do
       token_digest { nil }
     end
 
+    trait :admin_mode do
+      before(:create) do |personal_access_token|
+        personal_access_token.scopes.append(Gitlab::Auth::ADMIN_MODE_SCOPE) if personal_access_token.user.admin?
+      end
+    end
+
     trait :no_prefix do
       after(:build) { |personal_access_token| personal_access_token.set_token(Devise.friendly_token) }
     end

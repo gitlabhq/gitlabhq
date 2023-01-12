@@ -18,6 +18,7 @@ import {
 } from '~/vue_merge_request_widget/extensions/code_quality/constants';
 import {
   codeQualityResponseNewErrors,
+  codeQualityResponseResolvedErrors,
   codeQualityResponseResolvedAndNewErrors,
   codeQualityResponseNoErrors,
 } from './mock_data';
@@ -37,6 +38,9 @@ describe('Code Quality extension', () => {
   const findToggleCollapsedButton = () => wrapper.findByTestId('toggle-button');
   const findAllExtensionListItems = () => wrapper.findAllByTestId('extension-list-item');
   const isCollapsable = () => wrapper.findByTestId('toggle-button').exists();
+  const getNeutralIcon = () => wrapper.findByTestId('status-neutral-icon').exists();
+  const getAlertIcon = () => wrapper.findByTestId('status-alert-icon').exists();
+  const getSuccessIcon = () => wrapper.findByTestId('status-success-icon').exists();
 
   const createComponent = () => {
     wrapper = mountExtended(extensionsContainer, {
@@ -90,7 +94,7 @@ describe('Code Quality extension', () => {
       expect(isCollapsable()).toBe(false);
     });
 
-    it('displays correct single Report', async () => {
+    it('displays new Errors finding', async () => {
       mockApi(HTTP_STATUS_OK, codeQualityResponseNewErrors);
 
       createComponent();
@@ -104,8 +108,29 @@ describe('Code Quality extension', () => {
           .replace(/%{strong_start}/g, '')
           .replace(/%{strong_end}/g, ''),
       );
-
       expect(isCollapsable()).toBe(true);
+      expect(getAlertIcon()).toBe(true);
+    });
+
+    it('displays resolved Errors finding', async () => {
+      mockApi(HTTP_STATUS_OK, codeQualityResponseResolvedErrors);
+
+      createComponent();
+
+      await waitForPromises();
+      expect(wrapper.text()).toBe(
+        i18n
+          .singularCopy(
+            i18n.findings(
+              codeQualityResponseResolvedErrors.resolved_errors,
+              codeQualityPrefixes.fixed,
+            ),
+          )
+          .replace(/%{strong_start}/g, '')
+          .replace(/%{strong_end}/g, ''),
+      );
+      expect(isCollapsable()).toBe(true);
+      expect(getSuccessIcon()).toBe(true);
     });
 
     it('displays quality improvement and degradation', async () => {
@@ -131,6 +156,7 @@ describe('Code Quality extension', () => {
           .replace(/%{strong_end}/g, ''),
       );
       expect(isCollapsable()).toBe(true);
+      expect(getAlertIcon()).toBe(true);
     });
 
     it('displays no detected errors', async () => {
@@ -142,6 +168,7 @@ describe('Code Quality extension', () => {
 
       expect(wrapper.text()).toBe(i18n.noChanges);
       expect(isCollapsable()).toBe(false);
+      expect(getNeutralIcon()).toBe(true);
     });
   });
 

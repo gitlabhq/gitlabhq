@@ -45,12 +45,12 @@ module Tooling
       for background information and alternative options.
       SUGGEST_COMMENT
 
-      FEATURE_CATEGORY_REGEX = /^\+.?RSpec\.describe(.+)(?!feature_category)/.freeze
+      RSPEC_TOP_LEVEL_DESCRIBE_REGEX = /^\+.?RSpec\.describe(.+)/.freeze
       FEATURE_CATEGORY_SUGGESTION = <<~SUGGESTION_MARKDOWN
       Consider adding `feature_category: <feature_category_name>` for this example if it is not set already.
       See [testing best practices](https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata).
       SUGGESTION_MARKDOWN
-      FEATURE_CATEGORY_EXCLUDE = 'feature_category'
+      FEATURE_CATEGORY_KEYWORD = 'feature_category'
 
       def changed_specs_files(ee: :include)
         changed_files = helper.all_changed_files
@@ -86,13 +86,26 @@ module Tooling
       end
 
       def add_suggestions_for_feature_category(filename)
-        add_suggestion(
-          filename,
-          FEATURE_CATEGORY_REGEX,
-          FEATURE_CATEGORY_SUGGESTION,
-          nil,
-          FEATURE_CATEGORY_EXCLUDE
-        )
+        file_lines = project_helper.file_lines(filename)
+        changed_lines = helper.changed_lines(filename)
+
+        changed_lines.each_with_index do |changed_line, i|
+          next unless changed_line =~ RSPEC_TOP_LEVEL_DESCRIBE_REGEX
+
+          next_line_in_file = file_lines[file_lines.find_index(changed_line.delete_prefix('+')) + 1]
+
+          if changed_line.include?(FEATURE_CATEGORY_KEYWORD) || next_line_in_file.to_s.include?(FEATURE_CATEGORY_KEYWORD)
+            next
+          end
+
+          line_number = file_lines.find_index(changed_line.delete_prefix('+'))
+          next unless line_number
+
+          suggested_line = file_lines[line_number]
+
+          text = format(comment(FEATURE_CATEGORY_SUGGESTION), suggested_line: suggested_line)
+          markdown(text, file: filename, line: line_number + 1)
+        end
       end
 
       private

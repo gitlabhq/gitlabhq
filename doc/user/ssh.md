@@ -278,7 +278,8 @@ To learn more about using 1Password with SSH keys, see [1Password's documentatio
 
 ## Add an SSH key to your GitLab account
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271239) in GitLab 15.4, default expiration date suggested in UI.
+> - Suggested default expiration date for keys [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271239) in GitLab 15.4.
+> - Usage types for SSH keys [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383046) in GitLab 15.7.
 
 To use SSH with GitLab, copy your public key to your GitLab account:
 

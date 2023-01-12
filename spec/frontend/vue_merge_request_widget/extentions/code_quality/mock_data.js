@@ -23,6 +23,31 @@ export const codeQualityResponseNewErrors = {
   },
 };
 
+export const codeQualityResponseResolvedErrors = {
+  status: 'success',
+  new_errors: [],
+  resolved_errors: [
+    {
+      description: "Parsing error: 'return' outside of function",
+      severity: 'minor',
+      file_path: 'index.js',
+      line: 12,
+    },
+    {
+      description: 'TODO found',
+      severity: 'minor',
+      file_path: '.gitlab-ci.yml',
+      line: 73,
+    },
+  ],
+  existing_errors: [],
+  summary: {
+    total: 12235,
+    resolved: 0,
+    errored: 12235,
+  },
+};
+
 export const codeQualityResponseResolvedAndNewErrors = {
   status: 'failed',
   new_errors: [

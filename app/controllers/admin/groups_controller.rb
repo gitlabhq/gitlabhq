@@ -41,7 +41,7 @@ class Admin::GroupsController < Admin::ApplicationController
     @group = ::Groups::CreateService.new(current_user, group_params).execute
 
     if @group.persisted?
-      redirect_to [:admin, @group], notice: _('Group %{group_name} was successfully created.') % { group_name: @group.name }
+      redirect_to [:admin, @group], notice: format(_('Group %{group_name} was successfully created.'), group_name: @group.name)
     else
       render "new"
     end
@@ -66,7 +66,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
     redirect_to admin_groups_path,
                 status: :found,
-                alert: _('Group %{group_name} was scheduled for deletion.') % { group_name: @group.name }
+                alert: format(_('Group %{group_name} was scheduled for deletion.'), group_name: @group.name)
   end
 
   private

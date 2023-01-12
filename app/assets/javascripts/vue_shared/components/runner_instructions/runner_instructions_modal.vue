@@ -12,15 +12,13 @@ import {
   GlResizeObserverDirective,
 } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import { isEmpty } from 'lodash';
 import { __, s__ } from '~/locale';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
-import {
-  INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES,
-  REGISTRATION_TOKEN_PLACEHOLDER,
-} from './constants';
 import getRunnerPlatformsQuery from './graphql/get_runner_platforms.query.graphql';
-import getRunnerSetupInstructionsQuery from './graphql/get_runner_setup.query.graphql';
+import { PLATFORM_DOCKER, PLATFORM_KUBERNETES } from './constants';
+
+import RunnerCliInstructions from './instructions/runner_cli_instructions.vue';
+import RunnerDockerInstructions from './instructions/runner_docker_instructions.vue';
+import RunnerKubernetesInstructions from './instructions/runner_kubernetes_instructions.vue';
 
 export default {
   components: {
@@ -33,7 +31,7 @@ export default {
     GlIcon,
     GlLoadingIcon,
     GlSkeletonLoader,
-    ModalCopyButton,
+    RunnerDockerInstructions,
   },
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
@@ -74,27 +72,13 @@ export default {
         );
       },
       result() {
-        // If it is set and available, select the defaultSelectedPlatform.
+        // If found, select the defaultSelectedPlatform.
         // Otherwise, select the first available platform
-        this.selectPlatform(this.defaultPlatformName || this.platforms?.[0].name);
-      },
-      error() {
-        this.toggleAlert(true);
-      },
-    },
-    instructions: {
-      query: getRunnerSetupInstructionsQuery,
-      skip() {
-        return !this.shown || !this.selectedPlatform;
-      },
-      variables() {
-        return {
-          platform: this.selectedPlatform,
-          architecture: this.selectedArchitecture || '',
-        };
-      },
-      update(data) {
-        return data?.runnerSetup;
+        const platform =
+          this.platforms?.find(({ name }) => this.defaultPlatformName === name) ||
+          this.platforms?.[0];
+
+        this.selectPlatform(platform);
       },
       error() {
         this.toggleAlert(true);
@@ -106,39 +90,23 @@ export default {
       shown: false,
       platforms: [],
       selectedPlatform: null,
-      selectedArchitecture: null,
       showAlert: false,
-      instructions: {},
       platformsButtonGroupVertical: false,
     };
   },
   computed: {
-    instructionsEmpty() {
-      return isEmpty(this.instructions);
-    },
-    architectures() {
-      return this.platforms.find(({ name }) => name === this.selectedPlatform)?.architectures || [];
-    },
-    binaryUrl() {
-      return this.architectures.find(({ name }) => name === this.selectedArchitecture)
-        ?.downloadLocation;
-    },
-    instructionsWithoutArchitecture() {
-      return INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES[this.selectedPlatform]?.instructions;
-    },
-    runnerInstallationLink() {
-      return INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES[this.selectedPlatform]?.link;
-    },
-    registerInstructionsWithToken() {
-      const { registerInstructions } = this.instructions || {};
-
-      if (this.registrationToken) {
-        return registerInstructions?.replace(
-          REGISTRATION_TOKEN_PLACEHOLDER,
-          this.registrationToken,
-        );
+    instructionsComponent() {
+      if (this.selectedPlatform?.architectures?.length) {
+        return RunnerCliInstructions;
       }
-      return registerInstructions;
+      switch (this.selectedPlatform?.name) {
+        case PLATFORM_DOCKER:
+          return RunnerDockerInstructions;
+        case PLATFORM_KUBERNETES:
+          return RunnerKubernetesInstructions;
+        default:
+          return null;
+      }
     },
   },
   updated() {
@@ -148,6 +116,12 @@ export default {
   methods: {
     show() {
       this.$refs.modal.show();
+    },
+    close() {
+      this.$refs.modal.close();
+    },
+    onClose() {
+      this.close();
     },
     onShown() {
       this.shown = true;
@@ -159,21 +133,13 @@ export default {
       // get focused when setting a `defaultPlatformName`.
       // This method refocuses the expected button.
       // See more about this auto-focus: https://bootstrap-vue.org/docs/components/modal#auto-focus-on-open
-      this.$refs[this.selectedPlatform]?.[0].$el.focus();
+      this.$refs[this.selectedPlatform?.name]?.[0].$el.focus();
     },
-    selectPlatform(platformName) {
-      this.selectedPlatform = platformName;
-
-      // Update architecture when platform changes
-      const arch = this.architectures.find(({ name }) => name === this.selectedArchitecture);
-      if (arch) {
-        this.selectArchitecture(arch.name);
-      } else {
-        this.selectArchitecture(this.architectures[0]?.name);
-      }
+    selectPlatform(platform) {
+      this.selectedPlatform = platform;
     },
-    selectArchitecture(architecture) {
-      this.selectedArchitecture = architecture;
+    isPlatformSelected(platform) {
+      return this.selectedPlatform.name === platform.name;
     },
     toggleAlert(state) {
       this.showAlert = state;
@@ -189,17 +155,9 @@ export default {
   i18n: {
     environment: __('Environment'),
     installARunner: s__('Runners|Install a runner'),
-    architecture: s__('Runners|Architecture'),
     downloadInstallBinary: s__('Runners|Download and install binary'),
     downloadLatestBinary: s__('Runners|Download latest binary'),
-    registerRunnerCommand: s__('Runners|Command to register runner'),
     fetchError: s__('Runners|An error has occurred fetching instructions'),
-    copyInstructions: s__('Runners|Copy instructions'),
-    viewInstallationInstructions: s__('Runners|View installation instructions'),
-  },
-  closeButton: {
-    text: __('Close'),
-    attributes: [{ variant: 'default' }],
   },
 };
 </script>
@@ -208,8 +166,8 @@ export default {
     ref="modal"
     :modal-id="modalId"
     :title="$options.i18n.installARunner"
-    :action-secondary="$options.closeButton"
     v-bind="$attrs"
+    hide-footer
     v-on="$listeners"
     @shown="onShown"
   >
@@ -234,88 +192,23 @@ export default {
             v-for="platform in platforms"
             :key="platform.name"
             :ref="platform.name"
-            :selected="selectedPlatform === platform.name"
-            @click="selectPlatform(platform.name)"
+            :selected="isPlatformSelected(platform)"
+            @click="selectPlatform(platform)"
           >
             {{ platform.humanReadableName }}
           </gl-button>
         </gl-button-group>
       </div>
     </template>
-    <template v-if="architectures.length">
-      <template v-if="selectedPlatform">
-        <h5>
-          {{ $options.i18n.architecture }}
-          <gl-loading-icon v-if="$apollo.loading" size="sm" inline />
-        </h5>
 
-        <gl-dropdown class="gl-mb-3" :text="selectedArchitecture">
-          <gl-dropdown-item
-            v-for="architecture in architectures"
-            :key="architecture.name"
-            is-check-item
-            :is-checked="selectedArchitecture === architecture.name"
-            data-testid="architecture-dropdown-item"
-            @click="selectArchitecture(architecture.name)"
-          >
-            {{ architecture.name }}
-          </gl-dropdown-item>
-        </gl-dropdown>
-        <div class="gl-sm-display-flex gl-align-items-center gl-mb-3">
-          <h5>{{ $options.i18n.downloadInstallBinary }}</h5>
-          <gl-button
-            v-if="binaryUrl"
-            class="gl-ml-auto"
-            :href="binaryUrl"
-            download
-            icon="download"
-            data-testid="binary-download-button"
-          >
-            {{ $options.i18n.downloadLatestBinary }}
-          </gl-button>
-        </div>
-      </template>
-      <template v-if="!instructionsEmpty">
-        <div class="gl-display-flex">
-          <pre
-            class="gl-bg-gray gl-flex-grow-1 gl-white-space-pre-line"
-            data-testid="binary-instructions"
-            >{{ instructions.installInstructions }}</pre
-          >
-          <modal-copy-button
-            :title="$options.i18n.copyInstructions"
-            :text="instructions.installInstructions"
-            :modal-id="$options.modalId"
-            css-classes="gl-align-self-start gl-ml-2 gl-mt-2"
-            category="tertiary"
-          />
-        </div>
-
-        <h5 class="gl-mb-3">{{ $options.i18n.registerRunnerCommand }}</h5>
-        <div class="gl-display-flex">
-          <pre
-            class="gl-bg-gray gl-flex-grow-1 gl-white-space-pre-line"
-            data-testid="register-command"
-            >{{ registerInstructionsWithToken }}</pre
-          >
-          <modal-copy-button
-            :title="$options.i18n.copyInstructions"
-            :text="registerInstructionsWithToken"
-            :modal-id="$options.modalId"
-            css-classes="gl-align-self-start gl-ml-2 gl-mt-2"
-            category="tertiary"
-          />
-        </div>
-      </template>
-    </template>
-    <template v-else>
-      <div>
-        <p>{{ instructionsWithoutArchitecture }}</p>
-        <gl-button :href="runnerInstallationLink">
-          <gl-icon name="external-link" />
-          {{ $options.i18n.viewInstallationInstructions }}
-        </gl-button>
-      </div>
-    </template>
+    <keep-alive>
+      <component
+        :is="instructionsComponent"
+        :registration-token="registrationToken"
+        :platform="selectedPlatform"
+        @close="onClose"
+        @error="toggleAlert(true)"
+      />
+    </keep-alive>
   </gl-modal>
 </template>

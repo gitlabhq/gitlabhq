@@ -234,8 +234,6 @@ Backfills a specific field in an index. In most cases, the mapping for the field
 
 Requires the `index_name` and `field_name` methods.
 
-<details><summary>Example</summary>
-
 ```ruby
 class MigrationName < Elastic::Migration
   include Elastic::MigrationBackfillHelper
@@ -252,15 +250,11 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-</details>
-
 #### `Elastic::MigrationUpdateMappingsHelper`
 
 Updates a mapping in an index by calling `put_mapping` with the mapping specified.
 
 Requires the `index_name` and `new_mappings` methods.
-
-<details><summary>Example</summary>
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -282,13 +276,9 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-</details>
-
 #### `Elastic::MigrationObsolete`
 
 Marks a migration as obsolete when it's no longer required.
-
-<details><summary>Example</summary>
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -296,13 +286,9 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-</details>
-
 #### `Elastic::MigrationHelper`
 
 Contains methods you can use when a migration doesn't fit the previous examples.
-
-<details><summary>Example</summary>
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -317,8 +303,6 @@ class MigrationName < Elastic::Migration
   end
 end
 ```
-
-</details>
 
 ### Migration options supported by the `Elastic::MigrationWorker`
 

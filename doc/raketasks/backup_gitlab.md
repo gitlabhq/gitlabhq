@@ -892,7 +892,7 @@ When troubleshooting backup problems, however, replace `CRON=1` with `--trace` t
 ## Limit backup lifetime for local files (prune old backups)
 
 WARNING:
-The process described in this section don't work if you used a [custom filename](#backup-filename)
+The process described in this section doesn't work if you used a [custom filename](#backup-filename)
 for your backups.
 
 To prevent regular backups from using all your disk space, you may want to set a limited lifetime

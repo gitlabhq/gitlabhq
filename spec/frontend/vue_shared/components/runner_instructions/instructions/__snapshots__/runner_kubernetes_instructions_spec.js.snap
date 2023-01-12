@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RunnerKubernetesInstructions renders contents 1`] = `"To install Runner in Kubernetes follow the instructions described in the GitLab documentation. View installation instructions Close"`;
