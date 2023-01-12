@@ -195,6 +195,22 @@ To enable the export of
 1. Select **Project export enabled**.
 1. Select **Save changes**.
 
+## Enable migration of groups and projects by direct transfer
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
+
+You can enable migration of groups by direct transfer. To also migrate projects with the groups, you must enable the
+[`bulk_import_projects` feature flag](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
+
+To enable migration of groups by direct transfer:
+
+1. Sign in to GitLab as a user with Administrator access level.
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. Select **Enable migrating GitLab groups and projects by direct transfer**.
+1. Select **Save changes**.
+
 ## Configure enabled Git access protocols
 
 With GitLab access restrictions, you can select the protocols users can use to

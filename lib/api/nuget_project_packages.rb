@@ -90,6 +90,10 @@ module API
 
         created!
       end
+
+      def required_permission
+        :read_package
+      end
     end
 
     params do

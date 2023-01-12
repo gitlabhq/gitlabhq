@@ -75,14 +75,7 @@ If the app requires additional permissions, [the update must first be manually a
 
 ## Connect the GitLab.com for Jira Cloud app for self-managed instances **(FREE SELF)**
 
-> - Introduced in GitLab 15.6 [with flags](../../administration/feature_flags.md) named [`jira_connect_oauth_self_managed_setting`](https://gitlab.com/gitlab-org/gitlab/-/issues/377679), [`jira_connect_oauth`](https://gitlab.com/gitlab-org/gitlab/-/issues/355048), and [`jira_connect_oauth_self_managed`](https://gitlab.com/gitlab-org/gitlab/-/issues/359940). Disabled by default.
-> - Feature flag `jira_connect_oauth_self_managed_setting` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105070) in GitLab 15.7.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flags](../../administration/feature_flags.md) named
-`jira_connect_oauth` and `jira_connect_oauth_self_managed`. On GitLab.com, this feature
-is not available. The feature is not ready for production use.
+> Introduced in GitLab 15.7
 
 Prerequisites:
 

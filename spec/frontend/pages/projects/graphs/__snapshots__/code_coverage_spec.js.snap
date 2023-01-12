@@ -45,6 +45,7 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
       toggletext="rspec"
       variant="default"
     >
+       
       <!---->
        
       <!---->
@@ -80,9 +81,9 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
         </gl-listbox-item-stub>
          
         <!---->
+         
+        <!---->
       </ul>
-       
-      <!---->
        
       <!---->
        

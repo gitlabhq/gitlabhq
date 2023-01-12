@@ -21,7 +21,6 @@
 - billing_and_payments
 - build
 - build_artifacts
-- chatops
 - cloud_native_installation
 - cluster_cost_management
 - code_quality
@@ -35,7 +34,6 @@
 - container_scanning
 - continuous_delivery
 - continuous_integration
-- continuous_integration_scaling
 - continuous_verification
 - credential_management
 - customersdot_application

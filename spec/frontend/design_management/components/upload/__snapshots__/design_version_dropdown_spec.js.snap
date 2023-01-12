@@ -12,6 +12,7 @@ exports[`Design management design version dropdown component renders design vers
   toggletext="Showing latest version"
   variant="default"
 >
+   
   <!---->
    
   <!---->
@@ -111,9 +112,9 @@ exports[`Design management design version dropdown component renders design vers
     </gl-listbox-item-stub>
      
     <!---->
+     
+    <!---->
   </ul>
-   
-  <!---->
    
   <!---->
    
@@ -132,6 +133,7 @@ exports[`Design management design version dropdown component renders design vers
   toggletext="Showing latest version"
   variant="default"
 >
+   
   <!---->
    
   <!---->
@@ -231,9 +233,9 @@ exports[`Design management design version dropdown component renders design vers
     </gl-listbox-item-stub>
      
     <!---->
+     
+    <!---->
   </ul>
-   
-  <!---->
    
   <!---->
    

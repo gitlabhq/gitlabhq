@@ -119,7 +119,7 @@ The Swap revisions feature allows you to swap the Source and Target revisions. W
 
 ![After swap revisions](img/swap_revisions_after_v13_12.png)
 
-## View branches with configured rules **(FREE SELF)**
+## View branches with configured protections **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 15.1 with a flag named `branch_rules`. Disabled by default.
 

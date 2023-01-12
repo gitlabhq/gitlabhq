@@ -84,6 +84,7 @@ class Namespace < ApplicationRecord
 
   has_many :timelog_categories, class_name: 'TimeTracking::TimelogCategory'
   has_many :achievements, class_name: 'Achievements::Achievement'
+  has_many :namespace_commit_emails, class_name: 'Users::NamespaceCommitEmail'
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,

@@ -1005,5 +1005,38 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
         end
       end
     end
+
+    context 'with namespace_commit_emails concerns' do
+      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be(:target) { create(:group) }
+
+      before do
+        group.add_owner(user)
+        target.add_owner(user)
+      end
+
+      context 'when origin is a root group' do
+        before do
+          create_list(:namespace_commit_email, 2, namespace: group)
+        end
+
+        it 'deletes all namespace_commit_emails' do
+          expect { transfer_service.execute(target) }
+            .to change { group.namespace_commit_emails.count }.by(-2)
+        end
+
+        it_behaves_like 'publishes a GroupTransferedEvent'
+      end
+
+      context 'when origin is not a root group' do
+        let(:group) { create(:group, parent: create(:group)) }
+
+        it 'does not attempt to delete namespace_commit_emails' do
+          expect(Users::NamespaceCommitEmail).not_to receive(:delete_for_namespace)
+
+          transfer_service.execute(target)
+        end
+      end
+    end
   end
 end

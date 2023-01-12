@@ -50511,6 +50511,9 @@ msgstr ""
 msgid "must be a boolean value"
 msgstr ""
 
+msgid "must be a root group."
+msgstr ""
+
 msgid "must be a root namespace"
 msgstr ""
 

@@ -128,6 +128,20 @@ GitLab has deprecated Dependency Scanning support for Java versions 13, 14, 15, 
 
 <div class="deprecation removal-160 breaking-change">
 
+### Limit personal access token and deploy token's access with external authorization
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+With external authorization enabled, personal access tokens (PATs) and deploy tokens must no longer be able to access container or package registries. This defense-in-depth security measure will be deployed in 16.0. For users that use PATs and deploy tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use tokens with container or package registries.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Owner permissions are required to update Package settings
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>

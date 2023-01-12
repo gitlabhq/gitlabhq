@@ -8,7 +8,7 @@ class ChatNotificationWorker # rubocop:disable Scalability/IdempotentWorker
   TimeoutExceeded = Class.new(StandardError)
 
   sidekiq_options retry: false
-  feature_category :chatops
+  feature_category :integrations
   urgency :low # Can't be high as it has external dependencies
   weight 2
   worker_has_external_dependencies!

@@ -26,13 +26,15 @@ If you migrate from GitLab.com to self-managed GitLab, an administrator can crea
 > - Group items [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 for project resources [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
+> - New application setting `bulk_import_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8. `bulk_import` feature flag removed.
 
 FLAG:
-On self-managed GitLab, by default [migrating group items](#migrated-group-items) is available. To hide the
-feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `bulk_import`.
-On self-managed GitLab, by default [migrating project items](#migrated-project-items) is not available. To show
+On self-managed GitLab, by default [migrating group items](#migrated-group-items) is not available. To show the
+feature, ask an administrator to [enable it in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer).
+Also on self-managed GitLab, by default [migrating project items](#migrated-project-items) is not available. To show
 this feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
-`bulk_import_projects`. On GitLab.com, migration of both groups and projects is available.
+`bulk_import_projects`. The feature is not ready for production use. On GitLab.com, migration of both groups and projects
+is available.
 
 Prerequisites:
 

@@ -536,10 +536,11 @@ a.gl-badge.badge-warning:active {
   color: #89888d;
 }
 .gl-search-box-by-type-search-icon {
-  margin: 0.5rem;
   color: #89888d;
   width: 1rem;
   position: absolute;
+  left: 0.5rem;
+  top: calc(50% - 16px / 2);
 }
 .gl-search-box-by-type {
   display: flex;

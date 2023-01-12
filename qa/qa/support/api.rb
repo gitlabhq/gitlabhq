@@ -144,7 +144,7 @@ module QA
       end
 
       def with_paginated_response_body(url, attempts: 0)
-        not_ok_error = lambda do |resp|
+        not_ok_error = ->(resp) do
           raise "Failed to GET #{masked_url(url)} - (#{resp.code}): `#{resp}`."
         end
 
@@ -164,7 +164,7 @@ module QA
 
           yield parse_body(response)
 
-          break if next_page.empty?
+          break if next_page.blank?
 
           url = url.match?(/&page=\d+/) ? url.gsub(/&page=\d+/, "&page=#{next_page}") : "#{url}&page=#{next_page}"
         end

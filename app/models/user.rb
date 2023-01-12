@@ -266,7 +266,7 @@ class User < ApplicationRecord
   has_many :resource_state_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :namespace_commit_emails
+  has_many :namespace_commit_emails, class_name: 'Users::NamespaceCommitEmail'
 
   has_many :user_achievements, class_name: 'Achievements::UserAchievement', inverse_of: :user
   has_many :awarded_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'awarded_by_user_id', inverse_of: :awarded_by_user
@@ -2182,6 +2182,13 @@ class User < ApplicationRecord
 
   def webhook_email
     public_email.presence || _('[REDACTED]')
+  end
+
+  def namespace_commit_email_for_project(project)
+    return if project.nil?
+
+    namespace_commit_emails.find_by(namespace: project.project_namespace) ||
+      namespace_commit_emails.find_by(namespace: project.root_namespace)
   end
 
   protected

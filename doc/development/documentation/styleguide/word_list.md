@@ -313,6 +313,13 @@ Users can set the default branch by using a UI setting.
 
 For examples that use the default branch, use `main` instead of [`master`](#master).
 
+## delete
+
+Use **delete** when an object is completely deleted. **Delete** is the opposite of **create**.
+
+When the object continues to exist, use [**remove**](#remove) instead.
+For example, you can remove an issue from an epic, but the issue still exists.
+
 ## Dependency Proxy
 
 Use title case for the GitLab Dependency Proxy.
@@ -944,6 +951,12 @@ we would talk to a colleague, and to avoid differentiation between `we` and `the
 ## register
 
 Use **register** instead of **sign up** when talking about creating an account.
+
+## remove
+
+Use **remove** when an object continues to exist. For example, you can remove an issue from an epic, but the issue still exists.
+
+When an object is completely deleted, use [**delete**](#delete) instead.
 
 ## Reporter
 

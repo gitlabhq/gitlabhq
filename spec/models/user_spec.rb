@@ -170,6 +170,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:awarded_user_achievements).class_name('Achievements::UserAchievement').with_foreign_key('awarded_by_user_id').inverse_of(:awarded_by_user) }
     it { is_expected.to have_many(:revoked_user_achievements).class_name('Achievements::UserAchievement').with_foreign_key('revoked_by_user_id').inverse_of(:revoked_by_user) }
     it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
+    it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
 
     describe 'default values' do
       let(:user) { described_class.new }
@@ -7412,6 +7413,86 @@ RSpec.describe User do
 
       it 'sets the state machine default value' do
         expect(model.new(external: true).state).to eq('active')
+      end
+    end
+  end
+
+  describe '#namespace_commit_email_for_project' do
+    let_it_be(:user) { create(:user) }
+
+    let(:emails) { user.namespace_commit_email_for_project(project) }
+
+    context 'when project is nil' do
+      let(:project) {}
+
+      it 'returns nil' do
+        expect(emails).to be(nil)
+      end
+    end
+
+    context 'with a group project' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:group) { create(:group, parent: root_group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      context 'without a defined root group namespace_commit_email' do
+        context 'without a defined project namespace_commit_email' do
+          it 'returns nil' do
+            expect(emails).to be(nil)
+          end
+        end
+
+        context 'with a defined project namespace_commit_email' do
+          it 'returns the defined namespace_commit_email' do
+            project_commit_email = create(:namespace_commit_email,
+                                          user: user,
+                                          namespace: project.project_namespace)
+
+            expect(emails).to eq(project_commit_email)
+          end
+        end
+      end
+
+      context 'with a defined root group namespace_commit_email' do
+        let_it_be(:root_group_commit_email) do
+          create(:namespace_commit_email, user: user, namespace: root_group)
+        end
+
+        context 'without a defined project namespace_commit_email' do
+          it 'returns the defined namespace_commit_email' do
+            expect(emails).to eq(root_group_commit_email)
+          end
+        end
+
+        context 'with a defined project namespace_commit_email' do
+          it 'returns the defined namespace_commit_email' do
+            project_commit_email = create(:namespace_commit_email,
+                                          user: user,
+                                          namespace: project.project_namespace)
+
+            expect(emails).to eq(project_commit_email)
+          end
+        end
+      end
+    end
+
+    context 'with personal project' do
+      let_it_be(:project) { create(:project, namespace: user.namespace) }
+
+      context 'without a defined project namespace_commit_email' do
+        it 'returns nil' do
+          expect(emails).to be(nil)
+        end
+      end
+
+      context 'with a defined project namespace_commit_email' do
+        it 'returns the defined namespace_commit_email' do
+          project_commit_email = create(:namespace_commit_email,
+                                        user: user,
+                                        namespace: project.project_namespace)
+
+          expect(emails).to eq(project_commit_email)
+        end
       end
     end
   end

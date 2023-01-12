@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Helpers::PackagesHelpers do
+RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registry do
   let_it_be(:helper) { Class.new.include(API::Helpers).include(described_class).new }
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
@@ -16,6 +16,31 @@ RSpec.describe API::Helpers::PackagesHelpers do
       expect(helper).to receive(:authorize_read_package!).with(project)
 
       expect(subject).to eq nil
+    end
+
+    context 'with an allowed required permission' do
+      subject { helper.authorize_packages_access!(project, :read_group) }
+
+      it 'authorizes packages access' do
+        expect(helper).to receive(:require_packages_enabled!)
+        expect(helper).not_to receive(:authorize_read_package!)
+        expect(helper).to receive(:authorize!).with(:read_group, project)
+
+        expect(subject).to eq nil
+      end
+    end
+
+    context 'with a not allowed permission' do
+      subject { helper.authorize_packages_access!(project, :read_permission) }
+
+      it 'rejects packages access' do
+        expect(helper).to receive(:require_packages_enabled!)
+        expect(helper).not_to receive(:authorize_read_package!)
+        expect(helper).not_to receive(:authorize!).with(:test_permission, project)
+        expect(helper).to receive(:forbidden!)
+
+        expect(subject).to eq nil
+      end
     end
   end
 

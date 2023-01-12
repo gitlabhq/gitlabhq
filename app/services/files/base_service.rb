@@ -9,7 +9,7 @@ module Files
 
       git_user = Gitlab::Git::User.from_gitlab(current_user) if current_user.present?
 
-      @author_email = params[:author_email] || git_user&.email
+      @author_email = commit_email(git_user)
       @author_name = params[:author_name] || git_user&.name
       @commit_message = params[:commit_message]
       @last_commit_sha = params[:last_commit_sha]
@@ -32,6 +32,19 @@ module Files
       return false unless last_commit
 
       last_commit.sha != commit_id
+    end
+
+    private
+
+    def commit_email(git_user)
+      return params[:author_email] if params[:author_email].present?
+      return unless current_user
+
+      namespace_commit_email = current_user.namespace_commit_email_for_project(@start_project)
+
+      return namespace_commit_email.email.email if namespace_commit_email
+
+      git_user.email
     end
   end
 end

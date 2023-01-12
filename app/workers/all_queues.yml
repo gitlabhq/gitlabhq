@@ -2282,7 +2282,7 @@
   :tags: []
 - :name: chat_notification
   :worker_name: ChatNotificationWorker
-  :feature_category: :chatops
+  :feature_category: :integrations
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown

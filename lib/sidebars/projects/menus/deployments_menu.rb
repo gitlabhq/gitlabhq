@@ -80,7 +80,9 @@ module Sidebars
         end
 
         def pages_menu_item
-          return ::Sidebars::NilMenuItem.new(item_id: :pages) unless context.project.pages_available?
+          unless context.project.pages_available? && context.current_user&.can?(:update_pages, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :pages)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Pages'),
