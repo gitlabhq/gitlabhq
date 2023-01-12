@@ -113,7 +113,7 @@ gem 'gpgme', '~> 2.0.22'
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
 gem 'gitlab_omniauth-ldap', '~> 2.2.0', require: 'omniauth-ldap'
-gem 'net-ldap', '~> 0.16.3'
+gem 'net-ldap', '~> 0.17.1'
 
 # API
 gem 'grape', '~> 1.5.2'

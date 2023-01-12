@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :global }, product_group: :editor do
+  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :global }, product_group: :editor, quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387032',
+    type: :stale
+  } do
     describe 'Upload a file in Web IDE' do
       let(:file_path) { File.absolute_path(File.join('qa', 'fixtures', 'web_ide', file_name)) }
 

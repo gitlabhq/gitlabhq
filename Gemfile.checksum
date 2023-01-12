@@ -357,7 +357,7 @@
 {"name":"nap","version":"1.1.0","platform":"ruby","checksum":"949691660f9d041d75be611bb2a8d2fd559c467537deac241f4097d9b5eea576"},
 {"name":"nenv","version":"0.3.0","platform":"ruby","checksum":"d9de6d8fb7072228463bf61843159419c969edb34b3cef51832b516ae7972765"},
 {"name":"net-http-persistent","version":"4.0.1","platform":"ruby","checksum":"2752f4cce05fd1c45e0537c6f3a98fa5a4899efd5f88e63c104ed5f05cbddef9"},
-{"name":"net-ldap","version":"0.16.3","platform":"ruby","checksum":"db464d2f8236e5f8546c07abb51b08e0a62b77136b1c7f91fa0ec5fe2336908e"},
+{"name":"net-ldap","version":"0.17.1","platform":"ruby","checksum":"52571b55f9157120833ac1667f2969ce0139251811d0a9b64657c1c135069cf9"},
 {"name":"net-ntp","version":"2.1.3","platform":"ruby","checksum":"5bc73f4102bde0d1872bd3b293608ae99d9f5007d744f21919c6a565eda9267d"},
 {"name":"net-scp","version":"3.0.0","platform":"ruby","checksum":"8fc6c80365b95230c6bfc529dbea3893d2d81724855bfb01cbf385866e1c902c"},
 {"name":"net-ssh","version":"6.0.0","platform":"ruby","checksum":"6290ddcb232380cae79b772af924e12f57fe1dcd0f71254411dd21c04f7b13d0"},

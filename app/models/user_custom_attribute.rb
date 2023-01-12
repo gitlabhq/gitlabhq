@@ -11,6 +11,9 @@ class UserCustomAttribute < ApplicationRecord
   scope :by_updated_at, ->(updated_at) { where(updated_at: updated_at) }
   scope :arkose_sessions, -> { by_key('arkose_session') }
 
+  BLOCKED_BY = 'blocked_by'
+  UNBLOCKED_BY = 'unblocked_by'
+
   class << self
     def upsert_custom_attributes(custom_attributes)
       created_at = DateTime.now

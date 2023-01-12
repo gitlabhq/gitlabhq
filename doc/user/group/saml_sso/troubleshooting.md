@@ -233,6 +233,13 @@ If you receive a `404` during setup when using "verify configuration", make sure
 If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](index.md#configure-your-identity-provider), they may see a 404.
 As outlined in the [user access section](index.md#linking-saml-to-your-existing-gitlabcom-account), a group Owner needs to provide the URL to users.
 
+If all users are receiving a `404` after signing in to the identity provider (IdP), verify the `assertion_consumer_service_url`:
+
+- In the GitLab configuration by [matching it to the HTTPS endpoint of GitLab](../../../integration/saml.md#configure-saml-support-in-gitlab).
+- As the `Assertion Consumer Service URL` or equivalent when setting up the SAML app on your IdP.
+
+For configuration examples for some of the common providers, see the [example group SAML and SCIM configurations](example_saml_config.md).
+
 ### 500 error after login **(FREE SELF)**
 
 If you see a "500 error" in GitLab when you are redirected back from the SAML

@@ -3662,6 +3662,15 @@ RSpec.describe API::Users, feature_category: :users do
           expect(response.body).to eq('true')
           expect(user.reload.state).to eq('blocked')
         end
+
+        it 'saves a custom attribute', :freeze_time, feature_category: :insider_threat do
+          block_user
+
+          custom_attribute = user.custom_attributes.last
+
+          expect(custom_attribute.key).to eq(UserCustomAttribute::BLOCKED_BY)
+          expect(custom_attribute.value).to eq("#{admin.username}/#{admin.id}+#{Time.current}")
+        end
       end
 
       context 'with an ldap blocked user' do
@@ -3752,6 +3761,15 @@ RSpec.describe API::Users, feature_category: :users do
 
           expect(response).to have_gitlab_http_status(:created)
           expect(blocked_user.reload.state).to eq('active')
+        end
+
+        it 'saves a custom attribute', :freeze_time, feature_category: :insider_threat do
+          unblock_user
+
+          custom_attribute = blocked_user.custom_attributes.last
+
+          expect(custom_attribute.key).to eq(UserCustomAttribute::UNBLOCKED_BY)
+          expect(custom_attribute.value).to eq("#{admin.username}/#{admin.id}+#{Time.current}")
         end
       end
 

@@ -11,6 +11,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Customizable dashboards provide a dashboard structure that allows users to create
 their own dashboards and commit the structure to a repository.
 
+This feature is available for Premium and Ultimate subscriptions.
+
 ## Usage
 
 To use customizable dashboards:

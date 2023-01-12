@@ -837,7 +837,8 @@ module API
         elsif user.deactivated?
           forbidden!('Deactivated users cannot be unblocked by the API')
         else
-          user.activate
+          result = ::Users::UnblockService.new(current_user).execute(user)
+          result.success?
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

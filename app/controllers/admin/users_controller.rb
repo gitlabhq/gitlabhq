@@ -124,8 +124,12 @@ class Admin::UsersController < Admin::ApplicationController
 
   def unblock
     if user.ldap_blocked?
-      redirect_back_or_admin_user(alert: _("This user cannot be unlocked manually from GitLab"))
-    elsif update_user(&:activate)
+      return redirect_back_or_admin_user(alert: _("This user cannot be unlocked manually from GitLab"))
+    end
+
+    result = Users::UnblockService.new(current_user).execute(user)
+
+    if result.success?
       redirect_back_or_admin_user(notice: _("Successfully unblocked"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not unblocked"))

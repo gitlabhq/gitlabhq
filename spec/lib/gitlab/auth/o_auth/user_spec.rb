@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::OAuth::User do
+RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :authentication_and_authorization do
   include LdapHelpers
 
   let(:oauth_user) { described_class.new(auth_hash) }
@@ -329,7 +329,7 @@ RSpec.describe Gitlab::Auth::OAuth::User do
 
         context "and no LDAP provider defined" do
           before do
-            stub_ldap_config(providers: [])
+            allow(Gitlab::Auth::Ldap::Config).to receive(:providers).at_least(:once).and_return([])
           end
 
           include_examples "to verify compliance with allow_single_sign_on"
@@ -509,6 +509,8 @@ RSpec.describe Gitlab::Auth::OAuth::User do
           context "and no corresponding LDAP person" do
             before do
               allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(nil)
+              allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_email).and_return(nil)
+              allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_dn).and_return(nil)
             end
 
             include_examples "to verify compliance with allow_single_sign_on"

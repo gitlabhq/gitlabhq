@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :global }, product_group: :editor do
+  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :global }, product_group: :editor, quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387723',
+    type: :stale
+  } do
     describe 'First file using Web IDE' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

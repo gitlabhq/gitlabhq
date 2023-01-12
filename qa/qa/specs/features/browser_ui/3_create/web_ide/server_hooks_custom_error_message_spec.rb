@@ -3,7 +3,11 @@
 module QA
   RSpec.describe 'Create', :skip_live_env, except: { job: 'review-qa-*' },
                                            feature_flag: { name: 'vscode_web_ide', scope: :global },
-                                           product_group: :editor do
+                                           product_group: :editor,
+                                           quarantine: {
+                                             issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387928',
+                                             type: :stale
+                                           } do
     describe 'Git Server Hooks' do
       let(:file_path) { File.absolute_path(File.join('qa', 'fixtures', 'web_ide', 'README.md')) }
 

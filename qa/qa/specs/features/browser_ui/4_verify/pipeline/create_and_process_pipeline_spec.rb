@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :smoke, :runner, product_group: :pipeline_execution, quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/356295',
-    type: :investigating
-  } do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_execution do
     describe 'Pipeline creation and processing' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
 

@@ -13,7 +13,11 @@ typically much more performant, reliable, and scalable.
 
 ## Options
 
-GitLab has been tested by vendors and customers on a number of object storage providers:
+GitLab is tightly integrated with `Fog`, so you can refer to its
+[documentation](https://fog.io/about/provider_documentation.html) to check
+which storage services can be integrated with GitLab.
+
+Specifically, GitLab has been tested by vendors and customers on a number of object storage providers:
 
 - [Amazon S3](https://aws.amazon.com/s3/)
 - [Google Cloud Storage](https://cloud.google.com/storage)
