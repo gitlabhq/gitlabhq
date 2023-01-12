@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :smoke, product_group: :workspace do
+  RSpec.describe 'Manage', :smoke, product_group: :organization do
     describe 'Project' do
       shared_examples 'successful project creation' do
         it 'creates a new project' do

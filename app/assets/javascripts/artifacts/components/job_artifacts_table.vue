@@ -35,6 +35,7 @@ import {
   INITIAL_LAST_PAGE_SIZE,
 } from '../constants';
 import ArtifactsTableRowDetails from './artifacts_table_row_details.vue';
+import FeedbackBanner from './feedback_banner.vue';
 
 const INITIAL_PAGINATION_STATE = {
   currentPage: INITIAL_CURRENT_PAGE,
@@ -58,6 +59,7 @@ export default {
     CiIcon,
     TimeAgo,
     ArtifactsTableRowDetails,
+    FeedbackBanner,
   },
   inject: ['projectPath'],
   apollo: {
@@ -214,6 +216,7 @@ export default {
 </script>
 <template>
   <div>
+    <feedback-banner />
     <gl-table
       :items="jobArtifacts"
       :fields="$options.fields"

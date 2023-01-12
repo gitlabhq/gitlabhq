@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Pages::LookupPath do
+RSpec.describe Pages::LookupPath, feature_category: :pages do
   let(:project) { create(:project, :pages_private, pages_https_only: true) }
 
   subject(:lookup_path) { described_class.new(project) }
@@ -126,14 +126,18 @@ RSpec.describe Pages::LookupPath do
 
   describe '#prefix' do
     it 'returns "/" for pages group root projects' do
-      project = instance_double(Project, pages_group_root?: true)
+      project = instance_double(Project, pages_namespace_url: "namespace.test", pages_url: "namespace.test")
       lookup_path = described_class.new(project, trim_prefix: 'mygroup')
 
       expect(lookup_path.prefix).to eq('/')
     end
 
     it 'returns the project full path with the provided prefix removed' do
-      project = instance_double(Project, pages_group_root?: false, full_path: 'mygroup/myproject')
+      project = instance_double(
+        Project,
+        pages_namespace_url: "namespace.test",
+        pages_url: "namespace.other",
+        full_path: 'mygroup/myproject')
       lookup_path = described_class.new(project, trim_prefix: 'mygroup')
 
       expect(lookup_path.prefix).to eq('/myproject/')

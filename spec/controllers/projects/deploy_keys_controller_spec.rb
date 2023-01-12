@@ -102,7 +102,7 @@ RSpec.describe Projects::DeployKeysController do
       it 'shows an alert with the validations errors' do
         post :create, params: create_params(nil)
 
-        expect(flash[:alert]).to eq("Title can't be blank, Deploy keys projects deploy key title can't be blank")
+        expect(flash[:alert]).to eq("Title can't be blank")
       end
     end
 
@@ -126,8 +126,7 @@ RSpec.describe Projects::DeployKeysController do
       it 'shows an alert with the validations errors' do
         post :create, params: create_params
 
-        expect(flash[:alert]).to eq("Fingerprint sha256 has already been taken, " \
-          "Deploy keys projects deploy key fingerprint sha256 has already been taken")
+        expect(flash[:alert]).to eq("Fingerprint sha256 has already been taken")
       end
     end
   end

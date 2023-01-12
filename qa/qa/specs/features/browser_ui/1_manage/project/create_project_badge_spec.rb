@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Create project badge', :reliable, product_group: :workspace do
+    describe 'Create project badge', :reliable, product_group: :organization do
       let(:badge_name) { "project-badge-#{SecureRandom.hex(8)}" }
       let(:expected_badge_link_url) { "#{Runtime::Scenario.gitlab_address}/#{project.path_with_namespace}" }
       let(:expected_badge_image_url) { "#{Runtime::Scenario.gitlab_address}/#{project.path_with_namespace}/badges/main/pipeline.svg" }

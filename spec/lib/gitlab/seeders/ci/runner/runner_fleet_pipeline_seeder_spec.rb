@@ -32,6 +32,9 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder, feature
         expect { seeder.seed }.to change { Ci::Build.count }.by(job_count)
           .and change { Ci::Pipeline.count }.by(4)
 
+        expect(Ci::Pipeline.where.not(started_at: nil).map(&:queued_duration)).to all(be < 5.minutes)
+        expect(Ci::Build.where.not(started_at: nil).map(&:queued_duration)).to all(be < 5.minutes)
+
         projects_to_runners.first(3).each do |project|
           expect(Ci::Build.where(runner_id: project[:runner_ids])).not_to be_empty
         end

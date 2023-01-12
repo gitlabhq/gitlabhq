@@ -21,6 +21,6 @@ export default {
 <template>
   <div>
     <radio-filter :class="ffBasedXPadding" :filter-data="$options.stateFilterData" />
-    <hr class="gl-my-5 gl-border-gray-100" />
+    <hr class="gl-my-5 gl-mx-5 gl-border-gray-100" />
   </div>
 </template>

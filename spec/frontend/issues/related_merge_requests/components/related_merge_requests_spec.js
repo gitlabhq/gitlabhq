@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import mockData from 'test_fixtures/issues/related_merge_requests.json';
 import axios from '~/lib/utils/axios_utils';
@@ -20,7 +20,7 @@ describe('RelatedMergeRequests', () => {
     mock = new MockAdapter(axios);
     mock.onGet(`${API_ENDPOINT}?per_page=100`).reply(200, mockData, { 'x-total': 2 });
 
-    wrapper = mount(RelatedMergeRequests, {
+    wrapper = shallowMount(RelatedMergeRequests, {
       store: createStore(),
       propsData: {
         endpoint: API_ENDPOINT,
@@ -42,18 +42,14 @@ describe('RelatedMergeRequests', () => {
       const assignees = [{ name: 'foo' }, { name: 'bar' }];
 
       describe('when there is assignees array', () => {
-        // https://gitlab.com/gitlab-org/gitlab/-/issues/387756
-        // eslint-disable-next-line jest/no-disabled-tests
-        it.skip('should return assignees array', () => {
+        it('should return assignees array', () => {
           const mr = { assignees };
 
           expect(wrapper.vm.getAssignees(mr)).toEqual(assignees);
         });
       });
 
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/387789
-      // eslint-disable-next-line jest/no-disabled-tests
-      it.skip('should return an array with single assingee', () => {
+      it('should return an array with single assignee', () => {
         const mr = { assignee: assignees[0] };
 
         expect(wrapper.vm.getAssignees(mr)).toEqual([assignees[0]]);

@@ -411,15 +411,13 @@ To configure markdownlint in your editor, install one of the following as approp
 
 - Sublime Text [`SublimeLinter-contrib-markdownlint` package](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint).
 - Visual Studio Code [`DavidAnson.vscode-markdownlint` extension](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint).
-- Atom [`linter-node-markdownlint` package](https://atom.io/packages/linter-node-markdownlint).
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).
 
 To configure Vale in your editor, install one of the following as appropriate:
 
-- Sublime Text [`SublimeLinter-contrib-vale` package](https://packagecontrol.io/packages/SublimeLinter-contrib-vale).
+- Sublime Text [`SublimeLinter-vale` package](https://packagecontrol.io/packages/SublimeLinter-vale).
 - Visual Studio Code [`errata-ai.vale-server` extension](https://marketplace.visualstudio.com/items?itemName=errata-ai.vale-server).
   You can configure the plugin to [display only a subset of alerts](#show-subset-of-vale-alerts).
-- Atom [`atomic-vale` package](https://atom.io/packages/atomic-vale).
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).
 - JetBrains IDEs - No plugin exists, but
   [this issue comment](https://github.com/errata-ai/vale-server/issues/39#issuecomment-751714451)

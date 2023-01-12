@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Subgroup transfer', product_group: :workspace do
+    describe 'Subgroup transfer', product_group: :organization do
       let(:source_group) do
         Resource::Group.fabricate_via_api! do |group|
           group.path = "source-group-for-transfer_#{SecureRandom.hex(8)}"

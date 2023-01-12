@@ -2101,7 +2101,7 @@ class Project < ApplicationRecord
     pages_metadatum&.deployed?
   end
 
-  def pages_group_url
+  def pages_namespace_url
     # The host in URL always needs to be downcased
     Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
       "#{prefix}#{pages_subdomain}."
@@ -2109,17 +2109,21 @@ class Project < ApplicationRecord
   end
 
   def pages_url
-    url = pages_group_url
+    url = pages_namespace_url
     url_path = full_path.partition('/').last
+    namespace_url = "#{Settings.pages.protocol}://#{url_path}".downcase
+
+    if Rails.env.development?
+      url_without_port = URI.parse(url)
+      url_without_port.port = nil
+
+      return url if url_without_port.to_s == namespace_url
+    end
 
     # If the project path is the same as host, we serve it as group page
-    return url if url == "#{Settings.pages.protocol}://#{url_path}".downcase
+    return url if url == namespace_url
 
     "#{url}/#{url_path}"
-  end
-
-  def pages_group_root?
-    pages_group_url == pages_url
   end
 
   def pages_subdomain

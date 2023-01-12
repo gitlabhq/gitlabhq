@@ -2726,10 +2726,19 @@ msgstr ""
 msgid "AdminDashboard|Error loading the statistics. Please try again"
 msgstr ""
 
+msgid "AdminEmail|An error occurred fetching the groups and projects. Please refresh the page to try again."
+msgstr ""
+
 msgid "AdminEmail|Body"
 msgstr ""
 
 msgid "AdminEmail|Body is required."
+msgstr ""
+
+msgid "AdminEmail|Loading groups and projects."
+msgstr ""
+
+msgid "AdminEmail|No groups or projects found."
 msgstr ""
 
 msgid "AdminEmail|Recipient group or project"
@@ -5396,10 +5405,19 @@ msgstr ""
 msgid "Artifacts|Delete artifact"
 msgstr ""
 
+msgid "Artifacts|Help us improve this page"
+msgstr ""
+
+msgid "Artifacts|Take a quick survey"
+msgstr ""
+
 msgid "Artifacts|This artifact will be permanently deleted. Any reports generated from this artifact will be empty."
 msgstr ""
 
 msgid "Artifacts|Total artifacts size"
+msgstr ""
+
+msgid "Artifacts|We want you to be able to use this page to easily manage your CI/CD job artifacts. We are working to improve this experience and would appreciate any feedback you have about the improvements we are making."
 msgstr ""
 
 msgid "As we continue to build more features for SAST, we'd love your feedback on the SAST configuration feature in %{linkStart}this issue%{linkEnd}."

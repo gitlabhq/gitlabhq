@@ -10,11 +10,13 @@ import { initBlobRefSwitcher } from './under_topbar';
 
 export const initSearchApp = () => {
   syntaxHighlight(document.querySelectorAll('.js-search-results'));
+  const query = queryToObject(window.location.search, { gatherArrays: true });
+  const { navigationJsonParsed: navigation } = sidebarInitState() || {};
 
-  const query = queryToObject(window.location.search);
-  const navigation = sidebarInitState();
-
-  const store = createStore({ query, navigation });
+  const store = createStore({
+    query,
+    navigation,
+  });
 
   initTopbar(store);
   initSidebar(store);

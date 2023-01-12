@@ -57,11 +57,14 @@ values extracted from the `alerts` field in the
 - Alert severity:
   Extracted from the alert payload field `labels/severity`. Maps case-insensitive
   value to [Alert's severity](../incident_management/alerts.md#alert-severity):
-  - **Critical**: `critical`, `s1`, `p1`, `emergency`, `fatal`, or any value not in this list
-  - **High**: `high`, `s2`, `p2`, `major`, `page`
-  - **Medium**: `medium`, `s3`, `p3`, `error`, `alert`
-  - **Low**: `low`, `s4`, `p4`, `warn`, `warning`
-  - **Info**: `info`, `s5`, `p5`, `debug`, `information`, `notice`
+
+  | Alert payload | Mapped to alert severity                                                    |
+  | ------------- | --------------------------------------------------------------------------- |
+  | Critical      | `critical`, `s1`, `p1`, `emergency`, `fatal`, or any value not in this list |
+  | High          | `high`, `s2`, `p2`, `major`, `page`                                         |
+  | Medium        | `medium`, `s3`, `p3`, `error`, `alert`                                      |
+  | Low           | `low`, `s4`, `p4`, `warn`, `warning`                                        |
+  | Info          | `info`, `s5`, `p5`, `debug`, `information`, `notice`                        |
 
 To further customize the incident, you can add labels, mentions, or any other supported
 [quick action](../../user/project/quick_actions.md) in the selected issue template,

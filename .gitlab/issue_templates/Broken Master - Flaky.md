@@ -16,7 +16,7 @@ Please read the below documentations for a workflow of triaging and resolving br
 
 <!-- If the pipeline failure is reproducible, provide steps to recreate the issue locally. Please use an ordered list. -->
 
-Please refer to [Flaky tests documentation](https://docs.gitlab.com/ee/development/testing_guide/flaky_tests.html) to 
+Please refer to [Flaky tests documentation](https://docs.gitlab.com/ee/development/testing_guide/flaky_tests.html) to
 learn more about how to reproduce them.
 
 ### Proposed Resolution
@@ -25,4 +25,4 @@ learn more about how to reproduce them.
 
 Please refer to the [Resolution guidance](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master) to learn more about resolution of broken master.
 
-/label ~"failure::flaky-test" ~"Engineering Productivity" ~"priority::2" ~"severity::3" ~"type::bug" ~"bug::transient"
+/label ~"type::maintenance" ~"failure::flaky-test" ~"priority::3" ~"severity::3"

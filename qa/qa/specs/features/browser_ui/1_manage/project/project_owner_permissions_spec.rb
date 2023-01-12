@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Project owner permissions', :reliable, product_group: :workspace do
+    describe 'Project owner permissions', :reliable, product_group: :organization do
       let!(:owner) do
         Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
       end

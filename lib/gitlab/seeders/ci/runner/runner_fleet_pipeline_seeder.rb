@@ -7,11 +7,11 @@ module Gitlab
         class RunnerFleetPipelineSeeder
           DEFAULT_JOB_COUNT = 400
 
-          MAX_QUEUE_TIME_IN_SECONDS = 5 * 60
-          PIPELINE_CREATION_RANGE_MIN_IN_MINUTES = 120
-          PIPELINE_CREATION_RANGE_MAX_IN_MINUTES = 30 * 24 * 60
-          PIPELINE_START_RANGE_MAX_IN_MINUTES = 60 * 60
-          PIPELINE_FINISH_RANGE_MAX_IN_MINUTES = 60
+          MAX_QUEUE_TIME_IN_SECONDS = 5.minutes.to_i
+          PIPELINE_CREATION_RANGE_MIN_IN_SECONDS = 2.hours.to_i
+          PIPELINE_CREATION_RANGE_MAX_IN_SECONDS = 30.days.to_i
+          PIPELINE_START_RANGE_MAX_IN_SECONDS = 5.minutes.to_i
+          PIPELINE_FINISH_RANGE_MAX_IN_SECONDS = 1.hour.to_i
 
           PROJECT_JOB_DISTRIBUTION = [
             { allocation: 70, job_count_default: 10 },
@@ -99,14 +99,14 @@ module Gitlab
 
             sha = '00000000'
             if ::Ci::HasStatus::ALIVE_STATUSES.include?(status) || ::Ci::HasStatus::COMPLETED_STATUSES.include?(status)
-              created_at = Random.rand(PIPELINE_CREATION_RANGE_MIN_IN_MINUTES..PIPELINE_CREATION_RANGE_MAX_IN_MINUTES)
-                                 .minutes.ago
+              created_at = Random.rand(PIPELINE_CREATION_RANGE_MIN_IN_SECONDS..PIPELINE_CREATION_RANGE_MAX_IN_SECONDS)
+                                 .seconds.ago
 
               if ::Ci::HasStatus::STARTED_STATUSES.include?(status) ||
                   ::Ci::HasStatus::COMPLETED_STATUSES.include?(status)
-                started_at = created_at + Random.rand(1..PIPELINE_START_RANGE_MAX_IN_MINUTES).minutes
+                started_at = created_at + Random.rand(1..PIPELINE_START_RANGE_MAX_IN_SECONDS)
                 if ::Ci::HasStatus::COMPLETED_STATUSES.include?(status)
-                  finished_at = started_at + Random.rand(1..PIPELINE_FINISH_RANGE_MAX_IN_MINUTES).minutes
+                  finished_at = started_at + Random.rand(1..PIPELINE_FINISH_RANGE_MAX_IN_SECONDS)
                 end
               end
             end
@@ -138,19 +138,15 @@ module Gitlab
             started_at = pipeline.started_at
             finished_at = pipeline.finished_at
 
-            max_job_duration =
-              if finished_at
-                [MAX_QUEUE_TIME_IN_SECONDS, finished_at - started_at].min
-              else
-                Random.rand(1..5).seconds
-              end
+            max_job_duration = [MAX_QUEUE_TIME_IN_SECONDS, 5, 2].sample
+            max_job_duration = (finished_at - started_at) if finished_at && max_job_duration > finished_at - started_at
 
             job_created_at = pipeline.created_at
-            job_started_at = started_at + Random.rand(1..max_job_duration) if started_at
+            job_started_at = job_created_at + Random.rand(1..max_job_duration) if started_at
             if finished_at
               job_finished_at = Random.rand(job_started_at..finished_at)
             elsif job_status == 'running'
-              job_finished_at = job_started_at + Random.rand(1..PIPELINE_FINISH_RANGE_MAX_IN_MINUTES).minutes
+              job_finished_at = job_started_at + Random.rand(1 * 60..PIPELINE_FINISH_RANGE_MAX_IN_SECONDS)
             end
 
             # Do not use the first 2 runner tags ('runner-fleet', "#{registration_prefix}runner").

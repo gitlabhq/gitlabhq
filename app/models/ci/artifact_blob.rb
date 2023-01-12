@@ -46,7 +46,7 @@ module Ci
         'artifacts', path
       ].join('/')
 
-      "#{project.pages_group_url}/#{artifact_path}"
+      "#{project.pages_namespace_url}/#{artifact_path}"
     end
 
     def external_link?(job)

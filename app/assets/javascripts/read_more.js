@@ -31,9 +31,9 @@ export default function initReadMore(triggerSelector = '.js-read-more-trigger') 
 
     triggerEl.addEventListener(
       'click',
-      (e) => {
+      () => {
         targetEl.classList.add('is-expanded');
-        e.target.remove();
+        triggerEl.remove();
       },
       { once: true },
     );

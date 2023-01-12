@@ -2596,16 +2596,28 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#pages_url' do
+  describe '#pages_url', feature_category: :pages do
     let(:group) { create(:group, name: group_name) }
-    let(:project) { create(:project, namespace: group, name: project_name) }
+
+    let(:project_path) { project_name.downcase }
+    let(:project) do
+      create(
+        :project,
+        namespace: group,
+        name: project_name,
+        path: project_path)
+    end
+
     let(:domain) { 'Example.com' }
+    let(:port) { nil }
 
     subject { project.pages_url }
 
     before do
       allow(Settings.pages).to receive(:host).and_return(domain)
-      allow(Gitlab.config.pages).to receive(:url).and_return('http://example.com')
+      allow(Gitlab.config.pages)
+        .to receive(:url)
+        .and_return(['http://example.com', port].compact.join(':'))
     end
 
     context 'group page' do
@@ -2615,9 +2627,7 @@ RSpec.describe Project, factory_default: :keep do
       it { is_expected.to eq("http://group.example.com") }
 
       context 'mixed case path' do
-        before do
-          project.update!(path: 'Group.example.com')
-        end
+        let(:project_path) { 'Group.example.com' }
 
         it { is_expected.to eq("http://group.example.com") }
       end
@@ -2630,22 +2640,88 @@ RSpec.describe Project, factory_default: :keep do
       it { is_expected.to eq("http://group.example.com/project") }
 
       context 'mixed case path' do
-        before do
-          project.update!(path: 'Project')
-        end
+        let(:project_path) { 'Project' }
 
         it { is_expected.to eq("http://group.example.com/Project") }
       end
     end
+
+    context 'when there is an explicit port' do
+      let(:port) { 3000 }
+
+      context 'when not in dev mode' do
+        before do
+          stub_rails_env('production')
+        end
+
+        context 'group page' do
+          let(:group_name) { 'Group' }
+          let(:project_name) { 'group.example.com' }
+
+          it { is_expected.to eq('http://group.example.com:3000/group.example.com') }
+
+          context 'mixed case path' do
+            let(:project_path) { 'Group.example.com' }
+
+            it { is_expected.to eq('http://group.example.com:3000/Group.example.com') }
+          end
+        end
+
+        context 'project page' do
+          let(:group_name) { 'Group' }
+          let(:project_name) { 'Project' }
+
+          it { is_expected.to eq("http://group.example.com:3000/project") }
+
+          context 'mixed case path' do
+            let(:project_path) { 'Project' }
+
+            it { is_expected.to eq("http://group.example.com:3000/Project") }
+          end
+        end
+      end
+
+      context 'when in dev mode' do
+        before do
+          stub_rails_env('development')
+        end
+
+        context 'group page' do
+          let(:group_name) { 'Group' }
+          let(:project_name) { 'group.example.com' }
+
+          it { is_expected.to eq('http://group.example.com:3000') }
+
+          context 'mixed case path' do
+            let(:project_path) { 'Group.example.com' }
+
+            it { is_expected.to eq('http://group.example.com:3000') }
+          end
+        end
+
+        context 'project page' do
+          let(:group_name) { 'Group' }
+          let(:project_name) { 'Project' }
+
+          it { is_expected.to eq("http://group.example.com:3000/project") }
+
+          context 'mixed case path' do
+            let(:project_path) { 'Project' }
+
+            it { is_expected.to eq("http://group.example.com:3000/Project") }
+          end
+        end
+      end
+    end
   end
 
-  describe '#pages_group_url' do
+  describe '#pages_namespace_url', feature_category: :pages do
     let(:group) { create(:group, name: group_name) }
     let(:project) { create(:project, namespace: group, name: project_name) }
     let(:domain) { 'Example.com' }
     let(:port) { 1234 }
 
-    subject { project.pages_group_url }
+    subject { project.pages_namespace_url }
 
     before do
       allow(Settings.pages).to receive(:host).and_return(domain)
@@ -6989,21 +7065,6 @@ RSpec.describe Project, factory_default: :keep do
       project_with_pages_metadata_not_migrated.pages_metadatum.destroy!
 
       expect(described_class.pages_metadata_not_migrated).to contain_exactly(project_with_pages_metadata_not_migrated)
-    end
-  end
-
-  describe '#pages_group_root?' do
-    it 'returns returns true if pages_url is same as pages_group_url' do
-      project = build(:project)
-      expect(project).to receive(:pages_url).and_return(project.pages_group_url)
-
-      expect(project.pages_group_root?).to eq(true)
-    end
-
-    it 'returns returns false if pages_url is different than pages_group_url' do
-      project = build(:project)
-
-      expect(project.pages_group_root?).to eq(false)
     end
   end
 

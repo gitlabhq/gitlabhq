@@ -743,6 +743,75 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         end
       end
 
+      context 'ON UPDATE statements' do
+        context 'on_update: :nullify' do
+          it 'appends ON UPDATE SET NULL statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
+            expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+            expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+            expect(model).to receive(:execute).with(/ON UPDATE SET NULL/)
+
+            model.add_concurrent_foreign_key(:projects, :users,
+                                             column: :user_id,
+                                             on_update: :nullify)
+          end
+        end
+
+        context 'on_update: :cascade' do
+          it 'appends ON UPDATE CASCADE statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
+            expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+            expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+            expect(model).to receive(:execute).with(/ON UPDATE CASCADE/)
+
+            model.add_concurrent_foreign_key(:projects, :users,
+                                             column: :user_id,
+                                             on_update: :cascade)
+          end
+        end
+
+        context 'on_update: nil' do
+          it 'appends no ON UPDATE statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
+            expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+            expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+            expect(model).not_to receive(:execute).with(/ON UPDATE/)
+
+            model.add_concurrent_foreign_key(:projects, :users,
+                                             column: :user_id,
+                                             on_update: nil)
+          end
+        end
+
+        context 'when on_update is not provided' do
+          it 'appends no ON UPDATE statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
+            expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+            expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+            expect(model).not_to receive(:execute).with(/ON UPDATE/)
+
+            model.add_concurrent_foreign_key(:projects, :users,
+                                             column: :user_id)
+          end
+        end
+      end
+
       context 'when no custom key name is supplied' do
         it 'creates a concurrent foreign key and validates it' do
           expect(model).to receive(:with_lock_retries).and_call_original
@@ -760,6 +829,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           name = model.concurrent_foreign_key_name(:projects, :user_id)
           expect(model).to receive(:foreign_key_exists?).with(:projects, :users,
                                                               column: :user_id,
+                                                              on_update: nil,
                                                               on_delete: :cascade,
                                                               name: name,
                                                               primary_key: :id).and_return(true)
@@ -792,6 +862,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
               expect(model).to receive(:foreign_key_exists?).with(:projects, :users,
                                                                   name: :foo,
                                                                   primary_key: :id,
+                                                                  on_update: nil,
                                                                   on_delete: :cascade,
                                                                   column: :user_id).and_return(true)
 
@@ -861,6 +932,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             "ADD CONSTRAINT fk_multiple_columns\n" \
             "FOREIGN KEY \(partition_number, user_id\)\n" \
             "REFERENCES users \(partition_number, id\)\n" \
+            "ON UPDATE CASCADE\n" \
             "ON DELETE CASCADE\n" \
             "NOT VALID;\n"
           )
@@ -871,7 +943,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             column: [:partition_number, :user_id],
             target_column: [:partition_number, :id],
             validate: false,
-            name: :fk_multiple_columns
+            name: :fk_multiple_columns,
+            on_update: :cascade
           )
         end
 
@@ -883,6 +956,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
               {
                 column: [:partition_number, :user_id],
                 name: :fk_multiple_columns,
+                on_update: :cascade,
                 on_delete: :cascade,
                 primary_key: [:partition_number, :id]
               }
@@ -898,6 +972,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
               :users,
               column: [:partition_number, :user_id],
               target_column: [:partition_number, :id],
+              on_update: :cascade,
               validate: false,
               name: :fk_multiple_columns
             )

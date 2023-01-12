@@ -3,6 +3,7 @@ import { GlBadge, GlToggle } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
+import Tracking from '~/tracking';
 
 export default {
   i18n: {
@@ -37,6 +38,12 @@ export default {
     async toggleNav() {
       try {
         await axios.put(this.endpoint, { user: { use_new_navigation: !this.enabled } });
+
+        Tracking.event(undefined, 'click_toggle', {
+          label: this.enabled ? 'disable_new_nav_beta' : 'enable_new_nav_beta',
+          property: 'navigation',
+        });
+
         window.location.reload();
       } catch (error) {
         createAlert({

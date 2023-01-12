@@ -3,7 +3,7 @@
 = render_if_exists 'shared/promotions/promote_advanced_search'
 - if Feature.enabled?(:search_page_vertical_nav, current_user)
   .results.gl-md-display-flex.gl-mt-0
-    #js-search-sidebar{ class: search_bar_classes, data: { navigation: search_navigation_json } }
+    #js-search-sidebar{ class: search_bar_classes, data: { navigation_json: search_navigation_json } }
     .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
       = render partial: 'search/results_status' unless @search_objects.to_a.empty?
       = render partial: 'search/results_list'
@@ -12,7 +12,7 @@
 
   .results.gl-md-display-flex.gl-mt-3
     - if %w[issues merge_requests].include?(@scope)
-      #js-search-sidebar{ class: search_bar_classes, data: { navigation: search_navigation_json } }
+      #js-search-sidebar{ class: search_bar_classes, data: { navigation_json: search_navigation_json } }
 
     .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
       = render partial: 'search/results_list'

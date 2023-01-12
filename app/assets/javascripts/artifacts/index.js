@@ -16,13 +16,14 @@ export const initArtifactsTable = () => {
     return false;
   }
 
-  const { projectPath } = el.dataset;
+  const { projectPath, artifactsManagementFeedbackImagePath } = el.dataset;
 
   return new Vue({
     el,
     apolloProvider,
     provide: {
       projectPath,
+      artifactsManagementFeedbackImagePath,
     },
     render: (createElement) => createElement(JobArtifactsTable),
   });

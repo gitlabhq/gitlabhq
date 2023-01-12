@@ -52,6 +52,20 @@ sole discretion of GitLab Inc.
 
 <div class="deprecation removal-160 breaking-change">
 
+### Approvers and Approver Group fields in Merge Request Approval API
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The endpoint to get the configuration of approvals for a project returns empty arrays for `approvers` and `approval_groups`. These fields were deprecated in favor of the endpoint to [get project-level rules](https://docs.gitlab.com/ee/api/merge_request_approvals.html#get-project-level-rules) for a merge request. API users are encouraged to switch to this endpoint instead. These fields will be removed from the `get configuration` endpoint in v5 of the GitLab REST API.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Azure Storage Driver defaults to the correct root prefix
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>

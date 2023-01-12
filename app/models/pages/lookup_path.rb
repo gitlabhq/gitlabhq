@@ -46,7 +46,7 @@ module Pages
     strong_memoize_attr :source
 
     def prefix
-      if project.pages_group_root?
+      if project.pages_namespace_url == project.pages_url
         '/'
       else
         project.full_path.delete_prefix(trim_prefix) + '/'
