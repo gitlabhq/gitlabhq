@@ -61,7 +61,7 @@ module Banzai
       def call
         @nodes_count = 0
 
-        process_dollar_pipeline if Feature.enabled?(:markdown_dollar_math, group)
+        process_dollar_pipeline
 
         process_dollar_backtick_inline
         process_math_codeblock

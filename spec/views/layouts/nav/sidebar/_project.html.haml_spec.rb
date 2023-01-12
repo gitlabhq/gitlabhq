@@ -827,7 +827,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
         end
       end
 
-      context 'gitlab.com' do
+      context 'gitlab.com', :with_license do
         before do
           allow(Gitlab).to receive(:com?).and_return(true)
         end

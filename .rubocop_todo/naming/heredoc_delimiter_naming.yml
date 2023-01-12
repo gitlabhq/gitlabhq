@@ -113,7 +113,6 @@ Naming/HeredocDelimiterNaming:
     - 'spec/models/integrations/asana_spec.rb'
     - 'spec/models/ssh_host_key_spec.rb'
     - 'spec/rubocop/cop/migration/update_column_in_batches_spec.rb'
-    - 'spec/services/ci/after_requeue_job_service_spec.rb'
     - 'spec/services/ci/create_downstream_pipeline_service_spec.rb'
     - 'spec/services/ci/create_pipeline_service/cache_spec.rb'
     - 'spec/services/ci/create_pipeline_service/evaluate_runner_tags_spec.rb'

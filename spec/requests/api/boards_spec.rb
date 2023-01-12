@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Boards, feature_category: :team_planning do
+RSpec.describe API::Boards, :with_license, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:non_member) { create(:user) }
   let_it_be(:guest) { create(:user) }

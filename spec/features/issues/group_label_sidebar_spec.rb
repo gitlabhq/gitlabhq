@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group label on issue', feature_category: :team_planning do
+RSpec.describe 'Group label on issue', :with_license, feature_category: :team_planning do
   it 'renders link to the project issues page', :js do
     group = create(:group)
     project = create(:project, :public, namespace: group)

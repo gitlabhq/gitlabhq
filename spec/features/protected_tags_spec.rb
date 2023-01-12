@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Protected Tags', :js, feature_category: :source_code_management do
+RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_code_management do
   include ProtectedTagHelpers
 
   let(:project) { create(:project, :repository) }

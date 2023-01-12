@@ -2,7 +2,7 @@
 view_name: postgres_partitioned_tables
 description: TODO
 classes:
-- Gitlab::Database::PostgresPartitionedTables
+- Gitlab::Database::PostgresPartitionedTable
 feature_categories:
 - database
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45591

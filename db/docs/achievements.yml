@@ -1,7 +1,7 @@
 ---
 table_name: achievements
 classes:
-- Achievements::Achivement
+- Achievements::Achievement
 feature_categories:
 - users
 description: Achievements which can be created by namespaces to award them to users

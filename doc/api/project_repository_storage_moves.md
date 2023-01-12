@@ -8,9 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31285) in GitLab 13.0.
 
-Project repositories including wiki and design repositories can be moved between storages. This can be useful when
-[migrating to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster),
-for example.
+Project repositories including wiki and design repositories can be moved between storages. This API can help you when
+[migrating to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster), for example.
 
 As project repository storage moves are processed, they transition through different states. Values
 of `state` are:
@@ -250,8 +249,8 @@ Example response:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47142) in GitLab 13.7.
 
 Schedules repository storage moves for each project repository stored on the source storage shard.
-This endpoint migrates all projects at once. For more information, see 
-[Bulk schedule project moves](../administration/operations/moving_repositories.md#bulk-schedule-project-moves).
+This endpoint migrates all projects at once. For more information, see
+[Move all projects](../administration/operations/moving_repositories.md#move-all-projects).
 
 ```plaintext
 POST /project_repository_storage_moves

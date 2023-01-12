@@ -80,10 +80,10 @@ module API
               use :optional_distribution_params
             end
             post '/' do
-              authorize_create_package!(project_or_group)
+              authorize_create_package!(project_or_group(:read_project))
 
               distribution_params = declared_params(include_missing: false)
-              result = ::Packages::Debian::CreateDistributionService.new(project_or_group, current_user, distribution_params).execute
+              result = ::Packages::Debian::CreateDistributionService.new(project_or_group(:read_project), current_user, distribution_params).execute
               created_distribution = result.payload[:distribution]
 
               if result.success?
@@ -183,7 +183,7 @@ module API
               use :optional_distribution_params
             end
             put '/:codename' do
-              authorize_create_package!(project_or_group)
+              authorize_create_package!(project_or_group(:read_project))
 
               distribution_params = declared_params(include_missing: false).except(:codename)
               result = ::Packages::Debian::UpdateDistributionService.new(distribution, distribution_params).execute
@@ -214,7 +214,7 @@ module API
               use :optional_distribution_params
             end
             delete '/:codename' do
-              authorize_destroy_package!(project_or_group)
+              authorize_destroy_package!(project_or_group(:read_project))
 
               accepted! if distribution.destroy
 

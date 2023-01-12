@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline do
+RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :with_license do
   let_it_be(:project) { create(:project) }
   let_it_be(:bulk_import) { create(:bulk_import) }
   let_it_be(:entity) { create(:bulk_import_entity, :project_entity, project: project, bulk_import: bulk_import) }

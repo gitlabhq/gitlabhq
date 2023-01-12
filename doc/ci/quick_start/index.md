@@ -138,11 +138,8 @@ For the complete `.gitlab-ci.yml` syntax, see [the full `.gitlab-ci.yml` keyword
 
 - Use the [pipeline editor](../pipeline_editor/index.md) to edit your `.gitlab-ci.yml` file.
 - Each job contains a script section and belongs to a stage:
-  - The [`default`](../yaml/index.md#default) keyword is for
-    custom defaults, for example with [`before_script`](../yaml/index.md#before_script)
-    and [`after_script`](../yaml/index.md#after_script).
   - [`stage`](../yaml/index.md#stage) describes the sequential execution of jobs.
-    Jobs in a single stage run in parallel as long as there are available runners.
+    If there are runners available, jobs in a single stage run in parallel.
   - Use the [`needs` keyword](../yaml/index.md#needs) to run jobs out of stage order.
     This creates a [Directed Acyclic Graph (DAG)](../directed_acyclic_graph/index.md).
 - You can set additional configuration to customize how your jobs and stages perform:
@@ -152,6 +149,10 @@ For the complete `.gitlab-ci.yml` syntax, see [the full `.gitlab-ci.yml` keyword
   - Keep information across jobs and stages persistent in a pipeline with [`cache`](../yaml/index.md#cache)
     and [`artifacts`](../yaml/index.md#artifacts). These keywords are ways to store
     dependencies and job output, even when using ephemeral runners for each job.
+  - Use the [`default`](../yaml/index.md#default) keyword to specify additional
+    configurations that are applied to all jobs. This keyword is often used to define
+    [`before_script`](../yaml/index.md#before_script) and [`after_script`](../yaml/index.md#after_script)
+    sections that should run on every job.
 
 ## Related topics
 

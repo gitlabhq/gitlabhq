@@ -1,5 +1,7 @@
 ---
 table_name: dependency_list_exports
+classes:
+- Dependencies::DependencyListExport
 feature_categories:
 - dependency_management
 description: Dependency list exported data

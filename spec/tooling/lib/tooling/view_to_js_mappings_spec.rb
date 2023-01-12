@@ -143,6 +143,11 @@ RSpec.describe Tooling::ViewToJsMappings, feature_category: :tooling do
   describe '#view_files' do
     subject { described_class.new(view_base_folder: view_base_folder).view_files(changed_files) }
 
+    before do
+      File.write("#{js_base_folder}/index.js", "index.js")
+      File.write("#{view_base_folder}/index.html", "index.html")
+    end
+
     context 'when no files were changed' do
       let(:changed_files) { [] }
 
@@ -164,6 +169,14 @@ RSpec.describe Tooling::ViewToJsMappings, feature_category: :tooling do
 
       it 'returns the path to the view files' do
         expect(subject).to match_array(["#{view_base_folder}/index.html"])
+      end
+    end
+
+    context 'when view files are deleted' do
+      let(:changed_files) { ["#{js_base_folder}/index.js", "#{view_base_folder}/deleted.html"] }
+
+      it 'returns an empty array' do
+        expect(subject).to match_array([])
       end
     end
   end

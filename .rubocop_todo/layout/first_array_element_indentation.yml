@@ -35,7 +35,6 @@ Layout/FirstArrayElementIndentation:
     - 'ee/spec/lib/gitlab/ci/templates/Jobs/browser_performance_testing_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/ci/templates/Jobs/dast_default_branch_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/ci/templates/Jobs/load_performance_testing_gitlab_ci_yaml_spec.rb'
-    - 'ee/spec/models/analytics/cycle_analytics/group_value_stream_spec.rb'
     - 'ee/spec/models/ee/group_spec.rb'
     - 'ee/spec/models/security/orchestration_policy_configuration_spec.rb'
     - 'ee/spec/models/security/orchestration_policy_rule_schedule_spec.rb'

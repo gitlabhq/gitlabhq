@@ -39,7 +39,10 @@ module Tooling
 
     # Keep the files that are in the @view_base_folders folder
     def view_files(changed_files)
-      changed_files.select { |filename| filename.start_with?(*@view_base_folders) }
+      changed_files.select do |filename|
+        filename.start_with?(*@view_base_folders) &&
+          File.exist?(filename)
+      end
     end
 
     def folders_for_available_editions(base_folder)

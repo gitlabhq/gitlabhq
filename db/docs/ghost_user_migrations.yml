@@ -1,7 +1,7 @@
 ---
 table_name: ghost_user_migrations
 classes:
-- GhostUserMigration
+- Users::GhostUserMigration
 feature_categories:
 - users
 description: Users records awaiting for their associated records to be migrated to ghost user

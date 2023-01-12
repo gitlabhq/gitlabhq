@@ -1,7 +1,6 @@
 ---
 table_name: work_item_parent_links
 classes:
-- WorkItem
 - WorkItems::ParentLink
 feature_categories:
 - team_planning

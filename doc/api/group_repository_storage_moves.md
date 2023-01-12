@@ -240,7 +240,7 @@ Example response:
 
 Schedules repository storage moves for each group repository stored on the source storage shard.
 This endpoint migrates all groups at once. For more information, see
-[Bulk schedule group moves](../administration/operations/moving_repositories.md#bulk-schedule-group-moves).
+[Move all groups](../administration/operations/moving_repositories.md#move-all-groups).
 
 ```plaintext
 POST /group_repository_storage_moves

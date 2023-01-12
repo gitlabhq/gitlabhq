@@ -17760,7 +17760,7 @@ msgstr ""
 msgid "ForkedFromProjectPath|Forked from"
 msgstr ""
 
-msgid "ForkedFromProjectPath|Forked from an inaccessible project"
+msgid "ForkedFromProjectPath|Forked from an inaccessible project."
 msgstr ""
 
 msgid "Forking in progress"
@@ -17775,13 +17775,16 @@ msgstr ""
 msgid "ForksDivergence|%{behind} %{commit_word} behind"
 msgstr ""
 
-msgid "ForksDivergence|%{messages} upstream repository"
+msgid "ForksDivergence|%{messages} the upstream repository."
 msgstr ""
 
-msgid "ForksDivergence|Fork has diverged from upstream repository"
+msgid "ForksDivergence|Failed to fetch fork details. Try again later."
 msgstr ""
 
-msgid "ForksDivergence|Up to date with upstream repository"
+msgid "ForksDivergence|This fork has diverged from the upstream repository."
+msgstr ""
+
+msgid "ForksDivergence|Up to date with the upstream repository."
 msgstr ""
 
 msgid "Format: %{dateFormat}"

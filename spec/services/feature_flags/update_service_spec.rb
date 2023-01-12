@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FeatureFlags::UpdateService do
+RSpec.describe FeatureFlags::UpdateService, :with_license do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }

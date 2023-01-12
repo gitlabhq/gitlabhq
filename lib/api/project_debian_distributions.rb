@@ -14,13 +14,13 @@ module API
       after_validation do
         require_packages_enabled!
 
-        not_found! unless ::Feature.enabled?(:debian_packages, user_project)
+        not_found! unless ::Feature.enabled?(:debian_packages, project_or_group)
       end
 
       namespace ':id' do
         helpers do
-          def project_or_group
-            user_project
+          def project_or_group(action = :read_package)
+            user_project(action: action)
           end
         end
 

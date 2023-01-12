@@ -39,22 +39,10 @@ To change the location where the job logs are stored:
 :::TabTitle Linux package (Omnibus)
 
 1. Optional. If you have existing job logs, pause continuous integration data
-   processing. Jobs in progress are not affected, based on how
-   [data flow](#data-flow) works.
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   sidekiq['queue_selector'] = true
-   sidekiq['queue_groups'] = [
-     "feature_category!=continuous_integration"
-   ]
-   ```
-
-1. Save the file and reconfigure GitLab:
+   processing by temporarily stopping Sidekiq:
 
    ```shell
-   sudo gitlab-ctl reconfigure
+   sudo gitlab-ctl stop sidekiq
    ```
 
 1. Set the new storage location in `/etc/gitlab/gitlab.rb`:
@@ -72,15 +60,16 @@ To change the location where the job logs are stored:
 1. Use `rsync` to move job logs from the current location to the new location:
 
    ```shell
-   sudo rsync -avzh --remove-source-files --ignore-existing --progress /var/opt/gitlab/gitlab-ci/builds/ /mnt/gitlab-ci/builds
+   sudo rsync -avzh --remove-source-files --ignore-existing --progress /var/opt/gitlab/gitlab-ci/builds/ /mnt/gitlab-ci/builds/
    ```
 
    Use `--ignore-existing` so you don't override new job logs with older versions of the same log.
-1. Resume continuous integration data processing by editing `/etc/gitlab/gitlab.rb` and removing the `sidekiq` setting you updated earlier.
-1. Save the file and reconfigure GitLab:
+
+1. If you opted to pause the continuous integration data processing, you can
+   start Sidekiq again:
 
    ```shell
-   sudo gitlab-ctl reconfigure
+   sudo gitlab-ctl start sidekiq
    ```
 
 1. Remove the old job logs storage location:
@@ -90,6 +79,17 @@ To change the location where the job logs are stored:
    ```
 
 :::TabTitle Self-compiled (source)
+
+1. Optional. If you have existing job logs, pause continuous integration data
+   processing by temporarily stopping Sidekiq:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl stop gitlab-sidekiq
+
+   # For systems running SysV init
+   sudo service gitlab stop
+   ```
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` to set the new storage location:
 
@@ -107,6 +107,31 @@ To change the location where the job logs are stored:
 
    # For systems running SysV init
    sudo service gitlab restart
+   ```
+
+1. Use `rsync` to move job logs from the current location to the new location:
+
+   ```shell
+   sudo rsync -avzh --remove-source-files --ignore-existing --progress /home/git/gitlab/builds/ /mnt/gitlab-ci/builds/
+   ```
+
+   Use `--ignore-existing` so you don't override new job logs with older versions of the same log.
+
+1. If you opted to pause the continuous integration data processing, you can
+   start Sidekiq again:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl start gitlab-sidekiq
+
+   # For systems running SysV init
+   sudo service gitlab start
+   ```
+
+1. Remove the old job logs storage location:
+
+   ```shell
+   sudo rm -rf /home/git/gitlab/builds
    ```
 
 ::EndTabs

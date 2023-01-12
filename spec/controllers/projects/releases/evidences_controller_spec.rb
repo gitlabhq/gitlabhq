@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Releases::EvidencesController do
+RSpec.describe Projects::Releases::EvidencesController, :with_license do
   let!(:project) { create(:project, :repository, :public) }
   let_it_be(:private_project) { create(:project, :repository, :private) }
   let_it_be(:developer)  { create(:user) }

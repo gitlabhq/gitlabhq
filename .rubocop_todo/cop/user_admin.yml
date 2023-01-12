@@ -19,7 +19,6 @@ Cop/UserAdmin:
     - 'app/helpers/visibility_level_helper.rb'
     - 'app/models/concerns/protected_ref_access.rb'
     - 'app/models/concerns/spammable.rb'
-    - 'app/models/issue_collection.rb'
     - 'app/models/merge_requests_closing_issues.rb'
     - 'app/models/protected_branch.rb'
     - 'app/models/user.rb'

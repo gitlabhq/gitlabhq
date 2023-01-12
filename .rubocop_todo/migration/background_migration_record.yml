@@ -12,7 +12,6 @@ Migration/BackgroundMigrationRecord:
     - 'ee/lib/ee/gitlab/background_migration/populate_resolved_on_default_branch_column.rb'
     - 'ee/lib/ee/gitlab/background_migration/populate_uuids_for_security_findings.rb'
     - 'ee/lib/ee/gitlab/background_migration/update_vulnerability_occurrences_location.rb'
-    - 'lib/gitlab/background_migration/add_primary_email_to_emails_if_user_confirmed.rb'
     - 'lib/gitlab/background_migration/backfill_ci_queuing_tables.rb'
     - 'lib/gitlab/background_migration/backfill_draft_status_on_merge_requests.rb'
     - 'lib/gitlab/background_migration/backfill_namespace_traversal_ids_children.rb'

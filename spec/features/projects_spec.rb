@@ -213,7 +213,7 @@ RSpec.describe 'Project', feature_category: :projects do
     end
   end
 
-  describe 'showing information about source of a project fork' do
+  describe 'showing information about source of a project fork', :js do
     let(:user) { create(:user) }
     let(:base_project) { create(:project, :public, :repository) }
     let(:forked_project) { fork_project(base_project, user, repository: true) }
@@ -224,6 +224,7 @@ RSpec.describe 'Project', feature_category: :projects do
 
     it 'shows a link to the source project when it is available', :sidekiq_might_not_need_inline do
       visit project_path(forked_project)
+      wait_for_requests
 
       expect(page).to have_content('Forked from')
       expect(page).to have_link(base_project.full_name)
@@ -233,6 +234,7 @@ RSpec.describe 'Project', feature_category: :projects do
       forked_project
 
       visit project_path(base_project)
+      wait_for_requests
 
       expect(page).not_to have_content('In fork network of')
       expect(page).not_to have_content('Forked from')
@@ -243,7 +245,7 @@ RSpec.describe 'Project', feature_category: :projects do
       Projects::DestroyService.new(base_project, base_project.first_owner).execute
 
       visit project_path(forked_project)
-
+      wait_for_requests
       expect(page).to have_content('Forked from an inaccessible project')
     end
 
@@ -255,7 +257,7 @@ RSpec.describe 'Project', feature_category: :projects do
         Projects::DestroyService.new(forked_project, user).execute
 
         visit project_path(fork_of_fork)
-
+        wait_for_requests
         expect(page).to have_content("Forked from")
         expect(page).to have_link(base_project.full_name)
       end

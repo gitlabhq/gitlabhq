@@ -209,7 +209,10 @@ To test an EE class that doesn't exist in CE, create the spec file as you normal
 would in the `ee/spec` directory, but without the second `ee/` subdirectory.
 For example, a class `ee/app/models/vulnerability.rb` would have its tests in `ee/spec/models/vulnerability_spec.rb`.
 
-By default, licensed features are disabled while specs are running. To effectively test your feature
+By default, licensed features are disabled for specs in `specs/`.
+Specs in the `ee/spec` directory have Starter license initialized by default.
+
+To effectively test your feature
 you must explicitly enable the feature using the `stub_licensed_features` helper, for example:
 
 ```ruby

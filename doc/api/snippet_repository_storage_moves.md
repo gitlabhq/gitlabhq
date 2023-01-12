@@ -9,7 +9,7 @@ type: reference
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49228) in GitLab 13.8.
 
-Snippet repositories can be moved between storages. This can be useful when
+Snippet repositories can be moved between storages. This API can help you when
 [migrating to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster), for
 example.
 
@@ -267,7 +267,7 @@ Example response:
 
 Schedules repository storage moves for each snippet repository stored on the source storage shard.
 This endpoint migrates all snippets at once. For more information, see
-[Bulk schedule snippet moves](../administration/operations/moving_repositories.md#bulk-schedule-snippet-moves).
+[Move all snippets](../administration/operations/moving_repositories.md#move-all-snippets).
 
 ```plaintext
 POST /snippet_repository_storage_moves

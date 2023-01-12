@@ -95,10 +95,12 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(findTextarea().element.value).toBe(value);
   });
 
-  it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enableContentEditor emitted from markdown editor`, () => {
+  it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enableContentEditor emitted from markdown editor`, async () => {
     buildWrapper();
 
     findMarkdownField().vm.$emit('enableContentEditor');
+
+    await nextTick();
 
     expect(wrapper.emitted(EDITING_MODE_CONTENT_EDITOR)).toHaveLength(1);
   });

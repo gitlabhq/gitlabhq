@@ -1,7 +1,7 @@
 ---
 table_name: slack_integrations_scopes
 classes:
-- Integrations::SlackIntegrationsKnownApiScope
+- Integrations::SlackWorkspace::IntegrationApiScope
 feature_categories:
 - integrations
 description: Data related to the Slack application integration.

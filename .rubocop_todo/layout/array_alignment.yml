@@ -112,7 +112,6 @@ Layout/ArrayAlignment:
     - 'ee/spec/lib/gitlab/search/index_curator_spec.rb'
     - 'ee/spec/lib/gitlab/visibility_level_spec.rb'
     - 'ee/spec/lib/incident_management/oncall_shift_generator_spec.rb'
-    - 'ee/spec/models/analytics/cycle_analytics/group_value_stream_spec.rb'
     - 'ee/spec/models/dora/base_metric_spec.rb'
     - 'ee/spec/models/dora/daily_metrics_spec.rb'
     - 'ee/spec/models/ee/group_spec.rb'

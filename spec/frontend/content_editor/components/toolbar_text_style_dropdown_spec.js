@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EditorStateObserver from '~/content_editor/components/editor_state_observer.vue';
 import ToolbarTextStyleDropdown from '~/content_editor/components/toolbar_text_style_dropdown.vue';
@@ -22,8 +22,6 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
   const buildWrapper = (propsData = {}) => {
     wrapper = shallowMountExtended(ToolbarTextStyleDropdown, {
       stubs: {
-        GlDropdown,
-        GlDropdownItem,
         EditorStateObserver,
       },
       provide: {
@@ -35,7 +33,7 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
       },
     });
   };
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
 
   beforeEach(() => {
     buildEditor();
@@ -48,9 +46,10 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
   it('renders all text styles as dropdown items', () => {
     buildWrapper();
 
-    TEXT_STYLE_DROPDOWN_ITEMS.forEach((textStyle) => {
-      expect(wrapper.findByText(textStyle.label).exists()).toBe(true);
+    TEXT_STYLE_DROPDOWN_ITEMS.forEach((textStyle, index) => {
+      expect(findListbox().props('items').at(index).text).toContain(textStyle.label);
     });
+    expect(findListbox().props('items').length).toBe(TEXT_STYLE_DROPDOWN_ITEMS.length);
   });
 
   describe('when there is an active item', () => {
@@ -69,19 +68,11 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
     });
 
     it('displays the active text style label as the dropdown toggle text', () => {
-      expect(findDropdown().props().text).toBe(activeTextStyle.label);
+      expect(findListbox().props('toggleText')).toBe(activeTextStyle.label);
     });
 
     it('sets dropdown as enabled', () => {
-      expect(findDropdown().props().disabled).toBe(false);
-    });
-
-    it('sets active item as active', () => {
-      const activeItem = wrapper
-        .findAllComponents(GlDropdownItem)
-        .filter((item) => item.text() === activeTextStyle.label)
-        .at(0);
-      expect(activeItem.props().isChecked).toBe(true);
+      expect(findListbox().props('disabled')).toBe(false);
     });
   });
 
@@ -93,11 +84,11 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
     });
 
     it('sets dropdown as disabled', () => {
-      expect(findDropdown().props().disabled).toBe(true);
+      expect(findListbox().props('disabled')).toBe(true);
     });
 
     it('sets dropdown toggle text to Text style', () => {
-      expect(findDropdown().props().text).toBe('Text style');
+      expect(findListbox().props('toggleText')).toBe('Text style');
     });
   });
 
@@ -109,7 +100,7 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
         const { editorCommand, commandParams } = textStyle;
         const commands = mockChainedCommands(tiptapEditor, [editorCommand, 'focus', 'run']);
 
-        wrapper.findAllComponents(GlDropdownItem).at(index).vm.$emit('click');
+        findListbox().vm.$emit('select', TEXT_STYLE_DROPDOWN_ITEMS[index].label);
         expect(commands[editorCommand]).toHaveBeenCalledWith(commandParams || {});
         expect(commands.focus).toHaveBeenCalled();
         expect(commands.run).toHaveBeenCalled();
@@ -121,7 +112,7 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
         buildWrapper();
         const { contentType, commandParams } = textStyle;
 
-        wrapper.findAllComponents(GlDropdownItem).at(index).vm.$emit('click');
+        findListbox().vm.$emit('select', TEXT_STYLE_DROPDOWN_ITEMS[index].label);
         expect(wrapper.emitted('execute')).toEqual([
           [
             {

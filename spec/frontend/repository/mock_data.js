@@ -117,3 +117,10 @@ export const graphQLErrors = [
     extensions: { code: 'unavailable', gitaly_code: 14, service: 'git' },
   },
 ];
+
+export const propsForkInfo = {
+  projectPath: 'nataliia/myGitLab',
+  selectedRef: 'main',
+  sourceName: 'gitLab',
+  sourcePath: 'gitlab-org/gitlab',
+};

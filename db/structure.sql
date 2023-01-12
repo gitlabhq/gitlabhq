@@ -225,15 +225,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION sync_namespaces_amount_used_columns() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."new_amount_used" := NEW."amount_used";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_1a857e8db6cd() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13052,11 +13043,10 @@ CREATE TABLE ci_namespace_monthly_usages (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
     date date NOT NULL,
-    amount_used numeric(18,2) DEFAULT 0.0 NOT NULL,
     notification_level smallint DEFAULT 100 NOT NULL,
     shared_runners_duration integer DEFAULT 0 NOT NULL,
     created_at timestamp with time zone,
-    new_amount_used numeric(18,4) DEFAULT 0.0 NOT NULL,
+    amount_used numeric(18,4) DEFAULT 0.0 NOT NULL,
     CONSTRAINT ci_namespace_monthly_usages_year_month_constraint CHECK ((date = date_trunc('month'::text, (date)::timestamp with time zone)))
 );
 
@@ -28327,6 +28317,8 @@ CREATE INDEX idx_keys_expires_at_and_before_expiry_notification_undelivered ON k
 
 CREATE INDEX idx_members_created_at_user_id_invite_token ON members USING btree (created_at) WHERE ((invite_token IS NOT NULL) AND (user_id IS NULL));
 
+CREATE INDEX idx_members_on_user_and_source_and_source_type_and_member_role ON members USING btree (user_id, source_id, source_type, member_role_id);
+
 CREATE INDEX idx_merge_requests_on_id_and_merge_jid ON merge_requests USING btree (id, merge_jid) WHERE ((merge_jid IS NOT NULL) AND (state_id = 4));
 
 CREATE INDEX idx_merge_requests_on_merged_state ON merge_requests USING btree (id) WHERE (state_id = 3);
@@ -30024,8 +30016,6 @@ CREATE INDEX index_members_on_source_state_type_access_level_and_user_id ON memb
 CREATE INDEX index_members_on_user_id_and_access_level_requested_at_is_null ON members USING btree (user_id, access_level) WHERE (requested_at IS NULL);
 
 CREATE INDEX index_members_on_user_id_created_at ON members USING btree (user_id, created_at) WHERE ((ldap = true) AND ((type)::text = 'GroupMember'::text) AND ((source_type)::text = 'Namespace'::text));
-
-CREATE INDEX index_members_on_user_id_source_id_source_type ON members USING btree (user_id, source_id, source_type);
 
 CREATE INDEX index_merge_request_assignees_on_merge_request_id ON merge_request_assignees USING btree (merge_request_id);
 
@@ -33120,8 +33110,6 @@ CREATE TRIGGER namespaces_loose_fk_trigger AFTER DELETE ON namespaces REFERENCIN
 CREATE TRIGGER nullify_merge_request_metrics_build_data_on_update BEFORE UPDATE ON merge_request_metrics FOR EACH ROW EXECUTE FUNCTION nullify_merge_request_metrics_build_data();
 
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
-
-CREATE TRIGGER sync_namespaces_amount_used_columns BEFORE INSERT OR UPDATE ON ci_namespace_monthly_usages FOR EACH ROW EXECUTE FUNCTION sync_namespaces_amount_used_columns();
 
 CREATE TRIGGER trigger_1a857e8db6cd BEFORE INSERT OR UPDATE ON vulnerability_occurrences FOR EACH ROW EXECUTE FUNCTION trigger_1a857e8db6cd();
 

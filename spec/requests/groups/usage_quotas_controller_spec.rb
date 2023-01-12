@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::UsageQuotasController, feature_category: :subscription_cost_management do
+RSpec.describe Groups::UsageQuotasController, :with_license, feature_category: :subscription_cost_management do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:user) { create(:user) }

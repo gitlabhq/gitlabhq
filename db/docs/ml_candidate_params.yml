@@ -1,9 +1,9 @@
 ---
 table_name: ml_candidate_params
 classes:
-  - Ml::CandidateParams
+- Ml::CandidateParam
 feature_categories:
-  - mlops
+- mlops
 description: Configuration parameters recorded for a Machine Learning model candidate
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95168
 milestone: '15.4'

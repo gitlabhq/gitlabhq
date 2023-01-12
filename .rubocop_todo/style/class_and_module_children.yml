@@ -449,7 +449,6 @@ Style/ClassAndModuleChildren:
     - 'ee/app/helpers/projects/security/dast_profiles_helper.rb'
     - 'ee/app/helpers/projects/security/discover_helper.rb'
     - 'ee/app/helpers/projects/security/sast_configuration_helper.rb'
-    - 'ee/app/models/analytics/cycle_analytics/group_value_stream.rb'
     - 'ee/app/models/analytics/devops_adoption.rb'
     - 'ee/app/models/analytics/devops_adoption/enabled_namespace.rb'
     - 'ee/app/models/analytics/devops_adoption/snapshot.rb'

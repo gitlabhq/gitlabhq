@@ -47,7 +47,7 @@ module QA
           element :tree_holder, '.tree-holder' # rubocop:disable QA/ElementWithPattern
         end
 
-        view 'app/views/projects/_fork_info.html.haml' do
+        view 'app/assets/javascripts/repository/components/fork_info.vue' do
           element :forked_from_link
         end
 

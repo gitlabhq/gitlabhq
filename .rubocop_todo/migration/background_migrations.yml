@@ -1,17 +1,6 @@
 ---
 Migration/BackgroundMigrations:
   Exclude:
-    - 'db/migrate/20210519154058_schedule_update_users_where_two_factor_auth_required_from_group.rb'
-    - 'db/post_migrate/20210302074524_backfill_namespace_statistics_with_wiki_size.rb'
-    - 'db/post_migrate/20210304133508_schedule_remove_duplicate_vulnerabilities_findings2.rb'
-    - 'db/post_migrate/20210415155043_move_container_registry_enabled_to_project_features3.rb'
-    - 'db/post_migrate/20210423160427_schedule_drop_invalid_vulnerabilities.rb'
-    - 'db/post_migrate/20210427212034_schedule_update_timelogs_project_id.rb'
-    - 'db/post_migrate/20210506065000_schedule_backfill_traversal_ids.rb'
-    - 'db/post_migrate/20210511095658_schedule_migrate_project_taggings_context_from_tags_to_topics.rb'
-    - 'db/post_migrate/20210511142748_schedule_drop_invalid_vulnerabilities2.rb'
-    - 'db/post_migrate/20210514063252_schedule_cleanup_orphaned_lfs_objects_projects.rb'
-    - 'db/post_migrate/20210518074332_schedule_disable_expiration_policies_linked_to_no_container_images.rb'
     - 'db/post_migrate/20210604070207_retry_backfill_traversal_ids.rb'
     - 'db/post_migrate/20210611080951_fix_missing_traversal_ids.rb'
     - 'db/post_migrate/20210701111909_backfill_issues_upvotes_count.rb'
@@ -26,7 +15,6 @@ Migration/BackgroundMigrations:
     - 'db/post_migrate/20210901153324_slice_merge_request_diff_commit_migrations.rb'
     - 'db/post_migrate/20210909104800_reschedule_extract_project_topics_into_separate_table_2.rb'
     - 'db/post_migrate/20211004110927_schedule_fix_first_mentioned_in_commit_at_job.rb'
-    - 'db/post_migrate/20211004120135_schedule_add_primary_email_to_emails_if_user_confirmed.rb'
     - 'db/post_migrate/20211005010101_rereschedule_delete_orphaned_deployments.rb'
     - 'db/post_migrate/20211005194425_schedule_requirements_migration.rb'
     - 'db/post_migrate/20211006060436_schedule_populate_topics_total_projects_count_cache.rb'

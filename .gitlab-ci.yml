@@ -95,6 +95,7 @@ workflow:
     - if: '$CI_COMMIT_BRANCH =~ /^[\d-]+-stable(-ee)?$/'
       variables:
         RUBY_VERSION: "2.7"
+        NOTIFY_PIPELINE_FAILURE_CHANNEL: "releases"
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
       variables:
         RUBY_VERSION: "2.7"

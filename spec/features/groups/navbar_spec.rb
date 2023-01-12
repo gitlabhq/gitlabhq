@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group navbar', feature_category: :navigation do
+RSpec.describe 'Group navbar', :with_license, feature_category: :navigation do
   include NavbarStructureHelper
   include WikiHelpers
 

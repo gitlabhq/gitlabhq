@@ -224,7 +224,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/views/projects/edit.html.haml_spec.rb'
     - 'ee/spec/views/projects/issues/show.html.haml_spec.rb'
     - 'ee/spec/views/projects/on_demand_scans/index.html.haml_spec.rb'
-    - 'ee/spec/views/projects/pipelines/_tabs_content.html.haml_spec.rb'
     - 'ee/spec/views/projects/project_members/index.html.haml_spec.rb'
     - 'ee/spec/views/projects/security/corpus_management/show.html.haml_spec.rb'
     - 'ee/spec/views/projects/security/dast_profiles/show.html.haml_spec.rb'

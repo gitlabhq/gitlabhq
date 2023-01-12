@@ -1,7 +1,7 @@
 ---
 table_name: project_wiki_repository_states
 classes:
-- ProjectWikiRepositoryState
+- Geo::ProjectWikiRepositoryState
 feature_categories:
 - geo_replication
 description: Separate table for project wikis containing Geo verification metadata.

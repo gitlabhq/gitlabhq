@@ -1,7 +1,6 @@
 ---
 table_name: user_namespace_callouts
-classes:
-- Users::NamespaceCallout
+classes: []
 feature_categories:
 - navigation
 description: Contains records of which users have dismissed a callout, grouped by namespace.

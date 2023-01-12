@@ -19739,6 +19739,7 @@ Represents a requirement test report.
 | <a id="testreportcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the test report was created. |
 | <a id="testreportid"></a>`id` | [`ID!`](#id) | ID of the test report. |
 | <a id="testreportstate"></a>`state` | [`TestReportState!`](#testreportstate) | State of the test report. |
+| <a id="testreportuseslegacyiid"></a>`usesLegacyIid` | [`Boolean`](#boolean) | Indicates whether the test report was generated with references to legacy requirement IIDs. |
 
 ### `TestReportSummary`
 

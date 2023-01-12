@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # `:saas` is used to test `gitlab_subscription` factory.
 # It's not available on FOSS but also this very factory is not.
-RSpec.describe 'factories', :saas do
+RSpec.describe 'factories', :saas, :with_license do
   include Database::DatabaseHelpers
 
   # Used in `skipped` and indicates whether to skip any traits including the

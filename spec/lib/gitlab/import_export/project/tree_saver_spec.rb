@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
+RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license do
   let_it_be(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let_it_be(:exportable_path) { 'project' }
   let_it_be(:user) { create(:user) }

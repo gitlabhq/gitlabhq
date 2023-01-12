@@ -10,8 +10,6 @@ Layout/ParameterAlignment:
     - 'spec/lib/gitlab/background_migration/recalculate_vulnerabilities_occurrences_uuid_spec.rb'
     - 'spec/lib/gitlab/background_migration/remove_duplicate_vulnerabilities_findings_spec.rb'
     - 'spec/lib/gitlab/background_migration/remove_occurrence_pipelines_and_duplicate_vulnerabilities_findings_spec.rb'
-    - 'spec/migrations/20210423160427_schedule_drop_invalid_vulnerabilities_spec.rb'
-    - 'spec/migrations/20210511142748_schedule_drop_invalid_vulnerabilities2_spec.rb'
     - 'spec/migrations/20211018152654_schedule_remove_duplicate_vulnerabilities_findings3_spec.rb'
     - 'spec/migrations/20211116111644_schedule_remove_occurrence_pipelines_and_duplicate_vulnerabilities_findings_spec.rb'
     - 'spec/support/helpers/content_security_policy_helpers.rb'

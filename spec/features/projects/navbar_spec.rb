@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project navbar', feature_category: :projects do
+RSpec.describe 'Project navbar', :with_license, feature_category: :projects do
   include NavbarStructureHelper
   include WaitForRequests
 

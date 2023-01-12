@@ -186,11 +186,4 @@ RSpec.describe Banzai::Filter::MathFilter do
 
     expect(doc.search('.js-render-math').count).to eq(2)
   end
-
-  it 'does not recognize new syntax when feature flag is off' do
-    stub_feature_flags(markdown_dollar_math: false)
-    doc = filter('$1+2$')
-
-    expect(doc.to_s).to eq '$1+2$'
-  end
 end

@@ -1,7 +1,7 @@
 ---
 table_name: merge_request_predictions
 classes:
-- MergeRequest::Prediction
+- MergeRequest::Predictions
 feature_categories:
 - workflow_automation
 description: Includes machine learning model predictions

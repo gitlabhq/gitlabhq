@@ -1,6 +1,5 @@
 ---
 Database/MultipleDatabases:
   Exclude:
-    - 'db/post_migrate/20210317104032_set_iteration_cadence_automatic_to_false.rb'
     - 'db/post_migrate/20210811122206_update_external_project_bots.rb'
     - 'db/post_migrate/20210812013042_remove_duplicate_project_authorizations.rb'

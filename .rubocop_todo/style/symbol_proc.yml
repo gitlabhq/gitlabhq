@@ -66,8 +66,6 @@ Style/SymbolProc:
     - 'config/initializers/doorkeeper_openid_connect.rb'
     - 'config/initializers/mail_encoding_patch.rb'
     - 'config/settings.rb'
-    - 'db/migrate/20210318134427_delete_security_findings_without_uuid.rb'
-    - 'db/migrate/20210503105845_add_project_value_stream_id_to_project_stages.rb'
     - 'db/post_migrate/20220119094503_populate_audit_event_streaming_verification_token.rb'
     - 'db/post_migrate/20220803042352_cleanup_mr_attention_request_todos.rb'
     - 'ee/app/helpers/ee/mirror_helper.rb'

@@ -361,7 +361,6 @@ RSpec/AnyInstanceOf:
     - 'spec/workers/build_hooks_worker_spec.rb'
     - 'spec/workers/ci/build_schedule_worker_spec.rb'
     - 'spec/workers/ci/daily_build_group_report_results_worker_spec.rb'
-    - 'spec/workers/cluster_provision_worker_spec.rb'
     - 'spec/workers/clusters/cleanup/project_namespace_worker_spec.rb'
     - 'spec/workers/clusters/cleanup/service_account_worker_spec.rb'
     - 'spec/workers/concerns/project_import_options_spec.rb'
@@ -381,4 +380,3 @@ RSpec/AnyInstanceOf:
     - 'spec/workers/pipeline_schedule_worker_spec.rb'
     - 'spec/workers/project_cache_worker_spec.rb'
     - 'spec/workers/stage_update_worker_spec.rb'
-    - 'spec/workers/wait_for_cluster_creation_worker_spec.rb'

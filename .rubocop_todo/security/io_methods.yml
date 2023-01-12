@@ -3,4 +3,3 @@
 Security/IoMethods:
   Details: grace period
   Exclude:
-    - 'db/migrate/20210301200959_init_schema.rb'

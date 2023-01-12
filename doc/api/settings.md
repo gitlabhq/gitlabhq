@@ -252,6 +252,8 @@ Example responses: **(PREMIUM SELF)**
 
 ## List of settings that can be accessed via API calls
 
+> Fields `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106963) in GitLab 15.8. Use `housekeeping_optimize_repository_period` instead.
+
 In general, all settings are optional. Certain settings though, if enabled,
 require other settings to be set to function properly. These requirements are
 listed in the descriptions of the relevant settings.
@@ -377,11 +379,11 @@ listed in the descriptions of the relevant settings.
 | `help_text` **(PREMIUM)**                | string           | no                                   | GitLab server administrator information. |
 | `hide_third_party_offers`                | boolean          | no                                   | Do not display offers from third parties in GitLab. |
 | `home_page_url`                          | string           | no                                   | Redirect to this URL when not logged in. |
-| `housekeeping_bitmaps_enabled`           | boolean          | no                                   | Git pack file bitmap creation is always enabled and cannot be changed via API and UI. This API field is deprecated and always returns `true`. |
-| `housekeeping_enabled`                   | boolean          | no                                   | (**If enabled, requires either:** `housekeeping_bitmaps_enabled`, `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period` **or** `housekeeping_optimize_repository_period`) Enable or disable Git housekeeping. |
-| `housekeeping_full_repack_period`        | integer          | no                                   | **Deprecated** (use `housekeeping_optimize_repository_period` instead): Number of Git pushes after which an incremental `git repack` is run. |
-| `housekeeping_gc_period`                 | integer          | no                                   | **Deprecated** (use `housekeeping_optimize_repository_period` instead): Number of Git pushes after which `git gc` is run. |
-| `housekeeping_incremental_repack_period` | integer          | no                                   | **Deprecated** (use `housekeeping_optimize_repository_period` instead): Number of Git pushes after which an incremental `git repack` is run. |
+| `housekeeping_bitmaps_enabled`           | boolean          | no                                   | Deprecated. Git pack file bitmap creation is always enabled and cannot be changed via API and UI. Always returns `true`. |
+| `housekeeping_enabled`                   | boolean          | no                                   | Enable or disable Git housekeeping. Requires additional fields to be set. For more information, see [Housekeeping fields](#housekeeping-fields). |
+| `housekeeping_full_repack_period`        | integer          | no                                   | Deprecated. Number of Git pushes after which an incremental `git repack` is run. Use `housekeeping_optimize_repository_period` instead. For more information, see [Housekeeping fields](#housekeeping-fields). |
+| `housekeeping_gc_period`                 | integer          | no                                   | Deprecated. Number of Git pushes after which `git gc` is run. Use `housekeeping_optimize_repository_period` instead. For more information, see [Housekeeping fields](#housekeeping-fields). |
+| `housekeeping_incremental_repack_period` | integer          | no                                   | Deprecated. Number of Git pushes after which an incremental `git repack` is run. Use `housekeeping_optimize_repository_period` instead. For more information, see [Housekeeping fields](#housekeeping-fields).|
 | `housekeeping_optimize_repository_period`| integer          | no                                   | Number of Git pushes after which an incremental `git repack` is run. |
 | `html_emails_enabled`                    | boolean          | no                                   | Enable HTML emails. |
 | `import_sources`                         | array of strings | no                                   | Sources to allow project import from, possible values: `github`, `bitbucket`, `bitbucket_server`, `gitlab`, `fogbugz`, `git`, `gitlab_project`, `gitea`, `manifest`, and `phabricator`. |
@@ -523,6 +525,28 @@ listed in the descriptions of the relevant settings.
 | `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 52428800 Bytes (50 MB). The minimum value is 1024 bytes. |
 | `jira_connect_application_key`           | String           | no                                   | Application ID of the OAuth application that should be used to authenticate with the GitLab.com for Jira Cloud app |
 | `jira_connect_proxy_url`                 | String           | no                                   | URL of the GitLab instance that should be used as a proxy for the GitLab.com for Jira Cloud app |
+
+## Housekeeping fields
+
+::Tabs
+
+:::TabTitle 15.8 and later
+
+If the `housekeeping_optimize_repository_period`
+field is set to an integer, housekeeping operations are performed after the number
+of Git pushes you specify.
+
+:::TabTitle 15.7 and earlier
+
+The `housekeeping_enabled` field enables or disables
+Git housekeeping. To function properly, this field requires `housekeeping_optimize_repository_period`
+to be set, or _all_ of these values to be set:
+
+- `housekeeping_bitmaps_enabled`
+- `housekeeping_full_repack_period`
+- `housekeeping_gc_period`
+
+::EndTabs
 
 ### Package Registry: Package file size limits
 

@@ -1,7 +1,7 @@
 ---
 table_name: dast_pre_scan_verifications
 classes:
-- Dast::PreScanVerifications
+- Dast::PreScanVerification
 feature_categories:
 - dynamic_application_security_testing
 description: Verification status for DAST Profiles

@@ -2288,7 +2288,7 @@ RSpec.describe API::Projects do
       end
     end
 
-    context 'when authenticated as an admin' do
+    context 'when authenticated as an admin', :with_license do
       before do
         stub_container_registry_config(enabled: true, host_port: 'registry.example.org:5000')
       end

@@ -1,0 +1,9 @@
+query getForkDetails($projectPath: ID!, $ref: String) {
+  project(fullPath: $projectPath) {
+    id
+    forkDetails(ref: $ref) {
+      ahead
+      behind
+    }
+  }
+}
