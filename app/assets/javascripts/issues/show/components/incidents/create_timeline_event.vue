@@ -74,6 +74,7 @@ export default {
               incidentId: convertToGraphQLId(TYPE_ISSUE, this.issuableId),
               note: eventDetails.note,
               occurredAt: eventDetails.occurredAt,
+              timelineEventTagNames: eventDetails.timelineEventTags,
             },
           },
           update: this.updateCache,

@@ -59,9 +59,12 @@ To move repositories:
    so that the new storages receives all new projects. This stops new projects from being created
    on existing storages while the migration is in progress.
 1. Schedule repository moves for:
-   - [Projects](#bulk-schedule-project-moves).
-   - [Snippets](#bulk-schedule-snippet-moves).
-   - [Groups](#bulk-schedule-group-moves). **(PREMIUM SELF)**
+   - [All projects](#bulk-schedule-project-moves) or
+     [individual projects](../../api/project_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-project).
+   - [All snippets](#bulk-schedule-snippet-moves) or
+     [individual snippets](../../api/snippet_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-snippet).
+   - [All groups](#bulk-schedule-group-moves) or
+     [individual groups](../../api/group_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-group). **(PREMIUM SELF)**
 
 ### Bulk schedule project moves
 

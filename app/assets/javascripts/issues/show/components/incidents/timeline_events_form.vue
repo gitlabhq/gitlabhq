@@ -1,7 +1,9 @@
 <script>
-import { GlDatepicker, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
+import { GlDatepicker, GlFormInput, GlFormGroup, GlButton, GlListbox } from '@gitlab/ui';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import { MAX_TEXT_LENGTH, timelineFormI18n } from './constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { __, sprintf } from '~/locale';
+import { MAX_TEXT_LENGTH, TIMELINE_EVENT_TAGS, timelineFormI18n } from './constants';
 import { getUtcShiftedDate } from './utils';
 
 export default {
@@ -23,7 +25,9 @@ export default {
     GlFormInput,
     GlFormGroup,
     GlButton,
+    GlListbox,
   },
+  mixins: [glFeatureFlagsMixin()],
   i18n: timelineFormI18n,
   MAX_TEXT_LENGTH,
   props: {
@@ -32,7 +36,7 @@ export default {
       required: false,
       default: false,
     },
-    showDelete: {
+    isEditing: {
       type: Boolean,
       required: false,
       default: false,
@@ -51,6 +55,16 @@ export default {
       required: false,
       default: '',
     },
+    previousTags: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    tags: {
+      type: Array,
+      required: false,
+      default: () => TIMELINE_EVENT_TAGS,
+    },
   },
   data() {
     // if occurredAt is null, returns "now" in UTC
@@ -58,10 +72,12 @@ export default {
 
     return {
       timelineText: this.previousNote,
+      timelineTextIsDirty: this.isEditing,
       placeholderDate,
       hourPickerInput: placeholderDate.getHours(),
       minutePickerInput: placeholderDate.getMinutes(),
       datePickerInput: placeholderDate,
+      selectedTags: [...this.previousTags],
     };
   },
   computed: {
@@ -85,6 +101,20 @@ export default {
     timelineTextCount() {
       return this.timelineText.length;
     },
+    dropdownText() {
+      if (!this.selectedTags.length) {
+        return timelineFormI18n.selectTags;
+      }
+
+      const dropdownText =
+        this.selectedTags.length === 1
+          ? this.selectedTags[0]
+          : sprintf(__('%{numberOfSelectedTags} tags'), {
+              numberOfSelectedTags: this.selectedTags.length,
+            });
+
+      return dropdownText;
+    },
   },
   mounted() {
     this.focusDate();
@@ -96,14 +126,35 @@ export default {
       this.hourPickerInput = newPlaceholderDate.getHours();
       this.minutePickerInput = newPlaceholderDate.getMinutes();
       this.timelineText = '';
+      this.selectedTags = [];
     },
     focusDate() {
       this.$refs.datepicker.$el.querySelector('input')?.focus();
+    },
+    setTimelineTextDirty() {
+      this.timelineTextIsDirty = true;
+    },
+    onTagsChange(tagValue) {
+      this.selectedTags = [...tagValue];
+
+      if (!this.timelineTextIsDirty) {
+        this.timelineText = this.generateTimelineTextFromTags(this.selectedTags);
+      }
+    },
+    generateTimelineTextFromTags(tags) {
+      if (!tags.length) {
+        return '';
+      }
+
+      const tagsMessage = tags.map((tag) => tag.toLocaleLowerCase()).join(', ');
+
+      return `${timelineFormI18n.areaDefaultMessage} ${tagsMessage}`;
     },
     handleSave(addAnotherEvent) {
       const event = {
         note: this.timelineText,
         occurredAt: this.occurredAtString,
+        timelineEventTags: this.selectedTags,
       };
       this.$emit('save-event', event, addAnotherEvent);
     },
@@ -146,6 +197,16 @@ export default {
         <p class="gl-ml-3 gl-align-self-end gl-line-height-32">{{ __('UTC') }}</p>
       </div>
     </div>
+    <gl-form-group v-if="glFeatures.incidentEventTags" :label="$options.i18n.tagsLabel">
+      <gl-listbox
+        :selected="selectedTags"
+        :toggle-text="dropdownText"
+        :items="tags"
+        :is-check-centered="true"
+        :multiple="true"
+        @select="onTagsChange"
+      />
+    </gl-form-group>
     <div class="common-note-form">
       <gl-form-group class="gl-mb-3" :label="$options.i18n.areaLabel">
         <markdown-field
@@ -169,6 +230,7 @@ export default {
               aria-describedby="timeline-form-hint"
               :placeholder="$options.i18n.areaPlaceholder"
               :maxlength="$options.MAX_TEXT_LENGTH"
+              @input="setTimelineTextDirty"
             >
             </textarea>
             <div id="timeline-form-hint" class="gl-sr-only">{{ $options.i18n.hint }}</div>
@@ -214,7 +276,7 @@ export default {
           {{ $options.i18n.cancel }}
         </gl-button>
         <gl-button
-          v-if="showDelete"
+          v-if="isEditing"
           class="gl-ml-auto btn-danger"
           :disabled="isEventProcessed"
           @click="$emit('delete')"

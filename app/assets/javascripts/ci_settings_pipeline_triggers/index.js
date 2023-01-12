@@ -13,11 +13,6 @@ const parseJsonArray = (triggers) => {
 export default (containerId = 'js-ci-pipeline-triggers-list') => {
   const containerEl = document.getElementById(containerId);
 
-  // Note: Remove this check when FF `ci_pipeline_triggers_settings_vue_ui` is removed.
-  if (!containerEl) {
-    return null;
-  }
-
   const triggers = parseJsonArray(containerEl.dataset.triggers);
 
   return new Vue({

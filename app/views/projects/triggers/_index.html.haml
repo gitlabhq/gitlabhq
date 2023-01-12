@@ -6,32 +6,7 @@
       - c.body do
         = render 'projects/triggers/form', btn_text: _('Add trigger')
         .gl-mb-5
-        - if Feature.enabled?(:ci_pipeline_triggers_settings_vue_ui, @project)
-          #js-ci-pipeline-triggers-list.triggers-list{ data: { triggers: @triggers_json } }
-        - else
-          - if @triggers.any?
-            .table-responsive.triggers-list
-              %table.table
-                %thead
-                  %th
-                    %strong
-                    = _('Token')
-                  %th
-                    %strong
-                    = _('Description')
-                  %th
-                    %strong
-                    = _('Owner')
-                  %th
-                    %strong
-                    = _('Last used')
-                  %th
-                = render partial: 'projects/triggers/trigger', collection: @triggers, as: :trigger
-          - else
-            = render Pajamas::AlertComponent.new(variant: :warning, show_icon: false, dismissible: false,
-              alert_options: { data: { testid: 'no_triggers_content' }}) do |c|
-              = c.body do
-                = _('No triggers exist yet. Use the form above to create one.')
+        #js-ci-pipeline-triggers-list.triggers-list{ data: { triggers: @triggers_json } }
       - c.footer do
         %p
           = _("These examples show how to trigger this project's pipeline for a branch or tag.")

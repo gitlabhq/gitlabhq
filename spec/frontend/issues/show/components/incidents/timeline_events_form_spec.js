@@ -1,11 +1,15 @@
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
-import { GlDatepicker } from '@gitlab/ui';
-import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import { GlDatepicker, GlListbox } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import TimelineEventsForm from '~/issues/show/components/incidents/timeline_events_form.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import { timelineFormI18n } from '~/issues/show/components/incidents/constants';
+import {
+  timelineFormI18n,
+  TIMELINE_EVENT_TAGS,
+  timelineEventTagsI18n,
+} from '~/issues/show/components/incidents/constants';
 import { createAlert } from '~/flash';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -17,23 +21,33 @@ const fakeDate = '2020-07-08T00:00:00.000Z';
 
 const mockInputDate = new Date('2021-08-12');
 
+const mockTags = TIMELINE_EVENT_TAGS;
+
 describe('Timeline events form', () => {
   // July 8 2020
   useFakeDate(fakeDate);
   let wrapper;
 
-  const mountComponent = ({ mountMethod = shallowMountExtended } = {}, props = {}) => {
+  const mountComponent = ({ mountMethod = mountExtended } = {}, props = {}, glFeatures = {}) => {
     wrapper = mountMethod(TimelineEventsForm, {
+      provide: {
+        glFeatures,
+      },
       propsData: {
         showSaveAndAdd: true,
         isEventProcessed: false,
         ...props,
+        tags: mockTags,
       },
       stubs: {
         GlButton: true,
       },
     });
   };
+
+  beforeEach(() => {
+    mountComponent();
+  });
 
   afterEach(() => {
     createAlert.mockReset();
@@ -48,16 +62,26 @@ describe('Timeline events form', () => {
   const findDatePicker = () => wrapper.findComponent(GlDatepicker);
   const findHourInput = () => wrapper.findByTestId('input-hours');
   const findMinuteInput = () => wrapper.findByTestId('input-minutes');
+  const findTagDropdown = () => wrapper.findComponent(GlListbox);
+  const findTextarea = () => wrapper.findByTestId('input-note');
+  const findTextareaValue = () => findTextarea().element.value;
+  const findCountNumeric = (count) => wrapper.findByText(count);
+  const findCountVerbose = (count) => wrapper.findByText(`${count} characters remaining`);
+  const findCountHint = () => wrapper.findByText(timelineFormI18n.hint);
+
   const setDatetime = () => {
     findDatePicker().vm.$emit('input', mockInputDate);
     findHourInput().setValue(5);
     findMinuteInput().setValue(45);
   };
-  const findTextarea = () => wrapper.findByTestId('input-note');
-  const findCountNumeric = (count) => wrapper.findByText(count);
-  const findCountVerbose = (count) => wrapper.findByText(`${count} characters remaining`);
-  const findCountHint = () => wrapper.findByText(timelineFormI18n.hint);
-
+  const selectTags = async (tags) => {
+    findTagDropdown().vm.$emit(
+      'select',
+      tags.map((x) => x.value),
+    );
+    await nextTick();
+  };
+  const selectOneTag = () => selectTags([mockTags[0]]);
   const submitForm = async () => {
     findSubmitButton().vm.$emit('click');
     await waitForPromises();
@@ -90,23 +114,97 @@ describe('Timeline events form', () => {
     ]);
   });
 
-  describe('form button behaviour', () => {
+  describe('with incident_event_tag feature flag enabled', () => {
     beforeEach(() => {
-      mountComponent({ mountMethod: mountExtended });
+      mountComponent(
+        {},
+        {},
+        {
+          incidentEventTags: true,
+        },
+      );
     });
 
+    describe('event tag dropdown', () => {
+      it('should render option list from provided array', () => {
+        expect(findTagDropdown().props('items')).toEqual(mockTags);
+      });
+
+      it('should allow to choose multiple tags', async () => {
+        await selectTags(mockTags);
+
+        expect(findTagDropdown().props('selected')).toEqual(mockTags.map((x) => x.value));
+      });
+
+      it('should show default option, when none is chosen', () => {
+        expect(findTagDropdown().props('toggleText')).toBe(timelineFormI18n.selectTags);
+      });
+
+      it('should show the tag, when one is selected', async () => {
+        await selectOneTag();
+
+        expect(findTagDropdown().props('toggleText')).toBe(timelineEventTagsI18n.startTime);
+      });
+
+      it('should show the number of selected tags, when more than one is selected', async () => {
+        await selectTags(mockTags);
+
+        expect(findTagDropdown().props('toggleText')).toBe('2 tags');
+      });
+
+      it('should be cleared when clear is triggered', async () => {
+        await selectTags(mockTags);
+
+        // This component expects the parent to call `clear`, so this is the only way to trigger this
+        wrapper.vm.clear();
+        await nextTick();
+
+        expect(findTagDropdown().props('toggleText')).toBe(timelineFormI18n.selectTags);
+        expect(findTagDropdown().props('selected')).toEqual([]);
+      });
+
+      it('should populate incident note with tags if a note was empty', async () => {
+        await selectTags(mockTags);
+
+        expect(findTextareaValue()).toBe(
+          `${timelineFormI18n.areaDefaultMessage} ${mockTags
+            .map((x) => x.value.toLowerCase())
+            .join(', ')}`,
+        );
+      });
+
+      it('should populate incident note with tag but allow to customise it', async () => {
+        await selectOneTag();
+
+        await findTextarea().setValue('my customised event note');
+
+        await nextTick();
+
+        expect(findTextareaValue()).toBe('my customised event note');
+      });
+
+      it('should not populate incident note with tag if it had a note', async () => {
+        await findTextarea().setValue('hello');
+        await selectOneTag();
+
+        expect(findTextareaValue()).toBe('hello');
+      });
+    });
+  });
+
+  describe('form button behaviour', () => {
     it('should save event on submit', async () => {
       await submitForm();
 
       expect(wrapper.emitted()).toEqual({
-        'save-event': [[{ note: '', occurredAt: fakeDate }, false]],
+        'save-event': [[{ note: '', occurredAt: fakeDate, timelineEventTags: [] }, false]],
       });
     });
 
     it('should save event on "submit and add another"', async () => {
       await submitFormAndAddAnother();
       expect(wrapper.emitted()).toEqual({
-        'save-event': [[{ note: '', occurredAt: fakeDate }, true]],
+        'save-event': [[{ note: '', occurredAt: fakeDate, timelineEventTags: [] }, true]],
       });
     });
 
@@ -145,10 +243,6 @@ describe('Timeline events form', () => {
   });
 
   describe('form character limit', () => {
-    beforeEach(() => {
-      mountComponent({ mountMethod: mountExtended });
-    });
-
     it('sets a character limit hint', () => {
       expect(findCountHint().exists()).toBe(true);
     });
@@ -172,32 +266,32 @@ describe('Timeline events form', () => {
   });
 
   describe('Delete button', () => {
-    it('does not show the delete button if showDelete prop is false', () => {
-      mountComponent({ mountMethod: mountExtended }, { showDelete: false });
+    it('does not show the delete button if isEditing prop is false', () => {
+      mountComponent({ mountMethod: mountExtended }, { isEditing: false });
 
       expect(findDeleteButton().exists()).toBe(false);
     });
 
-    it('shows the delete button if showDelete prop is true', () => {
-      mountComponent({ mountMethod: mountExtended }, { showDelete: true });
+    it('shows the delete button if isEditing prop is true', () => {
+      mountComponent({ mountMethod: mountExtended }, { isEditing: true });
 
       expect(findDeleteButton().exists()).toBe(true);
     });
 
     it('disables the delete button if isEventProcessed prop is true', () => {
-      mountComponent({ mountMethod: mountExtended }, { showDelete: true, isEventProcessed: true });
+      mountComponent({ mountMethod: mountExtended }, { isEditing: true, isEventProcessed: true });
 
       expect(findDeleteButton().props('disabled')).toBe(true);
     });
 
     it('does not disable the delete button if isEventProcessed prop is false', () => {
-      mountComponent({ mountMethod: mountExtended }, { showDelete: true, isEventProcessed: false });
+      mountComponent({ mountMethod: mountExtended }, { isEditing: true, isEventProcessed: false });
 
       expect(findDeleteButton().props('disabled')).toBe(false);
     });
 
     it('emits delete event on click', () => {
-      mountComponent({ mountMethod: mountExtended }, { showDelete: true, isEventProcessed: true });
+      mountComponent({ mountMethod: mountExtended }, { isEditing: true, isEventProcessed: true });
 
       deleteForm();
 

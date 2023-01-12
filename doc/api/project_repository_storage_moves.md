@@ -250,6 +250,8 @@ Example response:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47142) in GitLab 13.7.
 
 Schedules repository storage moves for each project repository stored on the source storage shard.
+This endpoint migrates all projects at once. For more information, see 
+[Bulk schedule project moves](../administration/operations/moving_repositories.md#bulk-schedule-project-moves).
 
 ```plaintext
 POST /project_repository_storage_moves

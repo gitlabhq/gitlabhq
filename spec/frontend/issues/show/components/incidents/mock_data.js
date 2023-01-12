@@ -74,6 +74,7 @@ const mockUpdatedEvent = {
   action: 'comment',
   occurredAt: '2022-07-01T12:47:00Z',
   createdAt: '2022-07-20T12:47:40Z',
+  timelineEventTags: [],
 };
 
 export const timelineEventsQueryListResponse = {

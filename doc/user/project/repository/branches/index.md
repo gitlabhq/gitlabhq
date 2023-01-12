@@ -119,6 +119,30 @@ The Swap revisions feature allows you to swap the Source and Target revisions. W
 
 ![After swap revisions](img/swap_revisions_after_v13_12.png)
 
+## View branches with configured rules **(FREE SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 15.1 with a flag named `branch_rules`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../feature_flags.md) named `branch_rules`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+Branches in your repository can be [protected](../../protected_branches.md) by limiting
+who can push to a branch, require approval for those pushed changes, or merge those changes.
+To help you track the protections for all branches, the **Branch rules overview**
+page shows your branches with their configured rules.
+
+To view the **Branch rules overview** list:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Branch Rules** to view all branches with protections.
+1. Select **Details** next to your desired branch to show information about its:
+   - [Branch protections](../../protected_branches.md).
+   - [Approval rules](../../merge_requests/approvals/rules.md).
+   - [Status checks](../../merge_requests/status_checks.md).
+
 ## Troubleshooting
 
 ### Error: ambiguous `HEAD` branch exists

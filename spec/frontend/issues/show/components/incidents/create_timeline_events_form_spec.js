@@ -1,6 +1,6 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
-import { GlDatepicker } from '@gitlab/ui';
+import { GlDatepicker, GlListboxItem } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CreateTimelineEvent from '~/issues/show/components/incidents/create_timeline_event.vue';
@@ -27,6 +27,7 @@ const mockInputData = {
   incidentId: 'gid://gitlab/Issue/1',
   note: 'test',
   occurredAt: '2020-07-08T00:00:00.000Z',
+  timelineEventTagNames: ['Start time'],
 };
 
 describe('Create Timeline events', () => {
@@ -51,9 +52,14 @@ describe('Create Timeline events', () => {
     findHourInput().setValue(inputDate.getHours());
     findMinuteInput().setValue(inputDate.getMinutes());
   };
+  const findListboxItems = () => wrapper.findAllComponents(GlListboxItem);
+  const setEventTags = () => {
+    findListboxItems().at(0).vm.$emit('select', true);
+  };
   const fillForm = () => {
     setDatetime();
     setNoteInput();
+    setEventTags();
   };
 
   function createMockApolloProvider() {
@@ -80,6 +86,7 @@ describe('Create Timeline events', () => {
       provide: {
         fullPath: 'group/project',
         issuableId: '1',
+        glFeatures: { incidentEventTags: true },
       },
       apolloProvider,
     });
