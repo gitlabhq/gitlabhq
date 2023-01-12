@@ -57,7 +57,7 @@ routing configurations.
 
    ![Traffic policies](img/single_git_traffic_policies.png)
 
-1. Select the **Create traffic policy** button.
+1. Select **Create traffic policy**.
 
    ![Name policy](img/single_git_name_policy.png)
 

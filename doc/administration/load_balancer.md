@@ -36,7 +36,7 @@ for details on managing SSL certificates and configuring NGINX.
 
 ### Load Balancers terminate SSL without backend SSL
 
-Configure your load balancers to use the 'HTTP(S)' protocol rather than 'TCP'.
+Configure your load balancers to use the `HTTP(S)` protocol rather than `TCP`.
 The load balancers is be responsible for managing SSL certificates and
 terminating SSL.
 
@@ -47,7 +47,7 @@ for details.
 
 ### Load Balancers terminate SSL with backend SSL
 
-Configure your load balancers to use the 'HTTP(S)' protocol rather than 'TCP'.
+Configure your load balancers to use the `HTTP(S)` protocol rather than `TCP`.
 The load balancers is responsible for managing SSL certificates that
 end users see.
 

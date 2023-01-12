@@ -159,6 +159,20 @@ Since we released the new [GitLab Container Registry](https://gitlab.com/groups/
 Moving forward, we'll continue to invest in developing and releasing new features that will only be available in the GitLab Container Registry.
 
 </div>
+
+<div class="deprecation removal-170 breaking-change">
+
+### The Visual Reviews tool is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Due to limited customer usage and capabilities, the Visual Reviews feature for Review Apps is deprecated and will be removed. There is no planned replacement and users should stop using Visual Reviews before GitLab 17.0.
+
+</div>
 </div>
 
 <div class="announcement-milestone">

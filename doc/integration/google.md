@@ -51,7 +51,7 @@ In Google's side:
 
    1. Go to the [Google API Console](https://console.developers.google.com/apis/dashboard).
    1. Select **ENABLE APIS AND SERVICES** at the top of the page.
-   1. Find each of the above APIs. On the page for the API, press the **ENABLE** button.
+   1. Find each of the above APIs. On the page for the API, select **ENABLE**.
       It may take a few minutes for the API to be fully functional.
 
 On your GitLab server:

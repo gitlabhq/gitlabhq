@@ -11,7 +11,7 @@ type: howto
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
-1. Select the **Remove** button for the **secondary** site you want to remove.
+1. For the **secondary** site you want to remove, select **Remove**.
 1. Confirm by selecting **Remove** when the prompt appears.
 
 After the **secondary** site is removed from the Geo administration page, you must

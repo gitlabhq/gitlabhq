@@ -135,8 +135,7 @@ For each user, the following are listed:
 1. Date of account creation
 1. Date of last activity
 
-To edit a user, select the **Edit** button in that user's
-row. To delete the user, or delete the user and their contributions, select the cog dropdown list in
+To edit a user, in the user's row, select **Edit**. To delete the user, or delete the user and their contributions, select the cog dropdown list in
 that user's row, and select the desired option.
 
 To change the sort order:
@@ -256,9 +255,7 @@ To access the Groups page:
 1. On the left sidebar, select **Overview > Groups**.
 
 For each group, the page displays their name, description, size, number of projects in the group,
-number of members, and whether the group is private, internal, or public. To edit a group, select
-the **Edit** button in that group's row. To delete the group, select the **Delete** button in
-that group's row.
+number of members, and whether the group is private, internal, or public. To edit a group, in the group's row, select **Edit**. To delete the group, in the group's row, select **Delete**.
 
 To change the sort order, select the sort dropdown list and select the desired order. The default
 sort order is by **Last created**.
