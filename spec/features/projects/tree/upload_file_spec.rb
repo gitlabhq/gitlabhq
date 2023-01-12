@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Multi-file editor upload file', :js, feature_category: :web_ide do
+  include WebIdeSpecHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:txt_file) { File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt') }
@@ -18,9 +20,7 @@ RSpec.describe 'Multi-file editor upload file', :js, feature_category: :web_ide 
 
     wait_for_requests
 
-    click_link('Web IDE')
-
-    wait_for_requests
+    ide_visit_from_link
   end
 
   after do
@@ -28,6 +28,7 @@ RSpec.describe 'Multi-file editor upload file', :js, feature_category: :web_ide 
   end
 
   it 'uploads text file' do
+    wait_for_all_requests
     # make the field visible so capybara can use it
     execute_script('document.querySelector("#file-upload").classList.remove("hidden")')
     attach_file('file-upload', txt_file)

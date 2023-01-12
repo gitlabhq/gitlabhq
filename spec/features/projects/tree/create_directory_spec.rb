@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Multi-file editor new directory', :js, feature_category: :web_ide do
+  include WebIdeSpecHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
@@ -16,9 +18,7 @@ RSpec.describe 'Multi-file editor new directory', :js, feature_category: :web_id
 
     wait_for_requests
 
-    click_link('Web IDE')
-
-    wait_for_requests
+    ide_visit_from_link
   end
 
   after do
@@ -26,6 +26,8 @@ RSpec.describe 'Multi-file editor new directory', :js, feature_category: :web_id
   end
 
   it 'creates directory in current directory' do
+    wait_for_all_requests
+
     all('.ide-tree-actions button').last.click
 
     page.within('.modal') do

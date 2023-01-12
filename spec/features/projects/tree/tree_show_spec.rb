@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
+  include WebIdeSpecHelpers
   include RepoHelpers
 
   let(:user) { create(:user) }
@@ -123,10 +124,9 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
 
     it 'opens folder in IDE' do
       visit project_tree_path(project, File.join('master', 'bar'))
+      ide_visit_from_link
 
-      click_link 'Web IDE'
-
-      wait_for_requests
+      wait_for_all_requests
       find('.ide-file-list')
       wait_for_requests
       expect(page).to have_selector('.is-open', text: 'bar')

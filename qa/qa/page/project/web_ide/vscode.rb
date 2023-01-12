@@ -14,6 +14,8 @@ module QA
 
           # Used for stablility, due to feature_caching of vscode_web_ide
           def wait_for_ide_to_load
+            page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
+            wait_for_requests
             Support::Waiter.wait_until(max_duration: 60, reload_page: page, retry_on_exception: true) do
               within_vscode_editor do
                 # vscode file_explorer element

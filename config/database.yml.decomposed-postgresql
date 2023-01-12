@@ -9,6 +9,15 @@ production:
     username: git
     password: "secure password"
     host: localhost
+    # load_balancing:
+    #   hosts:
+    #     - host1.example.com
+    #     - host2.example.com
+    #   discover:
+    #     nameserver: 1.2.3.4
+    #     port: 8600
+    #     record: secondary.postgresql.service.consul
+    #     interval: 300
   ci:
     adapter: postgresql
     encoding: unicode
@@ -16,6 +25,15 @@ production:
     username: git
     password: "secure password"
     host: localhost
+    # load_balancing:
+    #   hosts:
+    #     - host1.example.com
+    #     - host2.example.com
+    #   discover:
+    #     nameserver: 1.2.3.4
+    #     port: 8600
+    #     record: secondary-ci.postgresql.service.consul
+    #     interval: 300
   geo:
     adapter: postgresql
     encoding: unicode

@@ -1,11 +1,12 @@
 import { nextTick } from 'vue';
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlFormGroup, GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import GroupSelect from '~/vue_shared/components/group_select/group_select.vue';
 import {
   TOGGLE_TEXT,
+  RESET_LABEL,
   FETCH_GROUPS_ERROR,
   FETCH_GROUP_ERROR,
   QUERY_TOO_SHORT_MESSAGE,
@@ -29,10 +30,12 @@ describe('GroupSelect', () => {
   };
 
   // Props
+  const label = 'label';
   const inputName = 'inputName';
   const inputId = 'inputId';
 
   // Finders
+  const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findInput = () => wrapper.findByTestId('input');
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -41,6 +44,7 @@ describe('GroupSelect', () => {
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(GroupSelect, {
       propsData: {
+        label,
         inputName,
         inputId,
         ...props,
@@ -69,6 +73,12 @@ describe('GroupSelect', () => {
 
   afterEach(() => {
     mock.restore();
+  });
+
+  it('passes the label to GlFormGroup', () => {
+    createComponent();
+
+    expect(findFormGroup().attributes('label')).toBe(label);
   });
 
   describe('on mount', () => {
@@ -292,4 +302,21 @@ describe('GroupSelect', () => {
       expect(findListbox().props('infiniteScroll')).toBe(true);
     });
   });
+
+  it.each`
+    description        | clearable | expectedLabel
+    ${'passes'}        | ${true}   | ${RESET_LABEL}
+    ${'does not pass'} | ${false}  | ${''}
+  `(
+    '$description the reset button label to the listbox when clearable is $clearable',
+    ({ clearable, expectedLabel }) => {
+      createComponent({
+        props: {
+          clearable,
+        },
+      });
+
+      expect(findListbox().props('resetButtonLabel')).toBe(expectedLabel);
+    },
+  );
 });

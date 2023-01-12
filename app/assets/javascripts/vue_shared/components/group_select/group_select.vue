@@ -1,6 +1,6 @@
 <script>
 import { debounce } from 'lodash';
-import { GlAlert, GlCollapsibleListbox } from '@gitlab/ui';
+import { GlFormGroup, GlAlert, GlCollapsibleListbox } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import axios from '~/lib/utils/axios_utils';
 import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
@@ -10,6 +10,7 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { groupsPath } from './utils';
 import {
   TOGGLE_TEXT,
+  RESET_LABEL,
   FETCH_GROUPS_ERROR,
   FETCH_GROUP_ERROR,
   QUERY_TOO_SHORT_MESSAGE,
@@ -20,10 +21,15 @@ const GROUPS_PER_PAGE = 20;
 
 export default {
   components: {
+    GlFormGroup,
     GlAlert,
     GlCollapsibleListbox,
   },
   props: {
+    label: {
+      type: String,
+      required: true,
+    },
     inputName: {
       type: String,
       required: true,
@@ -80,6 +86,9 @@ export default {
     },
     toggleText() {
       return this.selectedText ?? this.$options.i18n.toggleText;
+    },
+    resetButtonLabel() {
+      return this.clearable ? RESET_LABEL : '';
     },
     inputValue() {
       return this.selectedValue ? this.selectedValue : '';
@@ -184,7 +193,6 @@ export default {
   i18n: {
     toggleText: TOGGLE_TEXT,
     selectGroup: __('Select a group'),
-    reset: __('Reset'),
     noResultsText: __('No results found.'),
     searchQueryTooShort: QUERY_TOO_SHORT_MESSAGE,
   },
@@ -192,7 +200,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <gl-form-group :label="label">
     <gl-alert v-if="errorMessage" class="gl-mb-3" variant="danger" @dismiss="dismissError">{{
       errorMessage
     }}</gl-alert>
@@ -200,7 +208,7 @@ export default {
       ref="listbox"
       v-model="selected"
       :header-text="$options.i18n.selectGroup"
-      :reset-button-label="$options.i18n.reset"
+      :reset-button-label="resetButtonLabel"
       :toggle-text="toggleText"
       :loading="searching && pristine"
       :searching="searching"
@@ -222,5 +230,5 @@ export default {
       </template>
     </gl-collapsible-listbox>
     <input :id="inputId" data-testid="input" type="hidden" :name="inputName" :value="inputValue" />
-  </div>
+  </gl-form-group>
 </template>

@@ -71,7 +71,7 @@ export default class ShortcutsNavigation extends Shortcuts {
       iid: window.gl.mrWidgetData?.iid,
     });
     if (path) {
-      visitUrl(path);
+      visitUrl(path, true);
     }
   }
 }

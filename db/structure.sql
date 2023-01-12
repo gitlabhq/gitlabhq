@@ -21172,7 +21172,8 @@ CREATE TABLE requirements_management_test_reports (
     author_id bigint,
     state smallint NOT NULL,
     build_id bigint,
-    issue_id bigint
+    issue_id bigint,
+    uses_legacy_iid boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE requirements_management_test_reports_id_seq

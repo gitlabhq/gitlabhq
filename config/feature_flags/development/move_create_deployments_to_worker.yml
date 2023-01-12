@@ -1,0 +1,8 @@
+---
+name: move_create_deployments_to_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108042
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/386903
+milestone: '15.8'
+type: development
+group: group::pipeline execution
+default_enabled: false

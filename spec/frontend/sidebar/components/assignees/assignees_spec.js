@@ -1,10 +1,10 @@
 import { GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
 import UsersMockHelper from 'helpers/user_mock_data_helper';
 import Assignee from '~/sidebar/components/assignees/assignees.vue';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
+import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assignee_list.vue';
 import UsersMock from '../../mock_data';
 
 describe('Assignee component', () => {
@@ -66,10 +66,8 @@ describe('Assignee component', () => {
         editable: true,
       });
 
-      jest.spyOn(wrapper.vm, '$emit');
-      wrapper.find('[data-testid="assign-yourself"]').trigger('click');
+      await wrapper.find('[data-testid="assign-yourself"]').trigger('click');
 
-      await nextTick();
       expect(wrapper.emitted('assign-self')).toHaveLength(1);
     });
   });
@@ -166,7 +164,11 @@ describe('Assignee component', () => {
         editable: true,
       });
 
-      expect(wrapper.vm.sortedAssigness[0].can_merge).toBe(true);
+      expect(wrapper.findComponent(CollapsedAssigneeList).props('users')[0]).toEqual(
+        expect.objectContaining({
+          can_merge: true,
+        }),
+      );
     });
 
     it('passes the sorted assignees to the uncollapsed-assignee-list', () => {

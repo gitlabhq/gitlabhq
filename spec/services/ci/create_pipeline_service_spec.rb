@@ -766,6 +766,25 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         expect(result).to be_persisted
         expect(Environment.find_by(name: "review/master")).to be_present
         expect(result.builds.first.tag_list).to contain_exactly('hello')
+      end
+    end
+
+    context 'when create deployment step is synchronous' do
+      before do
+        config = YAML.dump(
+          deploy: {
+            environment: { name: "review/$CI_COMMIT_REF_NAME" },
+            script: 'ls',
+            tags: ['hello']
+          })
+
+        stub_feature_flags(move_create_deployments_to_worker: false)
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'creates the deployments successfully' do
+        result = execute_service.payload
+
         expect(result.builds.first.deployment).to be_persisted
         expect(result.builds.first.deployment.deployable).to be_a(Ci::Build)
       end
@@ -868,8 +887,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
         expect(result).to be_persisted
         expect(Environment.find_by(name: 'production')).to be_present
-        expect(result.builds.first.deployment).to be_persisted
-        expect(result.builds.first.deployment.deployable).to be_a(Ci::Build)
       end
     end
 
@@ -1315,7 +1332,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         it 'has a job with environment' do
           expect(pipeline.builds.count).to eq(1)
           expect(pipeline.builds.first.persisted_environment.name).to eq('review/master')
-          expect(pipeline.builds.first.deployment).to be_created
         end
       end
 

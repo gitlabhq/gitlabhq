@@ -7,14 +7,18 @@ import WebIdeLink, {
   i18n,
   PREFERRED_EDITOR_RESET_KEY,
   PREFERRED_EDITOR_KEY,
-  KEY_WEB_IDE,
 } from '~/vue_shared/components/web_ide_link.vue';
 import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
+import { KEY_WEB_IDE } from '~/vue_shared/components/constants';
 
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+
+import { visitUrl } from '~/lib/utils/url_utility';
+
+jest.mock('~/lib/utils/url_utility');
 
 const TEST_EDIT_URL = '/gitlab-test/test/-/edit/main/';
 const TEST_WEB_IDE_URL = '/-/ide/project/gitlab-test/test/edit/main/-/';
@@ -52,6 +56,7 @@ const ACTION_WEB_IDE = {
     'data-track-action': 'click_consolidated_edit_ide',
     'data-track-label': 'web_ide',
   },
+  handle: expect.any(Function),
 };
 const ACTION_WEB_IDE_CONFIRM_FORK = {
   ...ACTION_WEB_IDE,
@@ -257,6 +262,14 @@ describe('Web IDE link component', () => {
         actions: [ACTION_PIPELINE_EDITOR, ACTION_WEB_IDE, ACTION_GITPOD],
         selectedKey: ACTION_PIPELINE_EDITOR.key,
       });
+    });
+
+    it('when web ide button is clicked it opens in a new tab', async () => {
+      findActionsButton().props('actions')[1].handle({
+        preventDefault: jest.fn(),
+      });
+      await nextTick();
+      expect(visitUrl).toHaveBeenCalledWith(ACTION_WEB_IDE.href, true);
     });
   });
 

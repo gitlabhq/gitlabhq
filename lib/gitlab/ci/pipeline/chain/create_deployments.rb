@@ -6,7 +6,7 @@ module Gitlab
       module Chain
         class CreateDeployments < Chain::Base
           def perform!
-            create_deployments!
+            create_deployments! if Feature.disabled?(:move_create_deployments_to_worker, pipeline.project)
           end
 
           def break?
