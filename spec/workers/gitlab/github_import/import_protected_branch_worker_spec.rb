@@ -14,7 +14,8 @@ RSpec.describe Gitlab::GithubImport::ImportProtectedBranchWorker do
     let(:json_hash) do
       {
         id: 'main',
-        allow_force_pushes: true
+        allow_force_pushes: true,
+        allowed_to_push_users: []
       }
     end
 

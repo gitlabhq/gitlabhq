@@ -35,9 +35,13 @@ export default {
     };
   },
   methods: {
-    async toggleNav() {
+    toggleNav() {
+      this.isEnabled = !this.isEnabled;
+      this.updateAndReload();
+    },
+    async updateAndReload() {
       try {
-        await axios.put(this.endpoint, { user: { use_new_navigation: !this.enabled } });
+        await axios.put(this.endpoint, { user: { use_new_navigation: this.isEnabled } });
 
         Tracking.event(undefined, 'click_toggle', {
           label: this.enabled ? 'disable_new_nav_beta' : 'enable_new_nav_beta',
@@ -62,17 +66,15 @@ export default {
       class="gl-px-4 gl-py-2 gl-display-flex gl-justify-content-space-between gl-align-items-center"
     >
       <b>{{ $options.i18n.sectionTitle }}</b>
-      <gl-badge>{{ $options.i18n.badgeLabel }}</gl-badge>
+      <gl-badge variant="info">{{ $options.i18n.badgeLabel }}</gl-badge>
     </div>
 
-    <div class="menu-item gl-display-flex! gl-justify-content-space-between gl-align-items-center">
+    <div
+      class="menu-item gl-cursor-pointer gl-display-flex! gl-justify-content-space-between gl-align-items-center"
+      @click.prevent.stop="toggleNav"
+    >
       {{ $options.i18n.toggleMenuItemLabel }}
-      <gl-toggle
-        v-model="isEnabled"
-        :label="$options.i18n.toggleLabel"
-        label-position="hidden"
-        @change="toggleNav"
-      />
+      <gl-toggle :value="isEnabled" :label="$options.i18n.toggleLabel" label-position="hidden" />
     </div>
   </li>
 </template>

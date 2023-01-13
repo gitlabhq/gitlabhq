@@ -3,7 +3,7 @@
 - preview = local_assigns.fetch(:preview, false)
 
 - unless message.notification?
-  .gl-broadcast-message.broadcast-banner-message{ role: "alert", class: "js-broadcast-notification-#{message.id} #{message.theme}" }
+  .gl-broadcast-message.broadcast-banner-message.banner{ role: "alert", class: "js-broadcast-notification-#{message.id} #{message.theme}" }
     .gl-broadcast-message-content
       .gl-broadcast-message-icon
         = sprite_icon(icon_name)

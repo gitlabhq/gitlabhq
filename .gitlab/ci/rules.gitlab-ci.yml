@@ -2159,6 +2159,8 @@
     - !reference [".strict-ee-only-rules", rules]
     - !reference [".as-if-jh-default-exclusion-rules", rules]
     - <<: *if-merge-request-labels-as-if-jh
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *feature-flag-development-config-patterns
 
 # This rule should share the same logic with .as-if-jh:rules:prepare-as-if-jh
 # Because the jobs using this need jobs using the preparation rules
@@ -2167,4 +2169,7 @@
     - !reference [".strict-ee-only-rules", rules]
     - !reference [".as-if-jh-default-exclusion-rules", rules]
     - <<: *if-merge-request-labels-as-if-jh
+      allow_failure: true  # See https://gitlab.com/gitlab-org/gitlab/-/issues/351136
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *feature-flag-development-config-patterns
       allow_failure: true  # See https://gitlab.com/gitlab-org/gitlab/-/issues/351136

@@ -28,6 +28,14 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
       it 'includes the protected branch require_code_owner_reviews' do
         expect(protected_branch.require_code_owner_reviews).to eq true
       end
+
+      it 'includes the protected branch allowed_to_push_users' do
+        expect(protected_branch.allowed_to_push_users[0])
+          .to be_an_instance_of(Gitlab::GithubImport::Representation::User)
+
+        expect(protected_branch.allowed_to_push_users[0].id).to eq(4)
+        expect(protected_branch.allowed_to_push_users[0].login).to eq('alice')
+      end
     end
   end
 
@@ -40,7 +48,7 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
       )
       enabled_setting = Struct.new(:enabled, keyword_init: true)
       required_pull_request_reviews = Struct.new(
-        :url, :dismissal_restrictions, :require_code_owner_reviews,
+        :url, :dismissal_restrictions, :require_code_owner_reviews, :bypass_pull_request_allowances,
         keyword_init: true
       )
       response.new(
@@ -57,7 +65,17 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
         required_pull_request_reviews: required_pull_request_reviews.new(
           url: 'https://example.com/branches/main/protection/required_pull_request_reviews',
           dismissal_restrictions: {},
-          require_code_owner_reviews: true
+          require_code_owner_reviews: true,
+          bypass_pull_request_allowances: {
+            users: [
+              {
+                login: 'alice',
+                id: 4,
+                url: 'https://api.github.com/users/cervols',
+                type: 'User'
+              }
+            ]
+          }
         )
       )
     end
@@ -76,7 +94,8 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
           'required_conversation_resolution' => true,
           'required_signatures' => true,
           'required_pull_request_reviews' => true,
-          'require_code_owner_reviews' => true
+          'require_code_owner_reviews' => true,
+          'allowed_to_push_users' => [{ 'id' => 4, 'login' => 'alice' }]
         }
       end
 

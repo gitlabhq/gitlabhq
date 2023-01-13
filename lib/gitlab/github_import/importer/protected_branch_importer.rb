@@ -4,7 +4,7 @@ module Gitlab
   module GithubImport
     module Importer
       class ProtectedBranchImporter
-        attr_reader :protected_branch, :project, :client
+        attr_reader :project
 
         # By default on GitHub, both developers and maintainers can merge
         # a PR into the protected branch
@@ -18,6 +18,7 @@ module Gitlab
           @protected_branch = protected_branch
           @project = project
           @client = client
+          @user_finder = GithubImport::UserFinder.new(project, client)
         end
 
         def execute
@@ -32,11 +33,13 @@ module Gitlab
 
         private
 
+        attr_reader :protected_branch, :user_finder
+
         def params
           {
             name: protected_branch.id,
-            push_access_levels_attributes: [{ access_level: push_access_level }],
-            merge_access_levels_attributes: [{ access_level: merge_access_level }],
+            push_access_levels_attributes: push_access_levels_attributes,
+            merge_access_levels_attributes: merge_access_levels_attributes,
             allow_force_push: allow_force_push?,
             code_owner_approval_required: code_owner_approval_required?
           }
@@ -55,7 +58,7 @@ module Gitlab
         end
 
         def code_owner_approval_required?
-          return false unless project.licensed_feature_available?(:code_owner_approval_required)
+          return false unless licensed_feature_available?(:code_owner_approval_required)
 
           return protected_branch.require_code_owner_reviews unless protected_on_gitlab?
 
@@ -83,7 +86,7 @@ module Gitlab
         end
 
         def update_project_push_rule
-          return unless project.licensed_feature_available?(:push_rules)
+          return unless licensed_feature_available?(:push_rules)
           return unless protected_branch.required_signatures
 
           push_rule = project.push_rule || project.build_push_rule
@@ -91,12 +94,34 @@ module Gitlab
           project.project_setting.update!(push_rule_id: push_rule.id)
         end
 
-        def push_access_level
-          if protected_branch.required_pull_request_reviews
-            Gitlab::Access::NO_ACCESS
+        def push_access_levels_attributes
+          if allowed_to_push_gitlab_user_ids.present?
+            @allowed_to_push_gitlab_user_ids.map { |user_id| { user_id: user_id } }
+          elsif protected_branch.required_pull_request_reviews
+            [{ access_level: Gitlab::Access::NO_ACCESS }]
           else
-            gitlab_access_level_for(:push)
+            [{ access_level: gitlab_access_level_for(:push) }]
           end
+        end
+
+        def merge_access_levels_attributes
+          [{ access_level: merge_access_level }]
+        end
+
+        def allowed_to_push_gitlab_user_ids
+          return if protected_branch.allowed_to_push_users.empty? ||
+            !licensed_feature_available?(:protected_refs_for_users)
+
+          @allowed_to_push_gitlab_user_ids = []
+
+          protected_branch.allowed_to_push_users.each do |github_user_data|
+            gitlab_user_id = user_finder.user_id_for(github_user_data)
+            next unless gitlab_user_id
+
+            @allowed_to_push_gitlab_user_ids << gitlab_user_id
+          end
+
+          @allowed_to_push_gitlab_user_ids &= project_member_ids
         end
 
         # Gets the strictest merge_access_level between GitHub and GitLab
@@ -154,6 +179,14 @@ module Gitlab
           return ProtectedBranch::PushAccessLevel::GITLAB_DEFAULT_ACCESS_LEVEL if action == :push
 
           ProtectedBranch::MergeAccessLevel::GITLAB_DEFAULT_ACCESS_LEVEL
+        end
+
+        def licensed_feature_available?(feature)
+          project.licensed_feature_available?(feature)
+        end
+
+        def project_member_ids
+          project.authorized_users.map(&:id)
         end
       end
     end
