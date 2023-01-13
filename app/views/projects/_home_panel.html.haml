@@ -14,6 +14,8 @@
           %span.visibility-icon.gl-text-secondary.has-tooltip.gl-ml-2{ data: { container: 'body' }, title: visibility_icon_description(@project) }
             = visibility_level_icon(@project.visibility_level, options: { class: 'icon' })
           = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project, additional_classes: 'gl-align-self-center gl-ml-2'
+          - if @project.group
+            = render_if_exists 'shared/tier_badge', source: @project, source_type: 'Project'
         .home-panel-metadata.gl-font-sm.gl-text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal{ data: { qa_selector: 'project_id_content' }, itemprop: 'identifier' }
           - if can?(current_user, :read_project, @project)
             %span.gl-display-inline-block.gl-vertical-align-middle

@@ -43443,6 +43443,27 @@ msgstr ""
 msgid "Thursday"
 msgstr ""
 
+msgid "TierBadgePopover|Enhance team productivity"
+msgstr ""
+
+msgid "TierBadgePopover|Explore paid plans"
+msgstr ""
+
+msgid "TierBadgePopover|Start a free trial"
+msgstr ""
+
+msgid "TierBadgePopover|This group and all its related projects use the %{tier} GitLab tier. %{copyEnd}"
+msgstr ""
+
+msgid "TierBadgePopover|This project uses the %{tier} GitLab tier. %{copyEnd}"
+msgstr ""
+
+msgid "TierBadgePopover|Want to enhance team productivity and access advanced features like Merge Approvals, Push rules, Epics, Code Review Analytics, and Container Scanning? Try all GitLab has to offer for free for 30 days. No credit card required."
+msgstr ""
+
+msgid "TierBadge|Free"
+msgstr ""
+
 msgid "Time"
 msgstr ""
 

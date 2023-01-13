@@ -12,6 +12,7 @@
           = @group.name
           %span.visibility-icon.gl-text-secondary.has-tooltip.gl-ml-2{ data: { container: 'body' }, title: visibility_icon_description(@group) }
             = visibility_level_icon(@group.visibility_level, options: {class: 'icon'})
+          = render_if_exists 'shared/tier_badge', source: @group, source_type: 'Group'
         .home-panel-metadata.gl-text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal{ data: { qa_selector: 'group_id_content' }, itemprop: 'identifier' }
           - if can?(current_user, :read_group, @group)
             %span.gl-display-inline-block.gl-vertical-align-middle
