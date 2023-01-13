@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ssh::Commit do
+RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:signed_by_key) { create(:key) }
+  let_it_be(:fingerprint) { signed_by_key.fingerprint_sha256 }
 
   let(:commit) { create(:commit, project: project) }
   let(:signature_text) { 'signature_text' }
@@ -19,8 +20,11 @@ RSpec.describe Gitlab::Ssh::Commit do
       .with(Gitlab::Git::Repository, commit.sha)
       .and_return(signature_data)
 
-    allow(verifier).to receive(:verification_status).and_return(verification_status)
-    allow(verifier).to receive(:signed_by_key).and_return(signed_by_key)
+    allow(verifier).to receive_messages({
+      verification_status: verification_status,
+      signed_by_key: signed_by_key,
+      key_fingerprint: fingerprint
+    })
 
     allow(Gitlab::Ssh::Signature).to receive(:new)
       .with(signature_text, signed_text, commit.committer_email)
@@ -44,6 +48,8 @@ RSpec.describe Gitlab::Ssh::Commit do
           commit_sha: commit.sha,
           project: project,
           key_id: signed_by_key.id,
+          key_fingerprint_sha256: signed_by_key.fingerprint_sha256,
+          user_id: signed_by_key.user_id,
           verification_status: 'verified'
         )
       end
@@ -51,6 +57,7 @@ RSpec.describe Gitlab::Ssh::Commit do
 
     context 'when signed_by_key is nil' do
       let_it_be(:signed_by_key) { nil }
+      let_it_be(:fingerprint) { nil }
 
       let(:verification_status) { :unknown_key }
 
@@ -59,6 +66,8 @@ RSpec.describe Gitlab::Ssh::Commit do
           commit_sha: commit.sha,
           project: project,
           key_id: nil,
+          key_fingerprint_sha256: nil,
+          user_id: nil,
           verification_status: 'unknown_key'
         )
       end

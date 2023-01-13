@@ -69,20 +69,35 @@ RSpec.describe Gitlab::RepositoryHashCache, :clean_gitlab_redis_cache do
     end
   end
 
-  describe "#key?" do
-    subject { cache.key?(:example, "test") }
+  shared_examples "key?" do
+    describe "#key?" do
+      subject { cache.key?(:example, "test") }
 
-    context "key exists" do
-      before do
-        cache.write(:example, test_hash)
+      context "key exists" do
+        before do
+          cache.write(:example, test_hash)
+        end
+
+        it { is_expected.to be(true) }
       end
 
-      it { is_expected.to be(true) }
+      context "key doesn't exist" do
+        it { is_expected.to be(false) }
+      end
+    end
+  end
+
+  context "when both multistore FF is enabled" do
+    it_behaves_like "key?"
+  end
+
+  context "when both multistore FF is disabled" do
+    before do
+      stub_feature_flags(use_primary_and_secondary_stores_for_repository_cache: false)
+      stub_feature_flags(use_primary_store_as_default_for_repository_cache: false)
     end
 
-    context "key doesn't exist" do
-      it { is_expected.to be(false) }
-    end
+    it_behaves_like "key?"
   end
 
   describe "#read_members" do

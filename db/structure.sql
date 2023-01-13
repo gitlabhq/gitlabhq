@@ -21978,7 +21978,9 @@ CREATE TABLE ssh_signatures (
     project_id bigint NOT NULL,
     key_id bigint,
     verification_status smallint DEFAULT 0 NOT NULL,
-    commit_sha bytea NOT NULL
+    commit_sha bytea NOT NULL,
+    user_id bigint,
+    key_fingerprint_sha256 bytea
 );
 
 CREATE SEQUENCE ssh_signatures_id_seq
@@ -31161,6 +31163,8 @@ CREATE INDEX index_ssh_signatures_on_key_id ON ssh_signatures USING btree (key_i
 
 CREATE INDEX index_ssh_signatures_on_project_id ON ssh_signatures USING btree (project_id);
 
+CREATE INDEX index_ssh_signatures_on_user_id ON ssh_signatures USING btree (user_id);
+
 CREATE INDEX index_status_check_responses_on_external_approval_rule_id ON status_check_responses USING btree (external_approval_rule_id);
 
 CREATE INDEX index_status_check_responses_on_external_status_check_id ON status_check_responses USING btree (external_status_check_id);
@@ -33190,6 +33194,9 @@ ALTER TABLE ONLY dast_sites
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_0c0037f723 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ssh_signatures
+    ADD CONSTRAINT fk_0c83baaa5f FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY web_hooks
     ADD CONSTRAINT fk_0c8ca6d9d1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -33736,6 +33743,9 @@ ALTER TABLE ONLY lfs_objects_projects
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_a6963e8447 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ssh_signatures
+    ADD CONSTRAINT fk_aa1efbe865 FOREIGN KEY (key_id) REFERENCES keys(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_aa5798e761 FOREIGN KEY (closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -34053,9 +34063,6 @@ ALTER TABLE ONLY epics
 
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_f15266b5f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ssh_signatures
-    ADD CONSTRAINT fk_f177ea6aa5 FOREIGN KEY (key_id) REFERENCES keys(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_pipeline_variables
     ADD CONSTRAINT fk_f29c5f4380 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;

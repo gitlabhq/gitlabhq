@@ -427,6 +427,9 @@ end
 
 #### Changing default value for a column
 
+Note that changing column defaults can cause application downtime if a multi-release process is not followed.
+See [avoiding downtime in migrations for changing column defaults](database/avoiding_downtime_in_migrations.md#changing-column-defaults) for details.
+
 ```ruby
 enable_lock_retries!
 

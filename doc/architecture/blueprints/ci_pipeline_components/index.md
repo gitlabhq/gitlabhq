@@ -148,9 +148,13 @@ A component should not produce side effects by being included and should be
 
 Making components predictable is a process, and we may not be able to achieve
 this without significantly redesigning CI templates, what could be disruptive
-for users and customers right now. The predictability, determinism, referential
-transparency and making CI components predictable is still important for us,
-but we may be unable to achieve it early iterations.
+for users and customers right now. We initially considered restricting some
+top-level keywords, like `include: remote:` to make components more
+deterministic, but eventually agreed that we first need to iterate on the MVP
+to better understand the design that is required to make components more
+predictable. The predictability, determinism, referential transparency and
+making CI components predictable is still important for us, but we may be
+unable to achieve it early iterations.
 
 ## Structure of a component
 

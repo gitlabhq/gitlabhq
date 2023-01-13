@@ -22,7 +22,7 @@
     = link_to(_('Learn more about X.509 signed commits'), help_page_path('user/project/repository/x509_signed_commits/index.md'), class: 'gl-link gl-display-block')
   - elsif signature.ssh?
     = _('SSH key fingerprint:')
-    %span.gl-font-monospace= signature.key&.fingerprint_sha256 || _('Unknown')
+    %span.gl-font-monospace= signature.key_fingerprint_sha256 || _('Unknown')
 
     = link_to(_('Learn about signing commits with SSH keys.'), help_page_path('user/project/repository/ssh_signed_commits/index.md'), class: 'gl-link gl-display-block gl-mt-3')
   - else

@@ -282,6 +282,62 @@ Example migration:
   end
 ```
 
+## Changing column defaults
+
+Changing column defaults is difficult because of how Rails handles values
+that are equal to the default.
+
+If running code ever explicitly writes the old default value of a column, you must follow a multi-step
+process to prevent Rails replacing the old default with the new default in INSERT queries that explicitly
+specify the old default.
+
+Doing this requires steps in two minor releases:
+
+1. Add the `SafelyChangeColumnDefault` concern to the model and change the default in a post-migration.
+1. Clean up the `SafelyChangeColumnDefault` concern in the next minor release.
+
+We must wait a minor release before cleaning up the `SafelyChangeColumnDefault` because self-managed
+releases bundle an entire minor release into a single zero-downtime deployment.
+
+### Step 1: Add the `SafelyChangeColumnDefault` concern to the model and change the default in a post-migration
+
+The first step is to mark the column as safe to change in application code.
+
+```ruby
+class Ci::Build < ApplicationRecord
+  include SafelyChangeColumnDefault
+
+  columns_changing_default :partition_id
+end
+```
+
+Then create a **post-deployment migration** to change the default:
+
+```shell
+bundle exec rails g post_deployment_migration change_ci_builds_default
+```
+
+```ruby
+class ChangeCiBuildsDefault < Gitlab::Database::Migration[2.1]
+  def up
+    change_column_default('ci_builds', 'partition_id', from: 100, to: 101)
+  end
+
+  def down
+    change_column_default('ci_builds', 'partition_id', from: 101, to: 100)
+  end
+end
+```
+
+You can consider [enabling lock retries](../migration_style_guide.md#usage-with-transactional-migrations)
+when you run a migration on big tables, because it might take some time to
+acquire a lock on this table.
+
+### Step 2: Clean up the `SafelyChangeColumnDefault` concern in the next minor release
+
+In the next minor release, create a new merge request to remove the `columns_changing_default` call. Also remove the `SafelyChangeColumnDefault` include
+if it is not needed for a different column.
+
 ## Changing The Schema For Large Tables
 
 While `change_column_type_concurrently` and `rename_column_concurrently` can be

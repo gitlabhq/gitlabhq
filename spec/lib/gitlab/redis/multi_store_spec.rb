@@ -940,6 +940,98 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     include_examples 'pipelined command', :pipelined
   end
 
+  describe '#ping' do
+    subject { multi_store.ping }
+
+    context 'when using both stores' do
+      before do
+        allow(multi_store).to receive(:use_primary_and_secondary_stores?).and_return(true)
+      end
+
+      context 'without message' do
+        it 'returns PONG' do
+          expect(subject).to eq('PONG')
+        end
+      end
+
+      context 'with message' do
+        it 'returns the same message' do
+          expect(multi_store.ping('hello world')).to eq('hello world')
+        end
+      end
+
+      shared_examples 'returns an error' do
+        before do
+          allow(store).to receive(:ping).and_raise('boom')
+        end
+
+        it 'returns the error' do
+          expect { subject }.to raise_error('boom')
+        end
+      end
+
+      context 'when primary store returns an error' do
+        let(:store) { primary_store }
+
+        it_behaves_like 'returns an error'
+      end
+
+      context 'when secondary store returns an error' do
+        let(:store) { secondary_store }
+
+        it_behaves_like 'returns an error'
+      end
+    end
+
+    shared_examples 'single store as default store' do
+      context 'when the store retuns success' do
+        it 'returns response from the respective store' do
+          expect(store).to receive(:ping).and_return('PONG')
+
+          subject
+
+          expect(subject).to eq('PONG')
+        end
+      end
+
+      context 'when the store returns an error' do
+        before do
+          allow(store).to receive(:ping).and_raise('boom')
+        end
+
+        it 'returns the error' do
+          expect { subject }.to raise_error('boom')
+        end
+      end
+    end
+
+    context 'when using only one store' do
+      before do
+        allow(multi_store).to receive(:use_primary_and_secondary_stores?).and_return(false)
+      end
+
+      context 'when using primary_store as default store' do
+        let(:store) { primary_store }
+
+        before do
+          allow(multi_store).to receive(:use_primary_store_as_default?).and_return(true)
+        end
+
+        it_behaves_like 'single store as default store'
+      end
+
+      context 'when using secondary_store as default store' do
+        let(:store) { secondary_store }
+
+        before do
+          allow(multi_store).to receive(:use_primary_store_as_default?).and_return(false)
+        end
+
+        it_behaves_like 'single store as default store'
+      end
+    end
+  end
+
   context 'with unsupported command' do
     let(:counter) { Gitlab::Metrics::NullMetric.instance }
 

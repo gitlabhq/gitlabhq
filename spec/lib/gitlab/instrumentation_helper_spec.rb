@@ -4,7 +4,8 @@ require 'spec_helper'
 require 'rspec-parameterized'
 require 'support/helpers/rails_helpers'
 
-RSpec.describe Gitlab::InstrumentationHelper do
+RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cache, :clean_gitlab_redis_cache,
+               feature_category: :scalability do
   using RSpec::Parameterized::TableSyntax
 
   describe '.add_instrumentation_data', :request_store do
@@ -22,19 +23,42 @@ RSpec.describe Gitlab::InstrumentationHelper do
       expect(payload).to include(db_count: 0, db_cached_count: 0, db_write_count: 0)
     end
 
-    context 'when Gitaly calls are made' do
-      it 'adds Gitaly data and omits Redis data' do
-        project = create(:project)
-        RequestStore.clear!
-        project.repository.exists?
+    shared_examples 'make Gitaly calls' do
+      context 'when Gitaly calls are made' do
+        it 'adds Gitaly and Redis data' do
+          project = create(:project)
+          RequestStore.clear!
+          project.repository.exists?
 
-        subject
+          subject
 
-        expect(payload[:gitaly_calls]).to eq(1)
-        expect(payload[:gitaly_duration_s]).to be >= 0
-        expect(payload[:redis_calls]).to be_nil
-        expect(payload[:redis_duration_ms]).to be_nil
+          expect(payload[:gitaly_calls]).to eq(1)
+          expect(payload[:gitaly_duration_s]).to be >= 0
+          # With MultiStore, the number of `redis_calls` depends on whether primary_store
+          # (Gitlab::Redis::Repositorycache) and secondary_store (Gitlab::Redis::Cache) are of the same instance.
+          # In GitLab.com CI, primary and secondary are the same instance, thus only 1 call being made. If primary
+          # and secondary are different instances, an additional fallback read to secondary_store will be made because
+          # the first `get` call is a cache miss. Then, the following expect will fail.
+          expect(payload[:redis_calls]).to eq(1)
+          expect(payload[:redis_duration_ms]).to be_nil
+        end
       end
+    end
+
+    context 'when multistore ff use_primary_and_secondary_stores_for_repository_cache is enabled' do
+      before do
+        stub_feature_flags(use_primary_and_secondary_stores_for_repository_cache: true)
+      end
+
+      it_behaves_like 'make Gitaly calls'
+    end
+
+    context 'when multistore ff use_primary_and_secondary_stores_for_repository_cache is disabled' do
+      before do
+        stub_feature_flags(use_primary_and_secondary_stores_for_repository_cache: false)
+      end
+
+      it_behaves_like 'make Gitaly calls'
     end
 
     context 'when Redis calls are made' do

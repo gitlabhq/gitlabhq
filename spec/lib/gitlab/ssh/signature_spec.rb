@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ssh::Signature do
+RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management do
   # ssh-keygen -t ed25519
   let_it_be(:committer_email) { 'ssh-commit-test@example.com' }
   let_it_be(:public_key_text) { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHZ8NHEnCIpC4mnot+BRxv6L+fq+TnN1CgsRrHWLmfwb' }
@@ -265,6 +265,12 @@ RSpec.describe Gitlab::Ssh::Signature do
       it 'reports other_user status' do
         expect(signature.verification_status).to eq(:other_user)
       end
+    end
+  end
+
+  describe '#key_fingerprint' do
+    it 'returns the pubkey sha256 fingerprint' do
+      expect(signature.key_fingerprint).to eq('dw7gPSvYtkCBU+BbTolbbckUEX3sL6NsGIJTQ4PYEnM')
     end
   end
 end

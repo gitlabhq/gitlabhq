@@ -102,7 +102,7 @@ RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code 
 
       it 'renders unverified badge' do
         expect(title).to include('This commit was signed with an unverified signature.')
-        expect(content).to match(/SSH key fingerprint:[\s\S]+Unknown/)
+        expect(content).to match(/SSH key fingerprint:[\s\S].+#{commit.signature.key_fingerprint_sha256}/)
       end
     end
 

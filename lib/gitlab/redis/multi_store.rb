@@ -217,6 +217,17 @@ module Gitlab
           extra.merge(command_name: command_name, instance_name: instance_name))
       end
 
+      def ping(message = nil)
+        if use_primary_and_secondary_stores?
+          # Both stores have to response success for the ping to be considered success.
+          # We assume both stores cannot return different responses (only both "PONG" or both echo the message).
+          # If either store is not reachable, an Error will be raised anyway thus taking any response works.
+          [primary_store, secondary_store].map { |store| store.ping(message) }.first
+        else
+          default_store.ping(message)
+        end
+      end
+
       private
 
       # @return [Boolean]

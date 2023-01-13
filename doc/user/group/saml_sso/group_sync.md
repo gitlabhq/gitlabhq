@@ -35,15 +35,32 @@ WARNING:
 To prevent users being accidentally removed from the GitLab group, follow these instructions closely before
 enabling Group Sync in GitLab.
 
-To configure SAML Group Sync:
+To configure SAML Group Sync for self-managed GitLab instances:
 
-1. Configure the identity Provider:
-   - For self-managed GitLab, see the [SAML OmniAuth Provider documentation](../../../integration/saml.md).
-   - For GitLab.com, see the [SAML SSO for GitLab.com groups documentation](index.md).
+1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
+1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. See the following attribute statement example for reference:
 
-1. Capture [a SAML response](troubleshooting.md#saml-debugging-tools) during the sign-in process to confirm your SAML identity provider sends an attribute statement:
-   - For self-managed GitLab, with the same name as the value of the `groups_attribute` setting.
-   - For GitLab.com, named `Groups` or `groups`.
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       name: "saml",
+       label: "Provider name", # optional label for login button, defaults to "Saml",
+       groups_attribute: 'Groups',
+       args: {
+         assertion_consumer_service_url: "https://gitlab.example.com/users/auth/saml/callback",
+         idp_cert_fingerprint: "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8",
+         idp_sso_target_url: "https://login.example.com/idp",
+         issuer: "https://gitlab.example.com",
+         name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+       }
+     }
+   ]
+   ```
+
+To configure SAML Group Sync for GitLab.com instances:
+
+1. See [SAML SSO for GitLab.com groups](index.md).
+1. Ensure your SAML identity provider sends an attribute statement named `Groups` or `groups`.
 
 NOTE:
 The value for `Groups` or `groups` in the SAML response may be either the group name or an ID.

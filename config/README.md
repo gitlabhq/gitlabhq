@@ -79,6 +79,7 @@ An example configuration file for Redis is in this directory under the name
 | `trace_chunks`     | `shared_state`    | [CI trace chunks](https://docs.gitlab.com/ee/administration/job_logs.html#incremental-logging-architecture) |
 | `rate_limiting`    | `cache`           | [Rate limiting](https://docs.gitlab.com/ee/user/admin_area/settings/user_and_ip_rate_limits.html) state     |
 | `sessions`         | `shared_state`    | [Sessions](https://docs.gitlab.com/ee/development/session.html#redis)                                       |
+| `repository_cache` | `cache`           | Repository related information                                                                              |
 
 If no configuration is found, or no URL is found in the configuration
 file, the default URL used is:
