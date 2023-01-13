@@ -4,7 +4,7 @@ classes:
 - ChatTeam
 feature_categories:
 - integrations
-- chatops
+- continuous_integration
 description: Stores mappings from external chat teams to GitLab groups.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8746
 milestone: '9.0'

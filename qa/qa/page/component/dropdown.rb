@@ -50,6 +50,11 @@ module QA
           wait_for_search_to_complete
         end
 
+        def send_keys_to_search(item_text)
+          find('div.gl-listbox-search input[type="Search"]').send_keys(item_text)
+          wait_for_search_to_complete
+        end
+
         def search_and_select(item_text)
           return super if use_select2?
 
@@ -109,6 +114,7 @@ module QA
         def use_select2?
           @use_select2 ||= has_css?('.select2-container', wait: 1)
         end
+
         # rubocop:enable Gitlab/PredicateMemoization
       end
     end

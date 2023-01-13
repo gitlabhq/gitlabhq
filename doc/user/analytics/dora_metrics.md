@@ -24,7 +24,7 @@ For software leaders, tracking velocity alongside quality metrics ensures they'r
   For an overview, see <a href="https://www.youtube.com/watch?v=1BrcMV6rCDw">GitLab Speed Run: DORA metrics in GitLab One DevOps Platform</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/1BrcMV6rCDw" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/1BrcMV6rCDw" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 ## DORA Metrics dashboard in Value Stream Analytics

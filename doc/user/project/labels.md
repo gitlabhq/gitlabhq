@@ -390,7 +390,7 @@ For a video explanation, see:
   See the video: <a href="https://www.youtube.com/watch?v=4BCBby6du3c">Use scoped labels for custom fields and custom workflows</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/4BCBby6du3c" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/4BCBby6du3c" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 ### Nested scopes

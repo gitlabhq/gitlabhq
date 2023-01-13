@@ -1658,7 +1658,7 @@ Watch the following video walkthrough of this feature:
   See the video: <a href="https://www.youtube.com/watch?v=12yWKw1AdKY">Demo: JSON Tables in Markdown</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/12yWKw1AdKY" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/12yWKw1AdKY" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 The `items` attribute is a list of objects representing the data points.

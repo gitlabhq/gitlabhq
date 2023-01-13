@@ -1217,7 +1217,7 @@ To embed a video:
    the video title and link in the line under `<div class="video-fallback">`.
 1. In YouTube, select **Share**, and then select **Embed**.
 1. Copy the `<iframe>` source (`src`) **URL only**
-   (`https://www.youtube.com/embed/VIDEO-ID`),
+   (`https://www.youtube-nocookie.com/embed/VIDEO-ID`),
    and paste it, replacing the content of the `src` field in the
    `iframe` tag.
 
@@ -1227,7 +1227,7 @@ leave a blank line here
   See the video: <a href="https://www.youtube.com/watch?v=MqL6BMOySIQ">Video title</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen> </iframe>
 </figure>
 leave a blank line here
 ```
@@ -1238,7 +1238,7 @@ This is how it renders on the GitLab documentation site:
   See the video: <a href="https://www.youtube.com/watch?v=enMumwvLAug">What is GitLab</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 > Notes:
@@ -1249,6 +1249,7 @@ different mobile devices.
 > - The `<div class="video-fallback">` is a fallback necessary for
 `/help`, because the GitLab Markdown processor doesn't support iframes. It's
 hidden on the documentation site, but is displayed by `/help`.
+> - The `www.youtube-nocookie.com` domain enables the [Privacy Enhanced Mode](https://support.google.com/youtube/answer/171780?hl=en#zippy=%2Cturn-on-privacy-enhanced-mode) of the YouTube embedded player. This mode allows users with resticted cookie preferences to view embedded videos.
 
 ## Alert boxes
 

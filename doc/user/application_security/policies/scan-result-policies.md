@@ -17,7 +17,7 @@ job is fully executed. The following video gives you an overview of GitLab scan 
   See the video: <a href="https://youtu.be/w5I9gcUgr9U">Overview of GitLab Scan Result Policies</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/w5I9gcUgr9U" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/w5I9gcUgr9U" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 ## Scan result policy editor

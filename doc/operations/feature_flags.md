@@ -14,7 +14,7 @@ Feature flags help reduce risk, allowing you to do controlled testing, and separ
 delivery from customer launch.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an example of feature flags in action, see [GitLab for deploys, feature flags, and error tracking](https://www.youtube.com/embed/5tw2p6lwXxo).
+For an example of feature flags in action, see [GitLab for deploys, feature flags, and error tracking](https://www.youtube.com/watch?v=5tw2p6lwXxo).
 
 NOTE:
 To contribute to the development of the GitLab product, view

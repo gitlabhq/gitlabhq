@@ -3,7 +3,7 @@ table_name: ci_pipeline_chat_data
 classes:
 - Ci::PipelineChatData
 feature_categories:
-- chatops
+- continuous_integration
 description: Stores information about a CI pipeline created via chatops
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4466
 milestone: '10.6'

@@ -257,10 +257,10 @@ options:
 ## Aggregated metrics
 
 <div class="video-fallback">
-  See the video from: <a href="https://www.youtube.com/embed/22LbYqHwtUQ">Product Intelligence Office Hours Oct 6th</a> for an aggregated metrics walk-through.
+  See the video from: <a href="https://www.youtube.com/watch?v=22LbYqHwtUQ">Product Intelligence Office Hours Oct 6th</a> for an aggregated metrics walk-through.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/22LbYqHwtUQ" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/22LbYqHwtUQ" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 The aggregated metrics feature provides insight into the number of data attributes, for example `pseudonymized_user_ids`, that occurred in a collection of events. For example, you can aggregate the number of users who perform multiple actions such as creating a new issue and opening
@@ -474,5 +474,5 @@ The following pairing session video gives you an example of an investigation in 
   See the video from: <a href="https://www.youtube.com/watch?v=y_6m2POx2ug">Product Intelligence Office Hours Oct 27th</a> to learn more about the metrics troubleshooting process.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/y_6m2POx2ug" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/y_6m2POx2ug" frameborder="0" allowfullscreen> </iframe>
 </figure>

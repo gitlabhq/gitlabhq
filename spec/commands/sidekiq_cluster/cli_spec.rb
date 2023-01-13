@@ -245,9 +245,9 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
         it 'expands multiple queue groups correctly' do
           expected_workers =
             if Gitlab.ee?
-              [%w[chat_notification], %w[project_export projects_import_export_parallel_project_export projects_import_export_relation_export project_template_export]]
+              [%w[], %w[project_export projects_import_export_parallel_project_export projects_import_export_relation_export project_template_export]]
             else
-              [%w[chat_notification], %w[project_export projects_import_export_parallel_project_export projects_import_export_relation_export]]
+              [%w[], %w[project_export projects_import_export_parallel_project_export projects_import_export_relation_export]]
             end
 
           expect(Gitlab::SidekiqCluster)
@@ -255,7 +255,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             .with(expected_workers, default_options)
             .and_return([])
 
-          cli.run(%w(--queue-selector feature_category=chatops&has_external_dependencies=true resource_boundary=memory&feature_category=importers))
+          cli.run(%w(--queue-selector feature_category=continuous_integration&has_external_dependencies=true resource_boundary=memory&feature_category=importers))
         end
 
         it 'allows the special * selector' do
