@@ -1588,11 +1588,16 @@ export const mockWorkItemNotesResponse = {
                   nodes: [
                     {
                       id: 'gid://gitlab/Note/2428',
-                      body: 'added #31 as parent issue',
                       bodyHtml:
                         '<p data-sourcepos="1:1-1:25" dir="auto">added <a href="/flightjs/Flight/-/issues/31" data-reference-type="issue" data-original="#31" data-link="false" data-link-reference="false" data-project="6" data-issue="224" data-project-path="flightjs/Flight" data-iid="31" data-issue-type="issue" data-container=body data-placement="top" title="Perferendis est quae totam quia laborum tempore ut voluptatem." class="gfm gfm-issue">#31</a> as parent issue</p>',
                       systemNoteIconName: 'link',
                       createdAt: '2022-11-14T04:18:59Z',
+                      system: true,
+                      internal: false,
+                      userPermissions: {
+                        adminNote: false,
+                        __typename: 'NotePermissions',
+                      },
                       author: {
                         avatarUrl:
                           'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
@@ -1616,11 +1621,16 @@ export const mockWorkItemNotesResponse = {
                   nodes: [
                     {
                       id: 'gid://gitlab/MilestoneNote/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83864',
-                      body: 'changed milestone to %5',
                       bodyHtml:
                         '<p data-sourcepos="1:1-1:23" dir="auto">changed milestone to <a href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container=body data-placement="top" title="" class="gfm gfm-milestone has-tooltip">%v4.0</a></p>',
                       systemNoteIconName: 'clock',
                       createdAt: '2022-11-14T04:18:59Z',
+                      system: true,
+                      internal: false,
+                      userPermissions: {
+                        adminNote: false,
+                        __typename: 'NotePermissions',
+                      },
                       author: {
                         avatarUrl:
                           'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
@@ -1644,10 +1654,15 @@ export const mockWorkItemNotesResponse = {
                   nodes: [
                     {
                       id: 'gid://gitlab/WeightNote/0f2f195ec0d1ef95ee9d5b10446b8e96a9883864',
-                      body: 'changed weight to 89',
                       bodyHtml: '<p dir="auto">changed weight to <strong>89</strong></p>',
                       systemNoteIconName: 'weight',
                       createdAt: '2022-11-25T07:16:20Z',
+                      system: true,
+                      internal: false,
+                      userPermissions: {
+                        adminNote: false,
+                        __typename: 'NotePermissions',
+                      },
                       author: {
                         avatarUrl:
                           'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
@@ -1730,11 +1745,16 @@ export const mockWorkItemNotesByIidResponse = {
                         nodes: [
                           {
                             id: 'gid://gitlab/Note/2428',
-                            body: 'added #31 as parent issue',
                             bodyHtml:
                               '\u003cp data-sourcepos="1:1-1:25" dir="auto"\u003eadded \u003ca href="/flightjs/Flight/-/issues/31" data-reference-type="issue" data-original="#31" data-link="false" data-link-reference="false" data-project="6" data-issue="224" data-project-path="flightjs/Flight" data-iid="31" data-issue-type="issue" data-container="body" data-placement="top" title="Perferendis est quae totam quia laborum tempore ut voluptatem." class="gfm gfm-issue"\u003e#31\u003c/a\u003e as parent issue\u003c/p\u003e',
                             systemNoteIconName: 'link',
                             createdAt: '2022-11-14T04:18:59Z',
+                            system: true,
+                            internal: false,
+                            userPermissions: {
+                              adminNote: false,
+                              __typename: 'NotePermissions',
+                            },
                             author: {
                               id: 'gid://gitlab/User/1',
                               avatarUrl:
@@ -1759,11 +1779,16 @@ export const mockWorkItemNotesByIidResponse = {
                           {
                             id:
                               'gid://gitlab/MilestoneNote/7b08b89a728a5ceb7de8334246837ba1d07270dc',
-                            body: 'changed milestone to %5',
                             bodyHtml:
                               '\u003cp data-sourcepos="1:1-1:23" dir="auto"\u003echanged milestone to \u003ca href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container="body" data-placement="top" title="" class="gfm gfm-milestone has-tooltip"\u003e%v4.0\u003c/a\u003e\u003c/p\u003e',
                             systemNoteIconName: 'clock',
                             createdAt: '2022-11-14T04:18:59Z',
+                            system: true,
+                            internal: false,
+                            userPermissions: {
+                              adminNote: false,
+                              __typename: 'NotePermissions',
+                            },
                             author: {
                               id: 'gid://gitlab/User/1',
                               avatarUrl:
@@ -1788,11 +1813,16 @@ export const mockWorkItemNotesByIidResponse = {
                           {
                             id:
                               'gid://gitlab/IterationNote/addbc177f7664699a135130ab05ffb78c57e4db3',
-                            body: 'changed iteration to *iteration:5352',
                             bodyHtml:
                               '\u003cp data-sourcepos="1:1-1:36" dir="auto"\u003echanged iteration to \u003ca href="/groups/flightjs/-/iterations/5352" data-reference-type="iteration" data-original="*iteration:5352" data-link="false" data-link-reference="false" data-project="6" data-iteration="5352" data-container="body" data-placement="top" title="Iteration" class="gfm gfm-iteration has-tooltip"\u003eEt autem debitis nam suscipit eos ut. Jul 13, 2022 - Jul 19, 2022\u003c/a\u003e\u003c/p\u003e',
                             systemNoteIconName: 'iteration',
                             createdAt: '2022-11-14T04:19:00Z',
+                            system: true,
+                            internal: false,
+                            userPermissions: {
+                              adminNote: false,
+                              __typename: 'NotePermissions',
+                            },
                             author: {
                               id: 'gid://gitlab/User/1',
                               avatarUrl:
@@ -1872,11 +1902,16 @@ export const mockMoreWorkItemNotesResponse = {
                   nodes: [
                     {
                       id: 'gid://gitlab/Note/2428',
-                      body: 'added #31 as parent issue',
                       bodyHtml:
                         '<p data-sourcepos="1:1-1:25" dir="auto">added <a href="/flightjs/Flight/-/issues/31" data-reference-type="issue" data-original="#31" data-link="false" data-link-reference="false" data-project="6" data-issue="224" data-project-path="flightjs/Flight" data-iid="31" data-issue-type="issue" data-container=body data-placement="top" title="Perferendis est quae totam quia laborum tempore ut voluptatem." class="gfm gfm-issue">#31</a> as parent issue</p>',
                       systemNoteIconName: 'link',
                       createdAt: '2022-11-14T04:18:59Z',
+                      system: true,
+                      internal: false,
+                      userPermissions: {
+                        adminNote: false,
+                        __typename: 'NotePermissions',
+                      },
                       author: {
                         avatarUrl:
                           'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
@@ -1900,11 +1935,16 @@ export const mockMoreWorkItemNotesResponse = {
                   nodes: [
                     {
                       id: 'gid://gitlab/MilestoneNote/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83823',
-                      body: 'changed milestone to %5',
                       bodyHtml:
                         '<p data-sourcepos="1:1-1:23" dir="auto">changed milestone to <a href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container=body data-placement="top" title="" class="gfm gfm-milestone has-tooltip">%v4.0</a></p>',
                       systemNoteIconName: 'clock',
                       createdAt: '2022-11-14T04:18:59Z',
+                      system: true,
+                      internal: false,
+                      userPermissions: {
+                        adminNote: false,
+                        __typename: 'NotePermissions',
+                      },
                       author: {
                         avatarUrl:
                           'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
@@ -1928,10 +1968,15 @@ export const mockMoreWorkItemNotesResponse = {
                   nodes: [
                     {
                       id: 'gid://gitlab/WeightNote/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83864',
-                      body: 'changed weight to 89',
                       bodyHtml: '<p dir="auto">changed weight to <strong>89</strong></p>',
                       systemNoteIconName: 'weight',
                       createdAt: '2022-11-25T07:16:20Z',
+                      system: true,
+                      internal: false,
+                      userPermissions: {
+                        adminNote: false,
+                        __typename: 'NotePermissions',
+                      },
                       author: {
                         avatarUrl:
                           'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
@@ -1965,5 +2010,27 @@ export const createWorkItemNoteResponse = {
       errors: [],
       __typename: 'CreateNotePayload',
     },
+  },
+};
+
+export const mockWorkItemCommentNote = {
+  id: 'gid://gitlab/Note/158',
+  bodyHtml:
+    '<p data-sourcepos="1:1-1:76" dir="auto"><gl-emoji title="waving hand sign" data-name="wave" data-unicode-version="6.0">👋</gl-emoji> Hi <a href="/fredda.brekke" data-reference-type="user" data-user="3" data-container="body" data-placement="top" class="gfm gfm-project_member js-user-link" title="Sherie Nitzsche">@fredda.brekke</a> How are you ? what do you think about this ? <gl-emoji title="person with folded hands" data-name="pray" data-unicode-version="6.0">🙏</gl-emoji></p>',
+  systemNoteIconName: false,
+  createdAt: '2022-11-25T07:16:20Z',
+  system: false,
+  internal: false,
+  userPermissions: {
+    adminNote: false,
+    __typename: 'NotePermissions',
+  },
+  author: {
+    avatarUrl: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+    id: 'gid://gitlab/User/1',
+    name: 'Administrator',
+    username: 'root',
+    webUrl: 'http://127.0.0.1:3000/root',
+    __typename: 'UserCore',
   },
 };

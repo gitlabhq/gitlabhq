@@ -6,6 +6,7 @@ import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
 import { i18n, DEFAULT_PAGE_SIZE_NOTES } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
 import { getWorkItemNotesQuery } from '~/work_items/utils';
+import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
 import WorkItemCommentForm from './work_item_comment_form.vue';
 
 export default {
@@ -23,6 +24,7 @@ export default {
     GlIntersectionObserver,
     SystemNote,
     WorkItemCommentForm,
+    WorkItemNote,
   },
   props: {
     workItemId: {
@@ -119,6 +121,9 @@ export default {
     },
   },
   methods: {
+    isSystemNote(note) {
+      return note.notes.nodes[0].system;
+    },
     updateSortingOrderIfApplicable() {
       // when the sort order is DESC in local storage and there is only a single page, call
       // changeSortOrder manually
@@ -169,7 +174,7 @@ export default {
   <div class="gl-border-t gl-mt-5">
     <gl-intersection-observer
       v-if="showIntersectionObserver"
-      class="gl-absolute gl-top-0"
+      class="gl-fixed"
       height="100"
       @appear="fetchMoreNotes"
     />
@@ -199,12 +204,15 @@ export default {
     <div v-else class="issuable-discussion gl-mb-5 gl-clearfix!">
       <template v-if="showTimeline">
         <ul class="notes main-notes-list timeline gl-clearfix!">
-          <system-note
-            v-for="note in notesArray"
-            :key="note.notes.nodes[0].id"
-            :note="note.notes.nodes[0]"
-            :data-testid="note.notes.nodes[0].id"
-          />
+          <template v-for="note in notesArray">
+            <system-note
+              v-if="isSystemNote(note)"
+              :key="note.notes.nodes[0].id"
+              :note="note.notes.nodes[0]"
+            />
+            <work-item-note v-else :key="note.notes.nodes[0].id" :note="note.notes.nodes[0]" />
+          </template>
+
           <work-item-comment-form
             :query-variables="queryVariables"
             :full-path="fullPath"

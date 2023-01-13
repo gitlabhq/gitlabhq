@@ -8,7 +8,7 @@ import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import { getWorkItemQuery } from '../utils';
+import { getWorkItemQuery, getWorkItemNotesQuery } from '../utils';
 import createNoteMutation from '../graphql/create_work_item_note.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
@@ -155,6 +155,11 @@ export default {
         if (createNote.errors?.length) {
           throw new Error(createNote.errors[0]);
         }
+
+        const client = this.$apollo.provider.defaultClient;
+        client.refetchQueries({
+          include: [getWorkItemNotesQuery(this.fetchByIid)],
+        });
 
         this.isEditing = false;
         clearDraft(this.autosaveKey);

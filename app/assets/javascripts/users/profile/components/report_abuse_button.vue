@@ -14,7 +14,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['formSubmitPath', 'userId', 'reportedFromUrl'],
   i18n: {
     reportAbuse: __('Report abuse to administrator'),
   },

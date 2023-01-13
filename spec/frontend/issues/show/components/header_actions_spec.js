@@ -6,6 +6,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { IssuableStatus, IssueType } from '~/issues/constants';
 import DeleteIssueModal from '~/issues/show/components/delete_issue_modal.vue';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import HeaderActions from '~/issues/show/components/header_actions.vue';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
 import promoteToEpicMutation from '~/issues/show/queries/promote_to_epic.mutation.graphql';
@@ -38,8 +39,9 @@ describe('HeaderActions component', () => {
     issueType: IssueType.Issue,
     newIssuePath: 'gitlab-org/gitlab-test/-/issues/new',
     projectPath: 'gitlab-org/gitlab-test',
-    reportAbusePath:
-      '-/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%2Fgitlab-org%2Fgitlab-test%2F-%2Fissues%2F32&user_id=1',
+    reportAbusePath: '-/abuse_reports/add_category',
+    reportedUserId: '1',
+    reportedFromUrl: 'http://localhost:/gitlab-org/-/issues/32',
     submitAsSpamPath: 'gitlab-org/gitlab-test/-/issues/32/submit_as_spam',
   };
 
@@ -399,6 +401,33 @@ describe('HeaderActions component', () => {
         modalId: HeaderActions.deleteModalId,
         title: 'Delete issue',
       });
+    });
+  });
+
+  describe('abuse category selector', () => {
+    const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
+
+    beforeEach(() => {
+      wrapper = mountComponent({ props: { isIssueAuthor: false } });
+    });
+
+    it('renders', () => {
+      expect(findAbuseCategorySelector().exists()).toBe(true);
+      expect(findAbuseCategorySelector().props('showDrawer')).toEqual(false);
+    });
+
+    it('opens the drawer', async () => {
+      findDesktopDropdownItems().at(2).vm.$emit('click');
+
+      await nextTick();
+
+      expect(findAbuseCategorySelector().props('showDrawer')).toEqual(true);
+    });
+
+    it('closes the drawer', async () => {
+      await findAbuseCategorySelector().vm.$emit('close-drawer');
+
+      expect(findAbuseCategorySelector().props('showDrawer')).toEqual(false);
     });
   });
 });

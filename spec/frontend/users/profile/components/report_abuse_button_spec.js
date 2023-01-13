@@ -18,8 +18,8 @@ describe('ReportAbuseButton', () => {
         ...props,
       },
       provide: {
-        formSubmitPath: ACTION_PATH,
-        userId: USER_ID,
+        reportAbusePath: ACTION_PATH,
+        reportedUserId: USER_ID,
         reportedFromUrl: REPORTED_FROM_URL,
       },
     });

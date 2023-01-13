@@ -1,5 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "~/work_items/graphql/discussion.fragment.graphql"
+#import "~/work_items/graphql/work_item_note.fragment.graphql"
 
 query workItemNotes($id: WorkItemID!, $after: String, $pageSize: Int) {
   workItem(id: $id) {
@@ -8,7 +8,7 @@ query workItemNotes($id: WorkItemID!, $after: String, $pageSize: Int) {
     widgets {
       ... on WorkItemWidgetNotes {
         type
-        discussions(first: $pageSize, after: $after, filter: ONLY_ACTIVITY) {
+        discussions(first: $pageSize, after: $after, filter: ALL_NOTES) {
           pageInfo {
             ...PageInfo
           }
@@ -16,7 +16,7 @@ query workItemNotes($id: WorkItemID!, $after: String, $pageSize: Int) {
             id
             notes {
               nodes {
-                ...Discussion
+                ...WorkItemNote
               }
             }
           }

@@ -22,8 +22,8 @@ describe('AbuseCategorySelector', () => {
         ...props,
       },
       provide: {
-        formSubmitPath: ACTION_PATH,
-        userId: USER_ID,
+        reportAbusePath: ACTION_PATH,
+        reportedUserId: USER_ID,
         reportedFromUrl: REPORTED_FROM_URL,
       },
     });
@@ -54,6 +54,7 @@ describe('AbuseCategorySelector', () => {
     it('is open when prop showDrawer = true', () => {
       expect(findDrawer().exists()).toBe(true);
       expect(findDrawer().props('open')).toBe(true);
+      expect(findDrawer().props('zIndex')).toBe(300);
     });
 
     it('renders title', () => {

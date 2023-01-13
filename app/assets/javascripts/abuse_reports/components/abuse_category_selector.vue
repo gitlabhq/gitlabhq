@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlDrawer, GlForm, GlFormGroup, GlFormRadioGroup } from '@gitlab/ui';
+import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { s__, __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 
@@ -13,7 +14,17 @@ export default {
     GlFormGroup,
     GlFormRadioGroup,
   },
-  inject: ['formSubmitPath', 'userId', 'reportedFromUrl'],
+  inject: {
+    reportAbusePath: {
+      default: '',
+    },
+    reportedUserId: {
+      default: '',
+    },
+    reportedFromUrl: {
+      default: '',
+    },
+  },
   props: {
     showDrawer: {
       type: Boolean,
@@ -46,8 +57,7 @@ export default {
   },
   computed: {
     drawerOffsetTop() {
-      const wrapperEl = document.querySelector('.content-wrapper');
-      return wrapperEl ? `${wrapperEl.offsetTop}px` : '';
+      return getContentWrapperHeight('.content-wrapper');
     },
   },
   methods: {
@@ -58,7 +68,12 @@ export default {
 };
 </script>
 <template>
-  <gl-drawer :header-height="drawerOffsetTop" :open="showDrawer" @close="closeDrawer">
+  <gl-drawer
+    :header-height="drawerOffsetTop"
+    :z-index="300"
+    :open="showDrawer"
+    @close="closeDrawer"
+  >
     <template #title>
       <h2
         class="gl-font-size-h2 gl-mt-0 gl-mb-0 gl-line-height-24"
@@ -68,10 +83,10 @@ export default {
       </h2>
     </template>
     <template #default>
-      <gl-form :action="formSubmitPath" method="post" class="gl-text-left">
+      <gl-form :action="reportAbusePath" method="post" class="gl-text-left">
         <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
 
-        <input type="hidden" name="user_id" :value="userId" data-testid="input-user-id" />
+        <input type="hidden" name="user_id" :value="reportedUserId" data-testid="input-user-id" />
         <input
           type="hidden"
           name="abuse_report[reported_from_url]"

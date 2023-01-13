@@ -152,6 +152,8 @@ export function initHeaderActions(store, type = '') {
       projectPath: el.dataset.projectPath,
       projectId: el.dataset.projectId,
       reportAbusePath: el.dataset.reportAbusePath,
+      reportedUserId: el.dataset.reportedUserId,
+      reportedFromUrl: el.dataset.reportedFromUrl,
       submitAsSpamPath: el.dataset.submitAsSpamPath,
     },
     render: (createElement) => createElement(HeaderActions),

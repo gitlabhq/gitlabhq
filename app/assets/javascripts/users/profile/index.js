@@ -6,11 +6,11 @@ export const initReportAbuse = () => {
 
   if (!el) return false;
 
-  const { formSubmitPath, userId, reportedFromUrl } = el.dataset;
+  const { reportAbusePath, reportedUserId, reportedFromUrl } = el.dataset;
 
   return new Vue({
     el,
-    provide: { formSubmitPath, userId, reportedFromUrl },
+    provide: { reportAbusePath, reportedUserId, reportedFromUrl },
     render(createElement) {
       return createElement(ReportAbuseButton);
     },

@@ -266,7 +266,9 @@ RSpec.describe IssuesHelper do
         issue_type: 'issue',
         new_issue_path: new_project_issue_path(project, { add_related_issue: issue.iid }),
         project_path: project.full_path,
-        report_abuse_path: new_abuse_report_path(user_id: issue.author.id, ref_url: issue_url(issue)),
+        report_abuse_path: add_category_abuse_reports_path,
+        reported_user_id: issue.author.id,
+        reported_from_url: issue_url(issue),
         submit_as_spam_path: mark_as_spam_project_issue_path(project, issue)
       }
 

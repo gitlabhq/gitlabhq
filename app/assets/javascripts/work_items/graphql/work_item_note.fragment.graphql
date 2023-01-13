@@ -1,12 +1,16 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 
-fragment Discussion on Note {
+fragment WorkItemNote on Note {
   id
-  body
   bodyHtml
+  system
+  internal
   systemNoteIconName
   createdAt
   author {
     ...User
+  }
+  userPermissions {
+    adminNote
   }
 }

@@ -19,6 +19,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, sprintf } from '~/locale';
 import eventHub from '~/notes/event_hub';
 import Tracking from '~/tracking';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import promoteToEpicMutation from '../queries/promote_to_epic.mutation.graphql';
 import updateIssueMutation from '../queries/update_issue.mutation.graphql';
 import DeleteIssueModal from './delete_issue_modal.vue';
@@ -50,6 +51,7 @@ export default {
     GlDropdownItem,
     GlLink,
     GlModal,
+    AbuseCategorySelector,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -93,12 +95,14 @@ export default {
     projectPath: {
       default: '',
     },
-    reportAbusePath: {
-      default: '',
-    },
     submitAsSpamPath: {
       default: '',
     },
+  },
+  data() {
+    return {
+      isReportAbuseDrawerOpen: false,
+    };
   },
   computed: {
     ...mapState(['isToggleStateButtonLoading']),
@@ -162,6 +166,9 @@ export default {
       }
 
       this.invokeUpdateIssueMutation();
+    },
+    toggleReportAbuseDrawer(isOpen) {
+      this.isReportAbuseDrawerOpen = isOpen;
     },
     invokeUpdateIssueMutation() {
       this.toggleStateButtonLoading(true);
@@ -255,7 +262,7 @@ export default {
       <gl-dropdown-item v-if="canPromoteToEpic" @click="promoteToEpic">
         {{ __('Promote to epic') }}
       </gl-dropdown-item>
-      <gl-dropdown-item v-if="!isIssueAuthor" :href="reportAbusePath">
+      <gl-dropdown-item v-if="!isIssueAuthor" @click="toggleReportAbuseDrawer(true)">
         {{ $options.i18n.reportAbuse }}
       </gl-dropdown-item>
       <gl-dropdown-item
@@ -314,7 +321,7 @@ export default {
       >
         {{ __('Promote to epic') }}
       </gl-dropdown-item>
-      <gl-dropdown-item v-if="!isIssueAuthor" :href="reportAbusePath">
+      <gl-dropdown-item v-if="!isIssueAuthor" @click="toggleReportAbuseDrawer(true)">
         {{ $options.i18n.reportAbuse }}
       </gl-dropdown-item>
       <gl-dropdown-item
@@ -359,6 +366,11 @@ export default {
       :issue-type="issueType"
       :modal-id="$options.deleteModalId"
       :title="deleteButtonText"
+    />
+
+    <abuse-category-selector
+      :show-drawer="isReportAbuseDrawerOpen"
+      @close-drawer="toggleReportAbuseDrawer(false)"
     />
   </div>
 </template>

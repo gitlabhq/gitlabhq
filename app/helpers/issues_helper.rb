@@ -181,7 +181,9 @@ module IssuesHelper
       issue_type: issuable_display_type(issuable),
       new_issue_path: new_project_issue_path(project, new_issuable_params),
       project_path: project.full_path,
-      report_abuse_path: new_abuse_report_path(user_id: issuable.author.id, ref_url: issue_url(issuable)),
+      report_abuse_path: add_category_abuse_reports_path,
+      reported_user_id: issuable.author.id,
+      reported_from_url: issue_url(issuable),
       submit_as_spam_path: mark_as_spam_project_issue_path(project, issuable)
     }
   end
