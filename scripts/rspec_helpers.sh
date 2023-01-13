@@ -105,13 +105,9 @@ function rspec_simple_job() {
   export NO_KNAPSACK="1"
 
   local rspec_cmd="bin/rspec $(rspec_args "${1}" "${2}")"
-  local rspec_run_status=0
-  local rspec_log="${CI_PROJECT_DIR}/tmp/rspec.log"
   echoinfo "Running RSpec command: ${rspec_cmd}"
 
-  eval "${rspec_cmd}" | tee "${rspec_log}" || rspec_run_status=$?
-
-  handle_retry_rspec_in_new_process $rspec_run_status $rspec_log
+  eval "${rspec_cmd}"
 }
 
 function rspec_db_library_code() {
@@ -140,29 +136,6 @@ function debug_rspec_variables() {
   echoinfo "CRYSTALBALL: ${CRYSTALBALL}"
 }
 
-function handle_retry_rspec_in_new_process() {
-  local rspec_run_status="${1}"
-  local rspec_log="${2}"
-
-  # Experiment to retry failed examples in a new RSpec process: https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148
-  if [[ $rspec_run_status -ne 0 ]]; then
-    if [[ "${RETRY_FAILED_TESTS_IN_NEW_PROCESS}" == "true" ]]; then
-      if grep -q "error occurred outside of examples" "${rspec_log}"; then
-        echoerr "Not retrying failing examples since there were errors happening outside of the RSpec examples!"
-      else
-        retry_failed_rspec_examples
-        rspec_run_status=$?
-      fi
-    else
-      echoerr "Not retrying failing examples since \$RETRY_FAILED_TESTS_IN_NEW_PROCESS != 'true'!"
-    fi
-  else
-    echosuccess "No examples to retry, congrats!"
-  fi
-
-  exit $rspec_run_status
-}
-
 function rspec_paralellized_job() {
   read -ra job_name <<< "${CI_JOB_NAME}"
   local test_tool="${job_name[0]}"
@@ -173,7 +146,6 @@ function rspec_paralellized_job() {
   local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
   local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}")/"
   local rspec_run_status=0
-  local rspec_log="${CI_PROJECT_DIR}/tmp/rspec.log"
 
   if [[ "${test_tool}" =~ "-ee" ]]; then
     spec_folder_prefixes="'ee/'"
@@ -225,14 +197,24 @@ function rspec_paralellized_job() {
   debug_rspec_variables
 
   if [[ -n "${RSPEC_TESTS_MAPPING_ENABLED}" ]]; then
-    tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "${RSPEC_TESTS_FILTER_FILE}" | tee "${rspec_log}" || rspec_run_status=$?
+    tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "${RSPEC_TESTS_FILTER_FILE}" || rspec_run_status=$?
   else
-    tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" | tee "${rspec_log}" || rspec_run_status=$?
+    tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" || rspec_run_status=$?
   fi
 
   echoinfo "RSpec exited with ${rspec_run_status}."
 
-  handle_retry_rspec_in_new_process $rspec_run_status $rspec_log
+  # Experiment to retry failed examples in a new RSpec process: https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148
+  if [[ $rspec_run_status -ne 0 ]]; then
+    if [[ "${RETRY_FAILED_TESTS_IN_NEW_PROCESS}" == "true" ]]; then
+      retry_failed_rspec_examples
+      rspec_run_status=$?
+    fi
+  else
+    echosuccess "No examples to retry, congrats!"
+  fi
+
+  exit $rspec_run_status
 }
 
 function retry_failed_rspec_examples() {

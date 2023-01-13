@@ -17,6 +17,11 @@ RSpec.shared_examples 'graphql issue list request spec' do
   end
 
   describe 'filters' do
+    before_all do
+      issue_a.assignee_ids = current_user.id
+      issue_b.assignee_ids = another_user.id
+    end
+
     context 'when filtering by assignees' do
       context 'when both assignee_username filters are provided' do
         let(:issue_filter_params) do
@@ -44,12 +49,30 @@ RSpec.shared_examples 'graphql issue list request spec' do
     end
 
     context 'when filtering by unioned arguments' do
-      let(:issue_filter_params) { { or: { assignee_usernames: [current_user.username, another_user.username] } } }
+      context 'when filtering by assignees' do
+        let(:issue_filter_params) { { or: { assignee_usernames: [current_user.username, another_user.username] } } }
 
-      it 'returns correctly filtered issues' do
-        post_query
+        it 'returns correctly filtered issues' do
+          post_query
 
-        expect(issue_ids).to match_array(expected_unioned_assignee_issues.map { |i| i.to_gid.to_s })
+          expect(issue_ids).to match_array([issue_a, issue_b].map { |i| i.to_gid.to_s })
+        end
+      end
+
+      context 'when filtering by labels' do
+        let_it_be(:label_a) { create(:label, project: issue_a.project) }
+        let_it_be(:label_b) { create(:label, project: issue_b.project) }
+
+        let(:issue_filter_params) { { or: { label_names: [label_a.title, label_b.title] } } }
+
+        it 'returns correctly filtered issues' do
+          issue_a.label_ids = label_a.id
+          issue_b.label_ids = label_b.id
+
+          post_graphql(query, current_user: current_user)
+
+          expect(issue_ids).to match_array([issue_a, issue_b].map { |i| i.to_gid.to_s })
+        end
       end
 
       context 'when argument is blank' do
@@ -63,6 +86,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
       end
 
       context 'when feature flag is disabled' do
+        let(:issue_filter_params) { { or: { assignee_usernames: [current_user.username] } } }
+
         it 'returns an error' do
           stub_feature_flags(or_issuable_queries: false)
 

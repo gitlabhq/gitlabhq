@@ -14,6 +14,7 @@ module Issuables
 
     def filter(issuables)
       filtered = by_label(issuables)
+      filtered = by_label_union(filtered)
       by_negated_label(filtered)
     end
 
@@ -27,14 +28,25 @@ module Issuables
     def by_label(issuables)
       return issuables unless label_names_from_params.present?
 
-      target_model = issuables.base_class
-
       if filter_by_no_label?
-        issuables.where(label_link_query(target_model).arel.exists.not)
+        issuables.where(label_link_query(issuables).arel.exists.not)
       elsif filter_by_any_label?
-        issuables.where(label_link_query(target_model).arel.exists)
+        issuables.where(label_link_query(issuables).arel.exists)
       else
         issuables_with_selected_labels(issuables, label_names_from_params)
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def by_label_union(issuables)
+      return issuables unless or_filters_enabled? && label_names_from_or_params.present?
+
+      if root_namespace
+        all_label_ids = find_label_ids(label_names_from_or_params).flatten
+        issuables.where(label_link_query(issuables, label_ids: all_label_ids).arel.exists)
+      else
+        issuables.where(label_link_query(issuables, label_names: label_names_from_or_params).arel.exists)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -55,19 +67,17 @@ module Issuables
 
     # rubocop: disable CodeReuse/ActiveRecord
     def issuables_with_selected_labels(issuables, label_names)
-      target_model = issuables.base_class
-
       if root_namespace
         all_label_ids = find_label_ids(label_names)
         # Found less labels in the DB than we were searching for. Return nothing.
         return issuables.none if all_label_ids.size != label_names.size
 
         all_label_ids.each do |label_ids|
-          issuables = issuables.where(label_link_query(target_model, label_ids: label_ids).arel.exists)
+          issuables = issuables.where(label_link_query(issuables, label_ids: label_ids).arel.exists)
         end
       else
         label_names.each do |label_name|
-          issuables = issuables.where(label_link_query(target_model, label_names: label_name).arel.exists)
+          issuables = issuables.where(label_link_query(issuables, label_names: label_name).arel.exists)
         end
       end
 
@@ -77,16 +87,14 @@ module Issuables
 
     # rubocop: disable CodeReuse/ActiveRecord
     def issuables_without_selected_labels(issuables, label_names)
-      target_model = issuables.base_class
-
       if root_namespace
         label_ids = find_label_ids(label_names).flatten(1)
 
         return issuables if label_ids.empty?
 
-        issuables.where(label_link_query(target_model, label_ids: label_ids).arel.exists.not)
+        issuables.where(label_link_query(issuables, label_ids: label_ids).arel.exists.not)
       else
-        issuables.where(label_link_query(target_model, label_names: label_names).arel.exists.not)
+        issuables.where(label_link_query(issuables, label_names: label_names).arel.exists.not)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -134,7 +142,9 @@ module Issuables
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def label_link_query(target_model, label_ids: nil, label_names: nil)
+    def label_link_query(issuables, label_ids: nil, label_names: nil)
+      target_model = issuables.base_class
+
       relation = LabelLink.by_target_for_exists_query(target_model.name, target_model.arel_table['id'], label_ids)
       relation = relation.joins(:label).where(labels: { name: label_names }) if label_names
 
@@ -147,6 +157,14 @@ module Issuables
 
       strong_memoize(:label_names_from_params) do
         split_label_names(params[:label_name])
+      end
+    end
+
+    def label_names_from_or_params
+      return if or_params.blank? || or_params[:label_name].blank?
+
+      strong_memoize(:label_names_from_or_params) do
+        split_label_names(or_params[:label_name])
       end
     end
 

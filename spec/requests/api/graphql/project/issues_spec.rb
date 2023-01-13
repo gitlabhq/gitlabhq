@@ -91,7 +91,6 @@ RSpec.describe 'getting an issue list for a project', feature_category: :team_pl
 
     # filters
     let(:expected_negated_assignee_issues) { [issue_b, issue_c, issue_d, issue_e] }
-    let(:expected_unioned_assignee_issues) { [issue_a, issue_b] }
     let(:voted_issues) { [issue_a] }
     let(:no_award_issues) { [issue_b, issue_c, issue_d, issue_e] }
     let(:locked_discussion_issues) { [issue_a] }
@@ -119,9 +118,6 @@ RSpec.describe 'getting an issue list for a project', feature_category: :team_pl
     let(:same_project_issue2) { issue_b }
 
     before_all do
-      issue_a.assignee_ids = current_user.id
-      issue_b.assignee_ids = another_user.id
-
       create(:award_emoji, :upvote, user: current_user, awardable: issue_a)
     end
 

@@ -680,6 +680,29 @@ mutation($id: NoteableID!, $body: String!) {
 }
 ```
 
+### `Mutation.achievementsCreate`
+
+Input type: `AchievementsCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationachievementscreateavatar"></a>`avatar` | [`Upload`](#upload) | Avatar for the achievement. |
+| <a id="mutationachievementscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationachievementscreatedescription"></a>`description` | [`String`](#string) | Description of or notes for the achievement. |
+| <a id="mutationachievementscreatename"></a>`name` | [`String!`](#string) | Name for the achievement. |
+| <a id="mutationachievementscreatenamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Namespace for the achievement. |
+| <a id="mutationachievementscreaterevokeable"></a>`revokeable` | [`Boolean!`](#boolean) | Revokeability for the achievement. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationachievementscreateachievement"></a>`achievement` | [`Achievement`](#achievement) | Achievement created. |
+| <a id="mutationachievementscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationachievementscreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.addProjectToSecurityDashboard`
 
 Input type: `AddProjectToSecurityDashboardInput`
@@ -6218,6 +6241,29 @@ Some of the types in the schema exist solely to model connections. Each connecti
 has a distinct, named type, with a distinct named edge type. These are listed separately
 below.
 
+#### `AchievementConnection`
+
+The connection type for [`Achievement`](#achievement).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="achievementconnectionedges"></a>`edges` | [`[AchievementEdge]`](#achievementedge) | A list of edges. |
+| <a id="achievementconnectionnodes"></a>`nodes` | [`[Achievement]`](#achievement) | A list of nodes. |
+| <a id="achievementconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AchievementEdge`
+
+The edge type for [`Achievement`](#achievement).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="achievementedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="achievementedgenode"></a>`node` | [`Achievement`](#achievement) | The item at the end of the edge. |
+
 #### `AgentConfigurationConnection`
 
 The connection type for [`AgentConfiguration`](#agentconfiguration).
@@ -10251,6 +10297,21 @@ Representation of a GitLab user.
 | <a id="accessleveluserwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="accessleveluserweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
 
+### `Achievement`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="achievementavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar of the achievement. |
+| <a id="achievementcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp the achievement was created. |
+| <a id="achievementdescription"></a>`description` | [`String`](#string) | Description or notes for the achievement. |
+| <a id="achievementid"></a>`id` | [`AchievementsAchievementID!`](#achievementsachievementid) | ID of the achievement. |
+| <a id="achievementname"></a>`name` | [`String!`](#string) | Name of the achievement. |
+| <a id="achievementnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace of the achievement. |
+| <a id="achievementrevokeable"></a>`revokeable` | [`Boolean!`](#boolean) | Revokeability of the achievement. |
+| <a id="achievementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
+
 ### `AgentConfiguration`
 
 Configuration details for an Agent.
@@ -13517,6 +13578,7 @@ GPG signature for a signed commit.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupachievements"></a>`achievements` **{warning-solid}** | [`AchievementConnection`](#achievementconnection) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled. |
 | <a id="groupactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. |
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
@@ -16273,6 +16335,7 @@ Contains statistics about a milestone.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespaceachievements"></a>`achievements` **{warning-solid}** | [`AchievementConnection`](#achievementconnection) | **Introduced** in 15.8. This feature is in Alpha. It can be changed or removed at any time. Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled. |
 | <a id="namespaceactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. |
 | <a id="namespaceadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="namespacecontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
@@ -23286,6 +23349,12 @@ each kind of object.
 
 For more information, read about [Scalar Types](https://graphql.org/learn/schema/#scalar-types) on `graphql.org`.
 
+### `AchievementsAchievementID`
+
+A `AchievementsAchievementID` is a global ID. It is encoded as a string.
+
+An example `AchievementsAchievementID` is: `"gid://gitlab/Achievements::Achievement/1"`.
+
 ### `AlertManagementAlertID`
 
 A `AlertManagementAlertID` is a global ID. It is encoded as a string.
@@ -25071,6 +25140,7 @@ A time-frame defined as a closed inclusive range of two dates.
 | ---- | ---- | ----------- |
 | <a id="unionedissuefilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filters issues that are assigned to at least one of the given users. |
 | <a id="unionedissuefilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filters issues that are authored by one of the given users. |
+| <a id="unionedissuefilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | Filters issues that have at least one of the given labels. |
 
 ### `UpdateDiffImagePositionInput`
 

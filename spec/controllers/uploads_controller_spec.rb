@@ -736,6 +736,46 @@ RSpec.describe UploadsController do
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
+
+    context "when viewing an achievement" do
+      let!(:achievement) { create(:achievement, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
+
+      context "when signed in" do
+        before do
+          sign_in(user)
+        end
+
+        it "responds with status 200" do
+          get :show, params: { model: "achievements/achievement", mounted_as: "avatar", id: achievement.id, filename: "dk.png" }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it_behaves_like 'content publicly cached' do
+          subject do
+            get :show, params: { model: "achievements/achievement", mounted_as: "avatar", id: achievement.id, filename: "dk.png" }
+
+            response
+          end
+        end
+      end
+
+      context "when not signed in" do
+        it "responds with status 200" do
+          get :show, params: { model: "achievements/achievement", mounted_as: "avatar", id: achievement.id, filename: "dk.png" }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it_behaves_like 'content publicly cached' do
+          subject do
+            get :show, params: { model: "achievements/achievement", mounted_as: "avatar", id: achievement.id, filename: "dk.png" }
+
+            response
+          end
+        end
+      end
+    end
   end
 
   def post_authorize(verified: true)

@@ -6,6 +6,7 @@ module Types
 
     include Gitlab::Graphql::MountMutation
 
+    mount_mutation Mutations::Achievements::Create
     mount_mutation Mutations::Admin::SidekiqQueues::DeleteJobs
     mount_mutation Mutations::AlertManagement::CreateAlertIssue
     mount_mutation Mutations::AlertManagement::UpdateAlertStatus

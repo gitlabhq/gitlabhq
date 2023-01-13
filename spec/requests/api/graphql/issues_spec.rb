@@ -8,6 +8,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
 
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
+  let_it_be(:current_user) { developer }
   let_it_be(:group1) { create(:group).tap { |group| group.add_developer(developer) } }
   let_it_be(:group2) { create(:group).tap { |group| group.add_developer(developer) } }
   let_it_be(:project_a) { create(:project, :repository, :public, group: group1) }
@@ -88,7 +89,6 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
 
   let(:issue_filter_params) { {} }
   let(:all_query_params) { base_params.merge(**issue_filter_params) }
-  let(:current_user) { developer }
   let(:fields) do
     <<~QUERY
       nodes { id }
@@ -138,15 +138,14 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   # Shared example also used in spec/requests/api/graphql/project/issues_spec.rb
   it_behaves_like 'graphql issue list request spec' do
     let_it_be(:external_user) { create(:user) }
+    let_it_be(:another_user) { reporter }
 
     let(:public_projects) { [project_a, project_c] }
 
-    let(:another_user) { reporter }
     let(:issue_nodes_path) { %w[issues nodes] }
 
     # filters
     let(:expected_negated_assignee_issues) { [issue_b, issue_c, issue_d, issue_e] }
-    let(:expected_unioned_assignee_issues) { [issue_a, issue_c] }
     let(:voted_issues) { [issue_a, issue_c] }
     let(:no_award_issues) { [issue_b, issue_d, issue_e] }
     let(:locked_discussion_issues) { [issue_b, issue_d] }
@@ -174,9 +173,6 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     let(:same_project_issue2) { issue_e }
 
     before_all do
-      issue_a.assignee_ids = developer.id
-      issue_c.assignee_ids = reporter.id
-
       create(:award_emoji, :upvote, user: developer, awardable: issue_a)
       create(:award_emoji, :upvote, user: developer, awardable: issue_c)
     end

@@ -550,6 +550,24 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
             expect(items).to contain_exactly(item1, item4, item5)
           end
         end
+
+        context 'using OR' do
+          let(:params) { { or: { label_name: [label.title, label2.title].join(',') } } }
+
+          it 'returns items that have at least one of the given labels' do
+            expect(items).to contain_exactly(item2, item3)
+          end
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(or_issuable_queries: false)
+            end
+
+            it 'does not add any filter' do
+              expect(items).to contain_exactly(item1, item2, item3, item4, item5)
+            end
+          end
+        end
       end
 
       context 'filtering by a label that includes any or none in the title' do

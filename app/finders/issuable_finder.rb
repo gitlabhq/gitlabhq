@@ -410,7 +410,8 @@ class IssuableFinder
       Issuables::LabelFilter.new(
         params: original_params,
         project: params.project,
-        group: params.group
+        group: params.group,
+        or_filters_enabled: or_filters_enabled?
       )
     end
   end

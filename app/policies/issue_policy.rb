@@ -88,6 +88,10 @@ class IssuePolicy < IssuablePolicy
     enable :set_confidentiality
   end
 
+  rule { can?(:guest_access) & can?(:read_issue) }.policy do
+    enable :admin_issue_relation
+  end
+
   rule { can_read_crm_contacts }.policy do
     enable :read_crm_contacts
   end
