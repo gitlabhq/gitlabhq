@@ -78,7 +78,8 @@ module BulkImports
             source_type: entity[:source_type],
             source_full_path: entity[:source_full_path],
             destination_slug: entity[:destination_slug],
-            destination_namespace: entity[:destination_namespace]
+            destination_namespace: entity[:destination_namespace],
+            migrate_projects: Gitlab::Utils.to_boolean(entity[:migrate_projects], default: true)
           )
         end
 

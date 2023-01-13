@@ -24,6 +24,8 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
       updated_at
       user_permissions
       url
+      last_edited_at
+      last_edited_by
       system_note_metadata
     ]
 

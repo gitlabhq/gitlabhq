@@ -82,6 +82,7 @@ describe('JobArtifactsTable component', () => {
       getJobArtifactsQuery: jest.fn().mockResolvedValue(getJobArtifactsResponse),
     },
     data = {},
+    canDestroyArtifacts = true,
   ) => {
     requestHandlers = handlers;
     wrapper = mountExtended(JobArtifactsTable, {
@@ -90,6 +91,7 @@ describe('JobArtifactsTable component', () => {
       ]),
       provide: {
         projectPath: 'project/path',
+        canDestroyArtifacts,
         artifactsManagementFeedbackImagePath: 'banner/image/path',
       },
       data() {
@@ -295,6 +297,14 @@ describe('JobArtifactsTable component', () => {
   });
 
   describe('delete button', () => {
+    it('does not show when user does not have permission', async () => {
+      createComponent({}, {}, false);
+
+      await waitForPromises();
+
+      expect(findDeleteButton().exists()).toBe(false);
+    });
+
     it('shows a disabled delete button for now (coming soon)', async () => {
       createComponent();
 

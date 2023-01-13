@@ -71,7 +71,7 @@ module BulkImports
       end
 
       def project_entities_pipeline
-        if project_pipeline_available? && feature_flag_enabled?
+        if migrate_projects? && project_pipeline_available? && feature_flag_enabled?
           {
             project_entities: {
               pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline,
@@ -81,6 +81,10 @@ module BulkImports
         else
           {}
         end
+      end
+
+      def migrate_projects?
+        bulk_import_entity.migrate_projects
       end
 
       def project_pipeline_available?

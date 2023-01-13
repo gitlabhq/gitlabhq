@@ -19,6 +19,7 @@ module API
         expose :created_at, documentation: { type: 'dateTime', example: '2012-05-28T04:42:42-07:00' }
         expose :updated_at, documentation: { type: 'dateTime', example: '2012-05-28T04:42:42-07:00' }
         expose :failures, using: EntityFailure, documentation: { is_array: true }
+        expose :migrate_projects, documentation: { type: 'boolean', example: true }
       end
     end
   end

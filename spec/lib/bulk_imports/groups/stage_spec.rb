@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Groups::Stage do
+RSpec.describe BulkImports::Groups::Stage, feature_category: :importers do
   let(:ancestor) { create(:group) }
   let(:group) { build(:group, parent: ancestor) }
   let(:bulk_import) { build(:bulk_import) }
@@ -75,6 +75,28 @@ RSpec.describe BulkImports::Groups::Stage do
         expect(described_class.new(entity).pipelines).to include(
           hash_including({ pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline })
         )
+      end
+
+      describe 'migrate projects flag' do
+        context 'when true' do
+          it 'includes project entities pipeline' do
+            entity.update!(migrate_projects: true)
+
+            expect(described_class.new(entity).pipelines).to include(
+              hash_including({ pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline })
+            )
+          end
+        end
+
+        context 'when false' do
+          it 'does not include project entities pipeline' do
+            entity.update!(migrate_projects: false)
+
+            expect(described_class.new(entity).pipelines).not_to include(
+              hash_including({ pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline })
+            )
+          end
+        end
       end
 
       context 'when feature flag is enabled on root ancestor level' do

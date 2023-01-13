@@ -6,6 +6,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
   let(:user) { create(:user) }
   let(:credentials) { { url: 'http://gitlab.example', access_token: 'token' } }
   let(:destination_group) { create(:group, path: 'destination1') }
+  let(:migrate_projects) { true }
   let_it_be(:parent_group) { create(:group, path: 'parent-group') }
   let(:params) do
     [
@@ -13,19 +14,23 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
         source_type: 'group_entity',
         source_full_path: 'full/path/to/group1',
         destination_slug: 'destination group 1',
-        destination_namespace: 'parent-group'
+        destination_namespace: 'parent-group',
+        migrate_projects: migrate_projects
+
       },
       {
         source_type: 'group_entity',
         source_full_path: 'full/path/to/group2',
         destination_slug: 'destination group 2',
-        destination_namespace: 'parent-group'
+        destination_namespace: 'parent-group',
+        migrate_projects: migrate_projects
       },
       {
         source_type: 'project_entity',
         source_full_path: 'full/path/to/project1',
         destination_slug: 'destination project 1',
-        destination_namespace: 'parent-group'
+        destination_namespace: 'parent-group',
+        migrate_projects: migrate_projects
       }
     ]
   end
@@ -81,7 +86,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
       end
 
       context 'when token validation succeeds' do
-        it 'creates bulk import' do
+        before do
           stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
           stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
             .to_return(status: 200, body: source_version.to_json, headers: { 'Content-Type' => 'application/json' })
@@ -91,7 +96,9 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
               body: { 'scopes' => ['api'] }.to_json,
               headers: { 'Content-Type' => 'application/json' }
             )
+        end
 
+        it 'creates bulk import' do
           parent_group.add_owner(user)
           expect { subject.execute }.to change { BulkImport.count }.by(1)
 
@@ -114,6 +121,40 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
             user: user,
             extra: { user_role: 'Owner', import_type: 'bulk_import_group' }
           )
+        end
+
+        describe 'projects migration flag' do
+          let(:import) { BulkImport.last }
+
+          context 'when false' do
+            let(:migrate_projects) { false }
+
+            it 'sets false' do
+              subject.execute
+
+              expect(import.entities.pluck(:migrate_projects)).to contain_exactly(false, false, false)
+            end
+          end
+
+          context 'when true' do
+            let(:migrate_projects) { true }
+
+            it 'sets true' do
+              subject.execute
+
+              expect(import.entities.pluck(:migrate_projects)).to contain_exactly(true, true, true)
+            end
+          end
+
+          context 'when nil' do
+            let(:migrate_projects) { nil }
+
+            it 'sets true' do
+              subject.execute
+
+              expect(import.entities.pluck(:migrate_projects)).to contain_exactly(true, true, true)
+            end
+          end
         end
       end
     end

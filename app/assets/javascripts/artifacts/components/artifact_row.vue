@@ -11,6 +11,7 @@ export default {
     GlBadge,
     GlFriendlyWrap,
   },
+  inject: ['canDestroyArtifacts'],
   props: {
     artifact: {
       type: Object,
@@ -73,6 +74,7 @@ export default {
             data-testid="job-artifact-row-download-button"
           />
           <gl-button
+            v-if="canDestroyArtifacts"
             category="tertiary"
             icon="remove"
             :title="$options.i18n.delete"

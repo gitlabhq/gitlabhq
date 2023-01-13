@@ -67,6 +67,13 @@ module Types
         null: true,
         description: 'URL to view this Note in the Web UI.'
 
+      field :last_edited_at, Types::TimeType,
+        null: true,
+        description: 'Timestamp when note was last edited.'
+      field :last_edited_by, Types::UserType,
+        null: true,
+        description: 'User who last edited the note.'
+
       field :system_note_metadata, Types::Notes::SystemNoteMetadataType,
         null: true,
         description: 'Metadata for the given note if it is a system note.'

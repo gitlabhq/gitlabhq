@@ -7,4 +7,5 @@
     %strong= s_('Artifacts|Total artifacts size')
     = number_to_human_size(@total_size, precicion: 2)
   #js-artifact-management{ data: { "project-path": @project.full_path,
+    "can-destroy-artifacts" => can?(current_user, :destroy_artifacts, @project).to_s,
     "artifacts-management-feedback-image-path": image_path('illustrations/chat-bubble-sm.svg') } }

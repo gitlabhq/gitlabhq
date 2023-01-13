@@ -81,6 +81,10 @@ module API
                    desc: 'Deprecated: Use :destination_slug instead. Destination slug for the entity',
                    destination_slug_path: true,
                    documentation: { example: "'destination_slug' not 'destination/slug'" }
+          optional :migrate_projects,
+                   type: Boolean,
+                   default: true,
+                   desc: 'Indicates group migration should include nested projects'
 
           mutually_exclusive :destination_slug, :destination_name
           at_least_one_of :destination_slug, :destination_name

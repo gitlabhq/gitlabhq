@@ -61,7 +61,7 @@ export default {
     ArtifactsTableRowDetails,
     FeedbackBanner,
   },
-  inject: ['projectPath'],
+  inject: ['projectPath', 'canDestroyArtifacts'],
   apollo: {
     jobArtifacts: {
       query: getJobArtifactsQuery,
@@ -311,6 +311,7 @@ export default {
             data-testid="job-artifacts-browse-button"
           />
           <gl-button
+            v-if="canDestroyArtifacts"
             icon="remove"
             :title="$options.i18n.delete"
             :aria-label="$options.i18n.delete"

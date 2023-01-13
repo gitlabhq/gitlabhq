@@ -110,6 +110,36 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
         expect(json_response['status']).to eq('created')
       end
+
+      describe 'migrate projects flag' do
+        context 'when true' do
+          it 'sets true' do
+            params[:entities][0][:migrate_projects] = true
+
+            request
+
+            expect(user.bulk_imports.last.entities.pluck(:migrate_projects)).to contain_exactly(true)
+          end
+        end
+
+        context 'when false' do
+          it 'sets false' do
+            params[:entities][0][:migrate_projects] = false
+
+            request
+
+            expect(user.bulk_imports.last.entities.pluck(:migrate_projects)).to contain_exactly(false)
+          end
+        end
+
+        context 'when unspecified' do
+          it 'sets true' do
+            request
+
+            expect(user.bulk_imports.last.entities.pluck(:migrate_projects)).to contain_exactly(true)
+          end
+        end
+      end
     end
 
     include_examples 'starting a new migration' do

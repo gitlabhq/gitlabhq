@@ -8,7 +8,7 @@ import {
 } from '~/invite_members/constants';
 import { freeUsersLimit, remainingSeats } from '../mock_data/member_modal';
 
-const INFO_ALERT_TITLE = 'Your namespace name is over the 5 user limit.';
+const INFO_ALERT_TITLE = 'Your top-level group name is over the 5 user limit.';
 const WARNING_ALERT_TITLE = 'You only have space for 2 more members in name';
 
 describe('UserLimitNotification', () => {
@@ -67,7 +67,7 @@ describe('UserLimitNotification', () => {
 
       expect(alert.attributes('title')).toEqual("You've reached your 5 members limit for name");
       expect(alert.text()).toContain(
-        'To invite new users to this namespace, you must remove existing users.',
+        'To invite new users to this top-level group, you must remove existing users.',
       );
     });
   });
