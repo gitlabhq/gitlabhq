@@ -37,9 +37,8 @@ module Gitlab
         @stubs[storage] ||= {}
         @stubs[storage][name] ||= begin
           klass = stub_class(name)
-          addr = stub_address(storage)
-          creds = stub_creds(storage)
-          klass.new(addr, creds, interceptors: interceptors, channel_args: channel_args)
+          channel = create_channel(storage)
+          klass.new(channel.target, nil, interceptors: interceptors, channel_override: channel)
         end
       end
     end
@@ -99,9 +98,20 @@ module Gitlab
       address(storage).sub(%r{^tcp://|^tls://}, '')
     end
 
+    # Cache gRPC servers by storage. All the client stubs in the same process can share the underlying connection to the
+    # same host thanks to HTTP2 framing protocol that gRPC is built on top. This method is not thread-safe. It is
+    # intended to be a part of `stub`, method behind a mutex protection.
+    def self.create_channel(storage)
+      @channels ||= {}
+      @channels[storage] ||= GRPC::ClientStub.setup_channel(
+        nil, stub_address(storage), stub_creds(storage), channel_args
+      )
+    end
+
     def self.clear_stubs!
       MUTEX.synchronize do
         @stubs = nil
+        @channels = nil
       end
     end
 

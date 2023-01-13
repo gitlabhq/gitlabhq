@@ -637,7 +637,7 @@ Supported attributes:
 | `created_at` | datetime | Timestamp of when the merge request was created. |
 | `description` | string | Description of the merge request. Contains Markdown rendered as HTML for caching. |
 | `detailed_merge_status` | string | Detailed merge status of the merge request. Read [merge status](#merge-status) for a list of potential values. |
-| `diff_refs` | object | References of the base SHA, the head SHA, and the start SHA for this merge request. Corresponds to the latest diff version of the merge request. |
+| `diff_refs` | object | References of the base SHA, the head SHA, and the start SHA for this merge request. Corresponds to the latest diff version of the merge request. Empty when the merge request is created, and populates asynchronously. See [Empty `diff_refs` for new merge requests](#empty-diff_refs-for-new-merge-requests). |
 | `discussion_locked` | boolean | Indicates if comments on the merge request are locked to members only. |
 | `downvotes` | integer | Number of downvotes for the merge request. |
 | `draft` | boolean | Indicates if the merge request is a draft. |
@@ -2913,3 +2913,14 @@ For approvals, see [Merge request approvals](merge_request_approvals.md)
 
 To track which state was set, who did it, and when it happened, check out
 [Resource state events API](resource_state_events.md#merge-requests).
+
+## Troubleshooting
+
+### Empty `diff_refs` for new merge requests
+
+When a merge request is created, the `diff_refs` field is initially empty. This field
+is populated asynchronously after the merge request is created. For more
+information, see the issue
+[`diff_refs` empty after merge request is created](https://gitlab.com/gitlab-org/gitlab/-/issues/386562),
+and the [related discussion](https://forum.gitlab.com/t/diff-refs-empty-after-mr-is-created/78975)
+in the GitLab forums.

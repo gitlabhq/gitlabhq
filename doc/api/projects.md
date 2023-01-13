@@ -2888,7 +2888,14 @@ Example response:
 
 ## Configure pull mirroring for a project **(PREMIUM)**
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in GitLab 13.9.
+> - Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the field `mirror_branch_regex` is not available.
+To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+named `mirror_only_branches_match_regex`.
+On GitLab.com, this feature is not available.
 
 Configure pull mirroring while [creating a new project](#create-project)
 or [updating an existing project](#edit-project) using the API
@@ -2906,6 +2913,7 @@ with the API scope enabled.
 | `mirror`     | boolean | **{check-circle}** Yes | Enables pull mirroring on project when set to `true`. |
 | `mirror_trigger_builds`| boolean | **{dotted-circle}** No | Trigger pipelines for mirror updates when set to `true`. |
 | `only_mirror_protected_branches`| boolean | **{dotted-circle}** No | Limits mirroring to only protected branches when set to `true`. |
+| `mirror_branch_regex`            | String  | **{dotted-circle}** No | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
 
 ## Start the pull mirroring process for a Project **(PREMIUM)**
 

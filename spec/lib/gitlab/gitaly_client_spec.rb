@@ -4,11 +4,17 @@ require 'spec_helper'
 
 # We stub Gitaly in `spec/support/gitaly.rb` for other tests. We don't want
 # those stubs while testing the GitalyClient itself.
-RSpec.describe Gitlab::GitalyClient do
+RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
   def stub_repos_storages(address)
     allow(Gitlab.config.repositories).to receive(:storages).and_return({
       'default' => { 'gitaly_address' => address }
     })
+  end
+
+  around do |example|
+    described_class.clear_stubs!
+    example.run
+    described_class.clear_stubs!
   end
 
   describe '.query_time', :request_store do
@@ -157,44 +163,130 @@ RSpec.describe Gitlab::GitalyClient do
     end
   end
 
+  describe '.create_channel' do
+    where(:storage, :address, :expected_target) do
+      [
+        ['default', 'unix:tmp/gitaly.sock', 'unix:tmp/gitaly.sock'],
+        ['default', 'tcp://localhost:9876', 'localhost:9876'],
+        ['default', 'tls://localhost:9876', 'localhost:9876']
+      ]
+    end
+
+    with_them do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return(
+          'default' => { 'gitaly_address' => address },
+          'other' => { 'gitaly_address' => address }
+        )
+      end
+
+      it 'creates channel based on storage' do
+        channel = described_class.create_channel(storage)
+
+        expect(channel).to be_a(GRPC::Core::Channel)
+        expect(channel.target).to eql(expected_target)
+      end
+
+      it 'caches channel based on storage' do
+        channel_1 = described_class.create_channel(storage)
+        channel_2 = described_class.create_channel(storage)
+
+        expect(channel_1).to equal(channel_2)
+      end
+
+      it 'returns different channels for different storages' do
+        channel_1 = described_class.create_channel(storage)
+        channel_2 = described_class.create_channel('other')
+
+        expect(channel_1).not_to equal(channel_2)
+      end
+    end
+  end
+
   describe '.stub' do
-    # Notice that this is referring to gRPC "stubs", not rspec stubs
-    before do
-      described_class.clear_stubs!
+    matcher :be_a_grpc_channel do |expected_address|
+      match { |actual| actual.is_a?(::GRPC::Core::Channel) && actual.target == expected_address }
+    end
+
+    matcher :have_same_channel do |expected|
+      match do |actual|
+        # gRPC client stub does not expose the underlying channel. We need a way
+        # to verify two stubs have the same channel. So, no way around.
+        expected_channel = expected.instance_variable_get(:@ch)
+        actual_channel = actual.instance_variable_get(:@ch)
+        expected_channel.is_a?(GRPC::Core::Channel) &&
+          actual_channel.is_a?(GRPC::Core::Channel) &&
+          expected_channel == actual_channel
+      end
     end
 
     context 'when passed a UNIX socket address' do
-      it 'passes the address as-is to GRPC' do
-        address = 'unix:/tmp/gitaly.sock'
+      let(:address) { 'unix:/tmp/gitaly.sock' }
+
+      before do
         stub_repos_storages address
+      end
 
-        expect(Gitaly::CommitService::Stub).to receive(:new).with(address, any_args)
-
+      it 'passes the address as-is to GRPC' do
+        expect(Gitaly::CommitService::Stub).to receive(:new).with(
+          address, nil, channel_override: be_a_grpc_channel(address), interceptors: []
+        )
         described_class.stub(:commit_service, 'default')
+      end
+
+      it 'shares the same channel object with other stub' do
+        stub_commit = described_class.stub(:commit_service, 'default')
+        stub_blob = described_class.stub(:blob_service, 'default')
+
+        expect(stub_commit).to have_same_channel(stub_blob)
       end
     end
 
     context 'when passed a TLS address' do
-      it 'strips tls:// prefix before passing it to GRPC::Core::Channel initializer' do
-        address = 'localhost:9876'
+      let(:address) { 'localhost:9876' }
+
+      before do
         prefixed_address = "tls://#{address}"
         stub_repos_storages prefixed_address
+      end
 
-        expect(Gitaly::CommitService::Stub).to receive(:new).with(address, any_args)
+      it 'strips tls:// prefix before passing it to GRPC::Core::Channel initializer' do
+        expect(Gitaly::CommitService::Stub).to receive(:new).with(
+          address, nil, channel_override: be_a(GRPC::Core::Channel), interceptors: []
+        )
 
         described_class.stub(:commit_service, 'default')
+      end
+
+      it 'shares the same channel object with other stub' do
+        stub_commit = described_class.stub(:commit_service, 'default')
+        stub_blob = described_class.stub(:blob_service, 'default')
+
+        expect(stub_commit).to have_same_channel(stub_blob)
       end
     end
 
     context 'when passed a TCP address' do
-      it 'strips tcp:// prefix before passing it to GRPC::Core::Channel initializer' do
-        address = 'localhost:9876'
+      let(:address) { 'localhost:9876' }
+
+      before do
         prefixed_address = "tcp://#{address}"
         stub_repos_storages prefixed_address
+      end
 
-        expect(Gitaly::CommitService::Stub).to receive(:new).with(address, any_args)
+      it 'strips tcp:// prefix before passing it to GRPC::Core::Channel initializer' do
+        expect(Gitaly::CommitService::Stub).to receive(:new).with(
+          address, nil, channel_override: be_a(GRPC::Core::Channel), interceptors: []
+        )
 
         described_class.stub(:commit_service, 'default')
+      end
+
+      it 'shares the same channel object with other stub' do
+        stub_commit = described_class.stub(:commit_service, 'default')
+        stub_blob = described_class.stub(:blob_service, 'default')
+
+        expect(stub_commit).to have_same_channel(stub_blob)
       end
     end
   end

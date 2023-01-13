@@ -346,6 +346,7 @@
     a {
       @include top-level-item;
       @include context-header;
+      @include gl-h-auto;
     }
   }
 }
@@ -355,6 +356,7 @@
 
   .context-header a {
     @include context-header;
+    @include gl-h-auto;
   }
 
   > li {

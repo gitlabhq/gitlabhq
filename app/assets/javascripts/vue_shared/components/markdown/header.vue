@@ -10,6 +10,7 @@ import {
   INDENT_LINE,
   OUTDENT_LINE,
 } from '~/behaviors/shortcuts/keybindings';
+import { getModifierKey } from '~/constants';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
@@ -66,6 +67,7 @@ export default {
     return {
       tag: '> ',
       suggestPopoverVisible: false,
+      modifierKey: getModifierKey(),
     };
   },
   computed: {
@@ -89,15 +91,6 @@ export default {
     mdCollapsibleSection() {
       const expandText = s__('MarkdownEditor|Click to expand');
       return [`<details><summary>${expandText}</summary>`, `{text}`, '</details>'].join('\n');
-    },
-    isMac() {
-      // Accessing properties using ?. to allow tests to use
-      // this component without setting up window.gl.client.
-      // In production, window.gl.client should always be present.
-      return Boolean(window.gl?.client?.isMac);
-    },
-    modifierKey() {
-      return this.isMac ? '⌘' : s__('KeyboardKey|Ctrl+');
     },
   },
   watch: {
