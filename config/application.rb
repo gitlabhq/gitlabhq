@@ -596,6 +596,29 @@ module Gitlab
         Gitlab::Color, # https://gitlab.com/gitlab-org/gitlab/-/issues/368844,
         Hashie::Array # https://gitlab.com/gitlab-org/gitlab/-/issues/378089
       ]
+      #
+      # Restore setting the YAML permitted classes for ActiveRecord
+      #
+      # In [94d81c3c39e3ddc441c3af3f874e53b197cf3f54][0] rails upstream removed
+      # the code that copied the values of
+      # config.active_record.yaml_column_permitted_classes to
+      # ActiveRecord.yaml_column_permitted_classes during the
+      # config.after_initialize stage.
+      #
+      # We can not move the setting of
+      # config.active_record.yaml_column_permitted_classes out of the
+      # after_initialize because then the gitlab classes are not loaded yet
+      #
+      # This change was also ported to the 6.1 branch and released in 6.1.7.
+      # Some distributions like Debian even [backported this change to
+      # 6.1.6.1][1].
+      #
+      # This restores the code needed to have gitlab work in those cases.
+      #
+      # [0]: https://github.com/rails/rails/commit/94d81c3c39e3ddc441c3af3f874e53b197cf3f54
+      # [1]: https://salsa.debian.org/ruby-team/rails/-/commit/5663e598b41dc4e2058db22e1ee0d678e5c483ba
+      #
+      ActiveRecord::Base.yaml_column_permitted_classes = config.active_record.yaml_column_permitted_classes
 
       # on_master_start yields immediately in unclustered environments and runs
       # when the primary process is done initializing otherwise.

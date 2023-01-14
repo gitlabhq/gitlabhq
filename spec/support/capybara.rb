@@ -32,6 +32,8 @@ CAPYBARA_WINDOW_SIZE = [1366, 768].freeze
 
 SCREENSHOT_FILENAME_LENGTH = ENV['CI'] || ENV['CI_SERVER'] ? 255 : 99
 
+@blackhole_tcp_server = nil
+
 # Run Workhorse on the given host and port, proxying to Puma on a UNIX socket,
 # for a closer-to-production experience
 Capybara.register_server :puma_via_workhorse do |app, port, host, **options|
@@ -82,6 +84,17 @@ Capybara.register_driver :chrome do |app|
 
   # Chrome 75 defaults to W3C mode which doesn't allow console log access
   options.add_option(:w3c, false)
+
+  # Set up a proxy server to block all external traffic.
+  @blackhole_tcp_server = TCPServer.new(0)
+  Thread.new do
+    loop do
+      Thread.start(@blackhole_tcp_server.accept, &:close)
+    end
+  end
+
+  options.add_argument("--proxy-server=http://127.0.0.1:#{@blackhole_tcp_server.addr[1]}")
+  options.add_argument("--proxy-bypass-list=127.0.0.1,localhost,#{Gitlab.config.gitlab.host}")
 
   Capybara::Selenium::Driver.new(
     app,
