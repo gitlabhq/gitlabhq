@@ -343,6 +343,7 @@ Depending on the status of your pipeline, a badge can have the following values:
 - `passed`
 - `failed`
 - `skipped`
+- `manual`
 - `canceled`
 - `unknown`
 
