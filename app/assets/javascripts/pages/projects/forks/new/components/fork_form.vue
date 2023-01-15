@@ -57,6 +57,9 @@ export default {
     visibilityHelpPath: {
       default: '',
     },
+    cancelPath: {
+      default: '',
+    },
     projectFullPath: {
       default: '',
     },
@@ -372,7 +375,7 @@ export default {
         class="gl-mr-3"
         data-testid="cancel-button"
         :disabled="isSaving"
-        :href="projectFullPath"
+        :href="cancelPath"
       >
         {{ s__('ForkProject|Cancel') }}
       </gl-button>

@@ -11,6 +11,7 @@ const {
   newGroupPath,
   projectFullPath,
   visibilityHelpPath,
+  cancelPath,
   projectId,
   projectName,
   projectPath,
@@ -30,6 +31,7 @@ new Vue({
   provide: {
     newGroupPath,
     visibilityHelpPath,
+    cancelPath,
     endpoint,
     projectFullPath,
     projectId,

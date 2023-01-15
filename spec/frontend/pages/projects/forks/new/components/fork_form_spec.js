@@ -33,6 +33,7 @@ describe('ForkForm component', () => {
   const DEFAULT_PROVIDE = {
     newGroupPath: 'some/groups/path',
     visibilityHelpPath: 'some/visibility/help/path',
+    cancelPath: '/some/project-full-path',
     projectFullPath: '/some/project-full-path',
     projectId: '10',
     projectName: 'Project Name',
@@ -124,13 +125,13 @@ describe('ForkForm component', () => {
   const findVisibilityRadioGroup = () =>
     wrapper.find('[data-testid="fork-visibility-radio-group"]');
 
-  it('will go to projectFullPath when click cancel button', () => {
+  it('will go to cancelPath when click cancel button', () => {
     createComponent();
 
-    const { projectFullPath } = DEFAULT_PROVIDE;
+    const { cancelPath } = DEFAULT_PROVIDE;
     const cancelButton = wrapper.find('[data-testid="cancel-button"]');
 
-    expect(cancelButton.attributes('href')).toBe(projectFullPath);
+    expect(cancelButton.attributes('href')).toBe(cancelPath);
   });
 
   const selectedMockNamespace = {

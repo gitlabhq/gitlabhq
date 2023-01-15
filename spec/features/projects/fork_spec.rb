@@ -151,6 +151,13 @@ RSpec.describe 'Project fork', feature_category: :projects do
       expect(page).to have_content 'Forked from'
     end
 
+    it 'redirects to the source project when cancel is clicked' do
+      visit new_project_fork_path(project)
+      click_on 'Cancel'
+
+      expect(page).to have_current_path(project_path(project))
+    end
+
     it 'shows the new forked project on the forks page' do
       visit new_project_fork_path(project)
       submit_form
