@@ -1612,7 +1612,7 @@
               "description": "Creates N instances of the same job that run in parallel.",
               "default": 0,
               "minimum": 2,
-              "maximum": 50
+              "maximum": 200
             },
             {
               "type": "object",
@@ -1631,7 +1631,7 @@
                       ]
                     }
                   },
-                  "maxItems": 50
+                  "maxItems": 200
                 }
               },
               "additionalProperties": false,

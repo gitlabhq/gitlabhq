@@ -12,7 +12,7 @@ module Gitlab
             strategy :ParallelBuilds, if: -> (config) { config.is_a?(Numeric) }
             strategy :MatrixBuilds, if: -> (config) { config.is_a?(Hash) }
 
-            PARALLEL_LIMIT = 50
+            PARALLEL_LIMIT = 200
 
             class ParallelBuilds < ::Gitlab::Config::Entry::Node
               include ::Gitlab::Config::Entry::Validatable

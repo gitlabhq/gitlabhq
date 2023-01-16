@@ -151,8 +151,6 @@ Several known issues exist when you allow anyone to pull from the Package Regist
 
 - Project-level endpoints are supported. Group-level and instance-level endpoints are not supported. Support for group-level endpoints is proposed in [issue 383537](https://gitlab.com/gitlab-org/gitlab/-/issues/383537).
 - It does not work with the [Composer](../composer_repository/index.md#install-a-composer-package), because Composer only has a group endpoint.
-- It does not work with the [Debian](../debian_repository/index.md#install-a-package) repository. Support for the Debian repository is proposed in [issue 385258](https://gitlab.com/gitlab-org/gitlab/-/issues/385258).
-- It does not work with the [Ruby gems](../rubygems_registry/index.md#install-a-ruby-gem) repository. Support for the Ruby gems repository is proposed in [issue 385259](https://gitlab.com/gitlab-org/gitlab/-/issues/385259).
 - It will work with Conan, but using [`conan search`](../conan_repository/index.md#search-for-conan-packages-in-the-package-registry) does not work.
 
 ## Accepting contributions

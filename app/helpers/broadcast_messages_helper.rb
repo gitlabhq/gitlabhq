@@ -50,14 +50,6 @@ module BroadcastMessagesHelper
     end
   end
 
-  def broadcast_type_options
-    BroadcastMessage.broadcast_types.keys.map { |w| [w.humanize, w] }
-  end
-
-  def broadcast_theme_options
-    BroadcastMessage.themes.keys
-  end
-
   def target_access_level_options
     BroadcastMessage::ALLOWED_TARGET_ACCESS_LEVELS.map do |access_level|
       [Gitlab::Access.human_access(access_level), access_level]

@@ -29,7 +29,7 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Product::Matrix do
         [
           {
             'VAR_1' => (1..10).to_a,
-            'VAR_2' => (11..20).to_a
+            'VAR_2' => (11..31).to_a
           }
         ]
       end
@@ -41,7 +41,7 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Product::Matrix do
       describe '#errors' do
         it 'returns error about too many jobs' do
           expect(matrix.errors)
-            .to include('matrix config generates too many jobs (maximum is 50)')
+            .to include('matrix config generates too many jobs (maximum is 200)')
         end
       end
     end

@@ -2270,9 +2270,6 @@ msgstr ""
 msgid "Add approvers"
 msgstr ""
 
-msgid "Add broadcast message"
-msgstr ""
-
 msgid "Add child epic to an epic"
 msgstr ""
 
@@ -4130,9 +4127,6 @@ msgstr ""
 msgid "Allow use of licensed EE features"
 msgstr ""
 
-msgid "Allow users to dismiss the broadcast message"
-msgstr ""
-
 msgid "Allow users to register any application to use GitLab as an OAuth provider"
 msgstr ""
 
@@ -4506,9 +4500,6 @@ msgid "An error occurred while removing epics."
 msgstr ""
 
 msgid "An error occurred while removing issues."
-msgstr ""
-
-msgid "An error occurred while rendering preview broadcast message"
 msgstr ""
 
 msgid "An error occurred while rendering the editor"
@@ -7442,6 +7433,15 @@ msgid "BulkImport|Import is finished. Pick another name for re-import"
 msgstr ""
 
 msgid "BulkImport|Import selected"
+msgstr ""
+
+msgid "BulkImport|Import with projects"
+msgstr ""
+
+msgid "BulkImport|Import without projects"
+msgstr ""
+
+msgid "BulkImport|Importing projects is a %{docsLinkStart}Beta%{docsLinkEnd} feature."
 msgstr ""
 
 msgid "BulkImport|Importing the group failed."
@@ -14662,9 +14662,6 @@ msgstr ""
 msgid "Dismiss trial promotion"
 msgstr ""
 
-msgid "Dismissable"
-msgstr ""
-
 msgid "Dismissed"
 msgstr ""
 
@@ -15515,9 +15512,6 @@ msgid "End time"
 msgstr ""
 
 msgid "Ends"
-msgstr ""
-
-msgid "Ends at (UTC)"
 msgstr ""
 
 msgid "Ends on"
@@ -21216,6 +21210,12 @@ msgid "Import tasks from Phabricator into issues"
 msgstr ""
 
 msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
+msgstr ""
+
+msgid "Import with projects"
+msgstr ""
+
+msgid "Import without projects"
 msgstr ""
 
 msgid "ImportAProjectModal|Import from a project"
@@ -30172,9 +30172,6 @@ msgstr ""
 msgid "Path:"
 msgstr ""
 
-msgid "Paths can contain wildcards, like */welcome"
-msgstr ""
-
 msgid "Paths to protect with rate limiting"
 msgstr ""
 
@@ -34610,6 +34607,12 @@ msgid "Re-authentication required"
 msgstr ""
 
 msgid "Re-import"
+msgstr ""
+
+msgid "Re-import with projects"
+msgstr ""
+
+msgid "Re-import without projects"
 msgstr ""
 
 msgid "Re-request review"
@@ -40307,9 +40310,6 @@ msgstr ""
 msgid "Starts %{startsIn}"
 msgstr ""
 
-msgid "Starts at (UTC)"
-msgstr ""
-
 msgid "Starts escalations for this incident"
 msgstr ""
 
@@ -41936,9 +41936,6 @@ msgstr ""
 msgid "The branch or tag does not exist"
 msgstr ""
 
-msgid "The broadcast message displays only to users in projects and groups who have these roles."
-msgstr ""
-
 msgid "The character highlighter helps you keep the subject line to %{titleLength} characters and wrap the body at %{bodyLength} so they are readable in git."
 msgstr ""
 
@@ -42403,9 +42400,6 @@ msgid "The vulnerability is no longer detected. Verify the vulnerability has bee
 msgstr ""
 
 msgid "The vulnerability is no longer detected. Verify the vulnerability has been remediated before changing its status."
-msgstr ""
-
-msgid "Theme"
 msgstr ""
 
 msgid "There are currently no mirrored repositories."
@@ -44985,9 +44979,6 @@ msgid "Update approval rule"
 msgstr ""
 
 msgid "Update approvers"
-msgstr ""
-
-msgid "Update broadcast message"
 msgstr ""
 
 msgid "Update failed"

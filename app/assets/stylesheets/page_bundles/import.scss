@@ -1,48 +1,10 @@
 @import 'mixins_and_variables_and_functions';
 
-.import-jobs-from-col {
-  width: 37%;
-}
-
-
-.import-jobs-to-col {
-  width: 37%;
-}
-
-.import-jobs-status-col {
-  width: 25%;
-}
-
-.import-jobs-cta-col {
-  width: 1%;
-}
-
-.import-entities-target-select {
-  &.disabled {
-    .import-entities-target-select-separator {
-      color: var(--gray-400, $gray-400);
-      border-color: var(--gray-100, $gray-100);
-      background-color: var(--gray-10, $gray-10);
-    }
-  }
-
-  .import-entities-target-select-separator {
-    border-color: var(--gray-200, $gray-200);
-    background-color: var(--gray-10, $gray-10);
-  }
-
-  .gl-form-input {
-    box-shadow: inset 0 0 0 1px var(--gray-200, $gray-200);
-  }
-}
-
 $import-bar-height: $gl-spacing-scale-11;
 
 .import-table-bar {
-  @include gl-sticky;
   height: $import-bar-height;
   top: $header-height;
-  z-index: 3;
 
   html.with-performance-bar & {
     top: calc(#{$header-height} + #{$performance-bar-height});
@@ -50,16 +12,11 @@ $import-bar-height: $gl-spacing-scale-11;
 }
 
 .import-table {
-  border-collapse: separate;
-
   thead {
-    @include gl-sticky;
-    background-color: var(--gray-10, $gray-10);
     top: calc(#{$header-height} + #{$import-bar-height});
-    z-index: 3;
 
     html.with-performance-bar & {
-      top: calc(#{$header-height + $performance-bar-height} + #{$import-bar-height});
+      top: calc(#{$header-height} + #{$performance-bar-height} + #{$import-bar-height});
     }
   }
 }

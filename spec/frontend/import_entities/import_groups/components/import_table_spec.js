@@ -49,6 +49,8 @@ describe('import table', () => {
 
   const findImportSelectedButton = () =>
     wrapper.findAll('button').wrappers.find((w) => w.text() === 'Import selected');
+  const findImportSelectedDropdown = () =>
+    wrapper.findAll('.gl-dropdown').wrappers.find((w) => w.text().includes('Import with projects'));
   const findImportButtons = () =>
     wrapper.findAll('button').wrappers.filter((w) => w.text() === 'Import');
   const findPaginationDropdown = () => wrapper.find('[data-testid="page-size"]');
@@ -64,7 +66,12 @@ describe('import table', () => {
   const selectRow = (idx) =>
     wrapper.findAll('tbody td input[type=checkbox]').at(idx).setChecked(true);
 
-  const createComponent = ({ bulkImportSourceGroups, importGroups, defaultTargetNamespace }) => {
+  const createComponent = ({
+    bulkImportSourceGroups,
+    importGroups,
+    defaultTargetNamespace,
+    glFeatures = {},
+  }) => {
     apolloProvider = createMockApollo(
       [
         [
@@ -92,6 +99,9 @@ describe('import table', () => {
       },
       directives: {
         GlTooltip: createMockDirective(),
+      },
+      provide: {
+        glFeatures,
       },
       apolloProvider,
     });
@@ -530,16 +540,16 @@ describe('import table', () => {
         mutation: importGroupsMutation,
         variables: {
           importRequests: [
-            {
+            expect.objectContaining({
               targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
               newName: NEW_GROUPS[0].lastImportTarget.newName,
               sourceGroupId: NEW_GROUPS[0].id,
-            },
-            {
+            }),
+            expect.objectContaining({
               targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
               newName: NEW_GROUPS[1].lastImportTarget.newName,
               sourceGroupId: NEW_GROUPS[1].id,
-            },
+            }),
           ],
         },
       });
@@ -608,6 +618,85 @@ describe('import table', () => {
       await waitForPromises();
 
       expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
+    });
+  });
+
+  describe('when import projects is enabled', () => {
+    const NEW_GROUPS = [
+      generateFakeEntry({ id: 1, status: STATUSES.NONE }),
+      generateFakeEntry({ id: 2, status: STATUSES.NONE }),
+      generateFakeEntry({ id: 3, status: STATUSES.FINISHED }),
+    ];
+
+    beforeEach(() => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: NEW_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+        glFeatures: {
+          bulkImportProjects: true,
+        },
+      });
+      jest.spyOn(apolloProvider.defaultClient, 'mutate');
+      return waitForPromises();
+    });
+
+    it('renders import all dropdown', async () => {
+      expect(findImportSelectedDropdown().exists()).toBe(true);
+    });
+
+    it('includes migrateProjects: true when dropdown is clicked', async () => {
+      await selectRow(0);
+      await selectRow(1);
+      await nextTick();
+      await findImportSelectedDropdown().find('button').trigger('click');
+      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
+        mutation: importGroupsMutation,
+        variables: {
+          importRequests: [
+            expect.objectContaining({
+              targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
+              newName: NEW_GROUPS[0].lastImportTarget.newName,
+              sourceGroupId: NEW_GROUPS[0].id,
+              migrateProjects: true,
+            }),
+            expect.objectContaining({
+              targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
+              newName: NEW_GROUPS[1].lastImportTarget.newName,
+              sourceGroupId: NEW_GROUPS[1].id,
+              migrateProjects: true,
+            }),
+          ],
+        },
+      });
+    });
+
+    it('includes migrateProjects: false when dropdown item is clicked', async () => {
+      await selectRow(0);
+      await selectRow(1);
+      await nextTick();
+      await findImportSelectedDropdown().find('.gl-dropdown-item button').trigger('click');
+      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
+        mutation: importGroupsMutation,
+        variables: {
+          importRequests: [
+            expect.objectContaining({
+              targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
+              newName: NEW_GROUPS[0].lastImportTarget.newName,
+              sourceGroupId: NEW_GROUPS[0].id,
+              migrateProjects: false,
+            }),
+            expect.objectContaining({
+              targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
+              newName: NEW_GROUPS[1].lastImportTarget.newName,
+              sourceGroupId: NEW_GROUPS[1].id,
+              migrateProjects: false,
+            }),
+          ],
+        },
+      });
     });
   });
 });

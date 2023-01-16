@@ -153,6 +153,7 @@ export function createResolvers({ endpoints }) {
             source_full_path: op.group.fullPath,
             destination_namespace: op.targetNamespace,
             destination_name: op.newName,
+            migrate_projects: op.migrateProjects,
           })),
         });
 

@@ -135,14 +135,6 @@
     @include gl-font-weight-normal;
     flex: none;
   }
-
-  .icon-container {
-    @include gl-mr-3;
-    @include gl-p-3;
-    background-color: $t-gray-a-08;
-    border: 1px solid $t-gray-a-08;
-    border-radius: $border-radius-default;
-  }
 }
 
 @mixin top-level-item {
@@ -466,6 +458,7 @@
 // PANELS-SPECIFIC
 //
 
+.icon-avatar,
 .settings-avatar {
   svg {
     margin: auto;

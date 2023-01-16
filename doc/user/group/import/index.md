@@ -61,6 +61,11 @@ You can migrate:
 - By direct transfer using either the UI or the [API](../../../api/bulk_imports.md).
 - Many groups at once.
 
+You can migrate:
+
+- With projects - this feature is in [Beta](../../../policy/alpha-beta-support.md#beta-features) and not ready for production use.
+- Without projects.
+
 Not all group and project resources are imported. See list of migrated resources below:
 
 - [Migrated group items](#migrated-group-items).
@@ -107,7 +112,7 @@ After you have authorized access to the source GitLab instance, you are redirect
 importer page. The top-level groups on the connected source instance you have the Owner role for are listed.
 
 1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
-1. Next to the groups you want to import, select **Import**.
+1. Next to the groups you want to import, select from the dropdown **Import with projects** or **Import without projects**. Remember that importing projects is in [Beta](../../../policy/alpha-beta-support.md#beta-features). This feature is not ready for production use. On self-manage GitLab, if `bulk_import_projects` feature flag is disabled and the feature is not available, select **Import**.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 

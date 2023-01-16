@@ -2867,6 +2867,8 @@ You must:
 
 ### `parallel`
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336576) in GitLab 15.9, the maximum value for `parallel` is increased from 50 to 200.
+
 Use `parallel` to run a job multiple times in parallel in a single pipeline.
 
 Multiple runners must exist, or a single runner must be configured to run multiple jobs concurrently.
@@ -2877,7 +2879,7 @@ Parallel jobs are named sequentially from `job_name 1/N` to `job_name N/N`.
 
 **Possible inputs**:
 
-- A numeric value from `2` to `50`.
+- A numeric value from `2` to `200`.
 
 **Example of `parallel`**:
 
@@ -2902,6 +2904,7 @@ This example creates 5 jobs that run in parallel, named `test 1/5` to `test 5/5`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15356) in GitLab 13.3.
 > - The job naming style was [improved in GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/230452).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336576) in GitLab 15.9, the maximum number of permutations is increased from 50 to 200.
 
 Use `parallel:matrix` to run a job multiple times in parallel in a single pipeline,
 but with different variable values for each instance of the job.
@@ -2914,7 +2917,7 @@ Multiple runners must exist, or a single runner must be configured to run multip
 
 - The variable names can use only numbers, letters, and underscores (`_`).
 - The values must be either a string, or an array of strings.
-- The number of permutations cannot exceed 50.
+- The number of permutations cannot exceed 200.
 
 **Example of `parallel:matrix`**:
 

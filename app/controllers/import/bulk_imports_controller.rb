@@ -5,6 +5,9 @@ class Import::BulkImportsController < ApplicationController
 
   before_action :ensure_bulk_import_enabled
   before_action :verify_blocked_uri, only: :status
+  before_action only: :status do
+    push_frontend_feature_flag(:bulk_import_projects)
+  end
 
   feature_category :importers
   urgency :low
@@ -128,6 +131,7 @@ class Import::BulkImportsController < ApplicationController
       destination_name
       destination_slug
       destination_namespace
+      migrate_projects
     ]
   end
 
