@@ -57,6 +57,7 @@ RSpec.describe 'mail_room.yml', feature_category: :service_desk do
         password: '[REDACTED]',
         name: 'inbox',
         idle_timeout: 60,
+        delete_after_delivery: true,
         expunge_deleted: true
       }
       expected_options = {
@@ -81,7 +82,7 @@ RSpec.describe 'mail_room.yml', feature_category: :service_desk do
         email: 'gitlab-incoming@gmail.com',
         name: 'inbox',
         idle_timeout: 60,
-        expunge_deleted: true
+        delete_after_delivery: false
       }
       expected_options = {
         redis_url: gitlab_redis_queues.url,

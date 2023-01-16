@@ -236,7 +236,12 @@ production: &base
     #
     # log_path: log/mail_room_json.log
 
+    # If you are using Microsoft Graph instead of IMAP, set this to false to retain
+    # messages in the inbox since deleted messages are auto-expunged after some time.
+    delete_after_delivery: true
+
     # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+    # Only applies to IMAP. Microsoft Graph will auto-expunge any deleted messages.
     expunge_deleted: false
 
     # For Microsoft Graph support

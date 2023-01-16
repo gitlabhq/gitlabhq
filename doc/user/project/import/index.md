@@ -46,7 +46,6 @@ You can import projects from:
 - [GitLab.com](gitlab_com.md)
 - [Gitea](gitea.md)
 - [Perforce](perforce.md)
-- [From SVN](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Git-as-a-Client)
 - [TFVC](tfvc.md)
 - [Repository by URL](repo_by_url.md)
 - [Uloading a manifest file (AOSP)](manifest.md)
@@ -57,6 +56,13 @@ You can also import any Git repository through HTTP from the **New Project** pag
 repository is too large, the import can timeout.
 
 You can then [connect your external repository to get CI/CD benefits](../../../ci/ci_cd_for_external_repos/index.md).
+
+## Import from Subversion
+
+GitLab can not automatically migrate Subversion repositories to Git. Converting Subversion repositories to Git can be difficult, but several tools exist including:
+
+- [`git svn`](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Migrating-to-Git), for very small and simple repositories.
+- [`reposurgeon`](http://www.catb.org/~esr/reposurgeon/repository-editing.html), for larger and more complex repositories.
 
 ## Migrate using the API
 

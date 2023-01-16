@@ -16,7 +16,7 @@
 
       :name: <%= config[:mailbox].to_json %>
 
-      :delete_after_delivery: true
+      :delete_after_delivery: <%= config.fetch(:delete_after_delivery, true).to_json %>
       :expunge_deleted: <%= config[:expunge_deleted].to_json %>
 
       <% if config[:inbox_method] %>

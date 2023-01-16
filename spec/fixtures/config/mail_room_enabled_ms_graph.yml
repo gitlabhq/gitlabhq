@@ -4,7 +4,7 @@ test:
     address: "gitlab-incoming+%{key}@gmail.com"
     user: "gitlab-incoming@gmail.com"
     mailbox: "inbox"
-    expunge_deleted: true
+    delete_after_delivery: false
     inbox_method: "microsoft_graph"
     inbox_options:
       tenant_id: "12345"
@@ -17,7 +17,7 @@ test:
     address: "gitlab-incoming+%{key}@gmail.com"
     user: "gitlab-incoming@gmail.com"
     mailbox: "inbox"
-    expunge_deleted: true
+    delete_after_delivery: false
     inbox_method: "microsoft_graph"
     inbox_options:
       tenant_id: "12345"

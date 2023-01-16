@@ -80,7 +80,7 @@ go build -o analyzer
 
 ### Execution criteria
 
-[Enabling SAST](../../user/application_security/sast/index.md#configure-sast-manually) requires including a pre-defined [template](https://gitlab.com/gitlab-org/gitlab/-/blob/ee4d473eb9a39f2f84b719aa0ca13d2b8e11dc7e/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to your GitLab CI/CD configuration.
+[Enabling SAST](../../user/application_security/sast/index.md#configure-sast-in-your-cicd-yaml) requires including a pre-defined [template](https://gitlab.com/gitlab-org/gitlab/-/blob/ee4d473eb9a39f2f84b719aa0ca13d2b8e11dc7e/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to your GitLab CI/CD configuration.
 
 The following independent criteria determine which analyzer needs to be run on a project:
 

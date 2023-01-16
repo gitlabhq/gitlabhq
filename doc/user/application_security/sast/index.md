@@ -231,18 +231,23 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 
 ## Configuration
 
+SAST scanning runs in your CI/CD pipeline.
+When you add the GitLab-managed CI/CD template to your pipeline, the right [SAST analyzers](analyzers.md) automatically scan your code and save results as [SAST report artifacts](../../../ci/yaml/artifacts_reports.md#artifactsreportssast).
+
 To configure SAST for a project you can:
 
 - Use [Auto SAST](../../../topics/autodevops/stages.md#auto-sast), provided by
   [Auto DevOps](../../../topics/autodevops/index.md).
-- [Configure SAST manually](#configure-sast-manually).
+- [Configure SAST in your CI/CD YAML](#configure-sast-in-your-cicd-yaml).
 - [Configure SAST using the UI](#configure-sast-in-the-ui) (introduced in GitLab 13.3).
 
-### Configure SAST manually
+You can enable SAST across many projects by [enforcing scan execution](../index.md#enforce-scan-execution).
 
-To enable SAST you must [include](../../../ci/yaml/index.md#includetemplate)
-the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
-provided as a part of your GitLab installation.
+### Configure SAST in your CI/CD YAML
+
+To enable SAST, you [include](../../../ci/yaml/index.md#includetemplate)
+the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml).
+The template is provided as a part of your GitLab installation.
 
 Add the following to your `.gitlab-ci.yml` file:
 
@@ -256,34 +261,16 @@ your project's source code for possible vulnerabilities.
 
 The results are saved as a
 [SAST report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportssast)
-that you can later download and analyze. Due to implementation limitations, we
-always take the latest SAST artifact available.
+that you can later download and analyze.
+When downloading, you always receive the most recent SAST artifact available.
 
 ### Configure SAST in the UI
 
 You can enable and configure SAST in the UI, either with default settings, or with customizations.
 The method you can use depends on your GitLab license tier.
 
-- [Configure SAST in the UI with default settings](#configure-sast-in-the-ui-with-default-settings).
 - [Configure SAST in the UI with customizations](#configure-sast-in-the-ui-with-customizations). **(ULTIMATE)**
-
-### Configure SAST in the UI with default settings
-
-> [Introduced](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#security-configuration-page-for-all-users) in GitLab 13.9
-
-NOTE:
-The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
-configuration file. If you have a complex GitLab configuration file it may not be parsed
-successfully, and an error may occur.
-
-To enable and configure SAST with default settings:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance** > **Configuration**.
-1. In the SAST section, select **Configure with a merge request**.
-1. Review and merge the merge request to enable SAST.
-
-Pipelines now include a SAST job.
+- [Configure SAST in the UI with default settings only](#configure-sast-in-the-ui-with-default-settings-only).
 
 ### Configure SAST in the UI with customizations **(ULTIMATE)**
 
@@ -311,6 +298,24 @@ To enable and configure SAST with customizations:
    [SAST analyzers](analyzers.md) and enter custom analyzer values.
 1. Select **Create Merge Request**.
 1. Review and merge the merge request.
+
+Pipelines now include a SAST job.
+
+### Configure SAST in the UI with default settings only
+
+> [Introduced](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#security-configuration-page-for-all-users) in GitLab 13.9
+
+NOTE:
+The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
+configuration file. If you have a complex GitLab configuration file it may not be parsed
+successfully, and an error may occur.
+
+To enable and configure SAST with default settings:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance** > **Configuration**.
+1. In the SAST section, select **Configure with a merge request**.
+1. Review and merge the merge request to enable SAST.
 
 Pipelines now include a SAST job.
 
@@ -760,7 +765,7 @@ variables:
 
 ### Pipeline errors related to changes in the GitLab-managed CI/CD template
 
-The [GitLab-managed SAST CI/CD template](#configure-sast-manually) controls which [analyzer](analyzers.md) jobs run and how they're configured. While using the template, you might experience a job failure or other pipeline error. For example, you might:
+The [GitLab-managed SAST CI/CD template](#configure-sast-in-your-cicd-yaml) controls which [analyzer](analyzers.md) jobs run and how they're configured. While using the template, you might experience a job failure or other pipeline error. For example, you might:
 
 - See an error message like `'<your job>' needs 'spotbugs-sast' job, but 'spotbugs-sast' is not in any previous stage` when you view an affected pipeline.
 - Experience another type of unexpected issue with your CI/CD pipeline configuration.
@@ -774,12 +779,12 @@ include:
 
 If your GitLab instance has limited network connectivity, you can also download the file and host it elsewhere.
 
-We recommend that you only use this solution temporarily and that you return to [the standard template](#configure-sast-manually) as soon as possible.
+We recommend that you only use this solution temporarily and that you return to [the standard template](#configure-sast-in-your-cicd-yaml) as soon as possible.
 
 ### Errors in a specific analyzer job
 
 GitLab SAST [analyzers](analyzers.md) are released as container images.
-If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](#configure-sast-manually) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](#pinning-to-minor-image-version).
+If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](#configure-sast-in-your-cicd-yaml) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](#pinning-to-minor-image-version).
 
 Each [analyzer project](analyzers.md#sast-analyzers) has a `CHANGELOG.md` file listing the changes made in each available version.
 
