@@ -2,7 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness do
+RSpec.describe Ci::CreatePipelineService,
+:yaml_processor_feature_flag_corectness, feature_category: :pipeline_authoring do
+  include RepoHelpers
+
   context 'include:' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user)    { project.first_owner }
@@ -16,14 +19,17 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
     let(:file_location) { 'spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml' }
 
-    before do
-      allow(project.repository)
-        .to receive(:blob_data_at).with(project.commit.id, '.gitlab-ci.yml')
-        .and_return(config)
+    let(:project_files) do
+      {
+        '.gitlab-ci.yml' => config,
+        file_location => File.read(Rails.root.join(file_location))
+      }
+    end
 
-      allow(project.repository)
-        .to receive(:blob_data_at).with(project.commit.id, file_location)
-        .and_return(File.read(Rails.root.join(file_location)))
+    around do |example|
+      create_and_delete_files(project, project_files) do
+        example.run
+      end
     end
 
     shared_examples 'not including the file' do

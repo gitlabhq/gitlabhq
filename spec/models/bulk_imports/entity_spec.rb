@@ -325,4 +325,24 @@ RSpec.describe BulkImports::Entity, type: :model do
       expect(project_entity.update_service).to eq(::Projects::UpdateService)
     end
   end
+
+  describe '#full_path' do
+    it 'returns group full path for project entity' do
+      group_entity = build(:bulk_import_entity, :group_entity, group: build(:group))
+
+      expect(group_entity.full_path).to eq(group_entity.group.full_path)
+    end
+
+    it 'returns project full path for project entity' do
+      project_entity = build(:bulk_import_entity, :project_entity, project: build(:project))
+
+      expect(project_entity.full_path).to eq(project_entity.project.full_path)
+    end
+
+    it 'returns nil when not associated with group or project' do
+      entity = build(:bulk_import_entity, group: nil, project: nil)
+
+      expect(entity.full_path).to eq(nil)
+    end
+  end
 end

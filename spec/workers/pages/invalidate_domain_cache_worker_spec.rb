@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Pages::InvalidateDomainCacheWorker do
+RSpec.describe Pages::InvalidateDomainCacheWorker, feature_category: :pages do
   shared_examples 'clears caches with' do |event_class:, event_data:, caches:|
     include AfterNextHelpers
 
@@ -22,44 +22,70 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
     end
   end
 
+  context 'when a project have multiple domains' do
+    include AfterNextHelpers
+
+    let_it_be(:project) { create(:project) }
+    let_it_be(:pages_domain) { create(:pages_domain, project: project) }
+    let_it_be(:pages_domain2) { create(:pages_domain, project: project) }
+
+    let(:event) do
+      Pages::PageDeployedEvent.new(
+        data: {
+          project_id: project.id,
+          namespace_id: project.namespace_id,
+          root_namespace_id: project.root_ancestor.id
+        }
+      )
+    end
+
+    subject { consume_event(subscriber: described_class, event: event) }
+
+    it 'clears the cache with Gitlab::Pages::CacheControl' do
+      expect_next(Gitlab::Pages::CacheControl, type: :namespace, id: project.namespace_id)
+        .to receive(:clear_cache)
+      expect_next(Gitlab::Pages::CacheControl, type: :domain, id: pages_domain.id)
+        .to receive(:clear_cache)
+      expect_next(Gitlab::Pages::CacheControl, type: :domain, id: pages_domain2.id)
+        .to receive(:clear_cache)
+
+      subject
+    end
+  end
+
   it_behaves_like 'clears caches with',
     event_class: Pages::PageDeployedEvent,
     event_data: { project_id: 1, namespace_id: 2, root_namespace_id: 3 },
     caches: [
-      { type: :namespace, id: 3 },
-      { type: :project, id: 1 }
+      { type: :namespace, id: 3 }
     ]
 
   it_behaves_like 'clears caches with',
     event_class: Pages::PageDeletedEvent,
     event_data: { project_id: 1, namespace_id: 2, root_namespace_id: 3 },
     caches: [
-      { type: :namespace, id: 3 },
-      { type: :project, id: 1 }
+      { type: :namespace, id: 3 }
     ]
 
   it_behaves_like 'clears caches with',
     event_class: Projects::ProjectDeletedEvent,
     event_data: { project_id: 1, namespace_id: 2, root_namespace_id: 3 },
     caches: [
-      { type: :namespace, id: 3 },
-      { type: :project, id: 1 }
+      { type: :namespace, id: 3 }
     ]
 
   it_behaves_like 'clears caches with',
     event_class: Projects::ProjectCreatedEvent,
     event_data: { project_id: 1, namespace_id: 2, root_namespace_id: 3 },
     caches: [
-      { type: :namespace, id: 3 },
-      { type: :project, id: 1 }
+      { type: :namespace, id: 3 }
     ]
 
   it_behaves_like 'clears caches with',
     event_class: Projects::ProjectArchivedEvent,
     event_data: { project_id: 1, namespace_id: 2, root_namespace_id: 3 },
     caches: [
-      { type: :namespace, id: 3 },
-      { type: :project, id: 1 }
+      { type: :namespace, id: 3 }
     ]
 
   it_behaves_like 'clears caches with',
@@ -72,8 +98,7 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
       new_path: 'new_path'
     },
     caches: [
-      { type: :namespace, id: 3 },
-      { type: :project, id: 1 }
+      { type: :namespace, id: 3 }
     ]
 
   it_behaves_like 'clears caches with',
@@ -86,7 +111,6 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
       new_root_namespace_id: 5
     },
     caches: [
-      { type: :project, id: 1 },
       { type: :namespace, id: 3 },
       { type: :namespace, id: 5 }
     ]
@@ -131,10 +155,11 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
       project_id: 1,
       namespace_id: 2,
       root_namespace_id: 3,
+      domain_id: 4,
       domain: 'somedomain.com'
     },
     caches: [
-      { type: :project, id: 1 },
+      { type: :domain, id: 4 },
       { type: :namespace, id: 3 }
     ]
 
@@ -144,10 +169,11 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
       project_id: 1,
       namespace_id: 2,
       root_namespace_id: 3,
+      domain_id: 4,
       domain: 'somedomain.com'
     },
     caches: [
-      { type: :project, id: 1 },
+      { type: :domain, id: 4 },
       { type: :namespace, id: 3 }
     ]
 
@@ -157,10 +183,11 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
       project_id: 1,
       namespace_id: 2,
       root_namespace_id: 3,
+      domain_id: 4,
       domain: 'somedomain.com'
     },
     caches: [
-      { type: :project, id: 1 },
+      { type: :domain, id: 4 },
       { type: :namespace, id: 3 }
     ]
 
@@ -172,10 +199,11 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
           project_id: 1,
           namespace_id: 2,
           root_namespace_id: 3,
+          domain_id: 4,
           attributes: [attribute]
         },
         caches: [
-          { type: :project, id: 1 },
+          { type: :domain, id: 4 },
           { type: :namespace, id: 3 }
         ]
     end
@@ -204,7 +232,6 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
         features: ['pages_access_level']
       },
       caches: [
-        { type: :project, id: 1 },
         { type: :namespace, id: 3 }
       ]
 
@@ -234,7 +261,6 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
         new_root_namespace_id: 5
       },
       caches: [
-        { type: :project, id: 1 },
         { type: :namespace, id: 5 }
       ]
   end

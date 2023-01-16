@@ -4,8 +4,9 @@ require 'spec_helper'
 
 module Gitlab
   module Ci
-    RSpec.describe YamlProcessor do
+    RSpec.describe YamlProcessor, feature_category: :pipeline_authoring do
       include StubRequests
+      include RepoHelpers
 
       subject(:processor) { described_class.new(config, user: nil).execute }
 
@@ -1479,9 +1480,19 @@ module Gitlab
           let(:opts) { { project: project, sha: project.commit.sha } }
 
           context "when the included internal file is present" do
-            before do
-              expect(project.repository).to receive(:blob_data_at)
-                .and_return(YAML.dump({ job1: { script: 'hello' } }))
+            let(:project_files) do
+              {
+                'local.gitlab-ci.yml' => <<~YAML
+                job1:
+                  script: hello
+                YAML
+              }
+            end
+
+            around do |example|
+              create_and_delete_files(project, project_files) do
+                example.run
+              end
             end
 
             it { is_expected.to be_valid }

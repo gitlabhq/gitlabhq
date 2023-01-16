@@ -265,6 +265,7 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
             project_id: project.id,
             namespace_id: project.namespace.id,
             root_namespace_id: project.root_namespace.id,
+            domain_id: kind_of(Numeric),
             domain: params[:domain]
           )
 
@@ -393,6 +394,7 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
             project_id: project.id,
             namespace_id: project.namespace.id,
             root_namespace_id: project.root_namespace.id,
+            domain_id: pages_domain_secure.id,
             domain: pages_domain_secure.domain
           )
       end
@@ -556,6 +558,7 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
             project_id: project.id,
             namespace_id: project.namespace.id,
             root_namespace_id: project.root_namespace.id,
+            domain_id: pages_domain.id,
             domain: pages_domain.domain
           )
 

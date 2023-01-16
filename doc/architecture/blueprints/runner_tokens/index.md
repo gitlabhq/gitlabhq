@@ -314,33 +314,34 @@ using PAT tokens for example - such that every runner is associated with an owne
 
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
-| GitLab Runner    | `15.x` | Ensure a sidecar TOML file exists with a `system_id` value.<br/>Log new system ID values with `INFO` level as they get assigned. |
-| GitLab Runner    | `15.x` | Log unique system ID in the build logs. |
-| GitLab Runner    | `15.x` | Label Prometheus metrics with unique system ID. |
-| GitLab Runner    | `15.x` | Prepare `register` command to fail if runner server-side configuration options are passed together with a new `glrt-` token. |
+| GitLab Runner    | `15.7` | Ensure a sidecar TOML file exists with a `system_id` value.<br/>Log new system ID values with `INFO` level as they get assigned. |
+| GitLab Runner    | `15.7` | Log unique system ID in the build logs. |
+| GitLab Runner    | `15.9` | Label Prometheus metrics with unique system ID. |
+| GitLab Runner    | `15.8` | Prepare `register` command to fail if runner server-side configuration options are passed together with a new `glrt-` token. |
 
 ### Stage 3 - Database changes
 
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
-| GitLab Rails app | | Create database migration to add columns to `ci_runners` table. |
-| GitLab Rails app | | Create database migration to add `ci_runner_machines` table. |
-| GitLab Rails app | | Create database migration to add `ci_runner_machines.id` foreign key to `ci_builds_metadata` table. |
-| GitLab Rails app | | Create database migrations to add `allow_runner_registration_token` setting to `application_settings` and `namespace_settings` tables (default: `true`). |
-| GitLab Rails app | | Create `ci_runner_machines` record in `POST /runners/verify` request if the runner token is prefixed with `glrt-`. |
-| GitLab Rails app | | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
+| GitLab Rails app | `%15.8` | Create database migration to add columns to `ci_runners` table. |
+| GitLab Rails app | `%15.8` | Create database migration to add `ci_runner_machines` table. |
+| GitLab Rails app | `%15.9` | Create database migration to add `ci_runner_machines.id` foreign key to `ci_builds_metadata` table. |
+| GitLab Rails app | `%15.8` | Create database migrations to add `allow_runner_registration_token` setting to `application_settings` and `namespace_settings` tables (default: `true`). |
+| GitLab Rails app | `%15.8` | Create database migration to add config column to `ci_runner_machines` table. |
 | GitLab Runner    | | Start sending `system_id` value in `POST /jobs/request` request and other follow-up requests that require identifying the unique system. |
 | GitLab Rails app | | Create service similar to `StaleGroupRunnersPruneCronWorker` service to clean up `ci_runner_machines` records instead of `ci_runners` records.<br/>Existing service continues to exist but focuses only on legacy runners. |
+| GitLab Rails app | | Create `ci_runner_machines` record in `POST /runners/verify` request if the runner token is prefixed with `glrt-`. |
+| GitLab Rails app | | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
 
 ### Stage 4 - New UI
 
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
-| GitLab Runner    | | Implement new GraphQL user-authenticated API to create a new runner. |
-| GitLab Runner    | | [Add prefix to newly generated runner authentication tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/383198). |
-| GitLab Rails app | | Implement UI to create new runner. |
-| GitLab Rails app | | GraphQL changes to `CiRunner` type. |
-| GitLab Rails app | | UI changes to runner details view (listing of platform, architecture, IP address, etc.) (?) |
+| GitLab Rails app | `%15.10` | Implement new GraphQL user-authenticated API to create a new runner. |
+| GitLab Rails app | `%15.10` | [Add prefix to newly generated runner authentication tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/383198). |
+| GitLab Rails app | `%15.10` | Implement UI to create new runner. |
+| GitLab Rails app | `%15.10` | GraphQL changes to `CiRunner` type. |
+| GitLab Rails app | `%15.10` | UI changes to runner details view (listing of platform, architecture, IP address, etc.) (?) |
 
 ### Stage 5 - Optional disabling of registration token
 

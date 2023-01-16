@@ -1,12 +1,8 @@
-# valid artifacts:when
-artifacts-when-on-failure:
+# valid artifact:reports:browser_performance
+browser_performance string path:
   artifacts:
-    when: on_failure
-
-artifacts-no-when:
-  artifacts:
-    paths:
-      - binaries/
+    reports:
+      browser_performance: foo
 
 # valid artifact:reports:cyclonedx
 cyclonedx string path:
@@ -45,3 +41,13 @@ coverage-report-null:
   artifacts:
     reports:
       coverage_report: null
+
+# valid artifacts:when
+artifacts-when-on-failure:
+  artifacts:
+    when: on_failure
+
+artifacts-no-when:
+  artifacts:
+    paths:
+      - binaries/

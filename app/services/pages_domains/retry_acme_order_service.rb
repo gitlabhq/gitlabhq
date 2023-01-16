@@ -30,6 +30,7 @@ module PagesDomains
           project_id: domain.project.id,
           namespace_id: domain.project.namespace_id,
           root_namespace_id: domain.project.root_namespace.id,
+          domain_id: domain.id,
           domain: domain.domain
         }
       )

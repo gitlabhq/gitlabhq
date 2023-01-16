@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category: :continuous_integration do
+  include RepoHelpers
+
   describe 'Pipeline Processing Service Tests With Yaml' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user)    { project.first_owner }
@@ -956,17 +958,16 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push).payload
       end
 
-      before do
-        allow_next_instance_of(Repository) do |repository|
-          allow(repository)
-            .to receive(:blob_data_at)
-            .with(an_instance_of(String), '.gitlab-ci.yml')
-            .and_return(parent_config)
+      let(:project_files) do
+        {
+          '.gitlab-ci.yml' => parent_config,
+          '.child.yml' => child_config
+        }
+      end
 
-          allow(repository)
-            .to receive(:blob_data_at)
-            .with(an_instance_of(String), '.child.yml')
-            .and_return(child_config)
+      around do |example|
+        create_and_delete_files(project, project_files) do
+          example.run
         end
       end
 

@@ -1,15 +1,28 @@
-# invalid artifacts:when
-artifacts-when-unknown:
+# invalid artifact:reports:browser_performance
+browser_performance no paths:
   artifacts:
-    when: unknown
+      reports:
+        browser_performance:
 
-artifacts-when-array:
+## Lists (or globs) are not allowed!
+browser_performance list of string paths:
   artifacts:
-    when: [always]
+    reports:
+      browser_performance:
+        - foo
+        - ./bar/baz
 
-artifacts-when-boolean:
+browser_performance mixed list of string paths and globs:
   artifacts:
-    when: true
+    reports:
+      browser_performance:
+        - ./foo
+        - "bar/*.baz"
+
+browser_performance string array:
+  artifacts:
+    reports:
+      browser_performance: ["foo", "blah"]
 
 # invalid artifact:reports:cyclonedx
 cyclonedx no paths:
@@ -34,3 +47,23 @@ coverage-report-is-string:
   artifacts:
     reports:
       coverage_report: cobertura
+
+# invalid artifact:reports:performance
+# Superceded by: artifact:reports:browser_performance
+performance string path:
+  artifacts:
+    reports:
+      performance: foo
+
+# invalid artifacts:when
+artifacts-when-unknown:
+  artifacts:
+    when: unknown
+
+artifacts-when-array:
+  artifacts:
+    when: [always]
+
+artifacts-when-boolean:
+  artifacts:
+    when: true

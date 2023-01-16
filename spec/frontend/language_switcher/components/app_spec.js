@@ -1,3 +1,4 @@
+import { GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import LanguageSwitcherApp from '~/language_switcher/components/app.vue';
 import { PREFERRED_LANGUAGE_COOKIE_KEY } from '~/language_switcher/constants';
@@ -29,6 +30,7 @@ describe('<LanguageSwitcher />', () => {
 
   const getPreferredLanguage = () => wrapper.find('.gl-dropdown-button-text').text();
   const findLanguageDropdownItem = (code) => wrapper.findByTestId(`language_switcher_lang_${code}`);
+  const findFooter = () => wrapper.findByTestId('footer');
 
   it('preferred language', () => {
     expect(getPreferredLanguage()).toBe(EN.text);
@@ -58,5 +60,13 @@ describe('<LanguageSwitcher />', () => {
     expect(reloadSpy).toHaveBeenCalled();
     expect(utils.setCookie).toHaveBeenCalledWith(PREFERRED_LANGUAGE_COOKIE_KEY, ES.value);
     window.location = originalLocation;
+  });
+
+  it('renders footer link', () => {
+    const link = findFooter().findComponent(GlLink);
+
+    // Assert against actual value so we can implicitly test `helpPagePath` call
+    expect(link.attributes('href')).toBe('/help/development/i18n/translation.md');
+    expect(link.text()).toBe(LanguageSwitcherApp.HELP_TRANSLATE_MSG);
   });
 });

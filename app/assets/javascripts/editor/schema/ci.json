@@ -239,6 +239,10 @@
                 }
               ]
             },
+            "browser_performance": {
+              "type": "string",
+              "description": "Path to a single file with browser performance metric report(s)."
+            },
             "coverage_report": {
               "type": [
                 "object",
@@ -294,10 +298,6 @@
             "license_scanning": {
               "$ref": "#/definitions/string_file_list",
               "description": "Path to file or list of files with license report(s)."
-            },
-            "performance": {
-              "$ref": "#/definitions/string_file_list",
-              "description": "Path to file or list of files with performance metrics report(s)."
             },
             "requirements": {
               "$ref": "#/definitions/string_file_list",

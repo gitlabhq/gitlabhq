@@ -14,7 +14,7 @@ and provides the `/Users` endpoint. The base URL is `/api/scim/v2/groups/:group_
 To use this API, [Group SSO](../user/group/saml_sso/index.md) must be enabled for the group.
 This API is only in use where [SCIM for Group SSO](../user/group/saml_sso/scim_setup.md) is enabled. It's a prerequisite to the creation of SCIM identities.
 
-Not to be confused with the [internal SCIM API](../development/internal_api/index.md#scim-api).
+Not to be confused with the [internal group SCIM API](../development/internal_api/index.md#group-scim-api).
 
 ## Get SCIM identities for a group
 

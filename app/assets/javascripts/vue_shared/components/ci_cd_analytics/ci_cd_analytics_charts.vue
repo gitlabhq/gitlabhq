@@ -2,6 +2,7 @@
 import { s__, sprintf } from '~/locale';
 import SegmentedControlButtonGroup from '~/vue_shared/components/segmented_control_button_group.vue';
 import CiCdAnalyticsAreaChart from './ci_cd_analytics_area_chart.vue';
+import { DEFAULT_SELECTED_CHART } from './constants';
 
 export default {
   components: {
@@ -20,7 +21,7 @@ export default {
   },
   data() {
     return {
-      selectedChart: 0,
+      selectedChart: DEFAULT_SELECTED_CHART,
     };
   },
   computed: {

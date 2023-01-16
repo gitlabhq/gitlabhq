@@ -193,6 +193,24 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             )
           end
         end
+
+        context 'when ordered by default by created_at' do
+          let_it_be(:newest_child) { create(:work_item, :task, project: project, created_at: 5.minutes.from_now) }
+          let_it_be(:oldest_child) { create(:work_item, :task, project: project, created_at: 5.minutes.ago) }
+          let_it_be(:newest_link) { create(:parent_link, work_item_parent: work_item, work_item: newest_child) }
+          let_it_be(:oldest_link) { create(:parent_link, work_item_parent: work_item, work_item: oldest_child) }
+
+          let(:hierarchy_widget) { work_item_data['widgets'].find { |widget| widget['type'] == 'HIERARCHY' } }
+          let(:hierarchy_children) { hierarchy_widget['children']['nodes'] }
+
+          it 'places the oldest child item to the beginning of the children list' do
+            expect(hierarchy_children.first['id']).to eq(oldest_child.to_gid.to_s)
+          end
+
+          it 'places the newest child item to the end of the children list' do
+            expect(hierarchy_children.last['id']).to eq(newest_child.to_gid.to_s)
+          end
+        end
       end
 
       describe 'assignees widget' do

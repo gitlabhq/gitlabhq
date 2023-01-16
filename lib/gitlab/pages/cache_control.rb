@@ -16,8 +16,8 @@ module Gitlab
       PAYLOAD_CACHE_KEY = '%{settings_cache_key}_%{settings_hash}'
 
       class << self
-        def for_project(project_id)
-          new(type: :project, id: project_id)
+        def for_domain(domain_id)
+          new(type: :domain, id: domain_id)
         end
 
         def for_namespace(namespace_id)
@@ -26,7 +26,7 @@ module Gitlab
       end
 
       def initialize(type:, id:)
-        raise(ArgumentError, "type must be :namespace or :project") unless %i[namespace project].include?(type)
+        raise(ArgumentError, "type must be :namespace or :domain") unless %i[namespace domain].include?(type)
 
         @type = type
         @id = id
@@ -50,7 +50,9 @@ module Gitlab
           .map { |hash| payload_cache_key_for(hash) }
           .push(settings_cache_key)
 
-        Rails.cache.delete_multi(keys)
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          Rails.cache.delete_multi(keys)
+        end
       end
 
       private

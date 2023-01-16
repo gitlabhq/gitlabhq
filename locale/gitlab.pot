@@ -7417,9 +7417,6 @@ msgstr ""
 msgid "BulkImport|Destination"
 msgstr ""
 
-msgid "BulkImport|Destination group"
-msgstr ""
-
 msgid "BulkImport|Existing groups"
 msgstr ""
 
@@ -7429,7 +7426,7 @@ msgstr ""
 msgid "BulkImport|Following data will not be migrated: %{bullets} Contact system administrator of %{host} to upgrade GitLab if you need this data in your migration"
 msgstr ""
 
-msgid "BulkImport|Group import history"
+msgid "BulkImport|GitLab Migration history"
 msgstr ""
 
 msgid "BulkImport|History"
@@ -7507,7 +7504,7 @@ msgstr ""
 msgid "BulkImport|Update of import statuses with realtime changes failed"
 msgstr ""
 
-msgid "BulkImport|Your imported groups will appear here."
+msgid "BulkImport|Your imported groups and projects will appear here."
 msgstr ""
 
 msgid "BulkImport|Your imported projects will appear here."
@@ -20487,6 +20484,9 @@ msgstr ""
 msgid "Help translate GitLab into your language"
 msgstr ""
 
+msgid "Help translate to your language"
+msgstr ""
+
 msgid "Helps prevent bots from brute-force attacks."
 msgstr ""
 
@@ -24400,6 +24400,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Last %{days} days"
+msgstr ""
+
+msgid "Last 180 days"
 msgstr ""
 
 msgid "Last 2 weeks"

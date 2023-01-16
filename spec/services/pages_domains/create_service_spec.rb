@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::PagesDomains::CreateService do
+RSpec.describe ::PagesDomains::CreateService, feature_category: :pages do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :in_subgroup) }
 
@@ -37,6 +37,7 @@ RSpec.describe ::PagesDomains::CreateService do
             project_id: project.id,
             namespace_id: project.namespace.id,
             root_namespace_id: project.root_namespace.id,
+            domain_id: kind_of(Numeric),
             domain: domain
           )
 

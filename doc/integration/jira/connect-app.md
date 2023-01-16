@@ -16,7 +16,7 @@ the GitLab.com for Jira Cloud app.
 ## Install the GitLab.com for Jira Cloud app **(FREE SAAS)**
 
 If you use GitLab.com and Jira Cloud, you can install the GitLab.com for Jira Cloud app.
-If you do not use both of these environments, use the [Jira DVCS Connector](dvcs.md) or
+If you do not use both of these environments, use the [Jira DVCS Connector](dvcs/index.md) or
 [install GitLab.com for Jira Cloud app for self-managed instances](#install-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances).
 We recommend the GitLab.com for Jira Cloud app, because data is
 synchronized in real time. The DVCS connector updates data only once per hour.
@@ -24,7 +24,7 @@ synchronized in real time. The DVCS connector updates data only once per hour.
 To configure the GitLab.com for Jira Cloud app, you must have
 at least the Maintainer role in the GitLab.com namespace.
 
-This integration method supports [Smart Commits](dvcs.md#smart-commits).
+This integration method supports [Smart Commits](dvcs/index.md#smart-commits).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a walkthrough of the integration with GitLab.com for Jira Cloud app, watch

@@ -9,9 +9,9 @@ module Pages
     feature_category :pages
 
     def handle_event(event)
-      if event.data[:project_id]
+      domain_ids(event).each do |domain_id|
         ::Gitlab::Pages::CacheControl
-          .for_project(event.data[:project_id])
+          .for_domain(domain_id)
           .clear_cache
       end
 
@@ -24,6 +24,14 @@ module Pages
           .for_namespace(namespace_id)
           .clear_cache
       end
+    end
+
+    def domain_ids(event)
+      ids = PagesDomain.ids_for_project(event.data[:project_id])
+
+      ids << event.data[:domain_id] if event.data[:domain_id]
+
+      ids
     end
   end
 end

@@ -18,6 +18,7 @@ RSpec.describe PagesDomains::RetryAcmeOrderService, feature_category: :pages do
         project_id: project.id,
         namespace_id: project.namespace.id,
         root_namespace_id: project.root_namespace.id,
+        domain_id: domain.id,
         domain: domain.domain
       )
   end
@@ -31,6 +32,7 @@ RSpec.describe PagesDomains::RetryAcmeOrderService, feature_category: :pages do
         project_id: project.id,
         namespace_id: project.namespace.id,
         root_namespace_id: project.root_namespace.id,
+        domain_id: domain.id,
         domain: domain.domain
       )
   end

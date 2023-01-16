@@ -107,7 +107,6 @@
         "container_scanning": "scan2.json",
         "dast": "dast.json",
         "license_management": "license.json",
-        "performance": "performance.json",
         "metrics": "metrics.txt"
       }
     },
@@ -160,7 +159,6 @@
         "container_scanning": ["scan2.json"],
         "dast": ["dast.json"],
         "license_management": ["license.json"],
-        "performance": ["performance.json"],
         "metrics": ["metrics.txt"]
       }
     },

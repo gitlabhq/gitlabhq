@@ -160,6 +160,20 @@ See [migrated group items](https://docs.gitlab.com/ee/user/group/import/#migrate
 
 <div class="deprecation removal-160 breaking-change">
 
+### GraphQL: The `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting` enum is deprecated. Use `DISABLED_AND_OVERRIDABLE` instead
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In GitLab 16.0, the `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting` GraphQL enum type will be replaced with the value, `DISABLED_AND_OVERRIDABLE`.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Limit personal access token and deploy token's access with external authorization
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>

@@ -1,4 +1,4 @@
-import { GlEmptyState, GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -23,7 +23,9 @@ describe('BulkImportsHistoryApp', () => {
       id: 1,
       bulk_import_id: 1,
       status: 'finished',
+      entity_type: 'group',
       source_full_path: 'top-level-group-12',
+      destination_full_path: 'h5bp/top-level-group-12',
       destination_name: 'top-level-group-12',
       destination_namespace: 'h5bp',
       created_at: '2021-07-08T10:03:44.743Z',
@@ -33,8 +35,10 @@ describe('BulkImportsHistoryApp', () => {
       id: 2,
       bulk_import_id: 2,
       status: 'failed',
+      entity_type: 'project',
       source_full_path: 'autodevops-demo',
       destination_name: 'autodevops-demo',
+      destination_full_path: 'some-group/autodevops-demo',
       destination_namespace: 'flightjs',
       parent_id: null,
       namespace_id: null,
@@ -74,6 +78,7 @@ describe('BulkImportsHistoryApp', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
+    mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
   });
 
   afterEach(() => {
@@ -97,11 +102,10 @@ describe('BulkImportsHistoryApp', () => {
     });
 
     it('renders table with data when history is available', async () => {
-      mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
       createComponent();
       await axios.waitForAll();
 
-      const table = wrapper.findComponent(GlTable);
+      const table = wrapper.findComponent(GlTableLite);
       expect(table.exists()).toBe(true);
       // can't use .props() or .attributes() here
       expect(table.vm.$attrs.items).toHaveLength(DUMMY_RESPONSE.length);
@@ -110,7 +114,6 @@ describe('BulkImportsHistoryApp', () => {
     it('changes page when requested by pagination bar', async () => {
       const NEW_PAGE = 4;
 
-      mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
       createComponent();
       await axios.waitForAll();
       mock.resetHistory();
@@ -126,7 +129,6 @@ describe('BulkImportsHistoryApp', () => {
   it('changes page size when requested by pagination bar', async () => {
     const NEW_PAGE_SIZE = 4;
 
-    mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
     createComponent();
     await axios.waitForAll();
     mock.resetHistory();
@@ -143,7 +145,6 @@ describe('BulkImportsHistoryApp', () => {
   it('sets up the local storage sync correctly', async () => {
     const NEW_PAGE_SIZE = 4;
 
-    mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
     createComponent();
     await axios.waitForAll();
     mock.resetHistory();
@@ -155,12 +156,27 @@ describe('BulkImportsHistoryApp', () => {
   });
 
   it('renders correct url for destination group when relative_url is empty', async () => {
-    mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
     createComponent({ shallow: false });
     await axios.waitForAll();
 
     expect(wrapper.find('tbody tr a').attributes().href).toBe(
-      `/${DUMMY_RESPONSE[0].destination_namespace}/${DUMMY_RESPONSE[0].destination_name}`,
+      `/${DUMMY_RESPONSE[0].destination_full_path}`,
+    );
+  });
+
+  it('adds slash to group urls', async () => {
+    createComponent({ shallow: false });
+    await axios.waitForAll();
+
+    expect(wrapper.find('tbody tr a').text()).toBe(`${DUMMY_RESPONSE[0].destination_full_path}/`);
+  });
+
+  it('does not prefixes project urls with slash', async () => {
+    createComponent({ shallow: false });
+    await axios.waitForAll();
+
+    expect(wrapper.findAll('tbody tr a').at(1).text()).toBe(
+      DUMMY_RESPONSE[1].destination_full_path,
     );
   });
 

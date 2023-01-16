@@ -128,6 +128,7 @@ graph TD
     D ==> G[main branch]
     F ==> H[main branch]
     end
+```
 
 If you need to know what code is in production, you can check out the production branch to see.
 The approximate time of deployment is visible as the merge commit in the version control system.

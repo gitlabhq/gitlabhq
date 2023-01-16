@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::PagesDomainsController do
+RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let!(:pages_domain) { create(:pages_domain, project: project) }
@@ -70,6 +70,7 @@ RSpec.describe Projects::PagesDomainsController do
             project_id: project.id,
             namespace_id: project.namespace.id,
             root_namespace_id: project.root_namespace.id,
+            domain_id: kind_of(Numeric),
             domain: pages_domain_params[:domain]
           )
 
@@ -119,6 +120,7 @@ RSpec.describe Projects::PagesDomainsController do
             project_id: project.id,
             namespace_id: project.namespace.id,
             root_namespace_id: project.root_namespace.id,
+            domain_id: pages_domain.id,
             domain: pages_domain.domain
           )
       end
@@ -226,6 +228,7 @@ RSpec.describe Projects::PagesDomainsController do
           project_id: project.id,
           namespace_id: project.namespace.id,
           root_namespace_id: project.root_namespace.id,
+          domain_id: pages_domain.id,
           domain: pages_domain.domain
         )
 
@@ -251,6 +254,7 @@ RSpec.describe Projects::PagesDomainsController do
           project_id: project.id,
           namespace_id: project.namespace.id,
           root_namespace_id: project.root_namespace.id,
+          domain_id: pages_domain.id,
           domain: pages_domain.domain
         )
     end

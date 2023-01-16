@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Protected branches API **(FREE)**
 
-**Valid access levels**
+## Valid access levels
 
 The access levels are defined in the `ProtectedRefAccess.allowed_access_levels` method. Currently, these levels are recognized:
 

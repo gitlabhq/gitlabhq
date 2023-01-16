@@ -4,12 +4,12 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Git abuse rate limit (administration) **(ULTIMATE SELF)**
+# Git abuse rate limit (administration) **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8066) in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `git_abuse_rate_limit_feature_flag`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `git_abuse_rate_limit_feature_flag`. On GitLab.com, this feature is not available.
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `git_abuse_rate_limit_feature_flag`. On GitLab.com, this feature is available.
 
 Git abuse rate limiting is a feature to automatically [ban users](../moderate_users.md#ban-and-unban-users) who download or clone more than a specified number of repositories in any project in the instance within a given time frame. Banned users cannot sign in to the instance and cannot access any non-public group via HTTP or SSH.
 

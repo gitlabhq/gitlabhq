@@ -24,7 +24,8 @@
                 dismissible: false,
                 title: project.full_name) do |c|
                 = c.actions do
-                  = link_to _('Disable'), admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn gl-alert-action btn-confirm btn-md gl-button'
+                  = render Pajamas::ButtonComponent.new(variant: :confirm, href: admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete) do
+                    = _('Disable')
 
   %table.table{ data: { testid: 'unassigned-projects' } }
     %thead
@@ -47,7 +48,8 @@
           = project.full_name
         %td
           .float-right
-            = form_for project.runner_projects.new, url: admin_namespace_project_runner_projects_path(project.namespace, project), method: :post do |f|
+            = gitlab_ui_form_for project.runner_projects.new, url: admin_namespace_project_runner_projects_path(project.namespace, project), method: :post do |f|
               = f.hidden_field :runner_id, value: @runner.id
-              = f.submit _('Enable'), class: 'gl-button btn btn-sm'
+              = render Pajamas::ButtonComponent.new(size: :small, type: :submit) do
+                = _('Enable')
   = paginate_without_count @projects

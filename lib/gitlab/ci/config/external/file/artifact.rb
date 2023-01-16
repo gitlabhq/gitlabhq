@@ -38,10 +38,6 @@ module Gitlab
 
             private
 
-            def project
-              context&.parent_pipeline&.project
-            end
-
             def validate_context!
               context.logger.instrument(:config_file_artifact_validate_context) do
                 if !creating_child_pipeline?

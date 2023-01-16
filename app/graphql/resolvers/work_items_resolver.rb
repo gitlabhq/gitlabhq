@@ -55,7 +55,7 @@ module Resolvers
         last_edited_by: :last_edited_by,
         assignees: :assignees,
         parent: :work_item_parent,
-        children: { work_item_children: [:author, { project: :project_feature }] },
+        children: { work_item_children_by_created_at: [:author, { project: :project_feature }] },
         labels: :labels,
         milestone: :milestone
       }
