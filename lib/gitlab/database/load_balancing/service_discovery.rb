@@ -69,6 +69,7 @@ module Gitlab
           @use_tcp = use_tcp
           @load_balancer = load_balancer
           @max_replica_pools = max_replica_pools
+          @nameserver_ttl = 1.second.ago # Begin with an expired ttl to trigger a nameserver dns lookup
         end
         # rubocop:enable Metrics/ParameterLists
 
@@ -191,8 +192,14 @@ module Gitlab
         end
 
         def resolver
-          @resolver ||= Net::DNS::Resolver.new(
-            nameservers: Resolver.new(@nameserver).resolve,
+          return @resolver if defined?(@resolver) && @nameserver_ttl.future?
+
+          response = Resolver.new(@nameserver).resolve
+
+          @nameserver_ttl = response.ttl
+
+          @resolver = Net::DNS::Resolver.new(
+            nameservers: response.address,
             port: @port,
             use_tcp: @use_tcp
           )

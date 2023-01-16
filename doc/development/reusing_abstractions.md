@@ -248,7 +248,7 @@ response = ServiceResponse.error(
 
 if response.success?
   head :ok
-if response.reason == :job_not_retriable
+elsif response.reason == :job_not_retriable
   head :unprocessable_entity
 else
   head :bad_request
