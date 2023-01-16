@@ -16285,10 +16285,16 @@ msgstr ""
 msgid "EscalationPolicies|Are you sure you want to delete the \"%{escalationPolicy}\" escalation policy? This action cannot be undone."
 msgstr ""
 
+msgid "EscalationPolicies|Choose who to email if those contacted first about an alert don't respond."
+msgstr ""
+
 msgid "EscalationPolicies|Create an escalation policy in GitLab"
 msgstr ""
 
 msgid "EscalationPolicies|Delete escalation policy"
+msgstr ""
+
+msgid "EscalationPolicies|Distinguishes this policy from others you may create (for example, \"Critical alert escalation\")."
 msgstr ""
 
 msgid "EscalationPolicies|Edit escalation policy"
@@ -16306,6 +16312,9 @@ msgstr ""
 msgid "EscalationPolicies|Escalation policy %{obstacle} in project %{project}"
 msgstr ""
 
+msgid "EscalationPolicies|Escalation policy successfully created"
+msgstr ""
+
 msgid "EscalationPolicies|Escalation rules"
 msgstr ""
 
@@ -16321,6 +16330,9 @@ msgstr ""
 msgid "EscalationPolicies|Minutes must be between 0 and 1440."
 msgstr ""
 
+msgid "EscalationPolicies|More detailed information about your policy."
+msgstr ""
+
 msgid "EscalationPolicies|Remove escalation rule"
 msgstr ""
 
@@ -16328,9 +16340,6 @@ msgid "EscalationPolicies|Search for user"
 msgstr ""
 
 msgid "EscalationPolicies|Select schedule"
-msgstr ""
-
-msgid "EscalationPolicies|Set up escalation policies to define who is paged, and when, in the event the first users paged don't respond."
 msgstr ""
 
 msgid "EscalationPolicies|THEN %{doAction} %{scheduleOrUser}"
@@ -16343,6 +16352,9 @@ msgid "EscalationPolicies|The escalation policy could not be updated. Please try
 msgstr ""
 
 msgid "EscalationPolicies|This policy has no escalation rules."
+msgstr ""
+
+msgid "EscalationPolicies|When a new alert is received, the users specified in the policy receive an email."
 msgstr ""
 
 msgid "EscalationPolicies|mins"

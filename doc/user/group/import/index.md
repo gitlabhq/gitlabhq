@@ -33,13 +33,18 @@ On self-managed GitLab, by default [migrating group items](#migrated-group-items
 feature, ask an administrator to [enable it in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer).
 Also on self-managed GitLab, by default [migrating project items](#migrated-project-items) is not available. To show
 this feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
-`bulk_import_projects`. The feature is not ready for production use. On GitLab.com, migration of both groups and projects
-is available.
+`bulk_import_projects`. The feature is not ready for production use. On GitLab.com, migration of both groups and projects is available.
+
+WARNING:
+When you migrate a group to GitLab.com, all its subgroups and projects are migrated too. This feature is in [Beta](../../../policy/alpha-beta-support.md#beta-features) and not ready for production use.
+On self-managed GitLab, migrating project items is not available by default. To show
+this Beta feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
+`bulk_import_projects`.
 
 Prerequisites:
 
 - Network connection between instances or GitLab.com. Must support HTTPS.
-- Both GitLab instances have migration enabled in application settings by instance administrator.
+- Both GitLab instances have [migration enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer) by instance administrator.
 - Owner role on the top-level group to migrate.
 
 WARNING:
@@ -55,8 +60,6 @@ You can migrate:
 
 - By direct transfer using either the UI or the [API](../../../api/bulk_imports.md).
 - Many groups at once.
-
-When migrating a top-level group to GitLab.com, all its subgroups and projects are migrated too.
 
 Not all group and project resources are imported. See list of migrated resources below:
 

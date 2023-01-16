@@ -68,6 +68,8 @@ GitLab content imports that use GitHub accounts require that the GitHub public-f
 all comments and contributions are properly mapped to the same user in GitLab. GitHub Enterprise does not require this
 field to be populated so you may have to add it on existing accounts.
 
+See also [Branch protection rules and project settings](#branch-protection-rules-and-project-settings) for additional prerequisites for those imports.
+
 ## Import your GitHub repository into GitLab
 
 ### Use the GitHub integration
@@ -247,7 +249,10 @@ When they are imported, supported GitHub branch protection rules are mapped to e
 | **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences) **(PREMIUM)**                                   | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
 | **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../protected_branches.md#allow-force-push-on-a-protected-branch)                                      | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
 | **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) **(PREMIUM)** | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
-| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch) **(PREMIUM)**          | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
+| **Require a pull request before merging - Allow specified actors to bypass required pull requests** (1) | List of users in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch) **(PREMIUM)**. Without a Premium license, the list of users that are allowed to push is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
+
+1. To successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** rule, you must add to the parent group in GitLab
+   the users that are allowed to bypass required pull requests before you begin importing.
 
 Mapping GitHub rule **Require status checks to pass before merging** to
 [external status checks](../merge_requests/status_checks.md) was considered in issue
