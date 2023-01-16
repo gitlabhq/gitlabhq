@@ -13,7 +13,7 @@ class RunPipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
   deduplicate :until_executed
   idempotent!
 
-  def perform(schedule_id, user_id)
+  def perform(schedule_id, user_id, options = {})
     schedule = Ci::PipelineSchedule.find_by_id(schedule_id)
     user = User.find_by_id(user_id)
 

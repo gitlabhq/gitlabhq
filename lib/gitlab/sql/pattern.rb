@@ -81,3 +81,6 @@ module Gitlab
     end
   end
 end
+
+Gitlab::SQL::Pattern.prepend_mod
+Gitlab::SQL::Pattern::ClassMethods.prepend_mod_with('Gitlab::SQL::Pattern::ClassMethods')

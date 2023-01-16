@@ -3,6 +3,7 @@ import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
 import {
+  canDisableTwoFactor,
   canUnban,
   canOverride,
   canRemove,
@@ -47,6 +48,8 @@ export default {
     RemoveMemberModal,
     ExpirationDatepicker,
     MemberActivity,
+    DisableTwoFactorModal: () =>
+      import('ee_component/members/components/modals/disable_two_factor_modal.vue'),
     LdapOverrideConfirmationModal: () =>
       import('ee_component/members/components/ldap/ldap_override_confirmation_modal.vue'),
   },
@@ -95,7 +98,8 @@ export default {
         canResend(member) ||
         canUpdate(member, this.currentUserId) ||
         canOverride(member) ||
-        canUnban(member)
+        canUnban(member) ||
+        canDisableTwoFactor(member)
       );
     },
     showField(field) {
@@ -320,6 +324,7 @@ export default {
       :label-prev-page="__('Go to previous page')"
       align="center"
     />
+    <disable-two-factor-modal />
     <remove-group-link-modal />
     <remove-member-modal />
     <ldap-override-confirmation-modal />

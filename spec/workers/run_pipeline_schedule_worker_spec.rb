@@ -21,6 +21,11 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
       end
     end
 
+    it 'accepts an option' do
+      expect { worker.perform(pipeline_schedule.id, user.id, {}) }.not_to raise_error
+      expect { worker.perform(pipeline_schedule.id, user.id, {}, {}) }.to raise_error(ArgumentError)
+    end
+
     context 'when a schedule not found' do
       it 'does not call the Service' do
         expect(Ci::CreatePipelineService).not_to receive(:new)

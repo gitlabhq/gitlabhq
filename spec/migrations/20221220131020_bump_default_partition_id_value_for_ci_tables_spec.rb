@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe BumpDefaultPartitionIdValueForCiTables, :migration, feature_category: :continuous_integration_scaling do
+RSpec.describe BumpDefaultPartitionIdValueForCiTables, :migration, feature_category: :continuous_integration do
   context 'when on sass' do
     before do
       allow(Gitlab).to receive(:com?).and_return(true)

@@ -537,7 +537,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     end
   end
 
-  describe '.stale' do
+  describe '.stale', :freeze_time do
     subject { described_class.stale }
 
     let!(:runner1) { create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: 3.months.ago + 10.seconds) }

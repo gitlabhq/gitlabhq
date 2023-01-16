@@ -28963,6 +28963,10 @@ CREATE INDEX index_ci_resources_on_build_id ON ci_resources USING btree (build_i
 
 CREATE UNIQUE INDEX index_ci_resources_on_resource_group_id_and_build_id ON ci_resources USING btree (resource_group_id, build_id);
 
+CREATE INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ON ci_runner_machines USING btree (contacted_at DESC, id DESC);
+
+CREATE INDEX index_ci_runner_machines_on_created_at_and_id_desc ON ci_runner_machines USING btree (created_at, id DESC);
+
 CREATE UNIQUE INDEX index_ci_runner_machines_on_runner_id_and_machine_xid ON ci_runner_machines USING btree (runner_id, machine_xid);
 
 CREATE INDEX index_ci_runner_machines_on_version ON ci_runner_machines USING btree (version);

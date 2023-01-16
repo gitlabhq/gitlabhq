@@ -127,6 +127,7 @@ export const dataAttribute = JSON.stringify({
     pagination: paginationData,
     member_path: '/groups/foo-bar/-/group_members/:id',
     ldap_override_path: '/groups/ldap-group/-/group_members/:id/override',
+    disable_two_factor_path: '/groups/ldap-group/-/two_factor_auth',
   },
   source_id: 234,
   can_manage_members: true,

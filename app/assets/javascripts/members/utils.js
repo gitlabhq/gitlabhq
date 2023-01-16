@@ -109,6 +109,9 @@ export const buildSortHref = ({
 };
 
 // Defined in `ee/app/assets/javascripts/members/utils.js`
+export const canDisableTwoFactor = () => false;
+
+// Defined in `ee/app/assets/javascripts/members/utils.js`
 export const canOverride = () => false;
 
 // Defined in `ee/app/assets/javascripts/members/utils.js`

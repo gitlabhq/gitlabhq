@@ -4,7 +4,7 @@
   .gl-border-l-solid.gl-border-r-solid.gl-border-t-solid.gl-border-gray-100.gl-border-1.gl-p-5.gl-mt-4
     .gl-display-flex.gl-align-items-center
       %h4.gl-display-flex
-        = s_('GroupsNew|Import groups from another instance of GitLab')
+        = s_('GroupsNew|Import groups by direct transfer')
       = link_to _('History'), history_import_bulk_imports_path, class: 'gl-link gl-ml-auto'
 
     - if bulk_imports_disabled
@@ -30,12 +30,12 @@
           = s_('GroupsNew|Not all related objects are migrated. %{docs_link_start}More info%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: docs_link_end }
 
     %p.gl-mt-3
-    = s_('GroupsNew|Provide credentials for another instance of GitLab to import your groups directly.')
+    = s_('GroupsNew|Provide credentials for the source instance to import from. You can provide this instance as a source to move groups in this instance.')
     .form-group.gl-display-flex.gl-flex-direction-column
-      = f.label :bulk_import_gitlab_url, s_('GroupsNew|GitLab source URL'), for: 'import_gitlab_url'
+      = f.label :bulk_import_gitlab_url, s_('GroupsNew|GitLab source instance URL'), for: 'import_gitlab_url'
       = f.text_field :bulk_import_gitlab_url, disabled: bulk_imports_disabled, placeholder: 'https://gitlab.example.com', class: 'gl-form-input col-xs-12 col-sm-8',
         required: true,
-        title: s_('GroupsNew|Please fill in GitLab source URL.'),
+        title: s_('GroupsNew|Enter the URL for the source instance.'),
         id: 'import_gitlab_url',
         data: { qa_selector: 'import_gitlab_url' }
     .form-group.gl-display-flex.gl-flex-direction-column

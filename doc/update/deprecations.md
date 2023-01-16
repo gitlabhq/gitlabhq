@@ -174,6 +174,20 @@ With external authorization enabled, personal access tokens (PATs) and deploy to
 
 <div class="deprecation removal-160 breaking-change">
 
+### Null value for `private_profile` attribute in User API is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+When creating and updating users through the API, `null` was a valid value for the `private_profile` attribute, which would internally be converted to the default value. Starting with 16.0, `null` will no longer be a valid value for this parameter, and the response will be a 400 if used. Now the only valid values are `true` and `false`.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Owner permissions are required to update Package settings
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
@@ -243,6 +257,20 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 Due to limited customer usage and capabilities, the Visual Reviews feature for Review Apps is deprecated and will be removed. There is no planned replacement and users should stop using Visual Reviews before GitLab 17.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### `environment_tier` parameter for DORA API
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+To avoid confusion and duplication, the `environment_tier` parameter is deprecated in favor of the `environment_tiers` parameter. The new `environment_tiers` parameter allows DORA APIs to return aggregated data for multiple tiers at the same time. The `environment_tier` parameter will be removed in GitLab 16.0.
 
 </div>
 </div>

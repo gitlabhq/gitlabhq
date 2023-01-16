@@ -16,6 +16,7 @@ import {
   canRemoveBlockedByLastOwner,
   canResend,
   canUpdate,
+  canDisableTwoFactor,
   canOverride,
   parseSortParam,
   buildSortHref,
@@ -161,6 +162,19 @@ describe('Members Utils', () => {
     `('returns $expected', ({ member, currentUserId, expected }) => {
       expect(canUpdate(member, currentUserId)).toBe(expected);
     });
+  });
+
+  describe('canDisableTwoFactor', () => {
+    it.each`
+      member                                               | expected
+      ${{ ...memberMock, canGetTwoFactorDisabled: true }}  | ${false}
+      ${{ ...memberMock, canGetTwoFactorDisabled: false }} | ${false}
+    `(
+      'returns $expected for members whose two factor authentication can be disabled',
+      ({ member, expected }) => {
+        expect(canDisableTwoFactor(member)).toBe(expected);
+      },
+    );
   });
 
   describe('canOverride', () => {

@@ -823,12 +823,6 @@ msgstr ""
 msgid "%{linkStart} Learn more%{linkEnd}."
 msgstr ""
 
-msgid "%{link_start}Remove the %{draft_snippet} prefix%{link_end} from the title to allow this merge request to be merged when it's ready."
-msgstr ""
-
-msgid "%{link_start}Start the title with %{draft_snippet}%{link_end} to prevent a merge request draft from merging before it's ready."
-msgstr ""
-
 msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
@@ -9863,7 +9857,7 @@ msgstr ""
 msgid "Code Quality"
 msgstr ""
 
-msgid "Code Quality scans found %{degradation} and fixed %{improvement}."
+msgid "Code Quality scans found %{degradation} and %{improvement}."
 msgstr ""
 
 msgid "Code Quality scans found %{findings}."
@@ -12354,12 +12348,6 @@ msgstr ""
 msgid "DORA4Metrics|Cycle time"
 msgstr ""
 
-msgid "DORA4Metrics|DORA metrics for %{name} group"
-msgstr ""
-
-msgid "DORA4Metrics|DORA metrics for %{name} project"
-msgstr ""
-
 msgid "DORA4Metrics|Date"
 msgstr ""
 
@@ -12409,6 +12397,12 @@ msgid "DORA4Metrics|Median time from issue created to issue closed."
 msgstr ""
 
 msgid "DORA4Metrics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed."
+msgstr ""
+
+msgid "DORA4Metrics|Metrics comparison for %{name} group"
+msgstr ""
+
+msgid "DORA4Metrics|Metrics comparison for %{name} project"
 msgstr ""
 
 msgid "DORA4Metrics|Month to date"
@@ -14247,9 +14241,6 @@ msgid "DevOps Reports"
 msgstr ""
 
 msgid "DevOps adoption"
-msgstr ""
-
-msgid "DevOps metrics comparison (Beta)"
 msgstr ""
 
 msgid "Developer"
@@ -20120,7 +20111,10 @@ msgstr ""
 msgid "GroupsNew|Create subgroup"
 msgstr ""
 
-msgid "GroupsNew|GitLab source URL"
+msgid "GroupsNew|Enter the URL for the source instance."
+msgstr ""
+
+msgid "GroupsNew|GitLab source instance URL"
 msgstr ""
 
 msgid "GroupsNew|Groups can also be nested by creating %{linkStart}subgroups%{linkEnd}."
@@ -20132,7 +20126,7 @@ msgstr ""
 msgid "GroupsNew|Import group"
 msgstr ""
 
-msgid "GroupsNew|Import groups from another instance of GitLab"
+msgid "GroupsNew|Import groups by direct transfer"
 msgstr ""
 
 msgid "GroupsNew|Importing groups by direct transfer is currently disabled."
@@ -20153,13 +20147,10 @@ msgstr ""
 msgid "GroupsNew|Please ask your Administrator to enable it in the Admin settings."
 msgstr ""
 
-msgid "GroupsNew|Please fill in GitLab source URL."
-msgstr ""
-
 msgid "GroupsNew|Please fill in your personal access token."
 msgstr ""
 
-msgid "GroupsNew|Provide credentials for another instance of GitLab to import your groups directly."
+msgid "GroupsNew|Provide credentials for the source instance to import from. You can provide this instance as a source to move groups in this instance."
 msgstr ""
 
 msgid "GroupsNew|Remember to enable it also on the instance you are migrating from."
@@ -22449,9 +22440,6 @@ msgstr ""
 msgid "Integrations|Add namespace"
 msgstr ""
 
-msgid "Integrations|Adding a namespace only works in browsers that allow cross-site cookies. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
 msgid "Integrations|All details"
 msgstr ""
 
@@ -22572,9 +22560,6 @@ msgstr ""
 msgid "Integrations|Keep your PHP dependencies updated on Packagist."
 msgstr ""
 
-msgid "Integrations|Known limitations"
-msgstr ""
-
 msgid "Integrations|Link namespaces"
 msgstr ""
 
@@ -22651,9 +22636,6 @@ msgid "Integrations|Standard"
 msgstr ""
 
 msgid "Integrations|There are no projects using custom settings"
-msgstr ""
-
-msgid "Integrations|This integration only works with GitLab.com. Adding a namespace only works in browsers that allow cross-site cookies. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "Integrations|This integration, and inheriting projects were reset."
@@ -23424,9 +23406,6 @@ msgid "Issues|There was an error while moving the issues."
 msgstr ""
 
 msgid "Issue|Title"
-msgstr ""
-
-msgid "It looks like you have some draft commits in this branch."
 msgstr ""
 
 msgid "It looks like you're attempting to activate your subscription. Use %{a_start}the Subscription page%{a_end} instead."
@@ -26026,6 +26005,9 @@ msgstr ""
 msgid "Members|Are you sure you want to deny %{usersName}'s request to join \"%{source}\""
 msgstr ""
 
+msgid "Members|Are you sure you want to disable the two-factor authentication for %{userName}?"
+msgstr ""
+
 msgid "Members|Are you sure you want to leave \"%{source}\"?"
 msgstr ""
 
@@ -26051,6 +26033,9 @@ msgid "Members|Direct"
 msgstr ""
 
 msgid "Members|Direct member by %{createdBy}"
+msgstr ""
+
+msgid "Members|Disable two-factor authentication"
 msgstr ""
 
 msgid "Members|Disabled"
@@ -26327,6 +26312,12 @@ msgid "MergeRequests|An error occurred while saving the draft comment."
 msgstr ""
 
 msgid "MergeRequests|Create issue to resolve thread"
+msgstr ""
+
+msgid "MergeRequests|Drafts cannot be merged until marked ready."
+msgstr ""
+
+msgid "MergeRequests|Mark as draft"
 msgstr ""
 
 msgid "MergeRequests|Reference copied"
@@ -46001,6 +45992,9 @@ msgid "Value Stream Analytics"
 msgstr ""
 
 msgid "Value Stream Analytics can help you determine your team’s velocity"
+msgstr ""
+
+msgid "Value Streams Dashboard (Beta)"
 msgstr ""
 
 msgid "Value might contain a variable reference"

@@ -15,6 +15,10 @@ export default {
   i18n: I18N,
   components: {
     GlDropdown,
+    DisableTwoFactorDropdownItem: () =>
+      import(
+        'ee_component/members/components/action_dropdowns/disable_two_factor_dropdown_item.vue'
+      ),
     LdapOverrideDropdownItem: () =>
       import('ee_component/members/components/ldap/ldap_override_dropdown_item.vue'),
     LeaveGroupDropdownItem,
@@ -38,7 +42,11 @@ export default {
     },
   },
   computed: {
-    modalMessage() {
+    modalDisableTwoFactor() {
+      const userName = this.member.user.username;
+      return sprintf(this.$options.i18n.confirmDisableTwoFactor, { userName }, false);
+    },
+    modalRemoveUser() {
       const { user, source } = this.member;
 
       if (this.permissions.canRemoveBlockedByLastOwner) {
@@ -68,7 +76,9 @@ export default {
       };
     },
     showDropdown() {
-      return this.showLeaveOrRemove || this.showLdapOverride;
+      return (
+        this.permissions.canDisableTwoFactor || this.showLeaveOrRemove || this.showLdapOverride
+      );
     },
     showLeaveOrRemove() {
       return this.permissions.canRemove || this.permissions.canRemoveBlockedByLastOwner;
@@ -93,20 +103,30 @@ export default {
     data-testid="user-action-dropdown"
     data-qa-selector="user_action_dropdown"
   >
+    <disable-two-factor-dropdown-item
+      v-if="permissions.canDisableTwoFactor"
+      :modal-message="modalDisableTwoFactor"
+      :user-id="member.user.id"
+    >
+      {{ $options.i18n.disableTwoFactor }}
+    </disable-two-factor-dropdown-item>
+
     <template v-if="showLeaveOrRemove">
       <leave-group-dropdown-item v-if="isCurrentUser" :member="member" :permissions="permissions">{{
         $options.i18n.leaveGroup
       }}</leave-group-dropdown-item>
+
       <remove-member-dropdown-item
         v-else
         :member-id="member.id"
         :member-model-type="member.type"
         :user-deletion-obstacles="userDeletionObstaclesUserData"
-        :modal-message="modalMessage"
+        :modal-message="modalRemoveUser"
         :prevent-removal="permissions.canRemoveBlockedByLastOwner"
         >{{ $options.i18n.removeMember }}</remove-member-dropdown-item
       >
     </template>
+
     <ldap-override-dropdown-item v-else-if="showLdapOverride" :member="member">{{
       $options.i18n.editPermissions
     }}</ldap-override-dropdown-item>

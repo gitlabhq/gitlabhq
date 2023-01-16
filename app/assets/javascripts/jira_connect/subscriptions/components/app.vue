@@ -10,7 +10,6 @@ import { SET_ALERT } from '../store/mutation_types';
 import SignInPage from '../pages/sign_in/sign_in_page.vue';
 import SubscriptionsPage from '../pages/subscriptions_page.vue';
 import UserLink from './user_link.vue';
-import CompatibilityAlert from './compatibility_alert.vue';
 import BrowserSupportAlert from './browser_support_alert.vue';
 
 export default {
@@ -19,11 +18,10 @@ export default {
     GlAlert,
     GlLink,
     GlSprintf,
-    UserLink,
-    CompatibilityAlert,
     BrowserSupportAlert,
     SignInPage,
     SubscriptionsPage,
+    UserLink,
   },
   mixins: [glFeatureFlagMixin()],
   inject: {
@@ -123,8 +121,6 @@ export default {
     <main class="jira-connect-app gl-px-5 gl-pt-7 gl-mx-auto">
       <browser-support-alert v-if="!isBrowserSupported" class="gl-mb-7" />
       <div v-else data-testid="jira-connect-app">
-        <compatibility-alert class="gl-mb-7" />
-
         <gl-alert
           v-if="shouldShowAlert"
           :variant="alert.variant"

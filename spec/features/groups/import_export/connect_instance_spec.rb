@@ -25,7 +25,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js, feature_categ
       it 'successfully connects to remote instance' do
         pat = 'demo-pat'
 
-        expect(page).to have_content 'Import groups from another instance of GitLab'
+        expect(page).to have_content 'Import groups by direct transfer'
         expect(page).to have_content 'Not all related objects are migrated'
 
         fill_in :bulk_import_gitlab_url, with: source_url
@@ -64,7 +64,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js, feature_categ
 
         click_on 'Connect instance'
 
-        expect(page).to have_content 'Please fill in GitLab source URL'
+        expect(page).to have_content 'Enter the URL for the source instance'
       end
     end
 
@@ -89,7 +89,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js, feature_categ
     end
 
     it 'renders fields and button disabled' do
-      expect(page).to have_field('GitLab source URL', disabled: true)
+      expect(page).to have_field('GitLab source instance URL', disabled: true)
       expect(page).to have_field('Personal access token', disabled: true)
       expect(page).to have_button('Connect instance', disabled: true)
     end

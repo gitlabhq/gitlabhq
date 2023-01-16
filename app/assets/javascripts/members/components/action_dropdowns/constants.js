@@ -2,9 +2,13 @@ import { __, s__ } from '~/locale';
 
 export const I18N = {
   actions: __('More actions'),
+  disableTwoFactor: s__('Members|Disable two-factor authentication'),
   editPermissions: s__('Members|Edit permissions'),
   leaveGroup: __('Leave group'),
   removeMember: __('Remove member'),
+  confirmDisableTwoFactor: s__(
+    'Members|Are you sure you want to disable the two-factor authentication for %{userName}?',
+  ),
   confirmNormalUserRemoval: s__(
     'Members|Are you sure you want to remove %{userName} from "%{group}"?',
   ),

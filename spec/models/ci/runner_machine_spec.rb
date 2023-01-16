@@ -33,4 +33,19 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
       end
     end
   end
+
+  describe '.stale', :freeze_time do
+    subject { described_class.stale.ids }
+
+    let!(:runner_machine1) { create(:ci_runner_machine, created_at: 8.days.ago, contacted_at: 7.days.ago) }
+    let!(:runner_machine2) { create(:ci_runner_machine, created_at: 7.days.ago, contacted_at: nil) }
+    let!(:runner_machine3) { create(:ci_runner_machine, created_at: 5.days.ago, contacted_at: nil) }
+    let!(:runner_machine4) do
+      create(:ci_runner_machine, created_at: (7.days - 1.second).ago, contacted_at: (7.days - 1.second).ago)
+    end
+
+    it 'returns stale runner machines' do
+      is_expected.to match_array([runner_machine1.id, runner_machine2.id])
+    end
+  end
 end

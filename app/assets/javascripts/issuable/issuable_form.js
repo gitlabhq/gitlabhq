@@ -60,8 +60,6 @@ export default class IssuableForm {
       return;
     }
     this.form = form;
-    this.toggleWip = this.toggleWip.bind(this);
-    this.renderWipExplanation = this.renderWipExplanation.bind(this);
     this.resetAutosave = this.resetAutosave.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     // prettier-ignore
@@ -86,6 +84,7 @@ export default class IssuableForm {
     this.fallbackKey = getFallbackKey();
     this.titleField = this.form.find('input[name*="[title]"]');
     this.descriptionField = this.form.find('textarea[name*="[description]"]');
+    this.draftCheck = document.querySelector('input.js-toggle-draft');
     if (!(this.titleField.length && this.descriptionField.length)) {
       return;
     }
@@ -93,8 +92,7 @@ export default class IssuableForm {
     this.autosaves = this.initAutosave();
     this.form.on('submit', this.handleSubmit);
     this.form.on('click', '.btn-cancel, .js-reset-autosave', this.resetAutosave);
-    this.form.find('.js-unwrap-on-load').unwrap();
-    this.initWip();
+    this.initDraft();
 
     const $issuableDueDate = $('#issuable-due-date');
 
@@ -160,48 +158,34 @@ export default class IssuableForm {
     });
   }
 
-  initWip() {
-    this.$wipExplanation = this.form.find('.js-wip-explanation');
-    this.$noWipExplanation = this.form.find('.js-no-wip-explanation');
-    if (!(this.$wipExplanation.length && this.$noWipExplanation.length)) {
-      return undefined;
+  initDraft() {
+    if (this.draftCheck) {
+      this.form.on('click', this.draftCheck, () => this.writeDraftStatus());
+      this.titleField.on('keyup blur', () => this.readDraftStatus());
+
+      this.readDraftStatus();
     }
-    this.form.on('click', '.js-toggle-wip', this.toggleWip);
-    this.titleField.on('keyup blur', this.renderWipExplanation);
-    return this.renderWipExplanation();
   }
 
-  workInProgress() {
+  isMarkedDraft() {
     return this.draftRegex.test(this.titleField.val());
   }
-
-  renderWipExplanation() {
-    if (this.workInProgress()) {
-      // These strings are not "translatable" (the code is hard-coded to look for them)
-      this.$wipExplanation.find('code')[0].textContent =
-        'Draft'; /* eslint-disable-line @gitlab/require-i18n-strings */
-      this.$wipExplanation.show();
-      return this.$noWipExplanation.hide();
-    }
-    this.$wipExplanation.hide();
-    return this.$noWipExplanation.show();
+  readDraftStatus() {
+    this.draftCheck.checked = this.isMarkedDraft();
   }
-
-  toggleWip(event) {
-    event.preventDefault();
-    if (this.workInProgress()) {
-      this.removeWip();
+  writeDraftStatus() {
+    if (this.draftCheck.checked) {
+      this.addDraft();
     } else {
-      this.addWip();
+      this.removeDraft();
     }
-    return this.renderWipExplanation();
   }
 
-  removeWip() {
+  removeDraft() {
     return this.titleField.val(this.titleField.val().replace(this.draftRegex, ''));
   }
 
-  addWip() {
+  addDraft() {
     this.titleField.val(`Draft: ${this.titleField.val()}`);
   }
 }
