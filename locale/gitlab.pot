@@ -45607,6 +45607,9 @@ msgstr ""
 msgid "User settings"
 msgstr ""
 
+msgid "User was successfully banned."
+msgstr ""
+
 msgid "User was successfully created."
 msgstr ""
 
@@ -50584,6 +50587,9 @@ msgid "must have a repository"
 msgstr ""
 
 msgid "must match %{association}.project_id"
+msgstr ""
+
+msgid "must not be an owner of the namespace"
 msgstr ""
 
 msgid "must not contain commonly used combinations of words and letters"

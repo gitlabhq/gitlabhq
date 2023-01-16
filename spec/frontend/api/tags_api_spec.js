@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as tagsApi from '~/api/tags_api';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('~/api/tags_api.js', () => {
   let mock;
@@ -25,7 +25,7 @@ describe('~/api/tags_api.js', () => {
     it('fetches a tag of a given tag name of a particular project', () => {
       const tagName = 'tag-name';
       const expectedUrl = `/api/v7/projects/${projectId}/repository/tags/${tagName}`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, {
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, {
         name: tagName,
       });
 

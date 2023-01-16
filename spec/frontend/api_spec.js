@@ -1,12 +1,13 @@
 import MockAdapter from 'axios-mock-adapter';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus, {
+import {
   HTTP_STATUS_ACCEPTED,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_NO_CONTENT,
   HTTP_STATUS_NOT_FOUND,
+  HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 
 jest.mock('~/flash');
@@ -66,7 +67,7 @@ describe('Api', () => {
       it('fetch all group packages', () => {
         const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/packages`;
         jest.spyOn(axios, 'get');
-        mock.onGet(expectedUrl).replyOnce(httpStatus.OK, apiResponse);
+        mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, apiResponse);
 
         return Api.groupPackages(groupId).then(({ data }) => {
           expect(data).toEqual(apiResponse);
@@ -79,7 +80,7 @@ describe('Api', () => {
       it('fetch all project packages', () => {
         const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/packages`;
         jest.spyOn(axios, 'get');
-        mock.onGet(expectedUrl).replyOnce(httpStatus.OK, apiResponse);
+        mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, apiResponse);
 
         return Api.projectPackages(projectId).then(({ data }) => {
           expect(data).toEqual(apiResponse);
@@ -101,7 +102,7 @@ describe('Api', () => {
         const expectedUrl = `foo`;
         jest.spyOn(Api, 'buildProjectPackageUrl').mockReturnValue(expectedUrl);
         jest.spyOn(axios, 'get');
-        mock.onGet(expectedUrl).replyOnce(httpStatus.OK, apiResponse);
+        mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, apiResponse);
 
         return Api.projectPackage(projectId, packageId).then(({ data }) => {
           expect(data).toEqual(apiResponse);
@@ -116,7 +117,7 @@ describe('Api', () => {
 
         jest.spyOn(Api, 'buildProjectPackageUrl').mockReturnValue(expectedUrl);
         jest.spyOn(axios, 'delete');
-        mock.onDelete(expectedUrl).replyOnce(httpStatus.OK, true);
+        mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK, true);
 
         return Api.deleteProjectPackage(projectId, packageId).then(({ data }) => {
           expect(data).toEqual(true);
@@ -132,7 +133,7 @@ describe('Api', () => {
         const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/packages/${packageId}/package_files/${packageFileId}`;
 
         jest.spyOn(axios, 'delete');
-        mock.onDelete(expectedUrl).replyOnce(httpStatus.OK, true);
+        mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK, true);
 
         return Api.deleteProjectPackageFile(projectId, packageId, packageFileId).then(
           ({ data }) => {
@@ -152,7 +153,7 @@ describe('Api', () => {
 
         jest.spyOn(axios, 'get');
         jest.spyOn(Api, 'buildUrl').mockReturnValueOnce(expectedUrl);
-        mock.onGet(expectedUrl).replyOnce(httpStatus.OK, apiResponse);
+        mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, apiResponse);
 
         const { data } = await Api.containerRegistryDetails(1);
 
@@ -166,7 +167,7 @@ describe('Api', () => {
     it('fetches a group', () => {
       const groupId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, {
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, {
         name: 'test',
       });
 
@@ -184,7 +185,7 @@ describe('Api', () => {
       const groupId = '54321';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/members`;
       const expectedData = [{ id: 7 }];
-      mock.onGet(expectedUrl).reply(httpStatus.OK, expectedData);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, expectedData);
 
       return Api.groupMembers(groupId).then(({ data }) => {
         expect(data).toEqual(expectedData);
@@ -234,7 +235,7 @@ describe('Api', () => {
           web_url: 'https://gitlab.com/groups/gitlab-org/-/milestones/42',
         },
       ];
-      mock.onGet(expectedUrl).reply(httpStatus.OK, expectedData);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, expectedData);
 
       return Api.groupMilestones(groupId).then(({ data }) => {
         expect(data).toEqual(expectedData);
@@ -247,7 +248,7 @@ describe('Api', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups.json`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           name: 'test',
         },
@@ -268,7 +269,7 @@ describe('Api', () => {
       const options = { params: { search: 'foo' } };
       const expectedGroup = 'gitlab-org';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${expectedGroup}/labels`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           id: 1,
           name: 'Foo Label',
@@ -286,7 +287,7 @@ describe('Api', () => {
     it('fetches namespaces', () => {
       const query = 'dummy query';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/namespaces.json`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           name: 'test',
         },
@@ -308,7 +309,7 @@ describe('Api', () => {
       const options = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects.json`;
       window.gon.current_user_id = 1;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           name: 'test',
         },
@@ -327,7 +328,7 @@ describe('Api', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects.json`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           name: 'test',
         },
@@ -347,7 +348,7 @@ describe('Api', () => {
     it('update a project with the given payload', () => {
       const projectPath = 'foo';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}`;
-      mock.onPut(expectedUrl).reply(httpStatus.OK, { foo: 'bar' });
+      mock.onPut(expectedUrl).reply(HTTP_STATUS_OK, { foo: 'bar' });
 
       return Api.updateProject(projectPath, { foo: 'bar' }).then(({ data }) => {
         expect(data.foo).toBe('bar');
@@ -361,7 +362,7 @@ describe('Api', () => {
       const options = { unused: 'option' };
       const projectPath = 'gitlab-org%2Fgitlab-ce';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/users`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           name: 'test',
         },
@@ -380,7 +381,7 @@ describe('Api', () => {
 
     it('fetches all merge requests for a project', () => {
       const mockData = [{ source_branch: 'foo' }, { source_branch: 'bar' }];
-      mock.onGet(expectedUrl).reply(httpStatus.OK, mockData);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, mockData);
       return Api.projectMergeRequests(projectPath).then(({ data }) => {
         expect(data.length).toEqual(2);
         expect(data[0].source_branch).toBe('foo');
@@ -393,7 +394,7 @@ describe('Api', () => {
         source_branch: 'bar',
       };
       const mockData = [{ source_branch: 'bar' }];
-      mock.onGet(expectedUrl, { params }).reply(httpStatus.OK, mockData);
+      mock.onGet(expectedUrl, { params }).reply(HTTP_STATUS_OK, mockData);
 
       return Api.projectMergeRequests(projectPath, params).then(({ data }) => {
         expect(data.length).toEqual(1);
@@ -407,7 +408,7 @@ describe('Api', () => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, {
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, {
         title: 'test',
       });
 
@@ -422,7 +423,7 @@ describe('Api', () => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}/changes`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, {
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, {
         title: 'test',
       });
 
@@ -437,7 +438,7 @@ describe('Api', () => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}/versions`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           id: 123,
         },
@@ -456,7 +457,7 @@ describe('Api', () => {
       const params = { scope: 'active' };
       const mockData = [{ id: 4 }];
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/runners`;
-      mock.onGet(expectedUrl, { params }).reply(httpStatus.OK, mockData);
+      mock.onGet(expectedUrl, { params }).reply(HTTP_STATUS_OK, mockData);
 
       return Api.projectRunners(projectPath, { params }).then(({ data }) => {
         expect(data).toEqual(mockData);
@@ -563,7 +564,7 @@ describe('Api', () => {
         expect(config.data).toBe(JSON.stringify(expectedData));
 
         return [
-          httpStatus.OK,
+          HTTP_STATUS_OK,
           {
             name: 'test',
           },
@@ -586,7 +587,7 @@ describe('Api', () => {
         expect(config.data).toBe(JSON.stringify({ color: labelData.color }));
 
         return [
-          httpStatus.OK,
+          HTTP_STATUS_OK,
           {
             ...labelData,
           },
@@ -607,7 +608,7 @@ describe('Api', () => {
       const groupId = '123456';
       const query = 'dummy query';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/projects.json`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           name: 'test',
         },
@@ -662,7 +663,7 @@ describe('Api', () => {
     )}/repository/commits/${sha}`;
 
     it('fetches a single commit', () => {
-      mock.onGet(expectedUrl).reply(httpStatus.OK, { id: sha });
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { id: sha });
 
       return Api.commit(projectId, sha).then(({ data: commit }) => {
         expect(commit.id).toBe(sha);
@@ -670,7 +671,7 @@ describe('Api', () => {
     });
 
     it('fetches a single commit without stats', () => {
-      mock.onGet(expectedUrl, { params: { stats: false } }).reply(httpStatus.OK, { id: sha });
+      mock.onGet(expectedUrl, { params: { stats: false } }).reply(HTTP_STATUS_OK, { id: sha });
 
       return Api.commit(projectId, sha, { stats: false }).then(({ data: commit }) => {
         expect(commit.id).toBe(sha);
@@ -688,7 +689,7 @@ describe('Api', () => {
     )}`;
 
     it('fetches an issue template', () => {
-      mock.onGet(expectedUrl).reply(httpStatus.OK, 'test');
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, 'test');
 
       return new Promise((resolve) => {
         Api.issueTemplate(namespace, project, templateKey, templateType, (_, response) => {
@@ -722,7 +723,7 @@ describe('Api', () => {
       const expectedData = [
         { key: 'Template1', name: 'Template 1', content: 'This is template 1!' },
       ];
-      mock.onGet(expectedUrl).reply(httpStatus.OK, expectedData);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, expectedData);
 
       return new Promise((resolve) => {
         Api.issueTemplates(namespace, project, templateType, (_, response) => {
@@ -751,7 +752,7 @@ describe('Api', () => {
     it('fetches a list of templates', () => {
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/gitlab-org%2Fgitlab-ce/templates/licenses`;
 
-      mock.onGet(expectedUrl).reply(httpStatus.OK, 'test');
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, 'test');
 
       return new Promise((resolve) => {
         Api.projectTemplates('gitlab-org/gitlab-ce', 'licenses', {}, (response) => {
@@ -767,7 +768,7 @@ describe('Api', () => {
       const data = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/gitlab-org%2Fgitlab-ce/templates/licenses/test%20license`;
 
-      mock.onGet(expectedUrl).reply(httpStatus.OK, 'test');
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, 'test');
 
       return new Promise((resolve) => {
         Api.projectTemplate(
@@ -789,7 +790,7 @@ describe('Api', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users.json`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           name: 'test',
         },
@@ -806,7 +807,7 @@ describe('Api', () => {
     it('fetches single user', () => {
       const userId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users/${userId}`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, {
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, {
         name: 'testuser',
       });
 
@@ -819,7 +820,7 @@ describe('Api', () => {
   describe('user counts', () => {
     it('fetches single user counts', () => {
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/user_counts`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, {
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, {
         merge_requests: 4,
       });
 
@@ -833,7 +834,7 @@ describe('Api', () => {
     it('fetches single user status', () => {
       const userId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users/${userId}/status`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, {
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, {
         message: 'testmessage',
       });
 
@@ -849,7 +850,7 @@ describe('Api', () => {
       const options = { unused: 'option' };
       const userId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users/${userId}/projects`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           name: 'test',
         },
@@ -870,7 +871,7 @@ describe('Api', () => {
       const projectId = 'example/foobar';
       const commitSha = 'abc123def';
       const expectedUrl = `${dummyUrlRoot}/${projectId}/commit/${commitSha}/pipelines`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           name: 'test',
         },
@@ -895,7 +896,7 @@ describe('Api', () => {
             name: 'test',
           },
         ];
-        mock.onGet(expectedUrl, { params }).reply(httpStatus.OK, payload);
+        mock.onGet(expectedUrl, { params }).reply(HTTP_STATUS_OK, payload);
 
         const { data } = await Api.pipelineJobs(projectId, pipelineId, params);
         expect(data).toEqual(payload);
@@ -914,7 +915,7 @@ describe('Api', () => {
 
       jest.spyOn(axios, 'post');
 
-      mock.onPost(expectedUrl).replyOnce(httpStatus.OK, {
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, {
         name: branch,
       });
 
@@ -934,7 +935,7 @@ describe('Api', () => {
 
       jest.spyOn(axios, 'get');
 
-      mock.onGet(expectedUrl).replyOnce(httpStatus.OK, ['fork']);
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, ['fork']);
 
       return Api.projectForks(dummyProjectPath, { visibility: 'private' }).then(({ data }) => {
         expect(data).toEqual(['fork']);
@@ -1023,7 +1024,7 @@ describe('Api', () => {
 
       describe('when releases are successfully returned', () => {
         it('resolves the Promise', () => {
-          mock.onGet(expectedUrl).replyOnce(httpStatus.OK);
+          mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK);
 
           return Api.releases(dummyProjectPath).then(() => {
             expect(mock.history.get).toHaveLength(1);
@@ -1047,7 +1048,7 @@ describe('Api', () => {
 
       describe('when the release is successfully returned', () => {
         it('resolves the Promise', () => {
-          mock.onGet(expectedUrl).replyOnce(httpStatus.OK);
+          mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK);
 
           return Api.release(dummyProjectPath, dummyTagName).then(() => {
             expect(mock.history.get).toHaveLength(1);
@@ -1103,7 +1104,7 @@ describe('Api', () => {
 
       describe('when the release is successfully updated', () => {
         it('resolves the Promise', () => {
-          mock.onPut(expectedUrl, release).replyOnce(httpStatus.OK);
+          mock.onPut(expectedUrl, release).replyOnce(HTTP_STATUS_OK);
 
           return Api.updateRelease(dummyProjectPath, dummyTagName, release).then(() => {
             expect(mock.history.put).toHaveLength(1);
@@ -1156,7 +1157,7 @@ describe('Api', () => {
 
       describe('when the Release is successfully deleted', () => {
         it('resolves the Promise', () => {
-          mock.onDelete(expectedUrl).replyOnce(httpStatus.OK);
+          mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
 
           return Api.deleteReleaseLink(dummyProjectPath, dummyTagName, dummyLinkId).then(() => {
             expect(mock.history.delete).toHaveLength(1);
@@ -1185,7 +1186,7 @@ describe('Api', () => {
 
     describe('when the raw file is successfully fetched', () => {
       beforeEach(() => {
-        mock.onGet(expectedUrl).replyOnce(httpStatus.OK);
+        mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK);
       });
 
       it('resolves the Promise', () => {
@@ -1255,7 +1256,7 @@ describe('Api', () => {
       const issue = 1;
       const expectedArray = [1, 2, 3];
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/issues/${issue}`;
-      mock.onPut(expectedUrl).reply(httpStatus.OK, { assigneeIds: expectedArray });
+      mock.onPut(expectedUrl).reply(HTTP_STATUS_OK, { assigneeIds: expectedArray });
 
       return Api.updateIssue(projectId, issue, { assigneeIds: expectedArray }).then(({ data }) => {
         expect(data.assigneeIds).toEqual(expectedArray);
@@ -1269,7 +1270,7 @@ describe('Api', () => {
       const mergeRequest = 1;
       const expectedArray = [1, 2, 3];
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/merge_requests/${mergeRequest}`;
-      mock.onPut(expectedUrl).reply(httpStatus.OK, { assigneeIds: expectedArray });
+      mock.onPut(expectedUrl).reply(HTTP_STATUS_OK, { assigneeIds: expectedArray });
 
       return Api.updateMergeRequest(projectId, mergeRequest, { assigneeIds: expectedArray }).then(
         ({ data }) => {
@@ -1285,7 +1286,7 @@ describe('Api', () => {
       const options = { unused: 'option' };
       const projectId = 8;
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/repository/tags`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
         {
           name: 'test',
         },
@@ -1310,7 +1311,7 @@ describe('Api', () => {
         updated_at: '2020-07-10T05:10:35.122Z',
       };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/freeze_periods`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, [freezePeriod]);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [freezePeriod]);
 
       return Api.freezePeriods(projectId).then(({ data }) => {
         expect(data[0]).toStrictEqual(freezePeriod);
@@ -1370,7 +1371,7 @@ describe('Api', () => {
 
     describe('when the freeze period is successfully updated', () => {
       it('resolves the Promise', () => {
-        mock.onPut(expectedUrl, options).replyOnce(httpStatus.OK, expectedResult);
+        mock.onPut(expectedUrl, options).replyOnce(HTTP_STATUS_OK, expectedResult);
 
         return Api.updateFreezePeriod(projectId, options).then(({ data }) => {
           expect(data).toStrictEqual(expectedResult);
@@ -1394,7 +1395,7 @@ describe('Api', () => {
 
       jest.spyOn(axios, 'post');
 
-      mock.onPost(expectedUrl).replyOnce(httpStatus.OK, {
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, {
         web_url: redirectUrl,
       });
 
@@ -1425,7 +1426,7 @@ describe('Api', () => {
 
       it('returns null', () => {
         jest.spyOn(axios, 'post');
-        mock.onPost(expectedUrl).replyOnce(httpStatus.OK, true);
+        mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, true);
 
         expect(axios.post).toHaveBeenCalledTimes(0);
         expect(Api.trackRedisCounterEvent(event)).toEqual(null);
@@ -1439,7 +1440,7 @@ describe('Api', () => {
 
       it('resolves the Promise', () => {
         jest.spyOn(axios, 'post');
-        mock.onPost(expectedUrl, { event }).replyOnce(httpStatus.OK, true);
+        mock.onPost(expectedUrl, { event }).replyOnce(HTTP_STATUS_OK, true);
 
         return Api.trackRedisCounterEvent(event).then(({ data }) => {
           expect(data).toEqual(true);
@@ -1485,7 +1486,7 @@ describe('Api', () => {
 
         it('resolves the Promise', () => {
           jest.spyOn(axios, 'post');
-          mock.onPost(expectedUrl, { event }).replyOnce(httpStatus.OK, true);
+          mock.onPost(expectedUrl, { event }).replyOnce(HTTP_STATUS_OK, true);
 
           return Api.trackRedisHllUserEvent(event).then(({ data }) => {
             expect(data).toEqual(true);
@@ -1546,7 +1547,7 @@ describe('Api', () => {
       ];
 
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/deploy_keys`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, deployKeys);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, deployKeys);
 
       const params = { page: 2, public: true };
       const { data } = await Api.deployKeys(params);
@@ -1571,7 +1572,7 @@ describe('Api', () => {
       ];
 
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/secure_files`;
-      mock.onGet(expectedUrl).reply(httpStatus.OK, secureFiles);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, secureFiles);
       const { data } = await Api.projectSecureFiles(projectId, {});
 
       expect(data).toEqual(secureFiles);
@@ -1591,7 +1592,7 @@ describe('Api', () => {
       };
 
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/secure_files`;
-      mock.onPost(expectedUrl).reply(httpStatus.OK, secureFile);
+      mock.onPost(expectedUrl).reply(HTTP_STATUS_OK, secureFile);
       const { data } = await Api.uploadProjectSecureFile(projectId, 'some data');
 
       expect(data).toEqual(secureFile);
@@ -1641,7 +1642,7 @@ describe('Api', () => {
 
     describe('fetchFeatureFlagUserLists', () => {
       it('GETs the right url', () => {
-        mock.onGet(expectedUrl).replyOnce(httpStatus.OK, []);
+        mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, []);
 
         return Api.fetchFeatureFlagUserLists(projectId).then(({ data }) => {
           expect(data).toEqual([]);
@@ -1651,7 +1652,7 @@ describe('Api', () => {
 
     describe('searchFeatureFlagUserLists', () => {
       it('GETs the right url', () => {
-        mock.onGet(expectedUrl, { params: { search: 'test' } }).replyOnce(httpStatus.OK, []);
+        mock.onGet(expectedUrl, { params: { search: 'test' } }).replyOnce(HTTP_STATUS_OK, []);
 
         return Api.searchFeatureFlagUserLists(projectId, 'test').then(({ data }) => {
           expect(data).toEqual([]);
@@ -1665,7 +1666,7 @@ describe('Api', () => {
           name: 'mock_user_list',
           user_xids: '1,2,3,4',
         };
-        mock.onPost(expectedUrl, mockUserListData).replyOnce(httpStatus.OK, mockUserList);
+        mock.onPost(expectedUrl, mockUserListData).replyOnce(HTTP_STATUS_OK, mockUserList);
 
         return Api.createFeatureFlagUserList(projectId, mockUserListData).then(({ data }) => {
           expect(data).toEqual(mockUserList);
@@ -1675,7 +1676,7 @@ describe('Api', () => {
 
     describe('fetchFeatureFlagUserList', () => {
       it('GETs the right url', () => {
-        mock.onGet(`${expectedUrl}/1`).replyOnce(httpStatus.OK, mockUserList);
+        mock.onGet(`${expectedUrl}/1`).replyOnce(HTTP_STATUS_OK, mockUserList);
 
         return Api.fetchFeatureFlagUserList(projectId, 1).then(({ data }) => {
           expect(data).toEqual(mockUserList);
@@ -1687,7 +1688,7 @@ describe('Api', () => {
       it('PUTs the right url', () => {
         mock
           .onPut(`${expectedUrl}/1`)
-          .replyOnce(httpStatus.OK, { ...mockUserList, user_xids: '5' });
+          .replyOnce(HTTP_STATUS_OK, { ...mockUserList, user_xids: '5' });
 
         return Api.updateFeatureFlagUserList(projectId, {
           ...mockUserList,
@@ -1700,7 +1701,7 @@ describe('Api', () => {
 
     describe('deleteFeatureFlagUserList', () => {
       it('DELETEs the right url', () => {
-        mock.onDelete(`${expectedUrl}/1`).replyOnce(httpStatus.OK, 'deleted');
+        mock.onDelete(`${expectedUrl}/1`).replyOnce(HTTP_STATUS_OK, 'deleted');
 
         return Api.deleteFeatureFlagUserList(projectId, 1).then(({ data }) => {
           expect(data).toBe('deleted');
@@ -1732,7 +1733,7 @@ describe('Api', () => {
 
       jest.spyOn(axios, 'get');
 
-      mock.onGet(expectedUrl).replyOnce(httpStatus.OK, expectedObj);
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, expectedObj);
 
       return Api.projectProtectedBranch(dummyProjectId, branchName).then((data) => {
         expect(data).toEqual(expectedObj);

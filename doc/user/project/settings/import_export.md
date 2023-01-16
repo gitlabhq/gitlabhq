@@ -132,6 +132,9 @@ WARNING:
 Only import projects from sources you trust. If you import a project from an untrusted source, it
 may be possible for an attacker to steal your sensitive data.
 
+WARNING:
+Importing projects was restricted to users with Maintainer and above role on the destination group in GitLab 15.8.
+
 Prerequisites:
 
 - You must have [exported the project and its data](#export-a-project-and-its-data).

@@ -128,6 +128,38 @@ GitLab has deprecated Dependency Scanning support for Java versions 13, 14, 15, 
 
 <div class="deprecation removal-160 breaking-change">
 
+### Developer role providing the ability to import projects to a group
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The ability for users with the Developer role for a group to import projects to that group is deprecated in GitLab
+15.8 and will be removed in GitLab 16.0. From GitLab 16.0, only users with at least the Maintainer role for a group
+will be able to import projects to that group.
+
+</div>
+
+<div class="deprecation removal-160">
+
+### GitLab.com importer
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+The [GitLab.com importer](https://docs.gitlab.com/ee/user/project/import/gitlab_com.html) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0.
+
+The GitLab.com importer was introduced in 2015 for importing a project from GitLab.com to a self-managed GitLab instance through the UI.
+This feature is available on self-managed instances only. [Migrating GitLab groups and projects by direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended)
+supersedes the GitLab.com importer and provides a more cohesive importing functionality.
+
+See [migrated group items](https://docs.gitlab.com/ee/user/group/import/#migrated-group-items) and [migrated project items](https://docs.gitlab.com/ee/user/group/import/#migrated-project-items) for an overview.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Limit personal access token and deploy token's access with external authorization
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
@@ -153,6 +185,32 @@ Review the details carefully before upgrading.
 You must have Owner permissions to use the GitLab UI to update the `Packages and registries` settings for your groups. This includes [allowing or preventing duplicate package uploads](https://docs.gitlab.com/ee/user/packages/maven_repository/#do-not-allow-duplicate-maven-packages), [package request forwarding](https://docs.gitlab.com/ee/user/packages/maven_repository/#request-forwarding-to-maven-central), and [enabling lifecycle rules for the Dependency Proxy](https://docs.gitlab.com/ee/user/packages/dependency_proxy/reduce_dependency_proxy_storage.html). Currently, you can use the GraphQL API with Owner or Maintainer permissions to update these settings.
 
 In GitLab 16.0 and later, you must have Owner permissions to use the GraphQL API to change the `Packages and registries` settings.
+
+</div>
+
+<div class="deprecation removal-160">
+
+### Rake task for importing bare repositories
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+The [Rake task for importing bare repositories](https://docs.gitlab.com/ee/raketasks/import.html) `gitlab:import:repos` is deprecated in GitLab 15.8 and will be removed in GitLab 16.0.
+
+This Rake task imports a directory tree of repositories into a GitLab instance. These repositories must have been
+managed by GitLab previously, because the Rake task relies on the specific directory structure or a specific custom Git setting in order to work (`gitlab.fullpath`).
+
+Importing repositories using this Rake task has limitations. The Rake task:
+
+- Only knows about project and project wiki repositories and doesn't support repositories for designs, group wikis, or snippets.
+- Permits you to import non-hashed storage projects even though these aren't supported.
+- Relies on having Git config `gitlab.fullpath` set. [Epic 8953](https://gitlab.com/groups/gitlab-org/-/epics/8953) proposes removing support for this setting.
+
+Alternatives to using the `gitlab:import:repos` Rake task include:
+
+- Migrating projects using either [an export file](https://docs.gitlab.com/ee/user/project/settings/import_export.html) or
+  [direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended) migrate repositories as well.
+- Importing a [repository by URL](https://docs.gitlab.com/ee/user/project/import/repo_by_url.html).
+- Importing a [repositories from a non-GitLab source](https://docs.gitlab.com/ee/user/project/import/).
 
 </div>
 

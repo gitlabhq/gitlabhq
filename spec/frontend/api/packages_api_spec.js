@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { publishPackage } from '~/api/packages_api';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('Api', () => {
   const dummyApiVersion = 'v3000';
@@ -35,7 +35,7 @@ describe('Api', () => {
         const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/packages/generic/${name}/${packageVersion}/${name}`;
 
         jest.spyOn(axios, 'put');
-        mock.onPut(expectedUrl).replyOnce(httpStatus.OK, apiResponse);
+        mock.onPut(expectedUrl).replyOnce(HTTP_STATUS_OK, apiResponse);
 
         return publishPackage(
           {

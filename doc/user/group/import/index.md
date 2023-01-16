@@ -42,6 +42,9 @@ Prerequisites:
 - Both GitLab instances have migration enabled in application settings by instance administrator.
 - Owner role on the top-level group to migrate.
 
+WARNING:
+Importing was restricted to users with Maintainer and above role on the destination group in GitLab 15.8.
+
 You can import top-level groups to:
 
 - Another top-level group.

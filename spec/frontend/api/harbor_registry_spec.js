@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as harborRegistryApi from '~/api/harbor_registry';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('~/api/harbor_registry', () => {
   let mock;
@@ -37,7 +37,7 @@ describe('~/api/harbor_registry', () => {
           location: 'http://demo.harbor.com/harbor/projects/2/repositories/image-1',
         },
       ];
-      mock.onGet(expectedUrl).reply(httpStatus.OK, expectResponse);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, expectResponse);
 
       return harborRegistryApi.getHarborRepositoriesList(expectedParams).then(({ data }) => {
         expect(data).toEqual(expectResponse);
@@ -66,7 +66,7 @@ describe('~/api/harbor_registry', () => {
           tags: ['v2', 'v1', 'latest'],
         },
       ];
-      mock.onGet(expectedUrl).reply(httpStatus.OK, expectResponse);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, expectResponse);
 
       return harborRegistryApi.getHarborArtifacts(expectedParams).then(({ data }) => {
         expect(data).toEqual(expectResponse);
@@ -97,7 +97,7 @@ describe('~/api/harbor_registry', () => {
           immutable: false,
         },
       ];
-      mock.onGet(expectedUrl).reply(httpStatus.OK, expectResponse);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, expectResponse);
 
       return harborRegistryApi.getHarborTags(expectedParams).then(({ data }) => {
         expect(data).toEqual(expectResponse);
