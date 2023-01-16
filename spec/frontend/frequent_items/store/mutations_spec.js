@@ -44,6 +44,18 @@ describe('Frequent Items dropdown mutations', () => {
     });
   });
 
+  describe('TOGGLE_ITEMS_LIST_EDITABILITY', () => {
+    it('should toggle items list editablity', () => {
+      mutations[types.TOGGLE_ITEMS_LIST_EDITABILITY](stateCopy);
+
+      expect(stateCopy.isItemsListEditable).toEqual(true);
+
+      mutations[types.TOGGLE_ITEMS_LIST_EDITABILITY](stateCopy);
+
+      expect(stateCopy.isItemsListEditable).toEqual(false);
+    });
+  });
+
   describe('REQUEST_FREQUENT_ITEMS', () => {
     it('should set view states when requesting frequent items', () => {
       mutations[types.REQUEST_FREQUENT_ITEMS](stateCopy);
@@ -112,6 +124,29 @@ describe('Frequent Items dropdown mutations', () => {
       expect(stateCopy.isLoadingItems).toEqual(false);
       expect(stateCopy.hasSearchQuery).toEqual(true);
       expect(stateCopy.isFetchFailed).toEqual(true);
+    });
+  });
+
+  describe('RECEIVE_REMOVE_FREQUENT_ITEM_SUCCESS', () => {
+    it('should remove item with provided itemId from the items', () => {
+      stateCopy.isItemRemovalFailed = true;
+      stateCopy.items = mockFrequentProjects;
+
+      mutations[types.RECEIVE_REMOVE_FREQUENT_ITEM_SUCCESS](stateCopy, mockFrequentProjects[0].id);
+
+      expect(stateCopy.items).toHaveLength(mockFrequentProjects.length - 1);
+      expect(stateCopy.items).toEqual([...mockFrequentProjects.slice(1)]);
+      expect(stateCopy.isItemRemovalFailed).toBe(false);
+    });
+  });
+
+  describe('RECEIVE_REMOVE_FREQUENT_ITEM_ERROR', () => {
+    it('should remove item with provided itemId from the items', () => {
+      stateCopy.isItemRemovalFailed = false;
+
+      mutations[types.RECEIVE_REMOVE_FREQUENT_ITEM_ERROR](stateCopy);
+
+      expect(stateCopy.isItemRemovalFailed).toBe(true);
     });
   });
 });

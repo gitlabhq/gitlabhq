@@ -332,8 +332,16 @@ FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `incremental_repository_backup`.
 On GitLab.com, this feature is not available.
 
-Incremental backups can be faster than full backups because they only pack changes since the last backup into the backup
-bundle for each repository. There must be an existing backup to create an incremental backup from:
+NOTE:
+Only repositories support incremental backups. Therefore, if you use `INCREMENTAL=yes`, the task
+creates a self-contained backup tar archive. This is because all subtasks except repositories are
+still creating full backups (they overwrite the existing full backup).
+See [issue 19256](https://gitlab.com/gitlab-org/gitlab/-/issues/19256) for a feature request to
+support incremental backups for all subtasks.
+
+Incremental repository backups can be faster than full repository backups because they only pack changes since the last backup into the backup bundle for each repository.
+The incremental backup archives are not linked to each other: each archive is a self-contained backup of the instance. There must be an existing backup
+to create an incremental backup from:
 
 - In GitLab 14.9 and 14.10, use the `BACKUP=<timestamp_of_backup>` option to choose the backup to use. The chosen previous backup is overwritten.
 - In GitLab 15.0 and later, use the `PREVIOUS_BACKUP=<timestamp_of_backup>` option to choose the backup to use. By default, a backup file is created

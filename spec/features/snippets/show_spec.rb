@@ -43,11 +43,6 @@ RSpec.describe 'Snippet', :js, feature_category: :source_code_management do
       sign_in(different_user)
     end
 
-    it 'does not have the sidebar' do
-      visit snippet_path(snippet)
-
-      expect(page).to have_title _('Snippets')
-      expect(page).not_to have_css('aside.nav-sidebar')
-    end
+    it_behaves_like 'a dashboard page with sidebar', :dashboard_snippets_path, :snippets
   end
 end

@@ -5,5 +5,7 @@ export default ({ dropdownType = '' } = {}) => ({
   searchQuery: '',
   isLoadingItems: false,
   isFetchFailed: false,
+  isItemsListEditable: false,
+  isItemRemovalFailed: false,
   items: [],
 });

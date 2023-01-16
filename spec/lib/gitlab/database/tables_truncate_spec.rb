@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
   let(:main_db_shared_item_model) { table("_test_gitlab_shared_items", database: "main") }
   let(:main_db_partitioned_item) { table("_test_gitlab_hook_logs", database: "main") }
   let(:main_db_partitioned_item_detached) do
-    table("gitlab_partitions_dynamic._test_gitlab_hook_logs_20220101", database: "main")
+    table("gitlab_partitions_dynamic._test_gitlab_hook_logs_202201", database: "main")
   end
 
   # CI Database
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
   let(:ci_db_shared_item_model) { table("_test_gitlab_shared_items", database: "ci") }
   let(:ci_db_partitioned_item) { table("_test_gitlab_hook_logs", database: "ci") }
   let(:ci_db_partitioned_item_detached) do
-    table("gitlab_partitions_dynamic._test_gitlab_hook_logs_20220101", database: "ci")
+    table("gitlab_partitions_dynamic._test_gitlab_hook_logs_202201", database: "ci")
   end
 
   shared_examples 'truncating legacy tables on a database' do
@@ -64,19 +64,19 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
           id bigserial not null,
           created_at timestamptz not null,
           item_id BIGINT NOT NULL,
-          primary key (id, created_at),
+          PRIMARY KEY (id, created_at),
           CONSTRAINT fk_constrained_1 FOREIGN KEY(item_id) REFERENCES _test_gitlab_main_items(id)
         ) PARTITION BY RANGE(created_at);
 
-        CREATE TABLE gitlab_partitions_dynamic._test_gitlab_hook_logs_20220101
+        CREATE TABLE gitlab_partitions_dynamic._test_gitlab_hook_logs_202201
         PARTITION OF _test_gitlab_hook_logs
         FOR VALUES FROM ('20220101') TO ('20220131');
 
-        CREATE TABLE gitlab_partitions_dynamic._test_gitlab_hook_logs_20220201
+        CREATE TABLE gitlab_partitions_dynamic._test_gitlab_hook_logs_202202
         PARTITION OF _test_gitlab_hook_logs
         FOR VALUES FROM ('20220201') TO ('20220228');
 
-        ALTER TABLE _test_gitlab_hook_logs DETACH PARTITION gitlab_partitions_dynamic._test_gitlab_hook_logs_20220101;
+        ALTER TABLE _test_gitlab_hook_logs DETACH PARTITION gitlab_partitions_dynamic._test_gitlab_hook_logs_202201;
       SQL
 
       main_connection.execute(main_tables_sql)
@@ -124,14 +124,14 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
 
       Gitlab::Database::SharedModel.using_connection(main_connection) do
         Postgresql::DetachedPartition.create!(
-          table_name: '_test_gitlab_hook_logs_20220101',
+          table_name: '_test_gitlab_hook_logs_202201',
           drop_after: Time.current
         )
       end
 
       Gitlab::Database::SharedModel.using_connection(ci_connection) do
         Postgresql::DetachedPartition.create!(
-          table_name: '_test_gitlab_hook_logs_20220101',
+          table_name: '_test_gitlab_hook_logs_202201',
           drop_after: Time.current
         )
       end
@@ -234,6 +234,25 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
               truncate_legacy_tables
             end.to raise_error(/The table 'foobar' is not within the truncated tables/)
           end
+        end
+      end
+
+      context 'when one of the attached partitions happened to be locked for writes' do
+        before do
+          skip if connection.pool.db_config.name != 'ci'
+
+          Gitlab::Database::LockWritesManager.new(
+            table_name: "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_gitlab_hook_logs_202202",
+            connection: connection,
+            database_name: connection.pool.db_config.name,
+            with_retries: false
+          ).lock_writes
+        end
+
+        it 'truncates the locked partition successfully' do
+          expect do
+            truncate_legacy_tables
+          end.to change { ci_db_partitioned_item.count }.from(5).to(0)
         end
       end
 

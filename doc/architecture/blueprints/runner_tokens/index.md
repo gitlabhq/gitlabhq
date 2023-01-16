@@ -249,8 +249,13 @@ not an issue per-se.
 
 ### `ci_runner_machines` record lifetime
 
-New records are created when the runner pings the GitLab instance for new jobs, if a record matching
-the `token`+`system_id` does not already exist.
+New records are created in 2 situations:
+
+- when the runner calls the `POST /api/v4/runners/verify` endpoint as part of the
+`gitlab-runner register` command, if the specified runner token is prefixed with `glrt-`.
+This allows the frontend to determine whether the user has successfully completed the registration and take an
+appropriate action;
+- when GitLab is pinged for new jobs and a record matching the `token`+`system_id` does not already exist.
 
 Due to the time-decaying nature of the `ci_runner_machines` records, they are automatically
 cleaned after 7 days after the last contact from the respective runner.
@@ -322,6 +327,7 @@ using PAT tokens for example - such that every runner is associated with an owne
 | GitLab Rails app | | Create database migration to add `ci_runner_machines` table. |
 | GitLab Rails app | | Create database migration to add `ci_runner_machines.id` foreign key to `ci_builds_metadata` table. |
 | GitLab Rails app | | Create database migrations to add `allow_runner_registration_token` setting to `application_settings` and `namespace_settings` tables (default: `true`). |
+| GitLab Rails app | | Create `ci_runner_machines` record in `POST /runners/verify` request if the runner token is prefixed with `glrt-`. |
 | GitLab Rails app | | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
 | GitLab Runner    | | Start sending `system_id` value in `POST /jobs/request` request and other follow-up requests that require identifying the unique system. |
 | GitLab Rails app | | Create service similar to `StaleGroupRunnersPruneCronWorker` service to clean up `ci_runner_machines` records instead of `ci_runners` records.<br/>Existing service continues to exist but focuses only on legacy runners. |

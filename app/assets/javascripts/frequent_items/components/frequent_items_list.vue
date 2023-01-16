@@ -21,6 +21,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    isItemRemovalFailed: {
+      type: Boolean,
+      required: true,
+    },
     matcher: {
       type: String,
       required: true,
@@ -38,6 +42,9 @@ export default {
     isListEmpty() {
       return this.items.length === 0;
     },
+    showListEmptyMessage() {
+      return this.isListEmpty || this.isItemRemovalFailed;
+    },
     listEmptyMessage() {
       if (this.hasSearchQuery) {
         return this.isFetchFailed
@@ -45,7 +52,7 @@ export default {
           : this.translations.searchListEmptyMessage;
       }
 
-      return this.isFetchFailed
+      return this.isFetchFailed || this.isItemRemovalFailed
         ? this.translations.itemListErrorMessage
         : this.translations.itemListEmptyMessage;
     },
@@ -60,9 +67,10 @@ export default {
   <div class="frequent-items-list-container">
     <ul data-testid="frequent-items-list" class="list-unstyled">
       <li
-        v-if="isListEmpty"
+        v-if="showListEmptyMessage"
         :class="{ 'section-failure': isFetchFailed }"
         class="section-empty gl-mb-3"
+        data-testid="frequent-items-list-empty"
       >
         {{ listEmptyMessage }}
       </li>

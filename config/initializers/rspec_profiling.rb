@@ -6,7 +6,8 @@ module RspecProfilingExt
   module Collectors
     class CSVWithTimestamps < ::RspecProfiling::Collectors::CSV
       TIMESTAMP_FIELDS = %w(created_at updated_at).freeze
-      HEADERS = (::RspecProfiling::Collectors::CSV::HEADERS + TIMESTAMP_FIELDS).freeze
+      METADATA_FIELDS = %w(feature_category).freeze
+      HEADERS = (::RspecProfiling::Collectors::CSV::HEADERS + TIMESTAMP_FIELDS + METADATA_FIELDS).freeze
 
       def insert(attributes)
         output << HEADERS.map do |field|
@@ -40,9 +41,32 @@ module RspecProfilingExt
     end
   end
 
+  module Example
+    def feature_category
+      metadata[:feature_category]
+    end
+  end
+
   module Run
     def example_finished(*args)
-      super
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      collector.insert({
+        branch: vcs.branch,
+                         commit_hash: vcs.sha,
+                         date: vcs.time,
+                         file: @current_example.file,
+                         line_number: @current_example.line_number,
+                         description: @current_example.description,
+                         status: @current_example.status,
+                         exception: @current_example.exception,
+                         time: @current_example.time,
+                         query_count: @current_example.query_count,
+                         query_time: @current_example.query_time,
+                         request_count: @current_example.request_count,
+                         request_time: @current_example.request_time,
+                         feature_category: @current_example.feature_category
+      })
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
     rescue StandardError => err
       return if @already_logged_example_finished_error # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
@@ -59,6 +83,7 @@ RspecProfiling.configure do |config|
   if ENV.key?('CI') || ENV.key?('RSPEC_PROFILING')
     RspecProfiling::VCS::Git.prepend(RspecProfilingExt::Git)
     RspecProfiling::Run.prepend(RspecProfilingExt::Run)
+    RspecProfiling::Example.prepend(RspecProfilingExt::Example)
     config.collector = RspecProfilingExt::Collectors::CSVWithTimestamps
     config.csv_path = -> do
       prefix = "#{ENV['CI_JOB_NAME']}-".gsub(%r{[ /]}, '-') if ENV['CI_JOB_NAME']

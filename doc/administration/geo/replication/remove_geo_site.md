@@ -25,6 +25,9 @@ stop and uninstall this site. For each node on your secondary Geo site:
 
 1. Uninstall GitLab:
 
+   NOTE:
+   If GitLab data has to be cleaned from the instance as well, see how to [uninstall the Linux package and all its data](https://docs.gitlab.com/omnibus/installation/#uninstall-the-linux-package-omnibus).
+
    ```shell
    # Stop gitlab and remove its supervision process
    sudo gitlab-ctl uninstall

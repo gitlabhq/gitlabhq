@@ -20048,6 +20048,9 @@ msgstr ""
 msgid "GroupsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
+msgid "GroupsDropdown|Toggle edit mode"
+msgstr ""
+
 msgid "GroupsEmptyState|A group is a collection of several projects."
 msgstr ""
 
@@ -33640,6 +33643,9 @@ msgstr ""
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
+msgid "ProjectsDropdown|Toggle edit mode"
+msgstr ""
+
 msgid "ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository."
 msgstr ""
 
@@ -38402,9 +38408,6 @@ msgid "Select a role"
 msgstr ""
 
 msgid "Select a template repository"
-msgstr ""
-
-msgid "Select a template type"
 msgstr ""
 
 msgid "Select all"

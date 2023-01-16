@@ -15,7 +15,6 @@ module QA
         end
 
         view 'app/views/projects/blob/_template_selectors.html.haml' do
-          element :template_type_dropdown
           element :gitignore_dropdown
           element :gitlab_ci_yml_dropdown
           element :dockerfile_dropdown
@@ -27,7 +26,6 @@ module QA
         end
 
         def select_template(template_type, template)
-          click_element :template_type_dropdown
           click_link template_type
 
           case template_type

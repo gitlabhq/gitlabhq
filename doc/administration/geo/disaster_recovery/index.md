@@ -460,9 +460,9 @@ required:
 
 ### Step 4. (Optional) Updating the primary domain DNS record
 
-Updating the DNS records for the primary domain to point to the **secondary** site
-to prevent the need to update all references to the primary domain to the
-secondary domain, like changing Git remotes and API URLs.
+Update DNS records for the primary domain to point to the **secondary** site.
+This removes the need to update all references to the primary domain, for example
+changing Git remotes and API URLs.
 
 1. SSH into the **secondary** site and login as root:
 
@@ -478,6 +478,21 @@ secondary domain, like changing Git remotes and API URLs.
    # Change the existing external_url configuration
    external_url 'https://<new_external_url>'
    ```
+
+   If you provide GitLab with its certificate
+   [manually](https://docs.gitlab.com/omnibus/settings/ssl/index.html#configure-https-manually),
+   ensure:
+
+   - The new URL is one of the subject alternative names:
+
+     ```shell
+     /opt/gitlab/embedded/bin/openssl x509 -noout -dates -subject -issuer \
+         -nameopt multiline -ext subjectAltName -in /etc/gitlab/ssl/new-gitlab.new-example.com.crt
+     ```
+
+   - The certificate and key filenames match the new `external_url`,
+     or those filenames are
+     [specified in `/etc/gitlab/gitlab.rb`](https://docs.gitlab.com/omnibus/settings/ssl/index.html#change-the-default-ssl-certificate-location).
 
    NOTE:
    Changing `external_url` does not prevent access via the old secondary URL, as

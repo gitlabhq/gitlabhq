@@ -82,6 +82,22 @@ module Gitlab
           sql_statement = "SELECT set_config('lock_writes.#{table_name_without_schema}', 'false', false)"
           logger&.info(sql_statement)
           connection.execute(sql_statement) unless dry_run
+
+          # Temporarily unlocking writes on the attached partitions of the table.
+          # Because in some cases they might have been locked for writes as well, when they used to be
+          # normal tables before being converted into attached partitions.
+          Gitlab::Database::SharedModel.using_connection(connection) do
+            table_partitions = Gitlab::Database::PostgresPartition.for_parent_table(table_name_without_schema)
+            table_partitions.each do |table_partition|
+              partition_name_without_schema = ActiveRecord::ConnectionAdapters::PostgreSQL::Utils
+                .extract_schema_qualified_name(table_partition.identifier)
+                .identifier
+
+              sql_statement = "SELECT set_config('lock_writes.#{partition_name_without_schema}', 'false', false)"
+              logger&.info(sql_statement)
+              connection.execute(sql_statement) unless dry_run
+            end
+          end
         end
 
         # We do the truncation in stages to avoid high IO

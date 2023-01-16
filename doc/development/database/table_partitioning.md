@@ -389,7 +389,8 @@ class PrepareForeignKeyForPartitioning < Gitlab::Database::Migration[2.1]
       TARGET_TABLE_NAME,
       column: [PARTITION_COLUMN, COLUMN],
       target_column: [PARTITION_COLUMN, TARGET_COLUMN],
-      validate: false
+      validate: false,
+      on_update: :cascade,
       name: CONSTRAINT_NAME
     )
 
@@ -401,6 +402,13 @@ class PrepareForeignKeyForPartitioning < Gitlab::Database::Migration[2.1]
   end
 end
 ```
+
+The `on_update: :cascade` option is mandatory if we want the partitioning column
+to be updated. This will cascade the update to all dependent rows. Without
+specifying it, updating the partition column on the target table we would
+result in a `Key is still referenced from table ...` error and updating the
+partition column on the source table would raise a
+`Key is not present in table ...` error.
 
 ### Step 6 - Create parent table and attach existing table as the initial partition
 

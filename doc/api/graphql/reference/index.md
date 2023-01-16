@@ -11865,6 +11865,30 @@ A custom emoji uploaded by user.
 | <a id="customerrelationsorganizationname"></a>`name` | [`String!`](#string) | Name of the organization. |
 | <a id="customerrelationsorganizationupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the organization was last updated. |
 
+### `DastPreScanVerification`
+
+Represents a DAST Pre Scan Verification.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dastprescanverificationprescanverificationsteps"></a>`preScanVerificationSteps` | [`[DastPreScanVerificationStep!]`](#dastprescanverificationstep) | Pre Scan Verifications Steps. |
+| <a id="dastprescanverificationstatus"></a>`status` | [`DastPreScanVerificationStatus`](#dastprescanverificationstatus) | Status of the pre scan verification. |
+| <a id="dastprescanverificationvalid"></a>`valid` | [`Boolean!`](#boolean) | Whether or not the configuration has changed after the last pre scan run. |
+
+### `DastPreScanVerificationStep`
+
+Represents a DAST Pre Scan Verification Step.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dastprescanverificationsteperrors"></a>`errors` | [`[String!]`](#string) | Errors that occurred in the pre scan verification step. |
+| <a id="dastprescanverificationstepname"></a>`name` | [`String`](#string) | Name of the pre scan verification step. |
+| <a id="dastprescanverificationstepsuccess"></a>`success` | [`Boolean!`](#boolean) | Whether or not the pre scan verification step has errors. |
+
 ### `DastProfile`
 
 Represents a DAST Profile.
@@ -11874,6 +11898,7 @@ Represents a DAST Profile.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dastprofilebranch"></a>`branch` | [`DastProfileBranch`](#dastprofilebranch) | Associated branch. |
+| <a id="dastprofiledastprescanverification"></a>`dastPreScanVerification` | [`DastPreScanVerification`](#dastprescanverification) | DAST Pre Scan Verification associated with the site profile. Will always return `null` if `dast_on_demand_scans_scheduler` feature flag is disabled. |
 | <a id="dastprofiledastprofileschedule"></a>`dastProfileSchedule` | [`DastProfileSchedule`](#dastprofileschedule) | Associated profile schedule. |
 | <a id="dastprofiledastscannerprofile"></a>`dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | Associated scanner profile. |
 | <a id="dastprofiledastsiteprofile"></a>`dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | Associated site profile. |
@@ -21718,6 +21743,17 @@ Values for sorting tags.
 | <a id="customerrelationsorganizationstateactive"></a>`active` | Active organizations. |
 | <a id="customerrelationsorganizationstateall"></a>`all` | All available organizations. |
 | <a id="customerrelationsorganizationstateinactive"></a>`inactive` | Inactive organizations. |
+
+### `DastPreScanVerificationStatus`
+
+Status of DAST pre scan verification.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="dastprescanverificationstatuscomplete"></a>`COMPLETE` | Pre Scan Verification complete without errors. |
+| <a id="dastprescanverificationstatuscomplete_with_errors"></a>`COMPLETE_WITH_ERRORS` | Pre Scan Verification finished with one or more errors. |
+| <a id="dastprescanverificationstatusfailed"></a>`FAILED` | Pre Scan Validation unable to finish. |
+| <a id="dastprescanverificationstatusrunning"></a>`RUNNING` | Pre Scan Verification in execution. |
 
 ### `DastProfileCadenceUnit`
 

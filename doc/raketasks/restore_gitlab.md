@@ -20,6 +20,8 @@ If your backup is a different version than the current installation, you must
 [downgrade](../update/package/downgrade.md) or [upgrade](../update/package/index.md#upgrade-to-a-specific-version-using-the-official-repositories) your GitLab installation
 before restoring the backup.
 
+Each backup archive contains a full self-contained backup, including those created through the [incremental repository backup procedure](backup_gitlab.md#incremental-repository-backups). To restore an incremental repository backup, use the same instructions as restoring any other regular backup archive.
+
 ## Restore prerequisites
 
 You need to have a working GitLab installation before you can perform a

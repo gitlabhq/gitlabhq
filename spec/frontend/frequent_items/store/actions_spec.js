@@ -5,6 +5,7 @@ import * as types from '~/frequent_items/store/mutation_types';
 import state from '~/frequent_items/store/state';
 import AccessorUtilities from '~/lib/utils/accessor';
 import axios from '~/lib/utils/axios_utils';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   mockNamespace,
   mockStorageKey,
@@ -13,6 +14,7 @@ import {
 } from '../mock_data';
 
 describe('Frequent Items Dropdown Store Actions', () => {
+  useLocalStorageSpy();
   let mockedState;
   let mock;
 
@@ -47,6 +49,18 @@ describe('Frequent Items Dropdown Store Actions', () => {
         mockStorageKey,
         mockedState,
         [{ type: types.SET_STORAGE_KEY, payload: mockStorageKey }],
+        [],
+      );
+    });
+  });
+
+  describe('toggleItemsListEditablity', () => {
+    it('should toggle items list editablity', () => {
+      return testAction(
+        actions.toggleItemsListEditablity,
+        null,
+        mockedState,
+        [{ type: types.TOGGLE_ITEMS_LIST_EDITABILITY }],
         [],
       );
     });
@@ -208,6 +222,79 @@ describe('Frequent Items Dropdown Store Actions', () => {
         mockedState,
         [{ type: types.SET_SEARCH_QUERY, payload: null }],
         [{ type: 'fetchFrequentItems' }],
+      );
+    });
+  });
+
+  describe('removeFrequentItemSuccess', () => {
+    it('should remove frequent item on success', () => {
+      return testAction(
+        actions.removeFrequentItemSuccess,
+        { itemId: 1 },
+        mockedState,
+        [
+          {
+            type: types.RECEIVE_REMOVE_FREQUENT_ITEM_SUCCESS,
+            payload: { itemId: 1 },
+          },
+        ],
+        [],
+      );
+    });
+  });
+
+  describe('removeFrequentItemError', () => {
+    it('should should not remove frequent item on failure', () => {
+      return testAction(
+        actions.removeFrequentItemError,
+        null,
+        mockedState,
+        [{ type: types.RECEIVE_REMOVE_FREQUENT_ITEM_ERROR }],
+        [],
+      );
+    });
+  });
+
+  describe('removeFrequentItem', () => {
+    beforeEach(() => {
+      mockedState.items = [...mockFrequentProjects];
+      window.localStorage.setItem(mockStorageKey, JSON.stringify(mockFrequentProjects));
+    });
+
+    it('should remove provided itemId from localStorage', () => {
+      jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(true);
+
+      actions.removeFrequentItem(
+        { commit: jest.fn(), dispatch: jest.fn(), state: mockedState },
+        mockFrequentProjects[0].id,
+      );
+
+      expect(window.localStorage.getItem(mockStorageKey)).toBe(
+        JSON.stringify(mockFrequentProjects.slice(1)), // First item was removed
+      );
+    });
+
+    it('should dispatch `removeFrequentItemSuccess` on localStorage update success', () => {
+      jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(true);
+
+      return testAction(
+        actions.removeFrequentItem,
+        mockFrequentProjects[0].id,
+        mockedState,
+        [],
+        [{ type: 'removeFrequentItemSuccess', payload: mockFrequentProjects[0].id }],
+      );
+    });
+
+    it('should dispatch `removeFrequentItemError` on localStorage update failure', () => {
+      jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
+
+      return testAction(
+        actions.removeFrequentItem,
+        mockFrequentProjects[0].id,
+        mockedState,
+        [],
+        [{ type: 'removeFrequentItemError' }],
       );
     });
   });

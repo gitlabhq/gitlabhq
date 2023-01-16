@@ -18,6 +18,7 @@ export const TRANSLATION_KEYS = {
   projects: {
     loadingMessage: s__('ProjectsDropdown|Loading projects'),
     header: s__('ProjectsDropdown|Frequently visited'),
+    headerEditToggle: s__('ProjectsDropdown|Toggle edit mode'),
     itemListErrorMessage: s__(
       'ProjectsDropdown|This feature requires browser localStorage support',
     ),
@@ -29,6 +30,7 @@ export const TRANSLATION_KEYS = {
   groups: {
     loadingMessage: s__('GroupsDropdown|Loading groups'),
     header: s__('GroupsDropdown|Frequently visited'),
+    headerEditToggle: s__('GroupsDropdown|Toggle edit mode'),
     itemListErrorMessage: s__('GroupsDropdown|This feature requires browser localStorage support'),
     itemListEmptyMessage: s__('GroupsDropdown|Groups you visit often will appear here'),
     searchListErrorMessage: s__('GroupsDropdown|Something went wrong on our end.'),

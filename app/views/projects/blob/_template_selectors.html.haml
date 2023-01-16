@@ -1,8 +1,5 @@
 .template-selectors-menu.gl-pl-3
   .template-selector-dropdowns-wrap
-    .template-type-selector.js-template-type-selector-wrap.hidden
-      - toggle_text = should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : 'Select a template type'
-      = dropdown_tag(_(toggle_text), options: { toggle_class: 'js-template-type-selector', dropdown_class: 'dropdown-menu-selectable', data: { qa_selector: 'template_type_dropdown' } })
     .license-selector.js-license-selector-wrap.js-template-selector-wrap.hidden
       = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-license-selector', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: licenses_for_select(@project), project: @project.name, fullname: @project.namespace.human_name, qa_selector: 'license_dropdown' } })
     .gitignore-selector.js-gitignore-selector-wrap.js-template-selector-wrap.hidden
