@@ -30,8 +30,7 @@ that would not work efficiently without Workhorse.
 ## GitLab Shell
 
 GitLab Shell handles Git SSH sessions for GitLab and modifies the list of authorized keys.
-For more information, [refer to the README](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/README.md).
-for GitLab Shell.
+For more information, refer to the [GitLab Shell documentation](../../gitlab_shell/index.md).
 
 To learn about the reasoning behind our creation of `gitlab-sshd`, read the blog post
 [Why we implemented our own SSHD solution](https://about.gitlab.com/blog/2022/08/17/why-we-have-implemented-our-own-sshd-solution-on-gitlab-sass/).

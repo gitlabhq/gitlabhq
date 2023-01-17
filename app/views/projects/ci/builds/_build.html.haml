@@ -87,7 +87,7 @@
   %td
     - if job.duration
       %p.duration
-        = custom_icon("icon_timer")
+        = sprite_icon("timer")
         = duration_in_numbers(job.duration)
 
     - if job.finished_at

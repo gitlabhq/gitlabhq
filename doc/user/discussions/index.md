@@ -7,6 +7,11 @@ type: reference, howto
 
 # Comments and threads **(FREE)**
 
+> - Paginated merge request discussions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340172) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `paginated_mr_discussions`. Disabled by default.
+> - Paginated merge request discussions [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.2.
+> - Paginated merge request discussions [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.3.
+> - Paginated merge request discussions [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370075) in GitLab 15.8. Feature flag `paginated_mr_discussions` removed.
+
 GitLab encourages communication through comments, threads, and
 [code suggestions](../project/merge_requests/reviews/suggestions.md).
 
@@ -357,14 +362,3 @@ with a new push.
 
 Threads are now resolved if a push makes a diff section outdated.
 Threads on lines that don't change and top-level resolvable threads are not resolved.
-
-## Display paginated merge request discussions
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340172) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `paginated_mr_discussions`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.2.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370075) in GitLab 15.8. Feature flag `paginated_mr_discussions` removed.
-
-A merge request can have many discussions. Loading them all in a single request
-can be slow. To improve the performance of loading discussions, they are split into multiple
-pages, loading sequentially.

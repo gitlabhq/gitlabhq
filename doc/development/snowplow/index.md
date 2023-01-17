@@ -27,9 +27,10 @@ Tracking can be enabled at:
 - The user level. User tracking can be disabled on a per user basis.
   GitLab respects the [Do Not Track](https://www.eff.org/issues/do-not-track) standard, so any user who has enabled the Do Not Track option in their browser is not tracked at a user level.
 
-Snowplow tracking is enabled on GitLab.com, and we use it for most of our tracking strategy.
+Snowplow tracking is configured to send data for GitLab.com to a collector configured by GitLab. By default, self-managed
+instances do not have a collector configured and do not collect data via Snowplow.
 
-To enable Snowplow tracking on a self-managed instance:
+You can configure your self-managed GitLab instance to use a custom Snowplow collector.
 
 1. On the top bar, select **Main menu > Admin**, then select **Settings > General**.
    Alternatively, go to `admin/application_settings/general` in your browser.

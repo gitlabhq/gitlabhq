@@ -122,28 +122,6 @@ Expected batched background migration for the given configuration to be marked a
 
 If you get this error, [check the batched background migration options](#database-migrations-failing-because-of-batched-background-migration-not-finished) to complete the upgrade.
 
-### Enable or disable batched background migrations
-
-WARNING:
-If you disable this feature flag, GitLab upgrades may fail.
-
-Batched background migrations are under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:execute_batched_migrations_on_schedule)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:execute_batched_migrations_on_schedule)
-```
-
 ### Pause batched background migrations in GitLab 14.x
 
 To pause an ongoing batched background migration, use the `disable` command above.
@@ -224,6 +202,18 @@ Feature.disable(:optimize_batched_migrations)
 ```
 
 ## Troubleshooting
+
+### Enable or disable batched background migrations
+
+In extremely limited circumstances, a GitLab administrator can disable the
+`execute_batched_migrations_on_schedule` [feature flag](../administration/feature_flags.md).
+This flag is enabled by default, and should be disabled only as a last resort
+to limit database operations in special circumstances, like database host maintenance.
+
+WARNING:
+Do not disable this flag unless you fully understand the ramifications. If you disable
+the `execute_batched_migrations_on_schedule` feature flag, GitLab upgrades may fail
+and data loss may occur.
 
 ### Database migrations failing because of batched background migration not finished
 

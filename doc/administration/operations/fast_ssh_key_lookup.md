@@ -188,7 +188,8 @@ file for the environment, as it isn't generated dynamically.
 
 ### Additional documentation
 
-Additional technical documentation for `gitlab-sshd` may be found on the [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/README.md) documentation page.
+Additional technical documentation for `gitlab-sshd` may be found in the
+[GitLab Shell documentation](../../development/gitlab_shell/index.md).
 
 ## Troubleshooting
 

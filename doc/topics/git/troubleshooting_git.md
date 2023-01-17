@@ -40,6 +40,16 @@ git config http.postBuffer 52428800
 The value is specified in bytes, so in the above case the buffer size has been
 set to 50MB. The default is 1MB.
 
+### RPC failed; curl 92 HTTP/2 stream 0 was not closed cleanly: INTERNAL_ERROR (err 2)
+
+This problem may be caused by a slow internet connection. If you use Git over HTTP
+instead of SSH, try one of these fixes:
+
+- Increase the POST buffer size in the Git configuration with `git config http.postBuffer 52428800`.
+- Switch to the `HTTP/1.1` protocol with `git config http.version HTTP/1.1`.
+
+If neither approach fixes the error, you may need a different internet service provider.
+
 ### Check your SSH configuration
 
 **If pushing over SSH**, first check your SSH configuration as 'Broken pipe'

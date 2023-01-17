@@ -495,12 +495,6 @@ On each **secondary** node, executing the following:
    sudo gitlab-ctl reconfigure
    ```
 
-1. After the node is updated and reconfigure finished successfully, complete the migrations:
-
-   ```shell
-   sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-rake db:migrate
-   ```
-
 1. Run post-deployment database migrations, specific to the Geo database:
 
    ```shell
