@@ -45,6 +45,7 @@ module Gitlab
           commit: {
             # note: commit.id is actually the pipeline id
             id: commit.id,
+            name: commit.name,
             sha: commit.sha,
             message: commit.git_commit_message,
             author_name: commit.git_author_name,
@@ -70,7 +71,6 @@ module Gitlab
         }
 
         data[:retries_count] = build.retries_count if Feature.enabled?(:job_webhook_retries_count, project)
-        data[:commit][:name] = commit.name if Feature.enabled?(:pipeline_name, project)
 
         data
       end

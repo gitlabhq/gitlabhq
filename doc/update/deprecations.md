@@ -293,6 +293,20 @@ Review the details carefully before upgrading.
 To avoid confusion and duplication, the `environment_tier` parameter is deprecated in favor of the `environment_tiers` parameter. The new `environment_tiers` parameter allows DORA APIs to return aggregated data for multiple tiers at the same time. The `environment_tier` parameter will be removed in GitLab 16.0.
 
 </div>
+
+<div class="deprecation removal-1511">
+
+### openSUSE Leap 15.3 packages
+
+Planned removal: GitLab <span class="removal-milestone">15.11</span> <span class="removal-date"></span>
+
+Distribution support and security updates for openSUSE Leap 15.3 [ended December 2022](https://en.opensuse.org/Lifetime#Discontinued_distributions).
+
+Starting in GitLab 15.7 we started providing packages for openSUSE Leap 15.4, and will stop providing packages for openSUSE Leap 15.3 in the 15.11 milestone.
+
+- Switch from the openSUSE Leap 15.3 packages to the provided 15.4 packages.
+
+</div>
 </div>
 
 <div class="announcement-milestone">

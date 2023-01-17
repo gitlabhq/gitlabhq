@@ -10,7 +10,7 @@ class Ci::PipelineEntity < Grape::Entity
   expose :iid
   expose :user, using: UserEntity
   expose :active?, as: :active
-  expose :name, if: -> (pipeline, _) { Feature.enabled?(:pipeline_name, pipeline.project) }
+  expose :name
 
   # Coverage isn't always necessary (e.g. when displaying project pipelines in
   # the UI). Instead of creating an entirely different entity we just allow the

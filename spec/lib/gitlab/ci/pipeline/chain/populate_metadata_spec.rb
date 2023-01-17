@@ -54,94 +54,76 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata do
       expect(step.break?).to be false
     end
 
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(pipeline_name: false)
+    it 'builds pipeline_metadata' do
+      run_chain
+
+      expect(pipeline.pipeline_metadata.name).to eq('Pipeline name')
+      expect(pipeline.pipeline_metadata.project).to eq(pipeline.project)
+      expect(pipeline.pipeline_metadata).not_to be_persisted
+    end
+
+    context 'with empty name' do
+      let(:config) do
+        { workflow: { name: '  ' }, rspec: { script: 'rspec' } }
       end
 
-      it 'does not build pipeline_metadata' do
+      it 'strips whitespace from name' do
         run_chain
 
         expect(pipeline.pipeline_metadata).to be_nil
       end
-    end
 
-    context 'with feature flag enabled' do
-      before do
-        stub_feature_flags(pipeline_name: true)
-      end
-
-      it 'builds pipeline_metadata' do
-        run_chain
-
-        expect(pipeline.pipeline_metadata.name).to eq('Pipeline name')
-        expect(pipeline.pipeline_metadata.project).to eq(pipeline.project)
-        expect(pipeline.pipeline_metadata).not_to be_persisted
-      end
-
-      context 'with empty name' do
+      context 'with empty name after variable substitution' do
         let(:config) do
-          { workflow: { name: '  ' }, rspec: { script: 'rspec' } }
+          { workflow: { name: '$VAR1' }, rspec: { script: 'rspec' } }
         end
 
-        it 'strips whitespace from name' do
+        it 'does not save empty name' do
           run_chain
 
           expect(pipeline.pipeline_metadata).to be_nil
         end
+      end
+    end
 
-        context 'with empty name after variable substitution' do
-          let(:config) do
-            { workflow: { name: '$VAR1' }, rspec: { script: 'rspec' } }
-          end
-
-          it 'does not save empty name' do
-            run_chain
-
-            expect(pipeline.pipeline_metadata).to be_nil
-          end
-        end
+    context 'with variables' do
+      let(:config) do
+        {
+          variables: { ROOT_VAR: 'value $WORKFLOW_VAR1' },
+          workflow: {
+            name: 'Pipeline $ROOT_VAR $WORKFLOW_VAR2 $UNKNOWN_VAR',
+            rules: [{ variables: { WORKFLOW_VAR1: 'value1', WORKFLOW_VAR2: 'value2' } }]
+          },
+          rspec: { script: 'rspec' }
+        }
       end
 
-      context 'with variables' do
-        let(:config) do
-          {
-            variables: { ROOT_VAR: 'value $WORKFLOW_VAR1' },
-            workflow: {
-              name: 'Pipeline $ROOT_VAR $WORKFLOW_VAR2 $UNKNOWN_VAR',
-              rules: [{ variables: { WORKFLOW_VAR1: 'value1', WORKFLOW_VAR2: 'value2' } }]
-            },
-            rspec: { script: 'rspec' }
-          }
-        end
+      it 'substitutes variables' do
+        run_chain
 
-        it 'substitutes variables' do
-          run_chain
+        expect(pipeline.pipeline_metadata.name).to eq('Pipeline value value1 value2')
+      end
+    end
 
-          expect(pipeline.pipeline_metadata.name).to eq('Pipeline value value1 value2')
-        end
+    context 'with invalid name' do
+      let(:config) do
+        {
+          variables: { ROOT_VAR: 'a' * 256 },
+          workflow: {
+            name: 'Pipeline $ROOT_VAR'
+          },
+          rspec: { script: 'rspec' }
+        }
       end
 
-      context 'with invalid name' do
-        let(:config) do
-          {
-            variables: { ROOT_VAR: 'a' * 256 },
-            workflow: {
-              name: 'Pipeline $ROOT_VAR'
-            },
-            rspec: { script: 'rspec' }
-          }
-        end
+      it 'returns error and breaks chain' do
+        ret = run_chain
 
-        it 'returns error and breaks chain' do
-          ret = run_chain
-
-          expect(ret)
-            .to match_array(["Failed to build pipeline metadata! Name is too long (maximum is 255 characters)"])
-          expect(pipeline.pipeline_metadata.errors.full_messages)
-            .to match_array(['Name is too long (maximum is 255 characters)'])
-          expect(step.break?).to be true
-        end
+        expect(ret)
+          .to match_array(["Failed to build pipeline metadata! Name is too long (maximum is 255 characters)"])
+        expect(pipeline.pipeline_metadata.errors.full_messages)
+          .to match_array(['Name is too long (maximum is 255 characters)'])
+        expect(step.break?).to be true
       end
     end
   end

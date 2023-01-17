@@ -100,42 +100,16 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
       end
     end
 
-    context 'with pipeline_name feature flag enabled' do
-      before do
-        stub_feature_flags(pipeline_name: true)
+    it 'displays pipeline name instead of commit title' do
+      visit_pipeline
+
+      within 'h3' do
+        expect(page).to have_content(pipeline.name)
       end
 
-      it 'displays pipeline name instead of commit title' do
-        visit_pipeline
-
-        within 'h3' do
-          expect(page).to have_content(pipeline.name)
-        end
-
-        within '.well-segment[data-testid="commit-row"]' do
-          expect(page).to have_content(project.commit.title)
-          expect(page).to have_content(project.commit.short_id)
-        end
-      end
-    end
-
-    context 'with pipeline_name feature flag disabled' do
-      before do
-        stub_feature_flags(pipeline_name: false)
-      end
-
-      it 'displays commit title' do
-        visit_pipeline
-
-        within 'h3' do
-          expect(page).not_to have_content(pipeline.name)
-          expect(page).to have_content(project.commit.title)
-        end
-
-        within '.well-segment[data-testid="commit-row"]' do
-          expect(page).not_to have_content(project.commit.title)
-          expect(page).to have_content(project.commit.short_id)
-        end
+      within '.well-segment[data-testid="commit-row"]' do
+        expect(page).to have_content(project.commit.title)
+        expect(page).to have_content(project.commit.short_id)
       end
     end
 

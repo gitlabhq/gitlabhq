@@ -101,18 +101,17 @@ export default {
     mappedStatus() {
       if (this.status === STATUSES.FINISHED) {
         const isIncomplete = this.stats && isIncompleteImport(this.stats);
-        return {
-          icon: 'status-success',
-          ...(isIncomplete
-            ? {
-                text: __('Partial import'),
-                variant: 'warning',
-              }
-            : {
-                text: __('Complete'),
-                variant: 'success',
-              }),
-        };
+        return isIncomplete
+          ? {
+              icon: 'status-alert',
+              text: __('Partial import'),
+              variant: 'warning',
+            }
+          : {
+              icon: 'status-success',
+              text: __('Complete'),
+              variant: 'success',
+            };
       }
 
       return STATUS_MAP[this.status];
@@ -128,6 +127,8 @@ export default {
         return { name: 'status-success', class: 'gl-text-green-400' };
       } else if (imported === 0) {
         return { name: 'status-scheduled', class: 'gl-text-gray-400' };
+      } else if (this.status === STATUSES.FINISHED) {
+        return { name: 'status-alert', class: 'gl-text-orange-400' };
       }
 
       return { name: 'status-running', class: 'gl-text-blue-400' };

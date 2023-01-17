@@ -5,7 +5,7 @@ class MergeRequests::PipelineEntity < Grape::Entity
 
   expose :id
   expose :active?, as: :active
-  expose :name, if: -> (pipeline, _) { Feature.enabled?(:pipeline_name, pipeline.project) }
+  expose :name
 
   expose :path do |pipeline|
     project_pipeline_path(pipeline.project, pipeline)

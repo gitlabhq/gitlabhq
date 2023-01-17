@@ -397,10 +397,7 @@ Use [`workflow`](workflow.md) to control pipeline behavior.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372538) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `pipeline_name`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/376095) in GitLab 15.7.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `pipeline_name`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/376095) in GitLab 15.8. Feature flag `pipeline_name` removed.
 
 You can use `name` in `workflow:` to define a name for pipelines.
 

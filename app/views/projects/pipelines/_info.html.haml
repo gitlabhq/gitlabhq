@@ -1,4 +1,4 @@
-- if Feature.enabled?(:pipeline_name, @pipeline.project) && @pipeline.name
+- if @pipeline.name
   .gl-border-t.gl-p-5.gl-px-0
     %h3.gl-m-0.gl-text-body
       = @pipeline.name
@@ -53,7 +53,7 @@
   .well-segment{ 'data-testid': 'commit-row' }
     .icon-container.commit-icon
       = sprite_icon('commit', css_class: 'gl-top-0!')
-    - if Feature.enabled?(:pipeline_name, @pipeline.project) && @pipeline.name
+    - if @pipeline.name
       = markdown(commit.title, pipeline: :single_line)
       = clipboard_button(text: @pipeline.sha, title: _("Copy commit SHA"))
       = link_to commit.short_id, project_commit_path(@project, @pipeline.sha), class: "commit-sha"

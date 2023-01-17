@@ -80,18 +80,6 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
     expect(name_field[:value]).to eq('Build pipeline')
   end
 
-  context 'when pipeline_name feature flag is disabled' do
-    before do
-      stub_feature_flags(pipeline_name: false)
-    end
-
-    it 'does not return pipeline name' do
-      name_field = subject.attachments.first[:fields].find { |a| a[:title] == 'Pipeline name' }
-
-      expect(name_field).to be nil
-    end
-  end
-
   context "when the pipeline failed" do
     before do
       args[:object_attributes][:status] = 'failed'
