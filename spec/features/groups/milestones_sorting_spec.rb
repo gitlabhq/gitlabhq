@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Milestones sorting', :js, feature_category: :team_planning do
+  include ListboxHelpers
+
   let(:group) { create(:group) }
   let!(:project) { create(:project_empty_repo, group: group) }
   let!(:other_project) { create(:project_empty_repo, group: group) }
@@ -27,13 +29,13 @@ RSpec.describe 'Milestones sorting', :js, feature_category: :team_planning do
       expect(page.all('ul.content-list > li strong > a').map(&:text)).to eq(['v2.0', 'v2.0', 'v3.0', 'v1.0', 'v1.0'])
     end
 
-    within '[data-testid=milestone_sort_by_dropdown]' do
-      click_button 'Due soon'
-      expect(find('ul[role="listbox"]').all('li').map(&:text)).to eq(['Due soon', 'Due later', 'Start soon', 'Start later', 'Name, ascending', 'Name, descending'])
+    click_button 'Due soon'
 
-      find('li', text: 'Due later').click
-      expect(page).to have_button('Due later')
-    end
+    expect_listbox_items(['Due soon', 'Due later', 'Start soon', 'Start later', 'Name, ascending', 'Name, descending'])
+
+    select_listbox_item('Due later')
+
+    expect(page).to have_button('Due later')
 
     # assert descending sorting
     within '.milestones' do

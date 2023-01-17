@@ -135,6 +135,7 @@ describe('WorkItemDetail component', () => {
       stubs: {
         WorkItemWeight: true,
         WorkItemIteration: true,
+        WorkItemHealthStatus: true,
         WorkItemDetailModal: stubComponent(WorkItemDetailModal, {
           methods: {
             show: showModalHandler,

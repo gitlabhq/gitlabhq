@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::RefreshService do
+RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_workflow do
   include ProjectForksHelper
   include UserHelpers
 

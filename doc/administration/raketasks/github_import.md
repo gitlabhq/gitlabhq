@@ -34,7 +34,7 @@ bundle exec rake "import:github[access_token,root,foo/bar]" RAILS_ENV=production
 
 In this case, `access_token` is your GitHub personal access token, `root`
 is your GitLab username, and `foo/bar` is the new GitLab namespace/project
-created from your GitHub project. Subgroups are also possible: `foo/foo/bar`.
+created from your GitHub project. Subgroups are also possible: `foo/foo/bar`. The importer creates any missing intermediate namespaces (groups) if they do not exist.
 
 ## Importing a single project
 

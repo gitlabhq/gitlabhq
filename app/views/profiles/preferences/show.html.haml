@@ -76,7 +76,7 @@
         = f.select :layout, layout_choices, {}, class: 'gl-form-select custom-select'
         .form-text.text-muted
           = s_('Preferences|Choose between fixed (max. 1280px) and fluid (%{percentage}) application layout.').html_safe % { percentage: '100%' }
-      #user_dashboard.js-listbox-input{ data: { label: s_('Preferences|Dashboard'), description: s_('Preferences|Choose what content you want to see by default on your dashboard.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: current_user.dashboard } }
+      .js-listbox-input{ data: { label: s_('Preferences|Dashboard'), description: s_('Preferences|Choose what content you want to see by default on your dashboard.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: current_user.dashboard } }
 
       = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
 
@@ -125,7 +125,7 @@
         = succeed '.' do
           = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank', rel: 'noopener noreferrer'
     .col-lg-8
-      #user_preferred_language.js-listbox-input{ data: { label: _('Language'), description: s_('Preferences|This feature is experimental and translations are not yet complete.'), name: 'user[preferred_language]', items: language_choices.to_json, value: current_user.preferred_language } }
+      .js-listbox-input{ data: { label: _('Language'), description: s_('Preferences|This feature is experimental and translations are not yet complete.'), name: 'user[preferred_language]', items: language_choices.to_json, value: current_user.preferred_language } }
       %p.gl-mt-n5
         = link_to help_page_url('development/i18n/translation'), class: 'text-nowrap', target: '_blank', rel: 'noopener noreferrer' do
           = _("Help translate GitLab into your language")

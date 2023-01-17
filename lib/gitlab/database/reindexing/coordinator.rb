@@ -20,6 +20,8 @@ module Gitlab
         end
 
         def perform
+          return if too_late_for_reindexing?
+
           # This obtains a global lease such that there's
           # only one live reindexing process at a time.
           try_obtain_lease do
@@ -32,6 +34,8 @@ module Gitlab
         end
 
         def drop
+          return if too_late_for_reindexing?
+
           try_obtain_lease do
             Gitlab::AppLogger.info("Removing index #{index.identifier} which is a leftover, temporary index from previous reindexing activity")
 
@@ -78,6 +82,13 @@ module Gitlab
             connection.quote_table_name(index.schema),
             connection.quote_table_name(index.name)
           ].join('.')
+        end
+
+        # We need to check the time explicitly because we execute 4 reindexing
+        # action per rake invocation and one action can take up to 24 hours.
+        # This means that it can span for more than the weekend.
+        def too_late_for_reindexing?
+          !Time.current.on_weekend?
         end
       end
     end

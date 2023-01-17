@@ -8428,7 +8428,6 @@
 - './spec/policies/group_deploy_key_policy_spec.rb'
 - './spec/policies/group_deploy_keys_group_policy_spec.rb'
 - './spec/policies/group_member_policy_spec.rb'
-- './spec/policies/group_policy_spec.rb'
 - './spec/policies/identity_provider_policy_spec.rb'
 - './spec/policies/instance_metadata_policy_spec.rb'
 - './spec/policies/integration_policy_spec.rb'

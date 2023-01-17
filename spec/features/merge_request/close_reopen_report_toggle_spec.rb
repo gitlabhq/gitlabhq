@@ -27,12 +27,12 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
           find('[data-testid="merge-request-actions"]').click
 
           expect(container).to have_link("Close merge request")
-          expect(container).to have_link('Report abuse to administrator')
+          expect(container).to have_button('Report abuse to administrator')
         end
 
         it 'links to Report Abuse' do
           find('[data-testid="merge-request-actions"]').click
-          click_link 'Report abuse to administrator'
+          click_button 'Report abuse to administrator'
 
           expect(page).to have_content('Report abuse to administrator')
         end
@@ -47,7 +47,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
           expect(container).to have_link('Edit')
           expect(container).to have_link('Mark as draft')
           expect(container).to have_link('Close merge request')
-          expect(container).to have_link('Report abuse to administrator')
+          expect(container).to have_button('Report abuse to administrator')
           expect(container).not_to have_link('Reopen merge request')
         end
       end
@@ -59,7 +59,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
           find('[data-testid="merge-request-actions"]').click
 
           expect(container).to have_link('Edit')
-          expect(container).to have_link('Report abuse to administrator')
+          expect(container).to have_button('Report abuse to administrator')
           expect(container).to have_link('Reopen merge request')
           expect(container).not_to have_link('Close merge request')
         end
@@ -73,7 +73,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
             expect(container).to have_link('Edit')
             expect(container).to have_link('Reopen merge request')
             expect(container).not_to have_link('Close merge request')
-            expect(container).not_to have_link('Report abuse to administrator')
+            expect(container).not_to have_button('Report abuse to administrator')
           end
         end
       end
@@ -83,7 +83,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
 
         it 'shows only the `Edit` button' do
           expect(container).to have_link(exact_text: 'Edit')
-          expect(container).not_to have_link('Report abuse to administrator')
+          expect(container).not_to have_button('Report abuse to administrator')
           expect(container).not_to have_button('Close merge request')
           expect(container).not_to have_button('Reopen merge request')
         end
@@ -93,7 +93,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
 
           it 'shows only the `Edit` button' do
             expect(container).to have_link(exact_text: 'Edit')
-            expect(container).not_to have_link('Report abuse to administrator')
+            expect(container).not_to have_button('Report abuse to administrator')
             expect(container).not_to have_button('Close merge request')
             expect(container).not_to have_button('Reopen merge request')
           end
@@ -101,7 +101,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
       end
     end
 
-    context 'when user doesnt have permission to update' do
+    context 'when user doesnt have permission to update', :js do
       let(:cant_project) { create(:project, :repository) }
       let(:cant_issuable) { create(:merge_request, source_project: cant_project) }
 
@@ -112,7 +112,9 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
       end
 
       it 'only shows a `Report abuse` button' do
-        expect(container).to have_link('Report abuse to administrator')
+        find('[data-testid="merge-request-actions"]').click
+
+        expect(container).to have_button('Report abuse to administrator')
         expect(container).not_to have_button('Close merge request')
         expect(container).not_to have_button('Reopen merge request')
         expect(container).not_to have_link(exact_text: 'Edit')

@@ -7,6 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import your project from GitHub to GitLab **(FREE)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+
 You can import your GitHub repositories:
 
 - From either GitHub.com or GitHub Enterprise.
@@ -21,6 +23,9 @@ different namespaces.
 If you are importing to a self-managed GitLab instance, you can use the
 [GitHub Rake task](../../../administration/raketasks/github_import.md) instead. This allows you to import projects
 without the constraints of a [Sidekiq](../../../development/sidekiq/index.md) worker.
+
+NOTE:
+If you are importing a project using the GitHub Rake task, GitLab still creates namespaces or groups that don't exist.
 
 If you are importing from GitHub Enterprise to a self-managed GitLab instance:
 
@@ -40,9 +45,7 @@ When importing projects:
 - If a user referenced in the project is not found in the GitLab database, the project creator is set as the author and
   assignee. The project creator is usually the user that initiated the import process. A note on the issue mentioning the
   original GitHub author is added.
-- The importer creates any new namespaces (or groups) if they do not exist, or, if the namespace is taken, the
-  repository is imported under the namespace of the user who initiated the import process. The namespace or repository
-  name can also be edited, with the proper permissions.
+- You can change the target namespace and target repository name before you import.
 - The importer also imports branches on forks of projects related to open pull requests. These branches are
   imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`. This may lead to
   a discrepancy in branches compared to those of the GitHub repository.

@@ -331,6 +331,11 @@ You can configure many Auto DevOps jobs to run in an [offline environment](../..
 
 ## PostgreSQL database support
 
+WARNING:
+Provisioning a PostgreSQL database by default was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387766)
+in GitLab 15.8 and will no longer be the default from 16.0. To enable database provisioning, set
+the associated [CI/CD variable](cicd_variables.md#database-variables).
+
 To support applications that require a database,
 [PostgreSQL](https://www.postgresql.org/) is provisioned by default.
 The credentials to access the database are preconfigured.

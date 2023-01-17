@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Project fork', feature_category: :projects do
+  include ListboxHelpers
   include ProjectForksHelper
 
   let(:user) { create(:user) }
@@ -137,10 +138,9 @@ RSpec.describe 'Project fork', feature_category: :projects do
     let(:user) { create(:group_member, :maintainer, user: create(:user), group: group).user }
 
     def submit_form(group_obj = group)
-      click_button(s_('ForkProject|Select a namespace'), disabled: false)
-      find('[data-testid="listbox-search-input"]').fill_in(with: group_obj.name)
-      find('.gl-dropdown-item-text-wrapper', text: group_obj.name).click
-
+      click_button(s_('ForkProject|Select a namespace'))
+      send_keys group_obj.name
+      select_listbox_item(group_obj.name)
       click_button 'Fork project'
     end
 

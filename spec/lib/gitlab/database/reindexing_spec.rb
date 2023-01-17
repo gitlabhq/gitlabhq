@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Reindexing, feature_category: :database do
+RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_travel_to: '2023-01-07T09:44:07Z' do
   include ExclusiveLeaseHelpers
   include Database::DatabaseHelpers
 

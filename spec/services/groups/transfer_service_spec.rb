@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::TransferService, :sidekiq_inline do
+RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :subgroups do
   shared_examples 'project namespace path is in sync with project path' do
     it 'keeps project and project namespace attributes in sync' do
       projects_with_project_namespace.each do |project|

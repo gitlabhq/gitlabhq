@@ -86,11 +86,19 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
       )
     end
 
+    context 'when executed on Fridays', time_travel_to: '2022-12-16T09:44:07Z' do
+      it { expect(subject).not_to include(ci_builds.index) }
+    end
+
     context 'when executed on Saturdays', time_travel_to: '2022-12-17T09:44:07Z' do
       it { expect(subject).to include(ci_builds.index) }
     end
 
     context 'when executed on Sundays', time_travel_to: '2022-12-18T09:44:07Z' do
+      it { expect(subject).not_to include(ci_builds.index) }
+    end
+
+    context 'when executed on Mondays', time_travel_to: '2022-12-19T09:44:07Z' do
       it { expect(subject).not_to include(ci_builds.index) }
     end
   end

@@ -646,6 +646,9 @@ export default {
         :can-update="canUpdate"
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
+        :fetch-by-iid="fetchByIid"
+        :query-variables="queryVariables"
+        :full-path="fullPath"
         @error="updateError = $event"
       />
       <work-item-description

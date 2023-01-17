@@ -8,7 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Import repository from GitHub
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups if the namespace or group name specified in `target_namespace` doesn't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken or `target_namespace` is blank.
+
 Import your projects from GitHub to GitLab using the API.
+
+The namespace set in `target_namespace` must exist. The namespace can be your user namespace or an existing group that you have at least the Developer role for.
 
 ```plaintext
 POST /import/github
@@ -18,8 +22,8 @@ POST /import/github
 |-------------------------|---------|----------|-------------------------------------------------------------------------------------|
 | `personal_access_token` | string  | yes      | GitHub personal access token                                                        |
 | `repo_id`               | integer | yes      | GitHub repository ID                                                                |
-| `new_name`              | string  | no      | New repository name                                                                 |
-| `target_namespace`      | string  | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup` |
+| `new_name`              | string  | no       | New repository name                                                                 |
+| `target_namespace`      | string  | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`. In GitLab 15.8 and later, must not be blank |
 | `github_hostname`       | string  | no  | Custom GitHub Enterprise hostname. Do not set for GitHub.com.                       |
 | `optional_stages`       | object  | no  | [Additional items to import](../user/project/import/github.md#select-additional-items-to-import). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5 |
 

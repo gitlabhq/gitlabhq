@@ -56,7 +56,7 @@ module API
       requires :personal_access_token, type: String, desc: 'GitHub personal access token'
       requires :repo_id, type: Integer, desc: 'GitHub repository ID'
       optional :new_name, type: String, desc: 'New repo name'
-      requires :target_namespace, type: String, desc: 'Namespace to import repo into'
+      requires :target_namespace, type: String, allow_blank: false, desc: 'Namespace or group to import repository into'
       optional :github_hostname, type: String, desc: 'Custom GitHub enterprise hostname'
       optional :optional_stages, type: Hash, desc: 'Optional stages of import to be performed'
     end

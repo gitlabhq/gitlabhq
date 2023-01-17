@@ -46,6 +46,10 @@ To enable customer relations management in a group or subgroup:
 
 ### View contacts linked to a group
 
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
 To view a group's contacts:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
@@ -54,6 +58,10 @@ To view a group's contacts:
 ![Contacts list](crm_contacts_v14_10.png)
 
 ### Create a contact
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
 
 To create a contact:
 
@@ -67,6 +75,10 @@ You can also [create](../../api/graphql/reference/index.md#mutationcustomerrelat
 contacts using the GraphQL API.
 
 ### Edit a contact
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
 
 To edit an existing contact:
 
@@ -98,6 +110,10 @@ To change the state of a contact:
 
 ### View organizations
 
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
 To view a group's organizations:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
@@ -106,6 +122,10 @@ To view a group's organizations:
 ![Organizations list](crm_organizations_v14_10.png)
 
 ### Create an organization
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
 
 To create an organization:
 
@@ -119,6 +139,10 @@ You can also [create](../../api/graphql/reference/index.md#mutationcustomerrelat
 organizations using the GraphQL API.
 
 ### Edit an organization
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
 
 To edit an existing organization:
 
@@ -138,6 +162,10 @@ issues are linked to contacts matching the email addresses in the sender and CC 
 
 ### View issues linked to a contact
 
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
 To view a contact's issues, select a contact from the issue sidebar, or:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
@@ -146,6 +174,10 @@ To view a contact's issues, select a contact from the issue sidebar, or:
 
 ### View issues linked to an organization
 
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
 To view an organization's issues:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
@@ -153,6 +185,10 @@ To view an organization's issues:
 1. Next to the organization whose issues you wish to view, select **View issues** (**{issues}**).
 
 ### View contacts linked to an issue
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
 
 You can view contacts associated with an issue in the right sidebar.
 
@@ -165,6 +201,10 @@ You can also view issue contacts using the
 API.
 
 ### Add or remove issue contacts
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
 
 ### Add contacts to an issue
 

@@ -57,7 +57,11 @@ const apolloProvider = new VueApollo({
   defaultClient,
 });
 
-export default function mountImportProjectsTable(mountElement) {
+export default function mountImportProjectsTable({
+  mountElement,
+  Component = ImportProjectsTable,
+  extraProps = () => ({}),
+}) {
   if (!mountElement) return undefined;
 
   const store = initStoreFromElement(mountElement);
@@ -68,7 +72,7 @@ export default function mountImportProjectsTable(mountElement) {
     store,
     apolloProvider,
     render(createElement) {
-      return createElement(ImportProjectsTable, { props });
+      return createElement(Component, { props: { ...props, ...extraProps(mountElement.dataset) } });
     },
   });
 }

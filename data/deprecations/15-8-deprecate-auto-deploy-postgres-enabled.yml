@@ -1,0 +1,16 @@
+- title: "Auto DevOps no longer provisions a PostgreSQL database by default"
+  announcement_milestone: "15.8"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: tigerwnz
+  stage: Configure
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343988
+  body: |
+    Currently, Auto DevOps provisions an in-cluster PostgreSQL database by default.
+    In GitLab 16.0, databases will be provisioned only for users who opt in. This
+    change supports production deployments that require more robust database management.
+
+    If you want Auto DevOps to provision an in-cluster database,
+    set the `POSTGRES_ENABLED` CI/CD variable to `true`.
+  tiers: [Core, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/topics/autodevops/stages.html#auto-deploy

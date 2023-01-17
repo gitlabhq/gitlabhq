@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import your project from Gitea to GitLab **(FREE)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+
 Import your projects from Gitea to GitLab with minimal effort.
 
 NOTE:
@@ -29,10 +31,6 @@ Because Gitea isn't an OAuth provider, author/assignee can't be mapped to users
 in your GitLab instance. This means the project creator (usually the user that
 started the import process) is set as the author. A reference, however, is kept
 on the issue about the original Gitea author.
-
-The importer creates any new namespaces (groups) if they don't exist. If the
-namespace is taken, the repository is imported under the user's namespace
-that started the import process.
 
 ## Import your Gitea repositories
 

@@ -219,7 +219,13 @@ RSpec.describe PlanLimits do
         ci_daily_pipeline_schedule_triggers
         repository_size
         security_policy_scan_execution_schedules
+        enforcement_limit
+        notification_limit
       ] + disabled_max_artifact_size_columns
+    end
+
+    let(:datetime_columns) do
+      %w[dashboard_limit_enabled_at]
     end
 
     it "has positive values for enabled limits" do
@@ -227,6 +233,7 @@ RSpec.describe PlanLimits do
       attributes = attributes.except(described_class.primary_key)
       attributes = attributes.except(described_class.reflections.values.map(&:foreign_key))
       attributes = attributes.except(*columns_with_zero)
+      attributes = attributes.except(*datetime_columns)
 
       expect(attributes).to all(include(be_positive))
     end

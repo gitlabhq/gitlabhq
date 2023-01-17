@@ -75,6 +75,10 @@ export default {
       // GraphQL returns `avatarUrl` and Rest `avatar_url`
       return this.user?.avatarUrl || this.user?.avatar_url;
     },
+    webUrl() {
+      // GraphQL returns `webUrl` and Rest `web_url`
+      return this.user?.webUrl || this.user?.web_url;
+    },
     statusTooltipHTML() {
       // Rest `status_tooltip_html` which is a ready to work
       // html for the emoji and the status text inside a tooltip.
@@ -132,7 +136,7 @@ export default {
           :data-user-id="userId"
           :data-username="user.username"
           :data-name="user.name"
-          :href="user.webUrl"
+          :href="webUrl"
           target="_blank"
           class="js-user-link gl-vertical-align-middle gl-mx-2 gl-align-items-center"
         >

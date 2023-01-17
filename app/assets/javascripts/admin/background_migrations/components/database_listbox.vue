@@ -35,7 +35,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center" data-testid="database-listbox">
+  <div class="gl-display-flex gl-align-items-center">
     <label id="label" class="gl-font-weight-bold gl-mr-4 gl-mb-0">{{
       $options.i18n.database
     }}</label>

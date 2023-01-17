@@ -1622,6 +1622,50 @@ RSpec.describe Note do
         expect(described_class.with_suggestions).not_to include(note_without_suggestion)
       end
     end
+
+    describe '.inc_relations_for_view' do
+      subject { note.noteable.notes.inc_relations_for_view(noteable) }
+
+      context 'when noteable can not have diffs' do
+        let_it_be(:note) { create(:note_on_issue) }
+        let(:noteable) { note.noteable }
+
+        it 'does not include additional associations' do
+          expect { subject.reload }.to match_query_count(0).for_model(NoteDiffFile).and(
+            match_query_count(0).for_model(DiffNotePosition))
+        end
+
+        context 'when noteable is not set' do
+          let(:noteable) { nil }
+
+          it 'includes additional diff associations' do
+            expect { subject.reload }.to match_query_count(1).for_model(NoteDiffFile).and(
+              match_query_count(1).for_model(DiffNotePosition))
+          end
+        end
+
+        context 'when skip_notes_diff_include flag is disabled' do
+          before do
+            stub_feature_flags(skip_notes_diff_include: false)
+          end
+
+          it 'includes additional diff associations' do
+            expect { subject.reload }.to match_query_count(1).for_model(NoteDiffFile).and(
+              match_query_count(1).for_model(DiffNotePosition))
+          end
+        end
+      end
+
+      context 'when noteable can have diffs' do
+        let_it_be(:note) { create(:note_on_commit) }
+        let(:noteable) { note.noteable }
+
+        it 'includes additional diff associations' do
+          expect { subject.reload }.to match_query_count(1).for_model(NoteDiffFile).and(
+            match_query_count(1).for_model(DiffNotePosition))
+        end
+      end
+    end
   end
 
   describe 'banzai_render_context' do

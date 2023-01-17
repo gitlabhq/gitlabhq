@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
+RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: :continuous_integration do
   include ProjectForksHelper
   include StubRequests
   include Ci::SourcePipelineHelpers

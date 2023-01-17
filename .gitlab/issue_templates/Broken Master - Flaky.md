@@ -25,4 +25,6 @@ learn more about how to reproduce them.
 
 Please refer to the [Resolution guidance](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master) to learn more about resolution of broken master.
 
+Once the flaky failure has been fixed on the default branch, open merge requests to cherry-pick the fix to the active stable branches.
+
 /label ~"type::maintenance" ~"failure::flaky-test" ~"priority::3" ~"severity::3"

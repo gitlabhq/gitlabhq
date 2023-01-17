@@ -97,7 +97,7 @@ In this file, we write the actions that call mutations for handling a list of us
 ```javascript
   import * as types from './mutation_types';
   import axios from '~/lib/utils/axios_utils';
-  import createFlash from '~/flash';
+  import { createAlert } from '~/flash';
 
   export const fetchUsers = ({ state, dispatch }) => {
     commit(types.REQUEST_USERS);
@@ -106,7 +106,7 @@ In this file, we write the actions that call mutations for handling a list of us
       .then(({ data }) => commit(types.RECEIVE_USERS_SUCCESS, data))
       .catch((error) => {
         commit(types.RECEIVE_USERS_ERROR, error)
-        createFlash({ message: 'There was an error' })
+        createAlert({ message: 'There was an error' })
       });
   }
 

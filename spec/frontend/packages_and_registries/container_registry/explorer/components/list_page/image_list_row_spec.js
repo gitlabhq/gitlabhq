@@ -1,6 +1,6 @@
 import { GlIcon, GlSprintf, GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import { mockTracking } from 'helpers/tracking_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import DeleteButton from '~/packages_and_registries/container_registry/explorer/components/delete_button.vue';
@@ -57,31 +57,6 @@ describe('Image List Row', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-  });
-
-  describe('list item component', () => {
-    describe('tooltip', () => {
-      it(`the title is ${ROW_SCHEDULED_FOR_DELETION}`, () => {
-        mountComponent();
-
-        const tooltip = getBinding(wrapper.element, 'gl-tooltip');
-        expect(tooltip).toBeDefined();
-        expect(tooltip.value.title).toBe(ROW_SCHEDULED_FOR_DELETION);
-      });
-
-      it('is disabled when item is being deleted', () => {
-        mountComponent({ item: { ...item, status: IMAGE_DELETE_SCHEDULED_STATUS } });
-
-        const tooltip = getBinding(wrapper.element, 'gl-tooltip');
-        expect(tooltip.value.disabled).toBe(false);
-      });
-    });
-
-    it('is disabled when the item is in deleting status', () => {
-      mountComponent({ item: { ...item, status: IMAGE_DELETE_SCHEDULED_STATUS } });
-
-      expect(findListItemComponent().props('disabled')).toBe(true);
-    });
   });
 
   describe('image title and path', () => {
@@ -158,10 +133,22 @@ describe('Image List Row', () => {
         mountComponent({ item: { ...item, status: IMAGE_DELETE_SCHEDULED_STATUS } });
       });
 
-      it('the router link is disabled', () => {
-        // we check the event prop as is the only workaround to disable a router link
-        expect(findDetailsLink().props('event')).toBe('');
+      it('the router link does not exist', () => {
+        expect(findDetailsLink().exists()).toBe(false);
       });
+
+      it('image name exists', () => {
+        expect(findListItemComponent().text()).toContain('gitlab-test/rails-12009');
+      });
+
+      it(`contains secondary text ${ROW_SCHEDULED_FOR_DELETION}`, () => {
+        expect(findListItemComponent().text()).toContain(ROW_SCHEDULED_FOR_DELETION);
+      });
+
+      it('the tags count does not exist', () => {
+        expect(findTagsCount().exists()).toBe(false);
+      });
+
       it('the clipboard button is disabled', () => {
         expect(findClipboardButton().attributes('disabled')).toBe('true');
       });

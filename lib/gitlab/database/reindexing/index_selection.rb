@@ -50,7 +50,7 @@ module Gitlab
         # reindexing action on a large table late on Sunday could span during
         # Monday. We don't want this because it prevents vacuum from running.
         def too_late_for_very_large_table?
-          Date.today.sunday?
+          !Date.today.saturday?
         end
       end
     end

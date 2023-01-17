@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestDiff do
+RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   using RSpec::Parameterized::TableSyntax
 
   include RepoHelpers

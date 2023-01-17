@@ -72,7 +72,6 @@ export default {
 <template>
   <gl-collapsible-listbox
     class="gl-w-full gl-font-monospace"
-    data-testid="ref-select"
     :items="listBoxItems"
     :searchable="true"
     :searching="isLoading"

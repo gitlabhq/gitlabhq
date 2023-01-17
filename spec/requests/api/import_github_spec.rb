@@ -92,6 +92,23 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
 
+    context 'when target_namespace is blank' do
+      it 'returns 400 response' do
+        allow(Gitlab::LegacyGithubImport::ProjectCreator)
+          .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
+            .and_return(double(execute: project))
+
+        post api("/import/github", user), params: {
+          target_namespace: '',
+          personal_access_token: token,
+          repo_id: non_existing_record_id
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq 'target_namespace is empty'
+      end
+    end
+
     context 'when unauthenticated user' do
       it 'returns 403 response' do
         post api("/import/github"), params: {

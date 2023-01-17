@@ -728,6 +728,20 @@ export const workItemIterationSubscriptionResponse = {
   },
 };
 
+export const workItemHealthStatusSubscriptionResponse = {
+  data: {
+    issuableHealthStatusUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetHealthStatus',
+          healthStatus: 'needsAttention',
+        },
+      ],
+    },
+  },
+};
+
 export const workItemMilestoneSubscriptionResponse = {
   data: {
     issuableMilestoneUpdated: {

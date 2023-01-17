@@ -13,7 +13,7 @@ class Snippets::NotesController < ApplicationController
   private
 
   def note
-    @note ||= snippet.notes.inc_relations_for_view.find(params[:id])
+    @note ||= snippet.notes.inc_relations_for_view(snippet).find(params[:id])
   end
   alias_method :awardable, :note
 

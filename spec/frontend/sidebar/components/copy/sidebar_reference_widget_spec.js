@@ -66,7 +66,7 @@ describe('Sidebar Reference Widget', () => {
     });
 
     describe('when error occurs', () => {
-      it('calls createFlash with correct parameters', async () => {
+      it(`emits 'fetch-error' event with correct parameters`, async () => {
         const mockError = new Error('mayday');
 
         createComponent({

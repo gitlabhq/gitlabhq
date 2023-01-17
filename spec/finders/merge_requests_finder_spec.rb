@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestsFinder do
+RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
   context "multiple projects with merge requests" do
     include_context 'MergeRequestsFinder multiple projects with merge requests context'
 

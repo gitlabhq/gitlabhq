@@ -1,0 +1,12 @@
+- title: "Auto DevOps support for Herokuish is deprecated"
+  announcement_milestone: "15.8"
+  removal_milestone: "17.0"
+  breaking_change: true
+  reporter: nagyv-gitlab
+  stage: configure
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/211643
+  body: |
+    Auto DevOps support for Herokuish is deprecated in favor of [Cloud Native Buildpacks](https://docs.gitlab.com/ee/topics/autodevops/stages.html#auto-build-using-cloud-native-buildpacks). You should [migrate your builds from Herokuish to Cloud Native Buildpacks](https://docs.gitlab.com/ee/topics/autodevops/stages.html#moving-from-herokuish-to-cloud-native-buildpacks). From GitLab 14.0, Auto Build uses Cloud Native Buildpacks by default.
+
+    Because Cloud Native Buildpacks do not support automatic testing, the Auto Test feature of Auto DevOps is also deprecated.
+  documentation_url: https://docs.gitlab.com/ee/topics/autodevops/stages.html#auto-build-using-cloud-native-buildpacks

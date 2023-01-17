@@ -286,6 +286,46 @@ RSpec.describe ProjectPresenter do
           link: presenter.project_usage_quotas_path(project)
         )
       end
+
+      describe '#gitlab_ci_anchor_data' do
+        before do
+          project.update!(auto_devops_enabled: false)
+        end
+
+        context 'when user cannot collaborate' do
+          it 'returns no value' do
+            expect(presenter.gitlab_ci_anchor_data).to be(nil)
+          end
+        end
+
+        context 'when user can collaborate' do
+          before do
+            project.add_developer(user)
+          end
+
+          context 'and the CI/CD file is missing' do
+            it 'returns `Set up CI/CD` button' do
+              expect(presenter.gitlab_ci_anchor_data).to have_attributes(
+                is_link: false,
+                label: a_string_including('Set up CI/CD'),
+                link: presenter.project_ci_pipeline_editor_path(project)
+              )
+            end
+          end
+
+          context 'and there is a CI/CD file' do
+            it 'returns `CI/CD configuration` button' do
+              allow(project.repository).to receive(:gitlab_ci_yml).and_return 'Default content'
+
+              expect(presenter.gitlab_ci_anchor_data).to have_attributes(
+                is_link: false,
+                label: a_string_including('CI/CD configuration'),
+                link: presenter.project_ci_pipeline_editor_path(project)
+              )
+            end
+          end
+        end
+      end
     end
 
     describe '#releases_anchor_data' do

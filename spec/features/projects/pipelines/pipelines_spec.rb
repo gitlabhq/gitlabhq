@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Pipelines', :js, feature_category: :projects do
+  include ListboxHelpers
   include ProjectForksHelper
   include Spec::Support::Helpers::ModalHelpers
 
@@ -778,8 +779,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
       describe 'new pipeline page' do
         it 'has field to add a new pipeline' do
-          expect(page).to have_selector('[data-testid="ref-select"]')
-          expect(find('[data-testid="ref-select"]')).to have_content project.default_branch
+          expect(page).to have_button project.default_branch
           expect(page).to have_content('Run for')
         end
       end
@@ -787,14 +787,9 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
       describe 'find pipelines' do
         it 'shows filtered pipelines', :js do
           click_button project.default_branch
+          send_keys('fix')
 
-          page.within '[data-testid="ref-select"]' do
-            find('[data-testid="listbox-search-input"] input').native.send_keys('fix')
-
-            page.within '.gl-dropdown-contents' do
-              expect(page).to have_content('fix')
-            end
-          end
+          expect_listbox_item('fix')
         end
       end
     end

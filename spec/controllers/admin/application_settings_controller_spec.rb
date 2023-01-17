@@ -15,7 +15,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end
 
-  describe 'GET #integrations' do
+  describe 'GET #integrations', feature_category: :integrations do
     before do
       sign_in(admin)
     end
@@ -46,7 +46,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
   end
 
-  describe 'GET #usage_data with no access' do
+  describe 'GET #usage_data with no access', feature_category: :service_ping do
     before do
       stub_usage_data_connections
       sign_in(user)
@@ -59,7 +59,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
   end
 
-  describe 'GET #usage_data' do
+  describe 'GET #usage_data', feature_category: :service_ping do
     before do
       stub_usage_data_connections
       stub_database_flavor_check
@@ -400,7 +400,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
   end
 
-  describe 'PUT #reset_registration_token' do
+  describe 'PUT #reset_registration_token', feature_category: :credential_management do
     before do
       sign_in(admin)
     end
@@ -418,7 +418,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
   end
 
-  describe 'PUT #reset_error_tracking_access_token' do
+  describe 'PUT #reset_error_tracking_access_token', feature_category: :error_tracking do
     before do
       sign_in(admin)
     end
@@ -454,7 +454,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
   end
 
-  describe 'GET #service_usage_data' do
+  describe 'GET #service_usage_data', feature_category: :service_ping do
     before do
       stub_usage_data_connections
       stub_database_flavor_check

@@ -47,7 +47,6 @@
               - if moved_mr_sidebar_enabled?
                 %li.gl-dropdown-divider
                   %hr.dropdown-divider
-              %li.gl-dropdown-item
-                = link_to new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'dropdown-item' do
-                  .gl-dropdown-item-text-wrapper
-                    = _('Report abuse to administrator')
+              #js-report-abuse-dropdown-item{ data: { report_abuse_path: add_category_abuse_reports_path, reported_user_id: @merge_request.author.id, reported_from_url: merge_request_url(@merge_request) } }
+
+#js-report-abuse-drawer

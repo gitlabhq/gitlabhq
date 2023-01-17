@@ -134,9 +134,16 @@ class Note < ApplicationRecord
   scope :inc_author, -> { includes(:author) }
   scope :inc_note_diff_file, -> { includes(:note_diff_file) }
   scope :with_api_entity_associations, -> { preload(:note_diff_file, :author) }
-  scope :inc_relations_for_view, -> do
-    includes({ project: :group }, { author: :status }, :updated_by, :resolved_by, :award_emoji,
-             { system_note_metadata: :description_version }, :note_diff_file, :diff_note_positions, :suggestions)
+  scope :inc_relations_for_view, ->(noteable = nil) do
+    relations = [{ project: :group }, { author: :status }, :updated_by, :resolved_by,
+      :award_emoji, { system_note_metadata: :description_version }, :suggestions]
+
+    if noteable.nil? || DiffNote.noteable_types.include?(noteable.class.name) ||
+        Feature.disabled?(:skip_notes_diff_include)
+      relations += [:note_diff_file, :diff_note_positions]
+    end
+
+    includes(relations)
   end
 
   scope :with_notes_filter, -> (notes_filter) do

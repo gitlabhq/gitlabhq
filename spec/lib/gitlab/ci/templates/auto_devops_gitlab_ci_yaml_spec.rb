@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
+RSpec.describe 'Auto-DevOps.gitlab-ci.yml', feature_category: :auto_devops do
   using RSpec::Parameterized::TableSyntax
 
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps') }

@@ -64,7 +64,7 @@ Instead, you should obtain an instance of the `ContentEditor` class by listening
 
 ```html
 <script>
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 
 export default {
@@ -75,7 +75,7 @@ export default {
       try {
         await this.contentEditor.setSerializedContent(this.content);
       } catch (e) {
-        createFlash(__('Could not load initial document'));
+        createAlert({ message: __('Could not load initial document') });
       }
     },
     submitChanges() {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequest, factory_default: :keep do
+RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_review_workflow do
   include RepoHelpers
   include ProjectForksHelper
   include ReactiveCachingHelpers

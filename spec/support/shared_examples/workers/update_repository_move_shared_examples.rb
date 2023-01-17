@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'an update storage move worker' do
+  it 'has the `until_executed` deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+  end
+
   describe '#perform' do
     let(:service) { double(:update_repository_storage_service) }
 

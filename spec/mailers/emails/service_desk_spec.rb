@@ -58,7 +58,7 @@ RSpec.describe Emails::ServiceDesk do
     end
   end
 
-  shared_examples 'handle template content' do |template_key|
+  shared_examples 'handle template content' do |template_key, attachments_count|
     before do
       expect(Gitlab::Template::ServiceDeskTemplate).to receive(:find)
         .with(template_key, issue.project)
@@ -69,6 +69,7 @@ RSpec.describe Emails::ServiceDesk do
       aggregate_failures do
         is_expected.to have_referable_subject(issue, include_project: false, reply: reply_in_subject)
         is_expected.to have_body_text(expected_body)
+        expect(subject.attachments.count).to eq(attachments_count.to_i)
         expect(subject.content_type).to include('text/html')
       end
     end
@@ -195,13 +196,102 @@ RSpec.describe Emails::ServiceDesk do
       end
 
       context 'with upload link in the note' do
-        let_it_be(:upload_path) { '/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg' }
-        let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "a new comment with [file](#{upload_path})") }
+        let_it_be(:secret) { 'e90decf88d8f96fe9e1389afc2e4a91f' }
+        let_it_be(:filename) { 'test.jpg' }
+        let_it_be(:path) { "#{secret}/#{filename}" }
+        let_it_be(:upload_path) { "/uploads/#{path}" }
+        let_it_be(:template_content) { 'some text %{ NOTE_TEXT  }' }
+        let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "a new comment with [#{filename}](#{upload_path})") }
+        let!(:upload) { create(:upload, :issuable_upload, :with_file, model: note.project, path: path, secret: secret) }
 
-        let(:template_content) { 'some text %{ NOTE_TEXT  }' }
-        let(:expected_body) { %Q(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">file</a>) }
+        context 'when total uploads size is more than 10mb' do
+          before do
+            allow_next_instance_of(FileUploader) do |instance|
+              allow(instance).to receive(:size).and_return(10.1.megabytes)
+            end
+          end
 
-        it_behaves_like 'handle template content', 'new_note'
+          let_it_be(:expected_body) { %Q(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
+
+          it_behaves_like 'handle template content', 'new_note'
+        end
+
+        context 'when total uploads size is less or equal 10mb' do
+          context 'when it has only one upload' do
+            before do
+              allow_next_instance_of(FileUploader) do |instance|
+                allow(instance).to receive(:size).and_return(10.megabytes)
+              end
+            end
+
+            context 'when upload name is not changed in markdown' do
+              let_it_be(:expected_body) { %Q(some text a new comment with <strong>#{filename}</strong>) }
+
+              it_behaves_like 'handle template content', 'new_note', 1
+            end
+
+            context 'when upload name is changed in markdown' do
+              let_it_be(:upload_name_in_markdown) { 'Custom name' }
+              let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "a new comment with [#{upload_name_in_markdown}](#{upload_path})") }
+              let_it_be(:expected_body) { %Q(some text a new comment with <strong>#{upload_name_in_markdown} (#{filename})</strong>) }
+
+              it_behaves_like 'handle template content', 'new_note', 1
+            end
+          end
+
+          context 'when it has more than one upload' do
+            before do
+              allow_next_instance_of(FileUploader) do |instance|
+                allow(instance).to receive(:size).and_return(5.megabytes)
+              end
+            end
+
+            let_it_be(:secret_1) { '17817c73e368777e6f743392e334fb8a' }
+            let_it_be(:filename_1) { 'test1.jpg' }
+            let_it_be(:path_1) { "#{secret_1}/#{filename_1}" }
+            let_it_be(:upload_path_1) { "/uploads/#{path_1}" }
+            let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "a new comment with [#{filename}](#{upload_path}) [#{filename_1}](#{upload_path_1})") }
+
+            context 'when all uploads processed correct' do
+              let_it_be(:upload_1) { create(:upload, :issuable_upload, :with_file, model: note.project, path: path_1, secret: secret_1) }
+              let_it_be(:expected_body) { %Q(some text a new comment with <strong>#{filename}</strong> <strong>#{filename_1}</strong>) }
+
+              it_behaves_like 'handle template content', 'new_note', 2
+            end
+
+            context 'when not all uploads processed correct' do
+              let_it_be(:expected_body) { %Q(some text a new comment with <strong>#{filename}</strong> <a href="#{project.web_url}#{upload_path_1}" data-canonical-src="#{upload_path_1}" data-link="true" class="gfm">#{filename_1}</a>) }
+
+              it_behaves_like 'handle template content', 'new_note', 1
+            end
+          end
+        end
+
+        context 'when UploaderFinder is raising error' do
+          before do
+            allow_next_instance_of(UploaderFinder) do |instance|
+              allow(instance).to receive(:execute).and_raise(StandardError)
+            end
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(StandardError, project_id: note.project_id)
+          end
+
+          let_it_be(:expected_body) { %Q(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
+
+          it_behaves_like 'handle template content', 'new_note'
+        end
+
+        context 'when FileUploader is raising error' do
+          before do
+            allow_next_instance_of(FileUploader) do |instance|
+              allow(instance).to receive(:read).and_raise(StandardError)
+            end
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(StandardError, project_id: note.project_id)
+          end
+
+          let_it_be(:expected_body) { %Q(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
+
+          it_behaves_like 'handle template content', 'new_note'
+        end
       end
 
       context 'with all-user reference in a an external author comment' do

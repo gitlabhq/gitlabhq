@@ -5,6 +5,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   include GitlabRoutingHelper
   include StorageHelper
   include TreeHelper
+  include Ci::PipelineEditorHelper
   include IconsHelper
   include BlobHelper
   include ChecksCollaboration
@@ -349,6 +350,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def gitlab_ci_anchor_data
+    return unless can_view_pipeline_editor?(project)
+
     if cicd_missing?
       AnchorData.new(false,
                      statistic_icon + _('Set up CI/CD'),

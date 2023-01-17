@@ -29,10 +29,6 @@ describe('ReportAbuseButton', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findReportAbuseButton = () => wrapper.findComponent(GlButton);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
 

@@ -100,7 +100,7 @@ module NotesActions
 
   def gather_all_notes
     now = Time.current
-    notes = merge_resource_events(notes_finder.execute.inc_relations_for_view)
+    notes = merge_resource_events(notes_finder.execute.inc_relations_for_view(noteable))
 
     [notes, { last_fetched_at: (now.to_i * MICROSECOND) + now.usec }]
   end

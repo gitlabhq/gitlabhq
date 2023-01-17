@@ -46,12 +46,8 @@ module Import
       @project_name ||= params[:new_name].presence || repo[:name]
     end
 
-    def namespace_path
-      @namespace_path ||= params[:target_namespace].presence || current_user.namespace_path
-    end
-
     def target_namespace
-      @target_namespace ||= find_or_create_namespace(namespace_path, current_user.namespace_path)
+      @target_namespace ||= Namespace.find_by_full_path(target_namespace_path)
     end
 
     def extra_project_attrs
@@ -104,11 +100,19 @@ module Import
     def validate_context
       if blocked_url?
         log_and_return_error("Invalid URL: #{url}", _("Invalid URL: %{url}") % { url: url }, :bad_request)
+      elsif target_namespace.nil?
+        error(_('Namespace or group to import repository into does not exist.'), :unprocessable_entity)
       elsif !authorized?
         error(_('This namespace has already been taken. Choose a different one.'), :unprocessable_entity)
       elsif oversized?
         error(oversize_error_message, :unprocessable_entity)
       end
+    end
+
+    def target_namespace_path
+      raise ArgumentError, 'Target namespace is required' if params[:target_namespace].blank?
+
+      params[:target_namespace]
     end
 
     def log_error(exception)

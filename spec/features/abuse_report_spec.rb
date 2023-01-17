@@ -122,7 +122,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
         find('[data-testid="merge-request-actions"]').click
       end
 
-      it_behaves_like 'reports the user without an abuse category'
+      it_behaves_like 'reports the user with an abuse category'
     end
 
     context 'when reporting a comment' do

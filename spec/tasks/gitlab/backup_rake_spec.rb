@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:app namespace rake task', :delete do
+RSpec.describe 'gitlab:app namespace rake task', :delete, feature_category: :backup_restore do
   let(:enable_registry) { true }
   let(:backup_restore_pid_path) { "#{Rails.application.root}/tmp/backup_restore.pid" }
   let(:backup_tasks) { %w[db repo uploads builds artifacts pages lfs terraform_state registry packages] }
