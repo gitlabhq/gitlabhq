@@ -22,12 +22,6 @@ export const HTTP_STATUS_NOT_FOUND = 404;
 export const HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
 export const HTTP_STATUS_SERVICE_UNAVAILABLE = 503;
 
-// TODO move the rest of the status codes to primitive constants
-// https://docs.gitlab.com/ee/development/fe_guide/style/javascript.html#export-constants-as-primitives
-const httpStatusCodes = {
-  OK: 200,
-};
-
 export const successCodes = [
   HTTP_STATUS_OK,
   HTTP_STATUS_CREATED,
@@ -40,5 +34,3 @@ export const successCodes = [
   HTTP_STATUS_ALREADY_REPORTED,
   HTTP_STATUS_IM_USED,
 ];
-
-export default httpStatusCodes;

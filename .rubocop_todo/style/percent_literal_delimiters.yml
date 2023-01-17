@@ -304,7 +304,6 @@ Style/PercentLiteralDelimiters:
     - 'ee/spec/helpers/ee/geo_helper_spec.rb'
     - 'ee/spec/helpers/ee/labels_helper_spec.rb'
     - 'ee/spec/helpers/ee/security_orchestration_helper_spec.rb'
-    - 'ee/spec/helpers/ee/welcome_helper_spec.rb'
     - 'ee/spec/helpers/merge_requests_helper_spec.rb'
     - 'ee/spec/helpers/subscriptions_helper_spec.rb'
     - 'ee/spec/helpers/vulnerabilities_helper_spec.rb'

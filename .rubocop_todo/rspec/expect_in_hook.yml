@@ -25,7 +25,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/helpers/ee/integrations_helper_spec.rb'
     - 'ee/spec/helpers/ee/issues_helper_spec.rb'
     - 'ee/spec/helpers/ee/projects/security/dast_configuration_helper_spec.rb'
-    - 'ee/spec/helpers/ee/welcome_helper_spec.rb'
     - 'ee/spec/helpers/kerberos_helper_spec.rb'
     - 'ee/spec/helpers/vulnerabilities_helper_spec.rb'
     - 'ee/spec/lib/ee/api/helpers/members_helpers_spec.rb'
