@@ -18,6 +18,8 @@ module RuboCop
         KEYWORD_DEPRECATION_STR = 'maybe ** should be added to the call'
 
         def on_send(node)
+          return if target_ruby_version >= 3.0
+
           arg = get_last_argument(node)
           return unless arg
 
@@ -49,12 +51,12 @@ module RuboCop
         end
 
         def known_match?(file_path, line_number, method_name)
-          file_path_from_root = file_path.sub(File.expand_path('../../..', __dir__), '')
-          file_and_line = "#{file_path_from_root}:#{line_number}"
-
           method_name = 'initialize' if method_name == 'new'
 
           return unless self.class.keyword_warnings[method_name]
+
+          file_path_from_root = file_path.sub(File.expand_path('../../..', __dir__), '')
+          file_and_line = "#{file_path_from_root}:#{line_number}"
 
           self.class.keyword_warnings[method_name].any? do |warning|
             warning.include?(file_and_line)

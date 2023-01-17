@@ -95,7 +95,6 @@ InternalAffairs/DeprecateCopHelper:
     - spec/rubocop/**/*.rb
 
 Lint/LastKeywordArgument:
-  Enabled: true
   Safe: false
 
 Lint/EmptyFile:

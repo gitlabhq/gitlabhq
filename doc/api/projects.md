@@ -109,9 +109,7 @@ Example response:
     "ssh_url_to_repo": "git@gitlab.example.com:diaspora/diaspora-client.git",
     "http_url_to_repo": "https://gitlab.example.com/diaspora/diaspora-client.git",
     "web_url": "https://gitlab.example.com/diaspora/diaspora-client",
-    "readme_url": "https://gitlab.example.com/diaspora/diaspora-client/blob/master/README.md",
     "avatar_url": "https://gitlab.example.com/uploads/project/avatar/4/uploads/avatar.png",
-    "forks_count": 0,
     "star_count": 0,
     "last_activity_at": "2013-09-30T13:46:02Z",
     "namespace": {

@@ -32,6 +32,16 @@ export const config = {
           },
         },
       },
+      WorkItemWidgetProgress: {
+        fields: {
+          progress: {
+            // We want to show null progress as 0 as per https://gitlab.com/gitlab-org/gitlab/-/issues/386117
+            read(existing) {
+              return existing === null ? 0 : existing;
+            },
+          },
+        },
+      },
       WorkItem: {
         fields: {
           // widgets policy because otherwise the subscriptions invalidate the cache
