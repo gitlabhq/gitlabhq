@@ -154,6 +154,32 @@ RSpec.describe Gitlab::ErrorTracking do
     end
   end
 
+  describe '.log_and_raise_exception' do
+    subject(:log_and_raise_exception) do
+      described_class.log_and_raise_exception(exception, extra)
+    end
+
+    it 'only logs and raises the exception' do
+      expect(Raven).not_to receive(:capture_exception)
+      expect(Sentry).not_to receive(:capture_exception)
+      expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(logger_payload)
+
+      expect { log_and_raise_exception }.to raise_error(RuntimeError)
+    end
+
+    context 'when extra details are provided' do
+      let(:extra) { { test: 1, my_token: 'test' } }
+
+      it 'filters parameters' do
+        expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(
+          hash_including({ 'extra.test' => 1, 'extra.my_token' => '[FILTERED]' })
+        )
+
+        expect { log_and_raise_exception }.to raise_error(RuntimeError)
+      end
+    end
+  end
+
   describe '.track_exception' do
     subject(:track_exception) do
       described_class.track_exception(exception, extra)

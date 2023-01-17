@@ -27,11 +27,6 @@ RSpec.describe 'mail_room.yml', feature_category: :service_desk do
 
   before do
     stub_env('GITLAB_REDIS_QUEUES_CONFIG_FILE', absolute_path(queues_config_path))
-    redis_clear_raw_config!(Gitlab::Redis::Queues)
-  end
-
-  after do
-    redis_clear_raw_config!(Gitlab::Redis::Queues)
   end
 
   context 'when incoming email is disabled' do

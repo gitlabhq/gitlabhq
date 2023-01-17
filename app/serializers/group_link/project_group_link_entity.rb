@@ -10,6 +10,10 @@ module GroupLink
 
     private
 
+    def can_admin_group_link?(group_link, options)
+      can?(current_user, :admin_project_group_link, group_link)
+    end
+
     def admin_permission_name
       :admin_project_member
     end

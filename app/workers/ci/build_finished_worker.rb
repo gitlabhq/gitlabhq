@@ -40,6 +40,7 @@ module Ci
       ChatNotificationWorker.perform_async(build.id) if build.pipeline.chat?
       build.track_deployment_usage
       build.track_verify_environment_usage
+      build.remove_token!
 
       if build.failed? && !build.auto_retry_expected?
         ::Ci::MergeRequests::AddTodoWhenBuildFailsWorker.perform_async(build.id)

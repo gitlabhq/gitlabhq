@@ -164,6 +164,16 @@ describe('BulkImportsHistoryApp', () => {
     );
   });
 
+  it('renders loading icon when destination namespace is not defined', async () => {
+    const RESPONSE = [{ ...DUMMY_RESPONSE[0], destination_full_path: null }];
+
+    mock.onGet(API_URL).reply(200, RESPONSE, DEFAULT_HEADERS);
+    createComponent({ shallow: false });
+    await axios.waitForAll();
+
+    expect(wrapper.find('tbody tr').findComponent(GlLoadingIcon).exists()).toBe(true);
+  });
+
   it('adds slash to group urls', async () => {
     createComponent({ shallow: false });
     await axios.waitForAll();

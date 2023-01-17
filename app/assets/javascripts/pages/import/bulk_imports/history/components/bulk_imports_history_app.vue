@@ -176,16 +176,19 @@ export default {
         class="gl-w-full"
       >
         <template #cell(destination_name)="{ item }">
-          <gl-icon
-            v-gl-tooltip
-            :name="item.entity_type"
-            :title="getEntityTooltip(item)"
-            :aria-label="getEntityTooltip(item)"
-            class="gl-text-gray-500"
-          />
-          <gl-link :href="getFullDestinationUrl(item)" target="_blank">
-            {{ getPresentationUrl(item) }}
-          </gl-link>
+          <template v-if="item.destination_full_path">
+            <gl-icon
+              v-gl-tooltip
+              :name="item.entity_type"
+              :title="getEntityTooltip(item)"
+              :aria-label="getEntityTooltip(item)"
+              class="gl-text-gray-500"
+            />
+            <gl-link :href="getFullDestinationUrl(item)" target="_blank">
+              {{ getPresentationUrl(item) }}
+            </gl-link>
+          </template>
+          <gl-loading-icon v-else inline />
         </template>
         <template #cell(created_at)="{ value }">
           <time-ago :time="value" />

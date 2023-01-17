@@ -61,6 +61,7 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :team_
         %q(`` \@\! ``)       | %q(<code>\@\!</code>)
         %q(    \@\!)         | %Q(<code>\\@\\!\n</code>)
         %Q(~~~\n\\@\\!\n~~~) | %Q(<code>\\@\\!\n</code>)
+        %q($1+\$2$)          | %q(<code data-math-style="inline">1+\\$2</code>)
         %q(<http://example.com?find=\@>) | %q(<a href="http://example.com?find=%5C@">http://example.com?find=\@</a>)
         %q[<a href="/bar\@)">]           | %q[<a href="/bar%5C@)">]
       end

@@ -14,16 +14,6 @@ RSpec.describe Gitlab::Redis::DuplicateJobs do
   describe '#pool' do
     subject { described_class.pool }
 
-    before do
-      redis_clear_raw_config!(Gitlab::Redis::SharedState)
-      redis_clear_raw_config!(Gitlab::Redis::Queues)
-    end
-
-    after do
-      redis_clear_raw_config!(Gitlab::Redis::SharedState)
-      redis_clear_raw_config!(Gitlab::Redis::Queues)
-    end
-
     around do |example|
       clear_pool
       example.run

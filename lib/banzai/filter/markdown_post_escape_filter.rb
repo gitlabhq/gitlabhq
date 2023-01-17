@@ -9,8 +9,9 @@ module Banzai
       NOT_LITERAL_REGEX = %r{#{LITERAL_KEYWORD}-((%5C|\\).+?)-#{LITERAL_KEYWORD}}.freeze
       SPAN_REGEX        = %r{<span>(.*?)</span>}.freeze
 
-      XPATH_A        = Gitlab::Utils::Nokogiri.css_to_xpath('a').freeze
-      XPATH_LANG_TAG = Gitlab::Utils::Nokogiri.css_to_xpath('pre').freeze
+      XPATH_A         = Gitlab::Utils::Nokogiri.css_to_xpath('a').freeze
+      XPATH_LANG_TAG  = Gitlab::Utils::Nokogiri.css_to_xpath('pre').freeze
+      XPATH_CODE_SPAN = Gitlab::Utils::Nokogiri.css_to_xpath('code > span').freeze
 
       def call
         return doc unless result[:escaped_literals]
@@ -21,6 +22,7 @@ module Banzai
         @doc = parse_html(new_html)
 
         remove_spans_in_certain_attributes
+        remove_spans_in_code
 
         doc
       end
@@ -70,6 +72,16 @@ module Banzai
 
         doc.xpath(XPATH_LANG_TAG).each do |node|
           node.attributes['lang'].value  = node.attributes['lang'].value.gsub(SPAN_REGEX, '\1') if node.attributes['lang']
+        end
+      end
+
+      # Any `<span>` that makes it into a `<code>` element is from the math processing,
+      # convert back to the escaped character, such as `\$`
+      def remove_spans_in_code
+        doc.xpath(XPATH_CODE_SPAN).each do |node|
+          escaped_item = Banzai::Filter::MarkdownPreEscapeFilter::ESCAPABLE_CHARS.find { |item| item[:char] == node.content && item[:latex] }
+
+          node.replace(escaped_item[:escaped]) if escaped_item
         end
       end
     end

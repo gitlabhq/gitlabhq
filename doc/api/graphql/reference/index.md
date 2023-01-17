@@ -3032,6 +3032,28 @@ Input type: `GitlabSubscriptionActivateInput`
 | <a id="mutationgitlabsubscriptionactivatefuturesubscriptions"></a>`futureSubscriptions` | [`[SubscriptionFutureEntry!]`](#subscriptionfutureentry) | Array of future subscriptions. |
 | <a id="mutationgitlabsubscriptionactivatelicense"></a>`license` | [`CurrentLicense`](#currentlicense) | Current license. |
 
+### `Mutation.groupMemberBulkUpdate`
+
+Input type: `GroupMemberBulkUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupmemberbulkupdateaccesslevel"></a>`accessLevel` | [`MemberAccessLevel!`](#memberaccesslevel) | Access level to update the members to. |
+| <a id="mutationgroupmemberbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupmemberbulkupdateexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
+| <a id="mutationgroupmemberbulkupdategroupid"></a>`groupId` | [`GroupID!`](#groupid) | Global ID of the group. |
+| <a id="mutationgroupmemberbulkupdateuserids"></a>`userIds` | [`[UserID!]!`](#userid) | Global IDs of the group members. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupmemberbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupmemberbulkupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationgroupmemberbulkupdategroupmembers"></a>`groupMembers` | [`[GroupMember!]`](#groupmember) | Group members after mutation. |
+
 ### `Mutation.groupUpdate`
 
 Input type: `GroupUpdateInput`
@@ -22367,6 +22389,19 @@ Possible identifier types for a measurement.
 | <a id="measurementidentifierpipelines_succeeded"></a>`PIPELINES_SUCCEEDED` | Pipeline count with success status. |
 | <a id="measurementidentifierprojects"></a>`PROJECTS` | Project count. |
 | <a id="measurementidentifierusers"></a>`USERS` | User count. |
+
+### `MemberAccessLevel`
+
+Access level of a group or project member.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="memberaccessleveldeveloper"></a>`DEVELOPER` | Developer access. |
+| <a id="memberaccesslevelguest"></a>`GUEST` | Guest access. |
+| <a id="memberaccesslevelmaintainer"></a>`MAINTAINER` | Maintainer access. |
+| <a id="memberaccesslevelminimal_access"></a>`MINIMAL_ACCESS` | Minimal access. |
+| <a id="memberaccesslevelowner"></a>`OWNER` | Owner access. |
+| <a id="memberaccesslevelreporter"></a>`REPORTER` | Reporter access. |
 
 ### `MemberSort`
 

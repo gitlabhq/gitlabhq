@@ -208,7 +208,8 @@ To enable migration of groups by direct transfer:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
-1. Select **Enable migrating GitLab groups and projects by direct transfer**.
+1. Scroll to **Allow migrating GitLab groups and projects by direct transfer**.
+1. Select the **Enabled** checkbox.
 1. Select **Save changes**.
 
 ## Configure enabled Git access protocols

@@ -2783,6 +2783,9 @@ msgstr ""
 msgid "AdminSettings|All new projects can use the instance's shared runners by default."
 msgstr ""
 
+msgid "AdminSettings|Allow migrating GitLab groups and projects by direct transfer"
+msgstr ""
+
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
@@ -2856,9 +2859,6 @@ msgid "AdminSettings|Enable kuromoji custom analyzer: Indexing"
 msgstr ""
 
 msgid "AdminSettings|Enable kuromoji custom analyzer: Search"
-msgstr ""
-
-msgid "AdminSettings|Enable migrating GitLab groups and projects by direct transfer"
 msgstr ""
 
 msgid "AdminSettings|Enable pipeline suggestion banner"
@@ -36793,6 +36793,12 @@ msgid "SAML|Your organization's SSO has been connected to your GitLab account"
 msgstr ""
 
 msgid "SAST Configuration"
+msgstr ""
+
+msgid "SCIM|SCIM Token"
+msgstr ""
+
+msgid "SCIM|System for Cross-Domain Identity Management."
 msgstr ""
 
 msgid "SHA256"

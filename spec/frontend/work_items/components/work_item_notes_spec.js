@@ -1,4 +1,4 @@
-import { GlSkeletonLoader, GlIntersectionObserver } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -43,7 +43,6 @@ describe('WorkItemNotes component', () => {
   const findActivityLabel = () => wrapper.find('label');
   const findWorkItemCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
   const findSortingFilter = () => wrapper.findComponent(ActivityFilter);
   const findSystemNoteAtIndex = (index) => findAllSystemNotes().at(index);
   const workItemNotesQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNotesResponse);
@@ -134,9 +133,9 @@ describe('WorkItemNotes component', () => {
 
   describe('Pagination', () => {
     describe('When there is no next page', () => {
-      it('fetch more notes is not called', () => {
+      it('fetch more notes is not called', async () => {
         createComponent();
-        expect(findIntersectionObserver().exists()).toBe(false);
+        await nextTick();
         expect(workItemMoreNotesQueryHandler).not.toHaveBeenCalled();
       });
     });
@@ -152,8 +151,6 @@ describe('WorkItemNotes component', () => {
           pageSize: DEFAULT_PAGE_SIZE_NOTES,
           id: 'gid://gitlab/WorkItem/1',
         });
-
-        findIntersectionObserver().vm.$emit('appear');
 
         await nextTick();
 

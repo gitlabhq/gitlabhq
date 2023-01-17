@@ -24,11 +24,6 @@ RSpec.shared_examples "redis_shared_examples" do
   before do
     allow(described_class).to receive(:config_file_name).and_return(Rails.root.join(config_file_name).to_s)
     allow(described_class).to receive(:redis_yml_path).and_return('/dev/null')
-    redis_clear_raw_config!(described_class)
-  end
-
-  after do
-    redis_clear_raw_config!(described_class)
   end
 
   describe '.config_file_name' do

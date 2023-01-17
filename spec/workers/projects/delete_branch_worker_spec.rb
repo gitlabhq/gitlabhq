@@ -64,9 +64,11 @@ RSpec.describe Projects::DeleteBranchWorker, feature_category: :source_code_mana
               expect(instance).to receive(:execute).with(branch).and_return(service_result)
             end
 
-            expect(service_result).to receive(:track_and_raise_exception).and_call_original
+            expect(service_result).to receive(:log_and_raise_exception).and_call_original
 
-            expect { worker.perform(project.id, user.id, branch) }.to raise_error(StandardError)
+            expect do
+              worker.perform(project.id, user.id, branch)
+            end.to raise_error(Projects::DeleteBranchWorker::GitReferenceLockedError)
           end
         end
 
@@ -78,7 +80,7 @@ RSpec.describe Projects::DeleteBranchWorker, feature_category: :source_code_mana
               expect(instance).to receive(:execute).with(branch).and_return(service_result)
             end
 
-            expect(service_result).not_to receive(:track_and_raise_exception)
+            expect(service_result).not_to receive(:log_and_raise_exception)
 
             expect { worker.perform(project.id, user.id, branch) }.not_to raise_error
           end

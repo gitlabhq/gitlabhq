@@ -29403,6 +29403,8 @@ CREATE INDEX index_environments_on_merge_request_id ON environments USING btree 
 
 CREATE INDEX index_environments_on_name_varchar_pattern_ops ON environments USING btree (name varchar_pattern_ops);
 
+CREATE INDEX index_environments_on_project_id_and_id ON environments USING btree (project_id, id);
+
 CREATE UNIQUE INDEX index_environments_on_project_id_and_name ON environments USING btree (project_id, name);
 
 CREATE UNIQUE INDEX index_environments_on_project_id_and_slug ON environments USING btree (project_id, slug);

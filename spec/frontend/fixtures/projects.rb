@@ -66,4 +66,36 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
       end
     end
   end
+
+  describe 'Storage', feature_category: :subscription_cost_management do
+    describe GraphQL::Query, type: :request do
+      include GraphqlHelpers
+      context 'project storage statistics query' do
+        before do
+          project.statistics.update!(
+            repository_size: 3_900_000,
+            lfs_objects_size: 4_800_000,
+            build_artifacts_size: 400_000,
+            pipeline_artifacts_size: 400_000,
+            container_registry_size: 3_900_000,
+            wiki_size: 300_000,
+            packages_size: 3_800_000,
+            uploads_size: 900_000
+          )
+        end
+
+        base_input_path = 'usage_quotas/storage/queries/'
+        base_output_path = 'graphql/usage_quotas/storage/'
+        query_name = 'project_storage.query.graphql'
+
+        it "#{base_output_path}#{query_name}.json" do
+          query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+          post_graphql(query, current_user: user, variables: { fullPath: project.full_path })
+
+          expect_graphql_errors_to_be_empty
+        end
+      end
+    end
+  end
 end

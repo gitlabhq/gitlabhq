@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader, GlIntersectionObserver } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
@@ -21,7 +21,6 @@ export default {
   components: {
     GlSkeletonLoader,
     ActivityFilter,
-    GlIntersectionObserver,
     SystemNote,
     WorkItemCommentForm,
     WorkItemNote,
@@ -83,9 +82,6 @@ export default {
     disableActivityFilter() {
       return this.initialLoading || this.isLoadingMore;
     },
-    showIntersectionObserver() {
-      return this.hasNextPage && !this.isLoadingMore;
-    },
   },
   apollo: {
     workItemNotes: {
@@ -117,6 +113,11 @@ export default {
       },
       error() {
         this.$emit('error', i18n.fetchError);
+      },
+      result() {
+        if (this.hasNextPage) {
+          this.fetchMoreNotes();
+        }
       },
     },
   },
@@ -172,12 +173,6 @@ export default {
 
 <template>
   <div class="gl-border-t gl-mt-5">
-    <gl-intersection-observer
-      v-if="showIntersectionObserver"
-      class="gl-fixed"
-      height="100"
-      @appear="fetchMoreNotes"
-    />
     <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
       <label class="gl-mb-0">{{ $options.i18n.ACTIVITY_LABEL }}</label>
       <activity-filter

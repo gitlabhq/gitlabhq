@@ -116,6 +116,20 @@ module Gitlab
         process_exception(exception, extra: extra, trackers: [Logger])
       end
 
+      # This should be used when you want to log the exception and passthrough
+      # exception handling: rescue and raise to be catched in upper layers of
+      # the application.
+      #
+      # If the exception implements the method `sentry_extra_data` and that method
+      # returns a Hash, then the return value of that method will be merged into
+      # `extra`. Exceptions can use this mechanism to provide structured data
+      # to sentry in addition to their message and back-trace.
+      def log_and_raise_exception(exception, extra = {})
+        process_exception(exception, extra: extra, trackers: [Logger])
+
+        raise exception
+      end
+
       private
 
       def before_send_raven(event, hint)

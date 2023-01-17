@@ -4785,7 +4785,7 @@
   canonical: |
     <p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</p>
   static: |-
-    <p data-sourcepos="1:1-1:232" dir="auto"><span>!</span>"<span>#</span><span>$</span><span>%</span><span>&amp;</span>'()*+,-./:;&lt;=&gt;?<span>@</span>[\]<span>^</span>_`{|}<span>~</span></p>
+    <p data-sourcepos="1:1-1:295" dir="auto"><span>!</span>"<span>#</span><span>$</span><span>%</span><span>&amp;</span>'()*+,-./:;&lt;=&gt;?<span>@</span>[\]<span>^</span><span>_</span>`<span>{</span>|<span>}</span><span>~</span></p>
   wysiwyg: |-
     <p>!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</p>
 06_02_00__inlines__backslash_escapes__002:
@@ -5929,7 +5929,7 @@
   canonical: |
     <p>foo <em>_</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto">foo <em>_</em></p>
+    <p data-sourcepos="1:1-1:29" dir="auto">foo <em><span>_</span></em></p>
   wysiwyg: |-
     <p>foo <em>_</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__100:
@@ -5950,7 +5950,7 @@
   canonical: |
     <p>foo <strong>_</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto">foo <strong>_</strong></p>
+    <p data-sourcepos="1:1-1:31" dir="auto">foo <strong><span>_</span></strong></p>
   wysiwyg: |-
     <p>foo <strong>_</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__103:
@@ -8441,7 +8441,7 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:36" dir="auto">This math is inline <code class="code math js-render-math" data-math-style="inline">a^2+b^2=c^2</code>.</p>
+    <p data-sourcepos="1:1-1:36" dir="auto">This math is inline <code data-math-style="inline" class="code math js-render-math">a^2+b^2=c^2</code>.</p>
     <p data-sourcepos="3:1-3:27" dir="auto">This is on a separate line:</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
     <pre data-sourcepos="5:1-7:3" lang="math" data-math-style="display" class="js-render-math code highlight js-syntax-highlight language-math" v-pre="true"><code><span id="LC1" class="line" lang="math">a^2+b^2=c^2</span></code></pre>

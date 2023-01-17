@@ -5724,4 +5724,21 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
       expect(prefix).to eq(ci_testing_partition_id)
     end
   end
+
+  describe '#remove_token!' do
+    it 'removes the token' do
+      expect(build.token).to be_present
+
+      build.remove_token!
+
+      expect(build.token).to be_nil
+      expect(build.changes).to be_empty
+    end
+
+    it 'does not remove the token when FF is disabled' do
+      stub_feature_flags(remove_job_token_on_completion: false)
+
+      expect { build.remove_token! }.not_to change(build, :token)
+    end
+  end
 end

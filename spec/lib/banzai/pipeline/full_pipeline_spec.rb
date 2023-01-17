@@ -164,7 +164,7 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
       markdown = '_@test\__'
       output = described_class.to_html(markdown, project: project)
 
-      expect(output).to include('<em>@test_</em>')
+      expect(output).to include('<em>@test<span>_</span></em>')
     end
   end
 

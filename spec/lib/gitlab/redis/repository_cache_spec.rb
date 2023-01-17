@@ -13,16 +13,8 @@ RSpec.describe Gitlab::Redis::RepositoryCache, feature_category: :scalability do
     subject { described_class.pool }
 
     before do
-      redis_clear_raw_config!(described_class)
-      redis_clear_raw_config!(Gitlab::Redis::Cache)
-
       allow(described_class).to receive(:config_file_name).and_return(config_new_format_host)
       allow(Gitlab::Redis::Cache).to receive(:config_file_name).and_return(config_new_format_socket)
-    end
-
-    after do
-      redis_clear_raw_config!(described_class)
-      redis_clear_raw_config!(Gitlab::Redis::Cache)
     end
 
     around do |example|

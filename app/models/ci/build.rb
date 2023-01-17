@@ -745,6 +745,12 @@ module Ci
       self.token && token.present? && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
     end
 
+    def remove_token!
+      if Feature.enabled?(:remove_job_token_on_completion, project)
+        update!(token_encrypted: nil)
+      end
+    end
+
     # acts_as_taggable uses this method create/remove tags with contexts
     # defined by taggings and to get those contexts it executes a query.
     # We don't use any other contexts except `tags`, so we don't need it.

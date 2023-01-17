@@ -75,6 +75,8 @@
 
 = render 'admin/application_settings/external_authorization_service_form', expanded: expanded_by_default?
 
+= render_if_exists 'admin/application_settings/scim'
+
 %section.settings.as-terminal.no-animate#js-terminal-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only

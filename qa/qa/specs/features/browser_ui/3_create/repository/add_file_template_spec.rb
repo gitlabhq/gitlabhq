@@ -54,11 +54,10 @@ module QA
 
           Page::Project::Show.perform(&:create_new_file!)
           Page::File::Form.perform do |form|
+            form.add_custom_name(template[:file_name])
             form.select_template template[:file_name], template[:name]
 
             expect(form).to have_normalized_ws_text(content[0..100])
-
-            form.add_name("#{SecureRandom.hex(8)}/#{template[:file_name]}")
             form.commit_changes
 
             aggregate_failures "indications of file created" do
