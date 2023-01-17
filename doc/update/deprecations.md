@@ -188,6 +188,28 @@ With external authorization enabled, personal access tokens (PATs) and deploy to
 
 <div class="deprecation removal-160 breaking-change">
 
+### Maintainer role providing the ability to change Package settings using GraphQL API
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The ability for users with the Maintainer role to change the **Packages and registries** settings for a group using
+the GraphQL API is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. These settings include:
+
+- [Allowing or preventing duplicate package uploads](https://docs.gitlab.com/ee/user/packages/maven_repository/#do-not-allow-duplicate-maven-packages).
+- [Package request forwarding](https://docs.gitlab.com/ee/user/packages/maven_repository/#request-forwarding-to-maven-central).
+- [Enabling lifecycle rules for the Dependency Proxy](https://docs.gitlab.com/ee/user/packages/dependency_proxy/reduce_dependency_proxy_storage.html).
+
+In GitLab 16.0 and later, you must have Owner role for a group to change the **Packages and registries**
+settings for the group using either the GitLab UI or GraphQL API.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Null value for `private_profile` attribute in User API is deprecated
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
@@ -197,22 +219,6 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 When creating and updating users through the API, `null` was a valid value for the `private_profile` attribute, which would internally be converted to the default value. Starting with 16.0, `null` will no longer be a valid value for this parameter, and the response will be a 400 if used. Now the only valid values are `true` and `false`.
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### Owner permissions are required to update Package settings
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-You must have Owner permissions to use the GitLab UI to update the `Packages and registries` settings for your groups. This includes [allowing or preventing duplicate package uploads](https://docs.gitlab.com/ee/user/packages/maven_repository/#do-not-allow-duplicate-maven-packages), [package request forwarding](https://docs.gitlab.com/ee/user/packages/maven_repository/#request-forwarding-to-maven-central), and [enabling lifecycle rules for the Dependency Proxy](https://docs.gitlab.com/ee/user/packages/dependency_proxy/reduce_dependency_proxy_storage.html). Currently, you can use the GraphQL API with Owner or Maintainer permissions to update these settings.
-
-In GitLab 16.0 and later, you must have Owner permissions to use the GraphQL API to change the `Packages and registries` settings.
 
 </div>
 

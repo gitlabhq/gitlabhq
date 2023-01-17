@@ -44,11 +44,11 @@ this Beta feature, ask an administrator to [enable the feature flag](../../../ad
 Prerequisites:
 
 - Network connection between instances or GitLab.com. Must support HTTPS.
-- Both GitLab instances have [migration enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer) by instance administrator.
-- Owner role on the top-level group to migrate.
-
-WARNING:
-Importing was restricted to users with Maintainer and above role on the destination group in GitLab 15.8.
+- Both GitLab instances have [migration enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
+  by an instance administrator.
+- Owner role on the top-level source group to migrate from.
+- At least the Maintainer role on the destination group to migrate to. Using the Developer role for this purpose was
+  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
 
 You can import top-level groups to:
 
@@ -404,7 +404,7 @@ You can also export a group [using the API](../../../api/group_import_export.md)
 
 1. Create a new group:
    - On the top bar, select **Create new…** (**{plus-square}**) and then **New group**.
-   - On an existing group's page, select the **New subgroup** button.
+   - On an existing group's page, select **New subgroup**.
 1. Select **Import group**.
 1. Enter your group name.
 1. Accept or modify the associated group URL.
@@ -419,7 +419,7 @@ The maximum import file size can be set by the administrator, default is `0` (un
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the
 [Application settings API](../../../api/settings.md#change-application-settings) or the
 [Admin Area](../../admin_area/settings/account_and_limit_settings.md).
-Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8.
+Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8.
 
 ### Rate limits
 

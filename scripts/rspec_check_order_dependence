@@ -40,6 +40,8 @@ done
 
 set -xe
 
+export RSPEC_WARN_MISSING_FEATURE_CATEGORY=0
+
 bin/rspec --order defined "${RSPEC_ARGS[@]}" "$@"
 RSPEC_ORDER=reverse bin/rspec "${RSPEC_ARGS[@]}" "$@"
 bin/rspec --order random "${RSPEC_ARGS[@]}" "$@"
