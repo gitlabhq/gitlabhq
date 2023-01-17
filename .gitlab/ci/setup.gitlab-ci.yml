@@ -22,21 +22,21 @@ cache gems:
       - vendor/cache
     expire_in: 31d
 
-.minimal-job:
+.predictive-job:
   extends:
     - .default-retry
   needs: []
 
-.absolutely-minimal-job:
+.absolutely-predictive-job:
   extends:
-    - .minimal-job
+    - .predictive-job
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:edge
   variables:
     GIT_STRATEGY: none
 
 dont-interrupt-me:
   extends:
-    - .absolutely-minimal-job
+    - .absolutely-predictive-job
     - .setup:rules:dont-interrupt-me
   stage: sync
   interruptible: false
@@ -45,7 +45,7 @@ dont-interrupt-me:
 
 gitlab_git_test:
   extends:
-    - .minimal-job
+    - .predictive-job
     - .setup:rules:gitlab_git_test
   stage: test
   script:
@@ -53,7 +53,7 @@ gitlab_git_test:
 
 no-ee-check:
   extends:
-    - .minimal-job
+    - .predictive-job
     - .setup:rules:no-ee-check
   stage: test
   script:
@@ -61,7 +61,7 @@ no-ee-check:
 
 no-jh-check:
   extends:
-    - .minimal-job
+    - .predictive-job
     - .setup:rules:no-jh-check
   stage: test
   script:
@@ -69,7 +69,7 @@ no-jh-check:
 
 verify-ruby-3.0:
   extends:
-    - .absolutely-minimal-job
+    - .absolutely-predictive-job
     - .setup:rules:verify-ruby-3.0
   stage: prepare
   script:
@@ -89,7 +89,7 @@ verify-tests-yml:
 
 verify-approvals:
   extends:
-    - .minimal-job
+    - .predictive-job
     - .setup:rules:jh-contribution
   script:
     - source scripts/utils.sh
@@ -172,7 +172,7 @@ detect-previous-failed-tests:
 e2e-test-pipeline-generate:
   extends:
     - .qa-job-base
-    - .minimal-job
+    - .predictive-job
     - .qa:rules:determine-e2e-tests
   stage: prepare
   variables:

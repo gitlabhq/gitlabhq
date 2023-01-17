@@ -15385,9 +15385,6 @@ msgstr ""
 msgid "Enable email notification"
 msgstr ""
 
-msgid "Enable error tracking"
-msgstr ""
-
 msgid "Enable feature to choose access level"
 msgstr ""
 
@@ -16124,6 +16121,9 @@ msgid "Error setting up editor. Please try again."
 msgstr ""
 
 msgid "Error tracking"
+msgstr ""
+
+msgid "Error tracking is currently in"
 msgstr ""
 
 msgid "Error updating %{issuableType}"
@@ -20678,6 +20678,9 @@ msgid "How do I configure this integration?"
 msgstr ""
 
 msgid "How do I generate it?"
+msgstr ""
+
+msgid "How do I get started?"
 msgstr ""
 
 msgid "How do I mirror repositories?"
@@ -27155,7 +27158,7 @@ msgstr ""
 msgid "Monitor Settings"
 msgstr ""
 
-msgid "Monitor your errors by integrating with Sentry."
+msgid "Monitor your errors directly in GitLab."
 msgstr ""
 
 msgid "Monitoring"
@@ -29241,6 +29244,9 @@ msgid "Oops, are you sure?"
 msgstr ""
 
 msgid "Open"
+msgstr ""
+
+msgid "Open Beta."
 msgstr ""
 
 msgid "Open Selection"

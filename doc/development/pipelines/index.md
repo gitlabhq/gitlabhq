@@ -16,16 +16,16 @@ We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/develo
 GitLab [CI/CD features and best-practices](../../ci/yaml/index.md)
 as much as possible.
 
-## Minimal test jobs before a merge request is approved
+## Predictive test jobs before a merge request is approved
 
-**To reduce the pipeline cost and shorten the job duration, before a merge request is approved, the pipeline will run a minimal set of RSpec & Jest tests that are related to the merge request changes.**
+**To reduce the pipeline cost and shorten the job duration, before a merge request is approved, the pipeline will run a predictive set of RSpec & Jest tests that are likely to fail for the merge request changes.**
 
 After a merge request has been approved, the pipeline would contain the full RSpec & Jest tests. This will ensure that all tests
 have been run before a merge request is merged.
 
 ### Overview of the GitLab project test dependency
 
-To understand how the minimal test jobs are executed, we need to understand the dependency between
+To understand how the predictive test jobs are executed, we need to understand the dependency between
 GitLab code (frontend and backend) and the respective tests (Jest and RSpec).
 This dependency can be visualized in the following diagram:
 
@@ -47,11 +47,11 @@ In summary:
 - RSpec tests are dependent on the backend code.
 - Jest tests are dependent on both frontend and backend code, the latter through the frontend fixtures.
 
-### RSpec minimal jobs
+### RSpec predictive jobs
 
-#### Determining related RSpec test files in a merge request
+#### Determining predictive RSpec test files in a merge request
 
-To identify the minimal set of tests needed, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with two strategies:
+To identify the RSpec tests that are likely to fail in a merge request, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with two strategies:
 
 - dynamic mapping from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
   ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/47d507c93779675d73a05002e2ec9c3c467cd698/tooling/bin/find_tests#L15))
@@ -60,9 +60,9 @@ To identify the minimal set of tests needed, we use the [`test_file_finder` gem]
 
 The test mappings contain a map of each source files to a list of test files which is dependent of the source file.
 
-In the `detect-tests` job, we use this mapping to identify the minimal tests needed for the current merge request.
+In the `detect-tests` job, we use this mapping to identify the predictive tests needed for the current merge request.
 
-Later on in [the `rspec fail-fast` job](#fail-fast-job-in-merge-request-pipelines), we run the minimal tests needed for the current merge request.
+Later on in [the `rspec fail-fast` job](#fail-fast-job-in-merge-request-pipelines), we run the predictive tests for the current merge request.
 
 #### Exceptional cases
 
@@ -74,11 +74,11 @@ In addition, there are a few circumstances where we would always run the full RS
 - when the merge request is created in a security mirror
 - when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 
-### Jest minimal jobs
+### Jest predictive jobs
 
-#### Determining related Jest test files in a merge request
+#### Determining predictive Jest test files in a merge request
 
-To identify the minimal set of tests needed, we pass a list of all the changed files into `jest` using the [`--findRelatedTests`](https://jestjs.io/docs/cli#--findrelatedtests-spaceseparatedlistofsourcefiles) option.
+To identify the jest tests that are likely to fail in a merge request, we pass a list of all the changed files into `jest` using the [`--findRelatedTests`](https://jestjs.io/docs/cli#--findrelatedtests-spaceseparatedlistofsourcefiles) option.
 In this mode, `jest` would resolve all the dependencies of related to the changed files, which include test files that have these files in the dependency chain.
 
 #### Exceptional cases
@@ -97,7 +97,7 @@ The `rules` definitions for full Jest tests are defined at `.frontend:rules:jest
 
 ### Fork pipelines
 
-We run only the minimal RSpec & Jest jobs for fork pipelines, unless the `pipeline:run-all-rspec`
+We run only the predictive RSpec & Jest jobs for fork pipelines, unless the `pipeline:run-all-rspec`
 label is set on the MR. The goal is to reduce the CI/CD minutes consumed by fork pipelines.
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1170).

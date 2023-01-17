@@ -142,7 +142,7 @@ export const getOuterHeight = (selector) => {
   const element = document.querySelector(selector);
 
   if (!element) {
-    return undefined;
+    return 0;
   }
 
   return element.offsetHeight;
@@ -154,6 +154,11 @@ export const contentTop = () => {
     () => getOuterHeight('#js-peek'),
     () => getOuterHeight('.navbar-gitlab'),
     ({ desktop }) => {
+      const mrStickyHeader = document.querySelector('.merge-request-sticky-header');
+      if (mrStickyHeader) {
+        return mrStickyHeader.offsetHeight;
+      }
+
       const container = document.querySelector('.discussions-counter');
       let size = 0;
 
@@ -161,11 +166,12 @@ export const contentTop = () => {
         size = container.offsetHeight;
       }
 
+      size += getOuterHeight('.merge-request-tabs');
+      size += getOuterHeight('.issue-sticky-header.gl-fixed');
+
       return size;
     },
-    () => getOuterHeight('.merge-request-sticky-header, .merge-request-tabs'),
     () => getOuterHeight('.js-diff-files-changed'),
-    () => getOuterHeight('.issue-sticky-header.gl-fixed'),
     ({ desktop }) => {
       const diffsTabIsActive = window.mrTabs?.currentAction === 'diffs';
       let size;

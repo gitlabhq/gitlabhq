@@ -28,7 +28,7 @@ include:
     - run_timed_command "scripts/gitaly-test-spawn"  # Do not use 'bundle exec' here
     - echo -e "\e[0Ksection_end:`date +%s`:gitaly-test-spawn\r\e[0K"
 
-.minimal-rspec-tests:
+.predictive-rspec-tests:
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
 

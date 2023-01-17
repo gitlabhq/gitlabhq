@@ -352,6 +352,7 @@ export default {
           title: TOKEN_TITLE_LABEL,
           icon: 'labels',
           token: LabelToken,
+          operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
           fetchLabels: this.fetchLabels,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
         },

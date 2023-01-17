@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection, query_analyzers: false do
+RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection, query_analyzers: false,
+  feature_category: :pods do
   let(:analyzer) { described_class }
 
   # We keep only the GitlabSchemasValidateConnection analyzer running

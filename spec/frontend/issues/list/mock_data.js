@@ -150,6 +150,8 @@ export const locationSearch = [
   'label_name[]=tv',
   'not[label_name][]=live action',
   'not[label_name][]=drama',
+  'or[label_name][]=comedy',
+  'or[label_name][]=sitcom',
   'release_tag=v3',
   'release_tag=v4',
   'not[release_tag]=v20',
@@ -208,6 +210,8 @@ export const filteredTokens = [
   { type: TOKEN_TYPE_LABEL, value: { data: 'tv', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_LABEL, value: { data: 'live action', operator: OPERATOR_NOT } },
   { type: TOKEN_TYPE_LABEL, value: { data: 'drama', operator: OPERATOR_NOT } },
+  { type: TOKEN_TYPE_LABEL, value: { data: 'comedy', operator: OPERATOR_OR } },
+  { type: TOKEN_TYPE_LABEL, value: { data: 'sitcom', operator: OPERATOR_OR } },
   { type: TOKEN_TYPE_RELEASE, value: { data: 'v3', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_RELEASE, value: { data: 'v4', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_RELEASE, value: { data: 'v20', operator: OPERATOR_NOT } },
@@ -279,6 +283,7 @@ export const apiParams = {
   or: {
     authorUsernames: ['burns', 'smithers'],
     assigneeUsernames: ['carl', 'lenny'],
+    labelNames: ['comedy', 'sitcom'],
   },
 };
 
@@ -306,6 +311,7 @@ export const urlParams = {
   'not[milestone_title]': ['season 20', 'season 30'],
   'label_name[]': ['cartoon', 'tv'],
   'not[label_name][]': ['live action', 'drama'],
+  'or[label_name][]': ['comedy', 'sitcom'],
   release_tag: ['v3', 'v4'],
   'not[release_tag]': ['v20', 'v30'],
   'type[]': ['issue', 'feature'],

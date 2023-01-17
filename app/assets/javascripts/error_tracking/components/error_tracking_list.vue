@@ -161,7 +161,7 @@ export default {
       return this.pagination.next ? this.$options.NEXT_PAGE : null;
     },
     errorTrackingHelpUrl() {
-      return helpPagePath('operations/error_tracking');
+      return helpPagePath('operations/error_tracking.html#integrated-error-tracking');
     },
     showIntegratedDisabledAlert() {
       return !this.isAlertDismissed && this.showIntegratedTrackingDisabledAlert;
@@ -175,6 +175,7 @@ export default {
     },
   },
   epicLink: 'https://gitlab.com/gitlab-org/gitlab/-/issues/353639',
+  openBetaLink: 'https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta',
   featureFlagLink: helpPagePath('operations/error_tracking'),
   created() {
     if (this.errorTrackingEnabled) {
@@ -454,23 +455,18 @@ export default {
         />
       </template>
     </div>
-    <div v-else-if="userCanEnableErrorTracking">
-      <gl-empty-state
-        :title="__('Get started with error tracking')"
-        :description="__('Monitor your errors by integrating with Sentry.')"
-        :primary-button-text="__('Enable error tracking')"
-        :primary-button-link="enableErrorTrackingLink"
-        :svg-path="illustrationPath"
-      />
-    </div>
     <div v-else>
       <gl-empty-state :title="__('Get started with error tracking')" :svg-path="illustrationPath">
         <template #description>
           <div>
-            <span>{{ __('Monitor your errors by integrating with Sentry.') }}</span>
+            <span>{{ __('Monitor your errors directly in GitLab.') }}</span>
             <gl-link target="_blank" :href="errorTrackingHelpUrl">{{
-              __('More information')
+              __('How do I get started?')
             }}</gl-link>
+          </div>
+          <div class="gl-mt-3">
+            <span>{{ __('Error tracking is currently in') }}</span>
+            <gl-link target="_blank" :href="$options.openBetaLink">{{ __('Open Beta.') }}</gl-link>
           </div>
         </template>
       </gl-empty-state>

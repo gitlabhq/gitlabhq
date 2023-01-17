@@ -364,7 +364,23 @@ describe('ErrorTrackingList', () => {
     });
 
     it('shows empty state', () => {
-      expect(wrapper.findComponent(GlEmptyState).isVisible()).toBe(true);
+      const emptyStateComponent = wrapper.findComponent(GlEmptyState);
+      const emptyStatePrimaryDescription = emptyStateComponent.find('span', {
+        exactText: 'Monitor your errors directly in GitLab.',
+      });
+      const emptyStateSecondaryDescription = emptyStateComponent.find('span', {
+        exactText: 'Error tracking is currently in',
+      });
+      const emptyStateLinks = emptyStateComponent.findAll('a');
+      expect(emptyStateComponent.isVisible()).toBe(true);
+      expect(emptyStatePrimaryDescription.exists()).toBe(true);
+      expect(emptyStateSecondaryDescription.exists()).toBe(true);
+      expect(emptyStateLinks.at(0).attributes('href')).toBe(
+        '/help/operations/error_tracking.html#integrated-error-tracking',
+      );
+      expect(emptyStateLinks.at(1).attributes('href')).toBe(
+        'https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta',
+      );
     });
   });
 

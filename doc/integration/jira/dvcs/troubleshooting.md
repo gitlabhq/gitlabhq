@@ -34,22 +34,21 @@ Error obtaining access token. Cannot access https://gitlab.example.com from Jira
 - The Jira Development panel integration requires Jira to connect to GitLab, which
   causes Jira to be the TLS client. If your GitLab server's certificate is not
   issued by a public certificate authority, add the appropriate certificate
-  (such as your organization's root certificate) to the Java Truststore on Jira's server.
+  (such as your organization's root certificate) to the Java Truststore on Jira Server.
 
-Refer to Atlassian's documentation and Atlassian Support for assistance setting
-up Jira correctly:
+For help with Jira setup, see the Atlassian documentation and Atlassian Support:
 
 - [Add a certificate](https://confluence.atlassian.com/kb/how-to-import-a-public-ssl-certificate-into-a-jvm-867025849.html)
   to the trust store.
   - The simplest approach is [`keytool`](https://docs.oracle.com/javase/8/docs/technotes/tools/unix/keytool.html).
   - Add additional roots to Java's default Truststore (`cacerts`) to allow Jira to
     also trust public certificate authorities.
-  - If the integration stops working after upgrading Jira's Java runtime, the
+  - If the integration stops working after upgrading Jira Java runtime, the
     `cacerts` Truststore may have been replaced during the upgrade.
 
 - Troubleshoot connectivity [up to and including TLS handshaking](https://confluence.atlassian.com/kb/unable-to-connect-to-ssl-services-due-to-pkix-path-building-failed-error-779355358.html),
   using the `SSLPoke` Java class.
-- Download the class from Atlassian's knowledge base to a directory on Jira's server, such as `/tmp`.
+- Download the class from the Atlassian knowledge base to a directory on Jira Server, such as `/tmp`.
 - Use the same Java runtime as Jira.
 - Pass all networking-related parameters that Jira is called with, such as proxy
   settings or an alternative root Truststore (`-Djavax.net.ssl.trustStore`):
@@ -115,8 +114,8 @@ resynchronize the information:
    - To perform a *soft resync*, select the sync icon.
    - To complete a *full sync*, press `Shift` and select the sync icon.
 
-For more information, read
-[Atlassian's documentation](https://support.atlassian.com/jira-cloud-administration/docs/integrate-with-development-tools/).
+For more information, see the
+[Atlassian documentation](https://support.atlassian.com/jira-cloud-administration/docs/integrate-with-development-tools/).
 
 ## `Sync Failed` error when refreshing repository data
 

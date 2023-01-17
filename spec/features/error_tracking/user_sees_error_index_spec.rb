@@ -50,7 +50,7 @@ feature_category: :error_tracking do
     end
 
     it 'renders call to action' do
-      expect(page).to have_content('Enable error tracking')
+      expect(page).to have_content('Monitor your errors directly in GitLab.')
     end
   end
 

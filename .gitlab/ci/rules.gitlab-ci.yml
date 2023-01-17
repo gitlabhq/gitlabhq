@@ -591,7 +591,7 @@
     - <<: *if-merge-request-targeting-stable-branch
       when: never
 
-.rails:rules:minimal-default-rules:
+.rails:rules:predictive-default-rules:
   rules:
     - <<: *if-merge-request-approved
       when: never
@@ -619,7 +619,7 @@
     - <<: *if-merge-request-not-approved
       when: never
 
-.rails:rules:as-if-foss-migration-unit-integration:minimal-default-rules:
+.rails:rules:as-if-foss-migration-unit-integration:predictive-default-rules:
   rules:
     - <<: *if-merge-request
       changes: *core-backend-patterns
@@ -628,11 +628,11 @@
       changes: *ci-patterns
       when: never
 
-.rails:rules:unit-integration:minimal-default-rules:
+.rails:rules:unit-integration:predictive-default-rules:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
       when: never
-    - !reference [".rails:rules:as-if-foss-migration-unit-integration:minimal-default-rules", rules]
+    - !reference [".rails:rules:as-if-foss-migration-unit-integration:predictive-default-rules", rules]
 
 .rails:rules:system-default-rules:
   rules:
@@ -648,7 +648,7 @@
     - <<: *if-merge-request-not-approved
       when: never
 
-.rails:rules:system:minimal-default-rules:
+.rails:rules:system:predictive-default-rules:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
       when: never
@@ -871,7 +871,7 @@
 # Frontend rules #
 ##################
 
-.frontend:rules:minimal-default-rules:
+.frontend:rules:predictive-default-rules:
   rules:
     - <<: *if-merge-request-approved
       when: never
@@ -963,11 +963,11 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.frontend:rules:jest:minimal:
+.frontend:rules:jest:predictive:
   rules:
     - <<: *if-fork-merge-request
       changes: *code-backstage-patterns
-    - !reference [".frontend:rules:minimal-default-rules", rules]
+    - !reference [".frontend:rules:predictive-default-rules", rules]
     - <<: *if-merge-request-labels-run-all-jest
       when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
@@ -995,10 +995,10 @@
     - <<: *if-merge-request
       changes: *frontend-patterns-for-as-if-foss
 
-.frontend:rules:jest:minimal:as-if-foss:
+.frontend:rules:jest:predictive:as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
-    - !reference [".frontend:rules:minimal-default-rules", rules]
+    - !reference [".frontend:rules:predictive-default-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
       when: never
     - <<: *if-merge-request-labels-run-all-jest
@@ -1203,12 +1203,12 @@
     - <<: *if-default-refs
       changes: *db-patterns
 
-.rails:rules:ee-and-foss-migration:minimal:
+.rails:rules:ee-and-foss-migration:predictive:
   rules:
     - <<: *if-fork-merge-request
       changes: *db-patterns
-    - !reference [".rails:rules:minimal-default-rules", rules]
-    - !reference [".rails:rules:unit-integration:minimal-default-rules", rules]
+    - !reference [".rails:rules:predictive-default-rules", rules]
+    - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
     # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request
@@ -1237,12 +1237,12 @@
     - <<: *if-default-refs
       changes: *backend-patterns
 
-.rails:rules:ee-and-foss-unit:minimal:
+.rails:rules:ee-and-foss-unit:predictive:
   rules:
     - <<: *if-fork-merge-request
       changes: *backend-patterns
-    - !reference [".rails:rules:minimal-default-rules", rules]
-    - !reference [".rails:rules:unit-integration:minimal-default-rules", rules]
+    - !reference [".rails:rules:predictive-default-rules", rules]
+    - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
     - <<: *if-merge-request
       changes: *backend-patterns
 
@@ -1254,12 +1254,12 @@
     - <<: *if-default-refs
       changes: *backend-patterns
 
-.rails:rules:ee-and-foss-integration:minimal:
+.rails:rules:ee-and-foss-integration:predictive:
   rules:
     - <<: *if-fork-merge-request
       changes: *backend-patterns
-    - !reference [".rails:rules:minimal-default-rules", rules]
-    - !reference [".rails:rules:unit-integration:minimal-default-rules", rules]
+    - !reference [".rails:rules:predictive-default-rules", rules]
+    - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
     - <<: *if-merge-request
       changes: *backend-patterns
 
@@ -1271,12 +1271,12 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.rails:rules:ee-and-foss-system:minimal:
+.rails:rules:ee-and-foss-system:predictive:
   rules:
     - <<: *if-fork-merge-request
       changes: *code-backstage-patterns
-    - !reference [".rails:rules:minimal-default-rules", rules]
-    - !reference [".rails:rules:system:minimal-default-rules", rules]
+    - !reference [".rails:rules:predictive-default-rules", rules]
+    - !reference [".rails:rules:system:predictive-default-rules", rules]
 
 .rails:rules:ee-and-foss-fast_spec_helper:
   rules:
@@ -1312,12 +1312,12 @@
     - <<: *if-default-refs
       changes: *db-patterns
 
-.rails:rules:ee-only-migration:minimal:
+.rails:rules:ee-only-migration:predictive:
   rules:
     - <<: *if-not-ee
       when: never
-    - !reference [".rails:rules:minimal-default-rules", rules]
-    - !reference [".rails:rules:unit-integration:minimal-default-rules", rules]
+    - !reference [".rails:rules:predictive-default-rules", rules]
+    - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
     # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request
@@ -1334,14 +1334,14 @@
     - <<: *if-default-refs
       changes: *backend-patterns
 
-.rails:rules:ee-only-unit:minimal:
+.rails:rules:ee-only-unit:predictive:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-fork-merge-request
       changes: *backend-patterns
-    - !reference [".rails:rules:minimal-default-rules", rules]
-    - !reference [".rails:rules:unit-integration:minimal-default-rules", rules]
+    - !reference [".rails:rules:predictive-default-rules", rules]
+    - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
     - <<: *if-merge-request
       changes: *backend-patterns
 
@@ -1355,14 +1355,14 @@
     - <<: *if-default-refs
       changes: *backend-patterns
 
-.rails:rules:ee-only-integration:minimal:
+.rails:rules:ee-only-integration:predictive:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-fork-merge-request
       changes: *backend-patterns
-    - !reference [".rails:rules:minimal-default-rules", rules]
-    - !reference [".rails:rules:unit-integration:minimal-default-rules", rules]
+    - !reference [".rails:rules:predictive-default-rules", rules]
+    - !reference [".rails:rules:unit-integration:predictive-default-rules", rules]
     - <<: *if-merge-request
       changes: *backend-patterns
 
@@ -1376,14 +1376,14 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.rails:rules:ee-only-system:minimal:
+.rails:rules:ee-only-system:predictive:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-fork-merge-request
       changes: *code-backstage-patterns
-    - !reference [".rails:rules:minimal-default-rules", rules]
-    - !reference [".rails:rules:system:minimal-default-rules", rules]
+    - !reference [".rails:rules:predictive-default-rules", rules]
+    - !reference [".rails:rules:system:predictive-default-rules", rules]
 
 .rails:rules:as-if-foss-migration:
   rules:
@@ -1403,12 +1403,12 @@
     - <<: *if-merge-request-not-approved
       when: never
 
-.rails:rules:as-if-foss-migration:minimal:
+.rails:rules:as-if-foss-migration:predictive:
   rules:
     - <<: *if-not-ee
       when: never
-    - !reference [".rails:rules:minimal-default-rules", rules]
-    - !reference [".rails:rules:as-if-foss-migration-unit-integration:minimal-default-rules", rules]
+    - !reference [".rails:rules:predictive-default-rules", rules]
+    - !reference [".rails:rules:as-if-foss-migration-unit-integration:predictive-default-rules", rules]
     # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request-labels-as-if-foss
@@ -1425,14 +1425,14 @@
     - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
 
-.rails:rules:as-if-foss-unit:minimal:
+.rails:rules:as-if-foss-unit:predictive:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-fork-merge-request
       when: never
-    - !reference [".rails:rules:minimal-default-rules", rules]
-    - !reference [".rails:rules:as-if-foss-migration-unit-integration:minimal-default-rules", rules]
+    - !reference [".rails:rules:predictive-default-rules", rules]
+    - !reference [".rails:rules:as-if-foss-migration-unit-integration:predictive-default-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
 
@@ -1446,14 +1446,14 @@
     - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
 
-.rails:rules:as-if-foss-integration:minimal:
+.rails:rules:as-if-foss-integration:predictive:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-fork-merge-request
       when: never
-    - !reference [".rails:rules:minimal-default-rules", rules]
-    - !reference [".rails:rules:as-if-foss-migration-unit-integration:minimal-default-rules", rules]
+    - !reference [".rails:rules:predictive-default-rules", rules]
+    - !reference [".rails:rules:as-if-foss-migration-unit-integration:predictive-default-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
       changes: *backend-patterns
 
@@ -1467,13 +1467,13 @@
     - <<: *if-merge-request-labels-as-if-foss
       changes: *code-backstage-patterns
 
-.rails:rules:as-if-foss-system:minimal:
+.rails:rules:as-if-foss-system:predictive:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-fork-merge-request
       when: never
-    - !reference [".rails:rules:minimal-default-rules", rules]
+    - !reference [".rails:rules:predictive-default-rules", rules]
     - <<: *if-merge-request
       changes: *core-backend-patterns
       when: never

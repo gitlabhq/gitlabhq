@@ -633,7 +633,11 @@ class Repository
   end
 
   def readme_path
-    head_tree&.readme_path
+    if Feature.enabled?(:readme_from_gitaly)
+      readme_path_gitaly
+    else
+      head_tree&.readme_path
+    end
   end
   cache_method :readme_path
 
@@ -1240,6 +1244,29 @@ class Repository
                                 repo_type.identifier_for_container(container),
                                 container.full_path,
                                 container: container)
+  end
+
+  def readme_path_gitaly
+    return if empty? || root_ref.nil?
+
+    # (?i) to enable case-insensitive mode
+    #
+    # Note: `Gitlab::FileDetector::PATTERNS[:readme]#to_s` won't work because of
+    # incompatibility of regex engines between Rails and Gitaly.
+    regex = "(?i)#{Gitlab::FileDetector::PATTERNS[:readme].source}"
+
+    readmes = search_files_by_regexp(regex, root_ref)
+
+    choose_readme_to_display(readmes)
+  end
+
+  # Extracted from Tree#readme_path
+  def choose_readme_to_display(readmes)
+    previewable_readme = readmes.find { |name| Gitlab::MarkupHelper.previewable?(name) }
+
+    return previewable_readme if previewable_readme
+
+    readmes.find { |name| Gitlab::MarkupHelper.plain?(name) }
   end
 end
 

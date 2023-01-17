@@ -8,8 +8,6 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
-    # FIXME: before removing this please fix discussions navigation with this flag enabled
-    stub_feature_flags(moved_mr_sidebar: false)
     project.add_maintainer(user)
     sign_in(user)
   end
@@ -194,10 +192,10 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
   end
 
   def goto_next_thread
-    click_button 'Go to next unresolved thread'
+    click_button 'Go to next unresolved thread', obscured: false
   end
 
   def goto_previous_thread
-    click_button 'Go to previous unresolved thread'
+    click_button 'Go to previous unresolved thread', obscured: false
   end
 end

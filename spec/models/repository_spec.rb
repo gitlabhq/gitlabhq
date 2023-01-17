@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Repository do
+RSpec.describe Repository, feature_category: :source_code_management do
   include RepoHelpers
 
   before do
@@ -2718,10 +2718,24 @@ RSpec.describe Repository do
         end
 
         it 'caches the response' do
-          expect(repository.head_tree).to receive(:readme_path).and_call_original.once
+          expect(repository).to receive(:search_files_by_regexp).and_call_original.once
 
           2.times do
             expect(repository.readme_path).to eq("README.md")
+          end
+        end
+
+        context 'when "readme_from_gitaly" FF is disabled' do
+          before do
+            stub_feature_flags(readme_from_gitaly: false)
+          end
+
+          it 'caches the response' do
+            expect(repository.head_tree).to receive(:readme_path).and_call_original.once
+
+            2.times do
+              expect(repository.readme_path).to eq("README.md")
+            end
           end
         end
       end

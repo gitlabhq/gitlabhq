@@ -247,6 +247,7 @@ export const filters = {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'labelName',
       [SPECIAL_FILTER]: 'labelName',
+      [ALTERNATIVE_FILTER]: 'labelNames',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
@@ -256,6 +257,9 @@ export const filters = {
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[label_name][]',
+      },
+      [OPERATOR_OR]: {
+        [ALTERNATIVE_FILTER]: 'or[label_name][]',
       },
     },
   },

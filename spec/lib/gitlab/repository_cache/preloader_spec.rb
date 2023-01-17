@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::RepositoryCache::Preloader, :use_clean_rails_redis_caching do
+RSpec.describe Gitlab::RepositoryCache::Preloader, :use_clean_rails_redis_caching,
+                                                   feature_category: :source_code_management do
   let(:projects) { create_list(:project, 2, :repository) }
   let(:repositories) { projects.map(&:repository) }
 
@@ -17,8 +18,8 @@ RSpec.describe Gitlab::RepositoryCache::Preloader, :use_clean_rails_redis_cachin
           # Warm the cache but use a different model so they are not memoized
           repos = Project.id_in(projects).order(:id).map(&:repository)
 
-          allow(repos[0].head_tree).to receive(:readme_path).and_return('README.txt')
-          allow(repos[1].head_tree).to receive(:readme_path).and_return('README.md')
+          allow(repos[0]).to receive(:readme_path_gitaly).and_return('README.txt')
+          allow(repos[1]).to receive(:readme_path_gitaly).and_return('README.md')
 
           repos.map(&:exists?)
           repos.map(&:readme_path)

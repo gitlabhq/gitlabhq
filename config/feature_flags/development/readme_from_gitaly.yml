@@ -1,0 +1,8 @@
+---
+name: readme_from_gitaly
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108609
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387703
+milestone: '15.8'
+type: development
+group: group::source code
+default_enabled: false

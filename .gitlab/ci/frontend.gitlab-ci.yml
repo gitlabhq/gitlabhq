@@ -204,15 +204,15 @@ jest:
       junit: junit_jest.xml
   parallel: 5
 
-jest minimal:
+jest predictive:
   extends:
     - jest
-    - .frontend:rules:jest:minimal
+    - .frontend:rules:jest:predictive
   needs:
     - !reference [jest, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:minimal"; fi
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive"; fi
 
 jest as-if-foss:
   extends:
@@ -222,16 +222,16 @@ jest as-if-foss:
   needs: ["rspec-all frontend_fixture as-if-foss"]
   parallel: 2
 
-jest minimal as-if-foss:
+jest predictive as-if-foss:
   extends:
     - .jest-base
-    - .frontend:rules:jest:minimal:as-if-foss
+    - .frontend:rules:jest:predictive:as-if-foss
     - .as-if-foss
   needs:
     - "rspec-all frontend_fixture as-if-foss"
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:minimal"; fi
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive"; fi
 
 jest-integration:
   extends:
@@ -252,7 +252,7 @@ coverage-frontend:
   needs:
     - job: "jest"
       optional: true
-    - job: "jest minimal"
+    - job: "jest predictive"
       optional: true
   stage: post-test
   script:

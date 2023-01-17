@@ -370,7 +370,11 @@ On subsequent visits, you should be able to go [sign in to GitLab.com with SAML]
 
 ### Change NameID for one or more users
 
-If the NameID changes for one or more users, they need to reconnect their SAML account.
+> Update of SAML identities using the SAML API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
+
+Group owners can update the SAML identities for their group members using the [SAML API](../../../api/saml.md).
+
+Alternatively, ask the users to reconnect their SAML account.
 
 1. Ask relevant users to [unlink their account from the group](#unlinking-accounts).
 1. Ask relevant users to [link their account to the new SAML app](#linking-saml-to-your-existing-gitlabcom-account).

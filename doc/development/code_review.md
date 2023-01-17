@@ -197,6 +197,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. You have properly separated EE content from FOSS, or this MR is FOSS only.
     - [Where should EE code go?](ee_features.md)
 1. You have considered that existing data may be surprisingly varied. For example, a new model validation can break existing records. Consider making validation on existing data optional rather than required if you haven't confirmed that existing data will pass validation.
+1. If a test passes with warnings and the failed job includes the text `Flaky test '<path/to/test>' was found in the list of files changed by this MR.`, you have fixed this test, or provided evidence explaining why this flaky test can be ignored.
 
 ##### Performance, reliability, and availability
 

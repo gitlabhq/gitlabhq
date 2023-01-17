@@ -73,11 +73,11 @@ rspec migration pg12:
     - .rspec-base-migration
     - .rspec-migration-parallel
 
-rspec migration pg12 minimal:
+rspec migration pg12 predictive:
   extends:
     - rspec migration pg12
-    - .minimal-rspec-tests
-    - .rails:rules:ee-and-foss-migration:minimal
+    - .predictive-rspec-tests
+    - .rails:rules:ee-and-foss-migration:predictive
 
 rspec migration pg12 single-db:
   extends:
@@ -97,11 +97,11 @@ rspec unit pg12:
     - .rails:rules:ee-and-foss-unit
     - .rspec-unit-parallel
 
-rspec unit pg12 minimal:
+rspec unit pg12 predictive:
   extends:
     - rspec unit pg12
-    - .minimal-rspec-tests
-    - .rails:rules:ee-and-foss-unit:minimal
+    - .predictive-rspec-tests
+    - .rails:rules:ee-and-foss-unit:predictive
 
 rspec unit pg12 single-db:
   extends:
@@ -121,11 +121,11 @@ rspec integration pg12:
     - .rails:rules:ee-and-foss-integration
     - .rspec-integration-parallel
 
-rspec integration pg12 minimal:
+rspec integration pg12 predictive:
   extends:
     - rspec integration pg12
-    - .minimal-rspec-tests
-    - .rails:rules:ee-and-foss-integration:minimal
+    - .predictive-rspec-tests
+    - .rails:rules:ee-and-foss-integration:predictive
 
 rspec integration pg12 single-db:
   extends:
@@ -147,11 +147,11 @@ rspec system pg12:
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
 
-rspec system pg12 minimal:
+rspec system pg12 predictive:
   extends:
     - rspec system pg12
-    - .minimal-rspec-tests
-    - .rails:rules:ee-and-foss-system:minimal
+    - .predictive-rspec-tests
+    - .rails:rules:ee-and-foss-system:predictive
 
 rspec system pg12 single-db:
   extends:
@@ -352,11 +352,11 @@ rspec:coverage:
     - rspec unit pg12
     - rspec integration pg12
     - rspec system pg12
-    # FOSS/EE minimal jobs
-    - rspec migration pg12 minimal
-    - rspec unit pg12 minimal
-    - rspec integration pg12 minimal
-    - rspec system pg12 minimal
+    # FOSS/EE predictive jobs
+    - rspec migration pg12 predictive
+    - rspec unit pg12 predictive
+    - rspec integration pg12 predictive
+    - rspec system pg12 predictive
     # FOSS/EE single-db jobs
     - rspec migration pg12 single-db
     - rspec unit pg12 single-db
@@ -367,11 +367,11 @@ rspec:coverage:
     - rspec-ee unit pg12
     - rspec-ee integration pg12
     - rspec-ee system pg12
-    # EE minimal jobs
-    - rspec-ee migration pg12 minimal
-    - rspec-ee unit pg12 minimal
-    - rspec-ee integration pg12 minimal
-    - rspec-ee system pg12 minimal
+    # EE predictive jobs
+    - rspec-ee migration pg12 predictive
+    - rspec-ee unit pg12 predictive
+    - rspec-ee integration pg12 predictive
+    - rspec-ee system pg12 predictive
     # EE single-db jobs
     - rspec-ee migration pg12 single-db
     - rspec-ee unit pg12 single-db
@@ -381,16 +381,16 @@ rspec:coverage:
     - memory-on-boot
     # As-if-FOSS jobs
     - rspec migration pg12-as-if-foss
-    - rspec migration pg12-as-if-foss minimal
+    - rspec migration pg12-as-if-foss predictive
     - rspec migration pg12-as-if-foss single-db
     - rspec unit pg12-as-if-foss
-    - rspec unit pg12-as-if-foss minimal
+    - rspec unit pg12-as-if-foss predictive
     - rspec unit pg12-as-if-foss single-db
     - rspec integration pg12-as-if-foss
-    - rspec integration pg12-as-if-foss minimal
+    - rspec integration pg12-as-if-foss predictive
     - rspec integration pg12-as-if-foss single-db
     - rspec system pg12-as-if-foss
-    - rspec system pg12-as-if-foss minimal
+    - rspec system pg12-as-if-foss predictive
     - rspec system pg12-as-if-foss single-db
   script:
     - run_timed_command "bundle exec scripts/merge-simplecov"
@@ -476,11 +476,11 @@ rspec migration pg12-as-if-foss:
     - .rails:rules:as-if-foss-migration
     - .rspec-migration-parallel
 
-rspec migration pg12-as-if-foss minimal:
+rspec migration pg12-as-if-foss predictive:
   extends:
     - rspec migration pg12-as-if-foss
-    - .minimal-rspec-tests
-    - .rails:rules:as-if-foss-migration:minimal
+    - .predictive-rspec-tests
+    - .rails:rules:as-if-foss-migration:predictive
 
 rspec migration pg12-as-if-foss single-db:
   extends:
@@ -494,11 +494,11 @@ rspec unit pg12-as-if-foss:
     - .rails:rules:as-if-foss-unit
     - .rspec-unit-parallel
 
-rspec unit pg12-as-if-foss minimal:
+rspec unit pg12-as-if-foss predictive:
   extends:
     - rspec unit pg12-as-if-foss
-    - .minimal-rspec-tests
-    - .rails:rules:as-if-foss-unit:minimal
+    - .predictive-rspec-tests
+    - .rails:rules:as-if-foss-unit:predictive
 
 rspec unit pg12-as-if-foss single-db:
   extends:
@@ -512,11 +512,11 @@ rspec integration pg12-as-if-foss:
     - .rails:rules:as-if-foss-integration
     - .rspec-integration-parallel
 
-rspec integration pg12-as-if-foss minimal:
+rspec integration pg12-as-if-foss predictive:
   extends:
     - rspec integration pg12-as-if-foss
-    - .minimal-rspec-tests
-    - .rails:rules:as-if-foss-integration:minimal
+    - .predictive-rspec-tests
+    - .rails:rules:as-if-foss-integration:predictive
 
 rspec integration pg12-as-if-foss single-db:
   extends:
@@ -530,11 +530,11 @@ rspec system pg12-as-if-foss:
     - .rails:rules:as-if-foss-system
     - .rspec-system-parallel
 
-rspec system pg12-as-if-foss minimal:
+rspec system pg12-as-if-foss predictive:
   extends:
     - rspec system pg12-as-if-foss
-    - .minimal-rspec-tests
-    - .rails:rules:as-if-foss-system:minimal
+    - .predictive-rspec-tests
+    - .rails:rules:as-if-foss-system:predictive
 
 rspec system pg12-as-if-foss single-db:
   extends:
@@ -549,11 +549,11 @@ rspec-ee migration pg12:
     - .rails:rules:ee-only-migration
     - .rspec-ee-migration-parallel
 
-rspec-ee migration pg12 minimal:
+rspec-ee migration pg12 predictive:
   extends:
     - rspec-ee migration pg12
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-migration:minimal
+    - .predictive-rspec-tests
+    - .rails:rules:ee-only-migration:predictive
 
 rspec-ee migration pg12 single-db:
   extends:
@@ -572,11 +572,11 @@ rspec-ee unit pg12 es8:
     - .rspec-ee-base-pg12-es8
     - .rspec-ee-unit-parallel
 
-rspec-ee unit pg12 minimal:
+rspec-ee unit pg12 predictive:
   extends:
     - rspec-ee unit pg12
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-unit:minimal
+    - .predictive-rspec-tests
+    - .rails:rules:ee-only-unit:predictive
 
 rspec-ee unit pg12 single-db:
   extends:
@@ -595,11 +595,11 @@ rspec-ee integration pg12 es8:
     - .rspec-ee-base-pg12-es8
     - .rspec-ee-integration-parallel
 
-rspec-ee integration pg12 minimal:
+rspec-ee integration pg12 predictive:
   extends:
     - rspec-ee integration pg12
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-integration:minimal
+    - .predictive-rspec-tests
+    - .rails:rules:ee-only-integration:predictive
 
 rspec-ee integration pg12 single-db:
   extends:
@@ -618,11 +618,11 @@ rspec-ee system pg12 es8:
     - .rspec-ee-base-pg12-es8
     - .rspec-ee-system-parallel
 
-rspec-ee system pg12 minimal:
+rspec-ee system pg12 predictive:
   extends:
     - rspec-ee system pg12
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-system:minimal
+    - .predictive-rspec-tests
+    - .rails:rules:ee-only-system:predictive
 
 rspec-ee system pg12 single-db:
   extends:

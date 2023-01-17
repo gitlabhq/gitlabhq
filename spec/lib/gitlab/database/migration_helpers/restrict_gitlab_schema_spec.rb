@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_analyzers: false, stub_feature_flags: false do
+RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_analyzers: false,
+  stub_feature_flags: false, feature_category: :pods do
   let(:schema_class) { Class.new(Gitlab::Database::Migration[1.0]).include(described_class) }
 
   # We keep only the GitlabSchemasValidateConnection analyzer running
@@ -125,8 +126,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
         "does add index to ci_builds in gitlab_main and gitlab_ci" => {
           migration: ->(klass) do
             def change
-              # Due to running in transactin we cannot use `add_concurrent_index`
-              add_index :ci_builds, :tag, where: "type = 'Ci::Build'", name: 'index_ci_builds_on_tag_and_type_eq_ci_build'
+              # Due to running in transaction we cannot use `add_concurrent_index`
+              index_name = 'index_ci_builds_on_tag_and_type_eq_ci_build'
+              add_index :ci_builds, :tag, where: "type = 'Ci::Build'", name: index_name
             end
           end,
           query_matcher: /CREATE INDEX/,

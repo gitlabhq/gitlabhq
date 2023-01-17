@@ -14,6 +14,7 @@ import {
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_HEALTH,
+  TOKEN_TYPE_LABEL,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   ALTERNATIVE_FILTER,
@@ -253,8 +254,9 @@ const isSpecialFilter = (type, data) => {
 
 const getFilterType = ({ type, value: { data, operator } }) => {
   const isUnionedAuthor = type === TOKEN_TYPE_AUTHOR && operator === OPERATOR_OR;
+  const isUnionedLabel = type === TOKEN_TYPE_LABEL && operator === OPERATOR_OR;
 
-  if (isUnionedAuthor) {
+  if (isUnionedAuthor || isUnionedLabel) {
     return ALTERNATIVE_FILTER;
   }
   if (isSpecialFilter(type, data)) {
