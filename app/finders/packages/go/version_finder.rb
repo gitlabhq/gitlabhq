@@ -15,7 +15,7 @@ module Packages
         @mod.project.repository.tags
           .filter { |tag| semver_tag? tag }
           .map    { |tag| @mod.version_by(ref: tag) }
-          .filter { |ver| ver.valid? }
+          .filter(&:valid?)
       end
 
       def find(target)

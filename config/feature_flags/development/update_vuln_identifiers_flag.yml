@@ -1,8 +1,0 @@
----
-name: update_vuln_identifiers_flag
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82538
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362179
-milestone: '15.1'
-type: development
-group: group::static analysis
-default_enabled: true

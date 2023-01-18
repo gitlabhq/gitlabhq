@@ -101,7 +101,7 @@ export const fetchDiscussions = (
 
   if (
     getters.noteableType === constants.ISSUE_NOTEABLE_TYPE ||
-    window.gon?.features?.paginatedMrDiscussions
+    getters.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
   ) {
     return dispatch('fetchDiscussionsBatch', { path, config, perPage: 20 });
   }

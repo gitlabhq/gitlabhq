@@ -166,9 +166,10 @@ module API
                                     default: 0
               optional :user_id, type: String, desc: 'This will be ignored'
               optional :tags, type: Array, desc: 'Tags are stored, but not displayed'
+              optional :run_name, type: String, desc: 'A name for this run'
             end
             post 'create', urgency: :low do
-              present candidate_repository.create!(experiment, params[:start_time], params[:tags]),
+              present candidate_repository.create!(experiment, params[:start_time], params[:tags], params[:run_name]),
                       with: Entities::Ml::Mlflow::Run, packages_url: packages_url
             end
 

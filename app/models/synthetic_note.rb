@@ -14,7 +14,7 @@ class SyntheticNote < Note
       discussion_id: event.discussion_id,
       noteable: resource,
       event: event,
-      system_note_metadata: ::SystemNoteMetadata.new(action: action),
+      system_note_metadata: ::SystemNoteMetadata.new(action: action, id: event.discussion_id),
       resource_parent: resource_parent
     }
 

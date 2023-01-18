@@ -3,7 +3,7 @@ table_name: reviews
 classes:
 - Review
 feature_categories:
-- code_review
+- code_review_workflow
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8442
 milestone: '11.6'

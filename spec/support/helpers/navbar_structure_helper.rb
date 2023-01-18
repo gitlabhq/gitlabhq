@@ -91,9 +91,8 @@ module NavbarStructureHelper
       new_nav_item: {
         nav_item: _('Observability'),
         nav_sub_items: [
-          _('Dashboards'),
-          _('Explore'),
-          _('Manage Dashboards')
+          _('Explore telemetry data'),
+          _('Data sources')
         ]
       }
     )

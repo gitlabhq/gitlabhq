@@ -81,7 +81,7 @@ To enable container scanning in your pipeline, you need the following:
 - Docker `18.09.03` or higher installed on the same computer as the runner. If you're using the
   shared runners on GitLab.com, then this is already the case.
 - An image matching the [supported distributions](#supported-distributions).
-- [Build and push](../../packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd)
+- [Build and push](../../packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
   the Docker image to your project's container registry.
 - If you're using a third-party container registry, you might need to provide authentication
   credentials through the `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD` [configuration variables](#available-cicd-variables).
@@ -425,7 +425,7 @@ container_scanning:
         -----END CERTIFICATE-----
 ```
 
-The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
 ### Vulnerability allowlisting **(ULTIMATE)**
 
@@ -637,7 +637,7 @@ container_scanning:
     CS_IMAGE: "gcr.io/path-to-you-registry/image:tag"
 ```
 
-Before you commit this configuration, [add a CI/CD variable](../../../ci/variables/index.md#add-a-cicd-variable-to-a-project)
+Before you commit this configuration, [add a CI/CD variable](../../../ci/variables/index.md#for-a-project)
 for `GCP_CREDENTIALS` containing the JSON key, as described in the
 [Google Cloud Platform Container Registry documentation](https://cloud.google.com/container-registry/docs/advanced-authentication#json-key).
 Also:

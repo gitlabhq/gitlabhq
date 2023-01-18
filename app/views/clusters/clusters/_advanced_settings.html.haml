@@ -14,7 +14,7 @@
         = html_escape(s_('ClusterIntegration|Manage your Kubernetes cluster by visiting %{provider_link}')) % { provider_link: provider_link }
 
   .sub-section.form-group
-    = form_for @cluster, url: clusterable.cluster_path(@cluster), as: :cluster, html: { class: 'cluster_management_form' } do |field|
+    = gitlab_ui_form_for @cluster, url: clusterable.cluster_path(@cluster), as: :cluster, html: { class: 'cluster_management_form' } do |field|
       %h4
         = s_('ClusterIntegration|Cluster management project')
 
@@ -24,7 +24,7 @@
         .text-muted
           = html_escape(s_('ClusterIntegration|A cluster management project can be used to run deployment jobs with Kubernetes %{code_open}cluster-admin%{code_close} privileges.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
           = link_to _('More information'), help_page_path('user/clusters/management_project.md'), target: '_blank', rel: 'noopener noreferrer'
-      = field.submit _('Save changes'), class: 'btn gl-button btn-confirm'
+      = field.submit _('Save changes'), pajamas_button: true
 
   .sub-section.form-group
     %h4
@@ -35,7 +35,8 @@
         = s_("ClusterIntegration|This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts.")
       - else
         = s_("ClusterIntegration|This is necessary to clear existing environment-namespace associations from clusters previously managed by GitLab.")
-    = link_to(s_('ClusterIntegration|Clear cluster cache'), clusterable.clear_cluster_cache_path(@cluster), method: :delete, class: 'btn gl-button btn-confirm')
+    = render Pajamas::ButtonComponent.new(method: :delete, href: clusterable.clear_cluster_cache_path(@cluster)) do
+      = s_('ClusterIntegration|Clear cluster cache')
 
   .sub-section.form-group
     %h4.text-danger

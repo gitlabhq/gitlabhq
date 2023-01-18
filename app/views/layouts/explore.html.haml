@@ -1,7 +1,11 @@
 - page_title _("Explore")
-- @hide_breadcrumbs = true
+
+- if current_user && Feature.enabled?(:your_work_sidebar, current_user)
+  - @left_sidebar = true
+  - nav "your_work"
 
 - unless current_user
+  - @hide_breadcrumbs = true
   - header_title _("Explore GitLab"), explore_root_path
 
 = render template: "layouts/application"

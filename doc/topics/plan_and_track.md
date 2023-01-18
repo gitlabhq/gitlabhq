@@ -58,3 +58,4 @@ Align your work across teams.
   - [View health status](../user/project/issues/managing_issues.md#health-status)
 - [Roadmaps](../user/group/roadmap/index.md)
 - [Planning hierarchies](../user/group/planning_hierarchy/index.md)
+- [Objectives and key results](../user/okrs.md)

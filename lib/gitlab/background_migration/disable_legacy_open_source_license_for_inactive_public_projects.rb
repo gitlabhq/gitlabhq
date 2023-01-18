@@ -9,6 +9,7 @@ module Gitlab
       LAST_ACTIVITY_DATE = '2021-07-01'
 
       operation_name :disable_legacy_open_source_license_available
+      feature_category :database
 
       # Migration only version of `project_settings` table
       class ProjectSetting < ApplicationRecord

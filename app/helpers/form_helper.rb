@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module FormHelper
-  def form_errors(model, type: 'form', truncate: [])
+  def form_errors(model, type: 'form', truncate: [], custom_message: [])
     errors = model.errors
 
     return unless errors.any?
@@ -16,9 +16,15 @@ module FormHelper
 
     messages = errors.map do |error|
       attribute = error.attribute
-      message = error.message
 
-      message = html_escape_once(errors.full_message(attribute, message)).html_safe
+      message = errors.full_message(attribute, error.message)
+
+      # When error message is custom and does not follow the default pattern
+      # "<attribute name> <error message>" (e.g. "You have already reported this
+      # user"), use the message as-is
+      message = error.message if custom_message.include?(attribute)
+
+      message = html_escape_once(message).html_safe
       message = tag.span(message, class: 'str-truncated-100') if truncate.include?(attribute)
       message = append_help_page_link(message, error.options) if error.options[:help_page_url].present?
 

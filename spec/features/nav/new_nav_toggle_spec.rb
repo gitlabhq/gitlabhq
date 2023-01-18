@@ -48,14 +48,19 @@ RSpec.describe 'new navigation toggle', :js, feature_category: :navigation do
 
         expect(user.reload.use_new_navigation).to eq true
       end
+
+      it 'shows the old navigation' do
+        expect(page).to have_selector('.js-navbar')
+        expect(page).not_to have_selector('[data-testid="super-sidebar"]')
+      end
     end
 
     context 'when user has new nav enabled' do
       let(:user_preference) { true }
 
       it 'allows to disable new nav', :aggregate_failures do
-        within '.js-nav-user-dropdown' do
-          find('a[data-toggle="dropdown"]').click
+        within '[data-testid="super-sidebar"] [data-testid="user-dropdown"]' do
+          find('button').click
           expect(page).to have_content('Navigation redesign')
 
           toggle = page.find('.gl-toggle.is-checked')
@@ -65,6 +70,11 @@ RSpec.describe 'new navigation toggle', :js, feature_category: :navigation do
         wait_for_requests
 
         expect(user.reload.use_new_navigation).to eq false
+      end
+
+      it 'shows the new navigation' do
+        expect(page).not_to have_selector('.js-navbar')
+        expect(page).to have_selector('[data-testid="super-sidebar"]')
       end
     end
   end

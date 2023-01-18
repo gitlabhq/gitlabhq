@@ -23,7 +23,7 @@ module Gitlab
       #     def enabled?
       #       Feature.enabled?(:some_feature)
       #     end
-      #     strong_memoize_attr :enabled?, :enabled
+      #     strong_memoize_attr :enabled?
       #
       def strong_memoize(name)
         key = ivar(name)
@@ -46,20 +46,20 @@ module Gitlab
       end
 
       def strong_memoized?(name)
-        instance_variable_defined?(ivar(name))
+        key = ivar(StrongMemoize.normalize_key(name))
+        instance_variable_defined?(key)
       end
 
       def clear_memoization(name)
-        key = ivar(name)
+        key = ivar(StrongMemoize.normalize_key(name))
         remove_instance_variable(key) if instance_variable_defined?(key)
       end
 
       module StrongMemoizeClassMethods
-        def strong_memoize_attr(method_name, member_name = nil)
-          member_name ||= method_name
+        def strong_memoize_attr(method_name)
+          member_name = StrongMemoize.normalize_key(method_name)
 
-          StrongMemoize.send( # rubocop:disable GitlabSecurity/PublicSend
-            :do_strong_memoize, self, method_name, member_name)
+          StrongMemoize.send(:do_strong_memoize, self, method_name, member_name) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 
@@ -83,7 +83,14 @@ module Gitlab
         end
       end
 
-      class <<self
+      class << self
+        def normalize_key(key)
+          return key unless key.end_with?('!', '?')
+
+          # Replace invalid chars like `!` and `?` with allowed Unicode codeparts.
+          key.to_s.tr('!?', "\uFF01\uFF1F")
+        end
+
         private
 
         def do_strong_memoize(klass, method_name, member_name)

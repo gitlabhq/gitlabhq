@@ -12,7 +12,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
   let_it_be(:existing_link) { create(:parent_link, work_item: child_work_item, work_item_parent: work_item) }
 
   let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::Hierarchy) } }
-  let(:not_found_error) { 'No matching task found. Make sure that you are adding a valid task ID.' }
+  let(:not_found_error) { 'No matching work item found. Make sure that you are adding a valid work item ID.' }
 
   shared_examples 'raises a WidgetError' do
     it { expect { subject }.to raise_error(described_class::WidgetError, message) }
@@ -70,7 +70,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
           let(:params) { { children: [child_work_item] } }
 
           it_behaves_like 'raises a WidgetError' do
-            let(:message) { 'Task(s) already assigned' }
+            let(:message) { 'Work item(s) already assigned' }
           end
         end
 

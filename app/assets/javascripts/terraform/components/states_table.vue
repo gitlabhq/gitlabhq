@@ -11,14 +11,14 @@ import {
 } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__, sprintf } from '~/locale';
-import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import StateActions from './states_table_actions.vue';
 
 export default {
   components: {
-    CiBadge,
+    CiBadgeLink,
     GlAlert,
     GlBadge,
     GlLink,
@@ -198,7 +198,7 @@ export default {
           :id="`terraformJobStatusContainer${item.name}`"
           class="gl-my-2"
         >
-          <ci-badge
+          <ci-badge-link
             :id="`terraformJobStatus${item.name}`"
             :status="pipelineDetailedStatus(item)"
             class="gl-py-1"

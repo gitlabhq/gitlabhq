@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # `:saas` is used to test `gitlab_subscription` factory.
 # It's not available on FOSS but also this very factory is not.
-RSpec.describe 'factories', :saas do
+RSpec.describe 'factories', :saas, :with_license, feature_category: :tooling do
   include Database::DatabaseHelpers
 
   # Used in `skipped` and indicates whether to skip any traits including the
@@ -188,7 +188,13 @@ RSpec.describe 'factories', :saas do
     before do
       factories_based_on_view.each do |factory|
         view = build(factory).class.table_name
-        swapout_view_for_table(view)
+        view_gitlab_schema = Gitlab::Database::GitlabSchema.table_schema(view)
+        Gitlab::Database.database_base_models.each_value.select do |base_model|
+          connection = base_model.connection
+          next unless Gitlab::Database.gitlab_schemas_for_connection(connection).include?(view_gitlab_schema)
+
+          swapout_view_for_table(view, connection: connection)
+        end
       end
     end
 

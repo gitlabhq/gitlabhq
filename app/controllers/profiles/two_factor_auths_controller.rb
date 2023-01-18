@@ -206,7 +206,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def webauthn_options
     WebAuthn::Credential.options_for_create(
       user: { id: current_user.webauthn_xid, name: current_user.username },
-      exclude: current_user.webauthn_registrations.map { |c| c.credential_xid },
+      exclude: current_user.webauthn_registrations.map(&:credential_xid),
       authenticator_selection: { user_verification: 'discouraged' },
       rp: { name: 'GitLab' }
     )

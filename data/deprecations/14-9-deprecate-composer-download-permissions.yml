@@ -1,8 +1,6 @@
 - title: "Permissions change for downloading Composer dependencies"
   announcement_milestone: "14.9"
-  announcement_date: "2022-03-22"
   removal_milestone: "14.10"
-  removal_date: "2022-04-22"
   breaking_change: true
   reporter: trizzi
   body: |  # Do not modify this line, instead modify the lines below.

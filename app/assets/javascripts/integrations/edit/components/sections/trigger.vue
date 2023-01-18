@@ -15,11 +15,12 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-testid="trigger-fields-group">
     <trigger-field
       v-for="event in propsSource.triggerEvents"
       :key="`${currentKey}-trigger-fields-${event.name}`"
       :event="event"
+      :type="propsSource.type"
       class="gl-mb-3"
     />
   </div>

@@ -40,6 +40,7 @@ describe('ArtifactsTableRowDetails component', () => {
         refetchArtifacts,
         queryVariables: {},
       },
+      provide: { canDestroyArtifacts: true },
       data() {
         return { deletingArtifactId: null };
       },

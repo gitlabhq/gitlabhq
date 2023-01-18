@@ -225,6 +225,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.project_was_moved_email(project.id, user.id, "gitlab/gitlab").message
   end
 
+  def github_gists_import_errors_email
+    Notify.github_gists_import_errors_email(user.id, { '12345' => 'Snippet maximum file count exceeded', '67890' => 'error message 2' }).message
+  end
+
   private
 
   def project

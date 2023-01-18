@@ -15,10 +15,14 @@ import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg
 import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
+import { isPositiveInteger } from '~/lib/utils/number_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import {
+  sprintfWorkItem,
   i18n,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
@@ -53,6 +57,7 @@ import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemNotes from './work_item_notes.vue';
+import WorkItemDetailModal from './work_item_detail_modal.vue';
 
 export default {
   i18n,
@@ -83,6 +88,7 @@ export default {
     WorkItemMilestone,
     WorkItemTree,
     WorkItemNotes,
+    WorkItemDetailModal,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath'],
@@ -109,11 +115,16 @@ export default {
     },
   },
   data() {
+    const workItemId = getParameterByName('work_item_id');
+
     return {
       error: undefined,
       updateError: undefined,
       workItem: {},
       updateInProgress: false,
+      modalWorkItemId: isPositiveInteger(workItemId)
+        ? convertToGraphQLId(TYPE_WORK_ITEM, workItemId)
+        : null,
     };
   },
   apollo: {
@@ -207,6 +218,9 @@ export default {
     canDelete() {
       return this.workItem?.userPermissions?.deleteWorkItem;
     },
+    confidentialTooltip() {
+      return sprintfWorkItem(this.$options.i18n.confidentialTooltip, this.workItemType);
+    },
     fullPath() {
       return this.workItem?.project.fullPath;
     },
@@ -295,6 +309,11 @@ export default {
       return widgetHierarchy.children.nodes;
     },
   },
+  mounted() {
+    if (this.modalWorkItemId) {
+      this.openInModal(undefined, { id: this.modalWorkItemId });
+    }
+  },
   methods: {
     isWidgetPresent(type) {
       return this.workItem?.widgets?.find((widget) => widget.type === type);
@@ -362,9 +381,10 @@ export default {
       });
 
       const newData = produce(sourceData, (draftState) => {
-        const widgetHierarchy = draftState.workItem.widgets.find(
-          (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
-        );
+        const widgets = this.fetchByIid
+          ? draftState.workspace.workItems.nodes[0].widgets
+          : draftState.workItem.widgets;
+        const widgetHierarchy = widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
 
         const index = widgetHierarchy.children.nodes.findIndex((child) => child.id === childId);
 
@@ -419,6 +439,26 @@ export default {
         Sentry.captureException(error);
       }
     },
+    updateUrl(modalWorkItemId) {
+      updateHistory({
+        url: setUrlParams({ work_item_id: getIdFromGraphQLId(modalWorkItemId) }),
+        replace: true,
+      });
+    },
+    openInModal(event, modalWorkItem) {
+      if (event) {
+        event.preventDefault();
+
+        this.updateUrl(modalWorkItem.id);
+      }
+
+      if (this.isModal) {
+        this.$emit('update-modal', event, modalWorkItem.id);
+        return;
+      }
+      this.modalWorkItemId = modalWorkItem.id;
+      this.$refs.modal.show();
+    },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 };
@@ -456,6 +496,7 @@ export default {
               category="tertiary"
               :href="parentUrl"
               :title="parentWorkItem.title"
+              @click="openInModal($event, parentWorkItem)"
               >{{ parentWorkItem.title }}</gl-button
             >
             <gl-icon name="chevron-right" :size="16" class="gl-flex-shrink-0" />
@@ -482,7 +523,7 @@ export default {
         <gl-badge
           v-if="workItem.confidential"
           v-gl-tooltip.bottom
-          :title="$options.i18n.confidentialTooltip"
+          :title="confidentialTooltip"
           variant="warning"
           icon="eye-slash"
           class="gl-mr-3 gl-cursor-help"
@@ -605,6 +646,9 @@ export default {
         :can-update="canUpdate"
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
+        :fetch-by-iid="fetchByIid"
+        :query-variables="queryVariables"
+        :full-path="fullPath"
         @error="updateError = $event"
       />
       <work-item-description
@@ -619,20 +663,24 @@ export default {
       <work-item-tree
         v-if="workItemType === $options.WORK_ITEM_TYPE_VALUE_OBJECTIVE"
         :work-item-type="workItemType"
+        :parent-work-item-type="workItem.workItemType.name"
         :work-item-id="workItem.id"
         :children="children"
         :can-update="canUpdate"
         :project-path="fullPath"
+        :confidential="workItem.confidential"
         @addWorkItemChild="addChild"
         @removeChild="removeChild"
+        @show-modal="openInModal"
       />
-      <template v-if="workItemsMvc2Enabled">
+      <template v-if="workItemsMvcEnabled">
         <work-item-notes
           v-if="workItemNotes"
           :work-item-id="workItem.id"
           :query-variables="queryVariables"
           :full-path="fullPath"
           :fetch-by-iid="fetchByIid"
+          :work-item-type="workItemType"
           class="gl-pt-5"
           @error="updateError = $event"
         />
@@ -644,5 +692,12 @@ export default {
         :svg-path="noAccessSvgPath"
       />
     </template>
+    <work-item-detail-modal
+      v-if="!isModal"
+      ref="modal"
+      :work-item-id="modalWorkItemId"
+      :show="true"
+      @close="updateUrl"
+    />
   </section>
 </template>

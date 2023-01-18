@@ -241,7 +241,7 @@ with the following conventions:
 - It omits the `.md` extension.
 - It doesn't end with a forward slash (`/`).
 
-The help text follows the [Pajamas guidelines](https://design.gitlab.com/usability/helping-users/#formatting-help-content).
+The help text follows the [Pajamas guidelines](https://design.gitlab.com/usability/contextual-help#formatting-help-content).
 
 #### Linking to `/help` in HAML
 

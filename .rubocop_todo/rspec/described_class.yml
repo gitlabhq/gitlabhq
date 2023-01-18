@@ -145,7 +145,6 @@ RSpec/DescribedClass:
     - 'spec/lib/sidebars/panel_spec.rb'
     - 'spec/mailers/emails/service_desk_spec.rb'
     - 'spec/metrics_server/metrics_server_spec.rb'
-    - 'spec/migrations/remove_records_without_group_from_webhooks_table_spec.rb'
     - 'spec/models/active_session_spec.rb'
     - 'spec/models/alert_management/alert_spec.rb'
     - 'spec/models/application_record_spec.rb'

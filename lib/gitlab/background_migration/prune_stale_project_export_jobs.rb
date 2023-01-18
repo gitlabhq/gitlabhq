@@ -8,6 +8,7 @@ module Gitlab
 
       scope_to ->(relation) { relation.where("updated_at < ?", EXPIRES_IN.ago) }
       operation_name :delete_all
+      feature_category :database
 
       def perform
         each_sub_batch(&:delete_all)

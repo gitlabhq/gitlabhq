@@ -3,7 +3,7 @@ table_name: loose_foreign_keys_deleted_records
 classes:
 - LooseForeignKeys::DeletedRecord
 feature_categories:
-- sharding
+- pods
 description: Used by the loose foreign keys feature as a queue of parent records whose child records (via foreign keys) need to be deleted/nullified
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70152
 milestone: '14.3'

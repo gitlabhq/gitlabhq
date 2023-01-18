@@ -41,6 +41,10 @@ module Gitlab
         end
       end
 
+      def key_fingerprint
+        strong_memoize(:key_fingerprint) { signature&.public_key&.fingerprint }
+      end
+
       private
 
       def all_attributes_present?
@@ -76,10 +80,6 @@ module Gitlab
         rescue SSHData::DecodeError
           nil
         end
-      end
-
-      def key_fingerprint
-        strong_memoize(:key_fingerprint) { signature&.public_key&.fingerprint }
       end
     end
   end

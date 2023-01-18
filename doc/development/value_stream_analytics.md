@@ -261,7 +261,7 @@ considered legacy, which will be phased out at some point.
 
 - Rails Controller (`Analytics::CycleAnalytics` module): Value stream analytics exposes its data via JSON endpoints, implemented within the `analytics` workspace. Configuring the stages are also implements JSON endpoints (CRUD).
 - Services (`Analytics::CycleAnalytics` module): All `Stage` related actions are delegated to respective service objects.
-- Models (`Analytics::CycleAnalytics` module): Models are used to persist the `Stage` objects `ProjectStage` and `GroupStage`.
+- Models (`Analytics::CycleAnalytics` module): Models are used to persist the `Stage` objects `ProjectStage` and `Stage`.
 - Feature classes (`Gitlab::Analytics::CycleAnalytics` module):
   - Responsible for composing queries and define feature specific business logic.
   - `DataCollector`, `Event`, `StageEvents`, etc.

@@ -92,7 +92,8 @@ module Ci
             file: artifacts_file,
             file_type: params[:artifact_type],
             file_format: params[:artifact_format],
-            file_sha256: artifacts_file.sha256
+            file_sha256: artifacts_file.sha256,
+            accessibility: accessibility(params)
           )
         )
 
@@ -102,12 +103,17 @@ module Ci
                                   file: metadata_file,
                                   file_type: :metadata,
                                   file_format: :gzip,
-                                  file_sha256: metadata_file.sha256
+                                  file_sha256: metadata_file.sha256,
+                                  accessibility: accessibility(params)
                                 )
                               )
                             end
 
         [artifact, artifact_metadata]
+      end
+
+      def accessibility(params)
+        params[:accessibility] || 'public'
       end
 
       def parse_artifact(artifact)

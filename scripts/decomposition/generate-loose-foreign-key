@@ -253,7 +253,7 @@ end
 # Show only cross-schema foreign keys
 if $options[:cross_schema]
   all_foreign_keys.select! do |definition|
-    Gitlab::Database::GitlabSchema.table_schema(definition.from_table) != Gitlab::Database::GitlabSchema.table_schema(definition.to_table)
+    Gitlab::Database::GitlabSchema.table_schema!(definition.from_table) != Gitlab::Database::GitlabSchema.table_schema!(definition.to_table)
   end
 end
 

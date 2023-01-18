@@ -5,7 +5,6 @@
 - else
   - add_page_startup_graphql_call('snippet/user_permissions')
 - @hide_top_links = true
-- @content_class = "limit-container-width limited-inner-width-container" unless fluid_layout
 - add_to_breadcrumbs _("Snippets"), dashboard_snippets_path
 - breadcrumb_title @snippet.to_reference
 - page_title "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")

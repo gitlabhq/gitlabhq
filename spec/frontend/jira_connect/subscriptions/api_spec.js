@@ -9,7 +9,7 @@ import {
   updateInstallation,
 } from '~/jira_connect/subscriptions/api';
 import { getJwt } from '~/jira_connect/subscriptions/utils';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/jira_connect/subscriptions/utils', () => ({
   getJwt: jest.fn().mockResolvedValue('jwt'),
@@ -49,7 +49,7 @@ describe('JiraConnect API', () => {
           jwt: mockJwt,
           namespace_path: mockNamespace,
         })
-        .replyOnce(httpStatus.OK, mockResponse);
+        .replyOnce(HTTP_STATUS_OK, mockResponse);
 
       response = await makeRequest();
 
@@ -67,7 +67,7 @@ describe('JiraConnect API', () => {
 
     it('returns success response', async () => {
       jest.spyOn(axiosInstance, 'delete');
-      axiosMock.onDelete(mockRemovePath).replyOnce(httpStatus.OK, mockResponse);
+      axiosMock.onDelete(mockRemovePath).replyOnce(HTTP_STATUS_OK, mockResponse);
 
       response = await makeRequest();
 
@@ -99,7 +99,7 @@ describe('JiraConnect API', () => {
           page: mockPage,
           per_page: mockPerPage,
         })
-        .replyOnce(httpStatus.OK, mockResponse);
+        .replyOnce(HTTP_STATUS_OK, mockResponse);
 
       response = await makeRequest();
 
@@ -121,7 +121,7 @@ describe('JiraConnect API', () => {
 
       jest.spyOn(axiosInstance, 'get');
 
-      axiosMock.onGet(expectedUrl).replyOnce(httpStatus.OK, mockResponse);
+      axiosMock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, mockResponse);
 
       response = await makeRequest();
 
@@ -139,7 +139,7 @@ describe('JiraConnect API', () => {
 
       jest.spyOn(axiosInstance, 'post');
 
-      axiosMock.onPost(expectedUrl).replyOnce(httpStatus.OK, mockResponse);
+      axiosMock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, mockResponse);
 
       response = await makeRequest();
 
@@ -175,7 +175,7 @@ describe('JiraConnect API', () => {
               instance_url: expectedInstanceUrl,
             },
           })
-          .replyOnce(httpStatus.OK, mockResponse);
+          .replyOnce(HTTP_STATUS_OK, mockResponse);
 
         response = await makeRequest();
 

@@ -189,9 +189,9 @@ RSpec.describe Banzai::Filter::References::ReferenceFilter do
     let(:filter) { described_class.new(document, project: project) }
 
     it 'updates all new nodes', :aggregate_failures do
-      filter.instance_variable_set('@nodes', nodes)
+      filter.instance_variable_set(:@nodes, nodes)
 
-      expect(filter).to receive(:call) { filter.instance_variable_set('@new_nodes', new_nodes) }
+      expect(filter).to receive(:call) { filter.instance_variable_set(:@new_nodes, new_nodes) }
       expect(filter).to receive(:with_update_nodes).and_call_original
       expect(filter).to receive(:update_nodes!).and_call_original
 
@@ -212,7 +212,7 @@ RSpec.describe Banzai::Filter::References::ReferenceFilter do
       expect_next_instance_of(described_class) do |filter|
         expect(filter).to receive(:call_and_update_nodes).and_call_original
         expect(filter).to receive(:with_update_nodes).and_call_original
-        expect(filter).to receive(:call) { filter.instance_variable_set('@new_nodes', new_nodes) }
+        expect(filter).to receive(:call) { filter.instance_variable_set(:@new_nodes, new_nodes) }
         expect(filter).to receive(:update_nodes!).and_call_original
       end
 

@@ -1,8 +1,6 @@
 - title: "Outdated indices of Advanced Search migrations"
   announcement_milestone: "14.10"
-  announcement_date: "2021-04-22"
   removal_milestone: "15.0"
-  removal_date: "2022-05-22"
   breaking_change: true
   body: |
     As Advanced Search migrations usually require support multiple code paths for a long period of time, it’s important to clean those up when we safely can. We use GitLab major version upgrades as a safe time to remove backward compatibility for indices that have not been fully migrated. See the [upgrade documentation](https://docs.gitlab.com/ee/update/index.html#upgrading-to-a-new-major-version) for details.

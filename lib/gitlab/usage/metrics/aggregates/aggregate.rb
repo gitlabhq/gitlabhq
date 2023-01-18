@@ -7,6 +7,11 @@ module Gitlab
         class Aggregate
           include Gitlab::Usage::TimeFrame
 
+          # TODO: define this missing event https://gitlab.com/gitlab-org/gitlab/-/issues/385080
+          EVENTS_NOT_DEFINED_YET = %w[
+            i_code_review_merge_request_widget_license_compliance_warning
+          ].freeze
+
           def initialize(recorded_at)
             @recorded_at = recorded_at
           end
@@ -14,11 +19,12 @@ module Gitlab
           def calculate_count_for_aggregation(aggregation:, time_frame:)
             with_validate_configuration(aggregation, time_frame) do
               source = SOURCES[aggregation[:source]]
+              events = select_defined_events(aggregation[:events], aggregation[:source])
 
               if aggregation[:operator] == UNION_OF_AGGREGATED_METRICS
-                source.calculate_metrics_union(**time_constraints(time_frame).merge(metric_names: aggregation[:events], recorded_at: recorded_at))
+                source.calculate_metrics_union(**time_constraints(time_frame).merge(metric_names: events, recorded_at: recorded_at))
               else
-                source.calculate_metrics_intersections(**time_constraints(time_frame).merge(metric_names: aggregation[:events], recorded_at: recorded_at))
+                source.calculate_metrics_intersections(**time_constraints(time_frame).merge(metric_names: events, recorded_at: recorded_at))
               end
             end
           rescue Gitlab::UsageDataCounters::HLLRedisCounter::EventError, AggregatedMetricError => error
@@ -69,6 +75,16 @@ module Gitlab
               weekly_time_range
             when Gitlab::Usage::TimeFrame::ALL_TIME_TIME_FRAME_NAME
               { start_date: nil, end_date: nil }
+            end
+          end
+
+          def select_defined_events(events, source)
+            # Database source metrics get validated inside the PostgresHll class:
+            # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage/metrics/aggregates/sources/postgres_hll.rb#L16
+            return events if source != ::Gitlab::Usage::Metrics::Aggregates::REDIS_SOURCE
+
+            events.select do |event|
+              ::Gitlab::UsageDataCounters::HLLRedisCounter.known_event?(event) || EVENTS_NOT_DEFINED_YET.include?(event)
             end
           end
         end

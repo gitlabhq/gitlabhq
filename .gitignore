@@ -42,6 +42,7 @@ eslint-report.html
 /config/initializers/relative_url.rb
 /config/resque.yml
 /config/redis.*.yml
+/config/redis.yml
 /config/unicorn.rb
 /config/puma.rb
 /config/secrets.yml
@@ -73,6 +74,7 @@ eslint-report.html
 /.gitlab_workhorse_secret
 /.gitlab_pages_secret
 /.gitlab_kas_secret
+/.gitlab_suggested_reviewers_secret
 /webpack-report/
 /crystalball/
 /test_results/

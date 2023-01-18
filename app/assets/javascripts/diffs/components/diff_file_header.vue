@@ -427,6 +427,7 @@ export default {
               :href="diffFile.ide_edit_path"
               class="js-ide-edit-blob"
               data-qa-selector="edit_in_ide_button"
+              target="_blank"
             >
               {{ __('Open in Web IDE') }}
             </gl-dropdown-item>

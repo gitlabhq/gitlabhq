@@ -37,7 +37,7 @@ module Ci
     private
 
     def search!
-      if @project && Feature.enabled?(:on_demand_scans_runner_tags, @project)
+      if @project
         project_runners
       elsif @group
         group_runners

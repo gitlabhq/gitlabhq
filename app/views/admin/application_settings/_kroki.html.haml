@@ -32,4 +32,4 @@
         - kroki_available_formats.each do |format|
           = f.gitlab_ui_checkbox_component format[:name], format[:label]
 
-      = f.submit _('Save changes'), class: "btn gl-button btn-confirm"
+      = f.submit _('Save changes'), pajamas_button: true

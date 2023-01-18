@@ -4,6 +4,7 @@ import { mapActions, mapState } from 'vuex';
 import csrf from '~/lib/utils/csrf';
 import { s__, __ } from '~/locale';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
+import { MEMBER_MODEL_TYPE_GROUP_MEMBER } from '../../constants';
 
 export default {
   actionCancel: {
@@ -27,8 +28,13 @@ export default {
       memberPath(state) {
         return state[this.namespace].removeMemberModalData.memberPath;
       },
-      memberType(state) {
-        return state[this.namespace].removeMemberModalData.memberType;
+      /**
+       * `GroupMember` (`app/models/members/group_member.rb`)
+       * or
+       * `ProjectMember` (`app/models/members/project_member.rb`).
+       */
+      memberModelType(state) {
+        return state[this.namespace].removeMemberModalData.memberModelType;
       },
       message(state) {
         return state[this.namespace].removeMemberModalData.message;
@@ -36,12 +42,15 @@ export default {
       userDeletionObstacles(state) {
         return state[this.namespace].removeMemberModalData.userDeletionObstacles ?? {};
       },
+      preventRemoval(state) {
+        return state[this.namespace].removeMemberModalData.preventRemoval;
+      },
       removeMemberModalVisible(state) {
         return state[this.namespace].removeMemberModalVisible;
       },
     }),
     isGroupMember() {
-      return this.memberType === 'GroupMember';
+      return this.memberModelType === MEMBER_MODEL_TYPE_GROUP_MEMBER;
     },
     actionText() {
       if (this.isAccessRequest) {
@@ -53,6 +62,10 @@ export default {
       return __('Remove member');
     },
     actionPrimary() {
+      if (this.preventRemoval) {
+        return null;
+      }
+
       return {
         text: this.actionText,
         attributes: {
@@ -95,21 +108,22 @@ export default {
   >
     <form ref="form" :action="memberPath" method="post">
       <p>{{ message }}</p>
+      <template v-if="!preventRemoval">
+        <user-deletion-obstacles-list
+          v-if="hasObstaclesToUserDeletion"
+          :obstacles="userDeletionObstacles.obstacles"
+          :user-name="userDeletionObstacles.name"
+        />
 
-      <user-deletion-obstacles-list
-        v-if="hasObstaclesToUserDeletion"
-        :obstacles="userDeletionObstacles.obstacles"
-        :user-name="userDeletionObstacles.name"
-      />
-
-      <input ref="method" type="hidden" name="_method" value="delete" />
-      <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-      <gl-form-checkbox v-if="isGroupMember" name="remove_sub_memberships">
-        {{ __('Also remove direct user membership from subgroups and projects') }}
-      </gl-form-checkbox>
-      <gl-form-checkbox v-if="hasWorkspaceAccess" name="unassign_issuables">
-        {{ __('Also unassign this user from related issues and merge requests') }}
-      </gl-form-checkbox>
+        <input ref="method" type="hidden" name="_method" value="delete" />
+        <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
+        <gl-form-checkbox v-if="isGroupMember" name="remove_sub_memberships">
+          {{ __('Also remove direct user membership from subgroups and projects') }}
+        </gl-form-checkbox>
+        <gl-form-checkbox v-if="hasWorkspaceAccess" name="unassign_issuables">
+          {{ __('Also unassign this user from related issues and merge requests') }}
+        </gl-form-checkbox>
+      </template>
     </form>
   </gl-modal>
 </template>

@@ -3,7 +3,7 @@ table_name: snippet_user_mentions
 classes:
 - SnippetUserMention
 feature_categories:
-- snippets
+- source_code_management
 description: For storing mentioned users, groups, projects referenced in a snippet description.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19009
 milestone: '12.6'

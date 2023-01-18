@@ -33,10 +33,10 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Product::Parallel do
       it_behaves_like 'invalid config', /must be greater than or equal to 2/
     end
 
-    context 'when it is bigger than 50' do
-      let(:config) { 51 }
+    context 'when it is bigger than 200' do
+      let(:config) { 201 }
 
-      it_behaves_like 'invalid config', /must be less than or equal to 50/
+      it_behaves_like 'invalid config', /must be less than or equal to 200/
     end
 
     context 'when it is not an integer' do

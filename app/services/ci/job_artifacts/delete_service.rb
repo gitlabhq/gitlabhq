@@ -26,8 +26,7 @@ module Ci
         if result.fetch(:status) == :success
           ServiceResponse.success(payload:
           {
-            destroyed_artifacts_count: result.fetch(:destroyed_artifacts_count),
-            statistics_updates: result.fetch(:statistics_updates)
+            destroyed_artifacts_count: result.fetch(:destroyed_artifacts_count)
           })
         else
           ServiceResponse.error(message: result.fetch(:message))

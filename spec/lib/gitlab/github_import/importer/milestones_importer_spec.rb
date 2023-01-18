@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis_cache,
-                                                                   feature_category: :importer do
+                                                                   feature_category: :importers do
   let(:project) { create(:project, import_source: 'foo/bar') }
   let(:client) { double(:client) }
   let(:importer) { described_class.new(project, client) }

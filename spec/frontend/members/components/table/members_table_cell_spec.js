@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import MembersTableCell from '~/members/components/table/members_table_cell.vue';
 import { MEMBER_TYPES } from '~/members/constants';
+import { canRemoveBlockedByLastOwner } from '~/members/utils';
 import {
   member as memberMock,
   directMember,
@@ -11,6 +12,11 @@ import {
   invite,
   accessRequest,
 } from '../../mock_data';
+
+jest.mock('~/members/utils', () => ({
+  ...jest.requireActual('~/members/utils'),
+  canRemoveBlockedByLastOwner: jest.fn().mockImplementation(() => true),
+}));
 
 describe('MembersTableCell', () => {
   const WrappedComponent = {
@@ -55,6 +61,7 @@ describe('MembersTableCell', () => {
       provide: {
         sourceId: 1,
         currentUserId: 1,
+        canManageMembers: true,
       },
       scopedSlots: {
         default: `
@@ -176,6 +183,15 @@ describe('MembersTableCell', () => {
 
           expect(findWrappedComponent().props('permissions').canRemove).toBe(false);
         });
+      });
+    });
+
+    describe('canRemoveBlockedByLastOwner', () => {
+      it('calls util and returns value', () => {
+        createComponentWithDirectMember();
+
+        expect(canRemoveBlockedByLastOwner).toHaveBeenCalledWith(directMember, true);
+        expect(findWrappedComponent().props('permissions').canRemoveBlockedByLastOwner).toBe(true);
       });
     });
 

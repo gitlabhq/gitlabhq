@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import getGroupTransferLocationsResponse from 'test_fixtures/api/groups/transfer_locations.json';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { updateGroup, getGroupTransferLocations } from '~/api/groups_api';
@@ -35,7 +35,7 @@ describe('GroupsApi', () => {
 
     beforeEach(() => {
       mock.onPut(expectedUrl).reply(({ data }) => {
-        return [httpStatus.OK, { id: mockGroupId, ...JSON.parse(data) }];
+        return [HTTP_STATUS_OK, { id: mockGroupId, ...JSON.parse(data) }];
       });
     });
 

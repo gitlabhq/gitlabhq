@@ -59,8 +59,6 @@ Style/BarePercentLiterals:
     - 'spec/features/projects/badges/pipeline_badge_spec.rb'
     - 'spec/features/projects/issuable_templates_spec.rb'
     - 'spec/features/projects/jobs_spec.rb'
-    - 'spec/features/projects/pipelines/legacy_pipeline_spec.rb'
-    - 'spec/features/projects/pipelines/legacy_pipelines_spec.rb'
     - 'spec/features/projects/pipelines/pipeline_spec.rb'
     - 'spec/features/projects/pipelines/pipelines_spec.rb'
     - 'spec/features/uploads/user_uploads_avatar_to_group_spec.rb'

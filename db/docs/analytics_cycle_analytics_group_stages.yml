@@ -1,7 +1,7 @@
 ---
 table_name: analytics_cycle_analytics_group_stages
 classes:
-- Analytics::CycleAnalytics::GroupStage
+- Analytics::CycleAnalytics::Stage
 feature_categories:
 - value_stream_management
 description: TODO

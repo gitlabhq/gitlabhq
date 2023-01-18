@@ -91,21 +91,17 @@ You can pick a theme from your [profile preferences](../../profile/preferences.m
 |-------------------------------------------------------------|-----------------------------------------|
 | ![Solarized Dark Theme](img/solarized_dark_theme_v13_1.png) | ![Dark Theme](img/dark_theme_v13_0.png) |
 
-## Highlight lines
+## Link to specific lines
 
-The Web IDE is built with the [Web Editor](../repository/web_editor.md). This enables the Web IDE to share the
-same core features for highlighting and linking to particular lines in the edited files
-[described for the Web Editor](../repository/web_editor.md#highlight-lines).
+The Web IDE and the [Web Editor](../repository/web_editor.md) share the
+same core features. To link to specific lines in the Web IDE, see
+[Web Editor](../repository/web_editor.md#link-to-specific-lines).
 
 ## Schema based validation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218472) validation based on predefined schemas in GitLab 13.2 [with a flag](../../../administration/feature_flags.md) named `schema_linting`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available for your entire instance, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `schema_linting`.
-This feature cannot be enabled or disabled per-project.
-On GitLab.com, this feature is available.
-You should not use this feature for production environments.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218472) validation based on predefined schemas in GitLab 13.2 [with a flag](../../../administration/feature_flags.md) named `schema_linting`.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104399) in GitLab 15.7.
+> - On self-managed GitLab [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107488) in GitLab 15.8.
 
 The Web IDE provides validation support for certain JSON and YAML files using schemas
 based on the [JSON Schema Store](https://www.schemastore.org/json/).
@@ -446,13 +442,12 @@ when:
 - You select any area outside the file editor after editing a file.
 - A file or folder is created, deleted, or renamed.
 
-### Limitations
+### Known issues
 
 The Web IDE has a few limitations:
 
 - Interactive Terminals is in a beta phase and continues to be improved in upcoming releases. In the meantime, the user is limited to having only one
   active terminal at a time.
-
 - LFS files can be rendered and displayed but they cannot be updated and committed using the Web IDE. If an LFS file is modified and pushed to the repository, the LFS pointer in the repository is overwritten with the modified LFS file content.
 
 ### Troubleshooting
@@ -463,3 +458,7 @@ The Web IDE has a few limitations:
 - If the terminal displays **Connection Failure**, then the terminal could not
   connect to the runner. Try to stop and restart the terminal. If the
   problem persists, double check your runner configuration.
+
+## Related topics
+
+- [Web IDE Beta](../web_ide_beta/index.md)

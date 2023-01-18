@@ -46,13 +46,9 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
       it_behaves_like 'does not render registration features prompt', :application_setting_disabled_repository_size_limit
     end
 
-    context 'with no license and service ping disabled' do
+    context 'with no license and service ping disabled', :without_license do
       before do
         stub_application_setting(usage_ping_enabled: false)
-
-        if Gitlab.ee?
-          allow(License).to receive(:current).and_return(nil)
-        end
       end
 
       it_behaves_like 'renders registration features prompt', :application_setting_disabled_repository_size_limit

@@ -1,14 +1,5 @@
 <script>
-import {
-  GlButton,
-  GlButtonGroup,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownText,
-  GlDropdownSectionHeader,
-  GlSearchBoxByType,
-  GlTruncate,
-} from '@gitlab/ui';
+import { GlButton, GlButtonGroup, GlCollapsibleListbox } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { s__ } from '~/locale';
@@ -20,12 +11,7 @@ export default {
   components: {
     GlButton,
     GlButtonGroup,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownText,
-    GlDropdownSectionHeader,
-    GlSearchBoxByType,
-    GlTruncate,
+    GlCollapsibleListbox,
   },
   apollo: {
     project: {
@@ -61,24 +47,25 @@ export default {
     };
   },
   computed: {
+    loading() {
+      return this.$apollo.queries.project.loading;
+    },
     rootUrl() {
       return `${gon.gitlab_url}/`;
     },
     namespaces() {
       return this.project.forkTargets?.nodes || [];
     },
-    hasMatches() {
-      return this.namespaces.length;
-    },
     dropdownText() {
       return this.selectedNamespace?.fullPath || s__('ForkProject|Select a namespace');
     },
+    namespaceItems() {
+      return this.namespaces?.map(({ id, fullPath }) => ({ value: id, text: fullPath }));
+    },
   },
   methods: {
-    handleDropdownShown() {
-      this.$refs.search.focusInput();
-    },
-    setNamespace(namespace) {
+    setNamespace(namespaceId) {
+      const namespace = this.namespaces.find(({ id }) => id === namespaceId);
       const id = getIdFromGraphQLId(namespace.id);
 
       this.$emit('select', {
@@ -89,6 +76,9 @@ export default {
 
       this.selectedNamespace = { id, fullPath: namespace.fullPath };
     },
+    searchNamespaces(search) {
+      this.search = search;
+    },
   },
 };
 </script>
@@ -98,39 +88,19 @@ export default {
     <gl-button class="gl-text-truncate gl-flex-grow-0! gl-max-w-34" label :title="rootUrl">{{
       rootUrl
     }}</gl-button>
-
-    <gl-dropdown
+    <gl-collapsible-listbox
       class="gl-flex-grow-1"
-      toggle-class="gl-rounded-top-right-base! gl-rounded-bottom-right-base! gl-w-20"
       data-qa-selector="select_namespace_dropdown"
       data-testid="select_namespace_dropdown"
-      no-flip
-      @shown="handleDropdownShown"
-    >
-      <template #button-text>
-        <gl-truncate :text="dropdownText" position="start" with-tooltip />
-      </template>
-      <gl-search-box-by-type
-        ref="search"
-        v-model.trim="search"
-        :is-loading="$apollo.queries.project.loading"
-        data-qa-selector="select_namespace_dropdown_search_field"
-        data-testid="select_namespace_dropdown_search_field"
-      />
-      <template v-if="!$apollo.queries.project.loading">
-        <template v-if="hasMatches">
-          <gl-dropdown-section-header>{{ __('Namespaces') }}</gl-dropdown-section-header>
-          <gl-dropdown-item
-            v-for="namespace of namespaces"
-            :key="namespace.id"
-            data-qa-selector="select_namespace_dropdown_item"
-            @click="setNamespace(namespace)"
-          >
-            {{ namespace.fullPath }}
-          </gl-dropdown-item>
-        </template>
-        <gl-dropdown-text v-else>{{ __('No matches found') }}</gl-dropdown-text>
-      </template>
-    </gl-dropdown>
+      :items="namespaceItems"
+      :header-text="__('Namespaces')"
+      :no-results-text="__('No matches found')"
+      :searchable="true"
+      :searching="loading"
+      toggle-class="gl-flex-direction-column gl-align-items-stretch!"
+      :toggle-text="dropdownText"
+      @search="searchNamespaces"
+      @select="setNamespace"
+    />
   </gl-button-group>
 </template>

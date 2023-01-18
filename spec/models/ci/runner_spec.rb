@@ -11,6 +11,13 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     let(:factory_name) { :ci_runner }
   end
 
+  context 'loose foreign key on ci_runners.creator_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:user) }
+      let!(:model) { create(:ci_runner, creator: parent) }
+    end
+  end
+
   describe 'groups association' do
     # Due to other associations such as projects this whole spec is allowed to
     # generate cross-database queries. So we have this temporary spec to
@@ -530,7 +537,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     end
   end
 
-  describe '.stale' do
+  describe '.stale', :freeze_time do
     subject { described_class.stale }
 
     let!(:runner1) { create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: 3.months.ago + 10.seconds) }
@@ -1089,6 +1096,23 @@ RSpec.describe Ci::Runner, feature_category: :runner do
         heartbeat
 
         expect(runner.runner_version).to be_nil
+      end
+
+      context 'with only ip_address specified', :freeze_time do
+        subject(:heartbeat) do
+          runner.heartbeat(ip_address: '1.1.1.1')
+        end
+
+        it 'updates only ip_address' do
+          attrs = Gitlab::Json.dump(ip_address: '1.1.1.1', contacted_at: Time.current)
+
+          Gitlab::Redis::Cache.with do |redis|
+            redis_key = runner.send(:cache_attribute_key)
+            expect(redis).to receive(:set).with(redis_key, attrs, any_args)
+          end
+
+          heartbeat
+        end
       end
     end
 

@@ -4,6 +4,8 @@ module Gitlab
   module BackgroundMigration
     # Back-fill container_registry_size for project_statistics
     class BackfillProjectStatisticsContainerRepositorySize < Gitlab::BackgroundMigration::BatchedMigrationJob
+      feature_category :database
+
       def perform
         # no-op
       end

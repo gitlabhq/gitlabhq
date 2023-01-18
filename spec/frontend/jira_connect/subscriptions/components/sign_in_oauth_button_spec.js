@@ -4,6 +4,7 @@ import { nextTick } from 'vue';
 
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 import {
+  GITLAB_COM_BASE_PATH,
   I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
   OAUTH_WINDOW_OPTIONS,
 } from '~/jira_connect/subscriptions/constants';
@@ -36,6 +37,9 @@ describe('SignInOauthButton', () => {
     },
     state: 'good-state',
   };
+  const defaultProps = {
+    gitlabBasePath: GITLAB_COM_BASE_PATH,
+  };
 
   const createComponent = ({ slots, props } = {}) => {
     store = createStore();
@@ -48,7 +52,7 @@ describe('SignInOauthButton', () => {
       provide: {
         oauthMetadata: mockOauthMetadata,
       },
-      propsData: props,
+      propsData: { ...defaultProps, ...props },
     });
   };
 
@@ -57,16 +61,17 @@ describe('SignInOauthButton', () => {
   });
 
   const findButton = () => wrapper.findComponent(GlButton);
+  describe('when `gitlabBasePath` is GitLab.com', () => {
+    it('displays a button', () => {
+      createComponent();
 
-  it('displays a button', () => {
-    createComponent();
-
-    expect(findButton().exists()).toBe(true);
-    expect(findButton().text()).toBe(I18N_DEFAULT_SIGN_IN_BUTTON_TEXT);
-    expect(findButton().props('category')).toBe('primary');
+      expect(findButton().exists()).toBe(true);
+      expect(findButton().text()).toBe(I18N_DEFAULT_SIGN_IN_BUTTON_TEXT);
+      expect(findButton().props('category')).toBe('primary');
+    });
   });
 
-  describe('when `gitlabBasePath` is passed', () => {
+  describe('when `gitlabBasePath` is self-managed', () => {
     const mockBasePath = 'https://gitlab.mycompany.com';
 
     it('uses custom text for button', () => {

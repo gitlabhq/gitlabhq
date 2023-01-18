@@ -4,7 +4,8 @@ RSpec.shared_examples 'edits content using the content editor' do
   let(:content_editor_testid) { '[data-testid="content-editor"] [contenteditable].ProseMirror' }
 
   def switch_to_content_editor
-    find('[data-testid="toggle-editing-mode-button"] label', text: 'Rich text').click
+    click_button _('View rich text')
+    click_button _('Rich text')
   end
 
   def type_in_content_editor(keys)

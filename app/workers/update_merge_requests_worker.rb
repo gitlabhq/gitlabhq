@@ -7,7 +7,7 @@ class UpdateMergeRequestsWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: 3
 
-  feature_category :code_review
+  feature_category :code_review_workflow
   urgency :high
   worker_resource_boundary :cpu
   weight 3

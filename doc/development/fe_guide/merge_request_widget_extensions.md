@@ -4,7 +4,7 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request widget extensions **(FREE)**
+# Merge request widget extensions
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44616) in GitLab 13.6.
 
@@ -40,7 +40,7 @@ export default {
     summary(data) {},     // Required: Level 1 summary text
     statusIcon(data) {},  // Required: Level 1 status icon
     tertiaryButtons() {}, // Optional: Level 1 action buttons
-    shouldCollapse() {}, // Optional: Add logic to determine if the widget can expand or not
+    shouldCollapse(data) {}, // Optional: Add logic to determine if the widget can expand or not
   },
   methods: {
     fetchCollapsedData(props) {}, // Required: Fetches data required for collapsed state

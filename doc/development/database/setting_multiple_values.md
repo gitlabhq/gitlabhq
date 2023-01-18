@@ -32,7 +32,7 @@ update issues
   where id = obj_id
 ```
 
-You can't express this in ActiveRecord, or by dropping down to [Arel](https://api.rubyonrails.org/v6.1.0/classes/Arel.html),
+You can't express this in ActiveRecord, or by dropping down to [Arel](https://api.rubyonrails.org/classes/Arel.html),
 because the `UpdateManager` does not support `update from`. However, we supply
 an abstraction to help you generate these kinds of updates: `Gitlab::Database::BulkUpdate`.
 This abstraction constructs queries like the previous example, and uses

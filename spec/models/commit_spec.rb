@@ -847,20 +847,6 @@ eos
       expect(unsigned_commit.has_signature?).to be_falsey
       expect(commit.has_signature?).to be_falsey
     end
-
-    context 'when feature flag "ssh_commit_signatures" is disabled' do
-      before do
-        stub_feature_flags(ssh_commit_signatures: false)
-      end
-
-      it 'reports no signature' do
-        expect(ssh_signed_commit).not_to have_signature
-      end
-
-      it 'does not return signature data' do
-        expect(ssh_signed_commit.signature).to be_nil
-      end
-    end
   end
 
   describe '#has_been_reverted?' do

@@ -44,12 +44,19 @@ module Gitlab
           jobs.each do |j|
             break if run_until <= Time.current
 
+            meta = migration_meta(j)
+
             instrumentation.observe(version: nil,
                                     name: batch_names.next,
-                                    connection: connection) do
+                                    connection: connection,
+                                    meta: meta) do
               run_job(j)
             end
           end
+        end
+
+        def migration_meta(_job)
+          {}
         end
       end
     end

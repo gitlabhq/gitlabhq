@@ -24,7 +24,11 @@ import {
 import eventHub from '~/invite_members/event_hub';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus, { HTTP_STATUS_CREATED } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_BAD_REQUEST,
+  HTTP_STATUS_CREATED,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+} from '~/lib/utils/http_status';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import {
   displaySuccessfulInvitationAlert,
@@ -361,7 +365,7 @@ describe('InviteMembersModal', () => {
 
   describe('rendering the user limit notification', () => {
     it('shows the user limit notification alert when reached limit', () => {
-      const usersLimitDataset = { reachedLimit: true };
+      const usersLimitDataset = { alertVariant: 'reached' };
 
       createInviteMembersToProjectWrapper(usersLimitDataset);
 
@@ -369,7 +373,15 @@ describe('InviteMembersModal', () => {
     });
 
     it('shows the user limit notification alert when close to dashboard limit', () => {
-      const usersLimitDataset = { closeToDashboardLimit: true };
+      const usersLimitDataset = { alertVariant: 'close' };
+
+      createInviteMembersToProjectWrapper(usersLimitDataset);
+
+      expect(findUserLimitAlert().exists()).toBe(true);
+    });
+
+    it('shows the user limit notification alert when :preview_free_user_cap is enabled', () => {
+      const usersLimitDataset = { alertVariant: 'notification' };
 
       createInviteMembersToProjectWrapper(usersLimitDataset);
 
@@ -549,7 +561,7 @@ describe('InviteMembersModal', () => {
 
         it('displays the generic error for http server error', async () => {
           mockInvitationsApi(
-            httpStatus.INTERNAL_SERVER_ERROR,
+            HTTP_STATUS_INTERNAL_SERVER_ERROR,
             'Request failed with status code 500',
           );
 
@@ -648,7 +660,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays the api error for invalid email syntax', async () => {
-          mockInvitationsApi(httpStatus.BAD_REQUEST, invitationsApiResponse.EMAIL_INVALID);
+          mockInvitationsApi(HTTP_STATUS_BAD_REQUEST, invitationsApiResponse.EMAIL_INVALID);
 
           clickInviteButton();
 
@@ -660,7 +672,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('clears the error when the modal is hidden', async () => {
-          mockInvitationsApi(httpStatus.BAD_REQUEST, invitationsApiResponse.EMAIL_INVALID);
+          mockInvitationsApi(HTTP_STATUS_BAD_REQUEST, invitationsApiResponse.EMAIL_INVALID);
 
           clickInviteButton();
 
@@ -715,7 +727,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays the invalid syntax error for bad request', async () => {
-          mockInvitationsApi(httpStatus.BAD_REQUEST, invitationsApiResponse.ERROR_EMAIL_INVALID);
+          mockInvitationsApi(HTTP_STATUS_BAD_REQUEST, invitationsApiResponse.ERROR_EMAIL_INVALID);
 
           clickInviteButton();
 
@@ -739,7 +751,7 @@ describe('InviteMembersModal', () => {
           createInviteMembersToGroupWrapper();
 
           await triggerMembersTokenSelect([user3, user4]);
-          mockInvitationsApi(httpStatus.BAD_REQUEST, invitationsApiResponse.ERROR_EMAIL_INVALID);
+          mockInvitationsApi(HTTP_STATUS_BAD_REQUEST, invitationsApiResponse.ERROR_EMAIL_INVALID);
 
           clickInviteButton();
 

@@ -7,6 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import your project from GitHub to GitLab **(FREE)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+
 You can import your GitHub repositories:
 
 - From either GitHub.com or GitHub Enterprise.
@@ -21,6 +23,9 @@ different namespaces.
 If you are importing to a self-managed GitLab instance, you can use the
 [GitHub Rake task](../../../administration/raketasks/github_import.md) instead. This allows you to import projects
 without the constraints of a [Sidekiq](../../../development/sidekiq/index.md) worker.
+
+NOTE:
+If you are importing a project using the GitHub Rake task, GitLab still creates namespaces or groups that don't exist.
 
 If you are importing from GitHub Enterprise to a self-managed GitLab instance:
 
@@ -40,9 +45,7 @@ When importing projects:
 - If a user referenced in the project is not found in the GitLab database, the project creator is set as the author and
   assignee. The project creator is usually the user that initiated the import process. A note on the issue mentioning the
   original GitHub author is added.
-- The importer creates any new namespaces (or groups) if they do not exist, or, if the namespace is taken, the
-  repository is imported under the namespace of the user who initiated the import process. The namespace or repository
-  name can also be edited, with the proper permissions.
+- You can change the target namespace and target repository name before you import.
 - The importer also imports branches on forks of projects related to open pull requests. These branches are
   imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`. This may lead to
   a discrepancy in branches compared to those of the GitHub repository.
@@ -53,6 +56,9 @@ developer documentation.
 For an overview of the import process, see the video [Migrating from GitHub to GitLab](https://youtu.be/VYOXuOg9tQI).
 
 ## Prerequisites
+
+At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
 
 When issues and pull requests are being imported, the importer attempts to find
 their GitHub authors and assignees in the database of the GitLab instance. Pull requests are called _merge requests_ in
@@ -67,6 +73,8 @@ confirmed.
 GitLab content imports that use GitHub accounts require that the GitHub public-facing email address is populated. This means
 all comments and contributions are properly mapped to the same user in GitLab. GitHub Enterprise does not require this
 field to be populated so you may have to add it on existing accounts.
+
+See also [Branch protection rules and project settings](#branch-protection-rules-and-project-settings) for additional prerequisites for those imports.
 
 ## Import your GitHub repository into GitLab
 
@@ -242,11 +250,15 @@ When they are imported, supported GitHub branch protection rules are mapped to e
 
 | GitHub rule                                                                         | GitLab rule                                                                                                                                                 | Introduced in                                                       |
 | :---------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------ |
-| **Require conversation resolution before merging** for the project's default branch | **All threads must be resolved** [project setting](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved)                                | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
-| **Require a pull request before merging**                                           | **No one** option in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch)                    | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
-| **Require signed commits** for the project's default branch                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences) **(PREMIUM)**                                   | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
-| **Allow force pushes - Everyone**                                                   | **Allowed to force push** [branch protection setting](../protected_branches.md#allow-force-push-on-a-protected-branch)                                      | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
-| **Require a pull request before merging - Require review from Code Owners**         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) **(PREMIUM)** | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
+| **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved)                                | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
+| **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch)                    | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
+| **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences) **(PREMIUM)**                                   | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
+| **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../protected_branches.md#allow-force-push-on-a-protected-branch)                                      | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
+| **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) **(PREMIUM)** | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
+| **Require a pull request before merging - Allow specified actors to bypass required pull requests** (1) | List of users in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch) **(PREMIUM)**. Without a Premium license, the list of users that are allowed to push is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
+
+1. To successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** rule, you must add to the parent group in GitLab
+   the users that are allowed to bypass required pull requests before you begin importing.
 
 Mapping GitHub rule **Require status checks to pass before merging** to
 [external status checks](../merge_requests/status_checks.md) was considered in issue

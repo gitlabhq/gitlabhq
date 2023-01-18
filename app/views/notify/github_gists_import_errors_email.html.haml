@@ -1,0 +1,19 @@
+- text_style = 'font-size:16px; text-align:center;  line-height:30px;'
+
+%p{ style: text_style }
+  = s_('GithubImporter|Your import of GitHub gists into GitLab snippets is complete.')
+
+%p
+  = s_('GithubImporter|GitHub gists that were not imported:')
+
+  %ol
+  - @errors.each do |gist_id, error|
+    %li
+      = s_("GithubImporter|Gist with id %{gist_id} failed due to error: %{error}.") % { gist_id: gist_id, error: error }
+      - if error == Gitlab::GithubGistsImport::Importer::GistImporter::FILE_COUNT_LIMIT_MESSAGE
+        - import_snippets_url = help_page_url('api/import.md', anchor: 'import-github-gists-into-gitlab-snippets')
+        - import_snippets_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: import_snippets_url }
+        = html_escape(s_("GithubImporter|Please follow %{import_snippets_link_start}Import GitHub gists into GitLab snippets%{import_snippets_link_end} for more details.")) % { import_snippets_link_start: import_snippets_link_start, import_snippets_link_end: '</a>'.html_safe }
+
+%p
+  = s_('GithubImporter|GitHub gists with more than 10 files must be manually migrated.')

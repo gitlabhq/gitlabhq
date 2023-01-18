@@ -113,7 +113,6 @@ RSpec/InstanceVariable:
     - 'spec/lib/gitlab/git/diff_spec.rb'
     - 'spec/lib/gitlab/git/repository_spec.rb'
     - 'spec/lib/gitlab/http_spec.rb'
-    - 'spec/lib/gitlab/import_export/group/legacy_tree_restorer_spec.rb'
     - 'spec/lib/gitlab/import_export/group/tree_restorer_spec.rb'
     - 'spec/lib/gitlab/import_export/project/tree_restorer_spec.rb'
     - 'spec/lib/gitlab/patch/prependable_spec.rb'

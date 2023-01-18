@@ -125,7 +125,7 @@ Replace:
 
 If you trigger a pipeline by using a webhook, you can access the webhook payload with
 the `TRIGGER_PAYLOAD` [predefined CI/CD variable](../variables/predefined_variables.md).
-The payload is exposed as a [file-type variable](../variables/index.md#cicd-variable-types),
+The payload is exposed as a [file-type variable](../variables/index.md#use-file-type-cicd-variables),
 so you can access the data with `cat $TRIGGER_PAYLOAD` or a similar command.
 
 ### Pass CI/CD variables in the API call

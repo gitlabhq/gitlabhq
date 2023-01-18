@@ -164,10 +164,11 @@
             = _('Rails')
             %span.float-right
               #{Rails::VERSION::STRING}
-          %p
-            = ApplicationRecord.database.human_adapter_name
-            %span.float-right
-              = ApplicationRecord.database.version
+          - database_versions.each do |database_name, database|
+            %p
+              #{database[:adapter_name]} (#{database_name})
+              %span.float-right
+                = database[:version]
           %p
             = _('Redis')
             %span.float-right

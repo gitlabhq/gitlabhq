@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, concepts, howto
 ---
 
-# CI/CD development documentation **(FREE)**
+# CI/CD development documentation
 
 Development guides that are specific to CI/CD are listed here:
 
@@ -198,5 +198,5 @@ Watch a walkthrough of this feature in details in the video below.
   See the video: <a href="https://www.youtube.com/watch?v=NmdWRGT8kZg">CI/CD minutes - architectural overview</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/NmdWRGT8kZg" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/NmdWRGT8kZg" frameborder="0" allowfullscreen> </iframe>
 </figure>

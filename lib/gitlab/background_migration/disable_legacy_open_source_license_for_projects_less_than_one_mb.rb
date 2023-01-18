@@ -6,6 +6,7 @@ module Gitlab
     class DisableLegacyOpenSourceLicenseForProjectsLessThanOneMb < ::Gitlab::BackgroundMigration::BatchedMigrationJob
       scope_to ->(relation) { relation.where(legacy_open_source_license_available: true) }
       operation_name :disable_legacy_open_source_license_for_projects_less_than_one_mb
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

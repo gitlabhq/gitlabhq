@@ -6,6 +6,24 @@ RSpec.describe API::Files, feature_category: :source_code_management do
   include RepoHelpers
 
   let_it_be(:group) { create(:group, :public) }
+  let(:helper) do
+    fake_class = Class.new do
+      include ::API::Helpers::HeadersHelpers
+
+      attr_reader :headers
+
+      def initialize
+        @headers = {}
+      end
+
+      def header(key, value)
+        @headers[key] = value
+      end
+    end
+
+    fake_class.new
+  end
+
   let_it_be_with_refind(:user) { create(:user) }
   let_it_be(:inherited_guest) { create(:user) }
   let_it_be(:inherited_reporter) { create(:user) }
@@ -37,25 +55,9 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     }
   end
 
-  let(:author_email) { 'user@example.org' }
-  let(:author_name) { 'John Doe' }
-
-  let(:helper) do
-    fake_class = Class.new do
-      include ::API::Helpers::HeadersHelpers
-
-      attr_reader :headers
-
-      def initialize
-        @headers = {}
-      end
-
-      def header(key, value)
-        @headers[key] = value
-      end
-    end
-
-    fake_class.new
+  shared_context 'with author parameters' do
+    let(:author_email) { 'user@example.org' }
+    let(:author_name) { 'John Doe' }
   end
 
   before_all do
@@ -702,6 +704,80 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     end
   end
 
+  describe 'HEAD /projects/:id/repository/files/:file_path/raw' do
+    let(:request) { head api(route(file_path) + '/raw', current_user), params: params }
+
+    describe 'response headers' do
+      subject { response.headers }
+
+      context 'and user is a developer' do
+        let(:current_user) { user }
+
+        it 'responds with blob data' do
+          request
+          headers = response.headers
+          expect(headers['X-Gitlab-File-Name']).to eq(file_name)
+          expect(headers['X-Gitlab-File-Path']).to eq('files/ruby/popen.rb')
+          expect(headers['X-Gitlab-Content-Sha256']).to eq('c440cd09bae50c4632cc58638ad33c6aa375b6109d811e76a9cc3a613c1e8887')
+          expect(headers['X-Gitlab-Ref']).to eq('master')
+          expect(headers['X-Gitlab-Blob-Id']).to eq('7e3e39ebb9b2bf433b4ad17313770fbe4051649c')
+          expect(headers['X-Gitlab-Commit-Id']).to eq(project.repository.commit.id)
+          expect(headers['X-Gitlab-Last-Commit-Id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
+        end
+
+        context 'when lfs parameter is true and the project has lfs enabled' do
+          before do
+            allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+            project.update_attribute(:lfs_enabled, true)
+          end
+
+          let(:request) { head api(route('files%2Flfs%2Flfs_object.iso') + '/raw', current_user), params: params.merge(lfs: true) }
+
+          context 'and the file has an lfs object' do
+            let_it_be(:lfs_object) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897') }
+
+            it 'responds with 404' do
+              request
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+
+            context 'and the project has access to the lfs object' do
+              before do
+                project.lfs_objects << lfs_object
+              end
+
+              context 'and lfs uses AWS' do
+                before do
+                  stub_lfs_object_storage(config: Gitlab.config.lfs.object_store.merge(connection: {
+                    provider: 'AWS',
+                    aws_access_key_id: '',
+                    aws_secret_access_key: ''
+                  }))
+                  lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
+                end
+
+                it 'redirects to the lfs object file with a signed url' do
+                  request
+
+                  expect(response).to have_gitlab_http_status(:found)
+                  expect(response.location).to include(lfs_object.reload.file.path)
+                  expect(response.location).to include('X-Amz-SignedHeaders')
+                end
+              end
+            end
+          end
+        end
+      end
+
+      context 'and user is a guest' do
+        it_behaves_like '403 response' do
+          let(:request) { head api(route(file_path), guest), params: params }
+        end
+      end
+    end
+  end
+
   describe 'GET /projects/:id/repository/files/:file_path/raw' do
     shared_examples_for 'repository raw files' do
       it 'returns 400 when file path is invalid' do
@@ -1006,6 +1082,8 @@ RSpec.describe API::Files, feature_category: :source_code_management do
           end
 
           context 'when specifying an author' do
+            include_context 'with author parameters'
+
             it 'creates a new file with the specified author' do
               params.merge!(author_email: author_email, author_name: author_name)
               post api(route('new_file_with_author%2Etxt'), user), params: params
@@ -1163,6 +1241,8 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     end
 
     context 'when specifying an author' do
+      include_context 'with author parameters'
+
       it 'updates a file with the specified author' do
         params.merge!(author_email: author_email, author_name: author_name, content: 'New content')
 
@@ -1236,6 +1316,8 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       end
 
       context 'when specifying an author' do
+        include_context 'with author parameters'
+
         before do
           params.merge!(author_email: author_email, author_name: author_name)
         end

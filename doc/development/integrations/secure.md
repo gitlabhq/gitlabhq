@@ -350,9 +350,9 @@ version is 14.0.6, the report is validated against version 14.0.6.
 GitLab uses the
 [`json_schemer`](https://www.rubydoc.info/gems/json_schemer) gem to perform validation.
 
-Ongoing improvements to report validation are tracked [in this epic](https://gitlab.com/groups/gitlab-org/-/epics/6968).
+Ongoing improvements to report validation are tracked [in this epic](https://gitlab.com/groups/gitlab-org/-/epics/8900).
 In the meantime, you can see which versions are supported in the
-[source code](https://gitlab.com/gitlab-org/gitlab/-/blob/08dd756429731a0cca1e27ca9d59eea226398a7d/lib/gitlab/ci/parsers/security/validators/schema_validator.rb#L9-27).
+[source code](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb#L9). Remember to pick the correct version for your instance, for example [`v15.7.3-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.3-ee/lib/gitlab/ci/parsers/security/validators/schema_validator.rb#L9).
 
 #### Validate locally
 

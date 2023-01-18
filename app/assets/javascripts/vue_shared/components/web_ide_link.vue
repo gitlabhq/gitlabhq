@@ -1,16 +1,13 @@
 <script>
 import { GlModal, GlSprintf, GlLink, GlPopover } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
+import { visitUrl } from '~/lib/utils/url_utility';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-
-export const KEY_EDIT = 'edit';
-export const KEY_WEB_IDE = 'webide';
-export const KEY_GITPOD = 'gitpod';
-export const KEY_PIPELINE_EDITOR = 'pipeline_editor';
+import { KEY_EDIT, KEY_WEB_IDE, KEY_GITPOD, KEY_PIPELINE_EDITOR } from './constants';
 
 export const i18n = {
   modal: {
@@ -221,7 +218,13 @@ export default {
               this.showModal('showForkModal');
             },
           }
-        : { href: this.webIdeUrl };
+        : {
+            href: this.webIdeUrl,
+            handle: (evt) => {
+              evt.preventDefault();
+              visitUrl(this.webIdeUrl, true);
+            },
+          };
 
       return {
         key: KEY_WEB_IDE,

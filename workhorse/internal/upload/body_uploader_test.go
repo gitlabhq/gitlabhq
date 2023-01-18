@@ -92,11 +92,7 @@ func echoProxy(t *testing.T, expectedBodyLength int) http.Handler {
 
 		require.Equal(t, "application/x-www-form-urlencoded", r.Header.Get("Content-Type"), "Wrong Content-Type header")
 
-		if destination.FIPSEnabled() {
-			require.NotContains(t, r.PostForm, "file.md5")
-		} else {
-			require.Contains(t, r.PostForm, "file.md5")
-		}
+		require.Contains(t, r.PostForm, "file.md5")
 		require.Contains(t, r.PostForm, "file.sha1")
 		require.Contains(t, r.PostForm, "file.sha256")
 		require.Contains(t, r.PostForm, "file.sha512")
@@ -123,11 +119,7 @@ func echoProxy(t *testing.T, expectedBodyLength int) http.Handler {
 		require.Contains(t, uploadFields, "remote_url")
 		require.Contains(t, uploadFields, "remote_id")
 		require.Contains(t, uploadFields, "size")
-		if destination.FIPSEnabled() {
-			require.NotContains(t, uploadFields, "md5")
-		} else {
-			require.Contains(t, uploadFields, "md5")
-		}
+		require.Contains(t, uploadFields, "md5")
 		require.Contains(t, uploadFields, "sha1")
 		require.Contains(t, uploadFields, "sha256")
 		require.Contains(t, uploadFields, "sha512")

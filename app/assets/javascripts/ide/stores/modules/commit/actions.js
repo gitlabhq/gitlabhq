@@ -183,7 +183,11 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
 
             dispatch(
               'redirectToUrl',
-              createNewMergeRequestUrl(currentProject.web_url, branchName, targetBranch),
+              createNewMergeRequestUrl(
+                currentProject.web_url,
+                encodeURIComponent(branchName),
+                encodeURIComponent(targetBranch),
+              ),
               { root: true },
             );
           }

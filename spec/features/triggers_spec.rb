@@ -23,7 +23,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
     wait_for_requests
   end
 
-  shared_examples 'triggers page' do
+  describe 'triggers page' do
     describe 'create trigger workflow' do
       it 'prevents adding new trigger with no description' do
         fill_in 'trigger_description', with: ''
@@ -138,17 +138,5 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
         end
       end
     end
-  end
-
-  context 'when ci_pipeline_triggers_settings_vue_ui is enabled' do
-    it_behaves_like 'triggers page'
-  end
-
-  context 'when ci_pipeline_triggers_settings_vue_ui is disabled' do
-    before do
-      stub_feature_flags(ci_pipeline_triggers_settings_vue_ui: false)
-    end
-
-    it_behaves_like 'triggers page'
   end
 end

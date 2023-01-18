@@ -24,7 +24,7 @@ module Clusters
             transition any - [:errored] => :errored
           end
 
-          before_transition any => [:errored, :created] do |provider|
+          before_transition any => [:errored, :created] do |provider, _|
             provider.nullify_credentials
           end
 

@@ -3,7 +3,7 @@
 QA_IMAGE_NAME="gitlab-ee-qa"
 QA_BUILD_TARGET="ee"
 
-if [[ "${CI_PROJECT_NAME}" == "gitlabhq" || "${CI_PROJECT_NAME}" == "gitlab-foss" ]]; then
+if [[ "${CI_PROJECT_NAME}" == "gitlabhq" || "${CI_PROJECT_NAME}" == "gitlab-foss" || "${FOSS_ONLY}" == "1" ]]; then
   QA_IMAGE_NAME="gitlab-ce-qa"
   QA_BUILD_TARGET="foss"
 fi
@@ -28,7 +28,7 @@ if [ "${QA_IMAGE_NAME}" == "gitlab-ee-qa" ]; then
   DESTINATIONS="${DESTINATIONS} --tag $QA_IMAGE_FOR_AUTO_DEPLOY"
 fi
 
-echo "Building QA image for destinations: ${DESTINATIONS}"
+echo "Building QA image for '${QA_BUILD_TARGET}' for destinations: ${DESTINATIONS}"
 
 docker buildx build \
   --cache-to=type=inline \

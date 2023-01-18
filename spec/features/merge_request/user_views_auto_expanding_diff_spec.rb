@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User views diffs file-by-file', :js, feature_category: :code_review do
+RSpec.describe 'User views diffs file-by-file', :js, feature_category: :code_review_workflow do
   let(:merge_request) do
     create(:merge_request, source_branch: 'squash-large-files', source_project: project, target_project: project)
   end

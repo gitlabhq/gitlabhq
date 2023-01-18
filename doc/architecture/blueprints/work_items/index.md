@@ -2,7 +2,7 @@
 status: accepted
 creation-date: "2022-09-28"
 authors: [ "@ntepluhina" ]
-coach: "@kamil"
+coach: "@ayufan"
 approvers: [ "@gweaver" ]
 owning-stage: "~devops::plan"
 participating-stages: []
@@ -66,6 +66,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | start and due date | |
 | status\* | |
 | weight | |
+| [notes](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) | work_items_mvc |
 
 \* status is not currently a widget, but a part of the root work item, similar to title
 

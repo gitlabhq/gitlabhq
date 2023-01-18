@@ -55,7 +55,9 @@ RSpec.describe Groups::GroupMembersHelper do
       expected = {
         source_id: shared_group.id,
         can_manage_members: true,
-        can_manage_access_requests: true
+        can_manage_access_requests: true,
+        group_name: shared_group.name,
+        group_path: shared_group.full_path
       }
 
       expect(subject).to include(expected)

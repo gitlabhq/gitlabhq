@@ -10,6 +10,7 @@ module Gitlab
       end
 
       operation_name :disable_legacy_open_source_license_for_projects_less_than_five_mb
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

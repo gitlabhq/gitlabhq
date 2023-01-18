@@ -15,6 +15,10 @@ describe('MlCandidate', () => {
         { name: 'AUC', value: '.55' },
         { name: 'Accuracy', value: '.99' },
       ],
+      metadata: [
+        { name: 'FileName', value: 'test.py' },
+        { name: 'ExecutionTime', value: '.0856' },
+      ],
       info: {
         iid: 'candidate_iid',
         artifact_link: 'path_to_artifact',

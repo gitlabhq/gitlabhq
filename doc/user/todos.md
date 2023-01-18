@@ -50,6 +50,8 @@ A to-do item is added to your To-Do List when:
   merge request is removed from a
   [merge train](../ci/pipelines/merge_trains.md),
   and you're the user that added it.
+- [In GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/374725) and later,
+  a member access request is raised for a group or project you're an owner of.
 
 When several actions occur for the same user on the same object,
 GitLab displays the first action as a single to-do item.

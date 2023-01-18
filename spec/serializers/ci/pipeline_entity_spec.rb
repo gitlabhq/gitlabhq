@@ -49,16 +49,6 @@ RSpec.describe Ci::PipelineEntity do
           .to include :stuck, :auto_devops, :yaml_errors,
                       :retryable, :cancelable, :merge_request
       end
-
-      context 'when pipeline_name feature flag is disabled' do
-        before do
-          stub_feature_flags(pipeline_name: false)
-        end
-
-        it 'does not return name' do
-          is_expected.not_to include(:name)
-        end
-      end
     end
 
     context 'when default branch not protected' do

@@ -19,7 +19,7 @@ module Issuable
       return Note.none unless can_read_issuable_notes?
 
       notes = NotesFinder.new(current_user, params.merge({ target: issuable, project: issuable.project }))
-                .execute.with_web_entity_associations.inc_relations_for_view.fresh
+                .execute.with_web_entity_associations.inc_relations_for_view(issuable).fresh
 
       if paginator
         paginated_discussions_by_type = paginator.records.group_by(&:table_name)
@@ -49,7 +49,6 @@ module Issuable
 
     def paginator
       return if params[:per_page].blank?
-      return if issuable.instance_of?(MergeRequest) && Feature.disabled?(:paginated_mr_discussions, issuable.project)
 
       strong_memoize(:paginator) do
         issuable

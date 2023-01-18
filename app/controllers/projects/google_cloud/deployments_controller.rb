@@ -75,6 +75,13 @@ The `deploy-to-cloud-run` job:
     * `GCP_PROJECT_ID`
     * `GCP_SERVICE_ACCOUNT_KEY`
 * Job definition can be found at: https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/library
+* Uses CI/CD variables to configure the deployment. You can override the default values by adding these variables:
+    * `GCP_CLOUD_RUN_MAX_INSTANCES`
+    * `GCP_CLOUD_RUN_MIN_INSTANCES`
+    * `GCP_CLOUD_RUN_CONCURRENCY`
+    * `GCP_CLOUD_RUN_CPU`
+    * `GCP_CLOUD_RUN_MEMORY`
+    * `GCP_CLOUD_RUN_TIMEOUT`
 
 This pipeline definition has been committed to the branch `#{branch_name}`.
 You may modify the pipeline definition further or accept the changes as-is if suitable.

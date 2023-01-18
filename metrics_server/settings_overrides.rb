@@ -7,7 +7,7 @@
 # to all necessary constants. For example, we need Rails.root to
 # determine the location of bin/metrics-server.
 # Here we make the necessary constants available conditionally.
-require_relative 'override_rails_constants' unless Object.const_defined?('Rails')
+require_relative 'override_rails_constants' unless Object.const_defined?(:Rails)
 
 # We need to supply this outside of Rails because:
 # RubySampler needs Gitlab::Metrics needs Gitlab::Metrics::Prometheus needs Gitlab::CurrentSettings needs ::Settings

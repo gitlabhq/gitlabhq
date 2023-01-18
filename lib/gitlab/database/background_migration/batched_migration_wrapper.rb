@@ -49,6 +49,8 @@ module Gitlab
         def execute_job(tracking_record)
           job_class = tracking_record.migration_job_class
 
+          ApplicationContext.push(feature_category: fetch_feature_category(job_class))
+
           if job_class < Gitlab::BackgroundMigration::BatchedMigrationJob
             execute_batched_migration_job(job_class, tracking_record)
           else
@@ -85,6 +87,14 @@ module Gitlab
             *tracking_record.migration_job_arguments)
 
           job_instance
+        end
+
+        def fetch_feature_category(job_class)
+          if job_class.respond_to?(:feature_category)
+            job_class.feature_category.to_s
+          else
+            Gitlab::BackgroundMigration::BatchedMigrationJob::DEFAULT_FEATURE_CATEGORY
+          end
         end
       end
     end

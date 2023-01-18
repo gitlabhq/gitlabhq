@@ -26,20 +26,16 @@ If you migrate from GitLab.com to self-managed GitLab, an administrator can crea
 > - Group items [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 for project resources [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
+> - New application setting `bulk_import_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8. `bulk_import` feature flag removed.
 
 FLAG:
-On self-managed GitLab, by default [migrating group items](#migrated-group-items) is available. To hide the
-feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `bulk_import`.
-On self-managed GitLab, by default [migrating project items](#migrated-project-items) is not available. To show
+On self-managed GitLab, by default [migrating group items](#migrated-group-items) is not available. To show the
+feature, ask an administrator to [enable it in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer).
+Also on self-managed GitLab, by default [migrating project items](#migrated-project-items-beta) is not available. To show
 this feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
-`bulk_import_projects`. On GitLab.com, migration of both groups and projects is available.
+`bulk_import_projects`. The feature is not ready for production use. On GitLab.com, migration of both groups and projects is available.
 
-Prerequisites:
-
-- Network connection between instances or GitLab.com. Must support HTTPS.
-- Owner role on the top-level group to migrate.
-
-You can import top-level groups to:
+You can migrate top-level groups to:
 
 - Another top-level group.
 - The subgroup of any existing top-level group.
@@ -47,15 +43,34 @@ You can import top-level groups to:
 
 You can migrate:
 
-- By direct transfer using either the UI or the [API](../../../api/bulk_imports.md).
+- By direct transfer through either the UI or the [API](../../../api/bulk_imports.md).
 - Many groups at once.
+- With projects (in [Beta](../../../policy/alpha-beta-support.md#beta-features) and not ready for production use) or
+  without projects.
 
-When migrating a top-level group to GitLab.com, all its subgroups and projects are migrated too.
+When you migrate a group by direct transfer, you can also migrate subgroups and projects. When you migrate a group:
+
+- To GitLab.com, all its subgroups and projects are migrated too.
+- To a self-managed instance, migrating project items is not available by default. An administrator must
+  [enable the feature flag](../../../administration/feature_flags.md) named `bulk_import_projects`.
+
+WARNING:
+Migrating subgroups and projects this way is in [Beta](../../../policy/alpha-beta-support.md#beta-features) and is not
+ready for production use.
 
 Not all group and project resources are imported. See list of migrated resources below:
 
 - [Migrated group items](#migrated-group-items).
-- [Migrated project items](#migrated-project-items).
+- [Migrated project items](#migrated-project-items-beta).
+
+Prerequisites:
+
+- Network connection between instances or GitLab.com. Must support HTTPS.
+- Both GitLab instances have [migration enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
+  by an instance administrator.
+- Owner role on the top-level source group to migrate from.
+- At least the Maintainer role on the destination group to migrate to. Using the Developer role for this purpose was
+  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
 
 ### Preparation
 
@@ -94,15 +109,18 @@ Create the group you want to import to and connect the source:
 
 ### Select the groups to import
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
+
 After you have authorized access to the source GitLab instance, you are redirected to the GitLab group
 importer page. The top-level groups on the connected source instance you have the Owner role for are listed.
 
 1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
-1. Next to the groups you want to import, select **Import**.
+1. Next to the groups you want to import, select either:
+   - **Import with projects**. Importing groups with projects is in [Beta](../../../policy/alpha-beta-support.md#beta-features). This feature is not ready for production use.
+   - **Import without projects**.
+   - **Import** on self-managed GitLab, when the `bulk_import_projects` feature flag is disabled and the feature is not available.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
-
-![Group Importer page](img/bulk_imports_v14_1.png)
 
 ### Group import history
 
@@ -155,18 +173,24 @@ Group items that are migrated to the target instance include:
 
 Any other items are **not** migrated.
 
-### Migrated project items
+### Migrated project items (beta)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 
 FLAG:
-On self-managed GitLab, migrating project resources when migrating groups is not available by default. To make it available ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `bulk_import_projects`. On GitLab.com, groups are migrated with all their projects by default.
+On self-managed GitLab, migrating project resources when migrating groups is not available by default.
+To make it available ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
+`bulk_import_projects`. On GitLab.com, groups are migrated with all their projects by default.
 
 The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml)
 file for projects lists many of the items imported when migrating projects using group migration. View this file in the branch
 for your version of GitLab to see the list of items relevant to you. For example,
 [`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/project/import_export.yml).
+
+WARNING:
+Migrating projects when migrating groups by direct transfer is in [Beta](../../../policy/alpha-beta-support.md#beta-features)
+and is not ready for production use.
 
 Project items that are migrated to the target instance include:
 
@@ -390,7 +414,7 @@ You can also export a group [using the API](../../../api/group_import_export.md)
 
 1. Create a new group:
    - On the top bar, select **Create new…** (**{plus-square}**) and then **New group**.
-   - On an existing group's page, select the **New subgroup** button.
+   - On an existing group's page, select **New subgroup**.
 1. Select **Import group**.
 1. Enter your group name.
 1. Accept or modify the associated group URL.
@@ -405,7 +429,7 @@ The maximum import file size can be set by the administrator, default is `0` (un
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the
 [Application settings API](../../../api/settings.md#change-application-settings) or the
 [Admin Area](../../admin_area/settings/account_and_limit_settings.md).
-Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8.
+Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8.
 
 ### Rate limits
 

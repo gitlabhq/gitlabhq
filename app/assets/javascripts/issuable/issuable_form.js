@@ -47,13 +47,12 @@ function getFallbackKey() {
 }
 
 export default class IssuableForm {
-  static addAutosave(map, id, $input, searchTerm, fallbackKey) {
-    if ($input.length) {
-      map.set(
-        id,
-        new Autosave($input, [document.location.pathname, searchTerm, id], `${fallbackKey}=${id}`),
-      );
-    }
+  static addAutosave(map, id, element, searchTerm, fallbackKey) {
+    if (!element) return;
+    map.set(
+      id,
+      new Autosave(element, [document.location.pathname, searchTerm, id], `${fallbackKey}=${id}`),
+    );
   }
 
   constructor(form) {
@@ -122,28 +121,28 @@ export default class IssuableForm {
     IssuableForm.addAutosave(
       autosaveMap,
       'title',
-      this.form.find('input[name*="[title]"]'),
+      this.form.find('input[name*="[title]"]').get(0),
       this.searchTerm,
       this.fallbackKey,
     );
     IssuableForm.addAutosave(
       autosaveMap,
       'description',
-      this.form.find('textarea[name*="[description]"]'),
+      this.form.find('textarea[name*="[description]"]').get(0),
       this.searchTerm,
       this.fallbackKey,
     );
     IssuableForm.addAutosave(
       autosaveMap,
       'confidential',
-      this.form.find('input:checkbox[name*="[confidential]"]'),
+      this.form.find('input:checkbox[name*="[confidential]"]').get(0),
       this.searchTerm,
       this.fallbackKey,
     );
     IssuableForm.addAutosave(
       autosaveMap,
       'due_date',
-      this.form.find('input[name*="[due_date]"]'),
+      this.form.find('input[name*="[due_date]"]').get(0),
       this.searchTerm,
       this.fallbackKey,
     );

@@ -10,7 +10,7 @@ module Mutations
 
         argument :collapsed, GraphQL::Types::Boolean,
                   required: false,
-                  description: 'Indicates if the list is collapsed for this user.'
+                  description: 'Indicates if the list is collapsed for the user.'
 
         def resolve(list: nil, **args)
           if list.nil? || !can_read_list?(list)

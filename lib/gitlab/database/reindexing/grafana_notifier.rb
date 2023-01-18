@@ -60,7 +60,9 @@ module Gitlab
             "Authorization": "Bearer #{@api_key}"
           }
 
-          success = Gitlab::HTTP.post("#{@api_url}/api/annotations", body: payload.to_json, headers: headers, allow_local_requests: true).success?
+          success = Gitlab::HTTP.post(
+            "#{@api_url}/api/annotations", body: payload.to_json, headers: headers, allow_local_requests: true
+          ).success?
 
           log_error("Response code #{response.code}") unless success
 

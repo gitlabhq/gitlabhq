@@ -37,9 +37,9 @@ in-memory objects whenever possible.
 When you introduce a new feature, you should:
 
 - Avoid N+1 queries.
-- Minimize the [query count](merge_request_performance_guidelines.md#query-counts).
+- Minimize the [query count](merge_request_concepts/performance.md#query-counts).
 - Pay special attention to ensure
-  [cached queries](merge_request_performance_guidelines.md#cached-queries) are not
+  [cached queries](merge_request_concepts/performance.md#cached-queries) are not
   masking N+1 problems.
 
 ## How to detect cached queries
@@ -163,5 +163,5 @@ factors help improve the overall execution time:
 ## For more information
 
 - [Metrics that would help us detect the potential N+1 Cached SQL calls](https://gitlab.com/gitlab-org/gitlab/-/issues/259007)
-- [Merge request performance guidelines for cached queries](merge_request_performance_guidelines.md#cached-queries)
+- [Merge request performance guidelines for cached queries](merge_request_concepts/performance.md#cached-queries)
 - [Improvements for biggest offenders](https://gitlab.com/groups/gitlab-org/-/epics/4508)

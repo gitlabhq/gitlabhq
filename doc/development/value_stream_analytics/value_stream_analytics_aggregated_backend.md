@@ -273,7 +273,7 @@ attributes.
 - `stages` - Load the stages for the currently selected value stream.
 - `median` - For each stage, request the median duration.
 - `count` - For each stage, request the number of items in the stage (this is a
-[limit count](../merge_request_performance_guidelines.md#badge-counters), maximum 1000 rows).
+[limit count](../merge_request_concepts/performance.md#badge-counters), maximum 1000 rows).
 - `average_duration_chart` - Data for the duration chart.
 - `summary`, `time_summary` - Top-level aggregations, most of the metrics are using different APIs/
 finders and not invoking the aggregated backend.

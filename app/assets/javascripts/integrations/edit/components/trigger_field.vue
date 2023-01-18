@@ -1,13 +1,17 @@
 <script>
-import { GlFormCheckbox } from '@gitlab/ui';
+import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 
-import { integrationTriggerEventTitles } from '~/integrations/constants';
+import {
+  placeholderForType,
+  integrationTriggerEventTitles,
+} from 'any_else_ce/integrations/constants';
 
 export default {
   name: 'TriggerField',
   components: {
     GlFormCheckbox,
+    GlFormInput,
   },
   props: {
     event: {
@@ -15,10 +19,15 @@ export default {
       required: false,
       default: () => ({}),
     },
+    type: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       value: false,
+      fieldValue: this.event.field?.value,
     };
   },
   computed: {
@@ -26,8 +35,14 @@ export default {
     name() {
       return `service[${this.event.name}]`;
     },
+    fieldName() {
+      return `service[${this.event.field?.name}]`;
+    },
     title() {
       return integrationTriggerEventTitles[this.event.name];
+    },
+    defaultPlaceholder() {
+      return placeholderForType[this.type];
     },
   },
   mounted() {
@@ -42,5 +57,15 @@ export default {
     <gl-form-checkbox v-model="value" :disabled="isInheriting">
       {{ title }}
     </gl-form-checkbox>
+    <div class="gl-ml-6">
+      <gl-form-input
+        v-if="event.field"
+        v-show="value"
+        v-model="fieldValue"
+        :name="fieldName"
+        :placeholder="event.field.placeholder || defaultPlaceholder"
+        :readonly="isInheriting"
+      />
+    </div>
   </div>
 </template>

@@ -22,10 +22,10 @@ module QA
       end
 
       let!(:runner) do
-        Resource::Runner.fabricate! do |runner|
+        Resource::GroupRunner.fabricate! do |runner|
           runner.name = executor
           runner.tags = [executor]
-          runner.token = group.reload!.runners_token
+          runner.group = group
         end
       end
 

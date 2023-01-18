@@ -28,3 +28,7 @@ workflow:
       variables:
         IS_A_FEATURE: 'true'
       when: always
+
+# valid rules:null
+rules-null:
+  rules: null

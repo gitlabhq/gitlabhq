@@ -5,8 +5,11 @@ import { nextTick } from 'vue';
 import IssuableEditForm from '~/vue_shared/issuable/show/components/issuable_edit_form.vue';
 import IssuableEventHub from '~/vue_shared/issuable/show/event_hub';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import Autosave from '~/autosave';
 
 import { mockIssuableShowProps, mockIssuable } from '../mock_data';
+
+jest.mock('~/autosave');
 
 const issuableEditFormProps = {
   issuable: mockIssuable,
@@ -36,10 +39,12 @@ describe('IssuableEditForm', () => {
 
   beforeEach(() => {
     wrapper = createComponent();
+    jest.spyOn(Autosave.prototype, 'reset');
   });
 
   afterEach(() => {
     wrapper.destroy();
+    jest.resetAllMocks();
   });
 
   describe('watch', () => {
@@ -100,21 +105,18 @@ describe('IssuableEditForm', () => {
 
   describe('methods', () => {
     describe('initAutosave', () => {
-      it('initializes `autosaveTitle` and `autosaveDescription` props', () => {
-        expect(wrapper.vm.autosaveTitle).toBeDefined();
-        expect(wrapper.vm.autosaveDescription).toBeDefined();
+      it('initializes autosave', () => {
+        expect(Autosave.mock.calls).toEqual([
+          [expect.any(Element), ['/', '', 'title']],
+          [expect.any(Element), ['/', '', 'description']],
+        ]);
       });
     });
 
     describe('resetAutosave', () => {
-      it('calls `reset` on `autosaveTitle` and `autosaveDescription` props', () => {
-        jest.spyOn(wrapper.vm.autosaveTitle, 'reset').mockImplementation(jest.fn);
-        jest.spyOn(wrapper.vm.autosaveDescription, 'reset').mockImplementation(jest.fn);
-
-        wrapper.vm.resetAutosave();
-
-        expect(wrapper.vm.autosaveTitle.reset).toHaveBeenCalled();
-        expect(wrapper.vm.autosaveDescription.reset).toHaveBeenCalled();
+      it('resets title and description on "update.issuable event"', () => {
+        IssuableEventHub.$emit('update.issuable');
+        expect(Autosave.prototype.reset.mock.calls).toEqual([[], []]);
       });
     });
   });

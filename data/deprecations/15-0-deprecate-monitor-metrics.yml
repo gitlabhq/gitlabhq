@@ -1,8 +1,6 @@
 - title: "Monitor performance metrics through Prometheus"  # The name of the feature to be deprecated
   announcement_milestone: "14.7"  # The milestone when this feature was first announced as deprecated.
-  announcement_date: "2022-01-22"  # The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   removal_milestone: "16.0"  # The milestone when this feature is planned to be removed
-  removal_date: "2023-05-22"  # The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   breaking_change: true  # If this deprecation is a breaking change, set this value to true
   body: |  # Do not modify this line, instead modify the lines below.
      By displaying data stored in a Prometheus instance, GitLab allows users to view performance metrics. GitLab also displays visualizations of these metrics in dashboards. The user can connect to a previously-configured external Prometheus instance, or set up Prometheus as a GitLab Managed App.

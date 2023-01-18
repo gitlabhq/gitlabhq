@@ -12,7 +12,7 @@ import (
 	"strings"
 	"sync"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/s3api"
 )
 
 type partsEtagMap map[int]string
@@ -190,8 +190,8 @@ func (o *ObjectstoreStub) putObject(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
-func MultipartUploadInternalError() *objectstore.CompleteMultipartUploadError {
-	return &objectstore.CompleteMultipartUploadError{Code: "InternalError", Message: "malformed object path"}
+func MultipartUploadInternalError() *s3api.CompleteMultipartUploadError {
+	return &s3api.CompleteMultipartUploadError{Code: "InternalError", Message: "malformed object path"}
 }
 
 func (o *ObjectstoreStub) completeMultipartUpload(w http.ResponseWriter, r *http.Request) {
@@ -212,7 +212,7 @@ func (o *ObjectstoreStub) completeMultipartUpload(w http.ResponseWriter, r *http
 		return
 	}
 
-	var msg objectstore.CompleteMultipartUpload
+	var msg s3api.CompleteMultipartUpload
 	err = xml.Unmarshal(buf, &msg)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
@@ -245,7 +245,7 @@ func (o *ObjectstoreStub) completeMultipartUpload(w http.ResponseWriter, r *http
 
 	bucket := split[0]
 	key := split[1]
-	answer := objectstore.CompleteMultipartUploadResult{
+	answer := s3api.CompleteMultipartUploadResult{
 		Location: r.URL.String(),
 		Bucket:   bucket,
 		Key:      key,

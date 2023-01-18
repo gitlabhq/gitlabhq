@@ -51,6 +51,5 @@ Rails/NegateInclude:
     - 'spec/lib/gitlab/metrics/dashboard/stages/metric_endpoint_inserter_spec.rb'
     - 'spec/lib/gitlab/metrics/subscribers/active_record_spec.rb'
     - 'spec/support/matchers/pushed_frontend_feature_flags_matcher.rb'
-    - 'spec/support/shared_contexts/markdown_golden_master_shared_examples.rb'
     - 'spec/uploaders/object_storage_spec.rb'
     - 'tooling/danger/specs.rb'

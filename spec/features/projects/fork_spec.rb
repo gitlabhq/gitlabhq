@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Project fork', feature_category: :projects do
+  include ListboxHelpers
   include ProjectForksHelper
 
   let(:user) { create(:user) }
@@ -137,10 +138,9 @@ RSpec.describe 'Project fork', feature_category: :projects do
     let(:user) { create(:group_member, :maintainer, user: create(:user), group: group).user }
 
     def submit_form(group_obj = group)
-      find('[data-testid="select_namespace_dropdown"]').click
-      find('[data-testid="select_namespace_dropdown_search_field"]').fill_in(with: group_obj.name)
-      click_button group_obj.name
-
+      click_button(s_('ForkProject|Select a namespace'))
+      send_keys group_obj.name
+      select_listbox_item(group_obj.name)
       click_button 'Fork project'
     end
 
@@ -149,6 +149,13 @@ RSpec.describe 'Project fork', feature_category: :projects do
       submit_form
 
       expect(page).to have_content 'Forked from'
+    end
+
+    it 'redirects to the source project when cancel is clicked' do
+      visit new_project_fork_path(project)
+      click_on 'Cancel'
+
+      expect(page).to have_current_path(project_path(project))
     end
 
     it 'shows the new forked project on the forks page' do

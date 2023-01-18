@@ -12,3 +12,8 @@ wrong path declaration:
   rules:
     - changes:
       paths: { file: 'DOCKER' }
+
+# invalid rules:if
+rules-if-empty:
+  rules:
+    - if:

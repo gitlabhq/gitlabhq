@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::PostgresAutovacuumActivity, type: :model do
+RSpec.describe Gitlab::Database::PostgresAutovacuumActivity, type: :model, feature_category: :database do
   include Database::DatabaseHelpers
 
   it { is_expected.to be_a Gitlab::Database::SharedModel }
@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Database::PostgresAutovacuumActivity, type: :model do
     let(:tables) { %w[foo test] }
 
     before do
-      swapout_view_for_table(:postgres_autovacuum_activity)
+      swapout_view_for_table(:postgres_autovacuum_activity, connection: ApplicationRecord.connection)
 
       # unrelated
       create(:postgres_autovacuum_activity, table: 'bar')

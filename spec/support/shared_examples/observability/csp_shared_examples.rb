@@ -2,9 +2,17 @@
 
 # Verifies that the proper CSP rules for Observabilty UI are applied to a given controller/path
 #
-# The path under test needs to be declared with  `let(:tested_path) { .. }` in the context including this example
+# It requires the following variables declared in the context including this example:
+#
+# - `tested_path`: the path under test
+# - `user`: the test user
+# - `group`: the test group
+#
+# e.g.
 #
 # ```
+#   let_it_be(:group) { create(:group) }
+#   let_it_be(:user) { create(:user) }
 #   it_behaves_like "observability csp policy" do
 #     let(:tested_path) { ....the path under test }
 #   end
@@ -33,6 +41,9 @@ RSpec.shared_examples 'observability csp policy' do |controller_class = describe
 
   before do
     setup_csp_for_controller(controller_class, csp, any_time: true)
+    group.add_developer(user)
+    login_as(user)
+    allow(Gitlab::Observability).to receive(:observability_enabled?).and_return(true)
   end
 
   subject do
@@ -45,6 +56,40 @@ RSpec.shared_examples 'observability csp policy' do |controller_class = describe
 
     it 'does not add any csp header' do
       expect(subject).to be_blank
+    end
+  end
+
+  context 'when observability is disabled' do
+    let(:csp) do
+      ActionDispatch::ContentSecurityPolicy.new do |p|
+        p.frame_src 'https://something.test'
+      end
+    end
+
+    before do
+      allow(Gitlab::Observability).to receive(:observability_enabled?).and_return(false)
+    end
+
+    it 'does not add observability urls to the csp header' do
+      expect(subject).to include("frame-src https://something.test")
+      expect(subject).not_to include("#{observability_url} #{signin_url} #{oauth_url}")
+    end
+  end
+
+  context 'when checking if observability is enabled' do
+    let(:csp) do
+      ActionDispatch::ContentSecurityPolicy.new do |p|
+        p.frame_src 'https://something.test'
+      end
+    end
+
+    it 'check access for a given user and group' do
+      allow(Gitlab::Observability).to receive(:observability_enabled?)
+
+      get tested_path
+
+      expect(Gitlab::Observability).to have_received(:observability_enabled?)
+        .with(user, group).at_least(:once)
     end
   end
 

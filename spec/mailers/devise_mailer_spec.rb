@@ -131,6 +131,10 @@ RSpec.describe DeviseMailer do
     it 'includes a link to reset the password' do
       is_expected.to have_link("Reset password", href: "#{Gitlab.config.gitlab.url}/users/password/edit?reset_password_token=faketoken")
     end
+
+    it 'has the mailgun suppression bypass header' do
+      is_expected.to have_header 'X-Mailgun-Suppressions-Bypass', 'true'
+    end
   end
 
   describe '#email_changed' do

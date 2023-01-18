@@ -170,6 +170,7 @@ class Project < ApplicationRecord
   end
 
   # Project integrations
+  has_one :apple_app_store_integration, class_name: 'Integrations::AppleAppStore'
   has_one :asana_integration, class_name: 'Integrations::Asana'
   has_one :assembla_integration, class_name: 'Integrations::Assembla'
   has_one :bamboo_integration, class_name: 'Integrations::Bamboo'
@@ -269,6 +270,7 @@ class Project < ApplicationRecord
 
   has_many :integrations
   has_many :alert_hooks_integrations, -> { alert_hooks }, class_name: 'Integration'
+  has_many :incident_hooks_integrations, -> { incident_hooks }, class_name: 'Integration'
   has_many :archive_trace_hooks_integrations, -> { archive_trace_hooks }, class_name: 'Integration'
   has_many :confidential_issue_hooks_integrations, -> { confidential_issue_hooks }, class_name: 'Integration'
   has_many :confidential_note_hooks_integrations, -> { confidential_note_hooks }, class_name: 'Integration'
@@ -291,17 +293,23 @@ class Project < ApplicationRecord
 
   has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
+
   has_many :project_members, -> { where(requested_at: nil) },
     as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
-
-  has_many :project_callouts, class_name: 'Users::ProjectCallout', foreign_key: :project_id
-
   alias_method :members, :project_members
-  has_many :users, through: :project_members
+  has_many :namespace_members, ->(project) { where(requested_at: nil).unscope(where: %i[source_id source_type]) },
+    primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project, class_name: 'ProjectMember'
 
   has_many :requesters, -> { where.not(requested_at: nil) },
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :namespace_requesters, ->(project) { where.not(requested_at: nil).unscope(where: %i[source_id source_type]) },
+    primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project, class_name: 'ProjectMember'
+
   has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
+
+  has_many :users, through: :project_members
+
+  has_many :project_callouts, class_name: 'Users::ProjectCallout', foreign_key: :project_id
 
   has_many :deploy_keys_projects, inverse_of: :project
   has_many :deploy_keys, through: :deploy_keys_projects
@@ -750,16 +758,13 @@ class Project < ApplicationRecord
     end
   end
 
-  # Defines instance methods:
+  # Define two instance methods:
   #
-  # - only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: false)
-  # - allow_merge_on_skipped_pipeline?(inherit_group_setting: false)
-  # - only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: false)
-  # - only_allow_merge_if_pipeline_succeeds_locked?
-  # - allow_merge_on_skipped_pipeline_locked?
-  # - only_allow_merge_if_all_discussions_are_resolved_locked?
+  # - [attribute]?(inherit_group_setting) Returns the final value after inheriting the parent group
+  # - [attribute]_locked?                 Returns true if the value is inherited from the parent group
+  #
+  # These functions will be overridden in EE to make sense afterwards
   def self.cascading_with_parent_namespace(attribute)
-    # method overriden in EE
     define_method("#{attribute}?") do |inherit_group_setting: false|
       self.public_send(attribute) # rubocop:disable GitlabSecurity/PublicSend
     end
@@ -1610,7 +1615,9 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    []
+    disabled_integrations = []
+    disabled_integrations << 'apple_app_store' unless Feature.enabled?(:apple_app_store_integration, self)
+    disabled_integrations
   end
 
   def find_or_initialize_integration(name)
@@ -1722,14 +1729,8 @@ class Project < ApplicationRecord
   def execute_integrations(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
     run_after_commit_or_now do
-      if use_integration_relations?
-        association("#{hooks_scope}_integrations").reader.each do |integration|
-          integration.async_execute(data)
-        end
-      else
-        integrations.public_send(hooks_scope).each do |integration| # rubocop:disable GitlabSecurity/PublicSend
-          integration.async_execute(data)
-        end
+      association("#{hooks_scope}_integrations").reader.each do |integration|
+        integration.async_execute(data)
       end
     end
   end
@@ -2100,7 +2101,7 @@ class Project < ApplicationRecord
     pages_metadatum&.deployed?
   end
 
-  def pages_group_url
+  def pages_namespace_url
     # The host in URL always needs to be downcased
     Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
       "#{prefix}#{pages_subdomain}."
@@ -2108,17 +2109,21 @@ class Project < ApplicationRecord
   end
 
   def pages_url
-    url = pages_group_url
+    url = pages_namespace_url
     url_path = full_path.partition('/').last
+    namespace_url = "#{Settings.pages.protocol}://#{url_path}".downcase
+
+    if Rails.env.development?
+      url_without_port = URI.parse(url)
+      url_without_port.port = nil
+
+      return url if url_without_port.to_s == namespace_url
+    end
 
     # If the project path is the same as host, we serve it as group page
-    return url if url == "#{Settings.pages.protocol}://#{url_path}".downcase
+    return url if url == namespace_url
 
     "#{url}/#{url_path}"
-  end
-
-  def pages_group_root?
-    pages_group_url == pages_url
   end
 
   def pages_subdomain
@@ -2920,12 +2925,6 @@ class Project < ApplicationRecord
     Gitlab::Routing.url_helpers.activity_project_path(self)
   end
 
-  def increment_statistic_value(statistic, delta)
-    return if pending_delete?
-
-    ProjectStatistics.increment_statistic(self, statistic, delta)
-  end
-
   def ci_forward_deployment_enabled?
     return false unless ci_cd_settings
 
@@ -3367,12 +3366,6 @@ class Project < ApplicationRecord
       ProjectFeature::ENABLED
     else
       ProjectFeature::PRIVATE
-    end
-  end
-
-  def use_integration_relations?
-    strong_memoize(:use_integration_relations) do
-      Feature.enabled?(:cache_project_integrations, self)
     end
   end
 end

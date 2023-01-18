@@ -85,9 +85,15 @@ module API
       optional :home_page_url, type: String, desc: 'We will redirect non-logged in users to this page'
       optional :housekeeping_enabled, type: Boolean, desc: 'Enable automatic repository housekeeping (git repack, git gc)'
       given housekeeping_enabled: ->(val) { val } do
-        requires :housekeeping_full_repack_period, type: Integer, desc: "Number of Git pushes after which a full 'git repack' is run."
-        requires :housekeeping_gc_period, type: Integer, desc: "Number of Git pushes after which 'git gc' is run."
-        requires :housekeeping_incremental_repack_period, type: Integer, desc: "Number of Git pushes after which an incremental 'git repack' is run."
+        optional :housekeeping_full_repack_period, type: Integer, desc: "Number of Git pushes after which a full 'git repack' is run."
+        optional :housekeeping_gc_period, type: Integer, desc: "Number of Git pushes after which 'git gc' is run."
+        optional :housekeeping_incremental_repack_period, type: Integer, desc: "Number of Git pushes after which an incremental 'git repack' is run."
+
+        optional :housekeeping_optimize_repository_period, type: Integer, desc: "Number of Git pushes after which Gitaly is asked to optimize a repository."
+
+        # Requires either all three deprecated attributes (housekeeping_full_repack_period, housekeeping_gc_period, housekeeping_incremental_repack_period) or housekeeping_optimize_repository_period
+        all_or_none_of :housekeeping_full_repack_period, :housekeeping_gc_period, :housekeeping_incremental_repack_period
+        exactly_one_of :housekeeping_incremental_repack_period, :housekeeping_optimize_repository_period
       end
       optional :html_emails_enabled, type: Boolean, desc: 'By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format.'
       optional :import_sources, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
@@ -188,6 +194,7 @@ module API
       optional :jira_connect_application_key, type: String, desc: "Application ID of the OAuth application that should be used to authenticate with the GitLab.com for Jira Cloud app"
       optional :jira_connect_proxy_url, type: String, desc: "URL of the GitLab instance that should be used as a proxy for the GitLab.com for Jira Cloud app"
       optional :bulk_import_enabled, type: Boolean, desc: 'Enable migrating GitLab groups and projects by direct transfer'
+      optional :allow_runner_registration_token, type: Boolean, desc: 'Allow registering runners using a registration token'
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",

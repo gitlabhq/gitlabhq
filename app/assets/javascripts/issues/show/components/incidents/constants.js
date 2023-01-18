@@ -12,6 +12,9 @@ export const timelineFormI18n = Object.freeze({
     'Incident|Something went wrong while creating the incident timeline event.',
   ),
   areaPlaceholder: s__('Incident|Timeline text...'),
+  areaDefaultMessage: s__('Incident|Incident'),
+  selectTags: __('Select tags'),
+  tagsLabel: __('Event tag (optional)'),
   save: __('Save'),
   cancel: __('Cancel'),
   delete: __('Delete'),
@@ -42,4 +45,14 @@ export const timelineItemI18n = Object.freeze({
   timeUTC: __('%{time} UTC'),
 });
 
+export const timelineEventTagsI18n = Object.freeze({
+  startTime: __('Start time'),
+  endTime: __('End time'),
+});
+
 export const MAX_TEXT_LENGTH = 280;
+
+export const TIMELINE_EVENT_TAGS = Object.values(timelineEventTagsI18n).map((item) => ({
+  text: item,
+  value: item,
+}));

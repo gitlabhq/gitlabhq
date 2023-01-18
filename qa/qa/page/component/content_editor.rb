@@ -15,7 +15,6 @@ module QA
 
           base.view 'app/assets/javascripts/content_editor/components/toolbar_text_style_dropdown.vue' do
             element :text_style_dropdown
-            element :text_style_menu_item
           end
 
           base.view 'app/assets/javascripts/content_editor/components/toolbar_image_button.vue' do
@@ -33,9 +32,7 @@ module QA
             # wait for text style option to become active after typing
             has_active_element?(:text_style_dropdown, wait: 1)
             click_element(:text_style_dropdown)
-            within_element(:text_style_dropdown) do
-              click_element(:text_style_menu_item, text_style: heading)
-            end
+            find_element(:text_style_dropdown).find('li', text: heading).click
           end
         end
 

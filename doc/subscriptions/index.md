@@ -73,7 +73,7 @@ With the [Customers Portal](https://customers.gitlab.com/) you can:
 - [Change account owner information](#change-account-owner-information)
 - [Change your company details](#change-your-company-details)
 - [Change your payment method](#change-your-payment-method)
-- [Change the linked account](gitlab_com/index.md#change-the-linked-account)
+- [Change the linked account](#change-the-linked-account)
 - [Change the namespace the subscription is linked to](gitlab_com/index.md#change-the-linked-namespace)
 - [Change customers portal account password](#change-customers-portal-account-password)
 
@@ -83,8 +83,9 @@ reseller, you must contact them directly for assistance with your subscription.
 
 ### Change account owner information
 
-Account owner personal details are used on invoices. The account owner email
-address is used for the Customers Portal login and license-related email.
+Account owner personal details are used on invoices. The account owner email address is used for the Customers Portal legacy login and license-related email.
+
+If you have registered a Customers Portal account through a GitLab.com account, the GitLab.com account is used for login.
 
 To change account owner information, including name, billing address, and email address:
 
@@ -95,8 +96,10 @@ To change account owner information, including name, billing address, and email 
 1. Select **Save changes**.
 
 If you want to transfer ownership of the Customers Portal account
-to another person, after you enter that person's personal details, you must also
-[change the Customers Portal account password](#change-customers-portal-account-password).
+to another person, after you enter that person's personal details, you must also:
+
+- [Change the Customers Portal account password](#change-customers-portal-account-password).
+- [Change the linked GitLab.com account](#change-the-linked-account), if you have one linked.
 
 ### Change your company details
 
@@ -133,6 +136,19 @@ method as the default:
 1. Select **My account > Payment methods**.
 1. **Edit** the selected payment method and check the **Make default payment method** checkbox.
 1. Select **Save Changes**.
+
+### Change the linked account
+
+To change the GitLab.com account linked to your Customers Portal account:
+
+1. Log in to the
+   [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. In a separate browser tab, go to [GitLab.com](https://gitlab.com/users/sign_in) and ensure you
+   are not logged in.
+1. On the Customers Portal page, select **My account > Account details**.
+1. Under **Your GitLab.com account**, select **Change linked account**.
+1. Log in to the [GitLab.com](https://gitlab.com/users/sign_in) account you want to link to the Customers Portal
+   account.
 
 ### Change Customers Portal account password
 

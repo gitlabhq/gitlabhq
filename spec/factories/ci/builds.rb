@@ -421,9 +421,17 @@ FactoryBot.define do
     end
 
     trait :artifacts do
-      after(:create) do |build|
-        create(:ci_job_artifact, :archive, job: build, expire_at: build.artifacts_expire_at)
-        create(:ci_job_artifact, :metadata, job: build, expire_at: build.artifacts_expire_at)
+      after(:create) do |build, evaluator|
+        create(:ci_job_artifact, :archive, :public, job: build, expire_at: build.artifacts_expire_at)
+        create(:ci_job_artifact, :metadata, :public, job: build, expire_at: build.artifacts_expire_at)
+        build.reload
+      end
+    end
+
+    trait :private_artifacts do
+      after(:create) do |build, evaluator|
+        create(:ci_job_artifact, :archive, :private, job: build, expire_at: build.artifacts_expire_at)
+        create(:ci_job_artifact, :metadata, :private, job: build, expire_at: build.artifacts_expire_at)
         build.reload
       end
     end

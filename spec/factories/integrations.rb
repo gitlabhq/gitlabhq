@@ -254,6 +254,16 @@ FactoryBot.define do
     password { 'harborpassword' }
   end
 
+  factory :apple_app_store_integration, class: 'Integrations::AppleAppStore' do
+    project
+    active { true }
+    type { 'Integrations::AppleAppStore' }
+
+    app_store_issuer_id { 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
+    app_store_key_id { 'ABC1' }
+    app_store_private_key { File.read('spec/fixtures/ssl_key.pem') }
+  end
+
   # this is for testing storing values inside properties, which is deprecated and will be removed in
   # https://gitlab.com/gitlab-org/gitlab/issues/29404
   trait :without_properties_callback do

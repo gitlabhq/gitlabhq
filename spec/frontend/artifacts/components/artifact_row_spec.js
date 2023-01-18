@@ -16,13 +16,14 @@ describe('ArtifactRow component', () => {
   const findDownloadButton = () => wrapper.findByTestId('job-artifact-row-download-button');
   const findDeleteButton = () => wrapper.findByTestId('job-artifact-row-delete-button');
 
-  const createComponent = (mountFn = shallowMountExtended) => {
-    wrapper = mountFn(ArtifactRow, {
+  const createComponent = ({ canDestroyArtifacts = true } = {}) => {
+    wrapper = shallowMountExtended(ArtifactRow, {
       propsData: {
         artifact,
         isLoading: false,
         isLastRow: false,
       },
+      provide: { canDestroyArtifacts },
       stubs: { GlBadge, GlButton, GlFriendlyWrap },
     });
   };
@@ -50,12 +51,24 @@ describe('ArtifactRow component', () => {
     it('displays the download button as a link to the download path', () => {
       expect(findDownloadButton().attributes('href')).toBe(artifact.downloadPath);
     });
+  });
 
-    it('displays the delete button', () => {
+  describe('delete button', () => {
+    it('does not show when user does not have permission', () => {
+      createComponent({ canDestroyArtifacts: false });
+
+      expect(findDeleteButton().exists()).toBe(false);
+    });
+
+    it('shows when user has permission', () => {
+      createComponent();
+
       expect(findDeleteButton().exists()).toBe(true);
     });
 
-    it('emits the delete event when the delete button is clicked', async () => {
+    it('emits the delete event when clicked', async () => {
+      createComponent();
+
       expect(wrapper.emitted('delete')).toBeUndefined();
 
       findDeleteButton().trigger('click');

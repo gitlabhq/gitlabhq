@@ -2,7 +2,7 @@
 status: implemented
 creation-date: "2019-05-16"
 authors: [ "@grzesiek" ]
-coach: "@kamil"
+coach: [ "@ayufan", "@grzesiek" ]
 approvers: [ "@ogolowinski", "@dcroft", "@vshushlin" ]
 owning-stage: "~devops::release"
 participating-stages: []

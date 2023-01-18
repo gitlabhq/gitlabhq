@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import AccessorUtilities from '~/lib/utils/accessor';
 import {
   mapVuexModuleState,
@@ -18,6 +18,11 @@ export default {
     FrequentItemsSearchInput,
     FrequentItemsList,
     GlLoadingIcon,
+    GlButton,
+    GlIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [frequentItemsMixin],
   inject: ['vuexModule'],
@@ -40,12 +45,14 @@ export default {
     ...mapVuexModuleState((vm) => vm.vuexModule, [
       'searchQuery',
       'isLoadingItems',
+      'isItemsListEditable',
       'isFetchFailed',
+      'isItemRemovalFailed',
       'items',
     ]),
     ...mapVuexModuleGetters((vm) => vm.vuexModule, ['hasSearchQuery']),
     translations() {
-      return this.getTranslations(['loadingMessage', 'header']);
+      return this.getTranslations(['loadingMessage', 'header', 'headerEditToggle']);
     },
   },
   created() {
@@ -74,6 +81,7 @@ export default {
     ...mapVuexModuleActions((vm) => vm.vuexModule, [
       'setNamespace',
       'setStorageKey',
+      'toggleItemsListEditablity',
       'fetchFrequentItems',
     ]),
     dropdownOpenHandler() {
@@ -132,8 +140,25 @@ export default {
       class="loading-animation prepend-top-20"
       data-testid="loading"
     />
-    <div v-if="!isLoadingItems && !hasSearchQuery" class="section-header" data-testid="header">
-      {{ translations.header }}
+    <div
+      v-if="!isLoadingItems && !hasSearchQuery"
+      class="section-header gl-display-flex"
+      data-testid="header"
+    >
+      <span class="gl-flex-grow-1">{{ translations.header }}</span>
+      <gl-button
+        v-if="items.length"
+        v-gl-tooltip.left
+        size="small"
+        category="tertiary"
+        :aria-label="translations.headerEditToggle"
+        :title="translations.headerEditToggle"
+        :class="{ 'gl-bg-gray-100!': isItemsListEditable }"
+        class="gl-p-2!"
+        @click="toggleItemsListEditablity"
+      >
+        <gl-icon name="pencil" :class="{ 'gl-text-gray-900!': isItemsListEditable }" />
+      </gl-button>
     </div>
     <frequent-items-list
       v-if="!isLoadingItems"
@@ -141,6 +166,7 @@ export default {
       :namespace="namespace"
       :has-search-query="hasSearchQuery"
       :is-fetch-failed="isFetchFailed"
+      :is-item-removal-failed="isItemRemovalFailed"
       :matcher="searchQuery"
     />
   </div>

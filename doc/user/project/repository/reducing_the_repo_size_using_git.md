@@ -63,7 +63,7 @@ To purge files from a GitLab repository:
 1. Clone a fresh copy of the repository from the bundle using  `--bare` and `--mirror` options:
 
    ```shell
-   git clone --bare --mirror /path/to/project.bundle
+   git clone --bare /path/to/project.bundle
    ```
 
 1. Go to the `project.git` directory:
@@ -84,7 +84,7 @@ To purge files from a GitLab repository:
    ```shell
    # Using git filter-repo
    git filter-repo --analyze
-   head .git/filter-repo/analysis/*-{all,deleted}-sizes.txt
+   head filter-repo/analysis/*-{all,deleted}-sizes.txt
 
    # Using git-sizer
    git-sizer
@@ -117,7 +117,7 @@ To purge files from a GitLab repository:
    You can use the following command to back up each `commit-map` file:
 
    ```shell
-   cp .git/filter-repo/commit-map ./_filter_repo_commit_map_$(date +%s)
+   cp filter-repo/commit-map ./_filter_repo_commit_map_$(date +%s)
    ```
 
    Repeat this step and all following steps (including the [repository cleanup](#repository-cleanup) step)

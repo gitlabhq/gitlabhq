@@ -21,6 +21,8 @@ export const initMembersApp = (el, options) => {
     canExportMembers,
     canFilterByEnterprise,
     exportCsvPath,
+    groupName,
+    groupPath,
     ...vuexStoreAttributes
   } = parseDataAttributes(el);
 
@@ -66,6 +68,10 @@ export const initMembersApp = (el, options) => {
       canFilterByEnterprise,
       canExportMembers,
       exportCsvPath,
+      group: {
+        name: groupName,
+        path: groupPath,
+      },
     },
     render: (createElement) => createElement('members-tabs'),
   });

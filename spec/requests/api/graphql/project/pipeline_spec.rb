@@ -348,10 +348,10 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
     it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
       build_stage = create(:ci_stage, position: 1, name: 'build', project: project, pipeline: pipeline)
       test_stage = create(:ci_stage, position: 2, name: 'test', project: project, pipeline: pipeline)
-      create(:ci_build, pipeline: pipeline, stage_idx: build_stage.position, name: 'docker 1 2', stage: build_stage)
-      create(:ci_build, pipeline: pipeline, stage_idx: build_stage.position, name: 'docker 2 2', stage: build_stage)
-      create(:ci_build, pipeline: pipeline, stage_idx: test_stage.position, name: 'rspec 1 2', stage: test_stage)
-      test_job = create(:ci_build, pipeline: pipeline, stage_idx: test_stage.position, name: 'rspec 2 2', stage: test_stage)
+      create(:ci_build, pipeline: pipeline, name: 'docker 1 2', ci_stage: build_stage)
+      create(:ci_build, pipeline: pipeline, name: 'docker 2 2', ci_stage: build_stage)
+      create(:ci_build, pipeline: pipeline, name: 'rspec 1 2', ci_stage: test_stage)
+      test_job = create(:ci_build, pipeline: pipeline, name: 'rspec 2 2', ci_stage: test_stage)
       create(:ci_build_need, build: test_job, name: 'docker 1 2')
 
       post_graphql(query, current_user: current_user)
@@ -360,8 +360,8 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
         post_graphql(query, current_user: current_user)
       end
 
-      create(:ci_build, name: 'test-a', stage: test_stage, stage_idx: test_stage.position, pipeline: pipeline)
-      test_b_job = create(:ci_build, name: 'test-b', stage: test_stage, stage_idx: test_stage.position, pipeline: pipeline)
+      create(:ci_build, name: 'test-a', ci_stage: test_stage, pipeline: pipeline)
+      test_b_job = create(:ci_build, name: 'test-b', ci_stage: test_stage, pipeline: pipeline)
       create(:ci_build_need, build: test_b_job, name: 'docker 2 2')
 
       expect do
@@ -409,7 +409,8 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
 
     it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
       # create extra statuses
-      create(:generic_commit_status, :pending, name: 'generic-build-a', pipeline: pipeline, stage_idx: 0, stage: 'build')
+      external_stage = create(:ci_stage, position: 10, name: 'external', project: project, pipeline: pipeline)
+      create(:generic_commit_status, :pending, name: 'generic-build-a', pipeline: pipeline, ci_stage: external_stage)
       create(:ci_bridge, :failed, name: 'deploy-a', pipeline: pipeline, stage_idx: 2, stage: 'deploy')
 
       # warm up
@@ -419,7 +420,7 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
         post_graphql(query, current_user: current_user)
       end
 
-      create(:generic_commit_status, :pending, name: 'generic-build-b', pipeline: pipeline, stage_idx: 0, stage: 'build')
+      create(:generic_commit_status, :pending, name: 'generic-build-b', pipeline: pipeline, ci_stage: external_stage)
       create(:ci_build, :failed, name: 'test-a', pipeline: pipeline, stage_idx: 1, stage: 'test')
       create(:ci_build, :running, name: 'test-b', pipeline: pipeline, stage_idx: 1, stage: 'test')
       create(:ci_build, :pending, name: 'deploy-b', pipeline: pipeline, stage_idx: 2, stage: 'deploy')

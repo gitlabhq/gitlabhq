@@ -1,0 +1,8 @@
+---
+name: skip_notes_diff_include
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108893
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388081
+milestone: '15.8'
+type: development
+group: group::product planning
+default_enabled: false

@@ -10,7 +10,7 @@ module Mutations
         argument :discussion_id,
                   ::Types::GlobalIDType[::Discussion],
                   required: false,
-                  description: 'Global ID of the discussion this note is in reply to.'
+                  description: 'Global ID of the discussion the note is in reply to.'
 
         argument :merge_request_diff_head_sha,
                   GraphQL::Types::String,

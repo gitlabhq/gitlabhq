@@ -55,11 +55,11 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
     end
 
     where(:user_role, :token_type, :valid_token, :status) do
-      :guest     | :personal_access_token   | true  | :not_found
+      :guest     | :personal_access_token   | true  | :forbidden
       :guest     | :personal_access_token   | false | :unauthorized
       :guest     | :deploy_token            | true  | :not_found
       :guest     | :deploy_token            | false | :unauthorized
-      :guest     | :job_token               | true  | :not_found
+      :guest     | :job_token               | true  | :forbidden
       :guest     | :job_token               | false | :unauthorized
       :reporter  | :personal_access_token   | true  | :not_found
       :reporter  | :personal_access_token   | false | :unauthorized
@@ -172,6 +172,17 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
+    end
+
+    context 'with access to package registry for everyone' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_rubygems_user' } }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+      end
+
+      it_behaves_like 'Rubygems gem download', :anonymous, :success
     end
 
     context 'with package files pending destruction' do
@@ -422,6 +433,17 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
+    end
+
+    context 'with access to package registry for everyone' do
+      let(:params) { {} }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+      end
+
+      it_behaves_like 'dependency endpoint success', :anonymous, :success
     end
   end
 end

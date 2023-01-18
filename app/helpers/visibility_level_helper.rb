@@ -39,7 +39,7 @@ module VisibilityLevelHelper
   end
 
   def restricted_visibility_levels(show_all = false)
-    return [] if current_user.admin? && !show_all
+    return [] if current_user.can_admin_all_resources? && !show_all
 
     Gitlab::CurrentSettings.restricted_visibility_levels || []
   end

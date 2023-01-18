@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Workspace
+group: Organization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -56,7 +56,7 @@ To change the permitted Git access protocols for a group:
 1. Choose the permitted protocols from **Enabled Git access protocols**.
 1. Select **Save changes**.
 
-## Restrict access to groups by IP address **(PREMIUM)**
+## Restrict group access by IP address **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in GitLab 12.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) from GitLab Ultimate to GitLab Premium in 13.1.
@@ -66,16 +66,32 @@ address. This group-level setting applies to:
 
 - The GitLab UI, including subgroups, projects, and issues.
 - [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/12874), the API.
+- In self-managed installations of GitLab 15.1 and later, you can also configure
+[globally-allowed IP address ranges](../admin_area/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
+at the group level.
 
 Administrators can combine restricted access by IP address with
 [globally-allowed IP addresses](../admin_area/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges).
 
+To restrict group access by IP address:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. In the **Restrict access by IP address** text box, enter a list of IPv4 or IPv6
+   address ranges in CIDR notation. This list:
+   - Has no limit on the number of IP address ranges.
+   - Has a size limit of 1 GB.
+   - Applies to both SSH or HTTP authorized IP address ranges. You cannot split
+     this list by type of authorization.
+1. Select **Save changes**.
+
 ### Security implications
 
-You should consider some security implications before configuring IP address restrictions.
+Keep in mind that restricting group access by IP address has the following implications:
 
 - Administrators and group owners can access group settings from any IP address, regardless of IP restriction. However:
-  - Groups owners cannot access projects belonging to the group when accessing from a disallowed IP address.
+  - Group owners can access the subgroups, but not the projects belonging to the group or subgroups, when accessing from a disallowed IP address.
   - Administrators can access projects belonging to the group when accessing from a disallowed IP address.
     Access to projects includes cloning code from them.
   - Users can still see group and project names and hierarchies. Only the following are restricted:
@@ -84,29 +100,10 @@ You should consider some security implications before configuring IP address res
 - When you register a runner, it is not bound by the IP restrictions. When the runner requests a new job or an update to
   a job's state, it is also not bound by the IP restrictions. But when the running CI/CD job sends Git requests from a
   restricted IP address, the IP restriction prevents code from being cloned.
-- Users may still see some events from the IP restricted groups and projects on their dashboard. Activity may include
+- Users might still see some events from the IP-restricted groups and projects on their dashboard. Activity might include
   push, merge, issue, or comment events.
 - IP access restrictions for Git operations via SSH are supported only on GitLab SaaS.
   IP access restrictions applied to self-managed instances block SSH completely.
-
-### Restrict group access by IP address
-
-To restrict group access by IP address:
-
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Permissions and group features** section.
-1. In the **Restrict access by IP address** field, enter a list of IPv4 or IPv6
-   address ranges in CIDR notation. This list:
-   - Has no limit on the number of IP address ranges.
-   - Has a size limit of 1 GB.
-   - Applies to both SSH or HTTP authorized IP address ranges. You cannot split
-     this list by type of authorization.
-1. Select **Save changes**.
-
-In self-managed installations of GitLab 15.1 and later, you can also configure
-[globally-allowed IP address ranges](../admin_area/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
-at the group level.
 
 ## Restrict group access by domain **(PREMIUM)**
 
@@ -170,11 +167,13 @@ To prevent sharing outside of the group's hierarchy:
 
 ## Prevent a project from being shared with groups
 
-Prevent projects in a group from
-[sharing a project with another group](../project/members/share_project_with_groups.md)
-to enable tighter control over project access.
+[Sharing a project with another group](../project/members/share_project_with_groups.md)
+increases the number of users who can invite yet more members to the project.
+Each (sub)group can be an additional source of access permissions,
+which can be confusing and difficult to control.
 
-To prevent a project from being shared with other groups:
+To restrict the permission to invite project members to a single source,
+prevent a project from being shared with other groups:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
@@ -302,4 +301,4 @@ If a user sees a 404 when they would normally expect access, and the problem is 
 - `json.message`: `'Attempting to access IP restricted group'`
 - `json.allowed`: `false`
 
-In viewing the log entries, compare the `remote.ip` with the list of [allowed IP addresses](#restrict-access-to-groups-by-ip-address) for the group.
+In viewing the log entries, compare `remote.ip` with the list of [allowed IP addresses](#restrict-group-access-by-ip-address) for the group.

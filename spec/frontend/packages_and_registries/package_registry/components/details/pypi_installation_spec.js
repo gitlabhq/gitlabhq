@@ -16,7 +16,7 @@ const packageEntity = { ...packageData(), packageType: PACKAGE_TYPE_PYPI };
 describe('PypiInstallation', () => {
   let wrapper;
 
-  const pipCommandStr = `pip install @gitlab-org/package-15 --extra-index-url ${packageEntity.pypiUrl}`;
+  const pipCommandStr = `pip install @gitlab-org/package-15 --index-url ${packageEntity.pypiUrl}`;
   const pypiSetupStr = `[gitlab]
 repository = ${packageEntity.pypiSetupUrl}
 username = __token__

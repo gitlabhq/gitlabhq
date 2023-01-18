@@ -159,7 +159,7 @@ export const TYPE_TOKEN_OBJECTIVE_OPTION = {
 };
 
 export const TYPE_TOKEN_KEY_RESULT_OPTION = {
-  icon: 'issue-type-key-result',
+  icon: 'issue-type-keyresult',
   title: 'key_result',
   value: 'key_result',
 };
@@ -247,6 +247,7 @@ export const filters = {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'labelName',
       [SPECIAL_FILTER]: 'labelName',
+      [ALTERNATIVE_FILTER]: 'labelNames',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
@@ -256,6 +257,9 @@ export const filters = {
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[label_name][]',
+      },
+      [OPERATOR_OR]: {
+        [ALTERNATIVE_FILTER]: 'or[label_name][]',
       },
     },
   },
@@ -360,13 +364,16 @@ export const filters = {
   },
   [TOKEN_TYPE_HEALTH]: {
     [API_PARAM]: {
-      [NORMAL_FILTER]: 'healthStatus',
-      [SPECIAL_FILTER]: 'healthStatus',
+      [NORMAL_FILTER]: 'healthStatusFilter',
+      [SPECIAL_FILTER]: 'healthStatusFilter',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'health_status',
         [SPECIAL_FILTER]: 'health_status',
+      },
+      [OPERATOR_NOT]: {
+        [NORMAL_FILTER]: 'not[health_status]',
       },
     },
   },

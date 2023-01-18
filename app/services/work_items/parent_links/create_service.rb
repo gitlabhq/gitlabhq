@@ -46,7 +46,7 @@ module WorkItems
       end
 
       def target_issuable_type
-        issuable.issue_type == 'issue' ? 'task' : issuable.issue_type
+        'work item'
       end
 
       def issuables_not_found_message

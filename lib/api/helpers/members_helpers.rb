@@ -40,6 +40,9 @@ module API
       end
 
       def source_members(source)
+        return source.namespace_members if source.is_a?(Project) &&
+          Feature.enabled?(:project_members_index_by_project_namespace, source)
+
         source.members
       end
       # rubocop: enable CodeReuse/ActiveRecord

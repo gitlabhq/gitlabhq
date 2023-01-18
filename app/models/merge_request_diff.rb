@@ -392,8 +392,13 @@ class MergeRequestDiff < ApplicationRecord
 
   def diffs_in_batch(batch_page, batch_size, diff_options:)
     fetching_repository_diffs(diff_options) do |comparison|
-      reorder_diff_files!
-      diffs_batch = diffs_in_batch_collection(batch_page, batch_size, diff_options: diff_options)
+      Gitlab::Metrics.measure(:diffs_reorder) do
+        reorder_diff_files!
+      end
+
+      diffs_batch = Gitlab::Metrics.measure(:diffs_collection) do
+        diffs_in_batch_collection(batch_page, batch_size, diff_options: diff_options)
+      end
 
       if comparison
         if diff_options[:paths].blank? && !without_files?
@@ -406,7 +411,9 @@ class MergeRequestDiff < ApplicationRecord
           )
         end
 
-        comparison.diffs(diff_options)
+        Gitlab::Metrics.measure(:diffs_comparison) do
+          comparison.diffs(diff_options)
+        end
       else
         diffs_batch
       end

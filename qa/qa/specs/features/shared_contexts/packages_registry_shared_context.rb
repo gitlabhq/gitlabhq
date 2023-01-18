@@ -28,11 +28,11 @@ module QA
     end
 
     let(:runner) do
-      Resource::Runner.fabricate! do |runner|
+      Resource::GroupRunner.fabricate! do |runner|
         runner.name = "qa-runner-#{Time.now.to_i}"
         runner.tags = ["runner-for-#{package_project.group.name}"]
         runner.executor = :docker
-        runner.token = package_project.group.reload!.runners_token
+        runner.group = package_project.group
       end
     end
 

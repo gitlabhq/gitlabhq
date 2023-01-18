@@ -92,3 +92,13 @@ mapping:
     test: spec/requests/api/markdown_snapshot_spec.rb
   - source: glfm_specification/.+
     test: ee/spec/requests/api/markdown_snapshot_spec.rb
+
+  # Any change to metrics definition should trigger the specs in the ee/spec/config/metrics/ folder.
+  #
+  # Note: We only have those tests for ee, even though we have non-ee metrics.
+  #
+  # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/287#note_1192008962
+  - source: ee/config/metrics/.*.yml
+    test: ee/spec/config/metrics/every_metric_definition_spec.rb
+  - source: ee/lib/ee/gitlab/usage_data_counters/known_events/.*.yml
+    test: ee/spec/config/metrics/every_metric_definition_spec.rb

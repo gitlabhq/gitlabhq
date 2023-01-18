@@ -71,7 +71,7 @@ module Ci
     end
 
     def timeout_with_highest_precedence
-      [(job_timeout || project_timeout), runner_timeout].compact.min_by { |timeout| timeout.value }
+      [(job_timeout || project_timeout), runner_timeout].compact.min_by(&:value)
     end
 
     def project_timeout

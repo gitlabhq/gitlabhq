@@ -139,6 +139,7 @@ module ObjectStorage
             hash[:TempPath] = workhorse_local_upload_path
           end
 
+          hash[:UploadHashFunctions] = %w[sha1 sha256 sha512] if ::Gitlab::FIPS.enabled?
           hash[:MaximumSize] = maximum_size if maximum_size.present?
         end
       end

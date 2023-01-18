@@ -4,8 +4,9 @@ require 'spec_helper'
 
 module Gitlab
   module Ci
-    RSpec.describe YamlProcessor do
+    RSpec.describe YamlProcessor, feature_category: :pipeline_authoring do
       include StubRequests
+      include RepoHelpers
 
       subject(:processor) { described_class.new(config, user: nil).execute }
 
@@ -1302,32 +1303,6 @@ module Gitlab
               'VAR3' => { value: 'value3', raw: true }
             )
           end
-
-          context 'when the FF ci_raw_variables_in_yaml_config is disabled' do
-            before do
-              stub_feature_flags(ci_raw_variables_in_yaml_config: false)
-            end
-
-            it 'returns variables without description and raw' do
-              expect(job_variables).to contain_exactly(
-                { key: 'VAR4', value: 'value4' },
-                { key: 'VAR5', value: 'value5' },
-                { key: 'VAR6', value: 'value6' }
-              )
-
-              expect(execute.root_variables).to contain_exactly(
-                { key: 'VAR1', value: 'value1' },
-                { key: 'VAR2', value: 'value2' },
-                { key: 'VAR3', value: 'value3' }
-              )
-
-              expect(execute.root_variables_with_prefill_data).to eq(
-                'VAR1' => { value: 'value1' },
-                'VAR2' => { value: 'value2', description: 'description2' },
-                'VAR3' => { value: 'value3' }
-              )
-            end
-          end
         end
       end
 
@@ -1505,9 +1480,19 @@ module Gitlab
           let(:opts) { { project: project, sha: project.commit.sha } }
 
           context "when the included internal file is present" do
-            before do
-              expect(project.repository).to receive(:blob_data_at)
-                .and_return(YAML.dump({ job1: { script: 'hello' } }))
+            let(:project_files) do
+              {
+                'local.gitlab-ci.yml' => <<~YAML
+                job1:
+                  script: hello
+                YAML
+              }
+            end
+
+            around do |example|
+              create_and_delete_files(project, project_files) do
+                example.run
+              end
             end
 
             it { is_expected.to be_valid }
@@ -1699,7 +1684,8 @@ module Gitlab
               untracked: true,
               key: 'key',
               policy: 'pull-push',
-              when: 'on_success'
+              when: 'on_success',
+              unprotect: false
             ])
         end
 
@@ -1723,7 +1709,8 @@ module Gitlab
               untracked: true,
               key: { files: ['file'] },
               policy: 'pull-push',
-              when: 'on_success'
+              when: 'on_success',
+              unprotect: false
             ])
         end
 
@@ -1749,14 +1736,16 @@ module Gitlab
                 untracked: true,
                 key: 'keya',
                 policy: 'pull-push',
-                when: 'on_success'
+                when: 'on_success',
+                unprotect: false
               },
               {
                 paths: ['logs/', 'binaries/'],
                 untracked: true,
                 key: 'key',
                 policy: 'pull-push',
-                when: 'on_success'
+                when: 'on_success',
+                unprotect: false
               }
             ]
           )
@@ -1783,7 +1772,8 @@ module Gitlab
               untracked: true,
               key: { files: ['file'] },
               policy: 'pull-push',
-              when: 'on_success'
+              when: 'on_success',
+              unprotect: false
             ])
         end
 
@@ -1808,7 +1798,8 @@ module Gitlab
               untracked: true,
               key: { files: ['file'], prefix: 'prefix' },
               policy: 'pull-push',
-              when: 'on_success'
+              when: 'on_success',
+              unprotect: false
             ])
         end
 
@@ -1831,7 +1822,8 @@ module Gitlab
               untracked: false,
               key: 'local',
               policy: 'pull-push',
-              when: 'on_success'
+              when: 'on_success',
+              unprotect: false
             ])
         end
       end

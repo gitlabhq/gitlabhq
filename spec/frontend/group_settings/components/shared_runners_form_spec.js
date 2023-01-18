@@ -10,7 +10,7 @@ jest.mock('~/api/groups_api');
 const GROUP_ID = '99';
 const RUNNER_ENABLED_VALUE = 'enabled';
 const RUNNER_DISABLED_VALUE = 'disabled_and_unoverridable';
-const RUNNER_ALLOW_OVERRIDE_VALUE = 'disabled_with_override';
+const RUNNER_ALLOW_OVERRIDE_VALUE = 'disabled_and_overridable';
 
 describe('group_settings/components/shared_runners_form', () => {
   let wrapper;

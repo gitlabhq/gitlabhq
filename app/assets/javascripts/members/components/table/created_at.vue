@@ -1,10 +1,10 @@
 <script>
 import { GlSprintf } from '@gitlab/ui';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import UserDate from '~/vue_shared/components/user_date.vue';
 
 export default {
   name: 'CreatedAt',
-  components: { GlSprintf, TimeAgoTooltip },
+  components: { GlSprintf, UserDate },
   props: {
     date: {
       type: String,
@@ -29,12 +29,12 @@ export default {
   <span>
     <gl-sprintf v-if="showCreatedBy" :message="s__('Members|%{time} by %{user}')">
       <template #time>
-        <time-ago-tooltip :time="date" />
+        <user-date :date="date" />
       </template>
       <template #user>
         <a :href="createdBy.webUrl">{{ createdBy.name }}</a>
       </template>
     </gl-sprintf>
-    <time-ago-tooltip v-else :time="date" />
+    <user-date v-else :date="date" />
   </span>
 </template>

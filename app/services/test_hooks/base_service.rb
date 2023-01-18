@@ -16,9 +16,16 @@ module TestHooks
       trigger_key = hook.class.triggers.key(trigger.to_sym)
 
       return error('Testing not available for this hook') if trigger_key.nil? || data.blank?
+
       return error(data[:error]) if data[:error].present?
 
       hook.execute(data, trigger_key, force: true)
+    rescue ArgumentError => e
+      error(e.message)
+    end
+
+    def error(message)
+      ServiceResponse.error(message: message)
     end
   end
 end

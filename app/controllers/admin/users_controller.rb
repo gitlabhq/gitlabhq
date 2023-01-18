@@ -57,7 +57,7 @@ class Admin::UsersController < Admin::ApplicationController
 
       log_impersonation_event
 
-      flash[:alert] = _("You are now impersonating %{username}") % { username: user.username }
+      flash[:alert] = format(_("You are now impersonating %{username}"), username: user.username)
 
       redirect_to root_path
     else
@@ -81,7 +81,7 @@ class Admin::UsersController < Admin::ApplicationController
     result = Users::RejectService.new(current_user).execute(user)
 
     if result[:status] == :success
-      redirect_back_or_admin_user(notice: _("You've rejected %{user}" % { user: user.name }))
+      redirect_back_or_admin_user(notice: format(_("You've rejected %{user}"), user: user.name))
     else
       redirect_back_or_admin_user(alert: result[:message])
     end
@@ -105,7 +105,7 @@ class Admin::UsersController < Admin::ApplicationController
     return redirect_back_or_admin_user(notice: _("Internal users cannot be deactivated")) if user.internal?
 
     unless user.can_be_deactivated?
-      return redirect_back_or_admin_user(notice: _("The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated") % { minimum_inactive_days: Gitlab::CurrentSettings.deactivate_dormant_users_period })
+      return redirect_back_or_admin_user(notice: format(_("The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"), minimum_inactive_days: Gitlab::CurrentSettings.deactivate_dormant_users_period))
     end
 
     user.deactivate
@@ -124,8 +124,12 @@ class Admin::UsersController < Admin::ApplicationController
 
   def unblock
     if user.ldap_blocked?
-      redirect_back_or_admin_user(alert: _("This user cannot be unlocked manually from GitLab"))
-    elsif update_user { |user| user.activate }
+      return redirect_back_or_admin_user(alert: _("This user cannot be unlocked manually from GitLab"))
+    end
+
+    result = Users::UnblockService.new(current_user).execute(user)
+
+    if result.success?
       redirect_back_or_admin_user(notice: _("Successfully unblocked"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not unblocked"))
@@ -153,7 +157,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def unlock
-    if update_user { |user| user.unlock_access! }
+    if update_user(&:unlock_access!)
       redirect_back_or_admin_user(notice: _("Successfully unlocked"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not unlocked"))
@@ -161,7 +165,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def confirm
-    if update_user { |user| user.force_confirm }
+    if update_user(&:force_confirm)
       redirect_back_or_admin_user(notice: _("Successfully confirmed"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not confirmed"))
@@ -358,6 +362,7 @@ class Admin::UsersController < Admin::ApplicationController
       :username,
       :website_url,
       :note,
+      :private_profile,
       credit_card_validation_attributes: [:credit_card_validated_at]
     ]
   end
@@ -377,7 +382,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def log_impersonation_event
-    Gitlab::AppLogger.info(_("User %{current_user_username} has started impersonating %{username}") % { current_user_username: current_user.username, username: user.username })
+    Gitlab::AppLogger.info(format(_("User %{current_user_username} has started impersonating %{username}"), current_user_username: current_user.username, username: user.username))
   end
 
   def can_impersonate_user

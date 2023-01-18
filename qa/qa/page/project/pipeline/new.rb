@@ -5,7 +5,7 @@ module QA
     module Project
       module Pipeline
         class New < QA::Page::Base
-          view 'app/assets/javascripts/pipeline_new/components/pipeline_new_form.vue' do
+          view 'app/assets/javascripts/ci/pipeline_new/components/pipeline_new_form.vue' do
             element :run_pipeline_button, required: true
             element :ci_variable_row_container
             element :ci_variable_key_field

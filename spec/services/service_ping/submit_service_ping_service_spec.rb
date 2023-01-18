@@ -305,13 +305,20 @@ RSpec.describe ServicePing::SubmitService do
       stub_response(body: with_conv_index_params)
     end
 
-    let(:metric_double) { instance_double(Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator, duration: 123) }
+    let(:metric_double) do
+      instance_double(Gitlab::Usage::ServicePing::LegacyMetricMetadataDecorator, duration: 123, error: nil)
+    end
+
+    let(:metric_double_with_error) do
+      instance_double(Gitlab::Usage::ServicePing::LegacyMetricMetadataDecorator, duration: 123, error: 'Error')
+    end
+
     let(:usage_data) do
       {
         uuid: 'uuid',
         metric_a: metric_double,
         metric_group: {
-            metric_b: metric_double
+            metric_b: metric_double_with_error
           },
         metric_without_timing: "value",
         recorded_at: Time.current
@@ -324,7 +331,7 @@ RSpec.describe ServicePing::SubmitService do
           uuid: 'uuid',
           metrics: [
             { name: 'metric_a', time_elapsed: 123 },
-            { name: 'metric_group.metric_b', time_elapsed: 123 }
+            { name: 'metric_group.metric_b', time_elapsed: 123, error: 'Error' }
           ]
           }
         }

@@ -33,6 +33,7 @@ describe('BoardTopBar', () => {
         boardType: 'group',
         releasesFetchPath: '/releases',
         isIssueBoard: true,
+        isGroupBoard: true,
         ...provide,
       },
       stubs: { IssueBoardFilteredSearch },

@@ -25,6 +25,7 @@ describe('Pipeline schedule actions', () => {
   const findAllButtons = () => wrapper.findAllComponents(GlButton);
   const findDeleteBtn = () => wrapper.findByTestId('delete-pipeline-schedule-btn');
   const findTakeOwnershipBtn = () => wrapper.findByTestId('take-ownership-pipeline-schedule-btn');
+  const findPlayScheduleBtn = () => wrapper.findByTestId('play-pipeline-schedule-btn');
 
   afterEach(() => {
     wrapper.destroy();
@@ -59,6 +60,16 @@ describe('Pipeline schedule actions', () => {
 
     expect(wrapper.emitted()).toEqual({
       showTakeOwnershipModal: [[mockTakeOwnershipNodes[0].id]],
+    });
+  });
+
+  it('play button emits playPipelineSchedule event and schedule id', () => {
+    createComponent();
+
+    findPlayScheduleBtn().vm.$emit('click');
+
+    expect(wrapper.emitted()).toEqual({
+      playPipelineSchedule: [[mockPipelineScheduleNodes[0].id]],
     });
   });
 });

@@ -1,13 +1,12 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { GlTooltipDirective as GlTooltip, GlCollapsibleListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { TEXT_STYLE_DROPDOWN_ITEMS } from '../constants';
 import EditorStateObserver from './editor_state_observer.vue';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
     EditorStateObserver,
   },
   directives: {
@@ -25,15 +24,26 @@ export default {
 
       return activeItem ? activeItem.label : this.$options.i18n.placeholder;
     },
+    listboxItems() {
+      return this.$options.items.map((item) => {
+        return {
+          value: item.label,
+          text: item.label,
+        };
+      });
+    },
   },
   methods: {
+    mapDropdownItemToCommand(dropdownItem) {
+      return this.$options.items.find((option) => option.label === dropdownItem);
+    },
     updateActiveItem({ editor }) {
       this.activeItem = TEXT_STYLE_DROPDOWN_ITEMS.find((item) =>
         editor.isActive(item.contentType, item.commandParams),
       );
     },
     execute(item) {
-      const { editorCommand, contentType, commandParams } = item;
+      const { editorCommand, contentType, commandParams } = this.mapDropdownItemToCommand(item);
       const value = commandParams?.level;
 
       if (editorCommand) {
@@ -46,8 +56,8 @@ export default {
 
       this.$emit('execute', { contentType, value });
     },
-    isActive(item) {
-      return this.tiptapEditor.isActive(item.contentType, item.commandParams);
+    isActive(dropdownItem) {
+      return this.tiptapEditor.isActive(dropdownItem.contentType, dropdownItem.commandParams);
     },
   },
   items: TEXT_STYLE_DROPDOWN_ITEMS,
@@ -58,25 +68,15 @@ export default {
 </script>
 <template>
   <editor-state-observer @transaction="updateActiveItem">
-    <gl-dropdown
-      v-gl-tooltip="$options.i18n.placeholder"
-      size="small"
-      data-qa-selector="text_style_dropdown"
+    <gl-collapsible-listbox
+      v-gl-tooltip.hover="$options.i18n.placeholder"
+      :items="listboxItems"
+      :toggle-text="activeItemLabel"
+      :selected="activeItemLabel"
       :disabled="!activeItem"
-      :text="activeItemLabel"
-      lazy
-    >
-      <gl-dropdown-item
-        v-for="(item, index) in $options.items"
-        :key="index"
-        is-check-item
-        :is-checked="isActive(item)"
-        data-qa-selector="text_style_menu_item"
-        :data-qa-text-style="item.label"
-        @click="execute(item)"
-      >
-        {{ item.label }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      :data-qa-text-style="activeItemLabel"
+      data-qa-selector="text_style_dropdown"
+      @select="execute"
+    />
   </editor-state-observer>
 </template>

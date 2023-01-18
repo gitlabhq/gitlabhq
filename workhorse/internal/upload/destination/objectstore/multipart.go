@@ -11,6 +11,8 @@ import (
 	"os"
 
 	"gitlab.com/gitlab-org/labkit/mask"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/s3api"
 )
 
 // ErrNotEnoughParts will be used when writing more than size * len(partURLs)
@@ -51,7 +53,7 @@ func NewMultipart(partURLs []string, completeURL, abortURL, deleteURL string, pu
 }
 
 func (m *Multipart) Upload(ctx context.Context, r io.Reader) error {
-	cmu := &CompleteMultipartUpload{}
+	cmu := &s3api.CompleteMultipartUpload{}
 	for i, partURL := range m.PartURLs {
 		src := io.LimitReader(r, m.partSize)
 		part, err := m.readAndUploadOnePart(ctx, partURL, m.PutHeaders, src, i+1)
@@ -91,7 +93,7 @@ func (m *Multipart) Delete() {
 	deleteURL(m.DeleteURL)
 }
 
-func (m *Multipart) readAndUploadOnePart(ctx context.Context, partURL string, putHeaders map[string]string, src io.Reader, partNumber int) (*completeMultipartUploadPart, error) {
+func (m *Multipart) readAndUploadOnePart(ctx context.Context, partURL string, putHeaders map[string]string, src io.Reader, partNumber int) (*s3api.CompleteMultipartUploadPart, error) {
 	file, err := os.CreateTemp("", "part-buffer")
 	if err != nil {
 		return nil, fmt.Errorf("create temporary buffer file: %v", err)
@@ -118,7 +120,7 @@ func (m *Multipart) readAndUploadOnePart(ctx context.Context, partURL string, pu
 	if err != nil {
 		return nil, fmt.Errorf("upload part %d: %v", partNumber, err)
 	}
-	return &completeMultipartUploadPart{PartNumber: partNumber, ETag: etag}, nil
+	return &s3api.CompleteMultipartUploadPart{PartNumber: partNumber, ETag: etag}, nil
 }
 
 func (m *Multipart) uploadPart(ctx context.Context, url string, headers map[string]string, body io.Reader, size int64) (string, error) {
@@ -142,7 +144,7 @@ func (m *Multipart) uploadPart(ctx context.Context, url string, headers map[stri
 	return part.ETag(), nil
 }
 
-func (m *Multipart) complete(ctx context.Context, cmu *CompleteMultipartUpload) error {
+func (m *Multipart) complete(ctx context.Context, cmu *s3api.CompleteMultipartUpload) error {
 	body, err := xml.Marshal(cmu)
 	if err != nil {
 		return fmt.Errorf("marshal CompleteMultipartUpload request: %v", err)

@@ -16,6 +16,7 @@ module ApplicationWorker
   SAFE_PUSH_BULK_LIMIT = 1000
 
   included do
+    prefer_calling_context_feature_category false
     set_queue
     after_set_class_attribute { set_queue }
 

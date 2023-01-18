@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees empty state', feature_category: :code_review do
+RSpec.describe 'Merge request > User sees empty state', feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   let(:project) { create(:project, :public, :repository) }

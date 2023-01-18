@@ -18,7 +18,7 @@ describe('IssueBoardFilter', () => {
         isSignedIn,
         releasesFetchPath: '/releases',
         fullPath: 'gitlab-org',
-        boardType: 'group',
+        isGroupBoard: true,
       },
     });
   };

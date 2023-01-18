@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::TransferService, :sidekiq_inline do
+RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :subgroups do
   shared_examples 'project namespace path is in sync with project path' do
     it 'keeps project and project namespace attributes in sync' do
       projects_with_project_namespace.each do |project|
@@ -364,7 +364,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           let(:new_parent_group) { create(:group, shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: true) }
 
           it 'calls update service' do
-            expect(Groups::UpdateSharedRunnersService).to receive(:new).with(group, user, { shared_runners_setting: Namespace::SR_DISABLED_WITH_OVERRIDE }).and_call_original
+            expect(Groups::UpdateSharedRunnersService).to receive(:new).with(group, user, { shared_runners_setting: Namespace::SR_DISABLED_AND_OVERRIDABLE }).and_call_original
 
             transfer_service.execute(new_parent_group)
           end
@@ -1002,6 +1002,39 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
             expect { transfer_service.execute(subgroup_in_new_parent_group) }
               .not_to publish_event(Groups::GroupTransferedEvent)
           end
+        end
+      end
+    end
+
+    context 'with namespace_commit_emails concerns' do
+      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be(:target) { create(:group) }
+
+      before do
+        group.add_owner(user)
+        target.add_owner(user)
+      end
+
+      context 'when origin is a root group' do
+        before do
+          create_list(:namespace_commit_email, 2, namespace: group)
+        end
+
+        it 'deletes all namespace_commit_emails' do
+          expect { transfer_service.execute(target) }
+            .to change { group.namespace_commit_emails.count }.by(-2)
+        end
+
+        it_behaves_like 'publishes a GroupTransferedEvent'
+      end
+
+      context 'when origin is not a root group' do
+        let(:group) { create(:group, parent: create(:group)) }
+
+        it 'does not attempt to delete namespace_commit_emails' do
+          expect(Users::NamespaceCommitEmail).not_to receive(:delete_for_namespace)
+
+          transfer_service.execute(target)
         end
       end
     end

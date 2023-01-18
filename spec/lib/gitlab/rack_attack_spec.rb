@@ -35,7 +35,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
       allow(fake_rack_attack).to receive(:cache).and_return(fake_cache)
       allow(fake_cache).to receive(:store=)
 
-      fake_rack_attack.const_set('Request', fake_rack_attack_request)
+      fake_rack_attack.const_set(:Request, fake_rack_attack_request)
       stub_const("Rack::Attack", fake_rack_attack)
     end
 

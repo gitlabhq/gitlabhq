@@ -125,7 +125,7 @@ job:
   rules:
     - if: $CI_COMMIT_BRANCH
       changes:
-        compare_to: refs/heads/main
+        compare_to: 'refs/heads/main'
         paths:
           - '*'
 ```
@@ -315,7 +315,7 @@ Other commonly used variables for `if` clauses:
 - `if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TITLE =~ /Merge branch.*/`:
    If the commit branch is the default branch and the commit message title matches a regular expression.
    For example, the default commit message for a merge commit starts with `Merge branch`.
-- `if: $CUSTOM_VARIABLE !~ /regex-expression/`: If the [custom variable](../variables/index.md#custom-cicd-variables)
+- `if: $CUSTOM_VARIABLE !~ /regex-expression/`: If the [custom variable](../variables/index.md)
   `CUSTOM_VARIABLE` does **not** match a regular expression.
 - `if: $CUSTOM_VARIABLE == "value1"`: If the custom variable `CUSTOM_VARIABLE` is
   exactly `value1`.
@@ -754,7 +754,6 @@ deploystacks:
         STACK: [monitoring, backup]
       - PROVIDER: [gcp, vultr]
         STACK: [data]
-  environment: $PROVIDER/$STACK
 ```
 
 This example generates 6 parallel `deploystacks` trigger jobs, each with different values
@@ -986,8 +985,11 @@ Expressions evaluate as `true` if:
 
 For example:
 
-- `$VARIABLE =~ /^content.*/`
-- `$VARIABLE_1 !~ /^content.*/`
+- `if: $VARIABLE =~ /^content.*/`
+- `if: $VARIABLE !~ /^content.*/`
+
+Single-character regular expressions, like `/./`, are not supported and
+produce an `invalid expression syntax` error.
 
 Pattern matching is case-sensitive by default. Use the `i` flag modifier to make a
 pattern case-insensitive. For example: `/pattern/i`.

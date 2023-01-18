@@ -10,7 +10,7 @@ RSpec.describe Ci::StagePresenter do
   let!(:retried_build) { create(:ci_build, :tags, :artifacts, :retried, pipeline: stage.pipeline, stage: stage.name) }
 
   before do
-    create(:generic_commit_status, pipeline: stage.pipeline, stage: stage.name)
+    create(:generic_commit_status, pipeline: stage.pipeline, ci_stage: stage)
   end
 
   shared_examples 'preloaded associations for CI status' do

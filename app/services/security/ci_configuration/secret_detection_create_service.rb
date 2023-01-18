@@ -21,6 +21,10 @@ module Security
       def description
         _('Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings) to customize Secret Detection settings.')
       end
+
+      def name
+        'Secret Detection'
+      end
     end
   end
 end

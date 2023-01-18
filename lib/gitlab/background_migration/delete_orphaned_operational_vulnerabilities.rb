@@ -17,6 +17,8 @@ module Gitlab
       SQL
 
       operation_name :delete_orphaned_operational_vulnerabilities
+      feature_category :database
+
       scope_to ->(relation) do
         relation
           .where(report_type: [REPORT_TYPES[:cluster_image_scanning], REPORT_TYPES[:custom]])

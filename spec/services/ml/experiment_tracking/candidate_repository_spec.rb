@@ -31,16 +31,36 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository do
   end
 
   describe '#create!' do
-    subject { repository.create!(experiment, 1234, [{ key: 'hello', value: 'world' }]) }
+    let(:tags) { [{ key: 'hello', value: 'world' }] }
+    let(:name) { 'some_candidate' }
+
+    subject { repository.create!(experiment, 1234, tags, name) }
 
     it 'creates the candidate' do
       expect(subject.start_time).to eq(1234)
       expect(subject.iid).not_to be_nil
       expect(subject.end_time).to be_nil
+      expect(subject.name).to eq('some_candidate')
     end
 
     it 'creates with tag' do
       expect(subject.metadata.length).to eq(1)
+    end
+
+    context 'when name is passed as tag' do
+      let(:tags) { [{ key: 'mlflow.runName', value: 'blah' }] }
+
+      it 'ignores if name is not nil' do
+        expect(subject.name).to eq('some_candidate')
+      end
+
+      context 'when name is nil' do
+        let(:name) { nil }
+
+        it 'sets the mlflow.runName as candidate name' do
+          expect(subject.name).to eq('blah')
+        end
+      end
     end
   end
 

@@ -7,6 +7,7 @@ module Gitlab
       PUBLIC = 20
 
       operation_name :disable_legacy_open_source_license_for_one_member_no_repo_projects
+      feature_category :database
 
       # Migration only version of `project_settings` table
       class ProjectSetting < ApplicationRecord

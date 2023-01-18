@@ -33,6 +33,20 @@ RSpec.describe API::Entities::Ml::Mlflow::RunInfo do
     end
   end
 
+  describe 'run_name' do
+    context 'when nil' do
+      it { is_expected.not_to have_key(:run_name) }
+    end
+
+    context 'when not nil' do
+      before do
+        allow(candidate).to receive(:name).and_return('hello')
+      end
+
+      it { expect(subject[:run_name]).to eq('hello') }
+    end
+  end
+
   describe 'experiment_id' do
     it 'is the experiment iid as string' do
       expect(subject[:experiment_id]).to eq(candidate.experiment.iid.to_s)

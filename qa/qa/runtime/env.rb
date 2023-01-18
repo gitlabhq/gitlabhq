@@ -237,6 +237,10 @@ module QA
         ENV['GITLAB_QA_PASSWORD_1']
       end
 
+      def gitlab_qa_access_token_1
+        ENV['GITLAB_QA_ACCESS_TOKEN_1']
+      end
+
       def gitlab_qa_username_2
         ENV['GITLAB_QA_USERNAME_2'] || 'gitlab-qa-user2'
       end
@@ -406,14 +410,6 @@ module QA
         ENV.fetch('GITLAB_QA_LOOP_RUNNER_MINUTES', 1).to_i
       end
 
-      def reusable_project_path
-        ENV.fetch('QA_REUSABLE_PROJECT_PATH', 'reusable_project')
-      end
-
-      def reusable_group_path
-        ENV.fetch('QA_REUSABLE_GROUP_PATH', 'reusable_group')
-      end
-
       def mailhog_hostname
         ENV['MAILHOG_HOSTNAME']
       end
@@ -503,7 +499,7 @@ module QA
       end
 
       def chrome_default_download_path
-        ENV['DEFAULT_CHROME_DOWNLOAD_PATH']
+        ENV['DEFAULT_CHROME_DOWNLOAD_PATH'] || Dir.tmpdir
       end
 
       private

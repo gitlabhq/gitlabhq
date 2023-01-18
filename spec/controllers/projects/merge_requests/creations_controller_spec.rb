@@ -307,7 +307,7 @@ RSpec.describe Projects::MergeRequests::CreationsController do
     end
   end
 
-  describe 'GET target_projects', feature_category: :code_review do
+  describe 'GET target_projects', feature_category: :code_review_workflow do
     it 'returns target projects JSON' do
       get :target_projects, params: { namespace_id: project.namespace.to_param, project_id: project }
 

@@ -17,7 +17,8 @@ RSpec.describe CreateBaseWorkItemTypes, :migration, feature_category: :team_plan
     }
   end
 
-  after(:all) do
+  # We use append_after to make sure this runs after the schema was reset to its latest state
+  append_after(:all) do
     # Make sure base types are recreated after running the migration
     # because migration specs are not run in a transaction
     reset_work_item_types

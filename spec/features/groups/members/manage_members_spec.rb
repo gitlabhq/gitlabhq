@@ -50,12 +50,13 @@ RSpec.describe 'Groups > Members > Manage members', feature_category: :subgroups
 
     # Open modal
     page.within(second_row) do
-      click_button 'Remove member'
+      show_actions
+      click_button _('Remove member')
     end
 
     within_modal do
       expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
-      click_button('Remove member')
+      click_button _('Remove member')
     end
 
     wait_for_requests

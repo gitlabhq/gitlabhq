@@ -4,6 +4,7 @@ class Gitlab::Seeder::Projects
   include ActionView::Helpers::NumberHelper
 
   PROJECT_URLS = %w[
+    https://gitlab.com/gitlab-com/support/toolbox/gitlab-smoke-tests.git
     https://gitlab.com/gitlab-org/gitlab-test.git
     https://gitlab.com/gitlab-org/gitlab-shell.git
     https://gitlab.com/gnuwget/wget2.git

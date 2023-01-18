@@ -8,9 +8,6 @@ import (
 	"encoding/hex"
 	"hash"
 	"io"
-	"os"
-
-	"gitlab.com/gitlab-org/labkit/fips"
 )
 
 var hashFactories = map[string](func() hash.Hash){
@@ -20,26 +17,8 @@ var hashFactories = map[string](func() hash.Hash){
 	"sha512": sha512.New,
 }
 
-var fipsHashFactories = map[string](func() hash.Hash){
-	"sha1":   sha1.New,
-	"sha256": sha256.New,
-	"sha512": sha512.New,
-}
-
 func factories() map[string](func() hash.Hash) {
-	if FIPSEnabled() {
-		return fipsHashFactories
-	}
-
 	return hashFactories
-}
-
-func FIPSEnabled() bool {
-	if fips.Enabled() {
-		return true
-	}
-
-	return os.Getenv("WORKHORSE_TEST_FIPS_ENABLED") == "1"
 }
 
 type multiHash struct {
@@ -47,12 +26,30 @@ type multiHash struct {
 	hashes map[string]hash.Hash
 }
 
-func newMultiHash() (m *multiHash) {
+func permittedHashFunction(hashFunctions []string, hash string) bool {
+	if len(hashFunctions) == 0 {
+		return true
+	}
+
+	for _, name := range hashFunctions {
+		if name == hash {
+			return true
+		}
+	}
+
+	return false
+}
+
+func newMultiHash(hashFunctions []string) (m *multiHash) {
 	m = &multiHash{}
 	m.hashes = make(map[string]hash.Hash)
 
 	var writers []io.Writer
 	for hash, hashFactory := range factories() {
+		if !permittedHashFunction(hashFunctions, hash) {
+			continue
+		}
+
 		writer := hashFactory()
 
 		m.hashes[hash] = writer

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Project transfer between groups', :reliable, product_group: :workspace do
+    describe 'Project transfer between groups', :reliable, product_group: :organization do
       let(:source_group) do
         Resource::Group.fabricate_via_api! do |group|
           group.path = "source-group-#{SecureRandom.hex(8)}"

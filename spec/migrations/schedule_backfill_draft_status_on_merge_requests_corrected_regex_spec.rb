@@ -4,7 +4,8 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe ScheduleBackfillDraftStatusOnMergeRequestsCorrectedRegex, :sidekiq, feature_category: :code_review do
+RSpec.describe ScheduleBackfillDraftStatusOnMergeRequestsCorrectedRegex,
+               :sidekiq, feature_category: :code_review_workflow do
   let(:namespaces)     { table(:namespaces) }
   let(:projects)       { table(:projects) }
   let(:merge_requests) { table(:merge_requests) }

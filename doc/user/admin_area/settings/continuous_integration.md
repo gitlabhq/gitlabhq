@@ -52,7 +52,7 @@ you can assign that runner to other projects.
 To enable a specific runner for more than one project:
 
 1. On the top bar, select **Main menu > Admin**.
-1. From the left sidebar, select **Overview > Runners**.
+1. From the left sidebar, select **CI/CD > Runners**.
 1. Select the runner you want to edit.
 1. In the top right, select **Edit** (**{pencil}**).
 1. Under **Restrict projects for this runner**, search for a project.
@@ -188,7 +188,7 @@ For the value set for GitLab.com, see [Scheduled job archiving](../../gitlab_com
 ## Protect CI/CD variables by default
 
 To set all new [CI/CD variables](../../../ci/variables/index.md) as
-[protected](../../../ci/variables/index.md#protected-cicd-variables) by default:
+[protected](../../../ci/variables/index.md#protect-a-cicd-variable) by default:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.

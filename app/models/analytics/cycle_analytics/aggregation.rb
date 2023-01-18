@@ -2,8 +2,7 @@
 
 class Analytics::CycleAnalytics::Aggregation < ApplicationRecord
   include FromUnion
-
-  belongs_to :group, optional: false
+  include Analytics::CycleAnalytics::Parentable
 
   validates :incremental_runtimes_in_seconds, :incremental_processed_records, :full_runtimes_in_seconds, :full_processed_records, presence: true, length: { maximum: 10 }, allow_blank: true
 
@@ -58,7 +57,10 @@ class Analytics::CycleAnalytics::Aggregation < ApplicationRecord
     estimation < 1 ? nil : estimation.from_now
   end
 
-  def self.safe_create_for_group(group)
+  def self.safe_create_for_namespace(group_or_project_namespace)
+    # Namespaces::ProjectNamespace has no root_ancestor
+    # Related: https://gitlab.com/gitlab-org/gitlab/-/issues/386124
+    group = group_or_project_namespace.is_a?(Group) ? group_or_project_namespace : group_or_project_namespace.parent
     top_level_group = group.root_ancestor
     aggregation = find_by(group_id: top_level_group.id)
     return aggregation if aggregation.present?

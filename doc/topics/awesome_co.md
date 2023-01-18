@@ -32,10 +32,10 @@ ci: migrated
 
 ### Run
 
-The `gitlab:seed:awesome_co` Rake task takes two arguments. `:name` and `:namespace_id`.
+The `ee:gitlab:seed:awesome_co` Rake task takes two arguments. `:name` and `:namespace_id`.
 
 ```shell
-$ bundle exec rake "gitlab:seed:awesome_co[awesome_co,1]"
+$ bundle exec rake "ee:gitlab:seed:awesome_co[awesome_co,1]"
 Seeding AwesomeCo for Administrator
 ```
 
@@ -54,7 +54,7 @@ Each company (i.e. test data template) is represented as a Ruby file (.rb) in `d
 ### AwesomeCo (db/seeds/awesome_co/awesome_co.rb)
 
 ```shell
-$ bundle exec rake "gitlab:seed:awesome_co[awesome_co,:namespace_id]"
+$ bundle exec rake "ee:gitlab:seed:awesome_co[awesome_co,:namespace_id]"
 Seeding AwesomeCo for :namespace_id
 ```
 

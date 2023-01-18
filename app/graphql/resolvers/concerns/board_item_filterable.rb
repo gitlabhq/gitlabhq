@@ -22,6 +22,7 @@ module BoardItemFilterable
 
       rewrite_param_name(filters[:or], :author_usernames, :author_username)
       rewrite_param_name(filters[:or], :assignee_usernames, :assignee_username)
+      rewrite_param_name(filters[:or], :label_names, :label_name)
     end
 
     filters

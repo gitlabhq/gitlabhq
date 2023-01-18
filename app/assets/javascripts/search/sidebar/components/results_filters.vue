@@ -44,7 +44,7 @@ export default {
   <form class="gl-pt-5 gl-md-pt-0" @submit.prevent="applyQuery">
     <hr
       v-if="searchPageVerticalNavFeatureFlag"
-      class="gl-my-5 gl-border-gray-100 gl-display-none gl-md-display-block"
+      class="gl-my-5 gl-mx-5 gl-border-gray-100 gl-display-none gl-md-display-block"
     />
     <status-filter v-if="showStatusFilter" />
     <confidentiality-filter v-if="showConfidentialityFilter" />

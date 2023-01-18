@@ -36,6 +36,10 @@ To add a merge request approval rule:
 1. In the **Merge request approvals** section, scroll to **Approval rules**.
 1. Select **Add approval rule**.
 1. Add a human-readable **Rule name**.
+1. Select a **Target branch**:
+   - To apply the rule to all branches, select **All branches**.
+   - To apply the rule to all protected branches, select **All protected branches** (GitLab 15.3 and later).
+   - To apply the rule to a specific branch, select it from the list.
 1. Set the number of required approvals in **Approvals required**. A value of `0` makes
    [the rule optional](#configure-optional-approval-rules), and any number greater than `0`
    creates a required rule.
@@ -221,8 +225,7 @@ appreciated, but not required. To make an approval rule optional:
 
 ## Approvals for protected branches
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in GitLab 12.8.
-> - **All protected branches** target branch option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360930) in GitLab 15.3.
+> **All protected branches** target branch option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360930) in GitLab 15.3.
 
 Approval rules are often relevant only to specific branches, like your
 [default branch](../../repository/branches/default.md). To configure an
@@ -231,8 +234,7 @@ approval rule for certain branches:
 1. [Create an approval rule](#add-an-approval-rule).
 1. Go to your project and select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval rules**.
-1. Select a **Target branch**:
-   - To apply the rule to all branches, select **All branches**.
+1. For **Target branch**:
    - To apply the rule to all protected branches, select **All protected branches** (GitLab 15.3 and later).
    - To apply the rule to a specific branch, select it from the list.
 

@@ -1,1 +1,1 @@
-require 'bundler/checksum'
+require 'bundler_checksum'

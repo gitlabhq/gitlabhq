@@ -1,19 +1,15 @@
 - breadcrumb_title _("Messages")
 - page_title _("Broadcast Messages")
-- vue_app_enabled = Feature.enabled?(:vue_broadcast_messages, current_user)
 
-- if vue_app_enabled
-  #js-broadcast-message{ data: {
-    id: @broadcast_message.id,
-    message: @broadcast_message.message,
-    broadcast_type: @broadcast_message.broadcast_type,
-    theme: @broadcast_message.theme,
-    dismissable: @broadcast_message.dismissable.to_s,
-    target_access_levels: @broadcast_message.target_access_levels,
-    target_path: @broadcast_message.target_path,
-    starts_at: @broadcast_message.starts_at,
-    ends_at: @broadcast_message.ends_at,
-    target_access_level_options: target_access_level_options.to_json,
-  } }
-- else
-  = render 'form'
+#js-broadcast-message{ data: {
+  id: @broadcast_message.id,
+  message: @broadcast_message.message,
+  broadcast_type: @broadcast_message.broadcast_type,
+  theme: @broadcast_message.theme,
+  dismissable: @broadcast_message.dismissable.to_s,
+  target_access_levels: @broadcast_message.target_access_levels,
+  target_path: @broadcast_message.target_path,
+  starts_at: @broadcast_message.starts_at,
+  ends_at: @broadcast_message.ends_at,
+  target_access_level_options: target_access_level_options.to_json,
+} }

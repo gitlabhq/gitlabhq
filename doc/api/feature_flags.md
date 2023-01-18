@@ -211,10 +211,12 @@ PUT /projects/:id/feature_flags/:feature_flag_name
 | `strategies`        | JSON             | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies). |
 | `strategies:id`     | JSON             | no         | The feature flag strategy ID.                                                          |
 | `strategies:name`   | JSON             | no         | The strategy name.                                                                     |
+| `strategies:_destroy` | boolean         | no         | Delete the strategy when true.                                                               |
 | `strategies:parameters` | JSON         | no         | The strategy parameters.                                                               |
 | `strategies:scopes` | JSON             | no         | The scopes for the strategy.                                                           |
 | `strategies:scopes:id` | JSON          | no         | The environment scope ID.                                                                         |
 | `strategies:scopes:environment_scope` | string | no | The environment scope of the scope.                                                    |
+| `strategies:scopes:_destroy` | boolean | no | Delete the scope when true.                                                    |
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature" \

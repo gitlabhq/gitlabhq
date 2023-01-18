@@ -69,7 +69,7 @@ export default {
     isCollapsible() {
       if (!this.isLoadingSummary && this.loadingState !== LOADING_STATES.collapsedError) {
         if (this.shouldCollapse) {
-          return this.shouldCollapse();
+          return this.shouldCollapse(this.collapsedData);
         }
 
         return true;

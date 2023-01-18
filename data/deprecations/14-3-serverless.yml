@@ -1,8 +1,6 @@
 - title: "GitLab Serverless"
   announcement_milestone: "14.3"
-  announcement_date: "2021-09-22"
   removal_milestone: "15.0"
-  removal_date: "2022-05-22"
   breaking_change: true
   body: |
     GitLab Serverless is a feature set to support Knative-based serverless development with automatic deployments and monitoring.

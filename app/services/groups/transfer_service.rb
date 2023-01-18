@@ -34,6 +34,7 @@ module Groups
         update_integrations
         remove_issue_contacts(old_root_ancestor_id, was_root_group)
         update_crm_objects(was_root_group)
+        remove_namespace_commit_emails(was_root_group)
       end
 
       post_update_hooks(@updated_project_ids, old_root_ancestor_id)
@@ -278,6 +279,10 @@ module Groups
       )
 
       Gitlab::EventStore.publish(event)
+    end
+
+    def remove_namespace_commit_emails(was_root_group)
+      Users::NamespaceCommitEmail.delete_for_namespace(@group) if was_root_group
     end
   end
 end

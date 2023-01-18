@@ -13,12 +13,12 @@ import RegistrationTokenResetDropdownItem from '~/ci/runner/components/registrat
 
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
 
-import getRunnerPlatformsQuery from '~/vue_shared/components/runner_instructions/graphql/queries/get_runner_platforms.query.graphql';
-import getRunnerSetupInstructionsQuery from '~/vue_shared/components/runner_instructions/graphql/queries/get_runner_setup.query.graphql';
+import getRunnerPlatformsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_platforms.query.graphql';
+import getRunnerSetupInstructionsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_setup.query.graphql';
 
 import {
-  mockGraphqlRunnerPlatforms,
-  mockGraphqlInstructions,
+  mockRunnerPlatforms,
+  mockInstructions,
 } from 'jest/vue_shared/components/runner_instructions/mock_data';
 
 const mockToken = '0123456789';
@@ -67,8 +67,8 @@ describe('RegistrationDropdown', () => {
 
   const createComponentWithModal = () => {
     const requestHandlers = [
-      [getRunnerPlatformsQuery, jest.fn().mockResolvedValue(mockGraphqlRunnerPlatforms)],
-      [getRunnerSetupInstructionsQuery, jest.fn().mockResolvedValue(mockGraphqlInstructions)],
+      [getRunnerPlatformsQuery, jest.fn().mockResolvedValue(mockRunnerPlatforms)],
+      [getRunnerSetupInstructionsQuery, jest.fn().mockResolvedValue(mockInstructions)],
     ];
 
     createComponent(

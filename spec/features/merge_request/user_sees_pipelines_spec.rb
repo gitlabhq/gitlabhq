@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :code_review do
+RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :code_review_workflow do
   describe 'pipeline tab' do
     let(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.target_project }

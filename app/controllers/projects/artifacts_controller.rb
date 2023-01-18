@@ -82,6 +82,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def raw
     return render_404 unless zip_artifact?
+    return render_404 unless artifacts_file
 
     path = Gitlab::Ci::Build::Artifacts::Path.new(params[:path])
 

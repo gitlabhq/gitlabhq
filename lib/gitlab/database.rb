@@ -84,7 +84,7 @@ module Gitlab
     #
     # TODO: https://gitlab.com/gitlab-org/geo-team/discussions/-/issues/5032
     def self.database_base_models_using_load_balancing
-      @database_base_models_with_gitlab_shared ||= {
+      @database_base_models_using_load_balancing ||= {
         # Note that we use ActiveRecord::Base here and not ApplicationRecord.
         # This is deliberate, as we also use these classes to apply load
         # balancing to, and the load balancer must be enabled for _all_ models

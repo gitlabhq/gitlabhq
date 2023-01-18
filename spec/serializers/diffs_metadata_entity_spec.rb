@@ -9,7 +9,6 @@ RSpec.describe DiffsMetadataEntity do
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_diffs) { merge_request.merge_request_diffs }
   let(:merge_request_diff) { merge_request_diffs.last }
-  let(:merge_conflicts_in_diff) { false }
   let(:options) { {} }
 
   let(:entity) do
@@ -18,8 +17,7 @@ RSpec.describe DiffsMetadataEntity do
       options.merge(
         request: request,
         merge_request: merge_request,
-        merge_request_diffs: merge_request_diffs,
-        merge_conflicts_in_diff: merge_conflicts_in_diff
+        merge_request_diffs: merge_request_diffs
       )
     )
   end
@@ -67,10 +65,9 @@ RSpec.describe DiffsMetadataEntity do
         subject[:diff_files]
       end
 
-      context 'when merge_conflicts_in_diff is true' do
+      context 'when there are conflicts' do
         let(:conflict_file) { double(path: raw_diff_files.first.new_path, conflict_type: :both_modified) }
         let(:conflicts) { double(conflicts: double(files: [conflict_file]), can_be_resolved_in_ui?: false) }
-        let(:merge_conflicts_in_diff) { true }
 
         before do
           allow(merge_request).to receive(:cannot_be_merged?).and_return(true)

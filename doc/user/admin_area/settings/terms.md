@@ -29,7 +29,7 @@ For each update to the terms, a new version is stored. When a user accepts or de
 GitLab records which version they accepted or declined.
 
 Existing users must accept the terms on their next GitLab interaction.
-If a signed-in user declines the terms, they are signed out.
+If an authenticated user declines the terms, they are signed out.
 
 When enabled, it adds a mandatory checkbox to the sign up page for new users:
 

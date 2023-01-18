@@ -13,14 +13,18 @@
 module WebIdeSpecHelpers
   include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
 
+  # Open the IDE from anywhere by first visiting the given project's page
   def ide_visit(project)
     visit project_path(project)
 
-    wait_for_requests
+    ide_visit_from_link
+  end
 
-    click_link('Web IDE')
+  # Open the IDE from the current page by clicking the Web IDE link
+  def ide_visit_from_link(link_sel = 'Web IDE')
+    new_tab = window_opened_by { click_link(link_sel) }
 
-    wait_for_requests
+    switch_to_window new_tab
   end
 
   def ide_tree_body

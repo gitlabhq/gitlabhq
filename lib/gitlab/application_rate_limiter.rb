@@ -115,6 +115,38 @@ module Gitlab
         value > threshold_value
       end
 
+      # Similar to #throttled? above but checks for the bypass header in the request and logs the request when it is over the rate limit
+      #
+      # @param request [Http::Request] - Web request used to check the header and log
+      # @param current_user [User] Current user of the request, it can be nil
+      # @param key [Symbol] Key attribute registered in `.rate_limits`
+      # @param scope [Array<ActiveRecord>] Array of ActiveRecord models, Strings
+      #     or Symbols to scope throttling to a specific request (e.g. per user
+      #     per project)
+      # @param resource [ActiveRecord] An ActiveRecord model to count an action
+      #     for (e.g. limit unique project (resource) downloads (action) to five
+      #     per user (scope))
+      # @param threshold [Integer] Optional threshold value to override default
+      #     one registered in `.rate_limits`
+      # @param interval [Integer] Optional interval value to override default
+      #     one registered in `.rate_limits`
+      # @param users_allowlist [Array<String>] Optional list of usernames to
+      #     exclude from the limit. This param will only be functional if Scope
+      #     includes a current user.
+      # @param peek [Boolean] Optional. When true the key will not be
+      #     incremented but the current throttled state will be returned.
+      #
+      # @return [Boolean] Whether or not a request should be throttled
+      def throttled_request?(request, current_user, key, scope:, **options)
+        if ::Gitlab::Throttle.bypass_header.present? && request.get_header(Gitlab::Throttle.bypass_header) == '1'
+          return false
+        end
+
+        throttled?(key, scope: scope, **options).tap do |throttled|
+          log_request(request, "#{key}_request_limit".to_sym, current_user) if throttled
+        end
+      end
+
       # Returns the current rate limited state without incrementing the count.
       #
       # @param key [Symbol] Key attribute registered in `.rate_limits`

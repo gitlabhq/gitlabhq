@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group merge requests page', feature_category: :code_review do
+RSpec.describe 'Group merge requests page', feature_category: :code_review_workflow do
   include FilteredSearchHelpers
 
   let(:path) { merge_requests_group_path(group) }

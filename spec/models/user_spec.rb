@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe User do
+RSpec.describe User, feature_category: :users do
   include ProjectForksHelper
   include TermsHelper
   include ExclusiveLeaseHelpers
@@ -101,6 +101,24 @@ RSpec.describe User do
 
     it { is_expected.to delegate_method(:requires_credit_card_verification).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:requires_credit_card_verification=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:linkedin).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:linkedin=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:twitter).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:twitter=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:skype).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:skype=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:website_url).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:website_url=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:location).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:location=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:organization).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:organization=).to(:user_detail).with_arguments(:args).allow_nil }
   end
 
   describe 'associations' do
@@ -148,6 +166,11 @@ RSpec.describe User do
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
     it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout') }
     it { is_expected.to have_many(:created_projects).dependent(:nullify).class_name('Project') }
+    it { is_expected.to have_many(:user_achievements).class_name('Achievements::UserAchievement').inverse_of(:user) }
+    it { is_expected.to have_many(:awarded_user_achievements).class_name('Achievements::UserAchievement').with_foreign_key('awarded_by_user_id').inverse_of(:awarded_by_user) }
+    it { is_expected.to have_many(:revoked_user_achievements).class_name('Achievements::UserAchievement').with_foreign_key('revoked_by_user_id').inverse_of(:revoked_by_user) }
+    it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
+    it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
 
     describe 'default values' do
       let(:user) { described_class.new }
@@ -160,7 +183,7 @@ RSpec.describe User do
       it { expect(user.hide_no_password).to be_falsey }
       it { expect(user.project_view).to eq('files') }
       it { expect(user.notified_of_own_activity).to be_falsey }
-      it { expect(user.preferred_language).to eq(I18n.default_locale.to_s) }
+      it { expect(user.preferred_language).to eq(Gitlab::CurrentSettings.default_preferred_language) }
       it { expect(user.theme_id).to eq(described_class.gitlab_config.default_theme) }
     end
 
@@ -169,17 +192,51 @@ RSpec.describe User do
         expect(create(:user).user_detail).not_to be_persisted
       end
 
-      it 'creates `user_detail` when `bio` is given' do
-        user = create(:user, bio: 'my bio')
+      shared_examples 'delegated field' do |field|
+        it 'creates `user_detail` when the field is given' do
+          user = create(:user, field => 'my field')
 
-        expect(user.user_detail).to be_persisted
-        expect(user.user_detail.bio).to eq('my bio')
+          expect(user.user_detail).to be_persisted
+          expect(user.user_detail[field]).to eq('my field')
+        end
+
+        it 'delegates to `user_detail`' do
+          user = create(:user, field => 'my field')
+
+          expect(user.public_send(field)).to eq(user.user_detail[field])
+        end
+
+        it 'creates `user_detail` when first updated' do
+          user = create(:user)
+
+          expect { user.update!(field => 'my field') }.to change { user.user_detail.persisted? }.from(false).to(true)
+        end
       end
 
-      it 'delegates `bio` to `user_detail`' do
-        user = create(:user, bio: 'my bio')
+      it_behaves_like 'delegated field', :bio
+      it_behaves_like 'delegated field', :linkedin
+      it_behaves_like 'delegated field', :twitter
+      it_behaves_like 'delegated field', :skype
+      it_behaves_like 'delegated field', :location
+      it_behaves_like 'delegated field', :organization
 
-        expect(user.bio).to eq(user.user_detail.bio)
+      it 'creates `user_detail` when `website_url` is given' do
+        user = create(:user, website_url: 'https://example.com')
+
+        expect(user.user_detail).to be_persisted
+        expect(user.user_detail.website_url).to eq('https://example.com')
+      end
+
+      it 'delegates `website_url` to `user_detail`' do
+        user = create(:user, website_url: 'http://example.com')
+
+        expect(user.website_url).to eq(user.user_detail.website_url)
+      end
+
+      it 'creates `user_detail` when `website_url` is first updated' do
+        user = create(:user)
+
+        expect { user.update!(website_url: 'https://example.com') }.to change { user.user_detail.persisted? }.from(false).to(true)
       end
 
       it 'delegates `pronouns` to `user_detail`' do
@@ -193,30 +250,24 @@ RSpec.describe User do
 
         expect(user.pronunciation).to eq(user.user_detail.pronunciation)
       end
-
-      it 'creates `user_detail` when `bio` is first updated' do
-        user = create(:user)
-
-        expect { user.update!(bio: 'my bio') }.to change { user.user_detail.persisted? }.from(false).to(true)
-      end
     end
 
-    describe '#abuse_report' do
+    describe '#abuse_reports' do
       let(:current_user) { create(:user) }
       let(:other_user) { create(:user) }
 
-      it { is_expected.to have_one(:abuse_report) }
+      it { is_expected.to have_many(:abuse_reports) }
 
       it 'refers to the abuse report whose user_id is the current user' do
         abuse_report = create(:abuse_report, reporter: other_user, user: current_user)
 
-        expect(current_user.abuse_report).to eq(abuse_report)
+        expect(current_user.abuse_reports.last).to eq(abuse_report)
       end
 
       it 'does not refer to the abuse report whose reporter_id is the current user' do
         create(:abuse_report, reporter: current_user, user: other_user)
 
-        expect(current_user.abuse_report).to be_nil
+        expect(current_user.abuse_reports.last).to be_nil
       end
 
       it 'does not update the user_id of an abuse report when the user is updated' do
@@ -436,18 +487,25 @@ RSpec.describe User do
     end
 
     describe 'preferred_language' do
-      context 'when its value is nil in the database' do
-        let(:user) { build(:user, preferred_language: nil) }
+      subject(:preferred_language) { user.preferred_language }
 
-        it 'falls back to I18n.default_locale when empty in the database' do
-          expect(user.preferred_language).to eq I18n.default_locale.to_s
-        end
+      context 'when preferred_language is set' do
+        let(:user) { build(:user, preferred_language: 'de_DE') }
 
-        it 'falls back to english when I18n.default_locale is not an available language' do
-          allow(I18n).to receive(:default_locale) { :kl }
-          default_preferred_language = user.send(:default_preferred_language)
+        it { is_expected.to eq 'de_DE' }
+      end
 
-          expect(user.preferred_language).to eq default_preferred_language
+      context 'when preferred_language is nil' do
+        let(:user) { build(:user) }
+
+        it { is_expected.to eq 'en' }
+
+        context 'when Gitlab::CurrentSettings.default_preferred_language is set' do
+          before do
+            allow(::Gitlab::CurrentSettings).to receive(:default_preferred_language).and_return('zh_CN')
+          end
+
+          it { is_expected.to eq 'zh_CN' }
         end
       end
     end
@@ -1230,17 +1288,6 @@ RSpec.describe User do
   end
 
   describe 'before save hook' do
-    describe '#default_private_profile_to_false' do
-      let(:user) { create(:user, private_profile: true) }
-
-      it 'converts nil to false' do
-        user.private_profile = nil
-        user.save!
-
-        expect(user.private_profile).to eq false
-      end
-    end
-
     context 'when saving an external user' do
       let(:user)          { create(:user) }
       let(:external_user) { create(:user, external: true) }
@@ -2675,7 +2722,7 @@ RSpec.describe User do
         expect(user.can_create_group).to eq(Gitlab::CurrentSettings.can_create_group)
         expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
         expect(user.external).to be_falsey
-        expect(user.private_profile).to eq(false)
+        expect(user.private_profile).to eq(Gitlab::CurrentSettings.user_defaults_to_private_profile)
       end
     end
 
@@ -3672,19 +3719,14 @@ RSpec.describe User do
   describe '#sanitize_attrs' do
     let(:user) { build(:user, name: 'test <& user', skype: 'test&user') }
 
-    it 'encodes HTML entities in the Skype attribute' do
-      expect { user.sanitize_attrs }.to change { user.skype }.to('test&amp;user')
-    end
-
     it 'does not encode HTML entities in the name attribute' do
       expect { user.sanitize_attrs }.not_to change { user.name }
     end
 
     it 'sanitizes attr from html tags' do
-      user = create(:user, name: '<a href="//example.com">Test<a>', twitter: '<a href="//evil.com">https://twitter.com<a>')
+      user = create(:user, name: '<a href="//example.com">Test<a>')
 
       expect(user.name).to eq('Test')
-      expect(user.twitter).to eq('https://twitter.com')
     end
 
     it 'sanitizes attr from js scripts' do
@@ -5253,35 +5295,15 @@ RSpec.describe User do
   describe '#invalidate_issue_cache_counts' do
     let(:user) { build_stubbed(:user) }
 
-    before do
-      stub_feature_flags(limit_assigned_issues_count: false)
-    end
-
     it 'invalidates cache for issue counter' do
       cache_mock = double
 
       expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_issues_count'])
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'max_assigned_open_issues_count'])
 
       allow(Rails).to receive(:cache).and_return(cache_mock)
 
       user.invalidate_issue_cache_counts
-    end
-
-    context 'when limit_assigned_issues_count is enabled' do
-      before do
-        stub_feature_flags(limit_assigned_issues_count: true)
-      end
-
-      it 'invalidates cache for issue counter' do
-        cache_mock = double
-
-        expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_issues_count'])
-        expect(cache_mock).to receive(:delete).with(['users', user.id, 'max_assigned_open_issues_count'])
-
-        allow(Rails).to receive(:cache).and_return(cache_mock)
-
-        user.invalidate_issue_cache_counts
-      end
     end
   end
 
@@ -5502,41 +5524,6 @@ RSpec.describe User do
             end.not_to change { user.namespace.updated_at }
           end
         end
-      end
-    end
-  end
-
-  describe '#ensure_user_detail_assigned' do
-    let(:user) { build(:user) }
-
-    context 'when no user detail field has been changed' do
-      before do
-        allow(UserDetail)
-          .to receive(:user_fields_changed?)
-          .and_return(false)
-      end
-
-      it 'does not assign user details before save' do
-        expect(user.user_detail)
-          .not_to receive(:assign_changed_fields_from_user)
-
-        user.save!
-      end
-    end
-
-    context 'when a user detail field has been changed' do
-      before do
-        allow(UserDetail)
-          .to receive(:user_fields_changed?)
-          .and_return(true)
-      end
-
-      it 'assigns user details before save' do
-        expect(user.user_detail)
-          .to receive(:assign_changed_fields_from_user)
-          .and_call_original
-
-        user.save!
       end
     end
   end
@@ -7426,6 +7413,86 @@ RSpec.describe User do
 
       it 'sets the state machine default value' do
         expect(model.new(external: true).state).to eq('active')
+      end
+    end
+  end
+
+  describe '#namespace_commit_email_for_project' do
+    let_it_be(:user) { create(:user) }
+
+    let(:emails) { user.namespace_commit_email_for_project(project) }
+
+    context 'when project is nil' do
+      let(:project) {}
+
+      it 'returns nil' do
+        expect(emails).to be(nil)
+      end
+    end
+
+    context 'with a group project' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:group) { create(:group, parent: root_group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      context 'without a defined root group namespace_commit_email' do
+        context 'without a defined project namespace_commit_email' do
+          it 'returns nil' do
+            expect(emails).to be(nil)
+          end
+        end
+
+        context 'with a defined project namespace_commit_email' do
+          it 'returns the defined namespace_commit_email' do
+            project_commit_email = create(:namespace_commit_email,
+                                          user: user,
+                                          namespace: project.project_namespace)
+
+            expect(emails).to eq(project_commit_email)
+          end
+        end
+      end
+
+      context 'with a defined root group namespace_commit_email' do
+        let_it_be(:root_group_commit_email) do
+          create(:namespace_commit_email, user: user, namespace: root_group)
+        end
+
+        context 'without a defined project namespace_commit_email' do
+          it 'returns the defined namespace_commit_email' do
+            expect(emails).to eq(root_group_commit_email)
+          end
+        end
+
+        context 'with a defined project namespace_commit_email' do
+          it 'returns the defined namespace_commit_email' do
+            project_commit_email = create(:namespace_commit_email,
+                                          user: user,
+                                          namespace: project.project_namespace)
+
+            expect(emails).to eq(project_commit_email)
+          end
+        end
+      end
+    end
+
+    context 'with personal project' do
+      let_it_be(:project) { create(:project, namespace: user.namespace) }
+
+      context 'without a defined project namespace_commit_email' do
+        it 'returns nil' do
+          expect(emails).to be(nil)
+        end
+      end
+
+      context 'with a defined project namespace_commit_email' do
+        it 'returns the defined namespace_commit_email' do
+          project_commit_email = create(:namespace_commit_email,
+                                        user: user,
+                                        namespace: project.project_namespace)
+
+          expect(emails).to eq(project_commit_email)
+        end
       end
     end
   end

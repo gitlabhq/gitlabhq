@@ -107,7 +107,7 @@ can use only one:
   [Cluster precedence](../../instance/clusters/index.md#cluster-precedence).
 - If you have managed Prometheus applications installed on multiple Kubernetes
   clusters at the **same** level, the Prometheus application of a cluster with a
-  matching [environment scope](../../../ci/environments/index.md#scope-environments-with-specs) is used.
+  matching [environment scope](../../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) is used.
 
 ## Determining the performance impact of a merge
 

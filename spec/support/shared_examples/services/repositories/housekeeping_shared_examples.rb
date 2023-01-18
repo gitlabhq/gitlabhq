@@ -65,12 +65,9 @@ RSpec.shared_examples 'housekeeps repository' do
           # At push 200
           expect(resource.git_garbage_collect_worker_klass).to receive(:perform_async).with(resource.id, :gc, :the_lease_key, :the_uuid)
             .once
-          # At push 50, 100, 150
-          expect(resource.git_garbage_collect_worker_klass).to receive(:perform_async).with(resource.id, :full_repack, :the_lease_key, :the_uuid)
-            .exactly(3).times
-          # At push 10, 20, ... (except those above)
+          # At push 10, 20, ... (except the gc call)
           expect(resource.git_garbage_collect_worker_klass).to receive(:perform_async).with(resource.id, :incremental_repack, :the_lease_key, :the_uuid)
-            .exactly(16).times
+            .exactly(19).times
 
           201.times do
             subject.increment!
@@ -78,37 +75,6 @@ RSpec.shared_examples 'housekeeps repository' do
           end
 
           expect(resource.pushes_since_gc).to eq(1)
-        end
-
-        context 'when optimized_repository feature flag is disabled' do
-          before do
-            stub_feature_flags(optimized_housekeeping: false)
-          end
-
-          it 'calls also the garbage collect worker with pack_refs every 6 commits' do
-            allow(subject).to receive(:try_obtain_lease).and_return(:the_uuid)
-            allow(subject).to receive(:lease_key).and_return(:the_lease_key)
-
-            # At push 200
-            expect(resource.git_garbage_collect_worker_klass).to receive(:perform_async).with(resource.id, :gc, :the_lease_key, :the_uuid)
-              .once
-            # At push 50, 100, 150
-            expect(resource.git_garbage_collect_worker_klass).to receive(:perform_async).with(resource.id, :full_repack, :the_lease_key, :the_uuid)
-              .exactly(3).times
-            # At push 10, 20, ... (except those above)
-            expect(resource.git_garbage_collect_worker_klass).to receive(:perform_async).with(resource.id, :incremental_repack, :the_lease_key, :the_uuid)
-              .exactly(16).times
-            # At push 6, 12, 18, ... (except those above)
-            expect(resource.git_garbage_collect_worker_klass).to receive(:perform_async).with(resource.id, :pack_refs, :the_lease_key, :the_uuid)
-              .exactly(27).times
-
-            201.times do
-              subject.increment!
-              subject.execute if subject.needed?
-            end
-
-            expect(resource.pushes_since_gc).to eq(1)
-          end
         end
       end
 
@@ -136,15 +102,11 @@ RSpec.shared_examples 'housekeeps repository' do
         expect(subject.needed?).to eq(true)
       end
 
-      context 'when optimized_housekeeping is disabled' do
-        before do
-          stub_feature_flags(optimized_housekeeping: false)
-        end
+      it 'when incremental repack period is not multiple of gc period' do
+        allow(Gitlab::CurrentSettings).to receive(:housekeeping_incremental_repack_period).and_return(12)
+        allow(resource).to receive(:pushes_since_gc).and_return(200)
 
-        it 'returns true pack refs is needed' do
-          allow(resource).to receive(:pushes_since_gc).and_return(described_class::PACK_REFS_PERIOD)
-          expect(subject.needed?).to eq(true)
-        end
+        expect(subject.needed?).to eq(true)
       end
     end
 

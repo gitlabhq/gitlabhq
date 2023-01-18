@@ -20,8 +20,8 @@ module ButtonHelper
   #
   # See http://clipboardjs.com/#usage
   def clipboard_button(data = {})
-    css_class = data[:class] || 'btn-clipboard gl-button btn-default-tertiary btn-icon btn-sm'
-    title = data[:title] || _('Copy')
+    css_class = data.delete(:class) || 'btn-clipboard gl-button btn-default-tertiary btn-icon btn-sm'
+    title = data.delete(:title) || _('Copy')
     button_text = data[:button_text] || nil
     hide_tooltip = data[:hide_tooltip] || false
     hide_button_icon = data[:hide_button_icon] || false

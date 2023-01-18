@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Migrations Validation' do
+RSpec.describe 'Migrations Validation', feature_category: :database do
   using RSpec::Parameterized::TableSyntax
 
   # The range describes the timestamps that given migration helper can be used

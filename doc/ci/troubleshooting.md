@@ -60,7 +60,7 @@ pipeline, and what their values are. A lot of pipeline configuration is dependen
 on variables, and verifying them is one of the fastest ways to find the source of
 a problem.
 
-[Export the full list of variables](variables/index.md#list-all-environment-variables)
+[Export the full list of variables](variables/index.md#list-all-variables)
 available in each problematic job. Check if the variables you expect are present,
 and check if their values are what you expect.
 
@@ -249,7 +249,7 @@ The merge request status widget shows the **Merge** button and whether or not a 
 request is ready to merge. If the merge request can't be merged, the reason for this
 is displayed.
 
-If the pipeline is still running, the **Merge** button is replaced with the
+If the pipeline is still running, **Merge** is replaced with the
 **Merge when pipeline succeeds** button.
 
 If [**Merge Trains**](pipelines/merge_trains.md)

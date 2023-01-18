@@ -15,7 +15,7 @@ Depending on your needs, you might want to use a [deploy token](../deploy_tokens
 |------------------|-------------|--------------|
 | Sharing          | Shareable between multiple projects, even those in different groups. | Belong to a project or group. |
 | Source           | Public SSH key generated on an external host. | Generated on your GitLab instance, and is provided to users only at creation time. |
-| Validity         | Valid as long as it's registered and enabled. | Can be given an expiration date. |
+| Validity         | Valid as long as it's registered and enabled, and the user that created it exists. | Can be given an expiration date. |
 | Registry access  | Cannot access a package registry. | Can read from and write to a package registry. |
 
 Deploy keys can't be used for Git operations if [external authorization](../../admin_area/settings/external_authorization.md) is enabled.

@@ -37,8 +37,8 @@ RSpec.configure do |config|
   end
 
   config.around(:each, :use_sql_query_cache) do |example|
-    ActiveRecord::Base.cache do
-      example.run
-    end
+    base_models = Gitlab::Database.database_base_models_with_gitlab_shared.values
+    inner_proc = proc { example.run }
+    base_models.inject(inner_proc) { |proc, base_model| proc { base_model.cache { proc.call } } }.call
   end
 end

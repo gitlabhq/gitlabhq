@@ -177,9 +177,10 @@ database on the same PostgreSQL server if using [Geo](../geo/index.md).
 The replication state is internal to each instance of GitLab and should
 not be replicated.
 
-These instructions help set up a single PostgreSQL database, which creates a single point of
-failure. To avoid this, you can configure your own clustered PostgreSQL. Support for PostgreSQL replication and failover using Omnibus GitLab is being tracked in
-[a relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/7814).
+These instructions help set up a single PostgreSQL database, which creates a single point of failure. To avoid this, you can configure your own clustered
+PostgreSQL. Support for PostgreSQL replication and failover using Omnibus GitLab is proposed in [epic 7814](https://gitlab.com/groups/gitlab-org/-/epics/7814).
+Clustered database support for other databases (for example, Praefect and Geo databases) is proposed in
+[issue 7292](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
 
 The following options are available:
 

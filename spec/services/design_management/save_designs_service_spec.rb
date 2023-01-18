@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe DesignManagement::SaveDesignsService do
+RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_management do
   include DesignManagementTestHelpers
   include ConcurrentHelpers
 
@@ -240,6 +240,27 @@ RSpec.describe DesignManagement::SaveDesignsService do
             expect(existing_design.versions.reload.size).to eq(1)
             expect(updated_designs.size).to eq(1)
             expect(updated_designs.first.versions.size).to eq(1)
+          end
+        end
+
+        context 'when detecting content type' do
+          it 'detects content type when feature flag is enabled' do
+            expect_next_instance_of(::Lfs::FileTransformer) do |file_transformer|
+              expect(file_transformer).to receive(:new_file)
+                .with(anything, anything, hash_including(detect_content_type: true)).and_call_original
+            end
+
+            run_service
+          end
+
+          it 'skips content type detection when feature flag is disabled' do
+            stub_feature_flags(design_management_allow_dangerous_images: false)
+            expect_next_instance_of(::Lfs::FileTransformer) do |file_transformer|
+              expect(file_transformer).to receive(:new_file)
+                .with(anything, anything, hash_including(detect_content_type: false)).and_call_original
+            end
+
+            run_service
           end
         end
       end

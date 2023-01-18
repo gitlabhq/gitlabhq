@@ -489,10 +489,10 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             expect(response).to have_gitlab_http_status(:success)
             expect(widgets_response).to include(
               {
-                'children' => { 'edges' => [
+                'children' => { 'edges' => match_array([
                   { 'node' => { 'id' => valid_child2.to_global_id.to_s } },
                   { 'node' => { 'id' => valid_child1.to_global_id.to_s } }
-                ] },
+                ]) },
                 'parent' => nil,
                 'type' => 'HIERARCHY'
               }

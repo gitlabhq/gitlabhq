@@ -1,7 +1,7 @@
 - content_for :create_protected_branch do
-  = render 'protected_branches/create_protected_branch'
+  = render 'protected_branches/create_protected_branch', protected_branch_entity: protected_branch_entity
 
 - content_for :branches_list do
-  = render "protected_branches/branches_list"
+  = render "protected_branches/branches_list", protected_branch_entity: protected_branch_entity
 
-= render 'protected_branches/shared/index'
+= render 'protected_branches/shared/index', protected_branch_entity: protected_branch_entity

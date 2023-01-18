@@ -57,8 +57,8 @@ module Gitlab
       end
 
       def clear_memoization!
-        if instance_variable_defined?('@worker_metadatas')
-          remove_instance_variable('@worker_metadatas')
+        if instance_variable_defined?(:@worker_metadatas)
+          remove_instance_variable(:@worker_metadatas)
         end
       end
 

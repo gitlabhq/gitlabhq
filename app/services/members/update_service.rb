@@ -11,10 +11,9 @@ module Members
         [member.id, { human_access: member.human_access, expires_at: member.expires_at }]
       end
 
-      if Feature.enabled?(:bulk_update_membership_roles, current_user)
-        multiple_members_update(members, permission, old_access_level_expiry_map)
-      else
-        single_member_update(members.first, permission, old_access_level_expiry_map)
+      updated_members = update_members(members, permission)
+      Member.transaction do
+        updated_members.each { |member| post_update(member, permission, old_access_level_expiry_map) }
       end
 
       prepare_response(members)
@@ -22,35 +21,22 @@ module Members
 
     private
 
-    def single_member_update(member, permission, old_access_level_expiry_map)
+    def update_members(members, permission)
+      # `filter_map` avoids the `post_update` call for the member that resulted in no change
+      Member.transaction do
+        members.filter_map { |member| update_member(member, permission) }
+      end
+    rescue ActiveRecord::RecordInvalid
+      []
+    end
+
+    def update_member(member, permission)
       raise Gitlab::Access::AccessDeniedError unless has_update_permissions?(member, permission)
 
       member.attributes = params
-      return success(member: member) unless member.changed?
+      return unless member.changed?
 
-      post_update(member, permission, old_access_level_expiry_map) if member.save
-    end
-
-    def multiple_members_update(members, permission, old_access_level_expiry_map)
-      begin
-        updated_members =
-          Member.transaction do
-            # Using `next` with `filter_map` avoids the `post_update` call for the member that resulted in no change
-            members.filter_map do |member|
-              raise Gitlab::Access::AccessDeniedError unless has_update_permissions?(member, permission)
-
-              member.attributes = params
-              next unless member.changed?
-
-              member.save!
-              member
-            end
-          end
-      rescue ActiveRecord::RecordInvalid
-        return
-      end
-
-      updated_members.each { |member| post_update(member, permission, old_access_level_expiry_map) }
+      member.tap(&:save!)
     end
 
     def post_update(member, permission, old_access_level_expiry_map)
@@ -62,18 +48,13 @@ module Members
     end
 
     def prepare_response(members)
-      errored_member = members.detect { |member| member.errors.any? }
-      if errored_member.present?
-        return error(errored_member.errors.full_messages.to_sentence, pass_back: { member: errored_member })
+      errored_members = members.select { |member| member.errors.any? }
+      if errored_members.present?
+        error_message = errored_members.flat_map { |member| member.errors.full_messages }.uniq.to_sentence
+        return error(error_message, pass_back: { members: errored_members })
       end
 
-      # TODO: Remove the :member key when removing the bulk_update_membership_roles FF and update where it's used.
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/373257
-      if members.one?
-        success(member: members.first)
-      else
-        success(members: members)
-      end
+      success(members: members)
     end
 
     def has_update_permissions?(member, permission)

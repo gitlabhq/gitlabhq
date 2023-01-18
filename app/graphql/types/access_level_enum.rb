@@ -14,3 +14,5 @@ module Types
     value 'OWNER', value: Gitlab::Access::OWNER, description: 'Owner access.'
   end
 end
+
+Types::AccessLevelEnum.prepend_mod_with('Types::AccessLevelEnum')

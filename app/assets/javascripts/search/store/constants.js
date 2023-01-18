@@ -10,3 +10,5 @@ export const GROUPS_LOCAL_STORAGE_KEY = 'global-search-frequent-groups';
 export const PROJECTS_LOCAL_STORAGE_KEY = 'global-search-frequent-projects';
 
 export const SIDEBAR_PARAMS = [stateFilterData.filterParam, confidentialFilterData.filterParam];
+
+export const NUMBER_FORMATING_OPTIONS = { notation: 'compact', compactDisplay: 'short' };

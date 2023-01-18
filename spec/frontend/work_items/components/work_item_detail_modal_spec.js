@@ -4,10 +4,11 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
+import { stubComponent } from 'helpers/stub_component';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import deleteWorkItemFromTaskMutation from '~/work_items/graphql/delete_task_from_work_item.mutation.graphql';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
+import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import {
   deleteWorkItemFromTaskMutationErrorResponse,
   deleteWorkItemFromTaskMutationResponse,
@@ -69,8 +70,14 @@ describe('WorkItemDetailModal component', () => {
           error,
         };
       },
+      provide: {
+        fullPath: 'group/project',
+      },
       stubs: {
         GlModal,
+        WorkItemDetail: stubComponent(WorkItemDetail, {
+          apollo: {},
+        }),
       },
     });
   };
@@ -124,6 +131,15 @@ describe('WorkItemDetailModal component', () => {
     findWorkItemDetail().vm.$emit('close');
 
     expect(closeSpy).toHaveBeenCalled();
+  });
+
+  it('updates the work item when WorkItemDetail emits `update-modal` event', async () => {
+    createComponent();
+
+    findWorkItemDetail().vm.$emit('update-modal', null, 'updatedId');
+    await waitForPromises();
+
+    expect(findWorkItemDetail().props().workItemId).toEqual('updatedId');
   });
 
   describe('delete work item', () => {

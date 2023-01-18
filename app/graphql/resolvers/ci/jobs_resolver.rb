@@ -19,10 +19,15 @@ module Resolvers
               required: false,
               description: 'Filter jobs by retry-status.'
 
-      def resolve(statuses: nil, security_report_types: [], retried: nil)
+      argument :when_executed, [::GraphQL::Types::String],
+              required: false,
+              description: 'Filter jobs by when they are executed.'
+
+      def resolve(statuses: nil, security_report_types: [], retried: nil, when_executed: nil)
         jobs = init_collection(security_report_types)
         jobs = jobs.with_status(statuses) if statuses.present?
         jobs = jobs.retried if retried
+        jobs = jobs.with_when_executed(when_executed) if when_executed.present?
         jobs = jobs.latest if retried == false
 
         jobs

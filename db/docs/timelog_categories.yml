@@ -1,7 +1,7 @@
 ---
 table_name: timelog_categories
 classes:
-- TimelogCategory
+- TimeTracking::TimelogCategory
 feature_categories:
 - team_planning
 description: Categories that can be associated to a timelog to categorize them

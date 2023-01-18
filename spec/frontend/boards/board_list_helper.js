@@ -58,8 +58,6 @@ export default function createComponent({
       ...state,
     },
     getters: {
-      isGroupBoard: () => false,
-      isProjectBoard: () => true,
       isEpicBoard: () => false,
       ...getters,
     },
@@ -88,7 +86,6 @@ export default function createComponent({
     apolloProvider: fakeApollo,
     store,
     propsData: {
-      disabled: false,
       list,
       boardItems: [issue],
       canAdminList: true,
@@ -97,12 +94,16 @@ export default function createComponent({
     provide: {
       groupId: null,
       rootPath: '/',
+      fullPath: 'gitlab-org',
       boardId: '1',
       weightFeatureAvailable: false,
       boardWeight: null,
       canAdminList: true,
       isIssueBoard: true,
       isEpicBoard: false,
+      isGroupBoard: false,
+      isProjectBoard: true,
+      disabled: false,
       ...provide,
     },
     stubs,

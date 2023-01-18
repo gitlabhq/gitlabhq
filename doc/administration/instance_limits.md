@@ -912,7 +912,7 @@ An upper and lower limit applies to each of these:
 
 The lower limits result in additional diffs being collapsed. The higher limits
 prevent any more changes from rendering. For more information about these limits,
-[read the development documentation](../development/diffs.md#diff-limits).
+[read the development documentation](../development/merge_request_concepts/diffs/index.md#diff-limits).
 
 ### Merge request reports size limit
 

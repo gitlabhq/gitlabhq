@@ -24,10 +24,11 @@ created as private in GitLab as well.
 
 ## Import your Bitbucket repositories
 
-Prerequisite:
+Prerequisites:
 
-- An administrator must have enabled the **Bitbucket Server** in
-  **Admin > Settings > General > Visibility and access controls > Import sources**.
+- An administrator must enable **Bitbucket Server** in  **Admin > Settings > General > Visibility and access controls > Import sources**.
+- At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
+  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
 
 To import your Bitbucket repositories:
 

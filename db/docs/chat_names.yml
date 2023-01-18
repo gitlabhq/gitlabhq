@@ -4,7 +4,7 @@ classes:
 - ChatName
 feature_categories:
 - integrations
-- chatops
+- continuous_integration
 description: Stores mappings from external chat accounts to GitLab users.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7450
 milestone: '8.14'

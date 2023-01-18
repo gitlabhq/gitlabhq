@@ -51,9 +51,14 @@ module QA
 
             within_element(:"allowed_to_#{action}_dropdown_content") do
               click_on allowed[:roles][:description]
-              allowed[:users].each { |user| click_on user.username } if allowed.key?(:users)
-              allowed[:groups].each { |group| click_on group.name } if allowed.key?(:groups)
+              allowed[:users].each { |user| select_name user.username } if allowed.key?(:users)
+              allowed[:groups].each { |group| select_name group.name } if allowed.key?(:groups)
             end
+          end
+
+          def select_name(name)
+            fill_element(:dropdown_input_field, name)
+            click_on name
           end
         end
       end

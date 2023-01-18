@@ -16,26 +16,85 @@ finishes. This feature is enabled by default in all GitLab installations.
 
 To disable artifacts site-wide:
 
-**In Omnibus installations:**
+::Tabs
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitlab_rails['artifacts_enabled'] = false
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and reconfigure GitLab:
 
-**In installations from source:**
-
-1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
-
-   ```yaml
-   artifacts:
-     enabled: false
+   ```shell
+   sudo gitlab-ctl reconfigure
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       artifacts:
+         enabled: false
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['artifacts_enabled'] = false
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     artifacts:
+       enabled: false
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
 
 ## Storing job artifacts
 
@@ -48,45 +107,63 @@ Most artifacts are compressed by GitLab Runner before being sent to the coordina
 
 ### Using local storage
 
-To change the location where the artifacts are stored locally, follow the steps
-below.
+If you're using the Linux package or have a self-compiled installation, you
+can change the location where the artifacts are stored locally.
 
-**In Omnibus installations:**
+NOTE:
+For Docker installations, you can change the path where your data is mounted.
+For the Helm chart, use
+[object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
 
-_The artifacts are stored by default in
-`/var/opt/gitlab/gitlab-rails/shared/artifacts`._
+::Tabs
 
-1. To change the storage path for example to `/mnt/storage/artifacts`, edit
+:::TabTitle Linux package (Omnibus)
+
+The artifacts are stored by default in `/var/opt/gitlab/gitlab-rails/shared/artifacts`.
+
+1. To change the storage path, for example to `/mnt/storage/artifacts`, edit
    `/etc/gitlab/gitlab.rb` and add the following line:
 
    ```ruby
    gitlab_rails['artifacts_path'] = "/mnt/storage/artifacts"
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and reconfigure GitLab:
 
-**In installations from source:**
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
 
-_The artifacts are stored by default in
-`/home/git/gitlab/shared/artifacts`._
+:::TabTitle Self-compiled (source)
 
-1. To change the storage path for example to `/mnt/storage/artifacts`, edit
+The artifacts are stored by default in `/home/git/gitlab/shared/artifacts`.
+
+1. To change the storage path, for example to `/mnt/storage/artifacts`, edit
    `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
 
    ```yaml
-   artifacts:
-     enabled: true
-     path: /mnt/storage/artifacts
+   production: &base
+     artifacts:
+       enabled: true
+       path: /mnt/storage/artifacts
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
 
 ### Using object storage
 
 If you don't want to use the local disk where GitLab is installed to store the
 artifacts, you can use an object storage like AWS S3 instead.
-This configuration relies on valid AWS credentials to be configured already.
-Use an object storage option like AWS S3 to store job artifacts.
 
 If you configure GitLab to store artifacts on object storage, you may also want to
 [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage).
@@ -96,149 +173,110 @@ WARNING:
 In a multi-server setup you must use one of the options to
 [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage), or job logs could be lost.
 
-[Read more about using object storage with GitLab](object_storage.md).
-
-#### Object Storage Settings
-
 In GitLab 13.2 and later, you should use the
 [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
-This section describes the earlier configuration format.
-
-For source installations the following settings are nested under `artifacts:`
-and then `object_store:`. On Omnibus GitLab installs they are prefixed by
-`artifacts_object_store_`.
-
-| Setting             | Default | Description |
-|---------------------|---------|-------------|
-| `enabled`           | `false` | Enable or disable object storage. |
-| `remote_directory`  |         | The bucket name where Artifacts are stored. Use the name only, do not include the path. |
-| `proxy_download`    | `false` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data. |
-| `connection`        |         | Various connection options described below. |
-
-#### Connection settings
-
-See [the available connection settings for different providers](object_storage.md#connection-settings).
-
-**In Omnibus installations:**
-
-_The artifacts are stored by default in
-`/var/opt/gitlab/gitlab-rails/shared/artifacts`._
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
-   the values you want:
-
-   ```ruby
-   gitlab_rails['artifacts_enabled'] = true
-   gitlab_rails['artifacts_object_store_enabled'] = true
-   gitlab_rails['artifacts_object_store_remote_directory'] = "artifacts"
-   gitlab_rails['artifacts_object_store_connection'] = {
-     'provider' => 'AWS',
-     'region' => 'eu-central-1',
-     'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
-     'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
-   }
-   ```
-
-   NOTE:
-   If you're using AWS IAM profiles, omit the AWS access key and secret access
-   key/value pairs. For example:
-
-   ```ruby
-   gitlab_rails['artifacts_object_store_connection'] = {
-     'provider' => 'AWS',
-     'region' => 'eu-central-1',
-     'use_iam_profile' => true
-   }
-   ```
-
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. [Migrate any existing local artifacts to the object storage](#migrating-to-object-storage).
-
-**In installations from source:**
-
-_The artifacts are stored by default in
-`/home/git/gitlab/shared/artifacts`._
-
-1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
-   lines:
-
-   ```yaml
-   artifacts:
-     enabled: true
-     object_store:
-       enabled: true
-       remote_directory: "artifacts"  # The bucket name
-       connection:
-         provider: AWS  # Only AWS supported at the moment
-         aws_access_key_id: AWS_ACCESS_KEY_ID
-         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-         region: eu-central-1
-   ```
-
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
-1. [Migrate any existing local artifacts to the object storage](#migrating-to-object-storage).
 
 ### Migrating to object storage
 
-After [configuring the object storage](#using-object-storage), use the following task to
-migrate existing job artifacts from the local storage to the remote storage.
-The processing is done in a background worker and requires **no downtime**.
+You can migrate the job artifacts from local storage to object storage. The
+processing is done in a background worker and requires **no downtime**.
 
-**In Omnibus installations:**
+1. [Configure the object storage](#using-object-storage).
+1. Migrate the artifacts:
 
-```shell
-gitlab-rake gitlab:artifacts:migrate
-```
+   ::Tabs
 
-**In installations from source:**
+   :::TabTitle Linux package (Omnibus)
 
-```shell
-sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
-```
+   ```shell
+   sudo gitlab-rake gitlab:artifacts:migrate
+   ```
 
-You can optionally track progress and verify that all job artifacts migrated successfully using the
-[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+   :::TabTitle Docker
 
-- `sudo gitlab-rails dbconsole` for Omnibus GitLab 14.1 and earlier.
-- `sudo gitlab-rails dbconsole --database main` for Omnibus GitLab 14.2 and later.
-- `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
+   ```shell
+   sudo docker exec -t <container name> gitlab-rake gitlab:artifacts:migrate
+   ```
 
-Verify `objectstg` below (where `store=2`) has count of all job artifacts:
+   :::TabTitle Self-compiled (source)
 
-```shell
-gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM ci_job_artifacts;
+   ```shell
+   sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
+   ```
 
-total | filesystem | objectstg
-------+------------+-----------
-   19 |          0 |        19
-```
+   ::EndTabs
 
-Verify that there are no files on disk in the `artifacts` folder:
+1. Optional. Track the progress and verify that all job artifacts migrated
+   successfully using the PostgreSQL console.
+   1. Open a PostgreSQL console:
 
-```shell
-sudo find /var/opt/gitlab/gitlab-rails/shared/artifacts -type f | grep -v tmp | wc -l
-```
+      ::Tabs
+
+      :::TabTitle Linux package (Omnibus)
+
+      ```shell
+      sudo gitlab-psql
+      ```
+
+      :::TabTitle Docker
+
+      ```shell
+      sudo docker exec -it <container_name> /bin/bash
+      gitlab-psql
+      ```
+
+      :::TabTitle Self-compiled (source)
+
+      ```shell
+      sudo -u git -H psql -d gitlabhq_production
+      ```
+
+      ::EndTabs
+
+   1. Verify that all packages migrated to object storage with the following
+      SQL query. The number of `objectstg` should be the same as `total`:
+
+      ```shell
+      gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM ci_job_artifacts;
+
+      total | filesystem | objectstg
+      ------+------------+-----------
+         19 |          0 |        19
+      ```
+
+1. Verify that there are no files on disk in the `artifacts` directory:
+
+   ::Tabs
+
+   :::TabTitle Linux package (Omnibus)
+
+   ```shell
+   sudo find /var/opt/gitlab/gitlab-rails/shared/artifacts -type f | grep -v tmp | wc -l
+   ```
+
+   :::TabTitle Docker
+
+   Assuming you mounted `/var/opt/gitlab` to `/srv/gitlab`:
+
+   ```shell
+   sudo find /srv/gitlab/gitlab-rails/shared/artifacts -type f | grep -v tmp | wc -l
+   ```
+
+   :::TabTitle Self-compiled (source)
+
+   ```shell
+   sudo find /home/git/gitlab/shared/artifacts -type f | grep -v tmp | wc -l
+   ```
+
+   ::EndTabs
 
 In some cases, you need to run the [orphan artifact file cleanup Rake task](../raketasks/cleanup.md#remove-orphan-artifact-files)
 to clean up orphaned artifacts.
 
-WARNING:
-JUnit test report artifact (`junit.xml.gz`) migration
-[was not supported until GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/27698#note_317190991)
-by the `gitlab:artifacts:migrate` Rake task.
-
 ### Migrating from object storage to local storage
 
-**In Omnibus installations:**
-
-To migrate back to local storage:
-
-1. Run `gitlab-rake gitlab:artifacts:migrate_to_local`.
-1. Disable object storage for artifacts in `gitlab.rb`:
-   - Set `gitlab_rails['artifacts_object_store_enabled'] = false`.
-   - Comment out all other `artifacts_object_store` settings, including the entire
-     `artifacts_object_store_connection` section, including the closing `}`.
-1. [Reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure).
+To migrate back to local storage, you must
+[selectively disable the artifacts storage](object_storage.md#selectively-disabling-object-storage).
 
 ## Expiring artifacts
 
@@ -247,36 +285,93 @@ an expiry for the artifacts, they are marked for deletion right after that date 
 Otherwise, they expire per the [default artifacts expiration setting](../user/admin_area/settings/continuous_integration.md).
 
 Artifacts are cleaned up by the `expire_build_artifacts_worker` cron job which Sidekiq
-runs every 7 minutes (`*/7 * * * *`).
+runs every 7 minutes (`*/7 * * * *` in [Cron](../topics/cron/index.md) syntax).
 
-To change the default schedule on which the artifacts are expired, follow the
-steps below.
+To change the default schedule on which the artifacts are expired:
 
-**In Omnibus installations:**
+::Tabs
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following line (or uncomment it if it already exists and is commented out), substituting
-   your schedule in cron syntax:
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following line (or uncomment it if
+   it already exists and is commented out), substituting your schedule in cron
+   syntax:
 
    ```ruby
    gitlab_rails['expire_build_artifacts_worker_cron'] = "*/7 * * * *"
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and reconfigure GitLab:
 
-**In installations from source:**
-
-1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
-   lines:
-
-   ```yaml
-   expire_build_artifacts_worker:
-     cron: "*/7 * * * *"
+   ```shell
+   sudo gitlab-ctl reconfigure
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+:::TabTitle Helm chart (Kubernetes)
 
-If the `expire` directive is not set explicitly in your pipeline, artifacts expire per the
-default artifacts expiration setting, which you can find in the [CI/CD Administration settings](../user/admin_area/settings/continuous_integration.md).
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       cron_jobs:
+         expire_build_artifacts_worker:
+           cron: "*/7 * * * *"
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['expire_build_artifacts_worker_cron'] = "*/7 * * * *"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     cron_jobs:
+       expire_build_artifacts_worker:
+         cron: "*/7 * * * *"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
 
 ## Set the maximum file size of the artifacts
 
@@ -373,13 +468,41 @@ these artifacts are not processed by the new housekeeping jobs.
 
 You can check the database to confirm if your instance has artifacts with the `unknown` status:
 
-1. Start a database console, on Omnibus:
+1. Start a database console:
+
+   ::Tabs
+
+   :::TabTitle Linux package (Omnibus)
 
    ```shell
    sudo gitlab-psql
    ```
 
-1. Run this query:
+   :::TabTitle Helm chart (Kubernetes)
+
+   ```shell
+   # Find the toolbox pod
+   kubectl --namespace <namespace> get pods -lapp=toolbox
+   # Connect to the PostgreSQL console
+   kubectl exec -it <toolbox-pod-name> -- /srv/gitlab/bin/rails dbconsole --include-password --database main
+   ```
+
+   :::TabTitle Docker
+
+   ```shell
+   sudo docker exec -it <container_name> /bin/bash
+   gitlab-psql
+   ```
+
+   :::TabTitle Self-compiled (source)
+
+   ```shell
+   sudo -u git -H psql -d gitlabhq_production
+   ```
+
+   ::EndTabs
+
+1. Run the following query:
 
    ```sql
    select expire_at, file_type, locked, count(*) from ci_job_artifacts
@@ -652,7 +775,7 @@ review:
   {"error":"MissingRegion: could not find region configuration","level":"error","msg":"error uploading S3 session","time":"2021-03-16T22:10:55-04:00"}
   ```
 
-In both cases, you might need to add `region` to the job artifact [object storage configuration](#connection-settings).
+In both cases, you might need to add `region` to the job artifact [object storage configuration](object_storage.md).
 
 ### Job artifact upload fails with `500 Internal Server Error (Missing file)`
 

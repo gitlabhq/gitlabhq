@@ -29,11 +29,11 @@ module Lfs
       @branch_name = branch_name
     end
 
-    def new_file(file_path, file_content, encoding: nil)
+    def new_file(file_path, file_content, encoding: nil, detect_content_type: false)
       if project.lfs_enabled? && lfs_file?(file_path)
         file_content = parse_file_content(file_content, encoding: encoding)
         lfs_pointer_file = Gitlab::Git::LfsPointerFile.new(file_content)
-        lfs_object = create_lfs_object!(lfs_pointer_file, file_content)
+        lfs_object = create_lfs_object!(lfs_pointer_file, file_content, detect_content_type)
 
         link_lfs_object!(lfs_object)
 
@@ -63,9 +63,17 @@ module Lfs
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def create_lfs_object!(lfs_pointer_file, file_content)
+    def create_lfs_object!(lfs_pointer_file, file_content, detect_content_type)
       LfsObject.find_or_create_by(oid: lfs_pointer_file.sha256, size: lfs_pointer_file.size) do |lfs_object|
-        lfs_object.file = CarrierWaveStringFile.new(file_content)
+        lfs_object.file = if detect_content_type && (content_type = Gitlab::Utils::MimeType.from_string(file_content))
+                            CarrierWaveStringFile.new_file(
+                              file_content: file_content,
+                              filename: '',
+                              content_type: content_type
+                            )
+                          else
+                            CarrierWaveStringFile.new(file_content)
+                          end
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord

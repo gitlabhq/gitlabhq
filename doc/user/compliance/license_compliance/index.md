@@ -388,7 +388,7 @@ source "https://gems.example.com"
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), or by
 specifying a [`BUNDLE_SSL_CA_CERT`](https://bundler.io/v2.0/man/bundle-config.1.html)
-[variable](../../../ci/variables/index.md#custom-cicd-variables)
+[variable](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
 in the job definition.
 
 ### Configuring Cargo projects
@@ -412,7 +412,7 @@ To supply a custom root certificate to complete TLS verification, do one of the 
 
 - Use the `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).
 - Specify a [`CARGO_HTTP_CAINFO`](https://doc.rust-lang.org/cargo/reference/environment-variables.html)
-  [variable](../../../ci/variables/index.md#custom-cicd-variables)
+  [variable](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
   in the job definition.
 
 ### Configuring Composer projects
@@ -445,7 +445,7 @@ For example:
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), or by
 specifying a [`COMPOSER_CAFILE`](https://getcomposer.org/doc/03-cli.md#composer-cafile)
-[variable](../../../ci/variables/index.md#custom-cicd-variables)
+[variable](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
 in the job definition.
 
 ### Configuring Conan projects
@@ -508,7 +508,7 @@ example:
 }
 ```
 
-If credentials are required to authenticate then you can configure a [protected CI/CD variable](../../../ci/variables/index.md#protected-cicd-variables)
+If credentials are required to authenticate then you can configure a [protected CI/CD variable](../../../ci/variables/index.md#protect-a-cicd-variable)
 following the naming convention described in the [`CONAN_LOGIN_USERNAME` documentation](https://docs.conan.io/en/latest/reference/env_vars.html#conan-login-username-conan-login-username-remote-name).
 
 #### Custom root certificates for Conan

@@ -31,7 +31,12 @@ export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
 export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
 export const WORK_ITEM_TYPE_ENUM_KEY_RESULT = 'KEY_RESULT';
 
+export const WORK_ITEM_TYPE_VALUE_INCIDENT = 'Incident';
 export const WORK_ITEM_TYPE_VALUE_ISSUE = 'Issue';
+export const WORK_ITEM_TYPE_VALUE_TASK = 'Task';
+export const WORK_ITEM_TYPE_VALUE_TEST_CASE = 'Test case';
+export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirements';
+export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key Result';
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 
 export const i18n = {
@@ -41,7 +46,7 @@ export const i18n = {
   ),
   updateError: s__('WorkItem|Something went wrong while updating the work item. Please try again.'),
   confidentialTooltip: s__(
-    'WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this task.',
+    'WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this %{workItemType}.',
   ),
 };
 
@@ -73,12 +78,19 @@ export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{work
 export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__(
   'WorkItem|Search existing %{workItemType}s',
 );
+export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL = s__(
+  'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access',
+);
+export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP = s__(
+  'WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}.',
+);
 
-export const sprintfWorkItem = (msg, workItemTypeArg) => {
+export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') => {
   const workItemType = workItemTypeArg || s__('WorkItem|Work item');
   return capitalizeFirstCharacter(
     sprintf(msg, {
       workItemType: workItemType.toLocaleLowerCase(),
+      parentWorkItemType: parentWorkItemType.toLocaleLowerCase(),
     }),
   );
 };
@@ -96,30 +108,37 @@ export const WORK_ITEMS_TYPE_MAP = {
   [WORK_ITEM_TYPE_ENUM_INCIDENT]: {
     icon: `issue-type-incident`,
     name: s__('WorkItem|Incident'),
+    value: WORK_ITEM_TYPE_VALUE_INCIDENT,
   },
   [WORK_ITEM_TYPE_ENUM_ISSUE]: {
     icon: `issue-type-issue`,
     name: s__('WorkItem|Issue'),
+    value: WORK_ITEM_TYPE_VALUE_ISSUE,
   },
   [WORK_ITEM_TYPE_ENUM_TASK]: {
     icon: `issue-type-task`,
     name: s__('WorkItem|Task'),
+    value: WORK_ITEM_TYPE_VALUE_TASK,
   },
   [WORK_ITEM_TYPE_ENUM_TEST_CASE]: {
     icon: `issue-type-test-case`,
     name: s__('WorkItem|Test case'),
+    value: WORK_ITEM_TYPE_VALUE_TEST_CASE,
   },
   [WORK_ITEM_TYPE_ENUM_REQUIREMENTS]: {
     icon: `issue-type-requirements`,
     name: s__('WorkItem|Requirements'),
+    value: WORK_ITEM_TYPE_VALUE_REQUIREMENTS,
   },
   [WORK_ITEM_TYPE_ENUM_OBJECTIVE]: {
     icon: `issue-type-objective`,
     name: s__('WorkItem|Objective'),
+    value: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   },
   [WORK_ITEM_TYPE_ENUM_KEY_RESULT]: {
-    icon: `issue-type-issue`,
+    icon: `issue-type-keyresult`,
     name: s__('WorkItem|Key Result'),
+    value: WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   },
 };
 
@@ -141,7 +160,7 @@ export const WORK_ITEM_NAME_TO_ICON_MAP = {
   Task: 'issue-type-task',
   Objective: 'issue-type-objective',
   // eslint-disable-next-line @gitlab/require-i18n-strings
-  'Key Result': 'issue-type-key-result',
+  'Key Result': 'issue-type-keyresult',
 };
 
 export const FORM_TYPES = {
@@ -154,4 +173,6 @@ export const FORM_TYPES = {
 };
 
 export const DEFAULT_PAGE_SIZE_ASSIGNEES = 10;
-export const DEFAULT_PAGE_SIZE_NOTES = 100;
+export const DEFAULT_PAGE_SIZE_NOTES = 30;
+
+export const WORK_ITEM_NOTES_SORT_ORDER_KEY = 'sort_direction_work_item';

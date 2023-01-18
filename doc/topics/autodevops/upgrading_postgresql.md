@@ -174,7 +174,7 @@ deleted, you can choose to retain the [persistent volume](#retain-persistent-vol
 
 NOTE:
 You can also
-[scope](../../ci/environments/index.md#scope-environments-with-specs) the
+[scope](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) the
 `AUTO_DEVOPS_POSTGRES_CHANNEL`, `AUTO_DEVOPS_POSTGRES_DELETE_V1` and
 `POSTGRES_VERSION` variables to specific environments, for example, `staging`.
 
@@ -189,7 +189,7 @@ higher*. This is the
    minimum PostgreSQL version supported by Auto DevOps. See also the list of
    [tags available](https://hub.docker.com/r/bitnami/postgresql/tags).
 1. Set `PRODUCTION_REPLICAS` to `0`. For other environments, use
-   `REPLICAS` with an [environment scope](../../ci/environments/index.md#scope-environments-with-specs).
+   `REPLICAS` with an [environment scope](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
 1. If you have set the `DB_INITIALIZE` or `DB_MIGRATE` variables, either
    remove the variables, or rename the variables temporarily to
    `XDB_INITIALIZE` or the `XDB_MIGRATE` to effectively disable them.

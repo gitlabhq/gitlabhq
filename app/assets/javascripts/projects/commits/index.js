@@ -33,20 +33,31 @@ export const initCommitsRefSwitcher = () => {
 
   if (!el) return false;
 
-  const { projectId, ref, commitsPath } = el.dataset;
+  const { projectId, ref, commitsPath, refType } = el.dataset;
   const commitsPathPrefix = commitsPath.match(COMMITS_PATH_REGEX)?.[0];
-
+  const useSymbolicRefNames = Boolean(refType);
   return new Vue({
     el,
     render(createElement) {
       return createElement(RefSelector, {
         props: {
           projectId,
-          value: ref,
+          value: useSymbolicRefNames ? `refs/${refType}/${ref}` : ref,
+          useSymbolicRefNames,
+          refType,
         },
         on: {
           input(selected) {
-            visitUrl(`${commitsPathPrefix}/${selected}`);
+            if (useSymbolicRefNames) {
+              const matches = selected.match(/refs\/(heads|tags)\/(.+)/);
+              if (matches) {
+                visitUrl(`${commitsPathPrefix}/${matches[2]}?ref_type=${matches[1]}`);
+              } else {
+                visitUrl(`${commitsPathPrefix}/${selected}`);
+              }
+            } else {
+              visitUrl(`${commitsPathPrefix}/${selected}`);
+            }
           },
         },
       });

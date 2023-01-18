@@ -57,7 +57,7 @@ RSpec.describe "User views incident", feature_category: :incident_management do
         it 'shows incident actions', :js do
           click_button 'Incident actions'
 
-          expect(page).to have_link 'Report abuse to administrator'
+          expect(page).to have_button 'Report abuse to administrator'
         end
       end
     end

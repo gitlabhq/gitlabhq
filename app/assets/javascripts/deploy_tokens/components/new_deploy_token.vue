@@ -288,7 +288,7 @@ export default {
       </div>
     </gl-form-group>
     <div>
-      <gl-button variant="success" @click="createDeployToken">
+      <gl-button variant="confirm" @click="createDeployToken">
         {{ $options.translations.addTokenButton }}
       </gl-button>
     </div>

@@ -18,7 +18,11 @@ class AccessRequestsFinder
   def execute!(current_user)
     raise Gitlab::Access::AccessDeniedError unless can_see_access_requests?(current_user)
 
-    source.requesters
+    if Feature.enabled?(:project_members_index_by_project_namespace, source)
+      source.namespace_requesters
+    else
+      source.requesters
+    end
   end
 
   private

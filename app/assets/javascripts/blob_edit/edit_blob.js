@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import { FileTemplateExtension } from '~/editor/extensions/source_editor_file_template_ext';
 import { ToolbarExtension } from '~/editor/extensions/source_editor_toolbar_ext';
@@ -9,7 +10,6 @@ import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import { insertFinalNewline } from '~/lib/utils/text_utility';
 import TemplateSelectorMediator from '../blob/file_template_mediator';
 import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR } from './constants';
-import '~/behaviors/markdown/init_gfm';
 
 export default class EditBlob {
   // The options object has:
@@ -140,7 +140,7 @@ export default class EditBlob {
           })
           .then(({ data }) => {
             currentPane.empty().append(data);
-            currentPane.renderGFM();
+            renderGFM(currentPane.get(0));
           })
           .catch(() =>
             createAlert({

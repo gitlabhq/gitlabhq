@@ -52,6 +52,32 @@ module QA
         end
       end
 
+      context 'with associated merge request' do
+        let!(:source_mr) do
+          Resource::MergeRequest.fabricate_via_api! do |mr|
+            mr.project = source_project
+            mr.api_client = source_admin_api_client
+            mr.description = "Closes #{source_issue.web_url}"
+          end
+        end
+
+        let(:imported_related_mrs) do
+          imported_issue.related_merge_requests.pluck(:iid)
+        end
+
+        it(
+          'preserves related merge request',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386305',
+          quarantine: {
+            type: :bug,
+            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/386308'
+          }
+        ) do
+          expect_project_import_finished_successfully
+          expect(imported_related_mrs).to eq([source_mr.iid])
+        end
+      end
+
       # we can't fabricate things in source instance via UI
       context "with designs", quarantine: {
         type: :broken,

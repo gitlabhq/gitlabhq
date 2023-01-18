@@ -71,7 +71,7 @@ The following table lists project permissions available for each role:
 | [Application security](application_security/index.md):<br>Create or assign [security policy project](application_security/policies/index.md)                                         |          |          |           |            | ✓        |
 | [Clusters](infrastructure/clusters/index.md):<br>View clusters                                                                                                                       |          |          | ✓         | ✓          | ✓        |
 | [Clusters](infrastructure/clusters/index.md):<br>Manage clusters                                                                                                                     |          |          |           | ✓          | ✓        |
-| [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete [cleanup policies](packages/container_registry/index.md#delete-images-by-using-a-cleanup-policy) |          |          |          | ✓          | ✓        |
+| [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete [cleanup policies](packages/container_registry/delete_container_registry_images.md#use-a-cleanup-policy) |          |          |          | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Push an image to the Container Registry                                                                               |          |          | ✓         | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Pull an image from the Container Registry                                                                             | ✓ (*19*) | ✓ (*19*) | ✓         | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Remove a Container Registry image                                                                                     |          |          | ✓         | ✓          | ✓        |
@@ -222,8 +222,8 @@ The following table lists project permissions available for each role:
 
 1. On self-managed GitLab instances, guest users are able to perform this action only on
    public and internal projects (not on private projects). [External users](admin_area/external_users.md)
-   must be given explicit access even if the project is internal. For GitLab.com, see the
-   [GitLab.com visibility settings](gitlab_com/index.md#visibility-settings).
+   must be given explicit access even if the project is internal. Users with the Guest role on GitLab.com are 
+   only able to perform this action on public projects because internal visibility is not available. 
 2. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves or are assigned to.
 3. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).
 4. If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers.
@@ -236,7 +236,7 @@ The following table lists project permissions available for each role:
 10. Users can only view events based on their individual actions.
 11. Project access tokens are supported for self-managed instances on Free and above. They are also
     supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)).
-12. If the [tag is protected](#release-permissions-with-protected-tags), this depends on the access given to Developers and Maintainers.
+12. If the [tag is protected](project/protected_tags.md), this depends on the access given to Developers and Maintainers.
 13. A Maintainer or Owner can't change project features visibility level if
     [project visibility](public_access.md) is set to private.
 14. Attached design files are moved together with the issue even if the user doesn't have the
@@ -276,7 +276,7 @@ More details about the permissions for some project-level features follow.
 | View pipeline details page                                                                                                | ✓ (*1*)    | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
 | View pipelines page                                                                                                       | ✓ (*1*)    | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
 | View pipelines tab in MR                                                                                                  | ✓ (*3*)    | ✓ (*3*) | ✓        | ✓         | ✓          | ✓     |
-| [View vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |            | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
+| [View vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |       | ✓ (*2*) | ✓        | ✓         | ✓          | ✓     |
 | View and download project-level [Secure Files](../api/secure_files.md)                                                    |            |         |          | ✓         | ✓          | ✓     |
 | Cancel and retry jobs                                                                                                     |            |         |          | ✓         | ✓          | ✓     |
 | Create new [environments](../ci/environments/index.md)                                                                    |            |         |          | ✓         | ✓          | ✓     |
@@ -284,7 +284,7 @@ More details about the permissions for some project-level features follow.
 | Run CI/CD pipeline                                                                                                        |            |         |          | ✓         | ✓          | ✓     |
 | Run CI/CD pipeline for a protected branch                                                                                 |            |         |          | ✓ (*5*)   | ✓ (*5*)    | ✓     |
 | Stop [environments](../ci/environments/index.md)                                                                          |            |         |          | ✓         | ✓          | ✓     |
-| View a job with [debug logging](../ci/variables/index.md#debug-logging)                                                   |            |         |          | ✓         | ✓          | ✓     |
+| View a job with [debug logging](../ci/variables/index.md#enable-debug-logging)                                            |            |         |          | ✓         | ✓          | ✓     |
 | Use pipeline editor                                                                                                       |            |         |          | ✓         | ✓          | ✓     |
 | Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                  |            |         |          | ✓         | ✓          | ✓     |
 | Add specific runners to project                                                                                           |            |         |          |           | ✓          | ✓     |
@@ -331,24 +331,6 @@ This table shows granted privileges for jobs triggered by specific types of user
 
 1. Only if the triggering user is not an external one.
 1. Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](http://docs.gitlabl.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
-
-### File Locking permissions **(PREMIUM)**
-
-The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
-
-Read through the documentation on [permissions for File Locking](project/file_lock.md#permissions) to learn more.
-
-### Confidential Issues permissions
-
-[Confidential issues](project/issues/confidential_issues.md) can be accessed by users with reporter and higher permission levels,
-as well as by guest users that create a confidential issue or are assigned to it. To learn more,
-read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
-
-### Container Registry visibility permissions
-
-The ability to view the Container Registry and pull images is controlled by the Container Registry's
-visibility permissions. Find these permissions for the Container Registry as described in the
-[related documentation](packages/container_registry/index.md#container-registry-visibility-permissions).
 
 ## Group members permissions
 
@@ -448,13 +430,13 @@ To learn more, read through the documentation on
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
 
-Owners can add members with a "minimal access" role to a parent group. Such users don't automatically have access to
+Owners can add members with a "minimal access" role to a root group. Such users don't automatically have access to
 projects and subgroups underneath. Owners must explicitly add these "minimal access" users to the specific subgroups and
 projects.
 
 You can use minimal access to give the same member more than one role in a group:
 
-1. Add the member to the parent group with a minimal access role.
+1. Add the member to the root group with a minimal access role.
 1. Invite the member as a direct member with a specific role in any subgroup or project in that group.
 
 Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), when minimal access users:
@@ -470,20 +452,15 @@ Users with even a "minimal access" role are counted against your number of licen
 requirement does not apply for [GitLab Ultimate](https://about.gitlab.com/pricing/)
 subscriptions.
 
-## Release permissions with protected tags
-
-[The permission to create tags](project/protected_tags.md) is used to define if a user can
-create, edit, and delete [Releases](project/releases/index.md).
-
-See [Release permissions](project/releases/index.md#release-permissions)
-for more information.
-
 ## Related topics
 
 - [The GitLab principles behind permissions](https://about.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab)
 - [Members](project/members/index.md)
 - Customize permissions on [protected branches](project/protected_branches.md)
-- [LDAP users permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)
+- [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)
 - [Value stream analytics permissions](analytics/value_stream_analytics.md#access-permissions-for-value-stream-analytics)
 - [Project aliases](../user/project/import/index.md#project-aliases)
 - [Auditor users](../administration/auditor_users.md)
+- [Confidential issues](project/issues/confidential_issues.md)
+- [Container Registry permissions](packages/container_registry/index.md#container-registry-visibility-permissions)
+- [Release permissions](project/releases/index.md#release-permissions)

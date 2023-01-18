@@ -1,0 +1,17 @@
+- title: "Maintainer role providing the ability to change Package settings using GraphQL API"
+  announcement_milestone: "15.8"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: trizzi
+  stage: Package
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/370471
+  body: |
+    The ability for users with the Maintainer role to change the **Packages and registries** settings for a group using
+    the GraphQL API is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. These settings include:
+
+    - [Allowing or preventing duplicate package uploads](https://docs.gitlab.com/ee/user/packages/maven_repository/#do-not-allow-duplicate-maven-packages).
+    - [Package request forwarding](https://docs.gitlab.com/ee/user/packages/maven_repository/#request-forwarding-to-maven-central).
+    - [Enabling lifecycle rules for the Dependency Proxy](https://docs.gitlab.com/ee/user/packages/dependency_proxy/reduce_dependency_proxy_storage.html).
+
+    In GitLab 16.0 and later, you must have Owner role for a group to change the **Packages and registries**
+    settings for the group using either the GitLab UI or GraphQL API.

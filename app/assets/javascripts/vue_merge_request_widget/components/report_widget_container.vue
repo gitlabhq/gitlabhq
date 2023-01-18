@@ -6,7 +6,15 @@ export default {
     };
   },
   updated() {
-    this.hasChildren = this.$scopedSlots.default?.()?.some((c) => c.tag);
+    this.hasChildren = this.checkSlots();
+  },
+  mounted() {
+    this.hasChildren = this.checkSlots();
+  },
+  methods: {
+    checkSlots() {
+      return this.$scopedSlots.default?.()?.some((c) => c.tag);
+    },
   },
 };
 </script>

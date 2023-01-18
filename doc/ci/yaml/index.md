@@ -171,7 +171,7 @@ the time limit to resolve all files is 30 seconds.
 
 #### `include:local`
 
-Use `include:local` to include a file that is in the same repository as the `.gitlab-ci.yml` file.
+Use `include:local` to include a file that is in the same repository as the project running the pipeline.
 Use `include:local` instead of symbolic links.
 
 **Keyword type**: Global keyword.
@@ -397,10 +397,7 @@ Use [`workflow`](workflow.md) to control pipeline behavior.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372538) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `pipeline_name`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/376095) in GitLab 15.7.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `pipeline_name`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/376095) in GitLab 15.8. Feature flag `pipeline_name` removed.
 
 You can use `name` in `workflow:` to define a name for pipelines.
 
@@ -669,6 +666,7 @@ In this example, `job1` and `job2` run in parallel:
 **Additional details**:
 
 - You can use `allow_failure` as a subkey of [`rules`](#rulesallow_failure).
+- If `allow_failure: true` is set, the job is always considered successful, and later jobs with [`when: on_failure`](#when) don't start if this job fails.
 - You can use `allow_failure: false` with a manual job to create a [blocking manual job](../jobs/job_control.md#types-of-manual-jobs).
   A blocked pipeline does not run any jobs in later stages until the manual job
   is started and completes successfully.
@@ -1003,7 +1001,7 @@ rspec:
 
 - Combining reports in parent pipelines using [artifacts from child pipelines](#needspipelinejob) is
   not supported. Track progress on adding support in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215725).
-- To be able to browse the report output files, include the [`artifacts:paths`](#artifactspaths) keyword. This will upload and store the artifact twice.
+- To be able to browse the report output files, include the [`artifacts:paths`](#artifactspaths) keyword. This uploads and stores the artifact twice.
 - The test reports are collected regardless of the job results (success or failure).
   You can use [`artifacts:expire_in`](#artifactsexpire_in) to set up an expiration
   date for artifacts reports.
@@ -1103,10 +1101,16 @@ job:
 
 ### `cache`
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0, caches are not shared between protected and unprotected branches.
+
 Use `cache` to specify a list of files and directories to
 cache between jobs. You can only use paths that are in the local working copy.
 
-Caching is shared between pipelines and jobs. Caches are restored before [artifacts](#artifacts).
+Caches are:
+
+- Shared between pipelines and jobs.
+- By default, not shared between [protected](../../user/project/protected_branches.md) and unprotected branches.
+- Restored before [artifacts](#artifacts).
 
 Learn more about caches in [Caching in GitLab CI/CD](../caching/index.md).
 
@@ -1141,6 +1145,10 @@ rspec:
       - binaries/*.apk
       - .config
 ```
+
+**Additional details**:
+
+- The `cache:paths` keyword includes files even if they are untracked or in your `.gitignore` file.
 
 **Related topics**:
 
@@ -1289,6 +1297,11 @@ Untracked files include files that are:
 - Ignored due to [`.gitignore` configuration](https://git-scm.com/docs/gitignore).
 - Created, but not added to the checkout with [`git add`](https://git-scm.com/docs/git-add).
 
+Caching untracked files can create unexpectedly large caches if the job downloads:
+
+- Dependencies, like gems or node modules, which are usually untracked.
+- [Artifacts](#artifacts) from a different job. Files extracted from the artifacts are untracked by default.
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -1307,8 +1320,9 @@ rspec:
 
 **Additional details**:
 
-- You can combine `cache:untracked` with `cache:paths` to cache all untracked files
-  as well as files in the configured paths. This is useful for including files that are not tracked because of a `.gitignore` configuration. For example:
+- You can combine `cache:untracked` with `cache:paths` to cache all untracked files, as well as files in the configured paths.
+  Use `cache:paths` to cache any specific files, including tracked files, or files that are outside of the working directory,
+  and use `cache: untracked` to also cache all untracked files. For example:
 
   ```yaml
   rspec:
@@ -1318,6 +1332,36 @@ rspec:
       paths:
         - binaries/
   ```
+
+  In this example, the job caches all untracked files in the repository, as well as all the files in `binaries/`.
+  If there are untracked files in `binaries/`, they are covered by both keywords.
+
+#### `cache:unprotect`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362114) in GitLab 15.8.
+
+Use `cache:unprotect` to set a cache to be shared between [protected](../../user/project/protected_branches.md)
+and unprotected branches.
+
+WARNING:
+When set to `true`, users without access to protected branches can read and write to
+cache keys used by protected branches.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+- `true` or `false` (default).
+
+**Example of `cache:untracked`**:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    unprotect: true
+```
 
 #### `cache:when`
 
@@ -2820,6 +2864,8 @@ You must:
 
 ### `parallel`
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336576) in GitLab 15.9, the maximum value for `parallel` is increased from 50 to 200.
+
 Use `parallel` to run a job multiple times in parallel in a single pipeline.
 
 Multiple runners must exist, or a single runner must be configured to run multiple jobs concurrently.
@@ -2830,7 +2876,7 @@ Parallel jobs are named sequentially from `job_name 1/N` to `job_name N/N`.
 
 **Possible inputs**:
 
-- A numeric value from `2` to `50`.
+- A numeric value from `2` to `200`.
 
 **Example of `parallel`**:
 
@@ -2855,6 +2901,7 @@ This example creates 5 jobs that run in parallel, named `test 1/5` to `test 5/5`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15356) in GitLab 13.3.
 > - The job naming style was [improved in GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/230452).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336576) in GitLab 15.9, the maximum number of permutations is increased from 50 to 200.
 
 Use `parallel:matrix` to run a job multiple times in parallel in a single pipeline,
 but with different variable values for each instance of the job.
@@ -2867,7 +2914,7 @@ Multiple runners must exist, or a single runner must be configured to run multip
 
 - The variable names can use only numbers, letters, and underscores (`_`).
 - The values must be either a string, or an array of strings.
-- The number of permutations cannot exceed 50.
+- The number of permutations cannot exceed 200.
 
 **Example of `parallel:matrix`**:
 
@@ -3242,7 +3289,9 @@ Use `retry:when` with `retry:max` to retry jobs for only specific failure cases.
 
 - `always`: Retry on any failure (default).
 - `unknown_failure`: Retry when the failure reason is unknown.
-- `script_failure`: Retry when the script failed.
+- `script_failure`: Retry when:
+  - The script failed.
+  - The runner failed to pull the Docker image. For `docker`, `docker+machine`, `kubernetes` [executors](https://docs.gitlab.com/runner/executors/).
 - `api_failure`: Retry on API failure.
 - `stuck_or_timeout_failure`: Retry when the job got stuck or timed out.
 - `runner_system_failure`: Retry if there is a runner system failure (for example, job setup failed).
@@ -3332,8 +3381,8 @@ Use `rules:if` clauses to specify when to add a job to a pipeline:
 - If an `if` statement is true, but it's combined with `when: never`, do not add the job to the pipeline.
 - If no `if` statements are true, do not add the job to the pipeline.
 
-`if` clauses are evaluated based on the values of [predefined CI/CD variables](../variables/predefined_variables.md)
-or [custom CI/CD variables](../variables/index.md#custom-cicd-variables), with
+`if` clauses are evaluated based on the values of [CI/CD variables](../variables/index.md)
+or [predefined CI/CD variables](../variables/predefined_variables.md), with
 [some exceptions](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Keyword type**: Job-specific and pipeline-specific. You can use it as part of a job
@@ -3451,7 +3500,7 @@ any subkeys. All additional details and related topics are the same.
 
 **Possible inputs**:
 
-- An array of file paths. In GitLab 13.6 and later, [file paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
+- An array of file paths. [File paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
 
 **Example of `rules:changes:paths`**:
 
@@ -3657,7 +3706,7 @@ Use `secrets` to specify [CI/CD secrets](../secrets/index.md) to:
 
 - Retrieve from an external secrets provider.
 - Make available in the job as [CI/CD variables](../variables/index.md)
-  ([`file` type](../variables/index.md#cicd-variable-types) by default).
+  ([`file` type](../variables/index.md#use-file-type-cicd-variables) by default).
 
 This keyword must be used with `secrets:vault`.
 
@@ -3716,7 +3765,7 @@ job:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250695) in GitLab 14.1 and GitLab Runner 14.1.
 
 Use `secrets:file` to configure the secret to be stored as either a
-[`file` or `variable` type CI/CD variable](../variables/index.md#cicd-variable-types)
+[`file` or `variable` type CI/CD variable](../variables/index.md#use-file-type-cicd-variables)
 
 By default, the secret is passed to the job as a `file` type CI/CD variable. The value
 of the secret is stored in the file and the variable contains the path to the file.
@@ -4252,8 +4301,8 @@ child3:
 
 ### `variables`
 
-[CI/CD variables](../variables/index.md) are configurable values that are passed to jobs.
-Use `variables` to create [custom variables](../variables/index.md#custom-cicd-variables).
+Use `variables` to define [CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file),
+which are configurable values that are passed to jobs.
 
 Variables are always available in `script`, `before_script`, and `after_script` commands.
 You can also use variables as inputs in some job keywords.
@@ -4298,7 +4347,7 @@ deploy_review_job:
 
 - All YAML-defined variables are also set to any linked [Docker service containers](../services/index.md).
 - YAML-defined variables are meant for non-sensitive project configuration. Store sensitive information
-  in [protected variables](../variables/index.md#protected-cicd-variables) or [CI/CD secrets](../secrets/index.md).
+  in [protected variables](../variables/index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/index.md).
 - [Manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
   and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
   are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
@@ -4306,7 +4355,6 @@ deploy_review_job:
 
 **Related topics**:
 
-- You can use [YAML anchors for variables](yaml_optimization.md#yaml-anchors-for-variables).
 - [Predefined variables](../variables/predefined_variables.md) are variables the runner
   automatically creates and makes available in the job.
 - You can [configure runner behavior with variables](../runners/configure_runners.md#configure-runner-behavior-with-variables).
@@ -4348,10 +4396,7 @@ variables:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353991) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.6.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.7.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per project,
-ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.8. Feature flag `ci_raw_variables_in_yaml_config` removed.
 
 Use the `expand` keyword to configure a variable to be expandable or not.
 
@@ -4394,7 +4439,7 @@ the default value is `when: on_success`.
   or have `allow_failure: true`.
 - `manual`: Run the job only when [triggered manually](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
 - `always`: Run the job regardless of the status of jobs in earlier stages. Can also be used in `workflow:rules`.
-- `on_failure`: Run the job only when at least one job in an earlier stage fails.
+- `on_failure`: Run the job only when at least one job in an earlier stage fails. A job with `allow_failure: true` is always considered successful.
 - `delayed`: [Delay the execution of a job](../jobs/job_control.md#run-a-job-after-a-delay)
   for a specified duration.
 - `never`: Don't run the job. Can only be used in a [`rules`](#rules) section or `workflow: rules`.

@@ -3,6 +3,8 @@
 module Gitlab
   module Memory
     class Reporter
+      COMPRESS_CMD = %w[gzip --fast].freeze
+
       attr_reader :reports_path
 
       def initialize(reports_path: nil, logger: Gitlab::AppLogger)
@@ -67,29 +69,39 @@ module Gitlab
         report_file = file_name(report)
         tmp_file_path = File.join(tmp_dir, report_file)
 
-        io_r, io_w = IO.pipe
-        pid = nil
-        File.open(tmp_file_path, 'wb') do |file|
-          extras = {
-            in: io_r,
-            out: file,
-            err: $stderr
-          }
-          pid = Process.spawn('gzip', '--fast', **extras)
-          io_r.close
-
-          report.run(io_w)
-          io_w.close
-
-          Process.waitpid(pid)
-        end
+        write_heap_dump_file(report, tmp_file_path)
 
         File.join(@reports_path, report_file).tap do |report_file_path|
           FileUtils.mv(tmp_file_path, report_file_path)
         end
-      ensure
-        [io_r, io_w].each(&:close)
+      end
 
+      def write_heap_dump_file(report, path)
+        io_r, io_w = IO.pipe
+        err_r, err_w = IO.pipe
+        pid = nil
+        status = nil
+        File.open(path, 'wb') do |file|
+          extras = {
+            in: io_r,
+            out: file,
+            err: err_w
+          }
+          pid = Process.spawn(*COMPRESS_CMD, **extras)
+          io_r.close
+          err_w.close
+
+          report.run(io_w)
+          io_w.close
+
+          _, status = Process.wait2(pid)
+        end
+
+        errors = err_r.read&.strip
+        err_r.close
+        raise StandardError, "exit #{status.exitstatus}: #{errors}" if !status&.success? && errors.present?
+      ensure
+        [io_r, io_w, err_r, err_w].each(&:close)
         # Make sure we don't leave any running processes behind.
         Gitlab::ProcessManagement.signal(pid, :KILL) if pid
       end

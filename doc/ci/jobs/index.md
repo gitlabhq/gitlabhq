@@ -114,8 +114,10 @@ You can't use these keywords as job names:
 
 Job names must be 255 characters or fewer.
 
-Use unique names for your jobs. If multiple jobs have the same name,
+Use unique names for your jobs. If multiple jobs have the same name in a file,
 only one is added to the pipeline, and it's difficult to predict which one is chosen.
+If the same job name is used in one or more included files,
+[parameters are merged](../yaml/includes.md#override-included-configuration-values).
 
 ## Group jobs in a pipeline
 
@@ -267,10 +269,10 @@ You can do this from the job page of the manual job you want to run with
 additional variables. To access this page, select the **name** of the manual job in
 the pipeline view, *not* the play (**{play}**) button.
 
-This is useful when you want to alter the execution of a job that uses
-[custom CI/CD variables](../variables/index.md#custom-cicd-variables).
-Add a variable name (key) and value here to override the value defined in
-[the UI or `.gitlab-ci.yml`](../variables/index.md#custom-cicd-variables),
+Define CI/CD variables here when you want to alter the execution of a job that uses
+[CI/CD variables](../variables/index.md).
+Add a variable name (key) and value to [override the value](../variables/index.md#override-a-defined-cicd-variable)
+defined in the UI or `.gitlab-ci.yml`
 for a single run of the manual job.
 
 ![Manual job variables](img/manual_job_variables_v13_10.png)

@@ -72,6 +72,44 @@ Example response:
 ]
 ```
 
+## Apple App Store
+
+Use GitLab to build and release an app in the Apple App Store.
+
+See also the [Apple App Store integration documentation](../user/project/integrations/apple_app_store.md).
+
+### Create/Edit Apple App Store integration
+
+Set Apple App Store integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/apple_app_store
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `app_store_issuer_id` | string | true | The Apple App Store Connect Issuer ID. |
+| `app_store_key_id` | string | true | The Apple App Store Connect Key ID. |
+| `app_store_private_key` | string | true | The Apple App Store Connect Private Key. |
+
+### Disable Apple App Store integration
+
+Disable the Apple App Store integration for a project. Integration settings are preserved.
+
+```plaintext
+DELETE /projects/:id/integrations/apple_app_store
+```
+
+### Get Apple App Store integration settings
+
+Get Apple App Store integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/apple_app_store
+```
+
 ## Asana
 
 Add commit messages as comments to Asana tasks.

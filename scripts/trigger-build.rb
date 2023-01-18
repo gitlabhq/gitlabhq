@@ -184,6 +184,20 @@ module Trigger
       true
     end
 
+    def gitlab_ref_slug
+      if ENV['CI_COMMIT_TAG']
+        ENV['CI_COMMIT_REF_NAME']
+      else
+        ENV['CI_COMMIT_SHA']
+      end
+    end
+
+    def base_variables
+      super.merge(
+        'GITLAB_REF_SLUG' => gitlab_ref_slug
+      )
+    end
+
     def extra_variables
       {
         "TRIGGER_BRANCH" => ref,

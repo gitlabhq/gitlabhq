@@ -6,7 +6,7 @@ class PwaController < ApplicationController # rubocop:disable Gitlab/NamespacedC
   feature_category :navigation
   urgency :low
 
-  skip_before_action :authenticate_user!
+  skip_before_action :authenticate_user!, :required_signup_info
 
   def manifest
   end

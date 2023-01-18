@@ -8,11 +8,23 @@ module TimeboxesHelper
     if milestone.closed?
       _('Closed')
     elsif milestone.expired?
-      _('Past due')
+      _('Expired')
     elsif milestone.upcoming?
       _('Upcoming')
     else
       _('Open')
+    end
+  end
+
+  def milestone_badge_variant(milestone)
+    if milestone.closed?
+      :danger
+    elsif milestone.expired?
+      :warning
+    elsif milestone.upcoming?
+      :neutral
+    else
+      :success
     end
   end
 

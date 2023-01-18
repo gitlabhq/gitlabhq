@@ -7,7 +7,7 @@ import createIssueStore from '~/notes/stores';
 import IssuableHeaderWarnings from '~/issuable/components/issuable_header_warnings.vue';
 
 const ISSUABLE_TYPE_ISSUE = 'issue';
-const ISSUABLE_TYPE_MR = 'merge request';
+const ISSUABLE_TYPE_MR = 'merge_request';
 
 Vue.use(Vuex);
 
@@ -57,6 +57,7 @@ describe('IssuableHeaderWarnings', () => {
         beforeEach(() => {
           store.getters.getNoteableData.confidential = confidentialStatus;
           store.getters.getNoteableData.discussion_locked = lockStatus;
+          store.getters.getNoteableData.targetType = issuableType;
 
           createComponent({ store, provide: { hidden: hiddenStatus } });
         });
@@ -84,7 +85,7 @@ describe('IssuableHeaderWarnings', () => {
 
           if (hiddenStatus) {
             expect(hiddenIcon.attributes('title')).toBe(
-              'This issue is hidden because its author has been banned',
+              `This ${issuableType.replace('_', ' ')} is hidden because its author has been banned`,
             );
             expect(getBinding(hiddenIcon.element, 'gl-tooltip')).not.toBeUndefined();
           }

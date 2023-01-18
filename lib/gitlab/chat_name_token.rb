@@ -16,9 +16,7 @@ module Gitlab
     def get
       Gitlab::Redis::SharedState.with do |redis|
         data = redis.get(redis_shared_state_key)
-        params = Gitlab::Json.parse(data, symbolize_names: true) if data
-        params[:integration_id] ||= params.delete(:service_id) if params && params[:service_id]
-        params
+        Gitlab::Json.parse(data, symbolize_names: true) if data
       end
     end
 

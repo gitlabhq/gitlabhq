@@ -40,7 +40,7 @@ RSpec.describe AccessRequestsFinder do
     end
   end
 
-  describe '#execute' do
+  shared_examples '#execute' do
     context 'when current user cannot see project access requests' do
       it_behaves_like 'a finder returning no results', :execute do
         let(:source) { project }
@@ -67,7 +67,7 @@ RSpec.describe AccessRequestsFinder do
     end
   end
 
-  describe '#execute!' do
+  shared_examples '#execute!' do
     context 'when current user cannot see access requests' do
       it_behaves_like 'a finder raising Gitlab::Access::AccessDeniedError', :execute! do
         let(:source) { project }
@@ -92,5 +92,17 @@ RSpec.describe AccessRequestsFinder do
         let(:source) { group }
       end
     end
+  end
+
+  it_behaves_like '#execute'
+  it_behaves_like '#execute!'
+
+  context 'when project_members_index_by_project_namespace feature flag is disabled' do
+    before do
+      stub_feature_flags(project_members_index_by_project_namespace: false)
+    end
+
+    it_behaves_like '#execute'
+    it_behaves_like '#execute!'
   end
 end

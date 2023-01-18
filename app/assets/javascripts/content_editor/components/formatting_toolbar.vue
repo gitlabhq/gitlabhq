@@ -1,4 +1,5 @@
 <script>
+import EditorModeDropdown from '~/vue_shared/components/markdown/editor_mode_dropdown.vue';
 import trackUIControl from '../services/track_ui_control';
 import ToolbarButton from './toolbar_button.vue';
 import ToolbarImageButton from './toolbar_image_button.vue';
@@ -9,6 +10,7 @@ import ToolbarMoreDropdown from './toolbar_more_dropdown.vue';
 
 export default {
   components: {
+    EditorModeDropdown,
     ToolbarButton,
     ToolbarTextStyleDropdown,
     ToolbarLinkButton,
@@ -19,6 +21,11 @@ export default {
   methods: {
     trackToolbarControlExecution({ contentType, value }) {
       trackUIControl({ property: contentType, value });
+    },
+    handleEditorModeChanged(mode) {
+      if (mode === 'markdown') {
+        this.$emit('enableMarkdownEditor');
+      }
     },
   },
 };
@@ -101,6 +108,8 @@ export default {
     />
     <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />
     <toolbar-more-dropdown data-testid="more" @execute="trackToolbarControlExecution" />
+
+    <editor-mode-dropdown class="gl-ml-auto" value="richText" @input="handleEditorModeChanged" />
   </div>
 </template>
 <style>

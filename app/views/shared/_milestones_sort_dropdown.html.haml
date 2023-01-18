@@ -1,4 +1,4 @@
 - milestones_sort_options = milestones_sort_options_hash.map { |value, text| { value: value, text: text, href: page_filter_path(sort: value) } }
 
-%div{ data: {testid: 'milestone_sort_by_dropdown'} }
+%div
   = gl_redirect_listbox_tag milestones_sort_options, @sort

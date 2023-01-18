@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ArtifactsBlock from '~/jobs/components/job/sidebar/artifacts_block.vue';
 import JobRetryForwardDeploymentModal from '~/jobs/components/job/sidebar/job_retry_forward_deployment_modal.vue';
 import JobsContainer from '~/jobs/components/job/sidebar/jobs_container.vue';
@@ -43,7 +43,7 @@ describe('Sidebar details block', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet().reply(httpStatus.OK, {
+    mock.onGet().reply(HTTP_STATUS_OK, {
       name: job.stage,
     });
   });

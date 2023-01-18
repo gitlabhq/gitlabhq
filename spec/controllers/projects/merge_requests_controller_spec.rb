@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::MergeRequestsController, feature_category: :code_review do
+RSpec.describe Projects::MergeRequestsController, feature_category: :code_review_workflow do
   include ProjectForksHelper
   include Gitlab::Routing
   using RSpec::Parameterized::TableSyntax
@@ -229,6 +229,16 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
         expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-diff:")
       end
+
+      context 'when there is no diff' do
+        it 'renders 404' do
+          merge_request.merge_request_diff.destroy!
+
+          go(format: :diff)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
     describe "as patch" do
@@ -236,6 +246,16 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         go(format: :patch)
 
         expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-format-patch:")
+      end
+
+      context 'when there is no diff' do
+        it 'renders 404' do
+          merge_request.merge_request_diff.destroy!
+
+          go(format: :patch)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
   end
@@ -2132,12 +2152,13 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         create(:protected_branch, project: project, name: merge_request.source_branch, allow_force_push: false)
       end
 
-      it 'returns 404' do
+      it 'returns 403' do
         expect_rebase_worker_for(user).never
 
         post_rebase
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['merge_error']).to eq('Source branch is protected from force push')
       end
     end
 
@@ -2153,12 +2174,13 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
           forked_project.add_reporter(user)
         end
 
-        it 'returns 404' do
+        it 'returns 403' do
           expect_rebase_worker_for(user).never
 
           post_rebase
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['merge_error']).to eq('Cannot push to source branch')
         end
       end
 

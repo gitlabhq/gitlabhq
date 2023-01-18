@@ -13,7 +13,7 @@ import updateImportStatusMutation from '~/import_entities/import_groups/graphql/
 import bulkImportSourceGroupsQuery from '~/import_entities/import_groups/graphql/queries/bulk_import_source_groups.query.graphql';
 
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { statusEndpointFixture } from './fixtures';
 
 jest.mock('~/flash');
@@ -52,7 +52,7 @@ describe('Bulk import resolvers', () => {
     axiosMockAdapter = new MockAdapter(axios);
     client = createClient();
 
-    axiosMockAdapter.onGet(FAKE_ENDPOINTS.status).reply(httpStatus.OK, statusEndpointFixture);
+    axiosMockAdapter.onGet(FAKE_ENDPOINTS.status).reply(HTTP_STATUS_OK, statusEndpointFixture);
     client.watchQuery({ query: bulkImportSourceGroupsQuery }).subscribe(({ data }) => {
       results = data.bulkImportSourceGroups.nodes;
     });
@@ -143,7 +143,7 @@ describe('Bulk import resolvers', () => {
       it('sets import status to CREATED for successful groups when request completes', async () => {
         axiosMockAdapter
           .onPost(FAKE_ENDPOINTS.createBulkImport)
-          .reply(httpStatus.OK, [{ success: true, id: 1 }]);
+          .reply(HTTP_STATUS_OK, [{ success: true, id: 1 }]);
 
         await client.mutate({
           mutation: importGroupsMutation,
@@ -163,7 +163,7 @@ describe('Bulk import resolvers', () => {
       });
 
       it('sets import status to CREATED for successful groups when request completes with legacy response', async () => {
-        axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(httpStatus.OK, { id: 1 });
+        axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(HTTP_STATUS_OK, { id: 1 });
 
         await client.mutate({
           mutation: importGroupsMutation,
@@ -186,7 +186,7 @@ describe('Bulk import resolvers', () => {
         const FAKE_ERROR_MESSAGE = 'foo';
         axiosMockAdapter
           .onPost(FAKE_ENDPOINTS.createBulkImport)
-          .reply(httpStatus.OK, [{ success: false, id: 1, message: FAKE_ERROR_MESSAGE }]);
+          .reply(HTTP_STATUS_OK, [{ success: false, id: 1, message: FAKE_ERROR_MESSAGE }]);
 
         await client.mutate({
           mutation: importGroupsMutation,
@@ -210,7 +210,7 @@ describe('Bulk import resolvers', () => {
     it('updateImportStatus updates status', async () => {
       axiosMockAdapter
         .onPost(FAKE_ENDPOINTS.createBulkImport)
-        .reply(httpStatus.OK, [{ success: true, id: 1 }]);
+        .reply(HTTP_STATUS_OK, [{ success: true, id: 1 }]);
 
       const NEW_STATUS = 'dummy';
       await client.mutate({

@@ -23,6 +23,8 @@ export default {
     RunnerSingleStat,
     RunnerUpgradeStatusStats: () =>
       import('ee_component/ci/runner/components/stat/runner_upgrade_status_stats.vue'),
+    RunnerPerformanceStat: () =>
+      import('ee_component/ci/runner/components/stat/runner_performance_stat.vue'),
   },
   props: {
     scope: {
@@ -95,6 +97,8 @@ export default {
         :scope="scope"
         :variables="variables"
       />
+
+      <runner-performance-stat class="gl-px-5" />
     </div>
   </runner-count>
 </template>

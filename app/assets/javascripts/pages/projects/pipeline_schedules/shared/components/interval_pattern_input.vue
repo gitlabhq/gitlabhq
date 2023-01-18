@@ -54,7 +54,7 @@ export default {
       inputNameAttribute: 'schedule[cron]',
       radioValue: this.initialCronInterval ? KEY_CUSTOM : KEY_EVERY_DAY,
       cronInterval: this.initialCronInterval,
-      cronSyntaxUrl: 'https://en.wikipedia.org/wiki/Cron',
+      cronSyntaxUrl: 'https://docs.gitlab.com/ee/topics/cron/',
     };
   },
   computed: {
@@ -95,7 +95,7 @@ export default {
         },
         {
           value: KEY_CUSTOM,
-          text: s__('PipelineScheduleIntervalPattern|Custom (%{linkStart}Cron syntax%{linkEnd})'),
+          text: s__('PipelineScheduleIntervalPattern|Custom (%{linkStart}Learn more.%{linkEnd})'),
           link: this.cronSyntaxUrl,
         },
       ];

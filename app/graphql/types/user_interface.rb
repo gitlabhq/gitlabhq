@@ -42,10 +42,23 @@ module Types
           null: true,
           description: 'User email.', method: :public_email,
           deprecated: { reason: :renamed, replacement: 'User.publicEmail', milestone: '13.7' }
+    field :emails,
+          type: Types::Users::EmailType.connection_type,
+          null: true,
+          description: "User's email addresses."
     field :public_email,
           type: GraphQL::Types::String,
           null: true,
           description: "User's public email."
+    field :commit_email,
+          type: GraphQL::Types::String,
+          null: true,
+          description: "User's default commit email.",
+          authorize: :read_user_email_address
+    field :namespace_commit_emails,
+          type: Types::Users::NamespaceCommitEmailType.connection_type,
+          null: true,
+          description: "User's custom namespace commit emails."
     field :avatar_url,
           type: GraphQL::Types::String,
           null: true,

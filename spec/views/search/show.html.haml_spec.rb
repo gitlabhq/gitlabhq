@@ -13,7 +13,7 @@ RSpec.describe 'search/show', feature_category: :global_search do
     stub_template "search/_category.html.haml" => 'Category Partial'
     stub_template "search/_results.html.haml" => 'Results Partial'
 
-    assign(:search_service, search_service_presenter)
+    assign(:search_service_presenter, search_service_presenter)
   end
 
   context 'search_page_vertical_nav feature flag enabled' do

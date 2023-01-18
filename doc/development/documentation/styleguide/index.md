@@ -17,7 +17,7 @@ In addition to this page, the following resources can help you craft and contrib
 - [Doc contribution guidelines](../index.md)
 - [Recommended word list](word_list.md)
 - [Doc style and consistency testing](../testing.md)
-- [Guidelines for UI error messages](https://design.gitlab.com/content/error-messages/)
+- [Guidelines for UI error messages](https://design.gitlab.com/content/voice-and-tone#clear-error-messages)
 - [Documentation global navigation](../site_architecture/global_nav.md)
 - [GitLab Handbook style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
 - [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/welcome/)
@@ -523,10 +523,10 @@ When using code block style:
 
 ## Lists
 
-- Use a period after every sentence, including those that complete an introductory phrase.
-  Do not use semicolons or commas.
-- Majority rules. Use either full sentences or all fragments. Avoid a mix.
-- Always start list items with a capital letter.
+- Do not use a period if the phrase is not a full sentence.
+- Use a period after every sentence. Do not use semicolons or commas.
+- Majority rules. All items should have the same punctuation.
+- Start list items with a capital letter.
 - Separate the introductory phrase from explanatory text with a colon (`:`). For example:
 
   ```markdown
@@ -1217,7 +1217,7 @@ To embed a video:
    the video title and link in the line under `<div class="video-fallback">`.
 1. In YouTube, select **Share**, and then select **Embed**.
 1. Copy the `<iframe>` source (`src`) **URL only**
-   (`https://www.youtube.com/embed/VIDEO-ID`),
+   (`https://www.youtube-nocookie.com/embed/VIDEO-ID`),
    and paste it, replacing the content of the `src` field in the
    `iframe` tag.
 
@@ -1227,7 +1227,7 @@ leave a blank line here
   See the video: <a href="https://www.youtube.com/watch?v=MqL6BMOySIQ">Video title</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen> </iframe>
 </figure>
 leave a blank line here
 ```
@@ -1238,7 +1238,7 @@ This is how it renders on the GitLab documentation site:
   See the video: <a href="https://www.youtube.com/watch?v=enMumwvLAug">What is GitLab</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 > Notes:
@@ -1249,6 +1249,7 @@ different mobile devices.
 > - The `<div class="video-fallback">` is a fallback necessary for
 `/help`, because the GitLab Markdown processor doesn't support iframes. It's
 hidden on the documentation site, but is displayed by `/help`.
+> - The `www.youtube-nocookie.com` domain enables the [Privacy Enhanced Mode](https://support.google.com/youtube/answer/171780?hl=en#zippy=%2Cturn-on-privacy-enhanced-mode) of the YouTube embedded player. This mode allows users with resticted cookie preferences to view embedded videos.
 
 ## Alert boxes
 
@@ -1445,6 +1446,8 @@ For example:
 - `Linux package (Omnibus)`, `Helm chart (Kubernetes)` (when documenting configuration edits, follow the
   [configuration edits guide](#configuration-documentation-for-different-installation-methods))
 - `15.1 and earlier`, `15.2 and later`
+
+Until we implement automated testing for broken links to tabs ([Issue 1355](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/1355)), do not link directly to a single tab, even though they do have unique URL parameters.
 
 See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for more
 details on tabs.

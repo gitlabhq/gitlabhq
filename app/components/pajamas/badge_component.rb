@@ -23,7 +23,7 @@ module Pajamas
     end
 
     SIZE_OPTIONS = [:sm, :md, :lg].freeze
-    VARIANT_OPTIONS = [:muted, :neutral, :info, :success, :warning, :danger].freeze
+    VARIANT_OPTIONS = [:muted, :neutral, :info, :success, :warning, :danger, :tier].freeze
 
     private
 

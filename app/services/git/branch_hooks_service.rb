@@ -165,14 +165,11 @@ module Git
     end
 
     def signature_types
-      types = [
+      [
         ::CommitSignatures::GpgSignature,
-        ::CommitSignatures::X509CommitSignature
+        ::CommitSignatures::X509CommitSignature,
+        ::CommitSignatures::SshSignature
       ]
-
-      types.push(::CommitSignatures::SshSignature) if Feature.enabled?(:ssh_commit_signatures, project)
-
-      types
     end
 
     def unsigned_commit_shas(commits)

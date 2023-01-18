@@ -90,6 +90,17 @@ describe('Source Viewer component', () => {
     });
   });
 
+  describe('legacy fallbacks', () => {
+    it('tracks a fallback event and emits an error when viewing python files', () => {
+      const fallbackLanguage = 'python';
+      const eventData = { label: EVENT_LABEL_FALLBACK, property: fallbackLanguage };
+      createComponent({ language: fallbackLanguage });
+
+      expect(Tracking.event).toHaveBeenCalledWith(undefined, EVENT_ACTION, eventData);
+      expect(wrapper.emitted('error')).toHaveLength(1);
+    });
+  });
+
   describe('highlight.js', () => {
     beforeEach(() => createComponent({ language: mappedLanguage }));
 
@@ -114,10 +125,10 @@ describe('Source Viewer component', () => {
     });
 
     it('correctly maps languages starting with uppercase', async () => {
-      await createComponent({ language: 'Python3' });
-      const languageDefinition = await import(`highlight.js/lib/languages/python`);
+      await createComponent({ language: 'Ruby' });
+      const languageDefinition = await import(`highlight.js/lib/languages/ruby`);
 
-      expect(hljs.registerLanguage).toHaveBeenCalledWith('python', languageDefinition.default);
+      expect(hljs.registerLanguage).toHaveBeenCalledWith('ruby', languageDefinition.default);
     });
 
     it('highlights the first chunk', () => {

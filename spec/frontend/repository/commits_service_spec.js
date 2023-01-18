@@ -1,9 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/commits_service';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { createAlert } from '~/flash';
 import { I18N_COMMIT_DATA_FETCH_ERROR } from '~/repository/constants';
+import { refWithSpecialCharMock } from './mock_data';
 
 jest.mock('~/flash');
 
@@ -14,7 +15,7 @@ describe('commits service', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    mock.onGet(url).reply(httpStatus.OK, [], {});
+    mock.onGet(url).reply(HTTP_STATUS_OK, [], {});
 
     jest.spyOn(axios, 'get');
   });
@@ -39,10 +40,12 @@ describe('commits service', () => {
     expect(axios.get).toHaveBeenCalledWith(testUrl, { params: { format: 'json', offset } });
   });
 
-  it('encodes the path correctly', async () => {
-    await requestCommits(1, 'some-project', 'with $peci@l ch@rs/');
+  it('encodes the path and ref', async () => {
+    const encodedRef = encodeURIComponent(refWithSpecialCharMock);
+    const encodedUrl = `/some-project/-/refs/${encodedRef}/logs_tree/with%20%24peci%40l%20ch%40rs%2F`;
 
-    const encodedUrl = '/some-project/-/refs/main/logs_tree/with%20%24peci%40l%20ch%40rs%2F';
+    await requestCommits(1, 'some-project', 'with $peci@l ch@rs/', refWithSpecialCharMock);
+
     expect(axios.get).toHaveBeenCalledWith(encodedUrl, expect.anything());
   });
 
@@ -68,7 +71,7 @@ describe('commits service', () => {
   it('calls `createAlert` when the request fails', async () => {
     const invalidPath = '/#@ some/path';
     const invalidUrl = `${url}${invalidPath}`;
-    mock.onGet(invalidUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR, [], {});
+    mock.onGet(invalidUrl).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, [], {});
 
     await requestCommits(1, 'my-project', invalidPath);
 

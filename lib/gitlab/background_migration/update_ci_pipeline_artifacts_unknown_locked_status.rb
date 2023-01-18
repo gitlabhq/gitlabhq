@@ -9,6 +9,8 @@ module Gitlab
     # value of the associated `ci_pipelines.locked` value.  This class
     # does an UPDATE join to make the values match.
     class UpdateCiPipelineArtifactsUnknownLockedStatus < BatchedMigrationJob
+      feature_category :database
+
       def perform
         connection.exec_query(<<~SQL)
           UPDATE ci_pipeline_artifacts

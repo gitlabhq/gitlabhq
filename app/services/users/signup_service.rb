@@ -12,9 +12,9 @@ module Users
       inject_validators
 
       if @user.save
-        success
+        ServiceResponse.success
       else
-        error(@user.errors.full_messages.join('. '))
+        ServiceResponse.error(message: @user.errors.full_messages.join('. '))
       end
     end
 

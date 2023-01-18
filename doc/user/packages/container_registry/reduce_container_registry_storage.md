@@ -36,7 +36,7 @@ An image layer is only counted once if:
 - You share the image layer across different repositories.
 
 Only layers that are referenced by tagged images are accounted for. Untagged images and any layers
-referenced exclusively by them are subject to [online garbage collection](index.md#delete-images).
+referenced exclusively by them are subject to [online garbage collection](delete_container_registry_images.md).
 Untagged images are automatically deleted after 24 hours if they remain unreferenced during that period.
 
 Image layers are stored on the storage backend in the original (usually compressed) format. This
@@ -269,7 +269,7 @@ only if the number of tags being cleaned up is minimal.
 
 Here are some other options you can use to reduce the Container Registry storage used by your project:
 
-- Use the [GitLab UI](index.md#delete-images)
+- Use the [GitLab UI](delete_container_registry_images.md#use-the-gitlab-ui)
   to delete individual image tags or the entire repository containing all the tags.
 - Use the API to [delete individual image tags](../../../api/container_registry.md#delete-a-registry-repository-tag).
 - Use the API to [delete the entire container registry repository containing all the tags](../../../api/container_registry.md#delete-registry-repository).

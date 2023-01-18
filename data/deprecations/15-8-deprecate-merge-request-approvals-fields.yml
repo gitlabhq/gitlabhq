@@ -1,0 +1,14 @@
+- title: 'Approvers and Approver Group fields in Merge Request Approval API'
+  announcement_milestone: '15.8'
+  announcement_date: '2023-01-22'
+  removal_milestone: '16.0'
+  removal_date: '2023-05-22'
+  breaking_change: true
+  body: |
+    The endpoint to get the configuration of approvals for a project returns empty arrays for `approvers` and `approval_groups`. These fields were deprecated in favor of the endpoint to [get project-level rules](https://docs.gitlab.com/ee/api/merge_request_approvals.html#get-project-level-rules) for a merge request. API users are encouraged to switch to this endpoint instead. These fields will be removed from the `get configuration` endpoint in v5 of the GitLab REST API.
+  stage: create
+  tiers:
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353097
+  documentation_url: https://docs.gitlab.com/ee/api/merge_request_approvals.html#get-project-level-rules
+  image_url:
+  video_url:

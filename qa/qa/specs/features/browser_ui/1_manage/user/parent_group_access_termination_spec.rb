@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'User', :requires_admin, :reliable, product_group: :workspace do
+    describe 'User', :requires_admin, :reliable, product_group: :organization do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
       let!(:user) do
@@ -34,6 +34,7 @@ module QA
 
             Page::Group::Menu.perform(&:click_subgroup_members_item)
             Page::Group::Members.perform do |members_page|
+              members_page.search_member(user.username)
               members_page.remove_member(user.username)
             end
           end

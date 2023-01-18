@@ -410,7 +410,7 @@ This message is often preceded by other errors or warnings that specify the file
 generated. Check the job log for these messages.
 
 If you find no helpful messages, retry the failed job after activating
-[CI/CD debug logging](../variables/index.md#debug-logging).
+[CI/CD debug logging](../variables/index.md#enable-debug-logging).
 This logging should provide information to help you investigate further.
 
 ### Error message `Missing /usr/bin/gitlab-runner-helper. Uploading artifacts is disabled.`

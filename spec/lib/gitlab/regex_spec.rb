@@ -7,7 +7,7 @@ require_relative '../../support/shared_examples/lib/gitlab/regex_shared_examples
 
 # All specs that can be run with fast_spec_helper only
 # See regex_requires_app_spec for tests that require the full spec_helper
-RSpec.describe Gitlab::Regex do
+RSpec.describe Gitlab::Regex, feature_category: :tooling do
   shared_examples_for 'project/group name chars regex' do
     it { is_expected.to match('gitlab-ce') }
     it { is_expected.to match('GitLab CE') }
@@ -70,6 +70,59 @@ RSpec.describe Gitlab::Regex do
     subject { described_class.group_name_regex_message }
 
     it { is_expected.to eq("can contain only letters, digits, emojis, '_', '.', dash, space, parenthesis. It must start with letter, digit, emoji or '_'.") }
+  end
+
+  describe '.bulk_import_namespace_path_regex' do
+    subject { described_class.bulk_import_namespace_path_regex }
+
+    it { is_expected.not_to match('?gitlab') }
+    it { is_expected.not_to match("Users's something") }
+    it { is_expected.not_to match('/source') }
+    it { is_expected.not_to match('http:') }
+    it { is_expected.not_to match('https:') }
+    it { is_expected.not_to match('example.com/?stuff=true') }
+    it { is_expected.not_to match('example.com:5000/?stuff=true') }
+    it { is_expected.not_to match('http://gitlab.example/gitlab-org/manage/import/gitlab-migration-test') }
+    it { is_expected.not_to match('_good_for_me!') }
+    it { is_expected.not_to match('good_for+you') }
+    it { is_expected.not_to match('source/') }
+    it { is_expected.not_to match('.source/full./path') }
+
+    it { is_expected.to match('source') }
+    it { is_expected.to match('.source') }
+    it { is_expected.to match('_source') }
+    it { is_expected.to match('source/full') }
+    it { is_expected.to match('source/full/path') }
+    it { is_expected.to match('.source/.full/.path') }
+    it { is_expected.to match('domain_namespace') }
+    it { is_expected.to match('gitlab-migration-test') }
+  end
+
+  describe '.group_path_regex' do
+    subject { described_class.group_path_regex }
+
+    it { is_expected.not_to match('?gitlab') }
+    it { is_expected.not_to match("Users's something") }
+    it { is_expected.not_to match('/source') }
+    it { is_expected.not_to match('http:') }
+    it { is_expected.not_to match('https:') }
+    it { is_expected.not_to match('example.com/?stuff=true') }
+    it { is_expected.not_to match('example.com:5000/?stuff=true') }
+    it { is_expected.not_to match('http://gitlab.example/gitlab-org/manage/import/gitlab-migration-test') }
+    it { is_expected.not_to match('_good_for_me!') }
+    it { is_expected.not_to match('good_for+you') }
+    it { is_expected.not_to match('source/') }
+    it { is_expected.not_to match('.source/full./path') }
+
+    it { is_expected.not_to match('source/full') }
+    it { is_expected.not_to match('source/full/path') }
+    it { is_expected.not_to match('.source/.full/.path') }
+
+    it { is_expected.to match('source') }
+    it { is_expected.to match('.source') }
+    it { is_expected.to match('_source') }
+    it { is_expected.to match('domain_namespace') }
+    it { is_expected.to match('gitlab-migration-test') }
   end
 
   describe '.environment_name_regex' do

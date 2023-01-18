@@ -4,6 +4,8 @@
 module Gitlab
   module BackgroundMigration
     class MigrateVulnerabilitiesFeedbackToVulnerabilitiesStateTransition < BatchedMigrationJob
+      feature_category :database
+
       def perform; end
     end
   end

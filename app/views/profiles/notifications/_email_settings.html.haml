@@ -1,7 +1,6 @@
 - form = local_assigns.fetch(:form)
 .form-group
-  = form.label :notification_email, _('Notification Email'), class: "label-bold"
-  = form.select :notification_email, @user.public_verified_emails, { include_blank: _('Use primary email (%{email})') % { email: @user.email }, selected: @user.notification_email }, class: "select2", disabled: local_assigns.fetch(:email_change_disabled, nil)
+  .js-notification-email-listbox-input{ data: { label: _('Notification Email'), name: 'user[notification_email]', emails: @user.public_verified_emails.to_json, empty_value_text: _('Use primary email (%{email})') % { email: @user.email }, value: @user.notification_email, disabled: local_assigns.fetch(:email_change_disabled, nil) } }
   .help-block
     = local_assigns.fetch(:help_text, nil)
 .form-group

@@ -7,14 +7,7 @@ require_relative '../lib/gitlab/popen'
 require_relative '../lib/gitlab/popen/runner'
 
 class StaticAnalysis
-  ALLOWED_WARNINGS = [
-    # https://github.com/browserslist/browserslist/blob/d0ec62eb48c41c218478cd3ac28684df051cc865/node.js#L329
-    # warns if caniuse-lite package is older than 6 months. Ignore this
-    # warning message so that GitLab backports don't fail.
-    "Browserslist: caniuse-lite is outdated. Please run next command `yarn upgrade`",
-    # https://github.com/mime-types/mime-types-data/pull/50#issuecomment-1060908930
-    "Type application/netcdf is already registered as a variant of application/netcdf."
-  ].freeze
+  # `ALLOWED_WARNINGS` moved to scripts/allowed_warnings.txt
 
   Task = Struct.new(:command, :duration) do
     def cmd
@@ -94,12 +87,12 @@ class StaticAnalysis
     if static_analysis.all_success_and_clean?
       puts 'All static analyses passed successfully.'
     elsif static_analysis.all_success?
-      puts 'All static analyses passed successfully, but we have warnings:'
+      puts 'All static analyses passed successfully with warnings.'
       puts
 
       emit_warnings(static_analysis)
 
-      exit 2 if warning_count(static_analysis).nonzero?
+      # We used to exit 2 on warnings but `fail_on_warnings` takes care of it now.
     else
       puts 'Some static analyses failed:'
 
@@ -112,11 +105,11 @@ class StaticAnalysis
 
   def emit_warnings(static_analysis)
     static_analysis.warned_results.each do |result|
-      puts
-      puts "**** #{result.cmd.join(' ')} had the following warning(s):"
-      puts
-      puts result.stderr
-      puts
+      warn
+      warn "**** #{result.cmd.join(' ')} had the following warning(s):"
+      warn
+      warn result.stderr
+      warn
     end
   end
 
@@ -129,11 +122,6 @@ class StaticAnalysis
       puts result.stderr
       puts
     end
-  end
-
-  def warning_count(static_analysis)
-    static_analysis.warned_results
-      .count { |result| !ALLOWED_WARNINGS.include?(result.stderr.strip) } # rubocop:disable Rails/NegateInclude
   end
 
   def tasks_to_run(node_total)

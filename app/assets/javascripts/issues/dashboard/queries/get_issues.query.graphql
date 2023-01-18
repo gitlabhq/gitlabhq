@@ -7,8 +7,14 @@ query getDashboardIssues(
   $search: String
   $sort: IssueSort
   $state: IssuableState
+  $assigneeId: String
   $assigneeUsernames: [String!]
   $authorUsername: String
+  $labelName: [String]
+  $milestoneTitle: [String]
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $not: NegatedIssueFilterInput
   $afterCursor: String
   $beforeCursor: String
   $firstPageSize: Int
@@ -18,8 +24,14 @@ query getDashboardIssues(
     search: $search
     sort: $sort
     state: $state
+    assigneeId: $assigneeId
     assigneeUsernames: $assigneeUsernames
     authorUsername: $authorUsername
+    labelName: $labelName
+    milestoneTitle: $milestoneTitle
+    milestoneWildcardId: $milestoneWildcardId
+    myReactionEmoji: $myReactionEmoji
+    not: $not
     after: $afterCursor
     before: $beforeCursor
     first: $firstPageSize

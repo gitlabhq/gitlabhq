@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Workspace
+group: Organization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -62,6 +62,12 @@ To add a user to a project:
 1. Enter an email address and select a [role](../../permissions.md).
 1. Optional. Select an **Access expiration date**.
    From that date onward, the user can no longer access the project.
+
+   WARNING:
+   If you give a member the Maintainer role and select an expiration date, that member
+   has full permissions for the time they are in the role. This includes the ability
+   to extend their own time in the Maintainer role.
+
 1. Select **Invite**.
 
 If the user has a GitLab account, they are added to the members list.
@@ -96,6 +102,9 @@ Each user's access is based on:
 
 - The role they're assigned in the group.
 - The maximum role you choose when you invite the group.
+
+If a user has a group role with fewer permissions than the maximum project role, the user keeps the permissions of their group role.
+For example, if you add a user with the Guest role to a project with a maximum role of Maintainer, the user has only the permissions of the Guest role.
 
 Prerequisites:
 

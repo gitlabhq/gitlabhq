@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
+RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, feature_category: :vulnerability_management do
   let_it_be(:project) { create(:project) }
 
+  let(:current_dast_versions) { described_class::CURRENT_VERSIONS[:dast].join(', ') }
   let(:supported_dast_versions) { described_class::SUPPORTED_VERSIONS[:dast].join(', ') }
   let(:deprecated_schema_version_message) {}
   let(:missing_schema_version_message) do
@@ -19,6 +20,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
     }
   end
 
+  let(:analyzer_vendor) do
+    { 'name' => 'A DAST analyzer' }
+  end
+
+  let(:scanner_vendor) do
+    { 'name' => 'A DAST scanner' }
+  end
+
   let(:report_data) do
     {
       'scan' => {
@@ -26,7 +35,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
           'id' => 'my-dast-analyzer',
           'name' => 'My DAST analyzer',
           'version' => '0.1.0',
-          'vendor' => { 'name' => 'A DAST analyzer' }
+          'vendor' => analyzer_vendor
         },
         'end_time' => '2020-01-28T03:26:02',
         'scanned_resources' => [],
@@ -34,7 +43,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
           'id' => 'my-dast-scanner',
           'name' => 'My DAST scanner',
           'version' => '0.2.0',
-          'vendor' => { 'name' => 'A DAST scanner' }
+          'vendor' => scanner_vendor
         },
         'start_time' => '2020-01-28T03:26:01',
         'status' => 'success',
@@ -458,8 +467,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
 
       let(:report_version) { described_class::DEPRECATED_VERSIONS[report_type].last }
       let(:expected_deprecation_message) do
-        "Version #{report_version} for report type #{report_type} has been deprecated, supported versions for this "\
-        "report type are: #{supported_dast_versions}. GitLab will attempt to parse and ingest this report if valid."
+        "version #{report_version} for report type #{report_type} is deprecated. "\
+        "However, GitLab will still attempt to parse and ingest this report. "\
+        "Upgrade the security report to one of the following versions: #{current_dast_versions}."
       end
 
       let(:expected_deprecation_warnings) do
@@ -491,6 +501,22 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
         end
 
         it_behaves_like 'report with expected warnings'
+      end
+
+      context 'and the report passes schema validation as a GitLab-vendored analyzer' do
+        let(:analyzer_vendor) do
+          { 'name' => 'GitLab' }
+        end
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'and the report passes schema validation as a GitLab-vendored scanner' do
+        let(:scanner_vendor) do
+          { 'name' => 'GitLab' }
+        end
+
+        it { is_expected.to be_empty }
       end
     end
 

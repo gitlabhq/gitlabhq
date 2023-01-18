@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Discussions::ResolveService do
+RSpec.describe Discussions::ResolveService, feature_category: :code_review_workflow do
   describe '#execute' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user) { create(:user, developer_projects: [project]) }
@@ -42,6 +42,12 @@ RSpec.describe Discussions::ResolveService do
 
     it 'schedules an auto-merge' do
       expect(AutoMergeProcessWorker).to receive(:perform_async).with(discussion.noteable.id)
+
+      service.execute
+    end
+
+    it 'sends GraphQL triggers' do
+      expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(discussion.noteable)
 
       service.execute
     end
@@ -119,6 +125,12 @@ RSpec.describe Discussions::ResolveService do
 
       it 'does not schedule an auto-merge' do
         expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+        service.execute
+      end
+
+      it 'does not send GraphQL triggers' do
+        expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated).with(discussion.noteable)
 
         service.execute
       end

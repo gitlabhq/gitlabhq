@@ -68,6 +68,7 @@ module Ci
     delegate :service_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
     delegate :harbor_integration, to: :project
+    delegate :apple_app_store_integration, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
     delegate :ensure_persistent_ref, to: :pipeline
     delegate :enable_debug_trace!, to: :metadata
@@ -587,6 +588,7 @@ module Ci
           .append(key: 'CI_REPOSITORY_URL', value: repo_url.to_s, public: false)
           .concat(deploy_token_variables)
           .concat(harbor_variables)
+          .concat(apple_app_store_variables)
       end
     end
 
@@ -628,6 +630,13 @@ module Ci
       return [] unless harbor_integration.try(:activated?)
 
       Gitlab::Ci::Variables::Collection.new(harbor_integration.ci_variables)
+    end
+
+    def apple_app_store_variables
+      return [] unless apple_app_store_integration.try(:activated?)
+      return [] unless pipeline.protected_ref?
+
+      Gitlab::Ci::Variables::Collection.new(apple_app_store_integration.ci_variables)
     end
 
     def features
@@ -734,6 +743,12 @@ module Ci
 
     def valid_token?(token)
       self.token && token.present? && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
+    end
+
+    def remove_token!
+      if Feature.enabled?(:remove_job_token_on_completion, project)
+        update!(token_encrypted: nil)
+      end
     end
 
     # acts_as_taggable uses this method create/remove tags with contexts
@@ -884,8 +899,9 @@ module Ci
 
       return cache unless project.ci_separated_caches
 
-      type_suffix = pipeline.protected_ref? ? 'protected' : 'non_protected'
       cache.map do |entry|
+        type_suffix = !entry[:unprotect] && pipeline.protected_ref? ? 'protected' : 'non_protected'
+
         entry.merge(key: "#{entry[:key]}-#{type_suffix}")
       end
     end
@@ -1135,15 +1151,9 @@ module Ci
       end
     end
 
-    def partition_id_token_prefix
-      partition_id.to_s(16) if Feature.enabled?(:ci_build_partition_id_token_prefix, project)
-    end
-
     override :format_token
     def format_token(token)
-      return token if partition_id_token_prefix.nil?
-
-      "#{partition_id_token_prefix}_#{token}"
+      "#{partition_id.to_s(16)}_#{token}"
     end
 
     protected

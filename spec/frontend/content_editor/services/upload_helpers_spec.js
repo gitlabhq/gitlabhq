@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { uploadFile } from '~/content_editor/services/upload_helpers';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('content_editor/services/upload_helpers', () => {
   const uploadsPath = '/uploads';
@@ -26,7 +26,7 @@ describe('content_editor/services/upload_helpers', () => {
     renderedMarkdown = parseHTML(renderedAttachmentLinkFixture);
 
     mock = new MockAdapter(axios);
-    mock.onPost(uploadsPath, formData).reply(httpStatus.OK, successResponse);
+    mock.onPost(uploadsPath, formData).reply(HTTP_STATUS_OK, successResponse);
     renderMarkdown = jest.fn().mockResolvedValue(renderedAttachmentLinkFixture);
   });
 

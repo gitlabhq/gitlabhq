@@ -3,7 +3,7 @@ table_name: lfs_objects
 classes:
 - LfsObject
 feature_categories:
-- git_lfs
+- source_code_management
 description: LFS files
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1727
 milestone: '8.2'

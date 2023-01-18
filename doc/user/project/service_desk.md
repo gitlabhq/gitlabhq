@@ -1,6 +1,6 @@
 ---
-stage: Plan
-group: Certify
+stage: Monitor
+group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -110,6 +110,12 @@ With Service Desk, you can use templates for:
 - [Thank you emails](#thank-you-email)
 - [New note emails](#new-note-email)
 - [New Service Desk issues](#new-service-desk-issues)
+
+#### Email header and footer **(FREE SELF)**
+
+Instance administrators can add a small header or footer to the GitLab instance and make them
+visible in the email template. For more information, see
+[System header and footer messages](../admin_area/appearance.md#system-header-and-footer-messages).
 
 #### Thank you email
 
@@ -358,6 +364,17 @@ Note that:
 
 - The project's visibility (private, internal, public) does not affect Service Desk.
 - The path to the project, including its group or namespace, is shown in emails.
+
+#### Receiving files attached to comments as email attachments
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 15.8 [with a flag](../../administration/feature_flags.md) named `service_desk_new_note_email_native_attachments`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `service_desk_new_note_email_native_attachments`.
+On GitLab.com, this feature is not available.
+
+If a comment contains any attachments and their total size is less than or equal to 10 MB, these
+attachments are sent as part of the email. In other cases, the email contains links to the attachments.
 
 #### Privacy considerations
 

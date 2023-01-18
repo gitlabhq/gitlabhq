@@ -21,7 +21,7 @@ that were able to quickly complete this migration:
 1. Educate and enable your developers to independently perform the following steps in their projects:
    1. Review the [Quick Start Guide](../quick_start/index.md) and [Pipeline Configuration Reference](../yaml/index.md).
    1. Use the [Jenkins Wrapper](#jenkinsfile-wrapper) to temporarily maintain fragile Jenkins jobs.
-   1. Migrate the build and CI jobs and configure them to show results directly in your merge requests. They can use [Auto DevOps](../../topics/autodevops/index.md) as a starting point, and [customize](../../topics/autodevops/customize.md) or [decompose](../../topics/autodevops/customize.md#using-components-of-auto-devops) the configuration as needed.
+   1. Migrate the build and CI jobs and configure them to show results directly in your merge requests. They can use [Auto DevOps](../../topics/autodevops/index.md) as a starting point, and [customize](../../topics/autodevops/customize.md) or [decompose](../../topics/autodevops/customize.md#use-individual-components-of-auto-devops) the configuration as needed.
    1. Add [Review Apps](../review_apps/index.md).
    1. Migrate the deployment jobs using [cloud deployment templates](../cloud_deployment/index.md), adding [environments](../environments/index.md), and [deploy boards](../../user/project/deploy_boards.md).
    1. Work to unwrap any jobs still running with the use of the Jenkins wrapper.
@@ -308,7 +308,7 @@ my_job:
 
 In GitLab, we use the [`variables` keyword](../yaml/index.md#variables) to define different variables at runtime.
 These can also be set up through the GitLab UI, under CI/CD settings. See also our [general documentation on variables](../variables/index.md),
-including the section on [protected variables](../variables/index.md#protected-cicd-variables). This can be used
+including the section on [protected variables](../variables/index.md#protect-a-cicd-variable). This can be used
 to limit access to certain variables to certain environments or runners:
 
 ```yaml

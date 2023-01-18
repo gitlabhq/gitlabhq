@@ -117,7 +117,6 @@ module Types
                                                                              description: 'Collection of design images associated with this issue.'
 
     field :type, Types::IssueTypeEnum, null: true,
-                                       method: :issue_type,
                                        description: 'Type of the issue.'
 
     field :alert_management_alert,
@@ -197,6 +196,14 @@ module Types
 
     def escalation_status
       object.supports_escalation? ? object.escalation_status&.status_name : nil
+    end
+
+    def type
+      if Feature.enabled?(:issue_type_uses_work_item_types_table)
+        object.work_item_type.base_type
+      else
+        object.issue_type
+      end
     end
   end
 end

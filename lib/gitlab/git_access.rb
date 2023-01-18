@@ -49,7 +49,7 @@ module Gitlab
 
     def self.error_message(key)
       self.ancestors.each do |cls|
-        return cls.const_get('ERROR_MESSAGES', false).fetch(key)
+        return cls.const_get(:ERROR_MESSAGES, false).fetch(key)
       rescue NameError, KeyError
         next
       end

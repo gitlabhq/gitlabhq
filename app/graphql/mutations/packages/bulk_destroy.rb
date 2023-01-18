@@ -16,11 +16,10 @@ module Mutations
       def resolve(ids:)
         raise_resource_not_available_error!(TOO_MANY_IDS_ERROR) if ids.size > MAX_PACKAGES
 
-        ids = GitlabSchema.parse_gids(ids, expected_type: ::Packages::Package)
-                          .map(&:model_id)
+        model_ids = ids.map(&:model_id)
 
         service = ::Packages::MarkPackagesForDestructionService.new(
-          packages: packages_from(ids),
+          packages: packages_from(model_ids),
           current_user: current_user
         )
         result = service.execute

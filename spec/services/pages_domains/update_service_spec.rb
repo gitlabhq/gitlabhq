@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PagesDomains::UpdateService do
+RSpec.describe PagesDomains::UpdateService, feature_category: :pages do
   let_it_be(:user) { create(:user) }
   let_it_be(:pages_domain) { create(:pages_domain, :with_project) }
 
@@ -40,6 +40,7 @@ RSpec.describe PagesDomains::UpdateService do
             project_id: pages_domain.project.id,
             namespace_id: pages_domain.project.namespace.id,
             root_namespace_id: pages_domain.project.root_namespace.id,
+            domain_id: pages_domain.id,
             domain: pages_domain.domain
           )
       end

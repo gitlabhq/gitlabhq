@@ -19,4 +19,8 @@ class ResourceMilestoneEvent < ResourceTimeboxEvent
   def milestone_parent
     milestone&.parent
   end
+
+  def synthetic_note_class
+    MilestoneNote
+  end
 end

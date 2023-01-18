@@ -142,7 +142,7 @@ A deactivated user:
 
 - Cannot access Git repositories or the API.
 - Does not receive any notifications from GitLab.
-- Does not be able to use [slash commands](../../integration/slash_commands.md).
+- Cannot use [slash commands](../../integration/slash_commands.md).
 - Does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
 
 Personal projects, and group and user history of the deactivated user are left intact.
@@ -223,7 +223,7 @@ On self-managed GitLab, by default this feature is available.
 To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `ban_user_feature_flag`.
 On GitLab.com, this feature is available to GitLab.com administrators only.
 
-GitLab administrators can ban and unban users. Banned users are blocked, and their issues are hidden.
+GitLab administrators can ban and unban users. Banned users are blocked, and their issues and merge requests are hidden.
 The banned user's comments are still displayed. Hiding a banned user's comments is [tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327356).
 
 ### Ban a user

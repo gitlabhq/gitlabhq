@@ -210,7 +210,11 @@ InitializerConnections.with_disabled_database_connections do
       end
 
       # Spam reports
-      resources :abuse_reports, only: [:new, :create]
+      resources :abuse_reports, only: [:new, :create] do
+        collection do
+          post :add_category
+        end
+      end
 
       # JWKS (JSON Web Key Set) endpoint
       # Used by third parties to verify CI_JOB_JWT

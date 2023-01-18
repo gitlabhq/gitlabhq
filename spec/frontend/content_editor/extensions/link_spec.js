@@ -33,7 +33,7 @@ describe('content_editor/extensions/link', () => {
     ${'documentation](readme.md'}     | ${() => p('documentation](readme.md')}
     ${'http://example.com '}          | ${() => p(link({ href: 'http://example.com' }, 'http://example.com'))}
     ${'https://example.com '}         | ${() => p(link({ href: 'https://example.com' }, 'https://example.com'))}
-    ${'www.example.com '}             | ${() => p(link({ href: 'http://www.example.com' }, 'www.example.com'))}
+    ${'www.example.com '}             | ${() => p(link({ href: 'www.example.com' }, 'www.example.com'))}
     ${'example.com/ab.html '}         | ${() => p('example.com/ab.html')}
     ${'https://www.google.com '}      | ${() => p(link({ href: 'https://www.google.com' }, 'https://www.google.com'))}
   `('with input=$input, then should insert a $insertedNode', ({ input, insertedNode }) => {

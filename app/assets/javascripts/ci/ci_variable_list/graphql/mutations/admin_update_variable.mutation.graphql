@@ -1,0 +1,16 @@
+#import "~/ci/ci_variable_list/graphql/fragments/ci_variable.fragment.graphql"
+
+mutation updateAdminVariable($variable: CiVariable!, $endpoint: String!) {
+  ciVariableMutation: updateAdminVariable(variable: $variable, endpoint: $endpoint) @client {
+    ciVariables {
+      nodes {
+        ...BaseCiVariable
+        ... on CiInstanceVariable {
+          protected
+          masked
+        }
+      }
+    }
+    errors
+  }
+}

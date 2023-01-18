@@ -33,7 +33,7 @@ See the [permissions page](../user/permissions.md) for details on how each user 
 Groups and projects can have the following visibility levels:
 
 - public (`20`) - an entity is visible to everyone
-- internal (`10`) - an entity is visible to logged in users
+- internal (`10`) - an entity is visible to authenticated users
 - private (`0`) - an entity is visible only to the approved members of the entity
 
 By default, subgroups can **not** have higher visibility levels.

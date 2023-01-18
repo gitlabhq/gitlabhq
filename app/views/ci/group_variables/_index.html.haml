@@ -1,4 +1,4 @@
-- variables = @project.group.self_and_ancestors.map(&:variables).flatten
+- variables = @project.group.self_and_ancestors.flat_map(&:variables)
 
 .ci-variable-table
   %table.gl-table.gl-w-full.gl-table-layout-fixed

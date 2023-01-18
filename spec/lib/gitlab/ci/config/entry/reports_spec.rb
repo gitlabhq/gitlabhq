@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Reports do
+RSpec.describe Gitlab::Ci::Config::Entry::Reports, feature_category: :pipeline_authoring do
   let(:entry) { described_class.new(config) }
 
   describe 'validates ALLOWED_KEYS' do
@@ -88,6 +88,18 @@ RSpec.describe Gitlab::Ci::Config::Entry::Reports do
           it 'returns artifacts configuration' do
             expect(entry.value).to eq({ coverage_report: coverage_report, dast: ['gl-dast-report.json'] })
           end
+        end
+      end
+
+      context 'when coverage_report is nil' do
+        let(:config) { { coverage_report: nil } }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+
+        it 'returns artifacts configuration as an empty hash' do
+          expect(entry.value).to eq({})
         end
       end
     end

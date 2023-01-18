@@ -490,6 +490,7 @@ module API
         attrs = translate_params_for_compatibility(attrs)
         attrs = add_import_params(attrs)
         filter_attributes_using_license!(attrs)
+        filter_attributes_under_feature_flag!(attrs, user_project)
         verify_update_project_attrs!(user_project, attrs)
 
         user_project.remove_avatar! if attrs.key?(:avatar) && attrs[:avatar].nil?

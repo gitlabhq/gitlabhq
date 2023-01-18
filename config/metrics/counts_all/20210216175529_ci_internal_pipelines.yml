@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: usage_activity_by_stage.verify.ci_internal_pipelines
-description: Total pipelines in GitLab repositories
+description: Distinct users triggering pipelines in internal repositories
 product_section: ops
 product_stage: verify
 product_group: pipeline_execution

@@ -23,7 +23,7 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :team_plann
   context 'in an issue' do
     let(:issue) { create(:issue, project: project, description: description) }
 
-    it 'includes mermaid frame correctly' do
+    it 'includes mermaid frame correctly', :with_license do
       visit project_issue_path(project, issue)
 
       wait_for_requests

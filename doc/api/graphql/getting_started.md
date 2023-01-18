@@ -110,7 +110,7 @@ which is an object identifier in the format of `"gid://gitlab/Issue/123"`.
 [GitLab GraphQL Schema](reference/index.md) outlines which objects and fields are
 available for clients to query and their corresponding data types.
 
-Example: Get only the names of all the projects the currently logged in user can
+Example: Get only the names of all the projects the currently authenticated user can
 access (up to a limit) in the group `gitlab-org`.
 
 ```graphql
@@ -172,7 +172,7 @@ More about queries:
 
 Authorization uses the same engine as the GitLab application (and GitLab.com).
 If you've signed in to GitLab and use GraphiQL, all queries are performed as
-you, the signed in user. For more information, read the
+you, the authenticated user. For more information, read the
 [GitLab API documentation](../index.md#authentication).
 
 ### Mutations

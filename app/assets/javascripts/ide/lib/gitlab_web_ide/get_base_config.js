@@ -1,7 +1,12 @@
-import { cleanEndingSeparator } from '~/lib/utils/url_utility';
+import { cleanEndingSeparator, joinPaths } from '~/lib/utils/url_utility';
 
 const getBaseUrl = () => {
-  const baseUrlObj = new URL(process.env.GITLAB_WEB_IDE_PUBLIC_PATH, window.location.origin);
+  const path = joinPaths(
+    '/',
+    window.gon.relative_url_root || '',
+    process.env.GITLAB_WEB_IDE_PUBLIC_PATH,
+  );
+  const baseUrlObj = new URL(path, window.location.origin);
 
   return cleanEndingSeparator(baseUrlObj.href);
 };

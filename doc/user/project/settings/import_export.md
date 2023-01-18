@@ -27,14 +27,22 @@ To preserve contribution history, [migrate using direct transfer](../../group/im
 
 If you migrate from GitLab.com to self-managed GitLab, an administrator can create users on the self-managed GitLab instance.
 
-## Set up project to migrate using file exports
+## Configure file exports as an import source **(FREE SELF)**
 
-Before you can import or export a project and its data, you must set it up.
+Before you can migrate projects on a self-managed GitLab instance using file exports, GitLab administrators must:
 
+1. [Enable file exports](../../admin_area/settings/visibility_and_access_controls.md#enable-project-export) on the source
+   instance.
+1. Enable file exports as an import source for the destination instance. On GitLab.com, file exports are already enabled
+   as an import source.
+
+To enable file exports as an import source for the destination instance:
+
+1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to **Import sources**.
-1. Enable the desired **Import sources**.
+1. Select the **GitLab export** checkbox.
 
 ## Between CE and EE
 
@@ -53,6 +61,7 @@ Prerequisites:
 
 - Review the list of [items that are exported](#items-that-are-exported). Not all items are exported.
 - You must have at least the Maintainer role for the project.
+- Users must [set a public email](../../profile/index.md#set-your-public-email) in the source GitLab instance that matches one of their verified emails in the target GitLab instance for the user mapping to work correctly.
 
 To export a project and its data, follow these steps:
 
@@ -136,12 +145,13 @@ Prerequisites:
 - You must have [exported the project and its data](#export-a-project-and-its-data).
 - Compare GitLab versions and ensure you are importing to a GitLab version that is the same or later
   than the GitLab version you exported to.
-- Review the [Version history](#version-history)
-  for compatibility issues.
+- Review the [Version history](#version-history) for compatibility issues.
+- At least the Maintainer role on the destination group to migrate to. Using the Developer role for this purpose was
+  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
 
 To import a project:
 
-1. When [creating a new project](../working_with_projects.md#create-a-project),
+1. When [creating a new project](../index.md#create-a-project),
    select **Import project**.
 1. In **Import project from**, select **GitLab export**.
 1. Enter your project name and URL. Then select the file you exported previously.
@@ -211,6 +221,11 @@ To help avoid abuse, by default, users are rate limited to:
 | Import           | 6 projects per minute |
 
 ## Version history
+
+### 15.8+
+
+Starting with GitLab 15.8, importing groups from a JSON export is no longer supported. Groups must be imported
+in NDJSON format.
 
 ### 14.0+
 

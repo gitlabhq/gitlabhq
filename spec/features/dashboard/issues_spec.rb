@@ -21,6 +21,8 @@ RSpec.describe 'Dashboard Issues', feature_category: :team_planning do
     visit issues_dashboard_path(assignee_username: current_user.username)
   end
 
+  it_behaves_like 'a dashboard page with sidebar', :issues_dashboard_path, :issues
+
   describe 'issues' do
     it 'shows issues assigned to current user' do
       expect(page).to have_content(assigned_issue.title)

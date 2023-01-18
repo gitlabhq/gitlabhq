@@ -33,10 +33,10 @@ RSpec.describe 'Query.project.jobs', feature_category: :continuous_integration d
   it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
     build_stage = create(:ci_stage, position: 1, name: 'build', project: project, pipeline: pipeline)
     test_stage = create(:ci_stage, position: 2, name: 'test', project: project, pipeline: pipeline)
-    create(:ci_build, pipeline: pipeline, stage_idx: build_stage.position, name: 'docker 1 2', stage: build_stage)
-    create(:ci_build, pipeline: pipeline, stage_idx: build_stage.position, name: 'docker 2 2', stage: build_stage)
-    create(:ci_build, pipeline: pipeline, stage_idx: test_stage.position, name: 'rspec 1 2', stage: test_stage)
-    test_job = create(:ci_build, pipeline: pipeline, stage_idx: test_stage.position, name: 'rspec 2 2', stage: test_stage)
+    create(:ci_build, pipeline: pipeline, name: 'docker 1 2', ci_stage: build_stage)
+    create(:ci_build, pipeline: pipeline, name: 'docker 2 2', ci_stage: build_stage)
+    create(:ci_build, pipeline: pipeline, name: 'rspec 1 2', ci_stage: test_stage)
+    test_job = create(:ci_build, pipeline: pipeline, name: 'rspec 2 2', ci_stage: test_stage)
     create(:ci_build_need, build: test_job, name: 'docker 1 2')
 
     post_graphql(query, current_user: user)
@@ -45,8 +45,8 @@ RSpec.describe 'Query.project.jobs', feature_category: :continuous_integration d
       post_graphql(query, current_user: user)
     end
 
-    create(:ci_build, name: 'test-a', stage: test_stage, stage_idx: test_stage.position, pipeline: pipeline)
-    test_b_job = create(:ci_build, name: 'test-b', stage: test_stage, stage_idx: test_stage.position, pipeline: pipeline)
+    create(:ci_build, name: 'test-a', ci_stage: test_stage, pipeline: pipeline)
+    test_b_job = create(:ci_build, name: 'test-b', ci_stage: test_stage, pipeline: pipeline)
     create(:ci_build_need, build: test_b_job, name: 'docker 2 2')
 
     expect do

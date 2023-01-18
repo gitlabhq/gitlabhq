@@ -5,6 +5,7 @@ module Gitlab
     module PartitioningMigrationHelpers
       module ForeignKeyHelpers
         include ::Gitlab::Database::SchemaHelpers
+        include ::Gitlab::Database::Migrations::LockRetriesHelpers
 
         ERROR_SCOPE = 'foreign keys'
 

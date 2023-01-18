@@ -30,20 +30,35 @@ import { __ } from '~/locale';
 import {
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_LABEL,
+  TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import { AutocompleteCache } from '../utils';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
+const EmojiToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
+const LabelToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
+const MilestoneToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 
 export default {
   i18n: {
     calendarButtonText: __('Subscribe to calendar'),
     closed: __('CLOSED'),
     closedMoved: __('CLOSED (MOVED)'),
-    emptyStateTitle: __('Please select at least one filter to see results'),
+    emptyStateWithFilterTitle: __('Sorry, your filter produced no results'),
+    emptyStateWithFilterDescription: __('To widen your search, change or remove filters above'),
+    emptyStateWithoutFilterTitle: __('Please select at least one filter to see results'),
     errorFetchingIssues: __('An error occurred while loading issues'),
     rssButtonText: __('Subscribe to RSS feed'),
     searchInputPlaceholder: __('Search or filter results...'),
@@ -60,8 +75,12 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   inject: [
+    'autocompleteAwardEmojisPath',
     'calendarPath',
-    'emptyStateSvgPath',
+    'dashboardLabelsPath',
+    'dashboardMilestonesPath',
+    'emptyStateWithFilterSvgPath',
+    'emptyStateWithoutFilterSvgPath',
     'hasBlockedIssuesFeature',
     'hasIssuableHealthStatusFeature',
     'hasIssueWeightsFeature',
@@ -117,12 +136,34 @@ export default {
         this.issuesError = this.$options.i18n.errorFetchingIssues;
         Sentry.captureException(error);
       },
+      skip() {
+        return !this.hasSearch;
+      },
       debounce: 200,
     },
   },
   computed: {
     apiFilterParams() {
       return convertToApiParams(this.filterTokens);
+    },
+    emptyStateDescription() {
+      return this.hasSearch ? this.$options.i18n.emptyStateWithFilterDescription : undefined;
+    },
+    emptyStateSvgPath() {
+      return this.hasSearch
+        ? this.emptyStateWithFilterSvgPath
+        : this.emptyStateWithoutFilterSvgPath;
+    },
+    emptyStateTitle() {
+      return this.hasSearch
+        ? this.$options.i18n.emptyStateWithFilterTitle
+        : this.$options.i18n.emptyStateWithoutFilterTitle;
+    },
+    hasSearch() {
+      return Boolean(this.searchQuery || Object.keys(this.urlFilterParams).length);
+    },
+    renderedIssues() {
+      return this.hasSearch ? this.issues : [];
     },
     searchQuery() {
       return convertToSearchQuery(this.filterTokens);
@@ -159,12 +200,46 @@ export default {
           preloadedUsers,
           recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-author',
         },
+        {
+          type: TOKEN_TYPE_LABEL,
+          title: TOKEN_TITLE_LABEL,
+          icon: 'labels',
+          token: LabelToken,
+          fetchLabels: this.fetchLabels,
+          recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-label',
+        },
+        {
+          type: TOKEN_TYPE_MILESTONE,
+          title: TOKEN_TITLE_MILESTONE,
+          icon: 'clock',
+          token: MilestoneToken,
+          fetchMilestones: this.fetchMilestones,
+          recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-milestone',
+          shouldSkipSort: true,
+        },
       ];
+
+      if (this.isSignedIn) {
+        tokens.push({
+          type: TOKEN_TYPE_MY_REACTION,
+          title: TOKEN_TITLE_MY_REACTION,
+          icon: 'thumb-up',
+          token: EmojiToken,
+          unique: true,
+          fetchEmojis: this.fetchEmojis,
+          recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-my_reaction',
+        });
+      }
+
+      tokens.sort((a, b) => a.title.localeCompare(b.title));
 
       return tokens;
     },
     showPaginationControls() {
-      return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
+      return (
+        this.renderedIssues.length > 0 &&
+        (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage)
+      );
     },
     sortOptions() {
       return getSortOptions({
@@ -185,7 +260,34 @@ export default {
       };
     },
   },
+  created() {
+    this.autocompleteCache = new AutocompleteCache();
+  },
   methods: {
+    fetchEmojis(search) {
+      return this.autocompleteCache.fetch({
+        url: this.autocompleteAwardEmojisPath,
+        cacheName: 'emojis',
+        searchProperty: 'name',
+        search,
+      });
+    },
+    fetchLabels(search) {
+      return this.autocompleteCache.fetch({
+        url: this.dashboardLabelsPath,
+        cacheName: 'labels',
+        searchProperty: 'title',
+        search,
+      });
+    },
+    fetchMilestones(search) {
+      return this.autocompleteCache.fetch({
+        url: this.dashboardMilestonesPath,
+        cacheName: 'milestones',
+        searchProperty: 'title',
+        search,
+      });
+    },
     fetchUsers(search) {
       return axios.get('/-/autocomplete/users.json', { params: { active: true, search } });
     },
@@ -266,7 +368,7 @@ export default {
     :has-scoped-labels-feature="hasScopedLabelsFeature"
     :initial-filter-value="filterTokens"
     :initial-sort-by="sortKey"
-    :issuables="issues"
+    :issuables="renderedIssues"
     :issuables-loading="$apollo.queries.issues.loading"
     namespace="dashboard"
     recent-searches-storage-key="issues"
@@ -307,7 +409,11 @@ export default {
     </template>
 
     <template #empty-state>
-      <gl-empty-state :svg-path="emptyStateSvgPath" :title="$options.i18n.emptyStateTitle" />
+      <gl-empty-state
+        :description="emptyStateDescription"
+        :svg-path="emptyStateSvgPath"
+        :title="emptyStateTitle"
+      />
     </template>
   </issuable-list>
 </template>

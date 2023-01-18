@@ -140,7 +140,7 @@ export default {
     >
       <template v-if="repo.importSource.target">{{ repo.importSource.target }}</template>
       <template v-else-if="isImportNotStarted">
-        <div class="import-entities-target-select gl-display-flex gl-align-items-stretch gl-w-full">
+        <div class="gl-display-flex gl-align-items-stretch gl-w-full">
           <import-group-dropdown #default="{ namespaces }" :text="importTarget.targetNamespace">
             <template v-if="namespaces.length">
               <gl-dropdown-section-header>{{ __('Groups') }}</gl-dropdown-section-header>
@@ -161,7 +161,7 @@ export default {
             }}</gl-dropdown-item>
           </import-group-dropdown>
           <div
-            class="import-entities-target-select-separator gl-px-3 gl-display-flex gl-align-items-center gl-border-solid gl-border-0 gl-border-t-1 gl-border-b-1"
+            class="gl-px-3 gl-display-flex gl-align-items-center gl-border-solid gl-border-0 gl-border-t-1 gl-border-b-1"
           >
             /
           </div>

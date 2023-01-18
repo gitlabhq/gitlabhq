@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
+RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: :continuous_integration do
   include ProjectForksHelper
   include StubRequests
   include Ci::SourcePipelineHelpers
@@ -1319,6 +1319,21 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         it 'is not included' do
           expect(subject.to_hash).not_to have_key('CI_GITLAB_FIPS_MODE')
         end
+      end
+    end
+
+    context 'when tag is not found' do
+      let(:pipeline) do
+        create(:ci_pipeline, project: project, ref: 'not_found_tag', tag: true)
+      end
+
+      it 'does not expose tag variables' do
+        expect(subject.to_hash.keys)
+          .not_to include(
+            'CI_COMMIT_TAG',
+            'CI_COMMIT_TAG_MESSAGE',
+            'CI_BUILD_TAG'
+          )
       end
     end
 

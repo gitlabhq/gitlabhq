@@ -23,11 +23,10 @@ describe('BoardApp', () => {
     });
   };
 
-  const createComponent = ({ provide = { disabled: true } } = {}) => {
+  const createComponent = () => {
     wrapper = shallowMount(BoardApp, {
       store,
       provide: {
-        ...provide,
         fullBoardId: 'gid://gitlab/Board/1',
       },
     });

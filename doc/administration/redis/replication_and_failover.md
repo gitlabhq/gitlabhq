@@ -324,6 +324,14 @@ Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
+1. Only the primary GitLab application server should handle migrations. To
+   prevent database migrations from running on upgrade, add the following
+   configuration to your `/etc/gitlab/gitlab.rb` file:
+
+   ```ruby
+   gitlab_rails['auto_migrate'] = false
+   ```
+
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Go through the steps again for all the other replica nodes.
 

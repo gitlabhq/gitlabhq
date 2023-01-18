@@ -1,10 +1,10 @@
 ---
 stage: Manage
-group: Workspace
+group: Organization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Workspace
+# Organization
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.
@@ -15,9 +15,9 @@ The development, release, and timing of any products, features, or functionality
 sole discretion of GitLab Inc.
 
 NOTE:
-Workspace is in development.
+Organization is in development.
 
-Workspace will be above the [top-level namespaces](../namespace/index.md) for you to manage
+Organization will be above the [top-level namespaces](../namespace/index.md) for you to manage
 everything you do as a GitLab administrator, including:
 
 - Defining and applying settings to all of your groups, subgroups, and projects.
@@ -26,11 +26,11 @@ everything you do as a GitLab administrator, including:
 Our goal is to reach feature parity between SaaS and self-managed installations, with all
 [Admin Area settings](/ee/user/admin_area/settings/index.md) moving to either:
 
-- Groups. Available in the Workspace, top-level groups, and subgroups.
+- Groups. Available in the Organization, and subgroups.
 - Hardware Controls. For functionality that does not apply to groups, Hardware Controls are only
   applicable to self-managed installations. There is one Hardware Controls section per installation.
 
-For more information about the state of workspace development,
+For more information about the state of organization development,
 see [epic 9265](https://gitlab.com/groups/gitlab-org/-/epics/9265).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -39,4 +39,4 @@ For a video introduction to the new hierarchy concept for groups and projects fo
 
 ## Related topics
 
-- [Workspace developer documentation](../../development/workspace/index.md)
+- [Organization developer documentation](../../development/workspace/index.md)

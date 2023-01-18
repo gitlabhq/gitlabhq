@@ -74,6 +74,11 @@ export default {
       required: false,
       default: '',
     },
+    shouldShowCheck: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     totalCountText() {
@@ -82,6 +87,9 @@ export default {
   },
   methods: {
     showCheck(item) {
+      if (!this.shouldShowCheck) {
+        return false;
+      }
       return item.name === this.selectedRef || item.value === this.selectedRef;
     },
   },

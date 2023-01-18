@@ -56,7 +56,7 @@ module API
             params do
               requires :name, type: String, desc: 'The name of the link. Link names must be unique in the release'
               requires :url, type: String, desc: 'The URL of the link. Link URLs must be unique in the release.'
-              optional :filepath, type: String, desc: 'Optional path for a direct asset link'
+              optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link', as: :filepath
               optional :link_type,
                 type: String,
                 values: %w[other runbook image package],
@@ -108,7 +108,7 @@ module API
               params do
                 optional :name, type: String, desc: 'The name of the link'
                 optional :url, type: String, desc: 'The URL of the link'
-                optional :filepath, type: String, desc: 'Optional path for a direct asset link'
+                optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link', as: :filepath
                 optional :link_type,
                   type: String,
                   values: %w[other runbook image package],

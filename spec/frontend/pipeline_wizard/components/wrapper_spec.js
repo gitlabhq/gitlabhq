@@ -364,6 +364,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
         extra: {
           fromStep: 0,
           toStep: 1,
+          features: expect.any(Object),
         },
       });
     });
@@ -386,6 +387,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
         extra: {
           fromStep: 1,
           toStep: 0,
+          features: expect.any(Object),
         },
       });
     });
@@ -409,6 +411,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
         extra: {
           fromStep: 2,
           toStep: 1,
+          features: expect.any(Object),
         },
       });
     });
@@ -429,6 +432,9 @@ describe('Pipeline Wizard - wrapper.vue', () => {
         category: trackingCategory,
         label: 'pipeline_wizard_commit',
         property: 'commit',
+        extra: {
+          features: expect.any(Object),
+        },
       });
     });
 
@@ -443,6 +449,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
         label: 'pipeline_wizard_editor_interaction',
         extra: {
           currentStep: 0,
+          features: expect.any(Object),
         },
       });
     });

@@ -11,6 +11,7 @@ import RefSelector from '~/ref/components/ref_selector.vue';
 import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
+import ForkInfo from './components/fork_info.vue';
 import LastCommit from './components/last_commit.vue';
 import BlobControls from './components/blob_controls.vue';
 import apolloProvider from './graphql';
@@ -62,6 +63,28 @@ export default function setupVueRepositoryList() {
       escapedRef,
     },
   });
+
+  const initForkInfo = () => {
+    const forkEl = document.getElementById('js-fork-info');
+    if (!forkEl) {
+      return null;
+    }
+    const { sourceName, sourcePath } = forkEl.dataset;
+    return new Vue({
+      el: forkEl,
+      apolloProvider,
+      render(h) {
+        return h(ForkInfo, {
+          props: {
+            projectPath,
+            selectedRef: ref,
+            sourceName,
+            sourcePath,
+          },
+        });
+      },
+    });
+  };
 
   const initLastCommitApp = () =>
     new Vue({
@@ -118,6 +141,7 @@ export default function setupVueRepositoryList() {
 
   initLastCommitApp();
   initBlobControlsApp();
+  initForkInfo();
   initRefSwitcher();
 
   router.afterEach(({ params: { path } }) => {

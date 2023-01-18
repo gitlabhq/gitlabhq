@@ -273,6 +273,7 @@ module ApplicationSettingsHelper
       :housekeeping_full_repack_period,
       :housekeeping_gc_period,
       :housekeeping_incremental_repack_period,
+      :housekeeping_optimize_repository_period,
       :html_emails_enabled,
       :import_sources,
       :in_product_marketing_emails_enabled,
@@ -447,7 +448,9 @@ module ApplicationSettingsHelper
       :pipeline_limit_per_project_user_sha,
       :invitation_flow_enforcement,
       :can_create_group,
-      :bulk_import_enabled
+      :bulk_import_enabled,
+      :allow_runner_registration_token,
+      :user_defaults_to_private_profile
     ].tap do |settings|
       next if Gitlab.com?
 

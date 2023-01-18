@@ -34,7 +34,7 @@ RSpec.describe "User sorts things", :js do
     expect(page).to have_button(sort_option)
   end
 
-  it "merge requests -> dashboard merge requests", feature_category: :code_review do
+  it "merge requests -> dashboard merge requests", feature_category: :code_review_workflow do
     sort_option = s_('SortOptions|Updated date')
 
     visit(project_merge_requests_path(project))

@@ -119,10 +119,10 @@ In GitLab 13.9 and later, deployment frequency metrics are calculated based on w
 In GitLab 13.8 and earlier, deployment frequency metrics are calculated based on when the deployment was created.
 
 <div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/embed/wQU-mWvNSiI">DORA metrics and value stream analytics</a>.
+  See the video: <a href="https://www.youtube.com/watch?v=wQU-mWvNSiI">DORA metrics and value stream analytics</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/wQU-mWvNSiI" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/wQU-mWvNSiI" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 ### How value stream analytics aggregates data

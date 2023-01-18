@@ -64,67 +64,73 @@ module API
         end
       end
 
-      desc 'Start relations export' do
-        detail 'This feature was introduced in GitLab 13.12'
-        tags %w[group_export]
-        success code: 202
-        failure [
-          { code: 401, message: 'Unauthorized' },
-          { code: 403, message: 'Forbidden' },
-          { code: 404, message: 'Not found' },
-          { code: 503, message: 'Service unavailable' }
-        ]
-      end
-      post ':id/export_relations' do
-        response = ::BulkImports::ExportService.new(portable: user_group, user: current_user).execute
-
-        if response.success?
-          accepted!
-        else
-          render_api_error!(message: 'Group relations export could not be started.')
+      resource do
+        before do
+          not_found! unless Gitlab::CurrentSettings.bulk_import_enabled?
         end
-      end
 
-      desc 'Download relations export' do
-        detail 'This feature was introduced in GitLab 13.12'
-        produces %w[application/octet-stream application/json]
-        tags %w[group_export]
-        success code: 200
-        failure [
-          { code: 401, message: 'Unauthorized' },
-          { code: 403, message: 'Forbidden' },
-          { code: 404, message: 'Not found' },
-          { code: 503, message: 'Service unavailable' }
-        ]
-      end
-      params do
-        requires :relation, type: String, desc: 'Group relation name'
-      end
-      get ':id/export_relations/download' do
-        export = user_group.bulk_import_exports.find_by_relation(params[:relation])
-        file = export&.upload&.export_file
-
-        if file
-          present_carrierwave_file!(file)
-        else
-          render_api_error!('404 Not found', 404)
+        desc 'Start relations export' do
+          detail 'This feature was introduced in GitLab 13.12'
+          tags %w[group_export]
+          success code: 202
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' },
+            { code: 503, message: 'Service unavailable' }
+          ]
         end
-      end
+        post ':id/export_relations' do
+          response = ::BulkImports::ExportService.new(portable: user_group, user: current_user).execute
 
-      desc 'Relations export status' do
-        detail 'This feature was introduced in GitLab 13.12'
-        is_array true
-        tags %w[group_export]
-        success code: 200, model: Entities::BulkImports::ExportStatus
-        failure [
-          { code: 401, message: 'Unauthorized' },
-          { code: 403, message: 'Forbidden' },
-          { code: 404, message: 'Not found' },
-          { code: 503, message: 'Service unavailable' }
-        ]
-      end
-      get ':id/export_relations/status' do
-        present user_group.bulk_import_exports, with: Entities::BulkImports::ExportStatus
+          if response.success?
+            accepted!
+          else
+            render_api_error!(message: 'Group relations export could not be started.')
+          end
+        end
+
+        desc 'Download relations export' do
+          detail 'This feature was introduced in GitLab 13.12'
+          produces %w[application/octet-stream application/json]
+          tags %w[group_export]
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' },
+            { code: 503, message: 'Service unavailable' }
+          ]
+        end
+        params do
+          requires :relation, type: String, desc: 'Group relation name'
+        end
+        get ':id/export_relations/download' do
+          export = user_group.bulk_import_exports.find_by_relation(params[:relation])
+          file = export&.upload&.export_file
+
+          if file
+            present_carrierwave_file!(file)
+          else
+            render_api_error!('404 Not found', 404)
+          end
+        end
+
+        desc 'Relations export status' do
+          detail 'This feature was introduced in GitLab 13.12'
+          is_array true
+          tags %w[group_export]
+          success code: 200, model: Entities::BulkImports::ExportStatus
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' },
+            { code: 503, message: 'Service unavailable' }
+          ]
+        end
+        get ':id/export_relations/status' do
+          present user_group.bulk_import_exports, with: Entities::BulkImports::ExportStatus
+        end
       end
     end
   end

@@ -186,6 +186,10 @@ Instead, use **assign**. For example:
 - Assign the issue to an epic.
 - Assign a user to the issue.
 
+## authenticated user
+
+Use **authenticated user** instead of other variations, like **signed in user** or **logged in user**.
+
 ## below
 
 Try to avoid **below** when referring to an example or table in a documentation page. If required, use **following** instead. For example:
@@ -308,6 +312,13 @@ Use **default branch** to refer generically to the primary branch in the reposit
 Users can set the default branch by using a UI setting.
 
 For examples that use the default branch, use `main` instead of [`master`](#master).
+
+## delete
+
+Use **delete** when an object is completely deleted. **Delete** is the opposite of **create**.
+
+When the object continues to exist, use [**remove**](#remove) instead.
+For example, you can remove an issue from an epic, but the issue still exists.
 
 ## Dependency Proxy
 
@@ -487,7 +498,7 @@ Use title case for **Geo**.
 
 ## GitLab
 
-Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://about.gitlab.com/handbook/marketing/corporate-marketing/brand-activation/trademark-guidelines/).
+Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
 
 ## GitLab.com
 
@@ -690,6 +701,10 @@ Do not use **limitations**. Use **known issues** instead.
 ## log in, log on
 
 Do not use **log in** or **log on**. Use [sign in](#sign-in) instead. If the user interface has **Log in**, you can use it.
+
+## logged-in user, logged in user
+
+Use **authenticated user** instead of **logged-in user** or **logged in user**.
 
 ## lower
 
@@ -937,6 +952,12 @@ we would talk to a colleague, and to avoid differentiation between `we` and `the
 
 Use **register** instead of **sign up** when talking about creating an account.
 
+## remove
+
+Use **remove** when an object continues to exist. For example, you can remove an issue from an epic, but the issue still exists.
+
+When an object is completely deleted, use [**delete**](#delete) instead.
+
 ## Reporter
 
 When writing about the Reporter role:
@@ -1074,6 +1095,10 @@ You can use **single sign-on**.
 ## sign up
 
 Use **register** instead of **sign up** when talking about creating an account.
+
+## signed-in user, signed in user
+
+Use **authenticated user** instead of **signed-in user** or **signed in user**.
 
 ## simply, simple
 
@@ -1318,7 +1343,7 @@ in present tense, active voice.
 ## you, your, yours
 
 Use **you**, **your**, and **yours** instead of **the user** and **the user's**.
-Documentation should be from the [point of view](https://design.gitlab.com/content/voice-tone/#point-of-view) of the reader.
+Documentation should be from the [point of view](https://design.gitlab.com/content/voice-and-tone#point-of-view) of the reader.
 
 Use:
 

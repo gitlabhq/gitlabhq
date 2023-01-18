@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch, feature_category: :code_review do
+RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
   let(:batch_page) { 0 }
   let(:batch_size) { 10 }

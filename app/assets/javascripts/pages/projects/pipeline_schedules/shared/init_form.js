@@ -3,7 +3,7 @@ import Vue from 'vue';
 import { __ } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
-import setupNativeFormVariableList from '~/ci_variable_list/native_form_variable_list';
+import setupNativeFormVariableList from '~/ci/ci_variable_list/native_form_variable_list';
 import GlFieldErrors from '~/gl_field_errors';
 import Translate from '~/vue_shared/translate';
 import { initTimezoneDropdown } from '../../../profiles/init_timezone_dropdown';

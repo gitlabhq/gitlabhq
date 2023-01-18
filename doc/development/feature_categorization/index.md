@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/269) in GitLab 13.2.
 
-Each Sidekiq worker, controller action, [test example](../testing_guide/best_practices.md#feature-category-metadata) or API endpoint
+Each Sidekiq worker, Batched Background migrations, controller action, [test example](../testing_guide/best_practices.md#feature-category-metadata) or API endpoint
 must declare a `feature_category` attribute. This attribute maps each
 of these to a [feature category](https://about.gitlab.com/handbook/product/categories/). This
 is done for error budgeting, alert routing, and team attribution.
@@ -76,6 +76,25 @@ category (worker or HTTP endpoint) in metrics and logs.
 For instance, `ReactiveCachingWorker` can have multiple feature
 categories in metrics and logs.
 
+## Batched background migrations
+
+Long-running migrations (as per the [time limits guidelines](../migration_style_guide.md#how-long-a-migration-should-take))
+are pulled out as [batched background migrations](../database/batched_background_migrations.md).
+They should define a `feature_category`, like this:
+
+```ruby
+# File name: lib/gitlab/background_migration/my_background_migration_job.rb
+
+class MyBackgroundMigrationJob < BatchedMigrationJob
+  feature_category :gitaly
+
+  #...
+end
+```
+
+NOTE:
+[`RuboCop::Cop::BackgroundMigration::FeatureCategory`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/background_migration/feature_category.rb) cop ensures a valid `feature_category` is defined.
+
 ## Rails controllers
 
 Specifying feature categories on controller actions can be done using
@@ -96,7 +115,7 @@ second argument:
 ```ruby
 class DashboardController < ApplicationController
   feature_category :team_planning, [:issues, :issues_calendar]
-  feature_category :code_review, [:merge_requests]
+  feature_category :code_review_workflow, [:merge_requests]
 end
 ```
 
@@ -203,3 +222,9 @@ can be done using the `not_owned` feature category.
 ```ruby
 RSpec.describe Utils, feature_category: :not_owned do
 ```
+
+### Tooling feature category
+
+For Engineering Productivity internal tooling we use `feature_category: :tooling`.
+
+For example in [`spec/tooling/danger/specs_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/tooling/danger/specs_spec.rb#L12).

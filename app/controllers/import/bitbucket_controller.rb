@@ -78,12 +78,12 @@ class Import::BitbucketController < Import::BaseController
 
   override :importable_repos
   def importable_repos
-    bitbucket_repos.filter { |repo| repo.valid? }
+    bitbucket_repos.filter(&:valid?)
   end
 
   override :incompatible_repos
   def incompatible_repos
-    bitbucket_repos.reject { |repo| repo.valid? }
+    bitbucket_repos.reject(&:valid?)
   end
 
   def provider_url

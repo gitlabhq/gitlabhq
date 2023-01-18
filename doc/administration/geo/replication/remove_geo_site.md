@@ -11,7 +11,7 @@ type: howto
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
-1. Select the **Remove** button for the **secondary** site you want to remove.
+1. For the **secondary** site you want to remove, select **Remove**.
 1. Confirm by selecting **Remove** when the prompt appears.
 
 After the **secondary** site is removed from the Geo administration page, you must
@@ -24,6 +24,9 @@ stop and uninstall this site. For each node on your secondary Geo site:
    ```
 
 1. Uninstall GitLab:
+
+   NOTE:
+   If GitLab data has to be cleaned from the instance as well, see how to [uninstall the Linux package and all its data](https://docs.gitlab.com/omnibus/installation/#uninstall-the-linux-package-omnibus).
 
    ```shell
    # Stop gitlab and remove its supervision process

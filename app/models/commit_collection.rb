@@ -25,7 +25,7 @@ class CommitCollection
   end
 
   def committers
-    emails = without_merge_commits.map(&:committer_email).uniq
+    emails = without_merge_commits.filter_map(&:committer_email).uniq
 
     User.by_any_email(emails)
   end

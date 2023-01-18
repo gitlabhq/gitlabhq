@@ -23,7 +23,7 @@ module Gitlab
       # with an explosion in unused metric combinations, but we want the
       # most common ones to be always present.
       FEATURE_CATEGORIES_TO_INITIALIZE = ['authentication_and_authorization',
-                                          'code_review', 'continuous_integration',
+                                          'code_review_workflow', 'continuous_integration',
                                           'not_owned', 'source_code_management',
                                           FEATURE_CATEGORY_DEFAULT].freeze
 

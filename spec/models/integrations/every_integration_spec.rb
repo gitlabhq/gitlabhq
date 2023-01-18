@@ -11,9 +11,9 @@ RSpec.describe 'Every integration' do
       let(:integration) { integration_class.new }
 
       context 'secret fields', :aggregate_failures do
-        it "uses type: 'password' for all secret fields" do
+        it "uses type: 'password' for all secret fields, except when bypassed" do
           integration.fields.each do |field|
-            next unless Integrations::Field::SECRET_NAME.match?(field[:name])
+            next unless Integrations::Field::SECRET_NAME.match?(field[:name]) && field[:is_secret]
 
             expect(field[:type]).to eq('password'),
               "Field '#{field[:name]}' should use type 'password'"

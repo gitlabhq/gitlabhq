@@ -5,6 +5,7 @@ module Gitlab
     # A job to nullify duplicate token values in ci_runners table in batches
     class ResetDuplicateCiRunnersTokenValues < BatchedMigrationJob
       operation_name :nullify_duplicate_ci_runner_token_values
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

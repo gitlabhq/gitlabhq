@@ -6,6 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Version-specific upgrade instructions **(PREMIUM SELF)**
 
+NOTE:
+We're in the process of merging all the version-specific upgrade information
+into a single page. See [epic 9581](https://gitlab.com/groups/gitlab-org/-/epics/9581)
+for more information. For the time being, visit the
+[general upgrade page](../../../update/index.md)
+for the newest Geo version-specific upgrade instructions.
+
 Review this page for upgrade instructions for your version. These steps
 accompany the [general steps](upgrading_the_geo_sites.md#general-upgrade-steps)
 for upgrading Geo sites.
@@ -14,7 +21,7 @@ for upgrading Geo sites.
 
 [Geo proxying](../secondary_proxy/index.md) was [enabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in 15.1. This may be a breaking change. If needed, you may [disable Geo proxying](../secondary_proxy/index.md#disable-geo-proxying).
 
-If you are using SAML with different URLs, there is a [known issue which requires proxying to be disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/377372).
+If you are using SAML with different URLs, you must modify your SAML configuration and your Identity Provider configuration. For more information, see the [Geo with Single Sign-On (SSO) documentation](single_sign_on.md).
 
 ## Upgrading to 14.9
 

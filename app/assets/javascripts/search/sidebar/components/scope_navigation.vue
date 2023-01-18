@@ -1,13 +1,10 @@
 <script>
 import { GlNav, GlNavItem, GlIcon } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
-import { formatNumber, s__ } from '~/locale';
+import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import {
-  NAV_LINK_DEFAULT_CLASSES,
-  NUMBER_FORMATING_OPTIONS,
-  NAV_LINK_COUNT_DEFAULT_CLASSES,
-} from '../constants';
+import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES } from '../constants';
+import { formatSearchResultCount } from '../../store/utils';
 
 export default {
   name: 'ScopeNavigation',
@@ -29,11 +26,7 @@ export default {
   methods: {
     ...mapActions(['fetchSidebarCount']),
     showFormatedCount(count) {
-      if (!count) {
-        return '0';
-      }
-      const countNumber = parseInt(count.replace(/,/g, ''), 10);
-      return formatNumber(countNumber, NUMBER_FORMATING_OPTIONS);
+      return formatSearchResultCount(count);
     },
     isCountOverLimit(count) {
       return count.includes('+');
@@ -82,6 +75,6 @@ export default {
         </span>
       </gl-nav-item>
     </gl-nav>
-    <hr class="gl-mt-5 gl-mb-0 gl-border-gray-100 gl-md-display-none" />
+    <hr class="gl-mt-5 gl-mx-5 gl-mb-0 gl-border-gray-100 gl-md-display-none" />
   </nav>
 </template>

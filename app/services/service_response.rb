@@ -26,22 +26,22 @@ class ServiceResponse
     self.reason = reason
   end
 
-  def track_exception(as: StandardError, **extra_data)
-    if error?
-      e = as.new(message)
-      Gitlab::ErrorTracking.track_exception(e, extra_data)
+  def log_and_raise_exception(as: StandardError, **extra_data)
+    error_tracking(as) do |ex|
+      Gitlab::ErrorTracking.log_and_raise_exception(ex, extra_data)
     end
+  end
 
-    self
+  def track_exception(as: StandardError, **extra_data)
+    error_tracking(as) do |ex|
+      Gitlab::ErrorTracking.track_exception(ex, extra_data)
+    end
   end
 
   def track_and_raise_exception(as: StandardError, **extra_data)
-    if error?
-      e = as.new(message)
-      Gitlab::ErrorTracking.track_and_raise_exception(e, extra_data)
+    error_tracking(as) do |ex|
+      Gitlab::ErrorTracking.track_and_raise_exception(ex, extra_data)
     end
-
-    self
   end
 
   def [](key)
@@ -73,4 +73,13 @@ class ServiceResponse
   private
 
   attr_writer :status, :message, :http_status, :payload, :reason
+
+  def error_tracking(error_klass)
+    if error?
+      ex = error_klass.new(message)
+      yield ex
+    end
+
+    self
+  end
 end

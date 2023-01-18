@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Issue'] do
+  let_it_be_with_reload(:project) { create(:project, :public) }
+  let_it_be(:user) { create(:user) }
+
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Issue) }
 
   specify { expect(described_class.graphql_name).to eq('Issue') }
@@ -26,8 +29,6 @@ RSpec.describe GitlabSchema.types['Issue'] do
   end
 
   describe 'pagination and count' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :public) }
     let_it_be(:now) { Time.now.change(usec: 0) }
     let_it_be(:issues) { create_list(:issue, 10, project: project, created_at: now) }
 
@@ -130,8 +131,6 @@ RSpec.describe GitlabSchema.types['Issue'] do
   end
 
   describe "issue notes" do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :public) }
     let(:issue) { create(:issue, project: project) }
     let(:confidential_issue) { create(:issue, :confidential, project: project) }
     let(:private_note_body) { "mentioned in issue #{confidential_issue.to_reference(project)}" }
@@ -211,8 +210,6 @@ RSpec.describe GitlabSchema.types['Issue'] do
   describe 'hidden', :enable_admin_mode do
     let_it_be(:admin) { create(:user, :admin) }
     let_it_be(:banned_user) { create(:user, :banned) }
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :public) }
     let_it_be(:hidden_issue) { create(:issue, project: project, author: banned_user) }
     let_it_be(:visible_issue) { create(:issue, project: project, author: user) }
 
@@ -259,8 +256,6 @@ RSpec.describe GitlabSchema.types['Issue'] do
   end
 
   describe 'escalation_status' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :public) }
     let_it_be(:issue, reload: true) { create(:issue, project: project) }
 
     let(:execute) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
@@ -291,6 +286,46 @@ RSpec.describe GitlabSchema.types['Issue'] do
         let!(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: issue) }
 
         it { is_expected.to eq(escalation_status.status_name.to_s.upcase) }
+      end
+    end
+  end
+
+  describe 'type' do
+    let_it_be(:issue) { create(:issue, project: project) }
+
+    let(:query) do
+      %(
+        query {
+          issue(id: "#{issue.to_gid}") {
+            type
+          }
+        }
+      )
+    end
+
+    subject(:execute) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    context 'when the issue_type_uses_work_item_types_table feature flag is enabled' do
+      it 'gets the type field from the work_item_types table' do
+        expect_next_instance_of(::IssuePresenter) do |presented_issue|
+          expect(presented_issue).to receive_message_chain(:work_item_type, :base_type)
+        end
+
+        execute
+      end
+    end
+
+    context 'when the issue_type_uses_work_item_types_table feature flag is disabled' do
+      before do
+        stub_feature_flags(issue_type_uses_work_item_types_table: false)
+      end
+
+      it 'does not get the type field from the work_item_types table' do
+        expect_next_instance_of(::IssuePresenter) do |presented_issue|
+          expect(presented_issue).not_to receive(:work_item_type)
+        end
+
+        execute
       end
     end
   end

@@ -18,7 +18,6 @@ module Boards
       # TODO: eliminate need for SQL literal fragment
       columns = Arel.sql(fields.values_at(*keys).join(', '))
       results = item_model.where(id: collection_ids)
-      results = query_additions(results, required_fields)
       results = results.select(columns)
 
       Hash[keys.zip(results.pluck(columns).flatten)]
@@ -26,11 +25,6 @@ module Boards
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
-
-    # override if needed
-    def query_additions(items, required_fields)
-      items
-    end
 
     def collection_ids
       @collection_ids ||= init_collection.select(item_model.arel_table[:id])

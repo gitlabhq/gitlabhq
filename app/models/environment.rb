@@ -98,6 +98,27 @@ class Environment < ApplicationRecord
   scope :auto_stoppable, -> (limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
   scope :auto_deletable, -> (limit) { stopped.where('auto_delete_at < ?', Time.zone.now).limit(limit) }
 
+  scope :deployed_and_updated_before, -> (project_id, before) do
+    # this query joins deployments and filters out any environment that has recent deployments
+    joins = %{
+    LEFT JOIN "deployments" on "deployments".environment_id = "environments".id
+        AND "deployments".project_id = #{project_id}
+        AND "deployments".updated_at >= #{connection.quote(before)}
+    }
+    Environment.joins(joins)
+               .where(project_id: project_id, updated_at: ...before)
+               .group('id', 'deployments.id')
+               .having('deployments.id IS NULL')
+  end
+  scope :without_protected, -> (project) {} # no-op when not in EE mode
+
+  scope :without_names, -> (names) do
+    where.not(name: names)
+  end
+  scope :without_tiers, -> (tiers) do
+    where.not(tier: tiers)
+  end
+
   ##
   # Search environments which have names like the given query.
   # Do not set a large limit unless you've confirmed that it works on gitlab.com scale.

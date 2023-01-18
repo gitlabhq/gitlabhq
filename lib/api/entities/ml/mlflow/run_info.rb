@@ -10,6 +10,7 @@ module API
           expose(:experiment_id) { |candidate| candidate.experiment.iid.to_s }
           expose(:start_time) { |candidate| candidate.start_time || 0 }
           expose :end_time, expose_nil: false
+          expose :name, as: :run_name, expose_nil: false
           expose(:status) { |candidate| candidate.status.to_s.upcase }
           expose(:artifact_uri) { |candidate, options| "#{options[:packages_url]}#{candidate.artifact_root}" }
           expose(:lifecycle_stage) { |candidate| 'active' }

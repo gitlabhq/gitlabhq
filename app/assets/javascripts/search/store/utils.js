@@ -1,5 +1,12 @@
 import AccessorUtilities from '~/lib/utils/accessor';
-import { MAX_FREQUENT_ITEMS, MAX_FREQUENCY, SIDEBAR_PARAMS } from './constants';
+import { formatNumber } from '~/locale';
+import { joinPaths } from '~/lib/utils/url_utility';
+import {
+  MAX_FREQUENT_ITEMS,
+  MAX_FREQUENCY,
+  SIDEBAR_PARAMS,
+  NUMBER_FORMATING_OPTIONS,
+} from './constants';
 
 function extractKeys(object, keyList) {
   return Object.fromEntries(keyList.map((key) => [key, object[key]]));
@@ -89,4 +96,19 @@ export const isSidebarDirty = (currentQuery, urlQuery) => {
 
     return userAddedParam || userChangedExistingParam;
   });
+};
+
+export const formatSearchResultCount = (count) => {
+  if (!count) {
+    return '0';
+  }
+
+  const countNumber = typeof count === 'string' ? parseInt(count.replace(/,/g, ''), 10) : count;
+  return formatNumber(countNumber, NUMBER_FORMATING_OPTIONS);
+};
+
+export const getAggregationsUrl = () => {
+  const currentUrl = new URL(window.location.href);
+  currentUrl.pathname = joinPaths('/search', 'aggregations');
+  return currentUrl.toString();
 };

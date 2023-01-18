@@ -4,7 +4,7 @@ module MergeRequests
   class UpdateHeadPipelineWorker
     include Gitlab::EventStore::Subscriber
 
-    feature_category :code_review
+    feature_category :code_review_workflow
     urgency :high
     worker_resource_boundary :cpu
     data_consistency :always

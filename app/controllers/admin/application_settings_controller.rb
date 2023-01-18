@@ -137,8 +137,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
     unless job_id.length <= PARAM_JOB_ID_MAX_SIZE
       return render status: :bad_request, json: {
-        message: _('Parameter "job_id" cannot exceed length of %{job_id_max_size}' %
-          { job_id_max_size: PARAM_JOB_ID_MAX_SIZE })
+        message: format(_('Parameter "job_id" cannot exceed length of %{job_id_max_size}'), job_id_max_size: PARAM_JOB_ID_MAX_SIZE)
       }
     end
 
@@ -174,8 +173,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
     unless job_id.length <= PARAM_JOB_ID_MAX_SIZE
       return render status: :bad_request, json: {
-        message: _('Parameter "job_id" cannot exceed length of %{job_id_max_size}' %
-          { job_id_max_size: PARAM_JOB_ID_MAX_SIZE })
+        message: format(_('Parameter "job_id" cannot exceed length of %{job_id_max_size}'), job_id_max_size: PARAM_JOB_ID_MAX_SIZE)
       }
     end
 

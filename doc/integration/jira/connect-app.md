@@ -16,15 +16,15 @@ the GitLab.com for Jira Cloud app.
 ## Install the GitLab.com for Jira Cloud app **(FREE SAAS)**
 
 If you use GitLab.com and Jira Cloud, you can install the GitLab.com for Jira Cloud app.
-If you do not use both of these environments, use the [Jira DVCS Connector](dvcs.md) or
+If you do not use both of these environments, use the [Jira DVCS Connector](dvcs/index.md) or
 [install GitLab.com for Jira Cloud app for self-managed instances](#install-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances).
 We recommend the GitLab.com for Jira Cloud app, because data is
 synchronized in real time. The DVCS connector updates data only once per hour.
 
-The user configuring the GitLab.com for Jira Cloud app must have
+To configure the GitLab.com for Jira Cloud app, you must have
 at least the Maintainer role in the GitLab.com namespace.
 
-This integration method supports [Smart Commits](dvcs.md#smart-commits).
+This integration method supports [Smart Commits](dvcs/index.md#smart-commits).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a walkthrough of the integration with GitLab.com for Jira Cloud app, watch
@@ -41,14 +41,15 @@ To install the GitLab.com for Jira Cloud app:
    This page is always available under **Jira Settings > Apps > Manage apps**.
 
    ![Start GitLab.com app configuration on Jira Cloud](img/jira_dev_panel_setup_com_2.png)
-1. If not already signed in to GitLab.com, you must sign in as a user with
-   the Maintainer role to add namespaces.
+1. To add namespaces, ensure you're signed in to GitLab.com
+   as a user with at least the Maintainer role.
 
    ![Sign in to GitLab.com in GitLab.com for Jira Cloud app](img/jira_dev_panel_setup_com_3_v13_9.png)
 1. To open the list of available namespaces, select **Add namespace**.
 
-1. Identify the namespace you want to link, and select **Link**. Only Jira site
-   administrators are permitted to add or remove namespaces for an installation.
+1. Identify the namespace you want to link, and select **Link**.
+   - You must have at least the Maintainer role for the namespace.
+   - Only Jira site administrators can add or remove namespaces for an installation.
 
    ![Link namespace in GitLab.com for Jira Cloud app](img/jira_dev_panel_setup_com_4_v13_9.png)
 
@@ -74,14 +75,7 @@ If the app requires additional permissions, [the update must first be manually a
 
 ## Connect the GitLab.com for Jira Cloud app for self-managed instances **(FREE SELF)**
 
-> - Introduced in GitLab 15.6 [with flags](../../administration/feature_flags.md) named [`jira_connect_oauth_self_managed_setting`](https://gitlab.com/gitlab-org/gitlab/-/issues/377679), [`jira_connect_oauth`](https://gitlab.com/gitlab-org/gitlab/-/issues/355048), and [`jira_connect_oauth_self_managed`](https://gitlab.com/gitlab-org/gitlab/-/issues/359940). Disabled by default.
-> - Feature flag `jira_connect_oauth_self_managed_setting` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105070) in GitLab 15.7.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flags](../../administration/feature_flags.md) named
-`jira_connect_oauth` and `jira_connect_oauth_self_managed`. On GitLab.com, this feature
-is not available. The feature is not ready for production use.
+> Introduced in GitLab 15.7.
 
 Prerequisites:
 
@@ -91,6 +85,8 @@ Prerequisites:
 
 You can link self-managed instances after installing the GitLab.com for Jira Cloud app from the marketplace.
 Jira apps can only link to one URL per marketplace listing. The official listing links to GitLab.com.
+
+It's not possible to create branches from Jira for self-managed instances.
 
 ### Set up your instance
 
@@ -187,9 +183,9 @@ NOTE:
 This method uses [automated updates](#update-the-gitlabcom-for-jira-cloud-app)
 the same way as our GitLab.com Marketplace listing.
 
-## Troubleshoot GitLab.com for Jira Cloud app
+## Troubleshooting
 
-### Browser displays sign-in message when already signed in
+### Browser displays a sign-in message when already signed in
 
 You might get the following message prompting you to sign in to GitLab.com
 when you're already signed in:
@@ -198,8 +194,25 @@ when you're already signed in:
 You need to sign in or sign up before continuing.
 ```
 
-GitLab.com for Jira Cloud app uses an iframe to add namespaces on the
+The GitLab.com for Jira Cloud app uses an iframe to add namespaces on the
 settings page. Some browsers block cross-site cookies, which can lead to this issue.
 
-To resolve this issue, use [Firefox](https://www.mozilla.org/en-US/firefox/),
-[Google Chrome](https://www.google.com/chrome/), or enable cross-site cookies in your browser.
+To resolve this issue, use either [Firefox](https://www.mozilla.org/en-US/firefox/) or
+[Chrome](https://www.google.com/chrome/) or enable cross-site cookies in your browser.
+
+### Manual installation fails
+
+You might get an error if you have installed the GitLab.com for Jira Cloud app from the official marketplace listing and replaced it with manual installation. To resolve this issue, disable the **Jira Connect Proxy URL** setting.
+
+- In GitLab 15.7:
+
+  1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+  1. Execute `ApplicationSetting.current_without_cache.update(jira_connect_proxy_url: nil)`.
+
+- In GitLab 15.8 and later:
+
+  1. On the top bar, select **Main menu > Admin**.
+  1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
+  1. Expand the **GitLab for Jira App** section.
+  1. Clear the **Jira Connect Proxy URL** text box.
+  1. Select **Save changes**.

@@ -1,0 +1,8 @@
+---
+name: tier_badge
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101575"
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378454
+milestone: '15.8'
+type: experiment
+group: group::acquisition
+default_enabled: false

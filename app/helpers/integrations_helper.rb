@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module IntegrationsHelper
+  # rubocop:disable Metrics/CyclomaticComplexity
   def integration_event_title(event)
     case event
     when "push", "push_events"
@@ -27,8 +28,11 @@ module IntegrationsHelper
       _("Deployment")
     when "alert"
       _("Alert")
+    when "incident"
+      _("Incident")
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   def integration_event_description(integration, event)
     case integration
@@ -230,6 +234,7 @@ module IntegrationsHelper
     end
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
   def default_integration_event_description(event)
     case event
     when "push", "push_events"
@@ -256,8 +261,11 @@ module IntegrationsHelper
       s_("ProjectService|Trigger event when a deployment starts or finishes.")
     when "alert"
       s_("ProjectService|Trigger event when a new, unique alert is recorded.")
+    when "incident"
+      s_("ProjectService|Trigger event when an incident is created.")
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   def trigger_events_for_integration(integration)
     Integrations::EventSerializer.new(integration: integration).represent(integration.configurable_events).to_json

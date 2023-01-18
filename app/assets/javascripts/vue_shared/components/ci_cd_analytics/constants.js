@@ -1,1 +1,2 @@
 export const CHART_CONTAINER_HEIGHT = 300;
+export const DEFAULT_SELECTED_CHART = 2;

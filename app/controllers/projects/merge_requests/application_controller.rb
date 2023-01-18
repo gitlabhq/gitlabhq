@@ -5,7 +5,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   before_action :merge_request
   before_action :authorize_read_merge_request!
 
-  feature_category :code_review
+  feature_category :code_review_workflow
 
   private
 
@@ -13,6 +13,10 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
     @issuable =
       @merge_request ||=
         merge_request_includes(@project.merge_requests).find_by_iid!(params[:id])
+
+    return render_404 unless can?(current_user, :read_merge_request, @issuable)
+
+    @issuable
   end
 
   def merge_request_includes(association)

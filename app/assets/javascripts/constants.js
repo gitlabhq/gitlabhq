@@ -1,3 +1,6 @@
-import { s__ } from '~/locale';
+/* eslint-disable @gitlab/require-i18n-strings */
 
-export const MODIFIER_KEY = window.gl?.client?.isMac ? '⌘' : s__('KeyboardKey|Ctrl+');
+export const getModifierKey = (removeSuffix = false) => {
+  const winKey = `Ctrl${removeSuffix ? '' : '+'}`;
+  return window.gl?.client?.isMac ? '⌘' : winKey;
+};

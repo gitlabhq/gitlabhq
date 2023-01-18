@@ -75,7 +75,9 @@ The following is hidden from your user profile page (`https://gitlab.example.com
 - Tabs for activity, groups, contributed projects, personal projects, starred projects, snippets
 
 NOTE:
-Making your user profile page private does not hide all your public resources from the REST or GraphQL APIs.
+Making your user profile page private does not hide all your public resources from
+the REST or GraphQL APIs. For example, the email address associated with your commit
+signature is accessible unless you [use an automatically-generated private commit email](#use-an-automatically-generated-private-commit-email).
 
 ### User visibility
 
@@ -85,7 +87,7 @@ not.
 When visiting the public page of a user, you can only see the projects which you have privileges to.
 
 If the [public level is restricted](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels),
-user profiles are only visible to signed-in users.
+user profiles are only visible to authenticated users.
 
 ## Add details to your profile with a README
 
@@ -389,7 +391,7 @@ Without the `config.extend_remember_period` flag, you would be forced to sign in
 - Receive emails for:
   - [Sign-ins from unknown IP addresses or devices](notifications.md#notifications-for-unknown-sign-ins)
   - [Attempted sign-ins using wrong two-factor authentication codes](notifications.md#notifications-for-attempted-sign-in-using-wrong-two-factor-authentication-codes)
-- Manage applications that can [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
+- Manage applications that can [use GitLab as an OAuth provider](../../integration/oauth_provider.md)
 - Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
 - Manage [SSH keys](../ssh.md) to access your account via SSH
 - Change your [syntax highlighting theme](preferences.md#syntax-highlighting-theme)

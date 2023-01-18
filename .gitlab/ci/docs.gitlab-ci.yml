@@ -70,21 +70,22 @@ docs-lint markdown:
   script:
     - scripts/lint-doc.sh
 
-docs-code-quality:
+docs code_quality:
   extends:
-    - .docs:rules:docs-code-quality
+    - .reports:rules:code_quality
     - .docs-markdown-lint-image
   stage: lint
   needs: []
+  dependencies: []
   allow_failure: true
   script:
-    - scripts/lint-doc-quality.sh
+    - vale --output=doc/.vale/vale-json.tmpl --minAlertLevel warning doc > gl-code-quality-report-docs.json || exit_code=$?
   artifacts:
     reports:
       codequality: gl-code-quality-report-docs.json
     paths:
       - gl-code-quality-report-docs.json
-    expire_in: 1 week
+    expire_in: 2 weeks
     when: always
 
 ui-docs-links lint:

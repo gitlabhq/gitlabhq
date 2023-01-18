@@ -1,0 +1,13 @@
+---
+# Error: gitlab.TabsLinks
+#
+# Checks for the presence of links to individual GitLab UI tabs.
+#
+# For a list of all options, see https://vale.sh/docs/topics/styles/
+extends: existence
+message: "Do not include tabs query parameters in links."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#tabs
+level: error
+scope: raw
+raw:
+  - '\[[^\]]+\]\(.*?\.md\?tab=.*?\)'

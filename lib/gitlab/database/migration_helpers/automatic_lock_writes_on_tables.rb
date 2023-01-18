@@ -42,7 +42,7 @@ module Gitlab
         def should_lock_writes_on_table?(table_name)
           # currently gitlab_schema represents only present existing tables, this is workaround for deleted tables
           # that should be skipped as they will be removed in a future migration.
-          return false if Gitlab::Database::GitlabSchema::DELETED_TABLES[table_name]
+          return false if Gitlab::Database::GitlabSchema.deleted_tables_to_schema[table_name]
 
           table_schema = Gitlab::Database::GitlabSchema.table_schema(table_name.to_s, undefined: false)
 
@@ -60,12 +60,15 @@ module Gitlab
           Gitlab::Database.gitlab_schemas_for_connection(connection).exclude?(table_schema)
         end
 
+        # with_retries creates new a transaction. So we set it to false if the connection is
+        # already has an open transaction, to avoid sub-transactions.
         def lock_writes_on_table(connection, table_name)
           database_name = Gitlab::Database.db_config_name(connection)
           LockWritesManager.new(
             table_name: table_name,
             connection: connection,
             database_name: database_name,
+            with_retries: !connection.transaction_open?,
             logger: Logger.new($stdout)
           ).lock_writes
         end

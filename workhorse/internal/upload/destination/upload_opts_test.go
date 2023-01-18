@@ -1,4 +1,4 @@
-package destination_test
+package destination
 
 import (
 	"testing"
@@ -8,7 +8,6 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 )
 
@@ -43,7 +42,7 @@ func TestUploadOptsLocalAndRemote(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			opts := destination.UploadOpts{
+			opts := UploadOpts{
 				LocalTempPath: test.localTempPath,
 				PresignedPut:  test.presignedPut,
 				PartSize:      test.partSize,
@@ -103,15 +102,17 @@ func TestGetOpts(t *testing.T) {
 					MultipartUpload:  test.multipart,
 					CustomPutHeaders: test.customPutHeaders,
 					PutHeaders:       test.putHeaders,
+					SkipDelete:       true,
 				},
 			}
 			deadline := time.Now().Add(time.Duration(apiResponse.RemoteObject.Timeout) * time.Second)
-			opts, err := destination.GetOpts(apiResponse)
+			opts, err := GetOpts(apiResponse)
 			require.NoError(t, err)
 
 			require.Equal(t, apiResponse.TempPath, opts.LocalTempPath)
 			require.WithinDuration(t, deadline, opts.Deadline, time.Second)
 			require.Equal(t, apiResponse.RemoteObject.ID, opts.RemoteID)
+			require.Equal(t, apiResponse.RemoteObject.SkipDelete, opts.SkipDelete)
 			require.Equal(t, apiResponse.RemoteObject.GetURL, opts.RemoteURL)
 			require.Equal(t, apiResponse.RemoteObject.StoreURL, opts.PresignedPut)
 			require.Equal(t, apiResponse.RemoteObject.DeleteURL, opts.PresignedDelete)
@@ -155,22 +156,22 @@ func TestGetOptsFail(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			_, err := destination.GetOpts(tc.in)
+			_, err := GetOpts(tc.in)
 			require.Error(t, err, "expect input to be rejected")
 		})
 	}
 }
 
 func TestGetOptsDefaultTimeout(t *testing.T) {
-	deadline := time.Now().Add(destination.DefaultObjectStoreTimeout)
-	opts, err := destination.GetOpts(&api.Response{TempPath: "/foo/bar"})
+	deadline := time.Now().Add(DefaultObjectStoreTimeout)
+	opts, err := GetOpts(&api.Response{TempPath: "/foo/bar"})
 	require.NoError(t, err)
 
 	require.WithinDuration(t, deadline, opts.Deadline, time.Minute)
 }
 
 func TestUseWorkhorseClientEnabled(t *testing.T) {
-	cfg := destination.ObjectStorageConfig{
+	cfg := ObjectStorageConfig{
 		Provider: "AWS",
 		S3Config: config.S3Config{
 			Bucket: "test-bucket",
@@ -195,7 +196,7 @@ func TestUseWorkhorseClientEnabled(t *testing.T) {
 		name                string
 		UseWorkhorseClient  bool
 		remoteTempObjectID  string
-		objectStorageConfig destination.ObjectStorageConfig
+		objectStorageConfig ObjectStorageConfig
 		expected            bool
 	}{
 		{
@@ -243,7 +244,7 @@ func TestUseWorkhorseClientEnabled(t *testing.T) {
 			name:               "missing S3 bucket",
 			UseWorkhorseClient: true,
 			remoteTempObjectID: "test-object",
-			objectStorageConfig: destination.ObjectStorageConfig{
+			objectStorageConfig: ObjectStorageConfig{
 				Provider: "AWS",
 				S3Config: config.S3Config{},
 			},
@@ -269,7 +270,7 @@ func TestUseWorkhorseClientEnabled(t *testing.T) {
 				},
 			}
 			deadline := time.Now().Add(time.Duration(apiResponse.RemoteObject.Timeout) * time.Second)
-			opts, err := destination.GetOpts(apiResponse)
+			opts, err := GetOpts(apiResponse)
 			require.NoError(t, err)
 			opts.ObjectStorageConfig = test.objectStorageConfig
 
@@ -322,7 +323,7 @@ func TestGoCloudConfig(t *testing.T) {
 				},
 			}
 			deadline := time.Now().Add(time.Duration(apiResponse.RemoteObject.Timeout) * time.Second)
-			opts, err := destination.GetOpts(apiResponse)
+			opts, err := GetOpts(apiResponse)
 			require.NoError(t, err)
 			opts.ObjectStorageConfig.URLMux = mux
 

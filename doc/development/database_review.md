@@ -275,4 +275,4 @@ Include in the MR description:
   - [Check query plans](database/understanding_explain_plans.md) and suggest improvements
     to queries (changing the query, schema or adding indexes and similar)
   - General guideline is for queries to come in below [100ms execution time](database/query_performance.md#timing-guidelines-for-queries)
-  - Avoid N+1 problems and minimize the [query count](merge_request_performance_guidelines.md#query-counts).
+  - Avoid N+1 problems and minimize the [query count](merge_request_concepts/performance.md#query-counts).

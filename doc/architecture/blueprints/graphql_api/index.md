@@ -2,7 +2,7 @@
 status: accepted
 creation-date: "2021-01-07"
 authors: [ "@grzesiek" ]
-coach: "@kamil"
+coach: [ "@ayufan", "@grzesiek" ]
 approvers: [ "@dsatcher", "@deuley" ]
 owning-stage: "~devops::manage"
 participating-stages: []

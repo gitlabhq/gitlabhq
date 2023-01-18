@@ -37,11 +37,6 @@ The alert list displays the following information:
   - **Resolved**: No further work is required.
   - **Ignored**: No action will be taken on the alert.
 
-NOTE:
-Check out a live example available from the
-[`tanuki-inc` project page](https://gitlab.com/gitlab-examples/ops/incident-setup/everyone/tanuki-inc)
-in GitLab to examine alerts in action.
-
 ## Alert severity
 
 Each level of alert contains a uniquely shaped and color-coded icon to help
@@ -70,10 +65,6 @@ Alerts contain one of the following icons:
 Navigate to the Alert details view by visiting the [Alert list](alerts.md)
 and selecting an alert from the list. You need at least the Developer role
 to access alerts.
-
-NOTE:
-To review live examples of GitLab alerts, visit the
-[alert list](https://gitlab.com/gitlab-examples/ops/incident-setup/everyone/tanuki-inc/-/alert_management)
 for this demo project. Select any alert in the list to examine its alert details
 page.
 

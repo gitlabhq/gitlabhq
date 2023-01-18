@@ -46,7 +46,7 @@ class Issue < ApplicationRecord
   #
   # This should be kept consistent with the enums used for the GraphQL issue list query in
   # https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/assets/javascripts/issues/list/constants.js#L154-158
-  TYPES_FOR_LIST = %w(issue incident test_case task objective).freeze
+  TYPES_FOR_LIST = %w(issue incident test_case task objective key_result).freeze
 
   # Types of issues that should be displayed on issue board lists
   TYPES_FOR_BOARD_LIST = %w(issue incident).freeze
@@ -661,11 +661,6 @@ class Issue < ApplicationRecord
 
   def hidden?
     author&.banned?
-  end
-
-  # Necessary until all issues are backfilled and we add a NOT NULL constraint on the DB
-  def work_item_type
-    super || WorkItems::Type.default_by_type(issue_type)
   end
 
   def expire_etag_cache

@@ -1,9 +1,7 @@
 import * as Sentry from '@sentry/browser';
-import { escape } from 'lodash';
 import Vue from 'vue';
 import { GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { spriteIcon } from './lib/utils/common_utils';
 
 const FLASH_TYPES = {
   ALERT: 'alert',
@@ -17,13 +15,6 @@ const VARIANT_WARNING = 'warning';
 const VARIANT_DANGER = 'danger';
 const VARIANT_INFO = 'info';
 const VARIANT_TIP = 'tip';
-
-const TYPE_TO_VARIANT = {
-  [FLASH_TYPES.ALERT]: VARIANT_DANGER,
-  [FLASH_TYPES.NOTICE]: VARIANT_INFO,
-  [FLASH_TYPES.SUCCESS]: VARIANT_SUCCESS,
-  [FLASH_TYPES.WARNING]: VARIANT_WARNING,
-};
 
 const FLASH_CLOSED_EVENT = 'flashClosed';
 
@@ -56,27 +47,6 @@ const hideFlash = (flashEl, fadeTransition = true) => {
 
   if (!fadeTransition) flashEl.dispatchEvent(new Event('transitionend'));
 };
-
-const createAction = (config) => `
-  <a
-    href="${config.href || '#'}"
-    class="flash-action"
-    ${config.href ? '' : 'role="button"'}
-  >
-    ${escape(config.title)}
-  </a>
-`;
-
-const createFlashEl = (message, type) => `
-  <div class="flash-${type}" data-testid="alert-${TYPE_TO_VARIANT[type]}">
-    <div class="flash-text">
-      ${escape(message)}
-      <div class="close-icon-wrapper js-close-icon">
-        ${spriteIcon('close', 'close-icon')}
-      </div>
-    </div>
-  </div>
-`;
 
 const addDismissFlashClickListener = (flashEl, fadeTransition) => {
   // There are some flash elements which do not have a closeEl.
@@ -211,73 +181,7 @@ const createAlert = function createAlert({
   });
 };
 
-/**
- * @deprecated use `createAlert` instead
- *
- * Flash banner supports different types of Flash configurations
- * along with ability to provide actionConfig which can be used to show
- * additional action or link on banner next to message
- *
- * @param {object} options - Options to control the flash message
- * @param {string} options.message - Flash message text
- * @param {'alert'|'notice'|'success'|'warning'} [options.type] - Type of Flash; it defaults to 'alert'
- * @param {Element|Document} [options.parent] - Reference to parent element under which Flash needs to appear
- * @param {object} [options.actionConfig] - Map of config to show action on banner
- * @param {string} [options.actionConfig.href] - URL to which action config should point to (default: '#')
- * @param {string} [options.actionConfig.title] - Title of action
- * @param {Function} [options.actionConfig.clickHandler] - Method to call when action is clicked on
- * @param {boolean} [options.fadeTransition] - Boolean to determine whether to fade the alert out
- * @param {boolean} [options.addBodyClass] - Adds `flash-shown` class to the `body` element
- * @param {boolean} [options.captureError] - Boolean to determine whether to send error to Sentry
- * @param {object} [options.error] - Error to be captured in Sentry
- */
-const createFlash = function createFlash({
-  message,
-  type = FLASH_TYPES.ALERT,
-  parent = document,
-  actionConfig = null,
-  fadeTransition = true,
-  addBodyClass = false,
-  captureError = false,
-  error = null,
-}) {
-  const flashContainer = parent.querySelector('.flash-container');
-
-  if (!flashContainer) return null;
-
-  // eslint-disable-next-line no-unsanitized/property
-  flashContainer.innerHTML = createFlashEl(message, type);
-
-  const flashEl = flashContainer.querySelector(`.flash-${type}`);
-
-  if (actionConfig) {
-    // eslint-disable-next-line no-unsanitized/method
-    flashEl.insertAdjacentHTML('beforeend', createAction(actionConfig));
-
-    if (actionConfig.clickHandler) {
-      flashEl
-        .querySelector('.flash-action')
-        .addEventListener('click', (e) => actionConfig.clickHandler(e));
-    }
-  }
-
-  addDismissFlashClickListener(flashEl, fadeTransition);
-
-  flashContainer.classList.add('gl-display-block');
-
-  if (addBodyClass) document.body.classList.add('flash-shown');
-
-  if (captureError && error) Sentry.captureException(error);
-
-  flashContainer.close = () => {
-    getCloseEl(flashEl).click();
-  };
-
-  return flashContainer;
-};
-
 export {
-  createFlash as default,
   hideFlash,
   addDismissFlashClickListener,
   FLASH_TYPES,

@@ -1,11 +1,13 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlListbox } from '@gitlab/ui';
+import { GlFormGroup, GlListbox } from '@gitlab/ui';
 import ListboxInput from '~/vue_shared/components/listbox_input/listbox_input.vue';
 
 describe('ListboxInput', () => {
   let wrapper;
 
   // Props
+  const label = 'label';
+  const decription = 'decription';
   const name = 'name';
   const defaultToggleText = 'defaultToggleText';
   const items = [
@@ -21,29 +23,69 @@ describe('ListboxInput', () => {
       options: [{ text: 'Item 3', value: '3' }],
     },
   ];
+  const id = 'id';
 
   // Finders
+  const findGlFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findGlListbox = () => wrapper.findComponent(GlListbox);
   const findInput = () => wrapper.find('input');
 
   const createComponent = (propsData) => {
     wrapper = shallowMount(ListboxInput, {
       propsData: {
+        label,
+        decription,
         name,
         defaultToggleText,
         items,
         ...propsData,
       },
+      attrs: {
+        id,
+      },
     });
   };
 
-  describe('input attributes', () => {
+  describe('wrapper', () => {
+    it.each`
+      description          | labelProp      | descriptionProp      | rendersGlFormGroup
+      ${'does not render'} | ${''}          | ${''}                | ${false}
+      ${'renders'}         | ${'labelProp'} | ${''}                | ${true}
+      ${'renders'}         | ${''}          | ${'descriptionProp'} | ${true}
+      ${'renders'}         | ${'labelProp'} | ${'descriptionProp'} | ${true}
+    `(
+      "$description a GlFormGroup when label is '$labelProp' and description is '$descriptionProp'",
+      ({ labelProp, descriptionProp, rendersGlFormGroup }) => {
+        createComponent({ label: labelProp, description: descriptionProp });
+
+        expect(findGlFormGroup().exists()).toBe(rendersGlFormGroup);
+      },
+    );
+  });
+
+  describe('options', () => {
     beforeEach(() => {
       createComponent();
     });
 
+    it('passes the label to the form group', () => {
+      expect(findGlFormGroup().attributes('label')).toBe(label);
+    });
+
+    it('passes the decription to the form group', () => {
+      expect(findGlFormGroup().attributes('decription')).toBe(decription);
+    });
+
     it('sets the input name', () => {
       expect(findInput().attributes('name')).toBe(name);
+    });
+
+    it('is not filterable with few items', () => {
+      expect(findGlListbox().props('searchable')).toBe(false);
+    });
+
+    it('passes attributes to the root element', () => {
+      expect(findGlFormGroup().attributes('id')).toBe(id);
     });
   });
 
@@ -91,12 +133,29 @@ describe('ListboxInput', () => {
   });
 
   describe('search', () => {
-    beforeEach(() => {
-      createComponent();
+    it('is searchable when there are more than 10 items', () => {
+      createComponent({
+        items: [
+          {
+            text: 'Group 1',
+            options: [...Array(10).keys()].map((index) => ({
+              text: index + 1,
+              value: String(index + 1),
+            })),
+          },
+          {
+            text: 'Group 2',
+            options: [{ text: 'Item 11', value: '11' }],
+          },
+        ],
+      });
+
+      expect(findGlListbox().props('searchable')).toBe(true);
     });
 
     it('passes all items to GlListbox by default', () => {
       createComponent();
+
       expect(findGlListbox().props('items')).toStrictEqual(items);
     });
 

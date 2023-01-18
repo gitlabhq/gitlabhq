@@ -239,8 +239,15 @@
                 }
               ]
             },
+            "browser_performance": {
+              "type": "string",
+              "description": "Path to a single file with browser performance metric report(s)."
+            },
             "coverage_report": {
-              "type": "object",
+              "type": [
+                "object",
+                "null"
+              ],
               "description": "Used to collect coverage reports from the job.",
               "properties": {
                 "coverage_format": {
@@ -291,10 +298,6 @@
             "license_scanning": {
               "$ref": "#/definitions/string_file_list",
               "description": "Path to file or list of files with license report(s)."
-            },
-            "performance": {
-              "$ref": "#/definitions/string_file_list",
-              "description": "Path to file or list of files with performance metrics report(s)."
             },
             "requirements": {
               "$ref": "#/definitions/string_file_list",
@@ -703,7 +706,10 @@
       }
     },
     "rules": {
-      "type": "array",
+      "type": [
+        "array",
+        "null"
+      ],
       "markdownDescription": "Rules allows for an array of individual rule objects to be evaluated in order, until one matches and dynamically provides attributes to the job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#rules).",
       "items": {
         "anyOf": [
@@ -993,6 +999,11 @@
             "push",
             "pull-push"
           ]
+        },
+        "unprotect": {
+          "type": "boolean",
+          "markdownDescription": "Use `unprotect: true` to set a cache to be shared between protected and unprotected branches.",
+          "default": false
         },
         "untracked": {
           "type": "boolean",
@@ -1601,7 +1612,7 @@
               "description": "Creates N instances of the same job that run in parallel.",
               "default": 0,
               "minimum": 2,
-              "maximum": 50
+              "maximum": 200
             },
             {
               "type": "object",
@@ -1620,7 +1631,7 @@
                       ]
                     }
                   },
-                  "maxItems": 50
+                  "maxItems": 200
                 }
               },
               "additionalProperties": false,

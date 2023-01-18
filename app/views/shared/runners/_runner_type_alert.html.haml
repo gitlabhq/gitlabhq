@@ -12,5 +12,5 @@
     title: s_('Runners|This runner is associated with specific projects.'),
     dismissible: false) do |c|
     = c.body do
-      = s_('Runners|You can set up a specific runner to be used by multiple projects but you cannot make this a shared runner.')
+      = s_('Runners|You can set up a specific runner to be used by multiple projects but you cannot make this a shared or group runner.')
       = link_to _('Learn more.'), help_page_path('ci/runners/runners_scope', anchor: 'specific-runners'), target: '_blank', rel: 'noopener noreferrer'

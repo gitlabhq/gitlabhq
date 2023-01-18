@@ -74,6 +74,7 @@ input ImportRequestInput {
   sourceGroupId: ID!
   targetNamespace: String!
   newName: String!
+  migrateProjects: Boolean!
 }
 
 extend type Mutation {

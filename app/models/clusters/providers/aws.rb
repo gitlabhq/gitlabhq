@@ -45,18 +45,6 @@ module Clusters
         )
       end
 
-      def api_client
-        strong_memoize(:api_client) do
-          ::Aws::CloudFormation::Client.new(credentials: credentials, region: region)
-        end
-      end
-
-      def credentials
-        strong_memoize(:credentials) do
-          ::Aws::Credentials.new(access_key_id, secret_access_key, session_token)
-        end
-      end
-
       def has_rbac_enabled?
         true
       end

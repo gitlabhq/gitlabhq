@@ -15,7 +15,10 @@ module API
       expose :ssh_url_to_repo, documentation: { type: 'string', example: 'git@gitlab.example.com:gitlab/gitlab.git' }
       expose :http_url_to_repo, documentation: { type: 'string', example: 'https://gitlab.example.com/gitlab/gitlab.git' }
       expose :web_url, documentation: { type: 'string', example: 'https://gitlab.example.com/gitlab/gitlab' }
-      expose :readme_url, documentation: { type: 'string', example: 'https://gitlab.example.com/gitlab/gitlab/blob/master/README.md' }
+      with_options if: ->(_, _) { user_has_access_to_project_repository? } do
+        expose :readme_url, documentation: { type: 'string', example: 'https://gitlab.example.com/gitlab/gitlab/blob/master/README.md' }
+        expose :forks_count, documentation: { type: 'integer', example: 1 }
+      end
 
       expose :license_url, if: :license, documentation: { type: 'string', example: 'https://gitlab.example.com/gitlab/gitlab/blob/master/LICENCE' } do |project|
         license = project.repository.license_blob
@@ -33,7 +36,6 @@ module API
         project.avatar_url(only_path: false)
       end
 
-      expose :forks_count, documentation: { type: 'integer', example: 1 }
       expose :star_count, documentation: { type: 'integer', example: 1 }
       expose :last_activity_at, documentation: { type: 'dateTime', example: '2013-09-30T13:46:02Z' }
       expose :namespace, using: 'API::Entities::NamespaceBasic'
@@ -73,6 +75,10 @@ module API
         strong_memoize(:topic_names) do
           project.topics.pluck(:name).sort # rubocop:disable CodeReuse/ActiveRecord
         end
+      end
+
+      def user_has_access_to_project_repository?
+        Ability.allowed?(options[:current_user], :read_code, project)
       end
     end
   end

@@ -55,6 +55,7 @@ export default {
     :action-cancel="$options.modal.cancelAction"
     :title="$options.i18n.DELETE_PACKAGES_MODAL_TITLE"
     @primary="$emit('confirm')"
+    @cancel="$emit('cancel')"
   >
     <span>{{ description }}</span>
   </gl-modal>

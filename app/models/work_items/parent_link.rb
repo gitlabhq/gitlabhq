@@ -2,6 +2,8 @@
 
 module WorkItems
   class ParentLink < ApplicationRecord
+    include RelativePositioning
+
     self.table_name = 'work_item_parent_links'
 
     MAX_CHILDREN = 100
@@ -30,6 +32,14 @@ module WorkItems
         return false unless link
 
         link.work_item_parent.confidential?
+      end
+
+      def relative_positioning_query_base(parent_link)
+        where(work_item_parent_id: parent_link.work_item_parent_id)
+      end
+
+      def relative_positioning_parent_column
+        :work_item_parent_id
       end
     end
 

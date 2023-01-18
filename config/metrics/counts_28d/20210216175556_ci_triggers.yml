@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: usage_activity_by_stage_monthly.verify.ci_triggers
-description: Total configured Triggers in project
+description: Distinct users creating pipeline triggers in a month
 product_section: ops
 product_stage: verify
 product_group: pipeline_execution

@@ -1,9 +1,9 @@
 <script>
-import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 
 export default {
   components: {
-    CiBadge,
+    CiBadgeLink,
   },
   props: {
     schedule: {
@@ -24,7 +24,11 @@ export default {
 
 <template>
   <div>
-    <ci-badge v-if="hasPipeline" :status="lastPipelineStatus" class="gl-vertical-align-middle" />
+    <ci-badge-link
+      v-if="hasPipeline"
+      :status="lastPipelineStatus"
+      class="gl-vertical-align-middle"
+    />
     <span v-else data-testid="pipeline-schedule-status-text">
       {{ s__('PipelineSchedules|None') }}
     </span>

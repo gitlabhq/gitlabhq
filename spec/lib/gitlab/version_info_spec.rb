@@ -92,6 +92,8 @@ RSpec.describe Gitlab::VersionInfo do
     it { expect(described_class.parse("1.0.0-rc1-ee")).to eq(@v1_0_0) }
     it { expect(described_class.parse("git 1.0.0b1")).to eq(@v1_0_0) }
     it { expect(described_class.parse("git 1.0b1")).not_to be_valid }
+    it { expect(described_class.parse("1.1.#{'1' * described_class::MAX_VERSION_LENGTH}")).not_to be_valid }
+    it { expect(described_class.parse(nil)).not_to be_valid }
 
     context 'with parse_suffix: true' do
       let(:versions) do
@@ -181,5 +183,11 @@ RSpec.describe Gitlab::VersionInfo do
     it { expect(@v1_0_0.without_patch).to eq(@v1_0_0) }
     it { expect(@v1_0_1.without_patch).to eq(@v1_0_0) }
     it { expect(@v1_0_1_rc1.without_patch).to eq(@v1_0_0) }
+  end
+
+  describe 'MAX_VERSION_LENGTH' do
+    subject { described_class::MAX_VERSION_LENGTH }
+
+    it { is_expected.to eq(128) }
   end
 end

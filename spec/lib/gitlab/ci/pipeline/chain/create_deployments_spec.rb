@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::CreateDeployments do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::CreateDeployments, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -19,6 +19,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CreateDeployments do
     subject { step.perform! }
 
     before do
+      stub_feature_flags(move_create_deployments_to_worker: false)
       job.pipeline = pipeline
     end
 

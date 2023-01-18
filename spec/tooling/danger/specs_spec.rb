@@ -245,15 +245,16 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
         "  let_it_be(:user) { create(:user) }",
         " end",
         " describe 'GET \"time_summary\"' do",
-        " end"
-      ]
-    end
-
-    let(:matching_lines) do
-      [
-        "+ RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController, feature_category: :planning_analytics do",
-        "+RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do",
-        "+ RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do"
+        " end",
+        " \n",
+        "RSpec.describe Projects :aggregate_failures,",
+        "  feature_category: planning_analytics do",
+        " \n",
+        "RSpec.describe Epics :aggregate_failures,",
+        "  ee: true do",
+        "\n",
+        "RSpec.describe Issues :aggregate_failures,",
+        "  feature_category: :team_planning do"
       ]
     end
 
@@ -264,14 +265,24 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
         "+ let_it_be(:user) { create(:user) }",
         "- end",
         "+ describe 'GET \"time_summary\"' do",
-        "+ RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do"
+        "+ RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do",
+        "+RSpec.describe Projects :aggregate_failures,",
+        "+  feature_category: planning_analytics do",
+        "+RSpec.describe Epics :aggregate_failures,",
+        "+  ee: true do",
+        "+RSpec.describe Issues :aggregate_failures,"
       ]
+    end
+
+    before do
+      allow(specs.helper).to receive(:changed_lines).with(filename).and_return(changed_lines)
     end
 
     it 'adds suggestions at the correct lines', :aggregate_failures do
       [
         { suggested_line: "RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do", number: 5 },
-        { suggested_line: " RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do", number: 10 }
+        { suggested_line: " RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do", number: 10 },
+        { suggested_line: "RSpec.describe Epics :aggregate_failures,", number: 19 }
 
       ].each do |test_case|
         comment = format(template, suggested_line: test_case[:suggested_line])

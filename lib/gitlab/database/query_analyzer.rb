@@ -86,11 +86,7 @@ module Gitlab
         analyzers.each do |analyzer|
           next if analyzer.suppressed? && !analyzer.requires_tracking?(parsed)
 
-          if analyzer.raw?
-            analyzer.analyze(sql)
-          else
-            analyzer.analyze(parsed)
-          end
+          analyzer.analyze(parsed)
         rescue StandardError, ::Gitlab::Database::QueryAnalyzers::Base::QueryAnalyzerError => e
           # We catch all standard errors to prevent validation errors to introduce fatal errors in production
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)

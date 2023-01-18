@@ -2,8 +2,8 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_record_base,
-               :suppress_gitlab_schemas_validate_connection do
+RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_record_base, :delete,
+               :suppress_gitlab_schemas_validate_connection, feature_category: :pods do
   before :all do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
@@ -14,10 +14,10 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
     Rake::Task.define_task :environment
   end
 
-  let!(:project) { create(:project) }
-  let!(:ci_build) { create(:ci_build) }
   let(:main_connection) { ApplicationRecord.connection }
   let(:ci_connection) { Ci::ApplicationRecord.connection }
+  let!(:user) { create(:user) }
+  let!(:ci_build) { create(:ci_build) }
 
   let(:detached_partition_table) { '_test_gitlab_main_part_20220101' }
 
@@ -37,10 +37,23 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
         drop_after: Time.current
       )
     end
+  end
 
-    allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).and_call_original
-    allow(Gitlab::Database::GitlabSchema).to receive(:table_schema)
-      .with(detached_partition_table).and_return(:gitlab_main)
+  after do
+    run_rake_task('gitlab:db:unlock_writes')
+  end
+
+  after(:all) do
+    drop_detached_partition_sql = <<~SQL
+      DROP TABLE IF EXISTS gitlab_partitions_dynamic._test_gitlab_main_part_20220101
+    SQL
+
+    ApplicationRecord.connection.execute(drop_detached_partition_sql)
+    Ci::ApplicationRecord.connection.execute(drop_detached_partition_sql)
+
+    Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
+      Postgresql::DetachedPartition.delete_all
+    end
   end
 
   context 'single database' do
@@ -60,7 +73,7 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
       it 'will be still able to modify tables that belong to the main two schemas' do
         run_rake_task('gitlab:db:lock_writes')
         expect do
-          Project.last.touch
+          User.last.touch
           Ci::Build.last.touch
         end.not_to raise_error
       end
@@ -81,7 +94,7 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
 
     context 'when locking writes' do
       it 'still allows writes on the tables with the correct connections' do
-        Project.update_all(updated_at: Time.now)
+        User.update_all(updated_at: Time.now)
         Ci::Build.update_all(updated_at: Time.now)
       end
 
@@ -90,7 +103,7 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
         connections.each do |connection|
           Gitlab::Database::SharedModel.using_connection(connection) do
             LooseForeignKeys::DeletedRecord.create!(
-              fully_qualified_table_name: "public.projects",
+              fully_qualified_table_name: "public.users",
               primary_key_value: 1,
               cleanup_attempts: 0
             )
@@ -101,8 +114,8 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
       it 'prevents writes on the main tables on the ci database' do
         run_rake_task('gitlab:db:lock_writes')
         expect do
-          ci_connection.execute("delete from projects")
-        end.to raise_error(ActiveRecord::StatementInvalid, /Table: "projects" is write protected/)
+          ci_connection.execute("delete from users")
+        end.to raise_error(ActiveRecord::StatementInvalid, /Table: "users" is write protected/)
       end
 
       it 'prevents writes on the ci tables on the main database' do
@@ -135,7 +148,7 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
       it 'allows writes on the main tables on the ci database' do
         run_rake_task('gitlab:db:lock_writes')
         expect do
-          ci_connection.execute("delete from projects")
+          ci_connection.execute("delete from users")
         end.not_to raise_error
       end
 

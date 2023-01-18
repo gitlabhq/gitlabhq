@@ -1,8 +1,6 @@
 - title: "ZenTao integration"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "The maximum number of characters in a job name will be limited to 250."
   announcement_milestone: "15.7"  # (required) The milestone when this feature was first announced as deprecated.
-  announcement_date: "2022-12-22"  # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
-  removal_date: "2023-05-22"  # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: arturoherrero # (required) GitLab username of the person reporting the deprecation
   stage: Manage  # (required) String value of the stage that the feature was created in. e.g., Growth
@@ -17,7 +15,6 @@
 # in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
 #
   end_of_support_milestone: "16.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
-  end_of_support_date: "2023-05-22"  # (optional) The date of the milestone release when support for this feature will end.
   #
   # OTHER OPTIONAL FIELDS
   #

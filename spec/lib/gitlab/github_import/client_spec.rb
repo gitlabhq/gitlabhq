@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Client do
+RSpec.describe Gitlab::GithubImport::Client, feature_category: :importer do
   subject(:client) { described_class.new('foo', parallel: parallel) }
 
   let(:parallel) { true }
@@ -612,6 +612,46 @@ RSpec.describe Gitlab::GithubImport::Client do
         )
 
         client.search_repos_by_name_graphql('test')
+      end
+
+      context 'when relation type option present' do
+        context 'when relation type is owned' do
+          let(:expected_query) { 'test in:name is:public,private user:user' }
+
+          it 'searches for repositories within the organization based on name' do
+            expect(client.octokit).to receive(:post).with(
+              '/graphql', { query: expected_graphql }.to_json
+            )
+
+            client.search_repos_by_name_graphql('test', relation_type: 'owned')
+          end
+        end
+
+        context 'when relation type is organization' do
+          let(:expected_query) { 'test in:name is:public,private org:test-login' }
+
+          it 'searches for repositories within the organization based on name' do
+            expect(client.octokit).to receive(:post).with(
+              '/graphql', { query: expected_graphql }.to_json
+            )
+
+            client.search_repos_by_name_graphql(
+              'test', relation_type: 'organization', organization_login: 'test-login'
+            )
+          end
+        end
+
+        context 'when relation type is collaborated' do
+          let(:expected_query) { 'test in:name is:public,private repo:repo1 repo:repo2' }
+
+          it 'searches for collaborated repositories based on name' do
+            expect(client.octokit).to receive(:post).with(
+              '/graphql', { query: expected_graphql }.to_json
+            )
+
+            client.search_repos_by_name_graphql('test', relation_type: 'collaborated')
+          end
+        end
       end
 
       context 'when pagination options present' do

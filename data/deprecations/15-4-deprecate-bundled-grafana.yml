@@ -1,8 +1,6 @@
 - title: "Bundled Grafana deprecated"
   announcement_milestone: "15.3"
-  announcement_date: "2022-08-22"
   removal_milestone: "15.4"
-  removal_date: "2022-09-22"
   breaking_change: false
   reporter: dorrino
   body: |  # Do not modify this line, instead modify the lines below.

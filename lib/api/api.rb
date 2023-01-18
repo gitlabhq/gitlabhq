@@ -254,6 +254,7 @@ module API
         mount ::API::NugetProjectPackages
         mount ::API::PackageFiles
         mount ::API::Pages
+        mount ::API::PagesDomains
         mount ::API::PersonalAccessTokens::SelfInformation
         mount ::API::PersonalAccessTokens
         mount ::API::ProjectClusters
@@ -296,6 +297,7 @@ module API
         mount ::API::UsageData
         mount ::API::UsageDataNonSqlMetrics
         mount ::API::UsageDataQueries
+        mount ::API::Users
         mount ::API::UserCounts
         mount ::API::Wikis
 
@@ -318,7 +320,6 @@ module API
       mount ::API::Labels
       mount ::API::Notes
       mount ::API::NotificationSettings
-      mount ::API::PagesDomains
       mount ::API::ProjectEvents
       mount ::API::ProjectMilestones
       mount ::API::ProtectedTags
@@ -333,7 +334,6 @@ module API
       mount ::API::Todos
       mount ::API::UsageData
       mount ::API::UsageDataNonSqlMetrics
-      mount ::API::Users
       mount ::API::Ml::Mlflow
     end
 

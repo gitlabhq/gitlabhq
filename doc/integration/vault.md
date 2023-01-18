@@ -122,7 +122,7 @@ Otherwise, anyone with a public account can access your Vault instance.
 
    ![Sign into Vault with GitLab](img/sign_into_vault_with_gitlab_v12_6.png)
 
-1. To allow Vault to sign in through GitLab, select **Authorize**. This redirects you back to your Vault UI as a signed-in user.
+1. To allow Vault to sign in through GitLab, select **Authorize**. This redirects you back to your Vault UI as an authenticated user.
 
    ![Authorize Vault to connect with GitLab](img/authorize_vault_with_gitlab_v12_6.png)
 

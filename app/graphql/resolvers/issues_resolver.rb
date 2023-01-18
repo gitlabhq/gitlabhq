@@ -5,6 +5,8 @@ module Resolvers
     prepend ::Issues::LookAheadPreloads
     include ::Issues::SortArguments
 
+    NON_FILTER_ARGUMENTS = %i[sort lookahead].freeze
+
     argument :state, Types::IssuableStateEnum,
               required: false,
               description: 'Current state of this issue.'
@@ -15,6 +17,14 @@ module Resolvers
     before_connection_authorization do |nodes, current_user|
       projects = nodes.map(&:project)
       ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
+    end
+
+    def ready?(**args)
+      unless filter_provided?(args)
+        raise Gitlab::Graphql::Errors::ArgumentError, _('You must provide at least one filter argument for this query')
+      end
+
+      super
     end
 
     def resolve_with_lookahead(**args)
@@ -31,6 +41,12 @@ module Resolvers
       else
         issues
       end
+    end
+
+    private
+
+    def filter_provided?(args)
+      args.except(*NON_FILTER_ARGUMENTS).values.any?(&:present?)
     end
   end
 end

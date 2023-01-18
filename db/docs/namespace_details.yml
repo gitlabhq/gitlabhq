@@ -1,7 +1,7 @@
 ---
 table_name: namespace_details
 classes:
-- NamespaceDetail
+- Namespace::Detail
 feature_categories:
 - subgroups
 description: Used to store details for namespaces

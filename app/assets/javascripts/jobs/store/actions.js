@@ -2,7 +2,7 @@ import Visibility from 'visibilityjs';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import {
   canScroll,
@@ -178,7 +178,7 @@ export const fetchJobLog = ({ dispatch, state }) =>
       }
     })
     .catch((e) => {
-      if (e.response.status === httpStatusCodes.FORBIDDEN) {
+      if (e.response.status === HTTP_STATUS_FORBIDDEN) {
         dispatch('receiveJobLogUnauthorizedError');
       } else {
         reportToSentry('job_actions', e);

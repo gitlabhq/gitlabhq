@@ -65,6 +65,12 @@ RSpec.describe Ci::BuildFinishedWorker do
           subject
         end
       end
+
+      context 'when it has a token' do
+        it 'removes the token' do
+          expect { subject }.to change { build.reload.token }.to(nil)
+        end
+      end
     end
 
     context 'when build does not exist' do

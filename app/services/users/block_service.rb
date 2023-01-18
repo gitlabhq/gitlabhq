@@ -20,8 +20,14 @@ module Users
 
     private
 
+    # overridden by EE module
     def after_block_hook(user)
-      # overridden by EE module
+      custom_attribute = {
+        user_id: user.id,
+        key: UserCustomAttribute::BLOCKED_BY,
+        value: "#{current_user.username}/#{current_user.id}+#{Time.current}"
+      }
+      UserCustomAttribute.upsert_custom_attributes([custom_attribute])
     end
   end
 end

@@ -78,3 +78,5 @@ if (filesContainer.length) {
 
 loadAwardsHandler();
 initCommitActions();
+
+syntaxHighlight([document.querySelector('.files')]);

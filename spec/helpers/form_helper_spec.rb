@@ -162,6 +162,24 @@ RSpec.describe FormHelper do
       end
     end
 
+    it 'renders custom messages without the attribute name prefix' do
+      model = double(errors: errors_stub('Error 1'))
+      model.errors.add(:name, 'is already taken')
+      model.errors.add(:code_name, 'This code name is not allowed')
+
+      allow(model.class).to receive(:human_attribute_name) do |attribute|
+        attribute.to_s.capitalize
+      end
+
+      errors = helper.form_errors(model, custom_message: [:code_name])
+
+      aggregate_failures do
+        expect(errors).to include('<li>Error 1</li>')
+        expect(errors).to include('<li>Name is already taken</li>')
+        expect(errors).to include('<li>This code name is not allowed</li>')
+      end
+    end
+
     it 'renders help page links' do
       stubbed_errors = ActiveModel::Errors.new(double).tap do |errors|
         errors.add(:base, 'No text.', help_page_url: 'http://localhost/doc/user/index.html')

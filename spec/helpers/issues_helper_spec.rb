@@ -266,7 +266,9 @@ RSpec.describe IssuesHelper do
         issue_type: 'issue',
         new_issue_path: new_project_issue_path(project, { add_related_issue: issue.iid }),
         project_path: project.full_path,
-        report_abuse_path: new_abuse_report_path(user_id: issue.author.id, ref_url: issue_url(issue)),
+        report_abuse_path: add_category_abuse_reports_path,
+        reported_user_id: issue.author.id,
+        reported_from_url: issue_url(issue),
         submit_as_spam_path: mark_as_spam_project_issue_path(project, issue)
       }
 
@@ -389,8 +391,12 @@ RSpec.describe IssuesHelper do
       allow(helper).to receive(:url_for).and_return('#')
 
       expected = {
+        autocomplete_award_emojis_path: autocomplete_award_emojis_path,
         calendar_path: '#',
-        empty_state_svg_path: '#',
+        dashboard_labels_path: dashboard_labels_path(format: :json, include_ancestor_groups: true),
+        dashboard_milestones_path: dashboard_milestones_path(format: :json),
+        empty_state_with_filter_svg_path: '#',
+        empty_state_without_filter_svg_path: '#',
         initial_sort: current_user&.user_preference&.issues_sort,
         is_public_visibility_restricted: Gitlab::CurrentSettings.restricted_visibility_levels ? 'false' : '',
         is_signed_in: current_user.present?.to_s,
@@ -468,43 +474,6 @@ RSpec.describe IssuesHelper do
         end
 
         it { is_expected.to eq(true) }
-      end
-    end
-  end
-
-  describe '#status_box_class' do
-    context 'when object is expired' do
-      it 'returns orange background' do
-        milestone = build(:milestone, due_date: Date.today.prev_month)
-        expect(helper.status_box_class(milestone)).to eq('gl-bg-orange-500')
-      end
-    end
-
-    context 'when object is merged' do
-      it 'returns blue background' do
-        merge_request = build(:merge_request, :merged)
-        expect(helper.status_box_class(merge_request)).to eq('badge-info')
-      end
-    end
-
-    context 'when object is closed' do
-      it 'returns red background' do
-        merge_request = build(:merge_request, :closed)
-        expect(helper.status_box_class(merge_request)).to eq('badge-danger')
-      end
-    end
-
-    context 'when object is upcoming' do
-      it 'returns gray background' do
-        milestone = build(:milestone, start_date: Date.today.next_month)
-        expect(helper.status_box_class(milestone)).to eq('gl-bg-gray-500')
-      end
-    end
-
-    context 'when object is opened' do
-      it 'returns green background' do
-        merge_request = build(:merge_request, :opened)
-        expect(helper.status_box_class(merge_request)).to eq('badge-success')
       end
     end
   end

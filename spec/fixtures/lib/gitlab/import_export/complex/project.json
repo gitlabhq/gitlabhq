@@ -5,6 +5,8 @@
   "visibility_level": 10,
   "archived": false,
   "ci_config_path": "config/path",
+  "allow_merge_on_skipped_pipeline": true,
+  "squash_option": 3,
   "labels": [
     {
       "id": 2,
@@ -370,13 +372,13 @@
       ],
       "resource_label_events": [
         {
-          "id":244,
-          "action":"remove",
-          "issue_id":40,
-          "merge_request_id":null,
-          "label_id":2,
-          "user_id":1,
-          "created_at":"2018-08-28T08:24:00.494Z",
+          "id": 244,
+          "action": "remove",
+          "issue_id": 40,
+          "merge_request_id": null,
+          "label_id": 2,
+          "user_id": 1,
+          "created_at": "2018-08-28T08:24:00.494Z",
           "label": {
             "id": 2,
             "title": "test2",
@@ -2350,7 +2352,7 @@
           "name": "thumbsup",
           "user_id": 1,
           "awardable_type": "Snippet",
-	  "awardable_id": 1,
+          "awardable_id": 1,
           "created_at": "2019-11-05T15:37:21.287Z",
           "updated_at": "2019-11-05T15:37:21.287Z"
         },
@@ -2359,7 +2361,7 @@
           "name": "coffee",
           "user_id": 1,
           "awardable_type": "Snippet",
-	  "awardable_id": 1,
+          "awardable_id": 1,
           "created_at": "2019-11-05T15:37:24.645Z",
           "updated_at": "2019-11-05T15:37:24.645Z"
         }
@@ -2446,7 +2448,7 @@
       "links": [
         {
           "id": 1,
-          "release_id" : 1,
+          "release_id": 1,
           "url": "http://localhost/namespace6/project6/-/jobs/140463678/artifacts/download",
           "name": "release-1.1.dmg",
           "created_at": "2019-12-26T10:17:14.621Z",
@@ -2906,13 +2908,13 @@
       ],
       "resource_label_events": [
         {
-          "id":243,
-          "action":"add",
-          "issue_id":null,
-          "merge_request_id":27,
-          "label_id":null,
-          "user_id":1,
-          "created_at":"2018-08-28T08:24:00.494Z"
+          "id": 243,
+          "action": "add",
+          "issue_id": null,
+          "merge_request_id": 27,
+          "label_id": null,
+          "user_id": 1,
+          "created_at": "2018-08-28T08:24:00.494Z"
         }
       ],
       "merge_request_diff": {
@@ -7472,8 +7474,7 @@
       "started_at": null,
       "finished_at": null,
       "duration": null,
-      "stages": [
-      ]
+      "stages": []
     },
     {
       "id": 20,
@@ -7491,11 +7492,9 @@
       "started_at": null,
       "finished_at": null,
       "duration": null,
-      "stages": [
-      ],
+      "stages": [],
       "source": "external_pull_request_event",
-      "external_pull_request":
-      {
+      "external_pull_request": {
         "id": 3,
         "pull_request_iid": 4,
         "source_branch": "feature",
@@ -7505,8 +7504,8 @@
         "source_sha": "ce84140e8b878ce6e7c4d298c7202ff38170e3ac",
         "target_sha": "a09386439ca39abe575675ffd4b89ae824fec22f",
         "status": "open",
-	"created_at": "2016-03-22T15:20:35.763Z",
-	"updated_at": "2016-03-22T15:20:35.763Z"
+        "created_at": "2016-03-22T15:20:35.763Z",
+        "updated_at": "2016-03-22T15:20:35.763Z"
       }
     }
   ],
@@ -7563,7 +7562,7 @@
           "updated_at": "2016-08-30T07:32:52.490Z"
         }
       ],
-      "allow_force_push":false
+      "allow_force_push": false
     }
   ],
   "protected_environments": [
@@ -7670,17 +7669,17 @@
   },
   "external_pull_requests": [
     {
-       "id": 3,
-       "pull_request_iid": 4,
-       "source_branch": "feature",
-       "target_branch": "master",
-       "source_repository": "the-repository",
-       "target_repository": "the-repository",
-       "source_sha": "ce84140e8b878ce6e7c4d298c7202ff38170e3ac",
-       "target_sha": "a09386439ca39abe575675ffd4b89ae824fec22f",
-       "status": "open",
-       "created_at": "2019-12-24T14:04:50.053Z",
-       "updated_at": "2019-12-24T14:05:18.138Z"
+      "id": 3,
+      "pull_request_iid": 4,
+      "source_branch": "feature",
+      "target_branch": "master",
+      "source_repository": "the-repository",
+      "target_repository": "the-repository",
+      "source_sha": "ce84140e8b878ce6e7c4d298c7202ff38170e3ac",
+      "target_sha": "a09386439ca39abe575675ffd4b89ae824fec22f",
+      "status": "open",
+      "created_at": "2019-12-24T14:04:50.053Z",
+      "updated_at": "2019-12-24T14:05:18.138Z"
     }
   ],
   "boards": [
@@ -7848,5 +7847,4 @@
     "commit_committer_check": true,
     "regexp_uses_re2": true
   }
-
 }

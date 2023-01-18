@@ -16,7 +16,7 @@ export default {
     ProjectSelect,
   },
   mixins: [BoardNewIssueMixin],
-  inject: ['groupId'],
+  inject: ['groupId', 'fullPath', 'isGroupBoard'],
   props: {
     list: {
       type: Object,
@@ -24,8 +24,8 @@ export default {
     },
   },
   computed: {
-    ...mapState(['selectedProject', 'fullPath']),
-    ...mapGetters(['isGroupBoard', 'getBoardItemsByList']),
+    ...mapState(['selectedProject']),
+    ...mapGetters(['getBoardItemsByList']),
     formEventPrefix() {
       return toggleFormEventPrefix.issue;
     },

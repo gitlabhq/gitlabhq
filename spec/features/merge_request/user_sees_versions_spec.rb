@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees versions', :js, feature_category: :code_review do
+RSpec.describe 'Merge request > User sees versions', :js, feature_category: :code_review_workflow do
   include MergeRequestDiffHelpers
 
   let(:merge_request) do

@@ -4,12 +4,14 @@ group: Product Analytics
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Customizable dashboards **(PREMIUM)**
+# Customizable dashboards
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98610) in GitLab 15.5 as an [Alpha feature](../../policy/alpha-beta-support.md#alpha-features).
 
 Customizable dashboards provide a dashboard structure that allows users to create
 their own dashboards and commit the structure to a repository.
+
+This feature is available for Premium and Ultimate subscriptions.
 
 ## Usage
 

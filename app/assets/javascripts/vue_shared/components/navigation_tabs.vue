@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlTabs, GlTab } from '@gitlab/ui';
-import $ from 'jquery';
+import { initScrollingTabs } from '~/layout_nav';
 
 /**
  * Given an array of tabs, renders non linked bootstrap tabs.
@@ -41,7 +41,7 @@ export default {
     },
   },
   mounted() {
-    $(document).trigger('init.scrolling-tabs');
+    initScrollingTabs();
   },
   methods: {
     shouldRenderBadge(count) {

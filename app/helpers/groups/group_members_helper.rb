@@ -13,7 +13,9 @@ module Groups::GroupMembersHelper
       access_request: group_members_list_data(group, access_requests.nil? ? [] : access_requests),
       source_id: group.id,
       can_manage_members: can?(current_user, :admin_group_member, group),
-      can_manage_access_requests: can?(current_user, :admin_member_access_request, group)
+      can_manage_access_requests: can?(current_user, :admin_member_access_request, group),
+      group_name: group.name,
+      group_path: group.full_path
     }
   end
 

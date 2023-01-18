@@ -7,13 +7,21 @@ import { STATUSES } from '../constants';
 const STATISTIC_ITEMS = {
   diff_note: __('Diff notes'),
   issue: __('Issues'),
+  issue_attachment: s__('GithubImporter|Issue attachments'),
+  issue_event: __('Issue events'),
   label: __('Labels'),
+  lfs_object: __('LFS objects'),
+  merge_request_attachment: s__('GithubImporter|Merge request attachments'),
   milestone: __('Milestones'),
   note: __('Notes'),
+  note_attachment: s__('GithubImporter|Note attachments'),
+  protected_branch: __('Protected branches'),
   pull_request: s__('GithubImporter|Pull requests'),
   pull_request_merged_by: s__('GithubImporter|PR mergers'),
   pull_request_review: s__('GithubImporter|PR reviews'),
+  pull_request_review_request: s__('GithubImporter|PR reviews'),
   release: __('Releases'),
+  release_attachment: s__('GithubImporter|Release attachments'),
 };
 
 // support both camel case and snake case versions
@@ -93,18 +101,17 @@ export default {
     mappedStatus() {
       if (this.status === STATUSES.FINISHED) {
         const isIncomplete = this.stats && isIncompleteImport(this.stats);
-        return {
-          icon: 'status-success',
-          ...(isIncomplete
-            ? {
-                text: __('Partial import'),
-                variant: 'warning',
-              }
-            : {
-                text: __('Complete'),
-                variant: 'success',
-              }),
-        };
+        return isIncomplete
+          ? {
+              icon: 'status-alert',
+              text: __('Partial import'),
+              variant: 'warning',
+            }
+          : {
+              icon: 'status-success',
+              text: __('Complete'),
+              variant: 'success',
+            };
       }
 
       return STATUS_MAP[this.status];
@@ -120,6 +127,8 @@ export default {
         return { name: 'status-success', class: 'gl-text-green-400' };
       } else if (imported === 0) {
         return { name: 'status-scheduled', class: 'gl-text-gray-400' };
+      } else if (this.status === STATUSES.FINISHED) {
+        return { name: 'status-alert', class: 'gl-text-orange-400' };
       }
 
       return { name: 'status-running', class: 'gl-text-blue-400' };

@@ -106,7 +106,7 @@ module Gitlab
 
         def use_aggregated_backend?
           # for now it's only available on the group-level
-          group.present? && aggregation.enabled
+          group.present?
         end
 
         def aggregation_attributes
@@ -118,14 +118,14 @@ module Gitlab
         end
 
         def aggregation
-          @aggregation ||= ::Analytics::CycleAnalytics::Aggregation.safe_create_for_group(group)
+          @aggregation ||= ::Analytics::CycleAnalytics::Aggregation.safe_create_for_namespace(group)
         end
 
         def group_data_attributes
           {
             id: group.id,
+            namespace_id: group.id,
             name: group.name,
-            parent_id: group.parent_id,
             full_path: group.full_path,
             avatar_url: group.avatar_url
           }

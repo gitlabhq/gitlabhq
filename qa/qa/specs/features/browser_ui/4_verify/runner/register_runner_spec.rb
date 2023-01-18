@@ -5,7 +5,7 @@ module QA
     describe 'Runner registration' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let!(:runner) do
-        Resource::Runner.fabricate! do |runner|
+        Resource::ProjectRunner.fabricate! do |runner|
           runner.name = executor
           runner.tags = ['e2e-test']
         end

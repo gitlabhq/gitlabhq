@@ -62,6 +62,7 @@ module API
           optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for user', documentation: { type: 'file' }
           optional :theme_id, type: Integer, desc: 'The GitLab theme for the user'
           optional :color_scheme_id, type: Integer, desc: 'The color scheme for the file viewer'
+          # TODO: Add `allow_blank: false` in 16.0. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/387005
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
           optional :note, type: String, desc: 'Admin note for this user'
           optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
@@ -294,6 +295,12 @@ module API
         authenticated_as_admin!
 
         params = declared_params(include_missing: false)
+
+        # TODO: Remove in 16.0. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/387005
+        if params.key?(:private_profile) && params[:private_profile].nil?
+          params[:private_profile] = Gitlab::CurrentSettings.user_defaults_to_private_profile
+        end
+
         user = ::Users::AuthorizedCreateService.new(current_user, params).execute
 
         if user.persisted?
@@ -341,6 +348,12 @@ module API
               .where.not(id: user.id).exists?
 
         user_params = declared_params(include_missing: false)
+
+        # TODO: Remove in 16.0. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/387005
+        if user_params.key?(:private_profile) && user_params[:private_profile].nil?
+          user_params[:private_profile] = Gitlab::CurrentSettings.user_defaults_to_private_profile
+        end
+
         admin_making_changes_for_another_user = (current_user != user)
 
         if user_params[:password].present?
@@ -824,7 +837,8 @@ module API
         elsif user.deactivated?
           forbidden!('Deactivated users cannot be unblocked by the API')
         else
-          user.activate
+          result = ::Users::UnblockService.new(current_user).execute(user)
+          result.success?
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -1017,6 +1031,25 @@ module API
             end
 
           present current_user, with: entity, current_user: current_user
+        end
+      end
+
+      helpers do
+        def set_user_status(include_missing_params:)
+          forbidden! unless can?(current_user, :update_user_status, current_user)
+
+          if ::Users::SetStatusService.new(current_user, declared_params(include_missing: include_missing_params)).execute
+            present current_user.status, with: Entities::UserStatus
+          else
+            render_validation_error!(current_user.status)
+          end
+        end
+
+        params :set_user_status_params do
+          optional :emoji, type: String, desc: "The emoji to set on the status"
+          optional :message, type: String, desc: "The status message to set"
+          optional :availability, type: String, desc: "The availability of user to set"
+          optional :clear_status_after, type: String, desc: "Automatically clear emoji, message and availability fields after a certain time", values: UserStatus::CLEAR_STATUS_QUICK_OPTIONS.keys
         end
       end
 
@@ -1299,21 +1332,30 @@ module API
 
       desc 'Set the status of the current user' do
         success Entities::UserStatus
+        detail 'Any parameters that are not passed will be nullified.'
       end
       params do
-        optional :emoji, type: String, desc: "The emoji to set on the status"
-        optional :message, type: String, desc: "The status message to set"
-        optional :availability, type: String, desc: "The availability of user to set"
-        optional :clear_status_after, type: String, desc: "Automatically clear emoji, message and availability fields after a certain time", values: UserStatus::CLEAR_STATUS_QUICK_OPTIONS.keys
+        use :set_user_status_params
       end
       put "status", feature_category: :users do
-        forbidden! unless can?(current_user, :update_user_status, current_user)
+        set_user_status(include_missing_params: true)
+      end
 
-        if ::Users::SetStatusService.new(current_user, declared_params).execute
-          present current_user.status, with: Entities::UserStatus
-        else
-          render_validation_error!(current_user.status)
+      desc 'Set the status of the current user' do
+        success Entities::UserStatus
+        detail 'Any parameters that are not passed will be ignored.'
+      end
+      params do
+        use :set_user_status_params
+      end
+      patch "status", feature_category: :users do
+        if declared_params(include_missing: false).empty?
+          status :ok
+
+          break
         end
+
+        set_user_status(include_missing_params: false)
       end
 
       desc 'get the status of the current user' do

@@ -25,6 +25,12 @@ module QA
           find('span.gl-dropdown-button-text').text
         end
 
+        def all_items
+          raise NotImplementedError if use_select2?
+
+          find_all("li.gl-dropdown-item").map(&:text)
+        end
+
         def clear_current_selection_if_present
           return super if use_select2?
 
@@ -40,7 +46,12 @@ module QA
         def search_item(item_text)
           return super if use_select2?
 
-          find('div.gl-search-box-by-type input[type="Search"]').set(item_text)
+          find('div.gl-listbox-search input[type="Search"]').set(item_text)
+          wait_for_search_to_complete
+        end
+
+        def send_keys_to_search(item_text)
+          find('div.gl-listbox-search input[type="Search"]').send_keys(item_text)
           wait_for_search_to_complete
         end
 
@@ -103,6 +114,7 @@ module QA
         def use_select2?
           @use_select2 ||= has_css?('.select2-container', wait: 1)
         end
+
         # rubocop:enable Gitlab/PredicateMemoization
       end
     end

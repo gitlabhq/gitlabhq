@@ -386,10 +386,10 @@ class Member < ApplicationRecord
     user.present?
   end
 
-  def accept_request
+  def accept_request(current_user)
     return false unless request?
 
-    updated = self.update(requested_at: nil)
+    updated = self.update(requested_at: nil, created_by: current_user)
     after_accept_request if updated
 
     updated
@@ -531,7 +531,7 @@ class Member < ApplicationRecord
 
   def send_request
     notification_service.new_access_request(self)
-    todo_service.create_member_access_request(self) if source_type != 'Project'
+    todo_service.create_member_access_request_todos(self)
   end
 
   def post_create_hook

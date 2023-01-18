@@ -7,6 +7,7 @@ module Gitlab
     # These job artifacts will not be deleted and will have their `expire_at` removed.
     class RemoveBackfilledJobArtifactsExpireAt < BatchedMigrationJob
       operation_name :update_all
+      feature_category :database
 
       # The migration would have backfilled `expire_at`
       # to midnight on the 22nd of the month of the local timezone,

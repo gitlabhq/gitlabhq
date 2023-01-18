@@ -38,7 +38,6 @@ describe('AccessRequestActionButtons', () => {
       title: 'Deny access',
       isAccessRequest: true,
       isInvite: false,
-      icon: 'close',
     });
   });
 

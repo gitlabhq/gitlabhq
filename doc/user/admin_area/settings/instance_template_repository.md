@@ -13,7 +13,7 @@ type: reference
 In hosted systems, enterprises often have a need to share their own templates
 across teams. This feature allows an administrator to pick a project to be the
 instance-wide collection of file templates. These templates are then exposed to
-all users [via the web editor](../../project/repository/web_editor.md#template-dropdowns)
+all users through the [Web Editor](../../project/repository/web_editor.md)
 while the project remains secure.
 
 ## Configuration
@@ -28,7 +28,7 @@ To select a project to serve as the custom template repository:
 1. Add custom templates to the selected repository.
 
 After you add templates, you can use them for the entire instance.
-They are available in the [Web Editor's dropdown list](../../project/repository/web_editor.md#template-dropdowns)
+They are available in the [Web Editor](../../project/repository/web_editor.md)
 and through the [API settings](../../../api/settings.md).
 
 ## Supported file types and locations

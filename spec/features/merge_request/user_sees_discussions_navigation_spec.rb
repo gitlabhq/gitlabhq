@@ -2,14 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_category: :code_review do
+RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { project.creator }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
-    # FIXME: before removing this please fix discussions navigation with this flag enabled
-    stub_feature_flags(moved_mr_sidebar: false)
     project.add_maintainer(user)
     sign_in(user)
   end
@@ -194,29 +192,10 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
   end
 
   def goto_next_thread
-    begin
-      # this is required when moved_mr_sidebar is enabled
-      page.within('.issue-sticky-header') do
-        click_button 'Go to next unresolved thread'
-      end
-    rescue StandardError
-      click_button 'Go to next unresolved thread'
-    end
-    wait_for_scroll_end
+    click_button 'Go to next unresolved thread', obscured: false
   end
 
   def goto_previous_thread
-    begin
-      page.within('.issue-sticky-header') do
-        click_button 'Go to previous unresolved thread'
-      end
-    rescue StandardError
-      click_button 'Go to previous unresolved thread'
-    end
-    wait_for_scroll_end
-  end
-
-  def wait_for_scroll_end
-    sleep(1)
+    click_button 'Go to previous unresolved thread', obscured: false
   end
 end

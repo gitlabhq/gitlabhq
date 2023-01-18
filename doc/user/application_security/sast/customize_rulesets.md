@@ -385,7 +385,7 @@ rules:
   pattern: print("Hello World")
   message: |
     Unauthorized use of Hello World.
-  severity: CRITICAL
+  severity: ERROR
   languages:
   - python
 ```

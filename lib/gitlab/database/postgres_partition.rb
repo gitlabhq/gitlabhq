@@ -17,7 +17,9 @@ module Gitlab
         for_identifier(identifier).first!
       end
 
-      scope :for_parent_table, ->(name) { where("parent_identifier = concat(current_schema(), '.', ?)", name).order(:name) }
+      scope :for_parent_table, ->(name) do
+        where("parent_identifier = concat(current_schema(), '.', ?)", name).order(:name)
+      end
 
       def self.partition_exists?(table_name)
         where("identifier = concat(current_schema(), '.', ?)", table_name).exists?

@@ -38,12 +38,17 @@ module WorkerAttributes
       set_class_attribute(:feature_category, value)
     end
 
+    def prefer_calling_context_feature_category(preference = false)
+      set_class_attribute(:prefer_calling_context_feature_category, preference)
+    end
+
     # Special case: if a worker is not owned, get the feature category
     # (if present) from the calling context.
     def get_feature_category
       feature_category = get_class_attribute(:feature_category)
+      calling_context_feature_category_preferred = !!get_class_attribute(:prefer_calling_context_feature_category)
 
-      return feature_category unless feature_category == :not_owned
+      return feature_category unless feature_category == :not_owned || calling_context_feature_category_preferred
 
       Gitlab::ApplicationContext.current_context_attribute('meta.feature_category') || feature_category
     end

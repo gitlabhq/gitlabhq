@@ -11,7 +11,7 @@
 //
 
 export default function syntaxHighlight($els = null) {
-  if (!$els) return;
+  if (!$els || $els.length === 0) return;
 
   const els = $els.get ? $els.get() : $els;
   const handler = (el) => {

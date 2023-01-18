@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { s__ } from '~/locale';
 import Autosave from '~/autosave';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
@@ -16,7 +15,7 @@ export default {
         keys = keys.concat(extraKeys);
       }
 
-      this.autosave = new Autosave($(this.$refs.noteForm.$refs.textarea), keys);
+      this.autosave = new Autosave(this.$refs.noteForm.$refs.textarea, keys);
     },
     resetAutoSave() {
       this.autosave.reset();

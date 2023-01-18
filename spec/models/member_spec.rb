@@ -303,7 +303,7 @@ RSpec.describe Member do
       @requested_member = project.requesters.find_by(user_id: requested_user.id)
 
       accepted_request_user = create(:user).tap { |u| project.request_access(u) }
-      @accepted_request_member = project.requesters.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
+      @accepted_request_member = project.requesters.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request(@owner_user) }
       @member_with_minimal_access = create(:group_member, :minimal_access, source: group)
     end
 
@@ -777,18 +777,25 @@ RSpec.describe Member do
   describe '#accept_request' do
     let(:member) { create(:project_member, requested_at: Time.current.utc) }
 
-    it { expect(member.accept_request).to be_truthy }
+    it { expect(member.accept_request(@owner_user)).to be_truthy }
+    it { expect(member.accept_request(nil)).to be_truthy }
 
     it 'clears requested_at' do
-      member.accept_request
+      member.accept_request(@owner_user)
 
       expect(member.requested_at).to be_nil
+    end
+
+    it 'saves the approving user' do
+      member.accept_request(@owner_user)
+
+      expect(member.created_by).to eq(@owner_user)
     end
 
     it 'calls #after_accept_request' do
       expect(member).to receive(:after_accept_request)
 
-      member.accept_request
+      member.accept_request(@owner_user)
     end
   end
 
@@ -799,33 +806,27 @@ RSpec.describe Member do
   end
 
   describe '#request?' do
-    context 'when request for project' do
-      subject { create(:project_member, requested_at: Time.current.utc) }
+    shared_examples 'calls notification service and todo service' do
+      subject { create(source_type, requested_at: Time.current.utc) }
 
-      it 'calls notification service but not todo service' do
-        expect_next_instance_of(NotificationService) do |instance|
-          expect(instance).to receive(:new_access_request)
-        end
-
-        expect(TodoService).not_to receive(:new)
-
-        is_expected.to be_request
-      end
-    end
-
-    context 'when request for group' do
-      subject { create(:group_member, requested_at: Time.current.utc) }
-
-      it 'calls notification and todo service' do
+      specify do
         expect_next_instance_of(NotificationService) do |instance|
           expect(instance).to receive(:new_access_request)
         end
 
         expect_next_instance_of(TodoService) do |instance|
-          expect(instance).to receive(:create_member_access_request)
+          expect(instance).to receive(:create_member_access_request_todos)
         end
 
         is_expected.to be_request
+      end
+    end
+
+    context 'when requests for project and group are raised' do
+      %i[project_member group_member].each do |source_type|
+        it_behaves_like 'calls notification service and todo service' do
+          let_it_be(:source_type) { source_type }
+        end
       end
     end
   end

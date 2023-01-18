@@ -23,6 +23,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
         expect(json_response).to be_an Hash
         expect(json_response['description']).to eq('')
         expect(json_response['email_header_and_footer_enabled']).to be(false)
+        expect(json_response['pwa_icon']).to be_nil
         expect(json_response['favicon']).to be_nil
         expect(json_response['footer_message']).to eq('')
         expect(json_response['header_logo']).to be_nil
@@ -33,7 +34,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
         expect(json_response['new_project_guidelines']).to eq('')
         expect(json_response['profile_image_guidelines']).to eq('')
         expect(json_response['title']).to eq('')
-        expect(json_response['short_title']).to eq('')
+        expect(json_response['pwa_short_name']).to eq('')
       end
     end
   end
@@ -52,7 +53,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
         it "allows updating the settings" do
           put api("/application/appearance", admin), params: {
             title: "GitLab Test Instance",
-            short_title: "GitLab",
+            pwa_short_name: "GitLab PWA",
             description: "gitlab-test.example.com",
             new_project_guidelines: "Please read the FAQs for help.",
             profile_image_guidelines: "Custom profile image guidelines"
@@ -62,6 +63,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
           expect(json_response).to be_an Hash
           expect(json_response['description']).to eq('gitlab-test.example.com')
           expect(json_response['email_header_and_footer_enabled']).to be(false)
+          expect(json_response['pwa_icon']).to be_nil
           expect(json_response['favicon']).to be_nil
           expect(json_response['footer_message']).to eq('')
           expect(json_response['header_logo']).to be_nil
@@ -72,7 +74,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
           expect(json_response['new_project_guidelines']).to eq('Please read the FAQs for help.')
           expect(json_response['profile_image_guidelines']).to eq('Custom profile image guidelines')
           expect(json_response['title']).to eq('GitLab Test Instance')
-          expect(json_response['short_title']).to eq('GitLab')
+          expect(json_response['pwa_short_name']).to eq('GitLab PWA')
         end
       end
 
@@ -118,12 +120,14 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
           put api("/application/appearance", admin), params: {
             logo: fixture_file_upload("spec/fixtures/dk.png", "image/png"),
             header_logo: fixture_file_upload("spec/fixtures/dk.png", "image/png"),
+            pwa_icon: fixture_file_upload("spec/fixtures/dk.png", "image/png"),
             favicon: fixture_file_upload("spec/fixtures/dk.png", "image/png")
           }
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['logo']).to eq("/uploads/-/system/appearance/logo/#{appearance.id}/dk.png")
           expect(json_response['header_logo']).to eq("/uploads/-/system/appearance/header_logo/#{appearance.id}/dk.png")
+          expect(json_response['pwa_icon']).to eq("/uploads/-/system/appearance/pwa_icon/#{appearance.id}/dk.png")
           expect(json_response['favicon']).to eq("/uploads/-/system/appearance/favicon/#{appearance.id}/dk.png")
         end
 

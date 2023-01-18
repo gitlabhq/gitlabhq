@@ -78,6 +78,10 @@ RSpec.describe DraftNotes::PublishService do
         end
       end
 
+      it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+        let(:action) { publish }
+      end
+
       it 'does not publish any draft note' do
         expect { publish }.not_to change { DraftNote.count }
       end
@@ -95,6 +99,10 @@ RSpec.describe DraftNotes::PublishService do
         expect(result[:status]).to eq(:error)
         expect(result[:message]).to match(/Unable to save Review/)
       end
+    end
+
+    it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+      let(:action) { publish }
     end
 
     it 'returns success' do

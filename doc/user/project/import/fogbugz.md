@@ -14,6 +14,11 @@ The importer imports all of your cases and comments with the original
 case numbers and timestamps. You can also map FogBugz users to GitLab
 users.
 
+Prerequisite:
+
+- At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
+  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+
 To import your project from FogBugz:
 
 1. Sign in to GitLab.

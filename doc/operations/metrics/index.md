@@ -123,7 +123,7 @@ Custom metrics can be monitored by adding them on the monitoring dashboard page.
 After saving them, they display on the environment metrics dashboard provided that either:
 
 - A [connected Kubernetes cluster](../../user/clusters/agent/index.md)
-  with the matching [environment scope](../../ci/environments/index.md#scope-environments-with-specs) is used and
+  with the matching [environment scope](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) is used and
   [Prometheus installed on the cluster](../../user/project/integrations/prometheus.md#enabling-prometheus-integration).
 - Prometheus is [manually configured](../../user/project/integrations/prometheus.md#manual-configuration-of-prometheus).
 

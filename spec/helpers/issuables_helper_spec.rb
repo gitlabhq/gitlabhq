@@ -112,19 +112,7 @@ RSpec.describe IssuablesHelper do
       context 'when assigned issues count is over 100' do
         let_it_be(:issues) { create_list(:issue, 101, project: project, assignees: [user]) }
 
-        before do
-          stub_feature_flags(limit_assigned_issues_count: false)
-        end
-
-        it { is_expected.to eq 101 }
-
-        context 'when FF limit_assigned_issues_count is enabled' do
-          before do
-            stub_feature_flags(limit_assigned_issues_count: true)
-          end
-
-          it { is_expected.to eq 100 }
-        end
+        it { is_expected.to eq 100 }
       end
     end
   end
@@ -142,19 +130,7 @@ RSpec.describe IssuablesHelper do
     context 'when assigned issues count is over 99' do
       let_it_be(:issues) { create_list(:issue, 100, project: project, assignees: [user]) }
 
-      before do
-        stub_feature_flags(limit_assigned_issues_count: false)
-      end
-
-      it { is_expected.to eq '100' }
-
-      context 'when FF limit_assigned_issues_count is enabled' do
-        before do
-          stub_feature_flags(limit_assigned_issues_count: true)
-        end
-
-        it { is_expected.to eq '99+' }
-      end
+      it { is_expected.to eq '99+' }
     end
   end
 
@@ -627,6 +603,30 @@ RSpec.describe IssuablesHelper do
       milestone = build(:milestone, title: '&lt;img onerror=alert(1)&gt;')
 
       expect(helper.sidebar_milestone_tooltip_label(milestone)).to eq('&lt;img onerror=alert(1)&gt;<br/>Milestone')
+    end
+  end
+
+  describe '#hidden_issuable_icon', feature_category: :insider_threat do
+    let_it_be(:mock_svg) { '<svg></svg>'.html_safe }
+
+    before do
+      allow(helper).to receive(:sprite_icon).and_return(mock_svg)
+    end
+
+    context 'when issuable is an issue' do
+      let_it_be(:issuable) { build(:issue) }
+
+      it 'returns icon with tooltip' do
+        expect(helper.hidden_issuable_icon(issuable)).to eq("<span class=\"has-tooltip\" title=\"This issue is hidden because its author has been banned\">#{mock_svg}</span>")
+      end
+    end
+
+    context 'when issuable is a merge request' do
+      let_it_be(:issuable) { build(:merge_request) }
+
+      it 'returns icon with tooltip' do
+        expect(helper.hidden_issuable_icon(issuable)).to eq("<span class=\"has-tooltip\" title=\"This merge request is hidden because its author has been banned\">#{mock_svg}</span>")
+      end
     end
   end
 end

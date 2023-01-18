@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# How to run Jenkins in development environment (on macOS) **(FREE)**
+# How to run Jenkins in development environment (on macOS)
 
 This is a step by step guide on how to set up [Jenkins](https://www.jenkins.io/) on your local machine and connect to it from your GitLab instance. GitLab triggers webhooks on Jenkins, and Jenkins connects to GitLab using the API. By running both applications on the same machine, we can make sure they are able to access each other.
 

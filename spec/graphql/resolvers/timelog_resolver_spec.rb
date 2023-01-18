@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::TimelogResolver do
+RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
@@ -262,18 +262,6 @@ RSpec.describe Resolvers::TimelogResolver do
     it_behaves_like 'with a user'
   end
 
-  context 'when > `default_max_page_size` records' do
-    let(:object) { nil }
-    let!(:timelog_list) { create_list(:timelog, 101, issue: issue) }
-    let(:args) { { project_id: global_id_of(project) } }
-    let(:extra_args) { {} }
-
-    it 'pagination returns `default_max_page_size` and sets `has_next_page` true' do
-      expect(timelogs.items.count).to be(100)
-      expect(timelogs.has_next_page).to be(true)
-    end
-  end
-
   context 'when no object or arguments provided' do
     let(:object) { nil }
     let(:args) { {} }
@@ -283,6 +271,21 @@ RSpec.describe Resolvers::TimelogResolver do
       expect_graphql_error_to_be_created(error_class, /Provide at least one argument/) do
         timelogs
       end
+    end
+  end
+
+  context 'when the sort argument is provided' do
+    let_it_be(:timelog_a) { create(:issue_timelog, time_spent: 7200, spent_at: 1.hour.ago, user: current_user) }
+    let_it_be(:timelog_b) { create(:issue_timelog, time_spent: 5400, spent_at: 2.hours.ago, user: current_user) }
+    let_it_be(:timelog_c) { create(:issue_timelog, time_spent: 1800, spent_at: 30.minutes.ago, user: current_user) }
+    let_it_be(:timelog_d) { create(:issue_timelog, time_spent: 3600, spent_at: 1.day.ago, user: current_user) }
+
+    let(:object) { current_user }
+    let(:args) { { sort: 'TIME_SPENT_ASC' } }
+    let(:extra_args) { {} }
+
+    it 'returns all the timelogs in the correct order' do
+      expect(timelogs.items).to eq([timelog_c, timelog_d, timelog_b, timelog_a])
     end
   end
 

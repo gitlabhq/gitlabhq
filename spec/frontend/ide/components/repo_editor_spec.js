@@ -122,7 +122,7 @@ describe('RepoEditor', () => {
       vm.$once('editorSetup', resolve);
     });
 
-  const createComponent = async ({ state = {}, activeFile = dummyFile.text, flags = {} } = {}) => {
+  const createComponent = async ({ state = {}, activeFile = dummyFile.text } = {}) => {
     const store = prepareStore(state, activeFile);
     wrapper = shallowMount(RepoEditor, {
       store,
@@ -131,9 +131,6 @@ describe('RepoEditor', () => {
       },
       mocks: {
         ContentViewer,
-      },
-      provide: {
-        glFeatures: flags,
       },
     });
     await waitForPromises();
@@ -196,12 +193,8 @@ describe('RepoEditor', () => {
   });
 
   describe('schema registration for .gitlab-ci.yml', () => {
-    const setup = async (activeFile, flagIsOn = true) => {
-      await createComponent({
-        flags: {
-          schemaLinting: flagIsOn,
-        },
-      });
+    const setup = async (activeFile) => {
+      await createComponent();
       vm.editor.registerCiSchema = jest.fn();
       if (activeFile) {
         wrapper.setProps({ file: activeFile });
@@ -210,15 +203,13 @@ describe('RepoEditor', () => {
       await nextTick();
     };
     it.each`
-      flagIsOn | activeFile            | shouldUseExtension | desc
-      ${false} | ${dummyFile.markdown} | ${false}           | ${`file is not CI config; should NOT`}
-      ${true}  | ${dummyFile.markdown} | ${false}           | ${`file is not CI config; should NOT`}
-      ${false} | ${dummyFile.ciConfig} | ${false}           | ${`file is CI config; should NOT`}
-      ${true}  | ${dummyFile.ciConfig} | ${true}            | ${`file is CI config; should`}
+      activeFile            | shouldUseExtension | desc
+      ${dummyFile.markdown} | ${false}           | ${`file is not CI config; should NOT`}
+      ${dummyFile.ciConfig} | ${true}            | ${`file is CI config; should`}
     `(
-      'when the flag is "$flagIsOn", $desc use extension',
-      async ({ flagIsOn, activeFile, shouldUseExtension }) => {
-        await setup(activeFile, flagIsOn);
+      'when the activeFile is "$activeFile", $desc use extension',
+      async ({ activeFile, shouldUseExtension }) => {
+        await setup(activeFile);
 
         if (shouldUseExtension) {
           expect(applyExtensionSpy).toHaveBeenCalledWith({

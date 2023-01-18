@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, concepts, howto
 ---
 
-# Development guide for GitLab CI/CD templates **(FREE)**
+# Development guide for GitLab CI/CD templates
 
 This document explains how to develop [GitLab CI/CD templates](../../ci/examples/index.md#cicd-templates).
 

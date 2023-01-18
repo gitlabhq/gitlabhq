@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver do
+RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category: :importers do
   let(:project) { create(:project) }
   let(:relation_object) { build(:issue, project: project) }
   let(:relation_definition) { {} }
@@ -34,6 +34,7 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver do
 
       it 'saves relation object with subrelations' do
         expect(relation_object.notes).to receive(:<<).and_call_original
+        expect(relation_object).to receive(:save).and_call_original
 
         saver.execute
 
@@ -80,6 +81,7 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver do
 
       it 'saves valid subrelations and logs invalid subrelation' do
         expect(relation_object.notes).to receive(:<<).twice.and_call_original
+        expect(relation_object).to receive(:save).and_call_original
         expect(Gitlab::Import::Logger)
           .to receive(:info)
           .with(

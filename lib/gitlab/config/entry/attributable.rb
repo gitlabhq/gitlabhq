@@ -24,6 +24,10 @@ module Gitlab
               define_method("has_#{attribute_method}?") do
                 config.is_a?(Hash) && config.key?(attribute)
               end
+
+              define_method("has_#{attribute_method}_value?") do
+                config.is_a?(Hash) && config.key?(attribute) && !config[attribute].nil?
+              end
             end
           end
         end

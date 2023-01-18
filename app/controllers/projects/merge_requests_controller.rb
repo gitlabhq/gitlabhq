@@ -28,6 +28,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :codequality_mr_diff_reports
   ]
   before_action :set_issuables_index, only: [:index]
+  before_action :check_search_rate_limit!, only: [:index], if: -> {
+    params[:search].present? && Feature.enabled?(:rate_limit_issuable_searches)
+  }
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
@@ -37,7 +40,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:refactor_security_extension, @project)
     push_frontend_feature_flag(:refactor_code_quality_inline_findings, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
-    push_frontend_feature_flag(:paginated_mr_discussions, project)
     push_frontend_feature_flag(:mr_review_submit_comment, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:realtime_reviewers, project)
@@ -52,7 +54,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   after_action :log_merge_request_show, only: [:show, :diffs]
 
-  feature_category :code_review, [
+  feature_category :code_review_workflow, [
     :assign_related_issues, :bulk_update, :cancel_auto_merge,
     :commit_change_content, :commits, :context_commits, :destroy,
     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
@@ -387,13 +389,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       end
 
       format.patch do
-        break render_404 unless @merge_request.diff_refs
+        next render_404 unless @merge_request.diff_refs
 
         send_git_patch @project.repository, @merge_request.diff_refs
       end
 
       format.diff do
-        break render_404 unless @merge_request.diff_refs
+        next render_404 unless @merge_request.diff_refs
 
         send_git_diff @project.repository, @merge_request.diff_refs
       end
@@ -512,15 +514,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def check_user_can_push_to_source_branch!
-    return access_denied! unless @merge_request.source_branch_exists?
+    result = MergeRequests::RebaseService
+      .new(project: @merge_request.source_project, current_user: current_user)
+      .validate(@merge_request)
 
-    access_check = ::Gitlab::UserAccess
-      .new(current_user, container: @merge_request.source_project)
-      .can_push_to_branch?(@merge_request.source_branch)
+    return if result.success?
 
-    access_denied! unless access_check
-
-    access_denied! unless merge_request.permits_force_push?
+    render json: { merge_error: result.message }, status: :forbidden
   end
 
   def merge_access_check

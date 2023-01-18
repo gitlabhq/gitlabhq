@@ -20,10 +20,6 @@ export default {
       default: () => ({}),
       required: false,
     },
-    disabled: {
-      type: Boolean,
-      required: true,
-    },
   },
   computed: {
     ...mapState(['filterParams', 'highlightedLists']),
@@ -87,8 +83,8 @@ export default {
       class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base gl-bg-gray-50"
       :class="{ 'board-column-highlighted': highlighted }"
     >
-      <board-list-header :list="list" :disabled="disabled" />
-      <board-list ref="board-list" :disabled="disabled" :board-items="listItems" :list="list" />
+      <board-list-header :list="list" />
+      <board-list ref="board-list" :board-items="listItems" :list="list" />
     </div>
   </div>
 </template>

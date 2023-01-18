@@ -150,18 +150,12 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                    
                   <input
                     aria-label="Search"
-                    class="gl-form-input gl-search-box-by-type-input form-control"
+                    class="gl-form-input form-control gl-search-box-by-type-input"
                     placeholder="Search"
                     type="search"
                   />
                    
-                  <div
-                    class="gl-search-box-by-type-right-icons"
-                  >
-                    <!---->
-                     
-                    <!---->
-                  </div>
+                  <!---->
                 </div>
                   
                 <li
@@ -281,18 +275,12 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                    
                   <input
                     aria-label="Search"
-                    class="gl-form-input gl-search-box-by-type-input form-control"
+                    class="gl-form-input form-control gl-search-box-by-type-input"
                     placeholder="Search"
                     type="search"
                   />
                    
-                  <div
-                    class="gl-search-box-by-type-right-icons"
-                  >
-                    <!---->
-                     
-                    <!---->
-                  </div>
+                  <!---->
                 </div>
                   
                 <li

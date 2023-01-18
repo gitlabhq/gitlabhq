@@ -9,6 +9,8 @@ RSpec.describe 'Dashboard > Activity', feature_category: :users do
     sign_in(user)
   end
 
+  it_behaves_like 'a dashboard page with sidebar', :activity_dashboard_path, :activity
+
   context 'tabs' do
     it 'shows Your Projects' do
       visit activity_dashboard_path

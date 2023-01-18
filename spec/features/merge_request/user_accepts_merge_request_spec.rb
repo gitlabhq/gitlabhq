@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inline, feature_category: :code_review do
+RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inline, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
   let(:project) { create(:project, :public, :repository) }
   let(:user) { create(:user) }

@@ -62,7 +62,7 @@ Offset-based pagination is the easiest way to paginate over records, however, it
 
 - Avoid presenting total counts, prefer limit counts.
   - Example: count maximum 1001 records, and then on the UI show 1000+ if the count is 1001, show the actual number otherwise.
-  - See the [badge counters approach](../merge_request_performance_guidelines.md#badge-counters) for more information.
+  - See the [badge counters approach](../merge_request_concepts/performance.md#badge-counters) for more information.
 - Avoid using page numbers, use next and previous page buttons.
   - Keyset pagination doesn't support page numbers.
 - For APIs, advise against building URLs for the next page by "hand".

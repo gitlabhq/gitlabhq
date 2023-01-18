@@ -34,7 +34,7 @@ module Gitlab
       end
 
       def different_version?(version)
-        Gem::Version.new(version) != Gem::Version.new(Gitlab::ImportExport.version)
+        Gitlab::VersionInfo.parse(version) != Gitlab::VersionInfo.parse(Gitlab::ImportExport.version)
       rescue StandardError => e
         Gitlab::Import::Logger.error(
           message: 'Import error',

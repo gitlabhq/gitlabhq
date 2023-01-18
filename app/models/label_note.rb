@@ -4,12 +4,19 @@ class LabelNote < SyntheticNote
   attr_accessor :resource_parent
   attr_reader :events
 
+  def self.from_event(event, resource: nil, resource_parent: nil)
+    attrs = note_attributes('label', event, resource, resource_parent).merge(events: [event])
+
+    LabelNote.new(attrs)
+  end
+
   def self.from_events(events, resource: nil, resource_parent: nil)
     resource ||= events.first.issuable
 
-    attrs = note_attributes('label', events.first, resource, resource_parent).merge(events: events)
+    label_note = from_event(events.first, resource: resource, resource_parent: resource_parent)
+    label_note.events = events
 
-    LabelNote.new(attrs)
+    label_note
   end
 
   def events=(events)
@@ -37,8 +44,8 @@ class LabelNote < SyntheticNote
   end
 
   def note_text(html: false)
-    added = labels_str(label_refs_by_action('add', html), prefix: 'added', suffix: added_suffix)
-    removed = labels_str(label_refs_by_action('remove', html), prefix: removed_prefix)
+    added = labels_str(label_refs_by_action('add', html).uniq, prefix: 'added', suffix: added_suffix)
+    removed = labels_str(label_refs_by_action('remove', html).uniq, prefix: removed_prefix)
 
     [added, removed].compact.join(' and ')
   end

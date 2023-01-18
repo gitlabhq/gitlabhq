@@ -1,23 +1,25 @@
-- can_admin_project = can?(current_user, :admin_project, @project)
+- can_admin_entity = protected_branch_can_admin_entity?(protected_branch_entity)
+- url = protected_branch_path_by_entity(protected_branch, protected_branch_entity)
 
-%tr.js-protected-branch-edit-form{ data: { url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch), testid: 'protected-branch' } }
+%tr.js-protected-branch-edit-form{ data: { url: url, testid: 'protected-branch' } }
   %td
     %span.ref-name= protected_branch.name
 
-    - if @project.root_ref?(protected_branch.name)
+    - if protected_branch_entity.is_a?(Project) && protected_branch_entity.root_ref?(protected_branch.name)
       = gl_badge_tag s_('ProtectedBranch|default'), variant: :info
 
-    %div
-      - if protected_branch.wildcard?
-        - matching_branches = protected_branch.matching(repository.branch_names)
-        = link_to pluralize(matching_branches.count, "matching branch"), namespace_project_protected_branch_path(@project.namespace, @project, protected_branch)
-      - elsif !protected_branch.commit
-        %span.text-muted Branch was deleted.
+    - if protected_branch_entity.is_a?(Project)
+      %div
+        - if protected_branch.wildcard?
+          - matching_branches = protected_branch.matching(repository.branch_names)
+          = link_to pluralize(matching_branches.count, "matching branch"), namespace_project_protected_branch_path(@project.namespace, @project, protected_branch)
+        - elsif !protected_branch.commit
+          %span.text-muted= s_('ProtectedBranch|Branch does not exist.')
 
   = yield
 
-  = render_if_exists 'protected_branches/ee/code_owner_approval_table', protected_branch: protected_branch
+  = render_if_exists 'protected_branches/ee/code_owner_approval_table', protected_branch: protected_branch, protected_branch_entity: protected_branch_entity
 
-  - if can_admin_project
+  - if can_admin_entity
     %td
-      = link_to s_('ProtectedBranch|Unprotect'), [@project, protected_branch, { update_section: 'js-protected-branches-settings' }], disabled: local_assigns[:disabled], aria: { label: s_('ProtectedBranch|Unprotect branch') }, data: { confirm: s_('ProtectedBranch|Branch will be writable for developers. Are you sure?'), confirm_btn_variant: 'danger' }, method: :delete, class: "btn gl-button btn-danger btn-sm"
+      = link_to s_('ProtectedBranch|Unprotect'), [protected_branch_entity, protected_branch, { update_section: 'js-protected-branches-settings' }], disabled: local_assigns[:disabled], aria: { label: s_('ProtectedBranch|Unprotect branch') }, data: { confirm: s_('ProtectedBranch|Branch will be writable for developers. Are you sure?'), confirm_btn_variant: 'danger' }, method: :delete, class: "btn gl-button btn-danger btn-sm"

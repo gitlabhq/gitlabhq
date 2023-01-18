@@ -28,7 +28,7 @@ FactoryBot.define do
 
     # Clear our default @page, except when using build_stubbed
     after(:build) do |page|
-      page.instance_variable_set('@page', nil)
+      page.instance_variable_set(:@page, nil)
     end
 
     to_create do |page, evaluator|

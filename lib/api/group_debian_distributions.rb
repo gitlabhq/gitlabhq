@@ -19,7 +19,7 @@ module API
 
       namespace ':id/-' do
         helpers do
-          def project_or_group
+          def project_or_group(_ = nil)
             user_group
           end
         end

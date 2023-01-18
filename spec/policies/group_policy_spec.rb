@@ -157,7 +157,7 @@ RSpec.describe GroupPolicy do
     let(:current_user) { maintainer }
 
     context 'with subgroup_creation level set to maintainer' do
-      before_all do
+      before do
         group.update!(subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
       end
 
@@ -550,7 +550,7 @@ RSpec.describe GroupPolicy do
 
   context 'create_projects' do
     context 'when group has no project creation level set' do
-      before_all do
+      before do
         group.update!(project_creation_level: nil)
       end
 
@@ -580,7 +580,7 @@ RSpec.describe GroupPolicy do
     end
 
     context 'when group has project creation level set to no one' do
-      before_all do
+      before do
         group.update!(project_creation_level: ::Gitlab::Access::NO_ONE_PROJECT_ACCESS)
       end
 
@@ -610,7 +610,7 @@ RSpec.describe GroupPolicy do
     end
 
     context 'when group has project creation level set to maintainer only' do
-      before_all do
+      before do
         group.update!(project_creation_level: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
       end
 
@@ -640,7 +640,7 @@ RSpec.describe GroupPolicy do
     end
 
     context 'when group has project creation level set to developers + maintainer' do
-      before_all do
+      before do
         group.update!(project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
       end
 
@@ -672,7 +672,7 @@ RSpec.describe GroupPolicy do
 
   context 'create_subgroup' do
     context 'when group has subgroup creation level set to owner' do
-      before_all do
+      before do
         group.update!(subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
       end
 
@@ -702,7 +702,7 @@ RSpec.describe GroupPolicy do
     end
 
     context 'when group has subgroup creation level set to maintainer' do
-      before_all do
+      before do
         group.update!(subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
       end
 
@@ -1073,7 +1073,7 @@ RSpec.describe GroupPolicy do
   it_behaves_like 'Self-managed Core resource access tokens'
 
   context 'support bot' do
-    let_it_be(:group) { create(:group, :private, :crm_enabled) }
+    let_it_be_with_refind(:group) { create(:group, :private, :crm_enabled) }
     let_it_be(:current_user) { User.support_bot }
 
     before do
@@ -1351,9 +1351,8 @@ RSpec.describe GroupPolicy do
   context 'when crm_enabled is false' do
     let(:current_user) { owner }
 
-    before_all do
-      group.crm_settings.enabled = false
-      group.crm_settings.save!
+    before do
+      group.crm_settings.update!(enabled: false)
     end
 
     it { is_expected.to be_disallowed(:read_crm_contact) }

@@ -63,12 +63,13 @@ class User < ApplicationRecord
   attribute :admin, default: false
   attribute :external, default: -> { Gitlab::CurrentSettings.user_default_external }
   attribute :can_create_group, default: -> { Gitlab::CurrentSettings.can_create_group }
+  attribute :private_profile, default: -> { Gitlab::CurrentSettings.user_defaults_to_private_profile }
   attribute :can_create_team, default: false
   attribute :hide_no_ssh_key, default: false
   attribute :hide_no_password, default: false
   attribute :project_view, default: :files
   attribute :notified_of_own_activity, default: false
-  attribute :preferred_language, default: -> { I18n.default_locale }
+  attribute :preferred_language, default: -> { Gitlab::CurrentSettings.default_preferred_language }
   attribute :theme_id, default: -> { gitlab_config.default_theme }
 
   attr_encrypted :otp_secret,
@@ -99,6 +100,8 @@ class User < ApplicationRecord
   include RequireEmailVerification
 
   MINIMUM_DAYS_CREATED = 7
+
+  ignore_columns %i[linkedin twitter skype website_url location organization], remove_with: '15.8', remove_after: '2023-01-22'
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
@@ -214,7 +217,7 @@ class User < ApplicationRecord
   has_many :releases,                 dependent: :nullify, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :subscriptions,            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_one  :abuse_report,             dependent: :destroy, foreign_key: :user_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :abuse_reports,            dependent: :destroy, foreign_key: :user_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport" # rubocop:disable Cop/ActiveRecordDependent
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :builds,                   class_name: 'Ci::Build'
@@ -262,8 +265,11 @@ class User < ApplicationRecord
   has_many :resource_label_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :resource_state_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
-
-  has_many :namespace_commit_emails
+  has_many :namespace_commit_emails, class_name: 'Users::NamespaceCommitEmail'
+  has_many :user_achievements, class_name: 'Achievements::UserAchievement', inverse_of: :user
+  has_many :awarded_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'awarded_by_user_id', inverse_of: :awarded_by_user
+  has_many :revoked_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'revoked_by_user_id', inverse_of: :revoked_by_user
+  has_many :achievements, through: :user_achievements, class_name: 'Achievements::Achievement', inverse_of: :users
 
   #
   # Validations
@@ -298,19 +304,15 @@ class User < ApplicationRecord
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
                                                             message: ->(*) { _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } } }
 
-  validates :website_url, allow_blank: true, url: true, if: :website_url_changed?
-
   after_initialize :set_projects_limit
   before_validation :sanitize_attrs
   before_validation :ensure_namespace_correct
   after_validation :set_username_errors
-  before_save :default_private_profile_to_false
   before_save :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   before_save :ensure_namespace_correct # in case validation is skipped
-  before_save :ensure_user_detail_assigned
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
@@ -372,6 +374,12 @@ class User < ApplicationRecord
   delegate :pronunciation, :pronunciation=, to: :user_detail, allow_nil: true
   delegate :registration_objective, :registration_objective=, to: :user_detail, allow_nil: true
   delegate :requires_credit_card_verification, :requires_credit_card_verification=, to: :user_detail, allow_nil: true
+  delegate :linkedin, :linkedin=, to: :user_detail, allow_nil: true
+  delegate :twitter, :twitter=, to: :user_detail, allow_nil: true
+  delegate :skype, :skype=, to: :user_detail, allow_nil: true
+  delegate :website_url, :website_url=, to: :user_detail, allow_nil: true
+  delegate :location, :location=, to: :user_detail, allow_nil: true
+  delegate :organization, :organization=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
@@ -531,9 +539,7 @@ class User < ApplicationRecord
   strip_attributes! :name
 
   def preferred_language
-    read_attribute('preferred_language') ||
-      I18n.default_locale.to_s.presence_in(Gitlab::I18n.available_locales) ||
-      default_preferred_language
+    read_attribute('preferred_language').presence || Gitlab::CurrentSettings.default_preferred_language
   end
 
   def active_for_authentication?
@@ -1401,15 +1407,7 @@ class User < ApplicationRecord
   end
 
   def sanitize_attrs
-    sanitize_links
     sanitize_name
-  end
-
-  def sanitize_links
-    %i[skype linkedin twitter].each do |attr|
-      value = self[attr]
-      self[attr] = Sanitize.clean(value) if value.present?
-    end
   end
 
   def sanitize_name
@@ -1593,11 +1591,6 @@ class User < ApplicationRecord
       namespace = build_namespace(path: username, name: name, type: ::Namespaces::UserNamespace.sti_name)
       namespace.build_namespace_settings
     end
-  end
-
-  # Temporary, will be removed when user_detail fields are fully migrated
-  def ensure_user_detail_assigned
-    user_detail.assign_changed_fields_from_user if UserDetail.user_fields_changed?(self)
   end
 
   def set_username_errors
@@ -1890,7 +1883,7 @@ class User < ApplicationRecord
 
   def invalidate_issue_cache_counts
     Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
-    Rails.cache.delete(['users', id, 'max_assigned_open_issues_count']) if Feature.enabled?(:limit_assigned_issues_count)
+    Rails.cache.delete(['users', id, 'max_assigned_open_issues_count'])
   end
 
   def invalidate_merge_request_cache_counts
@@ -2189,6 +2182,13 @@ class User < ApplicationRecord
     public_email.presence || _('[REDACTED]')
   end
 
+  def namespace_commit_email_for_project(project)
+    return if project.nil?
+
+    namespace_commit_emails.find_by(namespace: project.project_namespace) ||
+      namespace_commit_emails.find_by(namespace: project.root_namespace)
+  end
+
   protected
 
   # override, from Devise::Validatable
@@ -2228,11 +2228,6 @@ class User < ApplicationRecord
     return false unless otp_backup_codes&.any?
 
     otp_backup_codes.first.start_with?("$pbkdf2-sha512$")
-  end
-
-  # To enable JiHu repository to modify the default language options
-  def default_preferred_language
-    'en'
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -2297,12 +2292,6 @@ class User < ApplicationRecord
                     Group.joins(:shared_with_group_links)
                          .where(group_group_links: { shared_with_group_id: Group.from(cte_alias) })
                   ])
-  end
-
-  def default_private_profile_to_false
-    return unless private_profile_changed? && private_profile.nil?
-
-    self.private_profile = false
   end
 
   def has_current_license?

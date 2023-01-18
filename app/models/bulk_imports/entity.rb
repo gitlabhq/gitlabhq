@@ -152,6 +152,10 @@ class BulkImports::Entity < ApplicationRecord
     "::#{pluralized_name.capitalize}::UpdateService".constantize
   end
 
+  def full_path
+    project? ? project&.full_path : group&.full_path
+  end
+
   private
 
   def validate_parent_is_a_group

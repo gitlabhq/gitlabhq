@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Workspace
+group: Organization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -217,7 +217,7 @@ GET /groups/:id/descendant_groups
   {
     "id": 2,
     "name": "Bar Group",
-    "path": "foo/bar",
+    "path": "bar",
     "description": "A subgroup of Foo Group",
     "visibility": "public",
     "share_with_group_lock": false,
@@ -242,7 +242,7 @@ GET /groups/:id/descendant_groups
   {
     "id": 3,
     "name": "Baz Group",
-    "path": "foo/bar/baz",
+    "path": "baz",
     "description": "A subgroup of Bar Group",
     "visibility": "public",
     "share_with_group_lock": false,
@@ -830,8 +830,8 @@ Parameters:
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                            | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
 | `membership_lock` **(PREMIUM)**                         | boolean | no       | Users cannot be added to projects in this group. |
-| `extra_shared_runners_minutes_limit` **(PREMIUM)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
-| `shared_runners_minutes_limit` **(PREMIUM)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
+| `shared_runners_minutes_limit` **(PREMIUM SELF)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
 
 ### Options for `default_branch_protection`
 
@@ -985,11 +985,11 @@ PUT /groups/:id
 | `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                            | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
-| `extra_shared_runners_minutes_limit` **(PREMIUM)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
+| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
 | `file_template_project_id` **(PREMIUM)**                | integer | no       | The ID of a project to load custom file templates from. |
 | `membership_lock` **(PREMIUM)**                         | boolean | no       | Users cannot be added to projects in this group. |
 | `prevent_forking_outside_group` **(PREMIUM)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces. |
-| `shared_runners_minutes_limit` **(PREMIUM)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `shared_runners_minutes_limit` **(PREMIUM SELF)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
 | `unique_project_download_limit` **(ULTIMATE)** | integer | no | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. |
 | `unique_project_download_limit_interval_in_seconds` **(ULTIMATE)** | integer | no | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). |
 | `unique_project_download_limit_allowlist` **(ULTIMATE)** | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. |
@@ -1025,7 +1025,7 @@ Example response:
   "web_url": "http://gitlab.example.com/groups/h5bp",
   "request_access_enabled": false,
   "full_name": "Foobar Group",
-  "full_path": "foo-bar",
+  "full_path": "h5bp",
   "file_template_project_id": 1,
   "parent_id": null,
   "created_at": "2020-01-15T12:36:29.590Z",
@@ -1099,8 +1099,9 @@ The `shared_runners_setting` attribute determines whether shared runners are ena
 | Value | Description |
 |-------|-------------------------------------------------------------------------------------------------------------|
 | `enabled`                      | Enables shared runners for all projects and subgroups in this group. |
-| `disabled_with_override`       | Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
+| `disabled_and_overridable`     | Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
 | `disabled_and_unoverridable`   | Disables shared runners for all projects and subgroups in this group, and prevents subgroups from overriding this setting. |
+| `disabled_with_override`       | (Deprecated. Use `disabled_and_overridable`) Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
 
 ### Upload a group avatar
 
@@ -1702,7 +1703,7 @@ DELETE /groups/:id/share/:group_id
 
 > Introduced in GitLab 13.4.
 
-### Get group push rules **(PREMIUM)**
+### Get group push rules
 
 Get the [push rules](../user/group/access_and_permissions.md#group-push-rules) of a group.
 
@@ -1745,7 +1746,7 @@ the `commit_committer_check` and `reject_unsigned_commits` parameters:
 }
 ```
 
-### Add group push rule **(PREMIUM)**
+### Add group push rule
 
 Adds [push rules](../user/group/access_and_permissions.md#group-push-rules) to the specified group.
 
@@ -1792,7 +1793,7 @@ Response:
 }
 ```
 
-### Edit group push rule **(PREMIUM)**
+### Edit group push rule
 
 Edit push rules for a specified group.
 
@@ -1839,7 +1840,7 @@ Response:
 }
 ```
 
-### Delete group push rule **(PREMIUM)**
+### Delete group push rule
 
 Deletes the [push rules](../user/group/access_and_permissions.md#group-push-rules) of a group.
 

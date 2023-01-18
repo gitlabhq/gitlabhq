@@ -414,21 +414,21 @@ export const durationTimeFormatted = (duration) => {
  *
  * @param {Number} offset UTC offset in seconds as a integer
  *
- * @return {String} the + or - offset in hours, e.g. `- 10`, `0`, `+ 4`
+ * @return {String} the + or - offset in hours, e.g. `-10`, ` 0`, `+4`
  */
 export const formatUtcOffset = (offset) => {
   const parsed = parseInt(offset, 10);
   if (Number.isNaN(parsed) || parsed === 0) {
-    return `0`;
+    return ` 0`;
   }
   const prefix = offset > 0 ? '+' : '-';
-  return `${prefix} ${Math.abs(offset / 3600)}`;
+  return `${prefix}${Math.abs(offset / 3600)}`;
 };
 
 /**
  * Returns formatted timezone
  *
  * @param {Object} timezone item with offset and name
- * @returns {String} the UTC timezone with the offset, e.g. `[UTC + 2] Berlin`
+ * @returns {String} the UTC timezone with the offset, e.g. `[UTC+2] Berlin, [UTC 0] London`
  */
-export const formatTimezone = ({ offset, name }) => `[UTC ${formatUtcOffset(offset)}] ${name}`;
+export const formatTimezone = ({ offset, name }) => `[UTC${formatUtcOffset(offset)}] ${name}`;

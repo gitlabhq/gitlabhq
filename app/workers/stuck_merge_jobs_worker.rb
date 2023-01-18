@@ -7,7 +7,7 @@ class StuckMergeJobsWorker # rubocop:disable Scalability/IdempotentWorker
 
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
-  feature_category :code_review
+  feature_category :code_review_workflow
 
   def self.logger
     Gitlab::AppLogger

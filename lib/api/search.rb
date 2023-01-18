@@ -59,8 +59,13 @@ module API
       end
 
       def search(additional_params = {})
+        search_service = search_service(additional_params)
+        if search_service.global_search? && !search_service.global_search_enabled_for_scope?
+          forbidden!('Global Search is disabled for this scope')
+        end
+
         @search_duration_s = Benchmark.realtime do
-          @results = search_service(additional_params).search_objects(preload_method)
+          @results = search_service.search_objects(preload_method)
         end
 
         set_global_search_log_information(additional_params)
@@ -68,7 +73,7 @@ module API
         Gitlab::Metrics::GlobalSearchSlis.record_apdex(
           elapsed: @search_duration_s,
           search_type: search_type(additional_params),
-          search_level: search_service(additional_params).level,
+          search_level: search_service.level,
           search_scope: search_scope
         )
 

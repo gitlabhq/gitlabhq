@@ -134,6 +134,6 @@ This table shows available scopes per token. Scopes can be limited further on to
 - When creating a token, consider setting a token that expires when your task is complete. For example, if performing a one-off import, set the
   token to expire after a few hours or a day. This reduces the impact of a token that is accidentally leaked because it is useless when it expires.
 - Be careful not to include tokens when pasting code, console commands, or log outputs into an issue or MR description or comment.
-- Don’t log credentials in the console logs. Consider [protecting](../ci/variables/index.md#protected-cicd-variables) and
+- Don’t log credentials in the console logs. Consider [protecting](../ci/variables/index.md#protect-a-cicd-variable) and
   [masking](../ci/variables/index.md#mask-a-cicd-variable) your credentials.
 - Review all currently active access tokens of all types on a regular basis and revoke any that are no longer needed.

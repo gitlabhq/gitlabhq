@@ -1,8 +1,6 @@
 - title: "Release CLI distributed as a generic package"  # The name of the feature to be deprecated
   announcement_milestone: "14.2"  # The milestone when this feature was first announced as deprecated.
-  announcement_date: "2021-08-22"  # The date of the milestone release when this feature was first announced as deprecated
   removal_milestone: "14.6"  # The milestone when this feature is planned to be removed
-  removal_date: "2021-12-22"  # the date of the milestone release when this feature is planned to be removed
   breaking_change: false
   body: |  # Do not modify this line, instead modify the lines below.
     The [release-cli](https://gitlab.com/gitlab-org/release-cli) will be released as a [generic package](https://gitlab.com/gitlab-org/release-cli/-/packages) starting in GitLab 14.2. We will continue to deploy it as a binary to S3 until GitLab 14.5 and stop distributing it in S3 in GitLab 14.6.

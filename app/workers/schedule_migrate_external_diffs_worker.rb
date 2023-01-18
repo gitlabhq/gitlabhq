@@ -13,7 +13,7 @@ class ScheduleMigrateExternalDiffsWorker # rubocop:disable Scalability/Idempoten
 
   include Gitlab::ExclusiveLeaseHelpers
 
-  feature_category :code_review
+  feature_category :code_review_workflow
 
   def perform
     in_lock(self.class.name.underscore, ttl: 2.hours, retries: 0) do

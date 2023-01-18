@@ -12,7 +12,6 @@ You can run the same query directly via a HTTP endpoint, using `cURL`. For more 
 guidance on getting started from the [command line](getting_started.md#command-line).
 
 The [example users query](#set-up-the-graphiql-explorer) looks for a subset of users in
-o
 a GitLab instance either by username or
 [Global ID](../../development/api_graphql_styleguide.md#global-ids).
 The query includes:
@@ -82,7 +81,7 @@ NOTE:
 a single integer.
 
 This GraphQL query returns the specified information for the three users with the listed username. Since the GraphiQL explorer uses the session token to authorize access to resources,
-the output is limited to the projects and groups accessible to the currently signed-in user.
+the output is limited to the projects and groups accessible to the currently authenticated user.
 
 If you've signed in as an instance administrator, you would have access to all records, regardless of ownership.
 

@@ -256,9 +256,6 @@ msgstr "crear un token de acceso personal"
 msgid "Cron Timezone"
 msgstr "Zona horaria del Cron"
 
-msgid "Cron syntax"
-msgstr "Sintaxis de Cron"
-
 msgid "Custom notification events"
 msgstr "Eventos de notificaciones personalizadas"
 
@@ -441,6 +438,9 @@ msgstr "Última actualización"
 
 msgid "Last commit"
 msgstr "Último cambio"
+
+msgid "Learn more."
+msgstr "Más información."
 
 msgid "Learn more in the"
 msgstr "Más información en la"

@@ -1,19 +1,25 @@
-import { getByText as getByTextHelper } from '@testing-library/dom';
-import { mount, createWrapper } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import MemberSource from '~/members/components/table/member_source.vue';
 
 describe('MemberSource', () => {
   let wrapper;
 
+  const memberSource = {
+    id: 102,
+    fullName: 'Foo bar',
+    webUrl: 'https://gitlab.com/groups/foo-bar',
+  };
+
+  const createdBy = {
+    name: 'Administrator',
+    webUrl: 'https://gitlab.com/root',
+  };
+
   const createComponent = (propsData) => {
-    wrapper = mount(MemberSource, {
+    wrapper = mountExtended(MemberSource, {
       propsData: {
-        memberSource: {
-          id: 102,
-          fullName: 'Foo bar',
-          webUrl: 'https://gitlab.com/groups/foo-bar',
-        },
+        memberSource,
         ...propsData,
       },
       directives: {
@@ -22,9 +28,6 @@ describe('MemberSource', () => {
     });
   };
 
-  const getByText = (text, options) =>
-    createWrapper(getByTextHelper(wrapper.element, text, options));
-
   const getTooltipDirective = (elementWrapper) => getBinding(elementWrapper.element, 'gl-tooltip');
 
   afterEach(() => {
@@ -32,40 +35,69 @@ describe('MemberSource', () => {
   });
 
   describe('direct member', () => {
-    it('displays "Direct member"', () => {
-      createComponent({
-        isDirectMember: true,
-      });
+    describe('when created by is available', () => {
+      it('displays "Direct member by <user name>"', () => {
+        createComponent({
+          isDirectMember: true,
+          createdBy,
+        });
 
-      expect(getByText('Direct member').exists()).toBe(true);
+        expect(wrapper.text()).toBe('Direct member by Administrator');
+        expect(wrapper.findByRole('link', { name: createdBy.name }).attributes('href')).toBe(
+          createdBy.webUrl,
+        );
+      });
+    });
+
+    describe('when created by is not available', () => {
+      it('displays "Direct member"', () => {
+        createComponent({
+          isDirectMember: true,
+        });
+
+        expect(wrapper.text()).toBe('Direct member');
+      });
     });
   });
 
   describe('inherited member', () => {
-    let sourceGroupLink;
-
-    beforeEach(() => {
-      createComponent({
-        isDirectMember: false,
+    describe('when created by is available', () => {
+      beforeEach(() => {
+        createComponent({
+          isDirectMember: false,
+          createdBy,
+        });
       });
 
-      sourceGroupLink = getByText('Foo bar');
+      it('displays "<group name> by <user name>"', () => {
+        expect(wrapper.text()).toBe('Foo bar by Administrator');
+        expect(wrapper.findByRole('link', { name: memberSource.fullName }).attributes('href')).toBe(
+          memberSource.webUrl,
+        );
+        expect(wrapper.findByRole('link', { name: createdBy.name }).attributes('href')).toBe(
+          createdBy.webUrl,
+        );
+      });
     });
 
-    it('displays a link to source group', () => {
-      createComponent({
-        isDirectMember: false,
+    describe('when created by is not available', () => {
+      beforeEach(() => {
+        createComponent({
+          isDirectMember: false,
+        });
       });
 
-      expect(sourceGroupLink.exists()).toBe(true);
-      expect(sourceGroupLink.attributes('href')).toBe('https://gitlab.com/groups/foo-bar');
-    });
+      it('displays a link to source group', () => {
+        expect(wrapper.text()).toBe(memberSource.fullName);
+        expect(wrapper.attributes('href')).toBe(memberSource.webUrl);
+      });
 
-    it('displays tooltip with "Inherited"', () => {
-      const tooltipDirective = getTooltipDirective(sourceGroupLink);
+      it('displays tooltip with "Inherited"', () => {
+        const tooltipDirective = getTooltipDirective(wrapper);
 
-      expect(tooltipDirective).not.toBeUndefined();
-      expect(sourceGroupLink.attributes('title')).toBe('Inherited');
+        expect(tooltipDirective).not.toBeUndefined();
+        expect(tooltipDirective.value).toBe('Inherited');
+      });
     });
   });
 });

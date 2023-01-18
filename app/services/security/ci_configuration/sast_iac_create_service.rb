@@ -21,6 +21,10 @@ module Security
       def description
         _('Configure SAST IaC in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST IaC settings.')
       end
+
+      def name
+        'SAST IaC'
+      end
     end
   end
 end

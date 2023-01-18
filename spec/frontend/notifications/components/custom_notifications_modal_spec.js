@@ -5,7 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import CustomNotificationsModal from '~/notifications/components/custom_notifications_modal.vue';
 import { i18n } from '~/notifications/constants';
 
@@ -138,7 +138,7 @@ describe('CustomNotificationsModal', () => {
 
           mockAxios
             .onGet(endpointUrl)
-            .reply(httpStatus.OK, mockNotificationSettingsResponses.default);
+            .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.default);
 
           wrapper = createComponent({ injectedProperties });
 
@@ -155,7 +155,7 @@ describe('CustomNotificationsModal', () => {
 
         mockAxios
           .onGet(endpointUrl)
-          .reply(httpStatus.OK, mockNotificationSettingsResponses.default);
+          .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.default);
 
         wrapper = createComponent();
 
@@ -173,7 +173,7 @@ describe('CustomNotificationsModal', () => {
       });
 
       it('shows a toast message when the request fails', async () => {
-        mockAxios.onGet('/api/v4/notification_settings').reply(httpStatus.NOT_FOUND, {});
+        mockAxios.onGet('/api/v4/notification_settings').reply(HTTP_STATUS_NOT_FOUND, {});
         wrapper = createComponent();
 
         wrapper.findComponent(GlModal).vm.$emit('show');
@@ -201,11 +201,11 @@ describe('CustomNotificationsModal', () => {
         async ({ projectId, groupId, endpointUrl }) => {
           mockAxios
             .onGet(endpointUrl)
-            .reply(httpStatus.OK, mockNotificationSettingsResponses.default);
+            .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.default);
 
           mockAxios
             .onPut(endpointUrl)
-            .reply(httpStatus.OK, mockNotificationSettingsResponses.updated);
+            .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.updated);
 
           const injectedProperties = {
             projectId,
@@ -241,7 +241,7 @@ describe('CustomNotificationsModal', () => {
       );
 
       it('shows a toast message when the request fails', async () => {
-        mockAxios.onPut('/api/v4/notification_settings').reply(httpStatus.NOT_FOUND, {});
+        mockAxios.onPut('/api/v4/notification_settings').reply(HTTP_STATUS_NOT_FOUND, {});
         wrapper = createComponent();
 
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::CreatePipelineTrackersService do
+RSpec.describe BulkImports::CreatePipelineTrackersService, feature_category: :importers do
   describe '#execute!' do
     context 'when entity is group' do
       it 'creates trackers for group entity' do

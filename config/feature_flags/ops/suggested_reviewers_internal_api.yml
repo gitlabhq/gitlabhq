@@ -1,0 +1,8 @@
+---
+name: suggested_reviewers_internal_api
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106648
+rollout_issue_url:
+milestone: '15.7'
+type: ops
+group: group::ai assisted
+default_enabled: true

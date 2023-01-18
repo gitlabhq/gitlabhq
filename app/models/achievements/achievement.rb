@@ -7,6 +7,9 @@ module Achievements
 
     belongs_to :namespace, inverse_of: :achievements, optional: false
 
+    has_many :user_achievements, inverse_of: :achievement
+    has_many :users, through: :user_achievements, inverse_of: :achievements
+
     strip_attributes! :name, :description
 
     validates :name,

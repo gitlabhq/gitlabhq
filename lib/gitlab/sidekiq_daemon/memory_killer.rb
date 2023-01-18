@@ -241,9 +241,8 @@ module Gitlab
 
         deadline = Gitlab::Metrics::System.monotonic_time + time
 
-        # we try to finish as early as all jobs finished
-        # so we retest that in loop
-        sleep(CHECK_INTERVAL_SECONDS) while enabled? && any_jobs? && Gitlab::Metrics::System.monotonic_time < deadline
+        # Sleep until thread killed or timeout reached
+        sleep(CHECK_INTERVAL_SECONDS) while enabled? && Gitlab::Metrics::System.monotonic_time < deadline
       end
 
       def signal_pgroup(signal, explanation)
@@ -288,10 +287,6 @@ module Gitlab
 
       def pid
         Process.pid
-      end
-
-      def any_jobs?
-        @sidekiq_daemon_monitor.jobs.any?
       end
     end
   end

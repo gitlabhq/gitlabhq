@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Job do
+RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_authoring do
   let(:entry) { described_class.new(config, name: :rspec) }
 
   it_behaves_like 'with inheritable CI config' do
@@ -337,100 +337,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
         end
       end
 
-      context 'when only: is used with rules:' do
-        let(:config) { { only: ['merge_requests'], rules: [{ if: '$THIS' }] } }
-
-        it 'returns error about mixing only: with rules:' do
-          expect(entry).not_to be_valid
-          expect(entry.errors).to include /may not be used with `rules`/
-        end
-
-        context 'and only: is blank' do
-          let(:config) { { only: nil, rules: [{ if: '$THIS' }] } }
-
-          it 'returns error about mixing only: with rules:' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include /may not be used with `rules`/
-          end
-        end
-
-        context 'and rules: is blank' do
-          let(:config) { { only: ['merge_requests'], rules: nil } }
-
-          it 'returns error about mixing only: with rules:' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include /may not be used with `rules`/
-          end
-        end
-      end
-
-      context 'when except: is used with rules:' do
-        let(:config) { { except: { refs: %w[master] }, rules: [{ if: '$THIS' }] } }
-
-        it 'returns error about mixing except: with rules:' do
-          expect(entry).not_to be_valid
-          expect(entry.errors).to include /may not be used with `rules`/
-        end
-
-        context 'and except: is blank' do
-          let(:config) { { except: nil, rules: [{ if: '$THIS' }] } }
-
-          it 'returns error about mixing except: with rules:' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include /may not be used with `rules`/
-          end
-        end
-
-        context 'and rules: is blank' do
-          let(:config) { { except: { refs: %w[master] }, rules: nil } }
-
-          it 'returns error about mixing except: with rules:' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include /may not be used with `rules`/
-          end
-        end
-      end
-
-      context 'when only: and except: are both used with rules:' do
-        let(:config) do
-          {
-            only: %w[merge_requests],
-            except: { refs: %w[master] },
-            rules: [{ if: '$THIS' }]
-          }
-        end
-
-        it 'returns errors about mixing both only: and except: with rules:' do
-          expect(entry).not_to be_valid
-          expect(entry.errors).to include /may not be used with `rules`/
-          expect(entry.errors).to include /may not be used with `rules`/
-        end
-
-        context 'when only: and except: as both blank' do
-          let(:config) do
-            { only: nil, except: nil, rules: [{ if: '$THIS' }] }
-          end
-
-          it 'returns errors about mixing both only: and except: with rules:' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include /may not be used with `rules`/
-            expect(entry.errors).to include /may not be used with `rules`/
-          end
-        end
-
-        context 'when rules: is blank' do
-          let(:config) do
-            { only: %w[merge_requests], except: { refs: %w[master] }, rules: nil }
-          end
-
-          it 'returns errors about mixing both only: and except: with rules:' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include /may not be used with `rules`/
-            expect(entry.errors).to include /may not be used with `rules`/
-          end
-        end
-      end
-
       context 'when start_in specified without delayed specification' do
         let(:config) { { start_in: '1 day' } }
 
@@ -603,6 +509,92 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
         end
       end
     end
+
+    context 'when only: is used with rules:' do
+      let(:config) { { only: ['merge_requests'], rules: [{ if: '$THIS' }], script: 'echo' } }
+
+      it 'returns error about mixing only: with rules:' do
+        expect(entry).not_to be_valid
+        expect(entry.errors).to include /may not be used with `rules`: only/
+      end
+
+      context 'and only: is blank' do
+        let(:config) { { only: nil, rules: [{ if: '$THIS' }], script: 'echo' } }
+
+        it 'is valid:' do
+          expect(entry).to be_valid
+        end
+      end
+
+      context 'and rules: is blank' do
+        let(:config) { { only: ['merge_requests'], rules: nil, script: 'echo' } }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+    end
+
+    context 'when except: is used with rules:' do
+      let(:config) { { except: { refs: %w[master] }, rules: [{ if: '$THIS' }], script: 'echo' } }
+
+      it 'returns error about mixing except: with rules:' do
+        expect(entry).not_to be_valid
+        expect(entry.errors).to include /may not be used with `rules`: except/
+      end
+
+      context 'and except: is blank' do
+        let(:config) { { except: nil, rules: [{ if: '$THIS' }], script: 'echo' } }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+
+      context 'and rules: is blank' do
+        let(:config) { { except: { refs: %w[master] }, rules: nil, script: 'echo' } }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+    end
+
+    context 'when only: and except: are both used with rules:' do
+      let(:config) do
+        {
+          only: %w[merge_requests],
+          except: { refs: %w[master] },
+          rules: [{ if: '$THIS' }],
+          script: 'echo'
+        }
+      end
+
+      it 'returns errors about mixing both only: and except: with rules:' do
+        expect(entry).not_to be_valid
+        expect(entry.errors).to include /may not be used with `rules`: only, except/
+      end
+
+      context 'when only: and except: as both blank' do
+        let(:config) do
+          { only: nil, except: nil, rules: [{ if: '$THIS' }], script: 'echo' }
+        end
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+
+      context 'when rules: is blank' do
+        let(:config) do
+          { only: %w[merge_requests], except: { refs: %w[master] }, rules: nil, script: 'echo' }
+        end
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+    end
   end
 
   describe '#relevant?' do
@@ -639,7 +631,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
 
       it 'overrides default config' do
         expect(entry[:image].value).to eq(name: 'some_image')
-        expect(entry[:cache].value).to eq([key: 'test', policy: 'pull-push', when: 'on_success'])
+        expect(entry[:cache].value).to eq([key: 'test', policy: 'pull-push', when: 'on_success', unprotect: false])
       end
     end
 
@@ -654,7 +646,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
 
       it 'uses config from default entry' do
         expect(entry[:image].value).to eq 'specified'
-        expect(entry[:cache].value).to eq([key: 'test', policy: 'pull-push', when: 'on_success'])
+        expect(entry[:cache].value).to eq([key: 'test', policy: 'pull-push', when: 'on_success', unprotect: false])
       end
     end
 

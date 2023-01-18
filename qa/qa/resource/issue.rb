@@ -65,6 +65,10 @@ module QA
         end
       end
 
+      def api_related_mrs_path
+        "#{api_get_path}/related_merge_requests"
+      end
+
       def set_issue_assignees(assignee_ids:)
         put_body = { assignee_ids: assignee_ids }
         response = put Runtime::API::Request.new(api_client, api_put_path).url, put_body
@@ -77,6 +81,13 @@ module QA
         end
 
         QA::Runtime::Logger.debug("Successfully updated issue assignees to #{assignee_ids}")
+      end
+
+      # Related merge requests
+      #
+      # @return [Array<Hash>]
+      def related_merge_requests
+        parse_body(api_get_from(api_related_mrs_path))
       end
 
       protected

@@ -1,5 +1,3 @@
-/labels ~"documentation" ~"docs-only" ~"documentation" ~"docs::improvement" ~"type::maintenance" ~"maintenance::refactor" ~"Seeking community contributions"  ~"quick win" ~"Technical Writing"
-
 <!--
 * Use this template for documentation issues identified
 * by [Vale](https://docs.gitlab.com/ee/development/documentation/testing.html#vale)
@@ -15,6 +13,8 @@
 Do you want to work on this issue?
 
 - **If the issue is unassigned**, in a comment, type `@docs-hackathon I would like to work on this issue` and a writer will assign it to you.
+
+  To be fair to others, do not ask for more than three issues at a time.
 
 - **If the issue is assigned to someone already**, choose another issue. Do not open a merge request for this issue if you are not assigned.
 
@@ -35,4 +35,4 @@ Thank you again for contributing to the GitLab documentation! :tada:
 
 ## Documentation issue
 
-
+/labels ~"documentation" ~"docs-only" ~"documentation" ~"docs::improvement" ~"type::maintenance" ~"maintenance::refactor" ~"Seeking community contributions"  ~"quick win" ~"Technical Writing"

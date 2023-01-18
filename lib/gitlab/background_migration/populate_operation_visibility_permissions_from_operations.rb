@@ -7,6 +7,7 @@ module Gitlab
     # The operations_access_level setting is being split into three seperate toggles.
     class PopulateOperationVisibilityPermissionsFromOperations < BatchedMigrationJob
       operation_name :populate_operations_visibility
+      feature_category :database
 
       def perform
         each_sub_batch do |batch|

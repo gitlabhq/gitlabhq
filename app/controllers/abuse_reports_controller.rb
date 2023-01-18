@@ -1,14 +1,25 @@
 # frozen_string_literal: true
 
 class AbuseReportsController < ApplicationController
-  before_action :set_user, only: [:new]
+  before_action :set_user, only: [:new, :add_category]
 
   feature_category :insider_threat
 
   def new
-    @abuse_report = AbuseReport.new
-    @abuse_report.user_id = @user.id
-    @ref_url = params.fetch(:ref_url, '')
+    @abuse_report = AbuseReport.new(
+      user_id: @user.id,
+      reported_from_url: params.fetch(:ref_url, '')
+    )
+  end
+
+  def add_category
+    @abuse_report = AbuseReport.new(
+      user_id: @user.id,
+      category: report_params[:category],
+      reported_from_url: report_params[:reported_from_url]
+    )
+
+    render :new
   end
 
   def create
@@ -30,7 +41,7 @@ class AbuseReportsController < ApplicationController
   private
 
   def report_params
-    params.require(:abuse_report).permit(:message, :user_id)
+    params.require(:abuse_report).permit(:message, :user_id, :category, :reported_from_url)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

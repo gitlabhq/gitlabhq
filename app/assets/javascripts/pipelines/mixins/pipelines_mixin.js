@@ -2,7 +2,7 @@ import Visibility from 'visibilityjs';
 import { createAlert } from '~/flash';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { __ } from '~/locale';
 import { validateParams } from '~/pipelines/utils';
@@ -196,7 +196,7 @@ export default {
           this.updateTable();
         })
         .catch((e) => {
-          const unauthorized = e.response.status === httpStatusCodes.UNAUTHORIZED;
+          const unauthorized = e.response.status === HTTP_STATUS_UNAUTHORIZED;
           let errorMessage = __(
             'An error occurred while trying to run a new pipeline for this merge request.',
           );

@@ -1,36 +1,19 @@
 <script>
-import {
-  GlTableLite,
-  GlAvatarLink,
-  GlAvatar,
-  GlLink,
-  GlTooltipDirective,
-  GlTruncate,
-  GlBadge,
-  GlLoadingIcon,
-} from '@gitlab/ui';
-import Commit from '~/vue_shared/components/commit.vue';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
+import { logError } from '~/lib/logger';
 import environmentDetailsQuery from '../graphql/queries/environment_details.query.graphql';
 import { convertToDeploymentTableRow } from '../helpers/deployment_data_transformation_helper';
-import DeploymentStatusBadge from '../components/deployment_status_badge.vue';
-import { ENVIRONMENT_DETAILS_PAGE_SIZE, ENVIRONMENT_DETAILS_TABLE_FIELDS } from './constants';
+import EmptyState from './empty_state.vue';
+import DeploymentsTable from './deployments_table.vue';
+import Pagination from './pagination.vue';
+import { ENVIRONMENT_DETAILS_PAGE_SIZE } from './constants';
 
 export default {
   components: {
+    Pagination,
+    DeploymentsTable,
+    EmptyState,
     GlLoadingIcon,
-    GlBadge,
-    DeploymentStatusBadge,
-    TimeAgoTooltip,
-    GlTableLite,
-    GlAvatarLink,
-    GlAvatar,
-    GlLink,
-    GlTruncate,
-    Commit,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   props: {
     projectFullPath: {
@@ -41,6 +24,16 @@ export default {
       type: String,
       required: true,
     },
+    after: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    before: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   apollo: {
     project: {
@@ -49,18 +42,19 @@ export default {
         return {
           projectFullPath: this.projectFullPath,
           environmentName: this.environmentName,
-          pageSize: ENVIRONMENT_DETAILS_PAGE_SIZE,
+          first: this.before ? null : ENVIRONMENT_DETAILS_PAGE_SIZE,
+          last: this.before ? ENVIRONMENT_DETAILS_PAGE_SIZE : null,
+          after: this.after,
+          before: this.before,
         };
       },
     },
   },
   data() {
     return {
-      project: {
-        loading: true,
-      },
-      loading: 0,
-      tableFields: ENVIRONMENT_DETAILS_TABLE_FIELDS,
+      project: {},
+      isInitialPageDataReceived: false,
+      isPrefetchingPages: false,
     };
   },
   computed: {
@@ -70,49 +64,80 @@ export default {
     isLoading() {
       return this.$apollo.queries.project.loading;
     },
+    isDeploymentTableShown() {
+      return this.isInitialPageDataReceived === true && this.deployments.length > 0;
+    },
+    pageInfo() {
+      return this.project.environment?.deployments.pageInfo || {};
+    },
+    isPaginationDisabled() {
+      return this.isLoading || this.isPrefetchingPages;
+    },
+  },
+  watch: {
+    async project(newProject) {
+      this.isInitialPageDataReceived = true;
+      this.isPrefetchingPages = true;
+
+      try {
+        // TLDR: when we load a page, if there's next and/or previous pages existing, we'll load their data as well to improve percepted performance.
+        const {
+          endCursor,
+          hasPreviousPage,
+          hasNextPage,
+          startCursor,
+        } = newProject.environment.deployments.pageInfo;
+
+        // At the moment we have a limit of deployments being requested only from a signle environment entity per query,
+        // and apparently two batched queries count as one on server-side
+        // to load both next and previous page data, we have to query them sequentially
+        if (hasNextPage) {
+          await this.$apollo.query({
+            query: environmentDetailsQuery,
+            variables: {
+              projectFullPath: this.projectFullPath,
+              environmentName: this.environmentName,
+              first: ENVIRONMENT_DETAILS_PAGE_SIZE,
+              after: endCursor,
+              before: null,
+              last: null,
+            },
+          });
+        }
+
+        if (hasPreviousPage) {
+          await this.$apollo.query({
+            query: environmentDetailsQuery,
+            variables: {
+              projectFullPath: this.projectFullPath,
+              environmentName: this.environmentName,
+              first: null,
+              after: null,
+              before: startCursor,
+              last: ENVIRONMENT_DETAILS_PAGE_SIZE,
+            },
+          });
+        }
+      } catch (error) {
+        logError(error);
+      }
+
+      this.isPrefetchingPages = false;
+    },
   },
 };
 </script>
 <template>
-  <div>
-    <gl-loading-icon v-if="isLoading" size="lg" class="mt-3" />
-    <gl-table-lite v-else :items="deployments" :fields="tableFields" fixed stacked="lg">
-      <template #table-colgroup="{ fields }">
-        <col v-for="field in fields" :key="field.key" :class="field.columnClass" />
-      </template>
-      <template #cell(status)="{ item }">
-        <div>
-          <deployment-status-badge :status="item.status" />
-        </div>
-      </template>
-      <template #cell(id)="{ item }">
-        <strong>{{ item.id }}</strong>
-      </template>
-      <template #cell(triggerer)="{ item }">
-        <gl-avatar-link :href="item.triggerer.webUrl">
-          <gl-avatar
-            v-gl-tooltip
-            :title="item.triggerer.name"
-            :src="item.triggerer.avatarUrl"
-            :size="24"
-          />
-        </gl-avatar-link>
-      </template>
-      <template #cell(commit)="{ item }">
-        <commit v-bind="item.commit" />
-      </template>
-      <template #cell(job)="{ item }">
-        <gl-link v-if="item.job" :href="item.job.webPath">
-          <gl-truncate :text="item.job.label" />
-        </gl-link>
-        <gl-badge v-else variant="info">{{ __('API') }}</gl-badge>
-      </template>
-      <template #cell(created)="{ item }">
-        <time-ago-tooltip :time="item.created" />
-      </template>
-      <template #cell(deployed)="{ item }">
-        <time-ago-tooltip :time="item.deployed" />
-      </template>
-    </gl-table-lite>
+  <div class="gl-relative gl-min-h-6">
+    <div
+      v-if="isLoading"
+      class="gl-absolute gl-top-0 gl-left-0 gl-w-full gl-h-full gl-z-index-200 gl-bg-gray-10 gl-opacity-3"
+    ></div>
+    <gl-loading-icon v-if="isLoading" size="lg" class="gl-absolute gl-top-half gl-left-50p" />
+    <div v-if="isDeploymentTableShown">
+      <deployments-table :deployments="deployments" />
+      <pagination :page-info="pageInfo" :disabled="isPaginationDisabled" />
+    </div>
+    <empty-state v-if="!isDeploymentTableShown && !isLoading" />
   </div>
 </template>

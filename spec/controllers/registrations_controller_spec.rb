@@ -137,6 +137,21 @@ RSpec.describe RegistrationsController do
       end
     end
 
+    context 'private profile' do
+      context 'when the `user_defaults_to_private_profile` setting is turned on' do
+        before do
+          stub_application_setting(user_defaults_to_private_profile: true)
+        end
+
+        it 'creates new user with profile set to private' do
+          subject
+          user = User.find_by(email: base_user_params[:email], private_profile: true)
+
+          expect(user).to be_present
+        end
+      end
+    end
+
     context 'email confirmation' do
       before do
         stub_feature_flags(identity_verification: false)

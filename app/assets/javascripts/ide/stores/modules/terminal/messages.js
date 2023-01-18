@@ -1,5 +1,5 @@
 import { escape } from 'lodash';
-import httpStatus, { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
+import { HTTP_STATUS_FORBIDDEN, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { __, sprintf } from '~/locale';
 
 export const UNEXPECTED_ERROR_CONFIG = __(
@@ -39,7 +39,7 @@ export const configCheckError = (status, helpUrl) => {
       },
       false,
     );
-  } else if (status === httpStatus.FORBIDDEN) {
+  } else if (status === HTTP_STATUS_FORBIDDEN) {
     return ERROR_PERMISSION;
   }
 

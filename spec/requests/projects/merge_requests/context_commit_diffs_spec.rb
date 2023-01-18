@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge Requests Context Commit Diffs', feature_category: :code_review do
+RSpec.describe 'Merge Requests Context Commit Diffs', feature_category: :code_review_workflow do
   let_it_be(:sha1) { "33f3729a45c02fc67d00adb1b8bca394b0e761d9" }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
@@ -35,7 +35,6 @@ RSpec.describe 'Merge Requests Context Commit Diffs', feature_category: :code_re
         commit: nil,
         diff_view: :inline,
         merge_ref_head_diff: nil,
-        merge_conflicts_in_diff: true,
         pagination_data: {
           total_pages: nil
         }.merge(pagination_data)

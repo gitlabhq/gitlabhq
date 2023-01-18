@@ -3,7 +3,7 @@ module Pajamas
   class ButtonComponentPreview < ViewComponent::Preview
     # Button
     # ----
-    # See its design reference [here](https://design.gitlab.com/components/banner).
+    # See its design reference [here](https://design.gitlab.com/components/button).
     #
     # @param category select {{ Pajamas::ButtonComponent::CATEGORY_OPTIONS }}
     # @param variant select {{ Pajamas::ButtonComponent::VARIANT_OPTIONS }}
@@ -13,7 +13,7 @@ module Pajamas
     # @param loading toggle
     # @param block toggle
     # @param selected toggle
-    # @param icon text
+    # @param icon select [~, star-o, issue-closed, tanuki]
     # @param text text
     def default( # rubocop:disable Metrics/ParameterLists
       category: :primary,
@@ -24,7 +24,7 @@ module Pajamas
       loading: false,
       block: false,
       selected: false,
-      icon: "pencil",
+      icon: nil,
       text: "Edit"
     )
       render(Pajamas::ButtonComponent.new(

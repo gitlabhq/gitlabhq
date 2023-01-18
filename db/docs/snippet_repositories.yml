@@ -3,7 +3,7 @@ table_name: snippet_repositories
 classes:
 - SnippetRepository
 feature_categories:
-- snippets
+- source_code_management
 description: Stores repository information used to version control snippets.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23796
 milestone: '12.8'

@@ -2,7 +2,7 @@
 
 module GitlabRecaptcha
   extend ActiveSupport::Concern
-  include Recaptcha::Verify
+  include Recaptcha::Adapters::ControllerMethods
   include RecaptchaHelper
 
   def load_recaptcha

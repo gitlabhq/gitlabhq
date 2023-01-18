@@ -3,7 +3,7 @@ table_name: merge_request_assignees
 classes:
 - MergeRequestAssignee
 feature_categories:
-- code_review
+- code_review_workflow
 description: Store allocated assignees for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26496
 milestone: '11.10'

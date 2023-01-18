@@ -5,22 +5,30 @@ import csrf from '~/lib/utils/csrf';
 import { __, s__, sprintf } from '~/locale';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
 import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
-import { LEAVE_MODAL_ID } from '../../constants';
+import {
+  LEAVE_MODAL_ID,
+  MEMBER_MODEL_TYPE_GROUP_MEMBER,
+  MEMBER_MODEL_TYPE_PROJECT_MEMBER,
+} from '../../constants';
 
 export default {
   name: 'LeaveModal',
   actionCancel: {
     text: __('Cancel'),
   },
-  actionPrimary: {
-    text: __('Leave'),
-    attributes: {
-      variant: 'danger',
-    },
-  },
   csrf,
   modalId: LEAVE_MODAL_ID,
-  modalContent: s__('Members|Are you sure you want to leave "%{source}"?'),
+  i18n: {
+    title: s__('Members|Leave "%{source}"'),
+    body: s__('Members|Are you sure you want to leave "%{source}"?'),
+    preventedTitle: s__('Members|Cannot leave "%{source}"'),
+    preventedBodyProjectMemberModelType: s__(
+      'Members|You cannot remove yourself from a personal project.',
+    ),
+    preventedBodyGroupMemberModelType: s__(
+      'Members|A group must have at least one owner. To leave this group, assign a new owner.',
+    ),
+  },
   components: { GlModal, GlForm, GlSprintf, UserDeletionObstaclesList },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -28,6 +36,10 @@ export default {
   inject: ['namespace'],
   props: {
     member: {
+      type: Object,
+      required: true,
+    },
+    permissions: {
       type: Object,
       required: true,
     },
@@ -42,7 +54,35 @@ export default {
       return this.memberPath.replace(/:id$/, 'leave');
     },
     modalTitle() {
-      return sprintf(s__('Members|Leave "%{source}"'), { source: this.member.source.fullName });
+      return sprintf(
+        this.permissions.canRemoveBlockedByLastOwner
+          ? this.$options.i18n.preventedTitle
+          : this.$options.i18n.title,
+        { source: this.member.source.fullName },
+      );
+    },
+    preventedModalBody() {
+      if (this.member.type === MEMBER_MODEL_TYPE_PROJECT_MEMBER) {
+        return this.$options.i18n.preventedBodyProjectMemberModelType;
+      }
+
+      if (this.member.type === MEMBER_MODEL_TYPE_GROUP_MEMBER) {
+        return this.$options.i18n.preventedBodyGroupMemberModelType;
+      }
+
+      return null;
+    },
+    actionPrimary() {
+      if (this.permissions.canRemoveBlockedByLastOwner) {
+        return null;
+      }
+
+      return {
+        text: __('Leave'),
+        attributes: {
+          variant: 'danger',
+        },
+      };
     },
     obstacles() {
       return parseUserDeletionObstacles(this.member.user);
@@ -64,13 +104,14 @@ export default {
     v-bind="$attrs"
     :modal-id="$options.modalId"
     :title="modalTitle"
-    :action-primary="$options.actionPrimary"
+    :action-primary="actionPrimary"
     :action-cancel="$options.actionCancel"
     @primary="handlePrimary"
   >
     <gl-form ref="form" :action="leavePath" method="post">
       <p>
-        <gl-sprintf :message="$options.modalContent">
+        <template v-if="permissions.canRemoveBlockedByLastOwner">{{ preventedModalBody }}</template>
+        <gl-sprintf v-else :message="$options.i18n.body">
           <template #source>{{ member.source.fullName }}</template>
         </gl-sprintf>
       </p>

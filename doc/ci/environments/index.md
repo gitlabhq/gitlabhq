@@ -436,6 +436,8 @@ There are multiple ways to clean up [dynamic environments](#create-a-dynamic-env
 - If you do _NOT_ use [merge request pipelines](../pipelines/merge_request_pipelines.md), GitLab stops an environment [when the associated feature branch is deleted](#stop-an-environment-when-a-branch-is-deleted).
 - If you set [an expiry period to an environment](../yaml/index.md#environmentauto_stop_in), GitLab stops an environment [when it's expired](#stop-an-environment-after-a-certain-time-period).
 
+To stop stale environments, you can [use the API](../../api/environments.md#stop-stale-environments).
+
 #### Stop an environment when a branch is deleted
 
 You can configure environments to stop when a branch is deleted.
@@ -533,10 +535,6 @@ In this example, if the configuration is not identical:
 Also in the example, `GIT_STRATEGY` is set to `none`. If the
 `stop_review_app` job is [automatically triggered](../environments/index.md#stop-an-environment),
 the runner won't try to check out the code after the branch is deleted.
-
-The example also overwrites global variables. If your `stop` `environment` job depends
-on global variables, use [anchor variables](../yaml/yaml_optimization.md#yaml-anchors-for-variables) when you set the `GIT_STRATEGY`
-to change the job without overriding the global variables.
 
 The `stop_review_app` job **must** have the following keywords defined:
 
@@ -926,11 +924,16 @@ NOTE:
 GitLab preserves all commits as [`keep-around` refs](../../user/project/repository/reducing_the_repo_size_using_git.md)
 so that deployed commits are not garbage collected, even if it's not referenced by the deployment refs.
 
-### Scope environments with specs
+### Limit the environment scope of a CI/CD variable
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2112) in GitLab Premium 9.4.
 > - Environment scoping for CI/CD variables was [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) from GitLab Premium to GitLab Free in 12.2.
 > - Environment scoping for Group CI/CD variables [added](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) to GitLab Premium in 13.11.
+
+By default, all [CI/CD variables](../variables/index.md) are available to any job in a pipeline. Therefore, if a project uses a
+compromised tool in a test job, it could expose all CI/CD variables that a deployment job used. This is
+a common scenario in supply chain attacks. GitLab helps mitigate supply chain attacks by limiting
+the environment scope of a variable.
 
 You can limit the environment scope of a CI/CD variable by
 defining which environments it can be available for.
@@ -942,10 +945,6 @@ any job can have this variable, regardless of whether an environment is defined.
 
 If the environment scope is `review/*`, then jobs with environment names starting
 with `review/` would have that variable available.
-
-Some GitLab features can behave differently for each environment.
-For example, you can
-[create a project CI/CD variable to be injected only into a production environment](../variables/index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 In most cases, these features use the _environment specs_ mechanism, which offers
 an efficient way to implement scoping in each environment group.

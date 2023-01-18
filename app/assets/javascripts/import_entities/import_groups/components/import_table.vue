@@ -2,6 +2,8 @@
 import {
   GlAlert,
   GlButton,
+  GlDropdown,
+  GlDropdownItem,
   GlEmptyState,
   GlIcon,
   GlLink,
@@ -15,6 +17,7 @@ import {
 import { debounce } from 'lodash';
 import { createAlert } from '~/flash';
 import { s__, __, n__, sprintf } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { getGroupPathAvailability } from '~/rest_api';
@@ -47,6 +50,8 @@ export default {
   components: {
     GlAlert,
     GlButton,
+    GlDropdown,
+    GlDropdownItem,
     GlEmptyState,
     GlIcon,
     GlLink,
@@ -65,6 +70,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     sourceUrl: {
       type: String,
@@ -128,32 +134,36 @@ export default {
     {
       key: 'webUrl',
       label: s__('BulkImport|Source group'),
-      thClass: `${DEFAULT_TH_CLASSES} gl-pl-0! import-jobs-from-col`,
+      thClass: `${DEFAULT_TH_CLASSES} gl-pl-0! gl-w-half`,
       // eslint-disable-next-line @gitlab/require-i18n-strings
       tdClass: `${DEFAULT_TD_CLASSES} gl-pl-0!`,
     },
     {
       key: 'importTarget',
       label: s__('BulkImport|New group'),
-      thClass: `${DEFAULT_TH_CLASSES} import-jobs-to-col`,
+      thClass: `${DEFAULT_TH_CLASSES} gl-w-half`,
       tdClass: DEFAULT_TD_CLASSES,
     },
     {
       key: 'progress',
       label: __('Status'),
-      thClass: `${DEFAULT_TH_CLASSES} import-jobs-status-col`,
+      thClass: `${DEFAULT_TH_CLASSES}`,
       tdClass: DEFAULT_TD_CLASSES,
       tdAttr: { 'data-qa-selector': 'import_status_indicator' },
     },
     {
       key: 'actions',
       label: '',
-      thClass: `${DEFAULT_TH_CLASSES} import-jobs-cta-col`,
+      thClass: `${DEFAULT_TH_CLASSES}`,
       tdClass: DEFAULT_TD_CLASSES,
     },
   ],
 
   computed: {
+    isProjectsImportEnabled() {
+      return Boolean(this.glFeatures.bulkImportProjects);
+    },
+
     groups() {
       return this.bulkImportSourceGroups?.nodes ?? [];
     },
@@ -260,7 +270,7 @@ export default {
       const table = this.getTableRef();
       const matches = new Set();
       this.groups.forEach((g, idx) => {
-        if (!this.importGroups[g.id]) {
+        if (!this.importTargets[g.id]) {
           this.setDefaultImportTarget(g);
         }
 
@@ -375,13 +385,14 @@ export default {
       }
     },
 
-    importSelectedGroups() {
+    importSelectedGroups(extraArgs = {}) {
       const importRequests = this.groupsTableData
         .filter((group) => this.selectedGroupsIds.includes(group.id))
         .map((group) => ({
           sourceGroupId: group.id,
           targetNamespace: group.importTarget.targetNamespace.fullPath,
           newName: group.importTarget.newName,
+          ...extraArgs,
         }));
 
       this.importGroups(importRequests);
@@ -521,6 +532,7 @@ export default {
   gitlabLogo: window.gon.gitlab_logo,
   PAGE_SIZES,
   permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-members-permissions' }),
+  betaFeatureHelpPath: helpPagePath('policy/alpha-beta-support', { anchor: 'beta-features' }),
   popoverOptions: { title: __('What is listed here?') },
   i18n,
   LOCAL_STORAGE_KEY: 'gl-bulk-imports-status-page-size-v1',
@@ -637,7 +649,7 @@ export default {
       </gl-empty-state>
       <template v-else>
         <div
-          class="gl-bg-gray-10 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-px-4 gl-display-flex gl-align-items-center import-table-bar"
+          class="gl-bg-gray-10 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-px-4 gl-display-flex gl-align-items-center gl-sticky gl-z-index-3 import-table-bar"
         >
           <span data-test-id="selection-count">
             <gl-sprintf :message="__('%{count} selected')">
@@ -646,7 +658,22 @@ export default {
               </template>
             </gl-sprintf>
           </span>
+          <gl-dropdown
+            v-if="isProjectsImportEnabled"
+            :text="s__('BulkImport|Import with projects')"
+            :disabled="!hasSelectedGroups"
+            variant="confirm"
+            category="primary"
+            class="gl-ml-4"
+            split
+            @click="importSelectedGroups({ migrateProjects: true })"
+          >
+            <gl-dropdown-item @click="importSelectedGroups({ migrateProjects: false })">
+              {{ s__('BulkImport|Import without projects') }}
+            </gl-dropdown-item>
+          </gl-dropdown>
           <gl-button
+            v-else
             category="primary"
             variant="confirm"
             class="gl-ml-4"
@@ -654,6 +681,22 @@ export default {
             @click="importSelectedGroups"
             >{{ s__('BulkImport|Import selected') }}</gl-button
           >
+          <span class="gl-ml-3">
+            <gl-icon name="information-o" :size="12" class="gl-text-blue-600" />
+            <gl-sprintf
+              :message="
+                s__(
+                  'BulkImport|Importing projects is a %{docsLinkStart}Beta%{docsLinkEnd} feature.',
+                )
+              "
+            >
+              <template #docsLink="{ content }"
+                ><gl-link :href="$options.betaFeatureHelpPath" target="_blank">{{
+                  content
+                }}</gl-link></template
+              >
+            </gl-sprintf>
+          </span>
         </div>
         <gl-table
           ref="table"
@@ -661,6 +704,7 @@ export default {
           data-qa-selector="import_table"
           :tbody-tr-class="rowClasses"
           :tbody-tr-attr="qaRowAttributes"
+          thead-class="gl-sticky gl-z-index-2 gl-bg-gray-10"
           :items="groupsTableData"
           :fields="$options.fields"
           selectable
@@ -711,6 +755,7 @@ export default {
           </template>
           <template #cell(actions)="{ item: group }">
             <import-actions-cell
+              :is-projects-import-enabled="isProjectsImportEnabled"
               :is-finished="group.flags.isFinished"
               :is-available-for-import="group.flags.isAvailableForImport"
               :is-invalid="group.flags.isInvalid"
@@ -720,6 +765,7 @@ export default {
                     sourceGroupId: group.id,
                     targetNamespace: group.importTarget.targetNamespace.fullPath,
                     newName: group.importTarget.newName,
+                    ...$event,
                   },
                 ])
               "

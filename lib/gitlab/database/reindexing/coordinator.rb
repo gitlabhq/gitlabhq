@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Reindexing
       class Coordinator
-        include ExclusiveLeaseGuard
+        include IndexingExclusiveLeaseGuard
 
         # Maximum lease time for the global Redis lease
         # This should be higher than the maximum time for any
@@ -20,6 +20,8 @@ module Gitlab
         end
 
         def perform
+          return if too_late_for_reindexing?
+
           # This obtains a global lease such that there's
           # only one live reindexing process at a time.
           try_obtain_lease do
@@ -32,25 +34,27 @@ module Gitlab
         end
 
         def drop
+          return if too_late_for_reindexing?
+
           try_obtain_lease do
             Gitlab::AppLogger.info("Removing index #{index.identifier} which is a leftover, temporary index from previous reindexing activity")
 
             retries = Gitlab::Database::WithLockRetriesOutsideTransaction.new(
-              connection: index.connection,
+              connection: connection,
               timing_configuration: REMOVE_INDEX_RETRY_CONFIG,
               klass: self.class,
               logger: Gitlab::AppLogger
             )
 
             retries.run(raise_on_exhaustion: false) do
-              index.connection.tap do |conn|
-                conn.execute("DROP INDEX CONCURRENTLY IF EXISTS #{conn.quote_table_name(index.schema)}.#{conn.quote_table_name(index.name)}")
-              end
+              connection.execute("DROP INDEX CONCURRENTLY IF EXISTS #{full_index_name}")
             end
           end
         end
 
         private
+
+        delegate :connection, to: :index
 
         def with_notifications(action)
           notifier.notify_start(action)
@@ -73,8 +77,18 @@ module Gitlab
           TIMEOUT_PER_ACTION
         end
 
-        def lease_key
-          [super, index.connection_db_config.name].join('/')
+        def full_index_name
+          [
+            connection.quote_table_name(index.schema),
+            connection.quote_table_name(index.name)
+          ].join('.')
+        end
+
+        # We need to check the time explicitly because we execute 4 reindexing
+        # action per rake invocation and one action can take up to 24 hours.
+        # This means that it can span for more than the weekend.
+        def too_late_for_reindexing?
+          !Time.current.on_weekend?
         end
       end
     end

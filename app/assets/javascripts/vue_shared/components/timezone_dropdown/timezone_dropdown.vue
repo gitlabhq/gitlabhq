@@ -30,6 +30,11 @@ export default {
       required: true,
       default: () => [],
     },
+    additionalClass: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -96,7 +101,14 @@ export default {
       :value="timezoneIdentifier || value"
       type="hidden"
     />
-    <gl-dropdown :text="selectedTimezoneLabel" block lazy menu-class="gl-w-full!" v-bind="$attrs">
+    <gl-dropdown
+      :text="selectedTimezoneLabel"
+      :class="additionalClass"
+      block
+      lazy
+      menu-class="gl-w-full!"
+      v-bind="$attrs"
+    >
       <gl-search-box-by-type v-model.trim="searchTerm" v-autofocusonshow autofocus />
       <gl-dropdown-item
         v-for="timezone in filteredResults"

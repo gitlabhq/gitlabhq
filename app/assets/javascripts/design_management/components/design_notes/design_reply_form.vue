@@ -1,6 +1,5 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import $ from 'jquery';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import Autosave from '~/autosave';
@@ -118,7 +117,7 @@ export default {
     },
     initAutosaveComment() {
       if (this.isLoggedIn) {
-        this.autosaveDiscussion = new Autosave($(this.$refs.textarea), [
+        this.autosaveDiscussion = new Autosave(this.$refs.textarea, [
           s__('DesignManagement|Discussion'),
           getIdFromGraphQLId(this.noteableId),
           this.shortDiscussionId,

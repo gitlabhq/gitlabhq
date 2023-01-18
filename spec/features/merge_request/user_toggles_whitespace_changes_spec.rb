@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User toggles whitespace changes', :js, feature_category: :code_review do
+RSpec.describe 'Merge request > User toggles whitespace changes', :js, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
   let(:user) { project.creator }

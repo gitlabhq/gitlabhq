@@ -299,21 +299,21 @@ HELM_CMD=$(cat << EOF
     --set global.appConfig.sentry.dsn="${REVIEW_APPS_SENTRY_DSN}" \
     --set global.appConfig.sentry.environment="review" \
     --set gitlab.migrations.image.repository="${gitlab_toolbox_image_repository}" \
-    --set gitlab.migrations.image.tag="${CI_COMMIT_REF_SLUG}" \
+    --set gitlab.migrations.image.tag="${CI_COMMIT_SHA}" \
     --set gitlab.gitaly.image.repository="${gitlab_gitaly_image_repository}" \
     --set gitlab.gitaly.image.tag="${gitaly_image_tag}" \
     --set gitlab.gitlab-shell.image.repository="${gitlab_shell_image_repository}" \
     --set gitlab.gitlab-shell.image.tag="v${GITLAB_SHELL_VERSION}" \
     --set gitlab.sidekiq.annotations.commit="${CI_COMMIT_SHORT_SHA}" \
     --set gitlab.sidekiq.image.repository="${gitlab_sidekiq_image_repository}" \
-    --set gitlab.sidekiq.image.tag="${CI_COMMIT_REF_SLUG}" \
+    --set gitlab.sidekiq.image.tag="${CI_COMMIT_SHA}" \
     --set gitlab.webservice.annotations.commit="${CI_COMMIT_SHORT_SHA}" \
     --set gitlab.webservice.image.repository="${gitlab_webservice_image_repository}" \
-    --set gitlab.webservice.image.tag="${CI_COMMIT_REF_SLUG}" \
+    --set gitlab.webservice.image.tag="${CI_COMMIT_SHA}" \
     --set gitlab.webservice.workhorse.image="${gitlab_workhorse_image_repository}" \
-    --set gitlab.webservice.workhorse.tag="${CI_COMMIT_REF_SLUG}" \
+    --set gitlab.webservice.workhorse.tag="${CI_COMMIT_SHA}" \
     --set gitlab.toolbox.image.repository="${gitlab_toolbox_image_repository}" \
-    --set gitlab.toolbox.image.tag="${CI_COMMIT_REF_SLUG}"
+    --set gitlab.toolbox.image.tag="${CI_COMMIT_SHA}"
 EOF
 )
 
@@ -362,20 +362,46 @@ function verify_deploy() {
 
   if [[ "${deployed}" == "true" ]]; then
     echoinfo "[$(date '+%H:%M:%S')] Review app is deployed to ${CI_ENVIRONMENT_URL}"
-    return 0
   else
     echoerr "[$(date '+%H:%M:%S')] Review app is not available at ${CI_ENVIRONMENT_URL}: see the logs from cURL above for more details"
     return 1
   fi
 }
 
+# We need to be able to access the GitLab API to run this method.
+# Since we are creating a personal access token in `disable_sign_ups`,
+# This method should be executed after it.
+function verify_commit_sha() {
+  local verify_success="false"
+
+  for i in {1..60}; do # try for 2 minutes in case review-apps containers are restarting
+    echoinfo "[$(date '+%H:%M:%S')] Checking the correct commit is deployed in the review-app:"
+    echo "Expected commit sha: ${CI_COMMIT_SHA}"
+
+    review_app_revision=$(curl --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/metadata" | jq -r .revision)
+    echo "review-app revision: ${review_app_revision}"
+
+    if [[ "${CI_COMMIT_SHA}" == "${review_app_revision}"* ]]; then
+      verify_success="true"
+      break
+    fi
+
+    sleep 2
+  done
+
+  if [[ "${verify_success}" != "true" ]]; then
+    echoerr "[$(date '+%H:%M:%S')] Review app revision is not the same as the current commit!"
+    return 1
+  fi
+
+  return 0
+}
+
 function display_deployment_debug() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
 
   # Install dig to inspect DNS entries
-  #
-  # Silent install: see https://stackoverflow.com/a/52642167/1620195
-  apt-get -qq update && apt-get -qq install -y dnsutils < /dev/null > /dev/null
+  apk add -q bind-tools
 
   echoinfo "[debugging data] Check review-app webservice DNS entry:"
   dig +short $(echo "${CI_ENVIRONMENT_URL}" | sed 's~http[s]*://~~g')

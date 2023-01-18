@@ -21,7 +21,7 @@ RSpec.describe TestHooks::SystemService do
 
       it 'returns error message' do
         expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Testing not available for this hook' })
+        expect(service.execute).to have_attributes(status: :error, message: 'Testing not available for this hook')
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.describe TestHooks::SystemService do
 
       it 'returns error message if the user does not have any repository with a merge request' do
         expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure one of your projects has merge requests.' })
+        expect(service.execute).to have_attributes(status: :error, message: 'Ensure one of your projects has merge requests.')
       end
 
       it 'executes hook' do

@@ -48,7 +48,7 @@ class IssueEntity < IssuableEntity
     end
 
     expose :can_create_confidential_note do |issue|
-      can?(request.current_user, :mark_note_as_confidential, issue)
+      can?(request.current_user, :mark_note_as_internal, issue)
     end
 
     expose :can_update do |issue|

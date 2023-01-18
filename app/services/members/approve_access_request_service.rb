@@ -6,7 +6,7 @@ module Members
       validate_access!(access_requester) unless skip_authorization
 
       access_requester.access_level = params[:access_level] if params[:access_level]
-      access_requester.accept_request
+      access_requester.accept_request(current_user)
 
       after_execute(member: access_requester, skip_log_audit_event: skip_log_audit_event)
 

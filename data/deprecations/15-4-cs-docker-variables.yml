@@ -1,8 +1,6 @@
 - title: "Container Scanning variables that reference Docker"
   announcement_milestone: "15.4"
-  announcement_date: "2022-09-22"
   removal_milestone: "16.0"
-  removal_date: "2023-05-22"
   breaking_change: true
   reporter: sam.white
   stage: secure

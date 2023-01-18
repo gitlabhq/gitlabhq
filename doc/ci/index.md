@@ -35,7 +35,7 @@ read the [Introduction to CI/CD with GitLab](introduction/index.md).
   Video demonstration of continuous integration with GitLab CI/CD: <a href="https://www.youtube.com/watch?v=ljth1Q5oJoo">Continuous Integration with GitLab (overview demo)</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/ljth1Q5oJoo" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/ljth1Q5oJoo" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 ## Concepts

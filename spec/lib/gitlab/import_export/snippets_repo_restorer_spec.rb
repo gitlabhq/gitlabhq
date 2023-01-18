@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer do
+RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer, :clean_gitlab_redis_repository_cache, feature_category: :importers do
   describe 'bundle a snippet Git repo' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, namespace: user.namespace) }
@@ -26,9 +26,18 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer do
     shared_examples 'imports snippet repositories' do
       before do
         snippet1.snippet_repository&.delete
+        # We need to explicitly invalidate repository.exists? from cache by calling repository.expire_exists_cache.
+        # Previously, we didn't have to do this because snippet1.repository_exists? would hit Rails.cache, which is a
+        # NullStore, thus cache.read would always be false.
+        # Now, since we are using a separate instance of Redis, ie Gitlab::Redis::RepositoryCache,
+        # snippet.repository_exists? would still be true because snippet.repository.remove doesn't invalidate the
+        # cache (snippet.repository.remove only makes gRPC call to Gitaly).
+        # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107232#note_1214358593 for more.
+        snippet1.repository.expire_exists_cache
         snippet1.repository.remove
 
         snippet2.snippet_repository&.delete
+        snippet2.repository.expire_exists_cache
         snippet2.repository.remove
       end
 

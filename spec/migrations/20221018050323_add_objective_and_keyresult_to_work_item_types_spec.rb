@@ -20,7 +20,7 @@ RSpec.describe AddObjectiveAndKeyresultToWorkItemTypes, :migration, feature_cate
     }
   end
 
-  after(:all) do
+  append_after(:all) do
     # Make sure base types are recreated after running the migration
     # because migration specs are not run in a transaction
     reset_work_item_types

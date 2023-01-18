@@ -48,7 +48,7 @@ tier. Users can continue to access the features in a paid tier without sharing u
 ### Features available in 14.4 and later
 
 - [Repository size limit](../settings/account_and_limit_settings.md#repository-size-limit).
-- [Group access restriction by IP address](../../group/access_and_permissions.md#restrict-access-to-groups-by-ip-address).
+- [Group access restriction by IP address](../../group/access_and_permissions.md#restrict-group-access-by-ip-address).
 
 NOTE:
 Registration is not yet required for participation, but may be added in a future milestone.
@@ -67,7 +67,7 @@ Registration is not yet required for participation, but may be added in a future
 
 If enabled, version check informs you if a new version is available and the
 importance of it through a status. The status displays on the help pages (`/help`)
-for all signed-in users, and on the Admin Area pages. The statuses are:
+for all authenticated users, and on the Admin Area pages. The statuses are:
 
 - Green: You are running the latest version of GitLab.
 - Orange: An updated version of GitLab is available.

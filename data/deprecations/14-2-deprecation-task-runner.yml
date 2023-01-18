@@ -1,8 +1,6 @@
 - title: "Rename Task Runner pod to Toolbox"  # The name of the feature to be deprecated
   announcement_milestone: "14.2"  # The milestone when this feature was first announced as deprecated.
-  announcement_date: "2021-08-22"  # The date of the milestone release when this feature was first announced as deprecated
   removal_milestone: "14.5"  # The milestone when this feature is planned to be removed
-  removal_date: "2021-11-22"  # the date of the milestone release when this feature is planned to be removed
   breaking_change: false
   body: |  # Do not modify this line, instead modify the lines below.
     The Task Runner pod is used to execute periodic housekeeping tasks within the GitLab application and is often confused with the GitLab Runner. Thus, [Task Runner will be renamed to Toolbox](https://gitlab.com/groups/gitlab-org/charts/-/epics/25).

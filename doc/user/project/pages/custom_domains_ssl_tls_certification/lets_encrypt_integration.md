@@ -42,7 +42,8 @@ For **self-managed** GitLab instances, make sure your administrator has
 
 Once you've met the requirements, enable Let's Encrypt integration:
 
-1. Navigate to your project's **Settings > Pages**.
+1. Navigate to your project's **Settings > Pages** (Note: this may also be
+   located at **Deployments > Pages**, [more information](../index.md#menu-position-test)).
 1. Find your domain and select **Details**.
 1. Select **Edit** in the top-right corner.
 1. Enable Let's Encrypt integration by switching **Automatic certificate management using Let's Encrypt**:
@@ -69,7 +70,8 @@ associated Pages domain. GitLab also renews it automatically.
 
 If you get an error **Something went wrong while obtaining the Let's Encrypt certificate**, first, make sure that your pages site is set to "Everyone" in your project's **Settings > General > Visibility**. This allows the Let's Encrypt Servers reach your pages site. Once this is confirmed, you can try obtaining the certificate again by following these steps:
 
-1. Go to your project's **Settings > Pages**.
+1. Go to your project's **Settings > Pages** (Note: this may also be
+   located at **Deployments > Pages**, [more information](../index.md#menu-position-test)).
 1. Select **Edit** on your domain.
 1. Select **Retry**.
 1. If you're still seeing the same error:
@@ -83,7 +85,8 @@ If you get an error **Something went wrong while obtaining the Let's Encrypt cer
 
 If you've enabled Let's Encrypt integration, but a certificate is absent after an hour and you see the message, "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later.", try to remove and add the domain for GitLab Pages again by following these steps:
 
-1. Go to your project's **Settings > Pages**.
+1. Go to your project's **Settings > Pages** (Note: this may also be
+   located at **Deployments > Pages**, [more information](../index.md#menu-position-test)).
 1. Select **Remove** on your domain.
 1. [Add the domain again and verify it](index.md#1-add-a-custom-domain).
 1. [Enable Let's Encrypt integration for your domain](#enabling-lets-encrypt-integration-for-your-custom-domain).

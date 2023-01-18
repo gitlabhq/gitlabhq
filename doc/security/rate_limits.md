@@ -74,13 +74,7 @@ For configuration information, see
 
 ### Git operations using SSH
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78373) in GitLab 14.7 [with a flag](../administration/feature_flags.md) named `rate_limit_gitlab_shell`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79419) in GitLab 14.8.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To disable the feature, ask an administrator to
-[disable the feature flag](../administration/feature_flags.md) named `rate_limit_gitlab_shell`. On GitLab.com, this feature
-is available.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78373) in GitLab 14.7 [with a flag](../administration/feature_flags.md) named `rate_limit_gitlab_shell`. Available by default without a feature flag from 15.8.
 
 GitLab applies rate limits to Git operations that use SSH by user account and project. When the rate limit is exceeded, GitLab rejects
 further connection requests from that user for the project.
@@ -130,7 +124,7 @@ The **rate limit** is 20 calls per minute per IP address.
 There is a rate limit on how frequently a username can be changed. This is enforced to mitigate misuse of the feature. For example, to mass discover
 which usernames are in use.
 
-The **rate limit** is 10 calls per minute per signed-in user.
+The **rate limit** is 10 calls per minute per authenticated user.
 
 ### Username exists
 
@@ -152,7 +146,7 @@ The feature is not ready for production use.
 
 There is a rate limit for the endpoint `project/:id/jobs`, which is enforced to reduce timeouts when retrieving jobs.
 
-The **rate limit** is 600 calls per minute per signed-in user.
+The **rate limit** is 600 calls per minute per authenticated user.
 
 ## Troubleshooting
 

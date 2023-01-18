@@ -76,17 +76,17 @@ export default {
         <div
           :class="{
             'gl-display-flex gl-align-items-center': actions.length,
-            'gl-md-display-flex gl-align-items-center': !actions.length,
+            'gl-md-display-flex gl-align-items-center gl-flex-wrap gl-gap-3': !actions.length,
           }"
-          class="media-body"
+          class="media-body gl-line-height-24"
         >
           <slot></slot>
           <div
             :class="{
-              'state-container-action-buttons gl-flex-direction-column gl-flex-wrap gl-justify-content-end': !actions.length,
+              'state-container-action-buttons gl-flex-wrap gl-lg-justify-content-end': !actions.length,
               'gl-md-pt-0 gl-pt-3': hasActionsSlot,
             }"
-            class="gl-display-flex gl-font-size-0 gl-ml-auto gl-gap-3"
+            class="gl-display-flex gl-font-size-0 gl-gap-3"
           >
             <slot name="actions">
               <actions v-if="actions.length" :tertiary-buttons="actions" />

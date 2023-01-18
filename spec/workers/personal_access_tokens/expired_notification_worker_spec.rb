@@ -11,7 +11,7 @@ RSpec.describe PersonalAccessTokens::ExpiredNotificationWorker, type: :worker do
 
       it 'uses notification service to send email to the user' do
         expect_next_instance_of(NotificationService) do |notification_service|
-          expect(notification_service).to receive(:access_token_expired).with(expired_today.user)
+          expect(notification_service).to receive(:access_token_expired).with(expired_today.user, [expired_today.name])
         end
 
         worker.perform
@@ -25,7 +25,7 @@ RSpec.describe PersonalAccessTokens::ExpiredNotificationWorker, type: :worker do
     shared_examples 'expiry notification is not required to be sent for the token' do
       it do
         expect_next_instance_of(NotificationService) do |notification_service|
-          expect(notification_service).not_to receive(:access_token_expired).with(token.user)
+          expect(notification_service).not_to receive(:access_token_expired).with(token.user, [token.name])
         end
 
         worker.perform

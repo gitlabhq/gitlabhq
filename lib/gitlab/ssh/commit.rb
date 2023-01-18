@@ -16,6 +16,8 @@ module Gitlab
           commit_sha: @commit.sha,
           project: @commit.project,
           key_id: signature.signed_by_key&.id,
+          key_fingerprint_sha256: signature.key_fingerprint,
+          user_id: signature.signed_by_key&.user_id,
           verification_status: signature.verification_status
         }
       end

@@ -347,6 +347,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
         {
           experiment_id: experiment.iid.to_s,
           start_time: Time.now.to_i,
+          run_name: "A new Run",
           tags: [
             { key: 'hello', value: 'world' }
           ]
@@ -359,6 +360,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
         expected_properties = {
           'experiment_id' => params[:experiment_id],
           'user_id' => current_user.id.to_s,
+          'run_name' => "A new Run",
           'start_time' => params[:start_time],
           'status' => 'RUNNING',
           'lifecycle_stage' => 'active'
@@ -407,7 +409,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
           'experiment_id' => candidate.experiment.iid.to_s,
           'user_id' => candidate.user.id.to_s,
           'start_time' => candidate.start_time,
-          'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/generic/ml_candidate_#{candidate.iid}/-/",
+          'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/generic/ml_candidate_#{candidate.id}/-/",
           'status' => "RUNNING",
           'lifecycle_stage' => "active"
         }
@@ -426,8 +428,8 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
               { 'key' => candidate.params[1].name, 'value' => candidate.params[1].value }
             ],
             'tags' => [
-              { 'key' => 'metadata_1',  'value' => 'value1' },
-              { 'key' => 'metadata_2',  'value' => 'value2' }
+              { 'key' => candidate.metadata[0].name,  'value' => candidate.metadata[0].value },
+              { 'key' => candidate.metadata[1].name,  'value' => candidate.metadata[1].value }
             ]
           })
       end
@@ -450,7 +452,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
           'user_id' => candidate.user.id.to_s,
           'start_time' => candidate.start_time,
           'end_time' => params[:end_time],
-          'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/generic/ml_candidate_#{candidate.iid}/-/",
+          'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/generic/ml_candidate_#{candidate.id}/-/",
           'status' => 'FAILED',
           'lifecycle_stage' => 'active'
         }

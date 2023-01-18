@@ -151,7 +151,7 @@ module Integrations
         fields << failed_stages_field if failed_stages.any?
         fields << failed_jobs_field if failed_jobs.any?
         fields << yaml_error_field if pipeline.has_yaml_errors?
-        fields << pipeline_name_field if Feature.enabled?(:pipeline_name, project) && pipeline.name.present?
+        fields << pipeline_name_field if pipeline.name.present?
 
         fields
       end

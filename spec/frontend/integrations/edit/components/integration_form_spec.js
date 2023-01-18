@@ -1,4 +1,4 @@
-import { GlAlert, GlBadge, GlForm } from '@gitlab/ui';
+import { GlAlert, GlForm } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
@@ -11,18 +11,16 @@ import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
 import IntegrationForm from '~/integrations/edit/components/integration_form.vue';
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
-import IntegrationSectionConnection from '~/integrations/edit/components/sections/connection.vue';
 import IntegrationFormActions from '~/integrations/edit/components/integration_form_actions.vue';
+import IntegrationFormSection from '~/integrations/edit/components/integration_forms/section.vue';
 
 import {
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
   INTEGRATION_FORM_TYPE_SLACK,
-  billingPlans,
-  billingPlanNames,
 } from '~/integrations/constants';
 import { createStore } from '~/integrations/edit/store';
-import httpStatus from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import {
   mockIntegrationProps,
@@ -73,15 +71,11 @@ describe('IntegrationForm', () => {
   const findActiveCheckbox = () => wrapper.findComponent(ActiveCheckbox);
   const findTriggerFields = () => wrapper.findComponent(TriggerFields);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findGlBadge = () => wrapper.findComponent(GlBadge);
   const findGlForm = () => wrapper.findComponent(GlForm);
   const findRedirectToField = () => wrapper.findByTestId('redirect-to-field');
   const findDynamicField = () => wrapper.findComponent(DynamicField);
   const findAllDynamicFields = () => wrapper.findAllComponents(DynamicField);
-  const findAllSections = () => wrapper.findAllByTestId('integration-section');
-  const findConnectionSection = () => findAllSections().at(0);
-  const findConnectionSectionComponent = () =>
-    findConnectionSection().findComponent(IntegrationSectionConnection);
+  const findAllSections = () => wrapper.findAllComponents(IntegrationFormSection);
   const findHelpHtml = () => wrapper.findByTestId('help-html');
   const findFormActions = () => wrapper.findComponent(IntegrationFormActions);
 
@@ -215,54 +209,13 @@ describe('IntegrationForm', () => {
     beforeEach(() => {
       createComponent({
         customStateProps: {
-          sections: [mockSectionConnection],
+          sections: [mockSectionConnection, mockSectionJiraIssues],
         },
       });
     });
 
     it('renders the expected number of sections', () => {
-      expect(findAllSections().length).toBe(1);
-    });
-
-    it('renders title, description and the correct dynamic component', () => {
-      const connectionSection = findConnectionSection();
-
-      expect(connectionSection.find('h4').text()).toBe(mockSectionConnection.title);
-      expect(connectionSection.find('p').text()).toBe(mockSectionConnection.description);
-      expect(findGlBadge().exists()).toBe(false);
-      expect(findConnectionSectionComponent().exists()).toBe(true);
-    });
-
-    it('renders GlBadge when `plan` is present', () => {
-      createComponent({
-        customStateProps: {
-          sections: [mockSectionConnection, mockSectionJiraIssues],
-        },
-      });
-
-      expect(findGlBadge().exists()).toBe(true);
-      expect(findGlBadge().text()).toMatchInterpolatedText(billingPlanNames[billingPlans.PREMIUM]);
-    });
-
-    it('passes only fields with section type', () => {
-      const sectionFields = [
-        { name: 'username', type: 'text', section: mockSectionConnection.type },
-        { name: 'API token', type: 'password', section: mockSectionConnection.type },
-      ];
-
-      const nonSectionFields = [
-        { name: 'branch', type: 'text' },
-        { name: 'labels', type: 'select' },
-      ];
-
-      createComponent({
-        customStateProps: {
-          sections: [mockSectionConnection],
-          fields: [...sectionFields, ...nonSectionFields],
-        },
-      });
-
-      expect(findConnectionSectionComponent().props('fields')).toEqual(sectionFields);
+      expect(findAllSections()).toHaveLength(2);
     });
 
     describe.each`
@@ -281,7 +234,8 @@ describe('IntegrationForm', () => {
             },
           });
 
-          findConnectionSectionComponent().vm.$emit('toggle-integration-active', formActive);
+          const section = findAllSections().at(0);
+          section.vm.$emit('toggle-integration-active', formActive);
         });
 
         it(`sets noValidate to ${novalidate}`, () => {
@@ -290,7 +244,7 @@ describe('IntegrationForm', () => {
       },
     );
 
-    describe('when IntegrationSectionConnection emits `request-jira-issue-types` event', () => {
+    describe('when section emits `request-jira-issue-types` event', () => {
       beforeEach(() => {
         jest.spyOn(document, 'querySelector').mockReturnValue(document.createElement('form'));
 
@@ -302,7 +256,8 @@ describe('IntegrationForm', () => {
           mountFn: mountExtended,
         });
 
-        findConnectionSectionComponent().vm.$emit('request-jira-issue-types');
+        const section = findAllSections().at(0);
+        section.vm.$emit('request-jira-issue-types');
       });
 
       it('dispatches `requestJiraIssueTypes` action', () => {
@@ -456,11 +411,11 @@ describe('IntegrationForm', () => {
       });
 
       describe.each`
-        scenario                                                | replyStatus                         | errorMessage   | serviceResponse | expectToast                           | expectSentry
-        ${'when "test settings" request fails'}                 | ${httpStatus.INTERNAL_SERVER_ERROR} | ${undefined}   | ${undefined}    | ${I18N_DEFAULT_ERROR_MESSAGE}         | ${true}
-        ${'when "test settings" returns an error'}              | ${httpStatus.OK}                    | ${'an error'}  | ${undefined}    | ${'an error'}                         | ${false}
-        ${'when "test settings" returns an error with details'} | ${httpStatus.OK}                    | ${'an error.'} | ${'extra info'} | ${'an error. extra info'}             | ${false}
-        ${'when "test settings" succeeds'}                      | ${httpStatus.OK}                    | ${undefined}   | ${undefined}    | ${I18N_SUCCESSFUL_CONNECTION_MESSAGE} | ${false}
+        scenario                                                | replyStatus                          | errorMessage   | serviceResponse | expectToast                           | expectSentry
+        ${'when "test settings" request fails'}                 | ${HTTP_STATUS_INTERNAL_SERVER_ERROR} | ${undefined}   | ${undefined}    | ${I18N_DEFAULT_ERROR_MESSAGE}         | ${true}
+        ${'when "test settings" returns an error'}              | ${HTTP_STATUS_OK}                    | ${'an error'}  | ${undefined}    | ${'an error'}                         | ${false}
+        ${'when "test settings" returns an error with details'} | ${HTTP_STATUS_OK}                    | ${'an error.'} | ${'extra info'} | ${'an error. extra info'}             | ${false}
+        ${'when "test settings" succeeds'}                      | ${HTTP_STATUS_OK}                    | ${undefined}   | ${undefined}    | ${I18N_SUCCESSFUL_CONNECTION_MESSAGE} | ${false}
       `(
         '$scenario',
         ({ replyStatus, errorMessage, serviceResponse, expectToast, expectSentry }) => {
@@ -491,7 +446,7 @@ describe('IntegrationForm', () => {
     const mockResetPath = '/reset';
 
     beforeEach(async () => {
-      mockAxios.onPost(mockResetPath).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+      mockAxios.onPost(mockResetPath).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       createComponent({
         customStateProps: {
           resetPath: mockResetPath,
@@ -526,7 +481,7 @@ describe('IntegrationForm', () => {
 
     describe('when "reset settings" succeeds', () => {
       beforeEach(async () => {
-        mockAxios.onPost(mockResetPath).replyOnce(httpStatus.OK);
+        mockAxios.onPost(mockResetPath).replyOnce(HTTP_STATUS_OK);
         createComponent({
           customStateProps: {
             resetPath: mockResetPath,

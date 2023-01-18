@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import store from '~/mr_notes/stores';
 import notesEventHub from '~/notes/event_hub';
@@ -9,6 +10,13 @@ import { getNotesFilterData } from '../notes/utils/get_notes_filter_data';
 import initWidget from '../vue_merge_request_widget';
 
 export default () => {
+  requestIdleCallback(
+    () => {
+      renderGFM(document.getElementById('diff-notes-app'));
+    },
+    { timeout: 500 },
+  );
+
   const el = document.getElementById('js-vue-mr-discussions');
   if (!el) {
     return;

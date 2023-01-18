@@ -98,6 +98,8 @@ type RemoteObject struct {
 	GetURL string
 	// DeleteURL is a presigned S3 RemoveObject URL
 	DeleteURL string
+	// Whether Workhorse needs to delete the temporary object or not.
+	SkipDelete bool
 	// StoreURL is the temporary presigned S3 PutObject URL to which upload the first found file
 	StoreURL string
 	// Boolean to indicate whether to use headers included in PutHeaders
@@ -161,6 +163,8 @@ type Response struct {
 	ProcessLsif bool
 	// The maximum accepted size in bytes of the upload
 	MaximumSize int64
+	// A list of permitted hash functions. If empty, then all available are permitted.
+	UploadHashFunctions []string
 }
 
 type GitalyServer struct {

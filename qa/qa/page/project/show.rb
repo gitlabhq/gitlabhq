@@ -47,13 +47,12 @@ module QA
           element :tree_holder, '.tree-holder' # rubocop:disable QA/ElementWithPattern
         end
 
-        view 'app/views/projects/_fork_info.html.haml' do
+        view 'app/assets/javascripts/repository/components/fork_info.vue' do
           element :forked_from_link
         end
 
         view 'app/views/projects/buttons/_fork.html.haml' do
-          element :fork_label, "%span= s_('ProjectOverview|Fork')" # rubocop:disable QA/ElementWithPattern
-          element :fork_link, "link_to new_project_fork_path(@project)" # rubocop:disable QA/ElementWithPattern
+          element :fork_button
         end
 
         view 'app/views/projects/empty.html.haml' do
@@ -97,8 +96,12 @@ module QA
           click_element :new_file_menu_item
         end
 
+        # Click by JS is needed to bypass the VSCode Web IDE popover
+        # Change back to regular click_element when vscode_web_ide FF is removed
+        # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/371084
         def fork_project
-          click_on 'Fork'
+          fork_button = find_element(:fork_button)
+          click_by_javascript(fork_button)
         end
 
         def forked_from?(parent_project_name)

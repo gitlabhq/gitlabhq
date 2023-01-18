@@ -17,7 +17,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
   - [Support for Universal 2nd Factor Authentication - YubiKeys](https://about.gitlab.com/blog/2016/06/22/gitlab-adds-support-for-u2f/)
   - [Security Webcast with Yubico](https://about.gitlab.com/blog/2016/08/31/gitlab-and-yubico-security-webcast/)
 - **Integrations:**
-  - [GitLab as OAuth2 authentication service provider](../../integration/oauth_provider.md#introduction-to-oauth)
+  - [GitLab as OAuth2 authentication service provider](../../integration/oauth_provider.md)
   - [GitLab as OpenID Connect identity provider](../../integration/openid_connect_provider.md)
 
 ## GitLab administrators

@@ -7,7 +7,7 @@ class CreateNoteDiffFileWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: 3
 
-  feature_category :code_review
+  feature_category :code_review_workflow
 
   def perform(diff_note_id)
     return unless diff_note_id.present?

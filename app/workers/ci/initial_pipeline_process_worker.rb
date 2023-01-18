@@ -17,10 +17,22 @@ module Ci
 
     def perform(pipeline_id)
       Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
+        create_deployments!(pipeline) if Feature.enabled?(:move_create_deployments_to_worker, pipeline.project)
+
         Ci::PipelineCreation::StartPipelineService
           .new(pipeline)
           .execute
       end
+    end
+
+    private
+
+    def create_deployments!(pipeline)
+      pipeline.stages.flat_map(&:statuses).each { |build| create_deployment(build) }
+    end
+
+    def create_deployment(build)
+      ::Deployments::CreateForBuildService.new.execute(build)
     end
   end
 end

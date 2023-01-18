@@ -58,7 +58,7 @@ class ProjectsController < Projects::ApplicationController
   feature_category :source_code_management, [:remove_fork, :housekeeping, :refs]
   feature_category :team_planning, [:preview_markdown, :new_issuable_address]
   feature_category :importers, [:export, :remove_export, :generate_new_export, :download_export]
-  feature_category :code_review, [:unfoldered_environment_names]
+  feature_category :code_review_workflow, [:unfoldered_environment_names]
   feature_category :portfolio_management, [:planning_hierarchy]
 
   urgency :low, [:export, :remove_export, :generate_new_export, :download_export]
@@ -388,7 +388,7 @@ class ProjectsController < Projects::ApplicationController
 
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)
-      'application'
+      'dashboard'
     elsif [:edit, :update].include?(action_name.to_sym)
       'project_settings'
     else

@@ -42,7 +42,7 @@ module SystemCheck
               end
             end
           end
-        rescue Net::LDAP::ConnectionRefusedError, Errno::ECONNREFUSED => e
+        rescue Errno::ECONNREFUSED => e
           $stdout.puts "Could not connect to the LDAP server: #{e.message}".color(:red)
         end
       end

@@ -30,7 +30,7 @@ RSpec.shared_examples 'issuable link creation' do
 
     context 'when user has no permission to target issuable' do
       let(:params) do
-        { issuable_references: [guest_issuable.to_reference(issuable_parent)] }
+        { issuable_references: [restricted_issuable.to_reference(issuable_parent)] }
       end
 
       it 'returns error' do

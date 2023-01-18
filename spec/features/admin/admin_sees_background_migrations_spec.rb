@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe "Admin > Admin sees background migrations", feature_category: :database do
+  include ListboxHelpers
+
   let_it_be(:admin) { create(:admin) }
   let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 
@@ -204,7 +206,7 @@ RSpec.describe "Admin > Admin sees background migrations", feature_category: :da
       it 'does not render the database listbox' do
         visit admin_background_migrations_path
 
-        expect(page).not_to have_selector('[data-testid="database-listbox"]')
+        expect(page).not_to have_button('main')
       end
     end
 
@@ -215,41 +217,26 @@ RSpec.describe "Admin > Admin sees background migrations", feature_category: :da
         allow(Gitlab::Database).to receive(:db_config_names).and_return(%w[main ci])
       end
 
-      it 'does render the database listbox' do
+      it 'renders the database listbox' do
         visit admin_background_migrations_path
 
-        expect(page).to have_selector('[data-testid="database-listbox"]')
-      end
-
-      it 'defaults to main when no parameter is passed' do
-        visit admin_background_migrations_path
-
-        listbox = page.find('[data-testid="database-listbox"]')
-
-        expect(listbox).to have_text('main')
+        expect(page).to have_button('main')
       end
 
       it 'shows correct database when a parameter is passed' do
         visit admin_background_migrations_path(database: 'ci')
 
-        listbox = page.find('[data-testid="database-listbox"]')
-
-        expect(listbox).to have_text('ci')
+        expect(page).to have_button('ci')
       end
 
       it 'updates the path to correct database when clicking on listbox option' do
         visit admin_background_migrations_path
 
-        listbox = page.find('[data-testid="database-listbox"]')
-        expect(listbox).to have_text('main')
-
-        listbox.find('button').click
-        listbox.find('li', text: 'ci').click
-        wait_for_requests
+        click_button 'main'
+        select_listbox_item('ci')
 
         expect(page).to have_current_path(admin_background_migrations_path(database: 'ci'))
-        listbox = page.find('[data-testid="database-listbox"]')
-        expect(listbox).to have_text('ci')
+        expect(page).to have_button('ci')
       end
     end
   end

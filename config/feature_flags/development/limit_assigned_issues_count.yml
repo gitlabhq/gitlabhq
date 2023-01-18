@@ -1,8 +1,0 @@
----
-name: limit_assigned_issues_count
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105759
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/384363
-milestone: '15.7'
-type: development
-group: group::project management
-default_enabled: false

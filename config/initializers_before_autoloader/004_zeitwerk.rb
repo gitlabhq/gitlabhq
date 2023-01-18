@@ -64,6 +64,7 @@ Rails.autoloaders.each do |autoloader|
     'svg' => 'SVG',
     'function_uri' => 'FunctionURI',
     'uuid' => 'UUID',
+    'occurrence_uuid' => 'OccurrenceUUID',
     'vulnerability_uuid' => 'VulnerabilityUUID',
     'vs_code_extension_activity_unique_counter' => 'VSCodeExtensionActivityUniqueCounter'
   )

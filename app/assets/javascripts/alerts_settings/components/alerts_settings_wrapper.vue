@@ -4,7 +4,7 @@ import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mu
 import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import { typeSet, i18n, tabIndices } from '../constants';
 import createPrometheusIntegrationMutation from '../graphql/mutations/create_prometheus_integration.mutation.graphql';
 import destroyHttpIntegrationMutation from '../graphql/mutations/destroy_http_integration.mutation.graphql';
@@ -327,7 +327,7 @@ export default {
         })
         .catch((error) => {
           let message = INTEGRATION_PAYLOAD_TEST_ERROR;
-          if (error.response?.status === httpStatusCodes.FORBIDDEN) {
+          if (error.response?.status === HTTP_STATUS_FORBIDDEN) {
             message = INTEGRATION_INACTIVE_PAYLOAD_TEST_ERROR;
           }
           createAlert({ message });

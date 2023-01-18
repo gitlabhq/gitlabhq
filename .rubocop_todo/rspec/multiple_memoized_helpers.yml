@@ -17,7 +17,6 @@ RSpec/MultipleMemoizedHelpers:
     - 'spec/finders/user_recent_events_finder_spec.rb'
     - 'spec/lib/gitlab/background_migration/recalculate_vulnerabilities_occurrences_uuid_spec.rb'
     - 'spec/lib/gitlab/diff/position_tracer/line_strategy_spec.rb'
-    - 'spec/migrations/backfill_escalation_policies_for_oncall_schedules_spec.rb'
     - 'spec/models/event_spec.rb'
     - 'spec/models/milestone_spec.rb'
     - 'spec/models/packages/package_file_spec.rb'

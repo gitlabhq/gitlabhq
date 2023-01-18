@@ -16,6 +16,7 @@ module Database
       included do
         data_consistency :always
         feature_category :database
+        prefer_calling_context_feature_category true
         idempotent!
       end
 

@@ -31,15 +31,16 @@ see the [external status checks epic](https://gitlab.com/groups/gitlab-org/-/epi
 
 ## Block merges of merge requests unless all status checks have passed
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `only_allow_merge_if_all_status_checks_passed`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `only_allow_merge_if_all_status_checks_passed`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/372340) in GitLab 15.8.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to
-[enable the feature flag](../../../administration/feature_flags.md) named `only_allow_merge_if_all_status_checks_passed`. On GitLab.com, this feature is not available.
+[enable the feature flag](../../../administration/feature_flags.md) named `only_allow_merge_if_all_status_checks_passed`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
 
 By default, merge requests in projects can be merged even if external status checks fail. To block the merging of merge requests when external checks fail, enable this feature
 using the [project API](../../../api/projects.md#edit-project). You must also [enable the feature flag](../../../administration/feature_flags.md) named
-`only_allow_merge_if_all_status_checks_passed`.
+`only_allow_merge_if_all_status_checks_passed` on self-managed GitLab.
 
 ## Lifecycle
 
@@ -151,11 +152,17 @@ the status check and it **will not** be recoverable.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327634) in GitLab 14.1.
 > - UI [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91504) in GitLab 15.2.
+> - Ability to retry failed external status checks [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383200) in GitLab 15.8.
 
 The status checks widget displays in merge requests and displays the following statuses:
 
 - **pending** (**{status-neutral}**), while GitLab waits for a response from an external status check.
 - **success** (**{status-success}**) or **failed** (**{status-failed}**), when GitLab receives a response from an external status check.
+
+To retry a failed status check:
+
+1. Expand the merge request widget to show the list of external status checks.
+1. Select **Retry** (**{retry}**) on the failed external status check row. The status check is put back into a pending state.
 
 An organization might have a policy that does not allow merging merge requests if
 external status checks do not pass. However, the details in the widget are for informational

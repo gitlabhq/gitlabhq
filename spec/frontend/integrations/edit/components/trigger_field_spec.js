@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import { GlFormCheckbox } from '@gitlab/ui';
+import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 
 import TriggerField from '~/integrations/edit/components/trigger_field.vue';
 import { integrationTriggerEventTitles } from '~/integrations/constants';
@@ -10,7 +10,9 @@ describe('TriggerField', () => {
 
   const defaultProps = {
     event: { name: 'push_events' },
+    type: 'gitlab_slack_application',
   };
+  const mockField = { name: 'push_channel' };
 
   const createComponent = ({ props = {}, isInheriting = false } = {}) => {
     wrapper = shallowMount(TriggerField, {
@@ -26,6 +28,7 @@ describe('TriggerField', () => {
   });
 
   const findGlFormCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findGlFormInput = () => wrapper.findComponent(GlFormInput);
   const findHiddenInput = () => wrapper.find('input[type="hidden"]');
 
   describe('template', () => {
@@ -53,6 +56,32 @@ describe('TriggerField', () => {
       createComponent();
 
       expect(findHiddenInput().attributes('value')).toBe('false');
+    });
+
+    it('renders hidden GlFormInput', () => {
+      createComponent({
+        props: {
+          event: { name: 'push_events', field: mockField },
+        },
+      });
+
+      expect(findGlFormInput().exists()).toBe(true);
+      expect(findGlFormInput().isVisible()).toBe(false);
+    });
+
+    describe('checkbox is selected', () => {
+      it('renders visible GlFormInput', async () => {
+        createComponent({
+          props: {
+            event: { name: 'push_events', field: mockField },
+          },
+        });
+
+        await findGlFormCheckbox().vm.$emit('input', true);
+
+        expect(findGlFormInput().exists()).toBe(true);
+        expect(findGlFormInput().isVisible()).toBe(true);
+      });
     });
 
     it('toggles value of hidden input on checkbox input', async () => {

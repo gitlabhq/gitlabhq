@@ -1,11 +1,4 @@
-import {
-  GlButton,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownSectionHeader,
-  GlSearchBoxByType,
-  GlTruncate,
-} from '@gitlab/ui';
+import { GlButton, GlListboxItem, GlCollapsibleListbox } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -80,17 +73,16 @@ describe('ProjectNamespace component', () => {
   };
 
   const findButtonLabel = () => wrapper.findComponent(GlButton);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownText = () => wrapper.findComponent(GlTruncate);
-  const findInput = () => wrapper.findComponent(GlSearchBoxByType);
+  const findListBox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findListBoxText = () => findListBox().props('toggleText');
 
-  const clickDropdownItem = async () => {
-    wrapper.findComponent(GlDropdownItem).vm.$emit('click');
+  const clickListBoxItem = async (value = '') => {
+    wrapper.findComponent(GlListboxItem).vm.$emit('select', value);
     await nextTick();
   };
 
   const showDropdown = () => {
-    findDropdown().vm.$emit('shown');
+    findListBox().vm.$emit('shown');
   };
 
   beforeAll(() => {
@@ -115,7 +107,7 @@ describe('ProjectNamespace component', () => {
     });
 
     it('renders placeholder text', () => {
-      expect(findDropdownText().props('text')).toBe('Select a namespace');
+      expect(findListBoxText()).toBe('Select a namespace');
     });
   });
 
@@ -127,24 +119,18 @@ describe('ProjectNamespace component', () => {
       showDropdown();
     });
 
-    it('focuses on the input when the dropdown is opened', () => {
-      const spy = jest.spyOn(findInput().vm, 'focusInput');
-      showDropdown();
-      expect(spy).toHaveBeenCalledTimes(1);
-    });
-
     it('displays fetched namespaces', () => {
       const listItems = wrapper.findAll('li');
-      expect(listItems).toHaveLength(3);
-      expect(listItems.at(0).findComponent(GlDropdownSectionHeader).text()).toBe('Namespaces');
-      expect(listItems.at(1).text()).toBe(data.project.forkTargets.nodes[0].fullPath);
-      expect(listItems.at(2).text()).toBe(data.project.forkTargets.nodes[1].fullPath);
+      expect(listItems).toHaveLength(2);
+      expect(listItems.at(0).text()).toBe(data.project.forkTargets.nodes[0].fullPath);
+      expect(listItems.at(1).text()).toBe(data.project.forkTargets.nodes[1].fullPath);
     });
 
     it('sets the selected namespace', async () => {
       const { fullPath } = data.project.forkTargets.nodes[0];
-      await clickDropdownItem();
-      expect(findDropdownText().props('text')).toBe(fullPath);
+      await clickListBoxItem(fullPath);
+
+      expect(findListBoxText()).toBe(fullPath);
     });
   });
 
@@ -155,7 +141,7 @@ describe('ProjectNamespace component', () => {
     });
 
     it('renders `No matches found`', () => {
-      expect(wrapper.find('li').text()).toBe('No matches found');
+      expect(findListBox().text()).toContain('No matches found');
     });
   });
 

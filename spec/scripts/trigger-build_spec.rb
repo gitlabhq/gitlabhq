@@ -6,7 +6,7 @@ require 'rspec-parameterized'
 
 require_relative '../../scripts/trigger-build'
 
-RSpec.describe Trigger do
+RSpec.describe Trigger, feature_category: :tooling do
   let(:env) do
     {
       'CI_JOB_URL' => 'ci_job_url',
@@ -358,6 +358,28 @@ RSpec.describe Trigger do
 
           it 'sets EE_PIPELINE to nil' do
             expect(subject.variables['EE_PIPELINE']).to eq(nil)
+          end
+        end
+      end
+
+      describe "GITLAB_REF_SLUG" do
+        context 'when CI_COMMIT_TAG is set' do
+          before do
+            stub_env('CI_COMMIT_TAG', 'true')
+          end
+
+          it 'sets GITLAB_REF_SLUG to CI_COMMIT_REF_NAME' do
+            expect(subject.variables['GITLAB_REF_SLUG']).to eq(env['CI_COMMIT_REF_NAME'])
+          end
+        end
+
+        context 'when CI_COMMIT_TAG is nil' do
+          before do
+            stub_env('CI_COMMIT_TAG', nil)
+          end
+
+          it 'sets GITLAB_REF_SLUG to CI_COMMIT_SHA' do
+            expect(subject.variables['GITLAB_REF_SLUG']).to eq(env['CI_COMMIT_SHA'])
           end
         end
       end

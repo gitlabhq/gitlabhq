@@ -9,9 +9,7 @@ module BoardRecentVisit
         "user" => user,
         board_parent_relation => board.resource_parent,
         board_relation => board
-      ).tap do |visit|
-        visit.touch
-      end
+      ).tap(&:touch)
     rescue ActiveRecord::RecordNotUnique
       retry
     end

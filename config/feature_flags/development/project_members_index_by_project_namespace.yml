@@ -1,0 +1,8 @@
+---
+name: project_members_index_by_project_namespace
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105781
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/384521
+milestone: '15.7'
+type: development
+group: group::workspace
+default_enabled: false

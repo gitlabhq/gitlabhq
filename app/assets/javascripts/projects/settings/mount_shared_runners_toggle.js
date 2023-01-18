@@ -4,6 +4,10 @@ import SharedRunnersToggle from '~/projects/settings/components/shared_runners_t
 
 export default (containerId = 'toggle-shared-runners-form') => {
   const containerEl = document.getElementById(containerId);
+  if (!containerEl) {
+    return null;
+  }
+
   const {
     isDisabledAndUnoverridable,
     isEnabled,

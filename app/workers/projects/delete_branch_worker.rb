@@ -4,6 +4,9 @@ module Projects
   class DeleteBranchWorker
     include ApplicationWorker
 
+    # Temporary error when Gitaly cannot lock the branch reference. A retry should solve it.
+    GitReferenceLockedError = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
+
     data_consistency :always
 
     feature_category :source_code_management
@@ -20,11 +23,10 @@ module Projects
       delete_service_result = ::Branches::DeleteService.new(project, user)
         .execute(branch_name)
 
-      return unless Feature.enabled?(:track_and_raise_delete_source_errors, project)
       # Only want to raise on 400 to avoid permission and non existant branch error
       return unless delete_service_result[:http_status] == 400
 
-      delete_service_result.track_and_raise_exception
+      delete_service_result.log_and_raise_exception(as: GitReferenceLockedError)
     end
   end
 end

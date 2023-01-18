@@ -12,6 +12,8 @@ module API
     feature_category :continuous_delivery
     urgency :low
 
+    MIN_SEARCH_LENGTH = 3
+
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
@@ -29,7 +31,7 @@ module API
       params do
         use :pagination
         optional :name, type: String, desc: 'Return the environment with this name. Mutually exclusive with search'
-        optional :search, type: String, desc: 'Return list of environments matching the search criteria. Mutually exclusive with name'
+        optional :search, type: String, desc: "Return list of environments matching the search criteria. Mutually exclusive with name. Must be at least #{MIN_SEARCH_LENGTH} characters."
         optional :states,
           type: String,
           values: Environment.valid_states.map(&:to_s),
@@ -38,6 +40,10 @@ module API
       end
       get ':id/environments' do
         authorize! :read_environment, user_project
+
+        if Feature.enabled?(:environment_search_api_min_chars, user_project) && params[:search].present? && params[:search].length < MIN_SEARCH_LENGTH
+          bad_request!("Search query is less than #{MIN_SEARCH_LENGTH} characters")
+        end
 
         environments = ::Environments::EnvironmentsFinder.new(user_project, current_user, declared_params(include_missing: false)).execute
 
@@ -180,6 +186,35 @@ module API
 
         status 200
         present environment, with: Entities::Environment, current_user: current_user
+      end
+
+      desc 'Stop stale environments' do
+        detail 'It returns `200` if stale environment check was scheduled successfully'
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' }
+        ]
+        tags %w[environments]
+      end
+      params do
+        requires :before,
+                 type: DateTime,
+                 desc: 'Stop all environments that were last modified or deployed to before this date.'
+      end
+      post ':id/environments/stop_stale' do
+        authorize! :stop_environment, user_project
+
+        bad_request!('Invalid Date') if params[:before] < 10.years.ago || params[:before] > 1.week.ago
+
+        service_response = ::Environments::StopStaleService.new(user_project, current_user, params.slice(:before)).execute
+
+        if service_response.error?
+          status 400
+        else
+          status 200
+        end
+
+        present message: service_response.message
       end
 
       desc 'Get a specific environment' do

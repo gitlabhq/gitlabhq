@@ -1,5 +1,5 @@
 ---
-redirect_to: 'index.md'
+redirect_to: 'index.md#import-from-subversion'
 remove_date: '2023-03-15'
 ---
 

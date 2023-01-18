@@ -165,6 +165,7 @@ RSpec.describe ButtonHelper do
       context 'when no `text` attribute is not provided' do
         it 'shows copy to clipboard button with default configuration and no text set to copy' do
           expect(element.attr('class')).to eq('btn btn-clipboard gl-button btn-default-tertiary btn-icon btn-sm')
+          expect(element.attr('title')).to eq('Copy')
           expect(element.attr('type')).to eq('button')
           expect(element.attr('aria-label')).to eq('Copy')
           expect(element.attr('aria-live')).to eq('polite')

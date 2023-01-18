@@ -5,7 +5,7 @@ module MergeRequests
     include ApplicationWorker
 
     data_consistency :always
-    feature_category :code_review
+    feature_category :code_review_workflow
     urgency :low
     idempotent!
 

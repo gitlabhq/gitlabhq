@@ -75,39 +75,6 @@ RSpec.describe Clusters::Providers::Aws do
     end
   end
 
-  describe '#api_client' do
-    let(:provider) { create(:cluster_provider_aws) }
-    let(:credentials) { double }
-    let(:client) { double }
-
-    subject { provider.api_client }
-
-    before do
-      allow(provider).to receive(:credentials).and_return(credentials)
-
-      expect(Aws::CloudFormation::Client).to receive(:new)
-        .with(credentials: credentials, region: provider.region)
-        .and_return(client)
-    end
-
-    it { is_expected.to eq client }
-  end
-
-  describe '#credentials' do
-    let(:provider) { create(:cluster_provider_aws) }
-    let(:credentials) { double }
-
-    subject { provider.credentials }
-
-    before do
-      expect(Aws::Credentials).to receive(:new)
-        .with(provider.access_key_id, provider.secret_access_key, provider.session_token)
-        .and_return(credentials)
-    end
-
-    it { is_expected.to eq credentials }
-  end
-
   describe '#created_by_user' do
     let(:provider) { create(:cluster_provider_aws) }
 

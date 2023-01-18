@@ -1,8 +1,6 @@
-- search_service = local_assigns.fetch(:search_service)
-
-- return unless search_service.show_results_status?
+- return unless @search_service_presenter.show_results_status?
 
 - if Feature.enabled?(:search_page_vertical_nav, current_user)
-  = render partial: 'search/results_status_vert_nav', locals: { search_service: search_service }
+  = render partial: 'search/results_status_vert_nav'
 - else
-  = render partial: 'search/results_status_horiz_nav', locals: { search_service: search_service }
+  = render partial: 'search/results_status_horiz_nav'

@@ -95,7 +95,6 @@ InternalAffairs/DeprecateCopHelper:
     - spec/rubocop/**/*.rb
 
 Lint/LastKeywordArgument:
-  Enabled: true
   Safe: false
 
 Lint/EmptyFile:
@@ -409,12 +408,18 @@ Database/MultipleDatabases:
     - 'ee/lib/ee/gitlab/background_migration/**/*.rb'
     - 'spec/lib/gitlab/background_migration/**/*.rb'
     - 'spec/lib/gitlab/database/**/*.rb'
+    - 'spec/tasks/gitlab/db_rake_spec.rb'
 
 Migration/BatchMigrationsPostOnly:
   Enabled: true
   Include:
     - 'db/migrate/*.rb'
     - 'db/post_migrate/*.rb'
+
+BackgroundMigration/FeatureCategory:
+  Enabled: true
+  Include:
+    - 'lib/gitlab/background_migration/*.rb'
 
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/373194
 Gitlab/RSpec/AvoidSetup:
@@ -909,5 +914,7 @@ Cop/FeatureFlagUsage:
     - 'lib/gitlab/redis/**/*.rb'
     - 'lib/gitlab/patch/**/*.rb'
     - 'lib/gitlab/instrumentation/**/*.rb'
-  Exclude:
-    - 'lib/gitlab/redis/multi_store.rb'
+
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/386618
+Layout/HashAlignment:
+  Enabled: false

@@ -44,7 +44,14 @@ export default {
 <template>
   <div class="gl-display-flex gl-justify-content-end">
     <gl-button-group>
-      <gl-button v-if="canPlay" v-gl-tooltip :title="$options.i18n.playTooltip" icon="play" />
+      <gl-button
+        v-if="canPlay"
+        v-gl-tooltip
+        :title="$options.i18n.playTooltip"
+        icon="play"
+        data-testid="play-pipeline-schedule-btn"
+        @click="$emit('playPipelineSchedule', schedule.id)"
+      />
       <gl-button
         v-if="canTakeOwnership"
         v-gl-tooltip

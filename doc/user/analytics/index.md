@@ -51,6 +51,14 @@ The following analytics features are available for users to create personalized 
 
 Be sure to review the documentation page for this feature for GitLab tier requirements.
 
+## Value streams management
+
+You can use the following analytics features to analyze and visualize the performance of your projects and groups:
+
+- [Value stream analytics for projects](value_stream_analytics.md)
+- [Value stream analytics for groups](../group/value_stream_analytics/index.md)
+- [Value streams dashboard](value_streams_dashboard.md)
+
 ## Definitions
 
 We use the following terms to describe GitLab analytics:

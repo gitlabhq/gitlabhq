@@ -188,6 +188,20 @@ tests = [
     explanation: 'GLFM spec and config files for CE and EE should map to respective markdown snapshot specs',
     source: 'glfm_specification/foo',
     expected: ['spec/requests/api/markdown_snapshot_spec.rb', 'ee/spec/requests/api/markdown_snapshot_spec.rb']
+  },
+
+  {
+    explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/287#note_1192008962',
+    # Note: The metrics seem to be changed every year or so, so this test will fail once a year or so.
+    #       You will need to change the metric below for another metric present in the project.
+    source: 'ee/config/metrics/counts_all/20221114065035_delete_merge_request.yml',
+    expected: ['ee/spec/config/metrics/every_metric_definition_spec.rb']
+  },
+
+  {
+    explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/287#note_1192008962',
+    source: 'ee/lib/ee/gitlab/usage_data_counters/known_events/common.yml',
+    expected: ['ee/spec/config/metrics/every_metric_definition_spec.rb']
   }
 ]
 

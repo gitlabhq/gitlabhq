@@ -2,14 +2,14 @@ import { GlTable } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
-import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import { mockJobsNodes } from '../../mock_data';
 
 describe('Jobs Table', () => {
   let wrapper;
 
   const findTable = () => wrapper.findComponent(GlTable);
-  const findStatusBadge = () => wrapper.findComponent(CiBadge);
+  const findCiBadgeLink = () => wrapper.findComponent(CiBadgeLink);
   const findTableRows = () => wrapper.findAllByTestId('jobs-table-row');
   const findJobStage = () => wrapper.findByTestId('job-stage-name');
   const findJobName = () => wrapper.findByTestId('job-name');
@@ -43,7 +43,7 @@ describe('Jobs Table', () => {
   });
 
   it('displays job status', () => {
-    expect(findStatusBadge().exists()).toBe(true);
+    expect(findCiBadgeLink().exists()).toBe(true);
   });
 
   it('displays the job stage and name', () => {

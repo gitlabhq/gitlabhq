@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importer do
+RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers do
   let(:project) { instance_double(Project, id: 1) }
   let(:importer) { MyImporter.new(project, double) }
   let(:importer_class) do

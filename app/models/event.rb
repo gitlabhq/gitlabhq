@@ -31,6 +31,7 @@ class Event < ApplicationRecord
   DESIGN_ACTIONS = [:created, :updated, :destroyed].freeze
   TEAM_ACTIONS = [:joined, :left, :expired].freeze
   ISSUE_ACTIONS = [:created, :updated, :closed, :reopened].freeze
+  ISSUE_TYPES = [Issue.name, WorkItem.name].freeze
 
   TARGET_TYPES = HashWithIndifferentAccess.new(
     issue: Issue,
@@ -83,6 +84,7 @@ class Event < ApplicationRecord
   scope :recent, -> { reorder(id: :desc) }
   scope :for_wiki_page, -> { where(target_type: 'WikiPage::Meta') }
   scope :for_design, -> { where(target_type: 'DesignManagement::Design') }
+  scope :for_issue, -> { where(target_type: ISSUE_TYPES) }
   scope :for_fingerprint, ->(fingerprint) do
     fingerprint.present? ? where(fingerprint: fingerprint) : none
   end

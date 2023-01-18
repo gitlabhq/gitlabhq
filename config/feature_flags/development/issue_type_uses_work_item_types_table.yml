@@ -1,0 +1,8 @@
+---
+name: issue_type_uses_work_item_types_table
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107690
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/386603
+milestone: '15.8'
+type: development
+group: group::project management
+default_enabled: false

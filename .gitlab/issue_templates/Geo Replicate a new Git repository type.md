@@ -18,7 +18,7 @@ If your Model's pluralized form is non-standard, i.e. it doesn't just end in `s`
 
 -->
 
-## Replicate Cool Widgets
+## Replicate Cool Widgets - Repository
 
 This issue is for implementing Geo replication and verification of Cool Widgets.
 
@@ -38,8 +38,6 @@ You can look into the following example for implementing replication/verificatio
 - [Add snippet repository verification](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56596)
 
 ### Modify database schemas to prepare to add Geo support for Cool Widgets
-
-You might do this section in its own merge request, but it is not required.
 
 #### Add the registry table to track replication and verification state
 
@@ -114,7 +112,7 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
   bin/rake db:migrate:geo
   ```
 
-- [ ] Be sure to commit the relevant changes in `ee/db/geo/structure.sql`
+- [ ] Be sure to commit the relevant changes in `ee/db/geo/structure.sql` and the file under `ee/db/geo/schema_migrations`
 
 ### Add verification state to the Model
 
@@ -146,7 +144,7 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
         t.datetime_with_timezone :verified_at
         t.references :cool_widget, primary_key: true, default: nil, index: false, foreign_key: { on_delete: :cascade }
         t.integer :verification_state, default: 0, limit: 2, null: false
-        t.integer :verification_retry_count, limit: 2
+        t.integer :verification_retry_count, default: 0, limit: 2, null: false
         t.binary :verification_checksum, using: 'verification_checksum::bytea'
         t.text :verification_failure, limit: 255
 
@@ -185,7 +183,21 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
   bin/rake db:migrate
   ```
 
-- [ ] Be sure to commit the relevant changes in `db/structure.sql`
+- [ ] Be sure to commit the relevant changes in `db/structure.sql` and the file under `db/schema_migrations`
+
+- [ ] Add an entry for the state table in `db/docs/cool_widget_states.yml`
+
+  ```yaml
+  ---
+  table_name: cool_widget_states
+  classes:
+    - Geo::CoolWidgetState
+  feature_categories:
+    - geo_replication
+  description: Separate table for cool widget verification states
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXXXX
+  milestone: 'XX.Y'
+  ```
 
 That's all of the required database changes.
 
@@ -371,7 +383,6 @@ That's all of the required database changes.
 
   ```shell
   bin/feature-flag --ee geo_cool_widget_replication --type development --group 'group::geo'
-  bin/feature-flag --ee geo_cool_widget_verification --type development --group 'group::geo'
   ```
 
 - [ ] Add this replicator class to the method `replicator_classes` in
@@ -382,7 +393,6 @@ That's all of the required database changes.
     ::Geo::PackageFileReplicator,
     ::Geo::CoolWidgetReplicator
   ]
-  end
   ```
 
 - [ ] Create `ee/spec/replicators/geo/cool_widget_replicator_spec.rb` and perform the necessary setup to define the `model_record` variable for the shared examples:
@@ -478,25 +488,29 @@ That's all of the required database changes.
   end
   ```
 
-- [ ] Add the following to `spec/factories/cool_widgets.rb`:
+- [ ] Add the following to `ee/spec/factories/cool_widgets.rb`:
 
   ```ruby
-  trait :verification_succeeded do
-    with_file
-    verification_checksum { 'abc' }
-    verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
-  end
+  FactoryBot.modify do
+    trait :verification_succeeded do
+        with_file
+        verification_checksum { 'abc' }
+        verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
+    end
 
-  trait :verification_failed do
-    with_file
-    verification_failure { 'Could not calculate the checksum' }
-    verification_state { CoolWidget.verification_state_value(:verification_failed) }
+    trait :verification_failed do
+        with_file
+        verification_failure { 'Could not calculate the checksum' }
+        verification_state { CoolWidget.verification_state_value(:verification_failed) }
+    end
   end
   ```
 
+  If there is not an existing factory for the object in `spec/factories/cool_widgets.rb`, wrap the traits in `FactoryBot.create` instead of `FactoryBot.modify`.
+
 - [ ] Make sure the factory also allows setting a `project` attribute. If the model does not have a direct relation to a project, you can use a `transient` attribute. Check out `spec/factories/merge_request_diffs.rb` for an example.
 
-- [ ] Following [the example of Merge Request Diffs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63309) add a `Geo::CoolWidgetState` model in `ee/app/models/ee/geo/cool_widget_state.rb`:
+- [ ] Following [the example of Merge Request Diffs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63309) add a `Geo::CoolWidgetState` model in `ee/app/models/geo/cool_widget_state.rb`:
 
   ``` ruby
   # frozen_string_literal: true
@@ -536,6 +550,8 @@ That's all of the required database changes.
   end
   ```
 
+- [ ] Add `[:cool_widget, :remote_store]` and `[:geo_cool_widget_state, any]` to `skipped` in `spec/models/factories_spec.rb`
+
 #### Step 2. Implement metrics gathering
 
 Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in `GeoNodeStatus` for display in the UI, and sent to Prometheus:
@@ -556,16 +572,18 @@ Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in `GeoNodeStatus`
 - [ ] Add the same fields to `GET /geo_nodes/status` example response in
   `ee/spec/fixtures/api/schemas/public_api/v4/geo_node_status.json`.
 - [ ] Add the following fields to the `Sidekiq metrics` table in `doc/administration/monitoring/prometheus/gitlab_metrics.md`:
-  - `geo_cool_widgets`
-  - `geo_cool_widgets_checksum_total`
-  - `geo_cool_widgets_checksummed`
-  - `geo_cool_widgets_checksum_failed`
-  - `geo_cool_widgets_synced`
-  - `geo_cool_widgets_failed`
-  - `geo_cool_widgets_registry`
-  - `geo_cool_widgets_verification_total`
-  - `geo_cool_widgets_verified`
-  - `geo_cool_widgets_verification_failed`
+  ```markdown
+  | `geo_cool_widgets` | Gauge | XX.Y | Number of Cool Widgets on primary | `url` |
+  | `geo_cool_widgets_checksum_total` | Gauge | XX.Y | Number of Cool Widgets checksummed successfully on primary | `url` |
+  | `geo_cool_widgets_checksummed` | Gauge | XX.Y | Number of Cool Widgets failed to calculate the checksum on primary | `url` |
+  | `geo_cool_widgets_checksum_failed` | Gauge | XX.Y | Number of Cool Widgets tried to checksum on primary | `url` |
+  | `geo_cool_widgets_synced` | Gauge | XX.Y | Number of syncable Cool Widgets synced on secondary | `url` |
+  | `geo_cool_widgets_failed` | Gauge | XX.Y | Number of syncable Cool Widgets failed to sync on secondary | `url` |
+  | `geo_cool_widgets_registry` | Gauge | XX.Y | Number of Cool Widgets in the registry | `url` |
+  | `geo_cool_widgets_verification_total` | Gauge | XX.Y | Number of Cool Widgets verified on secondary | `url` |
+  | `geo_cool_widgets_verified` | Gauge | XX.Y | Number of Cool Widgets' verifications failed on secondary | `url` |
+  | `geo_cool_widgets_verification_failed` | Gauge | XX.Y | Number of Cool Widgets' verifications tried on secondary | `url` |
+  ```
 
 Cool Widget replication and verification metrics should now be available in the API, the `Admin > Geo > Nodes` view, and Prometheus.
 
@@ -731,6 +749,14 @@ As illustrated by the above two examples, batch destroy logic cannot be handled 
     end
   end
 ```
+
+### Code Review
+
+When requesting review from database reviewers:
+
+- [ ] Include a comment mentioning that the change is based on a documented template.
+- [ ] `replicables_for_current_secondary` and `available_replicables` may differ per Model. If their queries are new, then add [query plans](https://docs.gitlab.com/ee/development/database_review.html#query-plans) to the MR description. An easy place to gather SQL queries is your GDK's `log/test.log` when running tests of these methods.
+
 ### Release Geo support of Cool Widgets
 
 - [ ] In the rollout issue you created when creating the feature flag, modify the Roll Out Steps:

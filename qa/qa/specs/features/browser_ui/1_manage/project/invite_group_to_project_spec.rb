@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Invite group', :reliable, product_group: :workspace do
+    describe 'Invite group', :reliable, product_group: :organization do
       shared_examples 'invites group to project' do
         it 'verifies group is added and members can access project with correct access level' do
           Page::Project::Menu.perform(&:click_members)

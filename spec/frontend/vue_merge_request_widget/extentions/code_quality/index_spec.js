@@ -7,10 +7,18 @@ import axios from '~/lib/utils/axios_utils';
 import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import codeQualityExtension from '~/vue_merge_request_widget/extensions/code_quality';
-import httpStatusCodes, { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
-import { i18n } from '~/vue_merge_request_widget/extensions/code_quality/constants';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_OK,
+} from '~/lib/utils/http_status';
+import {
+  i18n,
+  codeQualityPrefixes,
+} from '~/vue_merge_request_widget/extensions/code_quality/constants';
 import {
   codeQualityResponseNewErrors,
+  codeQualityResponseResolvedErrors,
   codeQualityResponseResolvedAndNewErrors,
   codeQualityResponseNoErrors,
 } from './mock_data';
@@ -29,6 +37,10 @@ describe('Code Quality extension', () => {
 
   const findToggleCollapsedButton = () => wrapper.findByTestId('toggle-button');
   const findAllExtensionListItems = () => wrapper.findAllByTestId('extension-list-item');
+  const isCollapsable = () => wrapper.findByTestId('toggle-button').exists();
+  const getNeutralIcon = () => wrapper.findByTestId('status-neutral-icon').exists();
+  const getAlertIcon = () => wrapper.findByTestId('status-alert-icon').exists();
+  const getSuccessIcon = () => wrapper.findByTestId('status-success-icon').exists();
 
   const createComponent = () => {
     wrapper = mountExtended(extensionsContainer, {
@@ -55,7 +67,7 @@ describe('Code Quality extension', () => {
 
   describe('summary', () => {
     it('displays loading text', () => {
-      mockApi(httpStatusCodes.OK, codeQualityResponseNewErrors);
+      mockApi(HTTP_STATUS_OK, codeQualityResponseNewErrors);
 
       createComponent();
 
@@ -72,28 +84,57 @@ describe('Code Quality extension', () => {
     });
 
     it('displays failed loading text', async () => {
-      mockApi(httpStatusCodes.INTERNAL_SERVER_ERROR);
+      mockApi(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       createComponent();
 
       await waitForPromises();
+
       expect(wrapper.text()).toBe(i18n.error);
+      expect(isCollapsable()).toBe(false);
     });
 
-    it('displays correct single Report', async () => {
-      mockApi(httpStatusCodes.OK, codeQualityResponseNewErrors);
+    it('displays new Errors finding', async () => {
+      mockApi(HTTP_STATUS_OK, codeQualityResponseNewErrors);
 
       createComponent();
 
       await waitForPromises();
-
       expect(wrapper.text()).toBe(
-        i18n.degradedCopy(i18n.singularReport(codeQualityResponseNewErrors.new_errors)),
+        i18n
+          .singularCopy(
+            i18n.findings(codeQualityResponseNewErrors.new_errors, codeQualityPrefixes.new),
+          )
+          .replace(/%{strong_start}/g, '')
+          .replace(/%{strong_end}/g, ''),
       );
+      expect(isCollapsable()).toBe(true);
+      expect(getAlertIcon()).toBe(true);
+    });
+
+    it('displays resolved Errors finding', async () => {
+      mockApi(HTTP_STATUS_OK, codeQualityResponseResolvedErrors);
+
+      createComponent();
+
+      await waitForPromises();
+      expect(wrapper.text()).toBe(
+        i18n
+          .singularCopy(
+            i18n.findings(
+              codeQualityResponseResolvedErrors.resolved_errors,
+              codeQualityPrefixes.fixed,
+            ),
+          )
+          .replace(/%{strong_start}/g, '')
+          .replace(/%{strong_end}/g, ''),
+      );
+      expect(isCollapsable()).toBe(true);
+      expect(getSuccessIcon()).toBe(true);
     });
 
     it('displays quality improvement and degradation', async () => {
-      mockApi(httpStatusCodes.OK, codeQualityResponseResolvedAndNewErrors);
+      mockApi(HTTP_STATUS_OK, codeQualityResponseResolvedAndNewErrors);
 
       createComponent();
       await waitForPromises();
@@ -102,28 +143,38 @@ describe('Code Quality extension', () => {
       expect(wrapper.text()).toBe(
         i18n
           .improvementAndDegradationCopy(
-            i18n.pluralReport(codeQualityResponseResolvedAndNewErrors.resolved_errors),
-            i18n.pluralReport(codeQualityResponseResolvedAndNewErrors.new_errors),
+            i18n.findings(
+              codeQualityResponseResolvedAndNewErrors.resolved_errors,
+              codeQualityPrefixes.fixed,
+            ),
+            i18n.findings(
+              codeQualityResponseResolvedAndNewErrors.new_errors,
+              codeQualityPrefixes.new,
+            ),
           )
           .replace(/%{strong_start}/g, '')
           .replace(/%{strong_end}/g, ''),
       );
+      expect(isCollapsable()).toBe(true);
+      expect(getAlertIcon()).toBe(true);
     });
 
     it('displays no detected errors', async () => {
-      mockApi(httpStatusCodes.OK, codeQualityResponseNoErrors);
+      mockApi(HTTP_STATUS_OK, codeQualityResponseNoErrors);
 
       createComponent();
 
       await waitForPromises();
 
       expect(wrapper.text()).toBe(i18n.noChanges);
+      expect(isCollapsable()).toBe(false);
+      expect(getNeutralIcon()).toBe(true);
     });
   });
 
   describe('expanded data', () => {
     beforeEach(async () => {
-      mockApi(httpStatusCodes.OK, codeQualityResponseResolvedAndNewErrors);
+      mockApi(HTTP_STATUS_OK, codeQualityResponseResolvedAndNewErrors);
 
       createComponent();
 

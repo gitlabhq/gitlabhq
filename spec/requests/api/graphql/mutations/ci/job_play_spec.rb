@@ -8,17 +8,25 @@ RSpec.describe 'JobPlay', feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
-  let_it_be(:job) { create(:ci_build, pipeline: pipeline, name: 'build') }
+  let_it_be(:job) { create(:ci_build, :playable, pipeline: pipeline, name: 'build') }
 
-  let(:mutation) do
-    variables = {
+  let(:variables) do
+    {
       id: job.to_global_id.to_s
     }
+  end
+
+  let(:mutation) do
     graphql_mutation(:job_play, variables,
                      <<-QL
                        errors
                        job {
                          id
+                         manualVariables {
+                           nodes {
+                             key
+                           }
+                         }
                        }
                      QL
     )
@@ -42,5 +50,30 @@ RSpec.describe 'JobPlay', feature_category: :continuous_integration do
 
     expect(response).to have_gitlab_http_status(:success)
     expect(mutation_response['job']['id']).to eq(job_id)
+  end
+
+  context 'when given variables' do
+    let(:variables) do
+      {
+        id: job.to_global_id.to_s,
+        variables: [
+          { key: 'MANUAL_VAR_1', value: 'test var' },
+          { key: 'MANUAL_VAR_2', value: 'test var 2' }
+        ]
+      }
+    end
+
+    it 'provides those variables to the job', :aggregated_errors do
+      expect_next_instance_of(Ci::PlayBuildService) do |instance|
+        expect(instance).to receive(:execute).with(an_instance_of(Ci::Build), variables[:variables]).and_call_original
+      end
+
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response['job']['manualVariables']['nodes'].pluck('key')).to contain_exactly(
+        'MANUAL_VAR_1', 'MANUAL_VAR_2'
+      )
+    end
   end
 end

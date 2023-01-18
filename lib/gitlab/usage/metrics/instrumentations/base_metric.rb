@@ -15,7 +15,7 @@ module Gitlab
             def available?(&block)
               return @metric_available = block if block
 
-              return @metric_available.call if instance_variable_defined?('@metric_available')
+              return @metric_available.call if instance_variable_defined?(:@metric_available)
 
               true
             end

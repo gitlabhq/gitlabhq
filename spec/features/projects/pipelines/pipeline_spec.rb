@@ -18,6 +18,8 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
   end
 
   shared_context 'pipeline builds' do
+    let!(:external_stage) { create(:ci_stage, name: 'external', pipeline: pipeline) }
+
     let!(:build_passed) do
       create(:ci_build, :success,
              pipeline: pipeline, stage: 'build', stage_idx: 0, name: 'build')
@@ -52,7 +54,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
       create(:generic_commit_status, status: 'success',
                                      pipeline: pipeline,
                                      name: 'jenkins',
-                                     stage: 'external',
+                                     ci_stage: external_stage,
                                      ref: 'master',
                                      target_url: 'http://gitlab.com/status')
     end
@@ -98,42 +100,16 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
       end
     end
 
-    context 'with pipeline_name feature flag enabled' do
-      before do
-        stub_feature_flags(pipeline_name: true)
+    it 'displays pipeline name instead of commit title' do
+      visit_pipeline
+
+      within 'h3' do
+        expect(page).to have_content(pipeline.name)
       end
 
-      it 'displays pipeline name instead of commit title' do
-        visit_pipeline
-
-        within 'h3' do
-          expect(page).to have_content(pipeline.name)
-        end
-
-        within '.well-segment[data-testid="commit-row"]' do
-          expect(page).to have_content(project.commit.title)
-          expect(page).to have_content(project.commit.short_id)
-        end
-      end
-    end
-
-    context 'with pipeline_name feature flag disabled' do
-      before do
-        stub_feature_flags(pipeline_name: false)
-      end
-
-      it 'displays commit title' do
-        visit_pipeline
-
-        within 'h3' do
-          expect(page).not_to have_content(pipeline.name)
-          expect(page).to have_content(project.commit.title)
-        end
-
-        within '.well-segment[data-testid="commit-row"]' do
-          expect(page).not_to have_content(project.commit.title)
-          expect(page).to have_content(project.commit.short_id)
-        end
+      within '.well-segment[data-testid="commit-row"]' do
+        expect(page).to have_content(project.commit.title)
+        expect(page).to have_content(project.commit.short_id)
       end
     end
 

@@ -216,9 +216,10 @@ The cost factors on self-managed instances are:
 
 #### Cost factor for community contributions to GitLab projects
 
-Community contributors can use up to 300,000 minutes on shared runners when
-contributing to open source projects maintained by GitLab. The 300,000
-minutes applies to all SaaS tiers, and the cost factor calculation is:
+Community contributors can use up to 300,000 minutes on shared runners when contributing to open source projects 
+maintained by GitLab. The maximum of 300,000 minutes would only be possible if contributing exclusively to projects [part of the GitLab product](https://about.gitlab.com/handbook/engineering/metrics/#projects-that-are-part-of-the-product). The total number of minutes available on shared runners
+is reduced by the CI/CD minutes used by pipelines from other projects. 
+The 300,000 minutes applies to all SaaS tiers, and the cost factor calculation is:
 
 - `Monthly minute quota / 300,000 job duration minutes = Cost factor`
 
@@ -255,9 +256,9 @@ calculations start again from `0`.
 
 For example, if you have a monthly quota of `10,000` CI/CD minutes:
 
-- On **1st April**, you have `10,000` minutes.
+- On **April 1**, you have `10,000` minutes.
 - During April, you use only `6,000` of the `10,000` minutes.
-- On **1st May**, the accumulated usage of minutes resets to `0`, and you have `10,000` minutes to use again
+- On **May 1**, the accumulated usage of minutes resets to `0`, and you have `10,000` minutes to use again
   during May.
 
 Usage data for the previous month is kept to show historical view of the consumption over time.
@@ -269,9 +270,9 @@ the next month.
 
 For example:
 
-- On **1st April**, you purchase `5,000` additional CI/CD minutes.
+- On **April 1**, you purchase `5,000` additional CI/CD minutes.
 - During April, you use only `3,000` of the `5,000` additional minutes.
-- On **1st May**, the unused minute roll over, so you have `2,000` additional minutes available for May.
+- On **May 1**, the unused minute roll over, so you have `2,000` additional minutes available for May.
 
 Additional CI/CD minutes are a one-time purchase and do not renew or refresh each month.
 

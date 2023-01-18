@@ -168,7 +168,12 @@ export default {
         class="md-area"
         :class="{ 'is-focused': focused }"
       >
-        <formatting-toolbar v-if="!useBottomToolbar" ref="toolbar" class="gl-border-b" />
+        <formatting-toolbar
+          v-if="!useBottomToolbar"
+          ref="toolbar"
+          class="gl-border-b"
+          @enableMarkdownEditor="$emit('enableMarkdownEditor')"
+        />
         <div class="gl-relative gl-mt-4">
           <formatting-bubble-menu />
           <code-block-bubble-menu />
@@ -181,7 +186,12 @@ export default {
           />
           <loading-indicator v-if="isLoading" />
         </div>
-        <formatting-toolbar v-if="useBottomToolbar" ref="toolbar" class="gl-border-t" />
+        <formatting-toolbar
+          v-if="useBottomToolbar"
+          ref="toolbar"
+          class="gl-border-t"
+          @enableMarkdownEditor="$emit('enableMarkdownEditor')"
+        />
       </div>
     </div>
   </content-editor-provider>

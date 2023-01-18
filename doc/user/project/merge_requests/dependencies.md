@@ -145,6 +145,11 @@ information, read [issue #12549](https://gitlab.com/gitlab-org/gitlab/-/issues/1
 
 ### Complex merge order dependencies are unsupported
 
+If you attempt to create an indirect, nested dependency, GitLab shows one of these error messages:
+
+- Dependencies failed to save: Blocked merge request cannot block others
+- Dependencies failed to save: Blocking merge request cannot itself be blocked
+
 GitLab supports direct dependencies between merge requests, but does not support
 [indirect (nested) dependencies](https://gitlab.com/gitlab-org/gitlab/-/issues/11393).
 

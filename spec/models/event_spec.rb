@@ -102,7 +102,20 @@ RSpec.describe Event, feature_category: :users do
   end
 
   describe 'scopes' do
-    describe 'created_at' do
+    describe '.for_issue' do
+      let(:issue_event) { create(:event, :for_issue, project: project) }
+      let(:work_item_event) { create(:event, :for_work_item, project: project) }
+
+      before do
+        create(:event, :for_design, project: project)
+      end
+
+      it 'returns events for Issue and WorkItem target_type' do
+        expect(described_class.for_issue).to contain_exactly(issue_event, work_item_event)
+      end
+    end
+
+    describe '.created_at' do
       it 'can find the right event' do
         time = 1.day.ago
         event = create(:event, created_at: time, project: project)

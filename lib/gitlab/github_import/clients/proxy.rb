@@ -10,24 +10,24 @@ module Gitlab
           @client = pick_client(access_token, client_options)
         end
 
-        def repos(search_text, pagination_options)
+        def repos(search_text, options)
           return { repos: filtered(client.repos, search_text) } if use_legacy?
 
           if use_graphql?
-            fetch_repos_via_graphql(search_text, pagination_options)
+            fetch_repos_via_graphql(search_text, options)
           else
-            fetch_repos_via_rest(search_text, pagination_options)
+            fetch_repos_via_rest(search_text, options)
           end
         end
 
         private
 
-        def fetch_repos_via_rest(search_text, pagination_options)
-          { repos: client.search_repos_by_name(search_text, pagination_options)[:items] }
+        def fetch_repos_via_rest(search_text, options)
+          { repos: client.search_repos_by_name(search_text, options)[:items] }
         end
 
-        def fetch_repos_via_graphql(search_text, pagination_options)
-          response = client.search_repos_by_name_graphql(search_text, pagination_options)
+        def fetch_repos_via_graphql(search_text, options)
+          response = client.search_repos_by_name_graphql(search_text, options)
           {
             repos: response.dig(:data, :search, :nodes),
             page_info: response.dig(:data, :search, :pageInfo)

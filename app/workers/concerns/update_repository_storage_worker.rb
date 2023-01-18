@@ -5,6 +5,7 @@ module UpdateRepositoryStorageWorker
   include ApplicationWorker
 
   included do
+    deduplicate :until_executed
     idempotent!
     feature_category :gitaly
     urgency :throttled

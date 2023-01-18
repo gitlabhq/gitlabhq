@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Reports::CoverageReport do
+RSpec.describe Gitlab::Ci::Config::Entry::Reports::CoverageReport, feature_category: :pipeline_authoring do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do
@@ -12,6 +12,16 @@ RSpec.describe Gitlab::Ci::Config::Entry::Reports::CoverageReport do
       it { expect(entry).to be_valid }
 
       it { expect(entry.value).to eq(config) }
+    end
+
+    context 'when it is not a hash' do
+      where(:config) { ['string', true, []] }
+
+      with_them do
+        it { expect(entry).not_to be_valid }
+
+        it { expect(entry.errors).to include /should be a hash/ }
+      end
     end
 
     context 'with unsupported coverage format' do

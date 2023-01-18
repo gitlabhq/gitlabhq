@@ -5,7 +5,10 @@ import {
   setFrequentItemToLS,
   mergeById,
   isSidebarDirty,
+  formatSearchResultCount,
+  getAggregationsUrl,
 } from '~/search/store/utils';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import {
   MOCK_LS_KEY,
   MOCK_GROUPS,
@@ -239,6 +242,25 @@ describe('Global Search Store Utils', () => {
       it(`returns ${isDirty}`, () => {
         expect(res).toStrictEqual(isDirty);
       });
+    });
+  });
+  describe('formatSearchResultCount', () => {
+    it('returns zero as string if no count is provided', () => {
+      expect(formatSearchResultCount()).toStrictEqual('0');
+    });
+    it('returns 10K string for 10000 integer', () => {
+      expect(formatSearchResultCount(10000)).toStrictEqual('10K');
+    });
+    it('returns 23K string for "23,000+" string', () => {
+      expect(formatSearchResultCount('23,000+')).toStrictEqual('23K');
+    });
+  });
+
+  describe('getAggregationsUrl', () => {
+    useMockLocationHelper();
+    it('returns zero as string if no count is provided', () => {
+      const testURL = window.location.href;
+      expect(getAggregationsUrl()).toStrictEqual(`${testURL}search/aggregations`);
     });
   });
 });

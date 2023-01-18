@@ -3,7 +3,7 @@ table_name: operations_feature_flags
 classes:
 - Operations::FeatureFlag
 feature_categories:
-- release
+- feature_flags
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7433
 milestone: '11.4'

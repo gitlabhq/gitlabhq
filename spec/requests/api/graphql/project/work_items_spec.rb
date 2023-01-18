@@ -263,7 +263,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       GRAPHQL
     end
 
-    before do
+    before_all do
       create_notes(item1, "some note1")
       create_notes(item2, "some note2")
     end

@@ -210,7 +210,7 @@ configured:
   This ensures that only operators can configure the organization-wide
   deployment ruleset.
 - Developers should be given no more than the Developer role
-  for the top-level group, or explicitly given the Owner role for a child project
+  for the top-level group, or explicitly given the Owner role for a child project.
   They do *not* have access to the CI/CD configurations in the
   top-level group, so operators can ensure that the critical configuration won't
   be accidentally changed by the developers.

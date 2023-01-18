@@ -5,7 +5,7 @@ module Gitlab
     module CycleAnalytics
       module Aggregated
         # Arguments:
-        #   stage - an instance of CycleAnalytics::ProjectStage or CycleAnalytics::GroupStage
+        #   stage - an instance of CycleAnalytics::ProjectStage or CycleAnalytics::Stage
         #   params:
         #     current_user: an instance of User
         #     from: DateTime

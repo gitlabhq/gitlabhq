@@ -51,7 +51,7 @@ Most issues will have labels for at least one of the following:
 - Specialization: `~frontend`, `~backend`, `~documentation`
 - Release Scoping: `~Deliverable`, `~Stretch`, `~"Next Patch Release"`
 - Priority: `~"priority::1"`, `~"priority::2"`, `~"priority::3"`, `~"priority::4"`
-- Severity: ~`"severity::1"`, `~"severity::2"`, `~"severity::3"`, `~"severity::4"`
+- Severity: `~"severity::1"`, `~"severity::2"`, `~"severity::3"`, `~"severity::4"`
 
 Please add `~"breaking change"` label if the issue can be considered as a [breaking change](../deprecation_guidelines/index.md).
 

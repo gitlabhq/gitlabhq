@@ -30,7 +30,7 @@ export default {
   computed: {
     pypiPipCommand() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `pip install ${this.packageEntity.name} --extra-index-url ${this.packageEntity.pypiUrl}`;
+      return `pip install ${this.packageEntity.name} --index-url ${this.packageEntity.pypiUrl}`;
     },
     pypiSetupCommand() {
       return `[gitlab]

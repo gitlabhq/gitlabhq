@@ -129,7 +129,8 @@ module Resolvers
         params[:or] = params[:or].to_h if params[:or]
         params[:iids] ||= [params.delete(:iid)].compact if params[:iid]
 
-        prepare_author_username_params(params)
+        rewrite_param_name(params[:or], :author_usernames, :author_username)
+        rewrite_param_name(params[:or], :label_names, :label_name)
         prepare_assignee_username_params(params)
         prepare_release_tag_params(params)
 
@@ -143,20 +144,14 @@ module Resolvers
         args[:release_tag] ||= release_tag_wildcard
       end
 
-      def prepare_author_username_params(args)
-        args[:or][:author_username] = args[:or].delete(:author_usernames) if args.dig(:or, :author_usernames).present?
+      def prepare_assignee_username_params(args)
+        rewrite_param_name(args, :assignee_usernames, :assignee_username)
+        rewrite_param_name(args[:or], :assignee_usernames, :assignee_username)
+        rewrite_param_name(args[:not], :assignee_usernames, :assignee_username)
       end
 
-      def prepare_assignee_username_params(args)
-        args[:assignee_username] = args.delete(:assignee_usernames) if args[:assignee_usernames].present?
-
-        if args.dig(:or, :assignee_usernames).present?
-          args[:or][:assignee_username] = args[:or].delete(:assignee_usernames)
-        end
-
-        return unless args.dig(:not, :assignee_usernames).present?
-
-        args[:not][:assignee_username] = args[:not].delete(:assignee_usernames)
+      def rewrite_param_name(params, old_name, new_name)
+        params[new_name] = params.delete(old_name) if params && params[old_name].present?
       end
 
       def mutually_exclusive_release_tag_args

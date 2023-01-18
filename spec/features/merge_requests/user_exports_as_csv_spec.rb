@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge Requests > Exports as CSV', :js, feature_category: :code_review do
+RSpec.describe 'Merge Requests > Exports as CSV', :js, feature_category: :code_review_workflow do
   let!(:project) { create(:project, :public, :repository) }
   let!(:user)    { project.creator }
   let!(:open_mr) { create(:merge_request, title: 'Bugfix1', source_project: project, target_project: project, source_branch: 'bugfix1') }

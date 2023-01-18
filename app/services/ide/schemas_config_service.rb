@@ -33,9 +33,7 @@ module Ide
     end
 
     def predefined_schemas
-      return PREDEFINED_SCHEMAS if Feature.enabled?(:schema_linting)
-
-      []
+      PREDEFINED_SCHEMAS
     end
 
     def get_cached(url)

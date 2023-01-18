@@ -186,7 +186,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         persist_accepted_terms_if_required(user) if new_user
 
         store_after_sign_up_path_for_user if intent_to_register?
-        sign_in_and_redirect(user, event: :authentication)
+        sign_in_and_redirect_or_confirm_identity(user, auth_user, new_user)
       end
     else
       fail_login(user)
@@ -306,7 +306,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def persist_accepted_terms_if_required(user)
-    return unless Feature.enabled?(:update_oauth_registration_flow)
     return unless user.persisted?
     return unless Gitlab::CurrentSettings.current_application_settings.enforce_terms?
 
@@ -316,6 +315,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def store_after_sign_up_path_for_user
     store_location_for(:user, users_sign_up_welcome_path)
+  end
+
+  # overridden in EE
+  def sign_in_and_redirect_or_confirm_identity(user, _, _)
+    sign_in_and_redirect(user, event: :authentication)
   end
 end
 

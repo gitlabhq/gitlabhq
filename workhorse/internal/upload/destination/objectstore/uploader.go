@@ -38,11 +38,21 @@ func newETagCheckUploader(strategy uploadStrategy, metrics bool) *uploader {
 
 func hexString(h hash.Hash) string { return hex.EncodeToString(h.Sum(nil)) }
 
+func (u *uploader) Consume(outerCtx context.Context, reader io.Reader, deadLine time.Time) (_ int64, err error) {
+	return u.consume(outerCtx, reader, deadLine, false)
+}
+
+func (u *uploader) ConsumeWithoutDelete(outerCtx context.Context, reader io.Reader, deadLine time.Time) (_ int64, err error) {
+	return u.consume(outerCtx, reader, deadLine, true)
+}
+
 // Consume reads the reader until it reaches EOF or an error. It spawns a
 // goroutine that waits for outerCtx to be done, after which the remote
 // file is deleted. The deadline applies to the upload performed inside
 // Consume, not to outerCtx.
-func (u *uploader) Consume(outerCtx context.Context, reader io.Reader, deadline time.Time) (_ int64, err error) {
+// SkipDelete optionaly call the Delete() function on the strategy once
+// rails is done handling the upload request.
+func (u *uploader) consume(outerCtx context.Context, reader io.Reader, deadLine time.Time, skipDelete bool) (_ int64, err error) {
 	if u.metrics {
 		objectStorageUploadsOpen.Inc()
 		defer func(started time.Time) {
@@ -59,17 +69,25 @@ func (u *uploader) Consume(outerCtx context.Context, reader io.Reader, deadline 
 		// "delete" them.
 		if err != nil {
 			u.strategy.Abort()
+
+			if skipDelete {
+				// skipDelete avoided the object removal (see the goroutine below). Make
+				// here that the object is deleted if aborted.
+				u.strategy.Delete()
+			}
 		}
 	}()
 
-	go func() {
-		// Once gitlab-rails is done handling the request, we are supposed to
-		// delete the upload from its temporary location.
-		<-outerCtx.Done()
-		u.strategy.Delete()
-	}()
+	if !skipDelete {
+		go func() {
+			// Once gitlab-rails is done handling the request, we are supposed to
+			// delete the upload from its temporary location.
+			<-outerCtx.Done()
+			u.strategy.Delete()
+		}()
+	}
 
-	uploadCtx, cancelFn := context.WithDeadline(outerCtx, deadline)
+	uploadCtx, cancelFn := context.WithDeadline(outerCtx, deadLine)
 	defer cancelFn()
 
 	var hasher hash.Hash

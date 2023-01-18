@@ -42,6 +42,10 @@ module API
       def snowplow_gitlab_standard_context
         { namespace: find_authorized_group! }
       end
+
+      def required_permission
+        :read_group
+      end
     end
 
     params do

@@ -32,7 +32,7 @@ static-analysis:
   parallel: 2
   script:
     - yarn_install_script
-    - scripts/static-analysis
+    - fail_on_warnings scripts/static-analysis
 
 static-analysis as-if-foss:
   extends:

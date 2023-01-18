@@ -58,7 +58,7 @@ module Mutations
           commit_message: message,
           branch_name: branch,
           start_branch: args[:start_branch] || branch,
-          actions: actions.map { |action| action.to_h }
+          actions: actions.map(&:to_h)
         }
 
         result = ::Files::MultiService.new(project, current_user, attributes).execute

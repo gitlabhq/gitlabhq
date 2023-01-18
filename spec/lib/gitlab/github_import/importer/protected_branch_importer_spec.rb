@@ -15,6 +15,9 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
   let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
   let(:expected_allow_force_push) { false }
   let(:expected_code_owner_approval_required) { false }
+  let(:allowed_to_push_users) { [] }
+  let(:push_access_levels_number) { 1 }
+  let(:push_access_levels_attributes) { [{ access_level: expected_push_access_level }] }
   let(:github_protected_branch) do
     Gitlab::GithubImport::Representation::ProtectedBranch.new(
       id: branch_name,
@@ -22,7 +25,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
       required_conversation_resolution: required_conversation_resolution,
       required_signatures: required_signatures,
       required_pull_request_reviews: required_pull_request_reviews,
-      require_code_owner_reviews: require_code_owner_reviews_on_github
+      require_code_owner_reviews: require_code_owner_reviews_on_github,
+      allowed_to_push_users: allowed_to_push_users
     )
   end
 
@@ -36,7 +40,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
       let(:expected_ruleset) do
         {
           name: 'protection',
-          push_access_levels_attributes: [{ access_level: expected_push_access_level }],
+          push_access_levels_attributes: push_access_levels_attributes,
           merge_access_levels_attributes: [{ access_level: expected_merge_access_level }],
           allow_force_push: expected_allow_force_push,
           code_owner_approval_required: expected_code_owner_approval_required
@@ -56,7 +60,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
 
       it 'creates protected branch and access levels for given github rule' do
         expect { importer.execute }.to change(ProtectedBranch, :count).by(1)
-          .and change(ProtectedBranch::PushAccessLevel, :count).by(1)
+          .and change(ProtectedBranch::PushAccessLevel, :count).by(push_access_levels_number)
           .and change(ProtectedBranch::MergeAccessLevel, :count).by(1)
       end
     end
@@ -220,10 +224,97 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
 
     context 'when required_pull_request_reviews rule is enabled on GitHub' do
       let(:required_pull_request_reviews) { true }
-      let(:expected_push_access_level) { Gitlab::Access::NO_ACCESS }
-      let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
 
-      it_behaves_like 'create branch protection by the strictest ruleset'
+      context 'when no user is allowed to bypass push restrictions' do
+        let(:expected_push_access_level) { Gitlab::Access::NO_ACCESS }
+        let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
+
+        it_behaves_like 'create branch protection by the strictest ruleset'
+      end
+
+      context 'when there are users who are allowed to bypass push restrictions' do
+        let(:owner_id) { project.owner.id }
+        let(:owner_username) { project.owner.username }
+        let(:other_user) { create(:user) }
+        let(:other_user_id) { other_user.id }
+        let(:other_user_username) { other_user.username }
+        let(:allowed_to_push_users) do
+          [
+            { id: owner_id, login: owner_username },
+            { id: other_user_id, login: other_user_username }
+          ]
+        end
+
+        context 'when the protected_refs_for_users feature is available', if: Gitlab.ee? do
+          let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
+
+          before do
+            stub_licensed_features(protected_refs_for_users: true)
+          end
+
+          context 'when the users are found on GitLab' do
+            let(:push_access_levels_number) { 2 }
+            let(:push_access_levels_attributes) do
+              [
+                { user_id: owner_id },
+                { user_id: other_user_id }
+              ]
+            end
+
+            before do
+              project.add_member(other_user, :maintainer)
+              allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+                allow(finder).to receive(:find).with(owner_id, owner_username).and_return(owner_id)
+                allow(finder).to receive(:find).with(other_user_id, other_user_username).and_return(other_user_id)
+              end
+            end
+
+            it_behaves_like 'create branch protection by the strictest ruleset'
+          end
+
+          context 'when one of found users is not a member of the imported project' do
+            let(:push_access_levels_number) { 1 }
+            let(:push_access_levels_attributes) do
+              [
+                { user_id: owner_id }
+              ]
+            end
+
+            before do
+              allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+                allow(finder).to receive(:find).with(owner_id, owner_username).and_return(owner_id)
+                allow(finder).to receive(:find).with(other_user_id, other_user_username).and_return(other_user_id)
+              end
+            end
+
+            it_behaves_like 'create branch protection by the strictest ruleset'
+          end
+
+          context 'when the user are not found on GitLab' do
+            before do
+              allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+                allow(finder).to receive(:find).and_return(nil)
+              end
+            end
+
+            let(:expected_push_access_level) { Gitlab::Access::NO_ACCESS }
+            let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
+
+            it_behaves_like 'create branch protection by the strictest ruleset'
+          end
+        end
+
+        context 'when the protected_refs_for_users feature is not available' do
+          before do
+            stub_licensed_features(protected_refs_for_users: false)
+          end
+
+          let(:expected_push_access_level) { Gitlab::Access::NO_ACCESS }
+          let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
+
+          it_behaves_like 'create branch protection by the strictest ruleset'
+        end
+      end
     end
 
     context 'when required_pull_request_reviews rule is disabled on GitHub' do

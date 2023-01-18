@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-# This will be removed with FF ci_refactoring_external_mapper and moved to below.
+# This will be use with the FF ci_refactoring_external_mapper_verifier in the next MR.
+# It can be removed when the FF is removed.
 RSpec.shared_context 'gitlab_ci_config_external_mapper' do
   include StubRequests
   include RepoHelpers
@@ -466,12 +467,4 @@ end
 
 RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline_authoring do
   it_behaves_like 'gitlab_ci_config_external_mapper'
-
-  context 'when the FF ci_refactoring_external_mapper is disabled' do
-    before do
-      stub_feature_flags(ci_refactoring_external_mapper: false)
-    end
-
-    it_behaves_like 'gitlab_ci_config_external_mapper'
-  end
 end

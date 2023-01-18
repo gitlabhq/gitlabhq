@@ -19,7 +19,7 @@ module Issues
       return if project_id.nil? && root_namespace_id.nil?
       return if ::Gitlab::Issues::Rebalancing::State.rebalance_recently_finished?(project_id, root_namespace_id)
 
-      # pull the projects collection to be rebalanced either the project if namespace is not a group(i.e. user namesapce)
+      # pull the projects collection to be rebalanced either the project if namespace is not a group(i.e. user namespace)
       # or the root namespace, this also makes the worker backward compatible with previous version where a project_id was
       # passed as the param
       projects_to_rebalance = projects_collection(project_id, root_namespace_id)

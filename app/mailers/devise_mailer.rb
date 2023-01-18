@@ -17,6 +17,11 @@ class DeviseMailer < Devise::Mailer
     devise_mail(record, :user_admin_approval, opts)
   end
 
+  def reset_password_instructions(record, token, opts = {})
+    headers['X-Mailgun-Suppressions-Bypass'] = 'true'
+    super
+  end
+
   protected
 
   def subject_for(key)

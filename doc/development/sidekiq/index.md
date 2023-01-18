@@ -83,6 +83,19 @@ Each retry for a worker is counted as a failure in our metrics. A worker
 which always fails 9 times and succeeds on the 10th would have a 90%
 error rate.
 
+If you want to manually retry the worker without tracking the exception in Sentry,
+use an exception class inherited from `Gitlab::SidekiqMiddleware::RetryError`.
+
+```ruby
+ServiceUnavailable = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
+
+def perform
+  ...
+
+  raise ServiceUnavailable if external_service_unavailable?
+end
+```
+
 ## Sidekiq Queues
 
 Previously, each worker had its own queue, which was automatically set based on the

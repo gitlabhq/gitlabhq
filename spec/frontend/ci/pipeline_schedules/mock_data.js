@@ -32,6 +32,14 @@ export const mockPipelineScheduleNodes = nodes;
 export const mockPipelineScheduleAsGuestNodes = guestNodes;
 
 export const mockTakeOwnershipNodes = takeOwnershipNodes;
+export const emptyPipelineSchedulesResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      pipelineSchedules: { nodes: [], count: 0 },
+    },
+  },
+};
 
 export const deleteMutationResponse = {
   data: {
@@ -39,6 +47,16 @@ export const deleteMutationResponse = {
       clientMutationId: null,
       errors: [],
       __typename: 'PipelineScheduleDeletePayload',
+    },
+  },
+};
+
+export const playMutationResponse = {
+  data: {
+    pipelineSchedulePlay: {
+      clientMutationId: null,
+      errors: [],
+      __typename: 'PipelineSchedulePlayPayload',
     },
   },
 };

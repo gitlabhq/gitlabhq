@@ -9,7 +9,7 @@ module Projects
       before_action :present_project, only: [:edit]
       before_action :authorize_admin_project!
 
-      feature_category :code_review
+      feature_category :code_review_workflow
 
       def update
         result = ::Projects::UpdateService.new(@project, current_user, project_params).execute

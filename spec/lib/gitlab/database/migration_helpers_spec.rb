@@ -743,6 +743,75 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         end
       end
 
+      context 'ON UPDATE statements' do
+        context 'on_update: :nullify' do
+          it 'appends ON UPDATE SET NULL statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
+            expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+            expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+            expect(model).to receive(:execute).with(/ON UPDATE SET NULL/)
+
+            model.add_concurrent_foreign_key(:projects, :users,
+                                             column: :user_id,
+                                             on_update: :nullify)
+          end
+        end
+
+        context 'on_update: :cascade' do
+          it 'appends ON UPDATE CASCADE statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
+            expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+            expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+            expect(model).to receive(:execute).with(/ON UPDATE CASCADE/)
+
+            model.add_concurrent_foreign_key(:projects, :users,
+                                             column: :user_id,
+                                             on_update: :cascade)
+          end
+        end
+
+        context 'on_update: nil' do
+          it 'appends no ON UPDATE statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
+            expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+            expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+            expect(model).not_to receive(:execute).with(/ON UPDATE/)
+
+            model.add_concurrent_foreign_key(:projects, :users,
+                                             column: :user_id,
+                                             on_update: nil)
+          end
+        end
+
+        context 'when on_update is not provided' do
+          it 'appends no ON UPDATE statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
+            expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+            expect(model).to receive(:execute).with(/SET statement_timeout TO/)
+            expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+            expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
+
+            expect(model).not_to receive(:execute).with(/ON UPDATE/)
+
+            model.add_concurrent_foreign_key(:projects, :users,
+                                             column: :user_id)
+          end
+        end
+      end
+
       context 'when no custom key name is supplied' do
         it 'creates a concurrent foreign key and validates it' do
           expect(model).to receive(:with_lock_retries).and_call_original
@@ -760,6 +829,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           name = model.concurrent_foreign_key_name(:projects, :user_id)
           expect(model).to receive(:foreign_key_exists?).with(:projects, :users,
                                                               column: :user_id,
+                                                              on_update: nil,
                                                               on_delete: :cascade,
                                                               name: name,
                                                               primary_key: :id).and_return(true)
@@ -792,6 +862,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
               expect(model).to receive(:foreign_key_exists?).with(:projects, :users,
                                                                   name: :foo,
                                                                   primary_key: :id,
+                                                                  on_update: nil,
                                                                   on_delete: :cascade,
                                                                   column: :user_id).and_return(true)
 
@@ -861,6 +932,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             "ADD CONSTRAINT fk_multiple_columns\n" \
             "FOREIGN KEY \(partition_number, user_id\)\n" \
             "REFERENCES users \(partition_number, id\)\n" \
+            "ON UPDATE CASCADE\n" \
             "ON DELETE CASCADE\n" \
             "NOT VALID;\n"
           )
@@ -871,7 +943,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             column: [:partition_number, :user_id],
             target_column: [:partition_number, :id],
             validate: false,
-            name: :fk_multiple_columns
+            name: :fk_multiple_columns,
+            on_update: :cascade
           )
         end
 
@@ -883,6 +956,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
               {
                 column: [:partition_number, :user_id],
                 name: :fk_multiple_columns,
+                on_update: :cascade,
                 on_delete: :cascade,
                 primary_key: [:partition_number, :id]
               }
@@ -898,6 +972,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
               :users,
               column: [:partition_number, :user_id],
               target_column: [:partition_number, :id],
+              on_update: :cascade,
               validate: false,
               name: :fk_multiple_columns
             )
@@ -973,58 +1048,58 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
   describe '#foreign_key_exists?' do
     before do
-      key = ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
-        :projects, :users,
-        {
-          column: :non_standard_id,
-          name: :fk_projects_users_non_standard_id,
-          on_delete: :cascade,
-          primary_key: :id
-        }
-      )
-      allow(model).to receive(:foreign_keys).with(:projects).and_return([key])
+      model.connection.execute(<<~SQL)
+        create table referenced (
+          id bigserial primary key not null
+        );
+        create table referencing (
+          id bigserial primary key not null,
+          non_standard_id bigint not null,
+          constraint fk_referenced foreign key (non_standard_id) references referenced(id) on delete cascade
+        );
+      SQL
     end
 
     shared_examples_for 'foreign key checks' do
       it 'finds existing foreign keys by column' do
-        expect(model.foreign_key_exists?(:projects, target_table, column: :non_standard_id)).to be_truthy
+        expect(model.foreign_key_exists?(:referencing, target_table, column: :non_standard_id)).to be_truthy
       end
 
       it 'finds existing foreign keys by name' do
-        expect(model.foreign_key_exists?(:projects, target_table, name: :fk_projects_users_non_standard_id)).to be_truthy
+        expect(model.foreign_key_exists?(:referencing, target_table, name: :fk_referenced)).to be_truthy
       end
 
       it 'finds existing foreign_keys by name and column' do
-        expect(model.foreign_key_exists?(:projects, target_table, name: :fk_projects_users_non_standard_id, column: :non_standard_id)).to be_truthy
+        expect(model.foreign_key_exists?(:referencing, target_table, name: :fk_referenced, column: :non_standard_id)).to be_truthy
       end
 
       it 'finds existing foreign_keys by name, column and on_delete' do
-        expect(model.foreign_key_exists?(:projects, target_table, name: :fk_projects_users_non_standard_id, column: :non_standard_id, on_delete: :cascade)).to be_truthy
+        expect(model.foreign_key_exists?(:referencing, target_table, name: :fk_referenced, column: :non_standard_id, on_delete: :cascade)).to be_truthy
       end
 
       it 'finds existing foreign keys by target table only' do
-        expect(model.foreign_key_exists?(:projects, target_table)).to be_truthy
+        expect(model.foreign_key_exists?(:referencing, target_table)).to be_truthy
       end
 
       it 'compares by column name if given' do
-        expect(model.foreign_key_exists?(:projects, target_table, column: :user_id)).to be_falsey
+        expect(model.foreign_key_exists?(:referencing, target_table, column: :user_id)).to be_falsey
       end
 
       it 'compares by target column name if given' do
-        expect(model.foreign_key_exists?(:projects, target_table, primary_key: :user_id)).to be_falsey
-        expect(model.foreign_key_exists?(:projects, target_table, primary_key: :id)).to be_truthy
+        expect(model.foreign_key_exists?(:referencing, target_table, primary_key: :user_id)).to be_falsey
+        expect(model.foreign_key_exists?(:referencing, target_table, primary_key: :id)).to be_truthy
       end
 
       it 'compares by foreign key name if given' do
-        expect(model.foreign_key_exists?(:projects, target_table, name: :non_existent_foreign_key_name)).to be_falsey
+        expect(model.foreign_key_exists?(:referencing, target_table, name: :non_existent_foreign_key_name)).to be_falsey
       end
 
       it 'compares by foreign key name and column if given' do
-        expect(model.foreign_key_exists?(:projects, target_table, name: :non_existent_foreign_key_name, column: :non_standard_id)).to be_falsey
+        expect(model.foreign_key_exists?(:referencing, target_table, name: :non_existent_foreign_key_name, column: :non_standard_id)).to be_falsey
       end
 
       it 'compares by foreign key name, column and on_delete if given' do
-        expect(model.foreign_key_exists?(:projects, target_table, name: :fk_projects_users_non_standard_id, column: :non_standard_id, on_delete: :nullify)).to be_falsey
+        expect(model.foreign_key_exists?(:referencing, target_table, name: :fk_referenced, column: :non_standard_id, on_delete: :nullify)).to be_falsey
       end
     end
 
@@ -1035,7 +1110,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
 
     context 'specifying a target table' do
-      let(:target_table) { :users }
+      let(:target_table) { :referenced }
 
       it_behaves_like 'foreign key checks'
     end
@@ -1044,59 +1119,66 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       expect(model.foreign_key_exists?(:projects, :other_table)).to be_falsey
     end
 
+    it 'raises an error if an invalid on_delete is specified' do
+      # The correct on_delete key is "nullify"
+      expect { model.foreign_key_exists?(:referenced, on_delete: :set_null) }.to raise_error(ArgumentError)
+    end
+
     context 'with foreign key using multiple columns' do
       before do
-        key = ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
-          :projects, :users,
-          {
-            column: [:partition_number, :id],
-            name: :fk_projects_users_partition_number_id,
-            on_delete: :cascade,
-            primary_key: [:partition_number, :id]
-          }
-        )
-        allow(model).to receive(:foreign_keys).with(:projects).and_return([key])
+        model.connection.execute(<<~SQL)
+        create table p_referenced (
+          id bigserial not null,
+          partition_number bigint not null default 100,
+          primary key (partition_number, id)
+        );
+        create table p_referencing (
+          id bigserial primary key not null,
+          partition_number bigint not null,
+          constraint fk_partitioning foreign key (partition_number, id) references p_referenced(partition_number, id) on delete cascade
+        );
+        SQL
       end
 
       it 'finds existing foreign keys by columns' do
-        expect(model.foreign_key_exists?(:projects, :users, column: [:partition_number, :id])).to be_truthy
+        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, column: [:partition_number, :id])).to be_truthy
       end
 
       it 'finds existing foreign keys by name' do
-        expect(model.foreign_key_exists?(:projects, :users, name: :fk_projects_users_partition_number_id)).to be_truthy
+        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, name: :fk_partitioning)).to be_truthy
       end
 
       it 'finds existing foreign_keys by name and column' do
-        expect(model.foreign_key_exists?(:projects, :users, name: :fk_projects_users_partition_number_id, column: [:partition_number, :id])).to be_truthy
+        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, name: :fk_partitioning, column: [:partition_number, :id])).to be_truthy
       end
 
       it 'finds existing foreign_keys by name, column and on_delete' do
-        expect(model.foreign_key_exists?(:projects, :users, name: :fk_projects_users_partition_number_id, column: [:partition_number, :id], on_delete: :cascade)).to be_truthy
+        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, name: :fk_partitioning, column: [:partition_number, :id], on_delete: :cascade)).to be_truthy
       end
 
       it 'finds existing foreign keys by target table only' do
-        expect(model.foreign_key_exists?(:projects, :users)).to be_truthy
+        expect(model.foreign_key_exists?(:p_referencing, :p_referenced)).to be_truthy
       end
 
       it 'compares by column name if given' do
-        expect(model.foreign_key_exists?(:projects, :users, column: :id)).to be_falsey
+        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, column: :id)).to be_falsey
       end
 
       it 'compares by target column name if given' do
-        expect(model.foreign_key_exists?(:projects, :users, primary_key: :user_id)).to be_falsey
-        expect(model.foreign_key_exists?(:projects, :users, primary_key: [:partition_number, :id])).to be_truthy
+        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, primary_key: :user_id)).to be_falsey
+        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, primary_key: [:partition_number, :id])).to be_truthy
       end
 
       it 'compares by foreign key name if given' do
-        expect(model.foreign_key_exists?(:projects, :users, name: :non_existent_foreign_key_name)).to be_falsey
+        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, name: :non_existent_foreign_key_name)).to be_falsey
       end
 
       it 'compares by foreign key name and column if given' do
-        expect(model.foreign_key_exists?(:projects, :users, name: :non_existent_foreign_key_name, column: [:partition_number, :id])).to be_falsey
+        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, name: :non_existent_foreign_key_name, column: [:partition_number, :id])).to be_falsey
       end
 
       it 'compares by foreign key name, column and on_delete if given' do
-        expect(model.foreign_key_exists?(:projects, :users, name: :fk_projects_users_partition_number_id, column: [:partition_number, :id], on_delete: :nullify)).to be_falsey
+        expect(model.foreign_key_exists?(:p_referencing, :p_referenced, name: :fk_partitioning, column: [:partition_number, :id], on_delete: :nullify)).to be_falsey
       end
     end
   end
@@ -1159,7 +1241,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           Gitlab::Database::LockWritesManager.new(
             table_name: test_table,
             connection: model.connection,
-            database_name: 'main'
+            database_name: 'main',
+            with_retries: false
           )
         end
 
@@ -1340,7 +1423,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           Gitlab::Database::LockWritesManager.new(
             table_name: test_table,
             connection: model.connection,
-            database_name: 'main'
+            database_name: 'main',
+            with_retries: false
           )
         end
 

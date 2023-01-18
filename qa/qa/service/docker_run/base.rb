@@ -55,7 +55,9 @@ module QA
         end
 
         def pull
-          shell "docker pull #{@image}"
+          Support::Retrier.retry_until(retry_on_exception: true, sleep_interval: 3) do
+            shell "docker pull #{@image}"
+          end
         end
 
         def host_name

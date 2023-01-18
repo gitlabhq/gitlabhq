@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_category: :importer do
+RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_category: :importers do
   subject { described_class.new(gist_object, user.id).execute }
 
   let_it_be(:user) { create(:user) }
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_catego
 
         expect(user.snippets.count).to eq(0)
         expect(result.error?).to eq(true)
-        expect(result.errors).to match_array(['Snippet max file count exceeded'])
+        expect(result.errors).to match_array(['Snippet maximum file count exceeded'])
       end
     end
 

@@ -15,6 +15,7 @@ import Autosize from 'autosize';
 import $ from 'jquery';
 import { escape, uniqueId } from 'lodash';
 import Vue from 'vue';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { createAlert, VARIANT_INFO } from '~/flash';
 import '~/lib/utils/jquery_at_who';
 import AjaxCache from '~/lib/utils/ajax_cache';
@@ -40,7 +41,6 @@ import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash } from './lib/utils/url_utility';
 import { sprintf, s__, __ } from './locale';
 import TaskList from './task_list';
-import '~/behaviors/markdown/init_gfm';
 
 window.autosize = Autosize;
 
@@ -516,7 +516,11 @@ export default class Notes {
     }
     if (discussionContainer.length === 0) {
       if (noteEntity.diff_discussion_html) {
-        const $discussion = $(noteEntity.diff_discussion_html).renderGFM();
+        const discussionElement = document.createElement('table');
+        // eslint-disable-next-line no-unsanitized/method
+        discussionElement.insertAdjacentHTML('afterbegin', noteEntity.diff_discussion_html);
+        renderGFM(discussionElement);
+        const $discussion = $(discussionElement).unwrap();
 
         if (!this.isParallelView() || row.hasClass('js-temp-notes-holder') || noteEntity.on_image) {
           // insert the note and the reply button after the temp row
@@ -571,7 +575,9 @@ export default class Notes {
     // reset text and preview
     form.find('.js-md-write-button').click();
     form.find('.js-note-text').val('').trigger('input');
-    form.find('.js-note-text').data('autosave').reset();
+    form.find('.js-note-text').each(function reset() {
+      this.$autosave.reset();
+    });
 
     const event = document.createEvent('Event');
     event.initEvent('autosize:update', true, false);
@@ -638,7 +644,9 @@ export default class Notes {
       // DiffNote
       form.find('#note_position').val(),
     ];
-    return new Autosave(textarea, key);
+    const textareaEl = textarea.get(0);
+    // eslint-disable-next-line no-new
+    if (textareaEl) new Autosave(textareaEl, key);
   }
 
   /**
@@ -708,7 +716,7 @@ export default class Notes {
 
     $noteAvatar.append($targetNoteBadge);
     this.revertNoteEditForm($targetNote);
-    $noteEntityEl.renderGFM();
+    renderGFM($noteEntityEl.get(0));
     // Find the note's `li` element by ID and replace it with the updated HTML
     const $note_li = $(`.note-row-${noteEntity.id}`);
 
@@ -1082,7 +1090,9 @@ export default class Notes {
     const row = form.closest('tr');
     const glForm = form.data('glForm');
     glForm.destroy();
-    form.find('.js-note-text').data('autosave').reset();
+    form.find('.js-note-text').each(function reset() {
+      this.$autosave.reset();
+    });
     // show the reply button (will only work for replies)
     form.prev('.discussion-reply-holder').show();
     if (row.is('.js-temp-notes-holder')) {
@@ -1382,7 +1392,8 @@ export default class Notes {
   static animateAppendNote(noteHtml, $notesList) {
     const $note = $(noteHtml);
 
-    $note.addClass('fade-in-full').renderGFM();
+    $note.addClass('fade-in-full');
+    renderGFM($note.get(0));
     $notesList.append($note);
     return $note;
   }
@@ -1390,7 +1401,8 @@ export default class Notes {
   static animateUpdateNote(noteHtml, $note) {
     const $updatedNote = $(noteHtml);
 
-    $updatedNote.addClass('fade-in').renderGFM();
+    $updatedNote.addClass('fade-in');
+    renderGFM($updatedNote.get(0));
     $note.replaceWith($updatedNote);
     return $updatedNote;
   }

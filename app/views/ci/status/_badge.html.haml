@@ -1,7 +1,7 @@
 - status = local_assigns.fetch(:status)
 - link   = local_assigns.fetch(:link, true)
 - title  = local_assigns.fetch(:title, nil)
-- css_classes = "ci-status ci-#{status.group} #{'has-tooltip' if title.present?}"
+- css_classes = "gl-display-inline-flex gl-align-items-center gl-gap-2 gl-line-height-0 gl-px-3 gl-py-2 gl-rounded-base ci-status ci-#{status.group} #{'has-tooltip' if title.present?}"
 
 - if link && status.has_details?
   = link_to status.details_path, class: css_classes, title: title, data: { html: title.present? } do

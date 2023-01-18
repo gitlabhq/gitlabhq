@@ -15,17 +15,22 @@ If you want to bring existing projects to GitLab or copy GitLab projects to a di
   - Between a self-managed instance and GitLab.com in both directions.
   - In the same GitLab instance.
 
-For any type of source and target, you can migrate projects:
+Prerequisite:
 
-- As part of a [GitLab group migration](../../group/import/index.md). You can't migrate only chosen projects,
-  but you can migrate many projects at once within a group.
+- At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+
+For any type of source and target, you can migrate GitLab projects:
+
+- When [migrating groups by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended), which allows you to migrate all
+  projects in a group at once. Migrating projects by direct transfer is in [Beta](../../../policy/alpha-beta-support.md#beta-features). The feature is not ready
+  for production use.
 - Using [file exports](../settings/import_export.md). With this method you can migrate projects one by one. No network
   connection between instances is required.
 
 If you only need to migrate Git repositories, you can [import each project by URL](repo_by_url.md). However, you can't
 import issues and merge requests this way. To retain metadata like issues and merge requests, either:
 
-- [Migrate projects with groups](../../group/import/index.md).
+- [Migrate projects with groups by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended). This feature is in [Beta](../../../policy/alpha-beta-support.md#beta-features). It is not ready for production use.
 - Use [file exports](../settings/import_export.md) to import projects.
 
 Keep in mind the limitations of [migrating using file exports](../settings/import_export.md#items-that-are-exported).
@@ -45,7 +50,6 @@ You can import projects from:
 - [GitLab.com](gitlab_com.md)
 - [Gitea](gitea.md)
 - [Perforce](perforce.md)
-- [From SVN](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Git-as-a-Client)
 - [TFVC](tfvc.md)
 - [Repository by URL](repo_by_url.md)
 - [Uloading a manifest file (AOSP)](manifest.md)
@@ -56,6 +60,13 @@ You can also import any Git repository through HTTP from the **New Project** pag
 repository is too large, the import can timeout.
 
 You can then [connect your external repository to get CI/CD benefits](../../../ci/ci_cd_for_external_repos/index.md).
+
+## Import from Subversion
+
+GitLab can not automatically migrate Subversion repositories to Git. Converting Subversion repositories to Git can be difficult, but several tools exist including:
+
+- [`git svn`](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Migrating-to-Git), for very small and simple repositories.
+- [`reposurgeon`](http://www.catb.org/~esr/reposurgeon/repository-editing.html), for larger and more complex repositories.
 
 ## Migrate using the API
 
@@ -101,8 +112,8 @@ To view project import history:
 1. Select **History** in the upper right corner.
 1. If there are any errors for a particular import, you can see them by selecting **Details**.
 
-The history also includes projects created from [built-in](../working_with_projects.md#create-a-project-from-a-built-in-template)
-or [custom](../working_with_projects.md#create-a-project-from-a-built-in-template)
+The history also includes projects created from [built-in](../index.md#create-a-project-from-a-built-in-template)
+or [custom](../index.md#create-a-project-from-a-built-in-template)
 templates. GitLab uses [import repository by URL](repo_by_url.md)
 to create a new project from a template.
 

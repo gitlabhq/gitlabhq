@@ -53,10 +53,6 @@ describe('BoardForm', () => {
   const setErrorMock = jest.fn();
 
   const store = new Vuex.Store({
-    getters: {
-      isGroupBoard: () => true,
-      isProjectBoard: () => false,
-    },
     actions: {
       setBoard: setBoardMock,
       setError: setErrorMock,
@@ -73,6 +69,8 @@ describe('BoardForm', () => {
       },
       provide: {
         boardBaseUrl: 'root',
+        isGroupBoard: true,
+        isProjectBoard: false,
       },
       mocks: {
         $apollo: {

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_authoring do
   include StubRequests
+  include RepoHelpers
 
   let_it_be(:user) { create(:user) }
 
@@ -313,9 +314,12 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_authoring do
 
   context "when using 'include' directive" do
     let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :repository, group: group) }
+    let_it_be(:main_project) { create(:project, :repository, :public, group: group) }
 
-    let(:project) { create(:project, :repository, group: group) }
-    let(:main_project) { create(:project, :repository, :public, group: group) }
+    let(:project_sha) { project.commit.id }
+    let(:main_project_sha) { main_project.commit.id }
+
     let(:pipeline) { build(:ci_pipeline, project: project) }
 
     let(:remote_location) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
@@ -356,34 +360,36 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_authoring do
     end
 
     let(:config) do
-      described_class.new(gitlab_ci_yml, project: project, pipeline: pipeline, sha: '12345', user: user)
+      described_class.new(gitlab_ci_yml, project: project, pipeline: pipeline, sha: project_sha, user: user)
+    end
+
+    let(:project_files) do
+      {
+        local_location => local_file_content
+      }
+    end
+
+    let(:main_project_files) do
+      {
+        '.gitlab-ci.yml' => local_file_content,
+        '.another-ci-file.yml' => local_file_content
+      }
     end
 
     before do
       stub_full_request(remote_location).to_return(body: remote_file_content)
 
-      allow(project.repository)
-        .to receive(:blob_data_at).and_return(local_file_content)
-
-      main_project.repository.create_file(
-        main_project.creator,
-        '.gitlab-ci.yml',
-        local_file_content,
-        message: 'Add README.md',
-        branch_name: 'master'
-      )
-
-      main_project.repository.create_file(
-        main_project.creator,
-        '.another-ci-file.yml',
-        local_file_content,
-        message: 'Add README.md',
-        branch_name: 'master'
-      )
-
       create(:ci_variable, project: project, key: "REF", value: "HEAD")
       create(:ci_group_variable, group: group, key: "FILENAME", value: ".gitlab-ci.yml")
       create(:ci_instance_variable, key: 'MAIN_PROJECT', value: main_project.full_path)
+    end
+
+    around do |example|
+      create_and_delete_files(project, project_files) do
+        create_and_delete_files(main_project, main_project_files) do
+          example.run
+        end
+      end
     end
 
     context "when gitlab_ci_yml has valid 'include' defined" do
@@ -434,25 +440,25 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_authoring do
         expect(config.metadata[:includes]).to contain_exactly(
           { type: :local,
             location: local_location,
-            blob: "http://localhost/#{project.full_path}/-/blob/12345/#{local_location}",
-            raw: "http://localhost/#{project.full_path}/-/raw/12345/#{local_location}",
+            blob: "http://localhost/#{project.full_path}/-/blob/#{project_sha}/#{local_location}",
+            raw: "http://localhost/#{project.full_path}/-/raw/#{project_sha}/#{local_location}",
             extra: {},
             context_project: project.full_path,
-            context_sha: '12345' },
+            context_sha: project_sha },
           { type: :remote,
             location: remote_location,
             blob: nil,
             raw: remote_location,
             extra: {},
             context_project: project.full_path,
-            context_sha: '12345' },
+            context_sha: project_sha },
           { type: :file,
             location: '.gitlab-ci.yml',
-            blob: "http://localhost/#{main_project.full_path}/-/blob/#{main_project.commit.sha}/.gitlab-ci.yml",
-            raw: "http://localhost/#{main_project.full_path}/-/raw/#{main_project.commit.sha}/.gitlab-ci.yml",
+            blob: "http://localhost/#{main_project.full_path}/-/blob/#{main_project_sha}/.gitlab-ci.yml",
+            raw: "http://localhost/#{main_project.full_path}/-/raw/#{main_project_sha}/.gitlab-ci.yml",
             extra: { project: main_project.full_path, ref: 'HEAD' },
             context_project: project.full_path,
-            context_sha: '12345' }
+            context_sha: project_sha }
         )
       end
     end
@@ -511,16 +517,13 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_authoring do
     describe 'external file version' do
       context 'when external local file SHA is defined' do
         it 'is using a defined value' do
-          expect(project.repository).to receive(:blob_data_at)
-            .with('eeff1122', local_location)
-
-          described_class.new(gitlab_ci_yml, project: project, sha: 'eeff1122', user: user, pipeline: pipeline)
+          described_class.new(gitlab_ci_yml, project: project, sha: project_sha, user: user, pipeline: pipeline)
         end
       end
 
       context 'when external local file SHA is not defined' do
         it 'is using latest SHA on the default branch' do
-          expect(project.repository).to receive(:root_ref_sha)
+          expect(project.repository).to receive(:root_ref_sha).and_call_original
 
           described_class.new(gitlab_ci_yml, project: project, sha: nil, user: user, pipeline: pipeline)
         end
@@ -757,13 +760,11 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_authoring do
 
       before do
         project.add_developer(user)
+      end
 
-        allow_next_instance_of(Repository) do |repository|
-          allow(repository).to receive(:blob_data_at).with(an_instance_of(String), local_location)
-                                                     .and_return(local_file_content)
-
-          allow(repository).to receive(:blob_data_at).with(an_instance_of(String), other_file_location)
-                                                     .and_return(other_file_content)
+      around do |example|
+        create_and_delete_files(project, { other_file_location => other_file_content }) do
+          example.run
         end
       end
 
@@ -819,14 +820,10 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_authoring do
           HEREDOC
         end
 
-        before do
-          project.repository.create_file(
-            project.creator,
-            'my_builds.yml',
-            local_file_content,
-            message: 'Add my_builds.yml',
-            branch_name: '12345'
-          )
+        around do |example|
+          create_and_delete_files(project, { 'my_builds.yml' => local_file_content }) do
+            example.run
+          end
         end
 
         context 'when the exists file does not exist' do
@@ -853,7 +850,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_authoring do
         include:
           - local: #{local_location}
             rules:
-              - if: $CI_COMMIT_SHA == "#{project.commit.sha}"
+              - if: $CI_COMMIT_REF_NAME == "master"
         HEREDOC
       end
 

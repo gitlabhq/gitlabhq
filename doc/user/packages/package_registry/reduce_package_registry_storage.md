@@ -75,6 +75,8 @@ To access these project settings, you must be at least a maintainer on the relat
   to upload more than one copy of an asset. You can limit the number of duplicated assets to keep and automatically
   delete the oldest assets once the limit is reached. Unique filenames, such as those produced by Maven snapshots, are not considered when evaluating the number of duplicated assets to keep.
 
+  `Number of duplicated assets to keep` has a [fixed cadence of 12 hours](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/packages/cleanup/policy.rb).
+
 ### Set cleanup limits to conserve resources
 
 A background process executes the package-cleanup policies. This process can take a long time to finish and consumes

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Sort labels', :js, feature_category: :team_planning do
+  include ListboxHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let!(:label1) { create(:label, title: 'Foo', description: 'Lorem ipsum', project: project) }
@@ -28,16 +30,16 @@ RSpec.describe 'Sort labels', :js, feature_category: :team_planning do
   it 'sorts by date' do
     click_button 'Name'
 
-    sort_options = find('ul[role="listbox"]').all('li').collect(&:text)
+    expect_listbox_items([
+      'Name',
+      'Name, descending',
+      'Last created',
+      'Oldest created',
+      'Updated date',
+      'Oldest updated'
+    ])
 
-    expect(sort_options[0]).to eq('Name')
-    expect(sort_options[1]).to eq('Name, descending')
-    expect(sort_options[2]).to eq('Last created')
-    expect(sort_options[3]).to eq('Oldest created')
-    expect(sort_options[4]).to eq('Updated date')
-    expect(sort_options[5]).to eq('Oldest updated')
-
-    find('li', text: 'Name, descending').click
+    select_listbox_item('Name, descending')
 
     # assert default sorting
     within '.other-labels' do

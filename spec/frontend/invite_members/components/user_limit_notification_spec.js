@@ -1,9 +1,14 @@
 import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import UserLimitNotification from '~/invite_members/components/user_limit_notification.vue';
-import { REACHED_LIMIT_VARIANT, CLOSE_TO_LIMIT_VARIANT } from '~/invite_members/constants';
+import {
+  NOTIFICATION_LIMIT_VARIANT,
+  REACHED_LIMIT_VARIANT,
+  CLOSE_TO_LIMIT_VARIANT,
+} from '~/invite_members/constants';
 import { freeUsersLimit, remainingSeats } from '../mock_data/member_modal';
 
+const INFO_ALERT_TITLE = 'Your top-level group name is over the 5 user limit.';
 const WARNING_ALERT_TITLE = 'You only have space for 2 more members in name';
 
 describe('UserLimitNotification', () => {
@@ -31,6 +36,17 @@ describe('UserLimitNotification', () => {
     });
   };
 
+  describe('when previewing free user cap', () => {
+    it("renders user's preview limit notification", () => {
+      createComponent(NOTIFICATION_LIMIT_VARIANT);
+
+      const alert = findAlert();
+
+      expect(alert.attributes('title')).toEqual(INFO_ALERT_TITLE);
+      expect(alert.text()).toContain('GitLab will enforce this limit in the future.');
+    });
+  });
+
   describe('when close to limit within a group', () => {
     it("renders user's limit notification", () => {
       createComponent(CLOSE_TO_LIMIT_VARIANT);
@@ -51,7 +67,7 @@ describe('UserLimitNotification', () => {
 
       expect(alert.attributes('title')).toEqual("You've reached your 5 members limit for name");
       expect(alert.text()).toContain(
-        'To invite new users to this namespace, you must remove existing users.',
+        'To invite new users to this top-level group, you must remove existing users.',
       );
     });
   });

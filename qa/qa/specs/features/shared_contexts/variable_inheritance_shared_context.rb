@@ -37,8 +37,8 @@ module QA
     end
 
     let!(:runner) do
-      Resource::Runner.fabricate! do |runner|
-        runner.token = group.reload!.runners_token
+      Resource::GroupRunner.fabricate! do |runner|
+        runner.group = group
         runner.name = random_string
         runner.tags = [random_string]
       end

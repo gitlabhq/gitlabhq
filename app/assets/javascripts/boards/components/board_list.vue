@@ -31,12 +31,8 @@ export default {
     BoardCardMoveToPosition,
   },
   mixins: [Tracking.mixin()],
-  inject: ['isEpicBoard'],
+  inject: ['isEpicBoard', 'disabled'],
   props: {
-    disabled: {
-      type: Boolean,
-      required: true,
-    },
     list: {
       type: Object,
       required: true,
@@ -314,7 +310,6 @@ export default {
         :list="list"
         :item="item"
         :data-draggable-item-type="$options.draggableItemTypes.card"
-        :disabled="disabled"
         :show-work-item-type-icon="!isEpicBoard"
       >
         <!-- TODO: remove the condition when https://gitlab.com/gitlab-org/gitlab/-/issues/377862 is resolved -->

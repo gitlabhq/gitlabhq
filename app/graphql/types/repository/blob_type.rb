@@ -44,11 +44,11 @@ module Types
       field :fork_and_view_path, GraphQL::Types::String, null: true,
                                                          description: 'Web path to view this blob using a forked project.'
 
-      field :size, GraphQL::Types::Int, null: true,
-                                        description: 'Size (in bytes) of the blob.'
+      field :size, GraphQL::Types::BigInt, null: true,
+                                           description: 'Size (in bytes) of the blob.'
 
-      field :raw_size, GraphQL::Types::Int, null: true,
-                                            description: 'Size (in bytes) of the blob, or the blob target if stored externally.'
+      field :raw_size, GraphQL::Types::BigInt, null: true,
+                                               description: 'Size (in bytes) of the blob, or the blob target if stored externally.'
 
       field :raw_blob, GraphQL::Types::String, null: true, method: :data,
                                                description: 'Raw content of the blob.'

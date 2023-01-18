@@ -188,7 +188,7 @@ Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/maste
     def enabled?
       Feature.enabled?(:some_feature)
     end
-    strong_memoize_attr :enabled?, :enabled
+    strong_memoize_attr :enabled?
   end
   ```
 

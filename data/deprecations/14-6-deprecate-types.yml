@@ -1,8 +1,6 @@
 - title: "`type` and `types` keyword in CI/CD configuration"  # The name of the feature to be deprecated
   announcement_milestone: "14.6"  # The milestone when this feature was first announced as deprecated.
-  announcement_date: "2021-12-22"  # The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   removal_milestone: "15.0"  # The milestone when this feature is planned to be removed
-  removal_date: "2022-05-22"  # the date of the milestone release when this feature is planned to be removed
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
     The `type` and `types` CI/CD keywords will be removed in GitLab 15.0. Pipelines that use these keywords will stop working, so you must switch to `stage` and `stages`, which have the same behavior.

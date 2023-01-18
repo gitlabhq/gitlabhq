@@ -121,7 +121,7 @@ module Gitlab
         def enabled?
           ::Feature.enabled?(:ci_pipeline_creation_logger, project, type: :ops)
         end
-        strong_memoize_attr :enabled?, :enabled
+        strong_memoize_attr :enabled?
 
         def observations
           @observations ||= {}

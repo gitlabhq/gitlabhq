@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnersFinder do
+RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
   context 'admin' do
     let_it_be(:admin) { create(:user, :admin) }
 
@@ -625,16 +625,6 @@ RSpec.describe Ci::RunnersFinder do
 
       context 'with nil project_full_path' do
         let(:project_full_path) { nil }
-
-        it 'returns no runners' do
-          expect(subject).to be_empty
-        end
-      end
-
-      context 'when on_demand_scans_runner_tags feature flag is disabled' do
-        before do
-          stub_feature_flags(on_demand_scans_runner_tags: false)
-        end
 
         it 'returns no runners' do
           expect(subject).to be_empty

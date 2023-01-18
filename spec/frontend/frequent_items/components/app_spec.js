@@ -1,3 +1,4 @@
+import { GlButton, GlIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
@@ -103,6 +104,7 @@ describe('Frequent Items App Component', () => {
 
       expect(loading.exists()).toBe(true);
       expect(loading.find('[aria-label="Loading projects"]').exists()).toBe(true);
+      expect(findSectionHeader().exists()).toBe(false);
     });
 
     it('should render frequent projects list header', () => {
@@ -110,25 +112,6 @@ describe('Frequent Items App Component', () => {
 
       expect(sectionHeader.exists()).toBe(true);
       expect(sectionHeader.text()).toBe('Frequently visited');
-    });
-
-    it('should render frequent projects list', async () => {
-      const expectedResult = getTopFrequentItems(mockFrequentProjects);
-      localStorage.setItem(TEST_STORAGE_KEY, JSON.stringify(mockFrequentProjects));
-
-      expect(findFrequentItems().length).toBe(1);
-
-      triggerDropdownOpen();
-      await nextTick();
-
-      expect(findFrequentItems().length).toBe(expectedResult.length);
-      expect(findFrequentItemsList().props()).toEqual({
-        items: expectedResult,
-        namespace: TEST_NAMESPACE,
-        hasSearchQuery: false,
-        isFetchFailed: false,
-        matcher: '',
-      });
     });
 
     it('should render searched projects list', async () => {
@@ -163,6 +146,47 @@ describe('Frequent Items App Component', () => {
           matcher: 'gitlab',
         }),
       );
+    });
+
+    describe('with frequent items list', () => {
+      const expectedResult = getTopFrequentItems(mockFrequentProjects);
+
+      beforeEach(async () => {
+        localStorage.setItem(TEST_STORAGE_KEY, JSON.stringify(mockFrequentProjects));
+        triggerDropdownOpen();
+        await nextTick();
+      });
+
+      it('should render edit button within header', () => {
+        const itemEditButton = findSectionHeader().findComponent(GlButton);
+
+        expect(itemEditButton.exists()).toBe(true);
+        expect(itemEditButton.attributes('title')).toBe('Toggle edit mode');
+        expect(itemEditButton.findComponent(GlIcon).props('name')).toBe('pencil');
+      });
+
+      it('should render frequent projects list', () => {
+        expect(findFrequentItems().length).toBe(expectedResult.length);
+        expect(findFrequentItemsList().props()).toEqual({
+          items: expectedResult,
+          namespace: TEST_NAMESPACE,
+          hasSearchQuery: false,
+          isFetchFailed: false,
+          isItemRemovalFailed: false,
+          matcher: '',
+        });
+      });
+
+      it('dispatches action `toggleItemsListEditablity` when edit button is clicked', async () => {
+        const itemEditButton = findSectionHeader().findComponent(GlButton);
+        itemEditButton.vm.$emit('click');
+
+        await nextTick();
+
+        expect(store.dispatch).toHaveBeenCalledWith(
+          `${TEST_VUEX_MODULE}/toggleItemsListEditablity`,
+        );
+      });
     });
   });
 

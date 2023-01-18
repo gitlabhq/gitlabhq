@@ -15,8 +15,8 @@ const createSandbox = () => {
   return iframeEl;
 };
 
-export default async () => {
-  const wrapperEl = document.getElementById('js-openapi-viewer');
+export default async (el = document.getElementById('js-openapi-viewer')) => {
+  const wrapperEl = el;
   const sandboxEl = createSandbox();
 
   const { data } = await axios.get(wrapperEl.dataset.endpoint);

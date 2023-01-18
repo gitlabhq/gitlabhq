@@ -1,6 +1,7 @@
 <script>
 import { GlIcon, GlBadge, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { mapActions } from 'vuex';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -74,6 +75,12 @@ export default {
     };
   },
   computed: {
+    authorId() {
+      return getIdFromGraphQLId(this.author.id);
+    },
+    authorHref() {
+      return this.author.path || this.author.webUrl;
+    },
     toggleChevronIconName() {
       return this.expanded ? 'chevron-up' : 'chevron-down';
     },
@@ -145,9 +152,9 @@ export default {
     <template v-if="hasAuthor">
       <a
         ref="authorNameLink"
-        :href="author.path"
+        :href="authorHref"
         :class="authorLinkClasses"
-        :data-user-id="author.id"
+        :data-user-id="authorId"
         :data-username="author.username"
       >
         <span class="note-header-author-name gl-font-weight-bold">

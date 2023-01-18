@@ -19,11 +19,6 @@ module Ci
     belongs_to :project
     belongs_to :trigger_request
 
-    # To be removed upon :ci_bridge_remove_sourced_pipelines feature flag removal
-    has_many :sourced_pipelines, class_name: "::Ci::Sources::Pipeline",
-                                 foreign_key: :source_job_id,
-                                 inverse_of: :source_bridge
-
     has_one :downstream_pipeline, through: :sourced_pipeline, source: :pipeline
 
     validates :ref, presence: true
@@ -89,20 +84,8 @@ module Ci
       end
     end
 
-    def sourced_pipelines
-      if Feature.enabled?(:ci_bridge_remove_sourced_pipelines, project)
-        raise 'Ci::Bridge does not have sourced_pipelines association'
-      end
-
-      super
-    end
-
     def has_downstream_pipeline?
-      if Feature.enabled?(:ci_bridge_remove_sourced_pipelines, project)
-        sourced_pipeline.present?
-      else
-        sourced_pipelines.exists?
-      end
+      sourced_pipeline.present?
     end
 
     def downstream_pipeline_params
@@ -298,7 +281,7 @@ module Ci
       return [] unless forward_yaml_variables?
 
       yaml_variables.to_a.map do |hash|
-        if hash[:raw] && ci_raw_variables_in_yaml_config_enabled?
+        if hash[:raw]
           { key: hash[:key], value: hash[:value], raw: true }
         else
           { key: hash[:key], value: ::ExpandVariables.expand(hash[:value], expand_variables) }
@@ -310,7 +293,7 @@ module Ci
       return [] unless forward_pipeline_variables?
 
       pipeline.variables.to_a.map do |variable|
-        if variable.raw? && ci_raw_variables_in_yaml_config_enabled?
+        if variable.raw?
           { key: variable.key, value: variable.value, raw: true }
         else
           { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
@@ -323,7 +306,7 @@ module Ci
       return [] unless pipeline.pipeline_schedule
 
       pipeline.pipeline_schedule.variables.to_a.map do |variable|
-        if variable.raw? && ci_raw_variables_in_yaml_config_enabled?
+        if variable.raw?
           { key: variable.key, value: variable.value, raw: true }
         else
           { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
@@ -344,12 +327,6 @@ module Ci
         result = options&.dig(:trigger, :forward, :pipeline_variables)
 
         result.nil? ? FORWARD_DEFAULTS[:pipeline_variables] : result
-      end
-    end
-
-    def ci_raw_variables_in_yaml_config_enabled?
-      strong_memoize(:ci_raw_variables_in_yaml_config_enabled) do
-        ::Feature.enabled?(:ci_raw_variables_in_yaml_config, project)
       end
     end
   end

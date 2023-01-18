@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceLabelEventPolicy do
+RSpec.describe ResourceLabelEventPolicy, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:issue) { create(:issue, project: project) }

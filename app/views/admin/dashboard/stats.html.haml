@@ -2,63 +2,15 @@
 
 %h3.gl-my-6
   = s_('AdminArea|Users statistics')
+
+= render 'admin/dashboard/stats_users_table', user_statistics: @users_statistics
+
+%p.gl-font-weight-bold.gl-mt-8
+  = s_('AdminArea|Totals')
+
 %table.table.gl-text-gray-500
-  %tr
-    %td.gl-p-5!
-      = s_('AdminArea|Users without a Group and Project')
-      = render_if_exists 'admin/dashboard/included_free_in_license_tooltip'
-    %td.gl-text-right{ class: 'gl-p-5!' }
-      = @users_statistics&.without_groups_and_projects
-  = render_if_exists 'admin/dashboard/minimal_access_stats_row', users_statistics: @users_statistics
-  %tr
-    %td.gl-p-5!
-      = s_('AdminArea|Users with highest role')
-      %strong
-        = s_('AdminArea|Guest')
-      = render_if_exists 'admin/dashboard/included_free_in_license_tooltip'
-    %td.gl-text-right{ class: 'gl-p-5!' }
-      = @users_statistics&.with_highest_role_guest
-  %tr
-    %td.gl-p-5!
-      = s_('AdminArea|Users with highest role')
-      %strong
-        = s_('AdminArea|Reporter')
-    %td.gl-text-right{ class: 'gl-p-5!' }
-      = @users_statistics&.with_highest_role_reporter
-  %tr
-    %td.gl-p-5!
-      = s_('AdminArea|Users with highest role')
-      %strong
-        = s_('AdminArea|Developer')
-    %td.gl-text-right{ class: 'gl-p-5!' }
-      = @users_statistics&.with_highest_role_developer
-  %tr
-    %td.gl-p-5!
-      = s_('AdminArea|Users with highest role')
-      %strong
-        = s_('AdminArea|Maintainer')
-    %td.gl-text-right{ class: 'gl-p-5!' }
-      = @users_statistics&.with_highest_role_maintainer
-  %tr
-    %td.gl-p-5!
-      = s_('AdminArea|Users with highest role')
-      %strong
-        = s_('AdminArea|Owner')
-    %td.gl-text-right{ class: 'gl-p-5!' }
-      = @users_statistics&.with_highest_role_owner
-  %tr
-    %td.gl-p-5!
-      = s_('AdminArea|Bots')
-    %td.gl-text-right{ class: 'gl-p-5!' }
-      = @users_statistics&.bots
-  = render_if_exists 'admin/dashboard/billable_users_row'
-  %tr.bg-gray-light.gl-text-gray-900
-    %td.gl-p-5!
-      %strong
-        = s_('AdminArea|Active users')
-    %td.gl-text-right{ class: 'gl-p-5!' }
-      %strong
-        = @users_statistics&.active
+  = render_if_exists 'admin/dashboard/stats_active_users_row', users_statistics: @users_statistics
+
   %tr.bg-gray-light.gl-text-gray-900
     %td.gl-p-5!
       %strong
@@ -70,6 +22,8 @@
     %td.gl-p-5!
       %strong
         = s_('AdminArea|Total users')
+      %span
+        (#{s_('AdminArea|active users + blocked users')})
     %td.gl-text-right{ class: 'gl-p-5!' }
       %strong
         = @users_statistics&.total

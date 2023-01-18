@@ -1,4 +1,4 @@
-- register_omniauth_params = Feature.enabled?(:update_oauth_registration_flow) ? { intent: :register } : {}
+- register_omniauth_params = { intent: :register }
 - if Feature.enabled?(:restyle_login_page, @project)
   .gl-text-center.gl-pt-5
     %label.gl-font-weight-normal

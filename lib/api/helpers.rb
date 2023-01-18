@@ -608,6 +608,8 @@ module API
       if file.file_storage?
         present_disk_file!(file.path, file.filename)
       elsif supports_direct_download && file.class.direct_download_enabled?
+        return redirect(signed_head_url(file)) if head_request_on_aws_file?(file)
+
         redirect(cdn_fronted_url(file))
       else
         header(*Gitlab::Workhorse.send_url(file.url))
@@ -695,7 +697,30 @@ module API
       unprocessable_entity!('User must be authenticated to use search')
     end
 
+    def validate_search_rate_limit!
+      return unless Feature.enabled?(:rate_limit_issuable_searches)
+
+      if current_user
+        check_rate_limit!(:search_rate_limit, scope: [current_user])
+      else
+        check_rate_limit!(:search_rate_limit_unauthenticated, scope: [ip_address])
+      end
+    end
+
     private
+
+    def head_request_on_aws_file?(file)
+      request.head? && file.fog_credentials[:provider] == 'AWS'
+    end
+
+    def signed_head_url(file)
+      fog_storage = ::Fog::Storage.new(file.fog_credentials)
+      fog_dir = fog_storage.directories.new(key: file.fog_directory)
+      fog_file = fog_dir.files.new(key: file.path)
+      expire_at = ::Fog::Time.now + file.fog_authenticated_url_expiration
+
+      fog_file.collection.head_url(fog_file.key, expire_at)
+    end
 
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def initial_current_user

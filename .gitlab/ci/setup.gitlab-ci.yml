@@ -22,21 +22,21 @@ cache gems:
       - vendor/cache
     expire_in: 31d
 
-.minimal-job:
+.predictive-job:
   extends:
     - .default-retry
   needs: []
 
-.absolutely-minimal-job:
+.absolutely-predictive-job:
   extends:
-    - .minimal-job
+    - .predictive-job
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:edge
   variables:
     GIT_STRATEGY: none
 
 dont-interrupt-me:
   extends:
-    - .absolutely-minimal-job
+    - .absolutely-predictive-job
     - .setup:rules:dont-interrupt-me
   stage: sync
   interruptible: false
@@ -45,7 +45,7 @@ dont-interrupt-me:
 
 gitlab_git_test:
   extends:
-    - .minimal-job
+    - .predictive-job
     - .setup:rules:gitlab_git_test
   stage: test
   script:
@@ -53,7 +53,7 @@ gitlab_git_test:
 
 no-ee-check:
   extends:
-    - .minimal-job
+    - .predictive-job
     - .setup:rules:no-ee-check
   stage: test
   script:
@@ -61,19 +61,19 @@ no-ee-check:
 
 no-jh-check:
   extends:
-    - .minimal-job
+    - .predictive-job
     - .setup:rules:no-jh-check
   stage: test
   script:
     - scripts/no-dir-check jh
 
-verify-ruby-2.7:
+verify-ruby-3.0:
   extends:
-    - .absolutely-minimal-job
-    - .setup:rules:verify-ruby-2.7
+    - .absolutely-predictive-job
+    - .setup:rules:verify-ruby-3.0
   stage: prepare
   script:
-    - echo 'Please remove label ~"pipeline:run-in-ruby3" so we do test against Ruby 2.7 (default version) before merging the merge request'
+    - echo 'Please remove label ~"pipeline:run-in-ruby2" so we do test against Ruby 3.0 (default version) before merging the merge request'
     - exit 1
 
 verify-tests-yml:
@@ -89,7 +89,7 @@ verify-tests-yml:
 
 verify-approvals:
   extends:
-    - .minimal-job
+    - .predictive-job
     - .setup:rules:jh-contribution
   script:
     - source scripts/utils.sh
@@ -116,11 +116,13 @@ generate-frontend-fixtures-mapping:
 
 detect-tests:
   extends: .rails:rules:detect-tests
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
   needs: []
   stage: prepare
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
+  before_script:
+    - apt-get update && apt-get install -y curl # Not present in ruby-slim, so we add it manually
   script:
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh
@@ -135,17 +137,20 @@ detect-tests:
         tooling/bin/find_tests ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_TESTS_PATH};
         tooling/bin/find_changes ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_TESTS_PATH} ${FRONTEND_FIXTURES_MAPPING_PATH};
         filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TESTS_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
+        tooling/bin/view_to_js_mappings ${RSPEC_CHANGED_FILES_PATH} ${RSPEC_MATCHING_JS_FILES_PATH};
         echoinfo "Changed files: $(cat $RSPEC_CHANGED_FILES_PATH)";
         echoinfo "Related RSpec tests: $(cat $RSPEC_MATCHING_TESTS_PATH)";
         echoinfo "Related FOSS RSpec tests: $(cat $RSPEC_MATCHING_TESTS_FOSS_PATH)";
+        echoinfo "Related JS files: $(cat $RSPEC_MATCHING_JS_FILES_PATH)";
       fi
   artifacts:
     expire_in: 7d
     paths:
-      - ${RSPEC_CHANGED_FILES_PATH}
-      - ${RSPEC_MATCHING_TESTS_PATH}
-      - ${RSPEC_MATCHING_TESTS_FOSS_PATH}
       - ${FRONTEND_FIXTURES_MAPPING_PATH}
+      - ${RSPEC_CHANGED_FILES_PATH}
+      - ${RSPEC_MATCHING_JS_FILES_PATH}
+      - ${RSPEC_MATCHING_TESTS_FOSS_PATH}
+      - ${RSPEC_MATCHING_TESTS_PATH}
 
 detect-previous-failed-tests:
   extends:
@@ -167,7 +172,7 @@ detect-previous-failed-tests:
 e2e-test-pipeline-generate:
   extends:
     - .qa-job-base
-    - .minimal-job
+    - .predictive-job
     - .qa:rules:determine-e2e-tests
   stage: prepare
   variables:

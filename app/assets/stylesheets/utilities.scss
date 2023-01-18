@@ -236,11 +236,42 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   }
 }
 
-// TODO: Remove once https: //gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/3198 is merged
-.gl-sm-ml-5 {
-  @include gl-media-breakpoint-up(sm) {
-    @include gl-ml-5;
+.gl-mt-n5 {
+  margin-top: -$gl-spacing-scale-5;
+}
+
+// Utils below are very specific so cannot be part of GitLab UI
+.gl-md-mt-5 {
+  @include gl-media-breakpoint-up(md) {
+    margin-top: $gl-spacing-scale-5;
   }
+}
+
+.gl-sm-mr-0\! {
+  @include gl-media-breakpoint-down(md) {
+    margin-right: 0 !important;
+  }
+}
+
+.gl-sm-mb-5 {
+  @include gl-media-breakpoint-down(md) {
+    margin-bottom: $gl-spacing-scale-5;
+  }
+}
+
+.gl-md-mb-3\! {
+  @include gl-media-breakpoint-up(md) {
+    margin-bottom: $gl-spacing-scale-3 !important;
+  }
+}
+
+
+.gl-gap-2 {
+  gap: $gl-spacing-scale-2;
+}
+
+.gl-hover-bg-t-gray-a-08:hover {
+  background-color: $t-gray-a-08;
 }
 
 /* End gitlab-ui#1709 */
@@ -262,4 +293,8 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 // Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2098
 .gl-max-w-0 {
   max-width: 0;
+}
+
+.gl-isolate {
+  isolation: isolate;
 }

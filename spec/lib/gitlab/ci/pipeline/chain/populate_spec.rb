@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -90,7 +90,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
 
     it 'appends an error about missing stages' do
       expect(pipeline.errors.to_a)
-        .to include 'No stages / jobs for this pipeline.'
+        .to include 'Pipeline will not run for the selected trigger. ' \
+          'The rules configuration prevented any jobs from being added to the pipeline.'
     end
 
     it 'wastes pipeline iid' do

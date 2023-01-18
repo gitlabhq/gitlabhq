@@ -471,6 +471,10 @@ img.emoji {
 .gl-font-size-28 { font-size: $gl-font-size-28; }
 .gl-font-size-42 { font-size: $gl-font-size-42; }
 
+.gl-icon-button:hover {
+  background-color: $gray-100;
+}
+
 .border-section {
   @include gl-py-6;
   @include gl-m-0;

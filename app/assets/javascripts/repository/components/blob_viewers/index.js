@@ -10,6 +10,8 @@ const viewers = {
   audio: () => import('./audio_viewer.vue'),
   svg: () => import('./image_viewer.vue'),
   sketch: () => import('./sketch_viewer.vue'),
+  notebook: () => import('./notebook_viewer.vue'),
+  openapi: () => import('./openapi_viewer.vue'),
 };
 
 export const loadViewer = (type, isUsingLfs) => {

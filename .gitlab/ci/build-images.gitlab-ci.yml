@@ -23,6 +23,11 @@ build-qa-image:
   script:
     - run_timed_command "scripts/build_qa_image"
 
+build-qa-image as-if-foss:
+  extends:
+    - build-qa-image
+    - .as-if-foss
+
 build-assets-image:
   extends:
     - .base-image-build

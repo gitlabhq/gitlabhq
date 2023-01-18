@@ -14,7 +14,10 @@ RSpec.shared_examples "a user type with merge request interaction type" do
       name
       username
       email
+      emails
       publicEmail
+      commitEmail
+      namespaceCommitEmails
       avatarUrl
       webUrl
       webPath

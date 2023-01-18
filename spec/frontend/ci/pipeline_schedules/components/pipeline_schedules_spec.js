@@ -1,4 +1,4 @@
-import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlLink, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { trimText } from 'helpers/text_helper';
@@ -10,13 +10,16 @@ import DeletePipelineScheduleModal from '~/ci/pipeline_schedules/components/dele
 import TakeOwnershipModal from '~/ci/pipeline_schedules/components/take_ownership_modal.vue';
 import PipelineSchedulesTable from '~/ci/pipeline_schedules/components/table/pipeline_schedules_table.vue';
 import deletePipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/mutations/delete_pipeline_schedule.mutation.graphql';
+import playPipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '~/ci/pipeline_schedules/graphql/mutations/take_ownership.mutation.graphql';
 import getPipelineSchedulesQuery from '~/ci/pipeline_schedules/graphql/queries/get_pipeline_schedules.query.graphql';
 import {
   mockGetPipelineSchedulesGraphQLResponse,
   mockPipelineScheduleNodes,
   deleteMutationResponse,
+  playMutationResponse,
   takeOwnershipMutationResponse,
+  emptyPipelineSchedulesResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -29,10 +32,13 @@ describe('Pipeline schedules app', () => {
   let wrapper;
 
   const successHandler = jest.fn().mockResolvedValue(mockGetPipelineSchedulesGraphQLResponse);
+  const successEmptyHandler = jest.fn().mockResolvedValue(emptyPipelineSchedulesResponse);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
   const deleteMutationHandlerSuccess = jest.fn().mockResolvedValue(deleteMutationResponse);
   const deleteMutationHandlerFailed = jest.fn().mockRejectedValue(new Error('GraphQL error'));
+  const playMutationHandlerSuccess = jest.fn().mockResolvedValue(playMutationResponse);
+  const playMutationHandlerFailed = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const takeOwnershipMutationHandlerSuccess = jest
     .fn()
     .mockResolvedValue(takeOwnershipMutationResponse);
@@ -60,14 +66,18 @@ describe('Pipeline schedules app', () => {
 
   const findTable = () => wrapper.findComponent(PipelineSchedulesTable);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findDeleteModal = () => wrapper.findComponent(DeletePipelineScheduleModal);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTakeOwnershipModal = () => wrapper.findComponent(TakeOwnershipModal);
   const findTabs = () => wrapper.findComponent(GlTabs);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findLink = () => wrapper.findComponent(GlLink);
   const findNewButton = () => wrapper.findByTestId('new-schedule-button');
   const findAllTab = () => wrapper.findByTestId('pipeline-schedules-all-tab');
   const findActiveTab = () => wrapper.findByTestId('pipeline-schedules-active-tab');
   const findInactiveTab = () => wrapper.findByTestId('pipeline-schedules-inactive-tab');
+  const findSchedulesCharacteristics = () =>
+    wrapper.findByTestId('pipeline-schedules-characteristics');
 
   afterEach(() => {
     wrapper.destroy();
@@ -181,6 +191,45 @@ describe('Pipeline schedules app', () => {
     });
   });
 
+  describe('playing a pipeline schedule', () => {
+    it('shows play mutation error alert', async () => {
+      createComponent([
+        [getPipelineSchedulesQuery, successHandler],
+        [playPipelineScheduleMutation, playMutationHandlerFailed],
+      ]);
+
+      await waitForPromises();
+
+      findTable().vm.$emit('playPipelineSchedule');
+
+      await waitForPromises();
+
+      expect(findAlert().text()).toBe('There was a problem playing the pipeline schedule.');
+    });
+
+    it('plays pipeline schedule', async () => {
+      createComponent([
+        [getPipelineSchedulesQuery, successHandler],
+        [playPipelineScheduleMutation, playMutationHandlerSuccess],
+      ]);
+
+      await waitForPromises();
+
+      const scheduleId = mockPipelineScheduleNodes[0].id;
+
+      findTable().vm.$emit('playPipelineSchedule', scheduleId);
+
+      await waitForPromises();
+
+      expect(playMutationHandlerSuccess).toHaveBeenCalledWith({
+        id: scheduleId,
+      });
+      expect(findAlert().text()).toBe(
+        'Successfully scheduled a pipeline to run. Go to the Pipelines page for details.',
+      );
+    });
+  });
+
   describe('taking ownership of a pipeline schedule', () => {
     it('shows take ownership mutation error alert', async () => {
       createComponent([
@@ -275,6 +324,26 @@ describe('Pipeline schedules app', () => {
       await findAllTab().trigger('click');
 
       expect(wrapper.vm.$apollo.queries.schedules.refetch).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Empty pipeline schedules response', () => {
+    it('should show an empty state', async () => {
+      createComponent([[getPipelineSchedulesQuery, successEmptyHandler]]);
+
+      await waitForPromises();
+
+      const schedulesCharacteristics = findSchedulesCharacteristics();
+
+      expect(findEmptyState().exists()).toBe(true);
+      expect(schedulesCharacteristics.text()).toContain('Runs for a specific branch or tag.');
+      expect(schedulesCharacteristics.text()).toContain('Can have custom CI/CD variables.');
+      expect(schedulesCharacteristics.text()).toContain(
+        'Runs with the same project permissions as the schedule owner.',
+      );
+
+      expect(findLink().exists()).toBe(true);
+      expect(findLink().text()).toContain('scheduled pipelines documentation.');
     });
   });
 });

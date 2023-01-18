@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Editor
+group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -16,7 +16,7 @@ Constants for snippet visibility levels are:
 | visibility | Description |
 | ---------- | ----------- |
 | `private`  | The snippet is visible only to project members |
-| `internal` | The snippet is visible for any logged in user except [external users](../user/admin_area/external_users.md) |
+| `internal` | The snippet is visible for any authenticated user except [external users](../user/admin_area/external_users.md) |
 | `public`   | The snippet can be accessed without any authentication |
 
 NOTE:

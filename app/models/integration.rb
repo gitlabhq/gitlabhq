@@ -27,7 +27,7 @@ class Integration < ApplicationRecord
   # TODO Shimo is temporary disabled on group and instance-levels.
   # See: https://gitlab.com/gitlab-org/gitlab/-/issues/345677
   PROJECT_SPECIFIC_INTEGRATION_NAMES = %w[
-    jenkins shimo
+    apple_app_store jenkins shimo
   ].freeze
 
   # Fake integrations to help with local development.
@@ -75,6 +75,7 @@ class Integration < ApplicationRecord
 
   attribute :active, default: false
   attribute :alert_events, default: true
+  attribute :incident_events, default: false
   attribute :category, default: 'common'
   attribute :commit_events, default: true
   attribute :confidential_issues_events, default: true
@@ -132,6 +133,7 @@ class Integration < ApplicationRecord
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
   scope :deployment_hooks, -> { where(deployment_events: true, active: true) }
   scope :alert_hooks, -> { where(alert_events: true, active: true) }
+  scope :incident_hooks, -> { where(incident_events: true, active: true) }
   scope :deployment, -> { where(category: 'deployment') }
 
   class << self

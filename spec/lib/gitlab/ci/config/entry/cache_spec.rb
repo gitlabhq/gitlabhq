@@ -16,12 +16,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
       let(:policy) { nil }
       let(:key) { 'some key' }
       let(:when_config) { nil }
+      let(:unprotect) { false }
 
       let(:config) do
         {
           key: key,
           untracked: true,
-          paths: ['some/path/']
+          paths: ['some/path/'],
+          unprotect: unprotect
         }.tap do |config|
           config[:policy] = policy if policy
           config[:when] = when_config if when_config
@@ -31,7 +33,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
       describe '#value' do
         shared_examples 'hash key value' do
           it 'returns hash value' do
-            expect(entry.value).to eq(key: key, untracked: true, paths: ['some/path/'], policy: 'pull-push', when: 'on_success')
+            expect(entry.value).to eq(key: key, untracked: true, paths: ['some/path/'], policy: 'pull-push', when: 'on_success', unprotect: false)
           end
         end
 
@@ -54,6 +56,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
 
           it 'key is nil' do
             expect(entry.value).to match(a_hash_including(key: nil))
+          end
+        end
+
+        context 'with option `unprotect` specified' do
+          let(:unprotect) { true }
+
+          it 'returns true' do
+            expect(entry.value).to match(a_hash_including(unprotect: true))
           end
         end
 

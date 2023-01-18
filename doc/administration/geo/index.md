@@ -124,7 +124,9 @@ The following are required to run Geo:
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS
 - All sites must run [the same GitLab and PostgreSQL versions](setup/database.md#postgresql-replication).
-- If using different operating system versions between Geo sites, [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility) across Geo sites.
+  - If using different operating system versions between Geo sites,
+    [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility)
+    across Geo sites to avoid silent corruption of database indexes.
 
 Additionally, check the GitLab [minimum requirements](../../install/requirements.md),
 and use the latest version of GitLab for a better experience.
@@ -162,15 +164,6 @@ To update the internal URL of the primary Geo site:
 1. On the top bar, select **Main menu > Admin > Geo > Sites**.
 1. Select **Edit** on the primary site.
 1. Change the **Internal URL**, then select **Save changes**.
-
-### LDAP
-
-We recommend that if you use LDAP on your **primary** site, you also set up secondary LDAP servers on each **secondary** site. Otherwise, users are unable to perform Git operations over HTTP(s) on the **secondary** site using HTTP Basic Authentication. However, Git via SSH and personal access tokens still works.
-
-NOTE:
-It is possible for all **secondary** sites to share an LDAP server, but additional latency can be an issue. Also, consider what LDAP server is available in a [disaster recovery](disaster_recovery/index.md) scenario if a **secondary** site is promoted to be a **primary** site.
-
-Check for instructions on how to set up replication in your LDAP service. Instructions are different depending on the software or service used. For example, OpenLDAP provides [these instructions](https://www.openldap.org/doc/admin24/replication.html).
 
 ### Geo Tracking Database
 
@@ -223,6 +216,8 @@ An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4623) to fix this 
 
 The only way to view designs replication data for a particular secondary site is to visit that secondary site directly. For example, `https://<IP of your secondary site>/admin/geo/replication/designs`.
 An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4624) to fix this limitation.
+
+Keep in mind that mentioned URLs don't work when [Admin Mode](../../user/admin_area/settings/sign_in_restrictions.md#admin-mode) is enabled.
 
 ## Setup instructions
 
@@ -291,6 +286,14 @@ For more information on how to replicate the Container Registry, see [Container 
 ### Geo secondary proxy
 
 For more information on using Geo proxying on secondary sites, see [Geo proxying for secondary sites](secondary_proxy/index.md).
+
+### Single Sign On (SSO)
+
+For more information on configuring Single Sign-On (SSO), see [Geo with Single Sign-On (SSO)](replication/single_sign_on.md).
+
+#### LDAP
+
+For more information on configuring LDAP, see [Geo with Single Sign-On (SSO) > LDAP](replication/single_sign_on.md#ldap).
 
 ### Security Review
 

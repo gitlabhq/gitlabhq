@@ -244,20 +244,24 @@ To trigger a child pipeline as a [merge request pipeline](merge_request_pipeline
    ```
 
 1. Configure the child pipeline jobs to run in merge request pipelines with [`rules`](../yaml/index.md#rules)
-   or [`workflow:rules`](../yaml/index.md#workflowrules). For example, with `rules`
-   in a child pipeline's configuration file:
+   or [`workflow:rules`](../yaml/index.md#workflowrules).
+   For example, with `rules` in a child pipeline's configuration file:
 
    ```yaml
    job1:
-     script: ...
+     script: echo "Child pipeline job 1"
      rules:
-       - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+       - if: $CI_MERGE_REQUEST_ID
 
    job2:
-     script: ...
+     script: echo "Child pipeline job 2"
      rules:
-       - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+       - if: $CI_MERGE_REQUEST_ID
    ```
+
+   In child pipelines, `$CI_PIPELINE_SOURCE` always has a value of `parent_pipeline`
+   and cannot be used to identify merge request pipelines. Use `$CI_MERGE_REQUEST_ID`
+   instead, which is always present in merge request pipelines.
 
 ### Specify a branch for multi-project pipelines
 

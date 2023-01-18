@@ -20,7 +20,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 )
 
 type uploadArtifactsFunction func(url, contentType string, body io.Reader) (*http.Response, string, error)
@@ -66,13 +65,20 @@ func expectSignedRequest(t *testing.T, r *http.Request) {
 	require.NoError(t, err)
 }
 
-func uploadTestServer(t *testing.T, authorizeTests func(r *http.Request), extraTests func(r *http.Request)) *httptest.Server {
+func uploadTestServer(t *testing.T, allowedHashFunctions []string, authorizeTests func(r *http.Request), extraTests func(r *http.Request)) *httptest.Server {
 	return testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasSuffix(r.URL.Path, "/authorize") || r.URL.Path == "/api/v4/internal/workhorse/authorize_upload" {
 			expectSignedRequest(t, r)
 
 			w.Header().Set("Content-Type", api.ResponseContentType)
-			_, err := fmt.Fprintf(w, `{"TempPath":"%s"}`, scratchDir)
+			var err error
+
+			if len(allowedHashFunctions) == 0 {
+				_, err = fmt.Fprintf(w, `{"TempPath":"%s"}`, scratchDir)
+			} else {
+				_, err = fmt.Fprintf(w, `{"TempPath":"%s", "UploadHashFunctions": ["%s"]}`, scratchDir, strings.Join(allowedHashFunctions, `","`))
+			}
+
 			require.NoError(t, err)
 
 			if authorizeTests != nil {
@@ -83,15 +89,23 @@ func uploadTestServer(t *testing.T, authorizeTests func(r *http.Request), extraT
 
 		require.NoError(t, r.ParseMultipartForm(100000))
 
-		var nValues int // file name, path, remote_url, remote_id, size, md5, sha1, sha256, sha512, upload_duration, gitlab-workhorse-upload for just the upload (no metadata because we are not POSTing a valid zip file)
-		if destination.FIPSEnabled() {
-			nValues = 10
+		nValues := len([]string{
+			"name",
+			"path",
+			"remote_url",
+			"remote_id",
+			"size",
+			"upload_duration",
+			"gitlab-workhorse-upload",
+		})
+
+		if n := len(allowedHashFunctions); n > 0 {
+			nValues += n
 		} else {
-			nValues = 11
+			nValues += len([]string{"md5", "sha1", "sha256", "sha512"}) // Default hash functions
 		}
 
 		require.Len(t, r.MultipartForm.Value, nValues)
-
 		require.Empty(t, r.MultipartForm.File, "multipart form files")
 
 		if extraTests != nil {
@@ -104,7 +118,7 @@ func uploadTestServer(t *testing.T, authorizeTests func(r *http.Request), extraT
 func signedUploadTestServer(t *testing.T, authorizeTests func(r *http.Request), extraTests func(r *http.Request)) *httptest.Server {
 	t.Helper()
 
-	return uploadTestServer(t, authorizeTests, func(r *http.Request) {
+	return uploadTestServer(t, nil, authorizeTests, func(r *http.Request) {
 		expectSignedRequest(t, r)
 
 		if extraTests != nil {
@@ -167,67 +181,80 @@ func TestAcceleratedUpload(t *testing.T) {
 		{"POST", "/api/v4/projects/group%2Fsubgroup%2Fproject/packages/helm/api/stable/charts", true},
 	}
 
+	allowedHashFunctions := map[string][]string{
+		"default":   nil,
+		"sha2_only": {"sha256", "sha512"},
+	}
+
 	for _, tt := range tests {
-		t.Run(tt.resource, func(t *testing.T) {
-			ts := uploadTestServer(t,
-				func(r *http.Request) {
-					if r.URL.Path == "/api/v4/internal/workhorse/authorize_upload" {
-						// Nothing to validate: this is a hard coded URL
-						return
-					}
-					resource := strings.TrimRight(tt.resource, "/")
-					// Validate %2F characters haven't been unescaped
-					require.Equal(t, resource+"/authorize", r.URL.String())
-				},
-				func(r *http.Request) {
-					if tt.signedFinalization {
-						expectSignedRequest(t, r)
-					}
+		for hashSet, hashFunctions := range allowedHashFunctions {
+			t.Run(tt.resource, func(t *testing.T) {
 
-					token, err := jwt.ParseWithClaims(r.Header.Get(upload.RewrittenFieldsHeader), &upload.MultipartClaims{}, testhelper.ParseJWT)
-					require.NoError(t, err)
+				ts := uploadTestServer(t,
+					hashFunctions,
+					func(r *http.Request) {
+						if r.URL.Path == "/api/v4/internal/workhorse/authorize_upload" {
+							// Nothing to validate: this is a hard coded URL
+							return
+						}
+						resource := strings.TrimRight(tt.resource, "/")
+						// Validate %2F characters haven't been unescaped
+						require.Equal(t, resource+"/authorize", r.URL.String())
+					},
+					func(r *http.Request) {
+						if tt.signedFinalization {
+							expectSignedRequest(t, r)
+						}
 
-					rewrittenFields := token.Claims.(*upload.MultipartClaims).RewrittenFields
-					if len(rewrittenFields) != 1 || len(rewrittenFields["file"]) == 0 {
-						t.Fatalf("Unexpected rewritten_fields value: %v", rewrittenFields)
-					}
+						token, err := jwt.ParseWithClaims(r.Header.Get(upload.RewrittenFieldsHeader), &upload.MultipartClaims{}, testhelper.ParseJWT)
+						require.NoError(t, err)
 
-					token, jwtErr := jwt.ParseWithClaims(r.PostFormValue("file.gitlab-workhorse-upload"), &testhelper.UploadClaims{}, testhelper.ParseJWT)
-					require.NoError(t, jwtErr)
+						rewrittenFields := token.Claims.(*upload.MultipartClaims).RewrittenFields
+						if len(rewrittenFields) != 1 || len(rewrittenFields["file"]) == 0 {
+							t.Fatalf("Unexpected rewritten_fields value: %v", rewrittenFields)
+						}
 
-					uploadFields := token.Claims.(*testhelper.UploadClaims).Upload
-					require.Contains(t, uploadFields, "name")
-					require.Contains(t, uploadFields, "path")
-					require.Contains(t, uploadFields, "remote_url")
-					require.Contains(t, uploadFields, "remote_id")
-					require.Contains(t, uploadFields, "size")
-					if destination.FIPSEnabled() {
-						require.NotContains(t, uploadFields, "md5")
-					} else {
-						require.Contains(t, uploadFields, "md5")
-					}
-					require.Contains(t, uploadFields, "sha1")
-					require.Contains(t, uploadFields, "sha256")
-					require.Contains(t, uploadFields, "sha512")
-				})
+						token, jwtErr := jwt.ParseWithClaims(r.PostFormValue("file.gitlab-workhorse-upload"), &testhelper.UploadClaims{}, testhelper.ParseJWT)
+						require.NoError(t, jwtErr)
 
-			defer ts.Close()
-			ws := startWorkhorseServer(ts.URL)
-			defer ws.Close()
+						uploadFields := token.Claims.(*testhelper.UploadClaims).Upload
+						require.Contains(t, uploadFields, "name")
+						require.Contains(t, uploadFields, "path")
+						require.Contains(t, uploadFields, "remote_url")
+						require.Contains(t, uploadFields, "remote_id")
+						require.Contains(t, uploadFields, "size")
 
-			reqBody, contentType, err := multipartBodyWithFile()
-			require.NoError(t, err)
+						if hashSet == "default" {
+							require.Contains(t, uploadFields, "md5")
+							require.Contains(t, uploadFields, "sha1")
+							require.Contains(t, uploadFields, "sha256")
+							require.Contains(t, uploadFields, "sha512")
+						} else {
+							require.NotContains(t, uploadFields, "md5")
+							require.NotContains(t, uploadFields, "sha1")
+							require.Contains(t, uploadFields, "sha256")
+							require.Contains(t, uploadFields, "sha512")
+						}
+					})
 
-			req, err := http.NewRequest(tt.method, ws.URL+tt.resource, reqBody)
-			require.NoError(t, err)
+				defer ts.Close()
+				ws := startWorkhorseServer(ts.URL)
+				defer ws.Close()
 
-			req.Header.Set("Content-Type", contentType)
-			resp, err := http.DefaultClient.Do(req)
-			require.NoError(t, err)
-			require.Equal(t, 200, resp.StatusCode)
+				reqBody, contentType, err := multipartBodyWithFile()
+				require.NoError(t, err)
 
-			resp.Body.Close()
-		})
+				req, err := http.NewRequest(tt.method, ws.URL+tt.resource, reqBody)
+				require.NoError(t, err)
+
+				req.Header.Set("Content-Type", contentType)
+				resp, err := http.DefaultClient.Do(req)
+				require.NoError(t, err)
+				require.Equal(t, 200, resp.StatusCode)
+
+				resp.Body.Close()
+			})
+		}
 	}
 }
 

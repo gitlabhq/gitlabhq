@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User edits reviewers sidebar', :js, feature_category: :code_review do
+RSpec.describe 'Merge request > User edits reviewers sidebar', :js, feature_category: :code_review_workflow do
   context 'with invite members considerations' do
     let_it_be(:merge_request) { create(:merge_request) }
     let_it_be(:project) { merge_request.project }

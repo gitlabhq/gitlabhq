@@ -5,6 +5,8 @@ module Emails
     extend ActiveSupport::Concern
     include MarkupHelper
 
+    EMAIL_ATTACHMENTS_SIZE_LIMIT = 10.megabytes.freeze
+
     included do
       layout 'service_desk', only: [:service_desk_thank_you_email, :service_desk_new_note_email]
     end
@@ -28,6 +30,7 @@ module Emails
       setup_service_desk_mail(issue_id)
 
       email_sender = sender(@note.author_id)
+      add_uploads_as_attachments if Feature.enabled?(:service_desk_new_note_email_native_attachments, @note.project)
       options = service_desk_options(email_sender, 'new_note', recipient)
                   .merge(subject: subject_base)
 
@@ -60,7 +63,8 @@ module Emails
       template = Gitlab::Template::ServiceDeskTemplate.find(email_type, @project)
       text = substitute_template_replacements(template.content)
 
-      context = { project: @project, pipeline: :email }
+      context = { project: @project, pipeline: :service_desk_email, uploads_as_attachments: @uploads_as_attachments }
+
       context[:author] = @note.author if email_type == 'new_note'
 
       markdown(text, context)
@@ -89,6 +93,33 @@ module Emails
 
     def subject_base
       "#{@issue.title} (##{@issue.iid})"
+    end
+
+    def add_uploads_as_attachments
+      uploaders = find_uploaders_for(@note)
+      return unless uploaders.present?
+      return if uploaders.sum(&:size) > EMAIL_ATTACHMENTS_SIZE_LIMIT
+
+      @uploads_as_attachments = []
+      uploaders.each do |uploader|
+        attachments[uploader.filename] = uploader.read
+        @uploads_as_attachments << "#{uploader.secret}/#{uploader.filename}"
+      rescue StandardError => e
+        Gitlab::ErrorTracking.track_exception(e, project_id: @note.project.id)
+      end
+    end
+
+    def find_uploaders_for(note)
+      uploads = FileUploader::MARKDOWN_PATTERN.scan(note.note)
+      return unless uploads.present?
+
+      project = note.project
+      uploads.map do |secret, file_name|
+        UploaderFinder.new(project, secret, file_name).execute
+      end
+    rescue StandardError => e
+      Gitlab::ErrorTracking.track_exception(e, project_id: note.project.id)
+      nil
     end
   end
 end

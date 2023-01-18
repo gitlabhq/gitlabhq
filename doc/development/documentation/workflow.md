@@ -21,7 +21,7 @@ If you are not a GitLab team member, or do not have the Developer role for the G
 
 1. Select an [issue](https://about.gitlab.com/handbook/product/ux/technical-writing/#community-contribution-opportunities) you'd like to work on.
    - You don't need an issue to open a merge request.
-   - For a Hackathon, in the issue, in a comment, mention the person who opened the issue and ask for the issue to be assigned to you.
+   - For a Hackathon, mention `@docs-hackathon` in a comment and ask for the issue to be assigned to you.
      To be fair to other contributors, if you see someone has already asked to work on the issue, choose another issue.
      If you are looking for issues to work on and don't see any that suit you, you can always fix [Vale](testing.md#vale) issues.
 1. Go to the [GitLab repository](https://gitlab.com/gitlab-org/gitlab).

@@ -53,7 +53,7 @@ module Gitlab
               end
             end
           end
-          strong_memoize_attr :included?, :inclusion
+          strong_memoize_attr :included?
 
           def errors
             logger.instrument(:pipeline_seed_build_errors) do
@@ -261,7 +261,7 @@ module Gitlab
           def reuse_build_in_seed_context?
             Feature.enabled?(:ci_reuse_build_in_seed_context, @pipeline.project)
           end
-          strong_memoize_attr :reuse_build_in_seed_context?, :reuse_build_in_seed_context
+          strong_memoize_attr :reuse_build_in_seed_context?
         end
       end
     end

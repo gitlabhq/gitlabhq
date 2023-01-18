@@ -27,6 +27,10 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :set_issuables_index, if: ->(c) {
     SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request?
   }
+  before_action :check_search_rate_limit!, if: ->(c) {
+    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request? &&
+      params[:search].present? && Feature.enabled?(:rate_limit_issuable_searches)
+  }
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -59,7 +63,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_mvc, project&.work_items_mvc_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
-    push_frontend_feature_flag(:use_iid_in_work_items_path, project)
+    push_frontend_feature_flag(:use_iid_in_work_items_path, project&.group)
     push_force_frontend_feature_flag(:work_items_create_from_markdown, project&.work_items_create_from_markdown_feature_flag_enabled?)
   end
 
@@ -436,17 +440,13 @@ class Projects::IssuesController < Projects::ApplicationController
   def create_vulnerability_issue_feedback(issue); end
 
   def redirect_if_work_item
-    return unless allowed_work_item?
+    return unless use_work_items_path?(issue)
 
     if Feature.enabled?(:use_iid_in_work_items_path, project.group)
       redirect_to project_work_items_path(project, issue.iid, params: request.query_parameters.merge(iid_path: true))
     else
       redirect_to project_work_items_path(project, issue.id, params: request.query_parameters)
     end
-  end
-
-  def allowed_work_item?
-    issue.task?
   end
 end
 

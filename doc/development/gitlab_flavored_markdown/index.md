@@ -4,7 +4,9 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Flavored Markdown (GLFM) developer documentation **(FREE)**
+<!-- vale gitlab.GitLabFlavoredMarkdown = NO -->
+
+# GitLab Flavored Markdown (GLFM) developer documentation
 
 This page contains the MVC for the developer documentation for GitLab Flavored Markdown (GLFM).
 For the user documentation about Markdown in GitLab, refer to

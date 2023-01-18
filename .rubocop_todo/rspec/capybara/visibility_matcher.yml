@@ -46,7 +46,6 @@ RSpec/Capybara/VisibilityMatcher:
     - 'spec/features/projects/issues/design_management/user_views_designs_with_svg_xss_spec.rb'
     - 'spec/features/projects/jobs_spec.rb'
     - 'spec/features/projects/network_graph_spec.rb'
-    - 'spec/features/projects/pipelines/legacy_pipeline_spec.rb'
     - 'spec/features/projects/pipelines/pipeline_spec.rb'
     - 'spec/features/projects/settings/lfs_settings_spec.rb'
     - 'spec/features/projects/settings/packages_settings_spec.rb'

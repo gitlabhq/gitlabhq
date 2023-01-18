@@ -18,6 +18,10 @@ function initPopovers(elements) {
 
 // Render GitLab flavoured Markdown
 export function renderGFM(element) {
+  if (!element) {
+    return;
+  }
+
   const [
     highlightEls,
     krokiEls,

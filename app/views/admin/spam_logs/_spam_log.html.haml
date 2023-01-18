@@ -23,19 +23,36 @@
     = truncate(spam_log.description, length: 100)
   %td
     - if user
-      = link_to _('Remove user'), admin_spam_log_path(spam_log, remove_user: true),
-        data: { confirm: _("USER %{user_name} WILL BE REMOVED! Are you sure?") % { user_name: user.name }, confirm_btn_variant: 'danger' }, aria: { label: _('Remove user') }, method: :delete, class: "gl-button btn btn-sm btn-danger"
+      = render Pajamas::ButtonComponent.new(size: :small,
+        variant: :danger,
+        method: :delete,
+        href: admin_spam_log_path(spam_log, remove_user: true),
+        button_options: { data: { confirm: _("USER %{user_name} WILL BE REMOVED! Are you sure?") % { user_name: user.name }, confirm_btn_variant: 'danger' }, aria: { label: _('Remove user') } }) do
+        = _('Remove user')
   %td
     -# TODO: Remove conditonal once spamcheck supports this https://gitlab.com/gitlab-com/gl-security/engineering-and-research/automation-team/spam/spamcheck/-/issues/190
     - if akismet_enabled?
       - if spam_log.submitted_as_ham?
-        .gl-button.btn.btn-default.btn-sm.disabled.gl-mb-3
+        = render Pajamas::ButtonComponent.new(size: :small,
+          button_options: { class: 'disabled gl-mb-3'}) do
           = _("Submitted as ham")
       - else
-        = link_to _('Submit as ham'), mark_as_ham_admin_spam_log_path(spam_log), method: :post, class: 'gl-button btn btn-default btn-sm gl-mb-3'
+        = render Pajamas::ButtonComponent.new(size: :small,
+          method: :post,
+          href: mark_as_ham_admin_spam_log_path(spam_log),
+          button_options: { class: ' gl-mb-3' }) do
+          = _('Submit as ham')
     - if user && !user.blocked?
-      = link_to _('Block user'), block_admin_user_path(user), data: {confirm: _('USER WILL BE BLOCKED! Are you sure?')}, method: :put, class: "gl-button btn btn-default btn-sm gl-mb-3"
+      = render Pajamas::ButtonComponent.new(size: :small,
+        method: :put,
+        href: block_admin_user_path(user),
+        button_options: { class: 'gl-mb-3', data: {confirm: _('USER WILL BE BLOCKED! Are you sure?')} }) do
+        = _('Block user')
     - else
-      .gl-button.btn.btn-default.btn-sm.disabled.gl-mb-3
-        Already blocked
-    = link_to _('Remove log'), [:admin, spam_log], remote: true, method: :delete, class: "gl-button btn btn-default btn-sm btn-close js-remove-tr"
+      = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'disabled gl-mb-3'}) do
+        = _("Already blocked")
+    = render Pajamas::ButtonComponent.new(size: :small,
+      method: :delete,
+      href: [:admin, spam_log],
+      button_options: { class: 'js-remove-tr', remote: true, }) do
+      = _('Remove log')

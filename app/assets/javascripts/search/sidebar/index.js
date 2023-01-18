@@ -6,11 +6,11 @@ Vue.use(Translate);
 
 export const sidebarInitState = () => {
   const el = document.getElementById('js-search-sidebar');
-
   if (!el) return {};
 
-  const { navigation } = el.dataset;
-  return JSON.parse(navigation);
+  const { navigationJson } = el.dataset;
+  const navigationJsonParsed = JSON.parse(navigationJson);
+  return { navigationJsonParsed };
 };
 
 export const initSidebar = (store) => {

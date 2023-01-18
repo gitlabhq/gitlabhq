@@ -857,10 +857,10 @@ build:
     BUILDAH_FORMAT: docker
     # You may need this workaround for some errors: https://stackoverflow.com/a/70438141/1233435
     BUILDAH_ISOLATION: chroot
-    FQ_IMAGE_NAME: "${CI_REGISTRY_IMAGE}/test"
+    FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE/test"
   before_script:
     # Log in to the GitLab container registry
-    - export REGISTRY_AUTH_FILE=${HOME}/auth.json
+    - export REGISTRY_AUTH_FILE=$HOME/auth.json
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
     - buildah images
@@ -872,7 +872,7 @@ build:
 ## Use the GitLab Container Registry
 
 After you've built a Docker image, you can push it up to the built-in
-[GitLab Container Registry](../../user/packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd).
+[GitLab Container Registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd).
 
 ## Troubleshooting
 

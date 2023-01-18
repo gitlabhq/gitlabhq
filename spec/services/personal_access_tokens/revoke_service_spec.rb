@@ -71,26 +71,30 @@ RSpec.describe PersonalAccessTokens::RevokeService do
       let_it_be(:current_user) { nil }
 
       context 'when source is valid' do
-        let_it_be(:source) { 'secret_detection' }
+        let_it_be(:source) { :secret_detection }
         let_it_be(:token) { create(:personal_access_token) }
 
         it_behaves_like 'a successfully revoked token' do
-          let(:revoked_by) { 'secret_detection' }
+          let(:revoked_by) { :secret_detection }
         end
       end
 
       context 'when source is invalid' do
-        let_it_be(:source) { 'external_request' }
+        let_it_be(:source) { :external_request }
         let_it_be(:token) { create(:personal_access_token) }
 
-        it_behaves_like 'an unsuccessfully revoked token'
+        it 'raises ArgumentError' do
+          expect { subject }.to raise_error ArgumentError
+        end
       end
 
       context 'when source is missing' do
         let_it_be(:source) { nil }
         let_it_be(:token) { create(:personal_access_token) }
 
-        it_behaves_like 'an unsuccessfully revoked token'
+        it 'raises ArgumentError' do
+          expect { subject }.to raise_error ArgumentError
+        end
       end
     end
   end

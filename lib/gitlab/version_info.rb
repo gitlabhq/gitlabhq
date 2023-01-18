@@ -7,11 +7,14 @@ module Gitlab
     attr_reader :major, :minor, :patch
 
     VERSION_REGEX = /(\d+)\.(\d+)\.(\d+)/.freeze
+    # To mitigate ReDoS, limit the length of the version string we're
+    # willing to check
+    MAX_VERSION_LENGTH = 128
 
     def self.parse(str, parse_suffix: false)
       if str.is_a?(self)
         str
-      elsif str && m = str.match(VERSION_REGEX)
+      elsif str && str.length <= MAX_VERSION_LENGTH && m = str.match(VERSION_REGEX)
         VersionInfo.new(m[1].to_i, m[2].to_i, m[3].to_i, parse_suffix ? m.post_match : nil)
       else
         VersionInfo.new

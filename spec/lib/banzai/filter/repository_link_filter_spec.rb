@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::RepositoryLinkFilter do
+RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :team_planning do
   include RepoHelpers
 
   def filter(doc, contexts = {})
@@ -301,6 +301,12 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter do
 
       doc = filter(image(escaped))
       expect(doc.at_css('img')['src']).to eq "/#{project_path}/-/raw/#{Addressable::URI.escape(ref)}/#{escaped}"
+    end
+
+    it 'supports percent sign in filenames' do
+      doc = filter(link('doc/api/README%.md'))
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/-/blob/#{ref}/doc/api/README%25.md"
     end
 
     context 'when requested path is a file in the repo' do

@@ -89,10 +89,10 @@ Example response:
 
 ## Create a related epic link
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352840) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352840) in GitLab 14.10.
+> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381308) from Reporter to Guest in GitLab 15.8.
 
-Create a two-way relation between two epics. The user must be allowed to
-update both epics to succeed.
+Create a two-way relation between two epics. The user must have at least the Guest role for both groups.
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/related_epics
@@ -208,10 +208,10 @@ Example response:
 
 ## Delete a related epic link
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352840) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352840) in GitLab 14.10.
+> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381308) from Reporter to Guest in GitLab 15.8.
 
-Delete a two-way relation between two epics. The user must be allowed to
-update both epics to succeed.
+Delete a two-way relation between two epics. The user must have at least the Guest role for both groups.
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid/related_epics/:related_epic_link_id

@@ -179,6 +179,17 @@ export default {
     </template>
     <template v-if="!isLoading" #actions>
       <gl-button
+        :loading="isMakingRequest"
+        variant="confirm"
+        size="small"
+        data-qa-selector="mr_rebase_button"
+        data-testid="standard-rebase-button"
+        class="gl-align-self-start"
+        @click="rebase"
+      >
+        {{ __('Rebase') }}
+      </gl-button>
+      <gl-button
         v-if="showRebaseWithoutPipeline"
         :loading="isMakingRequest"
         variant="confirm"
@@ -189,17 +200,6 @@ export default {
         @click="rebaseWithoutCi"
       >
         {{ __('Rebase without pipeline') }}
-      </gl-button>
-      <gl-button
-        :loading="isMakingRequest"
-        variant="confirm"
-        size="small"
-        data-qa-selector="mr_rebase_button"
-        data-testid="standard-rebase-button"
-        class="gl-mb-2 gl-md-mb-0 gl-align-self-start"
-        @click="rebase"
-      >
-        {{ __('Rebase') }}
       </gl-button>
     </template>
   </state-container>

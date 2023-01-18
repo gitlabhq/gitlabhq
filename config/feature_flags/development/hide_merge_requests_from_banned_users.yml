@@ -1,0 +1,8 @@
+---
+name: hide_merge_requests_from_banned_users
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107836
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/386726
+milestone: "15.8"
+type: development
+group: group::anti-abuse
+default_enabled: false

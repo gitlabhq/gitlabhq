@@ -212,8 +212,29 @@ describe('Manual Variables Form', () => {
 
       expect(findDeleteVarBtn().exists()).toBe(true);
     });
+  });
+
+  describe('variable delete button placeholder', () => {
+    beforeEach(async () => {
+      getJobQueryResponse.mockResolvedValue(mockJobResponse);
+      await createComponentWithApollo();
+    });
 
     it('delete variable button placeholder should only exist when a user cannot remove', async () => {
+      expect(findDeleteVarBtnPlaceholder().exists()).toBe(true);
+    });
+
+    it('does not show the placeholder button', () => {
+      expect(findDeleteVarBtnPlaceholder().classes('gl-opacity-0')).toBe(true);
+    });
+
+    it('placeholder button will not delete the row on click', async () => {
+      expect(findAllCiVariableKeys()).toHaveLength(1);
+      expect(findDeleteVarBtnPlaceholder().exists()).toBe(true);
+
+      await findDeleteVarBtnPlaceholder().trigger('click');
+
+      expect(findAllCiVariableKeys()).toHaveLength(1);
       expect(findDeleteVarBtnPlaceholder().exists()).toBe(true);
     });
   });

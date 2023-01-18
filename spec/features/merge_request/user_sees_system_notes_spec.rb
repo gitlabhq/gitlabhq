@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees system notes', :js, feature_category: :code_review do
+RSpec.describe 'Merge request > User sees system notes', :js, feature_category: :code_review_workflow do
   let(:public_project) { create(:project, :public, :repository) }
   let(:private_project) { create(:project, :private, :repository) }
   let(:user)            { private_project.creator }

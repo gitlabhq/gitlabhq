@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, concepts, howto
 ---
 
-# Sec section development **(FREE)**
+# Sec section development
 
 The Sec section is responsible for GitLab application security features, the "Sec" part of
 DevSecOps. Development guides that are specific to the Sec section are listed here.

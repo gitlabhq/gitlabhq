@@ -5,6 +5,7 @@ import { concatPagination } from '@apollo/client/utilities';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
+import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
 
 export const config = {
   typeDefs,
@@ -22,10 +23,30 @@ export const config = {
           },
         },
       },
+      WorkItemWidgetNotes: {
+        fields: {
+          // If we add any key args, the discussions field becomes discussions({"filter":"ONLY_ACTIVITY","first":10}) and
+          // kills any possibility to handle it on the widget level without hardcoding a string.
+          discussions: {
+            keyArgs: false,
+          },
+        },
+      },
+      WorkItemWidgetProgress: {
+        fields: {
+          progress: {
+            // We want to show null progress as 0 as per https://gitlab.com/gitlab-org/gitlab/-/issues/386117
+            read(existing) {
+              return existing === null ? 0 : existing;
+            },
+          },
+        },
+      },
       WorkItem: {
         fields: {
+          // widgets policy because otherwise the subscriptions invalidate the cache
           widgets: {
-            merge(existing = [], incoming) {
+            merge(existing = [], incoming, context) {
               if (existing.length === 0) {
                 return incoming;
               }
@@ -33,6 +54,24 @@ export const config = {
                 const incomingWidget = incoming.find(
                   (w) => w.type && w.type === existingWidget.type,
                 );
+                // We don't want to override existing notes with empty widget on work item updates
+                if (incomingWidget?.type === WIDGET_TYPE_NOTES && !context.variables.pageSize) {
+                  return existingWidget;
+                }
+                // we want to concat next page of discussions to the existing ones
+                if (incomingWidget?.type === WIDGET_TYPE_NOTES && context.variables.after) {
+                  // concatPagination won't work because we were placing new widget here so we have to do this manually
+                  return {
+                    ...incomingWidget,
+                    discussions: {
+                      ...incomingWidget.discussions,
+                      nodes: [
+                        ...existingWidget.discussions.nodes,
+                        ...incomingWidget.discussions.nodes,
+                      ],
+                    },
+                  };
+                }
                 return incomingWidget || existingWidget;
               });
             },

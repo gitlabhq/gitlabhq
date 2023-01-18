@@ -126,6 +126,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_member
     enable :read_custom_emoji
     enable :read_counts
+    enable :read_achievement
   end
 
   rule { ~public_group & ~has_access }.prevent :read_counts
@@ -185,6 +186,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :maintainer_access
     enable :read_upload
     enable :destroy_upload
+    enable :admin_achievement
   end
 
   rule { owner }.policy do

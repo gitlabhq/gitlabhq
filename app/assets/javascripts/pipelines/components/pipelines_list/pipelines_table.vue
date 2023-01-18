@@ -161,7 +161,7 @@ export default {
         <pipeline-url
           :pipeline="item"
           :pipeline-schedule-url="pipelineScheduleUrl"
-          :pipeline-key="pipelineKeyOption.key"
+          :pipeline-key="pipelineKeyOption.value"
         />
       </template>
 

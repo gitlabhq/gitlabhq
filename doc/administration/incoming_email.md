@@ -304,7 +304,12 @@ gitlab_rails['incoming_email_mailbox_name'] = "inbox"
 # The IDLE command timeout.
 gitlab_rails['incoming_email_idle_timeout'] = 60
 
+# If you are using Microsoft Graph instead of IMAP, set this to false to retain
+# messages in the inbox because deleted messages are auto-expunged after some time.
+gitlab_rails['incoming_email_delete_after_delivery'] = true
+
 # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+# Only applies to IMAP. Microsoft Graph will auto-expunge any deleted messages.
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
@@ -342,7 +347,12 @@ incoming_email:
     # The IDLE command timeout.
     idle_timeout: 60
 
+    # If you are using Microsoft Graph instead of IMAP, set this to false to retain
+    # messages in the inbox because deleted messages are auto-expunged after some time.
+    delete_after_delivery: true
+
     # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+    # Only applies to IMAP. Microsoft Graph will auto-expunge any deleted messages.
     expunge_deleted: true
 ```
 
@@ -386,7 +396,12 @@ gitlab_rails['incoming_email_mailbox_name'] = "inbox"
 # The IDLE command timeout.
 gitlab_rails['incoming_email_idle_timeout'] = 60
 
+# If you are using Microsoft Graph instead of IMAP, set this to false if you want to retain
+# messages in the inbox because deleted messages are auto-expunged after some time.
+gitlab_rails['incoming_email_delete_after_delivery'] = true
+
 # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+# Only applies to IMAP. Microsoft Graph will auto-expunge any deleted messages.
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
@@ -424,7 +439,12 @@ incoming_email:
     # The IDLE command timeout.
     idle_timeout: 60
 
+    # If you are using Microsoft Graph instead of IMAP, set this to falseto retain
+    # messages in the inbox because deleted messages are auto-expunged after some time.
+    delete_after_delivery: true
+
     # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+    # Only applies to IMAP. Microsoft Graph will auto-expunge any deleted messages.
     expunge_deleted: true
 ```
 
@@ -467,6 +487,7 @@ gitlab_rails['incoming_email_port'] = 993
 gitlab_rails['incoming_email_ssl'] = true
 
 # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+# Only applies to IMAP. Microsoft Graph will auto-expunge any deleted messages.
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
@@ -496,6 +517,10 @@ incoming_email:
     port: 993
     # Whether the IMAP server uses SSL
     ssl: true
+
+    # If you are using Microsoft Graph instead of IMAP, set this to false to retain
+    # messages in the inbox since deleted messages are auto-expunged after some time.
+    delete_after_delivery: true
 
     # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
     expunge_deleted: true
@@ -556,6 +581,10 @@ incoming_email:
     port: 993
     # Whether the IMAP server uses SSL
     ssl: true
+
+    # If you are using Microsoft Graph instead of IMAP, set this to false to retain
+    # messages in the inbox since deleted messages are auto-expunged after some time.
+    delete_after_delivery: true
 
     # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
     expunge_deleted: true
@@ -812,6 +841,7 @@ gitlab_rails['incoming_email_address'] = "incoming+%{key}@example.onmicrosoft.co
 
 # Email account username
 gitlab_rails['incoming_email_email'] = "incoming@example.onmicrosoft.com"
+gitlab_rails['incoming_email_delete_after_delivery'] = false
 
 gitlab_rails['incoming_email_inbox_method'] = 'microsoft_graph'
 gitlab_rails['incoming_email_inbox_options'] = {

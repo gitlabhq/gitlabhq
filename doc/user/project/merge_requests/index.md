@@ -19,6 +19,10 @@ Merge requests include:
 
 Read more about [how to get started](getting_started.md).
 
+## Create a merge request
+
+Learn the various ways to [create a merge request](creating_merge_requests.md).
+
 ## View merge requests
 
 You can view merge requests for your project, group, or yourself.
@@ -63,55 +67,35 @@ or:
 
 ## Filter the list of merge requests
 
+> - Filtering by `approved-by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30335) in GitLab 13.0.
+> - Filtering by `reviewer` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47605) in GitLab 13.7.
+> - Filtering by potential approvers was moved to GitLab Premium in 13.9.
+> - Filtering by `approved-by` moved to GitLab Premium in 13.9.
+
 To filter the list of merge requests:
 
 1. Above the list of merge requests, select **Search or filter results...**.
-1. In the dropdown list that appears, select the attribute you wish to filter by.
+1. From the dropdown list, select the attribute you wish to filter by. Some examples:
+   - [**By environment or deployment date**](#filter-merge-requests-by-environment-or-deployment-date).
+   - **ID**: Enter filter `#30` to return only merge request 30.
+   - User filters: Type (or select from the dropdown list) any of these filters to display a list of users:
+     - **Approved-By**, for merge requests already approved by a user. **(PREMIUM)**.
+     - **Approver**, for merge requests that this user is eligible to approve.
+       (For more information, read about [Code owners](../code_owners.md)). **(PREMIUM)**
+     - **Reviewer**, for merge requests reviewed by this user.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
    - `=`: Is
-   - `!=`: Is not ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18059) in GitLab 12.7)
+   - `!=`: Is not
 1. Enter the text to filter the attribute by.
    You can filter some attributes by **None** or **Any**.
 1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
    `AND`.
+1. Select a **Sort direction**, either **{sort-lowest}** for descending order,
+   or **{sort-highest}** for ascending order.
 
 GitLab displays the results on-screen, but you can also
 [retrieve them as an RSS feed](../../search/index.md#retrieve-search-results-as-feed).
-
-### Filter merge requests by ID
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
-
-You can filter the **Merge Request** list to find merge requests by their ID.
-
-For example, enter filter `#30` to return only merge request 30.
-
-### Filter merge requests by approvers **(PREMIUM)**
-
-> Moved to GitLab Premium in 13.9.
-
-To filter merge requests by an individual eligible approver ([Code owner](../code_owners.md)), you can type (or select from
-the dropdown list) **Approver** and select the user.
-
-![Filter MRs by an approver](img/filter_approver_merge_requests_v14_6.png)
-
-### Filter merge requests by "approved by" **(PREMIUM)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30335) in GitLab 13.0.
-> - Moved to GitLab Premium in 13.9.
-
-To filter merge requests already approved by a specific individual, you can type (or select from
-the dropdown list) **Approved-By** and select the user.
-
-![Filter MRs by approved by](img/filter_approved_by_merge_requests_v14_6.png)
-
-### Filter merge requests by reviewer
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47605) in GitLab 13.7.
-
-To filter review requested merge requests for a specific individual, you can type (or select from
-the dropdown list) **Reviewer** and select the user.
 
 ### Filter merge requests by environment or deployment date
 

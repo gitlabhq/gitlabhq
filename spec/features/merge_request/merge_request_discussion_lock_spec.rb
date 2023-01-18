@@ -4,7 +4,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge Request Discussion Lock', :js, feature_category: :code_review do
+RSpec.describe 'Merge Request Discussion Lock', :js, feature_category: :code_review_workflow do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, author: user) }

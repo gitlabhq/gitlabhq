@@ -8,7 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Import repository from GitHub
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups if the namespace or group name specified in `target_namespace` doesn't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken or `target_namespace` is blank.
+
 Import your projects from GitHub to GitLab using the API.
+
+The namespace set in `target_namespace` must exist. The namespace can be your user namespace or an existing group that you have at least the Developer role for.
 
 ```plaintext
 POST /import/github
@@ -18,8 +22,8 @@ POST /import/github
 |-------------------------|---------|----------|-------------------------------------------------------------------------------------|
 | `personal_access_token` | string  | yes      | GitHub personal access token                                                        |
 | `repo_id`               | integer | yes      | GitHub repository ID                                                                |
-| `new_name`              | string  | no      | New repository name                                                                 |
-| `target_namespace`      | string  | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup` |
+| `new_name`              | string  | no       | New repository name                                                                 |
+| `target_namespace`      | string  | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`. In GitLab 15.8 and later, must not be blank |
 | `github_hostname`       | string  | no  | Custom GitHub Enterprise hostname. Do not set for GitHub.com.                       |
 | `optional_stages`       | object  | no  | [Additional items to import](../user/project/import/github.md#select-additional-items-to-import). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5 |
 
@@ -115,6 +119,44 @@ Returns the following status codes:
 - `200 OK`: the project import is being canceled.
 - `400 Bad Request`: the project import cannot be canceled.
 - `404 Not Found`: the project associated with `project_id` does not exist.
+
+## Import GitHub gists into GitLab snippets
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371099) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `github_import_gists`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `github_import_gists`.
+
+You can use the GitLab API to import personal GitHub gists (with up to 10 files) into personal GitLab snippets.
+GitHub gists with more than 10 files are skipped. You should manually migrate these GitHub gists.
+
+If any gists couldn't be imported, an email is sent with a list of gists that were not imported.
+
+```plaintext
+POST /import/github/gists
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `personal_access_token`   | string | yes      | GitHub personal access token     |
+
+```shell
+curl --request POST \
+  --url "https://gitlab.example.com/api/v4/import/github/gists" \
+  --header "content-type: application/json" \
+  --header "PRIVATE-TOKEN: <your_gitlab_access_token>" \
+  --data '{
+    "personal_access_token": "<your_github_personal_access_token>"
+}'
+```
+
+Returns the following status codes:
+
+- `202 Accepted`: the gists import is being started.
+- `401 Unauthorized`: user's GitHub personal access token is invalid.
+- `422 Unprocessable Entity`: the gists import is already in progress.
+- `429 Too Many Requests`: the user has exceeded GitHub's rate limit.
 
 ## Import repository from Bitbucket Server
 

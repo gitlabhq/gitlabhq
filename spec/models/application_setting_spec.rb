@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationSetting do
+RSpec.describe ApplicationSetting, feature_category: :not_owned, type: :model do
   using RSpec::Parameterized::TableSyntax
 
   subject(:setting) { described_class.create_from_defaults }
@@ -128,6 +128,10 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to validate_presence_of(:max_terraform_state_size_bytes) }
     it { is_expected.to validate_numericality_of(:max_terraform_state_size_bytes).only_integer.is_greater_than_or_equal_to(0) }
 
+    it { is_expected.to allow_value(true).for(:user_defaults_to_private_profile) }
+    it { is_expected.to allow_value(false).for(:user_defaults_to_private_profile) }
+    it { is_expected.not_to allow_value(nil).for(:user_defaults_to_private_profile) }
+
     it 'ensures max_pages_size is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
       is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than_or_equal_to(0)
                        .is_less_than(::Gitlab::Pages::MAX_SIZE / 1.megabyte)
@@ -219,6 +223,10 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to allow_value(true).for(:bulk_import_enabled) }
     it { is_expected.to allow_value(false).for(:bulk_import_enabled) }
     it { is_expected.not_to allow_value(nil).for(:bulk_import_enabled) }
+
+    it { is_expected.to allow_value(true).for(:allow_runner_registration_token) }
+    it { is_expected.to allow_value(false).for(:allow_runner_registration_token) }
+    it { is_expected.not_to allow_value(nil).for(:allow_runner_registration_token) }
 
     context 'when deactivate_dormant_users is enabled' do
       before do
@@ -717,35 +725,7 @@ RSpec.describe ApplicationSetting do
     end
 
     context 'housekeeping settings' do
-      it { is_expected.not_to allow_value(0).for(:housekeeping_incremental_repack_period) }
-
-      it 'wants the full repack period to be at least the incremental repack period' do
-        subject.housekeeping_incremental_repack_period = 2
-        subject.housekeeping_full_repack_period = 1
-
-        expect(subject).not_to be_valid
-      end
-
-      it 'wants the gc period to be at least the full repack period' do
-        subject.housekeeping_full_repack_period = 100
-        subject.housekeeping_gc_period = 90
-
-        expect(subject).not_to be_valid
-      end
-
-      it 'allows the same period for incremental repack and full repack, effectively skipping incremental repack' do
-        subject.housekeeping_incremental_repack_period = 2
-        subject.housekeeping_full_repack_period = 2
-
-        expect(subject).to be_valid
-      end
-
-      it 'allows the same period for full repack and gc, effectively skipping full repack' do
-        subject.housekeeping_full_repack_period = 100
-        subject.housekeeping_gc_period = 100
-
-        expect(subject).to be_valid
-      end
+      it { is_expected.not_to allow_value(0).for(:housekeeping_optimize_repository_period) }
     end
 
     context 'gitaly timeouts' do

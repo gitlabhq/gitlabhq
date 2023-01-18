@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Pipeline::FullPipeline do
+RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning do
   describe 'References' do
     let(:project) { create(:project, :public) }
     let(:issue)   { create(:issue, project: project) }
@@ -164,7 +164,7 @@ RSpec.describe Banzai::Pipeline::FullPipeline do
       markdown = '_@test\__'
       output = described_class.to_html(markdown, project: project)
 
-      expect(output).to include('<em>@test_</em>')
+      expect(output).to include('<em>@test<span>_</span></em>')
     end
   end
 

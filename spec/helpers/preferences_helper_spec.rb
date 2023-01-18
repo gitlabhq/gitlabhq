@@ -25,15 +25,15 @@ RSpec.describe PreferencesHelper do
 
     it 'provides better option descriptions' do
       expect(helper.dashboard_choices).to match_array [
-        ['Your Projects (default)', 'projects'],
-        ['Starred Projects',        'stars'],
-        ["Your Projects' Activity", 'project_activity'],
-        ["Starred Projects' Activity", 'starred_project_activity'],
-        ["Followed Users' Activity", 'followed_user_activity'],
-        ["Your Groups", 'groups'],
-        ["Your To-Do List", 'todos'],
-        ["Assigned Issues", 'issues'],
-        ["Assigned merge requests", 'merge_requests']
+        { text: "Your Projects (default)", value: 'projects' },
+        { text: "Starred Projects", value: 'stars' },
+        { text: "Your Projects' Activity", value: 'project_activity' },
+        { text: "Starred Projects' Activity", value: 'starred_project_activity' },
+        { text: "Followed Users' Activity", value: 'followed_user_activity' },
+        { text: "Your Groups", value: 'groups' },
+        { text: "Your To-Do List", value: 'todos' },
+        { text: "Assigned Issues", value: 'issues' },
+        { text: "Assigned merge requests", value: 'merge_requests' }
       ]
     end
   end
@@ -214,9 +214,9 @@ RSpec.describe PreferencesHelper do
       stub_user(preferred_language: :en)
 
       expect(helper.language_choices).to eq([
-        '<option selected="selected" value="en">English (100% translated)</option>',
-        '<option value="es">Spanish - español (65% translated)</option>'
-      ].join("\n"))
+        { text: "English (100% translated)", value: 'en' },
+        { text: "Spanish - español (65% translated)", value: 'es' }
+      ])
     end
   end
 

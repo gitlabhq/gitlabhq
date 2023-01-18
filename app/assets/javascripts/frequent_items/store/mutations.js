@@ -20,6 +20,11 @@ export default {
       hasSearchQuery,
     });
   },
+  [types.TOGGLE_ITEMS_LIST_EDITABILITY](state) {
+    Object.assign(state, {
+      isItemsListEditable: !state.isItemsListEditable,
+    });
+  },
   [types.REQUEST_FREQUENT_ITEMS](state) {
     Object.assign(state, {
       isLoadingItems: true,
@@ -67,6 +72,17 @@ export default {
       isLoadingItems: false,
       hasSearchQuery: true,
       isFetchFailed: true,
+    });
+  },
+  [types.RECEIVE_REMOVE_FREQUENT_ITEM_SUCCESS](state, itemId) {
+    Object.assign(state, {
+      items: state.items.filter((item) => item.id !== itemId),
+      isItemRemovalFailed: false,
+    });
+  },
+  [types.RECEIVE_REMOVE_FREQUENT_ITEM_ERROR](state) {
+    Object.assign(state, {
+      isItemRemovalFailed: true,
     });
   },
 };

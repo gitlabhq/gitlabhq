@@ -1,0 +1,10 @@
+---
+table_name: ci_runner_machines
+classes:
+- Ci::RunnerMachine
+feature_categories:
+- runner_fleet
+description: Information about host machines associated to Ci::Runner models
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107801
+milestone: '15.8'
+gitlab_schema: gitlab_ci

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::UpdateTimelogsProjectId, schema: 20210427212034 do
+RSpec.describe Gitlab::BackgroundMigration::UpdateTimelogsProjectId, schema: 20210602155110 do
   let!(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }
   let!(:project1) { table(:projects).create!(namespace_id: namespace.id) }
   let!(:project2) { table(:projects).create!(namespace_id: namespace.id) }

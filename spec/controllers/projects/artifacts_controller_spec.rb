@@ -26,14 +26,34 @@ RSpec.describe Projects::ArtifactsController do
     subject { get :index, params: { namespace_id: project.namespace, project_id: project } }
 
     context 'when feature flag is on' do
+      render_views
+
       before do
         stub_feature_flags(artifacts_management_page: true)
       end
 
-      it 'renders the page' do
+      it 'renders the page with data for the artifacts app' do
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('projects/artifacts/index')
+
+        app = Nokogiri::HTML.parse(response.body).at_css('div#js-artifact-management')
+
+        expect(app.attributes['data-project-path'].value).to eq(project.full_path)
+        expect(app.attributes['data-can-destroy-artifacts'].value).to eq('true')
+      end
+
+      describe 'when user does not have permission to delete artifacts' do
+        let(:user) { create(:user) }
+
+        it 'passes false to the artifacts app' do
+          subject
+
+          app = Nokogiri::HTML.parse(response.body).at_css('div#js-artifact-management')
+
+          expect(app.attributes['data-can-destroy-artifacts'].value).to eq('false')
+        end
       end
     end
 
@@ -420,6 +440,16 @@ RSpec.describe Projects::ArtifactsController do
           let!(:job) { create(:ci_build, :success, pipeline: pipeline) }
           let(:store) { ObjectStorage::Store::REMOTE }
           let(:archive_path) { 'https://' }
+        end
+      end
+
+      context 'when artifacts archive is missing' do
+        let!(:job) { create(:ci_build, :success, pipeline: pipeline) }
+
+        it 'returns 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 

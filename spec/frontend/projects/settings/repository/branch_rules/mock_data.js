@@ -92,10 +92,7 @@ export const branchRuleWithoutDetailsPropsMock = {
   name: 'branch-1',
   isDefault: false,
   matchingBranchesCount: 1,
-  branchProtection: {
-    allowForcePush: false,
-    codeOwnerApprovalRequired: false,
-  },
+  branchProtection: null,
   approvalRulesTotal: 0,
   statusChecksTotal: 0,
 };

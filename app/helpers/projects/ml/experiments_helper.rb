@@ -11,7 +11,10 @@ module Projects
             **candidate.params.to_h { |p| [p.name, p.value] },
             **candidate.latest_metrics.to_h { |m| [m.name, number_with_precision(m.value, precision: 4)] },
             artifact: link_to_artifact(candidate),
-            details: link_to_details(candidate)
+            details: link_to_details(candidate),
+            name: candidate.name,
+            created_at: candidate.created_at,
+            user: user_info(candidate)
           }
         end
 
@@ -32,7 +35,8 @@ module Projects
             experiment_name: candidate.experiment.name,
             path_to_experiment: link_to_experiment(candidate),
             status: candidate.status
-          }
+          },
+          metadata: candidate.metadata
         }
 
         Gitlab::Json.generate(data)
@@ -45,17 +49,28 @@ module Projects
 
         return unless artifact.present?
 
-        project_package_path(candidate.experiment.project, artifact)
+        project_package_path(candidate.project, artifact)
       end
 
       def link_to_details(candidate)
-        project_ml_candidate_path(candidate.experiment.project, candidate.iid)
+        project_ml_candidate_path(candidate.project, candidate.iid)
       end
 
       def link_to_experiment(candidate)
         experiment = candidate.experiment
 
         project_ml_experiment_path(experiment.project, experiment.iid)
+      end
+
+      def user_info(candidate)
+        user = candidate.user
+
+        return unless user.present?
+
+        {
+          username: user.username,
+          path: user_path(user)
+        }
       end
     end
   end

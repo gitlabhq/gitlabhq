@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User clicks on merge request tabs', :js, feature_category: :code_review do
+RSpec.describe 'User clicks on merge request tabs', :js, feature_category: :code_review_workflow do
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 

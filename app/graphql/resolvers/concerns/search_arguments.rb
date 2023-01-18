@@ -18,6 +18,7 @@ module SearchArguments
   def ready?(**args)
     validate_search_in_params!(args)
     validate_anonymous_search_access!(args)
+    validate_search_rate_limit!(args)
 
     super
   end
@@ -37,6 +38,28 @@ module SearchArguments
 
     raise Gitlab::Graphql::Errors::ArgumentError,
           '`search` should be present when including the `in` argument'
+  end
+
+  def validate_search_rate_limit!(args)
+    return if args[:search].blank? || context[:request].nil? || Feature.disabled?(:rate_limit_issuable_searches)
+
+    if current_user.present?
+      rate_limiter_key = :search_rate_limit
+      rate_limiter_scope = [current_user]
+    else
+      rate_limiter_key = :search_rate_limit_unauthenticated
+      rate_limiter_scope = [context[:request].ip]
+    end
+
+    if ::Gitlab::ApplicationRateLimiter.throttled_request?(
+      context[:request],
+      current_user,
+      rate_limiter_key,
+      scope: rate_limiter_scope
+    )
+      raise Gitlab::Graphql::Errors::ResourceNotAvailable,
+        'This endpoint has been requested with the search argument too many times. Try again later.'
+    end
   end
 
   def prepare_finder_params(args)

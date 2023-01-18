@@ -12,6 +12,7 @@ fragment WorkItem on WorkItem {
   project {
     id
     fullPath
+    archived
   }
   workItemType {
     id

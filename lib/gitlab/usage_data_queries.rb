@@ -5,7 +5,7 @@ module Gitlab
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41091
   class UsageDataQueries < UsageData
     class << self
-      def with_duration
+      def with_metadata
         yield
       end
 

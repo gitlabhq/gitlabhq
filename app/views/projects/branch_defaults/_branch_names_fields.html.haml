@@ -10,5 +10,5 @@
         %p.form-text.text-muted
           = s_('ProjectSettings|Leave empty to use default template.')
           = sprintf(s_('ProjectSettings|Maximum %{maxLength} characters.'), { maxLength: Issue::MAX_BRANCH_TEMPLATE })
-          - branch_name_help_link = help_page_path('user/project/repository/web_editor.md', anchor: 'create-a-new-branch-from-an-issue')
+          - branch_name_help_link = help_page_path('user/project/merge_requests/creating_merge_requests.md', anchor: 'from-an-issue')
           = link_to _('What variables can I use?'), branch_name_help_link, target: "_blank"

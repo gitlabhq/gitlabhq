@@ -18,16 +18,8 @@ RSpec.describe Gitlab::Redis::SidekiqStatus do
     subject { described_class.pool }
 
     before do
-      redis_clear_raw_config!(Gitlab::Redis::SharedState)
-      redis_clear_raw_config!(Gitlab::Redis::Queues)
-
       allow(Gitlab::Redis::SharedState).to receive(:config_file_name).and_return(config_new_format_host)
       allow(Gitlab::Redis::Queues).to receive(:config_file_name).and_return(config_new_format_socket)
-    end
-
-    after do
-      redis_clear_raw_config!(Gitlab::Redis::SharedState)
-      redis_clear_raw_config!(Gitlab::Redis::Queues)
     end
 
     around do |example|

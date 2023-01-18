@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'search/_results' do
+RSpec.describe 'search/_results', feature_category: :global_search do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
@@ -11,7 +11,6 @@ RSpec.describe 'search/_results' do
   let(:scope) { 'issues' }
   let(:term) { 'foo' }
   let(:search_results) { instance_double('Gitlab::SearchResults', { formatted_count: 10, current_user: user } ) }
-  let(:search_service) { class_double(SearchServicePresenter, scope: scope, search: term, current_user: user) }
 
   before do
     controller.params[:action] = 'show'
@@ -20,6 +19,7 @@ RSpec.describe 'search/_results' do
     create_list(:issue, 3)
 
     allow(view).to receive(:current_user) { user }
+
     assign(:search_count_path, 'test count link')
     assign(:search_path, 'link test')
     assign(:search_results, search_results)
@@ -27,8 +27,9 @@ RSpec.describe 'search/_results' do
     assign(:search_term, term)
     assign(:scope, scope)
 
-    @search_service = SearchServicePresenter.new(SearchService.new(user, search: term, scope: scope))
-    allow(@search_service).to receive(:search_objects).and_return(search_objects)
+    search_service_presenter = SearchServicePresenter.new(SearchService.new(user, search: term, scope: scope))
+    allow(search_service_presenter).to receive(:search_objects).and_return(search_objects)
+    assign(:search_service_presenter, search_service_presenter)
   end
 
   where(search_page_vertical_nav_enabled: [true, false])

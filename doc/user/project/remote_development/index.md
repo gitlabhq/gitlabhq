@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Remote Development **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available. The feature is not ready for production use.
@@ -22,7 +22,7 @@ As with all projects, the items mentioned on this page are subject to change or 
 The development, release, and timing of any products, features, or functionality remain at the
 sole discretion of GitLab Inc.
 
-You can use the [Web IDE](../web_ide/index.md) to commit changes to a project directly from your web browser without installing any dependencies or cloning any repositories. The Web IDE, however, lacks a native runtime environment on which you would compile code, run tests, or generate real-time feedback in the IDE. For a more complete IDE experience, you can pair the Web IDE with a Remote Development environment that has been properly configured to run as a host.
+You can use the [Web IDE](../web_ide/index.md) to commit changes to a project directly from your web browser without installing any dependencies or cloning any repositories. The Web IDE, however, lacks a native runtime environment on which you would compile code, run tests, or generate real-time feedback in the IDE. For a more complete IDE experience, you can pair the [Web IDE Beta](../web_ide_beta/index.md) with a Remote Development environment that has been properly configured to run as a host.
 
 ## Connect a remote machine to the Web IDE
 
@@ -81,7 +81,7 @@ To connect a development environment to the Web IDE:
 
 1. [Create a development environment](#manage-a-development-environment).
 1. [Fetch a token](#fetch-a-token).
-1. [Connect to the Web IDE](#connect-to-the-web-ide).
+1. [Configure a remote connection](#configure-a-remote-connection).
 
 #### Manage a development environment
 
@@ -134,9 +134,18 @@ To remove a development environment:
 docker exec my-environment cat TOKEN
 ```
 
-#### Connect to the Web IDE
+#### Configure a remote connection
 
-To connect to the Web IDE:
+To configure a remote connection from the Web IDE:
+
+1. Open the Web IDE.
+1. In the Menu Bar, select **View > Terminal** or press <kbd>Control</kbd>+<kbd>`</kbd>.
+1. In the terminal panel, select **Configure a remote connection**.
+1. Enter the URL for the remote host including the port (for example, `yourdomain.com:3443`).
+1. Enter the project path.
+1. Enter the [token you fetched](#fetch-a-token).
+
+Alternatively, you can pass the parameters from a URL and connect directly to the Web IDE:
 
 1. Run the following command:
 
@@ -145,3 +154,7 @@ To connect to the Web IDE:
    ```
 
 1. Go to that URL and enter the [token you fetched](#fetch-a-token).
+
+## Related topics
+
+- [Web IDE Beta](../web_ide_beta/index.md)

@@ -92,7 +92,7 @@ module CycleAnalyticsHelpers
   end
 
   def create_value_stream_group_aggregation(group)
-    aggregation = Analytics::CycleAnalytics::Aggregation.safe_create_for_group(group)
+    aggregation = Analytics::CycleAnalytics::Aggregation.safe_create_for_namespace(group)
     Analytics::CycleAnalytics::AggregatorService.new(aggregation: aggregation).execute
   end
 

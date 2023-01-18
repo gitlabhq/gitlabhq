@@ -5,11 +5,14 @@ import { __, s__ } from '~/locale';
 import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
+import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/work_item_links/work_item_link_child_metadata.vue';
 
 import {
   STATE_OPEN,
   TASK_TYPE_NAME,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WIDGET_TYPE_PROGRESS,
+  WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_ASSIGNEES,
@@ -17,7 +20,6 @@ import {
   WORK_ITEM_NAME_TO_ICON_MAP,
 } from '../../constants';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
-import WorkItemLinkChildMetadata from './work_item_link_child_metadata.vue';
 import WorkItemLinksMenu from './work_item_links_menu.vue';
 import WorkItemTreeChildren from './work_item_tree_children.vue';
 
@@ -73,8 +75,15 @@ export default {
     canHaveChildren() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_OBJECTIVE;
     },
-    allowsScopedLabels() {
-      return this.getWidgetByType(this.childItem, WIDGET_TYPE_LABELS)?.allowsScopedLabels;
+    metadataWidgets() {
+      return this.childItem.widgets?.reduce((metadataWidgets, widget) => {
+        // Skip Hierarchy widget as it is not part of metadata.
+        if (widget.type && widget.type !== WIDGET_TYPE_HIERARCHY) {
+          // eslint-disable-next-line no-param-reassign
+          metadataWidgets[widget.type] = widget;
+        }
+        return metadataWidgets;
+      }, {});
     },
     isItemOpen() {
       return this.childItem.state === STATE_OPEN;
@@ -113,16 +122,16 @@ export default {
       return this.isExpanded ? __('Collapse') : __('Expand');
     },
     hasMetadata() {
-      return this.milestone || this.assignees.length > 0 || this.labels.length > 0;
-    },
-    milestone() {
-      return this.getWidgetByType(this.childItem, WIDGET_TYPE_MILESTONE)?.milestone;
-    },
-    assignees() {
-      return this.getWidgetByType(this.childItem, WIDGET_TYPE_ASSIGNEES)?.assignees?.nodes || [];
-    },
-    labels() {
-      return this.getWidgetByType(this.childItem, WIDGET_TYPE_LABELS)?.labels?.nodes || [];
+      if (this.metadataWidgets) {
+        return (
+          Number.isInteger(this.metadataWidgets[WIDGET_TYPE_PROGRESS]?.progress) ||
+          Boolean(this.metadataWidgets[WIDGET_TYPE_HEALTH_STATUS]?.healthStatus) ||
+          Boolean(this.metadataWidgets[WIDGET_TYPE_MILESTONE]?.milestone) ||
+          this.metadataWidgets[WIDGET_TYPE_ASSIGNEES]?.assignees?.nodes.length > 0 ||
+          this.metadataWidgets[WIDGET_TYPE_LABELS]?.labels?.nodes.length > 0
+        );
+      }
+      return false;
     },
   },
   methods: {
@@ -230,10 +239,7 @@ export default {
           </div>
           <work-item-link-child-metadata
             v-if="hasMetadata"
-            :allows-scoped-labels="allowsScopedLabels"
-            :milestone="milestone"
-            :assignees="assignees"
-            :labels="labels"
+            :metadata-widgets="metadataWidgets"
             class="gl-mt-3"
           />
         </div>
@@ -258,6 +264,7 @@ export default {
       :work-item-type="workItemType"
       :children="children"
       @removeChild="fetchChildren"
+      @click="$emit('click', $event)"
     />
   </div>
 </template>

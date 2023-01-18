@@ -24,19 +24,6 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
 
       subject.perform(*params)
     end
-
-    context 'when optimized_housekeeping feature is disabled' do
-      before do
-        stub_feature_flags(optimized_housekeeping: false)
-      end
-
-      specify do
-        expect(subject).to receive(:get_gitaly_client).with(task, repository.raw_repository).and_return(repository_service)
-        expect(repository_service).to receive(gitaly_task)
-
-        subject.perform(*params)
-      end
-    end
   end
 
   shared_examples 'it updates the resource statistics' do
@@ -90,20 +77,6 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
         allow(repository_service).to receive(:optimize_repository).and_raise(GRPC::NotFound)
 
         expect { subject.perform(*params) }.to raise_exception(Gitlab::Git::Repository::NoRepository)
-      end
-
-      context 'when optimized_housekeeping feature flag is disabled' do
-        before do
-          stub_feature_flags(optimized_housekeeping: false)
-        end
-
-        it 'handles gRPC errors' do
-          allow_next_instance_of(Gitlab::GitalyClient::RepositoryService, repository.raw_repository) do |instance|
-            allow(instance).to receive(:garbage_collect).and_raise(GRPC::NotFound)
-          end
-
-          expect { subject.perform(*params) }.to raise_exception(Gitlab::Git::Repository::NoRepository)
-        end
       end
     end
 
@@ -161,51 +134,6 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
       end
     end
 
-    context 'repack_full' do
-      let(:task) { :full_repack }
-      let(:gitaly_task) { :repack_full }
-
-      before do
-        expect(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
-      end
-
-      it_behaves_like 'it calls Gitaly'
-      it_behaves_like 'it updates the resource statistics' if update_statistics
-    end
-
-    context 'pack_refs' do
-      let(:task) { :pack_refs }
-      let(:gitaly_task) { :pack_refs }
-
-      before do
-        expect(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
-      end
-
-      it_behaves_like 'it calls Gitaly' do
-        let(:repository_service) { instance_double(Gitlab::GitalyClient::RefService) }
-      end
-
-      it 'does not update the resource statistics' do
-        expect(statistics_service_klass).not_to receive(:new)
-
-        subject.perform(*params)
-      end
-    end
-
-    context 'repack_incremental' do
-      let(:task) { :incremental_repack }
-      let(:gitaly_task) { :repack_incremental }
-
-      before do
-        expect(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
-
-        statistics_keys.delete(:repository_size)
-      end
-
-      it_behaves_like 'it calls Gitaly'
-      it_behaves_like 'it updates the resource statistics' if update_statistics
-    end
-
     context 'prune' do
       before do
         expect(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
@@ -218,42 +146,6 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
 
         subject.perform(resource.id, 'prune', lease_key, lease_uuid)
       end
-    end
-
-    shared_examples 'gc tasks' do
-      before do
-        allow(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
-        allow(subject).to receive(:bitmaps_enabled?).and_return(bitmaps_enabled)
-
-        stub_feature_flags(optimized_housekeeping: false)
-      end
-
-      it 'cleans up repository after finishing' do
-        expect(resource).to receive(:cleanup).and_call_original
-
-        subject.perform(resource.id, 'gc', lease_key, lease_uuid)
-      end
-
-      it 'prune calls garbage_collect with the option prune: true' do
-        repository_service = instance_double(Gitlab::GitalyClient::RepositoryService)
-
-        expect(subject).to receive(:get_gitaly_client).with(:prune, repository.raw_repository).and_return(repository_service)
-        expect(repository_service).to receive(:garbage_collect).with(bitmaps_enabled, prune: true)
-
-        subject.perform(resource.id, 'prune', lease_key, lease_uuid)
-      end
-    end
-
-    context 'with bitmaps enabled' do
-      let(:bitmaps_enabled) { true }
-
-      include_examples 'gc tasks'
-    end
-
-    context 'with bitmaps disabled' do
-      let(:bitmaps_enabled) { false }
-
-      include_examples 'gc tasks'
     end
   end
 end

@@ -332,12 +332,12 @@ sobelow-sast:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
       exists:
-        - 'mix.exs'
+        - '**/mix.exs'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
     - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
       exists:
-        - 'mix.exs'
+        - '**/mix.exs'
 
 spotbugs-sast:
   extends: .sast-analyzer

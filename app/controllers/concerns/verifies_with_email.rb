@@ -105,8 +105,10 @@ module VerifiesWithEmail
   end
 
   def render_sign_in_rate_limited
-    message = s_('IdentityVerification|Maximum login attempts exceeded. '\
-      'Wait %{interval} and try again.') % { interval: user_sign_in_interval }
+    message = format(
+      s_('IdentityVerification|Maximum login attempts exceeded. Wait %{interval} and try again.'),
+      interval: user_sign_in_interval
+    )
     redirect_to new_user_session_path, alert: message
   end
 

@@ -14,7 +14,7 @@ Feature flags help reduce risk, allowing you to do controlled testing, and separ
 delivery from customer launch.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an example of feature flags in action, see [GitLab for deploys, feature flags, and error tracking](https://www.youtube.com/embed/5tw2p6lwXxo).
+For an example of feature flags in action, see [GitLab for deploys, feature flags, and error tracking](https://www.youtube.com/watch?v=5tw2p6lwXxo).
 
 NOTE:
 To contribute to the development of the GitLab product, view
@@ -132,7 +132,7 @@ For example, set a value of 15% to enable the feature for 15% of authenticated u
 
 The rollout percentage can be from 0% to 100%.
 
-Stickiness (consistent application behavior for the same user) is guaranteed for logged-in users,
+Stickiness (consistent application behavior for the same user) is guaranteed for authenticated users,
 but not anonymous users.
 
 Note that [percent rollout](#percent-rollout) with a consistency based on **User IDs** has the same
@@ -394,6 +394,9 @@ docker run \
 | `UNLEASH_INSTANCE_ID` | Your project's Instance ID. For more details, read [Get access credentials](#get-access-credentials). |
 | `UNLEASH_APP_NAME`    | The name of the environment the application runs in. For more details, read [Get access credentials](#get-access-credentials). |
 | `UNLEASH_API_TOKEN`   | Required to start the Unleash Proxy, but not used to connect to GitLab. Can be set to any value. |
+
+There is a limitation when using the Unleash Proxy where each proxy instance can request flags only for the environment named in `UNLEASH_APP_NAME`. The Proxy sends
+this to GitLab on behalf of the client, which means the client can't override it.
 
 ## Feature flag related issues **(PREMIUM)**
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration! 'schedule_fix_merge_request_diff_commit_users_migration'
 
-RSpec.describe ScheduleFixMergeRequestDiffCommitUsersMigration, :migration, feature_category: :code_review do
+RSpec.describe ScheduleFixMergeRequestDiffCommitUsersMigration, :migration, feature_category: :code_review_workflow do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

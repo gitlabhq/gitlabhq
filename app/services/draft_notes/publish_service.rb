@@ -34,7 +34,12 @@ module DraftNotes
 
       created_notes = draft_notes.map do |draft_note|
         draft_note.review = review
-        create_note_from_draft(draft_note, skip_capture_diff_note_position: true, skip_keep_around_commits: true)
+        create_note_from_draft(
+          draft_note,
+          skip_capture_diff_note_position: true,
+          skip_keep_around_commits: true,
+          skip_merge_status_trigger: true
+        )
       end
 
       capture_diff_note_positions(created_notes)
@@ -43,16 +48,18 @@ module DraftNotes
       set_reviewed
       notification_service.async.new_review(review)
       MergeRequests::ResolvedDiscussionNotificationService.new(project: project, current_user: current_user).execute(merge_request)
+      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
     end
 
-    def create_note_from_draft(draft, skip_capture_diff_note_position: false, skip_keep_around_commits: false)
+    def create_note_from_draft(draft, skip_capture_diff_note_position: false, skip_keep_around_commits: false, skip_merge_status_trigger: false)
       # Make sure the diff file is unfolded in order to find the correct line
       # codes.
       draft.diff_file&.unfold_diff_lines(draft.original_position)
 
       note_params = draft.publish_params.merge(skip_keep_around_commits: skip_keep_around_commits)
       note = Notes::CreateService.new(draft.project, draft.author, note_params).execute(
-        skip_capture_diff_note_position: skip_capture_diff_note_position
+        skip_capture_diff_note_position: skip_capture_diff_note_position,
+        skip_merge_status_trigger: skip_merge_status_trigger
       )
 
       set_discussion_resolve_status(note, draft)

@@ -14,18 +14,17 @@ module Gitlab
         end
 
         def search_repos_by_name(name, options = {})
+          search_query = search_repos_query(name, options)
+
           with_retry do
-            octokit.search_repositories(
-              search_repos_query(str: name, type: :name),
-              options
-            ).to_h
+            octokit.search_repositories(search_query, options).to_h
           end
         end
 
         private
 
         def graphql_search_repos_body(name, options)
-          query = search_repos_query(str: name, type: :name)
+          query = search_repos_query(name, options)
           query = "query: \"#{query}\""
           first = options[:first].present? ? ", first: #{options[:first]}" : ''
           after = options[:after].present? ? ", after: \"#{options[:after]}\"" : ''
@@ -52,13 +51,49 @@ module Gitlab
           TEXT
         end
 
-        def search_repos_query(str:, type:, include_collaborations: true, include_orgs: true)
-          query = "#{str} in:#{type} is:public,private user:#{octokit.user.to_h[:login]}"
+        def search_repos_query(string, options = {})
+          base = "#{string} in:name is:public,private"
 
-          query = [query, collaborations_subquery].join(' ') if include_collaborations
-          query = [query, organizations_subquery].join(' ') if include_orgs
+          case options[:relation_type]
+          when 'organization' then organization_repos_query(base, options)
+          when 'collaborated' then collaborated_repos_query(base)
+          when 'owned' then owned_repos_query(base)
+          # TODO: remove after https://gitlab.com/gitlab-org/gitlab/-/issues/385113 get done
+          else legacy_all_repos_query(base)
+          end
+        end
 
-          query
+        def organization_repos_query(search_string, options)
+          "#{search_string} org:#{options[:organization_login]}"
+        end
+
+        def collaborated_repos_query(search_string)
+          "#{search_string} #{collaborations_subquery}"
+        end
+
+        def owned_repos_query(search_string)
+          "#{search_string} user:#{octokit.user.to_h[:login]}"
+        end
+
+        def legacy_all_repos_query(search_string)
+          [
+            search_string,
+            "user:#{octokit.user.to_h[:login]}",
+            collaborations_subquery,
+            organizations_subquery
+          ].join(' ')
+        end
+
+        def collaborations_subquery
+          each_object(:repos, nil, { affiliation: 'collaborator' })
+            .map { |repo| "repo:#{repo[:full_name]}" }
+            .join(' ')
+        end
+
+        def organizations_subquery
+          each_object(:organizations)
+            .map { |org| "org:#{org[:login]}" }
+            .join(' ')
         end
       end
     end

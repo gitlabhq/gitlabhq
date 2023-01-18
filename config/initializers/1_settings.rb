@@ -870,6 +870,14 @@ Settings.gitlab_kas['internal_url'] ||= 'grpc://localhost:8153'
 # Settings.gitlab_kas['external_k8s_proxy_url'] ||= 'grpc://localhost:8154' # NOTE: Do not set a default until all distributions have been updated with a correct value
 
 #
+# Suggested Reviewers
+#
+Gitlab.ee do
+  Settings['suggested_reviewers'] ||= Settingslogic.new({})
+  Settings.suggested_reviewers['secret_file'] ||= Rails.root.join('.gitlab_suggested_reviewers_secret')
+end
+
+#
 # Repositories
 #
 Settings['repositories'] ||= Settingslogic.new({})

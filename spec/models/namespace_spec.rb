@@ -35,6 +35,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_one :cluster_enabled_grant }
     it { is_expected.to have_many(:work_items) }
     it { is_expected.to have_many :achievements }
+    it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
 
     it do
       is_expected.to have_one(:ci_cd_settings).class_name('NamespaceCiCdSetting').inverse_of(:namespace).autosave(true)
@@ -363,6 +364,10 @@ RSpec.describe Namespace do
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix.allow_nil }
     it { is_expected.to delegate_method(:avatar_url).to(:owner).allow_nil }
     it { is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy).to(:namespace_settings).allow_nil }
+    it { is_expected.to delegate_method(:runner_registration_enabled).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:runner_registration_enabled?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:allow_runner_registration_token).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:allow_runner_registration_token?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:maven_package_requests_forwarding).to(:package_settings) }
     it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:package_settings) }
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:package_settings) }
@@ -370,6 +375,16 @@ RSpec.describe Namespace do
     it do
       is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=).to(:namespace_settings)
                        .with_arguments(:args).allow_nil
+    end
+
+    it do
+      is_expected.to delegate_method(:runner_registration_enabled=).to(:namespace_settings)
+                       .with_arguments(:args)
+    end
+
+    it do
+      is_expected.to delegate_method(:allow_runner_registration_token=).to(:namespace_settings)
+                       .with_arguments(:args)
     end
   end
 
@@ -2114,7 +2129,7 @@ RSpec.describe Namespace do
     where(:shared_runners_enabled, :allow_descendants_override_disabled_shared_runners, :shared_runners_setting) do
       true  | true  | Namespace::SR_ENABLED
       true  | false | Namespace::SR_ENABLED
-      false | true  | Namespace::SR_DISABLED_WITH_OVERRIDE
+      false | true  | Namespace::SR_DISABLED_AND_OVERRIDABLE
       false | false | Namespace::SR_DISABLED_AND_UNOVERRIDABLE
     end
 
@@ -2133,12 +2148,15 @@ RSpec.describe Namespace do
     where(:shared_runners_enabled, :allow_descendants_override_disabled_shared_runners, :other_setting, :result) do
       true  | true  | Namespace::SR_ENABLED                    | false
       true  | true  | Namespace::SR_DISABLED_WITH_OVERRIDE     | true
+      true  | true  | Namespace::SR_DISABLED_AND_OVERRIDABLE   | true
       true  | true  | Namespace::SR_DISABLED_AND_UNOVERRIDABLE | true
       false | true  | Namespace::SR_ENABLED                    | false
       false | true  | Namespace::SR_DISABLED_WITH_OVERRIDE     | false
+      false | true  | Namespace::SR_DISABLED_AND_OVERRIDABLE   | false
       false | true  | Namespace::SR_DISABLED_AND_UNOVERRIDABLE | true
       false | false | Namespace::SR_ENABLED                    | false
       false | false | Namespace::SR_DISABLED_WITH_OVERRIDE     | false
+      false | false | Namespace::SR_DISABLED_AND_OVERRIDABLE   | false
       false | false | Namespace::SR_DISABLED_AND_UNOVERRIDABLE | false
     end
 

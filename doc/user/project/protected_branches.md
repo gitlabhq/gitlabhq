@@ -38,6 +38,8 @@ Administrators can set a default branch protection level in the
 Prerequisite:
 
 - You must have at least the Maintainer role.
+- When granting a group **Allowed to merge** or **Allowed to push** permissions
+  on a protected branch, the group must be added to the project.
 
 To protect a branch:
 

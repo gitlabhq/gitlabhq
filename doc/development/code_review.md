@@ -197,10 +197,11 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. You have properly separated EE content from FOSS, or this MR is FOSS only.
     - [Where should EE code go?](ee_features.md)
 1. You have considered that existing data may be surprisingly varied. For example, a new model validation can break existing records. Consider making validation on existing data optional rather than required if you haven't confirmed that existing data will pass validation.
+1. If a test passes with warnings and the failed job includes the text `Flaky test '<path/to/test>' was found in the list of files changed by this MR.`, you have fixed this test, or provided evidence explaining why this flaky test can be ignored.
 
 ##### Performance, reliability, and availability
 
-1. You are confident that this MR does not harm performance, or you have asked a reviewer to help assess the performance impact. ([Merge request performance guidelines](merge_request_performance_guidelines.md))
+1. You are confident that this MR does not harm performance, or you have asked a reviewer to help assess the performance impact. ([Merge request performance guidelines](merge_request_concepts/performance.md))
 1. You have added [information for database reviewers in the MR description](database_review.md#required), or you have decided that it is unnecessary.
     - [Does this MR have database-related changes?](database_review.md)
 1. You have considered the availability and reliability risks of this change.
@@ -233,6 +234,10 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. If you are using a feature flag, you plan to test the change in staging before you test it in production, and you have considered rolling it out to a subset of production customers before rolling it out to all customers.
     - [When to use a feature flag](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags)
 1. You have informed the Infrastructure department of a default setting or new setting change per [definition of done](contributing/merge_request_workflow.md#definition-of-done), or decided that this is unnecessary.
+
+##### Compliance
+
+1. You have confirmed that the correct [MR type label](contributing/issue_workflow.md#type-labels) has been applied.
 
 ### The responsibility of the merge request author
 
@@ -510,6 +515,7 @@ WARNING:
 Before taking the decision to merge:
 
 - Set the milestone.
+- Confirm that the correct [MR type label](contributing/issue_workflow.md#type-labels) is applied.
 - Consider warnings and errors from danger bot, code quality, and other reports.
   Unless a strong case can be made for the violation, these should be resolved
   before merging. A comment must be posted if the MR is merged with any failed job.
@@ -557,7 +563,7 @@ WARNING:
     [very specific cases](https://about.gitlab.com/handbook/engineering/workflow/#criteria-for-merging-during-broken-master).
     For other cases, follow these [handbook instructions](https://about.gitlab.com/handbook/engineering/workflow/#merging-during-broken-master).
   - If the latest pipeline was created before the merge request was approved, start a new pipeline to ensure that full RSpec suite has been run. You may skip this step only if the merge request does not contain any backend change.
-  - If the **latest [merged results pipeline](../ci/pipelines/merged_results_pipelines.md)** finished less than 2 hours ago, you
+  - If the **latest [merged results pipeline](../ci/pipelines/merged_results_pipelines.md)** was **created less than 6 hours ago**, and **finished less than 2 hours ago**, you
     may merge without starting a new pipeline as the merge request is close
     enough to `main`.
 - When you set the MR to "Merge When Pipeline Succeeds", you should take over

@@ -143,11 +143,11 @@ feature_category: :authentication_and_authorization do
   describe 'API requests authenticated with OAuth token', :api do
     let(:user) { create(:user) }
     let(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
-    let(:token) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "api") }
+    let(:token) { create(:oauth_access_token, application_id: application.id, resource_owner_id: user.id, scopes: "api", expires_in: period_in_seconds + 1) }
 
     let(:other_user) { create(:user) }
     let(:other_user_application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: other_user) }
-    let(:other_user_token) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: other_user.id, scopes: "api") }
+    let(:other_user_token) { create(:oauth_access_token, application_id: application.id, resource_owner_id: other_user.id, scopes: "api") }
 
     let(:throttle_setting_prefix) { 'throttle_authenticated_api' }
     let(:api_partial_url) { '/todos' }
@@ -167,8 +167,8 @@ feature_category: :authentication_and_authorization do
     end
 
     context 'with a read_api scope' do
-      let(:read_token) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "read_api") }
-      let(:other_user_read_token) { Doorkeeper::AccessToken.create!(application_id: other_user_application.id, resource_owner_id: other_user.id, scopes: "read_api") }
+      let(:read_token) { create(:oauth_access_token, application_id: application.id, resource_owner_id: user.id, scopes: "read_api", expires_in: period_in_seconds + 1) }
+      let(:other_user_read_token) { create(:oauth_access_token, application_id: other_user_application.id, resource_owner_id: other_user.id, scopes: "read_api") }
       let(:request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(read_token)) }
       let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(other_user_read_token)) }
 
@@ -1202,7 +1202,7 @@ feature_category: :authentication_and_authorization do
 
     context 'authenticated with OAuth token' do
       let(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
-      let(:oauth_token) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "api") }
+      let(:oauth_token) { create(:oauth_access_token, application_id: application.id, resource_owner_id: user.id, scopes: "api", expires_in: period_in_seconds + 1) }
 
       it 'request is authenticated by token in query string' do
         expect_authenticated_request

@@ -10,7 +10,15 @@ module Resolvers
       alias_method :project, :object
 
       def resolve_with_lookahead(**args)
-        apply_lookahead(project.protected_branches)
+        protected_branches.map do |protected_branch|
+          ::Projects::BranchRule.new(project, protected_branch)
+        end
+      end
+
+      private
+
+      def protected_branches
+        apply_lookahead(project.protected_branches.sorted_by_name)
       end
     end
   end

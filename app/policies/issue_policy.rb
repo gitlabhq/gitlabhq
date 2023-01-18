@@ -21,9 +21,6 @@ class IssuePolicy < IssuablePolicy
   desc "Issue is confidential"
   condition(:confidential, scope: :subject) { @subject.confidential? }
 
-  desc "Issue is hidden"
-  condition(:hidden, scope: :subject) { @subject.hidden? }
-
   desc "Issue is persisted"
   condition(:persisted, scope: :subject) { @subject.persisted? }
 
@@ -37,7 +34,7 @@ class IssuePolicy < IssuablePolicy
     prevent :read_note
     prevent :read_internal_note
     prevent :set_note_created_at
-    prevent :mark_note_as_confidential
+    prevent :mark_note_as_internal
     # these actions on notes are not available on issues/work items yet,
     # but preventing any action on work item notes as long as there is no notes widget seems reasonable
     prevent :resolve_note
@@ -91,6 +88,10 @@ class IssuePolicy < IssuablePolicy
     enable :set_confidentiality
   end
 
+  rule { can?(:guest_access) & can?(:read_issue) }.policy do
+    enable :admin_issue_relation
+  end
+
   rule { can_read_crm_contacts }.policy do
     enable :read_crm_contacts
   end
@@ -100,7 +101,7 @@ class IssuePolicy < IssuablePolicy
   end
 
   rule { can?(:reporter_access) }.policy do
-    enable :mark_note_as_confidential
+    enable :mark_note_as_internal
   end
 end
 

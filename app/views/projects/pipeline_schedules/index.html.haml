@@ -6,7 +6,7 @@
 #pipeline-schedules-callout{ data: { docs_url: help_page_path('ci/pipelines/schedules'), illustration_url: image_path('illustrations/pipeline_schedule_callout.svg') } }
 
 - if Feature.enabled?(:pipeline_schedules_vue, @project)
-  #pipeline-schedules-app{ data: { full_path: @project.full_path } }
+  #pipeline-schedules-app{ data: { full_path: @project.full_path, pipelines_path: project_pipelines_path(@project) } }
 - else
   .top-area
     - schedule_path_proc = ->(scope) { pipeline_schedules_path(@project, scope: scope) }

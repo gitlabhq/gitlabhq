@@ -138,13 +138,12 @@
 }
 
 @mixin top-level-item {
+  @include gl-h-7;
   @include gl-px-4;
-  @include gl-py-3;
   @include gl-display-flex;
   @include gl-align-items-center;
   @include gl-rounded-base;
   @include gl-w-auto;
-  @include gl-line-height-normal;
   transition: none;
   margin: $sidebar-top-item-tb-margin $sidebar-top-item-lr-margin;
 
@@ -339,6 +338,7 @@
     a {
       @include top-level-item;
       @include context-header;
+      @include gl-h-auto;
     }
   }
 }
@@ -348,6 +348,7 @@
 
   .context-header a {
     @include context-header;
+    @include gl-h-auto;
   }
 
   > li {
@@ -457,9 +458,9 @@
 // PANELS-SPECIFIC
 //
 
+.icon-avatar,
 .settings-avatar {
   svg {
     margin: auto;
   }
 }
-

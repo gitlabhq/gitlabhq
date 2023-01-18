@@ -1,0 +1,9 @@
+- title: "Dependency Scanning support for Java 13, 14, 15, and 16"
+  announcement_milestone: "15.8"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: sam.white
+  stage: secure
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387560
+  body: |
+    GitLab has deprecated Dependency Scanning support for Java versions 13, 14, 15, and 16 and plans to remove that support in the upcoming GitLab 16.0 release. This is consistent with [Oracle's support policy](https://www.oracle.com/java/technologies/java-se-support-roadmap.html) as Oracle Premier and Extended Support for these versions has ended. This also allows GitLab to focus Dependency Scanning Java support on LTS versions moving forward.

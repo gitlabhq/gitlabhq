@@ -17,7 +17,8 @@ module Discussions
 
     def execute
       discussions.each(&method(:resolve_discussion))
-      process_auto_merge
+
+      after_resolve_cleanup
     end
 
     private
@@ -67,9 +68,19 @@ module Discussions
       end
     end
 
-    def process_auto_merge
+    def after_resolve_cleanup
       return unless merge_request
       return unless @resolved_count > 0
+
+      send_graphql_triggers
+      process_auto_merge
+    end
+
+    def send_graphql_triggers
+      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+    end
+
+    def process_auto_merge
       return unless discussions_ready_to_merge?
 
       AutoMergeProcessWorker.perform_async(merge_request.id)

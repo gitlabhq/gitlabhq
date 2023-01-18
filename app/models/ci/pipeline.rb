@@ -919,8 +919,12 @@ module Ci
         Gitlab::Ci::Variables::Collection.new.tap do |variables|
           next variables unless tag?
 
+          git_tag = project.repository.find_tag(ref)
+
+          next variables unless git_tag
+
           variables.append(key: 'CI_COMMIT_TAG', value: ref)
-          variables.append(key: 'CI_COMMIT_TAG_MESSAGE', value: project.repository.find_tag(ref).message)
+          variables.append(key: 'CI_COMMIT_TAG_MESSAGE', value: git_tag.message)
 
           # legacy variable
           variables.append(key: 'CI_BUILD_TAG', value: ref)

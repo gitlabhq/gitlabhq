@@ -6,7 +6,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
   let(:service) { described_class.new }
 
   describe '#execute' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, reload: true) { create(:project) }
 
     let_it_be(:artifact_1) { create(:ci_job_artifact, project: project, size: 1, created_at: 14.days.ago) }
     let_it_be(:artifact_2) { create(:ci_job_artifact, project: project, size: 2, created_at: 13.days.ago) }
@@ -29,6 +29,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
 
     let(:now) { Time.zone.now }
     let(:statistics) { project.statistics }
+    let(:increment) { Gitlab::Counters::Increment.new(amount: 30) }
 
     around do |example|
       freeze_time { example.run }
@@ -36,17 +37,19 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
 
     before do
       stub_const("#{described_class}::BATCH_SIZE", 3)
+      stub_const("#{described_class}::REFRESH_INTERVAL_SECONDS", 0)
 
       stats = create(:project_statistics, project: project, build_artifacts_size: 120)
-      stats.increment_counter(:build_artifacts_size, 30)
+      stats.increment_counter(:build_artifacts_size, increment)
     end
 
     it 'resets the build artifacts size stats' do
-      expect { service.execute }.to change { project.statistics.reload.build_artifacts_size }.to(0)
+      expect { service.execute }.to change { statistics.reload.build_artifacts_size }.from(120).to(0)
     end
 
-    it 'increments the counter attribute by the total size of the current batch of artifacts' do
-      expect { service.execute }.to change { statistics.counter(:build_artifacts_size).get }.to(3)
+    it 'resets the buffered counter' do
+      expect { service.execute }
+        .to change { Gitlab::Counters::BufferedCounter.new(statistics, :build_artifacts_size).get }.to(0)
     end
 
     it 'updates the last_job_artifact_id to the ID of the last artifact from the batch' do
@@ -56,7 +59,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
     it 'updates the last_job_artifact_id to the ID of the last artifact from the project' do
       expect { service.execute }
         .to change { refresh.reload.last_job_artifact_id_on_refresh_start.to_i }
-        .to(project.job_artifacts.last.id)
+              .to(project.job_artifacts.last.id)
     end
 
     it 'requeues the refresh job' do
@@ -106,9 +109,10 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
         )
       end
 
-      it 'deletes the refresh record' do
+      it 'schedules the refresh to be finalized' do
         service.execute
-        expect(Projects::BuildArtifactsSizeRefresh.where(id: refresh.id)).not_to exist
+
+        expect(refresh.reload.finalizing?).to be(true)
       end
     end
   end

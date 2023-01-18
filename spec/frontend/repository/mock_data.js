@@ -87,6 +87,8 @@ export const applicationInfoMock = { gitpodEnabled: true };
 export const propsMock = { path: 'some_file.js', projectPath: 'some/path' };
 
 export const refMock = 'default-ref';
+export const refWithSpecialCharMock = 'feat/selected-#-ref-#';
+export const encodedRefWithSpecialCharMock = 'feat/selected-%23-ref-%23';
 
 export const blobControlsDataMock = {
   id: '1234',
@@ -105,4 +107,20 @@ export const blobControlsDataMock = {
       ],
     },
   },
+};
+
+export const graphQLErrors = [
+  {
+    message: '14:failed to connect to all addresses.',
+    locations: [{ line: 16, column: 7 }],
+    path: ['project', 'repository', 'paginatedTree'],
+    extensions: { code: 'unavailable', gitaly_code: 14, service: 'git' },
+  },
+];
+
+export const propsForkInfo = {
+  projectPath: 'nataliia/myGitLab',
+  selectedRef: 'main',
+  sourceName: 'gitLab',
+  sourcePath: 'gitlab-org/gitlab',
 };

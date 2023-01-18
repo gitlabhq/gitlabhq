@@ -1368,7 +1368,7 @@ You can also prefix this command with `WEBDRIVER_HEADLESS=0` which will run the 
   ```ruby
   require 'spec_helper'
   ```
-  
+
   Import any other relevant module.
 
 1. Create a global scope for RSpec to define our tests, just like what we do in jest with the initial describe block.
@@ -1414,7 +1414,7 @@ Most feature tests at least require you to create a user, because you want to be
 
 This creates a variable that holds the newly created user and we can use `create` because we imported the `spec_helper`.
 
-However, we have not done anything with this user yet because it's just a variable. So, in the `before do` block of the spec, we could sign in with the user so that every spec starts with a signed in user.
+However, we have not done anything with this user yet because it's just a variable. So, in the `before do` block of the spec, we could sign in with the user so that every spec starts with an authenticated user.
 
 ```ruby
   let(:user) { create(:user) }

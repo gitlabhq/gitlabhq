@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Setting milestone of a merge request', feature_category: :code_review do
+RSpec.describe 'Setting milestone of a merge request', feature_category: :code_review_workflow do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }

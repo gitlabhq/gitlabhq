@@ -13,7 +13,7 @@ RSpec.describe 'Registration enabled callout', feature_category: :authentication
       stub_application_setting(signup_enabled: true)
     end
 
-    context 'when an admin is logged in' do
+    context 'when an admin is logged in', :do_not_mock_admin_mode_setting do
       before do
         sign_in(admin)
       end

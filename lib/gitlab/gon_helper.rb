@@ -57,6 +57,7 @@ module Gitlab
         gon.current_user_fullname = current_user.name
         gon.current_user_avatar_url = current_user.avatar_url
         gon.time_display_relative = current_user.time_display_relative
+        gon.use_new_navigation = Feature.enabled?(:super_sidebar_nav, current_user) && current_user&.use_new_navigation
       end
 
       # Initialize gon.features with any flags that should be
@@ -67,7 +68,6 @@ module Gitlab
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
       push_frontend_feature_flag(:integration_slack_app_notifications)
-      push_frontend_feature_flag(:vue_group_select)
       push_frontend_feature_flag(:new_fonts, current_user)
     end
 

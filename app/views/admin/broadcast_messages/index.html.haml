@@ -1,31 +1,25 @@
 - breadcrumb_title _("Messages")
 - page_title _("Broadcast Messages")
-- vue_app_enabled = Feature.enabled?(:vue_broadcast_messages, current_user)
 
 %h1.page-title.gl-font-size-h-display
   = _('Broadcast Messages')
 %p.light
   = _('Use banners and notifications to notify your users about scheduled maintenance, recent upgrades, and more.')
 
-- if vue_app_enabled
-  #js-broadcast-messages{ data: {
-    page: params[:page] || 1,
-    target_access_level_options: target_access_level_options.to_json,
-    messages_count: @broadcast_messages.total_count,
-    messages: @broadcast_messages.map { |message| {
-      id: message.id,
-      status: broadcast_message_status(message),
-      preview: broadcast_message(message, preview: true),
-      starts_at: message.starts_at.to_s,
-      ends_at: message.ends_at.to_s,
-      target_roles: target_access_levels_display(message.target_access_levels),
-      target_path: message.target_path,
-      type: message.broadcast_type.capitalize,
-      edit_path: edit_admin_broadcast_message_path(message),
-      delete_path: admin_broadcast_message_path(message) + '.js'
-    } }.to_json
-  } }
-- else
-  = render 'form'
-  %br.clearfix
-  = render 'table'
+#js-broadcast-messages{ data: {
+  page: params[:page] || 1,
+  target_access_level_options: target_access_level_options.to_json,
+  messages_count: @broadcast_messages.total_count,
+  messages: @broadcast_messages.map { |message| {
+    id: message.id,
+    status: broadcast_message_status(message),
+    preview: broadcast_message(message, preview: true),
+    starts_at: message.starts_at.to_s,
+    ends_at: message.ends_at.to_s,
+    target_roles: target_access_levels_display(message.target_access_levels),
+    target_path: message.target_path,
+    type: message.broadcast_type.capitalize,
+    edit_path: edit_admin_broadcast_message_path(message),
+    delete_path: admin_broadcast_message_path(message) + '.js'
+  } }.to_json
+} }

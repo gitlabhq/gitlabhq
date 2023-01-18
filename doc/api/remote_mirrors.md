@@ -86,6 +86,14 @@ Learn how to [configure a pull mirror](projects.md#configure-pull-mirroring-for-
 
 ## Create a push mirror
 
+> Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the field `mirror_branch_regex` is not available.
+To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+named `mirror_only_branches_match_regex`.
+On GitLab.com, this feature is not available.
+
 Push mirroring is disabled by default. To enable it, include the optional parameter
 `enabled` when you create the mirror:
 
@@ -99,6 +107,7 @@ POST /projects/:id/remote_mirrors
 | `enabled`                 | Boolean | no         | Determines if the mirror is enabled.                |
 | `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |
 | `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
+| `mirror_branch_regex` **(PREMIUM)**     | String  | no         | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_protected_branches` to be disabled. |
 
 Example request:
 
@@ -126,6 +135,12 @@ Example response:
 
 ## Update a remote mirror's attributes
 
+FLAG:
+On self-managed GitLab, by default the field `mirror_branch_regex` is not available.
+To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+named `mirror_only_branches_match_regex`.
+On GitLab.com, this feature is not available.
+
 Toggle a remote mirror on or off, or change which types of branches are
 mirrored:
 
@@ -139,6 +154,7 @@ PUT /projects/:id/remote_mirrors/:mirror_id
 | `enabled`                 | Boolean | no         | Determines if the mirror is enabled.                |
 | `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |
 | `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
+| `mirror_branch_regex`**(PREMIUM)**     | String  | no         |  Determines if only the branch whose name matches the regex is mirrored. It does not work with `only_protected_branches` enabled. |
 
 Example request:
 

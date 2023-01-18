@@ -2,7 +2,7 @@
   = _('Hi %{username}!') % { username: sanitize_name(@user.name) }
 %p
   = html_escape(_('A personal access token, named %{code_start}%{token_name}%{code_end}, has been revoked.')) % { code_start: '<code>'.html_safe, token_name: @token_name, code_end: '</code>'.html_safe }
-- if @source == 'secret_detection'
+- if @source == :secret_detection
   = _('We found your token in a public project and have automatically revoked it to protect your account.')
 %p
   - pat_link_start =  '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: @target_url }

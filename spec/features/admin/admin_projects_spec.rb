@@ -151,12 +151,11 @@ RSpec.describe "Admin::Projects", feature_category: :projects do
 
       expect(find_member_row(current_user)).to have_content('Developer')
 
-      page.within find_member_row(current_user) do
-        click_button 'Leave'
-      end
+      show_actions_for_username(current_user)
+      click_button _('Leave group')
 
       within_modal do
-        click_button('Leave')
+        click_button _('Leave')
       end
 
       expect(page).to have_current_path(dashboard_projects_path, ignore_query: true, url: false)

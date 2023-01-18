@@ -25,9 +25,9 @@ is `admin`.
 
 1. Log in to Grafana as the administration user.
 1. Select **Data Sources** from the **Configuration** menu.
-1. Select the **Add data source** button.
+1. Select **Add data source**.
 1. Select the required data source type. For example, [Prometheus](../prometheus/index.md#prometheus-as-a-grafana-data-source).
-1. Complete the details for the data source and select the **Save & Test** button.
+1. Complete the details for the data source and select **Save & Test**.
 
 Grafana should indicate the data source is working.
 
@@ -43,8 +43,8 @@ them:
 
    1. Log in to Grafana as the administration user.
    1. Select **Manage** from the **Dashboards** menu.
-   1. Select the **Import** button, then the **Upload JSON file** button.
-   1. Locate the JSON file to import and select **Choose for Upload**. Select the **Import** button.
+   1. Select **Import**, then **Upload JSON file**.
+   1. Locate the JSON file to import and select **Choose for Upload**. Select **Import**.
    1. After the dashboard is imported, select the **Save dashboard** icon in the top bar.
 
 If you don't save the dashboard after importing it, the dashboard is removed

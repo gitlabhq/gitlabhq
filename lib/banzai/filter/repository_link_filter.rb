@@ -90,14 +90,14 @@ module Banzai
       end
 
       def get_uri(html_attr)
-        uri = URI(html_attr.value)
+        uri = Addressable::URI.parse(html_attr.value)
 
         uri if uri.relative? && uri.path.present?
       rescue URI::Error, Addressable::URI::InvalidURIError
       end
 
       def process_link_to_repository_attr(html_attr)
-        uri = URI(html_attr.value)
+        uri = Addressable::URI.parse(html_attr.value)
 
         if uri.relative? && uri.path.present?
           html_attr.value = rebuild_relative_uri(uri).to_s

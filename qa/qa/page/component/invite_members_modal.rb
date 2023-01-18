@@ -41,7 +41,7 @@ module QA
           click_element :invite_a_group_button
         end
 
-        def add_member(username, access_level = 'Developer')
+        def add_member(username, access_level = 'Developer', refresh_page: true)
           open_invite_members_modal
 
           within_element(:invite_members_modal_content) do
@@ -51,10 +51,10 @@ module QA
             set_access_level(access_level)
           end
 
-          send_invite
+          send_invite(refresh_page)
         end
 
-        def invite_group(group_name, access_level = 'Guest')
+        def invite_group(group_name, access_level = 'Guest', refresh_page: true)
           open_invite_group_modal
 
           within_element(:invite_members_modal_content) do
@@ -69,7 +69,13 @@ module QA
             set_access_level(access_level)
           end
 
-          send_invite
+          send_invite(refresh_page)
+        end
+
+        def send_invite(refresh = false)
+          click_element :invite_button
+          Support::WaitForRequests.wait_for_requests
+          page.refresh if refresh
         end
 
         private
@@ -77,12 +83,6 @@ module QA
         def set_access_level(access_level)
           # Guest option is selected by default, skipping these steps if desired option is 'Guest'
           select_element(:access_level_dropdown, access_level) unless access_level == 'Guest'
-        end
-
-        def send_invite
-          click_element :invite_button
-          Support::WaitForRequests.wait_for_requests
-          page.refresh
         end
       end
     end

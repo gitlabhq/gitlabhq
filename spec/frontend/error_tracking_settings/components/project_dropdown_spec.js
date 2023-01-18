@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import { pick, clone } from 'lodash';
@@ -42,7 +42,7 @@ describe('error tracking settings project dropdown', () => {
   describe('empty project list', () => {
     it('renders the dropdown', () => {
       expect(wrapper.find('#project-dropdown').exists()).toBe(true);
-      expect(wrapper.findComponent(GlDropdown).exists()).toBe(true);
+      expect(wrapper.findComponent(GlCollapsibleListbox).exists()).toBe(true);
     });
 
     it('shows helper text', () => {
@@ -57,8 +57,10 @@ describe('error tracking settings project dropdown', () => {
     });
 
     it('does not contain any dropdown items', () => {
-      expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(false);
-      expect(wrapper.findComponent(GlDropdown).props('text')).toBe('No projects available');
+      expect(wrapper.findComponent(GlCollapsibleListbox).props('items')).toEqual([]);
+      expect(wrapper.findComponent(GlCollapsibleListbox).props('toggleText')).toBe(
+        'No projects available',
+      );
     });
   });
 
@@ -71,12 +73,12 @@ describe('error tracking settings project dropdown', () => {
 
     it('renders the dropdown', () => {
       expect(wrapper.find('#project-dropdown').exists()).toBe(true);
-      expect(wrapper.findComponent(GlDropdown).exists()).toBe(true);
+      expect(wrapper.findComponent(GlCollapsibleListbox).exists()).toBe(true);
     });
 
     it('contains a number of dropdown items', () => {
-      expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(true);
-      expect(wrapper.findAllComponents(GlDropdownItem).length).toBe(2);
+      expect(wrapper.findComponent(GlCollapsibleListbox).exists()).toBe(true);
+      expect(wrapper.findComponent(GlCollapsibleListbox).props('items').length).toBe(2);
     });
   });
 

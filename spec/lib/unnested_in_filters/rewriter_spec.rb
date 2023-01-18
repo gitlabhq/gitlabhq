@@ -69,15 +69,21 @@ RSpec.describe UnnestedInFilters::Rewriter do
     let(:recorded_queries) { ActiveRecord::QueryRecorder.new { rewriter.rewrite.load } }
     let(:relation) { User.where(state: :active, user_type: %i(support_bot alert_bot)).limit(2) }
 
+    let(:users_default_select_fields) do
+      User.default_select_columns
+        .map { |field| "\"users\".\"#{field.name}\"" }
+        .join(',')
+    end
+
     let(:expected_query) do
       <<~SQL
         SELECT
-          "users".*
+          #{users_default_select_fields}
         FROM
           unnest('{1,2}'::smallint[]) AS "user_types"("user_type"),
           LATERAL (
             SELECT
-              "users".*
+              #{users_default_select_fields}
             FROM
               "users"
             WHERE
@@ -101,13 +107,13 @@ RSpec.describe UnnestedInFilters::Rewriter do
       let(:expected_query) do
         <<~SQL
           SELECT
-            "users".*
+            #{users_default_select_fields}
           FROM
             unnest(ARRAY(SELECT "users"."state" FROM "users")::character varying[]) AS "states"("state"),
             unnest('{1,2}'::smallint[]) AS "user_types"("user_type"),
             LATERAL (
               SELECT
-                "users".*
+                #{users_default_select_fields}
               FROM
                 "users"
               WHERE
@@ -129,12 +135,12 @@ RSpec.describe UnnestedInFilters::Rewriter do
       let(:expected_query) do
         <<~SQL
           SELECT
-            "users".*
+            #{users_default_select_fields}
           FROM
             unnest('{active,blocked,banned}'::charactervarying[]) AS "states"("state"),
             LATERAL (
               SELECT
-                "users".*
+                #{users_default_select_fields}
               FROM
                 "users"
               WHERE
@@ -181,8 +187,6 @@ RSpec.describe UnnestedInFilters::Rewriter do
 
       let(:expected_query) do
         <<~SQL
-          SELECT
-              "users".*
           FROM
               "users"
           WHERE
@@ -217,7 +221,7 @@ RSpec.describe UnnestedInFilters::Rewriter do
       end
 
       it 'changes the query' do
-        expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
+        expect(issued_query.gsub(/\s/, '')).to include(expected_query.gsub(/\s/, ''))
       end
     end
 
@@ -226,8 +230,6 @@ RSpec.describe UnnestedInFilters::Rewriter do
 
       let(:expected_query) do
         <<~SQL
-          SELECT
-              "users".*
           FROM
               "users"
           WHERE
@@ -257,7 +259,7 @@ RSpec.describe UnnestedInFilters::Rewriter do
       end
 
       it 'does not rewrite the in statement for the joined table' do
-        expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
+        expect(issued_query.gsub(/\s/, '')).to include(expected_query.gsub(/\s/, ''))
       end
     end
 

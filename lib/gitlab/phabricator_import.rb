@@ -5,8 +5,7 @@ module Gitlab
     BaseError = Class.new(StandardError)
 
     def self.available?
-      Feature.enabled?(:phabricator_import) &&
-        Gitlab::CurrentSettings.import_sources.include?('phabricator')
+      Gitlab::CurrentSettings.import_sources.include?('phabricator')
     end
   end
 end

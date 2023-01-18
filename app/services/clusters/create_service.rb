@@ -24,9 +24,7 @@ module Clusters
 
       return cluster if cluster.errors.present?
 
-      cluster.tap do |cluster|
-        cluster.save && ClusterProvisionWorker.perform_async(cluster.id)
-      end
+      cluster.tap(&:save)
     end
 
     private

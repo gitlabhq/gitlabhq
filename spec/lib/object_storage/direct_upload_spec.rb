@@ -234,6 +234,7 @@ RSpec.describe ObjectStorage::DirectUpload do
         expect(subject[:GetURL]).to start_with(storage_url)
         expect(subject[:StoreURL]).to start_with(storage_url)
         expect(subject[:DeleteURL]).to start_with(storage_url)
+        expect(subject[:SkipDelete]).to eq(false)
         expect(subject[:CustomPutHeaders]).to be_truthy
         expect(subject[:PutHeaders]).to eq({})
       end

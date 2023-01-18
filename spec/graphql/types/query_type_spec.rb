@@ -8,29 +8,40 @@ RSpec.describe GitlabSchema.types['Query'] do
   end
 
   it 'has the expected fields' do
-    expected_fields = %i[
-      project
-      namespace
-      group
-      echo
-      metadata
-      current_user
-      snippets
-      design_management
-      milestone
-      user
-      users
-      issue
-      merge_request
-      usage_trends_measurements
-      runner_platforms
-      runner
-      runners
-      timelogs
-      board_list
-      topics
-      gitpod_enabled
-      ci_variables
+    expected_fields = [
+      :board_list,
+      :ci_application_settings,
+      :ci_config,
+      :ci_variables,
+      :container_repository,
+      :current_user,
+      :design_management,
+      :echo,
+      :gitpod_enabled,
+      :group,
+      :issue,
+      :issues,
+      :jobs,
+      :merge_request,
+      :metadata,
+      :milestone,
+      :namespace,
+      :package,
+      :project,
+      :projects,
+      :query_complexity,
+      :runner,
+      :runner_platforms,
+      :runner_setup,
+      :runners,
+      :snippets,
+      :timelogs,
+      :todo,
+      :topics,
+      :usage_trends_measurements,
+      :user,
+      :users,
+      :work_item
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least
@@ -135,7 +146,7 @@ RSpec.describe GitlabSchema.types['Query'] do
     subject { described_class.fields['timelogs'] }
 
     it 'returns timelogs' do
-      is_expected.to have_graphql_arguments(:startDate, :endDate, :startTime, :endTime, :username, :projectId, :groupId, :after, :before, :first, :last)
+      is_expected.to have_graphql_arguments(:startDate, :endDate, :startTime, :endTime, :username, :projectId, :groupId, :after, :before, :first, :last, :sort)
       is_expected.to have_graphql_type(Types::TimelogType.connection_type)
       is_expected.to have_graphql_resolver(Resolvers::TimelogResolver)
     end

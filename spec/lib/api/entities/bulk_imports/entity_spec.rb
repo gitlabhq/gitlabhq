@@ -21,7 +21,8 @@ RSpec.describe API::Entities::BulkImports::Entity do
       :project_id,
       :created_at,
       :updated_at,
-      :failures
+      :failures,
+      :migrate_projects
     )
   end
 end

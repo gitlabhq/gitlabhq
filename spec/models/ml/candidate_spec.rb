@@ -4,6 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Ml::Candidate, factory_default: :keep do
   let_it_be(:candidate) { create(:ml_candidates, :with_metrics_and_params) }
+  let_it_be(:candidate2) { create(:ml_candidates, experiment: candidate.experiment) }
+
+  let_it_be(:candidate_artifact) do
+    FactoryBot.create(:generic_package,
+                      name: candidate.package_name,
+                      version: candidate.package_version,
+                      project: candidate.project)
+  end
 
   let(:project) { candidate.experiment.project }
 
@@ -22,13 +30,13 @@ RSpec.describe Ml::Candidate, factory_default: :keep do
   describe '.artifact_root' do
     subject { candidate.artifact_root }
 
-    it { is_expected.to eq("/ml_candidate_#{candidate.iid}/-/") }
+    it { is_expected.to eq("/ml_candidate_#{candidate.id}/-/") }
   end
 
   describe '.package_name' do
     subject { candidate.package_name }
 
-    it { is_expected.to eq("ml_candidate_#{candidate.iid}") }
+    it { is_expected.to eq("ml_candidate_#{candidate.id}") }
   end
 
   describe '.package_version' do
@@ -38,24 +46,42 @@ RSpec.describe Ml::Candidate, factory_default: :keep do
   end
 
   describe '.artifact' do
-    subject { candidate.artifact }
+    let(:tested_candidate) { candidate }
+
+    subject { tested_candidate.artifact }
+
+    before do
+      candidate_artifact
+    end
 
     context 'when has logged artifacts' do
-      let(:package) do
-        create(:generic_package, name: candidate.package_name, version: candidate.package_version, project: project)
-      end
-
       it 'returns the package' do
-        package
-
-        is_expected.to eq(package)
+        expect(subject.name).to eq(tested_candidate.package_name)
       end
     end
 
     context 'when does not have logged artifacts' do
-      let(:tested_candidate) { create(:ml_candidates, :with_metrics_and_params) }
+      let(:tested_candidate) { candidate2 }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '.artifact_lazy' do
+    context 'when candidates have same the same iid' do
+      before do
+        BatchLoader::Executor.clear_current
+      end
+
+      it 'loads the correct artifacts', :aggregate_failures do
+        candidate.artifact_lazy
+        candidate2.artifact_lazy
+
+        expect(Packages::Package).to receive(:joins).once.and_call_original # Only one database call
+
+        expect(candidate.artifact.name).to eq(candidate.package_name)
+        expect(candidate2.artifact).to be_nil
+      end
     end
   end
 
@@ -95,12 +121,13 @@ RSpec.describe Ml::Candidate, factory_default: :keep do
     end
   end
 
-  describe "#including_metrics_and_params" do
-    subject { described_class.including_metrics_and_params.find_by(id: candidate.id) }
+  describe "#including_relationships" do
+    subject { described_class.including_relationships.find_by(id: candidate.id) }
 
     it 'loads latest metrics and params', :aggregate_failures do
       expect(subject.association_cached?(:latest_metrics)).to be(true)
       expect(subject.association_cached?(:params)).to be(true)
+      expect(subject.association_cached?(:user)).to be(true)
     end
   end
 end

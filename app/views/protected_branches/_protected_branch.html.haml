@@ -1,2 +1,2 @@
-= render layout: 'protected_branches/shared/protected_branch', locals: { protected_branch: protected_branch } do
+= render layout: 'protected_branches/shared/protected_branch', locals: { protected_branch: protected_branch, protected_branch_entity: protected_branch_entity } do
   = render_if_exists 'protected_branches/update_protected_branch', protected_branch: protected_branch

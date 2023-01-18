@@ -8,6 +8,8 @@ module Gitlab
     class CleanupOrphanedRoutes < Gitlab::BackgroundMigration::BatchedMigrationJob
       include Gitlab::Database::DynamicModelHelpers
 
+      feature_category :database
+
       def perform
         # there should really be no records to fix, there is none gitlab.com, but taking the safer route, just in case.
         fix_missing_namespace_id_routes

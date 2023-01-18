@@ -1,5 +1,5 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { X_TOTAL_HEADER } from '../constants';
 import * as types from './mutation_types';
 
@@ -86,7 +86,7 @@ export default {
 
       // 404's are expected when the search query doesn't match any commits
       // and shouldn't be treated as an actual error
-      error: error.response?.status !== httpStatusCodes.NOT_FOUND ? error : null,
+      error: error.response?.status !== HTTP_STATUS_NOT_FOUND ? error : null,
     };
   },
   [types.RESET_COMMIT_MATCHES](state) {

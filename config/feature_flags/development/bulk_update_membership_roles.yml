@@ -1,8 +1,0 @@
----
-name: bulk_update_membership_roles
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96745
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/373257
-milestone: '15.6'
-type: development
-group: group::workspace
-default_enabled: false

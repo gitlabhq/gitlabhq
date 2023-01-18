@@ -1,0 +1,16 @@
+- title: "GitLab Helm chart values `gitlab.kas.privateApi.*` are deprecated"
+  announcement_milestone: "15.8"
+  removal_milestone: "17.0"
+  breaking_change: true
+  reporter: nagyv-gitlab
+  stage: configure
+  issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/issues/4097
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    We introduced the `global.kas.tls.*` Helm values to facilitate TLS communication between KAS and your Helm chart components.
+    The old values `gitlab.kas.privateApi.tls.enabled` and `gitlab.kas.privateApi.tls.secretName` are deprecated and scheduled for removal in GitLab 17.0.
+
+    Because the new values provide a streamlined, comprehensive method to enable TLS for KAS, you should use `global.kas.tls.*` instead of `gitlab.kas.privateApi.tls.*`. The `gitlab.kas.privateApi.tls.*` For more information, see:
+
+    - The [merge request](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2888) that introduces the `global.kas.tls.*` values.
+    - The [deprecated `gitlab.kas.privateApi.tls.*` documentation](https://docs.gitlab.com/charts/charts/gitlab/kas/index.html#enable-tls-communication-through-the-gitlabkasprivateapi-attributes-deprecated).
+    - The [new `global.kas.tls.*` documentation](https://docs.gitlab.com/charts/charts/globals.html#tls-settings-1).

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
+RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_category: :database do
   let(:load_balancer) do
     configuration = Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base)
     configuration.service_discovery[:record] = 'localhost'
@@ -22,6 +22,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
   before do
     resource = double(:resource, address: IPAddr.new('127.0.0.1'))
     packet = double(:packet, answer: [resource])
+
+    service.instance_variable_set(:@nameserver_ttl, Gitlab::Database::LoadBalancing::Resolver::FAR_FUTURE_TTL)
 
     allow(Net::DNS::Resolver).to receive(:start)
       .with('localhost', Net::DNS::A)
@@ -360,6 +362,54 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
       ]
 
       expect(service.addresses_from_load_balancer).to eq(addresses)
+    end
+  end
+
+  describe '#resolver', :freeze_time do
+    context 'without predefined resolver' do
+      it 'fetches a new resolver and assigns it to the instance variable' do
+        expect(service.instance_variable_get(:@resolver)).not_to be_present
+
+        service_resolver = service.resolver
+
+        expect(service.instance_variable_get(:@resolver)).to be_present
+        expect(service_resolver).to be_present
+      end
+    end
+
+    context 'with predefined resolver' do
+      let(:resolver) do
+        Net::DNS::Resolver.new(
+          nameservers: 'localhost',
+          port: 8600
+        )
+      end
+
+      before do
+        service.instance_variable_set(:@resolver, resolver)
+      end
+
+      context "when nameserver's TTL is in the future" do
+        it 'returns the existing resolver' do
+          expect(service.resolver).to eq(resolver)
+        end
+      end
+
+      context "when nameserver's TTL is in the past" do
+        before do
+          service.instance_variable_set(
+            :@nameserver_ttl,
+            1.minute.ago
+          )
+        end
+
+        it 'fetches new resolver' do
+          service_resolver = service.resolver
+
+          expect(service_resolver).to be_present
+          expect(service_resolver).not_to eq(resolver)
+        end
+      end
     end
   end
 end

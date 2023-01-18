@@ -22,13 +22,16 @@ module Gitlab
             return unless allowed_schemas
 
             invalid_schemas = table_schemas - allowed_schemas
-            if invalid_schemas.any?
-              message = "The query tried to access #{tables} (of #{table_schemas.to_a}) "
-              message += "which is outside of allowed schemas (#{allowed_schemas}) "
-              message += "for the current connection '#{Gitlab::Database.db_config_name(parsed.connection)}'"
 
-              raise CrossSchemaAccessError, message
-            end
+            return if invalid_schemas.empty?
+
+            schema_list = table_schemas.sort.join(',')
+
+            message = "The query tried to access #{tables} (of #{schema_list}) "
+            message += "which is outside of allowed schemas (#{allowed_schemas}) "
+            message += "for the current connection '#{Gitlab::Database.db_config_name(parsed.connection)}'"
+
+            raise CrossSchemaAccessError, message
           end
         end
       end

@@ -68,6 +68,7 @@ export default {
       required: true,
     },
   },
+  clearBtnSharedClasses: ['gl-flex-grow-0 gl-flex-basis-0'],
   inputTypes: {
     key: 'key',
     value: 'value',
@@ -229,16 +230,23 @@ export default {
           v-gl-tooltip
           :aria-label="$options.i18n.clearInputs"
           :title="$options.i18n.clearInputs"
-          class="gl-flex-grow-0 gl-flex-basis-0"
+          :class="$options.clearBtnSharedClasses"
           category="tertiary"
           variant="danger"
           icon="clear"
           data-testid="delete-variable-btn"
           @click="deleteVariable(variable.id)"
         />
-
-        <!-- delete variable button placeholder to not break flex layout  -->
-        <div v-else class="gl-w-7 gl-mr-3" data-testid="delete-variable-btn-placeholder"></div>
+        <!-- Placeholder button to keep the layout fixed -->
+        <gl-button
+          v-else
+          class="gl-opacity-0 gl-pointer-events-none"
+          :class="$options.clearBtnSharedClasses"
+          data-testid="delete-variable-btn-placeholder"
+          category="tertiary"
+          variant="danger"
+          icon="clear"
+        />
       </div>
 
       <div class="gl-text-center gl-mt-5">

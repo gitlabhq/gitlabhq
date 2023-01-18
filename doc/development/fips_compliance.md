@@ -22,7 +22,7 @@ mean FIPS 140-2.
 
 ## Current status
 
-GitLab is actively working towards FIPS compliance. Progress on this initiative can be tracked with this [FIPS compliance Epic](https://gitlab.com/groups/gitlab-org/-/epics/6452).
+GitLab has completed FIPS 140-2 Compliance for the build specified in this documentation. You can find our FIPS 140-2 Attestation in our [customer assurance package](https://about.gitlab.com/security/cap/), specifically the community package.
 
 ## FIPS compliance at GitLab
 

@@ -11,7 +11,7 @@ import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { backOff } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
-import statusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { __, s__ } from '~/locale';
 import { queryTypes, formDataValidator } from '../constants';
 
@@ -23,7 +23,7 @@ function backOffRequest(makeRequestCallback) {
   return backOff((next, stop) => {
     makeRequestCallback()
       .then((resp) => {
-        if (resp.status === statusCodes.OK) {
+        if (resp.status === HTTP_STATUS_OK) {
           stop(resp);
         } else {
           next();

@@ -9,7 +9,7 @@ module SpammableActions::AkismetMarkAsSpamAction
 
   def mark_as_spam
     if Spam::AkismetMarkAsSpamService.new(target: spammable).execute
-      redirect_to spammable_path, notice: _("%{spammable_titlecase} was submitted to Akismet successfully.") % { spammable_titlecase: spammable.spammable_entity_type.titlecase }
+      redirect_to spammable_path, notice: format(_("%{spammable_titlecase} was submitted to Akismet successfully."), spammable_titlecase: spammable.spammable_entity_type.titlecase)
     else
       redirect_to spammable_path, alert: _('Error with Akismet. Please check the logs for more info.')
     end

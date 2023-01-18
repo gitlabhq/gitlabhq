@@ -7,7 +7,7 @@ class ScheduleMergeRequestCleanupRefsWorker
 
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
-  feature_category :code_review
+  feature_category :code_review_workflow
   idempotent!
 
   def perform

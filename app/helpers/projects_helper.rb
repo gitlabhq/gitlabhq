@@ -479,32 +479,6 @@ module ProjectsHelper
     format_cached_count(1000, number)
   end
 
-  def fork_divergence_message(counts)
-    messages = []
-
-    if counts[:behind].nil? || counts[:ahead].nil?
-      return s_('ForksDivergence|Fork has diverged from upstream repository')
-    end
-
-    if counts[:behind] > 0
-      messages << s_("ForksDivergence|%{behind} %{commit_word} behind") % {
-        behind: counts[:behind], commit_word: n_('commit', 'commits', counts[:behind])
-      }
-    end
-
-    if counts[:ahead] > 0
-      messages << s_("ForksDivergence|%{ahead} %{commit_word} ahead of") % {
-        ahead: counts[:ahead], commit_word: n_('commit', 'commits', counts[:ahead])
-      }
-    end
-
-    if messages.blank?
-      s_('ForksDivergence|Up to date with upstream repository')
-    else
-      s_("ForksDivergence|%{messages} upstream repository") % { messages: messages.join(', ') }
-    end
-  end
-
   private
 
   def localized_access_names
@@ -520,7 +494,7 @@ module ProjectsHelper
   end
 
   def configure_oauth_import_message(provider, help_url)
-    str = if current_user.admin?
+    str = if current_user.can_admin_all_resources?
             'ImportProjects|To enable importing projects from %{provider}, as administrator you need to configure %{link_start}OAuth integration%{link_end}'
           else
             'ImportProjects|To enable importing projects from %{provider}, ask your GitLab administrator to configure %{link_start}OAuth integration%{link_end}'
@@ -658,7 +632,7 @@ module ProjectsHelper
   end
 
   def restricted_levels
-    return [] if current_user.admin?
+    return [] if current_user.can_admin_all_resources?
 
     Gitlab::CurrentSettings.restricted_visibility_levels || []
   end

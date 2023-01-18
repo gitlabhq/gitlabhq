@@ -34,21 +34,6 @@ module Gitlab
         gitaly_client_call(@storage, :repository_service, :prune_unreachable_objects, request, timeout: GitalyClient.long_timeout)
       end
 
-      def garbage_collect(create_bitmap, prune:)
-        request = Gitaly::GarbageCollectRequest.new(repository: @gitaly_repo, create_bitmap: create_bitmap, prune: prune)
-        gitaly_client_call(@storage, :repository_service, :garbage_collect, request, timeout: GitalyClient.long_timeout)
-      end
-
-      def repack_full(create_bitmap)
-        request = Gitaly::RepackFullRequest.new(repository: @gitaly_repo, create_bitmap: create_bitmap)
-        gitaly_client_call(@storage, :repository_service, :repack_full, request, timeout: GitalyClient.long_timeout)
-      end
-
-      def repack_incremental
-        request = Gitaly::RepackIncrementalRequest.new(repository: @gitaly_repo)
-        gitaly_client_call(@storage, :repository_service, :repack_incremental, request, timeout: GitalyClient.long_timeout)
-      end
-
       def repository_size
         request = Gitaly::RepositorySizeRequest.new(repository: @gitaly_repo)
         response = gitaly_client_call(@storage, :repository_service, :repository_size, request, timeout: GitalyClient.long_timeout)

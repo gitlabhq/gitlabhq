@@ -71,7 +71,7 @@ describe('Pipelines', () => {
   const findTablePagination = () => wrapper.findComponent(TablePagination);
 
   const findTab = (tab) => wrapper.findByTestId(`pipelines-tab-${tab}`);
-  const findPipelineKeyDropdown = () => wrapper.findByTestId('pipeline-key-dropdown');
+  const findPipelineKeyCollapsibleBox = () => wrapper.findByTestId('pipeline-key-collapsible-box');
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
   const findCiLintButton = () => wrapper.findByTestId('ci-lint-button');
   const findCleanCacheButton = () => wrapper.findByTestId('clear-cache-button');
@@ -545,8 +545,8 @@ describe('Pipelines', () => {
         expect(findFilteredSearch().exists()).toBe(true);
       });
 
-      it('renders the pipeline key dropdown', () => {
-        expect(findPipelineKeyDropdown().exists()).toBe(true);
+      it('renders the pipeline key collapsible box', () => {
+        expect(findPipelineKeyCollapsibleBox().exists()).toBe(true);
       });
 
       it('renders tab empty state finished scope', async () => {
@@ -578,7 +578,7 @@ describe('Pipelines', () => {
       });
 
       it('does not render the pipeline key dropdown', () => {
-        expect(findPipelineKeyDropdown().exists()).toBe(false);
+        expect(findPipelineKeyCollapsibleBox().exists()).toBe(false);
       });
 
       it('does not render tabs nor buttons', () => {

@@ -178,4 +178,40 @@ RSpec.describe ServiceResponse do
       end
     end
   end
+
+  describe '#log_and_raise_exception' do
+    context 'when successful' do
+      let(:response) { described_class.success }
+
+      it 'returns self' do
+        expect(response.log_and_raise_exception).to be response
+      end
+    end
+
+    context 'when an error' do
+      let(:response) { described_class.error(message: 'bang') }
+
+      it 'logs' do
+        expect(::Gitlab::ErrorTracking).to receive(:log_and_raise_exception)
+          .with(StandardError.new('bang'), {})
+
+        response.log_and_raise_exception
+      end
+
+      it 'allows specification of error class' do
+        error = Class.new(StandardError)
+        expect(::Gitlab::ErrorTracking).to receive(:log_and_raise_exception)
+          .with(error.new('bang'), {})
+
+        response.log_and_raise_exception(as: error)
+      end
+
+      it 'allows extra data for tracking' do
+        expect(::Gitlab::ErrorTracking).to receive(:log_and_raise_exception)
+          .with(StandardError.new('bang'), { foo: 1, bar: 2 })
+
+        response.log_and_raise_exception(foo: 1, bar: 2)
+      end
+    end
+  end
 end

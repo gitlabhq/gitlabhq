@@ -83,7 +83,7 @@ export function initIssueApp(issueData, store) {
     return undefined;
   }
 
-  const { fullPath } = el.dataset;
+  const { fullPath, registerPath, signInPath } = el.dataset;
 
   scrollToTargetOnResize();
 
@@ -99,6 +99,8 @@ export function initIssueApp(issueData, store) {
     provide: {
       canCreateIncident,
       fullPath,
+      registerPath,
+      signInPath,
       hasIssueWeightsFeature,
     },
     computed: {
@@ -150,6 +152,8 @@ export function initHeaderActions(store, type = '') {
       projectPath: el.dataset.projectPath,
       projectId: el.dataset.projectId,
       reportAbusePath: el.dataset.reportAbusePath,
+      reportedUserId: el.dataset.reportedUserId,
+      reportedFromUrl: el.dataset.reportedFromUrl,
       submitAsSpamPath: el.dataset.submitAsSpamPath,
     },
     render: (createElement) => createElement(HeaderActions),

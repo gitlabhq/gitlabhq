@@ -2,11 +2,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ObservabilityApp from '~/observability/components/observability_app.vue';
 import ObservabilitySkeleton from '~/observability/components/skeleton/index.vue';
 
-import {
-  MESSAGE_EVENT_TYPE,
-  OBSERVABILITY_ROUTES,
-  SKELETON_VARIANT,
-} from '~/observability/constants';
+import { MESSAGE_EVENT_TYPE, SKELETON_VARIANTS_BY_ROUTE } from '~/observability/constants';
 
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 
@@ -20,6 +16,7 @@ describe('Observability root app', () => {
   };
   const $route = {
     pathname: 'https://gitlab.com/gitlab-org/',
+    path: 'https://gitlab.com/gitlab-org/-/observability/dashboards',
     query: { otherQuery: 100 },
   };
 
@@ -28,6 +25,10 @@ describe('Observability root app', () => {
   const findIframe = () => wrapper.findByTestId('observability-ui-iframe');
 
   const TEST_IFRAME_SRC = 'https://observe.gitlab.com/9970/?groupId=14485840';
+
+  const OBSERVABILITY_ROUTES = Object.keys(SKELETON_VARIANTS_BY_ROUTE);
+
+  const SKELETON_VARIANTS = Object.values(SKELETON_VARIANTS_BY_ROUTE);
 
   const mountComponent = (route = $route) => {
     wrapper = shallowMountExtended(ObservabilityApp, {
@@ -139,9 +140,9 @@ describe('Observability root app', () => {
   describe('on GOUI_LOADED', () => {
     beforeEach(() => {
       mountComponent();
-      wrapper.vm.$refs.iframeSkeleton.handleSkeleton = mockHandleSkeleton;
+      wrapper.vm.$refs.observabilitySkeleton.onContentLoaded = mockHandleSkeleton;
     });
-    it('should call handleSkeleton method', () => {
+    it('should call onContentLoaded method', () => {
       dispatchMessageEvent({
         data: { type: MESSAGE_EVENT_TYPE.GOUI_LOADED },
         origin: 'https://observe.gitlab.com',
@@ -149,7 +150,7 @@ describe('Observability root app', () => {
       expect(mockHandleSkeleton).toHaveBeenCalled();
     });
 
-    it('should not call handleSkeleton method if origin is different', () => {
+    it('should not call onContentLoaded method if origin is different', () => {
       dispatchMessageEvent({
         data: { type: MESSAGE_EVENT_TYPE.GOUI_LOADED },
         origin: 'https://example.com',
@@ -157,7 +158,7 @@ describe('Observability root app', () => {
       expect(mockHandleSkeleton).not.toHaveBeenCalled();
     });
 
-    it('should not call handleSkeleton method if event type is different', () => {
+    it('should not call onContentLoaded method if event type is different', () => {
       dispatchMessageEvent({
         data: { type: 'UNKNOWN_EVENT' },
         origin: 'https://observe.gitlab.com',
@@ -168,11 +169,11 @@ describe('Observability root app', () => {
 
   describe('skeleton variant', () => {
     it.each`
-      pathDescription        | path                               | variant
-      ${'dashboards'}        | ${OBSERVABILITY_ROUTES.DASHBOARDS} | ${SKELETON_VARIANT.DASHBOARDS}
-      ${'explore'}           | ${OBSERVABILITY_ROUTES.EXPLORE}    | ${SKELETON_VARIANT.EXPLORE}
-      ${'manage dashboards'} | ${OBSERVABILITY_ROUTES.MANAGE}     | ${SKELETON_VARIANT.MANAGE}
-      ${'any other'}         | ${'unknown/route'}                 | ${SKELETON_VARIANT.DASHBOARDS}
+      pathDescription        | path                       | variant
+      ${'dashboards'}        | ${OBSERVABILITY_ROUTES[0]} | ${SKELETON_VARIANTS[0]}
+      ${'explore'}           | ${OBSERVABILITY_ROUTES[1]} | ${SKELETON_VARIANTS[1]}
+      ${'manage dashboards'} | ${OBSERVABILITY_ROUTES[2]} | ${SKELETON_VARIANTS[2]}
+      ${'any other'}         | ${'unknown/route'}         | ${SKELETON_VARIANTS[0]}
     `('renders the $variant skeleton variant for $pathDescription path', ({ path, variant }) => {
       mountComponent({ ...$route, path });
       const props = wrapper.findComponent(ObservabilitySkeleton).props();

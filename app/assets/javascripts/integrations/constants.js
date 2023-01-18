@@ -52,6 +52,7 @@ export const integrationTriggerEvents = {
   TAG_PUSH: 'tag_push_events',
   PIPELINE: 'pipeline_events',
   WIKI_PAGE: 'wiki_page_events',
+  DEPLOYMENT: 'deployment_events',
 };
 
 export const integrationTriggerEventTitles = {
@@ -72,6 +73,9 @@ export const integrationTriggerEventTitles = {
   [integrationTriggerEvents.TAG_PUSH]: s__('IntegrationEvents|A tag is pushed to the repository'),
   [integrationTriggerEvents.PIPELINE]: s__('IntegrationEvents|A pipeline status changes'),
   [integrationTriggerEvents.WIKI_PAGE]: s__('IntegrationEvents|A wiki page is created or updated'),
+  [integrationTriggerEvents.DEPLOYMENT]: s__(
+    'IntegrationEvents|A deployment is started or finished',
+  ),
 };
 
 export const billingPlans = {

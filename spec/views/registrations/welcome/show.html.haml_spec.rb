@@ -7,10 +7,6 @@ RSpec.describe 'registrations/welcome/show' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:in_subscription_flow?).and_return(false)
-    allow(view).to receive(:in_trial_flow?).and_return(false)
-    allow(view).to receive(:user_has_memberships?).and_return(false)
-    allow(view).to receive(:in_oauth_flow?).and_return(false)
     allow(view).to receive(:glm_tracking_params).and_return({})
 
     render

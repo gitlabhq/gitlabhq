@@ -169,6 +169,8 @@ module MergeRequests
         merge_request.target_branch
       )
 
+      refresh_pipelines_on_merge_requests(merge_request, allow_duplicate: true)
+
       abort_auto_merge(merge_request, 'target branch was changed')
     end
 

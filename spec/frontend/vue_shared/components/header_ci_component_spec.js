@@ -84,11 +84,12 @@ describe('Header CI Component', () => {
       expect(findUserLink().text()).toContain(defaultProps.user.username);
     });
 
-    it('has the correct data attributes', () => {
+    it('has the correct HTML attributes', () => {
       expect(findUserLink().attributes()).toMatchObject({
         'data-user-id': defaultProps.user.id.toString(),
         'data-username': defaultProps.user.username,
         'data-name': defaultProps.user.name,
+        href: defaultProps.user.web_url,
       });
     });
 

@@ -1,4 +1,4 @@
-import initVariableList from '~/ci_variable_list';
+import initVariableList from '~/ci/ci_variable_list';
 import projectSelect from '~/project_select';
 import initSearchSettings from '~/search_settings';
 import selfMonitor from '~/self_monitor';

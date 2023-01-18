@@ -20,23 +20,15 @@ module ApplicationHelper
   def dispensable_render(...)
     render(...)
   rescue StandardError => e
-    if Feature.enabled?(:dispensable_render)
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
-      nil
-    else
-      raise e
-    end
+    Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+    nil
   end
 
   def dispensable_render_if_exists(...)
     render_if_exists(...)
   rescue StandardError => e
-    if Feature.enabled?(:dispensable_render)
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
-      nil
-    else
-      raise e
-    end
+    Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+    nil
   end
 
   def partial_exists?(partial)
@@ -183,6 +175,8 @@ module ApplicationHelper
   #
   # Returns an HTML-safe String
   def time_ago_with_tooltip(time, placement: 'top', html_class: '', short_format: false)
+    return "" if time.nil?
+
     css_classes = [short_format ? 'js-short-timeago' : 'js-timeago']
     css_classes << html_class unless html_class.blank?
 
@@ -242,7 +236,7 @@ module ApplicationHelper
   end
 
   def instance_review_permitted?
-    ::Gitlab::CurrentSettings.instance_review_permitted? && current_user&.admin?
+    ::Gitlab::CurrentSettings.instance_review_permitted? && current_user&.can_read_all_resources?
   end
 
   def static_objects_external_storage_enabled?

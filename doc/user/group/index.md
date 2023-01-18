@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Workspace
+group: Organization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -25,7 +25,7 @@ For more information about creating and managing your groups, see [Manage groups
 Like projects, a group can be configured to limit the visibility of it to:
 
 - Anonymous users.
-- All signed-in users.
+- All authenticated users.
 - Only explicit group members.
 
 The restriction for [visibility levels](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)

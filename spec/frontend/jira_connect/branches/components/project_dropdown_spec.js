@@ -1,10 +1,4 @@
-import {
-  GlAvatarLabeled,
-  GlDropdown,
-  GlDropdownItem,
-  GlLoadingIcon,
-  GlSearchBoxByType,
-} from '@gitlab/ui';
+import { GlAvatarLabeled, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -36,12 +30,8 @@ const mockQueryLoading = jest.fn().mockReturnValue(new Promise(() => {}));
 describe('ProjectDropdown', () => {
   let wrapper;
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findDropdownItemByProjectId = (projectId) =>
-    wrapper.find(`[data-testid="test-project-${projectId}"]`);
-  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findAllGlListboxItems = () => wrapper.findAllComponents(GlListboxItem);
 
   function createMockApolloProvider({ mockGetProjectsQuery = mockGetProjectsQuerySuccess } = {}) {
     Vue.use(VueApollo);
@@ -55,6 +45,7 @@ describe('ProjectDropdown', () => {
     wrapper = mountFn(ProjectDropdown, {
       apolloProvider: mockApollo || createMockApolloProvider(),
       propsData: props,
+      stubs: { GlCollapsibleListbox },
     });
   }
 
@@ -72,16 +63,11 @@ describe('ProjectDropdown', () => {
     it('sets dropdown `loading` prop to `true`', () => {
       expect(findDropdown().props('loading')).toBe(true);
     });
-
-    it('renders loading icon in dropdown', () => {
-      expect(findLoadingIcon().isVisible()).toBe(true);
-    });
   });
 
   describe('when projects query succeeds', () => {
     beforeEach(async () => {
       createComponent();
-      await waitForPromises();
       await nextTick();
     });
 
@@ -90,12 +76,19 @@ describe('ProjectDropdown', () => {
     });
 
     it('renders dropdown items with correct props', () => {
-      const dropdownItems = findAllDropdownItems();
-      const avatars = dropdownItems.wrappers.map((item) => item.findComponent(GlAvatarLabeled));
+      const dropdownItems = findDropdown().props('items');
+      expect(dropdownItems).toHaveLength(mockProjects.length);
+      expect(dropdownItems).toMatchObject(mockProjects);
+    });
+
+    it('renders dropdown items with correct template', () => {
+      expect(findAllGlListboxItems()).toHaveLength(mockProjects.length);
+      const avatars = findAllGlListboxItems().wrappers.map((item) =>
+        item.findComponent(GlAvatarLabeled),
+      );
       const avatarAttributes = avatars.map((avatar) => avatar.attributes());
       const avatarProps = avatars.map((avatar) => avatar.props());
 
-      expect(dropdownItems.wrappers).toHaveLength(mockProjects.length);
       expect(avatarProps).toMatchObject(
         mockProjects.map((project) => ({
           label: project.name,
@@ -113,8 +106,7 @@ describe('ProjectDropdown', () => {
     describe('when selecting a dropdown item', () => {
       it('emits `change` event with the selected project', async () => {
         const mockProject = mockProjects[0];
-        const itemToSelect = findDropdownItemByProjectId(mockProject.id);
-        await itemToSelect.vm.$emit('click');
+        await findDropdown().vm.$emit('select', mockProject.id);
 
         expect(wrapper.emitted('change')[0]).toEqual([mockProject]);
       });
@@ -124,17 +116,11 @@ describe('ProjectDropdown', () => {
       const mockProject = mockProjects[0];
 
       beforeEach(() => {
-        wrapper.setProps({
-          selectedProject: mockProject,
-        });
+        createComponent({ props: { selectedProject: mockProject } });
       });
 
-      it('sets `isChecked` prop of the corresponding dropdown item to `true`', () => {
-        expect(findDropdownItemByProjectId(mockProject.id).props('isChecked')).toBe(true);
-      });
-
-      it('sets dropdown text to `selectedBranchName` value', () => {
-        expect(findDropdown().props('text')).toBe(mockProject.nameWithNamespace);
+      it('selects the specified item', () => {
+        expect(findDropdown().props('selected')).toBe(mockProject.id);
       });
     });
   });
@@ -155,11 +141,10 @@ describe('ProjectDropdown', () => {
   describe('when searching branches', () => {
     it('triggers a refetch', async () => {
       createComponent({ mountFn: mount });
-      await waitForPromises();
       jest.clearAllMocks();
 
       const mockSearchTerm = 'gitl';
-      await findSearchBox().vm.$emit('input', mockSearchTerm);
+      await findDropdown().vm.$emit('search', mockSearchTerm);
 
       expect(mockGetProjectsQuerySuccess).toHaveBeenCalledWith({
         after: '',

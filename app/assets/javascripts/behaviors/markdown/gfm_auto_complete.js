@@ -11,6 +11,7 @@ export default function initGFMInput($els) {
       emojis: true,
       members: enableGFM,
       issues: enableGFM,
+      iterations: enableGFM,
       milestones: enableGFM,
       mergeRequests: enableGFM,
       labels: enableGFM,

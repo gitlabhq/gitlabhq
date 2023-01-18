@@ -36,7 +36,7 @@ RSpec.shared_examples 'reportable note' do |type|
     dropdown.click_link('Report abuse to administrator')
 
     expect(find('#user_name')['value']).to match(note.author.username)
-    expect(find('#abuse_report_message')['value']).to match(noteable_note_url(note))
+    expect(find('#abuse_report_reported_from_url')['value']).to match(noteable_note_url(note))
   end
 
   def open_dropdown(dropdown)

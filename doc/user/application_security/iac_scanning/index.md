@@ -221,8 +221,8 @@ For example, you might need to avoid a regression in a later release.
 To override the automatic update behavior, set the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
 in your CI/CD configuration file after you include the [`SAST-IaC.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml).
 
-Only set this variable within a specific job.
-If you set it [at the top level](../../../ci/variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file), the version you set will be used for other SAST analyzers.
+Only set this variable in a specific job.
+If you set it [at the top level](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set will be used for other SAST analyzers.
 
 You can set the tag to:
 

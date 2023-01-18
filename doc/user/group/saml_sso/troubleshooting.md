@@ -52,7 +52,7 @@ You can use one of the following to troubleshoot SAML:
 - A [quick start guide to start a Docker container](../../../administration/troubleshooting/test_environments.md#saml)
   with a plug and play SAML 2.0 identity provider if you only require a SAML provider.
 - A local environment by
-  [enabling SAML for groups on a self-managed instance](../../../integration/saml.md#group-saml-on-a-self-managed-gitlab-instance).
+  [enabling SAML for groups on a self-managed instance](../../../integration/saml.md#configure-group-saml-sso-on-a-self-managed-instance).
 
 ## Verify configuration
 
@@ -233,6 +233,13 @@ If you receive a `404` during setup when using "verify configuration", make sure
 If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](index.md#configure-your-identity-provider), they may see a 404.
 As outlined in the [user access section](index.md#linking-saml-to-your-existing-gitlabcom-account), a group Owner needs to provide the URL to users.
 
+If all users are receiving a `404` after signing in to the identity provider (IdP), verify the `assertion_consumer_service_url`:
+
+- In the GitLab configuration by [matching it to the HTTPS endpoint of GitLab](../../../integration/saml.md#configure-saml-support-in-gitlab).
+- As the `Assertion Consumer Service URL` or equivalent when setting up the SAML app on your IdP.
+
+For configuration examples for some of the common providers, see the [example group SAML and SCIM configurations](example_saml_config.md).
+
 ### 500 error after login **(FREE SELF)**
 
 If you see a "500 error" in GitLab when you are redirected back from the SAML
@@ -281,3 +288,12 @@ this means:
 A GitLab group Owner can use the [SAML API](../../../api/saml.md) to update the user's SAML `extern_uid`.
 The `extern_uid` value must match the Name ID value sent by the SAML identity provider (IdP). Depending on the IdP configuration
 this may be a generated unique ID, an email address, or other value.
+
+## Message: "The member's email address is not linked to a SAML account" **(PREMIUM SAAS)**
+
+This error appears when you try to invite a user to a GitLab.com group (or subgroup or project within a group) that has [SAML SSO enforcement](index.md#sso-enforcement) enabled.
+
+If you see this message after trying to invite a user to a group:
+
+1. Ensure the user has been [added to the SAML identity provider](index.md#user-access-and-management).
+1. Ask the user to [link SAML to their existing GitLab.com account](index.md#linking-saml-to-your-existing-gitlabcom-account), if they have one. Otherwise, ask the user to create a GitLab.com account by [accessing GitLab.com through the identity provider's dashboard](index.md#user-access-and-management), or by [signing up manually](https://gitlab.com/users/sign_up) and linking SAML to their new account.

@@ -11,7 +11,7 @@ RSpec.describe Admin::ApplicationSettings::AppearancesController do
     let(:create_params) do
       {
         title: 'Foo',
-        short_title: 'F',
+        pwa_short_name: 'F',
         description: 'Bar',
         header_message: header_message,
         footer_message: footer_message

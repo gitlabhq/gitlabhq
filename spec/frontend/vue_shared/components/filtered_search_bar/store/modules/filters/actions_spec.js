@@ -4,7 +4,7 @@ import testAction from 'helpers/vuex_action_helper';
 import { mockBranches } from 'jest/vue_shared/components/filtered_search_bar/mock_data';
 import Api from '~/api';
 import { createAlert } from '~/flash';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import * as actions from '~/vue_shared/components/filtered_search_bar/store/modules/filters/actions';
 import * as types from '~/vue_shared/components/filtered_search_bar/store/modules/filters/mutation_types';
 import initialState from '~/vue_shared/components/filtered_search_bar/store/modules/filters/state';
@@ -122,7 +122,7 @@ describe('Filters actions', () => {
           ':id',
           encodeURIComponent(projectEndpoint),
         );
-        mock.onGet(url).replyOnce(httpStatusCodes.OK, mockBranches);
+        mock.onGet(url).replyOnce(HTTP_STATUS_OK, mockBranches);
       });
 
       it('dispatches RECEIVE_BRANCHES_SUCCESS with received data', () => {
@@ -143,7 +143,7 @@ describe('Filters actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onAny().replyOnce(httpStatusCodes.SERVICE_UNAVAILABLE);
+        mock.onAny().replyOnce(HTTP_STATUS_SERVICE_UNAVAILABLE);
       });
 
       it('dispatches RECEIVE_BRANCHES_ERROR', () => {
@@ -155,7 +155,7 @@ describe('Filters actions', () => {
             { type: types.REQUEST_BRANCHES },
             {
               type: types.RECEIVE_BRANCHES_ERROR,
-              payload: httpStatusCodes.SERVICE_UNAVAILABLE,
+              payload: HTTP_STATUS_SERVICE_UNAVAILABLE,
             },
           ],
           [],
@@ -177,7 +177,7 @@ describe('Filters actions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onAny().replyOnce(httpStatusCodes.OK, filterUsers);
+        mock.onAny().replyOnce(HTTP_STATUS_OK, filterUsers);
       });
 
       it('dispatches RECEIVE_AUTHORS_SUCCESS with received data and groupEndpoint set', () => {
@@ -215,7 +215,7 @@ describe('Filters actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onAny().replyOnce(httpStatusCodes.SERVICE_UNAVAILABLE);
+        mock.onAny().replyOnce(HTTP_STATUS_SERVICE_UNAVAILABLE);
       });
 
       it('dispatches RECEIVE_AUTHORS_ERROR and groupEndpoint set', () => {
@@ -227,7 +227,7 @@ describe('Filters actions', () => {
             { type: types.REQUEST_AUTHORS },
             {
               type: types.RECEIVE_AUTHORS_ERROR,
-              payload: httpStatusCodes.SERVICE_UNAVAILABLE,
+              payload: HTTP_STATUS_SERVICE_UNAVAILABLE,
             },
           ],
           [],
@@ -246,7 +246,7 @@ describe('Filters actions', () => {
             { type: types.REQUEST_AUTHORS },
             {
               type: types.RECEIVE_AUTHORS_ERROR,
-              payload: httpStatusCodes.SERVICE_UNAVAILABLE,
+              payload: HTTP_STATUS_SERVICE_UNAVAILABLE,
             },
           ],
           [],
@@ -261,7 +261,7 @@ describe('Filters actions', () => {
   describe('fetchMilestones', () => {
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(milestonesEndpoint).replyOnce(httpStatusCodes.OK, filterMilestones);
+        mock.onGet(milestonesEndpoint).replyOnce(HTTP_STATUS_OK, filterMilestones);
       });
 
       it('dispatches RECEIVE_MILESTONES_SUCCESS with received data', () => {
@@ -282,7 +282,7 @@ describe('Filters actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onAny().replyOnce(httpStatusCodes.SERVICE_UNAVAILABLE);
+        mock.onAny().replyOnce(HTTP_STATUS_SERVICE_UNAVAILABLE);
       });
 
       it('dispatches RECEIVE_MILESTONES_ERROR', () => {
@@ -294,7 +294,7 @@ describe('Filters actions', () => {
             { type: types.REQUEST_MILESTONES },
             {
               type: types.RECEIVE_MILESTONES_ERROR,
-              payload: httpStatusCodes.SERVICE_UNAVAILABLE,
+              payload: HTTP_STATUS_SERVICE_UNAVAILABLE,
             },
           ],
           [],
@@ -307,7 +307,7 @@ describe('Filters actions', () => {
     describe('success', () => {
       let restoreVersion;
       beforeEach(() => {
-        mock.onAny().replyOnce(httpStatusCodes.OK, filterUsers);
+        mock.onAny().replyOnce(HTTP_STATUS_OK, filterUsers);
         restoreVersion = gon.api_version;
         gon.api_version = 'v1';
       });
@@ -352,7 +352,7 @@ describe('Filters actions', () => {
     describe('error', () => {
       let restoreVersion;
       beforeEach(() => {
-        mock.onAny().replyOnce(httpStatusCodes.SERVICE_UNAVAILABLE);
+        mock.onAny().replyOnce(HTTP_STATUS_SERVICE_UNAVAILABLE);
         restoreVersion = gon.api_version;
         gon.api_version = 'v1';
       });
@@ -370,7 +370,7 @@ describe('Filters actions', () => {
             { type: types.REQUEST_ASSIGNEES },
             {
               type: types.RECEIVE_ASSIGNEES_ERROR,
-              payload: httpStatusCodes.SERVICE_UNAVAILABLE,
+              payload: HTTP_STATUS_SERVICE_UNAVAILABLE,
             },
           ],
           [],
@@ -389,7 +389,7 @@ describe('Filters actions', () => {
             { type: types.REQUEST_ASSIGNEES },
             {
               type: types.RECEIVE_ASSIGNEES_ERROR,
-              payload: httpStatusCodes.SERVICE_UNAVAILABLE,
+              payload: HTTP_STATUS_SERVICE_UNAVAILABLE,
             },
           ],
           [],
@@ -404,7 +404,7 @@ describe('Filters actions', () => {
   describe('fetchLabels', () => {
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(labelsEndpoint).replyOnce(httpStatusCodes.OK, filterLabels);
+        mock.onGet(labelsEndpoint).replyOnce(HTTP_STATUS_OK, filterLabels);
       });
 
       it('dispatches RECEIVE_LABELS_SUCCESS with received data', () => {
@@ -425,7 +425,7 @@ describe('Filters actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onAny().replyOnce(httpStatusCodes.SERVICE_UNAVAILABLE);
+        mock.onAny().replyOnce(HTTP_STATUS_SERVICE_UNAVAILABLE);
       });
 
       it('dispatches RECEIVE_LABELS_ERROR', () => {
@@ -437,7 +437,7 @@ describe('Filters actions', () => {
             { type: types.REQUEST_LABELS },
             {
               type: types.RECEIVE_LABELS_ERROR,
-              payload: httpStatusCodes.SERVICE_UNAVAILABLE,
+              payload: HTTP_STATUS_SERVICE_UNAVAILABLE,
             },
           ],
           [],

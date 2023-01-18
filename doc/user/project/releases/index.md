@@ -132,7 +132,7 @@ release:
 ```
 
 The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a
-[custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables),
+[custom variable in the UI](../../../ci/variables/index.md#for-a-project),
 either as a `file`, which requires the path to the certificate, or as a variable,
 which requires the text representation of the certificate.
 

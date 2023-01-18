@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Package, type: :model do
+RSpec.describe Packages::Package, type: :model, feature_category: :package_registry do
   include SortingHelper
   using RSpec::Parameterized::TableSyntax
 
@@ -14,6 +14,7 @@ RSpec.describe Packages::Package, type: :model do
     it { is_expected.to have_many(:dependency_links).inverse_of(:package) }
     it { is_expected.to have_many(:tags).inverse_of(:package) }
     it { is_expected.to have_many(:build_infos).inverse_of(:package) }
+    it { is_expected.to have_many(:installable_nuget_package_files).inverse_of(:package) }
     it { is_expected.to have_one(:conan_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:debian_publication).inverse_of(:package).class_name('Packages::Debian::Publication') }
@@ -713,7 +714,7 @@ RSpec.describe Packages::Package, type: :model do
     subject(:destroy!) { package.destroy! }
 
     it 'updates the project statistics' do
-      expect(project_statistics).to receive(:increment_counter).with(:packages_size, -package_file.size)
+      expect(project_statistics).to receive(:increment_counter).with(:packages_size, have_attributes(amount: -package_file.size))
 
       destroy!
     end

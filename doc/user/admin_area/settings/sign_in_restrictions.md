@@ -68,7 +68,7 @@ For more information, see the [list of settings that can be accessed through API
 Open the [Rails console](../../../administration/operations/rails_console.md) and run the following:
 
 ```ruby
-::Gitlab::CurrentSettings.update!(admin_mode true)
+::Gitlab::CurrentSettings.update!(admin_mode: true)
 ```
 
 #### Use the UI to enable Admin Mode
@@ -114,6 +114,9 @@ authentication steps.
 
 We may address these limitations in the future. For more information see the following epic:
 [Admin Mode for GitLab Administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158).
+
+Also, when GitLab Geo is enabled, you can't view the replication status of projects and designs while
+on a secondary node. A fix is proposed when projects ([issue 367926](https://gitlab.com/gitlab-org/gitlab/-/issues/367926)) and designs ([issue 355660](https://gitlab.com/gitlab-org/gitlab/-/issues/355660)) move to the new Geo framework.
 
 ### Troubleshooting Admin Mode
 

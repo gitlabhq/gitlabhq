@@ -246,4 +246,30 @@ RSpec.describe UserPolicy do
       end
     end
   end
+
+  describe ':read_user_email_address' do
+    context 'when user is admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:read_user_email_address) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.not_to be_allowed(:read_user_email_address) }
+      end
+    end
+
+    context 'when user is not an admin' do
+      context 'requesting their own' do
+        subject { described_class.new(current_user, current_user) }
+
+        it { is_expected.to be_allowed(:read_user_email_address) }
+      end
+
+      context "requesting a different user's" do
+        it { is_expected.not_to be_allowed(:read_user_email_address) }
+      end
+    end
+  end
 end

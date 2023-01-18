@@ -74,6 +74,7 @@ describe('Work items router', () => {
       stubs: {
         WorkItemWeight: true,
         WorkItemIteration: true,
+        WorkItemHealthStatus: true,
       },
     });
   };

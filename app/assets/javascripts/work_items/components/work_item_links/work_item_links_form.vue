@@ -1,9 +1,18 @@
 <script>
-import { GlAlert, GlFormGroup, GlForm, GlTokenSelector, GlButton, GlFormInput } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlFormGroup,
+  GlForm,
+  GlTokenSelector,
+  GlButton,
+  GlFormInput,
+  GlFormCheckbox,
+  GlTooltip,
+} from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
@@ -17,6 +26,8 @@ import {
   I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
   I18N_WORK_ITEM_ADD_BUTTON_LABEL,
   I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL,
+  I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL,
+  I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
   sprintfWorkItem,
 } from '../../constants';
 
@@ -28,6 +39,8 @@ export default {
     GlButton,
     GlFormGroup,
     GlFormInput,
+    GlFormCheckbox,
+    GlTooltip,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['projectPath', 'hasIterationsFeature'],
@@ -60,6 +73,11 @@ export default {
     formType: {
       type: String,
       required: true,
+    },
+    parentWorkItemType: {
+      type: String,
+      required: false,
+      default: '',
     },
     childrenType: {
       type: String,
@@ -108,6 +126,7 @@ export default {
       error: null,
       childToCreateTitle: null,
       workItemsToAdd: [],
+      confidential: this.parentConfidential,
     };
   },
   computed: {
@@ -119,7 +138,7 @@ export default {
         hierarchyWidget: {
           parentId: this.issuableGid,
         },
-        confidential: this.parentConfidential,
+        confidential: this.parentConfidential || this.confidential,
       };
 
       if (this.parentMilestoneId) {
@@ -154,6 +173,9 @@ export default {
     childrenTypeName() {
       return WORK_ITEMS_TYPE_MAP[this.childrenType]?.name;
     },
+    childrenTypeValue() {
+      return WORK_ITEMS_TYPE_MAP[this.childrenType]?.value;
+    },
     addOrCreateButtonLabel() {
       if (this.isCreateForm) {
         return sprintfWorkItem(I18N_WORK_ITEM_CREATE_BUTTON_LABEL, this.childrenTypeName);
@@ -162,11 +184,24 @@ export default {
       }
       return sprintfWorkItem(I18N_WORK_ITEM_ADD_BUTTON_LABEL, this.childrenTypeName);
     },
+    confidentialityCheckboxLabel() {
+      return sprintfWorkItem(I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL, this.childrenTypeName);
+    },
+    confidentialityCheckboxTooltip() {
+      return sprintfWorkItem(
+        I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
+        this.childrenTypeName,
+        this.parentWorkItemType,
+      );
+    },
+    showConfidentialityTooltip() {
+      return this.isCreateForm && this.parentConfidential;
+    },
     addOrCreateMethod() {
       return this.isCreateForm ? this.createChild : this.addChild;
     },
     childWorkItemType() {
-      return this.workItemTypes.find((type) => type.name === this.childrenTypeName)?.id;
+      return this.workItemTypes.find((type) => type.name === this.childrenTypeValue)?.id;
     },
     parentIterationId() {
       return this.parentIteration?.id;
@@ -178,7 +213,10 @@ export default {
       return this.parentMilestone?.id;
     },
     isSubmitButtonDisabled() {
-      return this.isCreateForm ? this.search.length === 0 : this.workItemsToAdd.length === 0;
+      if (this.isCreateForm) {
+        return this.search.length === 0;
+      }
+      return this.workItemsToAdd.length === 0 || !this.areWorkItemsToAddValid;
     },
     isLoading() {
       return this.$apollo.queries.availableWorkItems.loading;
@@ -186,12 +224,43 @@ export default {
     addInputPlaceholder() {
       return sprintfWorkItem(I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER, this.childrenTypeName);
     },
+    tokenSelectorContainerClass() {
+      return !this.areWorkItemsToAddValid ? 'gl-inset-border-1-red-500!' : '';
+    },
+    invalidWorkItemsToAdd() {
+      return this.parentConfidential
+        ? this.workItemsToAdd.filter((workItem) => !workItem.confidential)
+        : [];
+    },
+    areWorkItemsToAddValid() {
+      return this.invalidWorkItemsToAdd.length === 0;
+    },
+    showWorkItemsToAddInvalidMessage() {
+      return !this.isCreateForm && !this.areWorkItemsToAddValid;
+    },
+    workItemsToAddInvalidMessage() {
+      return sprintf(
+        s__(
+          'WorkItem|%{invalidWorkItemsList} cannot be added: Cannot assign a non-confidential %{childWorkItemType} to a confidential parent %{parentWorkItemType}. Make the selected %{childWorkItemType} confidential and try again.',
+        ),
+        {
+          invalidWorkItemsList: this.invalidWorkItemsToAdd.map(({ title }) => title).join(', '),
+          childWorkItemType: this.childrenTypeName,
+          parentWorkItemType: this.parentWorkItemType,
+        },
+      );
+    },
   },
   created() {
     this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
   },
   methods: {
     getIdFromGraphQLId,
+    getConfidentialityTooltipTarget() {
+      // We want tooltip to be anchored to `input` within checkbox component
+      // but `$el.querySelector('input')` doesn't work. 🤷‍♂️
+      return this.$refs.confidentialityCheckbox?.$el;
+    },
     unsetError() {
       this.error = null;
     },
@@ -299,30 +368,54 @@ export default {
         autofocus
       />
     </gl-form-group>
-    <gl-token-selector
-      v-else
-      v-model="workItemsToAdd"
-      :dropdown-items="availableWorkItems"
-      :loading="isLoading"
-      :placeholder="addInputPlaceholder"
-      menu-class="gl-dropdown-menu-wide dropdown-reduced-height gl-min-h-7!"
-      class="gl-mb-4"
-      data-testid="work-item-token-select-input"
-      @text-input="debouncedSearchKeyUpdate"
-      @focus="handleFocus"
-      @mouseover.native="handleMouseOver"
-      @mouseout.native="handleMouseOut"
+    <gl-form-checkbox
+      v-if="isCreateForm"
+      ref="confidentialityCheckbox"
+      v-model="confidential"
+      name="isConfidential"
+      class="gl-md-mt-5 gl-mb-5 gl-md-mb-3!"
+      :disabled="parentConfidential"
+      >{{ confidentialityCheckboxLabel }}</gl-form-checkbox
     >
-      <template #token-content="{ token }">
-        {{ token.title }}
-      </template>
-      <template #dropdown-item-content="{ dropdownItem }">
-        <div class="gl-display-flex">
-          <div class="gl-text-secondary gl-mr-4">{{ getIdFromGraphQLId(dropdownItem.id) }}</div>
-          <div class="gl-text-truncate">{{ dropdownItem.title }}</div>
-        </div>
-      </template>
-    </gl-token-selector>
+    <gl-tooltip
+      v-if="showConfidentialityTooltip"
+      :target="getConfidentialityTooltipTarget"
+      triggers="hover"
+      >{{ confidentialityCheckboxTooltip }}</gl-tooltip
+    >
+    <div class="gl-mb-4">
+      <gl-token-selector
+        v-if="!isCreateForm"
+        v-model="workItemsToAdd"
+        :dropdown-items="availableWorkItems"
+        :loading="isLoading"
+        :placeholder="addInputPlaceholder"
+        menu-class="gl-dropdown-menu-wide dropdown-reduced-height gl-min-h-7!"
+        :container-class="tokenSelectorContainerClass"
+        data-testid="work-item-token-select-input"
+        @text-input="debouncedSearchKeyUpdate"
+        @focus="handleFocus"
+        @mouseover.native="handleMouseOver"
+        @mouseout.native="handleMouseOut"
+      >
+        <template #token-content="{ token }">
+          {{ token.title }}
+        </template>
+        <template #dropdown-item-content="{ dropdownItem }">
+          <div class="gl-display-flex">
+            <div class="gl-text-secondary gl-mr-4">{{ getIdFromGraphQLId(dropdownItem.id) }}</div>
+            <div class="gl-text-truncate">{{ dropdownItem.title }}</div>
+          </div>
+        </template>
+      </gl-token-selector>
+      <div
+        v-if="showWorkItemsToAddInvalidMessage"
+        class="gl-text-red-500"
+        data-testid="work-items-invalid"
+      >
+        {{ workItemsToAddInvalidMessage }}
+      </div>
+    </div>
     <gl-button
       category="primary"
       variant="confirm"

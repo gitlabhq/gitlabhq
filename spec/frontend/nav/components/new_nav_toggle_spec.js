@@ -14,6 +14,8 @@ jest.mock('~/flash');
 const TEST_ENDPONT = 'https://example.com/toggle';
 
 describe('NewNavToggle', () => {
+  useMockLocationHelper();
+
   let wrapper;
 
   const findToggle = () => wrapper.findComponent(GlToggle);
@@ -59,18 +61,22 @@ describe('NewNavToggle', () => {
     });
   });
 
-  describe('changing the toggle', () => {
-    useMockLocationHelper();
+  describe.each`
+    desc                                | actFn
+    ${'when toggle button is clicked'}  | ${() => findToggle().trigger('click')}
+    ${'when menu item text is clicked'} | ${() => getByText('New navigation').trigger('click')}
+  `('$desc', ({ actFn }) => {
     let mock;
 
     beforeEach(() => {
       mock = new MockAdapter(axios);
-      createComponent();
+      createComponent({ enabled: false });
     });
 
     it('reloads the page on success', async () => {
       mock.onPut(TEST_ENDPONT).reply(200);
-      findToggle().vm.$emit('change');
+
+      actFn();
       await waitForPromises();
 
       expect(window.location.reload).toHaveBeenCalled();
@@ -78,7 +84,8 @@ describe('NewNavToggle', () => {
 
     it('shows an alert on error', async () => {
       mock.onPut(TEST_ENDPONT).reply(500);
-      findToggle().vm.$emit('change');
+
+      actFn();
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith(
@@ -89,6 +96,12 @@ describe('NewNavToggle', () => {
         }),
       );
       expect(window.location.reload).not.toHaveBeenCalled();
+    });
+
+    it('changes the toggle', async () => {
+      await actFn();
+
+      expect(findToggle().props('value')).toBe(true);
     });
 
     afterEach(() => {

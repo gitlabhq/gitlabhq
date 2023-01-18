@@ -2,6 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Instrumentation do
+  subject(:instrumentation) { described_class.new(result_dir: result_dir) }
+
   let(:result_dir) { Dir.mktmpdir }
   let(:connection) { ActiveRecord::Migration.connection }
 
@@ -9,17 +11,18 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     FileUtils.rm_rf(result_dir)
   end
   describe '#observe' do
-    subject { described_class.new(result_dir: result_dir) }
-
     def load_observation(result_dir, migration_name)
       Gitlab::Json.parse(File.read(File.join(result_dir, migration_name, described_class::STATS_FILENAME)))
     end
 
     let(:migration_name) { 'test' }
     let(:migration_version) { '12345' }
+    let(:migration_meta) { { 'max_batch_size' => 1, 'total_tuple_count' => 10, 'interval' => 60 } }
 
     it 'executes the given block' do
-      expect { |b| subject.observe(version: migration_version, name: migration_name, connection: connection, &b) }.to yield_control
+      expect do |b|
+        instrumentation.observe(version: migration_version, name: migration_name, connection: connection, meta: migration_meta, &b)
+      end.to yield_control
     end
 
     context 'behavior with observers' do
@@ -68,13 +71,17 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     end
 
     context 'on successful execution' do
-      subject { described_class.new(result_dir: result_dir).observe(version: migration_version, name: migration_name, connection: connection) {} }
+      subject do
+        instrumentation.observe(version: migration_version, name: migration_name,
+                                connection: connection, meta: migration_meta) {}
+      end
 
       it 'records a valid observation', :aggregate_failures do
         expect(subject.walltime).not_to be_nil
         expect(subject.success).to be_truthy
         expect(subject.version).to eq(migration_version)
         expect(subject.name).to eq(migration_name)
+        expect(subject.meta).to eq(migration_meta)
       end
     end
 
@@ -82,9 +89,10 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
       where(exception: ['something went wrong', SystemStackError, Interrupt])
 
       with_them do
-        let(:instance) { described_class.new(result_dir: result_dir) }
-
-        subject(:observe) { instance.observe(version: migration_version, name: migration_name, connection: connection) { raise exception } }
+        subject(:observe) do
+          instrumentation.observe(version: migration_version, name: migration_name,
+                                  connection: connection, meta: migration_meta) { raise exception }
+        end
 
         it 'raises the exception' do
           expect { observe }.to raise_error(exception)
@@ -106,14 +114,13 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
             expect(subject['success']).to be_falsey
             expect(subject['version']).to eq(migration_version)
             expect(subject['name']).to eq(migration_name)
+            expect(subject['meta']).to include(migration_meta)
           end
         end
       end
     end
 
     context 'sequence of migrations with failures' do
-      subject { described_class.new(result_dir: result_dir) }
-
       let(:migration1) { double('migration1', call: nil) }
       let(:migration2) { double('migration2', call: nil) }
 
@@ -121,9 +128,9 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
       let(:migration_version_2) { '98765' }
 
       it 'records observations for all migrations' do
-        subject.observe(version: migration_version, name: migration_name, connection: connection) {}
+        instrumentation.observe(version: migration_version, name: migration_name, connection: connection) {}
         begin
-          subject.observe(version: migration_version_2, name: migration_name_2, connection: connection) { raise 'something went wrong' }
+          instrumentation.observe(version: migration_version_2, name: migration_name_2, connection: connection) { raise 'something went wrong' }
         rescue StandardError
           nil
         end

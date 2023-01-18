@@ -5,23 +5,22 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ItemMilestone from '~/issuable/components/issue_milestone.vue';
 import WorkItemLinkChildMetadata from '~/work_items/components/work_item_links/work_item_link_child_metadata.vue';
 
-import { mockMilestone, mockAssignees, mockLabels } from '../../mock_data';
+import { workItemObjectiveMetadataWidgets } from '../../mock_data';
 
 describe('WorkItemLinkChildMetadata', () => {
+  const { MILESTONE, ASSIGNEES, LABELS } = workItemObjectiveMetadataWidgets;
+  const mockMilestone = MILESTONE.milestone;
+  const mockAssignees = ASSIGNEES.assignees.nodes;
+  const mockLabels = LABELS.labels.nodes;
   let wrapper;
 
-  const createComponent = ({
-    allowsScopedLabels = true,
-    milestone = mockMilestone,
-    assignees = mockAssignees,
-    labels = mockLabels,
-  } = {}) => {
+  const createComponent = ({ metadataWidgets = workItemObjectiveMetadataWidgets } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinkChildMetadata, {
       propsData: {
-        allowsScopedLabels,
-        milestone,
-        assignees,
-        labels,
+        metadataWidgets,
+      },
+      slots: {
+        default: `<div data-testid="default-slot">Foo</div>`,
       },
     });
   };
@@ -30,7 +29,11 @@ describe('WorkItemLinkChildMetadata', () => {
     createComponent();
   });
 
-  it('renders milestone link button', () => {
+  it('renders default slot contents', () => {
+    expect(wrapper.findByTestId('default-slot').text()).toBe('Foo');
+  });
+
+  it('renders item milestone', () => {
     const milestoneLink = wrapper.findComponent(ItemMilestone);
 
     expect(milestoneLink.exists()).toBe(true);

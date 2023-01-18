@@ -1,0 +1,22 @@
+.super-sidebar {
+  top: 0;
+  width: $contextual-sidebar-width;
+
+  .user-bar {
+    background-color: $t-gray-a-04;
+
+    .tanuki-logo {
+      @include gl-vertical-align-middle;
+    }
+  }
+
+  .context-switcher-toggle {
+    &[aria-expanded='true'] {
+      background-color: $t-gray-a-08;
+    }
+  }
+}
+
+.with-performance-bar .super-sidebar {
+  top: $performance-bar-height;
+}

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'merge request content spec', feature_category: :code_review do
+RSpec.describe 'merge request content spec', feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:merge_request) { create(:merge_request, :with_head_pipeline, target_project: project, source_project: project) }

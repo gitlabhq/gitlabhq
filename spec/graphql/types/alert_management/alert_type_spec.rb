@@ -38,6 +38,7 @@ RSpec.describe GitlabSchema.types['AlertManagementAlert'], feature_category: :in
       prometheus_alert
       environment
       web_url
+      commenters
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

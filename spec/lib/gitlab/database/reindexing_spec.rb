@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Reindexing, feature_category: :database do
+RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_travel_to: '2023-01-07T09:44:07Z' do
   include ExclusiveLeaseHelpers
   include Database::DatabaseHelpers
 
@@ -76,7 +76,7 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database do
     let(:limit) { 5 }
 
     before_all do
-      swapout_view_for_table(:postgres_indexes)
+      swapout_view_for_table(:postgres_indexes, connection: ApplicationRecord.connection)
     end
 
     before do
@@ -147,7 +147,7 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database do
     subject { described_class.perform_from_queue(maximum_records: limit) }
 
     before_all do
-      swapout_view_for_table(:postgres_indexes)
+      swapout_view_for_table(:postgres_indexes, connection: ApplicationRecord.connection)
     end
 
     let(:limit) { 2 }

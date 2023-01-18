@@ -11,7 +11,7 @@ module Provider
       app { Environments::Test.app }
 
       honours_pact_with "Pipelines#new" do
-        pact_uri Provider::ContractSourceHelper.contract_location(:spec, __FILE__)
+        pact_uri Provider::ContractSourceHelper.contract_location(requester: :spec, file_path: __FILE__)
       end
 
       Provider::PublishContractHelper.publish_contract_setup.call(

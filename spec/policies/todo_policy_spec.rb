@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TodoPolicy do
+RSpec.describe TodoPolicy, feature_category: :project_management do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project) }

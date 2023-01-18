@@ -37,6 +37,50 @@ RSpec.describe CounterAttribute, :counter_attribute, :clean_gitlab_redis_shared_
     end
   end
 
+  describe '#initiate_refresh!' do
+    context 'when counter attribute is enabled' do
+      let(:attribute) { :build_artifacts_size }
+
+      it 'initiates refresh on the BufferedCounter' do
+        expect_next_instance_of(Gitlab::Counters::BufferedCounter, model, attribute) do |counter|
+          expect(counter).to receive(:initiate_refresh!)
+        end
+
+        model.initiate_refresh!(attribute)
+      end
+    end
+
+    context 'when counter attribute is not enabled' do
+      let(:attribute) { :snippets_size }
+
+      it 'raises error' do
+        expect { model.initiate_refresh!(attribute) }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
+  describe '#finalize_refresh' do
+    let(:attribute) { :build_artifacts_size }
+
+    context 'when counter attribute is enabled' do
+      it 'initiates refresh on the BufferedCounter' do
+        expect_next_instance_of(Gitlab::Counters::BufferedCounter, model, attribute) do |counter|
+          expect(counter).to receive(:finalize_refresh)
+        end
+
+        model.finalize_refresh(attribute)
+      end
+    end
+
+    context 'when counter attribute is not enabled' do
+      let(:attribute) { :snippets_size }
+
+      it 'raises error' do
+        expect { model.finalize_refresh(attribute) }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
   describe '#counter' do
     using RSpec::Parameterized::TableSyntax
 

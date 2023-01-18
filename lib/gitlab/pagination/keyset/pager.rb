@@ -10,7 +10,7 @@ module Gitlab
           @request = request
         end
 
-        def paginate(relation)
+        def paginate(relation, _params = {})
           # Validate assumption: The last two columns must match the page order_by
           validate_order!(relation)
 

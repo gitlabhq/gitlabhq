@@ -4,7 +4,6 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { mapActions } from 'vuex';
 import { orderBy } from 'lodash';
 import BoardFilteredSearch from 'ee_else_ce/boards/components/board_filtered_search.vue';
-import { BoardType } from '~/boards/constants';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import issueBoardFilters from '~/boards/issue_board_filters';
@@ -47,23 +46,15 @@ export default {
     issue: __('Issue'),
   },
   components: { BoardFilteredSearch },
-  inject: ['isSignedIn', 'releasesFetchPath', 'fullPath', 'boardType'],
+  inject: ['isSignedIn', 'releasesFetchPath', 'fullPath', 'isGroupBoard'],
   computed: {
-    isGroupBoard() {
-      return this.boardType === BoardType.group;
-    },
-    epicsGroupPath() {
-      return this.isGroupBoard
-        ? this.fullPath
-        : this.fullPath.slice(0, this.fullPath.lastIndexOf('/'));
-    },
     tokensCE() {
       const { issue, incident } = this.$options.i18n;
       const { types } = this.$options;
       const { fetchUsers, fetchLabels } = issueBoardFilters(
         this.$apollo,
         this.fullPath,
-        this.boardType,
+        this.isGroupBoard,
       );
 
       const tokens = [

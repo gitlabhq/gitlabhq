@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectMirrorEntity do
-  let(:project) { create(:project, :repository, :remote_mirror) }
+RSpec.describe ProjectMirrorEntity, feature_category: :source_code_management do
+  let(:project) { build(:project, :repository, :remote_mirror) }
   let(:entity) { described_class.new(project) }
 
   subject { entity.as_json }

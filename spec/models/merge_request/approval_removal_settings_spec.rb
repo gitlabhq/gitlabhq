@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequest::ApprovalRemovalSettings do
+RSpec.describe MergeRequest::ApprovalRemovalSettings, :with_license do
   describe 'validations' do
     let(:reset_approvals_on_push) {}
     let(:selective_code_owner_removals) {}

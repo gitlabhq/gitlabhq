@@ -96,7 +96,7 @@ module QA
               end
               xml.concurrentBuild false
               xml.builders do
-                xml.send('hudson.tasks.Shell') do
+                xml.send(:"hudson.tasks.Shell") do
                   xml.command shell_command
                   xml.configuredLocalRules
                 end
@@ -115,12 +115,12 @@ module QA
           if repo_url
             xml.scm(class: 'hudson.plugins.git.GitSCM') do
               xml.userRemoteConfigs do
-                xml.send('hudson.plugins.git.UserRemoteConfig') do
+                xml.send(:"hudson.plugins.git.UserRemoteConfig") do
                   xml.url repo_url
                 end
               end
               xml.branches do
-                xml.send('hudson.plugins.git.BranchSpec') do
+                xml.send(:"hudson.plugins.git.BranchSpec") do
                   xml.name
                 end
               end
@@ -133,7 +133,7 @@ module QA
 
         def build_gitlab_connection(xml)
           if gitlab_connection
-            xml.send('com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty') do
+            xml.send(:"com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty") do
               xml.gitLabConnection gitlab_connection
             end
           end
@@ -141,7 +141,7 @@ module QA
 
         def build_gitlab_triggers(xml)
           if gitlab_connection
-            xml.send('com.dabsquared.gitlabjenkins.GitLabPushTrigger') do
+            xml.send(:"com.dabsquared.gitlabjenkins.GitLabPushTrigger") do
               xml.spec
               xml.triggerOnPush true
               xml.triggerOnMergeRequest true
@@ -154,7 +154,7 @@ module QA
 
         def build_gitlab_publishers(xml)
           if gitlab_connection
-            xml.send('com.dabsquared.gitlabjenkins.publisher.GitLabCommitStatusPublisher') do
+            xml.send(:"com.dabsquared.gitlabjenkins.publisher.GitLabCommitStatusPublisher") do
               xml.name 'jenkins'
               xml.markUnstableAsSuccess false
             end

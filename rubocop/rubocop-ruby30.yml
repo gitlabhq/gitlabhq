@@ -14,3 +14,7 @@ Style/MutableConstant:
   Enabled: false
 Style/RedundantFreeze:
   Enabled: false
+
+# No longer needed because Ruby 3.0 will fail due to kwargs issues.
+Lint/LastKeywordArgument:
+  Enabled: false

@@ -3,7 +3,7 @@ import { GlTableLite } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { durationTimeFormatted } from '~/lib/utils/datetime_utility';
-import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import RunnerTags from '~/ci/runner/components/runner_tags.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { tableField } from '../utils';
@@ -11,7 +11,7 @@ import LinkCell from './cells/link_cell.vue';
 
 export default {
   components: {
-    CiBadge,
+    CiBadgeLink,
     GlTableLite,
     LinkCell,
     RunnerTags,
@@ -80,7 +80,7 @@ export default {
     fixed
   >
     <template #cell(status)="{ item = {} }">
-      <ci-badge v-if="item.detailedStatus" :status="item.detailedStatus" />
+      <ci-badge-link v-if="item.detailedStatus" :status="item.detailedStatus" />
     </template>
 
     <template #cell(job)="{ item = {} }">

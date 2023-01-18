@@ -54,8 +54,9 @@ RSpec.describe 'profiles/preferences/show' do
     end
 
     it 'has helpful homepage setup guidance' do
-      expect(rendered).to have_field('Dashboard')
-      expect(rendered).to have_content('Choose what content you want to see by default on your dashboard.')
+      expect(rendered).to have_selector('[data-label="Dashboard"]')
+      expect(rendered).to have_selector("[data-description=" \
+                                        "'Choose what content you want to see by default on your dashboard.']")
     end
   end
 

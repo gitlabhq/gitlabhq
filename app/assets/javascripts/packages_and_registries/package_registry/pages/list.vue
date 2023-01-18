@@ -1,20 +1,18 @@
 <script>
-import { GlAlert, GlBanner, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
-import { createAlert, VARIANT_INFO } from '~/flash';
-import { getCookie, historyReplaceState, parseBoolean, setCookie } from '~/lib/utils/common_utils';
+import { GlAlert, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import { createAlert, VARIANT_INFO, VARIANT_SUCCESS, VARIANT_DANGER } from '~/flash';
+import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/constants';
 import {
   PROJECT_RESOURCE_TYPE,
   GROUP_RESOURCE_TYPE,
   GRAPHQL_PAGE_SIZE,
-  HIDE_PACKAGE_MIGRATION_SURVEY_COOKIE,
   DELETE_PACKAGE_SUCCESS_MESSAGE,
   DELETE_PACKAGES_ERROR_MESSAGE,
   DELETE_PACKAGES_SUCCESS_MESSAGE,
   EMPTY_LIST_HELP_URL,
   PACKAGE_HELP_URL,
-  SURVEY_LINK,
 } from '~/packages_and_registries/package_registry/constants';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
 import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
@@ -22,31 +20,26 @@ import DeletePackage from '~/packages_and_registries/package_registry/components
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import PackageList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
-import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 
 export default {
   components: {
     GlAlert,
-    GlBanner,
     GlEmptyState,
     GlLink,
     GlSprintf,
     PackageList,
     PackageTitle,
     PackageSearch,
-    DeleteModal,
     DeletePackage,
   },
   inject: ['emptyListIllustration', 'isGroupPage', 'fullPath'],
   data() {
     return {
       alertVariables: null,
-      itemsToBeDeleted: [],
       packages: {},
       sort: '',
       filters: {},
       mutationLoading: false,
-      showSurveyBanner: !parseBoolean(getCookie(HIDE_PACKAGE_MIGRATION_SURVEY_COOKIE)),
     };
   },
   apollo: {
@@ -121,15 +114,13 @@ export default {
         historyReplaceState(cleanUrl);
       }
     },
-    async confirmDelete() {
-      const { itemsToBeDeleted } = this;
-      this.itemsToBeDeleted = [];
+    async deletePackages(packageEntities) {
       this.mutationLoading = true;
       try {
         const { data } = await this.$apollo.mutate({
           mutation: destroyPackagesMutation,
           variables: {
-            ids: itemsToBeDeleted.map((i) => i.id),
+            ids: packageEntities.map((i) => i.id),
           },
           awaitRefetchQueries: true,
           refetchQueries: [
@@ -144,29 +135,21 @@ export default {
           throw new Error(data.destroyPackages.errors[0]);
         }
         this.showAlert({
-          variant: 'success',
+          variant: VARIANT_SUCCESS,
           message: DELETE_PACKAGES_SUCCESS_MESSAGE,
         });
       } catch {
         this.showAlert({
-          variant: 'danger',
+          variant: VARIANT_DANGER,
           message: DELETE_PACKAGES_ERROR_MESSAGE,
         });
       } finally {
         this.mutationLoading = false;
       }
     },
-    showDeletePackagesModal(toBeDeleted) {
-      this.itemsToBeDeleted = toBeDeleted;
-      this.$refs.deletePackagesModal.show();
-    },
     handleSearchUpdate({ sort, filters }) {
       this.sort = sort;
       this.filters = { ...filters };
-    },
-    hideSurvey() {
-      this.showSurveyBanner = false;
-      setCookie(HIDE_PACKAGE_MIGRATION_SURVEY_COOKIE, 'true');
     },
     updateQuery(_, { fetchMoreResult }) {
       return fetchMoreResult;
@@ -208,17 +191,11 @@ export default {
     noResultsText: s__(
       'PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab.',
     ),
-    surveyBannerTitle: s__('PackageRegistry|Help us learn about your registry migration needs'),
-    surveyBannerDescription: s__(
-      'PackageRegistry|If you are interested in migrating packages from your private registry to the GitLab Package Registry, take our survey and tell us more about your needs.',
-    ),
-    surveyBannerPrimaryButtonText: s__('PackageRegistry|Take survey'),
   },
   links: {
     EMPTY_LIST_HELP_URL,
     PACKAGE_HELP_URL,
   },
-  surveyLink: SURVEY_LINK,
 };
 </script>
 
@@ -233,17 +210,6 @@ export default {
     >
       {{ alertVariables.message }}
     </gl-alert>
-    <gl-banner
-      v-if="showSurveyBanner"
-      :title="$options.i18n.surveyBannerTitle"
-      :button-text="$options.i18n.surveyBannerPrimaryButtonText"
-      :button-link="$options.surveyLink"
-      class="gl-mt-3"
-      @primary="hideSurvey"
-      @close="hideSurvey"
-    >
-      <p>{{ $options.i18n.surveyBannerDescription }}</p>
-    </gl-banner>
     <package-title :help-url="$options.links.PACKAGE_HELP_URL" :count="packagesCount" />
     <package-search class="gl-mb-5" @update="handleSearchUpdate" />
 
@@ -261,7 +227,7 @@ export default {
           @prev-page="fetchPreviousPage"
           @next-page="fetchNextPage"
           @package:delete="deletePackage"
-          @delete="showDeletePackagesModal"
+          @delete="deletePackages"
         >
           <template #empty-state>
             <gl-empty-state :title="emptyStateTitle" :svg-path="emptyListIllustration">
@@ -280,11 +246,5 @@ export default {
         </package-list>
       </template>
     </delete-package>
-
-    <delete-modal
-      ref="deletePackagesModal"
-      :items-to-be-deleted="itemsToBeDeleted"
-      @confirm="confirmDelete"
-    />
   </div>
 </template>

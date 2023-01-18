@@ -17,7 +17,7 @@ module Gitlab
               secret_detection: %w[14.0.0 14.0.1 14.0.2 14.0.3 14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3 15.0.0 15.0.1 15.0.2 15.0.4]
             }.freeze
 
-            VERSIONS_TO_REMOVE_IN_16_0 = [].freeze
+            VERSIONS_TO_REMOVE_IN_16_0 = %w[14.0.0 14.0.1 14.0.2 14.0.3 14.0.4 14.0.5 14.0.6 14.1.0 14.1.1 14.1.2 14.1.3].freeze
 
             DEPRECATED_VERSIONS = {
               cluster_image_scanning: VERSIONS_TO_REMOVE_IN_16_0,
@@ -29,6 +29,8 @@ module Gitlab
               sast: VERSIONS_TO_REMOVE_IN_16_0,
               secret_detection: VERSIONS_TO_REMOVE_IN_16_0
             }.freeze
+
+            CURRENT_VERSIONS = SUPPORTED_VERSIONS.to_h { |k, v| [k, v - DEPRECATED_VERSIONS[k]] }
 
             class Schema
               def root_path
@@ -129,6 +131,11 @@ module Gitlab
             end
 
             def report_uses_deprecated_schema_version?
+              # Avoid deprecation warnings for GitLab security scanners
+              # To be removed via https://gitlab.com/gitlab-org/gitlab/-/issues/386798
+              return if report_data.dig('scan', 'scanner', 'vendor', 'name')&.downcase == 'gitlab'
+              return if report_data.dig('scan', 'analyzer', 'vendor', 'name')&.downcase == 'gitlab'
+
               DEPRECATED_VERSIONS[report_type].include?(report_version)
             end
 
@@ -182,11 +189,15 @@ module Gitlab
             def add_deprecated_report_version_message
               log_warnings(problem_type: 'using_deprecated_schema_version')
 
-              template = _("Version %{report_version} for report type %{report_type} has been deprecated,"\
-              " supported versions for this report type are: %{supported_schema_versions}."\
-              " GitLab will attempt to parse and ingest this report if valid.")
+              template = _("version %{report_version} for report type %{report_type} is deprecated. "\
+              "However, GitLab will still attempt to parse and ingest this report. "\
+              "Upgrade the security report to one of the following versions: %{current_schema_versions}.")
 
-              message = format(template, report_version: report_version, report_type: report_type, supported_schema_versions: supported_schema_versions)
+              message = format(
+                template,
+                report_version: report_version,
+                report_type: report_type,
+                current_schema_versions: current_schema_versions)
 
               add_message_as(level: :deprecation_warning, message: message)
             end
@@ -205,6 +216,10 @@ module Gitlab
                 security_report_scanner_id: @scanner&.dig('id'),
                 security_report_scanner_version: @scanner&.dig('version')
               )
+            end
+
+            def current_schema_versions
+              CURRENT_VERSIONS[report_type].join(", ")
             end
 
             def supported_schema_versions

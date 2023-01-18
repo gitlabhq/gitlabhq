@@ -84,6 +84,13 @@ RSpec.describe Projects::PipelinesController do
     end
 
     context 'when performing gitaly calls', :request_store do
+      before do
+        # To prevent double writes / fallback read due to MultiStore which is failing the `Gitlab::GitalyClient
+        # .get_request_count` expectation.
+        stub_feature_flags(use_primary_store_as_default_for_repository_cache: false)
+        stub_feature_flags(use_primary_and_secondary_stores_for_repository_cache: false)
+      end
+
       it 'limits the Gitaly requests' do
         # Isolate from test preparation (Repository#exists? is also cached in RequestStore)
         RequestStore.end!

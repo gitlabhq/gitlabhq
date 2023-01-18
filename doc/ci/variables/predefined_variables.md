@@ -11,7 +11,7 @@ Predefined [CI/CD variables](index.md) are available in every GitLab CI/CD pipel
 
 Some variables are only available with more recent versions of [GitLab Runner](https://docs.gitlab.com/runner/).
 
-You can [output the values of all variables available for a job](index.md#list-all-environment-variables)
+You can [output the values of all variables available for a job](index.md#list-all-variables)
 with a `script` command.
 
 There are also a number of [variables you can use to configure runner behavior](../runners/configure_runners.md#configure-runner-behavior-with-variables) globally or for individual jobs.
@@ -45,7 +45,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_CONCURRENT_ID`                       | all    | 11.10  | The unique ID of build execution in a single executor. |
 | `CI_CONCURRENT_PROJECT_ID`               | all    | 11.10  | The unique ID of build execution in a single executor and project. |
 | `CI_CONFIG_PATH`                         | 9.4    | 0.5    | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. Read-only inside a running pipeline. |
-| `CI_DEBUG_TRACE`                         | all    | 1.7    | `true` if [debug logging (tracing)](index.md#debug-logging) is enabled. |
+| `CI_DEBUG_TRACE`                         | all    | 1.7    | `true` if [debug logging (tracing)](index.md#enable-debug-logging) is enabled. |
 | `CI_DEBUG_SERVICES`                      | 15.7   | 15.7   | `true` if [service container logging](../services/index.md#capturing-service-container-logs) is enabled. |
 | `CI_DEFAULT_BRANCH`                      | 12.4   | all    | The name of the project's default branch. |
 | `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` | 13.7   | all    | The top-level group image prefix for pulling images through the Dependency Proxy. |
@@ -135,10 +135,10 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_TEMPLATE_REGISTRY_HOST`              | 15.3   | all    | The host of the registry used by CI/CD templates. Defaults to `registry.gitlab.com`. |
 | `GITLAB_CI`                              | all    | all    | Available for all jobs executed in CI/CD. `true` when available. |
 | `GITLAB_FEATURES`                        | 10.6   | all    | The comma-separated list of licensed features available for the GitLab instance and license. |
-| `GITLAB_USER_EMAIL`                      | 8.12   | all    | The email of the user who started the job. |
-| `GITLAB_USER_ID`                         | 8.12   | all    | The ID of the user who started the job. |
-| `GITLAB_USER_LOGIN`                      | 10.0   | all    | The username of the user who started the job. |
-| `GITLAB_USER_NAME`                       | 10.0   | all    | The name of the user who started the job. |
+| `GITLAB_USER_EMAIL`                      | 8.12   | all    | The email of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the email of the user who started the job. |
+| `GITLAB_USER_ID`                         | 8.12   | all    | The ID of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the ID of the user who started the job. |
+| `GITLAB_USER_LOGIN`                      | 10.0   | all    | The username of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the username of the user who started the job. |
+| `GITLAB_USER_NAME`                       | 10.0   | all    | The name of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the name of the user who started the job. |
 | `TRIGGER_PAYLOAD`                        | 13.9   | all    | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/index.md#use-a-webhook-payload). |
 
 ## Predefined variables for merge request pipelines
@@ -189,3 +189,15 @@ These variables are only available when:
 | `CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_SHA`  | 12.3   | all    | The HEAD SHA of the source branch of the pull request. |
 | `CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME` | 12.3   | all    | The target branch name of the pull request. |
 | `CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_SHA`  | 12.3   | all    | The HEAD SHA of the target branch of the pull request. |
+
+## Deployment variables
+
+Integrations that are responsible for deployment configuration can define their own
+predefined variables that are set in the build environment. These variables are only defined
+for [deployment jobs](../environments/index.md).
+
+For example, the [Kubernetes integration](../../user/project/clusters/deploy_to_cluster.md#deployment-variables)
+defines deployment variables that you can use with the integration.
+
+The [documentation for each integration](../../user/project/integrations/index.md)
+explains if the integration has any deployment variables available.

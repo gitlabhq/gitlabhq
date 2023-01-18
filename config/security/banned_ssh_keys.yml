@@ -1,0 +1,16 @@
+---
+# https://github.com/rapid7/ssh-badkeys/tree/master/authorized
+# https://www.ctrlu.net/vuln/0006.html
+rsa:
+  - SHA256:Z+q4XhSwWY7q0BIDVPR1v/S306FjGBsid7tLq/8kIxM
+  - SHA256:uy5wXyEgbRCGsk23+J6f85om7G55Cu3UIPwC7oMZhNQ
+  - SHA256:9prMbqhS4QteoFQ1ZRJDqSBLWoHXPyKB0iWR05Ghro4
+  - SHA256:1M4RzhMyWuFS/86uPY/ce2prh/dVTHW7iD2RhpquOZA
+  - SHA256:2ewGtK7Dc8XpnfNKShczdc8HSgoEGpoX+MiJkfH2p5I
+dsa:
+  - SHA256:/JLp6z6uGE3BPcs70RQob6QOdEWQ6nDC0xY7ejPOCc0
+  - SHA256:whDP3xjKBEettbDuecxtGsfWBST+78gb6McdB9P7jCU
+  - SHA256:MEc4HfsOlMqJ3/9QMTmrKn5Xj/yfnMITMW8EwfUfTww
+  - SHA256:aPoYT2nPIfhqv6BIlbCCpbDjirBxaDFOtPfZ2K20uWw
+  - SHA256:VtjqZ5fiaeoZ3mXOYi49Lk9aO31iT4pahKFP9JPiQPc
+...

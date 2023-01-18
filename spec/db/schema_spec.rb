@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('ee', 'spec', 'db', 'schema_support') if Gitlab.ee?
 
-RSpec.describe 'Database schema' do
+RSpec.describe 'Database schema', feature_category: :database do
   prepend_mod_with('DB::SchemaSupport')
 
   let(:tables) { connection.tables }
@@ -30,7 +30,7 @@ RSpec.describe 'Database schema' do
     award_emoji: %w[awardable_id user_id],
     aws_roles: %w[role_external_id],
     boards: %w[milestone_id iteration_id],
-    chat_names: %w[chat_id team_id user_id],
+    chat_names: %w[chat_id team_id user_id integration_id],
     chat_teams: %w[team_id],
     ci_build_needs: %w[partition_id],
     ci_build_pending_states: %w[partition_id],
@@ -39,7 +39,7 @@ RSpec.describe 'Database schema' do
     ci_build_trace_metadata: %w[partition_id],
     ci_builds: %w[erased_by_id trigger_request_id partition_id],
     ci_builds_runner_session: %w[partition_id],
-    p_ci_builds_metadata: %w[partition_id],
+    p_ci_builds_metadata: %w[partition_id runner_machine_id], # NOTE: FK will be added in follow-up https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108167
     ci_job_artifacts: %w[partition_id],
     ci_job_variables: %w[partition_id],
     ci_namespace_monthly_usages: %w[namespace_id],
@@ -166,7 +166,7 @@ RSpec.describe 'Database schema' do
           context 'columns ending with _id' do
             let(:column_names) { columns.map(&:name) }
             let(:column_names_with_id) { column_names.select { |column_name| column_name.ends_with?('_id') } }
-            let(:foreign_keys_columns) { all_foreign_keys.map(&:column).uniq } # we can have FK and loose FK present at the same time
+            let(:foreign_keys_columns) { all_foreign_keys.reject { |fk| fk.name&.end_with?("_p") }.map(&:column).uniq } # we can have FK and loose FK present at the same time
             let(:ignored_columns) { ignored_fk_columns(table) }
 
             it 'do have the foreign keys' do
@@ -184,7 +184,7 @@ RSpec.describe 'Database schema' do
 
   # These pre-existing enums have limits > 2 bytes
   IGNORED_LIMIT_ENUMS = {
-    'Analytics::CycleAnalytics::GroupStage' => %w[start_event_identifier end_event_identifier],
+    'Analytics::CycleAnalytics::Stage' => %w[start_event_identifier end_event_identifier],
     'Analytics::CycleAnalytics::ProjectStage' => %w[start_event_identifier end_event_identifier],
     'Ci::Bridge' => %w[failure_reason],
     'Ci::Build' => %w[failure_reason],

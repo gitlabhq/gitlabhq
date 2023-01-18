@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 FLAG:
 By default, auto revocation of GitLab personal access tokens is not available. To opt-in on GitLab.com
-during the [Beta period](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga), please
+during the [Beta period](../../../policy/alpha-beta-support.md#beta-features), please
 [let us know by completing this form](https://docs.google.com/forms/d/e/1FAIpQLSdRbFhvA5jvI-Rt_Qnl1PQ1znOXKK8m6lRtmM0uva4upetKvQ/viewform).
 
 GitLab supports running post-processing hooks after detecting a secret. These

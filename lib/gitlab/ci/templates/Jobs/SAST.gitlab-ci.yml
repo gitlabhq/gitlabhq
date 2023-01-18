@@ -255,7 +255,7 @@ sobelow-sast:
       when: never
     - if: $CI_COMMIT_BRANCH
       exists:
-        - 'mix.exs'
+        - '**/mix.exs'
 
 spotbugs-sast:
   extends: .sast-analyzer

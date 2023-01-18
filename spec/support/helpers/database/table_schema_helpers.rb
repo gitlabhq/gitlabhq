@@ -3,7 +3,9 @@
 module Database
   module TableSchemaHelpers
     def connection
-      ActiveRecord::Base.connection
+      # We use ActiveRecord::Base.connection here because this is mainly used for database migrations
+      # where we override the connection on ActiveRecord::Base.connection
+      ActiveRecord::Base.connection # rubocop:disable Database/MultipleDatabases
     end
 
     def expect_table_to_be_replaced(original_table:, replacement_table:, archived_table:)

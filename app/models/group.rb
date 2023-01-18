@@ -30,6 +30,8 @@ class Group < Namespace
 
   has_many :all_group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :group_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
+  has_many :namespace_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }).unscope(where: %i[source_id source_type]) },
+    foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   alias_method :members, :group_members
 
   has_many :users, through: :group_members
@@ -39,6 +41,8 @@ class Group < Namespace
     source: :user
 
   has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
+  has_many :namespace_requesters, -> { where.not(requested_at: nil).unscope(where: %i[source_id source_type]) },
+    foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   has_many :members_and_requesters, as: :source, class_name: 'GroupMember'
 
   has_many :milestones
@@ -815,7 +819,7 @@ class Group < Namespace
 
     case state
     when SR_DISABLED_AND_UNOVERRIDABLE then disable_shared_runners! # also disallows override
-    when SR_DISABLED_WITH_OVERRIDE then disable_shared_runners_and_allow_override!
+    when SR_DISABLED_WITH_OVERRIDE, SR_DISABLED_AND_OVERRIDABLE then disable_shared_runners_and_allow_override!
     when SR_ENABLED then enable_shared_runners! # set both to true
     end
   end
@@ -846,7 +850,7 @@ class Group < Namespace
   def has_project_with_service_desk_enabled?
     Gitlab::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
   end
-  strong_memoize_attr :has_project_with_service_desk_enabled?, :has_project_with_service_desk_enabled
+  strong_memoize_attr :has_project_with_service_desk_enabled?
 
   def activity_path
     Gitlab::Routing.url_helpers.activity_group_path(self)
@@ -913,6 +917,10 @@ class Group < Namespace
 
   def work_items_create_from_markdown_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:work_items_create_from_markdown)
+  end
+
+  def usage_quotas_enabled?
+    ::Feature.enabled?(:usage_quotas_for_all_editions, self) && root?
   end
 
   # Check for enabled features, similar to `Project#feature_available?`
@@ -1055,7 +1063,7 @@ class Group < Namespace
   end
 
   def disable_shared_runners_and_allow_override!
-    # enabled -> disabled_with_override
+    # enabled -> disabled_and_overridable
     if shared_runners_enabled?
       update!(
         shared_runners_enabled: false,
@@ -1068,7 +1076,7 @@ class Group < Namespace
 
       all_projects.update_all(shared_runners_enabled: false)
 
-    # disabled_and_unoverridable -> disabled_with_override
+    # disabled_and_unoverridable -> disabled_and_overridable
     else
       update!(allow_descendants_override_disabled_shared_runners: true)
     end

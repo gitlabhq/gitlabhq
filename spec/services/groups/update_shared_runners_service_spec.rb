@@ -114,13 +114,13 @@ RSpec.describe Groups::UpdateSharedRunnersService do
       end
 
       context 'allow descendants to override' do
-        let(:params) { { shared_runners_setting: Namespace::SR_DISABLED_WITH_OVERRIDE } }
+        let(:params) { { shared_runners_setting: Namespace::SR_DISABLED_AND_OVERRIDABLE } }
 
         context 'top level group' do
           let_it_be(:group) { create(:group, :shared_runners_disabled) }
 
           it 'receives correct method and succeeds' do
-            expect(group).to receive(:update_shared_runners_setting!).with(Namespace::SR_DISABLED_WITH_OVERRIDE)
+            expect(group).to receive(:update_shared_runners_setting!).with(Namespace::SR_DISABLED_AND_OVERRIDABLE)
 
             expect(subject[:status]).to eq(:success)
           end
@@ -133,6 +133,30 @@ RSpec.describe Groups::UpdateSharedRunnersService do
           it 'results error' do
             expect(subject[:status]).to eq(:error)
             expect(subject[:message]).to eq('Validation failed: Allow descendants override disabled shared runners cannot be enabled because parent group does not allow it')
+          end
+        end
+
+        context 'when using DISABLED_WITH_OVERRIDE (deprecated)' do
+          let(:params) { { shared_runners_setting: Namespace::SR_DISABLED_WITH_OVERRIDE } }
+
+          context 'top level group' do
+            let_it_be(:group) { create(:group, :shared_runners_disabled) }
+
+            it 'receives correct method and succeeds' do
+              expect(group).to receive(:update_shared_runners_setting!).with(Namespace::SR_DISABLED_WITH_OVERRIDE)
+
+              expect(subject[:status]).to eq(:success)
+            end
+          end
+
+          context 'when parent does not allow' do
+            let_it_be(:parent) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false) }
+            let_it_be(:group) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false, parent: parent) }
+
+            it 'results error' do
+              expect(subject[:status]).to eq(:error)
+              expect(subject[:message]).to eq('Validation failed: Allow descendants override disabled shared runners cannot be enabled because parent group does not allow it')
+            end
           end
         end
       end

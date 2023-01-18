@@ -213,7 +213,7 @@ module ReviewApps
       gitlab.environments(project_path, per_page: DEPLOYMENTS_PER_PAGE, sort: 'desc', states: 'stopped', search: ENVIRONMENT_PREFIX[environment_type]).auto_paginate do |environment|
         next if skip_environment?(environment: environment, checked_environments: checked_environments, last_updated_threshold: last_updated_threshold, environment_type: environment_type)
 
-        yield environment if delete_environment(environment)
+        yield environment if delete_environment(environment) && block_given?
 
         checked_environments << environment.slug
       end

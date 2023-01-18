@@ -18,6 +18,8 @@ export default function initWorkItemLinks() {
     iid,
     wiHasIterationsFeature,
     wiHasIssuableHealthStatusFeature,
+    registerPath,
+    signInPath,
   } = workItemLinksRoot.dataset;
 
   // eslint-disable-next-line no-new
@@ -35,6 +37,8 @@ export default function initWorkItemLinks() {
       hasIssueWeightsFeature: wiHasIssueWeightsFeature,
       hasIterationsFeature: wiHasIterationsFeature,
       hasIssuableHealthStatusFeature: wiHasIssuableHealthStatusFeature,
+      registerPath,
+      signInPath,
     },
     render: (createElement) =>
       createElement('work-item-links', {

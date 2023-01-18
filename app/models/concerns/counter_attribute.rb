@@ -88,12 +88,20 @@ module CounterAttribute
   end
 
   def increment_counter(attribute, increment)
-    return if increment == 0
+    return if increment.amount == 0
 
     run_after_commit_or_now do
       new_value = counter(attribute).increment(increment)
 
-      log_increment_counter(attribute, increment, new_value)
+      log_increment_counter(attribute, increment.amount, new_value)
+    end
+  end
+
+  def bulk_increment_counter(attribute, increments)
+    run_after_commit_or_now do
+      new_value = counter(attribute).bulk_increment(increments)
+
+      log_increment_counter(attribute, increments.sum(&:amount), new_value)
     end
   end
 
@@ -103,12 +111,20 @@ module CounterAttribute
     end
   end
 
-  def reset_counter!(attribute)
+  def initiate_refresh!(attribute)
+    raise ArgumentError, %(attribute "#{attribute}" cannot be refreshed) unless counter_attribute_enabled?(attribute)
+
     detect_race_on_record(log_fields: { caller: __method__, attributes: attribute }) do
-      counter(attribute).reset!
+      counter(attribute).initiate_refresh!
     end
 
     log_clear_counter(attribute)
+  end
+
+  def finalize_refresh(attribute)
+    raise ArgumentError, %(attribute "#{attribute}" cannot be refreshed) unless counter_attribute_enabled?(attribute)
+
+    counter(attribute).finalize_refresh
   end
 
   def execute_after_commit_callbacks
@@ -122,11 +138,17 @@ module CounterAttribute
   def build_counter_for(attribute)
     raise ArgumentError, %(attribute "#{attribute}" does not exist) unless has_attribute?(attribute)
 
-    if counter_attribute_enabled?(attribute)
-      Gitlab::Counters::BufferedCounter.new(self, attribute)
-    else
-      Gitlab::Counters::LegacyCounter.new(self, attribute)
-    end
+    return legacy_counter(attribute) unless counter_attribute_enabled?(attribute)
+
+    buffered_counter(attribute)
+  end
+
+  def legacy_counter(attribute)
+    Gitlab::Counters::LegacyCounter.new(self, attribute)
+  end
+
+  def buffered_counter(attribute)
+    Gitlab::Counters::BufferedCounter.new(self, attribute)
   end
 
   def database_lock_key

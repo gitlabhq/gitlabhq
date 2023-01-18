@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Authentication and Authorization
+stage: Data Science
+group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -153,8 +153,8 @@ only models with full Spam and CAPTCHA support.
 
 1. Create an API token.
 1. Export it in your terminal for the REST commands: `export PRIVATE_TOKEN=<your_api_token>`
-1. Ensure you are logged into GitLab development environment at `localhost:3000` before using GraphiQL explorer,
-   because it uses your logged-in user as authorization for running GraphQL queries.
+1. Ensure you are signed into the GitLab development environment at `localhost:3000` before using GraphiQL explorer,
+   because it uses your authenticated user as authorization for running GraphQL queries.
 1. For the GraphQL examples, use the GraphiQL explorer at `http://localhost:3000/-/graphql-explorer`.
 1. Use the `--include` (`-i`) option to `curl` to print the HTTP response headers, including the status code.
 

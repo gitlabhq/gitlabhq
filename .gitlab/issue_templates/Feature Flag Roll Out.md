@@ -113,12 +113,14 @@ For visibility, all `/chatops` commands that target production should be execute
 For visibility, all `/chatops` commands that target production should be executed in the `#production` slack channel and cross-posted (with the command results) to the responsible team's slack channel (`#g_TEAM_NAME`).
 
 - [ ] [Incrementally roll out](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process) the feature.
+  - [ ] Between every step wait for at least 15 minutes and monitor the appropriate graphs on https://dashboards.gitlab.net.
   - If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform **actor-based** rollout.
     - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage> --actors`
   - If the feature flag in code does **NOT** have [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform time-based rollout (**random** rollout).
     - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage> --random`
   - Enable the feature globally on production environment.
     - [ ] `/chatops run feature set <feature-flag-name> true`
+- [ ] Observe appropriate graphs on https://dashboards.gitlab.net and verify that services are not affected.
 - [ ] Leave a comment on [the feature issue][main-issue] announcing that the feature has been globally enabled.
 - [ ] Wait for [at least one day for the verification term](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release).
 

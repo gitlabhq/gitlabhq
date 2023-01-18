@@ -66,7 +66,7 @@ export default {
       return !this.hideDefaultActions;
     },
     isEmpty() {
-      return this.blob.rawSize === 0;
+      return this.blob.rawSize === '0';
     },
     blobSwitcherDocIcon() {
       return this.blob.richViewer?.fileType === 'csv' ? 'table' : 'document';

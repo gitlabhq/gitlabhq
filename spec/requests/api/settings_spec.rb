@@ -65,6 +65,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['can_create_group']).to eq(true)
       expect(json_response['jira_connect_application_key']).to eq(nil)
       expect(json_response['jira_connect_proxy_url']).to eq(nil)
+      expect(json_response['user_defaults_to_private_profile']).to eq(false)
     end
   end
 
@@ -166,7 +167,9 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             can_create_group: false,
             jira_connect_application_key: '123',
             jira_connect_proxy_url: 'http://example.com',
-            bulk_import_enabled: false
+            bulk_import_enabled: false,
+            allow_runner_registration_token: true,
+            user_defaults_to_private_profile: true
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -232,6 +235,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['jira_connect_application_key']).to eq('123')
         expect(json_response['jira_connect_proxy_url']).to eq('http://example.com')
         expect(json_response['bulk_import_enabled']).to be(false)
+        expect(json_response['allow_runner_registration_token']).to be(true)
+        expect(json_response['user_defaults_to_private_profile']).to be(true)
       end
     end
 
@@ -799,6 +804,63 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['pipeline_limit_per_project_user_sha'])
           .to include(a_string_matching('is not a number'))
+      end
+    end
+
+    context 'with housekeeping enabled' do
+      it 'at least one of housekeeping_incremental_repack_period or housekeeping_optimize_repository_period is required' do
+        put api("/application/settings", admin), params: {
+          housekeeping_enabled: true
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq(
+          "housekeeping_incremental_repack_period, housekeeping_optimize_repository_period are missing, exactly one parameter must be provided"
+        )
+      end
+
+      context 'when housekeeping_incremental_repack_period is specified' do
+        it 'requires all three housekeeping settings' do
+          put api("/application/settings", admin), params: {
+            housekeeping_enabled: true,
+            housekeeping_incremental_repack_period: 10
+          }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq(
+            "housekeeping_full_repack_period, housekeeping_gc_period, housekeeping_incremental_repack_period provide all or none of parameters"
+          )
+        end
+
+        it 'returns housekeeping_optimize_repository_period value for all housekeeping settings attributes' do
+          put api("/application/settings", admin), params: {
+            housekeeping_enabled: true,
+            housekeeping_gc_period: 150,
+            housekeeping_full_repack_period: 125,
+            housekeeping_incremental_repack_period: 100
+          }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['housekeeping_optimize_repository_period']).to eq(100)
+          expect(json_response['housekeeping_full_repack_period']).to eq(100)
+          expect(json_response['housekeeping_gc_period']).to eq(100)
+          expect(json_response['housekeeping_incremental_repack_period']).to eq(100)
+        end
+      end
+
+      context 'when housekeeping_optimize_repository_period is specified' do
+        it 'returns housekeeping_optimize_repository_period value for all housekeeping settings attributes' do
+          put api("/application/settings", admin), params: {
+            housekeeping_enabled: true,
+            housekeeping_optimize_repository_period: 100
+          }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['housekeeping_optimize_repository_period']).to eq(100)
+          expect(json_response['housekeeping_full_repack_period']).to eq(100)
+          expect(json_response['housekeeping_gc_period']).to eq(100)
+          expect(json_response['housekeeping_incremental_repack_period']).to eq(100)
+        end
       end
     end
   end

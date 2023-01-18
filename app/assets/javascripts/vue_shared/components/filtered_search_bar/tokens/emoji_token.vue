@@ -67,6 +67,7 @@ export default {
     :suggestions="emojis"
     :suggestions-loading="loading"
     :get-active-token-value="getActiveEmoji"
+    value-identifier="name"
     v-bind="$attrs"
     @fetch-suggestions="fetchEmojis"
     v-on="$listeners"

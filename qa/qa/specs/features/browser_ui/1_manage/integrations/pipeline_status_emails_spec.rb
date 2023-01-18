@@ -36,7 +36,7 @@ module QA
       end
 
       let!(:runner) do
-        Resource::Runner.fabricate! do |runner|
+        Resource::ProjectRunner.fabricate! do |runner|
           runner.project = project
           runner.name = executor
           runner.tags = [executor]

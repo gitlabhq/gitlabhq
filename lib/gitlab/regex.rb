@@ -251,6 +251,26 @@ module Gitlab
     extend self
     extend Packages
 
+    def bulk_import_namespace_path_regex
+      # This regexp validates the string conforms to rules for a namespace path:
+      # i.e does not start with a non-alphanueric character except for periods or underscores,
+      # contains only alphanumeric characters, forward slashes, periods, and underscores,
+      # does not end with a period or forward slash, and has a relative path structure
+      # with no http protocol chars or leading or trailing forward slashes
+      # eg 'source/full/path' or 'destination_namespace' not 'https://example.com/source/full/path'
+      @bulk_import_namespace_path_regex ||= %r/^([.]?)[^\W](\/?[.]?[0-9a-z][-_]*)+$/i
+    end
+
+    def group_path_regex
+      # This regexp validates the string conforms to rules for a group slug:
+      # i.e does not start with a non-alphanueric character except for periods or underscores,
+      # contains only alphanumeric characters, periods, and underscores,
+      # does not end with a period or forward slash, and has a relative path structure
+      # with no http protocol chars or leading or trailing forward slashes
+      # eg 'source/full/path' or 'destination_namespace' not 'https://example.com/source/full/path'
+      @group_path_regex ||= %r/^[.]?[^\W]([.]?[0-9a-z][-_]*)+$/i
+    end
+
     def project_name_regex
       # The character range \p{Alnum} overlaps with \u{00A9}-\u{1f9ff}
       # hence the Ruby warning.

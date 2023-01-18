@@ -18,6 +18,10 @@ GitLab subscription management requires access to the Customers Portal.
 GitLab provides the [Customers Portal](../index.md#customers-portal) where you can
 manage your subscriptions and your account details.
 
+Customers are required to use their GitLab.com account to register for a new Customers Portal account.
+
+If you have a legacy Customers Portal account that is not linked to a GitLab.com account, you may still [sign in](https://customers.gitlab.com/customers/sign_in?legacy=true) using an email and password. However, you should [create](https://gitlab.com/users/sign_up) and [link a GitLab.com account](../index.md#change-the-linked-account) to ensure continued access to the Customers Portal.
+
 Customers of resellers do not have access to this portal and should contact their reseller for any
 changes to their subscription.
 
@@ -42,7 +46,7 @@ according to the [maximum number](#maximum-users) of users enabled during the su
 For instances that aren't offline or on a closed network, the maximum number of
 simultaneous users in the GitLab self-managed installation is checked each quarter.
 
-If an instance is unable to generate a quarterly usage report, the existing [true-up model](#users-over-license) is used.
+If an instance is unable to generate a quarterly usage report, the existing [true up model](#users-over-license) is used.
 Prorated charges are not possible without a quarterly usage report.
 
 ### View user totals
@@ -132,34 +136,32 @@ GitLab has several features which can help you manage the number of users:
   users manually.
 - View a breakdown of users by role in the [Users statistics](../../user/admin_area/index.md#users-statistics) page.
 
-## Sync your subscription data with GitLab
+## Subscription data synchronization
 
 > Introduced in GitLab 14.1.
 
-Prerequisites:
+Subscription data can be automatically synchronized between your self-managed instance and GitLab.
+To enable subscription data synchronization you must have:
 
-- You must be running GitLab Enterprise Edition (EE).
-- You must have GitLab 14.1 or later.
-- Your instance must be connected to the internet, and not be in an offline environment.
+- GitLab Enterprise Edition (EE), version 14.1 or later.
+- Connection to the internet, and must not have an offline environment.
+- [Activated](../../user/admin_area/license.md) your instance with an activation code.
 
-To sync subscription data between your self-managed instance and GitLab, you must [activate your instance](../../user/admin_area/license.md) with an
-activation code.
-
-After you activate your instance, the following processes are automated:
+When your instance is activated, and data is synchronized, the following processes are automated:
 
 - [Quarterly subscription reconciliation](../quarterly_reconciliation.md).
 - Subscription renewals.
 - Subscription updates, such as adding more seats or upgrading a GitLab tier.
 
-At approximately 03:00 UTC, a daily sync job sends subscription data to the Customers Portal. For this reason, updates and renewals may not
-apply immediately.
+At approximately 03:00 UTC, a daily synchronization job sends subscription data to the Customers
+Portal. For this reason, updates and renewals may not apply immediately.
 
-The data is sent securely through an encrypted HTTPS connection to `customers.gitlab.com` on port `443`.
-If the job fails, it retries up to 12 times over approximately 17 hours.
+The data is sent securely through an encrypted HTTPS connection to `customers.gitlab.com` on port
+`443`. If the job fails, it retries up to 12 times over approximately 17 hours.
 
-### Subscription data that GitLab receives
+### Subscription data
 
-The daily sync job sends **only** the following information to the Customers Portal:
+The daily synchronization job sends **only** the following information to the Customers Portal:
 
 - Date
 - Timestamp
@@ -224,14 +226,9 @@ Example of a license sync request:
 }
 ```
 
-### Troubleshoot automatic subscription sync
+### Manually synchronize your subscription details
 
-If the sync job is not working, ensure you allow network traffic from your GitLab instance
-to IP addresses `172.64.146.11:443` and `104.18.41.245:443` (`customers.gitlab.com`).
-
-## Manually sync your subscription details
-
-You can manually sync your subscription details at any time.
+You can manually synchronize your subscription details at any time.
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Subscription**.
@@ -305,11 +302,10 @@ NOTES:
 
 ## Renew your subscription
 
-You can renew your subscription starting from 15 days before your subscription expires.
+You can renew your subscription starting from 15 days before your subscription expires. To renew your subscription:
 
-To renew your subscription,
-[prepare for renewal by reviewing your account](#prepare-for-renewal-by-reviewing-your-account),
-then [renew your GitLab self-managed subscription](#renew-a-subscription).
+1. [Prepare for renewal by reviewing your account.](#prepare-for-renewal-by-reviewing-your-account)
+1. [Renew your GitLab self-managed subscription.](#renew-subscription-manually)
 
 ### Prepare for renewal by reviewing your account
 
@@ -375,12 +371,11 @@ your instance immediately. If you're using a license file, you receive an update
 To add the seats, [add the license file](../../user/admin_area/license_file.md)
 to your instance.
 
-### Renew a subscription
+### Renew subscription manually
 
 Starting 30 days before a subscription expires, a banner with the expiry date displays for administrators in the GitLab user interface.
-You can renew your subscription starting from 15 days before your subscription expires.
 
-We recommend following these steps during renewal:
+You should follow these steps during renewal:
 
 1. Prior to the renewal date, prune any inactive or unwanted users by [blocking them](../../user/admin_area/moderate_users.md#block-a-user).
 1. Determine if you have a need for user growth in the upcoming subscription.
@@ -398,6 +393,38 @@ You can hover your mouse on the **Renew** button to see the date when it will be
 1. [Add the activation code](../../user/admin_area/license.md) to your instance.
 
 An invoice is generated for the renewal and available for viewing or download on the [View invoices](https://customers.gitlab.com/receipts) page. If you have difficulty during the renewal process, contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
+
+### Automatic subscription renewal
+
+When a subscription is set to auto-renew, it renews automatically on the
+expiration date without a gap in available service. Subscriptions purchased through Customers Portal are set to auto-renew by default.
+The number of user licenses is adjusted to fit the [number of billable users in your instance](#view-user-totals) at the time of renewal.
+Before auto-renewal you should [prepare for the renewal](#prepare-for-renewal-by-reviewing-your-account). To auto-renew your subscription,
+you must have enabled the [synchronization of subscription data](#subscription-data-synchronization).
+
+You can view and download your renewal invoice on the Customers Portal
+[View invoices](https://customers.gitlab.com/receipts) page. If your account has a [saved credit card](../index.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription, after which your GitLab tier is downgraded.
+
+#### Email notifications
+
+15 days before a subscription automatically renews, an email is sent with information about the renewal.
+
+- If your credit card is expired, the email tells you how to update it.
+- If you have any outstanding overages or subscription isn't able to auto-renew for any other reason, the email tells you to contact our Sales team or [renew in Customers Portal](#renew-subscription-manually).
+- If there are no issues, the email specifies the names and quantity of the products being renewed. The email also includes the total amount you owe. If your usage increases or decreases before renewal, this amount can change.
+
+#### Enable or disable automatic subscription renewal
+
+To view or change automatic subscription renewal (at the same tier as the
+previous period), sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
+
+- If a **Resume subscription** button is displayed, your subscription was canceled
+  previously. Select it to resume automatic renewal.
+- If a **Cancel subscription** button is displayed, your subscription is set to automatically
+  renew at the end of the subscription period. Select it to cancel automatic renewal.
+
+If you have difficulty during the renewal process, contact the
+[Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
 
 ## Upgrade your subscription tier
 
@@ -462,6 +489,11 @@ These issues are the best avenue for getting updates on specific product plans
 and for communicating directly with the relevant GitLab team members.
 
 ## Troubleshooting
+
+### Subscription data fails to synchronize
+
+If the synchronization job is not working, ensure you allow network traffic from your GitLab 
+instance to IP addresses `172.64.146.11:443` and `104.18.41.245:443` (`customers.gitlab.com`).
 
 ### Credit card declined
 

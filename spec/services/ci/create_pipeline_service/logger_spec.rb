@@ -139,5 +139,74 @@ RSpec.describe Ci::CreatePipelineService, # rubocop: disable RSpec/FilePath
         expect(pipeline).to be_created_successfully
       end
     end
+
+    describe 'pipeline includes count' do
+      before do
+        stub_const('Gitlab::Ci::Config::External::Context::MAX_INCLUDES', 2)
+      end
+
+      context 'when the includes count exceeds the maximum' do
+        before do
+          allow_next_instance_of(Ci::Pipeline) do |pipeline|
+            allow(pipeline).to receive(:config_metadata)
+              .and_return({ includes: [{ file: 1 }, { file: 2 }, { file: 3 }] })
+          end
+        end
+
+        it 'creates a log entry' do
+          expect(Gitlab::AppJsonLogger)
+            .to receive(:info)
+            .with(a_hash_including({ 'pipeline_includes_count' => 3 }))
+            .and_call_original
+
+          expect(pipeline).to be_created_successfully
+        end
+      end
+
+      context 'when the includes count does not exceed the maximum' do
+        before do
+          allow_next_instance_of(Ci::Pipeline) do |pipeline|
+            allow(pipeline).to receive(:config_metadata)
+              .and_return({ includes: [{ file: 1 }, { file: 2 }] })
+          end
+        end
+
+        it 'does not create a log entry but it collects the data' do
+          expect(Gitlab::AppJsonLogger).not_to receive(:info)
+          expect(pipeline).to be_created_successfully
+
+          expect(service.logger.observations_hash)
+            .to match(a_hash_including({ 'pipeline_includes_count' => 2 }))
+        end
+      end
+
+      context 'when the includes data is nil' do
+        before do
+          allow_next_instance_of(Ci::Pipeline) do |pipeline|
+            allow(pipeline).to receive(:config_metadata)
+              .and_return({})
+          end
+        end
+
+        it 'does not create a log entry' do
+          expect(Gitlab::AppJsonLogger).not_to receive(:info)
+          expect(pipeline).to be_created_successfully
+        end
+      end
+
+      context 'when the pipeline config_metadata is nil' do
+        before do
+          allow_next_instance_of(Ci::Pipeline) do |pipeline|
+            allow(pipeline).to receive(:config_metadata)
+              .and_return(nil)
+          end
+        end
+
+        it 'does not create a log entry but it collects the data' do
+          expect(Gitlab::AppJsonLogger).not_to receive(:info)
+          expect(pipeline).to be_created_successfully
+        end
+      end
+    end
   end
 end

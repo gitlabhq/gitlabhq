@@ -85,6 +85,9 @@ describe('Learn GitLab Section Link', () => {
     it('renders a popover trigger with question icon', () => {
       expect(findPopoverTrigger().exists()).toBe(true);
       expect(findPopoverTrigger().props('icon')).toBe('question-o');
+      expect(findPopoverTrigger().attributes('aria-label')).toBe(
+        LearnGitlabSectionLink.i18n.contactAdmin,
+      );
     });
 
     it('renders a popover', () => {
@@ -93,6 +96,15 @@ describe('Learn GitLab Section Link', () => {
         placement: 'top',
         triggers: 'hover focus',
       });
+    });
+
+    it('renders default disabled message', () => {
+      expect(findPopover().text()).toContain(LearnGitlabSectionLink.i18n.contactAdmin);
+    });
+
+    it('renders custom disabled message if provided', () => {
+      createWrapper('trialStarted', { enabled: false, message: 'Custom message' });
+      expect(findPopover().text()).toContain('Custom message');
     });
 
     it('renders a link inside the popover', () => {

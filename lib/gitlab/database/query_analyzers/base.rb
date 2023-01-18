@@ -53,10 +53,6 @@ module Gitlab
           Thread.current[self.context_key]
         end
 
-        def self.raw?
-          false
-        end
-
         def self.enabled?
           raise NotImplementedError
         end

@@ -6,6 +6,7 @@ module API
       extend ::Gitlab::Utils::Override
 
       MAX_PACKAGE_FILE_SIZE = 50.megabytes.freeze
+      ALLOWED_REQUIRED_PERMISSIONS = %i[read_package read_group].freeze
 
       def require_packages_enabled!
         not_found! unless ::Gitlab.config.packages.enabled
@@ -27,9 +28,15 @@ module API
         authorize!(:destroy_package, subject)
       end
 
-      def authorize_packages_access!(subject = user_project)
+      def authorize_packages_access!(subject = user_project, required_permission = :read_package)
         require_packages_enabled!
-        authorize_read_package!(subject)
+        return forbidden! unless required_permission.in?(ALLOWED_REQUIRED_PERMISSIONS)
+
+        if required_permission == :read_package
+          authorize_read_package!(subject)
+        else
+          authorize!(required_permission, subject)
+        end
       end
 
       def authorize_workhorse!(subject: user_project, has_length: true, maximum_size: MAX_PACKAGE_FILE_SIZE)

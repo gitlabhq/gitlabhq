@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::PageCounter, :clean_gitlab_redis_cache, feature_category: :importer do
+RSpec.describe Gitlab::GithubImport::PageCounter, :clean_gitlab_redis_cache, feature_category: :importers do
   let(:project) { double(:project, id: 1) }
   let(:counter) { described_class.new(project, :issues) }
 

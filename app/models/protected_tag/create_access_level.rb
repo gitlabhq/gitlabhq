@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ProtectedTag::CreateAccessLevel < ApplicationRecord
+  include Importable
   include ProtectedTagAccess
 
   def check_access(user)

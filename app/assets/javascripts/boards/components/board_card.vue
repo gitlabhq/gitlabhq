@@ -9,6 +9,7 @@ export default {
     BoardCardInner,
   },
   mixins: [Tracking.mixin()],
+  inject: ['disabled'],
   props: {
     list: {
       type: Object,
@@ -20,11 +21,6 @@ export default {
       default: () => ({}),
       required: false,
     },
-    disabled: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
     index: {
       type: Number,
       default: 0,
@@ -34,6 +30,11 @@ export default {
       type: Boolean,
       default: false,
       required: false,
+    },
+    canAdmin: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   computed: {
@@ -48,10 +49,10 @@ export default {
       );
     },
     isDisabled() {
-      return this.disabled || !this.item.id || this.item.isLoading;
+      return this.disabled || !this.item.id || this.item.isLoading || !this.canAdmin;
     },
     isDraggable() {
-      return !this.disabled && this.item.id && !this.item.isLoading;
+      return !this.isDisabled;
     },
     cardStyle() {
       return this.isColorful && this.item.color ? { borderColor: this.item.color } : '';

@@ -1,7 +1,7 @@
 import { GlLabel, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { range } from 'lodash';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { nextTick } from 'vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -16,6 +16,8 @@ import { mockLabelList, mockIssue, mockIssueFullPath } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/boards/eventhub');
+
+Vue.use(Vuex);
 
 describe('Board card component', () => {
   const user = {
@@ -52,25 +54,19 @@ describe('Board card component', () => {
 
   const performSearchMock = jest.fn();
 
-  const createStore = ({ isProjectBoard = false } = {}) => {
+  const createStore = () => {
     store = new Vuex.Store({
-      ...defaultStore,
       actions: {
         performSearch: performSearchMock,
       },
       state: {
         ...defaultStore.state,
-        issuableType: issuableTypes.issue,
         isShowingLabels: true,
-      },
-      getters: {
-        isGroupBoard: () => true,
-        isProjectBoard: () => isProjectBoard,
       },
     });
   };
 
-  const createWrapper = ({ props = {}, isEpicBoard = false } = {}) => {
+  const createWrapper = ({ props = {}, isEpicBoard = false, isGroupBoard = true } = {}) => {
     wrapper = mountExtended(BoardCardInner, {
       store,
       propsData: {
@@ -97,6 +93,8 @@ describe('Board card component', () => {
         rootPath: '/',
         scopedLabelsAvailable: false,
         isEpicBoard,
+        issuableType: issuableTypes.issue,
+        isGroupBoard,
       },
     });
   };
@@ -164,8 +162,8 @@ describe('Board card component', () => {
   });
 
   it('does not render item reference path', () => {
-    createStore({ isProjectBoard: true });
-    createWrapper();
+    createStore();
+    createWrapper({ isGroupBoard: false });
 
     expect(wrapper.find('.board-card-number').text()).not.toContain(mockIssueFullPath);
   });

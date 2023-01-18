@@ -225,7 +225,7 @@ module Members
                                                  access_level: access_level)
                                             .execute(
                                               member,
-                                              skip_authorization: ldap,
+                                              skip_authorization: ldap || skip_authorization?,
                                               skip_log_audit_event: ldap
                                             )
     end

@@ -61,6 +61,41 @@ Inspiration:
 - <https://tailwindcss.com/docs/utility-first>
 - <https://tailwindcss.com/docs/extracting-components>
 
+#### Utility mixins
+
+In addition to utility classes GitLab UI provides utility mixins named after the utility classes.
+
+For example a utility class `.gl-mt-3` will have a corresponding mixin `gl-mt-3`. Here's how it can be used in an SCSS file:
+
+```scss
+.my-class {
+  @include gl-mt-3;
+}
+```
+
+These mixins should be used to replace _magic values_ in our code.
+For example a `margin-top: 8px` is a good candidate for the `@include gl-mt-3` mixin replacement.
+
+Avoid using utility mixins for [pre-defined CSS keywords](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Values_and_Units#pre-defined_keyword_values).
+For example prefer `display: flex` over `@include gl-display-flex`.
+
+```scss
+// Bad
+.my-class {
+  @include gl-display-flex;
+}
+
+// Good
+.my-class {
+  display: flex;
+}
+
+// Good
+.my-class {
+  @include gl-mt-3;
+}
+```
+
 ### Naming
 
 Filenames should use `snake_case`.

@@ -3,16 +3,20 @@
 module Import
   module Github
     class GistsImportService < ::BaseService
-      def initialize(user, params)
+      def initialize(user, client, params)
         @current_user = user
         @params = params
+        @client = client
       end
 
       def execute
         return error('Import already in progress', 422) if import_status.started?
 
+        check_user_token
         start_import
         success
+      rescue Octokit::Unauthorized
+        error('Access denied to the GitHub account.', 401)
       end
 
       private
@@ -28,6 +32,10 @@ module Import
       def start_import
         Gitlab::GithubGistsImport::StartImportWorker.perform_async(current_user.id, encrypted_token)
         import_status.start!
+      end
+
+      def check_user_token
+        @client.octokit.user.present?
       end
     end
   end

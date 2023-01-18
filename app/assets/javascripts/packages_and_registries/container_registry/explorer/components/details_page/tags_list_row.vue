@@ -95,7 +95,7 @@ export default {
       return formatDate(this.tag.createdAt, 'isoDate');
     },
     publishedTime() {
-      return formatDate(this.tag.createdAt, 'hh:MM Z');
+      return formatDate(this.tag.createdAt, 'HH:MM:ss Z');
     },
     formattedRevision() {
       // to be removed when API response is adjusted

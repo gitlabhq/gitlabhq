@@ -1,4 +1,4 @@
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlButton, GlIcon, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ImportActionsCell from '~/import_entities/import_groups/components/import_actions_cell.vue';
 
@@ -8,6 +8,7 @@ describe('import actions cell', () => {
   const createComponent = (props) => {
     wrapper = shallowMount(ImportActionsCell, {
       propsData: {
+        isProjectsImportEnabled: false,
         isFinished: false,
         isAvailableForImport: false,
         isInvalid: false,
@@ -78,4 +79,39 @@ describe('import actions cell', () => {
 
     expect(wrapper.emitted('import-group')).toHaveLength(1);
   });
+
+  describe.each`
+    isFinished | expectedAction
+    ${false}   | ${'Import'}
+    ${true}    | ${'Re-import'}
+  `(
+    'when import projects is enabled, group is available for import and finish status is $status',
+    ({ isFinished, expectedAction }) => {
+      beforeEach(() => {
+        createComponent({ isProjectsImportEnabled: true, isAvailableForImport: true, isFinished });
+      });
+
+      it('render import dropdown', () => {
+        const dropdown = wrapper.findComponent(GlDropdown);
+        expect(dropdown.props('text')).toBe(`${expectedAction} with projects`);
+        expect(dropdown.findComponent(GlDropdownItem).text()).toBe(
+          `${expectedAction} without projects`,
+        );
+      });
+
+      it('request migrate projects by default', async () => {
+        const dropdown = wrapper.findComponent(GlDropdown);
+        dropdown.vm.$emit('click');
+
+        expect(wrapper.emitted('import-group')[0]).toStrictEqual([{ migrateProjects: true }]);
+      });
+
+      it('request not to migrate projects via dropdown option', async () => {
+        const dropdown = wrapper.findComponent(GlDropdown);
+        dropdown.findComponent(GlDropdownItem).vm.$emit('click');
+
+        expect(wrapper.emitted('import-group')[0]).toStrictEqual([{ migrateProjects: false }]);
+      });
+    },
+  );
 });

@@ -7,21 +7,18 @@ RSpec.describe Import::GithubService do
   let_it_be(:token) { 'complex-token' }
   let_it_be(:access_params) { { github_access_token: 'github-complex-token' } }
   let(:settings) { instance_double(Gitlab::GithubImport::Settings) }
+  let(:user_namespace_path) { user.namespace_path }
   let(:optional_stages) { nil }
   let(:params) do
     {
       repo_id: 123,
       new_name: 'new_repo',
-      target_namespace: 'root',
+      target_namespace: user_namespace_path,
       optional_stages: optional_stages
     }
   end
 
   subject(:github_importer) { described_class.new(client, user, params) }
-
-  before do
-    allow(subject).to receive(:authorized?).and_return(true)
-  end
 
   shared_examples 'handles errors' do |klass|
     let(:client) { klass.new(token) }
@@ -74,6 +71,7 @@ RSpec.describe Import::GithubService do
       let(:repository_double) { { name: 'repository', size: 99 } }
 
       before do
+        allow(subject).to receive(:authorized?).and_return(true)
         expect(client).to receive(:repository).and_return(repository_double)
 
         allow_next_instance_of(Gitlab::LegacyGithubImport::ProjectCreator) do |creator|
@@ -215,6 +213,38 @@ RSpec.describe Import::GithubService do
         end
       end
     end
+
+    context 'when target_namespace is blank' do
+      before do
+        params[:target_namespace] = ''
+      end
+
+      it 'raises an exception' do
+        expect { subject.execute(access_params, :github) }.to raise_error(ArgumentError, 'Target namespace is required')
+      end
+    end
+
+    context 'when namespace to import repository into does not exist' do
+      before do
+        params[:target_namespace] = 'unknown_path'
+      end
+
+      it 'returns an error' do
+        expect(github_importer.execute(access_params, :github)).to include(not_existed_namespace_error)
+      end
+    end
+
+    context 'when user has no permissions to import repository into the specified namespace' do
+      let_it_be(:group) { create(:group) }
+
+      before do
+        params[:target_namespace] = group.full_path
+      end
+
+      it 'returns an error' do
+        expect(github_importer.execute(access_params, :github)).to include(taken_namespace_error)
+      end
+    end
   end
 
   context 'when remove_legacy_github_client feature flag is enabled' do
@@ -246,6 +276,22 @@ RSpec.describe Import::GithubService do
       status: :error,
       http_status: :bad_request,
       message: "Invalid URL: #{url}"
+    }
+  end
+
+  def not_existed_namespace_error
+    {
+      status: :error,
+      http_status: :unprocessable_entity,
+      message: 'Namespace or group to import repository into does not exist.'
+    }
+  end
+
+  def taken_namespace_error
+    {
+      status: :error,
+      http_status: :unprocessable_entity,
+      message: 'This namespace has already been taken. Choose a different one.'
     }
   end
 end

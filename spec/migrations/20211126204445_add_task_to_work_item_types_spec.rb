@@ -18,7 +18,7 @@ RSpec.describe AddTaskToWorkItemTypes, :migration, feature_category: :team_plann
     }
   end
 
-  after(:all) do
+  append_after(:all) do
     # Make sure base types are recreated after running the migration
     # because migration specs are not run in a transaction
     reset_work_item_types

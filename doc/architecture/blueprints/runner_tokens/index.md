@@ -1,8 +1,11 @@
 ---
-stage: Verify
-group: Runner
-comments: false
-description: 'Next Runner Token Architecture'
+status: ready
+creation-date: "2022-10-27"
+authors: [ "@pedropombeiro", "@tmaczukin" ]
+coach: "@ayufan"
+approvers: [ "@erushton" ]
+owning-stage: "~devops::verify"
+participating-stages: []
 ---
 
 # Next GitLab Runner Token Architecture
@@ -37,7 +40,7 @@ We call this new mechanism the "next GitLab Runner Token architecture".
 
 The proposal addresses the issues of a _single token per scope_ and _token storage_
 by eliminating the need for a registration token. Runner creation happens
-in the GitLab Runners settings page for the given scope, in the context of the logged-in user,
+in the GitLab Runners settings page for the given scope, in the context of the authenticated user,
 which provides traceability. The page provides instructions to configure the newly-created
 runner in supported environments using the existing `gitlab-runner register` command.
 
@@ -137,7 +140,7 @@ instance (for example if the runner is offline).
 
 In addition, we should add the following columns to `ci_runners`:
 
-- a `user_id` column to keep track of who created a runner;
+- a `creator_id` column to keep track of who created a runner;
 - a `registration_type` enum column to `ci_runners` to signal whether a runner has been created
   using the legacy `register` method, or the new UI-based method.
   Possible values are `:registration_token` and `:authenticated_user`.
@@ -145,26 +148,25 @@ In addition, we should add the following columns to `ci_runners`:
   future uses that may not be apparent.
 
 ```sql
-CREATE TABLE ci_runner (
+CREATE TABLE ci_runners (
   ...
-  user_id bigint
+  creator_id bigint
   registration_type int8
 )
 ```
 
-The `ci_builds_runner_session` (or `ci_builds` or `ci_builds_metadata`) shall reference
-`ci_runner_machines`.
+The `ci_builds_metadata` table shall reference `ci_runner_machines`.
 We might consider a more efficient way to store `contacted_at` than updating the existing record.
 
 ```sql
-CREATE TABLE ci_builds_runner_session (
+CREATE TABLE ci_builds_metadata (
     ...
     runner_machine_id bigint NOT NULL
 );
 
 CREATE TABLE ci_runner_machines (
-    id integer NOT NULL,
-    machine_id character varying UNIQUE NOT NULL,
+    id bigint NOT NULL,
+    machine_xid character varying UNIQUE NOT NULL,
     contacted_at timestamp without time zone,
     version character varying,
     revision character varying,
@@ -172,6 +174,7 @@ CREATE TABLE ci_runner_machines (
     architecture character varying,
     ip_address character varying,
     executor_type smallint,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 ```
 
@@ -238,7 +241,7 @@ future after the legacy registration system is removed, and runners have been up
 versions.
 
 Job pings from such legacy runners results in a `ci_runner_machines` record containing a
-`<legacy>` `machine_id` field value.
+`<legacy>` `machine_xid` field value.
 
 Not using the unique system ID means that all connected runners with the same token are
 notified, instead of just the runner matching the exact system identifier. While not ideal, this is
@@ -246,8 +249,13 @@ not an issue per-se.
 
 ### `ci_runner_machines` record lifetime
 
-New records are created when the runner pings the GitLab instance for new jobs, if a record matching
-the `token`+`system_id` does not already exist.
+New records are created in 2 situations:
+
+- when the runner calls the `POST /api/v4/runners/verify` endpoint as part of the
+`gitlab-runner register` command, if the specified runner token is prefixed with `glrt-`.
+This allows the frontend to determine whether the user has successfully completed the registration and take an
+appropriate action;
+- when GitLab is pinged for new jobs and a record matching the `token`+`system_id` does not already exist.
 
 Due to the time-decaying nature of the `ci_runner_machines` records, they are automatically
 cleaned after 7 days after the last contact from the respective runner.
@@ -306,32 +314,34 @@ using PAT tokens for example - such that every runner is associated with an owne
 
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
-| GitLab Runner    | `15.x` | Ensure a sidecar TOML file exists with a `system_id` value.<br/>Log new system ID values with `INFO` level as they get assigned. |
-| GitLab Runner    | `15.x` | Log unique system ID in the build logs. |
-| GitLab Runner    | `15.x` | Label Prometheus metrics with unique system ID. |
-| GitLab Runner    | `15.x` | Prepare `register` command to fail if runner server-side configuration options are passed together with a new `glrt-` token. |
+| GitLab Runner    | `15.7` | Ensure a sidecar TOML file exists with a `system_id` value.<br/>Log new system ID values with `INFO` level as they get assigned. |
+| GitLab Runner    | `15.7` | Log unique system ID in the build logs. |
+| GitLab Runner    | `15.9` | Label Prometheus metrics with unique system ID. |
+| GitLab Runner    | `15.8` | Prepare `register` command to fail if runner server-side configuration options are passed together with a new `glrt-` token. |
 
 ### Stage 3 - Database changes
 
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
-| GitLab Rails app | | Create database migration to add columns to `ci_runners` table. |
-| GitLab Rails app | | Create database migration to add `ci_runner_machines` table. |
-| GitLab Rails app | | Create database migration to add `ci_runner_machines.machine_id` foreign key to `ci_builds_runner_session` table. |
-| GitLab Rails app | | Create database migrations to add `allow_runner_registration_token` setting to `application_settings` and `namespace_settings` tables (default: `true`). |
-| GitLab Runner    | | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
+| GitLab Rails app | `%15.8` | Create database migration to add columns to `ci_runners` table. |
+| GitLab Rails app | `%15.8` | Create database migration to add `ci_runner_machines` table. |
+| GitLab Rails app | `%15.9` | Create database migration to add `ci_runner_machines.id` foreign key to `ci_builds_metadata` table. |
+| GitLab Rails app | `%15.8` | Create database migrations to add `allow_runner_registration_token` setting to `application_settings` and `namespace_settings` tables (default: `true`). |
+| GitLab Rails app | `%15.8` | Create database migration to add config column to `ci_runner_machines` table. |
 | GitLab Runner    | | Start sending `system_id` value in `POST /jobs/request` request and other follow-up requests that require identifying the unique system. |
 | GitLab Rails app | | Create service similar to `StaleGroupRunnersPruneCronWorker` service to clean up `ci_runner_machines` records instead of `ci_runners` records.<br/>Existing service continues to exist but focuses only on legacy runners. |
+| GitLab Rails app | | Create `ci_runner_machines` record in `POST /runners/verify` request if the runner token is prefixed with `glrt-`. |
+| GitLab Rails app | | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
 
 ### Stage 4 - New UI
 
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
-| GitLab Runner    | | Implement new GraphQL user-authenticated API to create a new runner. |
-| GitLab Runner    | | [Add prefix to newly generated runner authentication tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/383198). |
-| GitLab Rails app | | Implement UI to create new runner. |
-| GitLab Rails app | | GraphQL changes to `CiRunner` type. |
-| GitLab Rails app | | UI changes to runner details view (listing of platform, architecture, IP address, etc.) (?) |
+| GitLab Rails app | `%15.10` | Implement new GraphQL user-authenticated API to create a new runner. |
+| GitLab Rails app | `%15.10` | [Add prefix to newly generated runner authentication tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/383198). |
+| GitLab Rails app | `%15.10` | Implement UI to create new runner. |
+| GitLab Rails app | `%15.10` | GraphQL changes to `CiRunner` type. |
+| GitLab Rails app | `%15.10` | UI changes to runner details view (listing of platform, architecture, IP address, etc.) (?) |
 
 ### Stage 5 - Optional disabling of registration token
 

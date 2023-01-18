@@ -4,7 +4,9 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Flavored Markdown (GLFM) Specification Guide **(FREE)**
+<!-- vale gitlab.GitLabFlavoredMarkdown = NO -->
+
+# GitLab Flavored Markdown (GLFM) Specification Guide
 
 ## Summary
 
@@ -108,16 +110,17 @@ Here are the HTML-rendered versions of the specifications:
 - [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/) (rendered from the [source `spec.txt` for GFM specification](https://github.com/github/cmark-gfm/blob/master/test/spec.txt)), which extends the:
 - [CommonMark specification](https://spec.commonmark.org/0.30/) (rendered from the [source `spec.txt` for CommonMark specification](https://github.com/commonmark/commonmark-spec/blob/master/spec.txt))
 
-NOTE:
-The creation of the
-[HTML-rendered version of the GitLab Flavored Markdown (GLFM) specification](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_spec/spec.html)
-file is still pending.
-
 However, GLFM has more complex parsing, rendering, and testing requirements than
 GFM or CommonMark. Therefore,
 it does not have a static, hardcoded, manually updated `spec.txt`. Instead, the
 GLFM `spec.txt` is automatically generated based on other input files. This process
 is explained in detail in the [Implementation](#implementation) sections below.
+
+NOTE:
+As of December 2022, the HTML version of the [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/)
+is outdated, and does not match the [specification's `spec.txt`](https://github.com/github/cmark-gfm/blob/master/test/spec.txt).
+An issue has been [filed in the `cmark-gfm` project](https://github.com/github/cmark-gfm/issues/288)
+to report this.
 
 #### Official specifications vs internal extensions
 
@@ -239,6 +242,12 @@ Snapshot testing is intended to be comprehensive, so it is run against _all_ exa
 This means that it uses configuration files to support providing GitLab-specific environment or metadata
 which is required by internal extension examples, such
 as [`glfm_example_metadata.yml`](#glfm_example_metadatayml).
+
+The design of the snapshot testing helps ensure the correctness of the user-facing GLFM Markdown.
+The testing thoroughly exercises the backend and frontend [parsers and renderers](#parsers-and-renderers)
+by using a [black-box testing](https://en.wikipedia.org/wiki/Black-box_testing) approach.
+It can be considered a type of high-level testing at the ["top of the testing pyramid"](https://martinfowler.com/articles/practical-test-pyramid.html)
+because of this comprehensive style.
 
 Regarding the terminology used for Markdown snapshot testing:
 
@@ -1357,7 +1366,9 @@ This section describes how the scripts can be used to manage the GLFM specificat
 
 1. Run [`update-specification.rb`](#update-specificationrb-script) to update the GLFM specification [output specification files](#output-specification-files).
 1. Visually inspect and confirm any resulting changes to the [output specification files](#output-specification-files).
-1. Run [`run-spec-tests.sh`](#run-spec-testssh-script) to run the conformance tests against the canonicalized GLFM specification.
+1. Run [`run-spec-tests.sh`](#run-spec-testssh-script). This script is not yet implemented
+   and only prints a placeholder message. When implemented, it should run the conformance tests
+   against the canonicalized GLFM specification.
 1. Commit any changes to the [output specification files](#output-specification-files).
 
 ### Update the example snapshots and run snapshot tests

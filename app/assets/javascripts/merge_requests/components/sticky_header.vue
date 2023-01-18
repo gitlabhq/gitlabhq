@@ -56,11 +56,7 @@ export default {
   },
   watch: {
     discussionTabCounter(val) {
-      if (this.glFeatures.paginatedMrDiscussions) {
-        if (this.doneFetchingBatchDiscussions) {
-          this.discussionCounter = val;
-        }
-      } else {
+      if (this.doneFetchingBatchDiscussions) {
         this.discussionCounter = val;
       }
     },
@@ -86,8 +82,8 @@ export default {
     @disappear="setStickyHeaderVisible(true)"
   >
     <div
-      v-if="isStickyHeaderVisible"
       class="issue-sticky-header merge-request-sticky-header gl-fixed gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-100 gl-pt-3 gl-display-none gl-md-display-block"
+      :class="{ 'gl-visibility-hidden': !isStickyHeaderVisible }"
     >
       <div
         class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-px-5"

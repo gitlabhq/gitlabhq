@@ -339,19 +339,3 @@
     display: inline;
   }
 }
-
-.gl-select2-html5-required-fix {
-  .select2-container {
-    + .select2 {
-      @include gl-opacity-0;
-      @include gl-border-0;
-      @include gl-bg-none;
-      @include gl-bg-transparent;
-      display: block !important;
-      width: 1px;
-      height: 1px;
-      z-index: -1;
-      margin: -3px auto 0;
-    }
-  }
-}

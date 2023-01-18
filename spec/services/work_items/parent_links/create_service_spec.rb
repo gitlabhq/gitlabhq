@@ -30,7 +30,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
 
     shared_examples 'returns not found error' do
       it 'returns error' do
-        error = "No matching #{issuable_type} found. Make sure that you are adding a valid #{issuable_type} ID."
+        error = "No matching work item found. Make sure that you are adding a valid work item ID."
 
         is_expected.to eq(service_error(error))
       end

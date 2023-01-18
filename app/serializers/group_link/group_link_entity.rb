@@ -36,7 +36,7 @@ module GroupLink
     end
 
     expose :can_remove do |group_link, options|
-      can_admin_shared_from?(group_link, options)
+      direct_member?(group_link, options) && can_admin_group_link?(group_link, options)
     end
 
     expose :is_direct_member do |group_link, options|

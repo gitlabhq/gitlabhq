@@ -328,6 +328,21 @@ If a project A has `:feature-set-1` enabled, there is no guarantee that project 
 
 For more detail, see [This is how percentages work in Flipper](https://www.hackwithpassion.com/this-is-how-percentages-work-in-flipper/).
 
+### Verifying metrics after enabling feature flag
+
+After turning on the feature flag, you need to [monitor the relevant graphs](https://about.gitlab.com/handbook/engineering/monitoring/) between each step:
+
+1. Go to [`dashboards.gitlab.net`](https://dashboards.gitlab.net).
+1. Turn on the `feature-flag`.
+1. Watch `Latency: Apdex` for services that might be impacted by your change
+   (like `sidekiq service`, `api service` or `web service`). Then check out more in-depth
+   dashboards by selecting `Service Overview Dashboards` and choosing a dashboard that might
+   be related to your change.
+
+In this illustration, you can see that the Apdex score started to decline after the feature flag was enabled at `09:46`. The feature flag was then deactivated at `10:31`, and the service returned to the original value:
+
+![Feature Flag Metrics](../img/feature-flag-metrics.png)
+
 ### Feature flag change logging
 
 #### ChatOps level

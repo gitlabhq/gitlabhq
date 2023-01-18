@@ -35,10 +35,10 @@ module API
               ::Packages::Debian::DistributionsFinder.new(container, codename_or_suite: params[:distribution]).execute.last!
             end
 
-            def present_distribution_package_file!
+            def present_distribution_package_file!(project)
               not_found! unless params[:package_name].start_with?(params[:letter])
 
-              package_file = distribution_from!(user_project).package_files.with_file_name(params[:file_name]).last!
+              package_file = distribution_from!(project).package_files.with_file_name(params[:file_name]).last!
 
               present_package_file!(package_file)
             end

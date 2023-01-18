@@ -21,8 +21,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     { trigger: { project: 'my/project', branch: 'master' } }
   end
 
-  it 'has many sourced pipelines' do
-    expect(bridge).to have_many(:sourced_pipelines)
+  it 'has one sourced pipeline' do
+    expect(bridge).to have_one(:sourced_pipeline)
   end
 
   it_behaves_like 'has ID tokens', :ci_bridge
@@ -32,24 +32,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   it 'has one downstream pipeline' do
     expect(bridge).to have_one(:sourced_pipeline)
     expect(bridge).to have_one(:downstream_pipeline)
-  end
-
-  describe '#sourced_pipelines' do
-    subject { bridge.sourced_pipelines }
-
-    it 'raises error' do
-      expect { subject }.to raise_error RuntimeError, 'Ci::Bridge does not have sourced_pipelines association'
-    end
-
-    context 'when ci_bridge_remove_sourced_pipelines is disabled' do
-      before do
-        stub_feature_flags(ci_bridge_remove_sourced_pipelines: false)
-      end
-
-      it 'returns the sourced_pipelines association' do
-        expect(bridge.sourced_pipelines).to eq([])
-      end
-    end
   end
 
   describe '#retryable?' do
@@ -392,25 +374,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
           { key: 'VAR6', value: 'value6 value1' },
           { key: 'VAR7', value: 'value7 $VAR1', raw: true }
         )
-      end
-
-      context 'when the FF ci_raw_variables_in_yaml_config is disabled' do
-        before do
-          stub_feature_flags(ci_raw_variables_in_yaml_config: false)
-        end
-
-        it 'ignores the raw attribute' do
-          expect(downstream_variables).to contain_exactly(
-            { key: 'BRIDGE', value: 'cross' },
-            { key: 'VAR1', value: 'value1' },
-            { key: 'VAR2', value: 'value2 value1' },
-            { key: 'VAR3', value: 'value3 value1' },
-            { key: 'VAR4', value: 'value4 value1' },
-            { key: 'VAR5', value: 'value5 value1' },
-            { key: 'VAR6', value: 'value6 value1' },
-            { key: 'VAR7', value: 'value7 value1' }
-          )
-        end
       end
     end
   end

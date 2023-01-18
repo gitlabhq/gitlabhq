@@ -75,7 +75,7 @@ You can also configure specific aspects of your pipelines through the GitLab UI.
 
 - [Pipeline settings](settings.md) for each project.
 - [Pipeline schedules](schedules.md).
-- [Custom CI/CD variables](../variables/index.md#custom-cicd-variables).
+- [Custom CI/CD variables](../variables/index.md#for-a-project).
 
 ### Ref specs for runners
 
@@ -156,7 +156,7 @@ The pipeline now executes the jobs as configured.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
 You can use the [`description` and `value`](../yaml/index.md#variablesdescription)
-keywords to define [pipeline-level (global) variables](../variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
+keywords to [define pipeline-level (global) variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
 that are prefilled when running a pipeline manually. Use the description to explain
 information such as what the variable is used for, and what the acceptable values are.
 

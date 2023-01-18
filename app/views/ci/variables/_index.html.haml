@@ -4,7 +4,7 @@
   = render Pajamas::AlertComponent.new(variant: :warning, show_icon: false, dismissible: false,
     alert_options: { class: 'gl-mb-3'}) do |c|
     = c.body do
-      - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('ci/variables/index', anchor: 'protected-cicd-variables') }
+      - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('ci/variables/index', anchor: 'protect-a-cicd-variable') }
       = _('Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
 
 - is_group = !@group.nil?
@@ -23,10 +23,10 @@
   aws_tip_deploy_link: help_page_path('ci/cloud_deployment/index.md', anchor: 'deploy-your-application-to-ecs'),
   aws_tip_commands_link: help_page_path('ci/cloud_deployment/index.md', anchor: 'use-an-image-to-run-aws-commands'),
   aws_tip_learn_link: help_page_path('ci/cloud_deployment/index.md'),
-  contains_variable_reference_link: help_page_path('ci/variables/index', anchor: 'expand-cicd-variables'),
-  protected_environment_variables_link: help_page_path('ci/variables/index', anchor: 'protected-cicd-variables'),
+  contains_variable_reference_link: help_page_path('ci/variables/index', anchor: 'prevent-cicd-variable-expansion'),
+  protected_environment_variables_link: help_page_path('ci/variables/index', anchor: 'protect-a-cicd-variable'),
   masked_environment_variables_link: help_page_path('ci/variables/index', anchor: 'mask-a-cicd-variable'),
-  environment_scope_link: help_page_path('ci/environments/index', anchor: 'scope-environments-with-specs') } }
+  environment_scope_link: help_page_path('ci/environments/index', anchor: 'limit-the-environment-scope-of-a-cicd-variable') } }
 
 - if !@group && @project.group
   .settings-header.border-top.gl-mt-6

@@ -9,7 +9,7 @@ const INTERVALS = {
 
 export const FILE_SYMLINK_MODE = '120000';
 
-export const SHORT_DATE_FORMAT = 'd mmm, yyyy';
+export const SHORT_DATE_FORMAT = 'mmm dd, yyyy';
 
 export const ISO_SHORT_FORMAT = 'yyyy-mm-dd';
 

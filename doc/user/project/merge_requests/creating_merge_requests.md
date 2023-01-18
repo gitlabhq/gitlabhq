@@ -29,7 +29,54 @@ be associated with a given target branch at a time.
 
 ## From an issue
 
-You can [create a merge request from an issue](../repository/web_editor.md#create-a-new-branch-from-an-issue).
+> The **Create merge request** button [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/349566) to open the merge request creation form in GitLab 14.8.
+
+If your development workflow requires an issue for every merge
+request, you can create a branch directly from the issue to speed the process up.
+The new branch, and later its merge request, are marked as related to this issue.
+After merging the merge request, the issue is closed automatically, unless [automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
+You can see a **Create merge request** dropdown below the issue description.
+
+NOTE:
+In GitLab 14.8 and later, selecting **Create merge request**
+[redirects to the merge request creation form](https://gitlab.com/gitlab-org/gitlab/-/issues/349566)
+instead of immediately creating the merge request.
+
+The **Create merge request** button doesn't display if:
+
+- A branch with the same name already exists.
+- A merge request already exists for this branch.
+- Your project has an active fork relationship.
+- Your project is private and the issue is confidential.
+
+To make this button appear, one possible workaround is to
+[remove your project's fork relationship](../settings/index.md#remove-a-fork-relationship).
+After removal, the fork relationship cannot be restored. This project can no longer
+be able to receive or send merge requests to the source project, or other forks.
+
+This dropdown contains the options **Create merge request and branch** and **Create branch**.
+
+After selecting one of these options, a new branch or branch and merge request
+is created based on your project's [default branch](../repository/branches/default.md).
+The branch name is based on an internal ID, and the issue title. The example
+screenshot above creates a branch named
+`2-make-static-site-auto-deploy-and-serve`.
+
+When you select the **Create branch** button in an empty
+repository project, GitLab performs these actions:
+
+- Creates a default branch.
+- Commits a blank `README.md` file to it.
+- Creates and redirects you to a new branch based on the issue title.
+- _If your project is [configured with a deployment service](../integrations/index.md) like Kubernetes,_
+  GitLab prompts you to set up [auto deploy](../../../topics/autodevops/stages.md#auto-deploy)
+  by helping you create a `.gitlab-ci.yml` file.
+
+After the branch is created, you can edit files in the repository to fix
+the issue. When a merge request is created based on the newly-created branch,
+the description field displays the [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically)
+`Closes #ID`, where `ID` is the ID of the issue. This closes the issue when the
+merge request is merged.
 
 ## When you add, edit, or upload a file
 

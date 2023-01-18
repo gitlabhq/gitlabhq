@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User expands diff', :js, feature_category: :code_review do
+RSpec.describe 'User expands diff', :js, feature_category: :code_review_workflow do
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_branch: 'expand-collapse-files', source_project: project, target_project: project) }
 

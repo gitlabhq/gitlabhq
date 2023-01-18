@@ -1,4 +1,4 @@
-package objectstore_test
+package objectstore
 
 import (
 	"context"
@@ -11,7 +11,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 )
 
@@ -35,7 +34,7 @@ func testObjectUploadNoErrors(t *testing.T, startObjectStore osFactory, useDelet
 	defer cancel()
 
 	deadline := time.Now().Add(testTimeout)
-	object, err := objectstore.NewObject(objectURL, deleteURL, putHeaders, test.ObjectSize)
+	object, err := NewObject(objectURL, deleteURL, putHeaders, test.ObjectSize)
 	require.NoError(t, err)
 
 	// copy data
@@ -97,12 +96,12 @@ func TestObjectUpload404(t *testing.T) {
 
 	deadline := time.Now().Add(testTimeout)
 	objectURL := ts.URL + test.ObjectPath
-	object, err := objectstore.NewObject(objectURL, "", map[string]string{}, test.ObjectSize)
+	object, err := NewObject(objectURL, "", map[string]string{}, test.ObjectSize)
 	require.NoError(t, err)
 	_, err = object.Consume(ctx, strings.NewReader(test.ObjectContent), deadline)
 
 	require.Error(t, err)
-	_, isStatusCodeError := err.(objectstore.StatusCodeError)
+	_, isStatusCodeError := err.(StatusCodeError)
 	require.True(t, isStatusCodeError, "Should fail with StatusCodeError")
 	require.Contains(t, err.Error(), "404")
 }
@@ -140,7 +139,7 @@ func TestObjectUploadBrokenConnection(t *testing.T) {
 
 	deadline := time.Now().Add(testTimeout)
 	objectURL := ts.URL + test.ObjectPath
-	object, err := objectstore.NewObject(objectURL, "", map[string]string{}, -1)
+	object, err := NewObject(objectURL, "", map[string]string{}, -1)
 	require.NoError(t, err)
 
 	_, copyErr := object.Consume(ctx, &endlessReader{}, deadline)

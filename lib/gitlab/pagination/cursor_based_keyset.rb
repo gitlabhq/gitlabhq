@@ -5,7 +5,8 @@ module Gitlab
     module CursorBasedKeyset
       SUPPORTED_ORDERING = {
         Group => { name: :asc },
-        AuditEvent => { id: :desc }
+        AuditEvent => { id: :desc },
+        ::Ci::Build => { id: :desc }
       }.freeze
 
       # Relation types that are enforced in this list

@@ -6,27 +6,27 @@ module QA
       include ApprovalConfiguration
 
       attr_accessor :approval_rules,
-                    :source_branch,
-                    :target_new_branch,
-                    :update_existing_file,
-                    :assignee,
-                    :milestone,
-                    :labels,
-                    :file_name,
-                    :file_content,
-                    :reviewer_ids
+        :source_branch,
+        :target_new_branch,
+        :update_existing_file,
+        :assignee,
+        :milestone,
+        :labels,
+        :file_name,
+        :file_content,
+        :reviewer_ids
 
       attr_writer :no_preparation,
-                  :wait_for_merge,
-                  :template
+        :wait_for_merge,
+        :template
 
       attributes :iid,
-                 :title,
-                 :description,
-                 :merge_when_pipeline_succeeds,
-                 :merge_status,
-                 :state,
-                 :reviewers
+        :title,
+        :description,
+        :merge_when_pipeline_succeeds,
+        :merge_status,
+        :state,
+        :reviewers
 
       attribute :project do
         Project.fabricate_via_api! do |resource|
@@ -143,6 +143,13 @@ module QA
         }
       end
 
+      # Get merge request reviews
+      #
+      # @return [Array<Hash>]
+      def reviews
+        parse_body(api_get_from(api_reviewers_path))
+      end
+
       def merge_via_api!
         Support::Waiter.wait_until(sleep_interval: 1) do
           QA::Runtime::Logger.debug("Waiting until merge request with id '#{iid}' can be merged")
@@ -179,7 +186,7 @@ module QA
       def fabricate_large_merge_request
         @project = Resource::ImportProject.fabricate_via_browser_ui!
         # Setting the name here, since otherwise some tests will look for an existing file in
-        # the proejct without ever knowing what is in it.
+        # the project without ever knowing what is in it.
         @file_name = "added_file-00000000.txt"
         @source_branch = "large_merge_request"
         visit("#{project.web_url}/-/merge_requests/1")

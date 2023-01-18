@@ -10,7 +10,7 @@ class RemoveUnreferencedLfsObjectsWorker
   include CronjobQueue
   # rubocop:enable Scalability/CronWorkerContext
 
-  feature_category :git_lfs
+  feature_category :source_code_management
   deduplicate :until_executed
   idempotent!
 

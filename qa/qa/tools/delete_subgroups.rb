@@ -127,7 +127,7 @@ module QA
           next unless subgroup_exists?(subgroup)
 
           logger.info("Permanently deleting subgroup #{path}...")
-          delete_subgroup_response = delete(subgroup_request(subgroup, { permanently_remove: true, full_path: path }))
+          delete_subgroup_response = delete(subgroup_request(subgroup, permanently_remove: true, full_path: path))
 
           process_response_and_subgroup(delete_subgroup_response, subgroup)
         end

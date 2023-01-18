@@ -118,6 +118,7 @@ the other way around.
    sudo gitlab-ctl start postgresql
    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h /var/opt/gitlab/postgresql -d template1 -c "CREATE DATABASE gitlabhq_production_ci OWNER gitlab;"
    sudo gitlab-rake db:schema:load:ci
+   ```
 
 1. Lock writes for `ci` tables in `main` database, and the other way around:
 

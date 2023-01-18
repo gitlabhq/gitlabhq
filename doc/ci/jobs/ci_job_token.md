@@ -14,7 +14,7 @@ You can use a GitLab CI/CD job token to authenticate with specific API endpoints
 - Packages:
   - [Package Registry](../../user/packages/package_registry/index.md#use-gitlab-cicd-to-build-packages).
   - [Packages API](../../api/packages.md) (project-level).
-  - [Container Registry](../../user/packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd)
+  - [Container Registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
     (the `$CI_REGISTRY_PASSWORD` is `$CI_JOB_TOKEN`).
   - [Container Registry API](../../api/container_registry.md)
     (scoped to the job's project, when the `ci_job_token_scope` feature flag is enabled).

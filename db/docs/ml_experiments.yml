@@ -4,7 +4,6 @@ classes:
   - Ml::Experiment
 feature_categories:
   - mlops
-  - incubation
 description: A Machine Learning Experiments groups many Model Candidates
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95168
 milestone: '15.4'

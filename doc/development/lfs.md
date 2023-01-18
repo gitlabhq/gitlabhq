@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Git LFS developer information **(FREE)**
+# Git LFS developer information
 
 This page contains developer-centric information for GitLab team members. For the
 user documentation, see [Git Large File Storage](../topics/git/lfs/index.md).

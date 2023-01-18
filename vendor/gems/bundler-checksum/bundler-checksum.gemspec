@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative 'lib/bundler/checksum/version'
+require_relative 'lib/bundler_checksum/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'bundler-checksum'
-  spec.version       = Bundler::Checksum::VERSION
+  spec.version       = BundlerChecksum::VERSION
   spec.authors       = ['dustinmm80']
   spec.email         = ['dcollins@gitlab.com']
 

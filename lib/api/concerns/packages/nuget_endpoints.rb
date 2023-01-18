@@ -64,7 +64,7 @@ module API
             tags %w[nuget_packages]
           end
           get 'index', format: :json, urgency: :default do
-            authorize_read_package!(project_or_group)
+            authorize_packages_access!(project_or_group, required_permission)
 
             track_package_event('cli_metadata', :nuget, **snowplow_gitlab_standard_context.merge(category: 'API::NugetPackages'))
 
@@ -78,7 +78,7 @@ module API
           end
           namespace '/metadata/*package_name' do
             after_validation do
-              authorize_read_package!(project_or_group)
+              authorize_packages_access!(project_or_group, required_permission)
             end
 
             desc 'The NuGet Metadata Service - Package name level' do
@@ -124,7 +124,7 @@ module API
           end
           namespace '/query' do
             after_validation do
-              authorize_read_package!(project_or_group)
+              authorize_packages_access!(project_or_group, required_permission)
             end
 
             desc 'The NuGet Search Service' do

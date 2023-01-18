@@ -379,6 +379,26 @@ RSpec.shared_examples 'process nuget search request' do |user_type, status, add_
   end
 end
 
+RSpec.shared_examples 'process empty nuget search request' do |user_type, status, add_member = true|
+  before do
+    target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+  end
+
+  it_behaves_like 'returning response status', status
+
+  it 'returns a valid json response' do
+    subject
+
+    expect(response.media_type).to eq('application/json')
+    expect(json_response).to be_a(Hash)
+    expect(json_response).to match_schema('public_api/v4/packages/nuget/search')
+    expect(json_response['totalHits']).to eq(0)
+    expect(json_response['data'].map { |e| e['versions'].size }).to be_empty
+  end
+
+  it_behaves_like 'a package tracking event', 'API::NugetPackages', 'search_package'
+end
+
 RSpec.shared_examples 'rejects nuget access with invalid target id' do
   context 'with a target id with invalid integers' do
     using RSpec::Parameterized::TableSyntax

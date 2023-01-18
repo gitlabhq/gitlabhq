@@ -312,7 +312,7 @@ export default {
       if (this.isLoggedIn) {
         const noteableType = capitalizeFirstCharacter(convertToCamelCase(this.noteableType));
 
-        this.autosave = new Autosave($(this.$refs.textarea), [
+        this.autosave = new Autosave(this.$refs.textarea, [
           this.$options.i18n.note,
           noteableType,
           this.getNoteableData.id,

@@ -330,7 +330,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 This action doesn't delete blobs. To delete them and recycle disk space,
-[run the garbage collection](https://docs.gitlab.com/omnibus/maintenance/index.html#removing-unused-layers-not-referenced-by-manifests).
+[run the garbage collection](../administration/packages/container_registry.md#container-registry-garbage-collection).
 
 ## Delete registry repository tags in bulk
 
@@ -369,7 +369,7 @@ if successful, and performs the following operations:
 These operations are executed asynchronously and can take time to get executed.
 You can run this at most once an hour for a given container repository. This
 action doesn't delete blobs. To delete them and recycle disk space,
-[run the garbage collection](https://docs.gitlab.com/omnibus/maintenance/index.html#removing-unused-layers-not-referenced-by-manifests).
+[run the garbage collection](../administration/packages/container_registry.md#container-registry-garbage-collection).
 
 WARNING:
 The number of tags deleted by this API is limited on GitLab.com

@@ -68,7 +68,6 @@ describe('Board List Header Component', () => {
         apolloProvider: fakeApollo,
         store,
         propsData: {
-          disabled: false,
           list: listMock,
         },
         provide: {
@@ -76,6 +75,7 @@ describe('Board List Header Component', () => {
           weightFeatureAvailable: false,
           currentUserId,
           isEpicBoard: false,
+          disabled: false,
         },
       }),
     );

@@ -222,6 +222,24 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
       expect(response).to match_response_schema('release/link')
     end
 
+    context 'when using `direct_asset_path`' do
+      before do
+        params[:direct_asset_path] = params.delete(:filepath)
+      end
+
+      it 'creates a new release link successfully' do
+        expect do
+          post api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer), params: params
+        end.to change { Releases::Link.count }.by(1)
+
+        release.reload
+
+        expect(last_release_link.name).to eq('awesome-app.dmg')
+        expect(last_release_link.filepath).to eq('/binaries/awesome-app.dmg')
+        expect(last_release_link.url).to eq('https://example.com/download/awesome-app.dmg')
+      end
+    end
+
     context 'when using JOB-TOKEN auth' do
       let(:job) { create(:ci_build, :running, user: maintainer) }
 
@@ -355,6 +373,15 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
           params: params
 
       expect(response).to match_response_schema('release/link')
+    end
+
+    context 'when using `direct_asset_path`' do
+      it 'updates the release link' do
+        put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer),
+            params: params.merge(direct_asset_path: '/binaries/awesome-app.msi')
+
+        expect(json_response['direct_asset_url']).to eq("http://localhost/#{project.namespace.path}/#{project.name}/-/releases/#{release.tag}/downloads/binaries/awesome-app.msi")
+      end
     end
 
     context 'when using JOB-TOKEN auth' do

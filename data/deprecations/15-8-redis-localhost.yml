@@ -1,0 +1,16 @@
+- title: "Non-standard default Redis ports are deprecated"
+  announcement_milestone: "15.8"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: jacobvosmaer-gitlab
+  stage: platforms  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388269
+  body: |
+    If GitLab starts without any Redis configuration file present,
+    GitLab assumes it can connect to three Redis servers at `localhost:6380`,
+    `localhost:6381` and `localhost:6382`. We are changing this behavior
+    so GitLab assumes there is one Redis server at `localhost:6379`.
+
+    Administrators who want to keep the three servers must configure
+    the Redis URLs by editing the `config/redis.cache.yml`,`config/redis.queues.yml`
+    and `config/redis.shared_state.yml` files.

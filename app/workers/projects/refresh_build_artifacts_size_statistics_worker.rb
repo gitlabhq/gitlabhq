@@ -11,6 +11,10 @@ module Projects
 
     idempotent!
 
+    MAX_RUNNING_LOW = 1
+    MAX_RUNNING_MEDIUM = 3
+    MAX_RUNNING_HIGH = 5
+
     def perform_work(*args)
       refresh = Projects::RefreshBuildArtifactsSizeStatisticsService.new.execute
       return unless refresh
@@ -33,8 +37,12 @@ module Projects
     end
 
     def max_running_jobs
-      if ::Feature.enabled?(:projects_build_artifacts_size_refresh, type: :ops)
-        10
+      if ::Feature.enabled?(:projects_build_artifacts_size_refresh_high, type: :ops)
+        MAX_RUNNING_HIGH
+      elsif ::Feature.enabled?(:projects_build_artifacts_size_refresh_medium, type: :ops)
+        MAX_RUNNING_MEDIUM
+      elsif ::Feature.enabled?(:projects_build_artifacts_size_refresh, type: :ops)
+        MAX_RUNNING_LOW
       else
         0
       end

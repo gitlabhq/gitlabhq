@@ -5,7 +5,7 @@ module QA
     describe 'Code coverage statistics' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:runner) do
-        Resource::Runner.fabricate_via_api! do |runner|
+        Resource::ProjectRunner.fabricate_via_api! do |runner|
           runner.name = executor
           runner.tags = ['e2e-test']
         end

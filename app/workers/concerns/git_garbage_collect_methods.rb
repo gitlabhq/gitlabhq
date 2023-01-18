@@ -82,28 +82,12 @@ module GitGarbageCollectMethods
 
   def gitaly_call(task, resource)
     repository = resource.repository.raw_repository
+    client = repository.gitaly_repository_client
 
-    if Feature.enabled?(:optimized_housekeeping, container(resource))
-      client = repository.gitaly_repository_client
-
-      if task == :prune
-        client.prune_unreachable_objects
-      else
-        client.optimize_repository
-      end
+    if task == :prune
+      client.prune_unreachable_objects
     else
-      client = get_gitaly_client(task, repository)
-
-      case task
-      when :prune, :gc
-        client.garbage_collect(bitmaps_enabled?, prune: task == :prune)
-      when :full_repack
-        client.repack_full(bitmaps_enabled?)
-      when :incremental_repack
-        client.repack_incremental
-      when :pack_refs
-        client.pack_refs
-      end
+      client.optimize_repository
     end
   rescue GRPC::NotFound => e
     Gitlab::GitLogger.error("#{__method__} failed:\nRepository not found")
@@ -113,22 +97,6 @@ module GitGarbageCollectMethods
     raise Gitlab::Git::CommandError, e
   end
 
-  def get_gitaly_client(task, repository)
-    if task == :pack_refs
-      Gitlab::GitalyClient::RefService
-    else
-      Gitlab::GitalyClient::RepositoryService
-    end.new(repository)
-  end
-
-  # The option to enable/disable bitmaps has been removed in https://gitlab.com/gitlab-org/gitlab/-/issues/353777
-  # Now the options is always enabled
-  # This method and all the deprecated RPCs are going to be removed in
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/353779
-  def bitmaps_enabled?
-    true
-  end
-
   def flush_ref_caches(resource)
     resource.repository.expire_branches_cache
     resource.repository.branch_names
@@ -136,8 +104,6 @@ module GitGarbageCollectMethods
   end
 
   def update_repository_statistics(resource, task)
-    return if task == :pack_refs
-
     resource.repository.expire_statistics_caches
 
     return if Gitlab::Database.read_only? # GitGarbageCollectWorker may be run on a Geo secondary

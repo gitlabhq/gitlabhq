@@ -9,6 +9,7 @@
 ---
 - advanced_deployments
 - advisory_database
+- api
 - api_security
 - application_instrumentation
 - application_performance
@@ -20,11 +21,10 @@
 - billing_and_payments
 - build
 - build_artifacts
-- chatops
 - cloud_native_installation
 - cluster_cost_management
 - code_quality
-- code_review
+- code_review_workflow
 - code_search
 - code_suggestions
 - code_testing
@@ -34,7 +34,6 @@
 - container_scanning
 - continuous_delivery
 - continuous_integration
-- continuous_integration_scaling
 - continuous_verification
 - credential_management
 - customersdot_application
@@ -53,7 +52,6 @@
 - disaster_recovery
 - dora_metrics
 - dynamic_application_security_testing
-- editor_extension
 - environment_management
 - error_budgets
 - error_tracking
@@ -64,12 +62,11 @@
 - feature_flags
 - five_minute_production_app
 - fulfillment_admin_tooling
-- fulfillment_developer_productivity
 - fulfillment_infrastructure
 - fuzz_testing
 - geo_replication
-- git_lfs
 - gitaly
+- gitlab_cli
 - global_search
 - helm_chart_registry
 - importers
@@ -82,7 +79,6 @@
 - intel_code_security
 - interactive_application_security_testing
 - internationalization
-- jenkins_importer
 - kubernetes_management
 - license_compliance
 - logging
@@ -141,5 +137,6 @@
 - value_stream_management
 - vulnerability_management
 - web_ide
+- webhooks
 - wiki
 - workflow_automation

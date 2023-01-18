@@ -73,7 +73,7 @@ GitLab maintains the analyzer and writes detection rules for it.
 
 If you use the [GitLab-managed CI/CD template](index.md#configuration), the Semgrep-based analyzer operates alongside other language-specific analyzers.
 It runs with GitLab-managed detection rules that mimic the other analyzers' detection rules.
-Work to remove language-specific analyzers and replace them with the Semgrep-based analyzer is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5245).
+Work to remove language-specific analyzers and replace them with the Semgrep-based analyzer is tracked in [epic 5245](https://gitlab.com/groups/gitlab-org/-/epics/5245). In case of duplicate findings, the [analyzer order](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/reports/security/scanner.rb#L15) determines which analyzer's findings are preferred.
 
 You can choose to disable the other analyzers early and use Semgrep-based scanning for supported languages before the default behavior changes. If you do so:
 

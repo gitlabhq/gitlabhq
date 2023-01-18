@@ -254,7 +254,7 @@ module API
       def readable_discussion_notes(noteable, discussion_ids)
         notes = noteable.notes
           .with_discussion_ids(discussion_ids)
-          .inc_relations_for_view
+          .inc_relations_for_view(noteable)
           .includes(:noteable)
           .fresh
 

@@ -373,7 +373,7 @@ things to debug the situation.
   1. Search for the user.
   1. Open the user by selecting their name. Do not select **Edit**.
   1. Select the **Identities** tab. There should be an LDAP identity with
-     an LDAP DN as the 'Identifier'. If not, this user hasn't signed in with
+     an LDAP DN as the `Identifier`. If not, this user hasn't signed in with
      LDAP yet and must do so first.
 - You've waited an hour or [the configured interval](ldap_synchronization.md#adjust-ldap-group-sync-schedule) for
   the group to sync. To speed up the process, either go to the GitLab group **Group information > Members**
@@ -523,8 +523,8 @@ LDAP group lookups. The very last occurrence of this entry should indicate
 exactly which users GitLab believes should be added to the group.
 
 NOTE:
-10 is 'Guest', 20 is 'Reporter', 30 is 'Developer', 40 is 'Maintainer'
-and 50 is 'Owner'.
+10 is `Guest`, 20 is `Reporter`, 30 is `Developer`, 40 is `Maintainer`
+and 50 is `Owner`.
 
 ```shell
 Resolved 'my_group' group member access: {"uid=john0,ou=people,dc=example,dc=com"=>30,

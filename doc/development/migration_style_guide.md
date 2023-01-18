@@ -253,21 +253,18 @@ Therefore, either:
 
 For example, if you create an empty table and need to build an index for it,
 it is recommended to use a regular single-transaction migration and the default
-rails schema statement: [`add_index`](https://api.rubyonrails.org/v5.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_index).
+rails schema statement: [`add_index`](https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_index).
 This is a blocking operation, but it doesn't cause problems because the table is not yet used,
 and therefore it does not have any records yet.
 
 ## Naming conventions
 
+Names for database objects (such as tables, indexes, and views) must be lowercase.
+Lowercase names ensure that queries with unquoted names don't cause errors.
+
 We keep column names consistent with [ActiveRecord's schema conventions](https://guides.rubyonrails.org/active_record_basics.html#schema-conventions).
 
-Custom index names should follow the pattern `index_#{table_name}_on_#{column_1}_and_#{column_2}_#{condition}`.
-
-Examples:
-
-- `index_services_on_type_and_id_and_template_when_active`
-- `index_projects_on_id_service_desk_enabled`
-- `index_clusters_on_enabled_cluster_type_id_and_created_at`
+Custom index and constraint names should follow the [constraint naming convention guidelines](database/constraint_naming_convention.md).
 
 ### Truncate long index names
 
@@ -429,6 +426,9 @@ end
 ```
 
 #### Changing default value for a column
+
+Note that changing column defaults can cause application downtime if a multi-release process is not followed.
+See [avoiding downtime in migrations for changing column defaults](database/avoiding_downtime_in_migrations.md#changing-column-defaults) for details.
 
 ```ruby
 enable_lock_retries!

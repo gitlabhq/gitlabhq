@@ -16,8 +16,7 @@ module Groups
     private
 
     def verify_usage_quotas_enabled!
-      render_404 unless Feature.enabled?(:usage_quotas_for_all_editions, group)
-      render_404 if group.has_parent?
+      render_404 unless group.usage_quotas_enabled?
     end
 
     # To be overriden in ee/app/controllers/ee/groups/usage_quotas_controller.rb

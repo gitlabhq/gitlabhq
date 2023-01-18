@@ -1,8 +1,0 @@
----
-name: vue_group_select
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98597
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381042
-milestone: '15.6'
-type: development
-group: group::foundations
-default_enabled: false

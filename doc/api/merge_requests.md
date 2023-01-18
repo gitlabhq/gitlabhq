@@ -637,7 +637,7 @@ Supported attributes:
 | `created_at` | datetime | Timestamp of when the merge request was created. |
 | `description` | string | Description of the merge request. Contains Markdown rendered as HTML for caching. |
 | `detailed_merge_status` | string | Detailed merge status of the merge request. Read [merge status](#merge-status) for a list of potential values. |
-| `diff_refs` | object | References of the base SHA, the head SHA, and the start SHA for this merge request. Corresponds to the latest diff version of the merge request. |
+| `diff_refs` | object | References of the base SHA, the head SHA, and the start SHA for this merge request. Corresponds to the latest diff version of the merge request. Empty when the merge request is created, and populates asynchronously. See [Empty `diff_refs` for new merge requests](#empty-diff_refs-for-new-merge-requests). |
 | `discussion_locked` | boolean | Indicates if comments on the merge request are locked to members only. |
 | `downvotes` | integer | Number of downvotes for the merge request. |
 | `draft` | boolean | Indicates if the merge request is a draft. |
@@ -652,7 +652,7 @@ Supported attributes:
 | `latest_build_finished_at` | datetime | Timestamp of when the latest build for the merge request finished. |
 | `latest_build_started_at` | datetime | Timestamp of when the latest build for the merge request started. |
 | `merge_commit_sha` | string | SHA of the merge request commit. Returns `null` until merged. |
-| `merge_error` | string | Error message due to a merge error. |
+| `merge_error` | string | Error message shown when a merge has failed. To check mergeability, use `detailed_merge_status` instead  |
 | `merge_user` | object | The user who merged this merge request, the user who set it to merge when pipeline succeeds, or `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7. |
 | `merge_status` | string | Status of the merge request. Can be `unchecked`, `checking`, `can_be_merged`, `cannot_be_merged`, or `cannot_be_merged_recheck`. Affects the `has_conflicts` property. For important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. Use `detailed_merge_status` instead. |
 | `merge_when_pipeline_succeeds` | boolean | Indicates if the merge has been set to be merged when its pipeline succeeds. |
@@ -671,7 +671,7 @@ Supported attributes:
 | `squash` | boolean | Indicates if squash on merge is enabled. |
 | `squash_commit_sha` | string | SHA of the squash commit. Empty until merged. |
 | `state` | string | State of the merge request. Can be `opened`, `closed`, `merged` or `locked`. |
-| `subscribed` | boolean | Indicates if the currently logged in user is subscribed to this merge request. |
+| `subscribed` | boolean | Indicates if the currently authenticated user is subscribed to this merge request. |
 | `target_branch` | string | Target branch of the merge request. |
 | `target_project_id` | integer | ID of the merge request target project. |
 | `task_completion_status` | object | Completion status of tasks. |
@@ -986,7 +986,7 @@ returned by the API or viewed via the UI. When these limits impact the results, 
 field contains a value of `true`. Diff data without these limits applied can be retrieved by
 adding the `access_raw_diffs` parameter, accessing diffs not from the database but from Gitaly directly.
 This approach is generally slower and more resource-intensive, but isn't subject to size limits
-placed on database-backed diffs. [Limits inherent to Gitaly](../development/diffs.md#diff-limits)
+placed on database-backed diffs. [Limits inherent to Gitaly](../development/merge_request_concepts/diffs/index.md#diff-limits)
 still apply.
 
 ```plaintext
@@ -2913,3 +2913,14 @@ For approvals, see [Merge request approvals](merge_request_approvals.md)
 
 To track which state was set, who did it, and when it happened, check out
 [Resource state events API](resource_state_events.md#merge-requests).
+
+## Troubleshooting
+
+### Empty `diff_refs` for new merge requests
+
+When a merge request is created, the `diff_refs` field is initially empty. This field
+is populated asynchronously after the merge request is created. For more
+information, see the issue
+[`diff_refs` empty after merge request is created](https://gitlab.com/gitlab-org/gitlab/-/issues/386562),
+and the [related discussion](https://forum.gitlab.com/t/diff-refs-empty-after-mr-is-created/78975)
+in the GitLab forums.

@@ -1,8 +1,0 @@
----
-name: delay_for_repository_update_mirror
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90749
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365948
-milestone: '15.2'
-type: development
-group: group::source code
-default_enabled: false

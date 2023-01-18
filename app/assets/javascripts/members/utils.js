@@ -51,6 +51,9 @@ export const canRemove = (member) => {
   return isDirectMember(member) && member.canRemove;
 };
 
+export const canRemoveBlockedByLastOwner = (member, canManageMembers) =>
+  isDirectMember(member) && canManageMembers && member.isLastOwner;
+
 export const canResend = (member) => {
   return Boolean(member.invite?.canResend);
 };
@@ -104,6 +107,9 @@ export const buildSortHref = ({
 
   return setUrlParams({ ...filterParams, sort: sortParam }, window.location.href, true);
 };
+
+// Defined in `ee/app/assets/javascripts/members/utils.js`
+export const canDisableTwoFactor = () => false;
 
 // Defined in `ee/app/assets/javascripts/members/utils.js`
 export const canOverride = () => false;

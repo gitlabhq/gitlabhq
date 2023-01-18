@@ -1,0 +1,8 @@
+---
+name: reset_merge_error_on_transition
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106942
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385859
+milestone: '15.8'
+type: development
+group: group::code review
+default_enabled: false

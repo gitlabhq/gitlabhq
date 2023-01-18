@@ -12,6 +12,7 @@
     .issuable-main-info
       .merge-request-title.title
         %span.merge-request-title-text.js-onboarding-mr-item
+          = hidden_merge_request_icon(merge_request)
           = link_to merge_request.title, merge_request_path(merge_request), class: 'js-prefetch-document'
         - if merge_request.tasks?
           %span.task-status.d-none.d-sm-inline-block

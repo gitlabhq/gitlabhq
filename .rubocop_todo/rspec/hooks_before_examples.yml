@@ -42,5 +42,4 @@ RSpec/HooksBeforeExamples:
     - 'qa/qa/specs/features/ee/browser_ui/1_manage/group/prevent_forking_outside_group_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/1_manage/ldap/admin_ldap_sync_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/1_manage/user/minimal_access_user_spec.rb'
-    - 'qa/spec/resource/reusable_collection_spec.rb'
     - 'qa/spec/specs/runner_spec.rb'

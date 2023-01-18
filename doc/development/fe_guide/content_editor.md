@@ -4,7 +4,7 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Content Editor development guidelines **(FREE)**
+# Content Editor development guidelines
 
 The Content Editor is a UI component that provides a WYSIWYG editing
 experience for [GitLab Flavored Markdown](../../user/markdown.md) in the GitLab application.
@@ -64,7 +64,7 @@ Instead, you should obtain an instance of the `ContentEditor` class by listening
 
 ```html
 <script>
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 
 export default {
@@ -75,7 +75,7 @@ export default {
       try {
         await this.contentEditor.setSerializedContent(this.content);
       } catch (e) {
-        createFlash(__('Could not load initial document'));
+        createAlert({ message: __('Could not load initial document') });
       }
     },
     submitChanges() {

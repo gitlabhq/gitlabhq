@@ -1,8 +1,0 @@
----
-name: ci_pipeline_triggers_settings_vue_ui
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41864
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/247486
-milestone: '13.5'
-type: development
-group: group::pipeline execution
-default_enabled: false

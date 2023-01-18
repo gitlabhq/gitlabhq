@@ -4,6 +4,7 @@ module Gitlab
   module BackgroundMigration
     class BackfillProjectImportLevel < BatchedMigrationJob
       operation_name :update_import_level
+      feature_category :database
 
       LEVEL = {
         Gitlab::Access::NO_ACCESS => [0],

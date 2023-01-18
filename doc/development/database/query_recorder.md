@@ -10,7 +10,7 @@ QueryRecorder is a tool for detecting the [N+1 queries problem](https://guides.r
 
 > Implemented in [spec/support/query_recorder.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/helpers/query_recorder.rb) via [9c623e3e](https://gitlab.com/gitlab-org/gitlab-foss/commit/9c623e3e5d7434f2e30f7c389d13e5af4ede770a)
 
-As a rule, merge requests [should not increase query counts](../merge_request_performance_guidelines.md#query-counts). If you find yourself adding something like `.includes(:author, :assignee)` to avoid having `N+1` queries, consider using QueryRecorder to enforce this with a test. Without this, a new feature which causes an additional model to be accessed can silently reintroduce the problem.
+As a rule, merge requests [should not increase query counts](../merge_request_concepts/performance.md#query-counts). If you find yourself adding something like `.includes(:author, :assignee)` to avoid having `N+1` queries, consider using QueryRecorder to enforce this with a test. Without this, a new feature which causes an additional model to be accessed can silently reintroduce the problem.
 
 ## How it works
 
@@ -52,7 +52,7 @@ there are no N+1 queries. Rather than make an extra request to warm the cache, p
 
 ## Cached queries
 
-By default, QueryRecorder ignores [cached queries](../merge_request_performance_guidelines.md#cached-queries) in the count. However, it may be better to count
+By default, QueryRecorder ignores [cached queries](../merge_request_concepts/performance.md#cached-queries) in the count. However, it may be better to count
 all queries to avoid introducing an N+1 query that may be masked by the statement cache.
 To do this, this requires the `:use_sql_query_cache` flag to be set.
 You should pass the `skip_cached` variable to `QueryRecorder` and use the `exceed_all_query_limit` matcher:
@@ -146,5 +146,5 @@ There are multiple ways to find the source of queries.
 
 - [Bullet](../profiling.md#bullet) For finding `N+1` query problems
 - [Performance guidelines](../performance.md)
-- [Merge request performance guidelines - Query counts](../merge_request_performance_guidelines.md#query-counts)
-- [Merge request performance guidelines - Cached queries](../merge_request_performance_guidelines.md#cached-queries)
+- [Merge request performance guidelines - Query counts](../merge_request_concepts/performance.md#query-counts)
+- [Merge request performance guidelines - Cached queries](../merge_request_concepts/performance.md#cached-queries)

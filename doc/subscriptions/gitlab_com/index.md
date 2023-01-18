@@ -231,28 +231,15 @@ amounts at which the alert displays.
 | 100-999               | 8% of seats have been used.                                            |
 | 1000+                 | 5% of seats have been used                                             |
 
-## Change the linked account
-
-To change the GitLab.com account linked to your Customers Portal account:
-
-1. Log in to the
-   [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. In a separate browser tab, go to [GitLab SaaS](https://gitlab.com/users/sign_in) and ensure you
-   are not logged in.
-1. On the Customers Portal page, select **My account > Account details**.
-1. Under **Your GitLab.com account**, select **Change linked account**.
-1. Log in to the [GitLab SaaS](https://gitlab.com/users/sign_in) account you want to link to the Customers Portal
-   account.
-
 ## Change the linked namespace
 
 To change the namespace linked to a subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
-   [linked](#change-the-linked-account) GitLab SaaS account.
-1. Navigate to the **Manage Purchases** page.
+   [linked](../index.md#change-the-linked-account) GitLab.com account.
+1. Go to the **Manage Purchases** page.
 1. Select **Change linked namespace**.
-1. Select the desired group from the **This subscription is for** dropdown. For a group to appear here, you must have the Owner role for that group.
+1. Select the desired group from the **This subscription is for** dropdown list. For a group to appear here, you must have the Owner role for that group.
 1. Select **Proceed to checkout**.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -324,8 +311,7 @@ For details on upgrading your subscription tier, see
 ### Automatic subscription renewal
 
 When a subscription is set to auto-renew, it renews automatically on the
-expiration date without a gap in available service. Subscriptions purchased through Customers Portal or GitLab.com are set to auto-renew by default. The number of seats is adjusted to fit the [number of billable users in your group](#view-seat-usage) at the time of renewal. You can view and download your renewal invoice on the
-[View invoices](https://customers.gitlab.com/receipts) page. If your account has a [saved credit card](../index.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription. After that, your access is downgraded.
+expiration date without a gap in available service. Subscriptions purchased through Customers Portal or GitLab.com are set to auto-renew by default. The number of seats is adjusted to fit the [number of billable users in your group](#view-seat-usage) at the time of renewal. You can view and download your renewal invoice on the Customers Portal [View invoices](https://customers.gitlab.com/receipts) page. If your account has a [saved credit card](../index.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription, after which your access is downgraded.
 
 #### Email notifications
 

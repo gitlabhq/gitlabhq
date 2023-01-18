@@ -39,7 +39,6 @@ describe('RemoveMemberButton', () => {
       },
       propsData: {
         memberId: 1,
-        memberType: 'GroupMember',
         message: 'Are you sure you want to remove John Smith?',
         title: 'Remove member',
         isAccessRequest: true,
@@ -77,20 +76,9 @@ describe('RemoveMemberButton', () => {
   it('calls Vuex action to show `remove member` modal when clicked', () => {
     findButton().vm.$emit('click');
 
-    expect(actions.showRemoveMemberModal).toHaveBeenCalledWith(expect.any(Object), modalData);
-  });
-
-  describe('button optional properties', () => {
-    it('has default value for category and text', () => {
-      createComponent();
-      expect(findButton().props('category')).toBe('secondary');
-      expect(findButton().text()).toBe('');
-    });
-
-    it('allow changing value of button category and text', () => {
-      createComponent({ buttonCategory: 'primary', buttonText: 'Decline request' });
-      expect(findButton().props('category')).toBe('primary');
-      expect(findButton().text()).toBe('Decline request');
+    expect(actions.showRemoveMemberModal).toHaveBeenCalledWith(expect.any(Object), {
+      ...modalData,
+      memberModelType: undefined,
     });
   });
 });

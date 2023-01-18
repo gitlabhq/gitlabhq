@@ -35,12 +35,6 @@ RSpec.describe Ci::RunnerVersion, feature_category: :runner_fleet do
   end
 
   describe 'validation' do
-    context 'when runner version is too long' do
-      let(:runner_version) { build(:ci_runner_version, version: 'a' * 2049) }
-
-      it 'is not valid' do
-        expect(runner_version).to be_invalid
-      end
-    end
+    it { is_expected.to validate_length_of(:version).is_at_most(2048) }
   end
 end

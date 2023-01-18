@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RelativePositioning::Mover do
+RSpec.describe RelativePositioning::Mover, feature_category: :portfolio_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:one_sibling, reload: true) { create(:project, creator: user, namespace: user.namespace) }
   let_it_be(:one_free_space, reload: true) { create(:project, creator: user, namespace: user.namespace) }

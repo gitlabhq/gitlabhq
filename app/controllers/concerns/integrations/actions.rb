@@ -57,9 +57,9 @@ module Integrations::Actions
 
   def success_message
     if integration.active?
-      s_('Integrations|%{integration} settings saved and active.') % { integration: integration.title }
+      format(s_('Integrations|%{integration} settings saved and active.'), integration: integration.title)
     else
-      s_('Integrations|%{integration} settings saved, but not active.') % { integration: integration.title }
+      format(s_('Integrations|%{integration} settings saved, but not active.'), integration: integration.title)
     end
   end
 

@@ -80,4 +80,78 @@ RSpec.describe 'Observability rendering', :js do
       end
     end
   end
+
+  context 'when feature flag is disabled' do
+    before do
+      stub_feature_flags(observability_group_tab: false)
+    end
+
+    context 'when embedding in an issue' do
+      let(:issue) do
+        create(:issue, project: project, description: observable_url)
+      end
+
+      before do
+        visit project_issue_path(project, issue)
+        wait_for_requests
+      end
+
+      it 'does not render iframe in description' do
+        page.within('.description') do
+          expect(page.html).not_to include(expected)
+          expect(page.html).to include(observable_url)
+        end
+      end
+
+      it 'does not render iframe in comment' do
+        expect(page).not_to have_css('.note-text')
+
+        page.within('.js-main-target-form') do
+          fill_in('note[note]', with: observable_url)
+          click_button('Comment')
+        end
+
+        wait_for_requests
+
+        page.within('.note-text') do
+          expect(page.html).not_to include(expected)
+          expect(page.html).to include(observable_url)
+        end
+      end
+    end
+
+    context 'when embedding in an MR' do
+      let(:merge_request) do
+        create(:merge_request, source_project: project, target_project: project, description: observable_url)
+      end
+
+      before do
+        visit merge_request_path(merge_request)
+        wait_for_requests
+      end
+
+      it 'does not render iframe in description' do
+        page.within('.description') do
+          expect(page.html).not_to include(expected)
+          expect(page.html).to include(observable_url)
+        end
+      end
+
+      it 'does not render iframe in comment' do
+        expect(page).not_to have_css('.note-text')
+
+        page.within('.js-main-target-form') do
+          fill_in('note[note]', with: observable_url)
+          click_button('Comment')
+        end
+
+        wait_for_requests
+
+        page.within('.note-text') do
+          expect(page.html).not_to include(expected)
+          expect(page.html).to include(observable_url)
+        end
+      end
+    end
+  end
 end

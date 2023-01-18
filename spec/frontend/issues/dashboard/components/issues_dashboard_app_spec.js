@@ -27,6 +27,9 @@ import { scrollUp } from '~/lib/utils/scroll_utils';
 import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableStates } from '~/vue_shared/issuable/list/constants';
@@ -42,8 +45,12 @@ describe('IssuesDashboardApp component', () => {
   Vue.use(VueApollo);
 
   const defaultProvide = {
+    autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
     calendarPath: 'calendar/path',
-    emptyStateSvgPath: 'empty-state.svg',
+    dashboardLabelsPath: 'dashboard/labels/path',
+    dashboardMilestonesPath: 'dashboard/milestones/path',
+    emptyStateWithFilterSvgPath: 'empty/state/with/filter/svg/path.svg',
+    emptyStateWithoutFilterSvgPath: 'empty/state/with/filter/svg/path.svg',
     hasBlockedIssuesFeature: true,
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
@@ -97,74 +104,122 @@ describe('IssuesDashboardApp component', () => {
     axiosMock.reset();
   });
 
-  it('renders IssuableList component', async () => {
-    mountComponent();
-    jest.runOnlyPendingTimers();
-    await waitForPromises();
+  describe('UI components', () => {
+    beforeEach(() => {
+      setWindowLocation(locationSearch);
+      mountComponent();
+      jest.runOnlyPendingTimers();
+      return waitForPromises();
+    });
 
-    expect(findIssuableList().props()).toMatchObject({
-      currentTab: IssuableStates.Opened,
-      hasNextPage: true,
-      hasPreviousPage: false,
-      hasScopedLabelsFeature: defaultProvide.hasScopedLabelsFeature,
-      initialSortBy: CREATED_DESC,
-      issuables: issuesQueryResponse.data.issues.nodes,
-      issuablesLoading: false,
-      namespace: 'dashboard',
-      recentSearchesStorageKey: 'issues',
-      searchInputPlaceholder: IssuesDashboardApp.i18n.searchInputPlaceholder,
-      showPaginationControls: true,
-      sortOptions: getSortOptions({
-        hasBlockedIssuesFeature: defaultProvide.hasBlockedIssuesFeature,
-        hasIssuableHealthStatusFeature: defaultProvide.hasIssuableHealthStatusFeature,
-        hasIssueWeightsFeature: defaultProvide.hasIssueWeightsFeature,
-      }),
-      tabs: IssuesDashboardApp.IssuableListTabs,
-      urlParams: {
-        sort: urlSortParams[CREATED_DESC],
-        state: IssuableStates.Opened,
-      },
-      useKeysetPagination: true,
+    it('renders IssuableList component', () => {
+      expect(findIssuableList().props()).toMatchObject({
+        currentTab: IssuableStates.Opened,
+        hasNextPage: true,
+        hasPreviousPage: false,
+        hasScopedLabelsFeature: defaultProvide.hasScopedLabelsFeature,
+        initialSortBy: CREATED_DESC,
+        issuables: issuesQueryResponse.data.issues.nodes,
+        issuablesLoading: false,
+        namespace: 'dashboard',
+        recentSearchesStorageKey: 'issues',
+        searchInputPlaceholder: IssuesDashboardApp.i18n.searchInputPlaceholder,
+        showPaginationControls: true,
+        sortOptions: getSortOptions({
+          hasBlockedIssuesFeature: defaultProvide.hasBlockedIssuesFeature,
+          hasIssuableHealthStatusFeature: defaultProvide.hasIssuableHealthStatusFeature,
+          hasIssueWeightsFeature: defaultProvide.hasIssueWeightsFeature,
+        }),
+        tabs: IssuesDashboardApp.IssuableListTabs,
+        urlParams: {
+          sort: urlSortParams[CREATED_DESC],
+          state: IssuableStates.Opened,
+        },
+        useKeysetPagination: true,
+      });
+    });
+
+    it('renders RSS button link', () => {
+      expect(findRssButton().attributes('href')).toBe(defaultProvide.rssPath);
+    });
+
+    it('renders calendar button link', () => {
+      expect(findCalendarButton().attributes('href')).toBe(defaultProvide.calendarPath);
+    });
+
+    it('renders issue time information', () => {
+      expect(findIssueCardTimeInfo().exists()).toBe(true);
+    });
+
+    it('renders issue statistics', () => {
+      expect(findIssueCardStatistics().exists()).toBe(true);
     });
   });
 
-  it('renders RSS button link', () => {
-    mountComponent();
+  describe('fetching issues', () => {
+    describe('with a search query', () => {
+      describe('when there are issues returned', () => {
+        beforeEach(() => {
+          setWindowLocation(locationSearch);
+          mountComponent();
+          jest.runOnlyPendingTimers();
+          return waitForPromises();
+        });
 
-    expect(findRssButton().attributes('href')).toBe(defaultProvide.rssPath);
-    expect(findRssButton().props('icon')).toBe('rss');
-  });
+        it('renders the issues', () => {
+          expect(findIssuableList().props('issuables')).toEqual(
+            defaultQueryResponse.data.issues.nodes,
+          );
+        });
 
-  it('renders calendar button link', () => {
-    mountComponent();
+        it('does not render empty state', () => {
+          expect(findEmptyState().exists()).toBe(false);
+        });
+      });
 
-    expect(findCalendarButton().attributes('href')).toBe(defaultProvide.calendarPath);
-    expect(findCalendarButton().props('icon')).toBe('calendar');
-  });
+      describe('when there are no issues returned', () => {
+        beforeEach(() => {
+          setWindowLocation(locationSearch);
+          mountComponent({
+            issuesQueryHandler: jest.fn().mockResolvedValue(emptyIssuesQueryResponse),
+          });
+          return waitForPromises();
+        });
 
-  it('renders issue time information', async () => {
-    mountComponent();
-    jest.runOnlyPendingTimers();
-    await waitForPromises();
+        it('renders no issues', () => {
+          expect(findIssuableList().props('issuables')).toEqual([]);
+        });
 
-    expect(findIssueCardTimeInfo().exists()).toBe(true);
-  });
+        it('renders empty state', () => {
+          expect(findEmptyState().props()).toMatchObject({
+            description: IssuesDashboardApp.i18n.emptyStateWithFilterDescription,
+            svgPath: defaultProvide.emptyStateWithFilterSvgPath,
+            title: IssuesDashboardApp.i18n.emptyStateWithFilterTitle,
+          });
+        });
+      });
+    });
 
-  it('renders issue statistics', async () => {
-    mountComponent();
-    jest.runOnlyPendingTimers();
-    await waitForPromises();
+    describe('with no search query', () => {
+      let issuesQueryHandler;
 
-    expect(findIssueCardStatistics().exists()).toBe(true);
-  });
+      beforeEach(() => {
+        issuesQueryHandler = jest.fn().mockResolvedValue(defaultQueryResponse);
+        mountComponent({ issuesQueryHandler });
+        return waitForPromises();
+      });
 
-  it('renders empty state', async () => {
-    mountComponent({ issuesQueryHandler: jest.fn().mockResolvedValue(emptyIssuesQueryResponse) });
-    await waitForPromises();
+      it('does not call issues query', () => {
+        expect(issuesQueryHandler).not.toHaveBeenCalled();
+      });
 
-    expect(findEmptyState().props()).toMatchObject({
-      svgPath: defaultProvide.emptyStateSvgPath,
-      title: IssuesDashboardApp.i18n.emptyStateTitle,
+      it('renders empty state', () => {
+        expect(findEmptyState().props()).toMatchObject({
+          description: null,
+          svgPath: defaultProvide.emptyStateWithoutFilterSvgPath,
+          title: IssuesDashboardApp.i18n.emptyStateWithoutFilterTitle,
+        });
+      });
     });
   });
 
@@ -233,6 +288,7 @@ describe('IssuesDashboardApp component', () => {
 
   describe('when there is an error fetching issues', () => {
     beforeEach(() => {
+      setWindowLocation(locationSearch);
       mountComponent({ issuesQueryHandler: jest.fn().mockRejectedValue(new Error('ERROR')) });
       jest.runOnlyPendingTimers();
       return waitForPromises();
@@ -281,6 +337,9 @@ describe('IssuesDashboardApp component', () => {
       expect(findIssuableList().props('searchTokens')).toMatchObject([
         { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
         { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
+        { type: TOKEN_TYPE_LABEL },
+        { type: TOKEN_TYPE_MILESTONE },
+        { type: TOKEN_TYPE_MY_REACTION },
       ]);
     });
   });

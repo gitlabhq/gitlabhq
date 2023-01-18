@@ -159,9 +159,9 @@ export default {
         <history-item icon="commit" data-testid="first-pipeline-commit">
           <gl-sprintf :message="$options.i18n.createdByCommitText">
             <template #link>
-              <gl-link :href="firstPipeline.commitPath" @click="trackCommitClick"
-                >#{{ truncate(firstPipeline.sha) }}</gl-link
-              >
+              <gl-link :href="firstPipeline.commitPath" @click="trackCommitClick">{{
+                truncate(firstPipeline.sha)
+              }}</gl-link>
             </template>
             <template #branch>
               <strong>{{ firstPipeline.ref }}</strong>
@@ -212,9 +212,9 @@ export default {
       >
         <gl-sprintf :message="$options.i18n.combinedUpdateText">
           <template #link>
-            <gl-link :href="pipeline.commitPath" @click="trackCommitClick"
-              >#{{ truncate(pipeline.sha) }}</gl-link
-            >
+            <gl-link :href="pipeline.commitPath" @click="trackCommitClick">{{
+              truncate(pipeline.sha)
+            }}</gl-link>
           </template>
           <template #branch>
             <strong>{{ pipeline.ref }}</strong>

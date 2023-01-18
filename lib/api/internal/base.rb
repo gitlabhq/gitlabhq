@@ -44,16 +44,12 @@ module API
           # This is a separate method so that EE can alter its behaviour more
           # easily.
 
-          if Feature.enabled?(:rate_limit_gitlab_shell)
-            check_rate_limit!(:gitlab_shell_operation, scope: [params[:action], params[:project], actor.key_or_user])
-          end
+          check_rate_limit!(:gitlab_shell_operation, scope: [params[:action], params[:project], actor.key_or_user])
 
-          if Feature.enabled?(:rate_limit_gitlab_shell_by_ip, actor.user)
-            rate_limiter = Gitlab::Auth::IpRateLimiter.new(request.ip)
+          rate_limiter = Gitlab::Auth::IpRateLimiter.new(request.ip)
 
-            unless rate_limiter.trusted_ip?
-              check_rate_limit!(:gitlab_shell_operation, scope: [params[:action], params[:project], rate_limiter.ip])
-            end
+          unless rate_limiter.trusted_ip?
+            check_rate_limit!(:gitlab_shell_operation, scope: [params[:action], params[:project], rate_limiter.ip])
           end
 
           # Stores some Git-specific env thread-safely

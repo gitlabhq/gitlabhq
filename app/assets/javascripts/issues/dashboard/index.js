@@ -14,8 +14,12 @@ export function mountIssuesDashboardApp() {
   Vue.use(VueApollo);
 
   const {
+    autocompleteAwardEmojisPath,
     calendarPath,
-    emptyStateSvgPath,
+    dashboardLabelsPath,
+    dashboardMilestonesPath,
+    emptyStateWithFilterSvgPath,
+    emptyStateWithoutFilterSvgPath,
     hasBlockedIssuesFeature,
     hasIssuableHealthStatusFeature,
     hasIssueWeightsFeature,
@@ -33,8 +37,12 @@ export function mountIssuesDashboardApp() {
       defaultClient: createDefaultClient(),
     }),
     provide: {
+      autocompleteAwardEmojisPath,
       calendarPath,
-      emptyStateSvgPath,
+      dashboardLabelsPath,
+      dashboardMilestonesPath,
+      emptyStateWithFilterSvgPath,
+      emptyStateWithoutFilterSvgPath,
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),

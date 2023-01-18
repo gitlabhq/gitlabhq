@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::SanitizeConfidentialTodos, :migration, schema: 20221110045406 do
+RSpec.describe Gitlab::BackgroundMigration::SanitizeConfidentialTodos, :migration, feature_category: :team_planning do
+  let!(:issue_type_id) { table(:work_item_types).find_by(base_type: 0).id }
+
   let(:todos) { table(:todos) }
   let(:notes) { table(:notes) }
   let(:namespaces) { table(:namespaces) }
@@ -29,12 +31,16 @@ RSpec.describe Gitlab::BackgroundMigration::SanitizeConfidentialTodos, :migratio
 
   let(:issue1) do
     issues.create!(
-      project_id: project1.id, namespace_id: project_namespace1.id, issue_type: 1, title: 'issue1', author_id: user.id
+      project_id: project1.id, namespace_id: project_namespace1.id, issue_type: 1, title: 'issue1', author_id: user.id,
+      work_item_type_id: issue_type_id
     )
   end
 
   let(:issue2) do
-    issues.create!(project_id: project2.id, namespace_id: project_namespace2.id, issue_type: 1, title: 'issue2')
+    issues.create!(
+      project_id: project2.id, namespace_id: project_namespace2.id, issue_type: 1, title: 'issue2',
+      work_item_type_id: issue_type_id
+    )
   end
 
   let(:public_note) { notes.create!(note: 'text', project_id: project1.id) }

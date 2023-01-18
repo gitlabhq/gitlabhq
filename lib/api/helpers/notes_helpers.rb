@@ -8,7 +8,7 @@ module API
       def self.feature_category_per_noteable_type
         {
           Issue => :team_planning,
-          MergeRequest => :code_review,
+          MergeRequest => :code_review_workflow,
           Snippet => :source_code_management
         }
       end

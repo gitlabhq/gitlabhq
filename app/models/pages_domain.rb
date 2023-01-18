@@ -78,6 +78,10 @@ class PagesDomain < ApplicationRecord
     find_by("LOWER(domain) = LOWER(?)", domain)
   end
 
+  def self.ids_for_project(project_id)
+    where(project_id: project_id).ids
+  end
+
   def verified?
     !!verified_at
   end
@@ -209,7 +213,7 @@ class PagesDomain < ApplicationRecord
     return unless pages_deployed?
 
     cache = if Feature.enabled?(:cache_pages_domain_api, project.root_namespace)
-              ::Gitlab::Pages::CacheControl.for_project(project.id)
+              ::Gitlab::Pages::CacheControl.for_domain(id)
             end
 
     Pages::VirtualDomain.new(

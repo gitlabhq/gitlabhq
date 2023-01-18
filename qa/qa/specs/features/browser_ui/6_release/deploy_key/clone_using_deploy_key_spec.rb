@@ -15,7 +15,7 @@ module QA
       end
 
       let!(:runner) do
-        Resource::Runner.fabricate_via_api! do |resource|
+        Resource::ProjectRunner.fabricate_via_api! do |resource|
           resource.project = project
           resource.name = runner_name
           resource.tags = [runner_name]

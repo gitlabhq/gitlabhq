@@ -10,6 +10,7 @@ module Gitlab
       end
 
       operation_name :delete_all
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

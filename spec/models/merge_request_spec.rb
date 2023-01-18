@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequest, factory_default: :keep do
+RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_review_workflow do
   include RepoHelpers
   include ProjectForksHelper
   include ReactiveCachingHelpers
@@ -163,6 +163,25 @@ RSpec.describe MergeRequest, factory_default: :keep do
     describe '.drafts' do
       it 'returns MRs where draft == true' do
         expect(described_class.drafts).to eq([merge_request4])
+      end
+    end
+
+    describe '.without_hidden', feature_category: :insider_threat do
+      let_it_be(:banned_user) { create(:user, :banned) }
+      let_it_be(:hidden_merge_request) { create(:merge_request, :unique_branches, author: banned_user) }
+
+      it 'only returns public issuables' do
+        expect(described_class.without_hidden).not_to include(hidden_merge_request)
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(hide_merge_requests_from_banned_users: false)
+        end
+
+        it 'returns public and hidden issuables' do
+          expect(described_class.without_hidden).to include(hidden_merge_request)
+        end
       end
     end
   end
@@ -4546,6 +4565,34 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
     end
 
+    describe 'transition to merged' do
+      context 'when reset_merge_error_on_transition feature flag is on' do
+        before do
+          stub_feature_flags(reset_merge_error_on_transition: true)
+        end
+
+        it 'resets the merge error' do
+          subject.update!(merge_error: 'temp')
+
+          expect { subject.mark_as_merged }.to change { subject.merge_error.present? }
+            .from(true)
+            .to(false)
+        end
+      end
+
+      context 'when reset_merge_error_on_transition feature flag is off' do
+        before do
+          stub_feature_flags(reset_merge_error_on_transition: false)
+        end
+
+        it 'does not reset the merge error' do
+          subject.update!(merge_error: 'temp')
+
+          expect { subject.mark_as_merged }.not_to change { subject.merge_error.present? }
+        end
+      end
+    end
+
     describe 'transition to cannot_be_merged' do
       let(:notification_service) { double(:notification_service) }
       let(:todo_service) { double(:todo_service) }
@@ -5455,5 +5502,28 @@ RSpec.describe MergeRequest, factory_default: :keep do
     subject(:suggested_reviewer_users) { merge_request.suggested_reviewer_users }
 
     it { is_expected.to be_empty }
+  end
+
+  describe '#hidden?', feature_category: :insider_threat do
+    let_it_be(:author) { create(:user) }
+    let(:merge_request) { build_stubbed(:merge_request, author: author) }
+
+    subject { merge_request.hidden? }
+
+    it { is_expected.to eq(false) }
+
+    context 'when the author is banned' do
+      let_it_be(:author) { create(:user, :banned) }
+
+      it { is_expected.to eq(true) }
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(hide_merge_requests_from_banned_users: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
   end
 end

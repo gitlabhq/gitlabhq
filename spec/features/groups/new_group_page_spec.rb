@@ -10,6 +10,8 @@ RSpec.describe 'New group page', :js, feature_category: :subgroups do
     sign_in(user)
   end
 
+  it_behaves_like 'a dashboard page with sidebar', :new_group_path, :groups
+
   describe 'new top level group alert' do
     context 'when a user visits the new group page' do
       it 'shows the new top level group alert' do

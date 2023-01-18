@@ -22,7 +22,6 @@ RSpec/RepeatedExampleGroupBody:
     - 'spec/features/issues/spam_akismet_issue_creation_spec.rb'
     - 'spec/features/merge_request/user_sees_closing_issues_message_spec.rb'
     - 'spec/features/projects/commit/cherry_pick_spec.rb'
-    - 'spec/features/projects/pipelines/legacy_pipeline_spec.rb'
     - 'spec/features/security/project/private_access_spec.rb'
     - 'spec/finders/packages/nuget/package_finder_spec.rb'
     - 'spec/helpers/gitlab_routing_helper_spec.rb'

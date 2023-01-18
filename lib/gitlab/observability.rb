@@ -11,5 +11,9 @@ module Gitlab
 
       'https://observe.gitlab.com'
     end
+
+    def observability_enabled?(user, group)
+      Gitlab::Observability.observability_url.present? && Ability.allowed?(user, :read_observability, group)
+    end
   end
 end

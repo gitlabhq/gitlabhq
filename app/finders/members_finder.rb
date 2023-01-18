@@ -31,7 +31,11 @@ class MembersFinder
   attr_reader :project, :current_user, :group
 
   def find_members(include_relations)
-    project_members = project.project_members
+    project_members = if Feature.enabled?(:project_members_index_by_project_namespace, project)
+                        project.namespace_members
+                      else
+                        project.project_members
+                      end
 
     if params[:active_without_invites_and_requests].present?
       project_members = project_members.active_without_invites_and_requests

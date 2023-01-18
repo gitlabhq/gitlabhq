@@ -24,7 +24,12 @@ if Gitlab.dev_or_test_env?
   Marginalia::Comment.components << :line
   Marginalia::Comment.lines_to_ignore = Regexp.union(
     Gitlab::BacktraceCleaner::IGNORE_BACKTRACES + %w[
-      lib/ruby/gems/ lib/gem_extensions/ lib/ruby/ lib/gitlab/marginalia/ gems/
+      lib/ruby/gems/
+      lib/gem_extensions/
+      lib/ruby/
+      lib/gitlab/marginalia/
+      gems/
+      lib/gitlab/database/load_balancing/connection_proxy.rb
     ])
 end
 

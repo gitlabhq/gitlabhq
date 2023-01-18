@@ -79,8 +79,11 @@ export default {
 </script>
 <template>
   <div
-    class="gl-w-full gl-display-flex gl-align-items-baseline"
-    :class="{ 'gl-border-t gl-py-3 gl-pl-7': level === 2 }"
+    class="gl-w-full gl-display-flex"
+    :class="{
+      'gl-border-t gl-py-3 gl-pl-7 gl-align-items-baseline': level === 2,
+      'gl-align-items-center': level === 3,
+    }"
   >
     <status-icon
       v-if="statusIconName && !header"

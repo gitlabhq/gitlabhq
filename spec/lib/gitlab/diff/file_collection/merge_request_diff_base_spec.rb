@@ -26,6 +26,17 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBase do
     end
   end
 
+  describe '#diff_files' do
+    subject(:diff_files) { described_class.new(diffable, diff_options: nil).diff_files }
+
+    it 'measures diffs_highlight_cache_decorate' do
+      allow(Gitlab::Metrics).to receive(:measure).and_call_original
+      expect(Gitlab::Metrics).to receive(:measure).with(:diffs_highlight_cache_decorate).and_call_original
+
+      diff_files
+    end
+  end
+
   describe '#cache_key' do
     subject(:cache_key) { described_class.new(diffable, diff_options: nil).cache_key }
 

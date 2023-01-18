@@ -35,8 +35,8 @@ describe('IssuableForm', () => {
     let $description;
 
     beforeEach(() => {
-      $title = $form.find('input[name*="[title]"]');
-      $description = $form.find('textarea[name*="[description]"]');
+      $title = $form.find('input[name*="[title]"]').get(0);
+      $description = $form.find('textarea[name*="[description]"]').get(0);
     });
 
     afterEach(() => {
@@ -103,7 +103,11 @@ describe('IssuableForm', () => {
         createIssuable($form);
 
         expect(Autosave).toHaveBeenCalledTimes(totalAutosaveFormFields);
-        expect(Autosave).toHaveBeenLastCalledWith($input, ['/', '', id], `autosave///=${id}`);
+        expect(Autosave).toHaveBeenLastCalledWith(
+          $input.get(0),
+          ['/', '', id],
+          `autosave///=${id}`,
+        );
       });
     });
 

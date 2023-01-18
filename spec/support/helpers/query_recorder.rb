@@ -19,9 +19,7 @@ module ActiveRecord
 
     def record(&block)
       # force replacement of bind parameters to give tests the ability to check for ids
-      ActiveRecord::Base.connection.unprepared_statement do
-        ActiveSupport::Notifications.subscribed(method(:callback), 'sql.active_record', &block)
-      end
+      ActiveSupport::Notifications.subscribed(method(:callback), 'sql.active_record', &block)
     end
 
     def show_backtrace(values, duration)

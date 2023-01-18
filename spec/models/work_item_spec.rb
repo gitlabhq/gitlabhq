@@ -21,6 +21,13 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         .with_foreign_key('work_item_id')
     end
 
+    it 'has many `work_item_children_by_created_at`' do
+      is_expected.to have_many(:work_item_children_by_created_at)
+        .order(created_at: :asc)
+        .class_name('WorkItem')
+        .with_foreign_key('work_item_id')
+    end
+
     it 'has many `child_links`' do
       is_expected.to have_many(:child_links)
         .class_name('::WorkItems::ParentLink')

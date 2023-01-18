@@ -31,8 +31,9 @@ Doorkeeper::OpenidConnect.configure do
         Digest::SHA256.hexdigest "#{user.id}-#{Rails.application.secrets.secret_key_base}"
       end
 
-      o.claim(:name)           { |user| user.name }
-      o.claim(:nickname)       { |user| user.username }
+      o.claim(:name)                     { |user| user.name }
+      o.claim(:nickname)                 { |user| user.username }
+      o.claim(:preferred_username)       { |user| user.username }
 
       # Check whether the application has access to the email scope, and grant
       # access to the user's primary email address if so, otherwise their
@@ -54,7 +55,7 @@ Doorkeeper::OpenidConnect.configure do
         end
       end
 
-      o.claim(:website)        { |user| user.full_website_url if user.website_url? }
+      o.claim(:website)        { |user| user.full_website_url if user.website_url.present? }
       o.claim(:profile)        { |user| Gitlab::Routing.url_helpers.user_url user }
       o.claim(:picture)        { |user| user.avatar_url(only_path: false) }
       o.claim(:groups)         { |user| user.membership_groups.joins(:route).with_route.map(&:full_path) }

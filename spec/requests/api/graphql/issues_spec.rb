@@ -2,11 +2,13 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers
 RSpec.describe 'getting an issue list at root level', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
+  let_it_be(:current_user) { developer }
   let_it_be(:group1) { create(:group).tap { |group| group.add_developer(developer) } }
   let_it_be(:group2) { create(:group).tap { |group| group.add_developer(developer) } }
   let_it_be(:project_a) { create(:project, :repository, :public, group: group1) }
@@ -82,9 +84,11 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   end
 
   let_it_be(:issues, reload: true) { [issue_a, issue_b, issue_c, issue_d, issue_e] }
+  # we need to always provide at least one filter to the query so it doesn't fail
+  let_it_be(:base_params) { { iids: issues.map { |issue| issue.iid.to_s } } }
 
   let(:issue_filter_params) { {} }
-  let(:current_user) { developer }
+  let(:all_query_params) { base_params.merge(**issue_filter_params) }
   let(:fields) do
     <<~QUERY
       nodes { id }
@@ -93,6 +97,16 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
 
   before_all do
     group2.add_reporter(reporter)
+  end
+
+  shared_examples 'query that requires at least one filter' do
+    it 'requires at least one filter to be provided to the query' do
+      post_graphql(query, current_user: developer)
+
+      expect(graphql_errors).to contain_exactly(
+        hash_including('message' => _('You must provide at least one filter argument for this query'))
+      )
+    end
   end
 
   context 'when the root_level_issues_query feature flag is disabled' do
@@ -107,20 +121,31 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     end
   end
 
+  context 'when no filters are provided' do
+    let(:all_query_params) { {} }
+
+    it_behaves_like 'query that requires at least one filter'
+  end
+
+  context 'when only non filter arguments are provided' do
+    let(:all_query_params) { { sort: :SEVERITY_ASC } }
+
+    it_behaves_like 'query that requires at least one filter'
+  end
+
   # All new specs should be added to the shared example if the change also
   # affects the `issues` query at the root level of the API.
   # Shared example also used in spec/requests/api/graphql/project/issues_spec.rb
   it_behaves_like 'graphql issue list request spec' do
     let_it_be(:external_user) { create(:user) }
+    let_it_be(:another_user) { reporter }
 
     let(:public_projects) { [project_a, project_c] }
 
-    let(:another_user) { reporter }
     let(:issue_nodes_path) { %w[issues nodes] }
 
     # filters
     let(:expected_negated_assignee_issues) { [issue_b, issue_c, issue_d, issue_e] }
-    let(:expected_unioned_assignee_issues) { [issue_a, issue_c] }
     let(:voted_issues) { [issue_a, issue_c] }
     let(:no_award_issues) { [issue_b, issue_d, issue_e] }
     let(:locked_discussion_issues) { [issue_b, issue_d] }
@@ -148,9 +173,6 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     let(:same_project_issue2) { issue_e }
 
     before_all do
-      issue_a.assignee_ids = developer.id
-      issue_c.assignee_ids = reporter.id
-
       create(:award_emoji, :upvote, user: developer, awardable: issue_a)
       create(:award_emoji, :upvote, user: developer, awardable: issue_c)
     end
@@ -158,7 +180,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     def pagination_query(params)
       graphql_query_for(
         :issues,
-        params,
+        base_params.merge(**params.to_h),
         "#{page_info} nodes { id }"
       )
     end
@@ -177,6 +199,32 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     end
   end
 
+  context 'with rate limiting' do
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit, graphql: true do
+      let_it_be(:current_user) { developer }
+
+      let(:error_message) do
+        'This endpoint has been requested with the search argument too many times. Try again later.'
+      end
+
+      def request
+        post_graphql(query({ search: 'test' }), current_user: developer)
+      end
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit_unauthenticated, graphql: true do
+      let_it_be(:current_user) { nil }
+
+      let(:error_message) do
+        'This endpoint has been requested with the search argument too many times. Try again later.'
+      end
+
+      def request
+        post_graphql(query({ search: 'test' }))
+      end
+    end
+  end
+
   def execute_query
     post_query
   end
@@ -185,7 +233,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     post_graphql(query, current_user: request_user)
   end
 
-  def query(params = issue_filter_params)
+  def query(params = all_query_params)
     graphql_query_for(
       :issues,
       params,
@@ -193,3 +241,4 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     )
   end
 end
+# rubocop:enable RSpec/MultipleMemoizedHelpers

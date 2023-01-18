@@ -40,7 +40,7 @@ RSpec.describe 'Dashboard > User filters projects', feature_category: :projects 
     it 'returns message when starred projects fitler returns no results' do
       fill_in 'project-filter-form-field', with: 'Beta\n'
 
-      expect(page).to have_content('This user doesn\'t have any personal projects')
+      expect(page).to have_content('There are no projects available to be displayed here.')
       expect(page).not_to have_content('You don\'t have starred projects yet')
     end
   end

@@ -1,6 +1,6 @@
 import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -79,7 +79,7 @@ describe('CI Badge Link Component', () => {
   const findIcon = () => wrapper.findComponent(CiIcon);
 
   const createComponent = (propsData) => {
-    wrapper = shallowMount(CiBadge, { propsData });
+    wrapper = shallowMount(CiBadgeLink, { propsData });
   };
 
   afterEach(() => {

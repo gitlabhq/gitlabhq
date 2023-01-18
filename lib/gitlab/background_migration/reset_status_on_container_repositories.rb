@@ -13,6 +13,7 @@ module Gitlab
 
       scope_to ->(relation) { relation.where(status: DELETE_SCHEDULED_STATUS) }
       operation_name :reset_status_on_container_repositories
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

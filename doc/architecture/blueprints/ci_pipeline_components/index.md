@@ -1,8 +1,8 @@
 ---
 status: proposed
 creation-date: "2022-09-14"
-authors: [ "@fabio", "@grzesiek" ]
-coach: "@kamil"
+authors: [ "@ayufan", "@fabiopitino", "@grzesiek" ]
+coach: [ "@ayufan", "@grzesiek" ]
 approvers: [ "@dhershkovitch", "@marknuzzo" ]
 owning-stage: "~devops::verify"
 participating-stages: []
@@ -134,6 +134,28 @@ For best experience with any systems made of components it's fundamental that co
   The version identifies the exact interface and behavior of the component.
 - **Resolvable**: when a component depends on another component, this dependency must be explicit and trackable.
 
+### Predictable components
+
+Eventually, we want to make CI Catalog Components predictable. Including a
+component by its path, using a fixed `@` version, should always return the same
+configuration, regardless of a context from which it is getting included from.
+The resulting configuration should be the same for a given component version
+and the set of inputs passed using `with:` keyword, hence it should be
+[deterministic](https://en.wikipedia.org/wiki/Deterministic_algorithm).
+
+A component should not produce side effects by being included and should be
+[referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency).
+
+Making components predictable is a process, and we may not be able to achieve
+this without significantly redesigning CI templates, what could be disruptive
+for users and customers right now. We initially considered restricting some
+top-level keywords, like `include: remote:` to make components more
+deterministic, but eventually agreed that we first need to iterate on the MVP
+to better understand the design that is required to make components more
+predictable. The predictability, determinism, referential transparency and
+making CI components predictable is still important for us, but we may be
+unable to achieve it early iterations.
+
 ## Structure of a component
 
 A pipeline component is identified by the path to a repository or directory that defines it
@@ -143,30 +165,36 @@ For example: `gitlab-org/dast@1.0`.
 
 ### The component path
 
-A component path must contain at least the metadata YAML and optionally a related `README.md` documentation file.
+A component path must contain at least the component YAML and optionally a
+related `README.md` documentation file.
 
 The component path can be:
 
-- A path to a project: `gitlab-org/dast`. In this case the 2 files are defined in the root directory of the repository.
-- A path to a project subdirectory: `gitlab-org/dast/api-scan`. In this case the 2 files are defined in the `api-scan` directory.
-- A path to a local directory: `/path/to/component`. This path must contain the metadata YAML that defines the component.
+- A path to a project: `gitlab-org/dast`. The default component is processed.
+- A path to an explicit component: `gitlab-org/dast/api-scan`. In this case the explicit `api-scan` component is processed.
+- A path to a local directory: `/path/to/component`. This path must contain the component YAML that defines the component.
   The path must start with `/` to indicate a full path in the repository.
 
-The metadata YAML file follows the filename convention `gitlab-<component-type>.yml` where component type is one of:
+The component YAML file follows the filename convention `<type>.yml` where component type is one of:
 
 | Component type | Context |
 | -------------- | ------- |
 | `template`     | For components used under `include:` keyword |
 | `step`         | For components used under `steps:` keyword  |
-| `workflow`     | For components used under `trigger:` keyword |
 
 Based on the context where the component is used we fetch the correct YAML file.
-For example, if we are including a component `gitlab-org/dast@1.0` we expect a YAML file named `gitlab-template.yml` in the
-top level directory of `gitlab-org/dast` repository.
+For example:
 
-A `gitlab-<component-type>.yml` file:
+- if we are including a component `gitlab-org/dast@1.0` we expect a YAML file named `template.yml` in the
+  root directory of `gitlab-org/dast` repository.
+- if we are including a component `gitlab-org/dast/api-scan@1.0` we expect a YAML file named `template.yml` inside a
+  directory `api-scan` of `gitlab-org/dast` repository.
+- if we are using a step component `gitlab-org/dast/api-scan@1.0` we expect a YAML file named `step.yml` inside a
+  directory `api-scan` of `gitlab-org/dast` repository.
 
-- Must have a **name** to be referenced to and **description** for extra details.
+A component YAML file:
+
+- Must have a **name** to be referenced to.
 - Must specify its **type** in the filename, which defines how it can be used (raw configuration to be `include`d, child pipeline workflow, job step).
 - Must define its **content** based on the type.
 - Must specify **input parameters** that it accepts. Components should depend on input parameters for dynamic values and not environment variables.
@@ -174,6 +202,7 @@ A `gitlab-<component-type>.yml` file:
 - Should be **validated statically** (for example: using JSON schema validators).
 
 ```yaml
+---
 spec:
   inputs:
     website:
@@ -184,11 +213,12 @@ spec:
         - unit
         - integration
         - system
-content: { ... }
+---
+# content of the component
 ```
 
-Components that are released in the catalog must have a `README.md` file in the same directory as the
-metadata YAML file. The `README.md` represents the documentation for the specific component, hence it's recommended
+Components that are released in the catalog must have a `README.md` file at the root directory of the repository.
+The `README.md` represents the documentation for the specific component, hence it's recommended
 even when not releasing versions in the catalog.
 
 ### The component version
@@ -230,30 +260,28 @@ The following directory structure would support 1 component per project:
 
 ```plaintext
 .
-├── gitlab-<type>.yml
+├── template.yml
 ├── README.md
 └── .gitlab-ci.yml
 ```
 
 The `.gitlab-ci.yml` is recommended for the project to ensure changes are verified accordingly.
 
-The component is now identified by the path `myorg/rails-rspec`. In other words, this means that
-the `gitlab-<type>.yml` and `README.md` are located in the root directory of the repository.
+The component is now identified by the path `myorg/rails-rspec` and we expect a `template.yml` file
+and `README.md` located in the root directory of the repository.
 
 The following directory structure would support multiple components per project:
 
 ```plaintext
 .
 ├── .gitlab-ci.yml
+├── README.md
 ├── unit/
-│   ├── gitlab-workflow.yml
-│   └── README.md
+│   └── template.yml
 ├── integration/
-│   ├── gitlab-workflow.yml
-│   └── README.md
+│   └── template.yml
 └── feature/
-    ├── gitlab-workflow.yml
-    └── README.md
+    └── template.yml
 ```
 
 In this example we are defining multiple test profiles that are executed with RSpec.
@@ -266,18 +294,20 @@ This directory structure could also support both strategies:
 
 ```plaintext
 .
-├── gitlab-template.yml # myorg/rails-rspec
+├── template.yml       # myorg/rails-rspec
 ├── README.md
+├── LICENSE
 ├── .gitlab-ci.yml
 ├── unit/
-│   ├── gitlab-workflow.yml # myorg/rails-rspec/unit
-│   └── README.md
+│   └── template.yml   # myorg/rails-rspec/unit
 ├── integration/
-│   ├── gitlab-workflow.yml # myorg/rails-rspec/integration
-│   └── README.md
-└── feature/
-    ├── gitlab-workflow.yml # myorg/rails-rspec/feature
-    └── README.md
+│   └── template.yml   # myorg/rails-rspec/integration
+├── feature/
+│   └── template.yml   # myorg/rails-rspec/feature
+└── report/
+    ├── step.yml       # myorg/rails-rspec/report
+    ├── Dockerfile
+    └── ... other files
 ```
 
 With the above structure we could have a top-level component that can be used as the
@@ -285,14 +315,15 @@ default component. For example, `myorg/rails-rspec` could run all the test profi
 However, more specific test profiles could be used separately (for example `myorg/rails-rspec/integration`).
 
 NOTE:
-Any nesting more than 1 level is initially not permitted.
+Nesting of components is not permitted.
 This limitation encourages cohesion at project level and keeps complexity low.
 
-## Input parameters `spec:inputs:` parameters
+## `spec:inputs:` parameters
 
 If the component takes any input parameters they must be specified according to the following schema:
 
 ```yaml
+---
 spec:
   inputs:
     website: # by default all declared inputs are mandatory.
@@ -303,7 +334,14 @@ spec:
         - unit
         - integration
         - system
+---
+# content of the component
+my-job:
+  script: echo
 ```
+
+The YAML in this case contains 2 documents. The first document represents the specifications while the
+second document represents the content.
 
 When using the component we pass the input parameters as follows:
 
@@ -322,27 +360,28 @@ possible [inputs provided upstream](#input-parameters-for-pipelines).
 Input parameters are validated as soon as possible:
 
 1. Read the file `gitlab-template.yml` inside `org/my-component`.
-1. Parse `spec:inputs` and validate the parameters against this schema.
-1. If successfully validated, proceed with parsing `content:`. Return an error otherwise.
-1. Interpolate input parameters inside the component's `content:`.
+1. Parse `spec:inputs` from the specifications and validate the parameters against this schema.
+1. If successfully validated, proceed with parsing the content. Return an error otherwise.
+1. Interpolate input parameters inside the component's content.
 
 ```yaml
+---
 spec:
   inputs:
     environment:
       options: [test, staging, production]
-content:
-  "run-tests-$[[ inputs.environment ]]":
-    script: ./run-test
+---
+"run-tests-$[[ inputs.environment ]]":
+  script: ./run-test
 
-  scan-website:
-    script: ./scan-website $[[ inputs.environment ]]
-    rules:
-      - if: $[[ inputs.environment ]] == 'staging'
-      - if: $[[ inputs.environment ]] == 'production'
+scan-website:
+  script: ./scan-website $[[ inputs.environment ]]
+  rules:
+    - if: $[[ inputs.environment ]] == 'staging'
+    - if: $[[ inputs.environment ]] == 'production'
 ```
 
-With `$[[ inputs.XXX ]]` inputs are interpolated immediately after parsing the `content:`.
+With `$[[ inputs.XXX ]]` inputs are interpolated immediately after parsing the content.
 
 ### Why input parameters and not environment variables?
 
@@ -386,17 +425,19 @@ include:
       foo: bar
 ```
 
-Then the configuration being included must specify the inputs:
+Then the configuration being included must specify the inputs by defining a specification section in the YAML:
 
 ```yaml
+---
 spec:
   inputs:
     foo:
-
+---
 # rest of the configuration
 ```
 
-If a YAML includes content using `with:` but the including YAML doesn't specify `inputs:`, an error should be raised.
+If a YAML includes content using `with:` but the including YAML doesn't define `inputs:` in the specifications,
+an error should be raised.
 
 |`with:`| `inputs:` | result |
 | --- | --- | --- |
@@ -428,9 +469,10 @@ deploy-app:
       deploy_environment: staging
 ```
 
-To solve the problem of `Run Pipeline` UI form we could fully leverage the `spec:inputs` schema:
+To solve the problem of `Run Pipeline` UI form we could fully leverage the `inputs` specifications:
 
 ```yaml
+---
 spec:
   inputs:
     concurrency:
@@ -443,9 +485,11 @@ spec:
         - canary     # 2nd option
         - production # 3rd option
       default: staging # selected by default in the UI.
-                     # if `default:` is not specified, the user must explicitly select
-                     # an option.
+                      # if `default:` is not specified, the user must explicitly select
+                      # an option.
       description: Deployment environment # optional: render as input label.
+---
+# rest of the pipeline config
 ```
 
 ## Limits

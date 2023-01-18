@@ -113,7 +113,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
 
           within('div#project-dropdown') do
             click_button('Select project')
-            click_button('Sentry | internal')
+            find('li', text: 'Sentry | internal').click
           end
 
           click_button('Save changes')

@@ -6,11 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Writing consumer tests
 
-This tutorial guides you through writing a consumer test from scratch. To start, the consumer tests are written using [`jest-pact`](https://github.com/pact-foundation/jest-pact) that builds on top of [`pact-js`](https://github.com/pact-foundation/pact-js). This tutorial shows you how to write a consumer test for the `/discussions.json` REST API endpoint, which is actually `/:namespace_name/:project_name/-/merge_requests/:id/discussions.json`. For an example of a GraphQL consumer test, see [`spec/contracts/consumer/specs/project/pipeline/show.spec.js`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/consumer/specs/project/pipeline/show.spec.js).
+This tutorial guides you through writing a consumer test from scratch. To start, the consumer tests are written using [`jest-pact`](https://github.com/pact-foundation/jest-pact) that builds on top of [`pact-js`](https://github.com/pact-foundation/pact-js). This tutorial shows you how to write a consumer test for the `/discussions.json` REST API endpoint, which is `/:namespace_name/:project_name/-/merge_requests/:id/discussions.json`, that is called in the `MergeRequests#show` page. For an example of a GraphQL consumer test, see [`spec/contracts/consumer/specs/project/pipelines/show.spec.js`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/consumer/specs/project/pipelines/show.spec.js).
 
 ## Create the skeleton
 
-Start by creating the skeleton of a consumer test. Create a file under `spec/contracts/consumer/specs/project/merge_request` called `discussions.spec.js`.
+Start by creating the skeleton of a consumer test. Since this is for a request in the `MergeRequests#show` page, under `spec/contracts/consumer/specs/project/merge_requests`, create a file called `show.spec.js`.
 Then, populate it with the following function and parameters:
 
 - [`pactWith`](#the-pactwith-function)
@@ -38,10 +38,10 @@ import { pactWith } from 'jest-pact';
 
 pactWith(
   {
-    consumer: 'MergeRequest#show',
-    provider: 'Merge Request Discussions Endpoint',
+    consumer: 'MergeRequests#show',
+    provider: 'GET discussions',
     log: '../logs/consumer.log',
-    dir: '../contracts/project/merge_request/show',
+    dir: '../contracts/project/merge_requests/show',
   },
   PactFn
 );
@@ -58,14 +58,14 @@ import { pactWith } from 'jest-pact';
 
 pactWith(
   {
-    consumer: 'MergeRequest#show',
-    provider: 'Merge Request Discussions Endpoint',
+    consumer: 'MergeRequests#show',
+    provider: 'GET discussions',
     log: '../logs/consumer.log',
-    dir: '../contracts',
+    dir: '../contracts/project/merge_requests/show',
   },
 
   (provider) => {
-    describe('Merge Request Discussions Endpoint', () => {
+    describe('GET discussions', () => {
       beforeEach(() => {
 
       });
@@ -97,14 +97,14 @@ import { Matchers } from '@pact-foundation/pact';
 
 pactWith(
   {
-    consumer: 'MergeRequest#show',
-    provider: 'Merge Request Discussions Endpoint',
+    consumer: 'MergeRequests#show',
+    provider: 'GET discussions',
     log: '../logs/consumer.log',
-    dir: '../contracts/project/merge_request/show',
+    dir: '../contracts/project/merge_requests/show',
   },
 
   (provider) => {
-    describe('Merge Request Discussions Endpoint', () => {
+    describe('GET discussions', () => {
       beforeEach(() => {
         const interaction = {
           state: 'a merge request with discussions exists',
@@ -175,14 +175,14 @@ import { getDiscussions } from '../../../resources/api/project/merge_requests';
 
 pactWith(
   {
-    consumer: 'MergeRequest#show',
-    provider: 'Merge Request Discussions Endpoint',
+    consumer: 'MergeRequests#show',
+    provider: 'GET discussions',
     log: '../logs/consumer.log',
-    dir: '../contracts/project/merge_request/show',
+    dir: '../contracts/project/merge_requests/show',
   },
 
   (provider) => {
-    describe('Merge Request Discussions Endpoint', () => {
+    describe('GET discussions', () => {
       beforeEach(() => {
         const interaction = {
           state: 'a merge request with discussions exists',
@@ -232,7 +232,7 @@ There we have it! The consumer test is now set up. You can now try [running this
 
 As you may have noticed, the request and response definitions can get large. This results in the test being difficult to read, with a lot of scrolling to find what you want. You can make the test easier to read by extracting these out to a `fixture`.
 
-Create a file under `spec/contracts/consumer/fixtures/project/merge_request` called `discussions.fixture.js` where you will place the `request` and `response` definitions.
+Create a file under `spec/contracts/consumer/fixtures/project/merge_requests` called `discussions.fixture.js` where you will place the `request` and `response` definitions.
 
 ```javascript
 import { Matchers } from '@pact-foundation/pact';
@@ -279,13 +279,13 @@ With all of that moved to the `fixture`, you can simplify the test to the follow
 ```javascript
 import { pactWith } from 'jest-pact';
 
-import { Discussions } from '../../../fixtures/project/merge_request/discussions.fixture';
+import { Discussions } from '../../../fixtures/project/merge_requests/discussions.fixture';
 import { getDiscussions } from '../../../resources/api/project/merge_requests';
 
-const CONSUMER_NAME = 'MergeRequest#show';
-const PROVIDER_NAME = 'Merge Request Discussions Endpoint';
+const CONSUMER_NAME = 'MergeRequests#show';
+const PROVIDER_NAME = 'GET discussions';
 const CONSUMER_LOG = '../logs/consumer.log';
-const CONTRACT_DIR = '../contracts/project/merge_request/show';
+const CONTRACT_DIR = '../contracts/project/merge_requests/show';
 
 pactWith(
   {

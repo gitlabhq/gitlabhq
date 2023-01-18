@@ -2,14 +2,20 @@
 import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
-import { canUnban, canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members/utils';
+import {
+  canDisableTwoFactor,
+  canUnban,
+  canOverride,
+  canRemove,
+  canRemoveBlockedByLastOwner,
+  canResend,
+  canUpdate,
+} from 'ee_else_ce/members/utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import UserDate from '~/vue_shared/components/user_date.vue';
 import {
   FIELD_KEY_ACTIONS,
   FIELDS,
   ACTIVE_TAB_QUERY_PARAM_NAME,
-  TAB_QUERY_PARAM_VALUES,
   MEMBER_STATE_AWAITING,
   MEMBER_STATE_ACTIVE,
   USER_STATE_BLOCKED,
@@ -23,6 +29,7 @@ import ExpirationDatepicker from './expiration_datepicker.vue';
 import MemberActionButtons from './member_action_buttons.vue';
 import MemberAvatar from './member_avatar.vue';
 import MemberSource from './member_source.vue';
+import MemberActivity from './member_activity.vue';
 import RoleDropdown from './role_dropdown.vue';
 
 export default {
@@ -40,11 +47,13 @@ export default {
     RemoveGroupLinkModal,
     RemoveMemberModal,
     ExpirationDatepicker,
-    UserDate,
+    MemberActivity,
+    DisableTwoFactorModal: () =>
+      import('ee_component/members/components/modals/disable_two_factor_modal.vue'),
     LdapOverrideConfirmationModal: () =>
       import('ee_component/members/components/ldap/ldap_override_confirmation_modal.vue'),
   },
-  inject: ['namespace', 'currentUserId'],
+  inject: ['namespace', 'currentUserId', 'canManageMembers'],
   props: {
     tabQueryParamValue: {
       type: String,
@@ -80,18 +89,17 @@ export default {
 
       return paramName && currentPage && perPage && totalItems;
     },
-    isInvitedUser() {
-      return this.tabQueryParamValue === TAB_QUERY_PARAM_VALUES.invite;
-    },
   },
   methods: {
     hasActionButtons(member) {
       return (
         canRemove(member) ||
+        canRemoveBlockedByLastOwner(member, this.canManageMembers) ||
         canResend(member) ||
         canUpdate(member, this.currentUserId) ||
         canOverride(member) ||
-        canUnban(member)
+        canUnban(member) ||
+        canDisableTwoFactor(member)
       );
     },
     showField(field) {
@@ -249,7 +257,11 @@ export default {
 
       <template #cell(source)="{ item: member }">
         <members-table-cell #default="{ isDirectMember }" :member="member">
-          <member-source :is-direct-member="isDirectMember" :member-source="member.source" />
+          <member-source
+            :is-direct-member="isDirectMember"
+            :member-source="member.source"
+            :created-by="member.createdBy"
+          />
         </members-table-cell>
       </template>
 
@@ -281,12 +293,8 @@ export default {
         </members-table-cell>
       </template>
 
-      <template #cell(userCreatedAt)="{ item: member }">
-        <user-date :date="member.user.createdAt" />
-      </template>
-
-      <template #cell(lastActivityOn)="{ item: member }">
-        <user-date :date="member.user.lastActivityOn" />
+      <template #cell(activity)="{ item: member }">
+        <member-activity :member="member" />
       </template>
 
       <template #cell(actions)="{ item: member }">
@@ -294,7 +302,6 @@ export default {
           <member-action-buttons
             :member-type="memberType"
             :is-current-user="isCurrentUser"
-            :is-invited-user="isInvitedUser"
             :permissions="permissions"
             :member="member"
           />
@@ -317,6 +324,7 @@ export default {
       :label-prev-page="__('Go to previous page')"
       align="center"
     />
+    <disable-two-factor-modal />
     <remove-group-link-modal />
     <remove-member-modal />
     <ldap-override-confirmation-modal />

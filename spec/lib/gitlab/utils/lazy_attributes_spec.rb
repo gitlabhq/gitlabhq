@@ -47,9 +47,9 @@ RSpec.describe Gitlab::Utils::LazyAttributes do
       end
 
       it 'only calls the block once even if it returned `nil`', :aggregate_failures do
-        expect(instance.instance_variable_get('@number')).to receive(:call).once.and_call_original
-        expect(instance.instance_variable_get('@accessor_2')).to receive(:call).once.and_call_original
-        expect(instance.instance_variable_get('@incorrect_type')).to receive(:call).once.and_call_original
+        expect(instance.instance_variable_get(:@number)).to receive(:call).once.and_call_original
+        expect(instance.instance_variable_get(:@accessor_2)).to receive(:call).once.and_call_original
+        expect(instance.instance_variable_get(:@incorrect_type)).to receive(:call).once.and_call_original
 
         2.times do
           instance.number

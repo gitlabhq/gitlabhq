@@ -3,7 +3,7 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:db:truncate_legacy_tables', :silence_stdout, :reestablished_active_record_base,
-               :suppress_gitlab_schemas_validate_connection do
+               :suppress_gitlab_schemas_validate_connection, feature_category: :pods do
   let(:main_connection) { ApplicationRecord.connection }
   let(:ci_connection) { Ci::ApplicationRecord.connection }
   let(:test_gitlab_main_table) { '_test_gitlab_main_table' }
@@ -56,14 +56,16 @@ RSpec.describe 'gitlab:db:truncate_legacy_tables', :silence_stdout, :reestablish
         Gitlab::Database::LockWritesManager.new(
           table_name: test_gitlab_ci_table,
           connection: main_connection,
-          database_name: "main"
+          database_name: "main",
+          with_retries: false
         ).lock_writes
 
         # Locking main table on the ci database
         Gitlab::Database::LockWritesManager.new(
           table_name: test_gitlab_main_table,
           connection: ci_connection,
-          database_name: "ci"
+          database_name: "ci",
+          with_retries: false
         ).lock_writes
       end
 

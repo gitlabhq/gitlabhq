@@ -5,6 +5,9 @@ require 'spec_helper'
 RSpec.describe Achievements::Achievement, type: :model, feature_category: :users do
   describe 'associations' do
     it { is_expected.to belong_to(:namespace).required }
+
+    it { is_expected.to have_many(:user_achievements).inverse_of(:achievement) }
+    it { is_expected.to have_many(:users).through(:user_achievements).inverse_of(:achievements) }
   end
 
   describe 'modules' do

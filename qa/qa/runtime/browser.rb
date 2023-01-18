@@ -96,12 +96,11 @@ module QA
             capabilities['goog:chromeOptions'][:args] << 'disable-dev-shm-usage' if QA::Runtime::Env.disable_dev_shm?
 
             # Set chrome default download path
-            if QA::Runtime::Env.chrome_default_download_path
-              capabilities['goog:chromeOptions'][:prefs] = {
-                'download.default_directory' => File.expand_path(QA::Runtime::Env.chrome_default_download_path),
-                'download.prompt_for_download' => false
-              }
-            end
+
+            capabilities['goog:chromeOptions'][:prefs] = {
+              'download.default_directory' => File.expand_path(QA::Runtime::Env.chrome_default_download_path),
+              'download.prompt_for_download' => false
+            }
 
             # Specify the user-agent to allow challenges to be bypassed
             # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11938

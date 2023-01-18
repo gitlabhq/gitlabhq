@@ -74,7 +74,7 @@ FactoryBot.define do
       allow_descendants_override_disabled_shared_runners { false }
     end
 
-    trait :disabled_with_override do
+    trait :disabled_and_overridable do
       shared_runners_disabled
       allow_descendants_override_disabled_shared_runners
     end

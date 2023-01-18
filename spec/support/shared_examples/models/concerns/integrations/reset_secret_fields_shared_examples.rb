@@ -42,7 +42,7 @@ RSpec.shared_examples Integrations::ResetSecretFields do
 
       # Treat values as persisted
       integration.reset_updated_properties
-      integration.instance_variable_set('@old_data_fields', nil) if integration.supports_data_fields?
+      integration.instance_variable_set(:@old_data_fields, nil) if integration.supports_data_fields?
     end
 
     context 'when an exposing field has changed' do

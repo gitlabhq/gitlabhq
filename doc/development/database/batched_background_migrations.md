@@ -269,6 +269,7 @@ In the second (filtered) example, we know exactly 100 will be updated with each 
    class BackfillNamespaceType < BatchedMigrationJob
      scope_to ->(relation) { relation.where(type: nil) }
      operation_name :update_all
+     feature_category :source_code_management
 
      def perform
        each_sub_batch do |sub_batch|
@@ -330,6 +331,7 @@ background migration.
      # end
 
      operation_name :update_all
+     feature_category :source_code_management
 
      def perform
        each_sub_batch(

@@ -8,7 +8,7 @@ require 'time'
 
 # In environments where code is preloaded and cached such as `spring`,
 # we may run into "already initialized" warnings, hence the check.
-require_relative '../lib/gitlab' unless Object.const_defined?('Gitlab')
+require_relative '../lib/gitlab' unless Object.const_defined?(:Gitlab)
 require_relative '../lib/gitlab/utils'
 require_relative '../lib/gitlab/sidekiq_config/cli_methods'
 require_relative '../lib/gitlab/sidekiq_config/worker_matcher'

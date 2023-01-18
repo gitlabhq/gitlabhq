@@ -1,11 +1,8 @@
 import groupBoardMembers from '~/boards/graphql/group_board_members.query.graphql';
 import projectBoardMembers from '~/boards/graphql/project_board_members.query.graphql';
-import { BoardType } from './constants';
 import boardLabels from './graphql/board_labels.query.graphql';
 
-export default function issueBoardFilters(apollo, fullPath, boardType) {
-  const isGroupBoard = boardType === BoardType.group;
-  const isProjectBoard = boardType === BoardType.project;
+export default function issueBoardFilters(apollo, fullPath, isGroupBoard) {
   const transformLabels = ({ data }) => {
     return isGroupBoard ? data.group?.labels.nodes || [] : data.project?.labels.nodes || [];
   };
@@ -34,7 +31,7 @@ export default function issueBoardFilters(apollo, fullPath, boardType) {
           fullPath,
           searchTerm: labelSearchTerm,
           isGroup: isGroupBoard,
-          isProject: isProjectBoard,
+          isProject: !isGroupBoard,
         },
       })
       .then(transformLabels);

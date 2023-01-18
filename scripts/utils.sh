@@ -109,21 +109,38 @@ function install_junit_merge_gem() {
 
 function fail_on_warnings() {
   local cmd="$*"
-  local warnings
-  warnings="$(mktemp)"
+  local warning_file
+  warning_file="$(mktemp)"
 
-  eval "$cmd 2>$warnings"
+  local allowed_warning_file
+  allowed_warning_file="$(mktemp)"
+
+  eval "$cmd 2>$warning_file"
   local ret=$?
 
-  if test -s "$warnings";
+  # Filter out comments and empty lines from allowed warnings file.
+  grep --invert-match --extended-regexp "^#|^$" scripts/allowed_warnings.txt > "$allowed_warning_file"
+
+  local warnings
+  # Filter out allowed warnings from stderr.
+  # Turn grep errors into warnings so we fail later.
+  warnings=$(grep --invert-match --extended-regexp --file "$allowed_warning_file" "$warning_file" 2>&1 || true)
+
+  rm -f "$allowed_warning_file"
+
+  if [ "$warnings" != "" ]
   then
     echoerr "There were warnings:"
-    cat "$warnings"
-    rm "$warnings"
+    echoerr "======================== Filtered warnings ====================================="
+    echo "$warnings" >&2
+    echoerr "======================= Unfiltered warnings ===================================="
+    cat "$warning_file" >&2
+    echoerr "================================================================================"
+    rm -f "$warning_file"
     return 1
   fi
 
-  rm "$warnings"
+  rm -f "$warning_file"
 
   return $ret
 }

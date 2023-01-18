@@ -575,6 +575,45 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             end
           end
 
+          context 'when access level is private' do
+            subject(:request) { upload_artifacts(file_upload, headers_with_token, params) }
+
+            let(:params) { { artifact_type: :archive, artifact_format: :zip, accessibility: 'private' } }
+
+            it 'sets job artifact access level to private' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(job.reload.job_artifacts_archive).to be_private_accessibility
+            end
+          end
+
+          context 'when access level is public' do
+            subject(:request) { upload_artifacts(file_upload, headers_with_token, params) }
+
+            let(:params) { { artifact_type: :archive, artifact_format: :zip, accessibility: 'public' } }
+
+            it 'sets job artifact access level to public' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(job.reload.job_artifacts_archive).to be_public_accessibility
+            end
+          end
+
+          context 'when access level is unknown' do
+            subject(:request) { upload_artifacts(file_upload, headers_with_token, params) }
+
+            let(:params) { { artifact_type: :archive, artifact_format: :zip } }
+
+            it 'sets job artifact access level to public' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(job.reload.job_artifacts_archive).to be_public_accessibility
+            end
+          end
+
           context 'when artifact_type is archive' do
             context 'when artifact_format is zip' do
               subject(:request) { upload_artifacts(file_upload, headers_with_token, params) }

@@ -3,7 +3,7 @@ table_name: lfs_object_states
 classes:
 - Geo::LfsObjectState
 feature_categories:
-- git_lfs
+- source_code_management
 description: Geo verification states for LFS objects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63981
 milestone: '14.6'

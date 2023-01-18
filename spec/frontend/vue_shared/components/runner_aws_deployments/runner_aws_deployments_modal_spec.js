@@ -1,30 +1,28 @@
-import { GlModal, GlFormRadio } from '@gitlab/ui';
+import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { getBaseURL, visitUrl } from '~/lib/utils/url_utility';
-import { mockTracking } from 'helpers/tracking_helper';
-import {
-  CF_BASE_URL,
-  TEMPLATES_BASE_URL,
-  EASY_BUTTONS,
-} from '~/vue_shared/components/runner_aws_deployments/constants';
+import { s__ } from '~/locale';
 import RunnerAwsDeploymentsModal from '~/vue_shared/components/runner_aws_deployments/runner_aws_deployments_modal.vue';
+import RunnerAwsInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_aws_instructions.vue';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
 }));
 
+const mockModalId = 'runner-aws-deployments-modal';
+
 describe('RunnerAwsDeploymentsModal', () => {
   let wrapper;
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findEasyButtons = () => wrapper.findAllComponents(GlFormRadio);
+  const findRunnerAwsInstructions = () => wrapper.findComponent(RunnerAwsInstructions);
 
-  const createComponent = () => {
+  const createComponent = (options) => {
     wrapper = shallowMount(RunnerAwsDeploymentsModal, {
       propsData: {
-        modalId: 'runner-aws-deployments-modal',
+        modalId: mockModalId,
       },
+      ...options,
     });
   };
 
@@ -36,39 +34,39 @@ describe('RunnerAwsDeploymentsModal', () => {
     wrapper.destroy();
   });
 
-  it('renders the modal', () => {
-    expect(wrapper.element).toMatchSnapshot();
+  it('renders modal', () => {
+    expect(findModal().props()).toMatchObject({
+      size: 'sm',
+      modalId: mockModalId,
+      title: s__('Runners|Deploy GitLab Runner in AWS'),
+    });
+    expect(findModal().attributes()).toMatchObject({
+      'hide-footer': '',
+    });
   });
 
-  it('should contain all easy buttons', () => {
-    expect(findEasyButtons()).toHaveLength(EASY_BUTTONS.length);
+  it('renders modal contents', () => {
+    expect(findRunnerAwsInstructions().exists()).toBe(true);
   });
 
-  describe('first easy button', () => {
-    it('should contain the correct description', () => {
-      expect(findEasyButtons().at(0).text()).toContain(EASY_BUTTONS[0].description);
+  it('when contents trigger closing, modal closes', () => {
+    const mockClose = jest.fn();
+
+    createComponent({
+      stubs: {
+        GlModal: {
+          template: '<div><slot/></div>',
+          methods: {
+            close: mockClose,
+          },
+        },
+      },
     });
 
-    it('should contain the correct link', () => {
-      const templateUrl = encodeURIComponent(TEMPLATES_BASE_URL + EASY_BUTTONS[0].templateName);
-      const { stackName } = EASY_BUTTONS[0];
-      const instanceUrl = encodeURIComponent(getBaseURL());
-      const url = `${CF_BASE_URL}templateURL=${templateUrl}&stackName=${stackName}&param_3GITLABRunnerInstanceURL=${instanceUrl}`;
+    expect(mockClose).toHaveBeenCalledTimes(0);
 
-      findModal().vm.$emit('primary');
+    findRunnerAwsInstructions().vm.$emit('close');
 
-      expect(visitUrl).toHaveBeenCalledWith(url, true);
-    });
-
-    it('should track an event when clicked', () => {
-      const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-
-      findModal().vm.$emit('primary');
-
-      expect(trackingSpy).toHaveBeenCalledTimes(1);
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'template_clicked', {
-        label: EASY_BUTTONS[0].stackName,
-      });
-    });
+    expect(mockClose).toHaveBeenCalledTimes(1);
   });
 });

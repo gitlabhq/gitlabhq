@@ -52,6 +52,16 @@ RSpec.describe 'Environment', feature_category: :projects do
       end
     end
 
+    context 'without deployments' do
+      before do
+        visit_environment(environment)
+      end
+
+      it 'does not show deployments', :js do
+        expect(page).to have_content('You don\'t have any deployments right now.')
+      end
+    end
+
     context 'with deployments' do
       before do
         visit_environment(environment)

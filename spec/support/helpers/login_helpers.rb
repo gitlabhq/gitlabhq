@@ -101,6 +101,8 @@ module LoginHelpers
     fill_in "user_password", with: (password || user.password)
     check 'user_remember_me' if remember
 
+    wait_for_all_requests
+
     find('[data-testid="sign-in-button"]:enabled').click
 
     if two_factor_auth

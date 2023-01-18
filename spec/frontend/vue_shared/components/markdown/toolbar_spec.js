@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import Toolbar from '~/vue_shared/components/markdown/toolbar.vue';
+import EditorModeDropdown from '~/vue_shared/components/markdown/editor_mode_dropdown.vue';
 
 describe('toolbar', () => {
   let wrapper;
@@ -45,6 +46,20 @@ describe('toolbar', () => {
       createMountedWrapper();
 
       expect(wrapper.find('.comment-toolbar').exists()).toBe(true);
+    });
+  });
+
+  describe('with content editor switcher', () => {
+    beforeEach(() => {
+      createMountedWrapper({
+        showContentEditorSwitcher: true,
+      });
+    });
+
+    it('re-emits event from switcher', () => {
+      wrapper.findComponent(EditorModeDropdown).vm.$emit('input', 'richText');
+
+      expect(wrapper.emitted('enableContentEditor')).toEqual([[]]);
     });
   });
 });

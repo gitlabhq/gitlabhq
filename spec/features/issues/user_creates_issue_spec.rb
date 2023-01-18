@@ -161,6 +161,11 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       let(:project) { create(:project, :public, :repository) }
 
       before do
+        # With multistore feature flags enabled (using an actual Redis store instead of NullStore),
+        # it somehow writes an invalid content to Redis and the specs would fail.
+        stub_feature_flags(use_primary_and_secondary_stores_for_repository_cache: false)
+        stub_feature_flags(use_primary_store_as_default_for_repository_cache: false)
+
         project.repository.create_file(
           user,
           '.gitlab/issue_templates/bug.md',

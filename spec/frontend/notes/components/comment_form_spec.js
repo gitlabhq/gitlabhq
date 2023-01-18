@@ -5,6 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import Autosave from '~/autosave';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/flash';
@@ -20,6 +21,7 @@ import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } 
 jest.mock('autosize');
 jest.mock('~/commons/nav/user_merge_requests');
 jest.mock('~/flash');
+jest.mock('~/autosave');
 
 Vue.use(Vuex);
 
@@ -336,8 +338,11 @@ describe('issue_comment_form component', () => {
         });
 
         it('inits autosave', () => {
-          expect(wrapper.vm.autosave).toBeDefined();
-          expect(wrapper.vm.autosave.key).toBe(`autosave/Note/Issue/${noteableDataMock.id}`);
+          expect(Autosave).toHaveBeenCalledWith(expect.any(Element), [
+            'Note',
+            'Issue',
+            noteableDataMock.id,
+          ]);
         });
       });
 

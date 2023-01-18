@@ -7,12 +7,6 @@ module Wikis
 
     private
 
-    # Used for getting a project/group out of the resource in order to scope a feature flag
-    # Can be removed within https://gitlab.com/gitlab-org/gitlab/-/issues/353607
-    def container(resource)
-      resource.container
-    end
-
     override :find_resource
     def find_resource(id)
       Project.find(id).wiki

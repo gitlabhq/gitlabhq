@@ -33,21 +33,26 @@ RSpec.describe Projects::ProtectedBranchesController do
 
     let(:create_params) { attributes_for(:protected_branch).merge(access_level_params) }
 
-    it 'creates the protected branch rule' do
-      expect do
-        post(:create, params: project_params.merge(protected_branch: create_params))
-      end.to change(ProtectedBranch, :count).by(1)
-    end
+    describe "created successfully" do
+      using RSpec::Parameterized::TableSyntax
 
-    context 'when repository is empty' do
-      let(:project) { empty_project }
+      let(:protected_branch) { create(:protected_branch, project: ref_project) }
+      let(:project_params) { { namespace_id: ref_project.namespace.to_param, project_id: ref_project } }
 
-      it 'creates the protected branch rule' do
-        expect do
-          post(:create, params: project_params.merge(protected_branch: create_params))
-        end.to change(ProtectedBranch, :count).by(1)
+      subject { post(:create, params: project_params.merge(protected_branch: create_params), format: format) }
 
-        expect(response).to have_gitlab_http_status(:found)
+      where(:format, :ref_project, :response_status) do
+        :html          | ref(:project)              | :found
+        :html          | ref(:empty_project)        | :found
+        :json          | ref(:project)              | :ok
+        :json          | ref(:empty_project)        | :ok
+      end
+
+      with_them do
+        it 'creates a protected branch' do
+          expect { subject }.to change(ProtectedBranch, :count).by(1)
+          expect(response).to have_gitlab_http_status(response_status)
+        end
       end
     end
 

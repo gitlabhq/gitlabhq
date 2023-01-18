@@ -1,10 +1,7 @@
 @import 'mixins_and_variables_and_functions';
 
 .ci-status {
-  padding: 2px 7px 4px;
   border: 1px solid var(--border-color, $border-color);
-  white-space: nowrap;
-  border-radius: 4px;
 
   &:hover,
   &:focus {

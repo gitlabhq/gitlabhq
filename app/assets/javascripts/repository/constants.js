@@ -1,5 +1,6 @@
 import { __ } from '~/locale';
 
+export const GITALY_UNAVAILABLE_CODE = 'unavailable';
 export const TREE_PAGE_LIMIT = 1000; // the maximum amount of items per page
 export const TREE_PAGE_SIZE = 100; // the amount of items to be fetched per (batch) request
 export const TREE_INITIAL_FETCH_COUNT = TREE_PAGE_LIMIT / TREE_PAGE_SIZE; // the amount of (batch) requests to make
@@ -100,3 +101,8 @@ export const LEGACY_FILE_TYPES = [
   'cargo_toml',
   'go_mod',
 ];
+
+export const i18n = {
+  generalError: __('An error occurred while fetching folder content.'),
+  gitalyError: __('Error: Gitaly is unavailable. Contact your administrator.'),
+};

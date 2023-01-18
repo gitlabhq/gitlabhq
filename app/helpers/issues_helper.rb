@@ -35,20 +35,6 @@ module IssuesHelper
     end
   end
 
-  def status_box_class(item)
-    if item.try(:expired?)
-      'gl-bg-orange-500'
-    elsif item.try(:merged?)
-      'badge-info'
-    elsif item.closed?
-      item.is_a?(MergeRequest) ? 'badge-danger' : 'gl-bg-red-500'
-    elsif item.try(:upcoming?)
-      'gl-bg-gray-500'
-    else
-      item.is_a?(MergeRequest) ? 'badge-success' : 'gl-bg-green-500'
-    end
-  end
-
   def issue_status_visibility(issue, status_box:)
     case status_box
     when :open
@@ -77,9 +63,7 @@ module IssuesHelper
   def hidden_issue_icon(issue)
     return unless issue_hidden?(issue)
 
-    content_tag(:span, class: 'has-tooltip', title: _('This issue is hidden because its author has been banned')) do
-      sprite_icon('spam', css_class: 'gl-vertical-align-text-bottom')
-    end
+    hidden_issuable_icon(issue)
   end
 
   def award_user_list(awards, current_user, limit: 10)
@@ -197,7 +181,9 @@ module IssuesHelper
       issue_type: issuable_display_type(issuable),
       new_issue_path: new_project_issue_path(project, new_issuable_params),
       project_path: project.full_path,
-      report_abuse_path: new_abuse_report_path(user_id: issuable.author.id, ref_url: issue_url(issuable)),
+      report_abuse_path: add_category_abuse_reports_path,
+      reported_user_id: issuable.author.id,
+      reported_from_url: issue_url(issuable),
       submit_as_spam_path: mark_as_spam_project_issue_path(project, issuable)
     }
   end
@@ -258,8 +244,12 @@ module IssuesHelper
 
   def dashboard_issues_list_data(current_user)
     {
+      autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       calendar_path: url_for(safe_params.merge(calendar_url_options)),
-      empty_state_svg_path: image_path('illustrations/issue-dashboard_results-without-filter.svg'),
+      dashboard_labels_path: dashboard_labels_path(format: :json, include_ancestor_groups: true),
+      dashboard_milestones_path: dashboard_milestones_path(format: :json),
+      empty_state_with_filter_svg_path: image_path('illustrations/issues.svg'),
+      empty_state_without_filter_svg_path: image_path('illustrations/issue-dashboard_results-without-filter.svg'),
       initial_sort: current_user&.user_preference&.issues_sort,
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,

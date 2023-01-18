@@ -53,7 +53,6 @@ export const TRACKING_ACTION_CLICK_SHOW_FULL_PATH = 'click_show_full_path';
 // Parameters
 
 export const IMAGE_DELETE_SCHEDULED_STATUS = 'DELETE_SCHEDULED';
-export const IMAGE_FAILED_DELETED_STATUS = 'DELETE_FAILED';
 export const IMAGE_MIGRATING_STATE = 'importing';
 export const GRAPHQL_PAGE_SIZE = 10;
 

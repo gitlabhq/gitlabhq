@@ -25,7 +25,7 @@ To use Grafana-rendered images:
 
 1. Go to the dashboard containing the panel in Grafana.
 1. From the panel's menu, select **Share**.
-1. Select the **Direct link rendered image** button, which provides the link.
+1. Select **Direct link rendered image**, which provides the link.
 1. Copy the link and add an image tag as [inline HTML](../../user/markdown.md#inline-html) in your
    Markdown in the format `<img src="your_link"/>`. You can tweak the query parameters to meet your needs, such as removing the `&from=`
    and `&to=` parameters to display a live panel.

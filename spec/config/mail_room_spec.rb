@@ -27,11 +27,6 @@ RSpec.describe 'mail_room.yml', feature_category: :service_desk do
 
   before do
     stub_env('GITLAB_REDIS_QUEUES_CONFIG_FILE', absolute_path(queues_config_path))
-    redis_clear_raw_config!(Gitlab::Redis::Queues)
-  end
-
-  after do
-    redis_clear_raw_config!(Gitlab::Redis::Queues)
   end
 
   context 'when incoming email is disabled' do
@@ -57,6 +52,7 @@ RSpec.describe 'mail_room.yml', feature_category: :service_desk do
         password: '[REDACTED]',
         name: 'inbox',
         idle_timeout: 60,
+        delete_after_delivery: true,
         expunge_deleted: true
       }
       expected_options = {
@@ -81,7 +77,7 @@ RSpec.describe 'mail_room.yml', feature_category: :service_desk do
         email: 'gitlab-incoming@gmail.com',
         name: 'inbox',
         idle_timeout: 60,
-        expunge_deleted: true
+        delete_after_delivery: false
       }
       expected_options = {
         redis_url: gitlab_redis_queues.url,

@@ -5,6 +5,7 @@ module ContainerRegistry
     include Gitlab::Utils::StrongMemoize
 
     attr_accessor :uri
+    attr_reader :options, :base_uri
 
     REGISTRY_VERSION_HEADER = 'gitlab-container-registry-version'
     REGISTRY_FEATURES_HEADER = 'gitlab-container-registry-features'

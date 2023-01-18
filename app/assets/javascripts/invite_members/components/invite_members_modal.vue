@@ -18,8 +18,6 @@ import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import { n__, sprintf } from '~/locale';
 import {
-  CLOSE_TO_LIMIT_VARIANT,
-  REACHED_LIMIT_VARIANT,
   USERS_FILTER_ALL,
   INVITE_MEMBERS_FOR_TASK,
   MEMBER_MODAL_LABELS,
@@ -189,10 +187,10 @@ export default {
       return this.source === LEARN_GITLAB;
     },
     showUserLimitNotification() {
-      return this.usersLimitDataset.reachedLimit || this.usersLimitDataset.closeToDashboardLimit;
+      return !isEmpty(this.usersLimitDataset.alertVariant);
     },
     limitVariant() {
-      return this.usersLimitDataset.reachedLimit ? REACHED_LIMIT_VARIANT : CLOSE_TO_LIMIT_VARIANT;
+      return this.usersLimitDataset.alertVariant;
     },
     errorList() {
       return Object.entries(this.invalidMembers).map(([member, error]) => {
@@ -479,6 +477,7 @@ export default {
         </gl-alert>
         <user-limit-notification
           v-else-if="showUserLimitNotification"
+          class="gl-mb-5"
           :limit-variant="limitVariant"
           :users-limit-dataset="usersLimitDataset"
         />

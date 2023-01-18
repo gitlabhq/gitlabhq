@@ -1,4 +1,8 @@
-import { MEMBER_TYPES, MEMBER_STATE_CREATED } from '~/members/constants';
+import {
+  MEMBER_TYPES,
+  MEMBER_STATE_CREATED,
+  MEMBER_MODEL_TYPE_GROUP_MEMBER,
+} from '~/members/constants';
 
 export const member = {
   requestedAt: null,
@@ -13,7 +17,7 @@ export const member = {
     fullName: 'Foo Bar',
     webUrl: 'https://gitlab.com/groups/foo-bar',
   },
-  type: 'GroupMember',
+  type: MEMBER_MODEL_TYPE_GROUP_MEMBER,
   state: MEMBER_STATE_CREATED,
   user: {
     id: 123,
@@ -69,7 +73,7 @@ export const modalData = {
   isAccessRequest: true,
   isInvite: true,
   memberPath: '/groups/foo-bar/-/group_members/1',
-  memberType: 'GroupMember',
+  memberModelType: MEMBER_MODEL_TYPE_GROUP_MEMBER,
   message: 'Are you sure you want to remove John Smith?',
   userDeletionObstacles: { name: 'user', obstacles: [] },
 };
@@ -123,7 +127,15 @@ export const dataAttribute = JSON.stringify({
     pagination: paginationData,
     member_path: '/groups/foo-bar/-/group_members/:id',
     ldap_override_path: '/groups/ldap-group/-/group_members/:id/override',
+    disable_two_factor_path: '/groups/ldap-group/-/two_factor_auth',
   },
   source_id: 234,
   can_manage_members: true,
 });
+
+export const permissions = {
+  canRemove: true,
+  canRemoveBlockedByLastOwner: false,
+  canResend: true,
+  canUpdate: true,
+};

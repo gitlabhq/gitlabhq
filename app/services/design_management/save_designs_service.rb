@@ -113,7 +113,7 @@ module DesignManagement
 
     def file_content(file, full_path)
       transformer = ::Lfs::FileTransformer.new(project, repository, target_branch)
-      transformer.new_file(full_path, file.to_io).content
+      transformer.new_file(full_path, file.to_io, detect_content_type: Feature.enabled?(:design_management_allow_dangerous_images, project)).content
     end
 
     # Returns the latest blobs for the designs as a Hash of `{ Design => Blob }`

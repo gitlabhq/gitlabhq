@@ -11,7 +11,7 @@ RSpec.describe WorkItemPolicy do
   let_it_be(:reporter) { create(:user).tap { |user| project.add_reporter(user) } }
   let_it_be(:group_reporter) { create(:user).tap { |user| group.add_reporter(user) } }
   let_it_be(:non_member_user) { create(:user) }
-  let_it_be(:work_item) { create(:work_item, project: project) }
+  let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
   let_it_be(:authored_work_item) { create(:work_item, project: project, author: guest_author) }
   let_it_be(:public_work_item) { create(:work_item, project: public_project) }
 

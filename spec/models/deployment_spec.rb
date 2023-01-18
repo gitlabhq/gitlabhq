@@ -170,18 +170,7 @@ RSpec.describe Deployment do
         end
       end
 
-      it 'executes Deployments::DropOlderDeploymentsWorker asynchronously' do
-        stub_feature_flags(prevent_outdated_deployment_jobs: false)
-
-        expect(Deployments::DropOlderDeploymentsWorker)
-            .to receive(:perform_async).once.with(deployment.id)
-
-        deployment.run!
-      end
-
-      it 'does not execute Deployments::DropOlderDeploymentsWorker when FF enabled' do
-        stub_feature_flags(prevent_outdated_deployment_jobs: true)
-
+      it 'does not execute Deployments::DropOlderDeploymentsWorker' do
         expect(Deployments::DropOlderDeploymentsWorker)
           .not_to receive(:perform_async).with(deployment.id)
 
@@ -409,6 +398,16 @@ RSpec.describe Deployment do
 
       let!(:last_deployment) do
         create(:deployment, :success, project: project, environment: environment, sha: deployment.sha)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when environment is undefined' do
+      let(:deployment) { build(:deployment, :success, project: project, environment: environment) }
+
+      before do
+        deployment.environment = nil
       end
 
       it { is_expected.to be_falsey }

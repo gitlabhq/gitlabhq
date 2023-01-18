@@ -206,7 +206,7 @@ RSpec.describe ProjectsHelper do
     it 'loads the pipeline status in batch' do
       helper.load_pipeline_status([project])
       # Skip lazy loading of the `pipeline_status` attribute
-      pipeline_status = project.instance_variable_get('@pipeline_status')
+      pipeline_status = project.instance_variable_get(:@pipeline_status)
 
       expect(pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectPipelineStatus)
     end
@@ -1086,7 +1086,7 @@ RSpec.describe ProjectsHelper do
 
     context 'as a user' do
       it 'returns a link to contact an administrator' do
-        allow(user).to receive(:admin?).and_return(false)
+        allow(user).to receive(:can_admin_all_resources?).and_return(false)
 
         expect(subject).to have_text("To enable importing projects from #{import_method}, ask your GitLab administrator to configure OAuth integration")
       end
@@ -1094,7 +1094,7 @@ RSpec.describe ProjectsHelper do
 
     context 'as an administrator' do
       it 'returns a link to configure bitbucket' do
-        allow(user).to receive(:admin?).and_return(true)
+        allow(user).to receive(:can_admin_all_resources?).and_return(true)
 
         expect(subject).to have_text("To enable importing projects from #{import_method}, as administrator you need to configure OAuth integration")
       end
@@ -1330,27 +1330,6 @@ RSpec.describe ProjectsHelper do
         graph_ref: ref,
         graph_csv_path: start_with(daily_coverage_options.fetch(:download_path))
       )
-    end
-  end
-
-  describe '#fork_divergence_message' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:behind, :ahead, :message) do
-      0 | 0 | 'Up to date with upstream repository'
-      1 | 0 | '1 commit behind upstream repository'
-      2 | 0 | '2 commits behind upstream repository'
-      0 | 1 | '1 commit ahead of upstream repository'
-      0 | 2 | '2 commits ahead of upstream repository'
-      5 | 7 | '5 commits behind, 7 commits ahead of upstream repository'
-      nil | 7 | 'Fork has diverged from upstream repository'
-      7 | nil | 'Fork has diverged from upstream repository'
-    end
-
-    with_them do
-      it 'returns message based on behind/ahead values' do
-        expect(helper.fork_divergence_message({ behind: behind, ahead: ahead })).to eq(message)
-      end
     end
   end
 

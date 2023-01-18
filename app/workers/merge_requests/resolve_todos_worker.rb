@@ -7,7 +7,7 @@ class MergeRequests::ResolveTodosWorker
 
   sidekiq_options retry: 3
 
-  feature_category :code_review
+  feature_category :code_review_workflow
   urgency :high
   deduplicate :until_executed
   idempotent!

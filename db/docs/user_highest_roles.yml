@@ -3,8 +3,8 @@ table_name: user_highest_roles
 classes:
 - UserHighestRole
 feature_categories:
-- utilization
-description: TODO
+- authentication_and_authorization
+description: Stores highest role per User they have in a Group or a Project. If a User has an open invite or pending access request or no membership the highest role will be set to nil.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26987
 milestone: '12.9'
 gitlab_schema: gitlab_main

@@ -141,7 +141,7 @@ deploy:
 
 You can assign different agents to separate Auto DevOps jobs. For instance,
 Auto DevOps can use one agent for `staging` jobs, and another agent for `production` jobs.
-To use multiple agents, define an [environment-scoped CI/CD variable](../../../ci/variables/index.md#limit-the-environment-scope-of-a-cicd-variable)
+To use multiple agents, define an [environment-scoped CI/CD variable](../../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable)
 for each agent. For example:
 
 1. Define two variables named `KUBE_CONTEXT`.

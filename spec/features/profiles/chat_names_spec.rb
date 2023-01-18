@@ -15,7 +15,7 @@ RSpec.describe 'Profile > Chat', feature_category: :users do
       { team_id: 'T00', team_domain: 'my_chat_team', user_id: 'U01', user_name: 'my_chat_user' }
     end
 
-    let!(:authorize_url) { ChatNames::AuthorizeUserService.new(integration, params).execute }
+    let!(:authorize_url) { ChatNames::AuthorizeUserService.new(params).execute }
     let(:authorize_path) { URI.parse(authorize_url).request_uri }
 
     before do

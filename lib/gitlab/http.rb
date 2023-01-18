@@ -17,7 +17,8 @@ module Gitlab
     HTTP_ERRORS = HTTP_TIMEOUT_ERRORS + [
       EOFError, SocketError, OpenSSL::SSL::SSLError, OpenSSL::OpenSSLError,
       Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH,
-      Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep
+      Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep,
+      Net::HTTPBadResponse
     ].freeze
 
     DEFAULT_TIMEOUT_OPTIONS = {

@@ -4,11 +4,15 @@ module API
   module Entities
     class Appearance < Grape::Entity
       expose :title
-      expose :short_title
+      expose :pwa_short_name
       expose :description
 
       expose :logo do |appearance, options|
         appearance.logo.url
+      end
+
+      expose :pwa_icon do |appearance, options|
+        appearance.pwa_icon.url
       end
 
       expose :header_logo do |appearance, options|

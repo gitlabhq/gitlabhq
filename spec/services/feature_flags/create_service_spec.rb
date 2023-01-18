@@ -86,7 +86,7 @@ RSpec.describe FeatureFlags::CreateService do
         end
       end
 
-      it 'creates audit event' do
+      it 'creates audit event', :with_license do
         expect { subject }.to change { AuditEvent.count }.by(1)
         expect(AuditEvent.last.details[:custom_message]).to start_with('Created feature flag feature_flag with description "description".')
         expect(AuditEvent.last.details[:custom_message]).to include('Created strategy "default" with scopes "*".')

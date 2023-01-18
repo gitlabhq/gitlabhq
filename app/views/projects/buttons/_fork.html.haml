@@ -11,7 +11,7 @@
         - button_class = 'disabled' if disabled_tooltip
 
         %span.btn-group{ class: ('has-tooltip' if disabled_tooltip), title: disabled_tooltip }
-          = link_to new_project_fork_path(@project), class: "gl-button btn btn-default fork-btn #{button_class}" do
+          = link_to new_project_fork_path(@project), class: "gl-button btn btn-default fork-btn #{button_class}", data: { qa_selector: 'fork_button' } do
             = sprite_icon('fork', css_class: 'icon')
             %span= s_('ProjectOverview|Fork')
       = link_to project_forks_path(@project), title: n_(s_('ProjectOverview|Forks'), s_('ProjectOverview|Forks'), @project.forks_count), class: "gl-button btn btn-default count has-tooltip fork-count #{count_class}" do

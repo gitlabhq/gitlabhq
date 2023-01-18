@@ -1,8 +1,0 @@
----
-name: ci_raw_variables_in_yaml_config
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98420
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/375034
-milestone: '15.6'
-type: development
-group: group::pipeline authoring
-default_enabled: true

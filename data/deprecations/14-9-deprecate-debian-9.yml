@@ -1,7 +1,5 @@
 - title: "Deprecate support for Debian 9"
   announcement_milestone: "14.9"
-  announcement_date: "2022-03-22"
   removal_milestone: "15.1"
-  removal_date: "2022-06-22"
   body: |
     Long term service and support (LTSS) for [Debian 9 Stretch ends in July 2022](https://wiki.debian.org/LTS). Therefore, we will no longer support the Debian 9 distribution for the GitLab package. Users can upgrade to Debian 10 or Debian 11.

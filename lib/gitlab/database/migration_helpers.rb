@@ -281,6 +281,9 @@ module Gitlab
       # target_column - The name of the referenced column, defaults to "id".
       # on_delete - The action to perform when associated data is removed,
       #             defaults to "CASCADE".
+      # on_update - The action to perform when associated data is updated,
+      #             defaults to nil. This is useful for multi column FKs if
+      #             it's desirable to update one of the columns.
       # name - The name of the foreign key.
       # validate - Flag that controls whether the new foreign key will be validated after creation.
       #            If the flag is not set, the constraint will only be enforced for new data.
@@ -288,7 +291,8 @@ module Gitlab
       #                      order of the ALTER TABLE. This can be useful in situations where the foreign
       #                      key creation could deadlock with another process.
       #
-      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, target_column: :id, name: nil, validate: true, reverse_lock_order: false)
+      # rubocop: disable Metrics/ParameterLists
+      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, on_update: nil, target_column: :id, name: nil, validate: true, reverse_lock_order: false)
         # Transactions would result in ALTER TABLE locks being held for the
         # duration of the transaction, defeating the purpose of this method.
         if transaction_open?
@@ -298,6 +302,7 @@ module Gitlab
         options = {
           column: column,
           on_delete: on_delete,
+          on_update: on_update,
           name: name.presence || concurrent_foreign_key_name(source, column),
           primary_key: target_column
         }
@@ -306,7 +311,8 @@ module Gitlab
           warning_message = "Foreign key not created because it exists already " \
             "(this may be due to an aborted migration or similar): " \
             "source: #{source}, target: #{target}, column: #{options[:column]}, "\
-            "name: #{options[:name]}, on_delete: #{options[:on_delete]}"
+            "name: #{options[:name]}, on_update: #{options[:on_update]}, "\
+            "on_delete: #{options[:on_delete]}"
 
           Gitlab::AppLogger.warn warning_message
         else
@@ -322,6 +328,7 @@ module Gitlab
             ADD CONSTRAINT #{options[:name]}
             FOREIGN KEY (#{multiple_columns(options[:column])})
             REFERENCES #{target} (#{multiple_columns(target_column)})
+            #{on_update_statement(options[:on_update])}
             #{on_delete_statement(options[:on_delete])}
             NOT VALID;
             EOF
@@ -343,6 +350,7 @@ module Gitlab
           end
         end
       end
+      # rubocop: enable Metrics/ParameterLists
 
       def validate_foreign_key(source, column, name: nil)
         fk_name = name || concurrent_foreign_key_name(source, column)
@@ -357,10 +365,28 @@ module Gitlab
       end
 
       def foreign_key_exists?(source, target = nil, **options)
-        foreign_keys(source).any? do |foreign_key|
-          tables_match?(target.to_s, foreign_key.to_table.to_s) &&
-            options_match?(foreign_key.options, options)
+        # This if block is necessary because foreign_key_exists? is called in down migrations that may execute before
+        # the postgres_foreign_keys view had necessary columns added, or even before the view existed.
+        # In that case, we revert to the previous behavior of this method.
+        # The behavior in the if block has a bug: it always returns false if the fk being checked has multiple columns.
+        # This can be removed after init_schema.rb passes 20221122210711_add_columns_to_postgres_foreign_keys.rb
+        # Tracking issue: https://gitlab.com/gitlab-org/gitlab/-/issues/386796
+        if ActiveRecord::Migrator.current_version < 20221122210711
+          return foreign_keys(source).any? do |foreign_key|
+            tables_match?(target.to_s, foreign_key.to_table.to_s) &&
+                options_match?(foreign_key.options, options)
+          end
         end
+
+        fks = Gitlab::Database::PostgresForeignKey.by_constrained_table_name(source)
+
+        fks = fks.by_referenced_table_name(target) if target
+        fks = fks.by_name(options[:name]) if options[:name]
+        fks = fks.by_constrained_columns(options[:column]) if options[:column]
+        fks = fks.by_referenced_columns(options[:primary_key]) if options[:primary_key]
+        fks = fks.by_on_delete_action(options[:on_delete]) if options[:on_delete]
+
+        fks.exists?
       end
 
       # Returns the name for a concurrent foreign key.
@@ -1276,6 +1302,13 @@ into similar problems in the future (e.g. when new tables are created).
         return 'ON DELETE SET NULL' if on_delete == :nullify
 
         "ON DELETE #{on_delete.upcase}"
+      end
+
+      def on_update_statement(on_update)
+        return '' if on_update.blank?
+        return 'ON UPDATE SET NULL' if on_update == :nullify
+
+        "ON UPDATE #{on_update.upcase}"
       end
 
       def create_column_from(table, old, new, type: nil, batch_column_name: :id, type_cast_function: nil, limit: nil)

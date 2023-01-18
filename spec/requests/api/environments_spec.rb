@@ -4,12 +4,14 @@ require 'spec_helper'
 
 RSpec.describe API::Environments, feature_category: :continuous_delivery do
   let_it_be(:user) { create(:user) }
+  let_it_be(:developer) { create(:user) }
   let_it_be(:non_member) { create(:user) }
   let_it_be(:project) { create(:project, :private, :repository, namespace: user.namespace) }
   let_it_be_with_reload(:environment) { create(:environment, project: project) }
 
   before do
     project.add_maintainer(user)
+    project.add_developer(developer)
   end
 
   describe 'GET /projects/:id/environments', :aggregate_failures do
@@ -67,6 +69,34 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(0)
+        end
+
+        context "when params[:search] is less than #{described_class::MIN_SEARCH_LENGTH} characters" do
+          before do
+            stub_feature_flags(environment_search_api_min_chars: false)
+          end
+
+          it 'returns a normal response' do
+            get api("/projects/#{project.id}/environments?search=ab", user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
+            expect(json_response.size).to eq(0)
+          end
+
+          context 'and environment_search_api_min_chars flag is enabled for the project' do
+            before do
+              stub_feature_flags(environment_search_api_min_chars: project)
+            end
+
+            it 'returns with status 400' do
+              get api("/projects/#{project.id}/environments?search=ab", user)
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['message']).to include("Search query is less than #{described_class::MIN_SEARCH_LENGTH} characters")
+            end
+          end
         end
 
         it 'returns environment by valid state' do
@@ -150,6 +180,50 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
 
       it 'returns a 400 when the required params are missing' do
         post api("/projects/#{non_existing_record_id}/environments", non_member), params: { external_url: 'http://env.git.com' }
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/environments/stop_stale' do
+    context 'as a maintainer' do
+      it 'returns a 200' do
+        post api("/projects/#{project.id}/environments/stop_stale", user), params: { before: 1.week.ago.to_date.to_s }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns a 400 for bad input date' do
+        post api("/projects/#{project.id}/environments/stop_stale", user), params: { before: 1.day.ago.to_date.to_s }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('400 Bad request - Invalid Date')
+      end
+
+      it 'returns a 400 for service error' do
+        expect_next_instance_of(::Environments::StopStaleService) do |service|
+          expect(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Test Error'))
+        end
+
+        post api("/projects/#{project.id}/environments/stop_stale", user), params: { before: 1.week.ago.to_date.to_s }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('Test Error')
+      end
+    end
+
+    context 'a non member' do
+      it 'rejects the request' do
+        post api("/projects/#{project.id}/environments/stop_stale", non_member), params: { before: 1.week.ago.to_date.to_s }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'a developer' do
+      it 'rejects the request' do
+        post api("/projects/#{project.id}/environments/stop_stale", developer), params: { before: 1.week.ago.to_date.to_s }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

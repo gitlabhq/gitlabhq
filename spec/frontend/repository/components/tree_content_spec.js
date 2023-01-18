@@ -5,19 +5,25 @@ import FilePreview from '~/repository/components/preview/index.vue';
 import FileTable from '~/repository/components/table/index.vue';
 import TreeContent from 'jh_else_ce/repository/components/tree_content.vue';
 import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/commits_service';
+import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert } from '~/flash';
+import { i18n } from '~/repository/constants';
+import { graphQLErrors } from '../mock_data';
 
 jest.mock('~/repository/commits_service', () => ({
   loadCommits: jest.fn(() => Promise.resolve()),
   isRequested: jest.fn(),
   resetRequestedCommits: jest.fn(),
 }));
+jest.mock('~/flash');
 
 let vm;
 let $apollo;
+const mockResponse = jest.fn().mockReturnValue(Promise.resolve({ data: {} }));
 
-function factory(path, data = () => ({})) {
+function factory(path, appoloMockResponse = mockResponse) {
   $apollo = {
-    query: jest.fn().mockReturnValue(Promise.resolve({ data: data() })),
+    query: appoloMockResponse,
   };
 
   vm = shallowMount(TreeContent, {
@@ -220,6 +226,19 @@ describe('Repository table component', () => {
       findFileTable().vm.$emit('row-appear', 0);
 
       expect(loadCommits.mock.calls).toEqual([['', path, '', 0]]);
+    });
+  });
+
+  describe('error handling', () => {
+    const gitalyError = { graphQLErrors };
+    it.each`
+      error          | message
+      ${gitalyError} | ${i18n.gitalyError}
+      ${'Error'}     | ${i18n.generalError}
+    `('should show an expected error', async ({ error, message }) => {
+      factory('/', jest.fn().mockRejectedValue(error));
+      await waitForPromises();
+      expect(createAlert).toHaveBeenCalledWith({ message, captureError: true });
     });
   });
 });

@@ -87,7 +87,7 @@ The following procedure uses these sample project names:
    docker tag gitlab.example.com/org/build/sample_project/cr:v2.9.1 gitlab.example.com/new_org/build/new_sample_project/cr:v2.9.1
    ```
 
-1. Delete the images in the old project by using the [UI](index.md#delete-images) or [API](../../../api/packages.md#delete-a-project-package).
+1. Delete the images in the old project by using the [UI](delete_container_registry_images.md) or [API](../../../api/packages.md#delete-a-project-package).
    There may be a delay while the images are queued and deleted.
 1. Change the path or transfer the project:
 

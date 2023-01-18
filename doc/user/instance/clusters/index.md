@@ -33,7 +33,7 @@ GitLab tries to match clusters in the following order:
 - Instance-level clusters.
 
 To be selected, the cluster must be enabled and
-match the [environment selector](../../../ci/environments/index.md#scope-environments-with-specs).
+match the [environment selector](../../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 ## Cluster environments **(PREMIUM)**
 

@@ -11,16 +11,11 @@ class Namespace < ApplicationRecord
   include FeatureGate
   include FromUnion
   include Gitlab::Utils::StrongMemoize
-  include IgnorableColumns
   include Namespaces::Traversal::Recursive
   include Namespaces::Traversal::Linear
   include EachBatch
   include BlocksUnsafeSerialization
   include Ci::NamespaceSettings
-
-  # Temporary column used for back-filling project namespaces.
-  # Remove it once the back-filling of all project namespaces is done.
-  ignore_column :tmp_project_id, remove_with: '14.7', remove_after: '2022-01-22'
 
   # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
@@ -33,9 +28,11 @@ class Namespace < ApplicationRecord
   NUMBER_OF_ANCESTORS_ALLOWED = 20
 
   SR_DISABLED_AND_UNOVERRIDABLE = 'disabled_and_unoverridable'
+  # DISABLED_WITH_OVERRIDE is deprecated in favour of DISABLED_AND_OVERRIDABLE.
   SR_DISABLED_WITH_OVERRIDE = 'disabled_with_override'
+  SR_DISABLED_AND_OVERRIDABLE = 'disabled_and_overridable'
   SR_ENABLED = 'enabled'
-  SHARED_RUNNERS_SETTINGS = [SR_DISABLED_AND_UNOVERRIDABLE, SR_DISABLED_WITH_OVERRIDE, SR_ENABLED].freeze
+  SHARED_RUNNERS_SETTINGS = [SR_DISABLED_AND_UNOVERRIDABLE, SR_DISABLED_WITH_OVERRIDE, SR_DISABLED_AND_OVERRIDABLE, SR_ENABLED].freeze
   URL_MAX_LENGTH = 255
 
   PATH_TRAILING_VIOLATIONS = %w[.git .atom .].freeze
@@ -87,6 +84,7 @@ class Namespace < ApplicationRecord
 
   has_many :timelog_categories, class_name: 'TimeTracking::TimelogCategory'
   has_many :achievements, class_name: 'Achievements::Achievement'
+  has_many :namespace_commit_emails, class_name: 'Users::NamespaceCommitEmail'
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
@@ -133,6 +131,10 @@ class Namespace < ApplicationRecord
   delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=,
            to: :namespace_settings
   delegate :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
+           to: :namespace_settings
+  delegate :allow_runner_registration_token,
+           :allow_runner_registration_token?,
+           :allow_runner_registration_token=,
            to: :namespace_settings
   delegate :maven_package_requests_forwarding,
            :pypi_package_requests_forwarding,
@@ -556,7 +558,7 @@ class Namespace < ApplicationRecord
     if shared_runners_enabled
       SR_ENABLED
     elsif allow_descendants_override_disabled_shared_runners
-      SR_DISABLED_WITH_OVERRIDE
+      SR_DISABLED_AND_OVERRIDABLE
     else
       SR_DISABLED_AND_UNOVERRIDABLE
     end
@@ -566,10 +568,10 @@ class Namespace < ApplicationRecord
     case other_setting
     when SR_ENABLED
       false
-    when SR_DISABLED_WITH_OVERRIDE
+    when SR_DISABLED_WITH_OVERRIDE, SR_DISABLED_AND_OVERRIDABLE
       shared_runners_setting == SR_ENABLED
     when SR_DISABLED_AND_UNOVERRIDABLE
-      shared_runners_setting == SR_ENABLED || shared_runners_setting == SR_DISABLED_WITH_OVERRIDE
+      shared_runners_setting == SR_ENABLED || shared_runners_setting == SR_DISABLED_AND_OVERRIDABLE || shared_runners_setting == SR_DISABLED_WITH_OVERRIDE
     else
       raise ArgumentError
     end

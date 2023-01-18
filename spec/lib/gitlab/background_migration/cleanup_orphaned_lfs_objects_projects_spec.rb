@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::CleanupOrphanedLfsObjectsProjects, schema: 20210514063252 do
+RSpec.describe Gitlab::BackgroundMigration::CleanupOrphanedLfsObjectsProjects, schema: 20210602155110 do
   let(:lfs_objects_projects) { table(:lfs_objects_projects) }
   let(:lfs_objects) { table(:lfs_objects) }
   let(:projects) { table(:projects) }

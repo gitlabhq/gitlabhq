@@ -10,206 +10,335 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs_administration.h
 This page contains information about configuring Git LFS in self-managed GitLab instances.
 For user documentation about Git LFS, see [Git Large File Storage](../../topics/git/lfs/index.md).
 
-LFS is enabled in GitLab self-managed instances by default.
-
-## Requirements
+Prerequisites:
 
 - Users need to install [Git LFS client](https://git-lfs.github.com) version 1.0.1 or later.
 
-## Configuration
+## Enable or disable LFS
+
+LFS is enabled by default. To disable it:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   # Change to true to enable lfs - enabled by default if not defined
+   gitlab_rails['lfs_enabled'] = false
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       lfs:
+         enabled: false
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['lfs_enabled'] = false
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     lfs:
+       enabled: false
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
+
+## Change local storage path
 
 Git LFS objects can be large in size. By default, they are stored on the server
 GitLab is installed on.
 
-There are various configuration options to help GitLab server administrators:
+NOTE:
+For Docker installations, you can change the path where your data is mounted.
+For the Helm chart, use
+[object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
 
-- Enabling/disabling Git LFS support.
-- Changing the location of LFS object storage.
-- Setting up object storage supported by [Fog](https://fog.io/about/provider_documentation.html).
+To change the default local storage path location:
 
-### Configuration for Omnibus installations
+::Tabs
 
-In `/etc/gitlab/gitlab.rb`:
+:::TabTitle Linux package (Omnibus)
 
-```ruby
-# Change to true to enable lfs - enabled by default if not defined
-gitlab_rails['lfs_enabled'] = false
+1. Edit `/etc/gitlab/gitlab.rb`:
 
-# Optionally, change the storage path location. Defaults to
-# `#{gitlab_rails['shared_path']}/lfs-objects`. Which evaluates to
-# `/var/opt/gitlab/gitlab-rails/shared/lfs-objects` by default.
-gitlab_rails['lfs_storage_path'] = "/mnt/storage/lfs-objects"
-```
+   ```ruby
+   # /var/opt/gitlab/gitlab-rails/shared/lfs-objects by default.
+   gitlab_rails['lfs_storage_path'] = "/mnt/storage/lfs-objects"
+   ```
 
-After you update settings in `/etc/gitlab/gitlab.rb`, run [Omnibus GitLab reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and reconfigure GitLab:
 
-### Configuration for installations from source
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
 
-In `config/gitlab.yml`:
+:::TabTitle Self-compiled (source)
 
-```yaml
-# Change to true to enable lfs
-  lfs:
-    enabled: false
-    storage_path: /mnt/storage/lfs-objects
-```
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   # /home/git/gitlab/shared/lfs-objects by default.
+   production: &base
+     lfs:
+       storage_path: /mnt/storage/lfs-objects
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
 
 ## Storing LFS objects in remote object storage
 
 You can store LFS objects in remote object storage. This allows you
 to reduce reads and writes to the local disk, and free up disk space significantly.
-GitLab is tightly integrated with `Fog`, so you can refer to its [documentation](https://fog.io/about/provider_documentation.html)
-to check which storage services can be integrated with GitLab.
-You can also use external object storage in a private local network. For example,
-[MinIO](https://min.io/) is a standalone object storage service that works with GitLab instances.
 
-[Read more about using object storage with GitLab](../object_storage.md).
-
-NOTE:
 In GitLab 13.2 and later, you should use the
 [consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
-This section describes the earlier configuration format. [Migration steps still apply](#migrating-to-object-storage).
-
-1. User pushes an `lfs` file to the GitLab instance.
-1. GitLab-workhorse uploads the file directly to the external object storage.
-1. GitLab-workhorse notifies GitLab-rails that the upload process is complete.
-
-The following general settings are supported.
-
-| Setting             | Description | Default |
-|---------------------|-------------|---------|
-| `enabled`           | Enable/disable object storage. | `false` |
-| `remote_directory`  | The bucket name where LFS objects are stored. | |
-| `proxy_download`    | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data. | `false` |
-| `connection`        | Various connection options described below. | |
-
-See [the available connection settings for different providers](../object_storage.md#connection-settings).
-
-Here is a configuration example with S3.
-
-### S3 for Omnibus installations
-
-On Omnibus GitLab installations, the settings are prefixed by `lfs_object_store_`:
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, replacing values based on your needs:
-
-   ```ruby
-   gitlab_rails['lfs_object_store_enabled'] = true
-   gitlab_rails['lfs_object_store_remote_directory'] = "lfs-objects"
-   gitlab_rails['lfs_object_store_connection'] = {
-     'provider' => 'AWS',
-     'region' => 'eu-central-1',
-     'aws_access_key_id' => '1ABCD2EFGHI34JKLM567N',
-     'aws_secret_access_key' => 'abcdefhijklmnopQRSTUVwxyz0123456789ABCDE',
-     # The below options configure an S3 compatible host instead of AWS
-     'host' => 'localhost',
-     'endpoint' => 'http://127.0.0.1:9000',
-     'path_style' => true
-   }
-   ```
-
-1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. [Migrate any existing local LFS objects to the object storage](#migrating-to-object-storage).
-   New LFS objects are forwarded to object storage.
-
-### S3 for installations from source
-
-For source installations the settings are nested under `lfs:` and then
-`object_store:`:
-
-1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
-   lines:
-
-   ```yaml
-   lfs:
-   enabled: true
-   object_store:
-     enabled: false
-     remote_directory: lfs-objects # Bucket name
-     connection:
-       provider: AWS
-       aws_access_key_id: 1ABCD2EFGHI34JKLM567N
-       aws_secret_access_key: abcdefhijklmnopQRSTUVwxyz0123456789ABCDE
-       region: eu-central-1
-       # Use the following options to configure an AWS compatible host such as Minio
-       host: 'localhost'
-       endpoint: 'http://127.0.0.1:9000'
-       path_style: true
-   ```
-
-1. Save the file, and then [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
-1. [Migrate any existing local LFS objects to the object storage](#migrating-to-object-storage).
-   New LFS objects are forwarded to object storage.
 
 ### Migrating to object storage
 
-**Option 1: Rake task**
+You can migrate the LFS objects from local storage to object storage. The
+processing is done in the background and requires **no downtime**.
 
-After [configuring the object storage](#storing-lfs-objects-in-remote-object-storage), use the following task to
-migrate existing LFS objects from the local storage to the remote storage.
-The processing is done in a background worker and requires **no downtime**.
+1. [Configure the object storage](../object_storage.md#consolidated-object-storage-configuration).
+1. Migrate the LFS objects:
 
-For Omnibus GitLab:
+   ::Tabs
 
-```shell
-sudo gitlab-rake "gitlab:lfs:migrate"
-```
+   :::TabTitle Linux package (Omnibus)
 
-For installations from source:
+   ```shell
+   sudo gitlab-rake gitlab:lfs:migrate
+   ```
 
-```shell
-RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:lfs:migrate
-```
+   :::TabTitle Docker
 
-You can optionally track progress and verify that all LFS objects migrated successfully using the
-[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
+   ```shell
+   sudo docker exec -t <container name> gitlab-rake gitlab:lfs:migrate
+   ```
 
-- `sudo gitlab-rails dbconsole` for Omnibus GitLab 14.1 and earlier.
-- `sudo gitlab-rails dbconsole --database main` for Omnibus GitLab 14.2 and later.
-- `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
+   :::TabTitle Self-compiled (source)
 
-Verify `objectstg` below (where `store=2`) has count of all LFS objects:
+   ```shell
+   sudo -u git -H bundle exec rake gitlab:lfs:migrate RAILS_ENV=production
+   ```
 
-```shell
-gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM lfs_objects;
-```
+   ::EndTabs
 
-**Example Output**
+1. Optional. Track the progress and verify that all job LFS objects migrated
+   successfully using the PostgreSQL console.
+   1. Open a PostgreSQL console:
 
-```shell
-total | filesystem | objectstg
-------+------------+-----------
- 2409 |          0 |      2409
-```
+      ::Tabs
 
-Verify that there are no files on disk in the `objects` folder:
+      :::TabTitle Linux package (Omnibus)
 
-```shell
-sudo find /var/opt/gitlab/gitlab-rails/shared/lfs-objects -type f | grep -v tmp | wc -l
-```
+      ```shell
+      sudo gitlab-psql
+      ```
 
-**Option 2: Rails console**
+      :::TabTitle Docker
 
-Log into the Rails console:
+      ```shell
+      sudo docker exec -it <container_name> /bin/bash
+      gitlab-psql
+      ```
 
-```shell
-sudo gitlab-rails console
-```
+      :::TabTitle Self-compiled (source)
 
-Upload LFS files manually
+      ```shell
+      sudo -u git -H psql -d gitlabhq_production
+      ```
 
-```ruby
-LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
-  lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
-end
-```
+      ::EndTabs
+
+   1. Verify that all LFS files migrated to object storage with the following
+      SQL query. The number of `objectstg` should be the same as `total`:
+
+      ```shell
+      gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM lfs_objects;
+
+      total | filesystem | objectstg
+      ------+------------+-----------
+       2409 |          0 |      2409
+      ```
+
+1. Verify that there are no files on disk in the `lfs-objects` directory:
+
+   ::Tabs
+
+   :::TabTitle Linux package (Omnibus)
+
+   ```shell
+   sudo find /var/opt/gitlab/gitlab-rails/shared/lfs-objects -type f | grep -v tmp | wc -l
+   ```
+
+   :::TabTitle Docker
+
+   Assuming you mounted `/var/opt/gitlab` to `/srv/gitlab`:
+
+   ```shell
+   sudo find /srv/gitlab/gitlab-rails/shared/lfs-objects -type f | grep -v tmp | wc -l
+   ```
+
+   :::TabTitle Self-compiled (source)
+
+   ```shell
+   sudo find /home/git/gitlab/shared/lfs-objects -type f | grep -v tmp | wc -l
+   ```
+
+   ::EndTabs
 
 ### Migrating back to local storage
 
+NOTE:
+For the Helm chart, you should use
+[object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
+
 To migrate back to local storage:
 
-1. Run `rake gitlab:lfs:migrate_to_local` on your console.
-1. Disable `object_storage` for LFS objects in `gitlab.rb`. Remember to restart GitLab afterwards.
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Migrate the LFS objects:
+
+   ```shell
+   sudo gitlab-rake gitlab:lfs:migrate_to_local
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` and
+   [disable object storage](../object_storage.md#selectively-disabling-object-storage)
+   for LFS objects:
+
+   ```ruby
+   gitlab_rails['object_store']['objects']['lfs']['enabled'] = false
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Docker
+
+1. Migrate the LFS objects:
+
+   ```shell
+   sudo docker exec -t <container name> gitlab-rake gitlab:lfs:migrate_to_local
+   ```
+
+1. Edit `docker-compose.yml` and disable object storage for LFS objects:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['object_store']['objects']['lfs']['enabled'] = false
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Migrate the LFS objects:
+
+   ```shell
+   sudo -u git -H bundle exec rake gitlab:lfs:migrate_to_local RAILS_ENV=production
+   ```
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and disable object storage for LFS objects:
+
+   ```yaml
+   production: &base
+     object_store:
+       objects:
+         lfs:
+           enabled: false
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
 
 ## Storage statistics
 

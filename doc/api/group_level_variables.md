@@ -93,7 +93,7 @@ POST /groups/:id/variables
 | `protected`     | boolean | no       | Whether the variable is protected |
 | `masked`        | boolean | no       | Whether the variable is masked |
 | `raw`           | boolean | no       | Whether the variable is expandable |
-| `environment_scope` **(PREMIUM)** | string | no | The [environment scope](../ci/variables/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
+| `environment_scope` **(PREMIUM)** | string | no | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -129,7 +129,7 @@ PUT /groups/:id/variables/:key
 | `protected`     | boolean | no       | Whether the variable is protected |
 | `masked`        | boolean | no       | Whether the variable is masked |
 | `raw`           | boolean | no       | Whether the variable is expandable |
-| `environment_scope` **(PREMIUM)** | string | no | The [environment scope](../ci/variables/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
+| `environment_scope` **(PREMIUM)** | string | no | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \

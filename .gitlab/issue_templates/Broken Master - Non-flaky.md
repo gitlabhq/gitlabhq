@@ -21,4 +21,4 @@ Please read the below documentations for a workflow of triaging and resolving br
 
 Please refer to the [Resolution guidance](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master) to learn more about resolution of broken master.
 
-/label ~"master:broken" ~"Engineering Productivity" ~"priority::1" ~"severity::1" ~"type::bug" ~"bug::transient"
+/label ~"master:broken" ~"Engineering Productivity" ~"priority::1" ~"severity::1" ~"type::maintenance" ~"maintenance::pipelines"

@@ -6,7 +6,7 @@
   - if show_omniauth_providers && omniauth_providers_placement == :top
     = render 'devise/shared/signup_omniauth_providers_top'
 
-  = form_for(resource, as: "new_#{resource_name}", url: url, html: { class: 'new_user gl-show-field-errors js-arkose-labs-form', 'aria-live' => 'assertive' }, data: { testid: 'signup-form' }) do |f|
+  = gitlab_ui_form_for(resource, as: "new_#{resource_name}", url: url, html: { class: 'new_user gl-show-field-errors js-arkose-labs-form', 'aria-live' => 'assertive' }, data: { testid: 'signup-form' }) do |f|
     .devise-errors
       = render 'devise/shared/error_messages', resource: resource
     - if Gitlab::CurrentSettings.invisible_captcha_enabled
@@ -72,7 +72,7 @@
       = recaptcha_tags nonce: content_security_policy_nonce
 
     .submit-container.gl-mt-5
-      = f.submit button_text, class: 'btn gl-button btn-confirm gl-display-block gl-w-full', data: { qa_selector: 'new_user_register_button' }
+      = f.submit button_text, pajamas_button: true, class: 'gl-w-full', data: { qa_selector: 'new_user_register_button' }
     - if Gitlab::CurrentSettings.sign_in_text.present? && Feature.enabled?(:restyle_login_page, @project)
       .gl-pt-5
         = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)

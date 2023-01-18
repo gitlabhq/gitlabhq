@@ -1100,6 +1100,10 @@ On the **primary** site:
 1. Ensure the **URL** field matches the value found in `/etc/gitlab/gitlab.rb`
    in `external_url "https://gitlab.example.com"` on the **Rails nodes of the secondary** site.
 
+### Authenticating with SAML on the secondary site always lands on the primary site
+
+This [problem is usually encountered when upgrading to GitLab 15.1](version_specific_upgrades.md#upgrading-to-151). To fix this problem, see [configuring instance-wide SAML in Geo with Single Sign-On](single_sign_on.md#configuring-instance-wide-saml).
+
 ## Fixing common errors
 
 This section documents common error messages reported in the Admin Area on the web interface, and how to fix them.
@@ -1313,6 +1317,18 @@ registry = Geo::PackageFileRegistry.find(registry_id)
 registry.replicator.send(:download)
 ```
 
+#### Find registry records of blobs that failed to sync
+
+```ruby
+Geo::PackageFileRegistry.failed
+```
+
+#### Find registry records of blobs that are missing on the primary site
+
+```ruby
+Geo::PackageFileRegistry.where(last_sync_failure: 'The file is missing on the Geo primary site')
+```
+
 #### Verify package files on the secondary manually
 
 This iterates over all package files on the secondary, looking at the
@@ -1340,7 +1356,7 @@ status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
 status
 ```
 
-### Reverify all uploads (or any SSF data type which is verified)
+#### Reverify all uploads (or any SSF data type which is verified)
 
 1. SSH into a GitLab Rails node in the primary Geo site.
 1. Open [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
@@ -1394,21 +1410,6 @@ model_record.replicator.send(:sync_repository)
 ```ruby
 registry = Geo::SnippetRepositoryRegistry.find(registry_id)
 registry.replicator.send(:sync_repository)
-```
-
-### Find failed artifacts
-
-[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-to run the following commands:
-
-```ruby
-Geo::JobArtifactRegistry.failed
-```
-
-#### Find `ID` of synced artifacts that are missing on primary
-
-```ruby
-Geo::JobArtifactRegistry.synced.missing_on_primary.pluck(:artifact_id)
 ```
 
 ### Project or project wiki repositories
@@ -1535,9 +1536,12 @@ If the above steps are **not successful**, proceed through the next steps:
 
 ## Check OS locale data compatibility
 
-If different operating systems or different operating system versions are deployed across Geo sites, we recommend that you perform a locale data compatibility check setting up Geo.
+If different operating systems or different operating system versions are deployed across Geo sites, you should perform a locale data compatibility check before setting up Geo.
 
-Geo uses PostgreSQL and Streaming Replication to replicate data across Geo sites. PostgreSQL uses locale data provided by the operating system’s C library for sorting text. If the locale data in the C library is incompatible across Geo sites, erroneous query results that lead to [incorrect behavior on secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/360723). See [here](https://wiki.postgresql.org/wiki/Locale_data_changes) for more details.
+Geo uses PostgreSQL and Streaming Replication to replicate data across Geo sites. PostgreSQL uses locale data provided by the operating system's C library for sorting text. If the locale data in the C library is incompatible across Geo sites, erroneous query results that lead to [incorrect behavior on secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/360723).
+
+For example, Ubuntu 18.04 (and earlier) and RHEL/Centos7 (and earlier) are incompatible with their later releases.
+See the [PostgreSQL wiki for more details](https://wiki.postgresql.org/wiki/Locale_data_changes).
 
 On all hosts running PostgreSQL, across all Geo sites, run the following shell command:
 
@@ -1561,4 +1565,8 @@ or the reverse order:
 
 If the output is identical on all hosts, then they running compatible versions of locale data.
 
-If the output differs on some hosts, then PostgreSQL replication will not work properly. We advise that you select operating system versions that are compatible.
+If the output differs on some hosts, PostgreSQL replication does not work properly: indexes are corrupted on the database replicas. You should select operating system versions that are compatible.
+
+A full index rebuild is required if the on-disk data is transferred 'at rest' to an operating system with an incompatible locale, or through replication.
+
+This check is also required when using a mixture of GitLab deployments. The locale might be different between an Linux package install, a GitLab Docker container, a Helm chart deployment, or external database services.

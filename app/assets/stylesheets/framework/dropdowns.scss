@@ -851,10 +851,6 @@
         @include gl-focus($inset: true);
       }
     }
-
-    .frequent-items-list-item-container a {
-      display: flex;
-    }
   }
 
   .section-header {
@@ -873,9 +869,10 @@
 
   .frequent-items-item-title,
   .frequent-items-item-namespace {
-    max-width: 250px;
+    max-width: 220px;
     text-overflow: ellipsis;
     white-space: nowrap;
+    overflow: hidden;
   }
 
   .frequent-items-item-title {
@@ -894,6 +891,11 @@
   @include media-breakpoint-down(xs) {
     .frequent-items-item-metadata-container {
       float: none;
+    }
+
+    .frequent-items-item-title,
+    .frequent-items-item-namespace {
+      max-width: 250px;
     }
   }
 }

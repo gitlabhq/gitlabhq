@@ -9,7 +9,7 @@ class AutocompleteController < ApplicationController
   feature_category :users, [:users, :user]
   feature_category :projects, [:projects]
   feature_category :team_planning, [:award_emojis]
-  feature_category :code_review, [:merge_request_target_branches]
+  feature_category :code_review_workflow, [:merge_request_target_branches]
   feature_category :continuous_delivery, [:deploy_keys_with_owners]
 
   urgency :low, [:merge_request_target_branches, :deploy_keys_with_owners, :users]

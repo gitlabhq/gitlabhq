@@ -155,8 +155,7 @@ module Ci
 
     def by_name(items)
       return items unless
-        Feature.enabled?(:pipeline_name, project) &&
-          Feature.enabled?(:pipeline_name_search, project) &&
+        Feature.enabled?(:pipeline_name_search, project) &&
           params[:name].present?
 
       items.for_name(params[:name])

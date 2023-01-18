@@ -133,7 +133,7 @@ You can use the [performance bar](../monitoring/performance/performance_bar.md) 
 
 To view the data, the correlation ID of the request must match the same session as the user
 viewing the performance bar. For API requests, this means that you must perform the request
-using the session cookie of the signed-in user.
+using the session cookie of the authenticated user.
 
 For example, if you want to view the database queries executed for the following API endpoint:
 

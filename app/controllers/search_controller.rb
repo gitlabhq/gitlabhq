@@ -36,7 +36,6 @@ class SearchController < ApplicationController
   before_action only: :show do
     update_scope_for_code_search
   end
-  before_action :elasticsearch_in_use, only: :show
   rescue_from ActiveRecord::QueryCanceled, with: :render_timeout
 
   layout 'search'
@@ -47,7 +46,7 @@ class SearchController < ApplicationController
   def show
     @project = search_service.project
     @group = search_service.group
-    @search_service = Gitlab::View::Presenter::Factory.new(search_service, current_user: current_user).fabricate!
+    @search_service_presenter = Gitlab::View::Presenter::Factory.new(search_service, current_user: current_user).fabricate!
 
     return unless search_term_valid?
 
@@ -56,14 +55,14 @@ class SearchController < ApplicationController
     @search_term = params[:search]
     @sort = params[:sort] || default_sort
 
-    @search_level = @search_service.level
+    @search_level = @search_service_presenter.level
     @search_type = search_type
 
     @global_search_duration_s = Benchmark.realtime do
-      @scope = @search_service.scope
-      @search_results = @search_service.search_results
-      @search_objects = @search_service.search_objects
-      @search_highlight = @search_service.search_highlight
+      @scope = @search_service_presenter.scope
+      @search_results = @search_service_presenter.search_results
+      @search_objects = @search_service_presenter.search_objects
+      @search_highlight = @search_service_presenter.search_highlight
     end
 
     Gitlab::Metrics::GlobalSearchSlis.record_apdex(
@@ -118,11 +117,6 @@ class SearchController < ApplicationController
 
   def opensearch
   end
-
-  def elasticsearch_in_use
-    search_service.respond_to?(:use_elasticsearch?) && search_service.use_elasticsearch?
-  end
-  strong_memoize_attr :elasticsearch_in_use
 
   private
 
@@ -218,24 +212,7 @@ class SearchController < ApplicationController
   def check_scope_global_search_enabled
     return unless search_service.global_search?
 
-    search_allowed = case params[:scope]
-                     when 'blobs'
-                       Feature.enabled?(:global_search_code_tab, current_user, type: :ops)
-                     when 'commits'
-                       Feature.enabled?(:global_search_commits_tab, current_user, type: :ops)
-                     when 'issues'
-                       Feature.enabled?(:global_search_issues_tab, current_user, type: :ops)
-                     when 'merge_requests'
-                       Feature.enabled?(:global_search_merge_requests_tab, current_user, type: :ops)
-                     when 'wiki_blobs'
-                       Feature.enabled?(:global_search_wiki_tab, current_user, type: :ops)
-                     when 'users'
-                       Feature.enabled?(:global_search_users_tab, current_user, type: :ops)
-                     else
-                       true
-                     end
-
-    return if search_allowed
+    return if search_service.global_search_enabled_for_scope?
 
     redirect_to search_path, alert: _('Global Search is disabled for this scope')
   end

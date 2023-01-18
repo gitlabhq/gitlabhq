@@ -30,6 +30,9 @@
     "issues_events": {
       "type": "boolean"
     },
+    "incident_events": {
+      "type": "boolean"
+    },
     "confidential_issues_events": {
       "type": "boolean"
     },

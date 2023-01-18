@@ -341,6 +341,8 @@ automatically added to the epic.
 
 #### Add an existing issue to an epic
 
+> Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+
 You can add existing issues to an epic, including issues in a project from a [different group hierarchy](index.md#child-issues-from-different-group-hierarchies).
 Newly added issues appear at the top of the list of issues in the **Epics and Issues** tab.
 
@@ -350,8 +352,7 @@ current parent.
 
 Prerequisites:
 
-- You must be able to [view the epic](#who-can-view-an-epic).
-- You must be able to [edit the issue](../../project/issues/managing_issues.md#edit-an-issue).
+- You must have at least the Guest role for the issue's project and the epic's group.
 
 To add an existing issue to an epic:
 
@@ -368,13 +369,14 @@ To add an existing issue to an epic:
 
 #### Create an issue from an epic
 
+> Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+
 Creating an issue from an epic enables you to maintain focus on the broader context of the epic
 while dividing work into smaller parts.
 
 Prerequisites:
 
-- You must be able to [view the epic](#who-can-view-an-epic).
-- You must have at least the Reporter role for the project.
+- You must have at least the Guest role for the issue's project and the epic's group.
 
 To create an issue from an epic:
 
@@ -388,13 +390,14 @@ The new issue is assigned to the epic.
 
 ### Remove an issue from an epic
 
+> Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+
 You can remove issues from an epic when you're on the epic's details page.
 After you remove an issue from an epic, the issue is no longer associated with this epic.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the epic's group.
-- You must be able to [edit the issue](../../project/issues/managing_issues.md#edit-an-issue).
+- You must have at least the Guest role for the issue's project and the epic's group.
 
 To remove an issue from an epic:
 
@@ -406,14 +409,15 @@ To remove an issue from an epic:
 
 ### Reorder issues assigned to an epic
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9367) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9367) in GitLab 12.5.
+> - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
 
 New issues appear at the top of the list in the **Epics and Issues** tab.
 You can reorder the list of issues by dragging them.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the epic's group.
+- You must have at least the Guest role for the issue's project and the epic's group.
 
 To reorder issues assigned to an epic:
 
@@ -422,15 +426,15 @@ To reorder issues assigned to an epic:
 
 ### Move issues between epics **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
+> - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
 
 New issues appear at the top of the list in the **Epics and Issues**
 tab. You can move issues from one epic to another.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the epic's group.
-- You must be able to [edit the issue](../../project/issues/managing_issues.md#edit-an-issue).
+- You must have at least the Guest role for the issue's project and the epic's group.
 
 To move an issue to another epic:
 

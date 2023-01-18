@@ -20,12 +20,6 @@ module QA
         @provider.validate_dependencies
         @provider.setup
 
-        @api_url = fetch_api_url
-
-        credentials = @provider.filter_credentials(fetch_credentials)
-        @ca_certificate = Base64.decode64(credentials.dig('data', 'ca.crt'))
-        @token = Base64.decode64(credentials.dig('data', 'token'))
-
         self
       end
 
@@ -46,7 +40,7 @@ module QA
       end
 
       def create_secret(secret, secret_name)
-        shell("kubectl create secret generic #{secret_name} --from-literal=token='#{secret}'")
+        shell("kubectl create secret generic #{secret_name} --from-literal=token='#{secret}'", mask_secrets: [secret])
       end
 
       def apply_manifest(manifest)

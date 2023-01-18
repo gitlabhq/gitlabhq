@@ -16,5 +16,14 @@ FactoryBot.define do
         candidate.metadata = FactoryBot.create_list(:ml_candidate_metadata, 2, candidate: candidate )
       end
     end
+
+    trait :with_artifact do
+      after(:create) do |candidate|
+        FactoryBot.create(:generic_package,
+                          name: candidate.package_name,
+                          version: candidate.package_version,
+                          project: candidate.project)
+      end
+    end
   end
 end

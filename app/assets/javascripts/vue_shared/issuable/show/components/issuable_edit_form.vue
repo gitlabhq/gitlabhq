@@ -1,6 +1,5 @@
 <script>
 import { GlForm, GlFormGroup, GlFormInput } from '@gitlab/ui';
-import $ from 'jquery';
 
 import Autosave from '~/autosave';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
@@ -81,13 +80,13 @@ export default {
 
       if (!titleInput || !descriptionInput) return;
 
-      this.autosaveTitle = new Autosave($(titleInput.$el), [
+      this.autosaveTitle = new Autosave(titleInput.$el, [
         document.location.pathname,
         document.location.search,
         'title',
       ]);
 
-      this.autosaveDescription = new Autosave($(descriptionInput.$el), [
+      this.autosaveDescription = new Autosave(descriptionInput, [
         document.location.pathname,
         document.location.search,
         'description',

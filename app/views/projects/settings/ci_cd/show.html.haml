@@ -43,7 +43,10 @@
       = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
       = link_to s_('What is GitLab Runner?'), 'https://docs.gitlab.com/runner/', target: '_blank', rel: 'noopener noreferrer'
   .settings-content
-    = render 'projects/runners/settings'
+    - if Feature.enabled?(:project_runners_vue_ui, @project)
+      #js-project-runners{ data: { project_full_path: @project.full_path } }
+    - else
+      = render 'projects/runners/settings'
 
 - if Gitlab::CurrentSettings.current_application_settings.keep_latest_artifact?
   %section.settings.no-animate#js-artifacts-settings{ class: ('expanded' if expanded) }

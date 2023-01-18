@@ -21,6 +21,10 @@ module Security
       def description
         _('Configure Container Scanning in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings) to customize Container Scanning settings.')
       end
+
+      def name
+        'Container Scanning'
+      end
     end
   end
 end

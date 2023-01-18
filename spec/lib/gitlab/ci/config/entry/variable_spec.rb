@@ -257,14 +257,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
           subject(:value_with_data) { entry.value_with_data }
 
           it { is_expected.to eq(value: 'value', raw: true) }
-
-          context 'when the FF ci_raw_variables_in_yaml_config is disabled' do
-            before do
-              stub_feature_flags(ci_raw_variables_in_yaml_config: false)
-            end
-
-            it { is_expected.to eq(value: 'value') }
-          end
         end
 
         context 'when config expand is true' do

@@ -284,22 +284,37 @@ module EmailsHelper
   end
 
   def change_reviewer_notification_text(new_reviewers, previous_reviewers, html_tag = nil)
-    new = new_reviewers.any? ? users_to_sentence(new_reviewers) : s_('ChangeReviewer|Unassigned')
-    old = previous_reviewers.any? ? users_to_sentence(previous_reviewers) : nil
-
-    if html_tag.present?
-      new = content_tag(html_tag, new)
-      old = content_tag(html_tag, old) if old.present?
-    end
-
-    if old.present?
-      s_('ChangeReviewer|Reviewer changed from %{old} to %{new}').html_safe % { old: old, new: new }
+    if new_reviewers.empty?
+      s_('ChangeReviewer|All reviewers were removed.')
     else
-      s_('ChangeReviewer|Reviewer changed to %{new}').html_safe % { new: new }
+      added_reviewers = new_reviewers - previous_reviewers
+      removed_reviewers = previous_reviewers - new_reviewers
+
+      added_reviewers_template_text = added_reviewers.size > 1 ? "were added as reviewers.<br>" : "was added as a reviewer.<br>"
+      removed_reviewers_template_text = removed_reviewers.size > 1 ? "were removed from reviewers." : "was removed from reviewers."
+
+      added = format_reviewers_string(added_reviewers, html_tag)
+      removed = format_reviewers_string(removed_reviewers, html_tag)
+
+      added_reviewers_text = added ? "#{added} #{added_reviewers_template_text}".html_safe : ''
+      removed_reviewers_text = removed ? "#{removed} #{removed_reviewers_template_text}".html_safe : ''
+      s_('ChangeReviewer|%{added_reviewers_text}%{removed_reviewers_text}').html_safe % { added_reviewers_text: added_reviewers_text, removed_reviewers_text: removed_reviewers_text }
     end
   end
 
   private
+
+  def format_reviewers_string(reviewers, html_tag = nil)
+    return unless reviewers.any?
+
+    formatted_reviewers = users_to_sentence(reviewers)
+
+    if html_tag.present?
+      content_tag(html_tag, formatted_reviewers)
+    else
+      formatted_reviewers
+    end
+  end
 
   def users_to_sentence(users)
     sanitize_name(users.map(&:name).to_sentence)

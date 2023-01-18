@@ -1,0 +1,13 @@
+- title: "Configuring Redis config file paths using environment variables is deprecated"
+  announcement_milestone: "15.8"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: jacobvosmaer-gitlab
+  stage: platforms
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388255
+  body: |
+    You can no longer specify Redis configuration file locations
+    using the environment variables like `GITLAB_REDIS_CACHE_CONFIG_FILE` or
+    `GITLAB_REDIS_QUEUES_CONFIG_FILE`. Use the default
+    config file locations instead, for example `config/redis.cache.yml` or
+    `config/redis.queues.yml`.

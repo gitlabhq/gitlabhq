@@ -7,7 +7,7 @@ module API
 
     before { authenticate! }
 
-    feature_category :code_review
+    feature_category :code_review_workflow
 
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'

@@ -351,6 +351,13 @@ Alternatively, you can use the `/promote` [quick action](../quick_actions.md#iss
 
 Read more about [promoting an issues to epics](../../group/epics/manage_epics.md#promote-an-issue-to-an-epic).
 
+## Promote an issue to an incident
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296787) in GitLab 14.5.
+> - Quick actions to set issue type as incident upon creation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/376760) in GitLab 15.8.
+
+You can use the `/promote_to_incident` [quick action](../quick_actions.md) to promote the issue to an [incident](../../../operations/incident_management/incidents.md).
+
 ## Add an issue to an iteration **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216158) in GitLab 13.2.
@@ -404,7 +411,8 @@ GitLab displays the results on-screen, but you can also
 
 ### Filter with the OR operator
 
-> OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+> - OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+> - OR filtering for label was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
@@ -412,7 +420,11 @@ To make it available, ask an administrator to [enable the feature flag](../../..
 The feature is not ready for production use.
 
 When this feature is enabled, you can use the OR operator (**is one of: `||`**)
-when you [filter the list of issues](#filter-the-list-of-issues).
+when you [filter the list of issues](#filter-the-list-of-issues) by:
+
+- Assignees
+- Author
+- Labels
 
 `is one of` represents an inclusive OR. For example, if you filter by `Assignee is one of Sidney Jones` and
 `Assignee is one of Zhang Wei`, GitLab shows issues where either `Sidney`, `Zhang`, or both of them are assignees.

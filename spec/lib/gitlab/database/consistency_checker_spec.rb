@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::ConsistencyChecker do
+RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :pods do
   let(:batch_size) { 10 }
   let(:max_batches) { 4 }
   let(:max_runtime) { described_class::MAX_RUNTIME }

@@ -5,6 +5,8 @@ module Gitlab
     # Backfills the `issues.work_item_type_id` column, replacing any
     # instances of `NULL` with the appropriate `work_item_types.id` based on `issues.issue_type`
     class BackfillWorkItemTypeIdForIssues < BatchedMigrationJob
+      feature_category :database
+
       # Basic AR model for issues table
       class MigrationIssue < ApplicationRecord
         self.table_name = 'issues'

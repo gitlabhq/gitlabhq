@@ -32,7 +32,6 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
   with_them do
     before do
       stub_omniauth_provider(provider)
-      stub_feature_flags(update_oauth_registration_flow: true)
     end
 
     context 'when block_auto_created_users is true' do
@@ -117,22 +116,6 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
           expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
         end
       end
-    end
-  end
-
-  context 'when update_oauth_registration_flow is disabled' do
-    before do
-      stub_omniauth_provider(:github)
-      stub_omniauth_setting(block_auto_created_users: false)
-      stub_feature_flags(update_oauth_registration_flow: false)
-
-      enforce_terms
-    end
-
-    it 'presents the terms page' do
-      register_via(:github, uid, email)
-
-      expect(page).to have_content('These are the terms')
     end
   end
 

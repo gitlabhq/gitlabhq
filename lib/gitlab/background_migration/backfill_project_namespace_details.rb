@@ -4,6 +4,7 @@ module Gitlab
     # Backfill project namespace_details for a range of projects
     class BackfillProjectNamespaceDetails < ::Gitlab::BackgroundMigration::BatchedMigrationJob
       operation_name :backfill_project_namespace_details
+      feature_category :database
 
       def perform
         each_sub_batch do |sub_batch|

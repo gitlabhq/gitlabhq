@@ -75,7 +75,7 @@ and issue creation. Your instance becomes read-only and
 an expiration message displays to all administrators. You have a 14-day grace period
 before this occurs.
 
-To resume functionality, [renew your subscription](../../subscriptions/self_managed/index.md#renew-a-subscription).
+To resume functionality, [renew your subscription](../../subscriptions/self_managed/index.md#renew-subscription-manually).
 
 If the license has been expired for more than 30 days, you must purchase a [new subscription](../../subscriptions/self_managed/index.md) to resume functionality.
 
@@ -187,7 +187,7 @@ License.current.data
 
 #### Check if a project feature is available on the instance
 
-Features listed in <https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/license.rb>.
+Features listed in [`features.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/gitlab_subscriptions/features.rb).
 
 ```ruby
 License.current.feature_available?(:jira_dev_panel_integration)
@@ -195,7 +195,7 @@ License.current.feature_available?(:jira_dev_panel_integration)
 
 #### Check if a project feature is available in a project
 
-Features listed in [`license.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/license.rb).
+Features listed in [`features.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/gitlab_subscriptions/features.rb).
 
 ```ruby
 p = Project.find_by_full_path('<group>/<project>')

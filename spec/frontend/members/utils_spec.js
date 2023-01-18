@@ -13,8 +13,10 @@ import {
   isDirectMember,
   isCurrentUser,
   canRemove,
+  canRemoveBlockedByLastOwner,
   canResend,
   canUpdate,
+  canDisableTwoFactor,
   canOverride,
   parseSortParam,
   buildSortHref,
@@ -129,6 +131,17 @@ describe('Members Utils', () => {
     });
   });
 
+  describe('canRemoveBlockedByLastOwner', () => {
+    it.each`
+      member                                        | canManageMembers | expected
+      ${{ ...directMember, isLastOwner: true }}     | ${true}          | ${true}
+      ${{ ...inheritedMember, isLastOwner: false }} | ${true}          | ${false}
+      ${{ ...directMember, isLastOwner: true }}     | ${false}         | ${false}
+    `('returns $expected', ({ member, canManageMembers, expected }) => {
+      expect(canRemoveBlockedByLastOwner(member, canManageMembers)).toBe(expected);
+    });
+  });
+
   describe('canResend', () => {
     it.each`
       member                                                           | expected
@@ -149,6 +162,19 @@ describe('Members Utils', () => {
     `('returns $expected', ({ member, currentUserId, expected }) => {
       expect(canUpdate(member, currentUserId)).toBe(expected);
     });
+  });
+
+  describe('canDisableTwoFactor', () => {
+    it.each`
+      member                                               | expected
+      ${{ ...memberMock, canGetTwoFactorDisabled: true }}  | ${false}
+      ${{ ...memberMock, canGetTwoFactorDisabled: false }} | ${false}
+    `(
+      'returns $expected for members whose two factor authentication can be disabled',
+      ({ member, expected }) => {
+        expect(canDisableTwoFactor(member)).toBe(expected);
+      },
+    );
   });
 
   describe('canOverride', () => {

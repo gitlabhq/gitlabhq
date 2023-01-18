@@ -555,9 +555,9 @@ sequenceDiagram
 
 They get a 404.
 
-### Experience for non-logged in users
+### Experience for non-authenticated users
 
-Flow is similar to logged in users except global routes like `/dashboard` will
+Flow is similar to authenticated users except global routes like `/dashboard` will
 redirect to the login page as there is no default organization to choose from.
 
 ### A new customers signs up

@@ -18,6 +18,8 @@ RSpec.describe 'Dashboard Projects', feature_category: :projects do
     end
   end
 
+  it_behaves_like "a dashboard page with sidebar", :dashboard_projects_path, :projects
+
   context 'when user has access to the project' do
     it 'shows role badge' do
       visit dashboard_projects_path

@@ -19,6 +19,10 @@ module Groups
       render_observability
     end
 
+    def datasources
+      render_observability
+    end
+
     private
 
     def render_observability
@@ -26,9 +30,7 @@ module Groups
     end
 
     def check_observability_allowed
-      return render_404 unless Gitlab::Observability.observability_url.present?
-
-      render_404 unless can?(current_user, :read_observability, @group)
+      render_404 unless Gitlab::Observability.observability_enabled?(current_user, group)
     end
   end
 end

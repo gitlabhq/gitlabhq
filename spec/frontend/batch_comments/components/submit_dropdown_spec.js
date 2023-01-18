@@ -3,6 +3,8 @@ import Vuex from 'vuex';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SubmitDropdown from '~/batch_comments/components/submit_dropdown.vue';
 
+jest.mock('~/autosave');
+
 Vue.use(Vuex);
 
 let wrapper;

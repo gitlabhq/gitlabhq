@@ -7,12 +7,10 @@ class ChatName < ApplicationRecord
   belongs_to :user
 
   validates :user, presence: true
-  validates :integration, presence: true
   validates :team_id, presence: true
   validates :chat_id, presence: true
 
-  validates :user_id, uniqueness: { scope: [:integration_id] }
-  validates :chat_id, uniqueness: { scope: [:integration_id, :team_id] }
+  validates :chat_id, uniqueness: { scope: :team_id }
 
   # Updates the "last_used_timestamp" but only if it wasn't already updated
   # recently.

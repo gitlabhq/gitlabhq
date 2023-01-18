@@ -5,25 +5,32 @@ import CiCdAnalyticsCharts from '~/vue_shared/components/ci_cd_analytics/ci_cd_a
 import SegmentedControlButtonGroup from '~/vue_shared/components/segmented_control_button_group.vue';
 import { transformedAreaChartData, chartOptions } from '../mock_data';
 
+const charts = [
+  {
+    range: 'test range 1',
+    title: 'title 1',
+    data: transformedAreaChartData,
+  },
+  {
+    range: 'test range 2',
+    title: 'title 2',
+    data: transformedAreaChartData,
+  },
+  {
+    range: 'test range 3',
+    title: 'title 3',
+    data: transformedAreaChartData,
+  },
+  {
+    range: 'test range 4',
+    title: 'title 4',
+    data: transformedAreaChartData,
+  },
+];
+
 const DEFAULT_PROPS = {
   chartOptions,
-  charts: [
-    {
-      range: 'test range 1',
-      title: 'title 1',
-      data: transformedAreaChartData,
-    },
-    {
-      range: 'test range 2',
-      title: 'title 2',
-      data: transformedAreaChartData,
-    },
-    {
-      range: 'test range 3',
-      title: 'title 3',
-      data: transformedAreaChartData,
-    },
-  ],
+  charts,
 };
 
 describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', () => {
@@ -55,13 +62,13 @@ describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', (
       wrapper = createWrapper();
     });
 
-    it('should default to the first chart', () => {
-      expect(findSegmentedControl().props('value')).toBe(0);
+    it('should default to the 3rd chart (last 90 days)', () => {
+      expect(findSegmentedControl().props('value')).toBe(2);
     });
 
     it('should use the title and index as values', () => {
       const options = findSegmentedControl().props('options');
-      expect(options).toHaveLength(3);
+      expect(options).toHaveLength(charts.length);
       expect(options).toEqual([
         {
           text: 'title 1',
@@ -74,6 +81,10 @@ describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', (
         {
           text: 'title 3',
           value: 2,
+        },
+        {
+          text: 'title 4',
+          value: 3,
         },
       ]);
     });

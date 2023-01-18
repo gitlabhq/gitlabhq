@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 class ResourceTimeboxEvent < ResourceEvent
-  self.abstract_class = true
-
-  include IssueResourceEvent
   include MergeRequestResourceEvent
   include Importable
+
+  self.abstract_class = true
 
   validate :exactly_one_issuable, unless: :importing?
 

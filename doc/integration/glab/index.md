@@ -78,3 +78,27 @@ to send us feedback.
 - [Documentation](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source)
 - The extension source code is available in the
   [`cli`](https://gitlab.com/gitlab-org/cli/) project.
+
+## Troubleshooting
+
+### `glab completion` commands fail when using the 1Password shell plugin
+
+The [1Password shell plugin](https://developer.1password.com/docs/cli/shell-plugins/gitlab/)
+adds the alias `glab='op plugin run -- glab'`, which can interfere with the `glab completion`
+command. If your `glab completion` commands fail, configure your shell to prevent expanding aliases
+before performing completions:
+
+- For Zsh, edit your `~/.zshrc` file and add this line:
+
+  ```plaintext
+  setopt completealiases
+  ```
+
+- For Bash, edit your `~/.bashrc` file and add this line:
+
+  ```plaintext
+  complete -F _functionname glab
+  ```
+
+For more information, see [issue 122](https://github.com/1Password/shell-plugins/issues/122)
+for the 1Password shell plugin.

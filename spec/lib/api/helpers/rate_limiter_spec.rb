@@ -31,8 +31,8 @@ RSpec.describe API::Helpers::RateLimiter do
   end
 
   describe '#check_rate_limit!' do
-    it 'calls ApplicationRateLimiter#throttled? with the right arguments' do
-      expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope).and_return(false)
+    it 'calls ApplicationRateLimiter#throttled_request? with the right arguments' do
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled_request?).with(request, user, key, scope: scope).and_return(false)
       expect(subject).not_to receive(:render_api_error!)
 
       subject.check_rate_limit!(key, scope: scope)

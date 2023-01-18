@@ -1,8 +1,6 @@
 - title: "Audit events for repository push events"
   announcement_milestone: "14.3"  # The milestone when this feature was first announced as deprecated.
-  announcement_date: "2021-09-22"  # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69024
   removal_milestone: "15.0"  # the milestone when this feature is planned to be removed
-  removal_date: "2022-05-22"  # the date of the milestone release when this feature is planned to be removed
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
     Audit events for [repository events](https://docs.gitlab.com/ee/administration/audit_events.html#removed-events) are now deprecated and will be removed in GitLab 15.0.

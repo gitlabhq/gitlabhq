@@ -34,6 +34,13 @@ Pages does not support dynamic server-side processing, for instance, as `.php` a
 Learn more about
 [static websites compared to dynamic websites](https://about.gitlab.com/blog/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/).
 
+## Menu Position Test
+
+NOTE:
+We are currently conducting an A/B test where some users may see the Pages
+Menu entry under "Deployments" instead of "Settings". We think that this may
+be a more accurate position. Feel free to add any feedback to [the experiment issue](https://gitlab.com/gitlab-org/gitlab/-/issues/373547).
+
 ## Getting started
 
 To create a GitLab Pages website:

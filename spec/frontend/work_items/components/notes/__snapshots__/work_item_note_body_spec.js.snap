@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Work Item Note Body should have the wrapper to show the note body 1`] = `
+"<div data-testid=\\"work-item-note-body\\" class=\\"note-text md\\">
+  <p dir=\\"auto\\" data-sourcepos=\\"1:1-1:76\\">
+    <gl-emoji data-unicode-version=\\"6.0\\" data-name=\\"wave\\" title=\\"waving hand sign\\">👋</gl-emoji> Hi <a title=\\"Sherie Nitzsche\\" class=\\"gfm gfm-project_member js-user-link\\" data-placement=\\"top\\" data-container=\\"body\\" data-user=\\"3\\" data-reference-type=\\"user\\" href=\\"/fredda.brekke\\">@fredda.brekke</a> How are you ? what do you think about this ? <gl-emoji data-unicode-version=\\"6.0\\" data-name=\\"pray\\" title=\\"person with folded hands\\">🙏</gl-emoji>
+  </p>
+</div>"
+`;

@@ -14,9 +14,10 @@ const addListNewIssuesSpy = jest.fn().mockResolvedValue();
 const mockActions = { addListNewIssue: addListNewIssuesSpy };
 
 const createComponent = ({
-  state = { selectedProject: mockGroupProjects[0], fullPath: mockGroupProjects[0].fullPath },
+  state = { selectedProject: mockGroupProjects[0] },
   actions = mockActions,
-  getters = { isGroupBoard: () => true, getBoardItemsByList: () => () => [] },
+  getters = { getBoardItemsByList: () => () => [] },
+  isGroupBoard = true,
 } = {}) =>
   shallowMount(BoardNewIssue, {
     store: new Vuex.Store({
@@ -29,8 +30,10 @@ const createComponent = ({
     },
     provide: {
       groupId: 1,
+      fullPath: mockGroupProjects[0].fullPath,
       weightFeatureAvailable: false,
       boardWeight: null,
+      isGroupBoard,
     },
     stubs: {
       BoardNewItem,
@@ -84,9 +87,9 @@ describe('Issue boards new issue form', () => {
     beforeEach(() => {
       wrapper = createComponent({
         getters: {
-          isGroupBoard: () => true,
           getBoardItemsByList: () => () => [mockIssue, mockIssue2],
         },
+        isGroupBoard: true,
       });
     });
 
@@ -128,7 +131,7 @@ describe('Issue boards new issue form', () => {
   describe('when in project issue board', () => {
     beforeEach(() => {
       wrapper = createComponent({
-        getters: { isGroupBoard: () => false },
+        isGroupBoard: false,
       });
     });
 

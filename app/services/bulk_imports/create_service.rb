@@ -36,6 +36,8 @@ module BulkImports
     end
 
     def execute
+      validate!
+
       bulk_import = create_bulk_import
 
       Gitlab::Tracking.event(self.class.name, 'create', label: 'bulk_import_group')
@@ -43,7 +45,8 @@ module BulkImports
       BulkImportWorker.perform_async(bulk_import.id)
 
       ServiceResponse.success(payload: bulk_import)
-    rescue ActiveRecord::RecordInvalid => e
+
+    rescue ActiveRecord::RecordInvalid, BulkImports::Error, BulkImports::NetworkError => e
       ServiceResponse.error(
         message: e.message,
         http_status: :unprocessable_entity
@@ -51,6 +54,11 @@ module BulkImports
     end
 
     private
+
+    def validate!
+      client.validate_instance_version!
+      client.validate_import_scopes!
+    end
 
     def create_bulk_import
       BulkImport.transaction do
@@ -70,7 +78,8 @@ module BulkImports
             source_type: entity[:source_type],
             source_full_path: entity[:source_full_path],
             destination_slug: entity[:destination_slug],
-            destination_namespace: entity[:destination_namespace]
+            destination_namespace: entity[:destination_namespace],
+            migrate_projects: Gitlab::Utils.to_boolean(entity[:migrate_projects], default: true)
           )
         end
 

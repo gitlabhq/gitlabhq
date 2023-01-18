@@ -1,6 +1,5 @@
-- title = capture do
-  = _("This commit was signed with a different user's verified signature.")
-
-- locals = { signature: signature, title: title, label: _('Unverified'), css_class: 'invalid', icon: 'status_notfound_borderless', show_user: true }
+- title = _("Different user's signature")
+- description = _("This commit was signed with a different user's verified signature.")
+- locals = { signature: signature, title: title, description: description, label: _('Unverified'), css_class: 'invalid' }
 
 = render partial: 'projects/commit/signature_badge', locals: locals

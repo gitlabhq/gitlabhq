@@ -19,20 +19,18 @@ export default {
       },
       step3: {
         label: __('Step 3.'),
-        help: __(
-          'Merge the feature branch into the target branch and fix any conflicts. %{linkStart}How do I fix them?%{linkEnd}',
-        ),
+        help: __('Resolve any conflicts. %{linkStart}How do I fix them?%{linkEnd}'),
       },
       step4: {
         label: __('Step 4.'),
-        help: __('Push the target branch up to GitLab.'),
+        help: __('Push the source branch up to GitLab.'),
       },
     },
     copyCommands: __('Copy commands'),
     tip: __(
-      '%{strongStart}Tip:%{strongEnd} You can also check out merge requests locally. %{linkStart}Learn more.%{linkEnd}',
+      '%{strongStart}Tip:%{strongEnd} You can also %{linkStart}check out with merge request ID%{linkEnd}.',
     ),
-    title: __('Check out, review, and merge locally'),
+    title: __('Check out, review, and resolve locally'),
   },
   components: {
     GlModal,
@@ -93,20 +91,10 @@ export default {
         : `git fetch origin\ngit checkout -b ${this.escapedSourceBranch} ${escapedOriginBranch}`;
     },
     mergeInfo2() {
-      return this.isFork
-        ? `git fetch origin\ngit checkout ${this.escapedTargetBranch}\ngit merge --no-ff ${this.escapedForkBranch}`
-        : `git fetch origin\ngit checkout ${this.escapedTargetBranch}\ngit merge --no-ff ${this.escapedSourceBranch}`;
-    },
-    mergeInfo3() {
-      return this.canMerge
-        ? `git push origin ${this.escapedTargetBranch}`
-        : __('Note that pushing to GitLab requires write access to this repository.');
+      return `git push origin ${this.escapedSourceBranch}`;
     },
     escapedForkBranch() {
       return escapeShellString(`${this.sourceProjectPath}-${this.sourceBranch}`);
-    },
-    escapedTargetBranch() {
-      return escapeShellString(this.targetBranch);
     },
     escapedSourceBranch() {
       return escapeShellString(this.sourceBranch);
@@ -145,6 +133,18 @@ export default {
         class="gl-shadow-none! gl-bg-transparent! gl-flex-shrink-0"
       />
     </div>
+    <p v-if="reviewingDocsPath">
+      <gl-sprintf data-testid="docs-tip" :message="$options.i18n.tip">
+        <template #strong="{ content }">
+          <strong>{{ content }}</strong>
+        </template>
+        <template #link="{ content }">
+          <gl-link class="gl-display-inline-block" :href="reviewingDocsPath" target="_blank">{{
+            content
+          }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </p>
 
     <p>
       <strong>
@@ -164,6 +164,12 @@ export default {
         </template>
       </gl-sprintf>
     </p>
+    <p>
+      <strong>
+        {{ $options.i18n.steps.step4.label }}
+      </strong>
+      {{ $options.i18n.steps.step4.help }}
+    </p>
     <div class="gl-display-flex">
       <pre class="gl-w-full" data-testid="how-to-merge-instructions">{{ mergeInfo2 }}</pre>
       <clipboard-button
@@ -172,31 +178,5 @@ export default {
         class="gl-shadow-none! gl-bg-transparent! gl-flex-shrink-0"
       />
     </div>
-    <p>
-      <strong>
-        {{ $options.i18n.steps.step4.label }}
-      </strong>
-      {{ $options.i18n.steps.step4.help }}
-    </p>
-    <div class="gl-display-flex">
-      <pre class="gl-w-full" data-testid="how-to-merge-instructions">{{ mergeInfo3 }}</pre>
-      <clipboard-button
-        :text="mergeInfo3"
-        :title="$options.i18n.copyCommands"
-        class="gl-shadow-none! gl-bg-transparent! gl-flex-shrink-0"
-      />
-    </div>
-    <p v-if="reviewingDocsPath">
-      <gl-sprintf data-testid="docs-tip" :message="$options.i18n.tip">
-        <template #strong="{ content }">
-          <strong>{{ content }}</strong>
-        </template>
-        <template #link="{ content }">
-          <gl-link class="gl-display-inline-block" :href="reviewingDocsPath" target="_blank">{{
-            content
-          }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </p>
   </gl-modal>
 </template>

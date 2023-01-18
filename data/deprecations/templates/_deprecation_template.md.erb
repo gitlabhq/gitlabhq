@@ -56,9 +56,9 @@ sole discretion of GitLab Inc.
 ### <%= deprecation["title"] %>
 
 <% if deprecation["end_of_support_milestone"] -%>
-End of Support: GitLab <span class="removal-milestone"><%= deprecation["end_of_support_milestone"]%></span> (<%= deprecation["end_of_support_date"]%>)<br />
+End of Support: GitLab <span class="removal-milestone"><%= deprecation["end_of_support_milestone"]%></span> <span class="support-end-date"></span><br />
 <% end -%>
-Planned removal: GitLab <span class="removal-milestone"><%= deprecation["removal_milestone"]%></span> (<%= deprecation["removal_date"]%>)
+Planned removal: GitLab <span class="removal-milestone"><%= deprecation["removal_milestone"]%></span> <span class="removal-date"></span>
 <% if deprecation["breaking_change"] -%>
 
 WARNING:

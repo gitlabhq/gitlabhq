@@ -5,6 +5,7 @@ import getJobArtifactsResponse from 'test_fixtures/graphql/artifacts/graphql/que
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import JobArtifactsTable from '~/artifacts/components/job_artifacts_table.vue';
+import FeedbackBanner from '~/artifacts/components/feedback_banner.vue';
 import ArtifactsTableRowDetails from '~/artifacts/components/artifacts_table_row_details.vue';
 import ArtifactDeleteModal from '~/artifacts/components/artifact_delete_modal.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -22,6 +23,8 @@ Vue.use(VueApollo);
 describe('JobArtifactsTable component', () => {
   let wrapper;
   let requestHandlers;
+
+  const findBanner = () => wrapper.findComponent(FeedbackBanner);
 
   const findLoadingState = () => wrapper.findComponent(GlLoadingIcon);
   const findTable = () => wrapper.findComponent(GlTable);
@@ -79,13 +82,18 @@ describe('JobArtifactsTable component', () => {
       getJobArtifactsQuery: jest.fn().mockResolvedValue(getJobArtifactsResponse),
     },
     data = {},
+    canDestroyArtifacts = true,
   ) => {
     requestHandlers = handlers;
     wrapper = mountExtended(JobArtifactsTable, {
       apolloProvider: createMockApollo([
         [getJobArtifactsQuery, requestHandlers.getJobArtifactsQuery],
       ]),
-      provide: { projectPath: 'project/path' },
+      provide: {
+        projectPath: 'project/path',
+        canDestroyArtifacts,
+        artifactsManagementFeedbackImagePath: 'banner/image/path',
+      },
       data() {
         return data;
       },
@@ -94,6 +102,12 @@ describe('JobArtifactsTable component', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  it('renders feedback banner', () => {
+    createComponent();
+
+    expect(findBanner().exists()).toBe(true);
   });
 
   it('when loading, shows a loading state', () => {
@@ -283,6 +297,14 @@ describe('JobArtifactsTable component', () => {
   });
 
   describe('delete button', () => {
+    it('does not show when user does not have permission', async () => {
+      createComponent({}, {}, false);
+
+      await waitForPromises();
+
+      expect(findDeleteButton().exists()).toBe(false);
+    });
+
     it('shows a disabled delete button for now (coming soon)', async () => {
       createComponent();
 

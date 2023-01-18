@@ -380,3 +380,32 @@ RSpec::Matchers.define :exceed_query_limit do |expected|
     failure_message
   end
 end
+
+RSpec::Matchers.define :match_query_count do |expected|
+  supports_block_expectations
+
+  include ExceedQueryLimitHelpers
+
+  def verify_count(&block)
+    @subject_block = block
+    actual_count == maximum
+  end
+
+  def failure_message
+    threshold_message = threshold > 0 ? " (+#{threshold})" : ''
+    counts = "#{expected_count}#{threshold_message}"
+    "Expected exactly #{counts} queries, got #{actual_count}:\n\n#{log_message}"
+  end
+
+  def skip_cached
+    false
+  end
+
+  match do |block|
+    verify_count(&block)
+  end
+
+  failure_message_when_negated do |actual|
+    failure_message
+  end
+end

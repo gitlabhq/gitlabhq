@@ -4,6 +4,10 @@ module AppearancesHelper
   include MarkupHelper
   include Gitlab::Utils::StrongMemoize
 
+  def appearance_short_name
+    Appearance.current&.pwa_short_name.presence || _('GitLab')
+  end
+
   def brand_title
     current_appearance&.title.presence || default_brand_title
   end

@@ -1,0 +1,10 @@
+---
+table_name: elastic_group_index_statuses
+classes:
+- Elastic::GroupIndexStatus
+feature_categories:
+- global_search
+description: Table for tracking Advanced Search indexing statuses for groups
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107579
+milestone: '15.8'
+gitlab_schema: gitlab_main

@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlBadge, GlButton, GlForm } from '@gitlab/ui';
+import { GlAlert, GlForm } from '@gitlab/ui';
 import axios from 'axios';
 import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
@@ -10,8 +10,6 @@ import {
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   INTEGRATION_FORM_TYPE_SLACK,
-  integrationFormSectionComponents,
-  billingPlanNames,
 } from '~/integrations/constants';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
@@ -21,6 +19,7 @@ import ActiveCheckbox from './active_checkbox.vue';
 import DynamicField from './dynamic_field.vue';
 import OverrideDropdown from './override_dropdown.vue';
 import TriggerFields from './trigger_fields.vue';
+import IntegrationFormSection from './integration_forms/section.vue';
 import IntegrationFormActions from './integration_form_actions.vue';
 
 export default {
@@ -31,29 +30,8 @@ export default {
     TriggerFields,
     DynamicField,
     IntegrationFormActions,
-    IntegrationSectionConfiguration: () =>
-      import(
-        /* webpackChunkName: 'integrationSectionConfiguration' */ '~/integrations/edit/components/sections/configuration.vue'
-      ),
-    IntegrationSectionConnection: () =>
-      import(
-        /* webpackChunkName: 'integrationSectionConnection' */ '~/integrations/edit/components/sections/connection.vue'
-      ),
-    IntegrationSectionJiraIssues: () =>
-      import(
-        /* webpackChunkName: 'integrationSectionJiraIssues' */ '~/integrations/edit/components/sections/jira_issues.vue'
-      ),
-    IntegrationSectionJiraTrigger: () =>
-      import(
-        /* webpackChunkName: 'integrationSectionJiraTrigger' */ '~/integrations/edit/components/sections/jira_trigger.vue'
-      ),
-    IntegrationSectionTrigger: () =>
-      import(
-        /* webpackChunkName: 'integrationSectionTrigger' */ '~/integrations/edit/components/sections/trigger.vue'
-      ),
+    IntegrationFormSection,
     GlAlert,
-    GlBadge,
-    GlButton,
     GlForm,
   },
   directives: {
@@ -120,9 +98,6 @@ export default {
   },
   methods: {
     ...mapActions(['setOverride', 'requestJiraIssueTypes']),
-    fieldsForSection(section) {
-      return this.propsSource.fields.filter((field) => field.section === section.type);
-    },
     form() {
       return this.$refs.integrationForm.$el;
     },
@@ -189,14 +164,14 @@ export default {
           this.isResetting = false;
         });
     },
-    onRequestJiraIssueTypes() {
-      this.requestJiraIssueTypes(this.getFormData());
-    },
     getFormData() {
       return new FormData(this.form());
     },
     onToggleIntegrationState(integrationActive) {
       this.integrationActive = integrationActive;
+    },
+    onRequestJiraIssueTypes() {
+      this.requestJiraIssueTypes(this.getFormData());
     },
   },
   helpHtmlConfig: {
@@ -204,8 +179,6 @@ export default {
     FORBID_ATTR: [], // This is trusted input so we can override the default config to allow data-* attributes
   },
   csrf,
-  integrationFormSectionComponents,
-  billingPlanNames,
   slackUpgradeInfo: {
     title: s__(
       `SlackIntegration|Update to the latest version of GitLab for Slack to get notifications`,
@@ -280,42 +253,15 @@ export default {
     </div>
 
     <template v-if="hasSections">
-      <div
+      <integration-form-section
         v-for="(section, index) in customState.sections"
         :key="section.type"
+        :section="section"
+        :is-validated="isValidated"
         :class="{ 'gl-border-b gl-pb-3 gl-mb-6': index !== customState.sections.length - 1 }"
-        data-testid="integration-section"
-      >
-        <section class="gl-lg-display-flex">
-          <div class="gl-flex-basis-third gl-mr-4">
-            <h4 class="gl-mt-0">
-              {{ section.title
-              }}<gl-badge
-                v-if="section.plan"
-                :href="propsSource.aboutPricingUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="tier"
-                icon="license"
-                class="gl-ml-3"
-              >
-                {{ $options.billingPlanNames[section.plan] }}
-              </gl-badge>
-            </h4>
-            <p v-safe-html="section.description"></p>
-          </div>
-
-          <div class="gl-flex-basis-two-thirds">
-            <component
-              :is="$options.integrationFormSectionComponents[section.type]"
-              :fields="fieldsForSection(section)"
-              :is-validated="isValidated"
-              @toggle-integration-active="onToggleIntegrationState"
-              @request-jira-issue-types="onRequestJiraIssueTypes"
-            />
-          </div>
-        </section>
-      </div>
+        @toggle-integration-active="onToggleIntegrationState"
+        @request-jira-issue-types="onRequestJiraIssueTypes"
+      />
     </template>
 
     <section v-if="hasFieldsWithoutSection" class="gl-lg-display-flex gl-justify-content-end">

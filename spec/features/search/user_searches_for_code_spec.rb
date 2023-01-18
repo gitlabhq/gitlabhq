@@ -17,20 +17,24 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
         sign_in(user)
       end
 
-      it 'finds a file' do
-        visit(project_path(project))
+      context 'when on a project page' do
+        before do
+          visit(project_path(project))
+        end
 
-        submit_search('application.js')
-        select_search_scope('Code')
+        it 'finds a file' do
+          submit_search('application.js')
+          select_search_scope('Code')
 
-        expect(page).to have_selector('.results', text: 'application.js')
-        expect(page).to have_selector('.file-content .code')
-        expect(page).to have_selector("span.line[lang='javascript']")
-        expect(page).to have_link('application.js', href: %r{master/files/js/application.js})
-        expect(page).to have_button('Copy file path')
+          expect(page).to have_selector('.results', text: 'application.js')
+          expect(page).to have_selector('.file-content .code')
+          expect(page).to have_selector("span.line[lang='javascript']")
+          expect(page).to have_link('application.js', href: %r{master/files/js/application.js})
+          expect(page).to have_button('Copy file path')
+        end
       end
 
-      context 'when on a project page' do
+      context 'when on a project search page' do
         before do
           visit(search_path)
           find('[data-testid="project-filter"]').click
@@ -47,28 +51,31 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
           let(:additional_params) { { project_id: project.id } }
         end
 
-        it 'finds code and links to blob' do
-          expected_result = 'Update capybara, rspec-rails, poltergeist to recent versions'
+        context 'when searching code' do
+          let(:expected_result) { 'Update capybara, rspec-rails, poltergeist to recent versions' }
 
-          fill_in('dashboard_search', with: 'rspec')
-          find('.gl-search-box-by-click-search-button').click
+          before do
+            fill_in('dashboard_search', with: 'rspec')
+            find('.gl-search-box-by-click-search-button').click
+          end
 
-          expect(page).to have_selector('.results', text: expected_result)
+          it 'finds code and links to blob' do
+            expect(page).to have_selector('.results', text: expected_result)
 
-          find("#blob-L3").click
-          expect(current_url).to match(%r{blob/master/.gitignore#L3})
-        end
+            find("#blob-L3").click
+            expect(current_url).to match(%r{blob/master/.gitignore#L3})
+          end
 
-        it 'finds code and links to blame' do
-          expected_result = 'Update capybara, rspec-rails, poltergeist to recent versions'
+          it 'finds code and links to blame' do
+            expect(page).to have_selector('.results', text: expected_result)
 
-          fill_in('dashboard_search', with: 'rspec')
-          find('.gl-search-box-by-click-search-button').click
+            find("#blame-L3").click
+            expect(current_url).to match(%r{blame/master/.gitignore#L3})
+          end
 
-          expect(page).to have_selector('.results', text: expected_result)
-
-          find("#blame-L3").click
-          expect(current_url).to match(%r{blame/master/.gitignore#L3})
+          it_behaves_like 'code highlight' do
+            subject { page }
+          end
         end
 
         it 'search multiple words with refs switching' do

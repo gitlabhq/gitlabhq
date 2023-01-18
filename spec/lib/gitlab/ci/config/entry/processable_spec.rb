@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Processable do
+RSpec.describe Gitlab::Ci::Config::Entry::Processable, feature_category: :pipeline_authoring do
   let(:node_class) do
     Class.new(::Gitlab::Config::Entry::Node) do
       include Gitlab::Ci::Config::Entry::Processable
@@ -104,100 +104,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
         end
       end
 
-      context 'when only: is used with rules:' do
-        let(:config) { { only: ['merge_requests'], rules: [{ if: '$THIS' }] } }
-
-        it 'returns error about mixing only: with rules:' do
-          expect(entry).not_to be_valid
-          expect(entry.errors).to include /may not be used with `rules`/
-        end
-
-        context 'and only: is blank' do
-          let(:config) { { only: nil, rules: [{ if: '$THIS' }] } }
-
-          it 'returns error about mixing only: with rules:' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include /may not be used with `rules`/
-          end
-        end
-
-        context 'and rules: is blank' do
-          let(:config) { { only: ['merge_requests'], rules: nil } }
-
-          it 'returns error about mixing only: with rules:' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include /may not be used with `rules`/
-          end
-        end
-      end
-
-      context 'when except: is used with rules:' do
-        let(:config) { { except: { refs: %w[master] }, rules: [{ if: '$THIS' }] } }
-
-        it 'returns error about mixing except: with rules:' do
-          expect(entry).not_to be_valid
-          expect(entry.errors).to include /may not be used with `rules`/
-        end
-
-        context 'and except: is blank' do
-          let(:config) { { except: nil, rules: [{ if: '$THIS' }] } }
-
-          it 'returns error about mixing except: with rules:' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include /may not be used with `rules`/
-          end
-        end
-
-        context 'and rules: is blank' do
-          let(:config) { { except: { refs: %w[master] }, rules: nil } }
-
-          it 'returns error about mixing except: with rules:' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include /may not be used with `rules`/
-          end
-        end
-      end
-
-      context 'when only: and except: are both used with rules:' do
-        let(:config) do
-          {
-            only: %w[merge_requests],
-            except: { refs: %w[master] },
-            rules: [{ if: '$THIS' }]
-          }
-        end
-
-        it 'returns errors about mixing both only: and except: with rules:' do
-          expect(entry).not_to be_valid
-          expect(entry.errors).to include /may not be used with `rules`/
-          expect(entry.errors).to include /may not be used with `rules`/
-        end
-
-        context 'when only: and except: as both blank' do
-          let(:config) do
-            { only: nil, except: nil, rules: [{ if: '$THIS' }] }
-          end
-
-          it 'returns errors about mixing both only: and except: with rules:' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include /may not be used with `rules`/
-            expect(entry.errors).to include /may not be used with `rules`/
-          end
-        end
-
-        context 'when rules: is blank' do
-          let(:config) do
-            { only: %w[merge_requests], except: { refs: %w[master] }, rules: nil }
-          end
-
-          it 'returns errors about mixing both only: and except: with rules:' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include /may not be used with `rules`/
-            expect(entry.errors).to include /may not be used with `rules`/
-          end
-        end
-      end
-
       context 'when a variable has an invalid data attribute' do
         let(:config) do
           {
@@ -209,6 +115,91 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
         it 'reports error about variable' do
           expect(entry.errors)
             .to include 'variables:var2 config uses invalid data keys: description'
+        end
+      end
+    end
+
+    context 'when only: is used with rules:' do
+      let(:config) { { only: ['merge_requests'], rules: [{ if: '$THIS' }] } }
+
+      it 'returns error about mixing only: with rules:' do
+        expect(entry).not_to be_valid
+        expect(entry.errors).to include /may not be used with `rules`: only/
+      end
+
+      context 'and only: is blank' do
+        let(:config) { { only: nil, rules: [{ if: '$THIS' }] } }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+
+      context 'and rules: is blank' do
+        let(:config) { { only: ['merge_requests'], rules: nil } }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+    end
+
+    context 'when except: is used with rules:' do
+      let(:config) { { except: { refs: %w[master] }, rules: [{ if: '$THIS' }] } }
+
+      it 'returns error about mixing except: with rules:' do
+        expect(entry).not_to be_valid
+        expect(entry.errors).to include /may not be used with `rules`: except/
+      end
+
+      context 'and except: is blank' do
+        let(:config) { { except: nil, rules: [{ if: '$THIS' }] } }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+
+      context 'and rules: is blank' do
+        let(:config) { { except: { refs: %w[master] }, rules: nil } }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+    end
+
+    context 'when only: and except: are both used with rules:' do
+      let(:config) do
+        {
+          only: %w[merge_requests],
+          except: { refs: %w[master] },
+          rules: [{ if: '$THIS' }]
+        }
+      end
+
+      it 'returns errors about mixing both only: and except: with rules:' do
+        expect(entry).not_to be_valid
+        expect(entry.errors).to include /may not be used with `rules`: only, except/
+      end
+
+      context 'when only: and except: as both blank' do
+        let(:config) do
+          { only: nil, except: nil, rules: [{ if: '$THIS' }] }
+        end
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+
+      context 'when rules: is blank' do
+        let(:config) do
+          { only: %w[merge_requests], except: { refs: %w[master] }, rules: nil }
+        end
+
+        it 'is valid' do
+          expect(entry).to be_valid
         end
       end
     end

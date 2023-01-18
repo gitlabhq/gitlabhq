@@ -10,7 +10,7 @@ This tutorial guides you through writing a provider test from scratch. It is a c
 
 ## Create the skeleton
 
-Provider tests are quite simple. The goal is to set up the test data and then link that with the corresponding contract. Start by creating a file called `discussions_helper.rb` under `spec/contracts/provider/pact_helpers/project/merge_request`. Note that the files are called `helpers` to match how they are called by Pact in the Rake tasks, which are set up at the end of this tutorial.
+Provider tests are quite simple. The goal is to set up the test data and then link that with the corresponding contract. Start by creating a file called `get_discussions_helper.rb` under `spec/contracts/provider/pact_helpers/project/merge_request`. Note that the files are called `helpers` to match how they are called by Pact in the Rake tasks, which are set up at the end of this tutorial.
 
 To learn more about how the contract test directory is structured, see the contract testing [test suite folder structure](index.md#test-suite-folder-structure).
 
@@ -23,7 +23,7 @@ require_relative '../../../spec_helper'
 
 module Provider
   module DiscussionsHelper
-    Pact.service_provider 'Merge Request Discussions Endpoint' do
+    Pact.service_provider 'GET discussions' do
 
     end
   end
@@ -39,8 +39,8 @@ require_relative '../../../spec_helper'
 
 module Provider
   module DiscussionsHelper
-    Pact.service_provider 'Merge Request Discussions Endpoint' do
-      honours_pact_with 'MergeRequest#show' do
+    Pact.service_provider 'GET discussions' do
+      honours_pact_with 'MergeRequests#show' do
 
       end
     end
@@ -59,10 +59,10 @@ require_relative '../../../spec_helper'
 
 module Provider
   module DiscussionsHelper
-    Pact.service_provider 'Merge Request Discussions Endpoint' do
+    Pact.service_provider 'GET discussions' do
       app { Environment::Test.app }
 
-      honours_pact_with 'MergeRequest#show' do
+      honours_pact_with 'MergeRequests#show' do
 
       end
     end
@@ -79,11 +79,11 @@ require_relative '../../../spec_helper'
 
 module Provider
   module DiscussionsHelper
-    Pact.service_provider 'Merge Request Discussions Endpoint' do
+    Pact.service_provider 'GET discussions' do
       app { Environment::Test.app }
 
-      honours_pact_with 'MergeRequest#show' do
-        pact_uri '../contracts/project/merge_request/show/mergerequest#show-merge_request_discussions_endpoint.json'
+      honours_pact_with 'MergeRequests#show' do
+        pact_uri '../contracts/project/merge_requests/show/mergerequests#show-merge_request_discussions_endpoint.json'
       end
     end
   end
@@ -92,20 +92,25 @@ end
 
 ## Add / update the Rake tasks
 
-Now that you have a test created, you must create Rake tasks that run this test. The Rake tasks are defined in [`lib/tasks/contracts.rake`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/tasks/contracts.rake) where we have individual Rake tasks to run individual specs, but also Rake tasks that run a group of tests.
+Now that you have a test created, you must create Rake tasks that run this test. The Rake tasks are defined in [`lib/tasks/contracts/merge_requests.rake`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/tasks/contracts/merge_requests.rake) where we have individual Rake tasks to run individual tests, but also Rake tasks that run a group of tests.
 
-Under the `contracts:mr` namespace, introduce the Rake task to run this new test specifically. In it, call `pact.uri` to define the location of the contract and the provider test that tests that contract. Notice here that `pact_uri` has a parameter called `pact_helper`. This is why the provider tests are called `_helper.rb`.
+Under the `contracts:merge_requests` namespace, introduce the Rake task to run this new test specifically. In it, call `pact.uri` to define the location of the contract and the provider test that tests that contract. Notice here that `pact_uri` has a parameter called `pact_helper`. This is why the provider tests are called `_helper.rb`.
 
 ```ruby
-Pact::VerificationTask.new(:discussions) do |pact|
+Pact::VerificationTask.new(:get_discussions) do |pact|
+  provider = File.expand_path('../../../spec/contracts/provider', __dir__)
+  pact_helper_location = "pact_helpers/project/merge_requests/show/get_discussions_helper.rb"
+
   pact.uri(
-    "#{contracts}/contracts/project/merge_request/show/merge_request#show-merge_request_discussions_endpoint.json",
-    pact_helper: "#{provider}/pact_helpers/project/merge_request/discussions_helper.rb"
+    Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+    pact_helper: "#{provider}/#{pact_helper_location}"
   )
 end
 ```
 
-At the same time, add your new `:discussions` Rake task to be included in the `test:merge_request` Rake task. In that Rake task, there is an array defined (`%w[metadata diffs]`). You must add `discussions` in that list.
+[`Provider::ContractSourceHelper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/provider/helpers/contract_source_helper.rb) is a helper module that has the `#contract_location` method which parses `pact_helper_location` and determines where the contract is stored locally or on the Pact Broker depending on the `requester` passed in.
+
+At the same time, add your new `:get_discussions` Rake task to be included in the `test:merge_requests` Rake task. In that Rake task, there is an array defined (`%w[get_diffs_batch get_diffs_metadata]`). You must add `get_discussions` in that list.
 
 ## Create test data
 
@@ -113,7 +118,7 @@ As the last step, create the test data that allows the provider test to return t
 
 You can read more about [provider states](https://docs.pact.io/implementation_guides/ruby/provider_states). We can do global provider states but for this tutorial, the provider state is for one specific `state`.
 
-To create the test data, create `discussions_state.rb` under `spec/contracts/provider/states/project/merge_request`. Be sure to also import this state file in the `discussions_helper.rb` file.
+To create the test data, create `show_state.rb` under `spec/contracts/provider/states/project/merge_requests`. Be sure to also import this state file in the `get_discussions_helper.rb` file.
 
 ### Default user in `spec/contracts/provider/spec_helper.rb`
 
@@ -141,7 +146,7 @@ Any further modifications to the user that's needed can be done through the indi
 In the state file, you must define which consumer this provider state is for. You can do that with `provider_states_for`. Make sure that the `name` provided matches the name defined for the consumer.
 
 ```ruby
-Pact.provider_states_for 'MergeRequest#show' do
+Pact.provider_states_for 'MergeRequests#show' do
 end
 ```
 
@@ -150,7 +155,7 @@ end
 In the `provider_states_for` block, you then define the state the test data is for. These states are also defined in the consumer test. In this case, there is a `'a merge request with discussions exists'` state.
 
 ```ruby
-Pact.provider_states_for "MergeRequest#show" do
+Pact.provider_states_for "MergeRequests#show" do
   provider_state "a merge request with discussions exists" do
 
   end
@@ -162,7 +167,7 @@ end
 This is where you define the test data creation steps. Use `FactoryBot` to create the data. As you create the test data, you can keep [running the provider test](index.md#run-the-provider-tests) to check on the status of the test and figure out what else is missing in your data setup.
 
 ```ruby
-Pact.provider_states_for "MergeRequest#show" do
+Pact.provider_states_for "MergeRequests#show" do
   provider_state "a merge request with discussions exists" do
     set_up do
       user = User.find_by(name: Provider::UsersHelper::CONTRACT_USER_NAME)
@@ -187,20 +192,19 @@ Now that the provider state file is created, you need to import the state file t
 # frozen_string_literal: true
 
 require_relative '../../../spec_helper'
-require_relative '../../../states/project/merge_request/discussions_state'
+require_relative '../../../states/project/merge_requests/show_state'
 
 module Provider
   module DiscussionsHelper
-    Pact.service_provider "/merge_request/discussions" do
+    Pact.service_provider "GET discussions" do
       app { Environments::Test.app }
 
       honours_pact_with 'Merge Request#show' do
-        pact_uri '../contracts/project/merge_request/show/merge_request#show-merge_request_discussions_endpoint.json'
+        pact_uri '../contracts/project/merge_requests/show/mergerequests#show-merge_request_discussions_endpoint.json'
       end
     end
   end
 end
-
 ```
 
-And there we have it. The provider test for `discussions_helper.rb` should now pass with this.
+And there we have it. The provider test for `get_discussions_helper.rb` should now pass with this.

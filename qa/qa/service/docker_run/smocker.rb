@@ -7,24 +7,43 @@ module QA
         def initialize
           @image = 'thiht/smocker:0.17.1'
           @name = 'smocker-server'
-          @public_port = '8080'
-          @admin_port = '8081'
+          @public_port = 8080
+          @admin_port = 8081
           super
           @network_cache = network
         end
+
+        # @param wait [Integer] seconds to wait for server
+        # @yieldparam [SmockerApi] the api object ready for interaction
+        def self.init(wait: 10)
+          if @container.nil?
+            @container = new
+            @container.register!
+            @container.wait_for_running
+
+            @api = Vendor::Smocker::SmockerApi.new(
+              host: @container.host_name,
+              public_port: @container.public_port,
+              admin_port: @container.admin_port
+            )
+            @api.wait_for_ready(wait: wait)
+          end
+
+          yield @api
+        end
+
+        def self.teardown!
+          @container&.remove!
+          @container = nil
+          @api = nil
+        end
+
+        attr_reader :public_port, :admin_port
 
         def host_name
           return '127.0.0.1' unless QA::Runtime::Env.running_in_ci? || QA::Runtime::Env.qa_hostname
 
           "#{@name}.#{@network_cache}"
-        end
-
-        def base_url
-          "http://#{host_name}:#{@public_port}"
-        end
-
-        def admin_url
-          "http://#{host_name}:#{@admin_port}"
         end
 
         def wait_for_running

@@ -18,6 +18,7 @@ describe('Import entities status component', () => {
 
   describe('success status', () => {
     const getStatusText = () => wrapper.findComponent(GlBadge).text();
+    const getStatusIcon = () => wrapper.findComponent(GlBadge).props('icon');
 
     it('displays finished status as complete when no stats are provided', () => {
       createComponent({
@@ -38,6 +39,7 @@ describe('Import entities status component', () => {
       });
 
       expect(getStatusText()).toBe('Complete');
+      expect(getStatusIcon()).toBe('status-success');
     });
 
     it('displays finished status as partial when all stats items were processed', () => {
@@ -52,6 +54,7 @@ describe('Import entities status component', () => {
       });
 
       expect(getStatusText()).toBe('Partial import');
+      expect(getStatusIcon()).toBe('status-alert');
     });
   });
 
@@ -105,9 +108,9 @@ describe('Import entities status component', () => {
     const getStatusIcon = () =>
       wrapper.findComponent(GlAccordionItem).findComponent(GlIcon).props().name;
 
-    const createComponentWithStats = ({ fetched, imported }) => {
+    const createComponentWithStats = ({ fetched, imported, status = 'created' }) => {
       createComponent({
-        status: 'created',
+        status,
         stats: {
           fetched: { label: fetched },
           imported: { label: imported },
@@ -124,13 +127,23 @@ describe('Import entities status component', () => {
       expect(getStatusIcon()).toBe('status-scheduled');
     });
 
-    it('displays running status when imported is not equal to fetched', () => {
+    it('displays running status when imported is not equal to fetched and import is not finished', () => {
       createComponentWithStats({
         fetched: 100,
         imported: 10,
       });
 
       expect(getStatusIcon()).toBe('status-running');
+    });
+
+    it('displays alert status when imported is not equal to fetched and import is finished', () => {
+      createComponentWithStats({
+        fetched: 100,
+        imported: 10,
+        status: STATUSES.FINISHED,
+      });
+
+      expect(getStatusIcon()).toBe('status-alert');
     });
 
     it('displays success status when imported is equal to fetched', () => {

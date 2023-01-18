@@ -5,6 +5,7 @@ import { getAccessLevels } from '../../../utils';
 
 export const i18n = {
   defaultLabel: s__('BranchRules|default'),
+  protectedLabel: s__('BranchRules|protected'),
   detailsButtonLabel: s__('BranchRules|Details'),
   allowForcePush: s__('BranchRules|Allowed to force push'),
   codeOwnerApprovalRequired: s__('BranchRules|Requires CODEOWNERS approval'),
@@ -62,6 +63,9 @@ export default {
     isWildcard() {
       return this.name.includes('*');
     },
+    isProtected() {
+      return Boolean(this.branchProtection);
+    },
     hasApprovalDetails() {
       return this.approvalDetails.length;
     },
@@ -105,10 +109,10 @@ export default {
       if (this.isWildcard) {
         approvalDetails.push(this.matchingBranchesText);
       }
-      if (this.branchProtection.allowForcePush) {
+      if (this.branchProtection?.allowForcePush) {
         approvalDetails.push(this.$options.i18n.allowForcePush);
       }
-      if (this.branchProtection.codeOwnerApprovalRequired) {
+      if (this.branchProtection?.codeOwnerApprovalRequired) {
         approvalDetails.push(this.$options.i18n.codeOwnerApprovalRequired);
       }
       if (this.statusChecksTotal) {
@@ -152,6 +156,10 @@ export default {
 
       <gl-badge v-if="isDefault" variant="info" size="sm" class="gl-ml-2">{{
         $options.i18n.defaultLabel
+      }}</gl-badge>
+
+      <gl-badge v-if="isProtected" variant="success" size="sm" class="gl-ml-2">{{
+        $options.i18n.protectedLabel
       }}</gl-badge>
 
       <ul v-if="hasApprovalDetails" class="gl-pl-6 gl-mt-2 gl-mb-0 gl-text-gray-500">

@@ -12,7 +12,7 @@ module Mutations
 
         argument :project_path, GraphQL::Types::ID,
                  required: true,
-                 description: 'Full path of the associated project for this cluster agent.'
+                 description: 'Full path of the associated project for the cluster agent.'
 
         argument :name, GraphQL::Types::String,
                  required: true,

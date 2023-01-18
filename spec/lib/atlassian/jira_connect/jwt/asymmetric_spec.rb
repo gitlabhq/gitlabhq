@@ -90,7 +90,7 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric, feature_category: :integ
       it { is_expected.not_to be_valid }
     end
 
-    context 'with jira_connect_proxy_url setting' do
+    context 'with jira_connect_proxy_url setting', :aggregate_failures do
       let(:stub_asymmetric_jwt_cdn) { 'https://example.com/-/jira_connect/public_keys' }
       let(:jira_connect_proxy_url_setting) { 'https://example.com' }
 
@@ -100,6 +100,19 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric, feature_category: :integ
         expect(asymmetric_jwt).to be_valid
 
         expect(WebMock).to have_requested(:get, "https://example.com/-/jira_connect/public_keys/#{public_key_id}")
+      end
+
+      context 'when the setting is an empty string', :aggregate_failures do
+        let(:jira_connect_proxy_url_setting) { '' }
+        let(:stub_asymmetric_jwt_cdn) { 'https://connect-install-keys.atlassian.com' }
+
+        it 'requests the default CDN' do
+          expect(JWT).to receive(:decode).twice.and_call_original
+
+          expect(asymmetric_jwt).to be_valid
+
+          expect(WebMock).to have_requested(:get, install_keys_url)
+        end
       end
     end
   end

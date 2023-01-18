@@ -121,3 +121,17 @@ Doorkeeper.configure do
   # We might want to disable this in the future, see https://gitlab.com/gitlab-org/gitlab/-/issues/323615
   skip_client_authentication_for_password_grant true
 end
+
+module Doorkeeper
+  class AccessToken
+    # Doorkeeper OAuth Token refresh uses expires_in of refresh token for new token
+    # https://github.com/doorkeeper-gem/doorkeeper/pull/1366
+    # This override ensures that tokens with expires_in: nil do not create new
+    # tokens with expires_in: nil during refresh flow.
+    # Can be removed after https://gitlab.com/gitlab-org/gitlab/-/issues/386094 is
+    # closed
+    def expires_in
+      super || 2.hours
+    end
+  end
+end

@@ -1,4 +1,4 @@
-package upload_test
+package upload
 
 import (
 	"testing"
@@ -7,7 +7,6 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
 
 	"github.com/stretchr/testify/require"
 )
@@ -38,7 +37,7 @@ func TestPrepareWithS3Config(t *testing.T) {
 		},
 	}
 
-	p := upload.NewObjectStoragePreparer(c)
+	p := NewObjectStoragePreparer(c)
 	opts, err := p.Prepare(r)
 
 	require.NoError(t, err)
@@ -51,7 +50,7 @@ func TestPrepareWithS3Config(t *testing.T) {
 func TestPrepareWithNoConfig(t *testing.T) {
 	c := config.Config{}
 	r := &api.Response{RemoteObject: api.RemoteObject{ID: "id"}}
-	p := upload.NewObjectStoragePreparer(c)
+	p := NewObjectStoragePreparer(c)
 	opts, err := p.Prepare(r)
 
 	require.NoError(t, err)

@@ -307,10 +307,10 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
   end
 
   describe '#signal_and_wait' do
-    let(:time) { 0 }
+    let(:time) { 0.1 }
     let(:signal) { 'my-signal' }
     let(:explanation) { 'my-explanation' }
-    let(:check_interval_seconds) { 2 }
+    let(:check_interval_seconds) { 0.1 }
 
     subject { memory_killer.send(:signal_and_wait, time, signal, explanation) }
 
@@ -318,37 +318,19 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
       stub_const("#{described_class}::CHECK_INTERVAL_SECONDS", check_interval_seconds)
     end
 
-    context 'when all jobs are finished' do
-      let(:running_jobs) { {} }
+    it 'send signal and wait till deadline' do
+      expect(Process).to receive(:kill)
+        .with(signal, pid)
+        .ordered
 
-      it 'send signal and return when all jobs finished' do
-        expect(Process).to receive(:kill).with(signal, pid).ordered
-        expect(Gitlab::Metrics::System).to receive(:monotonic_time).and_call_original
+      expect(Gitlab::Metrics::System).to receive(:monotonic_time)
+        .and_call_original
+        .at_least(3)
 
-        expect(memory_killer).to receive(:enabled?).and_return(true)
+      expect(memory_killer).to receive(:enabled?).and_return(true).at_least(:twice)
+      expect(memory_killer).to receive(:sleep).at_least(:once).and_call_original
 
-        expect(memory_killer).not_to receive(:sleep)
-
-        subject
-      end
-    end
-
-    context 'when there are still running jobs' do
-      let(:running_jobs) { { 'jid1' => { worker_class: DummyWorker } } }
-
-      it 'send signal and wait till deadline if any job not finished' do
-        expect(Process).to receive(:kill)
-          .with(signal, pid)
-          .ordered
-
-        expect(Gitlab::Metrics::System).to receive(:monotonic_time)
-          .and_call_original
-          .at_least(:once)
-
-        expect(memory_killer).to receive(:enabled?).and_return(true).at_least(:once)
-
-        subject
-      end
+      subject
     end
   end
 

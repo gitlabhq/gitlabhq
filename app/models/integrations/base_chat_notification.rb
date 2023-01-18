@@ -10,7 +10,7 @@ module Integrations
 
     SUPPORTED_EVENTS = %w[
       push issue confidential_issue merge_request note confidential_note
-      tag_push pipeline wiki_page deployment
+      tag_push pipeline wiki_page deployment incident
     ].freeze
 
     SUPPORTED_EVENTS_FOR_LABEL_FILTER = %w[issue confidential_issue merge_request note confidential_note].freeze
@@ -76,21 +76,29 @@ module Integrations
 
     def default_fields
       [
-        { type: 'checkbox', name: 'notify_only_broken_pipelines', help: 'Do not send notifications for successful pipelines.' }.freeze,
+        {
+          type: 'checkbox',
+          section: SECTION_TYPE_CONFIGURATION,
+          name: 'notify_only_broken_pipelines',
+          help: 'Do not send notifications for successful pipelines.'
+        }.freeze,
         {
           type: 'select',
+          section: SECTION_TYPE_CONFIGURATION,
           name: 'branches_to_be_notified',
           title: s_('Integrations|Branches for which notifications are to be sent'),
           choices: self.class.branch_choices
         }.freeze,
         {
           type: 'text',
+          section: SECTION_TYPE_CONFIGURATION,
           name: 'labels_to_be_notified',
           placeholder: '~backend,~frontend',
           help: 'Send notifications for issue, merge request, and comment events with the listed labels only. Leave blank to receive notifications for all events.'
         }.freeze,
         {
           type: 'select',
+          section: SECTION_TYPE_CONFIGURATION,
           name: 'labels_to_be_notified_behavior',
           choices: [
             ['Match any of the labels', MATCH_ANY_LABEL],
@@ -224,6 +232,7 @@ module Integrations
       data.merge(project_url: project_url, project_name: project_name).with_indifferent_access
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def get_message(object_kind, data)
       case object_kind
       when "push", "tag_push"
@@ -240,8 +249,11 @@ module Integrations
         Integrations::ChatMessage::WikiPageMessage.new(data)
       when "deployment"
         Integrations::ChatMessage::DeploymentMessage.new(data) if notify_for_ref?(data)
+      when "incident"
+        Integrations::ChatMessage::IssueMessage.new(data) unless update?(data)
       end
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def build_event_channels
       event_channel_names.map do |channel_field|

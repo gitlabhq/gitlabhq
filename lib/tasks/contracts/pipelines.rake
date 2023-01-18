@@ -14,7 +14,7 @@ namespace :contracts do
       pact_helper_location = "pact_helpers/project/pipelines/new/post_create_a_new_pipeline_helper.rb"
 
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        Provider::ContractSourceHelper.contract_location(requester: :rake, file_path: pact_helper_location),
         pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
@@ -23,7 +23,7 @@ namespace :contracts do
       pact_helper_location = "pact_helpers/project/pipelines/index/get_list_project_pipelines_helper.rb"
 
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        Provider::ContractSourceHelper.contract_location(requester: :rake, file_path: pact_helper_location),
         pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
@@ -32,7 +32,7 @@ namespace :contracts do
       pact_helper_location = "pact_helpers/project/pipelines/show/get_pipeline_header_data_helper.rb"
 
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        Provider::ContractSourceHelper.contract_location(requester: :rake, file_path: pact_helper_location),
         pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
@@ -41,7 +41,7 @@ namespace :contracts do
       pact_helper_location = "pact_helpers/project/pipelines/show/delete_pipeline_helper.rb"
 
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        Provider::ContractSourceHelper.contract_location(requester: :rake, file_path: pact_helper_location),
         pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end

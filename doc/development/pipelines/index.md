@@ -16,16 +16,16 @@ We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/develo
 GitLab [CI/CD features and best-practices](../../ci/yaml/index.md)
 as much as possible.
 
-## Minimal test jobs before a merge request is approved
+## Predictive test jobs before a merge request is approved
 
-**To reduce the pipeline cost and shorten the job duration, before a merge request is approved, the pipeline will run a minimal set of RSpec & Jest tests that are related to the merge request changes.**
+**To reduce the pipeline cost and shorten the job duration, before a merge request is approved, the pipeline will run a predictive set of RSpec & Jest tests that are likely to fail for the merge request changes.**
 
 After a merge request has been approved, the pipeline would contain the full RSpec & Jest tests. This will ensure that all tests
 have been run before a merge request is merged.
 
 ### Overview of the GitLab project test dependency
 
-To understand how the minimal test jobs are executed, we need to understand the dependency between
+To understand how the predictive test jobs are executed, we need to understand the dependency between
 GitLab code (frontend and backend) and the respective tests (Jest and RSpec).
 This dependency can be visualized in the following diagram:
 
@@ -47,11 +47,11 @@ In summary:
 - RSpec tests are dependent on the backend code.
 - Jest tests are dependent on both frontend and backend code, the latter through the frontend fixtures.
 
-### RSpec minimal jobs
+### RSpec predictive jobs
 
-#### Determining related RSpec test files in a merge request
+#### Determining predictive RSpec test files in a merge request
 
-To identify the minimal set of tests needed, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with two strategies:
+To identify the RSpec tests that are likely to fail in a merge request, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with two strategies:
 
 - dynamic mapping from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
   ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/47d507c93779675d73a05002e2ec9c3c467cd698/tooling/bin/find_tests#L15))
@@ -60,9 +60,9 @@ To identify the minimal set of tests needed, we use the [`test_file_finder` gem]
 
 The test mappings contain a map of each source files to a list of test files which is dependent of the source file.
 
-In the `detect-tests` job, we use this mapping to identify the minimal tests needed for the current merge request.
+In the `detect-tests` job, we use this mapping to identify the predictive tests needed for the current merge request.
 
-Later on in [the `rspec fail-fast` job](#fail-fast-job-in-merge-request-pipelines), we run the minimal tests needed for the current merge request.
+Later on in [the `rspec fail-fast` job](#fail-fast-job-in-merge-request-pipelines), we run the predictive tests for the current merge request.
 
 #### Exceptional cases
 
@@ -74,11 +74,11 @@ In addition, there are a few circumstances where we would always run the full RS
 - when the merge request is created in a security mirror
 - when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 
-### Jest minimal jobs
+### Jest predictive jobs
 
-#### Determining related Jest test files in a merge request
+#### Determining predictive Jest test files in a merge request
 
-To identify the minimal set of tests needed, we pass a list of all the changed files into `jest` using the [`--findRelatedTests`](https://jestjs.io/docs/cli#--findrelatedtests-spaceseparatedlistofsourcefiles) option.
+To identify the jest tests that are likely to fail in a merge request, we pass a list of all the changed files into `jest` using the [`--findRelatedTests`](https://jestjs.io/docs/cli#--findrelatedtests-spaceseparatedlistofsourcefiles) option.
 In this mode, `jest` would resolve all the dependencies of related to the changed files, which include test files that have these files in the dependency chain.
 
 #### Exceptional cases
@@ -97,7 +97,7 @@ The `rules` definitions for full Jest tests are defined at `.frontend:rules:jest
 
 ### Fork pipelines
 
-We run only the minimal RSpec & Jest jobs for fork pipelines, unless the `pipeline:run-all-rspec`
+We run only the predictive RSpec & Jest jobs for fork pipelines, unless the `pipeline:run-all-rspec`
 label is set on the MR. The goal is to reduce the CI/CD minutes consumed by fork pipelines.
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1170).
@@ -176,9 +176,19 @@ graph LR
     A --"artifact: list of test files"--> B & C
 ```
 
-## Faster feedback for merge requests that fix a broken `master`
+## Faster feedback for some merge requests
+
+### Broken Master Fixes
 
 When you need to [fix a broken `master`](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline:expedite` label to expedite the pipelines that run on the merge request.
+
+Note that the merge request also needs to have the `master:broken` or `master:foss-broken` label set.
+
+### Revert MRs
+
+To make your Revert MRs faster, use the [revert MR template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Revert%20To%20Resolve%20Incident.md) **before** you create your merge request. It will apply the `pipeline:expedite` label and others that will expedite the pipelines that run on the merge request.
+
+### The `~pipeline:expedite` label
 
 When this label is assigned, the following steps of the CI/CD pipeline are skipped:
 
@@ -187,8 +197,6 @@ When this label is assigned, the following steps of the CI/CD pipeline are skipp
 - The entire [Review Apps process](../testing_guide/review_apps.md).
 
 Apply the label to the merge request, and run a new pipeline for the MR.
-
-Note that the merge request also needs to have the `master:broken` or `master:foss-broken` label set.
 
 ## Test jobs
 
@@ -424,17 +432,21 @@ running every day, updating cache.
 The default CI/CD configuration file is also set at `jh/.gitlab-ci.yml` so it
 runs exactly like [GitLab JH](https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml).
 
-## Ruby 3.0 jobs
+## Ruby 2.7 jobs
 
-You can add the `pipeline:run-in-ruby3` label to the merge request to switch
-the Ruby version used for running the whole test suite to 3.0. When you do
-this, the test suite will no longer run in Ruby 2.7 (default), and an
-additional job `verify-ruby-2.7` will also run and always fail to remind us to
-remove the label and run in Ruby 2.7 before merging the merge request.
+We're running Ruby 3.0 for the merge requests and the default branch. However,
+we're still running Ruby 2.7 for GitLab.com and there are older versions that
+we need to maintain. We need a way to still try out Ruby 2.7 in merge requests.
+
+You can add the `pipeline:run-in-ruby2` label to the merge request to switch
+the Ruby version used for running the whole test suite to 2.7. When you do
+this, the test suite will no longer run in Ruby 3.0 (default), and an
+additional job `verify-ruby-3.0` will also run and always fail to remind us to
+remove the label and run in Ruby 3.0 before merging the merge request.
 
 This should let us:
 
-- Test changes for Ruby 3.0
+- Test changes for Ruby 2.7
 - Make sure it will not break anything when it's merged into the default branch
 
 ## `undercover` RSpec test
@@ -465,9 +477,9 @@ If these commands return `undercover: ✅ No coverage is missing in latest chang
 
 ## Ruby versions testing
 
-Our test suite runs against Ruby 2 in merge requests and default branch pipelines.
+Our test suite runs against Ruby 3 in merge requests and default branch pipelines.
 
-We also run our test suite against Ruby 3 on another 2-hourly scheduled pipelines, as GitLab.com will soon run on Ruby 3.
+We also run our test suite against Ruby 2.7 on another 2-hourly scheduled pipelines, as GitLab.com still runs on Ruby 2.7.
 
 ## PostgreSQL versions testing
 
@@ -482,26 +494,26 @@ We also run our test suite against PG11 upon specific database library changes i
 
 | Where?                                                                                         | PostgreSQL version                              | Ruby version |
 |------------------------------------------------------------------------------------------------|-------------------------------------------------|--------------|
-| Merge requests                                                                                 | 12 (default version), 11 for DB library changes | 2.7 (default version) |
-| `master` branch commits                                                                        | 12 (default version), 11 for DB library changes | 2.7 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 12 (default version), 11 for DB library changes | 2.7 (default version) |
-| `maintenance` scheduled pipelines for the `ruby3` branch (every odd-numbered hour), see below. | 12 (default version), 11 for DB library changes | 3.0 (coded in the branch) |
-| `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 11, 13                    | 2.7 (default version) |
+| Merge requests                                                                                 | 12 (default version), 11 for DB library changes | 3.0 (default version) |
+| `master` branch commits                                                                        | 12 (default version), 11 for DB library changes | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 12 (default version), 11 for DB library changes | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 12 (default version), 11 for DB library changes | 2.7 |
+| `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 11, 13                    | 3.0 (default version) |
 
-There are 2 pipeline schedules used for testing Ruby 3. One is triggering a
-pipeline in `ruby3-sync` branch, which updates the `ruby3` branch with latest
+There are 2 pipeline schedules used for testing Ruby 2.7. One is triggering a
+pipeline in `ruby2-sync` branch, which updates the `ruby2` branch with latest
 `master`, and no pipelines will be triggered by this push. The other schedule
-is triggering a pipeline in `ruby3` 5 minutes after it, which is considered
+is triggering a pipeline in `ruby2` 5 minutes after it, which is considered
 the maintenance schedule to run test suites and update cache.
 
-Any changes in `ruby3` are only for running the pipeline. It should
-never be merged back to `master`. Any other Ruby 3 changes should go into
-`master` directly, which should be compatible with Ruby 2.7.
+Any changes in `ruby2` are only for running the pipeline. It should
+never be merged back to `master`. Any other Ruby 2.7 changes should go into
+`master` directly, which should be compatible with Ruby 3.
 
-Previously, `ruby3-sync` was using a project token stored in `RUBY3_SYNC_TOKEN`
-(now backed up in `RUBY3_SYNC_TOKEN_NOT_USED`), however due to various
+Previously, `ruby2-sync` was using a project token stored in `RUBY2_SYNC_TOKEN`
+(now backed up in `RUBY2_SYNC_TOKEN_NOT_USED`), however due to various
 permissions issues, we ended up using an access token from `gitlab-bot` so now
-`RUBY3_SYNC_TOKEN` is actually an access token from `gitlab-bot`.
+`RUBY2_SYNC_TOKEN` is actually an access token from `gitlab-bot`.
 
 ### Long-term plan
 

@@ -45,6 +45,7 @@ module Gitlab
           commit: {
             # note: commit.id is actually the pipeline id
             id: commit.id,
+            name: commit.name,
             sha: commit.sha,
             message: commit.git_commit_message,
             author_name: commit.git_author_name,

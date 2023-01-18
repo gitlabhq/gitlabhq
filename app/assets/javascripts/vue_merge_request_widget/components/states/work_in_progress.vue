@@ -1,7 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { produce } from 'immer';
-import $ from 'jquery';
 import { createAlert } from '~/flash';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
@@ -111,7 +110,9 @@ export default {
             },
           }) => {
             toast(__('Marked as ready. Merging is now allowed.'));
-            $('.merge-request .detail-page-description .title').text(title);
+            document.querySelector(
+              '.merge-request .detail-page-description .title',
+            ).textContent = title;
 
             if (!window.gon?.features?.realtimeMrStatusChange) {
               eventHub.$emit('MRWidgetUpdateRequested');

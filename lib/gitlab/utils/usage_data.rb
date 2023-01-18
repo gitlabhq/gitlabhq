@@ -44,7 +44,7 @@ module Gitlab
       DISTRIBUTED_HLL_FALLBACK = -2
       MAX_BUCKET_SIZE = 100
 
-      def with_duration
+      def with_metadata
         yield
       end
 
@@ -55,7 +55,7 @@ module Gitlab
       end
 
       def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil, start_at: Time.current)
-        with_duration do
+        with_metadata do
           if batch
             Gitlab::Database::BatchCount.batch_count(relation, column, batch_size: batch_size, start: start, finish: finish)
           else
@@ -68,7 +68,7 @@ module Gitlab
       end
 
       def distinct_count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
-        with_duration do
+        with_metadata do
           if batch
             Gitlab::Database::BatchCount.batch_distinct_count(relation, column, batch_size: batch_size, start: start, finish: finish)
           else
@@ -81,7 +81,7 @@ module Gitlab
       end
 
       def estimate_batch_distinct_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)
-        with_duration do
+        with_metadata do
           buckets = Gitlab::Database::PostgresHll::BatchDistinctCounter
                       .new(relation, column)
                       .execute(batch_size: batch_size, start: start, finish: finish)
@@ -96,7 +96,7 @@ module Gitlab
       end
 
       def sum(relation, column, batch_size: nil, start: nil, finish: nil)
-        with_duration do
+        with_metadata do
           Gitlab::Database::BatchCount.batch_sum(relation, column, batch_size: batch_size, start: start, finish: finish)
         rescue ActiveRecord::StatementInvalid => error
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
@@ -105,7 +105,7 @@ module Gitlab
       end
 
       def average(relation, column, batch_size: nil, start: nil, finish: nil)
-        with_duration do
+        with_metadata do
           Gitlab::Database::BatchCount.batch_average(relation, column, batch_size: batch_size, start: start, finish: finish)
         rescue ActiveRecord::StatementInvalid => error
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
@@ -119,7 +119,7 @@ module Gitlab
       #
       # rubocop: disable CodeReuse/ActiveRecord
       def histogram(relation, column, buckets:, bucket_size: buckets.size)
-        with_duration do
+        with_metadata do
           # Using lambda to avoid exposing histogram specific methods
           parameters_valid = lambda do
             error_message =
@@ -184,7 +184,7 @@ module Gitlab
       # rubocop: enable CodeReuse/ActiveRecord
 
       def add(*args)
-        with_duration do
+        with_metadata do
           break -1 if args.any?(&:negative?)
 
           args.sum
@@ -195,7 +195,7 @@ module Gitlab
       end
 
       def alt_usage_data(value = nil, fallback: FALLBACK, &block)
-        with_duration do
+        with_metadata do
           if block
             yield
           else
@@ -208,7 +208,7 @@ module Gitlab
       end
 
       def redis_usage_data(counter = nil, &block)
-        with_duration do
+        with_metadata do
           if block
             redis_usage_counter(&block)
           elsif counter.present?
@@ -218,7 +218,7 @@ module Gitlab
       end
 
       def with_prometheus_client(fallback: {}, verify: true)
-        with_duration do
+        with_metadata do
           client = prometheus_client(verify: verify)
           break fallback unless client
 
@@ -257,7 +257,7 @@ module Gitlab
 
       # rubocop: disable UsageData/LargeTable:
       def jira_integration_data
-        with_duration do
+        with_metadata do
           data = {
             projects_jira_server_active: 0,
             projects_jira_cloud_active: 0

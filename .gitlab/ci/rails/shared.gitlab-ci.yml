@@ -28,7 +28,7 @@ include:
     - run_timed_command "scripts/gitaly-test-spawn"  # Do not use 'bundle exec' here
     - echo -e "\e[0Ksection_end:`date +%s`:gitaly-test-spawn\r\e[0K"
 
-.minimal-rspec-tests:
+.predictive-rspec-tests:
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
 
@@ -58,10 +58,13 @@ include:
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag ~quarantine --tag ~level:migration"
+    # We need to exclude background migration because unit tests run with
+    # spec/lib, yet background migration tests are also sitting there,
+    # and they should run on their own jobs so we don't need to run them
+    # in unit tests again.
+    - rspec_paralellized_job "--tag ~quarantine --tag ~level:background_migration"
   allow_failure:
-    # the exit code listed here must match the one defined for the variable SUCCESSFULLY_RETRIED_TEST_EXIT_CODE
-    exit_codes: 137
+    exit_codes: !reference [.rspec-base, variables, SUCCESSFULLY_RETRIED_TEST_EXIT_CODE]
 
 .base-artifacts:
   artifacts:
@@ -80,14 +83,9 @@ include:
       junit: ${JUNIT_RESULT_FILE}
 
 .rspec-base-migration:
-  extends:
-    - .base-artifacts
-    - .rails:rules:ee-and-foss-migration
-  variables:
-    RSPEC_TESTS_FILTER_FILE: "${RSPEC_MATCHING_TESTS_PATH}"
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag ~quarantine --tag level:migration"
+    - rspec_paralellized_job "--tag ~quarantine"
 
 .rspec-base-pg11:
   extends:
@@ -120,12 +118,6 @@ include:
   extends:
     - .rspec-base
     - .use-pg12-es7-ee
-
-.rspec-ee-base-pg12-es7:
-  extends:
-    - .rspec-base
-    - .use-pg12-es7-ee
-    - .rails:rules:run-search-tests
 
 .rspec-ee-base-pg12-es8:
   extends:
@@ -163,10 +155,16 @@ include:
 ############################
 # rspec job parallel configs
 .rspec-migration-parallel:
-  parallel: 12
+  parallel: 8
+
+.rspec-background-migration-parallel:
+  parallel: 4
 
 .rspec-ee-migration-parallel:
-  parallel: 4
+  parallel: 2
+
+.rspec-ee-background-migration-parallel:
+  parallel: 2
 
 .rspec-unit-parallel:
   parallel: 28

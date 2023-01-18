@@ -31,7 +31,7 @@ RSpec.describe FeatureFlags::DestroyService do
       expect { subject }.to change { Operations::FeatureFlag.count }.by(-1)
     end
 
-    it 'creates audit log' do
+    it 'creates audit log', :with_license do
       expect { subject }.to change { AuditEvent.count }.by(1)
       expect(audit_event_message).to eq("Deleted feature flag #{feature_flag.name}.")
     end

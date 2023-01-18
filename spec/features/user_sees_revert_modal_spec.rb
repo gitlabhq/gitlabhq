@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User sees revert modal', :js, :sidekiq_might_not_need_inline,
-feature_category: :code_review do
+feature_category: :code_review_workflow do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project) }

@@ -264,18 +264,6 @@ module Gitlab
 
       private
 
-      def collaborations_subquery
-        each_object(:repos, nil, { affiliation: 'collaborator' })
-          .map { |repo| "repo:#{repo[:full_name]}" }
-          .join(' ')
-      end
-
-      def organizations_subquery
-        each_object(:organizations)
-          .map { |org| "org:#{org[:login]}" }
-          .join(' ')
-      end
-
       def with_retry
         Retriable.retriable(on: CLIENT_CONNECTION_ERROR, on_retry: on_retry) do
           yield

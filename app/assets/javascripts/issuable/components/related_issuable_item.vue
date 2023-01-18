@@ -135,7 +135,6 @@ export default {
         <gl-link
           :href="computedPath"
           class="sortable-link gl-font-weight-normal"
-          target="_blank"
           @click="handleTitleClick"
         >
           {{ title }}

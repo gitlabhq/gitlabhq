@@ -104,7 +104,7 @@ keys must be manually replicated to the **secondary** site.
 1. Make a backup of any existing SSH host keys:
 
    ```shell
-   find /etc/ssh -iname ssh_host_* -exec cp {} {}.backup.`date +%F` \;
+   find /etc/ssh -iname 'ssh_host_*' -exec cp {} {}.backup.`date +%F` \;
    ```
 
 1. Copy OpenSSH host keys from the **primary** site:

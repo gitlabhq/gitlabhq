@@ -26,7 +26,7 @@ module Gitlab
 
       class MethodMissingError < StandardError
         def message
-          'Method missing. Falling back to execute method on the redis secondary store.'
+          'Method missing. Falling back to execute method on the redis default store in Rails.env.production.'
         end
       end
 
@@ -36,31 +36,64 @@ module Gitlab
       FAILED_TO_WRITE_ERROR_MESSAGE = 'Failed to write to the redis primary_store.'
       FAILED_TO_RUN_PIPELINE = 'Failed to execute pipeline on the redis primary_store.'
 
-      SKIP_LOG_METHOD_MISSING_FOR_COMMANDS = %i(info).freeze
+      SKIP_LOG_METHOD_MISSING_FOR_COMMANDS = %i[info].freeze
 
-      READ_COMMANDS = %i(
-        get
-        mget
-        smembers
-        scard
-      ).freeze
+      # For ENUMERATOR_CACHE_HIT_VALIDATOR and READ_CACHE_HIT_VALIDATOR,
+      # we define procs to validate cache hit. The only other acceptable value is nil,
+      # in the case of errors being raised.
+      #
+      # If a command has no empty response, set ->(val) { true }
+      #
+      # Ref: https://www.rubydoc.info/github/redis/redis-rb/Redis/Commands
+      #
+      ENUMERATOR_CACHE_HIT_VALIDATOR = {
+        scan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
+        hscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
+        sscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
+        zscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? }
+      }.freeze
 
-      WRITE_COMMANDS = %i(
-        set
-        setnx
-        setex
-        sadd
-        srem
+      READ_CACHE_HIT_VALIDATOR = {
+        exists: ->(val) { val != 0 },
+        exists?: ->(val) { val },
+        get: ->(val) { !val.nil? },
+        hexists: ->(val) { val },
+        hget: ->(val) { !val.nil? },
+        hgetall:  ->(val) { val.is_a?(Hash) && !val.empty? },
+        hlen: ->(val) { val != 0 },
+        hmget: ->(val) { val.is_a?(Array) && !val.compact.empty? },
+        mapped_hmget: ->(val) { val.is_a?(Hash) && !val.compact.empty? },
+        mget: ->(val) { val.is_a?(Array) && !val.compact.empty? },
+        scard: ->(val) { val != 0 },
+        sismember: ->(val) { val },
+        smembers: ->(val) { val.is_a?(Array) && !val.empty? },
+        sscan: ->(val) { val != ['0', []] },
+        ttl: ->(val) { val != 0 && val != -2 }
+      }.freeze
+
+      WRITE_COMMANDS = %i[
         del
-        flushdb
-        rpush
         eval
-      ).freeze
+        expire
+        flushdb
+        hdel
+        hset
+        incr
+        incrby
+        mapped_hmset
+        rpush
+        sadd
+        set
+        setex
+        setnx
+        srem
+        unlink
+      ].freeze
 
-      PIPELINED_COMMANDS = %i(
+      PIPELINED_COMMANDS = %i[
         pipelined
         multi
-      ).freeze
+      ].freeze
 
       # To transition between two Redis store, `primary_store` should be the target store,
       # and `secondary_store` should be the current store. Transition is controlled with feature flags:
@@ -81,12 +114,12 @@ module Gitlab
       end
 
       # rubocop:disable GitlabSecurity/PublicSend
-      READ_COMMANDS.each do |name|
-        define_method(name) do |*args, &block|
+      READ_CACHE_HIT_VALIDATOR.each_key do |name|
+        define_method(name) do |*args, **kwargs, &block|
           if use_primary_and_secondary_stores?
-            read_command(name, *args, &block)
+            read_command(name, *args, **kwargs, &block)
           else
-            default_store.send(name, *args, &block)
+            default_store.send(name, *args, **kwargs, &block)
           end
         end
       end
@@ -98,6 +131,20 @@ module Gitlab
           else
             default_store.send(name, *args, **kwargs, &block)
           end
+        end
+      end
+
+      ENUMERATOR_CACHE_HIT_VALIDATOR.each_key do |name|
+        define_method(name) do |*args, **kwargs, &block|
+          enumerator = if use_primary_and_secondary_stores?
+                         read_command(name, *args, **kwargs)
+                       else
+                         default_store.send(name, *args, **kwargs)
+                       end
+
+          return enumerator if block.nil?
+
+          enumerator.each(&block)
         end
       end
 
@@ -170,12 +217,23 @@ module Gitlab
           extra.merge(command_name: command_name, instance_name: instance_name))
       end
 
+      def ping(message = nil)
+        if use_primary_and_secondary_stores?
+          # Both stores have to response success for the ping to be considered success.
+          # We assume both stores cannot return different responses (only both "PONG" or both echo the message).
+          # If either store is not reachable, an Error will be raised anyway thus taking any response works.
+          [primary_store, secondary_store].map { |store| store.ping(message) }.first
+        else
+          default_store.ping(message)
+        end
+      end
+
       private
 
       # @return [Boolean]
       def feature_enabled?(prefix)
         feature_table_exists? &&
-          Feature.enabled?("#{prefix}_#{instance_name.underscore}") &&
+          Feature.enabled?("#{prefix}_#{instance_name.underscore}") && # rubocop:disable Cop/FeatureFlagUsage
           !same_redis_store?
       end
 
@@ -193,15 +251,17 @@ module Gitlab
       def log_method_missing(command_name, *_args)
         return if SKIP_LOG_METHOD_MISSING_FOR_COMMANDS.include?(command_name)
 
+        raise MethodMissingError if Rails.env.test? || Rails.env.development?
+
         log_error(MethodMissingError.new, command_name)
         increment_method_missing_count(command_name)
       end
 
-      def read_command(command_name, *args, &block)
+      def read_command(command_name, *args, **kwargs, &block)
         if @instance
-          send_command(@instance, command_name, *args, &block)
+          send_command(@instance, command_name, *args, **kwargs, &block)
         else
-          read_one_with_fallback(command_name, *args, &block)
+          read_one_with_fallback(command_name, *args, **kwargs, &block)
         end
       end
 
@@ -213,19 +273,28 @@ module Gitlab
         end
       end
 
-      def read_one_with_fallback(command_name, *args, &block)
+      def read_one_with_fallback(command_name, *args, **kwargs, &block)
         begin
-          value = send_command(primary_store, command_name, *args, &block)
+          value = send_command(primary_store, command_name, *args, **kwargs, &block)
         rescue StandardError => e
           log_error(e, command_name,
             multi_store_error_message: FAILED_TO_READ_ERROR_MESSAGE)
         end
 
-        value || fallback_read(command_name, *args, &block)
+        return value if cache_hit?(command_name, value)
+
+        fallback_read(command_name, *args, **kwargs, &block)
       end
 
-      def fallback_read(command_name, *args, &block)
-        value = send_command(secondary_store, command_name, *args, &block)
+      def cache_hit?(command, value)
+        validator = READ_CACHE_HIT_VALIDATOR[command] || ENUMERATOR_CACHE_HIT_VALIDATOR[command]
+        return false unless validator
+
+        !value.nil? && validator.call(value)
+      end
+
+      def fallback_read(command_name, *args, **kwargs, &block)
+        value = send_command(secondary_store, command_name, *args, **kwargs, &block)
 
         if value
           log_error(ReadFromPrimaryError.new, command_name)

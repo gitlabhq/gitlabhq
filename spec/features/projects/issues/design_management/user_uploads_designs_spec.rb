@@ -18,7 +18,7 @@ RSpec.describe 'User uploads new design', :js, feature_category: :design_managem
   context "when the feature is available" do
     let(:feature_enabled) { true }
 
-    it 'uploads designs' do
+    it 'uploads designs', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/358845' do
       upload_design(logo_fixture, count: 1)
 
       expect(page).to have_selector('.js-design-list-item', count: 1)

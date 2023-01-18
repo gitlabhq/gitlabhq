@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::AutovacuumActiveOnTable do
+RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::AutovacuumActiveOnTable,
+  feature_category: :database do
   include Database::DatabaseHelpers
 
   let(:connection) { Gitlab::Database.database_base_models[:main].connection }
@@ -17,7 +18,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
     subject { described_class.new(context).evaluate }
 
     before do
-      swapout_view_for_table(:postgres_autovacuum_activity)
+      swapout_view_for_table(:postgres_autovacuum_activity, connection: connection)
     end
 
     let(:tables) { [table] }

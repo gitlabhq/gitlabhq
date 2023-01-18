@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Pipelines', :js, feature_category: :projects do
+  include ListboxHelpers
   include ProjectForksHelper
   include Spec::Support::Helpers::ModalHelpers
 
@@ -594,7 +595,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
         end
 
         it 'changes the Pipeline ID column for Pipeline IID' do
-          page.find('[data-testid="pipeline-key-dropdown"]').click
+          page.find('[data-testid="pipeline-key-collapsible-box"]').click
 
           within '.gl-dropdown-contents' do
             dropdown_options = page.find_all '.gl-dropdown-item'
@@ -618,6 +619,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
               user: user)
       end
 
+      let(:external_stage) { create(:ci_stage, name: 'external', pipeline: pipeline) }
+
       before do
         create_build('build', 0, 'build', :success)
         create_build('test', 1, 'rspec 0:2', :pending)
@@ -627,7 +630,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
         create_build('test', 1, 'audit', :created)
         create_build('deploy', 2, 'production', :created)
 
-        create(:generic_commit_status, pipeline: pipeline, stage: 'external', name: 'jenkins', stage_idx: 3, ref: 'master')
+        create(:generic_commit_status, pipeline: pipeline, ci_stage: external_stage, name: 'jenkins', ref: 'master')
 
         visit project_pipeline_path(project, pipeline)
         wait_for_requests
@@ -672,7 +675,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           click_button project.default_branch
           wait_for_requests
 
-          find('p', text: 'master').click
+          find('.gl-dropdown-item', text: 'master').click
           wait_for_requests
         end
 
@@ -776,8 +779,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
       describe 'new pipeline page' do
         it 'has field to add a new pipeline' do
-          expect(page).to have_selector('[data-testid="ref-select"]')
-          expect(find('[data-testid="ref-select"]')).to have_content project.default_branch
+          expect(page).to have_button project.default_branch
           expect(page).to have_content('Run for')
         end
       end
@@ -785,14 +787,9 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
       describe 'find pipelines' do
         it 'shows filtered pipelines', :js do
           click_button project.default_branch
+          send_keys('fix')
 
-          page.within '[data-testid="ref-select"]' do
-            find('[data-testid="search-refs"]').native.send_keys('fix')
-
-            page.within '.gl-dropdown-contents' do
-              expect(page).to have_content('fix')
-            end
-          end
+          expect_listbox_item('fix')
         end
       end
     end

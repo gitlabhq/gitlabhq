@@ -1,18 +1,20 @@
 - integration = chat_name.integration
-- project = integration.project
+- project = integration&.project
 %tr
   %td
     %strong
-      - if can?(current_user, :read_project, project)
+      - if project.present? && can?(current_user, :read_project, project)
         = link_to project.full_name, project_path(project)
       - else
         .light= _('Not applicable.')
   %td
     %strong
-      - if can?(current_user, :admin_project, project)
+      - if integration.present? && can?(current_user, :admin_project, project)
         = link_to integration.title, edit_project_settings_integration_path(project, integration)
-      - else
+      - elsif integration.present?
         = integration.title
+      - else
+        .light= _('Not applicable.')
   %td
     = chat_name.team_domain
   %td

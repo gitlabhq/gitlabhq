@@ -4,11 +4,14 @@ import { within } from '@testing-library/dom';
 import { mount, createWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import waitForPromises from 'helpers/wait_for_promises';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
 import { MEMBER_TYPES } from '~/members/constants';
+import { guestOverageConfirmAction } from 'ee_else_ce/members/guest_overage_confirm_action';
 import { member } from '../../mock_data';
 
 Vue.use(Vuex);
+jest.mock('ee_else_ce/members/guest_overage_confirm_action');
 
 describe('RoleDropdown', () => {
   let wrapper;
@@ -33,6 +36,10 @@ describe('RoleDropdown', () => {
     wrapper = mount(RoleDropdown, {
       provide: {
         namespace: MEMBER_TYPES.user,
+        group: {
+          name: 'groupname',
+          path: '/grouppath/',
+        },
       },
       propsData: {
         member,
@@ -63,12 +70,21 @@ describe('RoleDropdown', () => {
   const findDropdownToggle = () => wrapper.find('button[aria-haspopup="true"]');
   const findDropdown = () => wrapper.findComponent(GlDropdown);
 
+  let originalGon;
+
+  beforeEach(() => {
+    originalGon = window.gon;
+    gon.features = { showOverageOnRolePromotion: true };
+  });
+
   afterEach(() => {
+    window.gon = originalGon;
     wrapper.destroy();
   });
 
   describe('when dropdown is open', () => {
     beforeEach(() => {
+      guestOverageConfirmAction.mockReturnValue(true);
       createComponent();
 
       return findDropdownToggle().trigger('click');
@@ -113,12 +129,16 @@ describe('RoleDropdown', () => {
         expect($toast.show).toHaveBeenCalledWith('Role updated successfully.');
       });
 
-      it('disables dropdown while waiting for `updateMemberRole` to resolve', async () => {
+      it('puts dropdown in loading state while waiting for `updateMemberRole` to resolve', async () => {
         await getDropdownItemByText('Developer').trigger('click');
 
-        expect(findDropdown().props('disabled')).toBe(true);
+        expect(findDropdown().props('loading')).toBe(true);
+      });
 
-        await nextTick();
+      it('enables dropdown after `updateMemberRole` resolves', async () => {
+        await getDropdownItemByText('Developer').trigger('click');
+
+        await waitForPromises();
 
         expect(findDropdown().props('disabled')).toBe(false);
       });
@@ -147,5 +167,45 @@ describe('RoleDropdown', () => {
     await nextTick();
 
     expect(findDropdown().props('right')).toBe(false);
+  });
+
+  describe('guestOverageConfirmAction', () => {
+    const mockConfirmAction = ({ confirmed }) => {
+      guestOverageConfirmAction.mockResolvedValueOnce(confirmed);
+    };
+
+    beforeEach(() => {
+      createComponent();
+
+      findDropdownToggle().trigger('click');
+    });
+
+    afterEach(() => {
+      guestOverageConfirmAction.mockReset();
+    });
+
+    describe('when guestOverageConfirmAction returns true', () => {
+      beforeEach(() => {
+        mockConfirmAction({ confirmed: true });
+
+        getDropdownItemByText('Reporter').trigger('click');
+      });
+
+      it('calls updateMemberRole', () => {
+        expect(actions.updateMemberRole).toHaveBeenCalled();
+      });
+    });
+
+    describe('when guestOverageConfirmAction returns false', () => {
+      beforeEach(() => {
+        mockConfirmAction({ confirmed: false });
+
+        getDropdownItemByText('Reporter').trigger('click');
+      });
+
+      it('does not call updateMemberRole', () => {
+        expect(actions.updateMemberRole).not.toHaveBeenCalled();
+      });
+    });
   });
 });

@@ -174,6 +174,14 @@ FactoryBot.define do
       end
     end
 
+    trait :private do
+      accessibility { 'private' }
+    end
+
+    trait :public do
+      accessibility { 'public' }
+    end
+
     trait :accessibility do
       file_type { :accessibility }
       file_format { :raw }

@@ -312,22 +312,27 @@ module.exports = {
         test: /\.mjs$/,
         use: [],
       },
+      {
+        test: /(@cubejs-client\/vue).*\.(js)?$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+      },
       WEBPACK_USE_ESBUILD_LOADER && {
-        test: /\.js$/,
+        test: /\.(js|cjs)$/,
         exclude: (modulePath) =>
           /node_modules|vendor[\\/]assets/.test(modulePath) && !/\.vue\.js/.test(modulePath),
         loader: 'esbuild-loader',
         options: esbuildConfiguration,
       },
       !WEBPACK_USE_ESBUILD_LOADER && {
-        test: /\.js$/,
+        test: /\.(js|cjs)$/,
         exclude: (modulePath) =>
           /node_modules|vendor[\\/]assets/.test(modulePath) && !/\.vue\.js/.test(modulePath),
         loader: 'babel-loader',
         options: defaultJsOptions,
       },
       WEBPACK_USE_ESBUILD_LOADER && {
-        test: /\.js$/,
+        test: /\.(js|cjs)$/,
         include: (modulePath) =>
           /node_modules\/(monaco-worker-manager|monaco-marker-data-provider)\/index\.js/.test(
             modulePath,
@@ -336,7 +341,7 @@ module.exports = {
         options: esbuildConfiguration,
       },
       !WEBPACK_USE_ESBUILD_LOADER && {
-        test: /\.js$/,
+        test: /\.(js|cjs)$/,
         include: (modulePath) =>
           /node_modules\/(monaco-worker-manager|monaco-marker-data-provider)\/index\.js/.test(
             modulePath,

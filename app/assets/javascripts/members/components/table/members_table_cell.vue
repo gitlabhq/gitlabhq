@@ -5,13 +5,14 @@ import {
   isDirectMember,
   isCurrentUser,
   canRemove,
+  canRemoveBlockedByLastOwner,
   canResend,
   canUpdate,
 } from '../../utils';
 
 export default {
   name: 'MembersTableCell',
-  inject: ['currentUserId'],
+  inject: ['currentUserId', 'canManageMembers'],
   props: {
     member: {
       type: Object,
@@ -45,6 +46,9 @@ export default {
     isCurrentUser() {
       return isCurrentUser(this.member, this.currentUserId);
     },
+    canRemoveBlockedByLastOwner() {
+      return canRemoveBlockedByLastOwner(this.member, this.canManageMembers);
+    },
     canRemove() {
       return canRemove(this.member);
     },
@@ -62,6 +66,7 @@ export default {
       isCurrentUser: this.isCurrentUser,
       permissions: {
         canRemove: this.canRemove,
+        canRemoveBlockedByLastOwner: this.canRemoveBlockedByLastOwner,
         canResend: this.canResend,
         canUpdate: this.canUpdate,
       },

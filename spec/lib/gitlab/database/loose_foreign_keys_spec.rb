@@ -112,4 +112,31 @@ RSpec.describe Gitlab::Database::LooseForeignKeys do
       end
     end
   end
+
+  describe '.build_definition' do
+    context 'when child table schema is not defined' do
+      let(:loose_foreign_keys_yaml) do
+        {
+          'ci_unknown_table' => [
+            {
+              'table' => 'projects',
+              'column' => 'project_id',
+              'on_delete' => 'async_delete'
+            }
+          ]
+        }
+      end
+
+      subject { described_class.definitions }
+
+      before do
+        described_class.instance_variable_set(:@definitions, nil)
+        described_class.instance_variable_set(:@loose_foreign_keys_yaml, loose_foreign_keys_yaml)
+      end
+
+      it 'raises Gitlab::Database::GitlabSchema::UnknownSchemaError error' do
+        expect { subject }.to raise_error(Gitlab::Database::GitlabSchema::UnknownSchemaError)
+      end
+    end
+  end
 end

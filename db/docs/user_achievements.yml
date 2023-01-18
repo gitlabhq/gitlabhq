@@ -1,0 +1,10 @@
+---
+table_name: user_achievements
+classes:
+- Achievements::UserAchievement
+feature_categories:
+- users
+description: Achievements awarded to and revoked from users
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107027
+milestone: '15.8'
+gitlab_schema: gitlab_main

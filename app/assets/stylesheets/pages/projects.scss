@@ -122,7 +122,7 @@
   padding: 0;
   background: transparent;
   border: 0;
-  line-height: 34px;
+  line-height: $gl-line-height-32;
   margin: 0;
 
   a {
@@ -495,7 +495,7 @@
 
 .protected-branches-list,
 .protected-tags-list {
-  margin-bottom: 30px;
+  margin-bottom: 32px;
 
   .settings-message {
     margin: 0;

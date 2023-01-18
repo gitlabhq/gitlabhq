@@ -1,4 +1,5 @@
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const ENVIRONMENT_DETAILS_PAGE_SIZE = 20;
 export const ENVIRONMENT_DETAILS_TABLE_FIELDS = [
@@ -45,3 +46,17 @@ export const ENVIRONMENT_DETAILS_TABLE_FIELDS = [
     tdClass: 'gl-vertical-align-middle! gl-white-space-nowrap',
   },
 ];
+
+export const translations = {
+  emptyStateTitle: s__("Deployments|You don't have any deployments right now."),
+  emptyStatePrimaryButton: __('Read more'),
+  emptyStateDescription: s__(
+    'Deployments|Define environments in the deploy stage(s) in %{code_open}.gitlab-ci.yml%{code_close} to track deployments here.',
+  ),
+  nextPageButtonLabel: __('Next'),
+  previousPageButtonLabel: __('Prev'),
+};
+
+export const codeBlockPlaceholders = { code: ['code_open', 'code_close'] };
+
+export const environmentsHelpPagePath = helpPagePath('ci/environments/index.md');

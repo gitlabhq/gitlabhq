@@ -1,8 +1,6 @@
 - title: "Support for periods (`.`) in Terraform state names might break existing states"
   announcement_milestone: "15.7"
-  announcement_date: "2022-12-22"
   removal_milestone: "16.0"
-  removal_date: "2023-05-22"
   breaking_change: true
   reporter: nagyv-gitlab
   stage: configure
@@ -20,6 +18,5 @@
 
     To use the full state name, including the period, [migrate to the full state file](https://docs.gitlab.com/ee/user/infrastructure/iac/terraform_state.html#migrate-to-a-gitlab-managed-terraform-state).
   end_of_support_milestone: 16.0
-  end_of_support_date: 2023-05-22
   tiers: [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url: 'https://docs.gitlab.com/ee/user/infrastructure/iac/troubleshooting.html#troubleshooting-terraform-state'

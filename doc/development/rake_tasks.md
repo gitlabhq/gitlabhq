@@ -75,6 +75,54 @@ bin/rake "gitlab:seed:group_seed[subgroup_depth, username]"
 
 Group are additionally seeded with epics if GitLab instance has epics feature available.
 
+#### Seeding a runner fleet test environment
+
+Use the `gitlab:seed:runner_fleet` task to seed a full runner fleet, specifically groups with subgroups and projects that contain runners and pipelines:
+
+```shell
+bin/rake "gitlab:seed:runner_fleet[username, registration_prefix, runner_count, job_count]"
+```
+
+By default, the Rake task uses the `root` username to create 40 runners and 400 jobs.
+
+```mermaid
+graph TD
+    G1[Top level group 1] --> G11
+    G2[Top level group 2] --> G21
+    G11[Group 1.1] --> G111
+    G11[Group 1.1] --> G112
+    G111[Group 1.1.1] --> P1111
+    G112[Group 1.1.2] --> P1121
+    G21[Group 2.1] --> P211
+
+    P1111[Project 1.1.1.1<br><i>70% of jobs, sent to first 5 runners</i>]
+    P1121[Project 1.1.2.1<br><i>15% of jobs, sent to first 5 runners</i>]
+    P211[Project 2.1.1<br><i>15% of jobs, sent to first 5 runners</i>]
+
+    IR1[Instance runner]
+    P1111R1[Shared runner]
+    P1111R[Project 1.1.1.1 runners<br>20% total runners]
+    P1121R[Project 1.1.2.1 runners<br>49% total runners]
+    G111R[Group 1.1.1 runners<br>30% total runners<br><i>remaining jobs</i>]
+    G21R[Group 2.1 runners<br>1% total runners]
+
+    P1111 --> P1111R1
+    P1111 --> G111R
+    P1111 --> IR1
+    P1111 --> P1111R
+    P1121 --> P1111R1
+    P1121 --> IR1
+    P1121 --> P1121R
+    P211 --> P1111R1
+    P211 --> G21R
+    P211 --> IR1
+
+    classDef groups fill:#09f6,color:#000000,stroke:#333,stroke-width:3px;
+    classDef projects fill:#f96a,color:#000000,stroke:#333,stroke-width:2px;
+    class G1,G2,G11,G111,G112,G21 groups
+    class P1111,P1121,P211 projects
+```
+
 #### Seeding custom metrics for the monitoring dashboard
 
 A lot of different types of metrics are supported in the monitoring dashboard.
@@ -437,3 +485,26 @@ bundle exec rake gems:error_tracking_open_api:generate
 # Commit the changes
 git commit -m 'Update ErrorTrackingOpenAPI from OpenAPI definition' vendor/gems/error_tracking_open_api
 ```
+
+## Update banned SSH keys
+
+You can add [banned SSH keys](../security/ssh_keys_restrictions.md#block-banned-or-compromised-keys)
+from any Git repository by using the `gitlab:security:update_banned_ssh_keys` Rake task:
+
+1. Find a public remote Git repository containing SSH public keys.
+   The public key files must have the `.pub` file extension.
+1. Make sure that `/tmp/` directory has enough space to store the remote Git repository.
+1. To add the SSH keys to your banned-key list, run this command, replacing
+   `GIT_URL` and `OUTPUT_FILE` with appropriate values:
+
+   ```shell
+   # @param git_url - Remote Git URL.
+   # @param output_file - Update keys to an output file. Default is config/security/banned_ssh_keys.yml.
+
+   bundle exec rake "gitlab:security:update_banned_ssh_keys[GIT_URL, OUTPUT_FILE]"
+   ```
+
+This task clones the remote repository, recursively walks the file system looking for files
+ending in `.pub`, parses those files as SSH public keys, and then adds the public key fingerprints
+to `output_file`. The contents of `config/security/banned_ssh_keys.yml` is read by GitLab and kept
+in memory. It is not recommended to increase the size of this file beyond 1 megabyte in size.

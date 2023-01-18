@@ -1,0 +1,8 @@
+---
+name: ci_use_run_pipeline_schedule_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106661
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378361
+milestone: '15.8'
+type: development
+group: group::pipeline execution
+default_enabled: false

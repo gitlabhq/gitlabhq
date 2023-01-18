@@ -69,7 +69,7 @@ module RuboCop
       message = format(
         ':warning: `%{job_name}` passed :green: but contained <%{job_url}|silenced offenses>. ' \
         'See <%{docs_link}|docs>.',
-        docs_link: 'https://docs.gitlab.com/ee/development/contributing/style_guides.html#silenced-offenses',
+        docs_link: 'https://docs.gitlab.com/ee/development/rubocop_development_guide.html#silenced-offenses',
         job_name: job_name,
         job_url: job_url)
 

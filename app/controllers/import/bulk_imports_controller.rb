@@ -3,8 +3,11 @@
 class Import::BulkImportsController < ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
-  before_action :ensure_group_import_enabled
+  before_action :ensure_bulk_import_enabled
   before_action :verify_blocked_uri, only: :status
+  before_action only: :status do
+    push_frontend_feature_flag(:bulk_import_projects)
+  end
 
   feature_category :importers
   urgency :low
@@ -16,6 +19,9 @@ class Import::BulkImportsController < ApplicationController
   def configure
     session[access_token_key] = configure_params[access_token_key]&.strip
     session[url_key] = configure_params[url_key]
+
+    verify_blocked_uri && performed? && return
+    validate_configure_params!
 
     redirect_to status_import_bulk_imports_url(namespace_id: params[:namespace_id])
   end
@@ -100,6 +106,16 @@ class Import::BulkImportsController < ApplicationController
     params.permit(access_token_key, url_key)
   end
 
+  def validate_configure_params!
+    client = BulkImports::Clients::HTTP.new(
+      url: credentials[:url],
+      token: credentials[:access_token]
+    )
+
+    client.validate_instance_version!
+    client.validate_import_scopes!
+  end
+
   def create_params
     params.permit(bulk_import: bulk_import_params)[:bulk_import]
   end
@@ -115,11 +131,12 @@ class Import::BulkImportsController < ApplicationController
       destination_name
       destination_slug
       destination_namespace
+      migrate_projects
     ]
   end
 
-  def ensure_group_import_enabled
-    render_404 unless ::BulkImports::Features.enabled?
+  def ensure_bulk_import_enabled
+    render_404 unless Gitlab::CurrentSettings.bulk_import_enabled?
   end
 
   def access_token_key

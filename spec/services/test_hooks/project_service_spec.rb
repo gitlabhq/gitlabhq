@@ -26,7 +26,7 @@ RSpec.describe TestHooks::ProjectService do
     context 'hook with not implemented test' do
       it 'returns error message' do
         expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Testing not available for this hook' })
+        expect(service.execute).to have_attributes(status: :error, message: 'Testing not available for this hook')
       end
     end
 
@@ -60,7 +60,7 @@ RSpec.describe TestHooks::ProjectService do
 
       it 'returns error message if not enough data' do
         expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure the project has notes.' })
+        expect(service.execute).to have_attributes(status: :error, message: 'Ensure the project has notes.')
       end
 
       it 'executes hook' do
@@ -79,7 +79,7 @@ RSpec.describe TestHooks::ProjectService do
 
       it 'returns error message if not enough data' do
         expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure the project has issues.' })
+        expect(service.execute).to have_attributes(status: :error, message: 'Ensure the project has issues.')
       end
 
       it 'executes hook' do
@@ -112,7 +112,7 @@ RSpec.describe TestHooks::ProjectService do
 
       it 'returns error message if not enough data' do
         expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure the project has merge requests.' })
+        expect(service.execute).to have_attributes(status: :error, message: 'Ensure the project has merge requests.')
       end
 
       it 'executes hook' do
@@ -131,7 +131,7 @@ RSpec.describe TestHooks::ProjectService do
 
       it 'returns error message if not enough data' do
         expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure the project has CI jobs.' })
+        expect(service.execute).to have_attributes(status: :error, message: 'Ensure the project has CI jobs.')
       end
 
       it 'executes hook' do
@@ -150,7 +150,7 @@ RSpec.describe TestHooks::ProjectService do
 
       it 'returns error message if not enough data' do
         expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure the project has CI pipelines.' })
+        expect(service.execute).to have_attributes(status: :error, message: 'Ensure the project has CI pipelines.')
       end
 
       it 'executes hook' do
@@ -172,12 +172,12 @@ RSpec.describe TestHooks::ProjectService do
         allow(project).to receive(:wiki_enabled?).and_return(false)
 
         expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure the wiki is enabled and has pages.' })
+        expect(service.execute).to have_attributes(status: :error, message: 'Ensure the wiki is enabled and has pages.')
       end
 
       it 'returns error message if not enough data' do
         expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure the wiki is enabled and has pages.' })
+        expect(service.execute).to have_attributes(status: :error, message: 'Ensure the wiki is enabled and has pages.')
       end
 
       it 'executes hook' do
@@ -196,7 +196,7 @@ RSpec.describe TestHooks::ProjectService do
 
       it 'returns error message if not enough data' do
         expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure the project has releases.' })
+        expect(service.execute).to have_attributes(status: :error, message: 'Ensure the project has releases.')
       end
 
       it 'executes hook' do

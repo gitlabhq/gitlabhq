@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::GithubController do
+RSpec.describe Import::GithubController, feature_category: :import do
   include ImportSpecHelper
 
   let(:provider) { :github }
@@ -138,7 +138,7 @@ RSpec.describe Import::GithubController do
       it 'calls repos list from provider with expected args' do
         expect_next_instance_of(Gitlab::GithubImport::Clients::Proxy) do |client|
           expect(client).to receive(:repos)
-            .with(expected_filter, expected_pagination_options)
+            .with(expected_filter, expected_options)
             .and_return({ repos: [], page_info: {} })
         end
 
@@ -155,11 +155,16 @@ RSpec.describe Import::GithubController do
     let(:provider_token) { 'asdasd12345' }
     let(:client_auth_success) { true }
     let(:client_stub) { instance_double(Gitlab::GithubImport::Client, user: { login: 'user' }) }
-    let(:expected_pagination_options) { pagination_params.merge(first: 25, page: 1, per_page: 25) }
-    let(:expected_filter) { nil }
     let(:params) { nil }
     let(:pagination_params) { { before: nil, after: nil } }
+    let(:relation_params) { { relation_type: nil, organization_login: '' } }
     let(:provider_repos) { [] }
+    let(:expected_filter) { '' }
+    let(:expected_options) do
+      pagination_params.merge(relation_params).merge(
+        first: 25, page: 1, per_page: 25
+      )
+    end
 
     before do
       allow_next_instance_of(Gitlab::GithubImport::Clients::Proxy) do |proxy|
@@ -277,8 +282,34 @@ RSpec.describe Import::GithubController do
 
       context 'when page is specified' do
         let(:pagination_params) { { before: nil, after: nil, page: 2 } }
-        let(:expected_pagination_options) { pagination_params.merge(first: 25, page: 2, per_page: 25) }
         let(:params) { pagination_params }
+        let(:expected_options) do
+          pagination_params.merge(relation_params).merge(first: 25, page: 2, per_page: 25)
+        end
+
+        it_behaves_like 'calls repos through Clients::Proxy with expected args'
+      end
+    end
+
+    context 'when relation type params present' do
+      let(:organization_login) { 'test-login' }
+      let(:params) { pagination_params.merge(relation_type: 'organization', organization_login: organization_login) }
+      let(:pagination_defaults) { { first: 25, page: 1, per_page: 25 } }
+      let(:expected_options) do
+        pagination_defaults.merge(pagination_params).merge(
+          relation_type: 'organization', organization_login: organization_login
+        )
+      end
+
+      it_behaves_like 'calls repos through Clients::Proxy with expected args'
+
+      context 'when organization_login is too long and with ":"' do
+        let(:organization_login) { ":#{Array.new(270) { ('a'..'z').to_a.sample }.join}" }
+        let(:expected_options) do
+          pagination_defaults.merge(pagination_params).merge(
+            relation_type: 'organization', organization_login: organization_login.slice(1, 254)
+          )
+        end
 
         it_behaves_like 'calls repos through Clients::Proxy with expected args'
       end

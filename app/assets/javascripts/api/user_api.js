@@ -65,7 +65,7 @@ export function getUserProjects(userId, query, options, callback) {
 export function updateUserStatus({ emoji, message, availability, clearStatusAfter }) {
   const url = buildApiUrl(USER_POST_STATUS_PATH);
 
-  return axios.put(url, {
+  return axios.patch(url, {
     emoji,
     message,
     availability,

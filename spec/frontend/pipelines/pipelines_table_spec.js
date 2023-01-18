@@ -17,7 +17,7 @@ import {
   TRACKING_CATEGORIES,
 } from '~/pipelines/constants';
 
-import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 
 jest.mock('~/pipelines/event_hub');
 
@@ -50,7 +50,7 @@ describe('Pipelines Table', () => {
   };
 
   const findGlTableLite = () => wrapper.findComponent(GlTableLite);
-  const findStatusBadge = () => wrapper.findComponent(CiBadge);
+  const findCiBadgeLink = () => wrapper.findComponent(CiBadgeLink);
   const findPipelineInfo = () => wrapper.findComponent(PipelineUrl);
   const findTriggerer = () => wrapper.findComponent(PipelineTriggerer);
   const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
@@ -97,7 +97,7 @@ describe('Pipelines Table', () => {
 
     describe('status cell', () => {
       it('should render a status badge', () => {
-        expect(findStatusBadge().exists()).toBe(true);
+        expect(findCiBadgeLink().exists()).toBe(true);
       });
     });
 
@@ -171,7 +171,7 @@ describe('Pipelines Table', () => {
       });
 
       it('tracks status badge click', () => {
-        findStatusBadge().vm.$emit('ciStatusBadgeClick');
+        findCiBadgeLink().vm.$emit('ciStatusBadgeClick');
 
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_ci_status_badge', {
           label: TRACKING_CATEGORIES.table,

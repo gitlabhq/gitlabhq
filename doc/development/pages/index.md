@@ -147,7 +147,7 @@ GitLab Pages access control is disabled by default. To enable it:
 1. Restart GitLab (if running through the GDK, run `gdk restart`). Running
    `gdk reconfigure` overwrites the value of `access_control` in `config/gitlab.yml`.
 1. In your local GitLab instance, in the browser go to `http://gdk.test:3000/admin/applications`.
-1. Create an [Instance-wide OAuth application](../../integration/oauth_provider.md#instance-wide-applications)
+1. Create an [Instance-wide OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
    with the `api` scope.
 1. Set the value of your `redirect-uri` to the `pages-domain` authorization endpoint
 (for example, `http://pages.gdk.test:3010/auth`).

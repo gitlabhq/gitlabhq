@@ -60,7 +60,6 @@ describe('BoardContent', () => {
     wrapper = shallowMount(BoardContent, {
       apolloProvider: fakeApollo,
       propsData: {
-        disabled: false,
         boardId: 'gid://gitlab/Board/1',
         ...props,
       },
@@ -71,6 +70,8 @@ describe('BoardContent', () => {
         issuableType,
         isIssueBoard,
         isEpicBoard,
+        isGroupBoard: true,
+        disabled: false,
         isApolloBoard,
       },
       store,

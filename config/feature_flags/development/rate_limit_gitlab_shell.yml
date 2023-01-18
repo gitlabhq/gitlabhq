@@ -1,8 +1,0 @@
----
-name: rate_limit_gitlab_shell
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78373
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350465
-milestone: '14.7'
-type: development
-group: group::source code
-default_enabled: true

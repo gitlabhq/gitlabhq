@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', :with_license, type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:user) { create(:user, feed_token: 'feedtoken:coldfeed') }

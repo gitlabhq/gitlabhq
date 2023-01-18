@@ -10,25 +10,25 @@ module QA
       include ApprovalConfiguration
 
       attr_accessor :initialize_with_readme,
-                    :auto_devops_enabled,
-                    :github_personal_access_token,
-                    :github_repository_path,
-                    :gitlab_repository_path,
-                    :personal_namespace
+        :auto_devops_enabled,
+        :github_personal_access_token,
+        :github_repository_path,
+        :gitlab_repository_path,
+        :personal_namespace
 
       attr_reader :repository_storage
 
       attributes :id,
-                 :name,
-                 :path,
-                 :add_name_uuid,
-                 :runners_token,
-                 :visibility,
-                 :template_name,
-                 :import,
-                 :import_status,
-                 :import_error,
-                 :description
+        :name,
+        :path,
+        :add_name_uuid,
+        :runners_token,
+        :visibility,
+        :template_name,
+        :import,
+        :import_status,
+        :import_error,
+        :description
 
       attribute :group do
         Group.fabricate! do |group|
@@ -43,7 +43,7 @@ module QA
       alias_method :full_path, :path_with_namespace
 
       def sandbox_path
-        return '' if personal_namespace || !group.respond_to?('sandbox')
+        return '' if personal_namespace || !group.respond_to?(:sandbox)
 
         "#{group.sandbox.path}/"
       end
@@ -448,6 +448,14 @@ module QA
       def protected_branches
         response = api_get_from(api_protected_branches_path)
         parse_body(response)
+      end
+
+      # Fetch project specific runners
+      #
+      # @param [Hash] **kwargs optional query arguments, see: https://docs.gitlab.com/ee/api/runners.html#list-projects-runners
+      # @return [Array]
+      def runners(**kwargs)
+        auto_paginated_response(request_url(api_runners_path, **kwargs))
       end
 
       # Uses the API to wait until a pull mirroring update is successful (pull mirroring is treated as an import)

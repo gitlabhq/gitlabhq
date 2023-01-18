@@ -56,6 +56,22 @@ module Spec
               click_button 'Search'
             end
           end
+
+          def user_action_dropdown
+            '[data-testid="user-action-dropdown"]'
+          end
+
+          def show_actions
+            within user_action_dropdown do
+              find('button').click
+            end
+          end
+
+          def show_actions_for_username(user)
+            within find_username_row(user) do
+              show_actions
+            end
+          end
         end
       end
     end

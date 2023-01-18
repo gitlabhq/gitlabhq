@@ -2,11 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::File::Local do
+RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pipeline_authoring do
+  include RepoHelpers
+
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
-  let(:sha) { '12345' }
+  let(:sha) { project.commit.sha }
   let(:variables) { project.predefined_variables.to_runner_variables }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
   let(:params) { { local: location } }
@@ -172,14 +174,17 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
       let(:another_location) { 'another-config.yml' }
       let(:another_content) { 'rspec: JOB' }
 
-      before do
-        allow(project.repository).to receive(:blob_data_at).with(sha, location)
-          .and_return(content)
+      let(:project_files) do
+        {
+          location => content,
+          another_location => another_content
+        }
+      end
 
-        allow(project.repository).to receive(:blob_data_at).with(sha, another_location)
-          .and_return(another_content)
-
-        local_file.validate!
+      around(:all) do |example|
+        create_and_delete_files(project, project_files) do
+          example.run
+        end
       end
 
       it 'does expand hash to include the template' do
@@ -196,11 +201,11 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
     it {
       is_expected.to eq(
         context_project: project.full_path,
-        context_sha: '12345',
+        context_sha: sha,
         type: :local,
-        location: location,
-        blob: "http://localhost/#{project.full_path}/-/blob/12345/lib/gitlab/ci/templates/existent-file.yml",
-        raw: "http://localhost/#{project.full_path}/-/raw/12345/lib/gitlab/ci/templates/existent-file.yml",
+        location: '/lib/gitlab/ci/templates/existent-file.yml',
+        blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/lib/gitlab/ci/templates/existent-file.yml",
+        raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/lib/gitlab/ci/templates/existent-file.yml",
         extra: {}
       )
     }

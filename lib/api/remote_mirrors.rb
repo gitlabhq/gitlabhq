@@ -3,6 +3,7 @@
 module API
   class RemoteMirrors < ::API::Base
     include PaginationParams
+    helpers Helpers::RemoteMirrorsHelpers
 
     feature_category :source_code_management
 
@@ -60,14 +61,13 @@ module API
       params do
         requires :url, type: String, desc: 'The URL for a remote mirror', documentation: { example: 'https://*****:*****@example.com/gitlab/example.git' }
         optional :enabled, type: Boolean, desc: 'Determines if the mirror is enabled', documentation: { example: false }
-        optional :only_protected_branches, type: Boolean, desc: 'Determines if only protected branches are mirrored',
-                                           documentation: { example: false }
         optional :keep_divergent_refs, type: Boolean, desc: 'Determines if divergent refs are kept on the target',
                                        documentation: { example: false }
+        use :mirror_branches_setting
       end
       post ':id/remote_mirrors' do
         create_params = declared_params(include_missing: false)
-
+        verify_mirror_branches_setting(create_params, user_project)
         new_mirror = user_project.remote_mirrors.create(create_params)
 
         if new_mirror.persisted?
@@ -89,10 +89,9 @@ module API
       params do
         requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
         optional :enabled, type: Boolean, desc: 'Determines if the mirror is enabled', documentation: { example: true }
-        optional :only_protected_branches, type: Boolean, desc: 'Determines if only protected branches are mirrored',
-                                           documentation: { example: false }
         optional :keep_divergent_refs, type: Boolean, desc: 'Determines if divergent refs are kept on the target',
                                        documentation: { example: false }
+        use :mirror_branches_setting
       end
       put ':id/remote_mirrors/:mirror_id' do
         mirror = user_project.remote_mirrors.find(params[:mirror_id])
@@ -100,6 +99,7 @@ module API
         mirror_params = declared_params(include_missing: false)
         mirror_params[:id] = mirror_params.delete(:mirror_id)
 
+        verify_mirror_branches_setting(mirror_params, user_project)
         update_params = { remote_mirrors_attributes: mirror_params }
 
         result = ::Projects::UpdateService

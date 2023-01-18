@@ -166,7 +166,7 @@ module Projects
         .then do |(import_url, resolved_host)|
           next '' if resolved_host.nil? || !import_url.scheme.in?(%w[http https])
 
-          import_url.host.to_s
+          import_url.hostname.to_s
         end
     end
 

@@ -6,12 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Sign commits with SSH keys **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343879) in GitLab 15.7 [with a flag](../../../../administration/feature_flags.md) named `ssh_commit_signatures`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `ssh_commit_signatures`.
-On GitLab.com, this feature is available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343879) in GitLab 15.7 [with a flag](../../../../administration/feature_flags.md) named `ssh_commit_signatures`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/384202) in GitLab 15.8. Feature flag `ssh_commit_signatures` removed.
 
 Use SSH keys to sign Git commits in the same manner as
 [GPG signed commits](../gpg_signed_commits/index.md). When you sign commits

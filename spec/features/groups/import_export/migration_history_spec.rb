@@ -12,6 +12,8 @@ RSpec.describe 'Import/Export - GitLab migration history', :js, feature_category
   let_it_be(:failed_entity_2) { create(:bulk_import_entity, :failed, bulk_import: user_import_2) }
 
   before do
+    stub_application_setting(bulk_import_enabled: true)
+
     gitlab_sign_in(user)
 
     visit new_group_path
@@ -24,7 +26,7 @@ RSpec.describe 'Import/Export - GitLab migration history', :js, feature_category
 
     wait_for_requests
 
-    expect(page).to have_content 'Group import history'
+    expect(page).to have_content 'GitLab Migration history'
     expect(page.find('tbody')).to have_css('tr', count: 2)
   end
 end

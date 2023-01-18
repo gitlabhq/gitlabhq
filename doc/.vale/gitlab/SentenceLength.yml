@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.SentenceLength
+# Suggestion: gitlab.SentenceLength
 #
 # Counts words in a sentence and alerts if a sentence exceeds 25 words.
 #
@@ -8,6 +8,6 @@ extends: occurrence
 message: "Improve readability by using fewer than 25 words in this sentence."
 scope: sentence
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#language
-level: warning
+level: suggestion
 max: 25
 token: \b(\w+)\b

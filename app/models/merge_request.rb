@@ -193,6 +193,12 @@ class MergeRequest < ApplicationRecord
       merge_request.merge_error = nil
     end
 
+    before_transition any => :merged do |merge_request|
+      if ::Feature.enabled?(:reset_merge_error_on_transition, merge_request.project)
+        merge_request.merge_error = nil
+      end
+    end
+
     after_transition any => :opened do |merge_request|
       merge_request.run_after_commit do
         UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
@@ -435,6 +441,14 @@ class MergeRequest < ApplicationRecord
         .not
     )
   end
+
+  scope :without_hidden, -> {
+    if Feature.enabled?(:hide_merge_requests_from_banned_users)
+      where_not_exists(Users::BannedUser.where('merge_requests.author_id = banned_users.user_id'))
+    else
+      all
+    end
+  }
 
   def self.total_time_to_merge
     join_metrics
@@ -1999,6 +2013,10 @@ class MergeRequest < ApplicationRecord
 
   def can_suggest_reviewers?
     false # overridden in EE
+  end
+
+  def hidden?
+    Feature.enabled?(:hide_merge_requests_from_banned_users) && author&.banned?
   end
 
   private

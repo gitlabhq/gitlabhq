@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Users::BlockService do
-  let(:current_user) { create(:admin) }
+  let_it_be(:current_user) { create(:admin) }
 
   subject(:service) { described_class.new(current_user) }
 
@@ -17,6 +17,15 @@ RSpec.describe Users::BlockService do
 
       it "change the user's state" do
         expect { operation }.to change { user.state }.to('blocked')
+      end
+
+      it 'saves a custom attribute', :aggregate_failures, :freeze_time, feature_category: :insider_threat do
+        operation
+
+        custom_attribute = user.custom_attributes.last
+
+        expect(custom_attribute.key).to eq(UserCustomAttribute::BLOCKED_BY)
+        expect(custom_attribute.value).to eq("#{current_user.username}/#{current_user.id}+#{Time.current}")
       end
     end
 

@@ -8,12 +8,13 @@ module Projects
         include SendFileUpload
 
         before_action :validate_size!
+        before_action :validate_sha!
 
         skip_before_action :default_cache_headers, only: :show
 
         def show
           relation = design.actions
-          relation = relation.up_to_version(sha) if sha
+          relation = relation.up_to_version(version) if version
           action = relation.most_recent.first
 
           return render_404 unless action
@@ -37,8 +38,18 @@ module Projects
           render_404 unless ::DesignManagement::DESIGN_IMAGE_SIZES.include?(size)
         end
 
+        def validate_sha!
+          render_404 if sha && version.blank?
+        end
+
         def size
           params[:id]
+        end
+
+        def version
+          return if sha.blank?
+
+          @version ||= design.versions.find_by_sha(sha)
         end
       end
     end
