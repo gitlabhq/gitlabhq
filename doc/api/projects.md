@@ -208,7 +208,6 @@ When the user is authenticated and `simple` is not set this returns something li
     "builds_access_level": "enabled",
     "snippets_access_level": "enabled",
     "pages_access_level": "enabled",
-    "operations_access_level": "enabled",
     "analytics_access_level": "enabled",
     "container_registry_access_level": "enabled",
     "security_and_compliance_access_level": "private",
@@ -1242,7 +1241,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `namespace_id`                                              | integer | **{dotted-circle}** No | Namespace for the new project (defaults to the current user's namespace). |
 | `only_allow_merge_if_all_discussions_are_resolved`          | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_pipeline_succeeds`                     | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged with successful pipelines. This setting is named [**Pipelines must succeed**](../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge) in the project settings. |
-| `operations_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `operations_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 15.8. |
 | `packages_enabled`                                          | boolean | **{dotted-circle}** No | Enable or disable packages repository feature. |
 | `pages_access_level`                                        | string  | **{dotted-circle}** No | One of `disabled`, `private`, `enabled`, or `public`. |
 | `printing_merge_request_link_enabled`                       | boolean | **{dotted-circle}** No | Show link to create/view merge request when pushing from the command line. |
@@ -1325,7 +1324,7 @@ POST /projects/user/:user_id
 | `namespace_id`                                              | integer | **{dotted-circle}** No | Namespace for the new project (defaults to the current user's namespace). |
 | `only_allow_merge_if_all_discussions_are_resolved`          | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_pipeline_succeeds`                     | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged with successful jobs. |
-| `operations_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `operations_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 15.8. |
 | `packages_enabled`                                          | boolean | **{dotted-circle}** No | Enable or disable packages repository feature. |
 | `pages_access_level`                                        | string  | **{dotted-circle}** No | One of `disabled`, `private`, `enabled`, or `public`. |
 | `path`                                                      | string  | **{dotted-circle}** No | Custom repository name for new project. By default generated based on name. |
@@ -1433,7 +1432,7 @@ Supported attributes:
 | `only_allow_merge_if_all_discussions_are_resolved`          | boolean        | **{dotted-circle}** No | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_pipeline_succeeds`                     | boolean        | **{dotted-circle}** No | Set whether merge requests can only be merged with successful jobs. |
 | `only_mirror_protected_branches` **(PREMIUM)**              | boolean        | **{dotted-circle}** No | Only mirror protected branches. |
-| `operations_access_level`                                   | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `operations_access_level`                                   | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 15.8. |
 | `packages_enabled`                                          | boolean        | **{dotted-circle}** No | Enable or disable packages repository feature. |
 | `pages_access_level`                                        | string         | **{dotted-circle}** No | One of `disabled`, `private`, `enabled`, or `public`. |
 | `path`                                                      | string         | **{dotted-circle}** No | Custom repository name for the project. By default generated based on name. |

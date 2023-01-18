@@ -22407,7 +22407,7 @@ msgstr ""
 msgid "IntegrationEvents|A new, unique alert is recorded"
 msgstr ""
 
-msgid "IntegrationEvents|A new, unique, vulnerability is recorded. (Note: This feature requires an Ultimate plan)"
+msgid "IntegrationEvents|A new, unique vulnerability is recorded (available only in GitLab Ultimate)"
 msgstr ""
 
 msgid "IntegrationEvents|A pipeline status changes"
@@ -22420,6 +22420,9 @@ msgid "IntegrationEvents|A tag is pushed to the repository"
 msgstr ""
 
 msgid "IntegrationEvents|A wiki page is created or updated"
+msgstr ""
+
+msgid "IntegrationEvents|An incident is created"
 msgstr ""
 
 msgid "IntegrationEvents|An issue is created, updated, or closed"

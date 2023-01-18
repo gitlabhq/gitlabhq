@@ -200,7 +200,7 @@ gem 'diffy', '~> 3.4'
 gem 'diff_match_patch', '~> 0.1.0'
 
 # Application server
-gem 'rack', '~> 2.2.6'
+gem 'rack', '~> 2.2.6', '>= 2.2.6.2'
 # https://github.com/zombocom/rack-timeout/blob/master/README.md#rails-apps-manually
 gem 'rack-timeout', '~> 0.6.3', require: 'rack/timeout/base'
 
@@ -304,7 +304,7 @@ gem 'fast_blank'
 gem 'gitlab-chronic', '~> 0.10.5'
 gem 'gitlab_chronic_duration', '~> 0.10.6.2'
 
-gem 'rack-proxy', '~> 0.7.4'
+gem 'rack-proxy', '~> 0.7.6'
 
 gem 'sassc-rails', '~> 2.1.0'
 gem 'autoprefixer-rails', '10.2.5.1'

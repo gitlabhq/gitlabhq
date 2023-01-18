@@ -163,6 +163,20 @@ GitLab has deprecated Dependency Scanning support for Java versions 13, 14, 15, 
 
 <div class="deprecation removal-160 breaking-change">
 
+### Deployment API returns error when `updated_at` and `updated_at` are not used together
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The Deployment API will now return an error when `updated_at` filtering and `updated_at` sorting are not used together. Some users were using filtering by `updated_at` to fetch "latest" deployment without using `updated_at` sorting, which may produce wrong results. You should instead use them together, or migrate to filtering by `finished_at` and sorting by `finished_at` which will give you "latest deployments" in a consistent way.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Developer role providing the ability to import projects to a group
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
