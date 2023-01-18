@@ -58,4 +58,45 @@ RSpec.describe 'User', feature_category: :users do
       )
     end
   end
+
+  describe 'email fields' do
+    before_all do
+      current_user.commit_email = current_user.emails.first.email
+      current_user.save!
+    end
+
+    let_it_be(:query) do
+      graphql_query_for(
+        :user,
+        { username: current_user.username },
+        'emails { nodes { email } } commitEmail namespaceCommitEmails { nodes { id } }'
+      )
+    end
+
+    let_it_be(:email_1) { create(:email, user: current_user) }
+    let_it_be(:email_2) { create(:email, user: current_user) }
+    let_it_be(:namespace_commit_email_1) { create(:namespace_commit_email, email: email_1) }
+    let_it_be(:namespace_commit_email_2) { create(:namespace_commit_email, email: email_2) }
+
+    context 'with permission' do
+      it 'returns the relevant email details' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data['user']['emails']['nodes'].pluck('email')).to match_array(
+          current_user.emails.map(&:email))
+        expect(graphql_data['user']['namespaceCommitEmails']['nodes']).not_to be_empty
+        expect(graphql_data['user']['commitEmail']).to eq(current_user.commit_email)
+      end
+    end
+
+    context 'without permission' do
+      it 'does not return email details' do
+        post_graphql(query, current_user: create(:user))
+
+        expect(graphql_data['user']['emails']['nodes']).to be_empty
+        expect(graphql_data['user']['namespaceCommitEmails']['nodes']).to be_empty
+        expect(graphql_data['user']['commitEmail']).to be_nil
+      end
+    end
+  end
 end

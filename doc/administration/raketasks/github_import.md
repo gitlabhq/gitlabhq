@@ -15,6 +15,11 @@ Bear in mind that the syntax is very specific. Remove any spaces in the argument
 before/after the brackets. Also, some shells (for example, Zsh) can interpret the open/close brackets
 (`[]`) separately. You may want to either escape the brackets or use double quotes.
 
+Prerequisite:
+
+- At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
+  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+
 ## Caveats
 
 If the GitHub [rate limit](https://docs.github.com/en/rest/rate-limit) is reached while

@@ -31,11 +31,12 @@ When importing:
 - Repository public access is retained. If a repository is private in Bitbucket, it's created as
   private in GitLab as well.
 
-## Prerequisite for GitLab self-managed
+## Prerequisites
 
-To import your projects from Bitbucket Cloud, the [Bitbucket Cloud integration](../../../integration/bitbucket.md)
-must be enabled. If it isn't enabled, ask your GitLab administrator to enable it. By default it's
-enabled on GitLab.com.
+- [Bitbucket Cloud integration](../../../integration/bitbucket.md) must be enabled. If that integration is not enabled, ask your GitLab administrator
+  to enable it. The Bitbucket Cloud integration is enabled by default on GitLab.com.
+- At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
+  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
 
 ## How it works
 

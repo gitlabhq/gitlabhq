@@ -57,6 +57,9 @@ For an overview of the import process, see the video [Migrating from GitHub to G
 
 ## Prerequisites
 
+At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+
 When issues and pull requests are being imported, the importer attempts to find
 their GitHub authors and assignees in the database of the GitLab instance. Pull requests are called _merge requests_ in
 GitLab.

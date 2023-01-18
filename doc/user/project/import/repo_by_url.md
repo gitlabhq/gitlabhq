@@ -7,6 +7,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import project from repository by URL **(FREE)**
 
+Prerequisite:
+
+- At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
+  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+
 You can import your existing repositories by providing the Git URL:
 
 1. In GitLab, on the top bar, select **Main menu > Projects > View all projects**.

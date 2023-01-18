@@ -46,7 +46,7 @@ module Types
 
     def merge_request_interaction(id: nil)
       Gitlab::Graphql::Lazy.with_value(GitlabSchema.object_from_id(id, expected_class: ::MergeRequest)) do |merge_request|
-        Users::MergeRequestInteraction.new(user: object.user, merge_request: merge_request) if merge_request
+        ::Users::MergeRequestInteraction.new(user: object.user, merge_request: merge_request) if merge_request
       end
     end
   end

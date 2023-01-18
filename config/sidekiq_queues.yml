@@ -211,8 +211,6 @@
   - 1
 - - gitlab_shell
   - 2
-- - gitlab_subscriptions_notify_seats_exceeded
-  - 1
 - - gitlab_subscriptions_trials_apply_trial
   - 1
 - - google_cloud_create_cloudsql_instance

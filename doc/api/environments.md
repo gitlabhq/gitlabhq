@@ -19,7 +19,7 @@ GET /projects/:id/environments
 | --------- | ------- | -------- |-------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user                                              |
 | `name`    | string  | no       | Return the environment with this name. Mutually exclusive with `search`                                                                                     |
-| `search`  | string  | no       | Return list of environments matching the search criteria. Mutually exclusive with `name`                                                                    |
+| `search`  | string  | no       | Return list of environments matching the search criteria. Mutually exclusive with `name`. Must be at least 3 characters long. |
 | `states`  | string  | no       | List all environments that match a specific state. Accepted values: `available`, `stopping`, or `stopped`. If no state value given, returns all environments. |
 
 ```shell

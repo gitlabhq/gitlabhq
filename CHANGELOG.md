@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.7.5 (2023-01-12)
+
+No changes.
+
+## 15.7.4 (2023-01-12)
+
+No changes.
+
 ## 15.7.3 (2023-01-11)
 
 ### Fixed (3 changes)
@@ -844,6 +852,14 @@ entry.
 - [Propagate RemoteIP to Gitaly via Workhorse](gitlab-org/gitlab@71da945c85931bac0263c193902dc1b54e2e62da) ([merge request](gitlab-org/gitlab!103635))
 - [Documentation to reflect 100MB upload limit](gitlab-org/gitlab@33063bb26ab7699802ecb2b325cc8619d6fe7b86) ([merge request](gitlab-org/gitlab!103978))
 
+## 15.6.6 (2023-01-12)
+
+No changes.
+
+## 15.6.5 (2023-01-12)
+
+No changes.
+
 ## 15.6.4 (2023-01-09)
 
 ### Security (9 changes)
@@ -1500,6 +1516,14 @@ No changes.
 - [Add delay when performing refresh with delay](gitlab-org/gitlab@736dcda28c106d820c3f29fd21a25e45c936cd38) ([merge request](gitlab-org/gitlab!101369))
 - [Update Gitlab Shell to 14.13.0](gitlab-org/gitlab@691262f5c25c17efcfa50307862afa66d07366a4) ([merge request](gitlab-org/gitlab!101372))
 - [Migrate card to Pajamas](gitlab-org/gitlab@10577294ed64b13d7668be0c2041ec133e8f7f87) ([merge request](gitlab-org/gitlab!98861)) **GitLab Enterprise Edition**
+
+## 15.5.9 (2023-01-12)
+
+No changes.
+
+## 15.5.8 (2023-01-12)
+
+No changes.
 
 ## 15.5.7 (2023-01-09)
 

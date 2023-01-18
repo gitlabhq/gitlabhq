@@ -135,7 +135,8 @@ POST /projects/import
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `namespace` | integer/string | no | The ID or path of the namespace to import the project to. Defaults to the current user's namespace |
+| `namespace` | integer/string | no | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. Requires at least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0. |
 | `name` | string | no | The name of the project to be imported. Defaults to the path of the project if not provided |
 | `file` | string | yes | The file to be uploaded |
 | `path` | string | yes | Name and path for new project |

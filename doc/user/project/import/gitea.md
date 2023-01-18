@@ -13,6 +13,11 @@ Import your projects from Gitea to GitLab with minimal effort.
 NOTE:
 This requires Gitea `v1.0.0` or later.
 
+Prerequisite:
+
+- At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
+  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+
 The Gitea importer can import:
 
 - Repository description

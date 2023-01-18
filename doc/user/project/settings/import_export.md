@@ -29,18 +29,20 @@ If you migrate from GitLab.com to self-managed GitLab, an administrator can crea
 
 ## Configure file exports as an import source **(FREE SELF)**
 
-Before you can migrate projects on a self-managed GitLab instance using file exports, GitLab administrators must enable file exports as an import source for the instance. On
-GitLab.com, file exports are already enabled as an import source.
+Before you can migrate projects on a self-managed GitLab instance using file exports, GitLab administrators must:
 
-To enable file exports as an import source:
+1. [Enable file exports](../../admin_area/settings/visibility_and_access_controls.md#enable-project-export) on the source
+   instance.
+1. Enable file exports as an import source for the destination instance. On GitLab.com, file exports are already enabled
+   as an import source.
+
+To enable file exports as an import source for the destination instance:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to **Import sources**.
 1. Select the **GitLab export** checkbox.
-1. Then scroll to **Project export**.
-1. Select the **Enable** checkbox.
 
 ## Between CE and EE
 

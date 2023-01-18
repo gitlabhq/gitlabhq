@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['User'] do
+RSpec.describe GitlabSchema.types['User'], feature_category: :users do
   specify { expect(described_class.graphql_name).to eq('User') }
 
   specify do
@@ -20,7 +20,10 @@ RSpec.describe GitlabSchema.types['User'] do
       name
       username
       email
+      emails
       publicEmail
+      commitEmail
+      namespaceCommitEmails
       avatarUrl
       webUrl
       webPath
@@ -224,6 +227,22 @@ RSpec.describe GitlabSchema.types['User'] do
     it 'returns user timelogs' do
       is_expected.to have_graphql_resolver(Resolvers::TimelogResolver)
       is_expected.to have_graphql_type(Types::TimelogType.connection_type)
+    end
+  end
+
+  describe 'emails field' do
+    subject { described_class.fields['emails'] }
+
+    it 'returns user emails' do
+      is_expected.to have_graphql_type(Types::Users::EmailType.connection_type)
+    end
+  end
+
+  describe 'namespaceCommitEmails field' do
+    subject { described_class.fields['namespaceCommitEmails'] }
+
+    it 'returns user namespace_commit_emails' do
+      is_expected.to have_graphql_type(Types::Users::NamespaceCommitEmailType.connection_type)
     end
   end
 end
