@@ -2,27 +2,27 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer do
+RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer, feature_category: :importers do
   describe '#transform' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:destination_group) { create(:group) }
     let_it_be(:project) { create(:project, name: 'My Source Project') }
     let_it_be(:bulk_import) { create(:bulk_import, user: user) }
 
-    let_it_be(:entity) do
+    let(:entity) do
       create(
         :bulk_import_entity,
         source_type: :project_entity,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
         destination_slug: 'Destination Project Name',
-        destination_namespace: destination_group.full_path
+        destination_namespace: destination_namespace
       )
     end
 
-    let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
-
+    let(:destination_group) { create(:group) }
+    let(:destination_namespace) { destination_group.full_path }
+    let(:tracker) { create(:bulk_import_tracker, entity: entity) }
+    let(:context) { BulkImports::Pipeline::Context.new(tracker) }
     let(:data) do
       {
         'visibility' => 'private',
@@ -38,13 +38,6 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
 
     it 'adds path as parameterized name' do
       expect(transformed_data[:path]).to eq(entity.destination_slug.parameterize)
-    end
-
-    it 'transforms visibility level' do
-      visibility = data['visibility']
-
-      expect(transformed_data).not_to have_key(:visibility)
-      expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel.string_options[visibility])
     end
 
     it 'adds import type' do
@@ -89,8 +82,12 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
         transformed_data = described_class.new.transform(context, data)
 
         expect(transformed_data.keys)
-          .to contain_exactly(:created_at, :import_type, :name, :namespace_id, :path, :visibility_level)
+          .to contain_exactly('created_at', 'import_type', 'name', 'namespace_id', 'path', 'visibility_level')
       end
+    end
+
+    describe 'visibility level' do
+      include_examples 'visibility level settings'
     end
   end
 end

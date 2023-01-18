@@ -44,21 +44,6 @@ function setVisibilityOptions({ name, visibility, showPath, editPath }) {
   });
 }
 
-function handleSelect2DropdownChange(namespaceSelector) {
-  if (!namespaceSelector || !('selectedIndex' in namespaceSelector)) {
-    return;
-  }
-  const selectedNamespace = namespaceSelector.options[namespaceSelector.selectedIndex];
-  setVisibilityOptions(selectedNamespace.dataset);
-}
-
 export default function initProjectVisibilitySelector() {
   eventHub.$on('update-visibility', setVisibilityOptions);
-
-  const namespaceSelector = document.querySelector('select.js-select-namespace');
-  if (namespaceSelector) {
-    const el = document.querySelector('.select2.js-select-namespace');
-    el.addEventListener('change', () => handleSelect2DropdownChange(namespaceSelector));
-    handleSelect2DropdownChange(namespaceSelector);
-  }
 }

@@ -1,10 +1,10 @@
 import { s__ } from '~/locale';
 
 export const I18N = {
-  manageProtectionsLinkTitle: s__('BranchRules|Manage in Protected Branches'),
-  targetBranch: s__('BranchRules|Target Branch'),
+  manageProtectionsLinkTitle: s__('BranchRules|Manage in protected branches'),
+  targetBranch: s__('BranchRules|Target branch'),
   branchNameOrPattern: s__('BranchRules|Branch name or pattern'),
-  branch: s__('BranchRules|Target Branch'),
+  branch: s__('BranchRules|Target branch'),
   allBranches: s__('BranchRules|All branches'),
   matchingBranchesLinkTitle: s__('BranchRules|%{total} matching %{subject}'),
   protectBranchTitle: s__('BranchRules|Protect branch'),
@@ -20,7 +20,7 @@ export const I18N = {
   ),
   disallowForcePushDescription: s__('BranchRules|Force push is not allowed.'),
   approvalsTitle: s__('BranchRules|Approvals'),
-  manageApprovalsLinkTitle: s__('BranchRules|Manage in Merge Request Approvals'),
+  manageApprovalsLinkTitle: s__('BranchRules|Manage in merge request approvals'),
   approvalsDescription: s__(
     'BranchRules|Approvals to ensure separation of duties for new merge requests. %{linkStart}Learn more.%{linkEnd}',
   ),
@@ -28,7 +28,7 @@ export const I18N = {
   statusChecksDescription: s__(
     'BranchRules|Check for a status response in merge requests. Failures do not block merges. %{linkStart}Learn more.%{linkEnd}',
   ),
-  statusChecksLinkTitle: s__('BranchRules|Manage in Status checks'),
+  statusChecksLinkTitle: s__('BranchRules|Manage in status checks'),
   statusChecksHeader: s__('BranchRules|Status checks (%{total})'),
   allowedToPushHeader: s__('BranchRules|Allowed to push (%{total})'),
   allowedToMergeHeader: s__('BranchRules|Allowed to merge (%{total})'),

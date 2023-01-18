@@ -61,6 +61,11 @@ To create a project from a built-in template:
      change the **Visibility Level**.
 1. Select **Create project**.
 
+NOTE:
+A user who creates a project [from a template](#create-a-project-from-a-built-in-template) or [by import](settings/import_export.md#import-a-project-and-its-data) is displayed as the author of the imported objects (such as issues and merge requests), which keep the original timestamp from the template or import.
+Imported objects are labeled as `By <username> on <timestamp> (imported from GitLab)`.
+For this reason, the creation date of imported objects can be older than the creation date of the user's account. This can lead to objects appearing to have been created by a user before they even had an account.
+
 ## Create a project from a custom template **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in GitLab 11.2.

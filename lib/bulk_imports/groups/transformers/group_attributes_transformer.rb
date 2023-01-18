@@ -4,6 +4,8 @@ module BulkImports
   module Groups
     module Transformers
       class GroupAttributesTransformer
+        include BulkImports::VisibilityLevel
+
         # rubocop: disable Style/IfUnlessModifier
         def transform(context, data)
           import_entity = context.entity
@@ -49,10 +51,10 @@ module BulkImports
           end
 
           if data.has_key?('visibility')
-            params['visibility_level'] = Gitlab::VisibilityLevel.string_options[data['visibility']]
+            params['visibility_level'] = visibility_level(import_entity, namespace, data['visibility'])
           end
 
-          params
+          params.with_indifferent_access
         end
         # rubocop: enable Style/IfUnlessModifier
 

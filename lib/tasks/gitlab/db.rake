@@ -399,64 +399,71 @@ namespace :gitlab do
 
     namespace :dictionary do
       DB_DOCS_PATH = File.join(Rails.root, 'db', 'docs')
+      EE_DICTIONARY_PATH = File.join(Rails.root, 'ee', 'db', 'docs')
 
       desc 'Generate database docs yaml'
       task generate: :environment do
         FileUtils.mkdir_p(DB_DOCS_PATH) unless Dir.exist?(DB_DOCS_PATH)
+        FileUtils.mkdir_p(EE_DICTIONARY_PATH) unless Dir.exist?(EE_DICTIONARY_PATH)
 
         Rails.application.eager_load!
 
-        tables = Gitlab::Database.database_base_models.flat_map { |_, m| m.connection.tables }
+        version = Gem::Version.new(File.read('VERSION'))
+        milestone = version.release.segments[0..1].join('.')
 
-        views = Gitlab::Database.database_base_models.flat_map { |_, m| m.connection.views }
-
-        sources = tables + views
-
-        classes = sources.index_with { [] }
+        classes = {}
 
         Gitlab::Database.database_base_models.each do |_, model_class|
+          tables = model_class.connection.tables
+
+          views = model_class.connection.views
+
+          sources = tables + views
+
+          model_classes = sources.index_with { [] }
+
+          classes.merge!(model_classes) { |_, sources, new_sources| sources + new_sources }
+
           model_class
             .descendants
             .reject(&:abstract_class)
             .reject { |c| c.name =~ /^(?:EE::)?Gitlab::(?:BackgroundMigration|DatabaseImporters)::/ }
             .reject { |c| c.name =~ /^HABTM_/ }
             .each { |c| classes[c.table_name] << c.name if classes.has_key?(c.table_name) }
-        end
 
-        version = Gem::Version.new(File.read('VERSION'))
-        milestone = version.release.segments[0..1].join('.')
+          sources.each do |source_name|
+            database = model_class.connection_db_config.name
+            file = dictionary_file_path(source_name, views, database)
+            key_name = "#{data_source_type(source_name, views)}_name"
 
-        sources.each do |source_name|
-          file = dictionary_file_path(source_name, views)
-          key_name = "#{data_source_type(source_name, views)}_name"
+            table_metadata = {
+              key_name => source_name,
+              'classes' => classes[source_name]&.sort&.uniq,
+              'feature_categories' => [],
+              'description' => nil,
+              'introduced_by_url' => nil,
+              'milestone' => milestone
+            }
 
-          table_metadata = {
-            key_name => source_name,
-            'classes' => classes[source_name]&.sort&.uniq,
-            'feature_categories' => [],
-            'description' => nil,
-            'introduced_by_url' => nil,
-            'milestone' => milestone
-          }
+            if File.exist?(file)
+              outdated = false
 
-          if File.exist?(file)
-            outdated = false
+              existing_metadata = YAML.safe_load(File.read(file))
 
-            existing_metadata = YAML.safe_load(File.read(file))
+              if existing_metadata[key_name] != table_metadata[key_name]
+                existing_metadata[key_name] = table_metadata[key_name]
+                outdated = true
+              end
 
-            if existing_metadata[key_name] != table_metadata[key_name]
-              existing_metadata[key_name] = table_metadata[key_name]
-              outdated = true
+              if existing_metadata['classes'].sort != table_metadata['classes'].sort
+                existing_metadata['classes'] = table_metadata['classes']
+                outdated = true
+              end
+
+              File.write(file, existing_metadata.to_yaml) if outdated
+            else
+              File.write(file, table_metadata.to_yaml)
             end
-
-            if existing_metadata['classes'].sort != table_metadata['classes'].sort
-              existing_metadata['classes'] = table_metadata['classes']
-              outdated = true
-            end
-
-            File.write(file, existing_metadata.to_yaml) if outdated
-          else
-            File.write(file, table_metadata.to_yaml)
           end
         end
       end
@@ -469,10 +476,12 @@ namespace :gitlab do
         'table'
       end
 
-      def dictionary_file_path(source_name, views)
+      def dictionary_file_path(source_name, views, database)
         sub_directory = views.include?(source_name) ? 'views' : ''
 
-        File.join(DB_DOCS_PATH, sub_directory, "#{source_name}.yml")
+        path = database == 'geo' ? EE_DICTIONARY_PATH : DB_DOCS_PATH
+
+        File.join(path, sub_directory, "#{source_name}.yml")
       end
 
       # Temporary disable this, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85760#note_998452069

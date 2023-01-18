@@ -24,7 +24,7 @@ To create an epic in the group you're in:
 
 1. Get to the New Epic form:
    - Go to your group and from the left sidebar select **Epics**. Then select **New epic**.
-   - From an epic in your group, select the vertical ellipsis (**{ellipsis_v}**). Then select **New epic**.
+   - From an epic in your group, select **Epic actions** (**{ellipsis_v}**). Then select **New epic**.
    - From anywhere, in the top menu, select **New...** (**{plus-square}**). Then select **New epic**.
    - In an empty [roadmap](../roadmap/index.md), select **New epic**.
 

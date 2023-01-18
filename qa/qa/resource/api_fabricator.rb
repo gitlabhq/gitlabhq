@@ -122,9 +122,10 @@ module QA
         process_api_response(api_post_to(api_post_path, api_post_body))
       end
 
-      def api_post_to(post_path, post_body)
+      def api_post_to(post_path, post_body, args = {})
         if post_path == "/graphql"
-          graphql_response = post(Runtime::API::Request.new(api_client, post_path).url, query: post_body)
+          payload = post_body.is_a?(String) ? { query: post_body } : post_body
+          graphql_response = post(Runtime::API::Request.new(api_client, post_path).url, payload, args)
 
           body = flatten_hash(parse_body(graphql_response))
 
@@ -137,9 +138,9 @@ module QA
 
           body[:id] = body.fetch(:id).split('/').last if body.key?(:id)
 
-          body.transform_keys { |key| key.to_s.underscore.to_sym }
+          body.deep_transform_keys { |key| key.to_s.underscore.to_sym }
         else
-          response = post(Runtime::API::Request.new(api_client, post_path).url, post_body)
+          response = post(Runtime::API::Request.new(api_client, post_path).url, post_body, args)
 
           unless response.code == HTTP_STATUS_CREATED
             raise(

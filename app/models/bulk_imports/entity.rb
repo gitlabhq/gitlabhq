@@ -57,6 +57,10 @@ class BulkImports::Entity < ApplicationRecord
 
   alias_attribute :destination_slug, :destination_name
 
+  delegate  :default_project_visibility,
+            :default_group_visibility,
+            to: :'Gitlab::CurrentSettings.current_application_settings'
+
   state_machine :status, initial: :created do
     state :created, value: 0
     state :started, value: 1
@@ -154,6 +158,12 @@ class BulkImports::Entity < ApplicationRecord
 
   def full_path
     project? ? project&.full_path : group&.full_path
+  end
+
+  def default_visibility_level
+    return default_group_visibility if group?
+
+    default_project_visibility
   end
 
   private

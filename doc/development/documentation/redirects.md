@@ -31,6 +31,12 @@ Add a redirect to ensure:
 Be sure to assign a technical writer to any merge request that moves, renames, or deletes a page.
 Technical Writers can help with any questions and can review your change.
 
+NOTE:
+When you change a page name, the Google Analytics are removed
+from the content audit and the page views start from scratch.
+If you want to change a page name, edit the page first,
+so you can ensure the new page name is as accurate as possible.
+
 ## Types of redirects
 
 There are two types of redirects:

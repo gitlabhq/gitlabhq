@@ -29,7 +29,7 @@ Vue.use(VueApollo);
 
 const protectionMockProps = {
   headerLinkHref: 'protected/branches',
-  headerLinkTitle: 'Manage in Protected Branches',
+  headerLinkTitle: 'Manage in protected branches',
   roles: [{ accessLevelDescription: 'Maintainers' }],
   users: [{ avatarUrl: 'test.com/user.png', name: 'peter', webUrl: 'test.com' }],
 };

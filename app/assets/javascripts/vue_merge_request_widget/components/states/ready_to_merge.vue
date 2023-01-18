@@ -634,6 +634,7 @@ export default {
                   v-gl-tooltip.hover.focus="__('Select merge moment')"
                   :disabled="isMergeButtonDisabled"
                   variant="confirm"
+                  data-testid="merge-immediately-dropdown"
                   data-qa-selector="merge_moment_dropdown"
                   toggle-class="btn-icon js-merge-moment"
                 >
@@ -643,7 +644,8 @@ export default {
                   </template>
                   <gl-dropdown-item
                     icon-name="warning"
-                    button-class="accept-merge-request js-merge-immediately-button"
+                    button-class="accept-merge-request"
+                    data-testid="merge-immediately-button"
                     data-qa-selector="merge_immediately_menu_item"
                     @click="handleMergeImmediatelyButtonClick"
                   >

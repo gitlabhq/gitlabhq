@@ -1148,6 +1148,7 @@ Input type: `CiCdSettingsUpdateInput`
 | <a id="mutationcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates if the latest artifact should be kept for the project. |
 | <a id="mutationcicdsettingsupdatemergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Indicates if merge pipelines are enabled for the project. |
 | <a id="mutationcicdsettingsupdatemergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Indicates if merge trains are enabled for the project. |
+| <a id="mutationcicdsettingsupdateoptinjwt"></a>`optInJwt` | [`Boolean`](#boolean) | When disabled, the JSON Web Token is always available in all jobs in the pipeline. |
 
 #### Fields
 
@@ -4458,6 +4459,7 @@ Input type: `ProjectCiCdSettingsUpdateInput`
 | <a id="mutationprojectcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates if the latest artifact should be kept for the project. |
 | <a id="mutationprojectcicdsettingsupdatemergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Indicates if merge pipelines are enabled for the project. |
 | <a id="mutationprojectcicdsettingsupdatemergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Indicates if merge trains are enabled for the project. |
+| <a id="mutationprojectcicdsettingsupdateoptinjwt"></a>`optInJwt` | [`Boolean`](#boolean) | When disabled, the JSON Web Token is always available in all jobs in the pipeline. |
 
 #### Fields
 
@@ -18703,6 +18705,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectcicdsettingkeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Whether to keep the latest builds artifacts. |
 | <a id="projectcicdsettingmergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Whether merge pipelines are enabled. |
 | <a id="projectcicdsettingmergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Whether merge trains are enabled. |
+| <a id="projectcicdsettingoptinjwt"></a>`optInJwt` | [`Boolean`](#boolean) | When disabled, the JSON Web Token is always available in all jobs in the pipeline. |
 | <a id="projectcicdsettingproject"></a>`project` | [`Project`](#project) | Project the CI/CD settings belong to. |
 
 ### `ProjectMember`

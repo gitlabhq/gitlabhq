@@ -393,7 +393,7 @@ gitlab_rails['omniauth_providers'] = [
       name: "openid_connect",
       scope: ["openid", "profile", "email"],
       response_type: "code",
-      issuer:  "https://keycloak.example.com/auth/realms/myrealm",
+      issuer:  "https://keycloak.example.com/realms/myrealm",
       client_auth_method: "query",
       discovery: true,
       uid_field: "preferred_username",

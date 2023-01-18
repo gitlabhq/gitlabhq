@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
+RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer, feature_category: :importers do
   describe '#transform' do
-    let_it_be(:parent) { create(:group) }
-
     let(:bulk_import) { build_stubbed(:bulk_import) }
+    let(:destination_group) { create(:group) }
+    let(:destination_namespace) { destination_group.full_path }
 
     let(:entity) do
       build_stubbed(
@@ -14,7 +14,7 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
         destination_slug: 'destination-slug-path',
-        destination_namespace: parent.full_path
+        destination_namespace: destination_namespace
       )
     end
 
@@ -40,15 +40,13 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
       }
     end
 
-    subject { described_class.new }
+    subject(:transformed_data) { described_class.new.transform(context, data) }
 
     it 'returns original data with some keys transformed' do
-      transformed_data = subject.transform(context, data)
-
       expect(transformed_data).to eq({
         'name' => 'Source Group Name',
         'description' => 'Source Group Description',
-        'parent_id' => parent.id,
+        'parent_id' => destination_group.id,
         'path' => entity.destination_slug,
         'visibility_level' => Gitlab::VisibilityLevel.string_options[data['visibility']],
         'project_creation_level' => Gitlab::Access.project_creation_string_options[data['project_creation_level']],
@@ -64,21 +62,21 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
     end
 
     context 'when some fields are not present' do
-      it 'does not include those fields' do
-        data = {
+      let(:data) do
+        {
           'name' => 'Source Group Name',
           'description' => 'Source Group Description',
           'path' => 'source-group-path',
           'full_path' => 'source/full/path'
         }
+      end
 
-        transformed_data = subject.transform(context, data)
-
+      it 'does not include those fields' do
         expect(transformed_data).to eq({
           'name' => 'Source Group Name',
           'path' => 'destination-slug-path',
           'description' => 'Source Group Description',
-          'parent_id' => parent.id,
+          'parent_id' => destination_group.id,
           'share_with_group_lock' => nil,
           'emails_disabled' => nil,
           'lfs_enabled' => nil,
@@ -89,9 +87,7 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
 
     describe 'parent group transformation' do
       it 'sets parent id' do
-        transformed_data = subject.transform(context, data)
-
-        expect(transformed_data['parent_id']).to eq(parent.id)
+        expect(transformed_data['parent_id']).to eq(destination_group.id)
       end
 
       context 'when destination namespace is empty' do
@@ -100,8 +96,6 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
         end
 
         it 'does not set parent id' do
-          transformed_data = subject.transform(context, data)
-
           expect(transformed_data).not_to have_key('parent_id')
         end
       end
@@ -114,8 +108,6 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
         end
 
         it 'does not transform name' do
-          transformed_data = subject.transform(context, data)
-
           expect(transformed_data['name']).to eq('Source Group Name')
         end
       end
@@ -123,35 +115,39 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
       context 'when destination namespace is present' do
         context 'when destination namespace does not have a group with same name' do
           it 'does not transform name' do
-            transformed_data = subject.transform(context, data)
-
             expect(transformed_data['name']).to eq('Source Group Name')
           end
         end
 
         context 'when destination namespace already have a group with the same name' do
           before do
-            create(:group, parent: parent, name: 'Source Group Name', path: 'group_1')
-            create(:group, parent: parent, name: 'Source Group Name(1)', path: 'group_2')
-            create(:group, parent: parent, name: 'Source Group Name(2)', path: 'group_3')
-            create(:group, parent: parent, name: 'Source Group Name(1)(1)', path: 'group_4')
+            create(:group, parent: destination_group, name: 'Source Group Name', path: 'group_1')
+            create(:group, parent: destination_group, name: 'Source Group Name(1)', path: 'group_2')
+            create(:group, parent: destination_group, name: 'Source Group Name(2)', path: 'group_3')
+            create(:group, parent: destination_group, name: 'Source Group Name(1)(1)', path: 'group_4')
           end
 
           it 'makes the name unique by appeding a counter', :aggregate_failures do
-            transformed_data = subject.transform(context, data.merge('name' => 'Source Group Name'))
+            transformed_data = described_class.new.transform(context, data.merge('name' => 'Source Group Name'))
             expect(transformed_data['name']).to eq('Source Group Name(3)')
 
-            transformed_data = subject.transform(context, data.merge('name' => 'Source Group Name(2)'))
+            transformed_data = described_class.new.transform(context, data.merge('name' => 'Source Group Name(2)'))
             expect(transformed_data['name']).to eq('Source Group Name(2)(1)')
 
-            transformed_data = subject.transform(context, data.merge('name' => 'Source Group Name(1)'))
+            transformed_data = described_class.new.transform(context, data.merge('name' => 'Source Group Name(1)'))
             expect(transformed_data['name']).to eq('Source Group Name(1)(2)')
 
-            transformed_data = subject.transform(context, data.merge('name' => 'Source Group Name(1)(1)'))
+            transformed_data = described_class.new.transform(context, data.merge('name' => 'Source Group Name(1)(1)'))
             expect(transformed_data['name']).to eq('Source Group Name(1)(1)(1)')
           end
         end
       end
+    end
+
+    describe 'visibility level' do
+      subject(:transformed_data) { described_class.new.transform(context, data) }
+
+      include_examples 'visibility level settings'
     end
   end
 end

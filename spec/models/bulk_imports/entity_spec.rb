@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Entity, type: :model do
+RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers do
   describe 'associations' do
     it { is_expected.to belong_to(:bulk_import).required }
     it { is_expected.to belong_to(:parent) }
@@ -343,6 +343,26 @@ RSpec.describe BulkImports::Entity, type: :model do
       entity = build(:bulk_import_entity, group: nil, project: nil)
 
       expect(entity.full_path).to eq(nil)
+    end
+  end
+
+  describe '#default_visibility_level' do
+    context 'when entity is a group' do
+      it 'returns default group visibility' do
+        stub_application_setting(default_group_visibility: Gitlab::VisibilityLevel::PUBLIC)
+        entity = build(:bulk_import_entity, :group_entity, group: build(:group))
+
+        expect(entity.default_visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+      end
+    end
+
+    context 'when entity is a project' do
+      it 'returns default project visibility' do
+        stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
+        entity = build(:bulk_import_entity, :project_entity, group: build(:group))
+
+        expect(entity.default_visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+      end
     end
   end
 end

@@ -8,9 +8,9 @@ module QA
       end
 
       attributes :id,
-                 :filename,
-                 :full_path,
-                 :image
+        :filename,
+        :full_path,
+        :image
 
       def initialize
         @update = false
@@ -60,10 +60,52 @@ module QA
       #
       # @return [String]
       def api_post_body
-        # TODO: design creation requires file upload via multipart/form-data request type with file passed in mutation
-        # which currently isn't supported by our api implementation
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/366592
-        raise NotImplementedError, "File uploads are not supported"
+        query = <<~GQL
+          mutation ($files: [Upload!]!, $projectPath: ID!, $iid: ID!) {
+            designManagementUpload(input: { files: $files, projectPath: $projectPath, iid: $iid }) {
+              designs {
+                id
+                fullPath
+                image
+                filename
+                webUrl
+              }
+            }
+          }
+        GQL
+        operations = {
+          query: query,
+          variables: {
+            files: nil,
+            projectPath: issue.project.full_path,
+            iid: issue.iid
+          }
+        }
+
+        {
+          operations: JSON.dump(operations),
+          map: '{"0":["variables.files"]}',
+          "0": ::File.new(filepath)
+        }
+      end
+
+      # Override api_post_to method to add multipart request option
+      #
+      # @param [String] post_path
+      # @param [Hash] post_body
+      # @param [Hash] args
+      # @return [Hash]
+      def api_post_to(post_path, post_body, args = {})
+        super(post_path, post_body, { content_type: 'multipart/form-data' })
+      end
+
+      # Return first design from fabricated design array
+      # designManagementUpload mutation doesn't support returning single design
+      #
+      # @param [Hash] api_resource
+      # @return [Hash]
+      def transform_api_resource(api_resource)
+        api_resource.key?(:designs) ? api_resource[:designs].first : api_resource
       end
 
       private
