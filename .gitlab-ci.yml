@@ -77,6 +77,8 @@ workflow:
       when: never
     # For stable, auto-deploy, and security branches, create a pipeline.
     - if: '$CI_COMMIT_BRANCH =~ /^[\d-]+-stable(-ee)?$/'
+      variables:
+        NOTIFY_PIPELINE_FAILURE_CHANNEL: "releases"
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
     - if: '$CI_COMMIT_BRANCH =~ /^security\//'
 
