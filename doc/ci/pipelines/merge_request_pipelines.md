@@ -24,14 +24,14 @@ Branch pipelines:
 
 Merge request pipelines:
 
-- Run when you:
+- **Do not run by default**. The jobs in the CI/CD configuration file [must be configured](#prerequisites)
+  to run in merge request pipelines.
+- If configured, merge request pipelines run when you:
   - Create a new merge request from a source branch with one or more commits.
   - Push a new commit to the source branch for a merge request.
   - Select **Run pipeline** from the **Pipelines** tab in a merge request. This option
     is only available when merge request pipelines are configured for the pipeline
     and the source branch has at least one commit.
-- Do not run by default. The jobs in the CI/CD configuration file [must be configured](#prerequisites)
-  to run in merge request pipelines.
 - Have access to [more predefined variables](#available-predefined-variables).
 - Do not have access to [protected variables](../variables/index.md#protected-cicd-variables) or [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
 

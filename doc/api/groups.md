@@ -830,8 +830,8 @@ Parameters:
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                            | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
 | `membership_lock` **(PREMIUM)**                         | boolean | no       | Users cannot be added to projects in this group. |
-| `extra_shared_runners_minutes_limit` **(PREMIUM)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
-| `shared_runners_minutes_limit` **(PREMIUM)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
+| `shared_runners_minutes_limit` **(PREMIUM SELF)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
 
 ### Options for `default_branch_protection`
 
@@ -985,11 +985,11 @@ PUT /groups/:id
 | `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                            | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
-| `extra_shared_runners_minutes_limit` **(PREMIUM)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
+| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
 | `file_template_project_id` **(PREMIUM)**                | integer | no       | The ID of a project to load custom file templates from. |
 | `membership_lock` **(PREMIUM)**                         | boolean | no       | Users cannot be added to projects in this group. |
 | `prevent_forking_outside_group` **(PREMIUM)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces. |
-| `shared_runners_minutes_limit` **(PREMIUM)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `shared_runners_minutes_limit` **(PREMIUM SELF)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
 | `unique_project_download_limit` **(ULTIMATE)** | integer | no | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. |
 | `unique_project_download_limit_interval_in_seconds` **(ULTIMATE)** | integer | no | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). |
 | `unique_project_download_limit_allowlist` **(ULTIMATE)** | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. |

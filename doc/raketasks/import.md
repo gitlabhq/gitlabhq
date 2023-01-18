@@ -4,12 +4,24 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import bare repositories **(FREE SELF)**
+# Import bare repositories (deprecated) **(FREE SELF)**
+
+WARNING:
+The Rake task for importing bare repositories was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108507)
+in GitLab 15.8 and will be removed in GitLab 16.0.
+
+Alternatives to using the `gitlab:import:repos` Rake task include:
+
+- Migrating projects using either [an export file](../user/project/settings/import_export.md) or [direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended) migrate repositories as well.
+- Importing a [repository by URL](../user/project/import/repo_by_url.md).
+- Importing a [repositories from a non-GitLab source](../user/project/import/index.md).
 
 Rake tasks are available to import bare repositories into a GitLab instance.
-When migrating from an existing GitLab instance,
-and to preserve ownership by users and their namespaces,
-use [our project-based import/export](../user/project/settings/import_export.md).
+When migrating from an existing GitLab instance, and to preserve ownership by users and their namespaces,
+migrate projects using either:
+
+- [Direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended).
+- [An export file](../user/project/settings/import_export.md).
 
 Note that:
 
