@@ -1,7 +1,7 @@
 ---
 data_category: operational
 key_path: usage_activity_by_stage_monthly.verify.ci_builds
-description: Unique monthly builds in project
+description: Distinct users triggering jobs in a month
 product_section: ops
 product_stage: verify
 product_group: pipeline_execution

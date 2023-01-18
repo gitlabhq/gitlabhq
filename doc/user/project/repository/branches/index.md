@@ -27,7 +27,7 @@ For more information on managing branches using the GitLab UI, see:
 - [Default branches](default.md): When you create a new [project](../../index.md), GitLab creates a
   default branch for the repository. You can change this setting at the project,
   subgroup, group, or instance level.
-- [Create a branch](../web_editor.md#create-a-new-branch)
+- [Create a branch](../web_editor.md#create-a-branch)
 - [Protected branches](../../protected_branches.md#protected-branches)
 - [Delete merged branches](#delete-merged-branches)
 - [Branch filter search box](#branch-filter-search-box)

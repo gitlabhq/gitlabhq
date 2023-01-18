@@ -151,7 +151,7 @@ Prerequisites:
 
 To import a project:
 
-1. When [creating a new project](../working_with_projects.md#create-a-project),
+1. When [creating a new project](../index.md#create-a-project),
    select **Import project**.
 1. In **Import project from**, select **GitLab export**.
 1. Enter your project name and URL. Then select the file you exported previously.

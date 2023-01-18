@@ -27,7 +27,7 @@ To create a GitLab Pages website:
 
 ## Prerequisites
 
-You must have a [blank project](../../working_with_projects.md#create-a-blank-project) in GitLab.
+You must have a [blank project](../../index.md#create-a-blank-project) in GitLab.
 
 ## Create the project files
 

@@ -9,7 +9,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 ## Adding a new built-in project template
 
 This page provides instructions about how to contribute a
-[built-in project template](../user/project/working_with_projects.md#create-a-project-from-a-built-in-template).
+[built-in project template](../user/project/index.md#create-a-project-from-a-built-in-template).
 
 To contribute a built-in project template, you must complete the following tasks:
 

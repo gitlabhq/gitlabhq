@@ -169,7 +169,7 @@ Confirm the following are all true:
 
 - When any user adds or modifies a file from the repository using the GitLab
   UI, it immediately fails with a red `401 Unauthorized` banner.
-- Creating a new project and [initializing it with a README](../../user/project/working_with_projects.md#create-a-blank-project)
+- Creating a new project and [initializing it with a README](../../user/project/index.md#create-a-blank-project)
   successfully creates the project but doesn't create the README.
 - When [tailing the logs](https://docs.gitlab.com/omnibus/settings/logs.html#tail-logs-in-a-console-on-the-server)
   on a Gitaly client and reproducing the error, you get `401` errors

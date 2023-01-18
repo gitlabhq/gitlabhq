@@ -213,7 +213,7 @@ To avoid this problem, GitLab administrators can [ensure removed users cannot in
 
 There are two different ways to add a new project to a group:
 
-- Select a group, and then select **New project**. You can then continue [creating your project](../../user/project/working_with_projects.md#create-a-project).
+- Select a group, and then select **New project**. You can then continue [creating your project](../../user/project/index.md#create-a-project).
 - While you are creating a project, select a group from the dropdown list.
 
   ![Select group](img/select_group_dropdown_13_10.png)

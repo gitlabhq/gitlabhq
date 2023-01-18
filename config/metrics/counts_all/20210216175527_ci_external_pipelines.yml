@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: usage_activity_by_stage.verify.ci_external_pipelines
-description: Total pipelines in external repositories
+description: Distinct users triggering pipelines in external repositories
 product_section: ops
 product_stage: verify
 product_group: pipeline_execution

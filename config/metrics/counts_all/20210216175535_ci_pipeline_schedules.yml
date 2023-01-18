@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: usage_activity_by_stage.verify.ci_pipeline_schedules
-description: Pipeline schedules in GitLab
+description: Distinct users creating pipeline schedules
 product_section: ops
 product_stage: verify
 product_group: pipeline_execution

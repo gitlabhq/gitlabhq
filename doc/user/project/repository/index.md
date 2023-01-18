@@ -15,7 +15,7 @@ Each [project](../index.md) contains a repository.
 
 To create a repository, you can:
 
-- [Create a project](../../../user/project/working_with_projects.md#create-a-project) or
+- [Create a project](../../../user/project/index.md#create-a-project) or
 - [Fork an existing project](forking_workflow.md).
 
 ## Add files to a repository
@@ -265,7 +265,6 @@ to fetch configuration from a project that is renamed or moved.
 - [Find files](file_finder.md) in a repository.
 - [Branches](branches/index.md).
 - [Create a directory](web_editor.md#create-a-directory).
-- [Start a merge request](web_editor.md#tips).
 - [Find file history](git_history.md).
 - [Identify changes by line (Git blame)](git_blame.md).
 - [Use Jupyter notebooks with GitLab](jupyter_notebooks/index.md).

@@ -91,11 +91,11 @@ You can pick a theme from your [profile preferences](../../profile/preferences.m
 |-------------------------------------------------------------|-----------------------------------------|
 | ![Solarized Dark Theme](img/solarized_dark_theme_v13_1.png) | ![Dark Theme](img/dark_theme_v13_0.png) |
 
-## Highlight lines
+## Link to specific lines
 
-The Web IDE is built with the [Web Editor](../repository/web_editor.md). This enables the Web IDE to share the
-same core features for highlighting and linking to particular lines in the edited files
-[described for the Web Editor](../repository/web_editor.md#highlight-lines).
+The Web IDE and the [Web Editor](../repository/web_editor.md) share the
+same core features. To link to specific lines in the Web IDE, see
+[Web Editor](../repository/web_editor.md#link-to-specific-lines).
 
 ## Schema based validation
 

@@ -32,7 +32,7 @@ Membership automatically cascades down to all subgroups and projects.
 
 ## Create a project
 
-Now [create one or more projects](../user/project/working_with_projects.md#create-a-project) in your group.
+Now [create one or more projects](../user/project/index.md#create-a-project) in your group.
 There are several different ways to create a project. A project contains
 your code and pipelines, but also the issues that are used for planning your upcoming code changes.
 

@@ -108,7 +108,7 @@ To create a merge request to close an issue when it's merged, you can either:
     choose any name, and GitLab verifies that it's not already in use. The merge request
     inherits the milestone and labels of the issue, and is set to automatically
     close the issue when it is merged.
-  - Create a [new branch](../repository/web_editor.md#create-a-new-branch-from-an-issue)
+  - Create a [new branch](creating_merge_requests.md#from-an-issue)
     only, with its name starting with the issue number.
 
 If the issue is [confidential](../issues/confidential_issues.md),

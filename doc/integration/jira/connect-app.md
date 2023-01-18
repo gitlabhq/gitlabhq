@@ -75,7 +75,7 @@ If the app requires additional permissions, [the update must first be manually a
 
 ## Connect the GitLab.com for Jira Cloud app for self-managed instances **(FREE SELF)**
 
-> Introduced in GitLab 15.7
+> Introduced in GitLab 15.7.
 
 Prerequisites:
 
@@ -85,6 +85,8 @@ Prerequisites:
 
 You can link self-managed instances after installing the GitLab.com for Jira Cloud app from the marketplace.
 Jira apps can only link to one URL per marketplace listing. The official listing links to GitLab.com.
+
+It's not possible to create branches from Jira for self-managed instances.
 
 ### Set up your instance
 
@@ -181,9 +183,9 @@ NOTE:
 This method uses [automated updates](#update-the-gitlabcom-for-jira-cloud-app)
 the same way as our GitLab.com Marketplace listing.
 
-## Troubleshoot GitLab.com for Jira Cloud app
+## Troubleshooting
 
-### Browser displays sign-in message when already signed in
+### Browser displays a sign-in message when already signed in
 
 You might get the following message prompting you to sign in to GitLab.com
 when you're already signed in:
@@ -192,8 +194,25 @@ when you're already signed in:
 You need to sign in or sign up before continuing.
 ```
 
-GitLab.com for Jira Cloud app uses an iframe to add namespaces on the
+The GitLab.com for Jira Cloud app uses an iframe to add namespaces on the
 settings page. Some browsers block cross-site cookies, which can lead to this issue.
 
-To resolve this issue, use [Firefox](https://www.mozilla.org/en-US/firefox/),
-[Google Chrome](https://www.google.com/chrome/), or enable cross-site cookies in your browser.
+To resolve this issue, use either [Firefox](https://www.mozilla.org/en-US/firefox/) or
+[Chrome](https://www.google.com/chrome/) or enable cross-site cookies in your browser.
+
+### Manual installation fails
+
+You might get an error if you have installed the GitLab.com for Jira Cloud app from the official marketplace listing and replaced it with manual installation. To resolve this issue, disable the **Jira Connect Proxy URL** setting.
+
+- In GitLab 15.7:
+
+  1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+  1. Execute `ApplicationSetting.current_without_cache.update(jira_connect_proxy_url: nil)`.
+
+- In GitLab 15.8 and later:
+
+  1. On the top bar, select **Main menu > Admin**.
+  1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
+  1. Expand the **GitLab for Jira App** section.
+  1. Clear the **Jira Connect Proxy URL** text box.
+  1. Select **Save changes**.

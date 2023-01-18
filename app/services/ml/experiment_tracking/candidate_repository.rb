@@ -17,7 +17,7 @@ module Ml
       def create!(experiment, start_time, tags = nil, name = nil)
         candidate = experiment.candidates.create!(
           user: user,
-          name: name,
+          name: candidate_name(name, tags),
           start_time: start_time || 0
         )
 
@@ -85,6 +85,13 @@ module Ml
         end
 
         entity_class.insert_all(entities, returning: false) unless entities.empty?
+      end
+
+      def candidate_name(name, tags)
+        return name if name.present?
+        return unless tags.present?
+
+        tags.detect { |t| t[:key] == 'mlflow.runName' }&.dig(:value)
       end
     end
   end

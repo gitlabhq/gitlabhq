@@ -211,7 +211,7 @@ The remote tells Git where to push or pull from.
 
 To add a remote to your local copy:
 
-1. In GitLab, [create a project](../user/project/working_with_projects.md#create-a-project) to hold your files.
+1. In GitLab, [create a project](../user/project/index.md#create-a-project) to hold your files.
 1. Visit this project's homepage, scroll down to **Push an existing folder**, and copy the command that starts with `git remote add`.
 1. On your computer, open the terminal in the directory you've initialized, paste the command you copied, and press <kbd>enter</kbd>:
 

@@ -1,161 +1,186 @@
 ---
 stage: Manage
 group: Organization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Organize work with projects **(FREE)**
+# Create a project **(FREE)**
 
-In GitLab, you can create projects to host
-your codebase. You can also use projects to track issues, plan work,
-collaborate on code, and continuously build, test, and use
-built-in CI/CD to deploy your app.
+You can create a project in many ways in GitLab.
 
-Projects can be available [publicly, internally, or privately](../public_access.md).
-GitLab does not limit the number of private projects you can create.
+## Create a blank project
 
-## Project features
+To create a blank project:
 
-Projects include the following [features](https://about.gitlab.com/features/):
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
+1. Select **Create blank project**.
+1. Enter the project details:
+   - In the **Project name** field, enter the name of your project. You cannot use special characters at
+     the start or end of a project name.
+   - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
+     slug as the URL path to the project. To change the slug, first enter the project name,
+     then change the slug.
+   - In the **Project deployment target (optional)** field, select your project's deployment target.
+     This information helps GitLab better understand its users and their deployment requirements.
+   - To modify the project's [viewing and access rights](../public_access.md) for
+     users, change the **Visibility Level**.
+   - To create README file so that the Git repository is initialized, has a default branch, and
+     can be cloned, select **Initialize repository with a README**.
+   - To analyze the source code in the project for known security vulnerabilities,
+     select **Enable Static Application Security Testing (SAST)**.
+1. Select **Create project**.
 
-**Repositories:**
+## Create a project from a built-in template
 
-- [Issue tracker](issues/index.md): Discuss implementations with your team.
-  - [Issue boards](issue_board.md): Organize and prioritize your workflow.
-  - [Multiple issue boards](issue_board.md#multiple-issue-boards): Create team-specific workflows (issue boards) for a project.
-- [Repositories](repository/index.md): Host your code in a fully-integrated platform.
-  - [Branches](repository/branches/index.md): Use Git branching strategies to
-  collaborate on code.
-  - [Protected branches](protected_branches.md): Prevent collaborators
-  from changing history or pushing code without review.
-  - [Protected tags](protected_tags.md): Control who has
-  permission to create tags and prevent accidental updates or deletions.
-  - [Repository mirroring](repository/mirror/index.md)
-  - [Signing commits](repository/gpg_signed_commits/index.md): Use GNU Privacy Guard (GPG) to sign your commits.
-  - [Deploy tokens](deploy_tokens/index.md): Manage access to the repository and Container Registry.
-- [Web IDE](web_ide/index.md)
-- [CVE ID Requests](../application_security/cve_id_request.md): Request a CVE identifier to track a
-  vulnerability in your project.
+A built-in project template populates a new project with files to get you started.
+Built-in templates are sourced from the following groups:
 
-**Issues and merge requests:**
+- [`project-templates`](https://gitlab.com/gitlab-org/project-templates)
+- [`pages`](https://gitlab.com/pages)
 
-- [Issue tracker](issues/index.md): Discuss implementations with your team.
-  - [Issue boards](issue_board.md): Organize and prioritize your workflow.
-  - [Multiple issue boards](issue_board.md#multiple-issue-boards): Create team-specific workflows (issue boards) for a project.
-- [Merge requests](merge_requests/index.md): Apply a branching
-  strategy and get reviewed by your team.
-  - [Merge request approvals](merge_requests/approvals/index.md): Ask for approval before
-  implementing a change.
-  - [Fix merge conflicts from the UI](merge_requests/conflicts.md): View Git diffs from the GitLab UI.
-  - [Review Apps](../../ci/review_apps/index.md): By branch, preview the results
-  of the changes proposed in a merge request.
-- [Labels](labels.md): Organize issues and merge requests by labels.
-- [Time Tracking](time_tracking.md): Track time estimated and
-  spent on issues and merge requests.
-- [Milestones](milestones/index.md): Work toward a target date.
-- [Description templates](description_templates.md): Define context-specific
-  templates for issue and merge request description fields.
-- [Slash commands (quick actions)](quick_actions.md): Create text shortcuts for
-  common actions.
-- [Autocomplete characters](autocomplete_characters.md): Autocomplete
-  references to users, groups, issues, merge requests, and other GitLab
-  elements.
-- [Web IDE](web_ide/index.md)
+Anyone can [contribute a built-in template](../../development/project_templates.md).
 
-**GitLab CI/CD:**
+To create a project from a built-in template:
 
-- [GitLab CI/CD](../../ci/index.md): Use the built-in [Continuous Integration, Delivery, and Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) tool.
-  - [Container Registry](../packages/container_registry/index.md): Build and push Docker
-  images.
-  - [Auto Deploy](../../topics/autodevops/stages.md#auto-deploy): Configure GitLab CI/CD
-  to automatically set up your app's deployment.
-  - [Enable and disable GitLab CI/CD](../../ci/enable_or_disable_ci.md)
-  - [Pipelines](../../ci/pipelines/index.md): Configure and visualize
-    your GitLab CI/CD pipelines from the UI.
-    - [Scheduled Pipelines](../../ci/pipelines/schedules.md): Schedule a pipeline
-      to start at a chosen time.
-    - [Pipeline Graphs](../../ci/pipelines/index.md#visualize-pipelines): View your
-      pipeline from the UI.
-    - [Job artifacts](../../ci/pipelines/job_artifacts.md): Define,
-      browse, and download job artifacts.
-    - [Pipeline settings](../../ci/pipelines/settings.md): Set up Git strategy (how jobs fetch your repository),
-      timeout (the maximum amount of time a job can run), custom path for `.gitlab-ci.yml`, test coverage parsing, pipeline visibility, and more.
-  - [Kubernetes cluster integration](../infrastructure/clusters/index.md): Connect your GitLab project
-    with a Kubernetes cluster.
-  - [Feature Flags](../../operations/feature_flags.md): Ship different features
-    by dynamically toggling functionality.
-- [GitLab Pages](pages/index.md): Build, test, and deploy your static
-  website.
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
+1. Select **Create from template**.
+1. Select the **Built-in** tab.
+1. From the list of templates:
+   - To view a preview of the template, select **Preview**.
+   - To use a template for the project, select **Use template**.
+1. Enter the project details:
+   - In the **Project name** field, enter the name of your project. You cannot use special characters at
+     the start or end of a project name.
+   - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
+     slug as the URL path to the project. To change the slug, first enter the project name,
+     then change the slug.
+   - In the **Project description (optional)** field, enter the description of your project's dashboard.
+   - To modify the project's [viewing and access rights](../public_access.md) for users,
+     change the **Visibility Level**.
+1. Select **Create project**.
 
-**Other features:**
+## Create a project from a custom template **(PREMIUM)**
 
-- [Wiki](wiki/index.md): Document your GitLab project in an integrated Wiki.
-- [Snippets](../snippets.md): Store, share and collaborate on code snippets.
-- [Value Stream Analytics](../analytics/value_stream_analytics.md): Review your development lifecycle.
-- [Insights](insights/index.md): Configure the insights that matter for your projects.
-- [Security Dashboard](../application_security/security_dashboard/index.md)
-- [Syntax highlighting](highlighting.md): Customize
-  your code blocks, overriding the default language choice.
-- [Badges](badges.md): Add an image to the **Project information** page.
-- [Releases](releases/index.md): Take a snapshot of
-  the source, build output, metadata, and artifacts
-  associated with a released version of your code.
-- [Package Registry](../packages/package_registry/index.md): Publish and install packages.
-- [Code owners](code_owners.md): Specify code owners for specific files.
-- [License Compliance](../compliance/license_compliance/index.md): Approve and deny licenses for projects.
-- [Dependency List](../application_security/dependency_list/index.md): View project dependencies.
-- [Requirements](requirements/index.md): Create criteria to check your products against.
-- [Code Intelligence](code_intelligence.md): Navigate code.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in GitLab 11.2.
 
-## Project integrations
+Custom project templates are available at:
 
-[Integrate your project](integrations/index.md) with Jira, Mattermost,
-Kubernetes, Slack, and a lot more.
+- The [instance-level](../../user/admin_area/custom_project_templates.md)
+- The [group-level](../../user/group/custom_project_templates.md)
 
-## Import or export a project
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
+1. Select **Create from template**.
+1. Select the **Instance** or **Group** tab.
+1. From the list of templates:
+   - To view a preview of the template, select **Preview**.
+   - To use a template for the project, select **Use template**.
+1. Enter the project details:
+   - In the **Project name** field, enter the name of your project. You cannot use special characters at
+     the start or end of a project name.
+   - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
+     slug as the URL path to the project. To change the slug, first enter the project name,
+     then change the slug.
+   - The description of your project's dashboard in the **Project description (optional)** field.
+   - To modify the project's [viewing and access rights](../public_access.md) for users,
+     change the **Visibility Level**.
+1. Select **Create project**.
 
-- [Import a project](import/index.md) from:
-  - [GitHub to GitLab](import/github.md)
-  - [Bitbucket to GitLab](import/bitbucket.md)
-  - [Gitea to GitLab](import/gitea.md)
-  - [FogBugz to GitLab](import/fogbugz.md)
-- [Export a project from GitLab](settings/import_export.md#export-a-project-and-its-data)
-- [Importing and exporting projects between GitLab instances](settings/import_export.md)
+## Create a project from the HIPAA Audit Protocol template **(ULTIMATE)**
 
-## GitLab Workflow - VS Code extension
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10
 
-To avoid switching from the GitLab UI and VS Code while working in GitLab repositories, you can integrate
-the [VS Code](https://code.visualstudio.com/) editor with GitLab through the
-[GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
+The HIPAA Audit Protocol template contains issues for audit inquiries in the
+HIPAA Audit Protocol published by the U.S Department of Health and Human Services.
 
-To review or contribute to the extension's code, visit [its codebase in GitLab](https://gitlab.com/gitlab-org/gitlab-vscode-extension/).
+To create a project from the HIPAA Audit Protocol template:
 
-## Project APIs
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the right of the page, select **New project**.
+1. Select **Create from template**.
+1. Select the **Built-in** tab.
+1. Locate the **HIPAA Audit Protocol** template:
+   - To view a preview of the template, select **Preview**.
+   - To use the template for the project, select **Use template**.
+1. Enter the project details:
+   - In the **Project name** field, enter the name of your project. You cannot use special characters at
+     the start or end of a project name.
+   - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
+     slug as the URL path to the project. To change the slug, first enter the project name,
+     then change the slug.
+   - In the **Project description (optional)** field, enter the description of your project's dashboard.
+   - To modify the project's [viewing and access rights](../public_access.md) for users,
+     change the **Visibility Level**.
+1. Select **Create project**.
 
-There are numerous [APIs](../../api/index.md) to use with your projects:
+## Create a new project with Git push
 
-- [Badges](../../api/project_badges.md)
-- [Clusters](../../api/project_clusters.md)
-- [Threads](../../api/discussions.md)
-- [General](../../api/projects.md)
-- [Import/export](../../api/project_import_export.md)
-- [Issue board](../../api/boards.md)
-- [Labels](../../api/labels.md)
-- [Markdown](../../api/markdown.md)
-- [Merge requests](../../api/merge_requests.md)
-- [Milestones](../../api/milestones.md)
-- [Services](../../api/integrations.md)
-- [Snippets](../../api/project_snippets.md)
-- [Templates](../../api/project_templates.md)
-- [Traffic](../../api/project_statistics.md)
-- [Variables](../../api/project_level_variables.md)
-- [Aliases](../../api/project_aliases.md)
-- [DORA4 Analytics](../../api/dora/metrics.md)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26388) in GitLab 10.5.
 
-## DORA4 analytics overview
+Use `git push` to push a local project repository to GitLab. After you push a repository,
+GitLab creates your project in your chosen namespace.
 
-Project details include the following analytics:
+You cannot use `git push` to create projects with project paths that:
 
-- Deployment Frequency
+- Have previously been used.
+- Have been [renamed](settings/index.md#rename-a-repository).
 
-For more information, see [DORA4 Project Analytics API](../../api/dora/metrics.md).
+Previously used project paths have a redirect. The redirect causes push attempts to redirect requests
+to the renamed project location, instead of creating a new project. To create a new project for a previously
+used or renamed project, use the [UI](#create-a-project) or the [Projects API](../../api/projects.md#create-project).
+
+Prerequisites:
+
+- To push with SSH, you must have [an SSH key](../ssh.md) that is
+  [added to your GitLab account](../ssh.md#add-an-ssh-key-to-your-gitlab-account).
+- You must have permission to add new projects to a namespace. To check if you have permission:
+
+  1. On the top bar, select **Main menu > Groups** and find your group.
+  1. Confirm that **New project** is visible in the upper right
+     corner. Contact your GitLab
+     administrator if you require permission.
+
+To push your repository and create a project:
+
+1. Push with SSH or HTTPS:
+   - To push with SSH:
+
+      ```shell
+      git push --set-upstream git@gitlab.example.com:namespace/myproject.git master
+      ```
+
+   - To push with HTTPS:
+
+      ```shell
+      git push --set-upstream https://gitlab.example.com/namespace/myproject.git master
+      ```
+
+   - For `gitlab.example.com`, use the domain name of the machine that hosts your Git repository.
+   - For `namespace`, use the name of your [namespace](../namespace/index.md).
+   - For `myproject`, use the name of your project.
+   - Optional. To export existing repository tags, append the `--tags` flag to your `git push` command.
+1. Optional. To configure the remote:
+
+   ```shell
+   git remote add origin https://gitlab.example.com/namespace/myproject.git
+   ```
+
+When the push completes, GitLab displays the message:
+
+```shell
+remote: The private project namespace/myproject was created.
+```
+
+To view your new project, go to `https://gitlab.example.com/namespace/myproject`.
+Your project's visibility is set to **Private** by default. To change project visibility, adjust your
+[project's settings](../public_access.md#change-project-visibility).
+
+## Related topics
+
+- For a list of words that you cannot use as project names, see
+  [reserved project and group names](../../user/reserved_names.md).
+- For a list of characters that you cannot use in project and group names, see
+  [limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names).
+- [Manage projects](working_with_projects.md).

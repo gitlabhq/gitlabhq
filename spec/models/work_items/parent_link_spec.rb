@@ -218,4 +218,16 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
       end
     end
   end
+
+  context 'with relative positioning' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:work_item_parent) { create(:work_item, project: project) }
+
+    it_behaves_like "a class that supports relative positioning" do
+      let(:factory) { :parent_link }
+      let(:default_params) { { work_item_parent: work_item_parent } }
+      let(:items_with_nil_position_sample_quantity) { 90 }
+    end
+  end
 end

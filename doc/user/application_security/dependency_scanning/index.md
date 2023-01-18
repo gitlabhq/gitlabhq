@@ -204,9 +204,7 @@ table.supported-languages ul {
         14<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>,
         15<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>,
         16<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>,
-        or 17 LTS<br />
-        <br />
-        Official support is limited to LTS versions only. Although it may be possible to use Dependency Scanning with other versions by building a custom dependency scanning image, this approach is not officially supported by GitLab.
+        or 17 LTS
       </td>
       <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup></td>
       <td>
@@ -297,7 +295,7 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-1"></a>
     <p>
-      Support for this version of Java is deprecated and is planned to be removed in the GitLab 16.0 release. Additionally, this version of Java is not supported by the FIPS-enabled image of <code>gemnasium-maven</code>.
+      Support for these versions of Java is deprecated and is planned to be removed in the GitLab 16.0 release. Additionally, these versions of Java are not supported by the FIPS-enabled image of <code>gemnasium-maven</code>. Official support is limited to LTS versions only. Although it may be possible to use Dependency Scanning with other versions by building a custom dependency scanning image, this approach is not officially supported by GitLab.
     </p>
   </li>
   <li>
