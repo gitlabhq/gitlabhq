@@ -6,6 +6,7 @@ import * as types from '~/error_tracking_settings/store/mutation_types';
 import defaultState from '~/error_tracking_settings/store/state';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { projectList } from '../mock';
 
@@ -118,7 +119,7 @@ describe('error tracking settings actions', () => {
     });
 
     it('should save the page', async () => {
-      mock.onPatch(TEST_HOST).reply(200);
+      mock.onPatch(TEST_HOST).reply(HTTP_STATUS_OK);
       await testAction(actions.updateSettings, null, state, [], [{ type: 'requestSettings' }]);
       expect(mock.history.patch.length).toBe(1);
       expect(refreshCurrentPage).toHaveBeenCalled();

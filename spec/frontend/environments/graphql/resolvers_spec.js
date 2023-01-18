@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { resolvers } from '~/environments/graphql/resolvers';
 import environmentToRollback from '~/environments/graphql/queries/environment_to_rollback.query.graphql';
 import environmentToDelete from '~/environments/graphql/queries/environment_to_delete.query.graphql';
@@ -44,7 +45,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       const search = '';
       mock
         .onGet(ENDPOINT, { params: { nested: true, scope, page: 1, search } })
-        .reply(200, environmentsApp, {});
+        .reply(HTTP_STATUS_OK, environmentsApp, {});
 
       const app = await mockResolvers.Query.environmentApp(
         null,
@@ -63,7 +64,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       const interval = 3000;
       mock
         .onGet(ENDPOINT, { params: { nested: true, scope, page: 1, search: '' } })
-        .reply(200, environmentsApp, {
+        .reply(HTTP_STATUS_OK, environmentsApp, {
           'poll-interval': interval,
         });
 
@@ -78,7 +79,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       const scope = 'stopped';
       mock
         .onGet(ENDPOINT, { params: { nested: true, scope, page: 1, search: '' } })
-        .reply(200, environmentsApp, {
+        .reply(HTTP_STATUS_OK, environmentsApp, {
           'x-next-page': '2',
           'x-page': '1',
           'X-Per-Page': '2',
@@ -108,7 +109,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       const scope = 'stopped';
       mock
         .onGet(ENDPOINT, { params: { nested: true, scope, page: 1, search: '' } })
-        .reply(200, environmentsApp, {});
+        .reply(HTTP_STATUS_OK, environmentsApp, {});
 
       await mockResolvers.Query.environmentApp(null, { scope, page: 1, search: '' }, { cache });
       expect(cache.writeQuery).toHaveBeenCalledWith({
@@ -131,7 +132,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should fetch the folder url passed to it', async () => {
       mock
         .onGet(ENDPOINT, { params: { per_page: 3, scope: 'available', search: '' } })
-        .reply(200, folder);
+        .reply(HTTP_STATUS_OK, folder);
 
       const environmentFolder = await mockResolvers.Query.folder(null, {
         environment: { folderPath: ENDPOINT },
@@ -144,7 +145,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
   describe('stopEnvironment', () => {
     it('should post to the stop environment path', async () => {
-      mock.onPost(ENDPOINT).reply(200);
+      mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
 
       const client = { writeQuery: jest.fn() };
       const environment = { stopPath: ENDPOINT };
@@ -180,7 +181,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
   describe('rollbackEnvironment', () => {
     it('should post to the retry environment path', async () => {
-      mock.onPost(ENDPOINT).reply(200);
+      mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
 
       await mockResolvers.Mutation.rollbackEnvironment(null, {
         environment: { retryUrl: ENDPOINT },
@@ -193,7 +194,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
   describe('deleteEnvironment', () => {
     it('should DELETE to the delete environment path', async () => {
-      mock.onDelete(ENDPOINT).reply(200);
+      mock.onDelete(ENDPOINT).reply(HTTP_STATUS_OK);
 
       await mockResolvers.Mutation.deleteEnvironment(null, {
         environment: { deletePath: ENDPOINT },
@@ -206,7 +207,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
   describe('cancelAutoStop', () => {
     it('should post to the auto stop path', async () => {
-      mock.onPost(ENDPOINT).reply(200);
+      mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
 
       await mockResolvers.Mutation.cancelAutoStop(null, { autoStopUrl: ENDPOINT });
 
@@ -262,7 +263,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
   describe('action', () => {
     it('should POST to the given path', async () => {
-      mock.onPost(ENDPOINT).reply(200);
+      mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
       const errors = await mockResolvers.Mutation.action(null, { action: { playPath: ENDPOINT } });
 
       expect(errors).toEqual({ __typename: 'LocalEnvironmentErrors', errors: [] });

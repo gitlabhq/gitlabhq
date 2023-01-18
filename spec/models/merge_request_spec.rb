@@ -135,6 +135,15 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let_it_be(:merge_request3) { create(:merge_request, :unique_branches, reviewers: []) }
     let_it_be(:merge_request4) { create(:merge_request, :draft_merge_request) }
 
+    describe '.preload_target_project_with_namespace' do
+      subject(:mr) { described_class.preload_target_project_with_namespace.first }
+
+      it 'returns MR with the target project\'s namespace preloaded' do
+        expect(mr.association(:target_project)).to be_loaded
+        expect(mr.target_project.association(:namespace)).to be_loaded
+      end
+    end
+
     describe '.review_requested' do
       it 'returns MRs that have any review requests' do
         expect(described_class.review_requested).to eq([merge_request1, merge_request2])

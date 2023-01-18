@@ -2,7 +2,7 @@ import { GlEmptyState, GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
-import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
+import NewIssueDropdown from '~/vue_shared/components/new_issue_dropdown/new_issue_dropdown.vue';
 import { i18n } from '~/issues/list/constants';
 
 describe('EmptyStateWithoutAnyIssues component', () => {

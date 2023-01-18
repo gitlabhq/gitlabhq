@@ -3,6 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/emoji/awards_app/store/actions';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('@sentry/browser');
 jest.mock('~/vue_shared/plugins/global_toast');
@@ -152,7 +153,7 @@ describe('Awards app actions', () => {
 
         describe('success', () => {
           beforeEach(() => {
-            mock.onDelete(`${relativeRootUrl || ''}/awards/1`).reply(200);
+            mock.onDelete(`${relativeRootUrl || ''}/awards/1`).reply(HTTP_STATUS_OK);
           });
 
           it('commits REMOVE_AWARD', async () => {

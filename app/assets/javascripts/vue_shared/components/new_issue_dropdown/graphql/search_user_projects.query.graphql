@@ -1,0 +1,11 @@
+query searchUserProjects($search: String) {
+  projects(search: $search, membership: true, sort: "latest_activity_desc") {
+    nodes {
+      id
+      issuesEnabled
+      name
+      nameWithNamespace
+      webUrl
+    }
+  }
+}

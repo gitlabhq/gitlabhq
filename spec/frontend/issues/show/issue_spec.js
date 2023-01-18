@@ -3,11 +3,12 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { initIssueApp } from '~/issues/show';
 import * as parseData from '~/issues/show/utils/parse_data';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import createStore from '~/notes/stores';
 import { appProps } from './mock_data/mock_data';
 
 const mock = new MockAdapter(axios);
-mock.onGet().reply(200);
+mock.onGet().reply(HTTP_STATUS_OK);
 
 jest.mock('~/lib/utils/poll');
 

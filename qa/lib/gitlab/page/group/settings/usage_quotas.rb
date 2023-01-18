@@ -32,8 +32,7 @@ module Gitlab
           div :project
           div :storage_type_legend
           span :container_registry_size
-          div :purchased_usage_total_free # Different UI for free namespace
-          span :purchased_usage_total
+          div :purchased_usage_total
           div :storage_purchase_successful_alert, text: /You have successfully purchased a storage/
           div :additional_storage_alert, text: /purchase additional storage/
 
@@ -66,14 +65,10 @@ module Gitlab
           # Returns total purchased storage value once it's ready on page
           #
           # @return [Float] Total purchased storage value in GiB
-          def total_purchased_storage(free_name_space = true)
+          def total_purchased_storage
             additional_storage_alert_element.wait_until(&:present?)
 
-            if free_name_space
-              purchased_usage_total_free.split('/').last.match(/\d+\.\d+/)[0].to_f
-            else
-              purchased_usage_total.to_f
-            end
+            purchased_usage_total[/(\d+){2}.\d+/].to_f
           end
 
           def additional_ci_minutes_added?

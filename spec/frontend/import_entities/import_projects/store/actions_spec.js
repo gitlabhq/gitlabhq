@@ -21,6 +21,7 @@ import {
 import state from '~/import_entities/import_projects/store/state';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/flash');
 
@@ -433,7 +434,7 @@ describe('import_projects store actions', () => {
     afterEach(() => mock.restore());
 
     it('commits CANCEL_IMPORT_SUCCESS on success', async () => {
-      mock.onPost(MOCK_ENDPOINT).reply(200);
+      mock.onPost(MOCK_ENDPOINT).reply(HTTP_STATUS_OK);
 
       await testAction(
         cancelImport,

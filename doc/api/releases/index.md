@@ -397,14 +397,15 @@ Example response:
 Download a release asset file by making a request with the following format:
 
 ```plaintext
-GET /projects/:id/releases/:tag_name/downloads/:filepath
+GET /projects/:id/releases/:tag_name/downloads/:direct_asset_path
 ```
 
 | Attribute                  | Type           | Required | Description                                                                         |
 |----------------------------| -------------- | -------- | ----------------------------------------------------------------------------------- |
 | `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding).  |
 | `tag_name`                 | string         | yes      | The Git tag the release is associated with.                                         |
-| `filepath`                 | string         | yes      | Path to the release asset file as specified when [creating](links.md#create-a-release-link) or [updating](links.md#update-a-release-link) its link. |
+| `filepath`                 | string         | yes      | Deprecated: Use `direct_asset_path` instead.                                        |
+| `direct_asset_path`        | string         | yes      | Path to the release asset file as specified when [creating](links.md#create-a-release-link) or [updating](links.md#update-a-release-link) its link. |
 
 Example request:
 
@@ -463,15 +464,16 @@ POST /projects/:id/releases
 | `assets:links`     | array of hash   | no                          | An array of assets links.                                                                                                        |
 | `assets:links:name`| string          | required by: `assets:links` | The name of the link. Link names must be unique within the release.                                                              |
 | `assets:links:url` | string          | required by: `assets:links` | The URL of the link. Link URLs must be unique within the release.                                                                |
-| `assets:links:filepath` | string     | no | Optional path for a [Direct Asset link](../../user/project/releases/release_fields.md#permanent-links-to-release-assets).
-| `assets:links:link_type` | string     | no | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`.
+| `assets:links:filepath` | string     | no | Deprecated: Use `direct_asset_path` instead. |
+| `assets:links:direct_asset_path` | string     | no | Optional path for a [direct asset link](../../user/project/releases/release_fields.md#permanent-links-to-release-assets). |
+| `assets:links:link_type` | string     | no | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`. |
 | `released_at`      | datetime        | no                          | Date and time for the release. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Only provide this field if creating an [upcoming](../../user/project/releases/index.md#upcoming-releases) or [historical](../../user/project/releases/index.md#historical-releases) release.  |
 
 Example request:
 
 ```shell
 curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com", "filepath": "/binaries/linux-amd64", "link_type":"other" }] } }' \
+     --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com", "direct_asset_path": "/binaries/linux-amd64", "link_type":"other" }] } }' \
      --request POST "https://gitlab.example.com/api/v4/projects/24/releases"
 ```
 

@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import PipelinesManualActions from '~/pipelines/components/pipelines_list/pipelines_manual_actions.vue';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
@@ -70,7 +71,7 @@ describe('Pipelines Actions dropdown', () => {
 
     describe('on click', () => {
       it('makes a request and toggles the loading state', async () => {
-        mock.onPost(mockActions.path).reply(200);
+        mock.onPost(mockActions.path).reply(HTTP_STATUS_OK);
 
         findAllDropdownItems().at(0).vm.$emit('click');
 
@@ -132,7 +133,7 @@ describe('Pipelines Actions dropdown', () => {
     });
 
     it('makes post request after confirming', async () => {
-      mock.onPost(scheduledJobAction.path).reply(200);
+      mock.onPost(scheduledJobAction.path).reply(HTTP_STATUS_OK);
       confirmAction.mockResolvedValueOnce(true);
 
       findAllDropdownItems().at(0).vm.$emit('click');
@@ -145,7 +146,7 @@ describe('Pipelines Actions dropdown', () => {
     });
 
     it('does not make post request if confirmation is cancelled', async () => {
-      mock.onPost(scheduledJobAction.path).reply(200);
+      mock.onPost(scheduledJobAction.path).reply(HTTP_STATUS_OK);
       confirmAction.mockResolvedValueOnce(false);
 
       findAllDropdownItems().at(0).vm.$emit('click');

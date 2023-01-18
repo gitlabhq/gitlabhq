@@ -25137,6 +25137,9 @@ msgstr ""
 msgid "List available repositories"
 msgstr ""
 
+msgid "List of all commits"
+msgstr ""
+
 msgid "List of all merge commits"
 msgstr ""
 

@@ -4,6 +4,7 @@ import testAction from 'helpers/vuex_action_helper';
 import service from '~/batch_comments/services/drafts_service';
 import * as actions from '~/batch_comments/stores/modules/batch_comments/actions';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('Batch comments store actions', () => {
   let res = {};
@@ -31,7 +32,7 @@ describe('Batch comments store actions', () => {
   describe('addDraftToDiscussion', () => {
     it('commits ADD_NEW_DRAFT if no errors returned', () => {
       res = { id: 1 };
-      mock.onAny().reply(200, res);
+      mock.onAny().reply(HTTP_STATUS_OK, res);
 
       return testAction(
         actions.addDraftToDiscussion,
@@ -58,7 +59,7 @@ describe('Batch comments store actions', () => {
   describe('createNewDraft', () => {
     it('commits ADD_NEW_DRAFT if no errors returned', () => {
       res = { id: 1 };
-      mock.onAny().reply(200, res);
+      mock.onAny().reply(HTTP_STATUS_OK, res);
 
       return testAction(
         actions.createNewDraft,
@@ -100,7 +101,7 @@ describe('Batch comments store actions', () => {
         commit,
       };
       res = { id: 1 };
-      mock.onAny().reply(200);
+      mock.onAny().reply(HTTP_STATUS_OK);
 
       return actions.deleteDraft(context, { id: 1 }).then(() => {
         expect(commit).toHaveBeenCalledWith('DELETE_DRAFT', 1);
@@ -144,7 +145,7 @@ describe('Batch comments store actions', () => {
         },
       };
       res = { id: 1 };
-      mock.onAny().reply(200, res);
+      mock.onAny().reply(HTTP_STATUS_OK, res);
 
       return actions.fetchDrafts(context).then(() => {
         expect(commit).toHaveBeenCalledWith('SET_BATCH_COMMENTS_DRAFTS', { id: 1 });
@@ -169,7 +170,7 @@ describe('Batch comments store actions', () => {
     });
 
     it('dispatches actions & commits', () => {
-      mock.onAny().reply(200);
+      mock.onAny().reply(HTTP_STATUS_OK);
 
       return actions.publishReview({ dispatch, commit, getters, rootGetters }).then(() => {
         expect(commit.mock.calls[0]).toEqual(['REQUEST_PUBLISH_REVIEW']);
@@ -180,7 +181,7 @@ describe('Batch comments store actions', () => {
     });
 
     it('calls service with notes data', () => {
-      mock.onAny().reply(200);
+      mock.onAny().reply(HTTP_STATUS_OK);
       jest.spyOn(axios, 'post');
 
       return actions
@@ -221,7 +222,7 @@ describe('Batch comments store actions', () => {
         commit,
       };
       res = { id: 1 };
-      mock.onAny().reply(200, res);
+      mock.onAny().reply(HTTP_STATUS_OK, res);
       params = { note: { id: 1 }, noteText: 'test' };
     });
 

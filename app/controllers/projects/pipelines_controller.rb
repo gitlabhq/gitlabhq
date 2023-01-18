@@ -5,7 +5,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   include RedisTracking
   include ProductAnalyticsTracking
   include ProjectStatsRefreshConflictsGuard
-  include ZuoraCSP
 
   urgency :low, [
     :index, :new, :builds, :show, :failures, :create,

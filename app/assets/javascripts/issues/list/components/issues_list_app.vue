@@ -48,6 +48,7 @@ import {
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import NewIssueDropdown from '~/vue_shared/components/new_issue_dropdown/new_issue_dropdown.vue';
 import {
   CREATED_DESC,
   defaultTypeTokenOptions,
@@ -82,9 +83,9 @@ import {
   getSortOptions,
   isSortKey,
 } from '../utils';
+import { hasNewIssueDropdown } from '../has_new_issue_dropdown_mixin';
 import EmptyStateWithAnyIssues from './empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from './empty_state_without_any_issues.vue';
-import NewIssueDropdown from './new_issue_dropdown.vue';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 const EmojiToken = () =>
@@ -117,7 +118,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), hasNewIssueDropdown()],
   inject: [
     'autocompleteAwardEmojisPath',
     'calendarPath',
@@ -831,7 +832,12 @@ export default {
           {{ $options.i18n.newIssueLabel }}
         </gl-button>
         <slot name="new-objective-button"></slot>
-        <new-issue-dropdown v-if="showNewIssueDropdown" />
+        <new-issue-dropdown
+          v-if="showNewIssueDropdown"
+          :query="$options.searchProjectsQuery"
+          :query-variables="newIssueDropdownQueryVariables"
+          :extract-projects="extractProjects"
+        />
       </template>
 
       <template #timeframe="{ issuable = {} }">

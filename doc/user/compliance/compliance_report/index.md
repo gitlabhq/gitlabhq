@@ -95,11 +95,34 @@ Our criteria for the separation of duties is as follows:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213364) in GitLab 13.3.
 > - Chain of Custody reports sent using email [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342594) in GitLab 15.3 with a flag named `async_chain_of_custody_report`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370100) in GitLab 15.5. Feature flag `async_chain_of_custody_report` removed.
+> - Chain of Custody report includes all commits (instead of just merge commits) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267601) in GitLab 15.8 with a flag named `all_commits_compliance_report`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the Chain of Custody report only contains information on merge commits. To make the report contain information on all commits to projects within a group, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `all_commits_compliance_report`. On GitLab.com, this feature is not available.
 
 The Chain of Custody report allows customers to export a list of merge commits within the group.
 The data provides a comprehensive view with respect to merge commits. It includes the merge commit SHA,
 merge request author, merge request ID, merge user, date merged, pipeline ID, group name, project name, and merge request approvers.
 Depending on the merge strategy, the merge commit SHA can be a merge commit, squash commit, or a diff head commit.
+
+With the `all_commits_compliance_report` flag enabled, the Chain of Custody report provides a 1 month trailing window of any commit into a project under the group.
+
+To generate the report for all commits, GitLab:
+
+1. Fetches all projects under the group.
+1. For each project, fetches the last 1 month of commits. Each project is capped at 1024 commits. If there are more than 1024 commits in the 1-month window, they
+   are truncated.
+1. Writes the commits to a CSV file. The file is truncated at 15 MB because the report is emailed as an attachment.
+
+The expanded report includes the commit SHA, commit author, committer, date committed, the group, and the project.
+If the commit has a related merge commit, then the following are also included:
+
+- Merge commit SHA.
+- Merge request ID.
+- User who merged the merge request.
+- Merge date.
+- Pipeline ID.
+- Merge request approvers.
 
 To generate the Chain of Custody report:
 

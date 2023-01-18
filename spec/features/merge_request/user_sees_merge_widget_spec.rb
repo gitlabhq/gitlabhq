@@ -18,6 +18,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
   end
 
   before do
+    stub_feature_flags(refactor_security_extension: false)
     project.add_maintainer(user)
     project_only_mwps.add_maintainer(user)
     sign_in(user)

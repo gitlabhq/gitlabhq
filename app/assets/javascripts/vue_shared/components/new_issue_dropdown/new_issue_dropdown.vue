@@ -10,7 +10,7 @@ import { createAlert } from '~/flash';
 import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
-import searchProjectsQuery from '../queries/search_projects.query.graphql';
+import searchUserProjects from './graphql/search_user_projects.query.graphql';
 
 export default {
   i18n: {
@@ -25,7 +25,23 @@ export default {
     GlLoadingIcon,
     GlSearchBoxByType,
   },
-  inject: ['fullPath'],
+  props: {
+    query: {
+      type: Object,
+      required: false,
+      default: () => searchUserProjects,
+    },
+    queryVariables: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    extractProjects: {
+      type: Function,
+      required: false,
+      default: (data) => data?.projects?.nodes,
+    },
+  },
   data() {
     return {
       projects: [],
@@ -36,14 +52,18 @@ export default {
   },
   apollo: {
     projects: {
-      query: searchProjectsQuery,
+      query() {
+        return this.query;
+      },
       variables() {
         return {
-          fullPath: this.fullPath,
           search: this.search,
+          ...this.queryVariables,
         };
       },
-      update: ({ group }) => group.projects.nodes ?? [],
+      update(data) {
+        return this.extractProjects(data) || [];
+      },
       error(error) {
         createAlert({
           message: __('An error occurred while loading projects.'),

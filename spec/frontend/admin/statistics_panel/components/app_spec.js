@@ -8,6 +8,7 @@ import statisticsLabels from '~/admin/statistics_panel/constants';
 import createStore from '~/admin/statistics_panel/store';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import mockStatistics from '../mock_data';
 
 Vue.use(Vuex);
@@ -25,7 +26,7 @@ describe('Admin statistics app', () => {
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
-    axiosMock.onGet(/api\/(.*)\/application\/statistics/).reply(200);
+    axiosMock.onGet(/api\/(.*)\/application\/statistics/).reply(HTTP_STATUS_OK);
     store = createStore();
   });
 

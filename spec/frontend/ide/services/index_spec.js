@@ -5,6 +5,7 @@ import Api from '~/api';
 import dismissUserCallout from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import services from '~/ide/services';
 import { query, mutate } from '~/ide/services/gql';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import ciConfig from '~/ci/pipeline_editor/graphql/queries/ci_config.query.graphql';
 import { projectData } from '../mock_data';
@@ -271,7 +272,7 @@ describe('IDE services', () => {
       const TEST_PROJECT_PATH = 'foo/bar';
       const axiosURL = `${TEST_RELATIVE_URL_ROOT}/${TEST_PROJECT_PATH}/service_ping/web_ide_pipelines_count`;
 
-      mock.onPost(axiosURL).reply(200);
+      mock.onPost(axiosURL).reply(HTTP_STATUS_OK);
 
       return services.pingUsage(TEST_PROJECT_PATH).then(() => {
         expect(axios.post).toHaveBeenCalledWith(axiosURL);

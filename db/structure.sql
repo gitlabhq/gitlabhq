@@ -18479,7 +18479,7 @@ CREATE TABLE oauth_access_tokens (
     application_id integer,
     token character varying NOT NULL,
     refresh_token character varying,
-    expires_in integer,
+    expires_in integer DEFAULT 7200,
     revoked_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     scopes character varying
@@ -25631,6 +25631,9 @@ ALTER TABLE ONLY chat_teams
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
+
+ALTER TABLE oauth_access_tokens
+    ADD CONSTRAINT check_70f294ef54 CHECK ((expires_in IS NOT NULL)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;

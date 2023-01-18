@@ -2,6 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MemoryUsage from '~/vue_merge_request_widget/components/deployment/memory_usage.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 
@@ -66,7 +67,7 @@ describe('MemoryUsage', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet(`${url}.json`).reply(200);
+    mock.onGet(`${url}.json`).reply(HTTP_STATUS_OK);
 
     vm = createComponent();
     el = vm.$el;

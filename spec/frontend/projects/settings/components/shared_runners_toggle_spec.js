@@ -4,6 +4,7 @@ import MockAxiosAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import SharedRunnersToggleComponent from '~/projects/settings/components/shared_runners_toggle.vue';
 
 const TEST_UPDATE_PATH = '/test/update_shared_runners';
@@ -36,7 +37,7 @@ describe('projects/settings/components/shared_runners', () => {
 
   beforeEach(() => {
     mockAxios = new MockAxiosAdapter(axios);
-    mockAxios.onPost(TEST_UPDATE_PATH).reply(200);
+    mockAxios.onPost(TEST_UPDATE_PATH).reply(HTTP_STATUS_OK);
   });
 
   afterEach(() => {

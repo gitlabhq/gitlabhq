@@ -2,6 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import renderOpenApi from '~/blob/openapi';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('OpenAPI blob viewer', () => {
   const id = 'js-openapi-viewer';
@@ -10,7 +11,7 @@ describe('OpenAPI blob viewer', () => {
 
   beforeEach(async () => {
     setHTMLFixture(`<div id="${id}" data-endpoint="${mockEndpoint}"></div>`);
-    mock = new MockAdapter(axios).onGet().reply(200);
+    mock = new MockAdapter(axios).onGet().reply(HTTP_STATUS_OK);
     await renderOpenApi();
   });
 

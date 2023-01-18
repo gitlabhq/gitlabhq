@@ -30,7 +30,7 @@ import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/con
 import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
-import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
+import NewIssueDropdown from '~/vue_shared/components/new_issue_dropdown/new_issue_dropdown.vue';
 import {
   CREATED_DESC,
   RELATIVE_POSITION,

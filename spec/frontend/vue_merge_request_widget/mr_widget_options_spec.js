@@ -11,6 +11,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
@@ -837,7 +838,7 @@ describe('MrWidgetOptions', () => {
 
   describe('suggestPipeline', () => {
     beforeEach(() => {
-      mock.onAny().reply(200);
+      mock.onAny().reply(HTTP_STATUS_OK);
     });
 
     describe('given feature flag is enabled', () => {

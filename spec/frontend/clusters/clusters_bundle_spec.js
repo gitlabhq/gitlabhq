@@ -3,6 +3,7 @@ import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import Clusters from '~/clusters/clusters_bundle';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import initProjectSelectDropdown from '~/project_select';
 
 jest.mock('~/lib/utils/poll');
@@ -19,7 +20,7 @@ describe('Clusters', () => {
 
     mock = new MockAdapter(axios);
 
-    mock.onGet(statusPath).reply(200);
+    mock.onGet(statusPath).reply(HTTP_STATUS_OK);
   };
 
   beforeEach(() => {

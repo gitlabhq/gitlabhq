@@ -2,8 +2,9 @@
 import { GlButton, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
+import NewIssueDropdown from '~/vue_shared/components/new_issue_dropdown/new_issue_dropdown.vue';
 import { i18n } from '../constants';
-import NewIssueDropdown from './new_issue_dropdown.vue';
+import { hasNewIssueDropdown } from '../has_new_issue_dropdown_mixin';
 
 export default {
   i18n,
@@ -16,6 +17,7 @@ export default {
     GlSprintf,
     NewIssueDropdown,
   },
+  mixins: [hasNewIssueDropdown()],
   inject: [
     'canCreateProjects',
     'emptyStateSvgPath',
@@ -75,7 +77,13 @@ export default {
           :export-csv-path="exportCsvPathWithQuery"
           :issuable-count="currentTabCount"
         />
-        <new-issue-dropdown v-if="showNewIssueDropdown" class="gl-align-self-center" />
+        <new-issue-dropdown
+          v-if="showNewIssueDropdown"
+          class="gl-align-self-center"
+          :query="$options.searchProjectsQuery"
+          :query-variables="newIssueDropdownQueryVariables"
+          :extract-projects="extractProjects"
+        />
       </template>
     </gl-empty-state>
     <hr />

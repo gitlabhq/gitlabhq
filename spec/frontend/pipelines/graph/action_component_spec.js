@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ActionComponent from '~/pipelines/components/jobs_shared/action_component.vue';
 
 describe('pipeline graph action component', () => {
@@ -15,7 +16,7 @@ describe('pipeline graph action component', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    mock.onPost('foo.json').reply(200);
+    mock.onPost('foo.json').reply(HTTP_STATUS_OK);
 
     wrapper = mount(ActionComponent, {
       propsData: {

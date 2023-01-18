@@ -3,14 +3,15 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('axios_utils', () => {
   let mock;
 
   beforeEach(() => {
     mock = new AxiosMockAdapter(axios);
-    mock.onAny('/ok').reply(200);
-    mock.onAny('/err').reply(500);
+    mock.onAny('/ok').reply(HTTP_STATUS_OK);
+    mock.onAny('/err').reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
     // eslint-disable-next-line jest/no-standalone-expect
     expect(axios.countActiveRequests()).toBe(0);
   });

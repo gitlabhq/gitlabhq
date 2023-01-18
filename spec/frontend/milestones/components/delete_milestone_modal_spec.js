@@ -4,6 +4,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import DeleteMilestoneModal from '~/milestones/components/delete_milestone_modal.vue';
 import eventHub from '~/milestones/event_hub';
+import { HTTP_STATUS_IM_A_TEAPOT, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { createAlert } from '~/flash';
 
@@ -71,9 +72,9 @@ describe('Delete milestone modal', () => {
     });
 
     it.each`
-      statusCode | alertMessage
-      ${418}     | ${`Failed to delete milestone ${mockProps.milestoneTitle}`}
-      ${404}     | ${`Milestone ${mockProps.milestoneTitle} was not found`}
+      statusCode                 | alertMessage
+      ${HTTP_STATUS_IM_A_TEAPOT} | ${`Failed to delete milestone ${mockProps.milestoneTitle}`}
+      ${HTTP_STATUS_NOT_FOUND}   | ${`Milestone ${mockProps.milestoneTitle} was not found`}
     `(
       'displays error if deleting milestone failed with code $statusCode',
       async ({ statusCode, alertMessage }) => {

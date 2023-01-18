@@ -394,6 +394,7 @@ class MergeRequest < ApplicationRecord
   scope :order_closed_at_desc, -> { order_by_metric(:latest_closed_at, 'DESC') }
   scope :preload_source_project, -> { preload(:source_project) }
   scope :preload_target_project, -> { preload(:target_project) }
+  scope :preload_target_project_with_namespace, -> { preload(target_project: [:namespace]) }
   scope :preload_routables, -> do
     preload(target_project: [:route, { namespace: :route }],
             source_project: [:route, { namespace: :route }])

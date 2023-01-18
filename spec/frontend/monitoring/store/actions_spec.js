@@ -918,7 +918,7 @@ describe('Monitoring store actions', () => {
 
     it('stars dashboard if it is not starred', () => {
       state.selectedDashboard = unstarredDashboard;
-      mock.onPost(unstarredDashboard.user_starred_path).reply(200);
+      mock.onPost(unstarredDashboard.user_starred_path).reply(HTTP_STATUS_OK);
 
       return testAction(toggleStarredValue, null, state, [
         { type: types.REQUEST_DASHBOARD_STARRING },
@@ -934,7 +934,7 @@ describe('Monitoring store actions', () => {
 
     it('unstars dashboard if it is starred', () => {
       state.selectedDashboard = starredDashboard;
-      mock.onPost(starredDashboard.user_starred_path).reply(200);
+      mock.onPost(starredDashboard.user_starred_path).reply(HTTP_STATUS_OK);
 
       return testAction(toggleStarredValue, null, state, [
         { type: types.REQUEST_DASHBOARD_STARRING },

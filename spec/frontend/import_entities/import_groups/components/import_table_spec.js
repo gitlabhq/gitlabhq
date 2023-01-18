@@ -7,7 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createAlert } from '~/flash';
-import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { STATUSES } from '~/import_entities/constants';
 import { i18n, ROOT_NAMESPACE } from '~/import_entities/import_groups/constants';
@@ -113,7 +113,7 @@ describe('import table', () => {
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
-    axiosMock.onGet(/.*\/exists$/, () => []).reply(200);
+    axiosMock.onGet(/.*\/exists$/, () => []).reply(HTTP_STATUS_OK);
   });
 
   afterEach(() => {

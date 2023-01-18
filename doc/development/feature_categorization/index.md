@@ -214,15 +214,6 @@ In order to disable the warning use `RSPEC_WARN_MISSING_FEATURE_CATEGORY=false` 
 RSPEC_WARN_MISSING_FEATURE_CATEGORY=false bin/rspec spec/<test_file>
 ```
 
-### Excluding specs from feature categorization
-
-In the rare case an action cannot be tied to a feature category this
-can be done using the `not_owned` feature category.
-
-```ruby
-RSpec.describe Utils, feature_category: :not_owned do
-```
-
 ### Tooling feature category
 
 For Engineering Productivity internal tooling we use `feature_category: :tooling`.

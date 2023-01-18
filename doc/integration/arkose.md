@@ -61,6 +61,38 @@ To enable Arkose Protect:
    Feature.enable(:arkose_labs_prevent_login)
    ```
 
+## Triage and debug ArkoseLabs issues
+
+You can triage and debug issues raised by ArkoseLabs with:
+
+- The [GitLab production logs](https://log.gprd.gitlab.net).
+- The [Arkose logging service](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/arkose/logger.rb).
+
+### View ArkoseLabs Verify API response for a user session
+
+To view an ArkoseLabs Verify API response for a user, [query the GitLab production logs](https://log.gprd.gitlab.net/goto/54b82f50-935a-11ed-9f43-e3784d7fe3ca) with the following KQL:
+
+```plaintext
+KQL: json.message:"Arkose verify response" AND json.username:replace_username_here
+```
+
+If the query is valid, the result contains debug information about the user's session:
+
+| Response | Description |
+|---------|-------------|
+| `json.response.session_details.suppressed` | Value is `true` if the challenge was not shown to the user. Always `true` if the user is allowlisted. |
+| `json.arkose.risk_band` | Can be `low`, `medium`, or `high`. Ignored on sign in. Use to debug identity verification issues. |
+| `json.response.session_details.solved` | Indicates whether the user solved the challenge. Always `true` if the user is allowlisted. |
+| `json.response.session_details.previously_verified` | Indicates whether the token has been reused. Default is `false`. If `true`, it might indicate malicious activity. |
+
+### Check if a user failed an ArkoseLabs challenge
+
+To check if a user failed to sign in because the ArkoseLabs challenge was not solved, [query the GitLab production logs](https://log.gprd.gitlab.net/goto/b97c8a80-935a-11ed-85ed-e7557b0a598c) with the following KQL:
+
+```plaintext
+KQL: json.message:"Challenge was not solved" AND json.username:replace_username_here`
+```
+
 ## QA tests caveat
 
 Several GitLab QA test suites need to sign in to the app to test its features. This can conflict
