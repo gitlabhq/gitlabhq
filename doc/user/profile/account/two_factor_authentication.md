@@ -21,7 +21,7 @@ If you set up a device, also set up a TOTP so you can still access your account 
 
 ## Use personal access tokens with two-factor authentication
 
-When 2FA is enabled, you can't use your password to authenticate with Git over HTTPS or the [GitLab API](../../../api/index.md).
+When 2FA is enabled, you can't use your password to authenticate with Git over HTTPS or the [GitLab API](../../../api/rest/index.md).
 You can use a [personal access token](../personal_access_tokens.md) instead.
 
 ## Git Credential Manager

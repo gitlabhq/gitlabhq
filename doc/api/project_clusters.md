@@ -26,7 +26,7 @@ Parameters:
 
 | Attribute | Type    | Required | Description                                           |
 | --------- | ------- | -------- | ----------------------------------------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 
 Example request:
 
@@ -96,7 +96,7 @@ Parameters:
 
 | Attribute    | Type    | Required | Description                                           |
 | ------------ | ------- | -------- | ----------------------------------------------------- |
-| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `cluster_id` | integer | yes      | The ID of the cluster                                 |
 
 Example request:
@@ -190,7 +190,7 @@ Parameters:
 
 | Attribute                                            | Type    | Required | Description                                                                                           |
 | ---------------------------------------------------- | ------- | -------- | ----------------------------------------------------------------------------------------------------- |
-| `id`                                                 | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user                                                 |
+| `id`                                                 | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user                                                 |
 | `name`                                               | string  | yes      | The name of the cluster                                                                               |
 | `domain`                                             | string  | no       | The [base domain](../user/project/clusters/gitlab_managed_clusters.md#base-domain) of the cluster                       |
 | `management_project_id`                              | integer | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster            |
@@ -287,7 +287,7 @@ Parameters:
 
 | Attribute                                   | Type    | Required | Description                                                                                |
 | ------------------------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------ |
-| `id`                                        | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user                                      |
+| `id`                                        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user                                      |
 | `cluster_id`                                | integer | yes      | The ID of the cluster                                                                      |
 | `name`                                      | string  | no       | The name of the cluster                                                                    |
 | `domain`                                    | string  | no       | The [base domain](../user/project/clusters/gitlab_managed_clusters.md#base-domain) of the cluster            |
@@ -398,7 +398,7 @@ Parameters:
 
 | Attribute    | Type    | Required | Description                                           |
 | ------------ | ------- | -------- | ----------------------------------------------------- |
-| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `cluster_id` | integer | yes      | The ID of the cluster                                 |
 
 Example request:

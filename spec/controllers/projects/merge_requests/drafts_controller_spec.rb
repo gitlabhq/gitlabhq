@@ -388,103 +388,71 @@ RSpec.describe Projects::MergeRequests::DraftsController do
 
     context 'publish with note' do
       before do
+        allow(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .to receive(:track_submit_review_comment)
+
         create(:draft_note, merge_request: merge_request, author: user)
       end
 
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(mr_review_submit_comment: false)
-        end
+      it 'creates note' do
+        post :publish, params: params.merge!(note: 'Hello world')
 
-        it 'does not create note' do
-          post :publish, params: params.merge!(note: 'Hello world')
-
-          expect(merge_request.notes.reload.size).to be(1)
-        end
+        expect(merge_request.notes.reload.size).to be(2)
       end
 
-      context 'when feature flag is enabled' do
-        before do
-          allow(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-            .to receive(:track_submit_review_comment)
-        end
+      it 'does not create note when note param is empty' do
+        post :publish, params: params.merge!(note: '')
 
-        it 'creates note' do
-          post :publish, params: params.merge!(note: 'Hello world')
+        expect(merge_request.notes.reload.size).to be(1)
+      end
 
-          expect(merge_request.notes.reload.size).to be(2)
-        end
+      it 'tracks merge request activity' do
+        post :publish, params: params.merge!(note: 'Hello world')
 
-        it 'does not create note when note param is empty' do
-          post :publish, params: params.merge!(note: '')
-
-          expect(merge_request.notes.reload.size).to be(1)
-        end
-
-        it 'tracks merge request activity' do
-          post :publish, params: params.merge!(note: 'Hello world')
-
-          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-            .to have_received(:track_submit_review_comment).with(user: user)
-        end
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to have_received(:track_submit_review_comment).with(user: user)
       end
     end
 
     context 'approve merge request' do
       before do
+        allow(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_submit_review_approve)
+
         create(:draft_note, merge_request: merge_request, author: user)
       end
 
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(mr_review_submit_comment: false)
-        end
+      it 'approves merge request' do
+        post :publish, params: params.merge!(approve: true)
 
-        it 'does not approve' do
-          post :publish, params: params.merge!(approve: true)
-
-          expect(merge_request.approvals.reload.size).to be(0)
-        end
+        expect(merge_request.approvals.reload.size).to be(1)
       end
 
-      context 'when feature flag is enabled' do
+      it 'does not approve merge request' do
+        post :publish, params: params.merge!(approve: false)
+
+        expect(merge_request.approvals.reload.size).to be(0)
+      end
+
+      it 'tracks merge request activity' do
+        post :publish, params: params.merge!(approve: true)
+
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to have_received(:track_submit_review_approve).with(user: user)
+      end
+
+      context 'when merge request is already approved by user' do
         before do
-          allow(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-            .to receive(:track_submit_review_approve)
+          create(:approval, merge_request: merge_request, user: user)
         end
 
-        it 'approves merge request' do
+        it 'does return 200' do
           post :publish, params: params.merge!(approve: true)
 
-          expect(merge_request.approvals.reload.size).to be(1)
-        end
-
-        it 'does not approve merge request' do
-          post :publish, params: params.merge!(approve: false)
-
-          expect(merge_request.approvals.reload.size).to be(0)
-        end
-
-        it 'tracks merge request activity' do
-          post :publish, params: params.merge!(approve: true)
+          expect(response).to have_gitlab_http_status(:ok)
 
           expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
             .to have_received(:track_submit_review_approve).with(user: user)
-        end
-
-        context 'when merge request is already approved by user' do
-          before do
-            create(:approval, merge_request: merge_request, user: user)
-          end
-
-          it 'does return 200' do
-            post :publish, params: params.merge!(approve: true)
-
-            expect(response).to have_gitlab_http_status(:ok)
-
-            expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-              .to have_received(:track_submit_review_approve).with(user: user)
-          end
         end
       end
     end

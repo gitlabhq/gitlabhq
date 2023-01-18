@@ -22,7 +22,7 @@ module RequiresWhitelistedMonitoringClient
   end
 
   def ip_whitelist
-    @ip_whitelist ||= Settings.monitoring.ip_whitelist.map(&IPAddr.method(:new))
+    @ip_whitelist ||= Settings.monitoring.ip_whitelist.map { |ip| IPAddr.new(ip) }
   end
 
   def valid_token?

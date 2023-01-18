@@ -60,7 +60,7 @@ pipeline, and what their values are. A lot of pipeline configuration is dependen
 on variables, and verifying them is one of the fastest ways to find the source of
 a problem.
 
-[Export the full list of variables](variables/index.md#list-all-environment-variables)
+[Export the full list of variables](variables/index.md#list-all-variables)
 available in each problematic job. Check if the variables you expect are present,
 and check if their values are what you expect.
 

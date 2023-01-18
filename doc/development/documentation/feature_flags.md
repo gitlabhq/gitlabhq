@@ -13,9 +13,29 @@ feature flag depends on its state (enabled or disabled). When the state
 changes, the developer who made the change **must update the documentation**
 accordingly.
 
-Every feature introduced to the codebase, even if it's behind a feature flag,
-must be documented. For context, see the
-[latest merge request that updated this guideline](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47917#note_459984428).
+## When to document features behind a feature flag
+
+Every feature introduced to the codebase, even if it's behind a disabled feature flag,
+must be documented. For more information, see
+[the discussion that led to this decision](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47917#note_459984428).
+
+When the feature is [implemented over multiple merge requests](../feature_flags/index.md#feature-flags-in-gitlab-development),
+discuss the exact documentation plan with your technical writer. Consider
+creating a dedicated documentation issue if the feature:
+
+- Is far-reaching (makes changes across many areas of GitLab), like navigation changes.
+- Includes many MRs.
+- Affects more than a few documentation pages.
+- Is not fully functional if the feature flag is enabled for testing.
+
+If you and the technical writer agree to delay the product documentation (for example, until after testing),
+collaborate with the TW to create a documentation issue detailing the plan for adding the content.
+The PM and EM should be included in the discussions to make sure the task of adding the documentation is assigned and scheduled.
+Despite any planned delays, every feature flag in the codebase is automatically listed at
+<https://docs.gitlab.com/ee/user/feature_flags.html#available-feature-flags>,
+even when the feature is not fully functional.
+
+## How to add feature flag documentation
 
 When you document feature flags, you must:
 

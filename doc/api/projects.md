@@ -74,7 +74,7 @@ GET /projects
 | `with_merge_requests_enabled`              | boolean  | **{dotted-circle}** No | Limit by enabled merge requests feature. |
 | `with_programming_language`                | string   | **{dotted-circle}** No | Limit by projects which use the given programming language. |
 
-This endpoint supports [keyset pagination](index.md#keyset-based-pagination)
+This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination)
 for selected `order_by` options.
 
 When `simple=true` or the user is unauthenticated this returns something like:
@@ -299,9 +299,9 @@ curl --globoff --request GET "https://gitlab.example.com/api/v4/projects?custom_
 
 ### Pagination limits
 
-In GitLab 13.0 and later, [offset-based pagination](index.md#offset-based-pagination)
+In GitLab 13.0 and later, [offset-based pagination](rest/index.md#offset-based-pagination)
 is [limited to 50,000 records](https://gitlab.com/gitlab-org/gitlab/-/issues/34565).
-[Keyset pagination](index.md#keyset-based-pagination) is required to retrieve
+[Keyset pagination](rest/index.md#keyset-based-pagination) is required to retrieve
 projects beyond this limit.
 
 Keyset pagination supports only `order_by=id`. Other sorting options aren't available.
@@ -316,7 +316,7 @@ authentication, only public projects are returned.
 NOTE:
 Only the projects in the user's (specified in `user_id`) namespace are returned. Projects owned by the user in any group or subgroups are not returned. An empty list is returned if a profile is set to private.
 
-This endpoint supports [keyset pagination](index.md#keyset-based-pagination)
+This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination)
 for selected `order_by` options.
 
 ```plaintext
@@ -834,7 +834,7 @@ GET /projects/:id
 
 | Attribute                | Type           | Required               | Description |
 |--------------------------|----------------|------------------------|-------------|
-| `id`                     | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`                     | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `license`                | boolean        | **{dotted-circle}** No | Include project license data. |
 | `statistics`             | boolean        | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
 | `with_custom_attributes` | boolean        | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
@@ -1110,7 +1110,7 @@ GET /projects/:id/users
 
 | Attribute    | Type           | Required               | Description |
 |--------------|----------------|------------------------|-------------|
-| `id`         | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`         | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `search`     | string         | **{dotted-circle}** No | Search for specific users. |
 | `skip_users` | integer array  | **{dotted-circle}** No | Filter out users with the specified IDs. |
 
@@ -1145,7 +1145,7 @@ GET /projects/:id/groups
 
 | Attribute                   | Type              | Required               | Description |
 |-----------------------------|-------------------|------------------------|-------------|
-| `id`                        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`                        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `search`                    | string            | **{dotted-circle}** No | Search for specific groups. |
 | `shared_min_access_level`   | integer           | **{dotted-circle}** No | Limit to shared groups with at least this [role (`access_level`)](members.md#roles). |
 | `shared_visible_only`       | boolean           | **{dotted-circle}** No | Limit to shared groups user has access to. |
@@ -1382,7 +1382,7 @@ Supported attributes:
 
 | Attribute                                                   | Type           | Required               | Description |
 |-------------------------------------------------------------|----------------|------------------------|-------------|
-| `id`                                                        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`                                                        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `allow_merge_on_skipped_pipeline`                           | boolean        | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
 | `only_allow_merge_if_all_status_checks_passed` **(ULTIMATE)** | boolean | **{dotted-circle}** No | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. |
 | `analytics_access_level`                                    | string         | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
@@ -1479,7 +1479,7 @@ POST /projects/:id/fork
 
 | Attribute        | Type           | Required               | Description |
 |------------------|----------------|------------------------|-------------|
-| `id`             | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`             | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `description`    | string         | **{dotted-circle}** No | The description assigned to the resultant project after forking.                 |
 | `mr_default_target_self` | boolean | **{dotted-circle}** No | For forked projects, target merge requests to this project. If `false`, the target will be the upstream project. |
 | `name`           | string         | **{dotted-circle}** No | The name assigned to the resultant project after forking.                        |
@@ -1502,7 +1502,7 @@ GET /projects/:id/forks
 
 | Attribute                     | Type           | Required               | Description |
 |-------------------------------|----------------|------------------------|-------------|
-| `id`                          | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`                          | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `archived`                    | boolean        | **{dotted-circle}** No | Limit by archived status. |
 | `membership`                  | boolean        | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
 | `min_access_level`            | integer        | **{dotted-circle}** No | Limit by current user minimal [role (`access_level`)](members.md#roles). |
@@ -1616,7 +1616,7 @@ POST /projects/:id/star
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/star"
@@ -1721,7 +1721,7 @@ POST /projects/:id/unstar
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/unstar"
@@ -1824,7 +1824,7 @@ GET /projects/:id/starrers
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `search`  | string         | **{dotted-circle}** No | Search for specific users. |
 
 ```shell
@@ -1870,7 +1870,7 @@ GET /projects/:id/languages
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/languages"
@@ -1901,7 +1901,7 @@ POST /projects/:id/archive
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/archive"
@@ -2029,7 +2029,7 @@ POST /projects/:id/unarchive
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/unarchive"
@@ -2171,7 +2171,7 @@ DELETE /projects/:id
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ## Restore project marked for deletion **(PREMIUM)**
 
@@ -2185,7 +2185,7 @@ POST /projects/:id/restore
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ## Upload a file
 
@@ -2200,7 +2200,7 @@ POST /projects/:id/uploads
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
 | `file`    | string         | **{check-circle}** Yes | The file to be uploaded. |
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 To upload a file from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`. The
@@ -2274,7 +2274,7 @@ PUT /projects/:id
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
 | `avatar`  | string         | **{check-circle}** Yes | The file to be uploaded. |
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 To upload an avatar from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`. The
@@ -2321,7 +2321,7 @@ POST /projects/:id/share
 |----------------|----------------|------------------------|-------------|
 | `group_access` | integer        | **{check-circle}** Yes | The [role (`access_level`)](members.md#roles) to grant the group. |
 | `group_id`     | integer        | **{check-circle}** Yes | The ID of the group to share with. |
-| `id`           | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`           | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `expires_at`   | string         | **{dotted-circle}** No | Share expiration date in ISO 8601 format: 2016-09-26 |
 
 ## Delete a shared project link within a group
@@ -2335,7 +2335,7 @@ DELETE /projects/:id/share/:group_id
 | Attribute  | Type           | Required               | Description |
 |------------|----------------|------------------------|-------------|
 | `group_id` | integer        | **{check-circle}** Yes | The ID of the group. |
-| `id`       | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`       | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
@@ -2351,8 +2351,8 @@ POST /projects/:id/import_project_members/:project_id
 
 | Attribute    | Type              | Required               | Description |
 |--------------|-------------------|------------------------|-------------|
-| `id`         | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path](index.md#namespaced-path-encoding) of the target project to receive the members. |
-| `project_id` | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path](index.md#namespaced-path-encoding) of the source project to import the members from. |
+| `id`         | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path](rest/index.md#namespaced-path-encoding) of the target project to receive the members. |
+| `project_id` | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path](rest/index.md#namespaced-path-encoding) of the source project to import the members from. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/import_project_members/32"
@@ -2379,7 +2379,7 @@ GET /projects/:id/hooks
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ### Get project hook
 
@@ -2392,7 +2392,7 @@ GET /projects/:id/hooks/:hook_id
 | Attribute | Type           | Required               | Description               |
 |-----------|----------------|------------------------|---------------------------|
 | `hook_id` | integer        | **{check-circle}** Yes | The ID of a project hook. |
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ```json
 {
@@ -2427,7 +2427,7 @@ POST /projects/:id/hooks
 
 | Attribute                    | Type           | Required               | Description |
 |------------------------------|----------------|------------------------|-------------|
-| `id`                         | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`                         | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `url`                        | string         | **{check-circle}** Yes | The hook URL. |
 | `confidential_issues_events` | boolean        | **{dotted-circle}** No | Trigger hook on confidential issues events. |
 | `confidential_note_events`   | boolean        | **{dotted-circle}** No | Trigger hook on confidential note events. |
@@ -2456,7 +2456,7 @@ PUT /projects/:id/hooks/:hook_id
 | Attribute                    | Type           | Required               | Description |
 |------------------------------|----------------|------------------------|-------------|
 | `hook_id`                    | integer        | **{check-circle}** Yes | The ID of the project hook. |
-| `id`                         | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`                         | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `url`                        | string         | **{check-circle}** Yes | The hook URL. |
 | `confidential_issues_events` | boolean        | **{dotted-circle}** No | Trigger hook on confidential issues events. |
 | `confidential_note_events`   | boolean        | **{dotted-circle}** No | Trigger hook on confidential note events. |
@@ -2486,7 +2486,7 @@ DELETE /projects/:id/hooks/:hook_id
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
 | `hook_id` | integer        | **{check-circle}** Yes | The ID of the project hook. |
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 Note the JSON response differs if the hook is available or not. If the project
 hook is available before it's returned in the JSON response or an empty response
@@ -2506,7 +2506,7 @@ POST /projects/:id/fork/:forked_from_id
 | Attribute        | Type           | Required               | Description |
 |------------------|----------------|------------------------|-------------|
 | `forked_from_id` | ID             | **{check-circle}** Yes | The ID of the project that was forked from. |
-| `id`             | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`             | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ### Delete an existing forked from relationship
 
@@ -2516,7 +2516,7 @@ DELETE /projects/:id/fork
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ## Search for projects by name
 
@@ -2546,7 +2546,7 @@ POST /projects/:id/housekeeping
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ## Push rules **(PREMIUM)**
 
@@ -2561,7 +2561,7 @@ GET /projects/:id/push_rule
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 
 ```json
 {
@@ -2606,7 +2606,7 @@ POST /projects/:id/push_rule
 
 | Attribute                               | Type           | Required               | Description |
 |-----------------------------------------|----------------|------------------------|-------------|
-| `id`                                    | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`                                    | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `author_email_regex`                    | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
 | `branch_name_regex`                     | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
 | `commit_committer_check`                | boolean        | **{dotted-circle}** No | Users can only push commits to this repository if the committer email is one of their own verified emails. |
@@ -2629,7 +2629,7 @@ PUT /projects/:id/push_rule
 
 | Attribute                               | Type           | Required               | Description |
 |-----------------------------------------|----------------|------------------------|-------------|
-| `id`                                    | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`                                    | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `author_email_regex`                    | string         | **{dotted-circle}** No | All commit author emails must match this, for example `@my-company.com$`. |
 | `branch_name_regex`                     | string         | **{dotted-circle}** No | All branch names must match this, for example `(feature|hotfix)\/*`. |
 | `commit_committer_check`                | boolean        | **{dotted-circle}** No | Users can only push commits to this repository if the committer email is one of their own verified emails. |
@@ -2655,7 +2655,7 @@ DELETE /projects/:id/push_rule
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ## Get groups to which a user can transfer a project
 
@@ -2669,7 +2669,7 @@ GET /projects/:id/transfer_locations
 
 | Attribute   | Type           | Required               | Description |
 |-------------|----------------|------------------------|-------------|
-| `id`        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `search` | string | **{dotted-circle}** No  | The group names to search for. |
 
 Example request:
@@ -2714,7 +2714,7 @@ PUT /projects/:id/transfer
 
 | Attribute   | Type           | Required               | Description |
 |-------------|----------------|------------------------|-------------|
-| `id`        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `namespace` | integer or string | **{check-circle}** Yes | The ID or path of the namespace to transfer to project to. |
 
 Example request:
@@ -2861,7 +2861,7 @@ Supported attributes:
 
 | Attribute | Type  | Required    | Description |
 |:----------|:------|:------------|:------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 Example request:
 
@@ -2922,7 +2922,7 @@ POST /projects/:id/mirror/pull
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
@@ -2949,7 +2949,7 @@ GET /projects/:id/snapshot
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `wiki`    | boolean        | **{dotted-circle}** No | Whether to download the wiki, rather than project, repository. |
 
 ## Get the path to repository storage
@@ -2964,7 +2964,7 @@ GET /projects/:id/storage
 
 | Attribute    | Type           | Required               | Description |
 |--------------|----------------|------------------------|-------------|
-| `id`         | integer or string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`         | integer or string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 ```json
 [

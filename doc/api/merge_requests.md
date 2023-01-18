@@ -245,7 +245,7 @@ Supported attributes:
 
 | Attribute                       | Type           | Required | Description |
 | ------------------------------- | -------------- | -------- | ----------- |
-| `id`                            | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                            | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `approved_by_ids` **(PREMIUM)** | integer array  | **{dotted-circle}** No       | Returns merge requests which have been approved by all the users with the given `id`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
 | `approver_ids` **(PREMIUM)**    | integer array  | **{dotted-circle}** No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `assignee_id`                   | integer        | **{dotted-circle}** No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
@@ -434,7 +434,7 @@ Supported attributes:
 
 | Attribute                       | Type           | Required | Description |
 | ------------------------------- | -------------- | -------- | ----------- |
-| `id`                            | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                            | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `approved_by_ids` **(PREMIUM)** | integer array  | **{dotted-circle}** No       | Returns merge requests which have been approved by all the users with the given `id`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
 | `approved_by_usernames` **(PREMIUM)** | string array  | **{dotted-circle}** No       | Returns merge requests which have been approved by all the users with the given `username`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
 | `approver_ids` **(PREMIUM)**    | integer array  | **{dotted-circle}** No       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
@@ -616,7 +616,7 @@ Supported attributes:
 
 | Attribute                        | Type           | Required | Description |
 |----------------------------------|----------------|----------|-------------|
-| `id`                             | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                             | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`              | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 | `include_diverged_commits_count` | boolean        | **{dotted-circle}** No       | If `true`, response includes the commits behind the target branch. |
 | `include_rebase_in_progress`     | boolean        | **{dotted-circle}** No       | If `true`, response includes whether a rebase operation is in progress. |
@@ -866,7 +866,7 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```json
@@ -902,7 +902,7 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes   | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```json
@@ -946,7 +946,7 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```json
@@ -997,7 +997,7 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 | `access_raw_diffs`  | boolean        | **{dotted-circle}** No       | Retrieve change diffs via Gitaly. |
 
@@ -1120,12 +1120,12 @@ Supported attributes:
 
 | Attribute | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `id` | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id` | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer | **{check-circle}** Yes | The internal ID of the merge request. |
 | `page` | integer | **{dotted-circle}** no | The page of results to return. Defaults to 1. |
 | `per_page` | integer | **{dotted-circle}** no | The number of results per page. Defaults to 20. |
 
-If successful, returns [`200 OK`](index.md#status-codes) and the
+If successful, returns [`200 OK`](rest/index.md#status-codes) and the
 following response attributes:
 
 | Attribute | Type | Description |
@@ -1184,7 +1184,7 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```json
@@ -1218,7 +1218,7 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```json
@@ -1270,7 +1270,7 @@ POST /projects/:id/merge_requests
 
 | Attribute                  | Type    | Required | Description |
 | ---------                  | ----    | -------- | ----------- |
-| `id`                       | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                       | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `source_branch`            | string  | **{check-circle}** Yes      | The source branch. |
 | `target_branch`            | string  | **{check-circle}** Yes      | The target branch. |
 | `title`                    | string  | **{check-circle}** Yes      | Title of MR. |
@@ -1439,7 +1439,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 
 | Attribute                  | Type    | Required | Description |
 | ---------                  | ----    | -------- | ----------- |
-| `id`                       | integer or string | **{check-circle}** Yes  | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                       | integer or string | **{check-circle}** Yes  | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`        | integer | **{check-circle}** Yes      | The ID of a merge request. |
 | `add_labels`               | string  | **{dotted-circle}** No       | Comma-separated label names to add to a merge request. |
 | `allow_collaboration`      | boolean | **{dotted-circle}** No       | Allow commits from members who can merge to the target branch. |
@@ -1621,7 +1621,7 @@ DELETE /projects/:id/merge_requests/:merge_request_iid
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```shell
@@ -1640,7 +1640,7 @@ Supported attributes:
 
 | Attribute                      | Type           | Required | Description |
 |--------------------------------|----------------|----------|-------------|
-| `id`                           | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                           | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`            | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 | `merge_commit_message`         | string         | **{dotted-circle}** No       | Custom merge commit message. |
 | `merge_when_pipeline_succeeds` | boolean        | **{dotted-circle}** No       | If `true`, the merge request is merged when the pipeline succeeds. |
@@ -1832,7 +1832,7 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```json
@@ -1859,7 +1859,7 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```json
@@ -2027,7 +2027,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 | `skip_ci`           | boolean        | **{dotted-circle}** No       | Set to `true` to skip creating a CI pipeline. |
 
@@ -2089,7 +2089,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/reset_approvals
 
 | Attribute           | Type              | Required | Description                                                                                                     |
 |---------------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer           | **{check-circle}** Yes      | The internal ID of the merge request.                                                                           |
 
 ```shell
@@ -2110,7 +2110,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```shell
@@ -2186,7 +2186,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/subscribe
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```shell
@@ -2357,7 +2357,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/unsubscribe
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```shell
@@ -2528,7 +2528,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/todo
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```shell
@@ -2774,7 +2774,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/time_estimate
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 | `duration`          | string         | **{check-circle}** Yes      | The duration in human format, such as `3h30m`. |
 
@@ -2803,7 +2803,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/reset_time_estimate
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of a project's merge request. |
 
 ```shell
@@ -2831,7 +2831,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/add_spent_time
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 | `duration`          | string         | **{check-circle}** Yes      | The duration in human format, such as `3h30m` |
 | `summary`           | string         | **{dotted-circle}** No       | A summary of how the time was spent. |
@@ -2861,7 +2861,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/reset_spent_time
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of a project's merge request. |
 
 ```shell
@@ -2887,7 +2887,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/time_stats
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | **{check-circle}** Yes      | The internal ID of the merge request. |
 
 ```shell

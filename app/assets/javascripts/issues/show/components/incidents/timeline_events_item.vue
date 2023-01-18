@@ -57,11 +57,13 @@ export default {
     </div>
     <div class="timeline-event-note timeline-event-border" data-testid="event-text-container">
       <div class="gl-display-flex gl-align-items-center gl-mb-3">
-        <strong class="gl-font-lg" data-testid="event-time">
+        <h3 class="gl-font-weight-bold gl-font-sm gl-my-0" data-testid="event-time">
           <gl-sprintf :message="$options.i18n.timeUTC">
-            <template #time>{{ time }}</template>
+            <template #time>
+              <span class="gl-font-lg">{{ time }}</span>
+            </template>
           </gl-sprintf>
-        </strong>
+        </h3>
         <gl-badge v-if="eventTag" variant="muted" icon="tag" class="gl-ml-3">
           {{ eventTag }}
         </gl-badge>

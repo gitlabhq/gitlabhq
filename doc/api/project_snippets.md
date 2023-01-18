@@ -37,7 +37,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description                                                                                                     |
 |-----------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 
 ## Single snippet
 
@@ -51,7 +51,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description                                                                                                     |
 |--------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `snippet_id` | integer        | yes      | The ID of a project's snippet                                                                                   |
 
 ```json
@@ -88,7 +88,7 @@ Parameters:
 
 | Attribute         | Type            | Required | Description                                                                                                     |
 |:------------------|:----------------|:---------|:----------------------------------------------------------------------------------------------------------------|
-| `id`              | integer or string         | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`              | integer or string         | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `title`           | string          | yes      | Title of a snippet                                                                                              |
 | `file_name`       | string          | no       | Deprecated: Use `files` instead. Name of a snippet file                                                         |
 | `content`         | string          | no       | Deprecated: Use `files` instead. Content of a snippet                                                           |
@@ -135,7 +135,7 @@ Parameters:
 
 | Attribute             | Type            | Required | Description                                                                                                     |
 |:----------------------|:----------------|:---------|:----------------------------------------------------------------------------------------------------------------|
-| `id`                  | integer or string         | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                  | integer or string         | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `snippet_id`          | integer         | yes      | The ID of a project's snippet                                                                                   |
 | `title`               | string          | no       | Title of a snippet                                                                                              |
 | `file_name`           | string          | no       | Deprecated: Use `files` instead. Name of a snippet file                                                         |
@@ -188,7 +188,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description                                                                                                     |
 |:-------------|:---------------|:---------|:----------------------------------------------------------------------------------------------------------------|
-| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `snippet_id` | integer        | yes      | The ID of a project's snippet                                                                                   |
 
 Example request:
@@ -210,7 +210,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description                                                                                                     |
 |:-------------|:---------------|:---------|:----------------------------------------------------------------------------------------------------------------|
-| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `snippet_id` | integer        | yes      | The ID of a project's snippet                                                                                   |
 
 Example request:
@@ -232,7 +232,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description                                                                                                     |
 |:-------------|:---------------|:---------|:----------------------------------------------------------------------------------------------------------------|
-| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `snippet_id` | integer        | yes      | The ID of a project's snippet                                                                                   |
 | `ref`        | string         | yes      | The name of a branch, tag or commit, for example, main                                                          |
 | `file_path`  | string         | yes      | The URL-encoded path to the file, for example, snippet%2Erb                                                     |
@@ -254,7 +254,7 @@ GET /projects/:id/snippets/:snippet_id/user_agent_detail
 
 | Attribute    | Type           | Required | Description                                                                                                     |
 |--------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `snippet_id` | Integer        | yes      | The ID of a snippet                                                                                             |
 
 Example request:

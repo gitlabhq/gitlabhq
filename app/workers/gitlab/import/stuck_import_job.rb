@@ -37,7 +37,7 @@ module Gitlab
 
       def mark_imports_without_jid_as_failed!
         enqueued_import_states_without_jid
-          .each(&method(:mark_as_failed))
+          .each { |import_state| mark_as_failed(import_state) }
           .size
       end
 
@@ -61,7 +61,7 @@ module Gitlab
         )
 
         completed_import_states
-          .each(&method(:mark_as_failed))
+          .each { |import_state| mark_as_failed(import_state) }
           .size
       end
 

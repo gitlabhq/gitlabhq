@@ -28,7 +28,7 @@ You can limit the scope and lifetime of your OAuth2 tokens.
 
 ## Impersonation tokens
 
-An [Impersonation token](../api/index.md#impersonation-tokens) is a special type of personal access
+An [Impersonation token](../api/rest/index.md#impersonation-tokens) is a special type of personal access
 token. It can be created only by an administrator for a specific user. Impersonation tokens can
 help you build applications or scripts that authenticate with the GitLab API, repositories, and the GitLab registry as a specific user.
 
@@ -127,13 +127,13 @@ This table shows available scopes per token. Scopes can be limited further on to
 - Access tokens should be treated like passwords and kept secure.
 - Adding access tokens to URLs is a security risk, especially when cloning or adding a remote because Git then writes the URL to its `.git/config` file in plain text. URLs are
   also generally logged by proxies and application servers, which makes those credentials visible to system administrators. Instead, pass API calls an access token using
-  headers like [the `Private-Token` header](../api/index.md#personalprojectgroup-access-tokens).
+  headers like [the `Private-Token` header](../api/rest/index.md#personalprojectgroup-access-tokens).
 - Tokens can also be stored using a [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 - Tokens must not be committed to your source code. Instead, consider an approach such as [using external secrets in CI](../ci/secrets/index.md).
 - When creating a scoped token, consider using the most limited scope possible to reduce the impact of accidentally leaking the token.
 - When creating a token, consider setting a token that expires when your task is complete. For example, if performing a one-off import, set the
   token to expire after a few hours or a day. This reduces the impact of a token that is accidentally leaked because it is useless when it expires.
 - Be careful not to include tokens when pasting code, console commands, or log outputs into an issue or MR description or comment.
-- Don’t log credentials in the console logs. Consider [protecting](../ci/variables/index.md#protected-cicd-variables) and
+- Don’t log credentials in the console logs. Consider [protecting](../ci/variables/index.md#protect-a-cicd-variable) and
   [masking](../ci/variables/index.md#mask-a-cicd-variable) your credentials.
 - Review all currently active access tokens of all types on a regular basis and revoke any that are no longer needed.

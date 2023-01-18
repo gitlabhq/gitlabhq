@@ -187,7 +187,7 @@ module RuboCop
         # Marking all event's feature flags as used as Gitlab::UsageDataCounters::HLLRedisCounter.track_event{,context}
         # is mostly used with dynamic event name.
         def track_usage_data_counters_known_events!
-          usage_data_counters_known_event_feature_flags.each(&method(:save_used_feature_flag))
+          usage_data_counters_known_event_feature_flags.each { |feature_flag_name| save_used_feature_flag(feature_flag_name) }
         end
 
         def usage_data_counters_known_event_feature_flags

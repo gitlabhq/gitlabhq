@@ -12,7 +12,7 @@ Usernames and group names fall under a special category called
 For users and groups supported API calls see the [users](users.md) and
 [groups](groups.md) documentation respectively.
 
-[Pagination](index.md#pagination) is used.
+[Pagination](rest/index.md#pagination) is used.
 
 ## List namespaces
 
@@ -133,7 +133,7 @@ GET /namespaces/:id
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](rest/index.md#namespaced-path-encoding) |
 
 Example request:
 

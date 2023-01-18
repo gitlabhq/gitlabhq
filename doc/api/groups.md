@@ -11,9 +11,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Get a list of visible groups for the authenticated user. When accessed without
 authentication, only public groups are returned.
 
-By default, this request returns 20 results at a time because the API results [are paginated](index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
 
-When accessed without authentication, this endpoint also supports [keyset pagination](index.md#keyset-based-pagination):
+When accessed without authentication, this endpoint also supports [keyset pagination](rest/index.md#keyset-based-pagination):
 
 - When requesting consecutive pages of results, we recommend you use keyset pagination.
 - Beyond a specific offset limit (specified by [max offset allowed by the REST API for offset-based pagination](../administration/instance_limits.md#max-offset-allowed-by-the-rest-api-for-offset-based-pagination)), offset pagination is unavailable.
@@ -127,7 +127,7 @@ GET /groups?custom_attributes[key]=value&custom_attributes[other_key]=other_valu
 
 Get a list of visible direct subgroups in this group.
 
-By default, this request returns 20 results at a time because the API results [are paginated](index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
 
 If you request this list as:
 
@@ -139,7 +139,7 @@ Parameters:
 
 | Attribute                | Type              | Required | Description |
 | ------------------------ | ----------------- | -------- | ----------- |
-| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) of the immediate parent group |
+| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
 | `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria. Only subgroup short paths are searched (not full paths) |
@@ -191,13 +191,13 @@ GET /groups/:id/subgroups
 Get a list of visible descendant groups of this group.
 When accessed without authentication, only public groups are returned.
 
-By default, this request returns 20 results at a time because the API results [are paginated](index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
 
 Parameters:
 
 | Attribute                | Type              | Required | Description |
 | ------------------------ | ----------------- | -------- | ----------- |
-| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) of the immediate parent group |
+| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
 | `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators). Attributes `owned` and `min_access_level` have precedence |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria. Only descendant group short paths are searched (not full paths) |
@@ -271,7 +271,7 @@ GET /groups/:id/descendant_groups
 
 Get a list of projects in this group. When accessed without authentication, only public projects are returned.
 
-By default, this request returns 20 results at a time because the API results [are paginated](index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
 
 ```plaintext
 GET /groups/:id/projects
@@ -281,7 +281,7 @@ Parameters:
 
 | Attribute                              | Type           | Required | Description |
 | -------------------------------------- | -------------- | -------- | ----------- |
-| `id`                                   | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                                   | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `archived`                             | boolean        | no       | Limit by archived status |
 | `visibility`                           | string         | no       | Limit by visibility `public`, `internal`, or `private` |
 | `order_by`                             | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` (1), or `last_activity_at` fields. Default is `created_at` |
@@ -354,7 +354,7 @@ To distinguish between a project in the group and a project shared to the group,
 
 Get a list of projects shared to this group. When accessed without authentication, only public shared projects are returned.
 
-By default, this request returns 20 results at a time because the API results [are paginated](index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
 
 ```plaintext
 GET /groups/:id/projects/shared
@@ -364,7 +364,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `archived`                    | boolean        | no       | Limit by archived status |
 | `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private` |
 | `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
@@ -502,7 +502,7 @@ Parameters:
 
 | Attribute                | Type           | Required | Description |
 | ------------------------ | -------------- | -------- | ----------- |
-| `id`                     | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                     | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `with_custom_attributes` | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `with_projects`          | boolean        | no       | Include details from projects that belong to the specified group (defaults to `true`). (Deprecated, [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797). To get the details of all projects within a group, use the [list a group's projects endpoint](#list-a-groups-projects).)  |
 
@@ -871,8 +871,8 @@ Parameters:
 
 | Attribute    | Type           | Required | Description |
 | ------------ | -------------- | -------- | ----------- |
-| `id`         | integer/string | yes      | The ID or [URL-encoded path of the target group](index.md#namespaced-path-encoding) |
-| `project_id` | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
+| `id`         | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-path-encoding) |
+| `project_id` | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -891,7 +891,7 @@ GET /groups/:id/transfer_locations
 
 | Attribute   | Type           | Required               | Description |
 |-------------|----------------|------------------------|-------------|
-| `id`        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the group to be transferred](index.md#namespaced-path-encoding). |
+| `id`        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the group to be transferred](rest/index.md#namespaced-path-encoding). |
 | `search` | string | **{dotted-circle}** No  | The group names to search for. |
 
 Example request:
@@ -1152,7 +1152,7 @@ Parameters:
 
 | Attribute            | Type             | Required | Description                                                                                                                                                 |
 |----------------------|------------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)                                                                                |
+| `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding)                                                                                |
 | `permanently_remove` **(PREMIUM)** | boolean/string   | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4 |
 | `full_path` **(PREMIUM)**          | string           | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#details-of-a-group) |
 
@@ -1175,7 +1175,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 
 ## Search for group
 
@@ -1212,7 +1212,7 @@ Parameters:
 
 | Attribute        | Type           | Required | Description                                                              |
 |:-----------------|:---------------|:---------|:-------------------------------------------------------------------------|
-| `id`             | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`             | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `username`       | string         | no       | Return single user with a specific username                              |
 | `search`         | string         | no       | Search users by name, email, username                                    |
 | `active`         | boolean        | no       | Return only active users                                                 |
@@ -1284,7 +1284,7 @@ GET /groups/:id/hooks
 
 | Attribute | Type            | Required | Description |
 | --------- | --------------- | -------- | ----------- |
-| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 
 ### Get group hook
 
@@ -1292,7 +1292,7 @@ Get a specific hook for a group.
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `hook_id` | integer        | yes      | The ID of a group hook |
 
 ```plaintext
@@ -1333,7 +1333,7 @@ POST /groups/:id/hooks
 
 | Attribute                    | Type           | Required | Description |
 | -----------------------------| -------------- |----------| ----------- |
-| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `url`                        | string         | yes      | The hook URL |
 | `push_events`                | boolean        | no       | Trigger hook on push events |
 | `push_events_branch_filter`  | string         | No       | Trigger hook on push events for matching branches only. |
@@ -1362,7 +1362,7 @@ PUT /groups/:id/hooks/:hook_id
 
 | Attribute                    | Type           | Required | Description |
 | ---------------------------- | -------------- | -------- | ----------- |
-| `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding). |
+| `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
 | `hook_id`                    | integer        | yes      | The ID of the group hook. |
 | `url`                        | string         | yes      | The hook URL. |
 | `push_events`                | boolean        | no       | Trigger hook on push events. |
@@ -1393,7 +1393,7 @@ DELETE /groups/:id/hooks/:hook_id
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `hook_id` | integer        | yes      | The ID of the group hook. |
 
 ## Group Audit Events **(PREMIUM)**
@@ -1430,7 +1430,7 @@ GET /groups/:id/ldap_group_links
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 
 ### Add LDAP group link with CN or filter **(PREMIUM SELF)**
 
@@ -1442,7 +1442,7 @@ POST /groups/:id/ldap_group_links
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `cn`      | string         | no       | The CN of an LDAP group |
 | `filter`  | string         | no       | The LDAP filter for the group |
 | `group_access` | integer   | yes      | [Role (`access_level`)](members.md#roles) for members of the LDAP group |
@@ -1461,7 +1461,7 @@ DELETE /groups/:id/ldap_group_links/:cn
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `cn`      | string         | yes      | The CN of an LDAP group |
 
 Deletes an LDAP group link for a specific LDAP provider. Deprecated. Scheduled for removal in a future release.
@@ -1472,7 +1472,7 @@ DELETE /groups/:id/ldap_group_links/:provider/:cn
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `cn`      | string         | yes      | The CN of an LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
@@ -1486,7 +1486,7 @@ DELETE /groups/:id/ldap_group_links
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `cn`      | string         | no       | The CN of an LDAP group |
 | `filter`  | string         | no       | The LDAP filter for the group |
 | `provider` | string        | yes       | LDAP provider for the LDAP group link |
@@ -1513,9 +1513,9 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description                                                              |
 |:----------|:---------------|:---------|:-------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 
-If successful, returns [`200`](index.md#status-codes) and the following response attributes:
+If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
 
 | Attribute          | Type    | Description                                                                  |
 |:-------------------|:--------|:-----------------------------------------------------------------------------|
@@ -1555,10 +1555,10 @@ Supported attributes:
 
 | Attribute          | Type           | Required | Description                                                              |
 |:-------------------|:---------------|:---------|:-------------------------------------------------------------------------|
-| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `saml_group_name`  | string         | yes      | Name of an SAML group                                                    |
 
-If successful, returns [`200`](index.md#status-codes) and the following response attributes:
+If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
 
 | Attribute      | Type    | Description                                                                  |
 |:---------------|:--------|:-----------------------------------------------------------------------------|
@@ -1592,11 +1592,11 @@ Supported attributes:
 
 | Attribute          | Type           | Required | Description                                                                  |
 |:-------------------|:---------------|:---------|:-----------------------------------------------------------------------------|
-| `id`               | integer or string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)     |
+| `id`               | integer or string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding)     |
 | `saml_group_name`  | string         | yes      | Name of a SAML group                                                         |
 | `access_level`     | integer        | yes      | [Role (`access_level`)](members.md#roles) for members of the SAML group |
 
-If successful, returns [`201`](index.md#status-codes) and the following response attributes:
+If successful, returns [`201`](rest/index.md#status-codes) and the following response attributes:
 
 | Attribute      | Type    | Description                                                                  |
 |:---------------|:--------|:-----------------------------------------------------------------------------|
@@ -1630,10 +1630,10 @@ Supported attributes:
 
 | Attribute          | Type           | Required | Description                                                              |
 |:-------------------|:---------------|:---------|:-------------------------------------------------------------------------|
-| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `saml_group_name`  | string         | yes      | Name of a SAML group                                                     |
 
-If successful, returns [`204`](index.md#status-codes) status code without any response body.
+If successful, returns [`204`](rest/index.md#status-codes) status code without any response body.
 
 Example request:
 
@@ -1681,7 +1681,7 @@ POST /groups/:id/share
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
 | `group_access` | integer | yes | The [role (`access_level`)](members.md#roles) to grant the group |
 | `expires_at` | string | no | Share expiration date in ISO 8601 format: 2016-09-26 |
@@ -1696,14 +1696,14 @@ DELETE /groups/:id/share/:group_id
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
 
 ## Push Rules **(PREMIUM)**
 
 > Introduced in GitLab 13.4.
 
-### Get group push rules **(PREMIUM)**
+### Get group push rules
 
 Get the [push rules](../user/group/access_and_permissions.md#group-push-rules) of a group.
 
@@ -1715,7 +1715,7 @@ GET /groups/:id/push_rule
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID of the group or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID of the group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 
 ```json
 {
@@ -1746,7 +1746,7 @@ the `commit_committer_check` and `reject_unsigned_commits` parameters:
 }
 ```
 
-### Add group push rule **(PREMIUM)**
+### Add group push rule
 
 Adds [push rules](../user/group/access_and_permissions.md#group-push-rules) to the specified group.
 
@@ -1758,7 +1758,7 @@ POST /groups/:id/push_rule
 
 | Attribute                                     | Type           | Required | Description |
 | --------------------------------------------- | -------------- | -------- | ----------- |
-| `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag |
 | `member_check`                                | boolean        | no       | Allows only GitLab users to author commits |
 | `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
@@ -1793,7 +1793,7 @@ Response:
 }
 ```
 
-### Edit group push rule **(PREMIUM)**
+### Edit group push rule
 
 Edit push rules for a specified group.
 
@@ -1805,7 +1805,7 @@ PUT /groups/:id/push_rule
 
 | Attribute                                     | Type           | Required | Description |
 | --------------------------------------------- | -------------- | -------- | ----------- |
-| `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag |
 | `member_check`                                | boolean        | no       | Restricts commits to be authored by existing GitLab users only |
 | `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
@@ -1840,7 +1840,7 @@ Response:
 }
 ```
 
-### Delete group push rule **(PREMIUM)**
+### Delete group push rule
 
 Deletes the [push rules](../user/group/access_and_permissions.md#group-push-rules) of a group.
 
@@ -1852,4 +1852,4 @@ DELETE /groups/:id/push_rule
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |

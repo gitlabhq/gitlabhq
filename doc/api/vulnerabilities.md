@@ -21,7 +21,7 @@ across GitLab releases. Please use the
 [GraphQL API](graphql/reference/index.md#queryvulnerabilities)
 instead. See the [GraphQL examples](#replace-vulnerability-rest-api-with-graphql) to get started.
 
-Every API call to vulnerabilities must be [authenticated](index.md#authentication).
+Every API call to vulnerabilities must be [authenticated](rest/index.md#authentication).
 
 If an authenticated user does not have permission to
 [view vulnerabilities](../user/permissions.md#project-members-permissions),

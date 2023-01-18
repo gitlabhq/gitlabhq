@@ -29,7 +29,7 @@ module Packages
         package_detail[:nuget_metadatum] = @package.nuget_metadatum if @package.nuget_metadatum
         package_detail[:composer_metadatum] = @package.composer_metadatum if @package.composer_metadatum
         package_detail[:conan_metadatum] = @package.conan_metadatum if @package.conan_metadatum
-        package_detail[:dependency_links] = @package.dependency_links.map(&method(:build_dependency_links))
+        package_detail[:dependency_links] = @package.dependency_links.map { |link| build_dependency_links(link) }
         package_detail[:pipeline] = build_pipeline_info(@package.pipeline) if @package.pipeline
         package_detail[:pipelines] = build_pipeline_infos(@package.pipelines) if @package.pipelines.present?
 

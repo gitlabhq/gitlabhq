@@ -2,7 +2,8 @@
 
 module Projects
   class RefreshBuildArtifactsSizeStatisticsService
-    BATCH_SIZE = 1000
+    BATCH_SIZE = 500
+    REFRESH_INTERVAL_SECONDS = 0.1
 
     def execute
       refresh = Projects::BuildArtifactsSizeRefresh.process_next_refresh!
@@ -22,6 +23,8 @@ module Projects
 
           ProjectStatistics.bulk_increment_statistic(refresh.project, :build_artifacts_size, increments)
         end
+
+        sleep REFRESH_INTERVAL_SECONDS
       else
         refresh.schedule_finalize!
       end

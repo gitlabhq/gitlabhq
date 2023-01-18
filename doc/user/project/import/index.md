@@ -70,7 +70,7 @@ GitLab can not automatically migrate Subversion repositories to Git. Converting 
 
 ## Migrate using the API
 
-To migrate all data from self-managed to GitLab.com, you can leverage the [API](../../../api/index.md).
+To migrate all data from self-managed to GitLab.com, you can leverage the [API](../../../api/rest/index.md).
 Migrate the assets in this order:
 
 1. [Groups](../../../api/groups.md)

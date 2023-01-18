@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Get a list of jobs in a project. Jobs are sorted in descending order of their IDs.
 
-By default, this request returns 20 results at a time because the API results [are paginated](index.md#pagination)
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination)
 
 ```plaintext
 GET /projects/:id/jobs
@@ -18,7 +18,7 @@ GET /projects/:id/jobs
 
 | Attribute | Type                           | Required               | Description |
 |-----------|--------------------------------|------------------------|-------------|
-| `id`      | integer/string                 | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string                 | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `scope`   | string **or** array of strings | **{dotted-circle}** No | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 
 ```shell
@@ -163,7 +163,7 @@ Example of response
 
 Get a list of jobs for a pipeline.
 
-By default, this request returns 20 results at a time because the API results [are paginated](index.md#pagination)
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination)
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/jobs
@@ -171,7 +171,7 @@ GET /projects/:id/pipelines/:pipeline_id/jobs
 
 | Attribute         | Type                           | Required               | Description |
 |-------------------|--------------------------------|------------------------|-------------|
-| `id`              | integer/string                 | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`              | integer/string                 | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `pipeline_id`     | integer                        | **{check-circle}** Yes | ID of a pipeline. Can also be obtained in CI jobs via the [predefined CI variable](../ci/variables/predefined_variables.md) `CI_PIPELINE_ID`. |
 | `scope`           | string **or** array of strings | **{dotted-circle}** No | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 | `include_retried` | boolean                        | **{dotted-circle}** No | Include retried jobs in the response. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/272627) in GitLab 13.9. |
@@ -334,7 +334,7 @@ GET /projects/:id/pipelines/:pipeline_id/bridges
 
 | Attribute     | Type                           | Required               | Description |
 |---------------|--------------------------------|------------------------|-------------|
-| `id`          | integer/string                 | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`          | integer/string                 | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `pipeline_id` | integer                        | **{check-circle}** Yes | ID of a pipeline. |
 | `scope`       | string **or** array of strings | **{dotted-circle}** No | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 
@@ -575,7 +575,7 @@ GET /projects/:id/jobs/:job_id
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | **{check-circle}** Yes | ID of a job. |
 
 ```shell
@@ -655,7 +655,7 @@ GET /projects/:id/jobs/:job_id/trace
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | **{check-circle}** Yes | ID of a job. |
 
 ```shell
@@ -679,7 +679,7 @@ POST /projects/:id/jobs/:job_id/cancel
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | **{check-circle}** Yes | ID of a job. |
 
 ```shell
@@ -732,7 +732,7 @@ POST /projects/:id/jobs/:job_id/retry
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | **{check-circle}** Yes | ID of a job. |
 
 ```shell
@@ -787,7 +787,7 @@ Parameters
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | **{check-circle}** Yes | ID of a job. |
 
 Example of request
@@ -847,7 +847,7 @@ POST /projects/:id/jobs/:job_id/play
 
 | Attribute                  | Type            | Required               | Description |
 |----------------------------|-----------------|------------------------|-------------|
-| `id`                       | integer/string  | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                       | integer/string  | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`                   | integer         | **{check-circle}** Yes | ID of a job. |
 | `job_variables_attributes` | array of hashes | **{dotted-circle}** No | An array containing the custom variables available to the job. [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/37267) GitLab 14.9. |
 

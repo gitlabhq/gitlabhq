@@ -6,6 +6,7 @@ RSpec.describe 'Merge request > User sees check out branch modal', :js, feature_
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project) }
+  let(:modal_window_title) { 'Check out, review, and resolve locally' }
 
   before do
     sign_in(user)
@@ -17,12 +18,12 @@ RSpec.describe 'Merge request > User sees check out branch modal', :js, feature_
   end
 
   it 'shows the check out branch modal' do
-    expect(page).to have_content('Check out, review, and merge locally')
+    expect(page).to have_content(modal_window_title)
   end
 
   it 'closes the check out branch modal with the close action' do
     find('.modal button[aria-label="Close"]').click
 
-    expect(page).not_to have_content('Check out, review, and merge locally')
+    expect(page).not_to have_content(modal_window_title)
   end
 end

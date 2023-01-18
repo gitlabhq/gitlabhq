@@ -30,7 +30,7 @@ Supported attributes:
 |:------------------|:--------|:---------|:----------------------|
 | `id`              | integer | Yes      | Return SCIM identities for the given group ID. |
 
-If successful, returns [`200`](index.md#status-codes) and the following
+If successful, returns [`200`](rest/index.md#status-codes) and the following
 response attributes:
 
 | Attribute    | Type   | Description               |

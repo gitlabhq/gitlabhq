@@ -320,7 +320,7 @@ the tags. To create the list and delete the tags:
    the tags' names are written to the `list_o_tags.out` file:
 
    ```shell
-   # Get a list of all tags in a certain container repository while considering [pagination](../../../api/index.md#pagination)
+   # Get a list of all tags in a certain container repository while considering [pagination](../../../api/rest/index.md#pagination)
    echo -n "" > list_o_tags.out; for i in {1..N}; do curl --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags?per_page=100&page=${i}" | jq '.[].name' | sed 's:^.\(.*\).$:\1:' >> list_o_tags.out; done
    ```
 

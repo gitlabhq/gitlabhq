@@ -11,7 +11,7 @@ Predefined [CI/CD variables](index.md) are available in every GitLab CI/CD pipel
 
 Some variables are only available with more recent versions of [GitLab Runner](https://docs.gitlab.com/runner/).
 
-You can [output the values of all variables available for a job](index.md#list-all-environment-variables)
+You can [output the values of all variables available for a job](index.md#list-all-variables)
 with a `script` command.
 
 There are also a number of [variables you can use to configure runner behavior](../runners/configure_runners.md#configure-runner-behavior-with-variables) globally or for individual jobs.
@@ -189,3 +189,15 @@ These variables are only available when:
 | `CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_SHA`  | 12.3   | all    | The HEAD SHA of the source branch of the pull request. |
 | `CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME` | 12.3   | all    | The target branch name of the pull request. |
 | `CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_SHA`  | 12.3   | all    | The HEAD SHA of the target branch of the pull request. |
+
+## Deployment variables
+
+Integrations that are responsible for deployment configuration can define their own
+predefined variables that are set in the build environment. These variables are only defined
+for [deployment jobs](../environments/index.md).
+
+For example, the [Kubernetes integration](../../user/project/clusters/deploy_to_cluster.md#deployment-variables)
+defines deployment variables that you can use with the integration.
+
+The [documentation for each integration](../../user/project/integrations/index.md)
+explains if the integration has any deployment variables available.

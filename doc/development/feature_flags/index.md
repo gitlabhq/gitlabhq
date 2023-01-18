@@ -39,20 +39,25 @@ should be leveraged:
   existing feature flag because a feature is deemed stable must have the
   ~"feature flag" label assigned.
 
-When the feature implementation is delivered among multiple merge requests:
+When the feature implementation is delivered over multiple merge requests:
 
-  1. [Create a new feature flag](#create-a-new-feature-flag)
-     which is **off** by default, in the first merge request which uses the flag.
-     Flags [should not be added separately](#risk-of-a-broken-main-branch).
-  1. Submit incremental changes via one or more merge requests, ensuring that any
-     new code added can only be reached if the feature flag is **on**.
-     You can keep the feature flag enabled on your local GDK during development.
-  1. When the feature is ready to be tested, enable the feature flag for
-     a specific project and ensure that there are no issues with the implementation.
-  1. When the feature is ready to be announced, create a merge request that adds
-     documentation about the feature, including [documentation for the feature flag itself](../documentation/feature_flags.md),
-     and a [changelog entry](#changelog). In the same merge request either flip the feature flag to
-     be **on by default** or remove it entirely to enable the new behavior.
+1. [Create a new feature flag](#create-a-new-feature-flag)
+   which is **off** by default, in the first merge request which uses the flag.
+   Flags [should not be added separately](#risk-of-a-broken-main-branch).
+1. Submit incremental changes via one or more merge requests, ensuring that any
+   new code added can only be reached if the feature flag is **on**.
+   You can keep the feature flag enabled on your local GDK during development.
+1. When the feature is ready to be tested by other team members, [create the initial documentation](../documentation/feature_flags.md#when-to-document-features-behind-a-feature-flag).
+   Include details about the status of the [feature flag](../documentation/feature_flags.md#how-to-add-feature-flag-documentation).
+1. Enable the feature flag for a specific project and ensure that there are no issues
+   with the implementation. Do not enable the feature flag for a public project
+   like `gitlab` if there is no documentation. Team members and contributors might search for
+   documentation on how to use the feature if they see it enabled in a public project.
+1. When the feature is ready for production use, open a merge request to:
+   - Update the documentation to describe the latest flag status.
+   - Add a [changelog entry](#changelog).
+   - Flip the feature flag to be **on by default** or remove it entirely
+     to enable the new behavior.
 
 One might be tempted to think that feature flags will delay the release of a
 feature by at least one month (= one release). This is not the case. A feature

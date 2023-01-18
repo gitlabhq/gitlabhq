@@ -132,17 +132,21 @@ export default {
 </script>
 
 <template>
-  <div class="issuable-discussion incident-timeline-events">
+  <div class="issuable-discussion incident-timeline-events gl-mt-n3">
     <div
       v-for="[eventDate, events] in dateGroupedEvents"
       :key="eventDate"
       data-testid="timeline-group"
       class="timeline-group"
     >
-      <div class="gl-pb-3 gl-border-gray-50 gl-border-1 gl-border-b-solid">
-        <strong class="gl-font-size-h2" data-testid="event-date">{{ eventDate }}</strong>
-      </div>
-      <ul class="notes main-notes-list">
+      <h2
+        class="gl-font-size-h2 gl-my-0 gl-py-5 gl-border-gray-50 gl-border-1 gl-border-b-solid"
+        data-testid="event-date"
+      >
+        {{ eventDate }}
+      </h2>
+
+      <ul class="notes main-notes-list gl-pt-2!">
         <li
           v-for="(event, eventIndex) in events"
           :key="eventIndex"

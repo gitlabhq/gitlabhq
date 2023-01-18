@@ -7,7 +7,7 @@ class ProgrammingLanguage < ApplicationRecord
   # Returns all programming languages which match any of the given names (case
   # insensitively).
   scope :with_name_case_insensitive, ->(*names) do
-    sanitized_names = names.map(&method(:sanitize_sql_like))
+    sanitized_names = names.map { |name| sanitize_sql_like(name) }
     where(arel_table[:name].matches_any(sanitized_names))
   end
 

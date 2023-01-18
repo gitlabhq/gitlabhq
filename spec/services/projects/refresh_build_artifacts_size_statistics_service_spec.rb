@@ -37,6 +37,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
 
     before do
       stub_const("#{described_class}::BATCH_SIZE", 3)
+      stub_const("#{described_class}::REFRESH_INTERVAL_SECONDS", 0)
 
       stats = create(:project_statistics, project: project, build_artifacts_size: 120)
       stats.increment_counter(:build_artifacts_size, increment)

@@ -24,7 +24,7 @@ Supported attributes:
 |:------------------|:--------|:---------|:----------------------|
 | `id`              | integer | Yes      | Group ID for the group to return SAML identities. |
 
-If successful, returns [`200`](index.md#status-codes) and the following
+If successful, returns [`200`](rest/index.md#status-codes) and the following
 response attributes:
 
 | Attribute    | Type   | Description               |

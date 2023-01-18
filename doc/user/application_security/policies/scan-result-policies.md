@@ -70,7 +70,7 @@ the following sections and tables provide an alternative.
 
 ## `scan_finding` rule type
 
-This rule enforces the defined actions based on the information provided.
+This rule enforces the defined actions based on security scan findings.
 
 | Field      | Type | Possible values | Description |
 |------------|------|-----------------|-------------|
@@ -79,7 +79,19 @@ This rule enforces the defined actions based on the information provided.
 | `scanners`  | `array` of `string` | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. |
 | `vulnerabilities_allowed`  | `integer` | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered. |
 | `severity_levels`  | `array` of `string` | `info`, `unknown`, `low`, `medium`, `high`, `critical`| The severity levels for this rule to consider. |
-| `vulnerability_states`  | `array` of `string` | `newly_detected`, `detected`, `confirmed`, `resolved`, `dismissed` | All vulnerabilities fall into two categories:<br><br>**Newly Detected Vulnerabilities** - the `newly_detected` policy option covers vulnerabilities that are both `Detected` or "Dismissed` within the merge request itself where the vulnerabilities do not currently exist on the default branch. This policy option requires a pipeline to complete before the rule is evaluated so that it knows whether vulnerabilities are newly detected or not. Merge requests are blocked until the pipeline, and necessary security scans are complete.<br><br> • Detected<br> • Dismissed<br><br>**Pre-Existing Vulnerabilities** - these policy options are evaluated immediately and do not require a pipeline complete as they consider only vulnerabilities previously detected in the default branch.<br><br> • `Detected` - the policy looks for vulnerabilities in the detected state.<br> • `Confirmed` - the policy looks for vulnerabilities in the confirmed state.<br> • `Dismissed` - the policy looks for vulnerabilities in the dismissed state.<br> • `Resolved` - the policy looks for vulnerabilities in the resolved state. |
+| `vulnerability_states`  | `array` of `string` | `newly_detected`, `detected`, `confirmed`, `resolved`, `dismissed` | All vulnerabilities fall into two categories:<br><br>**Newly Detected Vulnerabilities** - the `newly_detected` policy option covers vulnerabilities that are both `Detected` or `Dismissed` within the merge request itself where the vulnerabilities do not currently exist on the default branch. This policy option requires a pipeline to complete before the rule is evaluated so that it knows whether vulnerabilities are newly detected or not. Merge requests are blocked until the pipeline, and necessary security scans are complete.<br><br> • Detected<br> • Dismissed<br><br>**Pre-Existing Vulnerabilities** - these policy options are evaluated immediately and do not require a pipeline complete as they consider only vulnerabilities previously detected in the default branch.<br><br> • `Detected` - the policy looks for vulnerabilities in the detected state.<br> • `Confirmed` - the policy looks for vulnerabilities in the confirmed state.<br> • `Dismissed` - the policy looks for vulnerabilities in the dismissed state.<br> • `Resolved` - the policy looks for vulnerabilities in the resolved state. |
+
+## `license_finding` rule type
+
+This rule enforces the defined actions based on license findings.
+
+| Field      | Type | Possible values | Description |
+|------------|------|-----------------|-------------|
+| `type` | `string` | `license_finding` | The rule's type. |
+| `branches` | `array` of `string` | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. |
+| `match_on_inclusion` | `boolean` | `true`, `false` | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. |
+| `license_types` | `array` of `string` | license types | License types to match on, for example `BSD` or `MIT`. |
+| `license_states` | `array` of `string` | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. |
 
 ## `require_approval` action type
 

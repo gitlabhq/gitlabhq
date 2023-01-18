@@ -924,11 +924,16 @@ NOTE:
 GitLab preserves all commits as [`keep-around` refs](../../user/project/repository/reducing_the_repo_size_using_git.md)
 so that deployed commits are not garbage collected, even if it's not referenced by the deployment refs.
 
-### Scope environments with specs
+### Limit the environment scope of a CI/CD variable
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2112) in GitLab Premium 9.4.
 > - Environment scoping for CI/CD variables was [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) from GitLab Premium to GitLab Free in 12.2.
 > - Environment scoping for Group CI/CD variables [added](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) to GitLab Premium in 13.11.
+
+By default, all [CI/CD variables](../variables/index.md) are available to any job in a pipeline. Therefore, if a project uses a
+compromised tool in a test job, it could expose all CI/CD variables that a deployment job used. This is
+a common scenario in supply chain attacks. GitLab helps mitigate supply chain attacks by limiting
+the environment scope of a variable.
 
 You can limit the environment scope of a CI/CD variable by
 defining which environments it can be available for.
@@ -940,10 +945,6 @@ any job can have this variable, regardless of whether an environment is defined.
 
 If the environment scope is `review/*`, then jobs with environment names starting
 with `review/` would have that variable available.
-
-Some GitLab features can behave differently for each environment.
-For example, you can
-[create a project CI/CD variable to be injected only into a production environment](../variables/index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 In most cases, these features use the _environment specs_ mechanism, which offers
 an efficient way to implement scoping in each environment group.

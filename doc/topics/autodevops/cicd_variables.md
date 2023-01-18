@@ -138,6 +138,10 @@ Auto DevOps detects CI/CD variables starting with `K8S_SECRET_`,
 and makes them available to the deployed application as
 environment variables.
 
+Prerequisite:
+
+- The variable value must be a single line.
+
 To configure secret variables:
 
 1. On the top bar, select **Main menu > Projects** and find your project.

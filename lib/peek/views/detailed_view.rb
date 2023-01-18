@@ -33,7 +33,7 @@ module Peek
       def details
         call_details
           .sort { |a, b| b[:duration] <=> a[:duration] }
-          .map(&method(:format_call_details))
+          .map { |call| format_call_details(call) }
       end
 
       def warnings

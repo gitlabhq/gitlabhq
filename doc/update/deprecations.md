@@ -135,6 +135,24 @@ This unintended functionality is deprecated in GitLab 15.8 and will be removed i
 
 <div class="deprecation removal-160 breaking-change">
 
+### Configuring Redis config file paths using environment variables is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+You can no longer specify Redis configuration file locations
+using the environment variables like `GITLAB_REDIS_CACHE_CONFIG_FILE` or
+`GITLAB_REDIS_QUEUES_CONFIG_FILE`. Use the default
+config file locations instead, for example `config/redis.cache.yml` or
+`config/redis.queues.yml`.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Container Registry pull-through cache
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>

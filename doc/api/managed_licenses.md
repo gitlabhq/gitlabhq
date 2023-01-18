@@ -19,7 +19,7 @@ GET /projects/:id/managed_licenses
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/managed_licenses"
@@ -52,7 +52,7 @@ GET /projects/:id/managed_licenses/:managed_license_id
 
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `managed_license_id`      | integer/string    | yes      | The ID or URL-encoded name of the license belonging to the project |
 
 ```shell
@@ -79,7 +79,7 @@ POST /projects/:id/managed_licenses
 
 | Attribute     | Type    | Required | Description                  |
 | ------------- | ------- | -------- | ---------------------------- |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`        | string  | yes      | The name of the managed license        |
 | `approval_status`       | string  | yes      | The approval status of the license. "allowed" or "denied". |
 
@@ -107,7 +107,7 @@ DELETE /projects/:id/managed_licenses/:managed_license_id
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `managed_license_id`      | integer/string    | yes      | The ID or URL-encoded name of the license belonging to the project |
 
 ```shell
@@ -126,7 +126,7 @@ PATCH /projects/:id/managed_licenses/:managed_license_id
 
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `managed_license_id`      | integer/string    | yes      | The ID or URL-encoded name of the license belonging to the project |
 | `approval_status`       | string  | yes      | The approval status of the license. "allowed" or "denied". |
 

@@ -6,11 +6,11 @@ module Tooling
     MARKER = 1
 
     def pack(map)
-      map.transform_values(&method(:create_tree_from_tests))
+      map.transform_values { |tests| create_tree_from_tests(tests) }
     end
 
     def unpack(compact_map)
-      compact_map.transform_values(&method(:retrieve_tests_from_tree))
+      compact_map.transform_values { |tree| retrieve_tests_from_tree(tree) }
     end
 
     private

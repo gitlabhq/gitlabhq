@@ -30,7 +30,7 @@ Read more in the Helm documentation about these topics:
 
 To authenticate to the Helm repository, you need either:
 
-- A [personal access token](../../../api/index.md#personalprojectgroup-access-tokens) with the scope set to `api`.
+- A [personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens) with the scope set to `api`.
 - A [deploy token](../../project/deploy_tokens/index.md) with the scope set to `read_package_registry`, `write_package_registry`, or both.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 
@@ -54,7 +54,7 @@ Once built, a chart can be uploaded to the desired channel with `curl` or `helm 
   - `<username>`: the GitLab username or the deploy token username.
   - `<access_token>`: the personal access token or the deploy token.
   - `<project_id>`: the project ID (like `42`) or the
-    [URL-encoded](../../../api/index.md#namespaced-path-encoding) path of the project (like `group%2Fproject`).
+    [URL-encoded](../../../api/rest/index.md#namespaced-path-encoding) path of the project (like `group%2Fproject`).
   - `<channel>`: the name of the channel (like `stable`).
 
 - With the [`helm cm-push`](https://github.com/chartmuseum/helm-push/#readme) plugin:

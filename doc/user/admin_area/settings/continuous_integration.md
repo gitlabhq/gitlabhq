@@ -188,7 +188,7 @@ For the value set for GitLab.com, see [Scheduled job archiving](../../gitlab_com
 ## Protect CI/CD variables by default
 
 To set all new [CI/CD variables](../../../ci/variables/index.md) as
-[protected](../../../ci/variables/index.md#protected-cicd-variables) by default:
+[protected](../../../ci/variables/index.md#protect-a-cicd-variable) by default:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.

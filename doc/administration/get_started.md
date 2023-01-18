@@ -241,7 +241,7 @@ You can make changes to your default rate limits from the Admin Area. For more i
 - Review the [rate limit on raw endpoints](../user/admin_area/settings/rate_limits_on_raw_endpoints.md). The default setting is 300 requests per minute for raw file access.
 - Review the [import/export rate limits](../user/admin_area/settings/import_export_rate_limits.md) of the six active defaults.
 
-For more information about API and rate limits, see our [API page](../api/index.md).
+For more information about API and rate limits, see our [API page](../api/rest/index.md).
 
 ## API and rate limits for GitLab SaaS
 
@@ -255,7 +255,7 @@ Rate limits also improve the security of your application.
 You can make changes to your default rate limits from the Admin Area. For more information about configuration, see the [Admin Area page](../security/rate_limits.md#configurable-limits).
 
 - Review the rate limit page.
-- Read our [API page](../api/index.md) for more information about API and rate limiting.
+- Read our [API page](../api/rest/index.md) for more information about API and rate limiting.
 
 ### GitLab SaaS-specific block and error responses
 

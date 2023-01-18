@@ -27,7 +27,7 @@ module Ci
       def execute
         params
           .fetch(:histograms, [])
-          .each(&method(:observe))
+          .each { |data| observe(data) }
 
         ServiceResponse.success(http_status: :created)
       end

@@ -3,13 +3,11 @@ import { mapActions, mapGetters } from 'vuex';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { REVIEW_BAR_VISIBLE_CLASS_NAME } from '../constants';
 import PreviewDropdown from './preview_dropdown.vue';
-import PublishButton from './publish_button.vue';
 import SubmitDropdown from './submit_dropdown.vue';
 
 export default {
   components: {
     PreviewDropdown,
-    PublishButton,
     SubmitDropdown,
   },
   mixins: [glFeatureFlagMixin()],
@@ -42,8 +40,7 @@ export default {
         data-qa-selector="review_bar_content"
       >
         <preview-dropdown />
-        <publish-button v-if="!glFeatures.mrReviewSubmitComment" class="gl-ml-3" show-count />
-        <submit-dropdown v-else />
+        <submit-dropdown />
       </div>
     </nav>
   </div>

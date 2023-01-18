@@ -40,7 +40,7 @@ GET /groups/:id/debian_distributions
 
 | Attribute  | Type            | Required | Description |
 | ---------- | --------------- | -------- | ----------- |
-| `id`       | integer/string  | yes      | The ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding). |
+| `id`       | integer/string  | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding). |
 | `codename` | string          | no       | Filter with specific `codename`. |
 | `suite`    | string          | no       | Filter with specific `suite`. |
 
@@ -82,7 +82,7 @@ GET /groups/:id/debian_distributions/:codename
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename` | integer        | yes      | The `codename` of a distribution. |
 
 ```shell
@@ -121,7 +121,7 @@ GET /groups/:id/debian_distributions/:codename/key.asc
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename` | integer        | yes      | The `codename` of a distribution. |
 
 ```shell
@@ -158,7 +158,7 @@ POST /groups/:id/debian_distributions
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename`                    | string         | yes      | The codename of a Debian distribution. |
 | `suite`                       | string         | no       | The suite of the new Debian distribution. |
 | `origin`                      | string         | no       | The origin of the new Debian distribution. |
@@ -205,7 +205,7 @@ PUT /groups/:id/debian_distributions/:codename
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename`                    | string         | yes      | The Debian distribution's new codename.  |
 | `suite`                       | string         | no       | The Debian distribution's new suite. |
 | `origin`                      | string         | no       | The Debian distribution's new origin. |
@@ -252,7 +252,7 @@ DELETE /groups/:id/debian_distributions/:codename
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `codename` | integer        | yes      | The codename of the Debian distribution. |
 
 ```shell

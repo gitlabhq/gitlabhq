@@ -106,7 +106,7 @@ module Packages
                                   .with_debian_architecture_name(architecture&.name)
                                   .with_debian_file_type(package_file_type)
                                   .find_each
-                                  .map(&method(:package_stanza_from_fields))
+                                  .map { |package_file| package_stanza_from_fields(package_file) }
         reuse_or_create_component_file(component, component_file_type, architecture, paragraphs.join("\n"))
       end
 

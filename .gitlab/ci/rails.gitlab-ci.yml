@@ -71,6 +71,7 @@ rspec migration pg12:
   extends:
     - .rspec-base-pg12
     - .rspec-base-migration
+    - .rails:rules:ee-and-foss-migration
     - .rspec-migration-parallel
 
 rspec migration pg12 predictive:
@@ -79,15 +80,40 @@ rspec migration pg12 predictive:
     - .predictive-rspec-tests
     - .rails:rules:ee-and-foss-migration:predictive
 
+rspec background_migration pg12:
+  extends:
+    - .rspec-base-pg12
+    - .rspec-base-migration
+    - .rails:rules:ee-and-foss-background-migration
+    - .rspec-background-migration-parallel
+
+rspec background_migration pg12 predictive:
+  extends:
+    - rspec background_migration pg12
+    - .predictive-rspec-tests
+    - .rails:rules:ee-and-foss-background-migration:predictive
+
 rspec migration pg12 single-db:
   extends:
     - rspec migration pg12
     - .single-db-rspec
     - .rails:rules:single-db
 
+rspec background_migration pg12 single-db:
+  extends:
+    - rspec background_migration pg12
+    - .single-db-rspec
+    - .rails:rules:single-db
+
 rspec migration pg12 praefect:
   extends:
     - rspec migration pg12
+    - .praefect-with-db
+    - .rails:rules:praefect-with-db
+
+rspec background_migration pg12 praefect:
+  extends:
+    - rspec background_migration pg12
     - .praefect-with-db
     - .rails:rules:praefect-with-db
 
@@ -319,10 +345,12 @@ rspec:deprecations:
   # so we use `dependencies` here.
   dependencies:
     - rspec migration pg12
+    - rspec background_migration pg12
     - rspec unit pg12
     - rspec integration pg12
     - rspec system pg12
     - rspec-ee migration pg12
+    - rspec-ee background_migration pg12
     - rspec-ee unit pg12
     - rspec-ee integration pg12
     - rspec-ee system pg12
@@ -349,31 +377,37 @@ rspec:coverage:
     - setup-test-env
     # FOSS/EE jobs
     - rspec migration pg12
+    - rspec background_migration pg12
     - rspec unit pg12
     - rspec integration pg12
     - rspec system pg12
     # FOSS/EE predictive jobs
     - rspec migration pg12 predictive
+    - rspec background_migration pg12 predictive
     - rspec unit pg12 predictive
     - rspec integration pg12 predictive
     - rspec system pg12 predictive
     # FOSS/EE single-db jobs
     - rspec migration pg12 single-db
+    - rspec background_migration pg12 single-db
     - rspec unit pg12 single-db
     - rspec integration pg12 single-db
     - rspec system pg12 single-db
     # EE jobs
     - rspec-ee migration pg12
+    - rspec-ee background_migration pg12
     - rspec-ee unit pg12
     - rspec-ee integration pg12
     - rspec-ee system pg12
     # EE predictive jobs
     - rspec-ee migration pg12 predictive
+    - rspec-ee background_migration pg12 predictive
     - rspec-ee unit pg12 predictive
     - rspec-ee integration pg12 predictive
     - rspec-ee system pg12 predictive
     # EE single-db jobs
     - rspec-ee migration pg12 single-db
+    - rspec-ee background_migration pg12 single-db
     - rspec-ee unit pg12 single-db
     - rspec-ee integration pg12 single-db
     - rspec-ee system pg12 single-db
@@ -383,6 +417,9 @@ rspec:coverage:
     - rspec migration pg12-as-if-foss
     - rspec migration pg12-as-if-foss predictive
     - rspec migration pg12-as-if-foss single-db
+    - rspec background_migration pg12-as-if-foss
+    - rspec background_migration pg12-as-if-foss predictive
+    - rspec background_migration pg12-as-if-foss single-db
     - rspec unit pg12-as-if-foss
     - rspec unit pg12-as-if-foss predictive
     - rspec unit pg12-as-if-foss single-db
@@ -482,9 +519,28 @@ rspec migration pg12-as-if-foss predictive:
     - .predictive-rspec-tests
     - .rails:rules:as-if-foss-migration:predictive
 
+rspec background_migration pg12-as-if-foss:
+  extends:
+    - .rspec-base-pg12-as-if-foss
+    - .rspec-base-migration
+    - .rails:rules:as-if-foss-background-migration
+    - .rspec-background-migration-parallel
+
+rspec background_migration pg12-as-if-foss predictive:
+  extends:
+    - rspec background_migration pg12-as-if-foss
+    - .predictive-rspec-tests
+    - .rails:rules:as-if-foss-background-migration:predictive
+
 rspec migration pg12-as-if-foss single-db:
   extends:
     - rspec migration pg12-as-if-foss
+    - .single-db-rspec
+    - .rails:rules:single-db
+
+rspec background_migration pg12-as-if-foss single-db:
+  extends:
+    - rspec background_migration pg12-as-if-foss
     - .single-db-rspec
     - .rails:rules:single-db
 
@@ -555,11 +611,42 @@ rspec-ee migration pg12 predictive:
     - .predictive-rspec-tests
     - .rails:rules:ee-only-migration:predictive
 
+rspec-ee background_migration pg12:
+  extends:
+    - .rspec-ee-base-pg12
+    - .rspec-base-migration
+    - .rails:rules:ee-only-background-migration
+    - .rspec-ee-background-migration-parallel
+
+rspec-ee background_migration pg12 predictive:
+  extends:
+    - rspec-ee background_migration pg12
+    - .predictive-rspec-tests
+    - .rails:rules:ee-only-background-migration:predictive
+
 rspec-ee migration pg12 single-db:
   extends:
     - rspec-ee migration pg12
     - .single-db-rspec
     - .rails:rules:single-db
+
+rspec-ee background_migration pg12 single-db:
+  extends:
+    - rspec-ee background_migration pg12
+    - .single-db-rspec
+    - .rails:rules:single-db
+
+rspec-ee migration pg12 praefect:
+  extends:
+    - rspec migration pg12
+    - .praefect-with-db
+    - .rails:rules:praefect-with-db
+
+rspec-ee background_migration pg12 praefect:
+  extends:
+    - rspec background_migration pg12
+    - .praefect-with-db
+    - .rails:rules:praefect-with-db
 
 rspec-ee unit pg12:
   extends:
@@ -651,6 +738,13 @@ rspec migration pg11:
     - .rails:rules:rspec-on-pg11
     - .rspec-migration-parallel
 
+rspec background_migration pg11:
+  extends:
+    - .rspec-base-pg11
+    - .rspec-base-migration
+    - .rails:rules:rspec-on-pg11
+    - .rspec-background-migration-parallel
+
 rspec unit pg11:
   extends:
     - .rspec-base-pg11
@@ -676,6 +770,13 @@ rspec migration pg13:
     - .rspec-base-migration
     - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-migration-parallel
+
+rspec background_migration pg13:
+  extends:
+    - .rspec-base-pg13
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-background-migration-parallel
 
 rspec unit pg13:
   extends:
@@ -707,6 +808,13 @@ rspec-ee migration pg11:
     - .rspec-base-migration
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-migration-parallel
+
+rspec-ee background_migration pg11:
+  extends:
+    - .rspec-ee-base-pg11
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-background-migration-parallel
 
 rspec-ee unit pg11:
   extends:
@@ -770,6 +878,13 @@ rspec-ee migration pg13:
     - .rspec-base-migration
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-migration-parallel
+
+rspec-ee background_migration pg13:
+  extends:
+    - .rspec-ee-base-pg13
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-background-migration-parallel
 
 rspec-ee unit pg13:
   extends:

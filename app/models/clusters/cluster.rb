@@ -245,7 +245,7 @@ module Clusters
     end
 
     def persisted_applications
-      APPLICATIONS_ASSOCIATIONS.map(&method(:public_send)).compact
+      APPLICATIONS_ASSOCIATIONS.filter_map { |association_name| public_send(association_name) } # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def applications

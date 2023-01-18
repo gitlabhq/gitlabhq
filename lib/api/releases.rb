@@ -150,18 +150,19 @@ module API
       params do
         requires :tag_name, type: String, desc: 'The Git tag the release is associated with', as: :tag
 
-        requires :file_path,
+        requires :direct_asset_path,
           type: String,
           file_path: true,
-          desc: 'The path to the file to download, as specified when creating the release asset'
+          desc: 'The path to the file to download, as specified when creating the release asset',
+          as: :filepath
       end
       route_setting :authentication, job_token_allowed: true
-      get ':id/releases/:tag_name/downloads/*file_path', format: false, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
+      get ':id/releases/:tag_name/downloads/*direct_asset_path', format: false, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_read_code!
 
         not_found! unless release
 
-        link = release.links.find_by_filepath!("/#{params[:file_path]}")
+        link = release.links.find_by_filepath!("/#{params[:filepath]}")
 
         not_found! unless link
 
@@ -237,7 +238,7 @@ module API
           optional :links, type: Array do
             requires :name, type: String, desc: 'The name of the link. Link names must be unique within the release'
             requires :url, type: String, desc: 'The URL of the link. Link URLs must be unique within the release'
-            optional :filepath, type: String, desc: 'Optional path for a direct asset link'
+            optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link', as: :filepath
             optional :link_type, type: String, desc: 'The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`'
           end
         end

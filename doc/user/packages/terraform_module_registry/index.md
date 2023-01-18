@@ -15,7 +15,7 @@ as a Terraform module registry.
 
 To authenticate to the Terraform module registry, you need either:
 
-- A [personal access token](../../../api/index.md#personalprojectgroup-access-tokens) with at least `read_api` rights.
+- A [personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens) with at least `read_api` rights.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 
 ## Publish a Terraform Module
@@ -26,7 +26,7 @@ Prerequisites:
 
 - The package name and version [must be unique in the top-level namespace](../infrastructure_registry/index.md#how-module-resolution-works).
 - Your project and group names must not include a dot (`.`). For example, `source = "gitlab.example.com/my.group/project.name"`.
-- You must [authenticate with the API](../../../api/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
+- You must [authenticate with the API](../../../api/rest/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
 - The name of a module [must be unique within the scope of its group](../infrastructure_registry/index.md#how-module-resolution-works), otherwise an
   [error occurs](#troubleshooting).
 
@@ -36,7 +36,7 @@ PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module
 
 | Attribute          | Type            | Required | Description                                                                                                                      |
 | -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
-| `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/index.md#namespaced-path-encoding).                                    |
+| `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-path-encoding).                                    |
 | `module-name`      | string          | yes      | The package name. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z), digits (0-9), and hyphens (`-`).
 | `module-system`    | string          | yes      | The package system. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z), digits (0-9), and hyphens (`-`). More information can be found in the [Terraform Module Registry Protocol documentation](https://www.terraform.io/internals/module-registry-protocol).
 | `module-version`   | string          | yes      | The package version. It must be valid according to the [Semantic Versioning Specification](https://semver.org/).
@@ -83,7 +83,7 @@ Example response:
 
 Prerequisites:
 
-- You need to [authenticate with the API](../../../api/index.md#authentication). If authenticating with a personal access token, it must be configured with the `read_api` scope.
+- You need to [authenticate with the API](../../../api/rest/index.md#authentication). If authenticating with a personal access token, it must be configured with the `read_api` scope.
 
 Authentication tokens (Job Token or Personal Access Token) can be provided for `terraform` in your `~/.terraformrc` file:
 

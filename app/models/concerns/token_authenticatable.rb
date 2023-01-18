@@ -86,7 +86,7 @@ module TokenAuthenticatable
 
     def token_authenticatable_module
       @token_authenticatable_module ||=
-        const_set(:TokenAuthenticatable, Module.new).tap(&method(:include))
+        const_set(:TokenAuthenticatable, Module.new).tap { |mod| include mod }
     end
   end
 end

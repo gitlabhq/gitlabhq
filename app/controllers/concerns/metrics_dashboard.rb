@@ -37,7 +37,7 @@ module MetricsDashboard
   def all_dashboards
     dashboard_finder
       .find_all_paths(project_for_dashboard)
-      .map(&method(:amend_dashboard))
+      .map { |dashboard| amend_dashboard(dashboard) }
   end
 
   def amend_dashboard(dashboard)

@@ -14,7 +14,7 @@ With group access tokens, you can use a single token to:
 
 You can use a group access token to authenticate:
 
-- With the [GitLab API](../../../api/index.md#personalprojectgroup-access-tokens).
+- With the [GitLab API](../../../api/rest/index.md#personalprojectgroup-access-tokens).
 - In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/330718) and later, authenticate with Git over HTTPS.
   Use:
 

@@ -83,9 +83,12 @@ module Quality
 
     def level_for(file_path)
       case file_path
-      # Detect migration first since some background migration tests are under
-      # spec/lib/gitlab/background_migration and tests under spec/lib are unit by default
-      when regexp(:migration), regexp(:background_migration)
+      # Detect background migration first since some are under
+      #     spec/lib/gitlab/background_migration
+      # and tests under spec/lib are unit by default
+      when regexp(:background_migration)
+        :background_migration
+      when regexp(:migration)
         :migration
       # Detect frontend fixture before matching other unit tests
       when regexp(:frontend_fixture)
@@ -101,10 +104,6 @@ module Quality
       end
     end
 
-    def background_migration?(file_path)
-      !!(file_path =~ regexp(:background_migration))
-    end
-
     private
 
     def prefixes_for_pattern
@@ -116,7 +115,7 @@ module Quality
     def prefixes_for_regex
       return '' if prefixes.empty?
 
-      regex_prefix = prefixes.map(&Regexp.method(:escape)).join('|')
+      regex_prefix = prefixes.map { |prefix| Regexp.escape(prefix) }.join('|')
 
       "(#{regex_prefix})"
     end
@@ -130,14 +129,8 @@ module Quality
       end
     end
 
-    def migration_and_background_migration_folders
-      TEST_LEVEL_FOLDERS.fetch(:migration) + TEST_LEVEL_FOLDERS.fetch(:background_migration)
-    end
-
     def folders_pattern(level)
       case level
-      when :migration
-        "{#{migration_and_background_migration_folders.join(',')}}"
       when :all
         '**'
       else
@@ -147,8 +140,6 @@ module Quality
 
     def folders_regex(level)
       case level
-      when :migration
-        "(#{migration_and_background_migration_folders.join('|')})/"
       when :all
         ''
       else

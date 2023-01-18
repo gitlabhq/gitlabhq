@@ -50,7 +50,7 @@ password = <your_personal_access_token>
 ```
 
 The `<project_id>` is either the project's
-[URL-encoded](../../../api/index.md#namespaced-path-encoding)
+[URL-encoded](../../../api/rest/index.md#namespaced-path-encoding)
 path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
 ### Authenticate with a deploy token
@@ -69,7 +69,7 @@ password = <deploy token>
 ```
 
 The `<project_id>` is either the project's
-[URL-encoded](../../../api/index.md#namespaced-path-encoding)
+[URL-encoded](../../../api/rest/index.md#namespaced-path-encoding)
 path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
 ### Authenticate with a CI job token
@@ -220,7 +220,7 @@ pip install --index-url https://<personal_access_token_name>:<personal_access_to
 - `<package_name>` is the package name.
 - `<personal_access_token_name>` is a personal access token name with the `read_api` scope.
 - `<personal_access_token>` is a personal access token with the `read_api` scope.
-- `<project_id>` is either the project's [URL-encoded](../../../api/index.md#namespaced-path-encoding)
+- `<project_id>` is either the project's [URL-encoded](../../../api/rest/index.md#namespaced-path-encoding)
   path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
 In these commands, you can use `--extra-index-url` instead of `--index-url`. However, using
@@ -324,7 +324,7 @@ pip cache purge
 You can define multiple `index-url` and `extra-index-url` parameters.
 
 If you use the same domain name (such as `gitlab.example.com`) multiple times with different authentication
-tokens, `pip` may not be able to find your packages. This problem is due to how `pip` 
+tokens, `pip` may not be able to find your packages. This problem is due to how `pip`
 [registers and stores your tokens](https://github.com/pypa/pip/pull/10904#issuecomment-1126690115) during commands executions.
 
 To workaround this issue, you can use a [group deploy token](../../project/deploy_tokens/index.md) with the

@@ -66,7 +66,7 @@ Supported attributes:
 | `attribute`              | datatype | No       | Detailed description. |
 | `attribute`              | datatype | No       | Detailed description. |
 
-If successful, returns [`<status_code>`](../../api/index.md#status-codes) and the following
+If successful, returns [`<status_code>`](../../api/rest/index.md#status-codes) and the following
 response attributes:
 
 | Attribute                | Type     | Description           |
@@ -159,10 +159,10 @@ For information about writing attribute descriptions, see the [GraphQL API descr
 ## Response body description
 
 Start the description with the following sentence, replacing `status code` with the
-relevant [HTTP status code](../../api/index.md#status-codes), for example:
+relevant [HTTP status code](../../api/rest/index.md#status-codes), for example:
 
 ```markdown
-If successful, returns [`200 OK`](../../api/index.md#status-codes) and the
+If successful, returns [`200 OK`](../../api/rest/index.md#status-codes) and the
 following response attributes:
 ```
 

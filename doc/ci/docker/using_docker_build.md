@@ -857,10 +857,10 @@ build:
     BUILDAH_FORMAT: docker
     # You may need this workaround for some errors: https://stackoverflow.com/a/70438141/1233435
     BUILDAH_ISOLATION: chroot
-    FQ_IMAGE_NAME: "${CI_REGISTRY_IMAGE}/test"
+    FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE/test"
   before_script:
     # Log in to the GitLab container registry
-    - export REGISTRY_AUTH_FILE=${HOME}/auth.json
+    - export REGISTRY_AUTH_FILE=$HOME/auth.json
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
     - buildah images

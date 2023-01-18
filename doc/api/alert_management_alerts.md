@@ -17,7 +17,7 @@ POST /projects/:id/alert_management_alerts/:alert_iid/metric_images
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `alert_iid` | integer | yes      | The internal ID of a project's alert. |
 
 ```shell
@@ -46,7 +46,7 @@ GET /projects/:id/alert_management_alerts/:alert_iid/metric_images
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `alert_iid` | integer | yes      | The internal ID of a project's alert. |
 
 ```shell
@@ -84,7 +84,7 @@ PUT /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `alert_iid` | integer | yes      | The internal ID of a project's alert. |
 | `image_id` | integer | yes      | The ID of the image. |
 | `url` | string | no      | The URL to view more metrics information. |
@@ -115,7 +115,7 @@ DELETE /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `alert_iid` | integer | yes      | The internal ID of a project's alert. |
 | `image_id` | integer | yes      | The ID of the image. |
 

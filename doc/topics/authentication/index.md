@@ -39,11 +39,11 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 ## API
 
-- [OAuth 2 Tokens](../../api/index.md#oauth2-tokens)
-- [Personal access tokens](../../api/index.md#personalprojectgroup-access-tokens)
-- [Project access tokens](../../api/index.md#personalprojectgroup-access-tokens)
-- [Group access tokens](../../api/index.md#personalprojectgroup-access-tokens)
-- [Impersonation tokens](../../api/index.md#impersonation-tokens)
+- [OAuth 2 Tokens](../../api/rest/index.md#oauth2-tokens)
+- [Personal access tokens](../../api/rest/index.md#personalprojectgroup-access-tokens)
+- [Project access tokens](../../api/rest/index.md#personalprojectgroup-access-tokens)
+- [Group access tokens](../../api/rest/index.md#personalprojectgroup-access-tokens)
+- [Impersonation tokens](../../api/rest/index.md#impersonation-tokens)
 - [OAuth 2.0 identity provider API](../../api/oauth2.md)
 
 ## Third-party resources

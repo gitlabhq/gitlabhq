@@ -11,11 +11,6 @@ module QA
           element :review_preview_dropdown
         end
 
-        # Remove once :mr_review_submit_comment ff is enabled by default
-        view 'app/assets/javascripts/batch_comments/components/publish_button.vue' do
-          element :submit_review_button
-        end
-
         view 'app/assets/javascripts/batch_comments/components/review_bar.vue' do
           element :review_bar_content
         end
@@ -170,16 +165,8 @@ module QA
             click_element(:review_preview_dropdown)
           end
 
-          # Remove if statement once :mr_review_submit_comment ff is enabled by default
-
-          if has_element?(:submit_review_dropdown, wait: 5)
-            click_element(:submit_review_dropdown)
-            click_element(:submit_review_button)
-          else
-            within_element(:review_bar_content) do
-              click_element(:submit_review_button)
-            end
-          end
+          click_element(:submit_review_dropdown)
+          click_element(:submit_review_button)
 
           # After clicking the button, wait for the review bar to disappear
           # before moving on to the next part of the test

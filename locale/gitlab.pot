@@ -1061,7 +1061,7 @@ msgid_plural "%{strongStart}%{count}%{strongEnd} commits"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{strongStart}Tip:%{strongEnd} You can also check out merge requests locally. %{linkStart}Learn more.%{linkEnd}"
+msgid "%{strongStart}Tip:%{strongEnd} You can also %{linkStart}check out with merge request ID%{linkEnd}."
 msgstr ""
 
 msgid "%{strong_open}%{group_name}%{strong_close} projects:"
@@ -3603,6 +3603,9 @@ msgid "Advanced Settings"
 msgstr ""
 
 msgid "Advanced export options"
+msgstr ""
+
+msgid "AdvancedSearch|Could not fetch index entities. Please try again later."
 msgstr ""
 
 msgid "AdvancedSearch|Elasticsearch version not compatible"
@@ -8241,7 +8244,7 @@ msgstr ""
 msgid "Check out branch"
 msgstr ""
 
-msgid "Check out, review, and merge locally"
+msgid "Check out, review, and resolve locally"
 msgstr ""
 
 msgid "Check the %{code_open}elasticsearch.log%{code_close} file to debug why the migration halted and make any changes before retrying the migration. When you fix the cause of the failure, select %{strong_open}Retry migration%{strong_close}, and the migration is scheduled to retry in the background."
@@ -26176,9 +26179,6 @@ msgstr ""
 msgid "Merge in progress"
 msgstr ""
 
-msgid "Merge locally"
-msgstr ""
-
 msgid "Merge options"
 msgstr ""
 
@@ -26231,9 +26231,6 @@ msgid "Merge requests are a place to propose changes you've made to a project an
 msgstr ""
 
 msgid "Merge requests can't be merged if the status checks did not succeed or are still running."
-msgstr ""
-
-msgid "Merge the feature branch into the target branch and fix any conflicts. %{linkStart}How do I fix them?%{linkEnd}"
 msgstr ""
 
 msgid "Merge unavailable: merge requests are read-only in a secondary Geo node."
@@ -28179,9 +28176,6 @@ msgid "Note creation requests"
 msgstr ""
 
 msgid "Note parameters are invalid: %{errors}"
-msgstr ""
-
-msgid "Note that pushing to GitLab requires write access to this repository."
 msgstr ""
 
 msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow connecting repositories without generating a Personal Access Token."
@@ -34405,7 +34399,7 @@ msgstr ""
 msgid "Push project from command line"
 msgstr ""
 
-msgid "Push the target branch up to GitLab."
+msgid "Push the source branch up to GitLab."
 msgstr ""
 
 msgid "Push to create a project"
@@ -35853,13 +35847,19 @@ msgstr ""
 msgid "Resolve"
 msgstr ""
 
+msgid "Resolve any conflicts. %{linkStart}How do I fix them?%{linkEnd}"
+msgstr ""
+
 msgid "Resolve conflicts"
 msgstr ""
 
 msgid "Resolve conflicts on source branch"
 msgstr ""
 
-msgid "Resolve these conflicts or ask someone with write access to this repository to merge it locally."
+msgid "Resolve locally"
+msgstr ""
+
+msgid "Resolve these conflicts, or ask someone with write access to this repository to resolve them locally."
 msgstr ""
 
 msgid "Resolve thread"

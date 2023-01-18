@@ -45,7 +45,7 @@ module UnnestedInFilters
 
       def serialized_array_values
         values.map(&:value)
-              .then { array_type.serialize(_1) }
+              .then { |value| array_type.serialize(value) }
               .then { |array| quote(array) }
       end
 
@@ -58,7 +58,7 @@ module UnnestedInFilters
       end
 
       def column
-        columns.find { _1.name == attribute }
+        columns.find { |column| column.name == attribute }
       end
 
       def unprepared_statement_collector
@@ -180,12 +180,12 @@ module UnnestedInFilters
     end
 
     def filter_query
-      model.from(from).then { add_relation_defaults(_1) }
+      model.from(from).then { |relation| add_relation_defaults(relation) }
     end
 
     def index_only_filter_query
       model.where(model.primary_key => filter_query.select(model.primary_key))
-           .then { add_relation_defaults(_1) }
+           .then { |relation| add_relation_defaults(relation) }
     end
 
     def add_relation_defaults(new_relation)
@@ -229,7 +229,9 @@ module UnnestedInFilters
     # Actively filter any nodes that don't belong to the primary queried table to prevent sql type resolution issues
     # Context: https://gitlab.com/gitlab-org/gitlab/-/issues/370271#note_1151019824
     def arel_in_nodes
-      where_clause_arel_nodes.select(&method(:in_predicate?)).select { model_column_names.include?(_1.left.name) }
+      where_clause_arel_nodes
+        .select { |arel_node| in_predicate?(arel_node) }
+        .select { |arel_node| model_column_names.include?(arel_node.left.name) }
     end
 
     # `ActiveRecord::WhereClause#ast` is returning a single node when there is only one
@@ -270,7 +272,7 @@ module UnnestedInFilters
     end
 
     def order_attributes
-      @order_attributes ||= order_values.flat_map(&method(:extract_column_name))
+      @order_attributes ||= order_values.flat_map { |order_value| extract_column_name(order_value) }
     end
 
     def extract_column_name(order_value)

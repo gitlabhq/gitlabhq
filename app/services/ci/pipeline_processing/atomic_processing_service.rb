@@ -42,13 +42,14 @@ module Ci
       end
 
       def update_stages!
-        pipeline.stages.ordered.each(&method(:update_stage!))
+        pipeline.stages.ordered.each { |stage| update_stage!(stage) }
       end
 
       def update_stage!(stage)
         # Update processables for a given stage in bulk/slices
-        ids = @collection.created_processable_ids_for_stage_position(stage.position)
-        ids.in_groups_of(BATCH_SIZE, false, &method(:update_processables!))
+        @collection
+          .created_processable_ids_for_stage_position(stage.position)
+          .in_groups_of(BATCH_SIZE, false) { |ids| update_processables!(ids) }
 
         status = @collection.status_for_stage_position(stage.position)
         stage.set_status(status)
@@ -62,7 +63,7 @@ module Ci
           .ordered_by_stage
           .select_with_aggregated_needs(project)
 
-        created_processables.each(&method(:update_processable!))
+        created_processables.each { |processable| update_processable!(processable) }
       end
 
       def update_pipeline!

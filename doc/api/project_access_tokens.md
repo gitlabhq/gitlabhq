@@ -20,7 +20,7 @@ GET projects/:id/access_tokens
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
+| `id` | integer or string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens"
@@ -56,7 +56,7 @@ GET projects/:id/access_tokens/:token_id
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
+| `id` | integer or string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `token_id` | integer or string | yes | ID of the project access token |
 
 ```shell
@@ -101,7 +101,7 @@ POST projects/:id/access_tokens
 
 | Attribute | Type    | required | Description                                                                                                                           |
 |-----------|---------|----------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding)                                                            |
+| `id` | integer or string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding)                                                            |
 | `name` | String | yes | Name of the project access token                                                                                                               |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token)                               |
 | `access_level` | Integer | no | Access level. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Defaults to `40`. |
@@ -144,7 +144,7 @@ DELETE projects/:id/access_tokens/:token_id
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
+| `id` | integer or string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `token_id` | integer or string | yes | ID of the project access token |
 
 ```shell

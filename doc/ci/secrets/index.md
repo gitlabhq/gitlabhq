@@ -119,7 +119,7 @@ In this example:
 
 After GitLab fetches the secret from Vault, the value is saved in a temporary file.
 The path to this file is stored in a CI/CD variable named `DATABASE_PASSWORD`,
-similar to [variables of type `file`](../variables/index.md#cicd-variable-types).
+similar to [variables of type `file`](../variables/index.md#use-file-type-cicd-variables).
 
 To overwrite the default behavior, set the `file` option explicitly:
 

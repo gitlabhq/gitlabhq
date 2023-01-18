@@ -27,7 +27,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description                                                                                                   |
 |---------------------|----------------|----------|---------------------------------------------------------------------------------------------------------------|
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `sort`              | string         | no       | The direction of the order. Either `desc` (default) for descending order or `asc` for ascending order.        |
 | `simple`            | boolean        | no       | Return only limited fields for each release.                                                                  |
 

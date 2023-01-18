@@ -36,12 +36,12 @@ GET /projects/:id/releases
 
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding). |
 | `order_by`    | string         | no       | The field to use as order. Either `released_at` (default) or `created_at`. |
 | `sort`        | string         | no       | The direction of the order. Either `desc` (default) for descending order or `asc` for ascending order. |
 | `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
 
-If successful, returns [`200 OK`](../../api/index.md#status-codes) and the following
+If successful, returns [`200 OK`](../../api/rest/index.md#status-codes) and the following
 response attributes:
 
 | Attribute            | Type    | Description                           |
@@ -256,11 +256,11 @@ GET /projects/:id/releases/:tag_name
 
 | Attribute                  | Type           | Required | Description                                                                         |
 |----------------------------| -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).  |
+| `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding).  |
 | `tag_name`                 | string         | yes      | The Git tag the release is associated with.                                         |
 | `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
 
-If successful, returns [`200 OK`](../../api/index.md#status-codes) and the following
+If successful, returns [`200 OK`](../../api/rest/index.md#status-codes) and the following
 response attributes:
 
 | Attribute         | Type    | Description                           |
@@ -402,7 +402,7 @@ GET /projects/:id/releases/:tag_name/downloads/:filepath
 
 | Attribute                  | Type           | Required | Description                                                                         |
 |----------------------------| -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).  |
+| `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding).  |
 | `tag_name`                 | string         | yes      | The Git tag the release is associated with.                                         |
 | `filepath`                 | string         | yes      | Path to the release asset file as specified when [creating](links.md#create-a-release-link) or [updating](links.md#update-a-release-link) its link. |
 
@@ -453,7 +453,7 @@ POST /projects/:id/releases
 
 | Attribute          | Type            | Required                    | Description                                                                                                                      |
 | -------------------| --------------- | --------                    | -------------------------------------------------------------------------------------------------------------------------------- |
-| `id`               | integer/string  | yes                         | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).                                              |
+| `id`               | integer/string  | yes                         | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding).                                              |
 | `name`             | string          | no                          | The release name.                                                                                                                |
 | `tag_name`         | string          | yes                         | The tag where the release is created from.                                                                                  |
 | `tag_message`      | string          | no                          | Message to use if creating a new annotated tag.                                                                                  |
@@ -603,7 +603,7 @@ POST /projects/:id/releases/:tag_name/evidence
 
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The Git tag the release is associated with.                                         |
 
 Example request:
@@ -630,7 +630,7 @@ PUT /projects/:id/releases/:tag_name
 
 | Attribute     | Type            | Required | Description                                                                                                 |
 | ------------- | --------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
-| `id`          | integer/string  | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).                         |
+| `id`          | integer/string  | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding).                         |
 | `tag_name`    | string          | yes      | The Git tag the release is associated with.                                                                 |
 | `name`        | string          | no       | The release name.                                                                                           |
 | `description` | string          | no       | The description of the release. You can use [Markdown](../../user/markdown.md).                             |
@@ -739,7 +739,7 @@ DELETE /projects/:id/releases/:tag_name
 
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The Git tag the release is associated with.                                         |
 
 Example request:

@@ -49,7 +49,9 @@ module PrometheusAdapter
       query_class = query_klass_for(query_name)
       query_args = build_query_args(*args)
 
-      with_reactive_cache(query_class.name, *query_args, &query_class.method(:transform_reactive_result))
+      with_reactive_cache(query_class.name, *query_args) do |result|
+        query_class.transform_reactive_result(result)
+      end
     end
 
     # Cache metrics for specific environment

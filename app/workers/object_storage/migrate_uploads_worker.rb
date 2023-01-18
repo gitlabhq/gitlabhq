@@ -99,7 +99,7 @@ module ObjectStorage
     end
 
     def migrate(uploads)
-      uploads.map(&method(:process_upload))
+      uploads.map { |upload| process_upload(upload) }
     end
 
     def process_upload(upload)

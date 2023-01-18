@@ -445,7 +445,7 @@ GET /groups/:id/search
 
 | Attribute | Type | Required | Description  |
 | --------- | ---- | -------- | -------------|
-| `id`                | integer or string   | Yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer or string   | Yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `scope`       | string   | Yes | The scope to search in. Values include `issues`, `merge_requests`, `milestones`, `projects`, `users`. [Additional scopes](#additional-scopes): `blobs`, `commits`, `notes`, `wiki_blobs`. |
 | `search`      | string   | Yes | The search query. |
 | `confidential` | boolean   | No | Filter by confidentiality. Supports only `issues` scope; other scopes are ignored. |
@@ -834,7 +834,7 @@ GET /projects/:id/search
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ------------|
-| `id` | integer or string | Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id` | integer or string | Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `scope`       | string   | Yes | The scope to search in. Values include `blobs`, `commits`, `issues`, `merge_requests`, `milestones`, `notes`, `users`, and `wiki_blobs`. |
 | `search`      | string   | Yes | The search query. |
 | `confidential` | boolean   | No | Filter by confidentiality. Supports `issues` scope; other scopes are ignored. |

@@ -34,7 +34,7 @@ describe('MRWidgetHowToMerge', () => {
   });
 
   it('renders a selection of markdown fields', () => {
-    expect(findInstructionsFields().length).toBe(3);
+    expect(findInstructionsFields().length).toBe(2);
   });
 
   it('renders a tip including a link to docs when a valid link is present', () => {
@@ -48,23 +48,11 @@ describe('MRWidgetHowToMerge', () => {
 
   it('should render different instructions based on if the user can merge', () => {
     mountComponent({ props: { canMerge: true } });
-    expect(findInstructionsFields().at(2).text()).toContain('git push origin');
-  });
-
-  it('should render different instructions based on if the merge is based off a fork', () => {
-    mountComponent({ props: { isFork: true } });
-    expect(findInstructionsFields().at(0).text()).toContain('FETCH_HEAD');
-  });
-
-  it('escapes the target branch name shell-secure', () => {
-    mountComponent({ props: { targetBranch: '";echo$IFS"you_shouldnt_run_this' } });
-
-    expect(findInstructionsFields().at(1).text()).toContain('\'";echo$IFS"you_shouldnt_run_this\'');
+    expect(findInstructionsFields().at(1).text()).toContain('git push origin');
   });
 
   it('escapes the source branch name shell-secure', () => {
     mountComponent({ props: { sourceBranch: 'branch-of-$USER' } });
-
     expect(findInstructionsFields().at(0).text()).toContain("'branch-of-$USER'");
   });
 });

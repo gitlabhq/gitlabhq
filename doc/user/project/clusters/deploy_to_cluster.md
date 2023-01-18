@@ -43,7 +43,7 @@ following command in your deployment job script, for Kubernetes to access the re
   ```
 
 The Kubernetes cluster integration exposes these
-[deployment variables](../../../ci/variables/index.md#deployment-variables) in the
+[deployment variables](../../../ci/variables/predefined_variables.md#deployment-variables) in the
 GitLab CI/CD build environment to deployment jobs. Deployment jobs have
 [defined a target environment](../../../ci/environments/index.md).
 

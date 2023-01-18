@@ -648,6 +648,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/resource_milestone_events.md @msedlakjakubowski
 /doc/api/resource_state_events.md @msedlakjakubowski
 /doc/api/resource_weight_events.md @msedlakjakubowski
+/doc/api/rest/index.md @ashrafkhamis
 /doc/api/runners.md @fneill
 /doc/api/saml.md @jglassman1
 /doc/api/scim.md @jglassman1

@@ -38,7 +38,7 @@ RSpec.describe FeatureFlagsHelper do
                              feature_flags_path: "/#{project.full_path}/-/feature_flags",
                              environments_endpoint: "/#{project.full_path}/-/environments/search.json",
                              strategy_type_docs_page_path: "/help/operations/feature_flags#feature-flag-strategies",
-                             environments_scope_docs_path: "/help/ci/environments/index.md#scope-environments-with-specs")
+                             environments_scope_docs_path: "/help/ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable")
     end
   end
 end

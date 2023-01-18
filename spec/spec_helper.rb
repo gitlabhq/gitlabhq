@@ -109,12 +109,12 @@ RSpec.configure do |config|
 
     # Do not overwrite migration if it's already set
     unless metadata.key?(:migration)
-      metadata[:migration] = true if metadata[:level] == :migration
+      metadata[:migration] = true if metadata[:level] == :migration || metadata[:level] == :background_migration
     end
 
     # Do not overwrite schema if it's already set
     unless metadata.key?(:schema)
-      metadata[:schema] = :latest if quality_level.background_migration?(location)
+      metadata[:schema] = :latest if metadata[:level] == :background_migration
     end
 
     # Do not overwrite type if it's already set

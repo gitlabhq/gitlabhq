@@ -36,7 +36,7 @@ export default {
       <p class="gl-mb-0">
         {{
           __(
-            'Resolve these conflicts or ask someone with write access to this repository to merge it locally.',
+            'Resolve these conflicts, or ask someone with write access to this repository to resolve them locally.',
           )
         }}
       </p>
@@ -54,7 +54,7 @@ export default {
           v-gl-modal-directive="'modal-merge-info'"
           class="gl-alert-action"
         >
-          {{ __('Merge locally') }}
+          {{ __('Resolve locally') }}
         </gl-button>
       </template>
     </gl-alert>

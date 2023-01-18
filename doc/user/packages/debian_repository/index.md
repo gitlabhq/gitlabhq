@@ -70,7 +70,7 @@ Creating a Debian package is documented [on the Debian Wiki](https://wiki.debian
 To create a distribution, publish a package, or install a private package, you need one of the
 following:
 
-- [Personal access token](../../../api/index.md#personalprojectgroup-access-tokens)
+- [Personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens)
 - [CI/CD job token](../../../ci/jobs/ci_job_token.md)
 - [Deploy token](../../project/deploy_tokens/index.md)
 

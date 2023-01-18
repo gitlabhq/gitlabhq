@@ -3706,7 +3706,7 @@ Use `secrets` to specify [CI/CD secrets](../secrets/index.md) to:
 
 - Retrieve from an external secrets provider.
 - Make available in the job as [CI/CD variables](../variables/index.md)
-  ([`file` type](../variables/index.md#cicd-variable-types) by default).
+  ([`file` type](../variables/index.md#use-file-type-cicd-variables) by default).
 
 This keyword must be used with `secrets:vault`.
 
@@ -3765,7 +3765,7 @@ job:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250695) in GitLab 14.1 and GitLab Runner 14.1.
 
 Use `secrets:file` to configure the secret to be stored as either a
-[`file` or `variable` type CI/CD variable](../variables/index.md#cicd-variable-types)
+[`file` or `variable` type CI/CD variable](../variables/index.md#use-file-type-cicd-variables)
 
 By default, the secret is passed to the job as a `file` type CI/CD variable. The value
 of the secret is stored in the file and the variable contains the path to the file.
@@ -4347,7 +4347,7 @@ deploy_review_job:
 
 - All YAML-defined variables are also set to any linked [Docker service containers](../services/index.md).
 - YAML-defined variables are meant for non-sensitive project configuration. Store sensitive information
-  in [protected variables](../variables/index.md#protected-cicd-variables) or [CI/CD secrets](../secrets/index.md).
+  in [protected variables](../variables/index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/index.md).
 - [Manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
   and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
   are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)

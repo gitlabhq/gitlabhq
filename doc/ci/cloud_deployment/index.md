@@ -31,7 +31,7 @@ After you set up authentication, you can configure CI/CD to deploy.
    | `AWS_SECRET_ACCESS_KEY`        | Your secret access key. |
    | `AWS_DEFAULT_REGION`           | Your region code. You might want to confirm that the AWS service you intend to use is [available in the chosen region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/). |
 
-1. Variables are [protected by default](../variables/index.md#protected-cicd-variables).
+1. Variables are [protected by default](../variables/index.md#protect-a-cicd-variable).
    To use GitLab CI/CD with branches or tags that are not protected,
    clear the **Protect variable** checkbox.
 
@@ -190,7 +190,7 @@ To deploy to EC2, complete the following steps.
      ```
 
    - If you do not want these JSON objects saved in your repository, add each object
-     as a separate [file type CI/CD variable](../variables/index.md#cicd-variable-types)
+     as a separate [file type CI/CD variable](../variables/index.md#use-file-type-cicd-variables)
      in the project settings. Use the same variable names as above.
 
 1. In your `.gitlab-ci.yml` file, create a CI/CD variable for the name of the stack. For example:

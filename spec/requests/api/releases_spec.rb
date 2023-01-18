@@ -573,7 +573,7 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
     end
   end
 
-  describe 'GET /projects/:id/releases/:tag_name/downloads/*file_path' do
+  describe 'GET /projects/:id/releases/:tag_name/downloads/*direct_asset_path' do
     let!(:release) { create(:release, project: project, tag: 'v0.1', author: maintainer) }
     let!(:link) { create(:release_link, release: release, url: "#{url}#{filepath}", filepath: filepath) }
     let(:filepath) { '/bin/bigfile.exe' }
@@ -634,6 +634,16 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
                 expect(response).to redirect_to("#{url}#{filepath}")
               end
             end
+          end
+        end
+
+        context 'when direct_asset_path is used' do
+          let(:direct_asset_path) { filepath }
+
+          it 'redirects to the file download URL successfully' do
+            get api("/projects/#{project.id}/releases/v0.1/downloads#{direct_asset_path}", maintainer)
+
+            expect(response).to redirect_to("#{url}#{direct_asset_path}")
           end
         end
 
@@ -909,6 +919,22 @@ RSpec.describe API::Releases, feature_category: :release_orchestration do
       expect do
         post api("/projects/#{project.id}/releases", maintainer), params: params
       end.not_to change { Project.find_by_id(project.id).repository.tag_count }
+    end
+
+    context 'when using `direct_asset_path` for the asset link' do
+      before do
+        params[:direct_asset_path] = params.delete(:filepath)
+      end
+
+      it 'creates a new release successfully' do
+        expect do
+          post api("/projects/#{project.id}/releases", maintainer), params: params
+        end.to change { Release.count }.by(1)
+
+        release = project.releases.last
+
+        expect(release.links.last.filepath).to eq('/permanent/path/to/runbook')
+      end
     end
 
     context 'with protected tag' do

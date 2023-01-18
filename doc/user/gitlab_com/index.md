@@ -429,7 +429,7 @@ No response headers are provided.
 
 ### Pagination response headers
 
-For performance reasons, if a query returns more than 10,000 records, [GitLab excludes some headers](../../api/index.md#pagination-response-headers).
+For performance reasons, if a query returns more than 10,000 records, [GitLab excludes some headers](../../api/rest/index.md#pagination-response-headers).
 
 ### Visibility settings
 

@@ -184,7 +184,7 @@ Example response:
 ]
 ```
 
-To view more than the first 20 runners, use [pagination](index.md#pagination).
+To view more than the first 20 runners, use [pagination](rest/index.md#pagination).
 
 ## Get runner's details
 
@@ -462,7 +462,7 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 
 | Attribute  | Type           | Required | Description                                                                                                                                                                           |
 |------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user                                                                        |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user                                                                        |
 | `scope`    | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided           |
 | `type`     | string         | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`                                                                                                    |
 | `status`   | string         | no       | The status of runners to return, one of: `online`, `offline`, `stale`, and `never_contacted`. `active` and `paused` are also possible values which were deprecated in GitLab 14.8 and will be removed in GitLab 16.0 |
@@ -522,7 +522,7 @@ POST /projects/:id/runners
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```shell
@@ -558,7 +558,7 @@ DELETE /projects/:id/runners/:runner_id
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```shell

@@ -1215,6 +1215,18 @@
       changes: *db-patterns
       when: never
 
+.rails:rules:ee-and-foss-background-migration:
+  rules:
+    - !reference [".rails:rules:ee-and-foss-migration", rules]
+    - <<: *if-default-refs
+      changes: *backend-patterns
+
+.rails:rules:ee-and-foss-background-migration:predictive:
+  rules:
+    - !reference [".rails:rules:ee-and-foss-migration:predictive", rules]
+    - <<: *if-merge-request
+      changes: *backend-patterns
+
 .rails:rules:ee-and-foss-mr-with-migration:
   rules:
     - <<: *if-merge-request
@@ -1324,6 +1336,18 @@
       changes: *db-patterns
       when: never
 
+.rails:rules:ee-only-background-migration:
+  rules:
+    - !reference [".rails:rules:ee-only-migration", rules]
+    - <<: *if-default-refs
+      changes: *backend-patterns
+
+.rails:rules:ee-only-background-migration:predictive:
+  rules:
+    - !reference [".rails:rules:ee-only-migration:predictive", rules]
+    - <<: *if-merge-request
+      changes: *backend-patterns
+
 .rails:rules:ee-only-unit:
   rules:
     - <<: *if-not-ee
@@ -1414,6 +1438,18 @@
     - <<: *if-merge-request-labels-as-if-foss
       changes: *db-patterns
       when: never
+
+.rails:rules:as-if-foss-background-migration:
+  rules:
+    - !reference [".rails:rules:as-if-foss-migration", rules]
+    - <<: *if-merge-request-labels-as-if-foss
+      changes: *backend-patterns
+
+.rails:rules:as-if-foss-background-migration:predictive:
+  rules:
+    - !reference [".rails:rules:as-if-foss-migration:predictive", rules]
+    - <<: *if-merge-request-labels-as-if-foss
+      changes: *backend-patterns
 
 .rails:rules:as-if-foss-unit:
   rules:

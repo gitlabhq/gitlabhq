@@ -18,7 +18,7 @@ GET /projects/:id/triggers
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/triggers"
@@ -51,7 +51,7 @@ GET /projects/:id/triggers/:trigger_id
 
 | Attribute    | Type    | required | Description              |
 |--------------|---------|----------|--------------------------|
-| `id`         | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `trigger_id` | integer | yes      | The trigger ID           |
 
 ```shell
@@ -80,7 +80,7 @@ POST /projects/:id/triggers
 
 | Attribute     | Type    | required | Description              |
 |---------------|---------|----------|--------------------------|
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `description` | string  | yes      | The trigger name         |
 
 ```shell
@@ -110,7 +110,7 @@ PUT /projects/:id/triggers/:trigger_id
 
 | Attribute     | Type    | required | Description              |
 |---------------|---------|----------|--------------------------|
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `trigger_id`  | integer | yes      | The trigger ID           |
 | `description` | string  | no       | The trigger name         |
 
@@ -141,7 +141,7 @@ DELETE /projects/:id/triggers/:trigger_id
 
 | Attribute      | Type    | required | Description              |
 |----------------|---------|----------|--------------------------|
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `trigger_id`   | integer | yes      | The trigger ID           |
 
 ```shell
@@ -167,7 +167,7 @@ Supported attributes:
 
 | Attribute   | Type           | Required               | Description |
 |:------------|:---------------|:-----------------------|:---------------------|
-| `id`        | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`        | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `ref`       | string         | **{check-circle}** Yes | The branch or tag to run the pipeline on. |
 | `token`     | string         | **{check-circle}** Yes | The trigger token or CI/CD job token. |
 | `variables` | hash           | **{dotted-circle}** No | A map of key-valued strings containing the pipeline variables. For example: `{ VAR1: "value1", VAR2: "value2" }`. |

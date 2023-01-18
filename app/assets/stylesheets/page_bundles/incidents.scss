@@ -68,3 +68,7 @@
     }
   }
 }
+
+.timeline-event-note .md p {
+  @include gl-text-gray-700;
+}

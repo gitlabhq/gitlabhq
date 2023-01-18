@@ -74,7 +74,7 @@ export default {
       return this.initialLoading || this.changeNotesSortOrderAfterLoading;
     },
     showTimeline() {
-      return this.notesArray?.length && !this.changeNotesSortOrderAfterLoading;
+      return !this.changeNotesSortOrderAfterLoading;
     },
     showLoadingMoreSkeleton() {
       return this.isLoadingMore && !this.changeNotesSortOrderAfterLoading;

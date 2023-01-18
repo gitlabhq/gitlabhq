@@ -25,7 +25,7 @@ Parameters:
 
 | Attribute | Type              | Required  | Description                                                                                                     |
 |-----------|-------------------|-----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`      | integer or string | yes       | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) maintained by the authenticated user |
+| `id`      | integer or string | yes       | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user |
 
 Response:
 
@@ -103,7 +103,7 @@ Parameters:
 
 | Attribute  | Type              | Required | Description                                                                                                     |
 |------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) maintained by the authenticated user |
+| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user |
 | `agent_id` | integer           | yes      | ID of the agent                                                                                                 |
 
 Response:
@@ -165,7 +165,7 @@ Parameters:
 
 | Attribute | Type              | Required | Description                                                                                                     |
 |-----------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) maintained by the authenticated user |
+| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user |
 | `name`    | string            | yes      | Name for the agent                                                                                              |
 
 Response:
@@ -229,7 +229,7 @@ Parameters:
 
 | Attribute  | Type              | Required | Description                                                                                                     |
 |------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) maintained by the authenticated user |
+| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user |
 | `agent_id` | integer           | yes      | ID of the agent                                                                                                 |
 
 Example request:
@@ -254,7 +254,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required  | Description                                                                                                      |
 |------------|-------------------|-----------|------------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes       | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) maintained by the authenticated user. |
+| `id`       | integer or string | yes       | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user. |
 | `agent_id` | integer or string | yes       | ID of the agent.                                                                                                 |
 
 Response:
@@ -321,7 +321,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required | Description                                                                                                       |
 |------------|-------------------|----------|-------------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) maintained by the authenticated user.  |
+| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user.  |
 | `agent_id` | integer           | yes      | ID of the agent.                                                                                                  |
 | `token_id` | integer           | yes      | ID of the token.                                                                                                  |
 
@@ -377,7 +377,7 @@ Supported attributes:
 
 | Attribute     | Type              | Required | Description                                                                                                      |
 |---------------|-------------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) maintained by the authenticated user. |
+| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user. |
 | `agent_id`    | integer           | yes      | ID of the agent.                                                                                                 |
 | `name`        | string            | yes      | Name for the token.                                                                                              |
 | `description` | string            | no       | Description for the token.                                                                                       |
@@ -441,7 +441,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required | Description                                                                                                      |
 |------------|-------------------|----------|---------------------------------------------------------------------------------------------------------------- -|
-| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) maintained by the authenticated user. |
+| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user. |
 | `agent_id` | integer           | yes      | ID of the agent.                                                                                                 |
 | `token_id` | integer           | yes      | ID of the token.                                                                                                 |
 

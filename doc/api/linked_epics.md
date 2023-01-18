@@ -24,7 +24,7 @@ Supported attributes:
 | Attribute  | Type           | Required               | Description                                                               |
 | ---------- | -------------- | ---------------------- | ------------------------------------------------------------------------- |
 | `epic_iid` | integer        | **{check-circle}** Yes | Internal ID of a group's epic                                             |
-| `id`       | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding). |
+| `id`       | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
 
 Example request:
 
@@ -103,9 +103,9 @@ Supported attributes:
 | Attribute           | Type           | Required                    | Description                           |
 |---------------------|----------------|-----------------------------|---------------------------------------|
 | `epic_iid`          | integer        | **{check-circle}** Yes      | Internal ID of a group's epic.        |
-| `id`                | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `target_epic_iid`   | integer/string | **{check-circle}** Yes      | Internal ID of a target group's epic. |
-| `target_group_id`   | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the target group](index.md#namespaced-path-encoding). |
+| `target_group_id`   | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the target group](rest/index.md#namespaced-path-encoding). |
 | `link_type`         | string         | **{dotted-circle}** No      | Type of the relation (`relates_to`, `blocks`, `is_blocked_by`), defaults to `relates_to`. |
 
 Example request:
@@ -222,7 +222,7 @@ Supported attributes:
 | Attribute                | Type           | Required                    | Description                           |
 |--------------------------|----------------|-----------------------------|---------------------------------------|
 | `epic_iid`               | integer        | **{check-circle}** Yes      | Internal ID of a group's epic.        |
-| `id`                     | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                     | integer/string | **{check-circle}** Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `related_epic_link_id`   | integer/string | **{check-circle}** Yes      | Internal ID of a related epic link. |
 
 Example request:

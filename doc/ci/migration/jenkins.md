@@ -308,7 +308,7 @@ my_job:
 
 In GitLab, we use the [`variables` keyword](../yaml/index.md#variables) to define different variables at runtime.
 These can also be set up through the GitLab UI, under CI/CD settings. See also our [general documentation on variables](../variables/index.md),
-including the section on [protected variables](../variables/index.md#protected-cicd-variables). This can be used
+including the section on [protected variables](../variables/index.md#protect-a-cicd-variable). This can be used
 to limit access to certain variables to certain environments or runners:
 
 ```yaml

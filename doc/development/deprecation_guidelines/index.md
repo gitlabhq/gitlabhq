@@ -77,7 +77,7 @@ However, at GitLab, we [give agency](https://about.gitlab.com/handbook/values/#g
 Generally, feature or configuration can be removed/changed only on major release.
 It also should be [deprecated in advance](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
 
-For API removals, see the [GraphQL](../../api/graphql/index.md#deprecation-and-removal-process) and [GitLab API](../../api/index.md#compatibility-guidelines) guidelines.
+For API removals, see the [GraphQL](../../api/graphql/index.md#deprecation-and-removal-process) and [GitLab API](../../api/rest/index.md#compatibility-guidelines) guidelines.
 
 For configuration removals, see the [Omnibus deprecation policy](../../administration/package_information/deprecation_policy.md).
 

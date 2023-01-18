@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Authentication and Authorization
+stage: Data Science
+group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -18,7 +18,7 @@ To add this support, you must implement the following areas as applicable:
    for a feature which does not yet have support.
 1. [REST API](rest_api.md): The changes needed to add
    spam or CAPTCHA support to Grape REST API endpoints. Refer to the related
-   [REST API documentation](../../api/index.md#resolve-requests-detected-as-spam).
+   [REST API documentation](../../api/rest/index.md#resolve-requests-detected-as-spam).
 1. [GraphQL API](graphql_api.md): The changes needed to add spam or CAPTCHA support to GraphQL
    mutations. Refer to the related
    [GraphQL API documentation](../../api/graphql/index.md#resolve-mutations-detected-as-spam).
@@ -48,6 +48,6 @@ The possible values include:
 ## Related topics
 
 - [Spam and CAPTCHA support in the GraphQL API](../../api/graphql/index.md#resolve-mutations-detected-as-spam)
-- [Spam and CAPTCHA support in the REST API](../../api/index.md#resolve-requests-detected-as-spam)
+- [Spam and CAPTCHA support in the REST API](../../api/rest/index.md#resolve-requests-detected-as-spam)
 - [reCAPTCHA Spam and Anti-bot Protection](../../integration/recaptcha.md)
 - [Akismet and Spam Logs](../../integration/akismet.md)

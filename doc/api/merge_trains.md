@@ -20,7 +20,7 @@ If Merge Trains is not available for the project, a `403` status code is returne
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.
 
-Read more on [pagination](index.md#pagination).
+Read more on [pagination](rest/index.md#pagination).
 
 ## List Merge Trains for a project
 
@@ -33,7 +33,7 @@ GET /projects/:id/merge_trains?scope=complete
 
 | Attribute           | Type             | Required   | Description                                                                                                                 |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).                                            |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                            |
 | `scope`             | string           | no         | Return Merge Trains filtered by the given scope. Available scopes are `active` (to be merged) and `complete` (have been merged). |
 | `sort`              | string           | no         | Return Merge Trains sorted in `asc` or `desc` order. Default is `desc`.                                                     |
 
@@ -97,7 +97,7 @@ Supported attributes:
 
 | Attribute       | Type           | Required | Description  |
 | --------------- | ---------------| -------- | ------------ |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `target_branch` | string         | yes      | The target branch of the merge train. |
 | `scope`         | string         | no       | Return Merge Trains filtered by the given scope. Available scopes are `active` (to be merged) and `complete` (have been merged). |
 | `sort`          | string         | no       | Return Merge Trains sorted in `asc` or `desc` order. Default is `desc`. |
@@ -167,7 +167,7 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description                                                                     |
 | ------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `merge_request_iid` | integer        | yes      | The internal ID of the merge request.                                           |
 
 Example request:
