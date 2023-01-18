@@ -6,7 +6,7 @@ import InviteActionButtons from '../action_buttons/invite_action_buttons.vue';
 import UserActionDropdown from '../action_dropdowns/user_action_dropdown.vue';
 
 export default {
-  name: 'MemberActionButtons',
+  name: 'MemberActions',
   components: {
     UserActionDropdown,
     GroupActionButtons,

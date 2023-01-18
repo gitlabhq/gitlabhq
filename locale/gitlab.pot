@@ -22551,6 +22551,9 @@ msgstr ""
 msgid "Integrations|GitLab for Slack app"
 msgstr ""
 
+msgid "Integrations|GitLab for Slack app must be reinstalled to enable notifications"
+msgstr ""
+
 msgid "Integrations|Group-level integration management"
 msgstr ""
 
@@ -22657,6 +22660,9 @@ msgid "Integrations|To keep this project going, create a new issue."
 msgstr ""
 
 msgid "Integrations|Trigger"
+msgstr ""
+
+msgid "Integrations|Unable to post to %{channel_list}, please add the GitLab Slack app to any private Slack channels"
 msgstr ""
 
 msgid "Integrations|Use custom settings"

@@ -96,14 +96,15 @@ available to self-managed instances because it requires administrator access.
 Create the group you want to import to and connect the source:
 
 1. Create either:
-
    - A new group. On the top bar, select **{plus-square}**, then **New group**, and select **Import group**.
    - A new subgroup. On existing group's page, either:
      - Select **New subgroup**.
      - On the top bar, Select **{plus-square}** and then **New subgroup**. Then on the left sidebar, select the **import an existing group** link.
 1. Enter the URL of your source GitLab instance.
-1. Generate or copy a [personal access token](../../../user/profile/personal_access_tokens.md)
-   with the `api` scope on your source GitLab instance. Both `api` and `read_repository` scopes are required when migrating from GitLab 15.0 and earlier.
+1. Generate or copy a [personal access token](../../../user/profile/personal_access_tokens.md) on your source GitLab
+   instance with:
+   - The `api` scope, if the source GitLab instance on version 15.1 or later.
+   - Both `api` and `read_repository` scopes, if the source GitLab instance on version 15.0 or earlier.
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
 

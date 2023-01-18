@@ -191,17 +191,7 @@ graph TB
    GitLabGroupD --> |Member|GitLabUserD
 ```
 
-### Use the API
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
-
-You can use the GitLab API to [list, add, and delete](../../../api/groups.md#saml-group-links) SAML group links.
-
-## Troubleshooting
-
-This section contains possible solutions for problems you might encounter.
-
-### User that belongs to many SAML groups automatically removed from GitLab group
+#### User that belongs to many SAML groups automatically removed from GitLab group
 
 When using Azure AD as the SAML identity provider, users that belong to many SAML groups can be automatically removed from your GitLab group. Users are removed from GitLab
 groups if the group claim is missing from the user's SAML assertion.
@@ -209,5 +199,15 @@ groups if the group claim is missing from the user's SAML assertion.
 Because of a [known issue with Azure AD](https://support.esri.com/en/technical-article/000022190), if a user belongs to more than 150 SAML groups, the group claim is not sent
 in the user's SAML assertion.
 
-To work around this issue, allow more than 150 group IDs to be sent in SAML token using configuration steps in the
-[Azure AD documentation](https://support.esri.com/en/technical-article/000022190).
+With an Azure AD premium subscription, you can allow up to 500 group IDs to be sent in a SAML token using the
+[Azure AD documentation configuration steps](https://support.esri.com/en/technical-article/000022190).
+
+Otherwise, you can work around this issue by changing the [group claims](https://learn.microsoft.com/en-us/azure/active-directory/hybrid/how-to-connect-fed-group-claims#configure-the-azure-ad-application-registration-for-group-attributes) to use the `Groups assigned to the application` option instead.
+
+![Manage Group Claims](img/Azure-manage-group-claims.png).
+
+### Use the API
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
+
+You can use the GitLab API to [list, add, and delete](../../../api/groups.md#saml-group-links) SAML group links.

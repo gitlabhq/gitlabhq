@@ -5741,4 +5741,25 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
       expect { build.remove_token! }.not_to change(build, :token)
     end
   end
+
+  describe 'metadata partitioning', :ci_partitioning do
+    let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
+
+    let(:build) do
+      FactoryBot.build(:ci_build, pipeline: pipeline)
+    end
+
+    it 'creates the metadata record and assigns its partition' do
+      # The record is initialized by the factory calling metadatable setters
+      build.metadata = nil
+
+      expect(build.metadata).to be_nil
+
+      expect(build.save!).to be_truthy
+
+      expect(build.metadata).to be_present
+      expect(build.metadata).to be_valid
+      expect(build.metadata.partition_id).to eq(ci_testing_partition_id)
+    end
+  end
 end

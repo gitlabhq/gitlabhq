@@ -24,7 +24,11 @@ module QA
       end
 
       def list_members
-        JSON.parse(get(Runtime::API::Request.new(api_client, api_members_path).url).body)
+        parse_body(api_get_from(api_members_path))
+      end
+
+      def list_all_members
+        parse_body(api_get_from("#{api_members_path}/all"))
       end
 
       def invite_group(group, access_level = AccessLevel::GUEST)

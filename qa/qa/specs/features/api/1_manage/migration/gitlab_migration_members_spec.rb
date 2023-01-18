@@ -19,11 +19,11 @@ module QA
       end
 
       let(:imported_group_member) do
-        imported_group.reload!.list_members.find { |usr| usr['username'] == target_member.username }
+        imported_group.reload!.list_members.find { |usr| usr[:username] == target_member.username }
       end
 
       let(:imported_project_member) do
-        imported_project.reload!.list_members.find { |usr| usr['username'] == target_member.username }
+        imported_project.reload!.list_members.find { |usr| usr[:username] == target_member.username }
       end
 
       context 'with group member' do
@@ -39,9 +39,7 @@ module QA
 
           aggregate_failures do
             expect(imported_project_member).to be_nil
-            expect(imported_group_member&.fetch('access_level')).to eq(
-              Resource::Members::AccessLevel::DEVELOPER
-            )
+            expect(imported_group_member&.fetch(:access_level)).to eq(Resource::Members::AccessLevel::DEVELOPER)
           end
         end
       end
@@ -59,9 +57,7 @@ module QA
 
           aggregate_failures do
             expect(imported_group_member).to be_nil
-            expect(imported_project_member&.fetch('access_level')).to eq(
-              Resource::Members::AccessLevel::DEVELOPER
-            )
+            expect(imported_project_member&.fetch(:access_level)).to eq(Resource::Members::AccessLevel::DEVELOPER)
           end
         end
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::LearnGitlabController do
+RSpec.describe Projects::LearnGitlabController, feature_category: :onboarding do
   describe 'GET #index' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, namespace: create(:group)) }
@@ -17,18 +17,18 @@ RSpec.describe Projects::LearnGitlabController do
       allow(controller.helpers).to receive(:learn_gitlab_enabled?).and_return(learn_gitlab_enabled)
     end
 
-    context 'unauthenticated user' do
+    context 'for unauthenticated user' do
       it { is_expected.to have_gitlab_http_status(:redirect) }
     end
 
-    context 'authenticated user' do
+    context 'for authenticated user' do
       before do
         sign_in(user)
       end
 
       it { is_expected.to render_template(:index) }
 
-      context 'learn_gitlab experiment not enabled' do
+      context 'when learn_gitlab is not available' do
         let(:learn_gitlab_enabled) { false }
 
         it { is_expected.to have_gitlab_http_status(:not_found) }

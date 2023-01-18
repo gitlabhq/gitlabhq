@@ -10,6 +10,7 @@ FactoryBot.define do
     pipeline factory: :ci_pipeline
     project { pipeline.project }
     scheduling_type { 'stage' }
+    partition_id { pipeline.partition_id }
 
     trait :waiting_for_resource do
       status { 'waiting_for_resource' }

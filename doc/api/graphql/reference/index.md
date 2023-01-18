@@ -17298,6 +17298,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindingname"></a>`name` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.1. Use `title`. |
 | <a id="pipelinesecurityreportfindingproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability finding was found. |
 | <a id="pipelinesecurityreportfindingprojectfingerprint"></a>`projectFingerprint` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.1. The `project_fingerprint` attribute is being deprecated. Use `uuid` to identify findings. |
+| <a id="pipelinesecurityreportfindingremediations"></a>`remediations` | [`[VulnerabilityRemediationType!]`](#vulnerabilityremediationtype) | Remediations of the security report finding. |
 | <a id="pipelinesecurityreportfindingreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingscanner"></a>`scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
 | <a id="pipelinesecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
@@ -20983,6 +20984,17 @@ Check permissions for the current user on a vulnerability.
 | <a id="vulnerabilitypermissionsdestroyvulnerabilityfeedback"></a>`destroyVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_vulnerability_feedback` on this resource. |
 | <a id="vulnerabilitypermissionsreadvulnerabilityfeedback"></a>`readVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `read_vulnerability_feedback` on this resource. |
 | <a id="vulnerabilitypermissionsupdatevulnerabilityfeedback"></a>`updateVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `update_vulnerability_feedback` on this resource. |
+
+### `VulnerabilityRemediationType`
+
+Represents a vulnerability remediation type.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityremediationtypediff"></a>`diff` | [`String`](#string) | Diff of the remediation. |
+| <a id="vulnerabilityremediationtypesummary"></a>`summary` | [`String`](#string) | Summary of the remediation. |
 
 ### `VulnerabilityRequest`
 

@@ -179,7 +179,6 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/projects/issues_controller.rb'
     - 'app/controllers/projects/jobs_controller.rb'
     - 'app/controllers/projects/labels_controller.rb'
-    - 'app/controllers/projects/learn_gitlab_controller.rb'
     - 'app/controllers/projects/mattermosts_controller.rb'
     - 'app/controllers/projects/merge_requests/application_controller.rb'
     - 'app/controllers/projects/merge_requests/conflicts_controller.rb'

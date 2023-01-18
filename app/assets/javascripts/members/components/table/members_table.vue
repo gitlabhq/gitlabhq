@@ -26,7 +26,7 @@ import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
 import RemoveMemberModal from '../modals/remove_member_modal.vue';
 import CreatedAt from './created_at.vue';
 import ExpirationDatepicker from './expiration_datepicker.vue';
-import MemberActionButtons from './member_action_buttons.vue';
+import MemberActions from './member_actions.vue';
 import MemberAvatar from './member_avatar.vue';
 import MemberSource from './member_source.vue';
 import MemberActivity from './member_activity.vue';
@@ -42,7 +42,7 @@ export default {
     CreatedAt,
     MembersTableCell,
     MemberSource,
-    MemberActionButtons,
+    MemberActions,
     RoleDropdown,
     RemoveGroupLinkModal,
     RemoveMemberModal,
@@ -299,7 +299,7 @@ export default {
 
       <template #cell(actions)="{ item: member }">
         <members-table-cell #default="{ memberType, isCurrentUser, permissions }" :member="member">
-          <member-action-buttons
+          <member-actions
             :member-type="memberType"
             :is-current-user="isCurrentUser"
             :permissions="permissions"

@@ -385,6 +385,10 @@ a project, you can disable this behavior to save space:
 You can disable this behavior for all projects on a self-managed instance in the
 [instance's CI/CD settings](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
 
+When **Keep artifacts from most recent successful jobs** is enabled, artifacts are always kept for [blocked](../jobs/job_control.md#types-of-manual-jobs)
+pipelines. These artifacts expire only after the blocking job is triggered and the pipeline completes.
+For more information, see [issue 387087](https://gitlab.com/gitlab-org/gitlab/-/issues/387087).
+
 ## Troubleshooting
 
 ### Job does not retrieve certain artifacts

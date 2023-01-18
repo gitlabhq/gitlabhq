@@ -132,17 +132,15 @@ module Integrations
 
       return false unless message
 
-      event_type = data[:event_type] || object_kind
-
-      channel_names = event_channel_value(event_type).presence || channel.presence
-      channels = channel_names&.split(',')&.map(&:strip)
+      event = data[:event_type] || object_kind
+      channels = channels_for_event(event)
 
       opts = {}
       opts[:channel] = channels if channels.present?
       opts[:username] = username if username
 
       if notify(message, opts)
-        log_usage(event_type, user_id_from_hook_data(data))
+        log_usage(event, user_id_from_hook_data(data))
         return true
       end
 
@@ -296,6 +294,19 @@ module Integrations
       else
         false
       end
+    end
+
+    def channels_for_event(event)
+      channel_names = event_channel_value(event).presence || channel.presence
+      return [] unless channel_names
+
+      channel_names.split(',').map(&:strip)
+    end
+
+    def unique_channels
+      @unique_channels ||= supported_events.flat_map do |event|
+        channels_for_event(event)
+      end.uniq
     end
   end
 end

@@ -1080,7 +1080,6 @@ RSpec/ContextWording:
     - 'spec/controllers/projects/issues_controller_spec.rb'
     - 'spec/controllers/projects/jobs_controller_spec.rb'
     - 'spec/controllers/projects/labels_controller_spec.rb'
-    - 'spec/controllers/projects/learn_gitlab_controller_spec.rb'
     - 'spec/controllers/projects/mattermosts_controller_spec.rb'
     - 'spec/controllers/projects/merge_requests/conflicts_controller_spec.rb'
     - 'spec/controllers/projects/merge_requests/content_controller_spec.rb'

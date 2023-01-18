@@ -570,4 +570,24 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       end
     end
   end
+
+  describe 'metadata partitioning', :ci_partitioning do
+    let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
+
+    let(:bridge) do
+      build(:ci_bridge, pipeline: pipeline)
+    end
+
+    it 'creates the metadata record and assigns its partition' do
+      # the factory doesn't use any metadatable setters by default
+      # so the record will be initialized by the before_validation callback
+      expect(bridge.metadata).to be_nil
+
+      expect(bridge.save!).to be_truthy
+
+      expect(bridge.metadata).to be_present
+      expect(bridge.metadata).to be_valid
+      expect(bridge.metadata.partition_id).to eq(ci_testing_partition_id)
+    end
+  end
 end

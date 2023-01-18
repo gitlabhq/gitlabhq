@@ -52,6 +52,7 @@ or the Jira DVCS (distributed version control system) connector,
 | Display a list of [Jira issues](issues.md#view-jira-issues). | Yes. | No. |
 | Create a Jira issue from a [vulnerability or finding](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability). | Yes. | No. |
 | Create a GitLab branch from a Jira issue. | No. | Yes, in the issue's [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/). |
+| Mention a Jira issue ID in a GitLab merge request, and deployments are synced. | No. | Yes, in the issue's [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/). |
 
 ## Authentication in Jira
 

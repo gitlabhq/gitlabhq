@@ -7,7 +7,6 @@ FactoryBot.define do
     created_at { 'Di 29. Okt 09:50:00 CET 2013' }
     scheduling_type { 'stage' }
     pending
-    partition_id { pipeline.partition_id }
 
     options do
       {

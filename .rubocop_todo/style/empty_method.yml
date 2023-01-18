@@ -39,7 +39,6 @@ Style/EmptyMethod:
     - 'app/controllers/projects/incidents_controller.rb'
     - 'app/controllers/projects/jobs_controller.rb'
     - 'app/controllers/projects/labels_controller.rb'
-    - 'app/controllers/projects/learn_gitlab_controller.rb'
     - 'app/controllers/projects/mattermosts_controller.rb'
     - 'app/controllers/projects/pages_domains_controller.rb'
     - 'app/controllers/projects/pipeline_schedules_controller.rb'

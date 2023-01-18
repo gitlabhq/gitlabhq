@@ -1023,7 +1023,7 @@ RSpec.describe CommitStatus do
   describe 'partitioning' do
     context 'with pipeline' do
       let(:pipeline) { build(:ci_pipeline, partition_id: 123) }
-      let(:status) { build(:commit_status, pipeline: pipeline) }
+      let(:status) { build(:commit_status, pipeline: pipeline, partition_id: nil) }
 
       it 'copies the partition_id from pipeline' do
         expect { status.valid? }.to change(status, :partition_id).to(123)
