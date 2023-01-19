@@ -19567,9 +19567,6 @@ msgstr ""
 msgid "Group: %{group_name}"
 msgstr ""
 
-msgid "Group: %{name}"
-msgstr ""
-
 msgid "GroupActivityMetrics|Issues created"
 msgstr ""
 

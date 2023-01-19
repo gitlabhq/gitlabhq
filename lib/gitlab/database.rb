@@ -102,7 +102,8 @@ module Gitlab
         gitlab_ci: [self.database_base_models[:ci] || self.database_base_models.fetch(:main)], # use CI or fallback to main
         gitlab_shared: database_base_models_with_gitlab_shared.values, # all models
         gitlab_internal: database_base_models.values, # all models
-        gitlab_pm: [self.database_base_models.fetch(:main)] # package metadata models
+        gitlab_pm: [self.database_base_models.fetch(:main)], # package metadata models
+        gitlab_main_clusterwide: [self.database_base_models.fetch(:main)]
       }.with_indifferent_access.freeze
     end
 

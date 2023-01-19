@@ -33541,9 +33541,6 @@ ALTER TABLE ONLY merge_requests
 ALTER TABLE ONLY ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY application_settings
-    ADD CONSTRAINT fk_693b8795e4 FOREIGN KEY (push_rule_id) REFERENCES push_rules(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY project_wiki_repository_states
     ADD CONSTRAINT fk_6951681c70 FOREIGN KEY (project_wiki_repository_id) REFERENCES project_wiki_repositories(id) ON DELETE CASCADE;
 
@@ -33705,9 +33702,6 @@ ALTER TABLE ONLY vulnerabilities
 
 ALTER TABLE ONLY boards_epic_list_user_preferences
     ADD CONSTRAINT fk_95eac55851 FOREIGN KEY (epic_list_id) REFERENCES boards_epic_lists(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY application_settings
-    ADD CONSTRAINT fk_964370041d FOREIGN KEY (usage_stats_set_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_96b1dd429c FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
@@ -34048,17 +34042,11 @@ ALTER TABLE ONLY namespaces
 ALTER TABLE ONLY fork_networks
     ADD CONSTRAINT fk_e7b436b2b5 FOREIGN KEY (root_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY application_settings
-    ADD CONSTRAINT fk_e8a145f3a7 FOREIGN KEY (instance_administrators_group_id) REFERENCES namespaces(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_e8fe908a34 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY pages_domains
     ADD CONSTRAINT fk_ea2f6dfc6f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY application_settings
-    ADD CONSTRAINT fk_ec757bd087 FOREIGN KEY (file_template_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY merge_requests_compliance_violations
     ADD CONSTRAINT fk_ec881c1c6f FOREIGN KEY (violating_user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -34987,9 +34975,6 @@ ALTER TABLE ONLY milestone_releases
 ALTER TABLE ONLY resource_state_events
     ADD CONSTRAINT fk_rails_7ddc5f7457 FOREIGN KEY (source_merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY application_settings
-    ADD CONSTRAINT fk_rails_7e112a9599 FOREIGN KEY (instance_administration_project_id) REFERENCES projects(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_rails_7e7688ecaf FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
@@ -35343,9 +35328,6 @@ ALTER TABLE ONLY merge_request_predictions
 
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_rails_b3c9c17bd4 FOREIGN KEY (oncall_schedule_id) REFERENCES incident_management_oncall_schedules(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY application_settings
-    ADD CONSTRAINT fk_rails_b53e481273 FOREIGN KEY (custom_project_templates_group_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY packages_debian_project_component_files
     ADD CONSTRAINT fk_rails_b543a9622b FOREIGN KEY (architecture_id) REFERENCES packages_debian_project_architectures(id) ON DELETE RESTRICT;

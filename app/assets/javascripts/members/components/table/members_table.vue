@@ -51,7 +51,7 @@ export default {
     DisableTwoFactorModal: () =>
       import('ee_component/members/components/modals/disable_two_factor_modal.vue'),
     LdapOverrideConfirmationModal: () =>
-      import('ee_component/members/components/ldap/ldap_override_confirmation_modal.vue'),
+      import('ee_component/members/components/modals/ldap_override_confirmation_modal.vue'),
   },
   inject: ['namespace', 'currentUserId', 'canManageMembers'],
   props: {

@@ -1,5 +1,23 @@
-# Make sure that this file has the keys sorted
 ---
+application_settings:
+  - table: push_rules
+    column: push_rule_id
+    on_delete: async_nullify
+  - table: users
+    column: usage_stats_set_by_user_id
+    on_delete: async_nullify
+  - table: namespaces
+    column: instance_administrators_group_id
+    on_delete: async_nullify
+  - table: projects
+    column: file_template_project_id
+    on_delete: async_nullify
+  - table: projects
+    column: instance_administration_project_id
+    on_delete: async_nullify
+  - table: namespaces
+    column: custom_project_templates_group_id
+    on_delete: async_nullify
 ci_build_report_results:
   - table: projects
     column: project_id

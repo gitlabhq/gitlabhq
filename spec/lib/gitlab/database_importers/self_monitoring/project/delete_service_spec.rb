@@ -38,6 +38,8 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::DeleteService
       it 'deletes project ID from application settings' do
         subject.execute
 
+        LooseForeignKeys::ProcessDeletedRecordsService.new(connection: Project.connection).execute
+
         expect(application_setting.reload.self_monitoring_project_id).to be_nil
       end
 
