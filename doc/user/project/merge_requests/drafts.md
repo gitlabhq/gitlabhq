@@ -21,12 +21,13 @@ the **Merge** button until you remove the **Draft** flag:
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/228685) all support for using **WIP** in GitLab 14.8.
 > - **Mark as draft** and **Mark as ready** buttons [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227421) in GitLab 13.5.
 > `/draft` quick action as a toggle [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92654) in GitLab 15.4.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108073) the draft status to use a checkbox in GitLab 15.8.
 
 There are several ways to flag a merge request as a draft:
 
 - **Viewing a merge request**: In the top right corner of the merge request, select **Mark as draft**.
 - **Creating or editing a merge request**: Add `[Draft]`, `Draft:` or `(Draft)` to
-  the beginning of the merge request's title, or select **Start the title with Draft:**
+  the beginning of the merge request's title, or select **Mark as draft**
   below the **Title** field.
 - **Commenting in an existing merge request**: Add the `/draft`
   [quick action](../quick_actions.md#issues-merge-requests-and-epics)
@@ -47,7 +48,7 @@ When a merge request is ready to be merged, you can remove the `Draft` flag in s
   ![Mark as ready](img/draft_blocked_merge_button_v13_10.png)
 
 - **Editing an existing merge request**: Remove `[Draft]`, `Draft:` or `(Draft)`
-  from the beginning of the title, or select **Remove the Draft: prefix from the title**
+  from the beginning of the title, or clear **Mark as draft**
   below the **Title** field.
 - **Commenting in an existing merge request**: Add the `/ready`
   [quick action](../quick_actions.md#issues-merge-requests-and-epics)

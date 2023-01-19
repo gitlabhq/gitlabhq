@@ -46,6 +46,37 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
     describe 'GET merge requests' do
       it_behaves_like 'issuables list meta-data', :merge_request, :merge_requests
       it_behaves_like 'issuables requiring filter', :merge_requests
+
+      context 'when an ActiveRecord::QueryCanceled is raised' do
+        before do
+          allow_next_instance_of(Gitlab::IssuableMetadata) do |instance|
+            allow(instance).to receive(:data).and_raise(ActiveRecord::QueryCanceled)
+          end
+        end
+
+        it 'sets :search_timeout_occurred' do
+          get :merge_requests, params: { author_id: user.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:search_timeout_occurred)).to eq(true)
+        end
+
+        context 'rendering views' do
+          render_views
+
+          it 'shows error message' do
+            get :merge_requests, params: { author_id: user.id }
+
+            expect(response.body).to have_content('Too many results to display. Edit your search or add a filter.')
+          end
+        end
+
+        it 'logs the exception' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+
+          get :merge_requests, params: { author_id: user.id }
+        end
+      end
     end
   end
 

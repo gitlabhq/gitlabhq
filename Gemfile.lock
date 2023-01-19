@@ -979,7 +979,7 @@ GEM
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
       rack-protection
-    omniauth-alicloud (2.0.0)
+    omniauth-alicloud (2.0.1)
       omniauth-oauth2 (~> 1.8)
     omniauth-atlassian-oauth2 (0.2.0)
       omniauth (>= 1.1.1)
@@ -1747,7 +1747,7 @@ DEPENDENCIES
   oj (~> 3.13.21)
   oj-introspect (~> 0.7)
   omniauth (~> 2.1.0)
-  omniauth-alicloud (~> 2.0.0)
+  omniauth-alicloud (~> 2.0.1)
   omniauth-atlassian-oauth2 (~> 0.2.0)
   omniauth-auth0 (~> 2.0.0)
   omniauth-authentiq (~> 0.3.3)

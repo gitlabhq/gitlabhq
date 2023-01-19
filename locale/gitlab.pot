@@ -823,12 +823,6 @@ msgstr ""
 msgid "%{linkStart} Learn more%{linkEnd}."
 msgstr ""
 
-msgid "%{link_start}Remove the %{draft_snippet} prefix%{link_end} from the title to allow this merge request to be merged when it's ready."
-msgstr ""
-
-msgid "%{link_start}Start the title with %{draft_snippet}%{link_end} to prevent a merge request draft from merging before it's ready."
-msgstr ""
-
 msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
@@ -12731,6 +12725,9 @@ msgstr ""
 msgid "DastProfiles|Request headers"
 msgstr ""
 
+msgid "DastProfiles|Retry"
+msgstr ""
+
 msgid "DastProfiles|Run the AJAX spider, in addition to the traditional spider, to crawl the target site."
 msgstr ""
 
@@ -12831,6 +12828,12 @@ msgid "DastProfiles|Username"
 msgstr ""
 
 msgid "DastProfiles|Username form field"
+msgstr ""
+
+msgid "DastProfiles|Validate"
+msgstr ""
+
+msgid "DastProfiles|Validate site profile"
 msgstr ""
 
 msgid "DastProfiles|Validated"
@@ -23434,9 +23437,6 @@ msgstr ""
 msgid "Issue|Title"
 msgstr ""
 
-msgid "It looks like you have some draft commits in this branch."
-msgstr ""
-
 msgid "It looks like you're attempting to activate your subscription. Use %{a_start}the Subscription page%{a_end} instead."
 msgstr ""
 
@@ -26329,6 +26329,12 @@ msgid "MergeRequests|An error occurred while saving the draft comment."
 msgstr ""
 
 msgid "MergeRequests|Create issue to resolve thread"
+msgstr ""
+
+msgid "MergeRequests|Drafts cannot be merged until marked ready."
+msgstr ""
+
+msgid "MergeRequests|Mark as draft"
 msgstr ""
 
 msgid "MergeRequests|Reference copied"
@@ -44226,6 +44232,9 @@ msgid "Too many projects enabled. Manage them through the console or the API."
 msgstr ""
 
 msgid "Too many references. Quick actions are limited to at most %{max_count} user references"
+msgstr ""
+
+msgid "Too many results to display. Edit your search or add a filter."
 msgstr ""
 
 msgid "Too many users found. Quick actions are limited to at most %{max_count} users"

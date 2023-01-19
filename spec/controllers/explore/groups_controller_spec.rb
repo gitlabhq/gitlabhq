@@ -40,12 +40,4 @@ RSpec.describe Explore::GroupsController do
   end
 
   it_behaves_like 'explore groups'
-
-  context 'generic_explore_groups flag is disabled' do
-    before do
-      stub_feature_flags(generic_explore_groups: false)
-    end
-
-    it_behaves_like 'explore groups'
-  end
 end

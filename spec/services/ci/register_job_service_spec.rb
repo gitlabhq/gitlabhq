@@ -9,7 +9,7 @@ module Ci
     let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
 
     let!(:shared_runner) { create(:ci_runner, :instance) }
-    let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
+    let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
     let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
     let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
@@ -46,32 +46,32 @@ module Ci
             pending_job.update!(tag_list: ["linux"])
             pending_job.reload
             pending_job.create_queuing_entry!
-            specific_runner.update!(tag_list: ["linux"])
-            expect(execute(specific_runner)).to eq(pending_job)
+            project_runner.update!(tag_list: ["linux"])
+            expect(execute(project_runner)).to eq(pending_job)
           end
 
           it "does not pick build with different tag" do
             pending_job.update!(tag_list: ["linux"])
             pending_job.reload
             pending_job.create_queuing_entry!
-            specific_runner.update!(tag_list: ["win32"])
-            expect(execute(specific_runner)).to be_falsey
+            project_runner.update!(tag_list: ["win32"])
+            expect(execute(project_runner)).to be_falsey
           end
 
           it "picks build without tag" do
-            expect(execute(specific_runner)).to eq(pending_job)
+            expect(execute(project_runner)).to eq(pending_job)
           end
 
           it "does not pick build with tag" do
             pending_job.update!(tag_list: ["linux"])
             pending_job.reload
             pending_job.create_queuing_entry!
-            expect(execute(specific_runner)).to be_falsey
+            expect(execute(project_runner)).to be_falsey
           end
 
           it "pick build without tag" do
-            specific_runner.update!(tag_list: ["win32"])
-            expect(execute(specific_runner)).to eq(pending_job)
+            project_runner.update!(tag_list: ["win32"])
+            expect(execute(project_runner)).to eq(pending_job)
           end
         end
 
@@ -90,9 +90,9 @@ module Ci
             end
           end
 
-          context 'for specific runner' do
+          context 'for project runner' do
             it 'does not pick a build' do
-              expect(execute(specific_runner)).to be_nil
+              expect(execute(project_runner)).to be_nil
               expect(pending_job.reload).to be_failed
               expect(pending_job.queuing_entry).to be_nil
             end
@@ -216,13 +216,13 @@ module Ci
             it { expect(Gitlab::Json.parse(response.build_json)['id']).to eq(build.id) }
           end
 
-          context 'specific runner' do
-            let(:build) { execute(specific_runner) }
+          context 'project runner' do
+            let(:build) { execute(project_runner) }
 
             it { expect(build).to be_kind_of(Build) }
             it { expect(build).to be_valid }
             it { expect(build).to be_running }
-            it { expect(build.runner).to eq(specific_runner) }
+            it { expect(build.runner).to eq(project_runner) }
           end
         end
 
@@ -237,13 +237,13 @@ module Ci
             it { expect(build).to be_nil }
           end
 
-          context 'specific runner' do
-            let(:build) { execute(specific_runner) }
+          context 'project runner' do
+            let(:build) { execute(project_runner) }
 
             it { expect(build).to be_kind_of(Build) }
             it { expect(build).to be_valid }
             it { expect(build).to be_running }
-            it { expect(build.runner).to eq(specific_runner) }
+            it { expect(build.runner).to eq(project_runner) }
           end
         end
 
@@ -268,7 +268,7 @@ module Ci
           end
 
           context 'and uses project runner' do
-            let(:build) { execute(specific_runner) }
+            let(:build) { execute(project_runner) }
 
             it 'does not pick a build' do
               expect(build).to be_nil
@@ -360,7 +360,7 @@ module Ci
               .with(pending_job, anything).and_raise(ActiveRecord::StaleObjectError)
           end
 
-          subject { described_class.new(specific_runner).execute }
+          subject { described_class.new(project_runner).execute }
 
           context 'with multiple builds are in queue' do
             let!(:other_build) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
@@ -404,13 +404,13 @@ module Ci
         end
 
         context 'when access_level of runner is not_protected' do
-          let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
+          let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
           context 'when a job is protected' do
             let!(:pending_job) { create(:ci_build, :pending, :queued, :protected, pipeline: pipeline) }
 
             it 'picks the job' do
-              expect(execute(specific_runner)).to eq(pending_job)
+              expect(execute(project_runner)).to eq(pending_job)
             end
           end
 
@@ -418,7 +418,7 @@ module Ci
             let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
             it 'picks the job' do
-              expect(execute(specific_runner)).to eq(pending_job)
+              expect(execute(project_runner)).to eq(pending_job)
             end
           end
 
@@ -430,19 +430,19 @@ module Ci
             end
 
             it 'picks the job' do
-              expect(execute(specific_runner)).to eq(pending_job)
+              expect(execute(project_runner)).to eq(pending_job)
             end
           end
         end
 
         context 'when access_level of runner is ref_protected' do
-          let!(:specific_runner) { create(:ci_runner, :project, :ref_protected, projects: [project]) }
+          let!(:project_runner) { create(:ci_runner, :project, :ref_protected, projects: [project]) }
 
           context 'when a job is protected' do
             let!(:pending_job) { create(:ci_build, :pending, :queued, :protected, pipeline: pipeline) }
 
             it 'picks the job' do
-              expect(execute(specific_runner)).to eq(pending_job)
+              expect(execute(project_runner)).to eq(pending_job)
             end
           end
 
@@ -450,7 +450,7 @@ module Ci
             let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
             it 'does not pick the job' do
-              expect(execute(specific_runner)).to be_nil
+              expect(execute(project_runner)).to be_nil
             end
           end
 
@@ -462,7 +462,7 @@ module Ci
             end
 
             it 'does not pick the job' do
-              expect(execute(specific_runner)).to be_nil
+              expect(execute(project_runner)).to be_nil
             end
           end
         end
@@ -471,7 +471,7 @@ module Ci
           let(:options) { { artifacts: { reports: { junit: "junit.xml" } } } }
           let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
 
-          subject { execute(specific_runner, params) }
+          subject { execute(project_runner, params) }
 
           context 'when feature is missing by runner' do
             let(:params) { {} }
@@ -507,10 +507,10 @@ module Ci
 
           let(:dependencies) { %w[test] }
 
-          subject { execute(specific_runner) }
+          subject { execute(project_runner) }
 
           it 'picks a build with a dependency' do
-            picked_build = execute(specific_runner)
+            picked_build = execute(project_runner)
 
             expect(picked_build).to be_present
           end
@@ -523,7 +523,7 @@ module Ci
             let(:dependencies) { %w[test deploy] }
 
             it 'logs build artifacts size' do
-              execute(specific_runner)
+              execute(project_runner)
 
               artifacts_size = [pre_stage_job, pre_stage_job_second].sum do |job|
                 job.job_artifacts_archive.size
@@ -622,7 +622,7 @@ module Ci
         context 'when build is degenerated' do
           let!(:pending_job) { create(:ci_build, :pending, :queued, :degenerated, pipeline: pipeline) }
 
-          subject { execute(specific_runner, {}) }
+          subject { execute(project_runner, {}) }
 
           it 'does not pick the build and drops the build' do
             expect(subject).to be_nil
@@ -642,7 +642,7 @@ module Ci
             pending_job.update_columns(options: "string")
           end
 
-          subject { execute(specific_runner, {}) }
+          subject { execute(project_runner, {}) }
 
           it 'does drop the build and logs both failures' do
             expect(Gitlab::ErrorTracking).to receive(:track_exception)
@@ -668,7 +668,7 @@ module Ci
               .and_raise(RuntimeError, 'scheduler error')
           end
 
-          subject { execute(specific_runner, {}) }
+          subject { execute(project_runner, {}) }
 
           it 'does drop the build and logs failure' do
             expect(Gitlab::ErrorTracking).to receive(:track_exception)
@@ -690,7 +690,7 @@ module Ci
             allow_any_instance_of(Ci::PersistentRef).to receive(:create_ref) { raise ArgumentError }
           end
 
-          subject { execute(specific_runner, {}) }
+          subject { execute(project_runner, {}) }
 
           it 'picks the build' do
             expect(subject).to eq(pending_job)
@@ -701,7 +701,7 @@ module Ci
         end
 
         context 'when only some builds can be matched by runner' do
-          let!(:specific_runner) { create(:ci_runner, :project, projects: [project], tag_list: %w[matching]) }
+          let!(:project_runner) { create(:ci_runner, :project, projects: [project], tag_list: %w[matching]) }
           let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline, tag_list: %w[matching]) }
 
           before do
@@ -713,21 +713,21 @@ module Ci
           it 'observes queue size of only matching jobs' do
             # pending_job + 2 x matching ones
             expect(Gitlab::Ci::Queue::Metrics.queue_size_total).to receive(:observe)
-              .with({ runner_type: specific_runner.runner_type }, 3)
+              .with({ runner_type: project_runner.runner_type }, 3)
 
-            expect(execute(specific_runner)).to eq(pending_job)
+            expect(execute(project_runner)).to eq(pending_job)
           end
 
           it 'observes queue processing time by the runner type' do
             expect(Gitlab::Ci::Queue::Metrics.queue_iteration_duration_seconds)
               .to receive(:observe)
-              .with({ runner_type: specific_runner.runner_type }, anything)
+              .with({ runner_type: project_runner.runner_type }, anything)
 
             expect(Gitlab::Ci::Queue::Metrics.queue_retrieval_duration_seconds)
               .to receive(:observe)
-              .with({ runner_type: specific_runner.runner_type }, anything)
+              .with({ runner_type: project_runner.runner_type }, anything)
 
-            expect(execute(specific_runner)).to eq(pending_job)
+            expect(execute(project_runner)).to eq(pending_job)
           end
         end
 
@@ -739,7 +739,7 @@ module Ci
           end
 
           context 'when a build is temporarily locked' do
-            let(:service) { described_class.new(specific_runner) }
+            let(:service) { described_class.new(project_runner) }
 
             before do
               service.send(:acquire_temporary_lock, pending_job.id)
@@ -777,7 +777,7 @@ module Ci
         include_examples 'handles runner assignment'
 
         context 'when a conflicting data is stored in denormalized table' do
-          let!(:specific_runner) { create(:ci_runner, :project, projects: [project], tag_list: %w[conflict]) }
+          let!(:project_runner) { create(:ci_runner, :project, projects: [project], tag_list: %w[conflict]) }
           let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline, tag_list: %w[conflict]) }
 
           before do
@@ -788,7 +788,7 @@ module Ci
             expect(pending_job.reload).to be_running
             expect(pending_job.queuing_entry).to be_present
 
-            result = described_class.new(specific_runner).execute
+            result = described_class.new(project_runner).execute
 
             expect(result).not_to be_valid
             expect(pending_job.reload.queuing_entry).not_to be_present
@@ -918,7 +918,7 @@ module Ci
         end
       end
 
-      context 'when specific runner is used' do
+      context 'when project runner is used' do
         let(:runner) { create(:ci_runner, :project, projects: [project], tag_list: %w(tag1 metrics_shard::shard_tag tag2)) }
         let(:expected_shared_runner) { false }
         let(:expected_shard) { ::Gitlab::Ci::Queue::Metrics::DEFAULT_METRICS_SHARD }
@@ -933,12 +933,12 @@ module Ci
       it 'present sets runner session configuration in the build' do
         runner_session_params = { session: { 'url' => 'https://example.com' } }
 
-        expect(execute(specific_runner, runner_session_params).runner_session.attributes)
+        expect(execute(project_runner, runner_session_params).runner_session.attributes)
           .to include(runner_session_params[:session])
       end
 
       it 'not present it does not configure the runner session' do
-        expect(execute(specific_runner).runner_session).to be_nil
+        expect(execute(project_runner).runner_session).to be_nil
       end
     end
 
@@ -954,7 +954,7 @@ module Ci
       it 'returns 409 conflict' do
         expect(Ci::Build.pending.unstarted.count).to eq 3
 
-        result = described_class.new(specific_runner).execute
+        result = described_class.new(project_runner).execute
 
         expect(result).not_to be_valid
         expect(result.build).to be_nil

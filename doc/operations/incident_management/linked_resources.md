@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230852) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_resource_links_widget`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364755) in GitLab 15.3.
-> - [Generally available](ihttps://gitlab.com/gitlab-org/gitlab/-/issues/364755) in GitLab 15.5. Feature flag `incident_resource_links_widget` removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364755) in GitLab 15.5. Feature flag `incident_resource_links_widget` removed.
 
 To help your team members find the important links without having to search through many comments,
 you can add linked resources to an incident issue.

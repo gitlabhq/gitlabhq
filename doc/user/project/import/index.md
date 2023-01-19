@@ -47,13 +47,11 @@ You can import projects from:
 - [CVS](cvs.md)
 - [FogBugz](fogbugz.md)
 - [GitHub.com or GitHub Enterprise](github.md)
-- [GitLab.com](gitlab_com.md)
 - [Gitea](gitea.md)
 - [Perforce](perforce.md)
 - [TFVC](tfvc.md)
 - [Repository by URL](repo_by_url.md)
-- [Uloading a manifest file (AOSP)](manifest.md)
-- [Phabricator](phabricator.md)
+- [Uploading a manifest file (AOSP)](manifest.md)
 - [Jira (issues only)](jira.md)
 
 You can also import any Git repository through HTTP from the **New Project** page. Note that if the

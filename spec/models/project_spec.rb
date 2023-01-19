@@ -2320,7 +2320,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
     context 'shared runners' do
       let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
-      let(:specific_runner) { create(:ci_runner, :project, :online, projects: [project]) }
+      let(:project_runner) { create(:ci_runner, :project, :online, projects: [project]) }
       let(:shared_runner) { create(:ci_runner, :instance, :online) }
       let(:offline_runner) { create(:ci_runner, :instance) }
 
@@ -2331,8 +2331,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
           is_expected.to be_falsey
         end
 
-        it 'has a specific runner' do
-          specific_runner
+        it 'has a project runner' do
+          project_runner
 
           is_expected.to be_truthy
         end
@@ -2343,14 +2343,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
           is_expected.to be_falsey
         end
 
-        it 'checks the presence of specific runner' do
-          specific_runner
+        it 'checks the presence of project runner' do
+          project_runner
 
-          expect(project.any_online_runners? { |runner| runner == specific_runner }).to be_truthy
+          expect(project.any_online_runners? { |runner| runner == project_runner }).to be_truthy
         end
 
         it 'returns false if match cannot be found' do
-          specific_runner
+          project_runner
 
           expect(project.any_online_runners? { false }).to be_falsey
         end

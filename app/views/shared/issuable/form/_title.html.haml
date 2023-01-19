@@ -1,27 +1,18 @@
 - issuable = local_assigns.fetch(:issuable)
-- has_wip_commits = local_assigns.fetch(:has_wip_commits)
 - form = local_assigns.fetch(:form)
 - no_issuable_templates = issuable_templates(ref_project, issuable.to_ability_name).empty?
-- toggle_wip_link_start = '<a href="" class="js-toggle-wip">'
-- toggle_wip_link_end = '</a>'
-- add_wip_text = (_('%{link_start}Start the title with %{draft_snippet}%{link_end} to prevent a merge request draft from merging before it\'s ready.') % { link_start: toggle_wip_link_start, link_end: toggle_wip_link_end, draft_snippet: '<code>Draft:</code>'.html_safe }).html_safe
-- remove_wip_text = (_('%{link_start}Remove the %{draft_snippet} prefix%{link_end} from the title to allow this merge request to be merged when it\'s ready.') % { link_start: toggle_wip_link_start, link_end: toggle_wip_link_end, draft_snippet: '<code>Draft</code>'.html_safe }).html_safe
 
 %div{ data: { testid: 'issue-title-input-field' } }
   = form.text_field :title, required: true, aria: { required: true }, maxlength: 255, autofocus: true,
     autocomplete: 'off', class: 'form-control pad', dir: 'auto', data: { qa_selector: 'issuable_form_title_field' }
 
   - if issuable.respond_to?(:draft?)
-    .form-text.text-muted
-      .js-wip-explanation{ style: "display: none;" }
-        = remove_wip_text
-      .js-no-wip-explanation
-        - if has_wip_commits
-          = _('It looks like you have some draft commits in this branch.')
-          %br
-        .invisible
-          .js-unwrap-on-load
-            = add_wip_text
+    .gl-pt-3
+      = render Pajamas::CheckboxTagComponent.new(name: 'mark_as_draft', checkbox_options: { class: 'js-toggle-draft' }) do |c|
+        = c.label do
+          = s_('MergeRequests|Mark as draft')
+        = c.help_text do
+          = s_('MergeRequests|Drafts cannot be merged until marked ready.')
 
   - if no_issuable_templates && can?(current_user, :push_code, issuable.project)
     = render 'shared/issuable/form/default_templates'

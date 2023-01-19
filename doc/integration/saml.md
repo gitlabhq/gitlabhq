@@ -262,13 +262,6 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-To allow your users to use SAML to sign up without having to manually create an
-account from either of the providers, add the following values to your configuration.
-
-```ruby
-gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'saml1']
-```
-
 ## Set up identity providers
 
 GitLab support of SAML means you can sign in to GitLab through a wide range

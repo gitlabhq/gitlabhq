@@ -97,7 +97,7 @@ GitLab supports the following types of CRON syntax for the `cadence` field:
 - A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
 
 NOTE:
-Other elements of the [CRON syntax]((https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm)) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
+Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
 
 NOTE:
 If using the `agents` field, required for `Operational Container Scanning`, the CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod. If not using the `agents` field, the CRON expression is evaluated in standard [UTC](https://www.timeanddate.com/worldclock/timezone/utc) time from GitLab.com. If you have a self-managed GitLab instance and have [changed the server timezone](../../../administration/timezone.md), the CRON expression is evaluated with the new timezone.

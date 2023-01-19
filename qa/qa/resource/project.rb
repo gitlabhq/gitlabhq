@@ -450,7 +450,7 @@ module QA
         parse_body(response)
       end
 
-      # Fetch project specific runners
+      # Fetch project runners
       #
       # @param [Hash] **kwargs optional query arguments, see: https://docs.gitlab.com/ee/api/runners.html#list-projects-runners
       # @return [Array]

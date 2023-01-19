@@ -2,6 +2,7 @@
 
 module IssuableCollectionsAction
   extend ActiveSupport::Concern
+  include GracefulTimeoutHandling
   include IssuableCollections
   include IssuesCalendar
 
@@ -33,6 +34,10 @@ module IssuableCollectionsAction
     @merge_requests = issuables_collection.page(params[:page])
 
     @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @merge_requests).data
+  rescue ActiveRecord::QueryCanceled => exception # rubocop:disable Database/RescueQueryCanceled
+    log_exception(exception)
+
+    @search_timeout_occurred = true
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 

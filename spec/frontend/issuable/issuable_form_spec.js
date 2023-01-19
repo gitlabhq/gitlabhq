@@ -4,6 +4,8 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import IssuableForm from '~/issuable/issuable_form';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
+import { getSaveableFormChildren } from './helpers';
+
 jest.mock('~/autosave');
 
 const createIssuable = (form) => {
@@ -18,6 +20,7 @@ describe('IssuableForm', () => {
     setHTMLFixture(`
       <form>
         <input name="[title]" />
+        <input type="checkbox" class="js-toggle-draft" />
         <textarea name="[description]"></textarea>
       </form>
     `);
@@ -99,10 +102,11 @@ describe('IssuableForm', () => {
       ])('creates $id autosave when $id input exist', ({ id, input, selector }) => {
         $form.append(input);
         const $input = $form.find(selector);
-        const totalAutosaveFormFields = $form.children().length;
         createIssuable($form);
 
-        expect(Autosave).toHaveBeenCalledTimes(totalAutosaveFormFields);
+        const children = getSaveableFormChildren($form[0]);
+
+        expect(Autosave).toHaveBeenCalledTimes(children.length);
         expect(Autosave).toHaveBeenLastCalledWith(
           $input.get(0),
           ['/', '', id],
@@ -153,12 +157,17 @@ describe('IssuableForm', () => {
     });
   });
 
-  describe('wip', () => {
+  describe('draft', () => {
+    let titleField;
+    let toggleDraft;
+
     beforeEach(() => {
       instance = createIssuable($form);
+      titleField = document.querySelector('input[name="[title]"]');
+      toggleDraft = document.querySelector('input.js-toggle-draft');
     });
 
-    describe('removeWip', () => {
+    describe('removeDraft', () => {
       it.each`
         prefix
         ${'draFT: '}
@@ -169,25 +178,25 @@ describe('IssuableForm', () => {
         ${' (DrafT)'}
         ${'draft: [draft] (draft)'}
       `('removes "$prefix" from the beginning of the title', ({ prefix }) => {
-        instance.titleField.val(`${prefix}The Issuable's Title Value`);
+        titleField.value = `${prefix}The Issuable's Title Value`;
 
-        instance.removeWip();
+        instance.removeDraft();
 
-        expect(instance.titleField.val()).toBe("The Issuable's Title Value");
+        expect(titleField.value).toBe("The Issuable's Title Value");
       });
     });
 
-    describe('addWip', () => {
+    describe('addDraft', () => {
       it("properly adds the work in progress prefix to the Issuable's title", () => {
-        instance.titleField.val("The Issuable's Title Value");
+        titleField.value = "The Issuable's Title Value";
 
-        instance.addWip();
+        instance.addDraft();
 
-        expect(instance.titleField.val()).toBe("Draft: The Issuable's Title Value");
+        expect(titleField.value).toBe("Draft: The Issuable's Title Value");
       });
     });
 
-    describe('workInProgress', () => {
+    describe('isMarkedDraft', () => {
       it.each`
         title                                 | expected
         ${'draFT: something is happening'}    | ${true}
@@ -195,10 +204,45 @@ describe('IssuableForm', () => {
         ${'something is happening to drafts'} | ${false}
         ${'something is happening'}           | ${false}
       `('returns $expected with "$title"', ({ title, expected }) => {
-        instance.titleField.val(title);
+        titleField.value = title;
 
-        expect(instance.workInProgress()).toBe(expected);
+        expect(instance.isMarkedDraft()).toBe(expected);
       });
+    });
+
+    describe('readDraftStatus', () => {
+      it.each`
+        title                | checked
+        ${'Draft: my title'} | ${true}
+        ${'my title'}        | ${false}
+      `(
+        'sets the draft checkbox checked status to $checked when the title is $title',
+        ({ title, checked }) => {
+          titleField.value = title;
+
+          instance.readDraftStatus();
+
+          expect(toggleDraft.checked).toBe(checked);
+        },
+      );
+    });
+
+    describe('writeDraftStatus', () => {
+      it.each`
+        checked  | title
+        ${true}  | ${'Draft: my title'}
+        ${false} | ${'my title'}
+      `(
+        'updates the title to $title when the draft checkbox checked status is $checked',
+        ({ checked, title }) => {
+          titleField.value = 'my title';
+          toggleDraft.checked = checked;
+
+          instance.writeDraftStatus();
+
+          expect(titleField.value).toBe(title);
+        },
+      );
     });
   });
 });

@@ -259,7 +259,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
   end
 
   describe '.belonging_to_project' do
-    it 'returns the specific project runner' do
+    it 'returns the project runner' do
       # own
       specific_project = create(:project)
       specific_runner = create(:ci_runner, :project, projects: [specific_project])
@@ -285,7 +285,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
 
     subject(:result) { described_class.belonging_to_parent_group_of_project(project_id) }
 
-    it 'returns the specific group runner' do
+    it 'returns the group runner' do
       expect(result).to contain_exactly(runner1)
     end
 
@@ -339,7 +339,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
     describe '.owned_or_instance_wide' do
       subject { described_class.owned_or_instance_wide(project.id) }
 
-      it 'returns a globally shared, a project specific and a group specific runner' do
+      it 'returns a shared, project and group runner' do
         is_expected.to contain_exactly(group_runner, project_runner, shared_runner)
       end
     end
@@ -352,7 +352,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
         project_runner
       end
 
-      it 'returns a globally shared and a group specific runner' do
+      it 'returns a globally shared and a group runner' do
         is_expected.to contain_exactly(group_runner, shared_runner)
       end
     end
@@ -382,7 +382,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
       context 'with group runners disabled' do
         let(:group_runners_enabled) { false }
 
-        it 'returns only the project specific runner' do
+        it 'returns only the project runner' do
           is_expected.to contain_exactly(project_runner)
         end
       end
@@ -390,7 +390,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
       context 'with group runners enabled' do
         let(:group_runners_enabled) { true }
 
-        it 'returns a project specific and a group specific runner' do
+        it 'returns a project runner and a group runner' do
           is_expected.to contain_exactly(group_runner, project_runner)
         end
       end
@@ -404,7 +404,7 @@ RSpec.describe Ci::Runner, feature_category: :runner do
         project_runner
       end
 
-      it 'returns a group specific runner' do
+      it 'returns a group runner' do
         is_expected.to contain_exactly(group_runner)
       end
     end

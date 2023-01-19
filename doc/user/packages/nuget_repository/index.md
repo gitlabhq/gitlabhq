@@ -283,7 +283,7 @@ To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Re
 
 Prerequisite:
 
-- Set up the [source](#https://docs.gitlab.com/ee/user/packages/nuget_repository/#add-the-package-registry-as-a-source-for-nuget-packages) with a [project-level endpoint](#use-the-gitlab-endpoint-for-nuget-packages).
+- Set up the [source](#add-the-package-registry-as-a-source-for-nuget-packages) with a [project-level endpoint](#use-the-gitlab-endpoint-for-nuget-packages).
 
 When publishing packages:
 

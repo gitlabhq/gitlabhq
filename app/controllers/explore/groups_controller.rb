@@ -7,8 +7,6 @@ class Explore::GroupsController < Explore::ApplicationController
   urgency :low
 
   def index
-    user = Feature.enabled?(:generic_explore_groups, current_user, type: :experiment) ? nil : current_user
-
-    render_group_tree GroupsFinder.new(user).execute
+    render_group_tree GroupsFinder.new(nil).execute
   end
 end

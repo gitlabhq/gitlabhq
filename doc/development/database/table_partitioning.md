@@ -307,9 +307,84 @@ class PrepareIndexesForPartitioning < Gitlab::Database::Migration[2.1]
 end
 ```
 
-### Step 3 - Swap primary key
+### Step 3 - Enforce unique constraint
 
-Swap the primary key including the partitioning key column. For example, in a rails migration:
+Change all unique indexes to include the partitioning key column,
+including the primary key index. You can start by adding an unique
+index on `[primary_key_column, :partition_id]`, which will be
+required for the next two steps. For example, in a rails migration:
+
+```ruby
+class PrepareUniqueContraintForPartitioning < Gitlab::Database::Migration[2.1]
+  disable_ddl_transaction!
+
+  TABLE_NAME = :table_name
+  OLD_UNIQUE_INDEX_NAME = :index_name_unique
+  NEW_UNIQUE_INDEX_NAME = :new_index_name
+
+  def up
+    add_concurrent_index(TABLE_NAME, [:id, :partition_id], unique: true, name: NEW_UNIQUE_INDEX_NAME)
+
+    remove_concurrent_index_by_name(TABLE_NAME, OLD_UNIQUE_INDEX_NAME)
+  end
+
+  def down
+    add_concurrent_index(TABLE_NAME, :id, unique: true, name: OLD_UNIQUE_INDEX_NAME)
+
+    remove_concurrent_index_by_name(TABLE_NAME, NEW_UNIQUE_INDEX_NAME)
+  end
+end
+```
+
+### Step 4 - Enforce foreign key constraint
+
+Enforce foreign keys including the partitioning key column. For example, in a rails migration:
+
+```ruby
+class PrepareForeignKeyForPartitioning < Gitlab::Database::Migration[2.1]
+  disable_ddl_transaction!
+
+  SOURCE_TABLE_NAME = :source_table_name
+  TARGET_TABLE_NAME = :target_table_name
+  COLUMN = :foreign_key_id
+  TARGET_COLUMN = :id
+  FK_NAME = :fk_365d1db505_p
+  PARTITION_COLUMN = :partition_id
+
+  def up
+    add_concurrent_foreign_key(
+      SOURCE_TABLE_NAME,
+      TARGET_TABLE_NAME,
+      column: [PARTITION_COLUMN, COLUMN],
+      target_column: [PARTITION_COLUMN, TARGET_COLUMN],
+      validate: false,
+      on_update: :cascade,
+      name: CONSTRAINT_NAME
+    )
+
+    # This should be done in a separate post migration when dealing with a high traffic table
+    validate_foreign_key(TABLE_NAME, [PARTITION_COLUMN, COLUMN], name: FK_NAME)
+  end
+
+  def down
+    with_lock_retries do
+      remove_foreign_key_if_exists(SOURCE_TABLE_NAME, name: FK_NAME)
+    end
+  end
+end
+```
+
+The `on_update: :cascade` option is mandatory if we want the partitioning column
+to be updated. This will cascade the update to all dependent rows. Without
+specifying it, updating the partition column on the target table we would
+result in a `Key is still referenced from table ...` error and updating the
+partition column on the source table would raise a
+`Key is not present in table ...` error.
+
+### Step 5 - Swap primary key
+
+Swap the primary key including the partitioning key column. This can be done only after
+including the partition key for all references foreign keys. For example, in a rails migration:
 
 ```ruby
 class PreparePrimaryKeyForPartitioning < Gitlab::Database::Migration[2.1]
@@ -341,74 +416,6 @@ class Model < ApplicationRecord
   self.primary_key = :id
 end
 ```
-
-### Step 4 - Enforce unique constraint
-
-Enforce unique indexes including the partitioning key column. For example, in a rails migration:
-
-```ruby
-class PrepareUniqueContraintForPartitioning < Gitlab::Database::Migration[2.1]
-  disable_ddl_transaction!
-
-  TABLE_NAME = :table_name
-  OLD_UNIQUE_INDEX_NAME = :index_name_unique
-  NEW_UNIQUE_INDEX_NAME = :new_index_name
-
-  def up
-    add_concurrent_index(TABLE_NAME, [:some_column, :partition_id], unique: true, name: NEW_UNIQUE_INDEX_NAME)
-
-    remove_concurrent_index_by_name(TABLE_NAME, OLD_UNIQUE_INDEX_NAME)
-  end
-
-  def down
-    add_concurrent_index(TABLE_NAME, :some_column, unique: true, name: OLD_UNIQUE_INDEX_NAME)
-
-    remove_concurrent_index_by_name(TABLE_NAME, NEW_UNIQUE_INDEX_NAME)
-  end
-end
-```
-
-### Step 5 - Enforce foreign key constraint
-
-Enforce foreign keys including the partitioning key column. For example, in a rails migration:
-
-```ruby
-class PrepareForeignKeyForPartitioning < Gitlab::Database::Migration[2.1]
-  disable_ddl_transaction!
-
-  SOURCE_TABLE_NAME = :source_table_name
-  TARGET_TABLE_NAME = :target_table_name
-  COLUMN = :foreign_key_id
-  TARGET_COLUMN = :id
-  CONSTRAINT_NAME = :fk_365d1db505_p
-  PARTITION_COLUMN = :partition_id
-
-  def up
-    add_concurrent_foreign_key(
-      SOURCE_TABLE_NAME,
-      TARGET_TABLE_NAME,
-      column: [PARTITION_COLUMN, COLUMN],
-      target_column: [PARTITION_COLUMN, TARGET_COLUMN],
-      validate: false,
-      on_update: :cascade,
-      name: CONSTRAINT_NAME
-    )
-
-    validate_foreign_key(TARGET_TABLE_NAME, CONSTRAINT_NAME)
-  end
-
-  def down
-    drop_constraint(TARGET_TABLE_NAME, CONSTRAINT_NAME)
-  end
-end
-```
-
-The `on_update: :cascade` option is mandatory if we want the partitioning column
-to be updated. This will cascade the update to all dependent rows. Without
-specifying it, updating the partition column on the target table we would
-result in a `Key is still referenced from table ...` error and updating the
-partition column on the source table would raise a
-`Key is not present in table ...` error.
 
 ### Step 6 - Create parent table and attach existing table as the initial partition
 
@@ -465,7 +472,7 @@ class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.1]
       table_name: TABLE_NAME,
       partitioning_column: PARTITION_COLUMN,
       parent_table_name: PARENT_TABLE_NAME,
-      initial_partitioning_value: FIRST_PARTITION
+      initial_partitioning_value: FIRST_PARTITION,
       lock_tables: [TABLE_FK, TABLE_NAME]
     )
   end

@@ -2601,7 +2601,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
       it { is_expected.to be_truthy }
 
-      context "and there are specific runner" do
+      context "and there is a project runner" do
         let!(:runner) { create(:ci_runner, :project, projects: [build.project], contacted_at: 1.second.ago) }
 
         it { is_expected.to be_falsey }

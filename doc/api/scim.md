@@ -33,10 +33,11 @@ Supported attributes:
 If successful, returns [`200`](rest/index.md#status-codes) and the following
 response attributes:
 
-| Attribute    | Type   | Description               |
-| ------------ | ------ | ------------------------- |
-| `extern_uid` | string | External UID for the user |
-| `user_id`    | string | ID for the user           |
+| Attribute    | Type    | Description               |
+| ------------ | ------- | ------------------------- |
+| `extern_uid` | string  | External UID for the user |
+| `user_id`    | integer | ID for the user           |
+| `active`     | boolean | Status of the identity    |
 
 Example response:
 
@@ -44,7 +45,8 @@ Example response:
 [
     {
         "extern_uid": "4",
-        "user_id": 48
+        "user_id": 48,
+        "active": true
     }
 ]
 ```
@@ -67,7 +69,7 @@ Fields that can be updated are:
 | `id/externalId` | `extern_uid` |
 
 ```plaintext
-PATCH groups/:groups_id/scim/:uid
+PATCH /groups/:groups_id/scim/:uid
 ```
 
 Parameters:

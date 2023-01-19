@@ -387,6 +387,26 @@ Alternatives to using the `gitlab:import:repos` Rake task include:
 
 <div class="deprecation removal-160 breaking-change">
 
+### Slack Notifications integration
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> <span class="support-end-date"></span><br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+As we're consolidating all Slack capabilities into the
+GitLab for Slack app, we're [deprecating the Slack Notifications
+integration](https://gitlab.com/gitlab-org/gitlab/-/issues/372411).
+GitLab.com users can now use the GitLab for Slack app to manage notifications
+to their Slack workspace. For self-managed users of the Slack Notifications integration,
+we'll be introducing support in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/1211).
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Support for third party registries
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
@@ -400,6 +420,22 @@ Support for third-party container registries is deprecated in GitLab 15.8 and wi
 Since we released the new [GitLab Container Registry](https://gitlab.com/groups/gitlab-org/-/epics/5523) version for GitLab.com, we've started to implement additional features that are not available in third-party container registries. These new features have allowed us to achieve significant performance improvements, such as [cleanup policies](https://gitlab.com/groups/gitlab-org/-/epics/8379). We are focusing on delivering [new features](https://gitlab.com/groups/gitlab-org/-/epics/5136), most of which will require functionalities only available on the GitLab Container Registry. This deprecation allows us to reduce fragmentation and user frustration in the long term by focusing on delivering a more robust integrated registry experience and feature set.
 
 Moving forward, we'll continue to invest in developing and releasing new features that will only be available in the GitLab Container Registry.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Test system hook endpoint
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> <span class="support-end-date"></span><br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [test system hook](https://docs.gitlab.com/ee/api/system_hooks.html#test-system-hook) endpoint returns dummy data.
+This endpoint is now deprecated and will be removed from the GitLab codebase.
 
 </div>
 
