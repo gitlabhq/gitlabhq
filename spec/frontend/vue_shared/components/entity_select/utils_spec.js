@@ -1,6 +1,6 @@
-import { groupsPath } from '~/vue_shared/components/group_select/utils';
+import { groupsPath } from '~/vue_shared/components/entity_select/utils';
 
-describe('group_select utils', () => {
+describe('entity_select utils', () => {
   describe('groupsPath', () => {
     it.each`
       groupsFilter           | parentGroupID | expectedPath

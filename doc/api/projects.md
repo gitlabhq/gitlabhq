@@ -2413,6 +2413,10 @@ GET /projects/:id/hooks/:hook_id
   "deployment_events": true,
   "releases_events": true,
   "enable_ssl_verification": true,
+  "repository_update_events": false,
+  "alert_status": "executable",
+  "disabled_until": null,
+  "url_variables": [ ],
   "created_at": "2012-10-12T17:04:47Z"
 }
 ```

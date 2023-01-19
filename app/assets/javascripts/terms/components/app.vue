@@ -2,7 +2,6 @@
 import { GlButton, GlIntersectionObserver } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
-import { FLASH_TYPES, FLASH_CLOSED_EVENT } from '~/flash';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
@@ -26,6 +25,9 @@ export default {
   data() {
     return {
       acceptDisabled: true,
+      observer: new MutationObserver(() => {
+        this.setScrollableViewportHeight();
+      }),
     };
   },
   computed: {
@@ -34,23 +36,10 @@ export default {
   mounted() {
     this.renderGFM();
     this.setScrollableViewportHeight();
-
-    this.$options.flashElements = [
-      ...document.querySelectorAll(
-        Object.values(FLASH_TYPES)
-          .map((flashType) => `.flash-${flashType}`)
-          .join(','),
-      ),
-    ];
-
-    this.$options.flashElements.forEach((flashElement) => {
-      flashElement.addEventListener(FLASH_CLOSED_EVENT, this.handleFlashClose);
-    });
+    this.observer.observe(document.body, { childList: true, subtree: true });
   },
   beforeDestroy() {
-    this.$options.flashElements.forEach((flashElement) => {
-      flashElement.removeEventListener(FLASH_CLOSED_EVENT, this.handleFlashClose);
-    });
+    this.observer.disconnect();
   },
   methods: {
     renderGFM() {
@@ -69,10 +58,6 @@ export default {
       this.$refs.scrollableViewport.style.maxHeight = `calc(100vh - ${
         scrollHeight - clientHeight
       }px)`;
-    },
-    handleFlashClose(event) {
-      this.setScrollableViewportHeight();
-      event.target.removeEventListener(FLASH_CLOSED_EVENT, this.handleFlashClose);
     },
     trackTrialAcceptTerms,
   },

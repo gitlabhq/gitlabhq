@@ -26,7 +26,7 @@ If you suspect that a user account or bot account has been compromised, consider
   - Addition or modification of runners.
   - Addition or modification of webhooks or Git hooks.
 - Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected
-  [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](token_overview.md#runner-registration-tokens).
+  [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](token_overview.md#runner-registration-tokens-deprecated).
 - [Reset the user's password](reset_user_password.md).
 - Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA at the instance or group level](two_factor_authentication.md)
 - After completing an investigation and mitigating impacts, unblock the user.

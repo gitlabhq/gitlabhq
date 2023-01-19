@@ -97,6 +97,9 @@ This problem was discovered in <https://gitlab.com/gitlab-org/gitlab-qa/-/issues
 work-around was suggested in <https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4717>.
 A feature proposal to segregate access control regarding running pipelines from ability to push/merge was also created at <https://gitlab.com/gitlab-org/gitlab/-/issues/24585>.
 
+For more technical details on CI/CD setup and documentation on adding new test jobs to `package-and-test` pipeline, see
+[`package_and_test` setup documentation](package_and_test_pipeline.md).
+
 #### With merged results pipelines
 
 In a merged results pipeline, the pipeline runs on a new ref that contains the merge result of the source and target branch.

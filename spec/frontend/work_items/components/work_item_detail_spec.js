@@ -700,7 +700,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('opens the modal with the child when `show-modal` is emitted', async () => {
-        createComponent({ handler });
+        createComponent({ handler, workItemsMvc2Enabled: true });
         await waitForPromises();
 
         const event = {
@@ -721,6 +721,7 @@ describe('WorkItemDetail component', () => {
           createComponent({
             isModal: true,
             handler,
+            workItemsMvc2Enabled: true,
           });
 
           await waitForPromises();

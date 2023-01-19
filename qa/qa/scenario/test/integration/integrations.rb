@@ -3,9 +3,9 @@
 module QA
   module Scenario
     module Test
-      module Instance
-        class Jira < All
-          tags :jira
+      module Integration
+        class Integrations < Test::Instance::All
+          tags :integrations
         end
       end
     end

@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
+               :clean_gitlab_redis_cache, feature_category: :importers do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:merge_request) { create(:merge_request) }
@@ -34,6 +35,19 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter, :clean
       end
 
       it 'does not change Merge Request reviewers' do
+        expect { subject.execute }.not_to change(MergeRequestReviewer, :count)
+
+        expect(merge_request.reviewers).to contain_exactly(author)
+      end
+    end
+
+    context 'when because of concurrency an attempt of duplication appeared' do
+      before do
+        allow(MergeRequestReviewer)
+          .to receive(:create!).and_raise(ActiveRecord::RecordNotUnique)
+      end
+
+      it 'does not change Merge Request reviewers', :aggregate_failures do
         expect { subject.execute }.not_to change(MergeRequestReviewer, :count)
 
         expect(merge_request.reviewers).to contain_exactly(author)

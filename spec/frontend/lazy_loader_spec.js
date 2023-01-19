@@ -60,7 +60,6 @@ describe('LazyLoader', () => {
   beforeEach(() => {
     jest.spyOn(window, 'requestAnimationFrame').mockImplementation(execImmediately);
     jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
-    jest.spyOn(LazyLoader, 'loadImage');
 
     mockLoadEvent();
   });
@@ -106,7 +105,6 @@ describe('LazyLoader', () => {
 
         trigger(img);
 
-        expect(LazyLoader.loadImage).toHaveBeenCalledWith(img);
         expect(img.getAttribute('src')).toBe(TEST_PATH);
         expect(img.dataset.src).toBeUndefined();
         expect(img).toHaveClass('js-lazy-loaded');
@@ -121,7 +119,6 @@ describe('LazyLoader', () => {
 
         await waitForPromises();
 
-        expect(LazyLoader.loadImage).toHaveBeenCalledWith(newImg);
         expect(newImg.getAttribute('src')).toBe(TEST_PATH);
         expect(newImg).toHaveClass('js-lazy-loaded');
       });
@@ -131,7 +128,6 @@ describe('LazyLoader', () => {
 
         lazyLoader.register();
 
-        expect(LazyLoader.loadImage).not.toHaveBeenCalled();
         expect(newImg).not.toHaveClass('js-lazy-loaded');
       });
 
@@ -143,7 +139,6 @@ describe('LazyLoader', () => {
 
         await waitForPromises();
 
-        expect(LazyLoader.loadImage).not.toHaveBeenCalledWith(newImg);
         expect(newImg).not.toHaveClass('js-lazy-loaded');
       });
 
@@ -158,7 +153,6 @@ describe('LazyLoader', () => {
 
         await waitForPromises();
 
-        expect(LazyLoader.loadImage).toHaveBeenCalledWith(newImg);
         expect(newImg.getAttribute('src')).toBe(TEST_PATH);
         expect(newImg).toHaveClass('js-lazy-loaded');
       });

@@ -3,46 +3,11 @@ import Vue from 'vue';
 import { GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
 
-const FLASH_TYPES = {
-  ALERT: 'alert',
-  NOTICE: 'notice',
-  SUCCESS: 'success',
-  WARNING: 'warning',
-};
-
-const VARIANT_SUCCESS = 'success';
-const VARIANT_WARNING = 'warning';
-const VARIANT_DANGER = 'danger';
-const VARIANT_INFO = 'info';
-const VARIANT_TIP = 'tip';
-
-const FLASH_CLOSED_EVENT = 'flashClosed';
-
-const hideFlash = (flashEl, fadeTransition = true) => {
-  if (fadeTransition) {
-    Object.assign(flashEl.style, {
-      transition: 'opacity 0.15s',
-      opacity: '0',
-    });
-  }
-
-  flashEl.addEventListener(
-    'transitionend',
-    () => {
-      flashEl.remove();
-      window.dispatchEvent(new Event('resize'));
-      flashEl.dispatchEvent(new Event(FLASH_CLOSED_EVENT));
-      if (document.body.classList.contains('flash-shown'))
-        document.body.classList.remove('flash-shown');
-    },
-    {
-      once: true,
-      passive: true,
-    },
-  );
-
-  if (!fadeTransition) flashEl.dispatchEvent(new Event('transitionend'));
-};
+export const VARIANT_SUCCESS = 'success';
+export const VARIANT_WARNING = 'warning';
+export const VARIANT_DANGER = 'danger';
+export const VARIANT_INFO = 'info';
+export const VARIANT_TIP = 'tip';
 
 /**
  * Render an alert at the top of the page, or, optionally an
@@ -86,7 +51,7 @@ const hideFlash = (flashEl, fadeTransition = true) => {
  * @param {boolean} [options.captureError] - Whether to send error to Sentry
  * @param {object} [options.error] - Error to be captured in Sentry
  */
-const createAlert = function createAlert({
+export const createAlert = ({
   message,
   title,
   variant = VARIANT_DANGER,
@@ -98,7 +63,7 @@ const createAlert = function createAlert({
   onDismiss = null,
   captureError = false,
   error = null,
-}) {
+}) => {
   if (captureError && error) Sentry.captureException(error);
 
   const alertContainer = parent.querySelector(containerSelector);
@@ -169,16 +134,4 @@ const createAlert = function createAlert({
       );
     },
   });
-};
-
-export {
-  hideFlash,
-  FLASH_TYPES,
-  FLASH_CLOSED_EVENT,
-  createAlert,
-  VARIANT_SUCCESS,
-  VARIANT_WARNING,
-  VARIANT_DANGER,
-  VARIANT_INFO,
-  VARIANT_TIP,
 };

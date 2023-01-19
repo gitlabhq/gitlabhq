@@ -22,10 +22,9 @@ For details on the similarities and differences between these features, see
 [Enforce scan execution](../index.md#enforce-scan-execution).
 
 NOTE:
-Policy jobs are created in the `test` stage of the pipeline. If you modify the default pipeline
+Policy jobs for scans other than DAST scans are created in the `test` stage of the pipeline. If you modify the default pipeline
 [`stages`](../../../ci/yaml/index.md#stages),
-you must ensure that the `test` stage exists in the list. Otherwise, the pipeline fails to run and
-an error appears that states `chosen stage does not exist`.
+to remove the `test` stage, jobs will run in the `scan-policies` stage instead. This stage is injected into the CI pipeline at evaluation time if it doesn't exist. If the `build` stage exists, it is injected just after the `build` stage. If the `build` stage does not exist, it is injected at the beginning of the pipeline. DAST scans always run in the `dast` stage. If this stage does not exist, then a `dast` stage is injected at the end of the pipeline.
 
 ## Scan execution policy editor
 

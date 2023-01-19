@@ -74,7 +74,14 @@ This is useful, for example, for cloning repositories to your Continuous Integra
 
 Project maintainers and owners can add or enable a deploy key for a project repository
 
-## Runner registration tokens
+## Runner registration tokens (deprecated)
+
+WARNING:
+The ability to pass a runner registration token was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is
+planned for removal in 17.0, along with support for certain configuration arguments. This change is a breaking change. GitLab plans to introduce a new
+[GitLab Runner token architecture](../architecture/blueprints/runner_tokens/index.md), which introduces
+a new method for registering runners and eliminates the
+runner registration token.
 
 Runner registration tokens are used to [register](https://docs.gitlab.com/runner/register/) a [runner](https://docs.gitlab.com/runner/) with GitLab. Group or project owners or instance administrators can obtain them through the GitLab user interface. The registration token is limited to runner registration and has no further scope.
 

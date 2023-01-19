@@ -1,4 +1,5 @@
 # E2E tests pipeline loaded dynamically by script: scripts/generate-e2e-pipeline
+# For adding new tests, refer to: doc/development/testing_guide/end_to_end/package_and_test_pipeline.md
 
 default:
   interruptible: true
@@ -440,7 +441,7 @@ ee:jira:
     JIRA_ADMIN_PASSWORD: $QA_JIRA_ADMIN_PASSWORD
   rules:
     - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Instance::Jira/
+    - if: $QA_SUITES =~ /Test::Integration::Jira/
     - !reference [.rules:test:manual, rules]
 
 ee:integrations:
@@ -485,7 +486,7 @@ ee:mtls:
     QA_SCENARIO: Test::Integration::MTLS
   rules:
     - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Integration::MTLS/
+    - if: $QA_SUITES =~ /Test::Integration::Mtls/
     - !reference [.rules:test:manual, rules]
 
 ee:mattermost:

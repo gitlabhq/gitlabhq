@@ -3,9 +3,9 @@
 module QA
   module Scenario
     module Test
-      module Instance
-        class Integrations < All
-          tags :integrations
+      module Integration
+        class GitalyCluster < Test::Instance::All
+          tags :gitaly_cluster
         end
       end
     end

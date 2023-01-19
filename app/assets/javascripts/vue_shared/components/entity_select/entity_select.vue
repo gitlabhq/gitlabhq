@@ -1,28 +1,15 @@
 <script>
 import { debounce } from 'lodash';
-import { GlFormGroup, GlAlert, GlCollapsibleListbox } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
-import axios from '~/lib/utils/axios_utils';
-import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
-import Api from '~/api';
+import { GlFormGroup, GlCollapsibleListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { groupsPath } from './utils';
-import {
-  TOGGLE_TEXT,
-  RESET_LABEL,
-  FETCH_GROUPS_ERROR,
-  FETCH_GROUP_ERROR,
-  QUERY_TOO_SHORT_MESSAGE,
-} from './constants';
+import { RESET_LABEL, QUERY_TOO_SHORT_MESSAGE } from './constants';
 
 const MINIMUM_QUERY_LENGTH = 3;
-const GROUPS_PER_PAGE = 20;
 
 export default {
   components: {
     GlFormGroup,
-    GlAlert,
     GlCollapsibleListbox,
   },
   props: {
@@ -48,13 +35,20 @@ export default {
       required: false,
       default: false,
     },
-    parentGroupID: {
+    headerText: {
       type: String,
-      required: false,
-      default: null,
+      required: true,
     },
-    groupsFilter: {
+    defaultToggleText: {
       type: String,
+      required: true,
+    },
+    fetchItems: {
+      type: Function,
+      required: true,
+    },
+    fetchInitialSelectionText: {
+      type: Function,
       required: false,
       default: null,
     },
@@ -63,10 +57,10 @@ export default {
     return {
       pristine: true,
       searching: false,
-      hasMoreGroups: true,
+      hasMoreItems: true,
       infiniteScrollLoading: false,
       searchString: '',
-      groups: [],
+      items: [],
       page: 1,
       selectedValue: null,
       selectedText: null,
@@ -78,14 +72,14 @@ export default {
       set(value) {
         this.selectedValue = value;
         this.selectedText =
-          value === null ? null : this.groups.find((group) => group.value === value).full_name;
+          value === null ? null : this.items.find((item) => item.value === value).text;
       },
       get() {
         return this.selectedValue;
       },
     },
     toggleText() {
-      return this.selectedText ?? this.$options.i18n.toggleText;
+      return this.selectedText ?? this.defaultToggleText;
     },
     resetButtonLabel() {
       return this.clearable ? RESET_LABEL : '';
@@ -109,90 +103,64 @@ export default {
     search: debounce(function debouncedSearch(searchString) {
       this.searchString = searchString;
       if (this.isSearchQueryTooShort) {
-        this.groups = [];
+        this.items = [];
       } else {
-        this.fetchGroups();
+        this.fetchEntities();
       }
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
-    async fetchGroups(page = 1) {
+    async fetchEntities(page = 1) {
       if (page === 1) {
         this.searching = true;
-        this.groups = [];
-        this.hasMoreGroups = true;
+        this.items = [];
+        this.hasMoreItems = true;
       } else {
         this.infiniteScrollLoading = true;
       }
 
-      try {
-        const { data, headers } = await axios.get(
-          Api.buildUrl(groupsPath(this.groupsFilter, this.parentGroupID)),
-          {
-            params: {
-              search: this.searchString,
-              per_page: GROUPS_PER_PAGE,
-              page,
-            },
-          },
-        );
-        const groups = data.length ? data : data.results || [];
+      const { items, totalPages } = await this.fetchItems(this.searchString, page);
 
-        this.groups.push(
-          ...groups.map((group) => ({
-            ...group,
-            value: String(group.id),
-          })),
-        );
+      this.items.push(...items);
 
-        const { totalPages } = parseIntPagination(normalizeHeaders(headers));
-        if (page === totalPages) {
-          this.hasMoreGroups = false;
-        }
-
-        this.page = page;
-        this.searching = false;
-        this.infiniteScrollLoading = false;
-      } catch (error) {
-        this.handleError({ message: FETCH_GROUPS_ERROR, error });
+      if (page === totalPages) {
+        this.hasMoreItems = false;
       }
+
+      this.page = page;
+      this.searching = false;
+      this.infiniteScrollLoading = false;
     },
     async fetchInitialSelection() {
       if (!this.initialSelection) {
         this.pristine = false;
         return;
       }
-      this.searching = true;
-      try {
-        const group = await Api.group(this.initialSelection);
-        this.selectedValue = this.initialSelection;
-        this.selectedText = group.full_name;
-        this.pristine = false;
-        this.searching = false;
-      } catch (error) {
-        this.handleError({ message: FETCH_GROUP_ERROR, error });
+
+      if (!this.fetchInitialSelectionText) {
+        throw new Error(
+          '`initialSelection` is provided but lacks `fetchInitialSelectionText` to retrieve the corresponding text',
+        );
       }
+
+      this.searching = true;
+      const name = await this.fetchInitialSelectionText(this.initialSelection);
+      this.selectedValue = this.initialSelection;
+      this.selectedText = name;
+      this.pristine = false;
+      this.searching = false;
     },
     onShown() {
-      if (!this.searchString && !this.groups.length) {
-        this.fetchGroups();
+      if (!this.searchString && !this.items.length) {
+        this.fetchEntities();
       }
     },
     onReset() {
       this.selected = null;
     },
     onBottomReached() {
-      this.fetchGroups(this.page + 1);
-    },
-    handleError({ message, error }) {
-      Sentry.captureException(error);
-      this.errorMessage = message;
-    },
-    dismissError() {
-      this.errorMessage = '';
+      this.fetchEntities(this.page + 1);
     },
   },
   i18n: {
-    toggleText: TOGGLE_TEXT,
-    selectGroup: __('Select a group'),
     noResultsText: __('No results found.'),
     searchQueryTooShort: QUERY_TOO_SHORT_MESSAGE,
   },
@@ -201,20 +169,18 @@ export default {
 
 <template>
   <gl-form-group :label="label">
-    <gl-alert v-if="errorMessage" class="gl-mb-3" variant="danger" @dismiss="dismissError">{{
-      errorMessage
-    }}</gl-alert>
+    <slot name="error"></slot>
     <gl-collapsible-listbox
       ref="listbox"
       v-model="selected"
-      :header-text="$options.i18n.selectGroup"
+      :header-text="headerText"
       :reset-button-label="resetButtonLabel"
       :toggle-text="toggleText"
       :loading="searching && pristine"
       :searching="searching"
-      :items="groups"
+      :items="items"
       :no-results-text="noResultsText"
-      :infinite-scroll="hasMoreGroups"
+      :infinite-scroll="hasMoreItems"
       :infinite-scroll-loading="infiniteScrollLoading"
       searchable
       @shown="onShown"
@@ -223,10 +189,7 @@ export default {
       @bottom-reached="onBottomReached"
     >
       <template #list-item="{ item }">
-        <div class="gl-font-weight-bold">
-          {{ item.full_name }}
-        </div>
-        <div class="gl-text-gray-300">{{ item.full_path }}</div>
+        <slot name="list-item" :item="item"></slot>
       </template>
     </gl-collapsible-listbox>
     <input :id="inputId" data-testid="input" type="hidden" :name="inputName" :value="inputValue" />

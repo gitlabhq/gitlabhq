@@ -18,6 +18,7 @@ export default {
   methods: {
     renderGFM() {
       renderGFM(this.$refs['note-body']);
+      gl?.lazyLoader?.searchLazyImages();
     },
   },
   safeHtmlConfig: {

@@ -3526,7 +3526,6 @@ Layout/LineLength:
     - 'rubocop/cop/migration/add_limit_to_text_columns.rb'
     - 'rubocop/cop/migration/add_reference.rb'
     - 'rubocop/cop/migration/prevent_global_enable_lock_retries_with_disable_ddl_transaction.rb'
-    - 'rubocop/cop/migration/versioned_migration_class.rb'
     - 'rubocop/cop/migration/with_lock_retries_disallowed_method.rb'
     - 'rubocop/cop/qa/selector_usage.rb'
     - 'rubocop/cop/rspec/top_level_describe_path.rb'

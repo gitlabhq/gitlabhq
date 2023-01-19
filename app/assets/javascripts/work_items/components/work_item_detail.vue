@@ -451,7 +451,11 @@ export default {
       });
     },
     openInModal(event, modalWorkItem) {
-      if (event) {
+      if (!this.workItemsMvc2Enabled) {
+        return;
+      }
+
+      if (this.event) {
         event.preventDefault();
 
         this.updateUrl(modalWorkItem);

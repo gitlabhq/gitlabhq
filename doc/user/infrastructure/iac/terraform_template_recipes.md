@@ -182,6 +182,19 @@ deploy:
 
 For an example repository, see the [GitLab Terraform template usage project](https://gitlab.com/gitlab-org/configure/examples/terraform-template-usage).
 
+## Automatically deploy from the default branch
+
+You can automatically deploy from the default branch by setting the `TF_AUTO_DEPLOY` variable
+to `"true"`. All other values are interpreted as `"false"`.
+
+```yaml
+variables:
+  TF_AUTO_DEPLOY: "true"
+
+include:
+  - template: Terraform.latest.gitlab-ci.yml
+```
+
 ## Deploy Terraform to multiple environments
 
 You can run pipelines in multiple environments, each with a unique Terraform state.

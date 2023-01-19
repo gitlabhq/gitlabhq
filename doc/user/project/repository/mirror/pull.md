@@ -65,7 +65,12 @@ Prerequisite:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Enter the **Git repository URL**. Include the username
-   in the URL, if required: `https://MYUSERNAME@github.com/GROUPNAME/PROJECTNAME.git`
+   in the URL, if required: `https://MYUSERNAME@gitlab.com/GROUPNAME/PROJECTNAME.git`
+
+   NOTE:
+   To mirror the `gitlab` repository, use `git@gitlab.com:gitlab-org/gitlab.git`
+   or `https://gitlab.com/gitlab-org/gitlab.git`.
+
 1. In **Mirror direction**, select **Pull**.
 1. In **Authentication method**, select your authentication method. To learn more, read
    [Authentication methods for mirrors](index.md#authentication-methods-for-mirrors).

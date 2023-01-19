@@ -64,10 +64,6 @@ export default {
       type: String,
       required: true,
     },
-    groupRunnersLimitedCount: {
-      type: Number,
-      required: true,
-    },
   },
   data() {
     return {

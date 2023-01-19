@@ -1,8 +1,8 @@
 <script>
 import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import NoteBody from '~/work_items/components/notes/work_item_note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
+import NoteBody from './work_item_note_body.vue';
 
 export default {
   components: {

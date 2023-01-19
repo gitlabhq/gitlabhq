@@ -20,7 +20,6 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
     runnerInstallHelpPage,
     groupId,
     groupFullPath,
-    groupRunnersLimitedCount,
     onlineContactTimeoutSecs,
     staleTimeoutSecs,
     emptyStateSvgPath,
@@ -50,7 +49,6 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
         props: {
           registrationToken,
           groupFullPath,
-          groupRunnersLimitedCount: parseInt(groupRunnersLimitedCount, 10),
         },
       });
     },

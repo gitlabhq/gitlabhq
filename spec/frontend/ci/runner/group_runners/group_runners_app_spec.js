@@ -112,7 +112,6 @@ describe('GroupRunnersApp', () => {
       propsData: {
         registrationToken: mockRegistrationToken,
         groupFullPath: mockGroupFullPath,
-        groupRunnersLimitedCount: mockGroupRunnersCount,
         ...props,
       },
       provide: {
@@ -466,7 +465,6 @@ describe('GroupRunnersApp', () => {
         propsData: {
           registrationToken: mockRegistrationToken,
           groupFullPath: mockGroupFullPath,
-          groupRunnersLimitedCount: mockGroupRunnersCount,
         },
       });
     });
@@ -482,7 +480,6 @@ describe('GroupRunnersApp', () => {
         propsData: {
           registrationToken: null,
           groupFullPath: mockGroupFullPath,
-          groupRunnersLimitedCount: mockGroupRunnersCount,
         },
       });
     });

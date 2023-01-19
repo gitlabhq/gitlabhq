@@ -21,18 +21,23 @@ For any of the following scenarios, the `start-review-app-pipeline` job would be
 - for scheduled pipelines
 - the MR has the `pipeline:run-review-app` label set
 
-## QA runs on review apps
+## E2E test runs on review apps
 
-On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage (which comes after the
-`review` stage), the `review-qa-smoke` and `review-qa-reliable` jobs are automatically started. The `review-qa-smoke` runs
-the QA smoke suite and the `review-qa-reliable` executes E2E tests identified as [reliable](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/reliable-tests/).
+On every pipeline in the `qa` stage (which comes after the `review` stage), the `review-qa-smoke` and `review-qa-blocking` jobs are automatically started.
 
-`review-qa-*` jobs ensure that end-to-end tests for the changes in the merge request pass in a live environment. This shifts the identification of e2e failures from an environment on the path to production to the merge request, to prevent breaking features on GitLab.com or costly GitLab.com deployment blockers. `review-qa-*` failures should be investigated with counterpart SET involvement if needed to help determine the root cause of the error.
+`qa` stage consists of following jobs:
 
-You can also manually start the `review-qa-all`: it runs the full QA suite.
+- `review-qa-smoke`: small and fast subset of tests to validate core functionality of GitLab.
+- `review-qa-blocking`: subset of tests identified as [reliable](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/reliable-tests/). These tests are
+  considered stable and are not allowed to fail.
+- `review-qa-non-blocking`: rest of the e2e tests that can be triggered manually.
+
+`review-qa-*` jobs ensure that end-to-end tests for the changes in the merge request pass in a live environment. This shifts the identification of e2e failures from an environment
+on the path to production to the merge request to prevent breaking features on GitLab.com or costly GitLab.com deployment blockers. If needed, `review-qa-*` failures should be
+investigated with an SET (software engineer in test) counterpart to help determine the root cause of the error.
 
 After the end-to-end test runs have finished, [Allure reports](https://github.com/allure-framework/allure2) are generated and published by
-the `allure-report-qa-smoke`, `allure-report-qa-reliable`, and `allure-report-qa-all` jobs. A comment with links to the reports are added to the merge request.
+the `e2e-test-report` job. A comment with links to the reports is added to the merge request.
 
 Errors can be found in the `gitlab-review-apps` Sentry project and [filterable by review app URL](https://sentry.gitlab.net/gitlab/gitlab-review-apps/?query=url%3A%22https%3A%2F%2Fgitlab-review-require-ve-u92nn2.gitlab-review.app%2F%22) or [commit SHA](https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/6095b501da7/all-events/).
 
