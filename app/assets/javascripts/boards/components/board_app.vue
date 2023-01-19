@@ -11,7 +11,12 @@ export default {
     BoardSettingsSidebar,
     BoardTopBar,
   },
-  inject: ['fullBoardId'],
+  inject: ['initialBoardId'],
+  data() {
+    return {
+      boardId: this.initialBoardId,
+    };
+  },
   computed: {
     ...mapGetters(['isSidebarOpen']),
   },
@@ -21,13 +26,18 @@ export default {
   destroyed() {
     window.removeEventListener('popstate', refreshCurrentPage);
   },
+  methods: {
+    switchBoard(id) {
+      this.boardId = id;
+    },
+  },
 };
 </script>
 
 <template>
   <div class="boards-app gl-relative" :class="{ 'is-compact': isSidebarOpen }">
-    <board-top-bar />
-    <board-content :board-id="fullBoardId" />
+    <board-top-bar :board-id="boardId" @switchBoard="switchBoard" />
+    <board-content :board-id="boardId" />
     <board-settings-sidebar />
   </div>
 </template>

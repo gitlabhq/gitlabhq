@@ -14,6 +14,8 @@ RSpec.describe 'Group Boards', feature_category: :team_planning do
     let_it_be(:project) { create(:project_empty_repo, group: group) }
 
     before do
+      stub_feature_flags(apollo_boards: false)
+
       group.add_maintainer(user)
 
       sign_in(user)
@@ -60,6 +62,8 @@ RSpec.describe 'Group Boards', feature_category: :team_planning do
     let_it_be(:issue2) { create(:issue, title: 'issue2', project: project2) }
 
     before do
+      stub_feature_flags(apollo_boards: false)
+
       project1.add_guest(user)
       project2.add_reporter(user)
 

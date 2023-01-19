@@ -15,7 +15,7 @@
       "type": "string"
     },
     "options": {
-      "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/metric_label_values_variable_options.json"
+      "$ref": "metric_label_values_variable_options.json"
     }
   },
   "additionalProperties": false

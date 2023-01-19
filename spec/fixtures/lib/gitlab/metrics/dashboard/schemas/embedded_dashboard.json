@@ -6,7 +6,7 @@
     "panel_groups": {
       "type": "array",
       "items": {
-        "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/embedded_panel_groups.json"
+        "$ref": "embedded_panel_groups.json"
       }
     }
   },

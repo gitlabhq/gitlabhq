@@ -108,6 +108,7 @@ describe('BoardsSelector', () => {
         boardType: isGroupBoard ? 'group' : 'project',
         isGroupBoard,
         isProjectBoard,
+        isApolloBoard: false,
       },
     });
   };

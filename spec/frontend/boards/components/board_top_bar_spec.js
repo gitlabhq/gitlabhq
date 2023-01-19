@@ -1,6 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
+import createMockApollo from 'helpers/mock_apollo_helper';
 
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
@@ -9,11 +11,18 @@ import ConfigToggle from '~/boards/components/config_toggle.vue';
 import IssueBoardFilteredSearch from '~/boards/components/issue_board_filtered_search.vue';
 import NewBoardButton from '~/boards/components/new_board_button.vue';
 import ToggleFocus from '~/boards/components/toggle_focus.vue';
+import { BoardType } from '~/boards/constants';
+
+import groupBoardQuery from '~/boards/graphql/group_board.query.graphql';
+import projectBoardQuery from '~/boards/graphql/project_board.query.graphql';
+import { mockProjectBoardResponse, mockGroupBoardResponse } from '../mock_data';
+
+Vue.use(VueApollo);
+Vue.use(Vuex);
 
 describe('BoardTopBar', () => {
   let wrapper;
-
-  Vue.use(Vuex);
+  let mockApollo;
 
   const createStore = () => {
     return new Vuex.Store({
@@ -21,10 +30,22 @@ describe('BoardTopBar', () => {
     });
   };
 
+  const projectBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockProjectBoardResponse);
+  const groupBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockGroupBoardResponse);
+
   const createComponent = ({ provide = {} } = {}) => {
     const store = createStore();
+    mockApollo = createMockApollo([
+      [projectBoardQuery, projectBoardQueryHandlerSuccess],
+      [groupBoardQuery, groupBoardQueryHandlerSuccess],
+    ]);
+
     wrapper = shallowMount(BoardTopBar, {
       store,
+      apolloProvider: mockApollo,
+      props: {
+        boardId: 'gid://gitlab/Board/1',
+      },
       provide: {
         swimlanesFeatureAvailable: false,
         canAdminList: false,
@@ -33,7 +54,9 @@ describe('BoardTopBar', () => {
         boardType: 'group',
         releasesFetchPath: '/releases',
         isIssueBoard: true,
+        isEpicBoard: false,
         isGroupBoard: true,
+        isApolloBoard: false,
         ...provide,
       },
       stubs: { IssueBoardFilteredSearch },
@@ -42,6 +65,7 @@ describe('BoardTopBar', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    mockApollo = null;
   });
 
   describe('base template', () => {
@@ -81,6 +105,28 @@ describe('BoardTopBar', () => {
 
     it('renders BoardAddNewColumnTrigger component', () => {
       expect(wrapper.findComponent(BoardAddNewColumnTrigger).exists()).toBe(true);
+    });
+  });
+
+  describe('Apollo boards', () => {
+    it.each`
+      boardType            | queryHandler                       | notCalledHandler
+      ${BoardType.group}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
+      ${BoardType.project} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
+    `('fetches $boardType boards', async ({ boardType, queryHandler, notCalledHandler }) => {
+      createComponent({
+        provide: {
+          boardType,
+          isProjectBoard: boardType === BoardType.project,
+          isGroupBoard: boardType === BoardType.group,
+          isApolloBoard: true,
+        },
+      });
+
+      await nextTick();
+
+      expect(queryHandler).toHaveBeenCalled();
+      expect(notCalledHandler).not.toHaveBeenCalled();
     });
   });
 });

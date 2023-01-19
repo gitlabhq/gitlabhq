@@ -3,7 +3,7 @@
   "type": "object",
   "required": ["variables"],
   "properties": {
-    "variables": { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/variables.json" }
+    "variables": { "$ref": "variables.json" }
   },
   "additionalProperties": false
 }

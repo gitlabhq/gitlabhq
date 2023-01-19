@@ -1,7 +1,13 @@
 import { sortBy, cloneDeep } from 'lodash';
 import { TYPE_BOARD, TYPE_ITERATION, TYPE_MILESTONE, TYPE_USER } from '~/graphql_shared/constants';
 import { isGid, convertToGraphQLId } from '~/graphql_shared/utils';
-import { ListType, MilestoneIDs, AssigneeFilterType, MilestoneFilterType } from './constants';
+import {
+  ListType,
+  MilestoneIDs,
+  AssigneeFilterType,
+  MilestoneFilterType,
+  boardQuery,
+} from './constants';
 
 export function getMilestone() {
   return null;
@@ -303,6 +309,10 @@ export const filterVariables = ({ filters, issuableType, filterInfo, filterField
 // EE-specific feature. Find the implementation in the `ee/`-folder
 export function transformBoardConfig() {
   return '';
+}
+
+export function getBoardQuery(boardType) {
+  return boardQuery[boardType].query;
 }
 
 export default {

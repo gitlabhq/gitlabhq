@@ -9,7 +9,7 @@
     "group": { "type": "string" },
     "panels": {
       "type": "array",
-      "items": { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/panels.json" }
+      "items": { "$ref": "panels.json" }
     },
     "has_custom_metrics": { "type": "boolean" }
   },

@@ -49682,9 +49682,6 @@ msgstr ""
 msgid "ciReport|is loading, errors when loading results"
 msgstr ""
 
-msgid "ci_database"
-msgstr ""
-
 msgid "closed"
 msgstr ""
 
@@ -49766,6 +49763,9 @@ msgid "daily"
 msgstr ""
 
 msgid "data"
+msgstr ""
+
+msgid "database"
 msgstr ""
 
 msgid "date must not be after 9999-12-31"
@@ -50206,9 +50206,6 @@ msgid "loading"
 msgstr ""
 
 msgid "locked by %{path_lock_user_name} %{created_at}"
-msgstr ""
-
-msgid "main_database"
 msgstr ""
 
 msgid "manual"

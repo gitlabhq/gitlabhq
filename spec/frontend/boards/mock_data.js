@@ -50,6 +50,26 @@ export const mockBoard = {
   weight: 2,
 };
 
+export const mockProjectBoardResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/114',
+      board: mockBoard,
+      __typename: 'Project',
+    },
+  },
+};
+
+export const mockGroupBoardResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Group/114',
+      board: mockBoard,
+      __typename: 'Group',
+    },
+  },
+};
+
 export const mockBoardConfig = {
   milestoneId: 'gid://gitlab/Milestone/114',
   milestoneTitle: '14.9',

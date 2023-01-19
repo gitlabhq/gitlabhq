@@ -7,6 +7,8 @@ import updateBoardListMutation from './graphql/board_list_update.mutation.graphq
 
 import issueSetSubscriptionMutation from './graphql/issue_set_subscription.mutation.graphql';
 import issueSetTitleMutation from './graphql/issue_set_title.mutation.graphql';
+import groupBoardQuery from './graphql/group_board.query.graphql';
+import projectBoardQuery from './graphql/project_board.query.graphql';
 
 /* eslint-disable-next-line @gitlab/require-i18n-strings */
 export const AssigneeIdParamValues = ['Any', 'None'];
@@ -58,6 +60,15 @@ export const LIST = 'list';
 export const INCIDENT = 'INCIDENT';
 
 export const flashAnimationDuration = 2000;
+
+export const boardQuery = {
+  [BoardType.group]: {
+    query: groupBoardQuery,
+  },
+  [BoardType.project]: {
+    query: projectBoardQuery,
+  },
+};
 
 export const listsQuery = {
   [issuableTypes.issue]: {

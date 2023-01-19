@@ -14,6 +14,10 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
   let(:board_list_header) { first('[data-testid="board-list-header"]') }
   let(:project_select_dropdown) { find('[data-testid="project-select-dropdown"]') }
 
+  before do
+    stub_feature_flags(apollo_boards: false)
+  end
+
   context 'authorized user' do
     before do
       project.add_maintainer(user)

@@ -16,7 +16,6 @@ import * as tooltips from '~/tooltips';
 import { initPrefetchLinks } from '~/lib/utils/navigation_utility';
 import { logHelloDeferred } from 'jh_else_ce/lib/logger/hello_deferred';
 import initAlertHandler from './alert_handler';
-import { addDismissFlashClickListener } from './flash';
 import initTodoToggle from './header';
 import initLayoutNav from './layout_nav';
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
@@ -252,16 +251,6 @@ $('form.filter-form').on('submit', function filterFormSubmitCallback(event) {
   event.preventDefault();
   visitUrl(action);
 });
-
-const flashContainer = document.querySelector('.flash-container');
-
-if (flashContainer && flashContainer.children.length) {
-  flashContainer
-    .querySelectorAll('.flash-alert, .flash-notice, .flash-success')
-    .forEach((flashEl) => {
-      addDismissFlashClickListener(flashEl);
-    });
-}
 
 // initialize field errors
 $('.gl-show-field-errors').each((i, form) => new GlFieldErrors(form));

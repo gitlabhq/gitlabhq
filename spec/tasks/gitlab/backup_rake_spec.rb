@@ -7,9 +7,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete, feature_category: :bac
   let(:backup_restore_pid_path) { "#{Rails.application.root}/tmp/backup_restore.pid" }
   let(:backup_tasks) { %w[db repo uploads builds artifacts pages lfs terraform_state registry packages] }
   let(:backup_types) do
-    %w[main_db repositories uploads builds artifacts pages lfs terraform_state registry packages].tap do |array|
-      array.insert(1, 'ci_db') if Gitlab::Database.has_config?(:ci)
-    end
+    %w[db repositories uploads builds artifacts pages lfs terraform_state registry packages]
   end
 
   def tars_glob
@@ -94,7 +92,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete, feature_category: :bac
       let(:pid_file) { instance_double(File, write: 12345) }
 
       where(:tasks_name, :rake_task) do
-        %w[main_db ci_db] | 'gitlab:backup:db:restore'
+        'db'              | 'gitlab:backup:db:restore'
         'repositories'    | 'gitlab:backup:repo:restore'
         'builds'          | 'gitlab:backup:builds:restore'
         'uploads'         | 'gitlab:backup:uploads:restore'
@@ -260,9 +258,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete, feature_category: :bac
       end
 
       it 'logs the progress to log file' do
-        ci_database_status = Gitlab::Database.has_config?(:ci) ? "[SKIPPED]" : "[DISABLED]"
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping main_database ... [SKIPPED]")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping ci_database ... #{ci_database_status}")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping database ... [SKIPPED]")
         expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... ")
         expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... done")
         expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... ")

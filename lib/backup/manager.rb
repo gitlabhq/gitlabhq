@@ -22,7 +22,6 @@ module Backup
       :destination_optional, # `true` if the destination might not exist on a successful backup.
       :cleanup_path, # Path to remove after a successful backup. Uses `destination_path` when not specified.
       :task,
-      :task_group,
       keyword_init: true
     ) do
       def enabled?
@@ -121,20 +120,11 @@ module Backup
 
     def build_definitions # rubocop:disable Metrics/AbcSize
       {
-        'main_db' => TaskDefinition.new(
-          human_name: _('main_database'),
-          destination_path: 'db/database.sql.gz',
+        'db' => TaskDefinition.new(
+          human_name: _('database'),
+          destination_path: 'db',
           cleanup_path: 'db',
-          task: build_db_task(:main),
-          task_group: 'db'
-        ),
-        'ci_db' => TaskDefinition.new(
-          human_name: _('ci_database'),
-          destination_path: 'db/ci_database.sql.gz',
-          cleanup_path: 'db',
-          task: build_db_task(:ci),
-          enabled: Gitlab::Database.has_config?(:ci),
-          task_group: 'db'
+          task: build_db_task
         ),
         'repositories' => TaskDefinition.new(
           human_name: _('repositories'),
@@ -186,11 +176,10 @@ module Backup
       }.freeze
     end
 
-    def build_db_task(database_name)
-      return unless Gitlab::Database.has_config?(database_name) # It will be disabled for a single db setup
-
+    def build_db_task
       force = Gitlab::Utils.to_boolean(ENV['force'], default: false)
-      Database.new(database_name, progress, force: force)
+
+      Database.new(progress, force: force)
     end
 
     def build_repositories_task
@@ -483,7 +472,7 @@ module Backup
     end
 
     def skipped?(item)
-      skipped.include?(item) || skipped.include?(definitions[item]&.task_group)
+      skipped.include?(item)
     end
 
     def skipped

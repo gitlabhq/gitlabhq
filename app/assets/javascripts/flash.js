@@ -18,10 +18,6 @@ const VARIANT_TIP = 'tip';
 
 const FLASH_CLOSED_EVENT = 'flashClosed';
 
-const getCloseEl = (flashEl) => {
-  return flashEl.querySelector('.js-close-icon');
-};
-
 const hideFlash = (flashEl, fadeTransition = true) => {
   if (fadeTransition) {
     Object.assign(flashEl.style, {
@@ -46,12 +42,6 @@ const hideFlash = (flashEl, fadeTransition = true) => {
   );
 
   if (!fadeTransition) flashEl.dispatchEvent(new Event('transitionend'));
-};
-
-const addDismissFlashClickListener = (flashEl, fadeTransition) => {
-  // There are some flash elements which do not have a closeEl.
-  // https://gitlab.com/gitlab-org/gitlab/blob/763426ef344488972eb63ea5be8744e0f8459e6b/ee/app/views/layouts/header/_read_only_banner.html.haml
-  getCloseEl(flashEl)?.addEventListener('click', () => hideFlash(flashEl, fadeTransition));
 };
 
 /**
@@ -183,7 +173,6 @@ const createAlert = function createAlert({
 
 export {
   hideFlash,
-  addDismissFlashClickListener,
   FLASH_TYPES,
   FLASH_CLOSED_EVENT,
   createAlert,

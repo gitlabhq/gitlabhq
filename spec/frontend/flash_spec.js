@@ -1,12 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import {
-  hideFlash,
-  addDismissFlashClickListener,
-  FLASH_CLOSED_EVENT,
-  createAlert,
-  VARIANT_WARNING,
-} from '~/flash';
+import { hideFlash, FLASH_CLOSED_EVENT, createAlert, VARIANT_WARNING } from '~/flash';
 
 jest.mock('@sentry/browser');
 
@@ -335,47 +329,6 @@ describe('Flash', () => {
 
           expect(findTextContent()).toBe('message 1 message 2');
         });
-      });
-    });
-  });
-
-  describe('addDismissFlashClickListener', () => {
-    let el;
-
-    describe('with close icon', () => {
-      beforeEach(() => {
-        el = document.createElement('div');
-        el.innerHTML = `
-          <div class="flash-container">
-            <div class="flash">
-              <div class="close-icon js-close-icon"></div>
-            </div>
-          </div>
-        `;
-      });
-
-      it('removes global flash on click', () => {
-        addDismissFlashClickListener(el, false);
-
-        el.querySelector('.js-close-icon').click();
-
-        expect(document.querySelector('.flash')).toBeNull();
-      });
-    });
-
-    describe('without close icon', () => {
-      beforeEach(() => {
-        el = document.createElement('div');
-        el.innerHTML = `
-          <div class="flash-container">
-            <div class="flash">
-            </div>
-          </div>
-        `;
-      });
-
-      it('does not throw', () => {
-        expect(() => addDismissFlashClickListener(el, false)).not.toThrow();
       });
     });
   });
