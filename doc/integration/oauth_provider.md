@@ -124,13 +124,14 @@ When applications are deleted, all grants and tokens associated with the applica
 ## Hashed OAuth application secrets
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374588) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `hash_oauth_secrets`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/374588) in GitLab 15.8.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/374588) in GitLab 15.8.
 
 FLAG:
-On self-managed GitLab, by default, this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `hash_oauth_secrets`.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `hash_oauth_secrets`.
 On GitLab.com, this feature is available.
 
-By default, OAuth application secrets are stored as plain text in the database. When enabled, OAuth application secrets are stored in the database in hashed format and are only available to users immediately after creating OAuth applications.
+By default, GitLab stores OAuth application secrets in the database in hashed format. These secrets are only available to users immediately after creating OAuth applications. In
+earlier versions of GitLab, application secrets are stored as plain text in the database.
 
 ## Other ways to use OAuth 2 in GitLab
 

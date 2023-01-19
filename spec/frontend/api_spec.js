@@ -1004,7 +1004,7 @@ describe('Api', () => {
 
       jest.spyOn(axios, 'delete');
 
-      mock.onDelete(expectedUrl).replyOnce(204);
+      mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_NO_CONTENT);
 
       return Api.removeContextCommits(projectPath, mergeRequestId, expectedData).then(() => {
         expect(axios.delete).toHaveBeenCalledWith(expectedUrl, { data: expectedData });

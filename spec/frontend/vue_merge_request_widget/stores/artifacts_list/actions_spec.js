@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import {
   setEndpoint,
   requestArtifacts,
@@ -136,7 +137,7 @@ describe('Artifacts App Store Actions', () => {
     it('should not commit RECEIVE_ARTIFACTS_SUCCESS mutation with 204', () => {
       return testAction(
         receiveArtifactsSuccess,
-        { data: { summary: {} }, status: 204 },
+        { data: { summary: {} }, status: HTTP_STATUS_NO_CONTENT },
         mockedState,
         [],
         [],

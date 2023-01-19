@@ -2,6 +2,11 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_OK,
+} from '~/lib/utils/http_status';
 import createStore from '~/ci/reports/codequality_report/store';
 import * as actions from '~/ci/reports/codequality_report/store/actions';
 import * as types from '~/ci/reports/codequality_report/store/mutation_types';
@@ -105,9 +110,9 @@ describe('Codequality Reports actions', () => {
       it('continues polling until it receives data', () => {
         mock
           .onGet(endpoint)
-          .replyOnce(204, undefined, pollIntervalHeader)
+          .replyOnce(HTTP_STATUS_NO_CONTENT, undefined, pollIntervalHeader)
           .onGet(endpoint)
-          .reply(200, reportIssues);
+          .reply(HTTP_STATUS_OK, reportIssues);
 
         return Promise.all([
           testAction(
@@ -134,9 +139,9 @@ describe('Codequality Reports actions', () => {
       it('continues polling until it receives an error', () => {
         mock
           .onGet(endpoint)
-          .replyOnce(204, undefined, pollIntervalHeader)
+          .replyOnce(HTTP_STATUS_NO_CONTENT, undefined, pollIntervalHeader)
           .onGet(endpoint)
-          .reply(500);
+          .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
         return Promise.all([
           testAction(

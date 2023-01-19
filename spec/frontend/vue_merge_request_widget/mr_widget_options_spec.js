@@ -11,7 +11,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
@@ -1010,7 +1010,7 @@ describe('MrWidgetOptions', () => {
             () =>
               Promise.resolve({
                 headers: { 'poll-interval': 1 },
-                status: 204,
+                status: HTTP_STATUS_NO_CONTENT,
               }),
             () =>
               Promise.resolve({

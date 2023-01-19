@@ -10,6 +10,7 @@ import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import CommentForm from '~/notes/components/comment_form.vue';
 import CommentTypeDropdown from '~/notes/components/comment_type_dropdown.vue';
 import * as constants from '~/notes/constants';
@@ -162,11 +163,11 @@ describe('issue_comment_form component', () => {
       });
 
       it.each`
-        httpStatus | errors
-        ${400}     | ${[COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK]}
-        ${422}     | ${['error 1']}
-        ${422}     | ${['error 1', 'error 2']}
-        ${422}     | ${['error 1', 'error 2', 'error 3']}
+        httpStatus                          | errors
+        ${400}                              | ${[COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK]}
+        ${HTTP_STATUS_UNPROCESSABLE_ENTITY} | ${['error 1']}
+        ${HTTP_STATUS_UNPROCESSABLE_ENTITY} | ${['error 1', 'error 2']}
+        ${HTTP_STATUS_UNPROCESSABLE_ENTITY} | ${['error 1', 'error 2', 'error 3']}
       `(
         'displays the correct errors ($errors) for a $httpStatus network response',
         async ({ errors, httpStatus }) => {
@@ -198,7 +199,10 @@ describe('issue_comment_form component', () => {
         store = createStore({
           actions: {
             saveNote: jest.fn().mockRejectedValue({
-              response: { status: 422, data: { errors: { commands_only: [...commandErrors] } } },
+              response: {
+                status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
+                data: { errors: { commands_only: [...commandErrors] } },
+              },
             }),
           },
         });

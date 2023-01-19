@@ -237,6 +237,8 @@ Edition, follow the guides below based on the installation method:
   GitLab Community Edition to the Enterprise Edition.
 - [Docker CE to EE](../install/docker.md#convert-community-edition-to-enterprise-edition) -
   Follow this guide to update your GitLab Community Edition container to an Enterprise Edition container.
+- [Helm chart (Kubernetes) CE to EE](https://docs.gitlab.com/charts/installation/deployment.html#convert-community-edition-to-enterprise-edition) -
+  Follow this guide to update your GitLab Community Edition Helm deployment to Enterprise Edition.
 
 ### Enterprise to Community Edition
 

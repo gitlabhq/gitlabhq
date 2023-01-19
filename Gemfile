@@ -29,7 +29,7 @@ gem 'ipaddr', '1.2.2'
 # Responders respond_to and respond_with
 gem 'responders', '~> 3.0'
 
-gem 'sprockets', '~> 3.7.0'
+gem 'sprockets', '~> 4.1.1'
 
 gem 'view_component', '~> 2.74.1'
 

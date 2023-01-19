@@ -7,6 +7,7 @@ import { createAlert } from '~/flash';
 import toast from '~/vue_shared/plugins/global_toast';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import * as notesConstants from '~/notes/constants';
 import createStore from '~/notes/stores';
 import * as actions from '~/notes/stores/actions';
@@ -1208,7 +1209,7 @@ describe('Actions Notes Store', () => {
     describe('if response contains errors', () => {
       const errorMessage = 'Request failed with status code 503';
       it('dispatches receiveDeleteDescriptionVersionError and throws an error', async () => {
-        axiosMock.onDelete(endpoint).replyOnce(503);
+        axiosMock.onDelete(endpoint).replyOnce(HTTP_STATUS_SERVICE_UNAVAILABLE);
         await expect(
           testAction(
             actions.softDeleteDescriptionVersion,

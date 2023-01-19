@@ -3,7 +3,7 @@
 class Groups::EmailCampaignsController < Groups::ApplicationController
   EMAIL_CAMPAIGNS_SCHEMA_URL = 'iglu:com.gitlab/email_campaigns/jsonschema/1-0-0'
 
-  feature_category :navigation
+  feature_category :experimentation_activation
   urgency :low
 
   before_action :check_params

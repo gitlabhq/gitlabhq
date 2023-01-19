@@ -21,7 +21,7 @@ import {
 import state from '~/import_entities/import_projects/store/state';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 
 jest.mock('~/flash');
 
@@ -216,7 +216,7 @@ describe('import_projects store actions', () => {
 
     describe('when rate limited', () => {
       it('commits RECEIVE_REPOS_ERROR and shows rate limited error message', async () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(429);
+        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(HTTP_STATUS_TOO_MANY_REQUESTS);
 
         await testAction(
           fetchRepos,

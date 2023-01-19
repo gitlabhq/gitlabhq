@@ -240,145 +240,32 @@ module Gitlab
 
     # Support legacy unicode file named img emojis, `1F939.png`
     config.assets.paths << TanukiEmoji.images_path
-    config.assets.paths << "#{config.root}/vendor/assets/fonts"
-
-    config.assets.precompile << "application_utilities.css"
-    config.assets.precompile << "application_utilities_dark.css"
-    config.assets.precompile << "application_dark.css"
-
-    config.assets.precompile << "startup/*.css"
-
-    config.assets.precompile << "print.css"
-    config.assets.precompile << "mailer.css"
-    config.assets.precompile << "mailer_client_specific.css"
-    config.assets.precompile << "notify.css"
-    config.assets.precompile << "notify_enhanced.css"
-    config.assets.precompile << "mailers/*.css"
-    config.assets.precompile << "page_bundles/_mixins_and_variables_and_functions.css"
-    config.assets.precompile << "page_bundles/admin/application_settings_metrics_and_profiling.css"
-    config.assets.precompile << "page_bundles/admin/geo_nodes.css"
-    config.assets.precompile << "page_bundles/admin/geo_replicable.css"
-    config.assets.precompile << "page_bundles/admin/jobs_index.css"
-    config.assets.precompile << "page_bundles/alert_management_details.css"
-    config.assets.precompile << "page_bundles/alert_management_settings.css"
-    config.assets.precompile << "page_bundles/billings.css"
-    config.assets.precompile << "page_bundles/boards.css"
-    config.assets.precompile << "page_bundles/branches.css"
-    config.assets.precompile << "page_bundles/build.css"
-    config.assets.precompile << "page_bundles/ci_status.css"
-    config.assets.precompile << "page_bundles/cluster_agents.css"
-    config.assets.precompile << "page_bundles/clusters.css"
-    config.assets.precompile << "page_bundles/cycle_analytics.css"
-    config.assets.precompile << "page_bundles/dashboard.css"
-    config.assets.precompile << "page_bundles/dashboard_projects.css"
-    config.assets.precompile << "page_bundles/design_management.css"
-    config.assets.precompile << "page_bundles/dev_ops_reports.css"
-    config.assets.precompile << "page_bundles/editor.css"
-    config.assets.precompile << "page_bundles/environments.css"
-    config.assets.precompile << "page_bundles/epics.css"
-    config.assets.precompile << "page_bundles/error_tracking_details.css"
-    config.assets.precompile << "page_bundles/error_tracking_index.css"
-    config.assets.precompile << "page_bundles/graph_charts.css"
-    config.assets.precompile << "page_bundles/group.css"
-    config.assets.precompile << "page_bundles/ide.css"
-    config.assets.precompile << "page_bundles/import.css"
-    config.assets.precompile << "page_bundles/incident_management_list.css"
-    config.assets.precompile << "page_bundles/incidents.css"
-    config.assets.precompile << "page_bundles/issues_analytics.css"
-    config.assets.precompile << "page_bundles/issuable.css"
-    config.assets.precompile << "page_bundles/issuable_list.css"
-    config.assets.precompile << "page_bundles/issues_list.css"
-    config.assets.precompile << "page_bundles/issues_show.css"
-    config.assets.precompile << "page_bundles/jira_connect.css"
-    config.assets.precompile << "page_bundles/jira_connect_users.css"
-    config.assets.precompile << "page_bundles/learn_gitlab.css"
-    config.assets.precompile << "page_bundles/marketing_popover.css"
-    config.assets.precompile << "page_bundles/members.css"
-    config.assets.precompile << "page_bundles/merge_conflicts.css"
-    config.assets.precompile << "page_bundles/merge_request_analytics.css"
-    config.assets.precompile << "page_bundles/merge_requests.css"
-    config.assets.precompile << "page_bundles/milestone.css"
-    config.assets.precompile << "page_bundles/new_namespace.css"
-    config.assets.precompile << "page_bundles/notifications.css"
-    config.assets.precompile << "page_bundles/oncall_schedules.css"
-    config.assets.precompile << "page_bundles/operations.css"
-    config.assets.precompile << "page_bundles/escalation_policies.css"
-    config.assets.precompile << "page_bundles/pipeline.css"
-    config.assets.precompile << "page_bundles/pipeline_schedules.css"
-    config.assets.precompile << "page_bundles/pipelines.css"
-    config.assets.precompile << "page_bundles/pipeline_editor.css"
-    config.assets.precompile << "page_bundles/productivity_analytics.css"
-    config.assets.precompile << "page_bundles/profile.css"
-    config.assets.precompile << "page_bundles/profile_two_factor_auth.css"
-    config.assets.precompile << "page_bundles/profiles/preferences.css"
-    config.assets.precompile << "page_bundles/project.css"
-    config.assets.precompile << "page_bundles/projects_edit.css"
-    config.assets.precompile << "page_bundles/prometheus.css"
-    config.assets.precompile << "page_bundles/releases.css"
-    config.assets.precompile << "page_bundles/reports.css"
-    config.assets.precompile << "page_bundles/roadmap.css"
-    config.assets.precompile << "page_bundles/requirements.css"
-    config.assets.precompile << "page_bundles/runner_details.css"
-    config.assets.precompile << "page_bundles/search.css"
-    config.assets.precompile << "page_bundles/security_dashboard.css"
-    config.assets.precompile << "page_bundles/security_discover.css"
-    config.assets.precompile << "page_bundles/settings.css"
-    config.assets.precompile << "page_bundles/signup.css"
-    config.assets.precompile << "page_bundles/terminal.css"
-    config.assets.precompile << "page_bundles/terms.css"
-    config.assets.precompile << "page_bundles/todos.css"
-    config.assets.precompile << "page_bundles/tree.css"
-    config.assets.precompile << "page_bundles/users.css"
-    config.assets.precompile << "page_bundles/wiki.css"
-    config.assets.precompile << "page_bundles/work_items.css"
-    config.assets.precompile << "page_bundles/xterm.css"
-    config.assets.precompile << "lazy_bundles/cropper.css"
-    config.assets.precompile << "lazy_bundles/select2.css"
-    config.assets.precompile << "lazy_bundles/gridstack.css"
-    config.assets.precompile << "performance_bar.css"
-    config.assets.precompile << "disable_animations.css"
-    config.assets.precompile << "test_environment.css"
-    config.assets.precompile << "snippets.css"
-    config.assets.precompile << "fonts.css"
-    config.assets.precompile << "locale/**/app.js"
-    config.assets.precompile << "emoji_sprites.css"
-    config.assets.precompile << "errors.css"
-    config.assets.precompile << "jira_connect.js"
-
-    config.assets.precompile << "themes/*.css"
-
-    config.assets.precompile << "highlight/themes/*.css"
-    config.assets.precompile << "highlight/diff_custom_colors_addition.css"
-    config.assets.precompile << "highlight/diff_custom_colors_deletion.css"
-
-    # Import woff2 for fonts
-    config.assets.paths << "#{config.root}/node_modules/@gitlab/fonts/"
-    config.assets.precompile << "gitlab-sans/*.woff2"
-    config.assets.precompile << "jetbrains-mono/*.woff2"
 
     # Import gitlab-svgs directly from vendored directory
     config.assets.paths << "#{config.root}/node_modules/@gitlab/svgs/dist"
-    config.assets.paths << "#{config.root}/node_modules/@jihulab/svgs/dist" if Gitlab.jh?
-    config.assets.precompile << "illustrations/jh/*.svg" if Gitlab.jh?
-    config.assets.precompile << "icons.svg"
-    config.assets.precompile << "icons.json"
-    config.assets.precompile << "illustrations/*.svg"
-    config.assets.precompile << "illustrations/*.png"
 
-    # Import css for xterm
-    config.assets.paths << "#{config.root}/node_modules/xterm/src/"
-    config.assets.precompile << "xterm.css"
+    config.assets.paths << "#{config.root}/node_modules/@gitlab/fonts"
 
-    # Import path for EE specific SCSS entry point
+    # BEGIN Import path for EE/JH specific SCSS entry point
     # In CE it will import a noop file, in EE a functioning file
     # Order is important, so that the ee file takes precedence:
-    config.assets.paths << "#{config.root}/jh/app/assets/stylesheets/_jh" if Gitlab.jh?
-    config.assets.paths << "#{config.root}/ee/app/assets/stylesheets/_ee" if Gitlab.ee?
+    if Gitlab.jh?
+      config.assets.precompile << "#{config.root}/jh/app/assets/config/jh.js"
+      config.assets.paths << "#{config.root}/jh/app/assets"
+      config.assets.paths << "#{config.root}/jh/app/assets/stylesheets/_jh"
+    end
+
+    if Gitlab.ee?
+      config.assets.precompile << "#{config.root}/ee/app/assets/config/ee.js"
+      config.assets.paths << "#{config.root}/ee/app/assets"
+      config.assets.paths << "#{config.root}/ee/app/assets/stylesheets/_ee"
+    end
+
     config.assets.paths << "#{config.root}/app/assets/stylesheets/_jh"
     config.assets.paths << "#{config.root}/app/assets/stylesheets/_ee"
+    # END Import path for EE/JH specific SCSS entry point
 
     config.assets.paths << "#{config.root}/vendor/assets/javascripts/"
-    config.assets.precompile << "snowplow/sp.js"
 
     # This path must come last to avoid confusing sprockets
     # See https://gitlab.com/gitlab-org/gitlab-foss/issues/64091#note_194512508
@@ -499,42 +386,6 @@ module Gitlab
     if defined?(FactoryBotRails)
       config.factory_bot.definition_file_paths << 'ee/spec/factories' if Gitlab.ee?
       config.factory_bot.definition_file_paths << 'jh/spec/factories' if Gitlab.jh?
-    end
-
-    # sprocket-rails adds some precompile assets we actually do not need.
-    #
-    # It copies all _non_ js and CSS files from the app/assets/ older.
-    #
-    # In our case this copies for example: Vue, Markdown and Graphql, which we do not need
-    # for production.
-    #
-    # We remove this default behavior and then reimplement it in order to consider ee/ as well
-    # and remove those other files we do not need.
-    #
-    # For reference: https://github.com/rails/sprockets-rails/blob/v3.2.1/lib/sprockets/railtie.rb#L84-L87
-    initializer :correct_precompile_targets, after: :set_default_precompile do |app|
-      app.config.assets.precompile.reject! { |entry| entry == Sprockets::Railtie::LOOSE_APP_ASSETS }
-
-      # if two files in assets are named the same, it'll likely resolve to the normal app/assets version.
-      # See https://gitlab.com/gitlab-jh/gitlab/-/merge_requests/27#note_609101582 for more details
-      asset_roots = []
-
-      if Gitlab.jh?
-        asset_roots << config.root.join("jh/app/assets").to_s
-      end
-
-      asset_roots << config.root.join("app/assets").to_s
-
-      if Gitlab.ee?
-        asset_roots << config.root.join("ee/app/assets").to_s
-      end
-
-      LOOSE_APP_ASSETS = lambda do |logical_path, filename|
-        filename.start_with?(*asset_roots) &&
-          !['.js', '.css', '.md', '.vue', '.graphql', ''].include?(File.extname(logical_path))
-      end
-
-      app.config.assets.precompile << LOOSE_APP_ASSETS
     end
 
     # This empty initializer forces the :let_zeitwerk_take_over initializer to run before we load

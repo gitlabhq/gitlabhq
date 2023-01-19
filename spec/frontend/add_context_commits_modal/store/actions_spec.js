@@ -16,6 +16,7 @@ import {
 } from '~/add_context_commits_modal/store/actions';
 import * as types from '~/add_context_commits_modal/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 
 describe('AddContextCommitsModalStoreActions', () => {
   const contextCommitEndpoint =
@@ -156,7 +157,7 @@ describe('AddContextCommitsModalStoreActions', () => {
     beforeEach(() => {
       mock
         .onDelete('/api/v4/projects/gitlab-org%2Fgitlab/merge_requests/1/context_commits')
-        .reply(204);
+        .reply(HTTP_STATUS_NO_CONTENT);
     });
     it('calls API to remove context commits', () => {
       return testAction(

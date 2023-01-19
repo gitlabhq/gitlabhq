@@ -9,6 +9,7 @@ import {
 } from 'jest/issuable/components/related_issuable_mock_data';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_CONFLICT, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { linkedIssueTypesMap } from '~/related_issues/constants';
 import RelatedIssuesBlock from '~/related_issues/components/related_issues_block.vue';
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
@@ -68,7 +69,7 @@ describe('RelatedIssuesRoot', () => {
         });
 
         it('does not remove related issue on API error', async () => {
-          mock.onDelete(issuable1.referencePath).reply(422, {});
+          mock.onDelete(issuable1.referencePath).reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, {});
 
           findRelatedIssuesBlock().vm.$emit('relatedIssueRemoveRequest', issuable1.id);
           await axios.waitForAll();
@@ -204,7 +205,7 @@ describe('RelatedIssuesRoot', () => {
       it('passes an error message from the backend upon error', async () => {
         const input = '#123';
         const message = 'error';
-        mock.onPost(defaultProps.endpoint).reply(409, { message });
+        mock.onPost(defaultProps.endpoint).reply(HTTP_STATUS_CONFLICT, { message });
         wrapper.vm.store.setPendingReferences([issuable1.reference, issuable2.reference]);
 
         expect(findRelatedIssuesBlock().props('hasError')).toBe(false);

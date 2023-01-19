@@ -4,7 +4,7 @@ import MockAxiosAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import SharedRunnersToggleComponent from '~/projects/settings/components/shared_runners_toggle.vue';
 
 const TEST_UPDATE_PATH = '/test/update_shared_runners';
@@ -133,7 +133,9 @@ describe('projects/settings/components/shared_runners', () => {
 
     describe('when request encounters an error', () => {
       it('should show custom error message from API if it exists', async () => {
-        mockAxios.onPost(TEST_UPDATE_PATH).reply(401, { error: 'Custom API Error message' });
+        mockAxios
+          .onPost(TEST_UPDATE_PATH)
+          .reply(HTTP_STATUS_UNAUTHORIZED, { error: 'Custom API Error message' });
         createComponent();
         expect(getToggleValue()).toBe(false);
 
@@ -145,7 +147,7 @@ describe('projects/settings/components/shared_runners', () => {
       });
 
       it('should show default error message if API does not return a custom error message', async () => {
-        mockAxios.onPost(TEST_UPDATE_PATH).reply(401);
+        mockAxios.onPost(TEST_UPDATE_PATH).reply(HTTP_STATUS_UNAUTHORIZED);
         createComponent();
         expect(getToggleValue()).toBe(false);
 
