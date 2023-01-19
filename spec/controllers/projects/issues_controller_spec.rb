@@ -647,9 +647,8 @@ RSpec.describe Projects::IssuesController do
           end
         end
 
-        context 'when allow_possible_spam feature flag is false' do
+        context 'when allow_possible_spam application setting is false' do
           before do
-            stub_feature_flags(allow_possible_spam: false)
             expect(controller).to(receive(:spam_action_response_fields).with(issue)) do
               spam_action_response_fields
             end
@@ -662,7 +661,11 @@ RSpec.describe Projects::IssuesController do
           end
         end
 
-        context 'when allow_possible_spam feature flag is true' do
+        context 'when allow_possible_spam application setting is true' do
+          before do
+            stub_application_setting(allow_possible_spam: true)
+          end
+
           it 'updates the issue' do
             subject
 
@@ -887,11 +890,7 @@ RSpec.describe Projects::IssuesController do
               end
             end
 
-            context 'when allow_possible_spam feature flag is false' do
-              before do
-                stub_feature_flags(allow_possible_spam: false)
-              end
-
+            context 'when allow_possible_spam application setting is false' do
               it 'rejects an issue recognized as spam' do
                 expect { update_issue }.not_to change { issue.reload.title }
               end
@@ -925,7 +924,11 @@ RSpec.describe Projects::IssuesController do
               end
             end
 
-            context 'when allow_possible_spam feature flag is true' do
+            context 'when allow_possible_spam application setting is true' do
+              before do
+                stub_application_setting(allow_possible_spam: true)
+              end
+
               it 'updates the issue recognized as spam' do
                 expect { update_issue }.to change { issue.reload.title }
               end
@@ -1234,8 +1237,6 @@ RSpec.describe Projects::IssuesController do
 
       context 'when SpamVerdictService allows the issue' do
         before do
-          stub_feature_flags(allow_possible_spam: false)
-
           expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
             expect(verdict_service).to receive(:execute).and_return(ALLOW)
           end
@@ -1258,11 +1259,7 @@ RSpec.describe Projects::IssuesController do
             post_new_issue(title: 'Spam Title', description: 'Spam lives here')
           end
 
-          context 'when allow_possible_spam feature flag is false' do
-            before do
-              stub_feature_flags(allow_possible_spam: false)
-            end
-
+          context 'when allow_possible_spam application setting is false' do
             it 'rejects an issue recognized as spam' do
               expect { post_spam_issue }.not_to change(Issue, :count)
             end
@@ -1283,7 +1280,11 @@ RSpec.describe Projects::IssuesController do
             end
           end
 
-          context 'when allow_possible_spam feature flag is true' do
+          context 'when allow_possible_spam application setting is true' do
+            before do
+              stub_application_setting(allow_possible_spam: true)
+            end
+
             it 'creates an issue recognized as spam' do
               expect { post_spam_issue }.to change(Issue, :count)
             end

@@ -111,7 +111,7 @@ module QA
       private
 
       def filepath
-        ::File.absolute_path(::File.join('qa', 'fixtures', 'designs', filename))
+        ::File.join(Runtime::Path.fixtures_path, 'designs', filename)
       end
     end
   end

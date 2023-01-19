@@ -22,7 +22,7 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
 
     if enable_cloud_run_response[:status] == :error
       track_event(:error_enable_services)
-      flash[:error] = enable_cloud_run_response[:message]
+      flash[:alert] = enable_cloud_run_response[:message]
       redirect_to project_google_cloud_deployments_path(project)
     else
       params = { action: GoogleCloud::GeneratePipelineService::ACTION_DEPLOY_TO_CLOUD_RUN }
@@ -31,7 +31,7 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
 
       if generate_pipeline_response[:status] == :error
         track_event(:error_generate_cloudrun_pipeline)
-        flash[:error] = 'Failed to generate pipeline'
+        flash[:alert] = 'Failed to generate pipeline'
         redirect_to project_google_cloud_deployments_path(project)
       else
         cloud_run_mr_params = cloud_run_mr_params(generate_pipeline_response[:branch_name])

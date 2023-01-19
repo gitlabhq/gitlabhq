@@ -60,7 +60,7 @@ module QA
       context 'when using attachments in comments', :object_storage do
         let(:png_file_name) { 'testfile.png' }
         let(:file_to_attach) do
-          File.absolute_path(File.join('qa', 'fixtures', 'designs', png_file_name))
+          File.join(Runtime::Path.fixtures_path, 'designs', png_file_name)
         end
 
         before do

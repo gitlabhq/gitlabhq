@@ -79,6 +79,9 @@ export default {
           // labels.json and /groups/:id/labels & /projects/:id/labels
           // return response differently.
           this.labels = Array.isArray(res) ? res : res.data;
+          if (this.config.fetchLatestLabels) {
+            this.fetchLatestLabels(searchTerm);
+          }
         })
         .catch(() =>
           createAlert({
@@ -88,6 +91,21 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+    fetchLatestLabels(searchTerm) {
+      this.config
+        .fetchLatestLabels(searchTerm)
+        .then((res) => {
+          // We'd want to avoid doing this check but
+          // labels.json and /groups/:id/labels & /projects/:id/labels
+          // return response differently.
+          this.labels = Array.isArray(res) ? res : res.data;
+        })
+        .catch(() =>
+          createAlert({
+            message: __('There was a problem fetching latest labels.'),
+          }),
+        );
     },
   },
 };

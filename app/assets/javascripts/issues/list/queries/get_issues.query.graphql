@@ -31,7 +31,7 @@ query getIssues(
   $firstPageSize: Int
   $lastPageSize: Int
 ) {
-  group(fullPath: $fullPath) @skip(if: $isProject) {
+  group(fullPath: $fullPath) @skip(if: $isProject) @persist {
     id
     issues(
       includeSubgroups: true
@@ -58,16 +58,18 @@ query getIssues(
       first: $firstPageSize
       last: $lastPageSize
     ) {
+      __persist
       pageInfo {
         ...PageInfo
       }
       nodes {
+        __persist
         ...IssueFragment
         reference(full: true)
       }
     }
   }
-  project(fullPath: $fullPath) @include(if: $isProject) {
+  project(fullPath: $fullPath) @include(if: $isProject) @persist {
     id
     issues(
       iid: $iid
@@ -95,10 +97,12 @@ query getIssues(
       first: $firstPageSize
       last: $lastPageSize
     ) {
+      __persist
       pageInfo {
         ...PageInfo
       }
       nodes {
+        __persist
         ...IssueFragment
       }
     }

@@ -20,6 +20,7 @@ fragment IssueFragment on Issue {
   type
   assignees @skip(if: $hideUsers) {
     nodes {
+      __persist
       id
       avatarUrl
       name
@@ -28,6 +29,7 @@ fragment IssueFragment on Issue {
     }
   }
   author @skip(if: $hideUsers) {
+    __persist
     id
     avatarUrl
     name
@@ -36,6 +38,7 @@ fragment IssueFragment on Issue {
   }
   labels {
     nodes {
+      __persist
       id
       color
       title
@@ -43,6 +46,7 @@ fragment IssueFragment on Issue {
     }
   }
   milestone {
+    __persist
     id
     dueDate
     startDate

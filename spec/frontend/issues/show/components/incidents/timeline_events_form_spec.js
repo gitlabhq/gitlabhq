@@ -190,6 +190,33 @@ describe('Timeline events form', () => {
         expect(findTextareaValue()).toBe('hello');
       });
     });
+
+    describe('form button behaviour', () => {
+      it('should enable the save buttons when event does not include tags', async () => {
+        await findTextarea().setValue('hello');
+
+        expect(findTagDropdown().props('toggleText')).toBe(timelineFormI18n.selectTags);
+        expect(findSubmitButton().props('disabled')).toBe(false);
+        expect(findSubmitAndAddButton().props('disabled')).toBe(false);
+      });
+
+      it('should clear the form', async () => {
+        setDatetime();
+        await nextTick();
+
+        expect(findDatePicker().props('value')).toBe(mockInputDate);
+        expect(findHourInput().element.value).toBe('5');
+        expect(findMinuteInput().element.value).toBe('45');
+
+        wrapper.vm.clear();
+        await nextTick();
+
+        expect(findDatePicker().props('value')).toStrictEqual(new Date(fakeDate));
+        expect(findHourInput().element.value).toBe('0');
+        expect(findMinuteInput().element.value).toBe('0');
+        expect(findTagDropdown().props('toggleText')).toBe(timelineFormI18n.selectTags);
+      });
+    });
   });
 
   describe('form button behaviour', () => {

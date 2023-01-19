@@ -122,7 +122,7 @@ module QA
       end
 
       def runner(**kwargs)
-        raise("Not implemented!")
+        raise NotImplementedError
       end
     end
   end

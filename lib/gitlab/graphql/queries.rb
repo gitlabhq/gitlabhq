@@ -91,7 +91,8 @@ module Gitlab
         end
 
         def print_field(field, indent: '')
-          if skips? && field.directives.any? { |d| d.name == 'client' }
+          if skips? &&
+              (field.directives.any? { |d| d.name == 'client' || d.name == 'persist' } || field.name == '__persist')
             skipped = self.class.new(false)
 
             skipped.print_node(field)
@@ -136,7 +137,7 @@ module Gitlab
           qs = [query] + all_imports(mode: mode).uniq.sort.map { |p| fragment(p).query }
           t = qs.join("\n\n").gsub(/\n\n+/, "\n\n")
 
-          return t unless /@client/.match?(t)
+          return t unless /(@client)|(persist)/.match?(t)
 
           doc = ::GraphQL.parse(t)
           printer = ClientFieldRedactor.new

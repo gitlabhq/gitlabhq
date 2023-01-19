@@ -4118,6 +4118,9 @@ msgstr ""
 msgid "Allow password authentication for the web interface"
 msgstr ""
 
+msgid "Allow possible spam"
+msgstr ""
+
 msgid "Allow project maintainers to configure repository mirroring"
 msgstr ""
 
@@ -4617,6 +4620,11 @@ msgstr ""
 
 msgid "An issue already exists"
 msgstr ""
+
+msgid "An issue has been assigned to you."
+msgid_plural "%d issues have been assigned to you."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "An unauthenticated user"
 msgstr ""
@@ -16889,6 +16897,9 @@ msgid "Failed to assign a reviewer because no user was specified."
 msgstr ""
 
 msgid "Failed to assign a user because no user was found."
+msgstr ""
+
+msgid "Failed to assign you issues related to the merge request."
 msgstr ""
 
 msgid "Failed to cancel auto stop because failed to update the environment."
@@ -29199,6 +29210,9 @@ msgid "Only group members with at least the Reporter role can view or be notifie
 msgstr ""
 
 msgid "Only include features new to your current subscription tier."
+msgstr ""
+
+msgid "Only log Akismet verdict, do not prevent issue or snippet creation when spam is detected."
 msgstr ""
 
 msgid "Only members of this group can access the wiki."
@@ -42568,6 +42582,9 @@ msgid "There was a problem fetching iterations."
 msgstr ""
 
 msgid "There was a problem fetching labels."
+msgstr ""
+
+msgid "There was a problem fetching latest labels."
 msgstr ""
 
 msgid "There was a problem fetching linked pipelines."

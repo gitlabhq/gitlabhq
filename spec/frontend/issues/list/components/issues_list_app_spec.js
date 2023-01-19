@@ -131,6 +131,11 @@ describe('CE IssuesListApp component', () => {
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findNewIssueDropdown = () => wrapper.findComponent(NewIssueDropdown);
 
+  const findLabelsToken = () =>
+    findIssuableList()
+      .props('searchTokens')
+      .find((token) => token.type === TOKEN_TYPE_LABEL);
+
   const mountComponent = ({
     provide = {},
     data = {},
@@ -179,7 +184,7 @@ describe('CE IssuesListApp component', () => {
       return waitForPromises();
     });
 
-    it('renders', () => {
+    it('renders', async () => {
       expect(findIssuableList().props()).toMatchObject({
         namespace: defaultProvide.fullPath,
         recentSearchesStorageKey: 'issues',
@@ -981,6 +986,32 @@ describe('CE IssuesListApp component', () => {
       expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
         expect.objectContaining({ types }),
       );
+    });
+  });
+
+  describe('when providing token for labels', () => {
+    it('passes function to fetchLatestLabels property if frontend caching is enabled', () => {
+      wrapper = mountComponent({
+        provide: {
+          glFeatures: {
+            frontendCaching: true,
+          },
+        },
+      });
+
+      expect(typeof findLabelsToken().fetchLatestLabels).toBe('function');
+    });
+
+    it('passes null to fetchLatestLabels property if frontend caching is disabled', () => {
+      wrapper = mountComponent({
+        provide: {
+          glFeatures: {
+            frontendCaching: false,
+          },
+        },
+      });
+
+      expect(findLabelsToken().fetchLatestLabels).toBe(null);
     });
   });
 });

@@ -7,7 +7,7 @@ module QA
 
       def initialize
         @name = "ImportedProject-#{SecureRandom.hex(8)}"
-        @file_path = ::File.join('qa', 'fixtures', 'export.tar.gz')
+        @file_path = ::File.join(Runtime::Path.fixtures_path, 'export.tar.gz')
       end
 
       def fabricate!

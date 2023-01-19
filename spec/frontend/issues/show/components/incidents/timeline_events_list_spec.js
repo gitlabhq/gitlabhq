@@ -20,6 +20,7 @@ import {
   timelineEventsEditEventError,
   fakeDate,
   fakeEventData,
+  fakeEventSaveData,
   mockInputData,
 } from './mock_data';
 
@@ -183,20 +184,20 @@ describe('IncidentTimelineEventList', () => {
     });
 
     const findEditEvent = () => wrapper.findComponent(EditTimelineEvent);
-    const mockSaveData = { ...fakeEventData, ...mockInputData };
+    const mockHandleSaveEventData = { ...fakeEventData, ...mockInputData };
 
     describe('editTimelineEvent', () => {
       it('should call the mutation with the right variables', async () => {
-        await findEditEvent().vm.$emit('handle-save-edit', mockSaveData);
+        await findEditEvent().vm.$emit('handle-save-edit', mockHandleSaveEventData);
         await waitForPromises();
 
         expect(editResponseSpy).toHaveBeenCalledWith({
-          input: mockSaveData,
+          input: fakeEventSaveData,
         });
       });
 
       it('should close the form on successful addition', async () => {
-        await findEditEvent().vm.$emit('handle-save-edit', mockSaveData);
+        await findEditEvent().vm.$emit('handle-save-edit', fakeEventSaveData);
         await waitForPromises();
 
         expect(findEditEvent().exists()).toBe(false);
@@ -217,7 +218,7 @@ describe('IncidentTimelineEventList', () => {
         };
         editResponseSpy.mockResolvedValueOnce(timelineEventsEditEventError);
 
-        await findEditEvent().vm.$emit('handle-save-edit', mockSaveData);
+        await findEditEvent().vm.$emit('handle-save-edit', fakeEventSaveData);
         await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith(expectedAlertArgs);
@@ -231,7 +232,7 @@ describe('IncidentTimelineEventList', () => {
         };
         editResponseSpy.mockRejectedValueOnce();
 
-        await findEditEvent().vm.$emit('handle-save-edit', mockSaveData);
+        await findEditEvent().vm.$emit('handle-save-edit', fakeEventSaveData);
         await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith(expectedAlertArgs);
@@ -240,7 +241,7 @@ describe('IncidentTimelineEventList', () => {
       it('should keep the form open on failed addition', async () => {
         editResponseSpy.mockResolvedValueOnce(timelineEventsEditEventError);
 
-        await findEditEvent().vm.$emit('handle-save-edit', mockSaveData);
+        await findEditEvent().vm.$emit('handle-save-edit', fakeEventSaveData);
         await waitForPromises();
 
         expect(findEditEvent().exists()).toBe(true);

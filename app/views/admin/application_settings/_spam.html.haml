@@ -47,6 +47,10 @@
       help_text: _("Helps prevent bots from creating issues.")
 
     .form-group
+      = f.gitlab_ui_checkbox_component :allow_possible_spam, _('Allow possible spam'),
+      help_text: _('Only log Akismet verdict, do not prevent issue or snippet creation when spam is detected.')
+
+    .form-group
       = f.label :akismet_api_key, _('Akismet API Key'), class: 'label-bold'
       = f.text_field :akismet_api_key, class: 'form-control gl-form-input'
       .form-text.text-muted

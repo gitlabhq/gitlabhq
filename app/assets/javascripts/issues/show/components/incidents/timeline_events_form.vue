@@ -4,7 +4,7 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, sprintf } from '~/locale';
 import { MAX_TEXT_LENGTH, TIMELINE_EVENT_TAGS, timelineFormI18n } from './constants';
-import { getUtcShiftedDate } from './utils';
+import { getUtcShiftedDate, getPreviousEventTags } from './utils';
 
 export default {
   name: 'TimelineEventsForm',
@@ -77,7 +77,7 @@ export default {
       hourPickerInput: placeholderDate.getHours(),
       minutePickerInput: placeholderDate.getMinutes(),
       datePickerInput: placeholderDate,
-      selectedTags: [...this.previousTags],
+      selectedTags: getPreviousEventTags(this.previousTags),
     };
   },
   computed: {

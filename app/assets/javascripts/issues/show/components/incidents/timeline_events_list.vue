@@ -105,6 +105,7 @@ export default {
               id: eventDetails.id,
               note: eventDetails.note,
               occurredAt: eventDetails.occurredAt,
+              timelineEventTagNames: eventDetails.timelineEventTags,
             },
           },
         })

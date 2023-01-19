@@ -51,7 +51,7 @@ module Projects
 
         if enable_response[:status] == :error
           track_event(:error_enable_cloudsql_services)
-          flash[:error] = error_message(enable_response[:message])
+          flash[:alert] = error_message(enable_response[:message])
         else
           create_response = ::GoogleCloud::CreateCloudsqlInstanceService
                               .new(project, current_user, create_service_params)

@@ -340,7 +340,6 @@ RSpec.describe API::Snippets, factory_default: :keep, feature_category: :source_
         allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
-        stub_feature_flags(allow_possible_spam: false)
       end
 
       context 'when the snippet is private' do
@@ -406,7 +405,6 @@ RSpec.describe API::Snippets, factory_default: :keep, feature_category: :source_
         allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
-        stub_feature_flags(allow_possible_spam: false)
       end
 
       context 'when the snippet is private' do

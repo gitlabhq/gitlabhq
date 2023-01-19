@@ -432,11 +432,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       }
     end
 
-    context 'when allow_possible_spam feature flag is false' do
-      before do
-        stub_feature_flags(allow_possible_spam: false)
-      end
-
+    context 'when allow_possible_spam application setting is false' do
       it 'does not create a new project issue' do
         expect { post_issue }.not_to change(Issue, :count)
       end
@@ -454,7 +450,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
     end
 
-    context 'when allow_possible_spam feature flag is true' do
+    context 'when allow_possible_spam application setting is true' do
+      before do
+        stub_application_setting(allow_possible_spam: true)
+      end
+
       it 'does creates a new project issue' do
         expect { post_issue }.to change(Issue, :count).by(1)
       end

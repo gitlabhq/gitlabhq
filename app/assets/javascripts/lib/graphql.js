@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache, ApolloLink, HttpLink } from '@apollo/client/core';
 import { BatchHttpLink } from '@apollo/client/link/batch-http';
 import { createUploadLink } from 'apollo-upload-client';
+import { persistCacheSync, LocalStorageWrapper } from 'apollo3-cache-persist';
 import ActionCableLink from '~/actioncable_link';
 import { apolloCaptchaLink } from '~/captcha/apollo_captcha_link';
 import possibleTypes from '~/graphql_shared/possible_types.json';
@@ -10,6 +11,8 @@ import { objectToQuery, queryToObject } from '~/lib/utils/url_utility';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
 import { getInstrumentationLink } from './apollo/instrumentation_link';
 import { getSuppressNetworkErrorsDuringNavigationLink } from './apollo/suppress_network_errors_during_navigation_link';
+import { getPersistLink } from './apollo/persist_link';
+import { persistenceMapper } from './apollo/persistence_mapper';
 
 export const fetchPolicies = {
   CACHE_FIRST: 'cache-first',
@@ -110,6 +113,7 @@ export default (resolvers = {}, config = {}) => {
     typeDefs,
     path = '/api/graphql',
     useGet = false,
+    localCacheKey = null,
   } = config;
   let ac = null;
   let uri = `${gon.relative_url_root || ''}${path}`;
@@ -201,6 +205,8 @@ export default (resolvers = {}, config = {}) => {
     });
   });
 
+  const persistLink = getPersistLink();
+
   const appLink = ApolloLink.split(
     hasSubscriptionOperation,
     new ActionCableLink(),
@@ -212,27 +218,40 @@ export default (resolvers = {}, config = {}) => {
         performanceBarLink,
         new StartupJSLink(),
         apolloCaptchaLink,
+        persistLink,
         uploadsLink,
         requestLink,
       ].filter(Boolean),
     ),
   );
 
+  const newCache = new InMemoryCache({
+    ...cacheConfig,
+    typePolicies: {
+      ...typePolicies,
+      ...cacheConfig.typePolicies,
+    },
+    possibleTypes: {
+      ...possibleTypes,
+      ...cacheConfig.possibleTypes,
+    },
+  });
+
+  if (localCacheKey) {
+    persistCacheSync({
+      cache: newCache,
+      // we leave NODE_ENV here temporarily for visibility so developers can easily see caching happening in dev mode
+      debug: process.env.NODE_ENV === 'development',
+      storage: new LocalStorageWrapper(window.localStorage),
+      persistenceMapper,
+    });
+  }
+
   ac = new ApolloClient({
     typeDefs,
     link: appLink,
     connectToDevTools: process.env.NODE_ENV !== 'production',
-    cache: new InMemoryCache({
-      ...cacheConfig,
-      typePolicies: {
-        ...typePolicies,
-        ...cacheConfig.typePolicies,
-      },
-      possibleTypes: {
-        ...possibleTypes,
-        ...cacheConfig.possibleTypes,
-      },
-    }),
+    cache: newCache,
     resolvers,
     defaultOptions: {
       query: {

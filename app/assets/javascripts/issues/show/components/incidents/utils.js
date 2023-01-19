@@ -32,3 +32,11 @@ export const getUtcShiftedDate = (ISOString = null) => {
 
   return date;
 };
+
+/**
+ * Returns an array of previously set event tags
+ * @param {array} timelineEventTagsNodes
+ * @returns {array}
+ */
+export const getPreviousEventTags = (timelineEventTagsNodes = []) =>
+  timelineEventTagsNodes.map(({ name }) => name);

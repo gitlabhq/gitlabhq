@@ -1856,18 +1856,26 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
            }
     end
 
-    it 'shows a flash message on success' do
+    it 'displays an flash error message on fail' do
+      allow(MergeRequests::AssignIssuesService).to receive(:new).and_return(double(execute: { count: 0 }))
+
       post_assign_issues
 
-      expect(flash[:notice]).to eq '2 issues have been assigned to you'
+      expect(flash[:alert]).to eq _('Failed to assign you issues related to the merge request.')
     end
 
-    it 'correctly pluralizes flash message on success' do
+    it 'shows a flash message on success' do
       issue2.assignees = [user]
 
       post_assign_issues
 
-      expect(flash[:notice]).to eq '1 issue has been assigned to you'
+      expect(flash[:notice]).to eq n_("An issue has been assigned to you.", "%d issues have been assigned to you.", 1)
+    end
+
+    it 'correctly pluralizes flash message on success' do
+      post_assign_issues
+
+      expect(flash[:notice]).to eq n_("An issue has been assigned to you.", "%d issues have been assigned to you.", 2)
     end
 
     it 'calls MergeRequests::AssignIssuesService' do

@@ -107,3 +107,20 @@ Alternatively:
 1. On the right of a timeline event, select **More actions** (**{ellipsis_v}**) and then select **Edit**.
 1. Select **Delete**.
 1. To confirm, select **Delete event**.
+
+## Incident tags
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8741) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `incident_event_tags`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `incident_event_tags`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+[When creating an event using the form](#using-the-form) or editing it,
+you can specify incident tags to capture relevant incident timestamps.
+Timeline tags are optional. You can choose more than one tag per event.
+When you create a timeline event and select the tags, the event note
+is populated with a default message.
+This allows for a quick event creation. If a note has already been set, it isn't changed.
+Added tags are displayed next to the timestamp.

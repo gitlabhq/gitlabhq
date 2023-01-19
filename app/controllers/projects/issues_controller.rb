@@ -55,6 +55,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action only: :index do
     push_frontend_feature_flag(:or_issuable_queries, project)
+    push_frontend_feature_flag(:frontend_caching, project&.group)
   end
 
   before_action only: :show do

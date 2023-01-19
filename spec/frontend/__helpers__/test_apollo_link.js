@@ -18,7 +18,7 @@ const FOO_QUERY = gql`
  *
  * @returns Promise resolving to the resulting operation after running the subjectLink
  */
-export const testApolloLink = (subjectLink, options = {}) =>
+export const testApolloLink = (subjectLink, options = {}, query = FOO_QUERY) =>
   new Promise((resolve) => {
     const { context = {} } = options;
 
@@ -38,6 +38,6 @@ export const testApolloLink = (subjectLink, options = {}) =>
     // Trigger a query so the ApolloLink chain will be executed.
     client.query({
       context,
-      query: FOO_QUERY,
+      query,
     });
   });

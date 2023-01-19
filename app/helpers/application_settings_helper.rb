@@ -197,6 +197,7 @@ module ApplicationSettingsHelper
       :allow_local_requests_from_hooks_and_services,
       :allow_local_requests_from_web_hooks_and_services,
       :allow_local_requests_from_system_hooks,
+      :allow_possible_spam,
       :dns_rebinding_protection_enabled,
       :archive_builds_in_human_readable,
       :asset_proxy_enabled,

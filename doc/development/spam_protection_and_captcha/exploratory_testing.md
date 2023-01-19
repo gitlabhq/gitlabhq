@@ -353,8 +353,8 @@ GraphQL response:
 }
 ```
 
-### Scenario: `allow_possible_spam` feature flag enabled
+### Scenario: `allow_possible_spam` application setting enabled
 
-With the `allow_possible_spam` feature flag enabled, the API returns a 200 response. Any
+With the `allow_possible_spam` application setting enabled, the API returns a 200 response. Any
 valid request is successful and no CAPTCHA is presented, even if the request is considered
 spam.

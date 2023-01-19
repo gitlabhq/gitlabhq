@@ -13,7 +13,6 @@ RSpec.describe 'snippet editor with spam', skip: "Will be handled in https://git
   end
 
   before do
-    stub_feature_flags(allow_possible_spam: false)
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
     Gitlab::CurrentSettings.update!(
@@ -74,15 +73,15 @@ RSpec.describe 'snippet editor with spam', skip: "Will be handled in https://git
       end
     end
 
-    context 'when allow_possible_spam feature flag is false' do
-      before do
-        stub_application_setting(recaptcha_enabled: false)
-      end
-
+    context 'when allow_possible_spam application setting is false' do
       it_behaves_like 'does not allow creation'
     end
 
-    context 'when allow_possible_spam feature flag is true' do
+    context 'when allow_possible_spam application setting is true' do
+      before do
+        stub_application_setting(allow_possible_spam: true)
+      end
+
       it_behaves_like 'solve reCAPTCHA'
     end
   end
@@ -94,7 +93,7 @@ RSpec.describe 'snippet editor with spam', skip: "Will be handled in https://git
       end
     end
 
-    context 'when allow_possible_spam feature flag is false' do
+    context 'when allow_possible_spam application setting is false' do
       before do
         stub_application_setting(recaptcha_enabled: false)
       end
@@ -102,7 +101,11 @@ RSpec.describe 'snippet editor with spam', skip: "Will be handled in https://git
       it_behaves_like 'does not allow creation'
     end
 
-    context 'when allow_possible_spam feature flag is true' do
+    context 'when allow_possible_spam application setting is true' do
+      before do
+        stub_application_setting(allow_possible_spam: true)
+      end
+
       it_behaves_like 'does not allow creation'
     end
   end

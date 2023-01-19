@@ -204,11 +204,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
     end
 
-    context 'when allow_possible_spam feature flag is false' do
-      before do
-        stub_feature_flags(allow_possible_spam: false)
-      end
-
+    context 'when allow_possible_spam application setting is false' do
       it 'does not update a project issue' do
         expect { update_issue }.not_to change { issue.reload.title }
       end
@@ -226,7 +222,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
     end
 
-    context 'when allow_possible_spam feature flag is true' do
+    context 'when allow_possible_spam application setting is true' do
+      before do
+        stub_application_setting(allow_possible_spam: true)
+      end
+
       it 'updates a project issue' do
         expect { update_issue }.to change { issue.reload.title }
       end

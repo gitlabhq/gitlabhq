@@ -2,14 +2,14 @@
 
 module QA
   RSpec.describe 'Create', :skip_live_env, except: { job: 'review-qa-*' },
-                                           feature_flag: { name: 'vscode_web_ide', scope: :global },
-                                           product_group: :editor,
-                                           quarantine: {
-                                             issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387928',
-                                             type: :stale
-                                           } do
+    feature_flag: { name: 'vscode_web_ide', scope: :global },
+    product_group: :editor,
+    quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387928',
+      type: :stale
+    } do
     describe 'Git Server Hooks' do
-      let(:file_path) { File.absolute_path(File.join('qa', 'fixtures', 'web_ide', 'README.md')) }
+      let(:file_path) { File.join(Runtime::Path.fixtures_path, 'web_ide', 'README.md') }
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -29,9 +29,9 @@ module QA
         Runtime::Feature.enable(:vscode_web_ide)
       end
 
-      context 'Custom error messages' do
+      context 'with custom error messages' do
         it 'renders preconfigured error message when user hook failed on commit in WebIDE',
-           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/364751' do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/364751' do
           Page::Project::Show.perform(&:open_web_ide_via_shortcut)
           Page::Project::WebIDE::Edit.perform do |ide|
             ide.wait_until_ide_loads

@@ -41,6 +41,7 @@ module ApplicationSettingImplementation
         akismet_api_key: nil,
         allow_local_requests_from_system_hooks: true,
         allow_local_requests_from_web_hooks_and_services: false,
+        allow_possible_spam: false,
         asset_proxy_enabled: false,
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
         commit_email_hostname: default_commit_email_hostname,

@@ -108,20 +108,20 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
     end
   end
 
-  shared_context 'when allow_possible_spam feature flag is true' do
+  shared_context 'when allow_possible_spam application setting is true' do
     before do
-      stub_feature_flags(allow_possible_spam: true)
+      stub_application_setting(allow_possible_spam: true)
     end
   end
 
-  shared_context 'when allow_possible_spam feature flag is false' do
+  shared_context 'when allow_possible_spam application setting is false' do
     before do
-      stub_feature_flags(allow_possible_spam: false)
+      stub_application_setting(allow_possible_spam: false)
     end
   end
 
   describe 'spam handling' do
-    # verdict, spam_flagged, captcha_enabled, allow_possible_spam_flag, creates_spam_log
+    # verdict, spam_flagged, captcha_enabled, allow_possible_spam, creates_spam_log
     # TODO: Add example for BLOCK_USER verdict when we add support for testing SpamCheck - see https://gitlab.com/groups/gitlab-org/-/epics/5527#lacking-coverage-for-spamcheck-vs-akismet
     # DISALLOW, true, false, false, true
     # CONDITIONAL_ALLOW, true, true, false, true
@@ -133,7 +133,7 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
     context 'DISALLOW: spam_flagged=true, captcha_enabled=true, allow_possible_spam=true' do
       include_context 'when spammable is identified as possible spam'
       include_context 'when CAPTCHA is enabled'
-      include_context 'when allow_possible_spam feature flag is true'
+      include_context 'when allow_possible_spam application setting is true'
 
       it_behaves_like 'allows issue creation without CAPTCHA'
       it_behaves_like 'creates a spam_log record'
@@ -142,7 +142,7 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
     context 'CONDITIONAL_ALLOW: spam_flagged=true, captcha_enabled=true, allow_possible_spam=false' do
       include_context 'when spammable is identified as possible spam'
       include_context 'when CAPTCHA is enabled'
-      include_context 'when allow_possible_spam feature flag is false'
+      include_context 'when allow_possible_spam application setting is false'
 
       it_behaves_like 'allows issue creation with CAPTCHA'
       it_behaves_like 'creates a spam_log record'
@@ -151,7 +151,7 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
     context 'OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM: spam_flagged=true, captcha_enabled=true, allow_possible_spam=true' do
       include_context 'when spammable is identified as possible spam'
       include_context 'when CAPTCHA is enabled'
-      include_context 'when allow_possible_spam feature flag is true'
+      include_context 'when allow_possible_spam application setting is true'
 
       it_behaves_like 'allows issue creation without CAPTCHA'
       it_behaves_like 'creates a spam_log record'
@@ -160,7 +160,7 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
     context 'OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM: spam_flagged=true, captcha_enabled=false, allow_possible_spam=true' do
       include_context 'when spammable is identified as possible spam'
       include_context 'when CAPTCHA is not enabled'
-      include_context 'when allow_possible_spam feature flag is true'
+      include_context 'when allow_possible_spam application setting is true'
 
       it_behaves_like 'allows issue creation without CAPTCHA'
       it_behaves_like 'creates a spam_log record'
@@ -169,7 +169,7 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
     context 'ALLOW: spam_flagged=false, captcha_enabled=true, allow_possible_spam=false' do
       include_context 'when spammable is not identified as possible spam'
       include_context 'when CAPTCHA is not enabled'
-      include_context 'when allow_possible_spam feature flag is false'
+      include_context 'when allow_possible_spam application setting is false'
 
       it_behaves_like 'allows issue creation without CAPTCHA'
       it_behaves_like 'does not create a spam_log record'

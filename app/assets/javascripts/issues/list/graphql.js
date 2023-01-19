@@ -22,4 +22,6 @@ const resolvers = {
   },
 };
 
-export const gqlClient = createDefaultClient(resolvers);
+export const gqlClient = gon.features?.frontendCaching
+  ? createDefaultClient(resolvers, { localCacheKey: 'issues_list' })
+  : createDefaultClient(resolvers);

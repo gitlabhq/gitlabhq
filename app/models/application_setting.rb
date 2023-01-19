@@ -415,6 +415,10 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 90, message: N_("'%{value}' days of inactivity must be greater than or equal to 90") },
             if: :deactivate_dormant_users?
 
+  validates :allow_possible_spam,
+            allow_nil: false,
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
   Gitlab::SSHPublicKey.supported_types.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end

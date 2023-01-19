@@ -14,6 +14,7 @@ import CsvImportExportButtons from '~/issuable/components/csv_import_export_butt
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import { IssuableStatus } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
+import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
@@ -191,8 +192,15 @@ export default {
       update(data) {
         return data[this.namespace]?.issues.nodes ?? [];
       },
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      // We need this for handling loading state when using frontend cache
+      // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106004#note_1217325202 for details
+      notifyOnNetworkStatusChange: true,
       result({ data }) {
-        this.pageInfo = data?.[this.namespace]?.issues.pageInfo ?? {};
+        if (!data) {
+          return;
+        }
+        this.pageInfo = data[this.namespace]?.issues.pageInfo ?? {};
         this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       },
       error(error) {
@@ -355,6 +363,7 @@ export default {
           token: LabelToken,
           operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
           fetchLabels: this.fetchLabels,
+          fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
         },
         {
@@ -477,6 +486,17 @@ export default {
     shouldDisableTextSearch() {
       return this.isAnonymousSearchDisabled && !this.isSignedIn;
     },
+    // due to the issues with cache-and-network, we need this hack to check if there is any data for the query in the cache.
+    // if we have cached data, we disregard the loading state
+    isLoading() {
+      return (
+        this.$apollo.queries.issues.loading &&
+        !this.$apollo.provider.clients.defaultClient.readQuery({
+          query: getIssuesQuery,
+          variables: this.queryVariables,
+        })
+      );
+    },
   },
   watch: {
     $route(newValue, oldValue) {
@@ -515,11 +535,12 @@ export default {
     fetchReleases(search) {
       return this.fetchWithCache(this.releasesPath, 'releases', 'tag', search);
     },
-    fetchLabels(search) {
+    fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
       return this.$apollo
         .query({
           query: searchLabelsQuery,
           variables: { fullPath: this.fullPath, search, isProject: this.isProject },
+          fetchPolicy,
         })
         .then(({ data }) => data[this.namespace]?.labels.nodes)
         .then((labels) =>
@@ -527,6 +548,12 @@ export default {
           // https://gitlab.com/gitlab-org/gitlab/-/issues/346353
           labels.filter((label) => label.title.toLowerCase().includes(search.toLowerCase())),
         );
+    },
+    fetchLabels(search) {
+      return this.fetchLabelsWithFetchPolicy(search);
+    },
+    fetchLatestLabels(search) {
+      return this.fetchLabelsWithFetchPolicy(search, fetchPolicies.NETWORK_ONLY);
     },
     fetchMilestones(search) {
       return this.$apollo
@@ -774,7 +801,7 @@ export default {
       :current-tab="state"
       :tab-counts="tabCounts"
       :truncate-counts="!isProject"
-      :issuables-loading="$apollo.queries.issues.loading"
+      :issuables-loading="isLoading"
       :is-manual-ordering="isManualOrdering"
       :show-bulk-edit-sidebar="showBulkEditSidebar"
       :show-pagination-controls="showPaginationControls"

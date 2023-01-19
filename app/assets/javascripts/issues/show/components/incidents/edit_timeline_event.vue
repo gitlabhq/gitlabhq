@@ -40,6 +40,7 @@ export default {
       :is-event-processed="editTimelineEventActive"
       :previous-occurred-at="event.occurredAt"
       :previous-note="event.note"
+      :previous-tags="event.timelineEventTags.nodes"
       is-editing
       @save-event="saveEvent"
       @cancel="$emit('hide-edit')"

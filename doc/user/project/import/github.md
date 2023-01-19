@@ -38,6 +38,7 @@ If you are importing from GitHub Enterprise to a self-managed GitLab instance:
 If you are importing from GitHub.com to a self-managed GitLab instance:
 
 - Setting up GitHub integration is not required.
+- GitHub must be enabled as an import source in the [Admin Area](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
 - You can use the [Import API](../../../api/import.md).
 
 When importing projects:

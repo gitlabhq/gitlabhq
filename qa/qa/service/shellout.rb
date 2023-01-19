@@ -13,6 +13,7 @@ module QA
 
       def shell(command, stdin_data: nil, fail_on_exception: true, stream_progress: true, mask_secrets: []) # rubocop:disable Metrics/CyclomaticComplexity
         cmd_string = Array(command).join(' ')
+        cmd_output = ''
 
         QA::Runtime::Logger.info("Executing: `#{mask_secrets_on_string(cmd_string, mask_secrets).cyan}`")
 
@@ -21,7 +22,6 @@ module QA
           stdin.close if stdin_data
 
           print_progress_dots = stream_progress && !Runtime::Env.running_in_ci?
-          cmd_output = ''
 
           out.each do |line|
             line = mask_secrets_on_string(line, mask_secrets)
@@ -43,6 +43,8 @@ module QA
 
           Runtime::Logger.debug("Command output:\n#{cmd_output.strip}") unless cmd_output.empty?
         end
+
+        cmd_output.strip
       end
 
       def sql_to_docker_exec_cmd(sql, username, password, database, host, container)

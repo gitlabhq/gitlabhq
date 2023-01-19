@@ -281,11 +281,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     case result[:count]
     when 0
-      flash[:error] = "Failed to assign you issues related to the merge request"
-    when 1
-      flash[:notice] = "1 issue has been assigned to you"
+      flash[:alert] = _("Failed to assign you issues related to the merge request.")
     else
-      flash[:notice] = "#{result[:count]} issues have been assigned to you"
+      flash[:notice] = n_("An issue has been assigned to you.", "%d issues have been assigned to you.", result[:count])
     end
 
     redirect_to(merge_request_path(@merge_request))

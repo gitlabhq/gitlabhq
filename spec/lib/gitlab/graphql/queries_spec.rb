@@ -360,5 +360,29 @@ RSpec.describe Gitlab::Graphql::Queries do
         end
       end
     end
+
+    context 'a query containing a persist directive' do
+      let(:path) { 'persist_directive.query.graphql' }
+
+      it_behaves_like 'a valid GraphQL query for the blog schema'
+
+      it 'is tagged as a client query' do
+        expect(subject.validate(schema).first).to eq :client_query
+      end
+    end
+
+    context 'a query containing a persistantly directive' do
+      let(:path) { 'persistantly_directive.query.graphql' }
+
+      it 'is not tagged as a client query' do
+        expect(subject.validate(schema).first).not_to eq :client_query
+      end
+    end
+
+    context 'a query containing a persist field' do
+      let(:path) { 'persist_field.query.graphql' }
+
+      it_behaves_like 'a valid GraphQL query for the blog schema'
+    end
   end
 end

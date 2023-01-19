@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LearnGitlabHelper do
+RSpec.describe LearnGitlabHelper, feature_category: :onboarding do
   include AfterNextHelpers
   include Devise::Test::ControllerHelpers
 

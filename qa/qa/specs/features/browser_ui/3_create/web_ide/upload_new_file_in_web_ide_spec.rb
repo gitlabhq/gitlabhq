@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :global }, product_group: :editor, quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387032',
-    type: :stale
-  } do
+  RSpec.describe 'Create', product_group: :editor,
+    feature_flag: { name: 'vscode_web_ide', scope: :global },
+    quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387032', type: :stale } do
     describe 'Upload a file in Web IDE' do
-      let(:file_path) { File.absolute_path(File.join('qa', 'fixtures', 'web_ide', file_name)) }
+      let(:file_path) { File.join(Runtime::Path.fixtures_path, 'web_ide', file_name) }
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -43,7 +42,8 @@ module QA
       context 'when the file is a text file' do
         let(:file_name) { 'text_file.txt' }
 
-        it 'shows the Edit tab with the text', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347852' do
+        it 'shows the Edit tab with the text',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347852' do
           Page::Project::WebIDE::Edit.perform do |ide|
             ide.wait_until_ide_loads
             ide.upload_file(file_path)

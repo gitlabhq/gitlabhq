@@ -256,7 +256,6 @@ RSpec.describe API::ProjectSnippets, feature_category: :source_code_management d
         allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
-        stub_feature_flags(allow_possible_spam: false)
 
         project.add_developer(user)
       end
@@ -312,8 +311,6 @@ RSpec.describe API::ProjectSnippets, feature_category: :source_code_management d
         allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
-
-        stub_feature_flags(allow_possible_spam: false)
       end
 
       context 'when the snippet is private' do
