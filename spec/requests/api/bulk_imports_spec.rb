@@ -13,6 +13,8 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
   before do
     stub_application_setting(bulk_import_enabled: true)
+
+    allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
   end
 
   shared_examples 'disabled feature' do
@@ -73,6 +75,24 @@ RSpec.describe API::BulkImports, feature_category: :importers do
   end
 
   describe 'POST /bulk_imports' do
+    let(:request) { post api('/bulk_imports', user), params: params }
+    let(:destination_param) { { destination_slug: 'destination_slug' } }
+    let(:params) do
+      {
+        configuration: {
+          url: 'http://gitlab.example',
+          access_token: 'access_token'
+        },
+        entities: [
+          {
+            source_type: 'group_entity',
+            source_full_path: 'full_path',
+            destination_namespace: 'destination_namespace'
+          }.merge(destination_param)
+        ]
+      }
+    end
+
     before do
       allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
         allow(instance)
@@ -86,23 +106,6 @@ RSpec.describe API::BulkImports, feature_category: :importers do
     end
 
     shared_examples 'starting a new migration' do
-      let(:request) { post api('/bulk_imports', user), params: params }
-      let(:params) do
-        {
-          configuration: {
-            url: 'http://gitlab.example',
-            access_token: 'access_token'
-          },
-          entities: [
-            {
-              source_type: 'group_entity',
-              source_full_path: 'full_path',
-              destination_namespace: 'destination_namespace'
-            }.merge(destination_param)
-          ]
-        }
-      end
-
       it 'starts a new migration' do
         request
 
@@ -278,6 +281,17 @@ RSpec.describe API::BulkImports, feature_category: :importers do
     end
 
     include_examples 'disabled feature'
+
+    context 'when request exceeds rate limits' do
+      it 'prevents user from starting a new migration' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+
+        request
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
+      end
+    end
   end
 
   describe 'GET /bulk_imports/entities' do

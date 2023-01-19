@@ -1,5 +1,4 @@
 import { flatten } from 'lodash';
-import { hideFlash } from '~/flash';
 import dateFormat from '~/lib/dateformat';
 import { slugify } from '~/lib/utils/text_utility';
 import { urlQueryToFilter } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
@@ -74,10 +73,8 @@ export const getDataZoomOption = ({
 };
 
 export const removeFlash = (type = 'alert') => {
-  const flashEl = document.querySelector(`.flash-${type}`);
-  if (flashEl) {
-    hideFlash(flashEl);
-  }
+  // flash-warning don't have dismiss button.
+  document.querySelector(`.flash-${type} .js-close`)?.click();
 };
 
 /**

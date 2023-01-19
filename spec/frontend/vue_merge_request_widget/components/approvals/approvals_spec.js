@@ -13,7 +13,12 @@ import {
 } from '~/vue_merge_request_widget/components/approvals/messages';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 
-jest.mock('~/flash');
+const mockAlertDismiss = jest.fn();
+jest.mock('~/flash', () => ({
+  createAlert: jest.fn().mockImplementation(() => ({
+    dismiss: mockAlertDismiss,
+  })),
+}));
 
 const RULE_NAME = 'first_rule';
 const TEST_HELP_PATH = 'help/path';
@@ -267,8 +272,15 @@ describe('MRWidget approvals', () => {
             return nextTick();
           });
 
-          it('flashes error message', () => {
+          it('shows an alert with error message', () => {
             expect(createAlert).toHaveBeenCalledWith({ message: APPROVE_ERROR });
+          });
+
+          it('clears the previous alert', () => {
+            expect(mockAlertDismiss).toHaveBeenCalledTimes(0);
+
+            findAction().vm.$emit('click');
+            expect(mockAlertDismiss).toHaveBeenCalledTimes(1);
           });
         });
       });

@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Appearance do
+  using RSpec::Parameterized::TableSyntax
   subject { build(:appearance) }
 
   it { include(CacheableAttributes) }
@@ -14,8 +15,10 @@ RSpec.describe Appearance do
     subject(:appearance) { described_class.new }
 
     it { expect(appearance.title).to eq('') }
-    it { expect(appearance.pwa_short_name).to eq('') }
     it { expect(appearance.description).to eq('') }
+    it { expect(appearance.pwa_name).to eq('') }
+    it { expect(appearance.pwa_short_name).to eq('') }
+    it { expect(appearance.pwa_description).to eq('') }
     it { expect(appearance.new_project_guidelines).to eq('') }
     it { expect(appearance.profile_image_guidelines).to eq('') }
     it { expect(appearance.header_message).to eq('') }
@@ -94,6 +97,41 @@ RSpec.describe Appearance do
     it { is_expected.to allow_value(triplet).for(:message_font_color) }
     it { is_expected.to allow_value(hex).for(:message_font_color) }
     it { is_expected.not_to allow_value('000').for(:message_font_color) }
+  end
+
+  shared_examples 'validation allows' do
+    it { is_expected.to allow_value(value).for(attribute) }
+  end
+
+  shared_examples 'validation permits with message' do
+    it { is_expected.not_to allow_value(value).for(attribute).with_message(message) }
+  end
+
+  context 'valid pwa attributes' do
+    where(:attribute, :value) do
+      :pwa_name        | nil
+      :pwa_name        | "G" * 255
+      :pwa_short_name  | nil
+      :pwa_short_name  | "S" * 255
+      :pwa_description | nil
+      :pwa_description | "T" * 2048
+    end
+
+    with_them do
+      it_behaves_like 'validation allows'
+    end
+  end
+
+  context 'invalid pwa attributes' do
+    where(:attribute, :value, :message) do
+      :pwa_name        | "G" * 256  | 'is too long (maximum is 255 characters)'
+      :pwa_short_name  | "S" * 256  | 'is too long (maximum is 255 characters)'
+      :pwa_description | "T" * 2049 | 'is too long (maximum is 2048 characters)'
+    end
+
+    with_them do
+      it_behaves_like 'validation permits with message'
+    end
   end
 
   describe 'email_header_and_footer_enabled' do

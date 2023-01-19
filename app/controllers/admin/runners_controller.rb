@@ -29,28 +29,6 @@ class Admin::RunnersController < Admin::ApplicationController
     end
   end
 
-  def destroy
-    Ci::Runners::UnregisterRunnerService.new(@runner, current_user).execute
-
-    redirect_to admin_runners_path, status: :found
-  end
-
-  def resume
-    if Ci::Runners::UpdateRunnerService.new(@runner).execute(active: true).success?
-      redirect_to admin_runners_path, notice: _('Runner was successfully updated.')
-    else
-      redirect_to admin_runners_path, alert: _('Runner was not updated.')
-    end
-  end
-
-  def pause
-    if Ci::Runners::UpdateRunnerService.new(@runner).execute(active: false).success?
-      redirect_to admin_runners_path, notice: _('Runner was successfully updated.')
-    else
-      redirect_to admin_runners_path, alert: _('Runner was not updated.')
-    end
-  end
-
   def tag_list
     tags = Autocomplete::ActsAsTaggableOn::TagsFinder.new(params: params).execute
 

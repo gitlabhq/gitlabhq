@@ -213,7 +213,7 @@ RSpec.describe PlanLimits do
         ci_active_jobs
         storage_size_limit
         daily_invites
-        web_hook_calls
+        web_hook_calls_high
         web_hook_calls_mid
         web_hook_calls_low
         ci_daily_pipeline_schedule_triggers

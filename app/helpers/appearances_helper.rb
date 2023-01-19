@@ -4,12 +4,24 @@ module AppearancesHelper
   include MarkupHelper
   include Gitlab::Utils::StrongMemoize
 
-  def appearance_short_name
-    Appearance.current&.pwa_short_name.presence || _('GitLab')
-  end
-
   def brand_title
     current_appearance&.title.presence || default_brand_title
+  end
+
+  def appearance_pwa_name
+    current_appearance&.pwa_name.presence || _('GitLab')
+  end
+
+  def appearance_pwa_short_name
+    current_appearance&.pwa_short_name.presence || _('GitLab')
+  end
+
+  def appearance_pwa_description
+    current_appearance&.pwa_description.presence ||
+      _("The complete DevOps platform. " \
+        "One application with endless possibilities. " \
+        "Organizations rely on GitLab’s source code management, " \
+        "CI/CD, security, and more to deliver software rapidly.")
   end
 
   def default_brand_title

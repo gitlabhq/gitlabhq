@@ -105,49 +105,6 @@ RSpec.describe Admin::RunnersController, feature_category: :runner_fleet do
     end
   end
 
-  describe '#destroy' do
-    it 'destroys the runner' do
-      expect_next_instance_of(Ci::Runners::UnregisterRunnerService, runner, user) do |service|
-        expect(service).to receive(:execute).once.and_call_original
-      end
-
-      delete :destroy, params: { id: runner.id }
-
-      expect(response).to have_gitlab_http_status(:found)
-      expect(Ci::Runner.find_by(id: runner.id)).to be_nil
-    end
-  end
-
-  describe '#resume' do
-    it 'marks the runner as active and ticks the queue' do
-      runner.update!(active: false)
-
-      expect do
-        post :resume, params: { id: runner.id }
-      end.to change { runner.ensure_runner_queue_value }
-
-      runner.reload
-
-      expect(response).to have_gitlab_http_status(:found)
-      expect(runner.active).to eq(true)
-    end
-  end
-
-  describe '#pause' do
-    it 'marks the runner as inactive and ticks the queue' do
-      runner.update!(active: true)
-
-      expect do
-        post :pause, params: { id: runner.id }
-      end.to change { runner.ensure_runner_queue_value }
-
-      runner.reload
-
-      expect(response).to have_gitlab_http_status(:found)
-      expect(runner.active).to eq(false)
-    end
-  end
-
   describe 'GET #runner_setup_scripts' do
     it 'renders the setup scripts' do
       get :runner_setup_scripts, params: { os: 'linux', arch: 'amd64' }

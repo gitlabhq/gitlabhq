@@ -37,8 +37,8 @@ PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module
 | Attribute          | Type            | Required | Description                                                                                                                      |
 | -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
 | `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-path-encoding).                                    |
-| `module-name`      | string          | yes      | The package name. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z), digits (0-9), and hyphens (`-`).
-| `module-system`    | string          | yes      | The package system. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z), digits (0-9), and hyphens (`-`). More information can be found in the [Terraform Module Registry Protocol documentation](https://www.terraform.io/internals/module-registry-protocol).
+| `module-name`      | string          | yes      | The package name. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z) and digits (0-9). The package name can't exceed 64 characters.
+| `module-system`    | string          | yes      | The package system. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z) and digits (0-9). The package system can't exceed 64 characters. More information can be found in the [Terraform Module Registry Protocol documentation](https://www.terraform.io/internals/module-registry-protocol).
 | `module-version`   | string          | yes      | The package version. It must be valid according to the [Semantic Versioning Specification](https://semver.org/).
 
 Provide the file content in the request body.

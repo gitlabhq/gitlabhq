@@ -68,8 +68,10 @@ class Admin::ApplicationSettings::AppearancesController < Admin::ApplicationCont
   def allowed_appearance_params
     %i[
       title
-      pwa_short_name
       description
+      pwa_name
+      pwa_short_name
+      pwa_description
       logo
       logo_cache
       header_logo

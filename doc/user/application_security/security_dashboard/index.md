@@ -21,12 +21,18 @@ To use the Security Dashboards, you must:
 
 ## When Security Dashboards are updated
 
-The Security Dashboards show results of the most recent security scan on the
+The Security Dashboards show results of scans from the most recent completed pipeline on the
 [default branch](../../project/repository/branches/default.md).
-Security scans run only when the default branch updates, so
-information on the Security Dashboard might not reflect newly-discovered vulnerabilities.
+Dashboards are updated with the result of completed pipelines run on the default branch; they do not include vulnerabilities discovered in pipelines from other un-merged branches.
 
-To run a daily security scan,
+If you use manual jobs, for example gate deployments, in the default branch's pipeline,
+the results of any scans are only updated when the job has been successfully run.
+If manual jobs are skipped regularly, you should to define the job as optional,
+using the [`allow_failure`](../../../ci/jobs/job_control.md#types-of-manual-jobs) attribute.
+
+To ensure regular security scans (even on infrequently developed projects),
+you should use [scan execution policies](../../../user/application_security/policies/scan-execution-policies.md).
+Alternatively, you can
 [configure a scheduled pipeline](../../../ci/pipelines/schedules.md).
 
 ## Reduce false negatives in dependency scans

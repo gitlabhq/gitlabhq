@@ -110,7 +110,6 @@ Layout/LineContinuationSpacing:
     - 'ee/spec/services/phone_verification/telesign_client/send_verification_code_service_spec.rb'
     - 'ee/spec/services/phone_verification/users/send_verification_code_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/ci_configuration_service_spec.rb'
-    - 'ee/spec/services/security/security_orchestration_policies/legacy_ci_configuration_service_spec.rb'
     - 'ee/spec/views/compliance_management/compliance_framework/_project_settings.html.haml_spec.rb'
     - 'ee/spec/workers/ee/issuable_export_csv_worker_spec.rb'
     - 'lib/api/dependency_proxy.rb'

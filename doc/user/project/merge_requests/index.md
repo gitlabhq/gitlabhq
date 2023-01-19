@@ -243,7 +243,7 @@ like in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87727/diffs?diff_i
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is enabled in the following projects: `gitlab-org/gitlab`, `gitlab-com/www-gitlab-com`, and `gitlab-org/customers-gitlab-com`.
 
 When this feature flag is enabled, you can find the following actions in
 **Merge request actions** (**{ellipsis_v}**) on the top right:

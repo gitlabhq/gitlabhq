@@ -6,8 +6,10 @@ class Appearance < ApplicationRecord
   include WithUploads
 
   attribute :title, default: ''
-  attribute :pwa_short_name, default: ''
   attribute :description, default: ''
+  attribute :pwa_name, default: ''
+  attribute :pwa_short_name, default: ''
+  attribute :pwa_description, default: ''
   attribute :new_project_guidelines, default: ''
   attribute :profile_image_guidelines, default: ''
   attribute :header_message, default: ''
@@ -21,6 +23,18 @@ class Appearance < ApplicationRecord
   cache_markdown_field :profile_image_guidelines
   cache_markdown_field :header_message, pipeline: :broadcast_message
   cache_markdown_field :footer_message, pipeline: :broadcast_message
+
+  validates :pwa_name,
+            length: { maximum: 255, message: N_("is too long (maximum is %{count} characters)") },
+            allow_blank: true
+
+  validates :pwa_short_name,
+            length: { maximum: 255, message: N_("is too long (maximum is %{count} characters)") },
+            allow_blank: true
+
+  validates :pwa_description,
+            length: { maximum: 2048, message: N_("is too long (maximum is %{count} characters)") },
+            allow_blank: true
 
   validates :logo,        file_size: { maximum: 1.megabyte }
   validates :pwa_icon,    file_size: { maximum: 1.megabyte }

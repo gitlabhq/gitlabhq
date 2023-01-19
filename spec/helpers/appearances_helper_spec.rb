@@ -10,17 +10,45 @@ RSpec.describe AppearancesHelper do
     allow(helper).to receive(:current_user).and_return(user)
   end
 
-  describe '#appearance_short_name' do
+  describe '#appearance_pwa_name' do
     it 'returns the default value' do
       create(:appearance)
 
-      expect(helper.appearance_short_name).to match('GitLab')
+      expect(helper.appearance_pwa_name).to match('GitLab')
+    end
+
+    it 'returns the customized value' do
+      create(:appearance, pwa_name: 'GitLab as PWA')
+
+      expect(helper.appearance_pwa_name).to match('GitLab as PWA')
+    end
+  end
+
+  describe '#appearance_pwa_short_name' do
+    it 'returns the default value' do
+      create(:appearance)
+
+      expect(helper.appearance_pwa_short_name).to match('GitLab')
     end
 
     it 'returns the customized value' do
       create(:appearance, pwa_short_name: 'Short')
 
-      expect(helper.appearance_short_name).to match('Short')
+      expect(helper.appearance_pwa_short_name).to match('Short')
+    end
+  end
+
+  describe '#appearance_pwa_description' do
+    it 'returns the default value' do
+      create(:appearance)
+
+      expect(helper.appearance_pwa_description).to include('The complete DevOps platform.')
+    end
+
+    it 'returns the customized value' do
+      create(:appearance, pwa_description: 'This is a description')
+
+      expect(helper.appearance_pwa_description).to match('This is a description')
     end
   end
 

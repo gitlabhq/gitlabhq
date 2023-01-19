@@ -11065,8 +11065,12 @@ CREATE TABLE appearances (
     profile_image_guidelines_html text,
     pwa_short_name text,
     pwa_icon text,
+    pwa_name text,
+    pwa_description text,
     CONSTRAINT appearances_profile_image_guidelines CHECK ((char_length(profile_image_guidelines) <= 4096)),
+    CONSTRAINT check_13b2165eca CHECK ((char_length(pwa_name) <= 255)),
     CONSTRAINT check_5c3fd63577 CHECK ((char_length(pwa_short_name) <= 255)),
+    CONSTRAINT check_5e0e6f24ed CHECK ((char_length(pwa_description) <= 2048)),
     CONSTRAINT check_5e5b7ac344 CHECK ((char_length(pwa_icon) <= 1024))
 );
 
@@ -19565,7 +19569,6 @@ CREATE TABLE plan_limits (
     helm_max_file_size bigint DEFAULT 5242880 NOT NULL,
     ci_registered_group_runners integer DEFAULT 1000 NOT NULL,
     ci_registered_project_runners integer DEFAULT 1000 NOT NULL,
-    web_hook_calls integer DEFAULT 0 NOT NULL,
     ci_daily_pipeline_schedule_triggers integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_running_container_scanning integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_cluster_image_scanning integer DEFAULT 0 NOT NULL,
@@ -19589,7 +19592,9 @@ CREATE TABLE plan_limits (
     pipeline_hierarchy_size integer DEFAULT 1000 NOT NULL,
     enforcement_limit integer DEFAULT 0 NOT NULL,
     notification_limit integer DEFAULT 0 NOT NULL,
-    dashboard_limit_enabled_at timestamp with time zone
+    dashboard_limit_enabled_at timestamp with time zone,
+    web_hook_calls_high integer DEFAULT 0,
+    CONSTRAINT check_0fa68f370e CHECK ((web_hook_calls_high IS NOT NULL))
 );
 
 CREATE SEQUENCE plan_limits_id_seq

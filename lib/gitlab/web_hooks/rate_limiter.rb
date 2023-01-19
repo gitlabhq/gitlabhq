@@ -5,7 +5,7 @@ module Gitlab
     class RateLimiter
       include Gitlab::Utils::StrongMemoize
 
-      LIMIT_NAME = :web_hook_calls
+      LIMIT_NAME = :web_hook_calls_high
       NO_LIMIT = 0
       # SystemHooks (instance admin hooks) and ServiceHooks (integration hooks)
       # are not rate-limited.

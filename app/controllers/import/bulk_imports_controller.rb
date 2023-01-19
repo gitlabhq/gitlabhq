@@ -53,6 +53,7 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def create
+    return render json: { success: false }, status: :too_many_requests if throttled_request?
     return render json: { success: false }, status: :unprocessable_entity unless valid_create_params?
 
     responses = create_params.map do |entry|
@@ -203,5 +204,9 @@ class Import::BulkImportsController < ApplicationController
 
   def current_user_bulk_imports
     current_user.bulk_imports.gitlab
+  end
+
+  def throttled_request?
+    ::Gitlab::ApplicationRateLimiter.throttled_request?(request, current_user, :bulk_import, scope: current_user)
   end
 end

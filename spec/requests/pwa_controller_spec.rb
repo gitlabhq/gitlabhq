@@ -7,14 +7,15 @@ RSpec.describe PwaController, feature_category: :navigation do
     it 'responds with json' do
       get manifest_path(format: :json)
 
-      expect(response.body).to include('The complete DevOps platform.')
+      expect(Gitlab::Json.parse(response.body)).to include({ 'name' => 'GitLab' })
       expect(Gitlab::Json.parse(response.body)).to include({ 'short_name' => 'GitLab' })
+      expect(response.body).to include('The complete DevOps platform.')
       expect(response).to have_gitlab_http_status(:success)
     end
 
     context 'with customized appearance' do
       let_it_be(:appearance) do
-        create(:appearance, title: 'Long name', pwa_short_name: 'Short name', description: 'This is a test')
+        create(:appearance, pwa_name: 'PWA name', pwa_short_name: 'Short name', pwa_description: 'This is a test')
       end
 
       it 'uses custom values', :aggregate_failures do
@@ -22,7 +23,7 @@ RSpec.describe PwaController, feature_category: :navigation do
 
         expect(Gitlab::Json.parse(response.body)).to include({
                                                                'description' => 'This is a test',
-                                                               'name' => 'Long name',
+                                                               'name' => 'PWA name',
                                                                'short_name' => 'Short name'
                                                              })
         expect(response).to have_gitlab_http_status(:success)

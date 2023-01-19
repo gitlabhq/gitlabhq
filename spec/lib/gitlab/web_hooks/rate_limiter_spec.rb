@@ -32,7 +32,7 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
 
     context 'when there is a plan limit' do
       before_all do
-        create(:plan_limits, plan: plan, web_hook_calls: limit)
+        create(:plan_limits, plan: plan, web_hook_calls_high: limit)
       end
 
       where(:hook, :limitless_hook_type) do
@@ -65,7 +65,7 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
 
     describe 'rate limit scope' do
       it 'rate limits all hooks from the same namespace', :freeze_time do
-        create(:plan_limits, plan: plan, web_hook_calls: limit)
+        create(:plan_limits, plan: plan, web_hook_calls_high: limit)
         project_hook_in_different_namespace = create(:project_hook)
         project_hook_in_same_namespace = create(:project_hook,
           project: create(:project, namespace: project_hook.project.namespace)
@@ -92,7 +92,7 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
 
     context 'when there is a plan limit' do
       before_all do
-        create(:plan_limits, plan: plan, web_hook_calls: limit)
+        create(:plan_limits, plan: plan, web_hook_calls_high: limit)
       end
 
       context 'when hook is not rate-limited' do

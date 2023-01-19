@@ -139,9 +139,11 @@ export default {
         this.fetchingApprovals = false;
       })
       .catch(() =>
-        createAlert({
-          message: FETCH_ERROR,
-        }),
+        this.alerts.push(
+          createAlert({
+            message: FETCH_ERROR,
+          }),
+        ),
       );
   },
   methods: {
@@ -154,9 +156,11 @@ export default {
       this.updateApproval(
         () => this.service.approveMergeRequest(),
         () =>
-          createAlert({
-            message: APPROVE_ERROR,
-          }),
+          this.alerts.push(
+            createAlert({
+              message: APPROVE_ERROR,
+            }),
+          ),
       );
     },
     approveWithAuth(data) {
@@ -167,9 +171,11 @@ export default {
             this.hasApprovalAuthError = true;
             return;
           }
-          createAlert({
-            message: APPROVE_ERROR,
-          });
+          this.alerts.push(
+            createAlert({
+              message: APPROVE_ERROR,
+            }),
+          );
         },
       );
     },
@@ -177,9 +183,11 @@ export default {
       this.updateApproval(
         () => this.service.unapproveMergeRequest(),
         () =>
-          createAlert({
-            message: UNAPPROVE_ERROR,
-          }),
+          this.alerts.push(
+            createAlert({
+              message: UNAPPROVE_ERROR,
+            }),
+          ),
       );
     },
     updateApproval(serviceFn, errFn) {

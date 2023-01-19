@@ -78,7 +78,7 @@ sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::Ba
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
 > - Enabled on GitLab.com.
 > - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-batched-background-migrations).
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-background-migrations).
 
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
@@ -203,17 +203,21 @@ Feature.disable(:optimize_batched_migrations)
 
 ## Troubleshooting
 
-### Enable or disable batched background migrations
+### Enable or disable background migrations
 
-In extremely limited circumstances, a GitLab administrator can disable the
-`execute_batched_migrations_on_schedule` [feature flag](../administration/feature_flags.md).
-This flag is enabled by default, and should be disabled only as a last resort
+In extremely limited circumstances, a GitLab administrator can disable either or
+both of these [feature flags](../administration/feature_flags.md):
+
+- `execute_background_migrations`
+- `execute_batched_migrations_on_schedule`
+
+These flags are enabled by default. Disable them only as a last resort
 to limit database operations in special circumstances, like database host maintenance.
 
 WARNING:
-Do not disable this flag unless you fully understand the ramifications. If you disable
-the `execute_batched_migrations_on_schedule` feature flag, GitLab upgrades may fail
-and data loss may occur.
+Do not disable either of these flags unless you fully understand the ramifications. If you disable
+the `execute_background_migrations` or `execute_batched_migrations_on_schedule` feature flag,
+GitLab upgrades might fail and data loss might occur.
 
 ### Database migrations failing because of batched background migration not finished
 

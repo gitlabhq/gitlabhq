@@ -147,7 +147,7 @@ To set this limit for a self-managed installation, run the following in the
 # If limits don't exist for the default plan, you can create one with:
 # Plan.default.create_limits!
 
-Plan.default.actual_limits.update!(web_hook_calls: 10)
+Plan.default.actual_limits.update!(web_hook_calls_high: 10)
 ```
 
 Set the limit to `0` to disable it.

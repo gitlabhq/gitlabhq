@@ -11,8 +11,10 @@ RSpec.describe Admin::ApplicationSettings::AppearancesController do
     let(:create_params) do
       {
         title: 'Foo',
-        pwa_short_name: 'F',
         description: 'Bar',
+        pwa_name: 'GitLab PWA',
+        pwa_short_name: 'F',
+        pwa_description: 'This is GitLab as PWA',
         header_message: header_message,
         footer_message: footer_message
       }
@@ -26,6 +28,11 @@ RSpec.describe Admin::ApplicationSettings::AppearancesController do
       post :create, params: { appearance: create_params }
 
       expect(Appearance.current).to have_attributes(
+        title: 'Foo',
+        description: 'Bar',
+        pwa_name: 'GitLab PWA',
+        pwa_short_name: 'F',
+        pwa_description: 'This is GitLab as PWA',
         header_message: header_message,
         footer_message: footer_message,
         email_header_and_footer_enabled: false,
@@ -41,6 +48,11 @@ RSpec.describe Admin::ApplicationSettings::AppearancesController do
         post :create, params: { appearance: create_params }
 
         expect(Appearance.current).to have_attributes(
+          title: 'Foo',
+          description: 'Bar',
+          pwa_name: 'GitLab PWA',
+          pwa_short_name: 'F',
+          pwa_description: 'This is GitLab as PWA',
           header_message: header_message,
           footer_message: footer_message,
           email_header_and_footer_enabled: true
