@@ -1,6 +1,6 @@
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
-import { GlDatepicker, GlListbox } from '@gitlab/ui';
+import { GlDatepicker, GlCollapsibleListbox } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import TimelineEventsForm from '~/issues/show/components/incidents/timeline_events_form.vue';
@@ -62,7 +62,7 @@ describe('Timeline events form', () => {
   const findDatePicker = () => wrapper.findComponent(GlDatepicker);
   const findHourInput = () => wrapper.findByTestId('input-hours');
   const findMinuteInput = () => wrapper.findByTestId('input-minutes');
-  const findTagDropdown = () => wrapper.findComponent(GlListbox);
+  const findTagsListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findTextarea = () => wrapper.findByTestId('input-note');
   const findTextareaValue = () => findTextarea().element.value;
   const findCountNumeric = (count) => wrapper.findByText(count);
@@ -75,7 +75,7 @@ describe('Timeline events form', () => {
     findMinuteInput().setValue(45);
   };
   const selectTags = async (tags) => {
-    findTagDropdown().vm.$emit(
+    findTagsListbox().vm.$emit(
       'select',
       tags.map((x) => x.value),
     );
@@ -125,31 +125,31 @@ describe('Timeline events form', () => {
       );
     });
 
-    describe('event tag dropdown', () => {
+    describe('event tags listbox', () => {
       it('should render option list from provided array', () => {
-        expect(findTagDropdown().props('items')).toEqual(mockTags);
+        expect(findTagsListbox().props('items')).toEqual(mockTags);
       });
 
       it('should allow to choose multiple tags', async () => {
         await selectTags(mockTags);
 
-        expect(findTagDropdown().props('selected')).toEqual(mockTags.map((x) => x.value));
+        expect(findTagsListbox().props('selected')).toEqual(mockTags.map((x) => x.value));
       });
 
       it('should show default option, when none is chosen', () => {
-        expect(findTagDropdown().props('toggleText')).toBe(timelineFormI18n.selectTags);
+        expect(findTagsListbox().props('toggleText')).toBe(timelineFormI18n.selectTags);
       });
 
       it('should show the tag, when one is selected', async () => {
         await selectOneTag();
 
-        expect(findTagDropdown().props('toggleText')).toBe(timelineEventTagsI18n.startTime);
+        expect(findTagsListbox().props('toggleText')).toBe(timelineEventTagsI18n.startTime);
       });
 
       it('should show the number of selected tags, when more than one is selected', async () => {
         await selectTags(mockTags);
 
-        expect(findTagDropdown().props('toggleText')).toBe('2 tags');
+        expect(findTagsListbox().props('toggleText')).toBe('2 tags');
       });
 
       it('should be cleared when clear is triggered', async () => {
@@ -159,8 +159,8 @@ describe('Timeline events form', () => {
         wrapper.vm.clear();
         await nextTick();
 
-        expect(findTagDropdown().props('toggleText')).toBe(timelineFormI18n.selectTags);
-        expect(findTagDropdown().props('selected')).toEqual([]);
+        expect(findTagsListbox().props('toggleText')).toBe(timelineFormI18n.selectTags);
+        expect(findTagsListbox().props('selected')).toEqual([]);
       });
 
       it('should populate incident note with tags if a note was empty', async () => {
@@ -195,7 +195,7 @@ describe('Timeline events form', () => {
       it('should enable the save buttons when event does not include tags', async () => {
         await findTextarea().setValue('hello');
 
-        expect(findTagDropdown().props('toggleText')).toBe(timelineFormI18n.selectTags);
+        expect(findTagsListbox().props('toggleText')).toBe(timelineFormI18n.selectTags);
         expect(findSubmitButton().props('disabled')).toBe(false);
         expect(findSubmitAndAddButton().props('disabled')).toBe(false);
       });
@@ -214,7 +214,7 @@ describe('Timeline events form', () => {
         expect(findDatePicker().props('value')).toStrictEqual(new Date(fakeDate));
         expect(findHourInput().element.value).toBe('0');
         expect(findMinuteInput().element.value).toBe('0');
-        expect(findTagDropdown().props('toggleText')).toBe(timelineFormI18n.selectTags);
+        expect(findTagsListbox().props('toggleText')).toBe(timelineFormI18n.selectTags);
       });
     });
   });

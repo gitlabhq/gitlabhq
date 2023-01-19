@@ -136,10 +136,14 @@ describe('WorkItemDetailModal component', () => {
   it('updates the work item when WorkItemDetail emits `update-modal` event', async () => {
     createComponent();
 
-    findWorkItemDetail().vm.$emit('update-modal', null, 'updatedId');
+    findWorkItemDetail().vm.$emit('update-modal', undefined, {
+      id: 'updatedId',
+      iid: 'updatedIid',
+    });
     await waitForPromises();
 
     expect(findWorkItemDetail().props().workItemId).toEqual('updatedId');
+    expect(findWorkItemDetail().props().workItemIid).toEqual('updatedIid');
   });
 
   describe('delete work item', () => {

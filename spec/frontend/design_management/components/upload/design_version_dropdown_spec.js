@@ -32,7 +32,7 @@ describe('Design management design version dropdown component', () => {
       mocks: {
         $route,
       },
-      stubs: { GlAvatar, GlCollapsibleListbox },
+      stubs: { GlAvatar: true, GlCollapsibleListbox },
     });
 
     // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
@@ -50,18 +50,28 @@ describe('Design management design version dropdown component', () => {
   const findAllListboxItems = () => wrapper.findAllComponents(GlListboxItem);
   const findVersionLink = (index) => wrapper.findAllComponents(GlListboxItem).at(index);
 
-  it('renders design version dropdown button', async () => {
-    createComponent();
+  describe('renders the item with custom template in design version list', () => {
+    let listItem;
+    const latestVersion = mockAllVersions[0];
 
-    await nextTick();
-    expect(wrapper.element).toMatchSnapshot();
-  });
+    beforeEach(async () => {
+      createComponent();
+      await nextTick();
+      listItem = findAllListboxItems().at(0);
+    });
 
-  it('renders design version list', async () => {
-    createComponent();
+    it('should render author name and their avatar', () => {
+      expect(listItem.findComponent(GlAvatar).props('alt')).toBe(latestVersion.author.name);
+      expect(listItem.text()).toContain(latestVersion.author.name);
+    });
 
-    await nextTick();
-    expect(wrapper.element).toMatchSnapshot();
+    it('should render correct version number', () => {
+      expect(listItem.text()).toContain('Version 2 (latest)');
+    });
+
+    it('should render time ago tooltip', () => {
+      expect(listItem.findComponent(TimeAgo).props('time')).toBe(latestVersion.createdAt);
+    });
   });
 
   describe('selected version name', () => {

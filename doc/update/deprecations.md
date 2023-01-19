@@ -185,6 +185,22 @@ The Container Registry pull-through cache is deprecated in GitLab 15.8 and will 
 
 <div class="deprecation removal-160 breaking-change">
 
+### Cookie authorization in the GitLab for Jira Cloud app
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Cookie authentication in the GitLab for Jira Cloud app is now deprecated in favor of OAuth authentication.
+You must [set up OAuth authentication](https://docs.gitlab.com/ee/integration/jira/connect-app.html#set-up-oauth-authentication)
+to continue to use the GitLab for Jira Cloud app. Without OAuth, you will not be able to manage linked namespaces.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Dependency Scanning support for Java 13, 14, 15, and 16
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>

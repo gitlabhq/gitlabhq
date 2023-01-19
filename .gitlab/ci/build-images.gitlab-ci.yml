@@ -27,6 +27,7 @@ build-qa-image as-if-foss:
   extends:
     - build-qa-image
     - .as-if-foss
+    - .build-images:rules:build-qa-image-as-if-foss
 
 build-assets-image:
   extends:

@@ -113,6 +113,7 @@ export const workItemQueryResponse = {
             nodes: [
               {
                 id: 'gid://gitlab/WorkItem/444',
+                iid: '4',
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
                 confidential: false,
@@ -176,6 +177,7 @@ export const updateWorkItemMutationResponse = {
               nodes: [
                 {
                   id: 'gid://gitlab/WorkItem/444',
+                  iid: '4',
                   createdAt: '2022-08-03T12:41:54Z',
                   closedAt: null,
                   confidential: false,
@@ -409,6 +411,7 @@ export const workItemResponseFactory = ({
             nodes: [
               {
                 id: 'gid://gitlab/WorkItem/444',
+                iid: '5',
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
                 confidential: false,

@@ -7,18 +7,18 @@ module ListboxHelpers
   end
 
   def select_listbox_item(text, exact_text: false)
-    find('.gl-listbox-item[role="option"]', text: text, exact_text: exact_text).click
+    find('.gl-dropdown-item[role="option"]', text: text, exact_text: exact_text).click
   end
 
   def expect_listbox_item(text)
-    expect(page).to have_css('.gl-listbox-item[role="option"]', text: text)
+    expect(page).to have_css('.gl-dropdown-item[role="option"]', text: text)
   end
 
   def expect_no_listbox_item(text)
-    expect(page).not_to have_css('.gl-listbox-item[role="option"]', text: text)
+    expect(page).not_to have_css('.gl-dropdown-item[role="option"]', text: text)
   end
 
   def expect_listbox_items(items)
-    expect(find_all('.gl-listbox-item[role="option"]').map(&:text)).to eq(items)
+    expect(find_all('.gl-dropdown-item[role="option"]').map(&:text)).to eq(items)
   end
 end

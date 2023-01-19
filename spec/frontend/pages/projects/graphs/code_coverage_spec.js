@@ -68,10 +68,6 @@ describe('Code Coverage', () => {
       expect(wrapper.vm.sortedData).toEqual(sortedDataByDates);
     });
 
-    it('matches the snapshot', () => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
     it('shows no error messages', () => {
       expect(findAlert().exists()).toBe(false);
     });

@@ -200,7 +200,7 @@ You can configure GitLab to use multiple SAML IdPs if:
 - The `strategy_class` is explicitly set because it cannot be inferred from provider
   name.
 
-[SAML Group Sync](../user/group/saml_sso/group_sync.md) does not support multiple IdPs. For more information, see [issue 386605](https://gitlab.com/gitlab-org/gitlab/-/issues/386605).
+[SAML group memberships](#configure-users-based-on-saml-group-membership) and [Group Sync](../user/group/saml_sso/group_sync.md) do not support multiple IdPs. For more information, see [issue 386605](https://gitlab.com/gitlab-org/gitlab/-/issues/386605).
 
 Example provider's configuration for installations from source:
 
@@ -375,6 +375,9 @@ Support for these groups depends on:
 
 - Your [subscription](https://about.gitlab.com/pricing/).
 - Whether you've installed [GitLab Enterprise Edition (EE)](https://about.gitlab.com/install/).
+- The [name of the SAML provider](#configure-saml-support-in-gitlab). Group
+  memberships are only supported by a single SAML provider named
+  `saml`. For more information, see [issue 386605](https://gitlab.com/gitlab-org/gitlab/-/issues/386605).
 
 | Group                        | Tier               | GitLab Enterprise Edition (EE) Only? |
 |------------------------------|--------------------|--------------------------------------|

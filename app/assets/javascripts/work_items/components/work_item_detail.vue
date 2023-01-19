@@ -125,6 +125,7 @@ export default {
       modalWorkItemId: isPositiveInteger(workItemId)
         ? convertToGraphQLId(TYPE_WORK_ITEM, workItemId)
         : null,
+      modalWorkItemIid: getParameterByName('work_item_iid'),
     };
   },
   apollo: {
@@ -136,7 +137,7 @@ export default {
         return this.queryVariables;
       },
       skip() {
-        return !this.workItemId;
+        return !this.workItemId && !this.workItemIid;
       },
       update(data) {
         const workItem = this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
@@ -310,8 +311,8 @@ export default {
     },
   },
   mounted() {
-    if (this.modalWorkItemId) {
-      this.openInModal(undefined, { id: this.modalWorkItemId });
+    if (this.modalWorkItemId || this.modalWorkItemIid) {
+      this.openInModal(undefined, { id: this.modalWorkItemId, iid: this.modalWorkItemIid });
     }
   },
   methods: {
@@ -439,9 +440,13 @@ export default {
         Sentry.captureException(error);
       }
     },
-    updateUrl(modalWorkItemId) {
+    updateUrl(modalWorkItem) {
+      const params = this.fetchByIid
+        ? { work_item_iid: modalWorkItem?.iid }
+        : { work_item_id: getIdFromGraphQLId(modalWorkItem?.id) };
+
       updateHistory({
-        url: setUrlParams({ work_item_id: getIdFromGraphQLId(modalWorkItemId) }),
+        url: setUrlParams(params),
         replace: true,
       });
     },
@@ -449,14 +454,15 @@ export default {
       if (event) {
         event.preventDefault();
 
-        this.updateUrl(modalWorkItem.id);
+        this.updateUrl(modalWorkItem);
       }
 
       if (this.isModal) {
-        this.$emit('update-modal', event, modalWorkItem.id);
+        this.$emit('update-modal', event, modalWorkItem);
         return;
       }
       this.modalWorkItemId = modalWorkItem.id;
+      this.modalWorkItemIid = modalWorkItem.iid;
       this.$refs.modal.show();
     },
   },
@@ -696,6 +702,7 @@ export default {
       v-if="!isModal"
       ref="modal"
       :work-item-id="modalWorkItemId"
+      :work-item-iid="modalWorkItemIid"
       :show="true"
       @close="updateUrl"
     />

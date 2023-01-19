@@ -1,4 +1,4 @@
-import { GlAlert, GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -59,6 +59,8 @@ describe('import table', () => {
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
   const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
   const findNewPathCol = () => wrapper.find('[data-test-id="new-path-col"]');
+  const findUnavailableFeaturesWarning = () =>
+    wrapper.find('[data-testid="unavailable-features-alert"]');
 
   const triggerSelectAllCheckbox = (checked = true) =>
     wrapper.find('thead input[type=checkbox]').setChecked(checked);
@@ -598,8 +600,8 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
-      expect(wrapper.findComponent(GlAlert).text()).toContain('projects (require v14.8.0)');
+      expect(findUnavailableFeaturesWarning().exists()).toBe(true);
+      expect(findUnavailableFeaturesWarning().text()).toContain('projects (require v14.8.0)');
     });
 
     it('does not renders alert when there are no unavailable features', async () => {
@@ -617,7 +619,7 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
+      expect(findUnavailableFeaturesWarning().exists()).toBe(false);
     });
   });
 

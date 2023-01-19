@@ -55,6 +55,7 @@ fragment WorkItemWidgets on WorkItemWidget {
     children {
       nodes {
         id
+        iid
         confidential
         workItemType {
           id

@@ -41,7 +41,9 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def update
-    if schedule.update(schedule_params)
+    response = Ci::PipelineSchedules::UpdateService.new(schedule, current_user, schedule_params).execute
+
+    if response.success?
       redirect_to project_pipeline_schedules_path(@project)
     else
       render :edit
@@ -63,7 +65,9 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def take_ownership
-    if schedule.update(owner: current_user)
+    response = Ci::PipelineSchedules::TakeOwnershipService.new(schedule, current_user).execute
+
+    if response.success?
       redirect_to pipeline_schedules_path(@project)
     else
       redirect_to pipeline_schedules_path(@project), alert: _("Failed to change the owner")

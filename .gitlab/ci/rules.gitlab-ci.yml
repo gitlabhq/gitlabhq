@@ -690,7 +690,7 @@
 ######################
 # Build images rules #
 ######################
-.build-images:rules:build-qa-image:
+.build-images:rules:build-qa-image-merge-requests:
   rules:
     - <<: *if-not-canonical-namespace
       when: never
@@ -700,6 +700,10 @@
       changes: *ci-build-images-patterns
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-qa-patterns
+
+.build-images:rules:build-qa-image:
+  rules:
+    - !reference [".build-images:rules:build-qa-image-merge-requests", "rules"]
     - <<: *if-auto-deploy-branches
       variables:
         ARCH: amd64,arm64
@@ -711,6 +715,10 @@
         ARCH: amd64,arm64
     - <<: *if-force-ci
     - <<: *if-ruby2-branch
+
+.build-images:rules:build-qa-image-as-if-foss:
+  rules:
+    - !reference [".build-images:rules:build-qa-image-merge-requests", "rules"]
 
 .build-images:rules:build-assets-image:
   rules:

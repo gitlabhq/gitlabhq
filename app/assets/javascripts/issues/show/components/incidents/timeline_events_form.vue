@@ -1,5 +1,5 @@
 <script>
-import { GlDatepicker, GlFormInput, GlFormGroup, GlButton, GlListbox } from '@gitlab/ui';
+import { GlDatepicker, GlFormInput, GlFormGroup, GlButton, GlCollapsibleListbox } from '@gitlab/ui';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, sprintf } from '~/locale';
@@ -25,7 +25,7 @@ export default {
     GlFormInput,
     GlFormGroup,
     GlButton,
-    GlListbox,
+    GlCollapsibleListbox,
   },
   mixins: [glFeatureFlagsMixin()],
   i18n: timelineFormI18n,
@@ -101,19 +101,19 @@ export default {
     timelineTextCount() {
       return this.timelineText.length;
     },
-    dropdownText() {
+    listboxText() {
       if (!this.selectedTags.length) {
         return timelineFormI18n.selectTags;
       }
 
-      const dropdownText =
+      const listboxText =
         this.selectedTags.length === 1
           ? this.selectedTags[0]
           : sprintf(__('%{numberOfSelectedTags} tags'), {
               numberOfSelectedTags: this.selectedTags.length,
             });
 
-      return dropdownText;
+      return listboxText;
     },
   },
   mounted() {
@@ -198,9 +198,9 @@ export default {
       </div>
     </div>
     <gl-form-group v-if="glFeatures.incidentEventTags" :label="$options.i18n.tagsLabel">
-      <gl-listbox
+      <gl-collapsible-listbox
         :selected="selectedTags"
-        :toggle-text="dropdownText"
+        :toggle-text="listboxText"
         :items="tags"
         :is-check-centered="true"
         :multiple="true"

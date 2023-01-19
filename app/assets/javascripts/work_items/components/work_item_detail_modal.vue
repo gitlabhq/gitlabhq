@@ -50,11 +50,15 @@ export default {
     return {
       error: undefined,
       updatedWorkItemId: null,
+      updatedWorkItemIid: null,
     };
   },
   computed: {
     displayedWorkItemId() {
       return this.updatedWorkItemId || this.workItemId;
+    },
+    displayedWorkItemIid() {
+      return this.updatedWorkItemIid || this.workItemIid;
     },
   },
   methods: {
@@ -122,6 +126,7 @@ export default {
     },
     closeModal() {
       this.updatedWorkItemId = null;
+      this.updatedWorkItemIid = null;
       this.error = '';
       this.$emit('close');
     },
@@ -134,9 +139,10 @@ export default {
     show() {
       this.$refs.modal.show();
     },
-    updateModal($event, workItemId) {
-      this.updatedWorkItemId = workItemId;
-      this.$emit('update-modal', $event, workItemId);
+    updateModal($event, workItem) {
+      this.updatedWorkItemId = workItem.id;
+      this.updatedWorkItemIid = workItem.iid;
+      this.$emit('update-modal', $event, workItem);
     },
   },
 };
@@ -160,7 +166,7 @@ export default {
       is-modal
       :work-item-parent-id="issueGid"
       :work-item-id="displayedWorkItemId"
-      :work-item-iid="workItemIid"
+      :work-item-iid="displayedWorkItemIid"
       class="gl-p-5 gl-mt-n3 gl-reset-bg gl-isolate"
       @close="hide"
       @deleteWorkItem="deleteWorkItem"

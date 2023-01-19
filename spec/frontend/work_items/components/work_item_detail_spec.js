@@ -92,6 +92,7 @@ describe('WorkItemDetail component', () => {
     isModal = false,
     updateInProgress = false,
     workItemId = workItemQueryResponse.data.workItem.id,
+    workItemIid = '1',
     handler = successHandler,
     subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
@@ -112,7 +113,7 @@ describe('WorkItemDetail component', () => {
 
     wrapper = shallowMount(WorkItemDetail, {
       apolloProvider: createMockApollo(handlers),
-      propsData: { isModal, workItemId, workItemIid: '1' },
+      propsData: { isModal, workItemId, workItemIid },
       data() {
         return {
           updateInProgress,
@@ -150,9 +151,9 @@ describe('WorkItemDetail component', () => {
     setWindowLocation('');
   });
 
-  describe('when there is no `workItemId` prop', () => {
+  describe('when there is no `workItemId` and no `workItemIid` prop', () => {
     beforeEach(() => {
-      createComponent({ workItemId: null });
+      createComponent({ workItemId: null, workItemIid: null });
     });
 
     it('skips the work item query', () => {
@@ -647,6 +648,19 @@ describe('WorkItemDetail component', () => {
     setWindowLocation(`?iid_path=true`);
 
     createComponent({ fetchByIid: true, iidPathQueryParam: 'true' });
+    await waitForPromises();
+
+    expect(successHandler).not.toHaveBeenCalled();
+    expect(successByIidHandler).toHaveBeenCalledWith({
+      fullPath: 'group/project',
+      iid: '1',
+    });
+  });
+
+  it('calls the IID work item query when `useIidInWorkItemsPath` feature flag is true and `iid_path` route parameter is present and is a modal', async () => {
+    setWindowLocation(`?iid_path=true`);
+
+    createComponent({ fetchByIid: true, iidPathQueryParam: 'true', isModal: true });
     await waitForPromises();
 
     expect(successHandler).not.toHaveBeenCalled();

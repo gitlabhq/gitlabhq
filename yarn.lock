@@ -1140,19 +1140,19 @@
     stylelint-declaration-strict-value "1.8.0"
     stylelint-scss "4.2.0"
 
-"@gitlab/svgs@3.15.0":
-  version "3.15.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.15.0.tgz#b7284584d1a60093334037d16e0d11b05fb4da38"
-  integrity sha512-l3kWuE/s+UuchouQwKnYtONuTUQtaPHkcbacRSpFEfRcw8FXknlLjUpkO1nfxFaH10jE76KYJNoFad4x74+6nQ==
+"@gitlab/svgs@3.16.0":
+  version "3.16.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.16.0.tgz#ba7f566c160bd408f3fce63b92bbf9d66a0e6a4d"
+  integrity sha512-sL2D6yNxq4eT5go6d9k9QBbYyvlqWbxWUFB+Ty0/xxxx1ZaWlBs/PpGERgebPZ9uk5v4FIW1mI+Ra8ZVFBOjww==
 
-"@gitlab/ui@52.9.0":
-  version "52.9.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-52.9.0.tgz#940fb670570b8e4aaeffd02637273785bd5115b6"
-  integrity sha512-HBBcLtYGgg/ZuBxV9TOl4jc0avugsqKkBQRgV3iw06Uux/8fIl346bEfUjsLNh8rk7ccp8nKb2JozXCjlKs1Qw==
+"@gitlab/ui@52.11.0":
+  version "52.11.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-52.11.0.tgz#a81f5e4901531fca3d2340cc17f1282d2370665c"
+  integrity sha512-6ocP2GhIpaq4+Zf05n1nBoTckyHEYGf9KRs0CNyOyNoCe28fSTRX91KTdC4hcvam9IdQZY049X+tcG6bRxooCg==
   dependencies:
     "@popperjs/core" "^2.11.2"
     bootstrap-vue "2.20.1"
-    dompurify "^2.4.1"
+    dompurify "^2.4.3"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
     lodash "^4.17.20"
@@ -5102,7 +5102,7 @@ dompurify@2.3.8:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.8.tgz#224fe9ae57d7ebd9a1ae1ac18c1c1ca3f532226f"
   integrity sha512-eVhaWoVibIzqdGYjwsBWodIQIaXFSB+cKDf4cfxLMsK0xiud6SE+/WCVx/Xw/UwQsa4cS3T2eITcdtmTg2UKcw==
 
-dompurify@^2.4.1, dompurify@^2.4.3:
+dompurify@^2.4.3:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.4.3.tgz#f4133af0e6a50297fc8874e2eaedc13a3c308c03"
   integrity sha512-q6QaLcakcRjebxjg8/+NP+h0rPfatOgOzc46Fst9VAA3jF2ApfKBNKMzdP4DYTqtUMXSCd5pRS/8Po/OmoCHZQ==

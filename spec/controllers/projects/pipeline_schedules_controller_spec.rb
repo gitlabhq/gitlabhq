@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::PipelineSchedulesController do
+RSpec.describe Projects::PipelineSchedulesController, feature_category: :continuous_integration do
   include AccessMatchersForController
 
   let_it_be(:user) { create(:user) }

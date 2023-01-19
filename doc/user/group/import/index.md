@@ -72,6 +72,18 @@ Prerequisites:
 - At least the Maintainer role on the destination group to migrate to. Using the Developer role for this purpose was
   [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
 
+### Visibility rules
+
+After migration:
+
+- Private groups and projects stay private.
+- Public groups and projects:
+  - Stay public when imported into a public group.
+  - Become private when imported into a private group.
+
+If used a private network on your source instance to hide content from the general public,
+make sure to have a similar setup on the destination instance, or to import into a private group.
+
 ### Preparation
 
 GitLab maps users and their contributions correctly provided:

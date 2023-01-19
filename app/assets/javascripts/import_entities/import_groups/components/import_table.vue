@@ -104,6 +104,9 @@ export default {
       pendingGroupsIds: [],
       importTargets: {},
       unavailableFeaturesAlertVisible: true,
+      helpUrl: helpPagePath('ee/user/group/import', {
+        anchor: 'visibility-rules',
+      }),
     };
   },
 
@@ -552,6 +555,7 @@ export default {
     </div>
     <gl-alert
       v-if="unavailableFeatures.length > 0 && unavailableFeaturesAlertVisible"
+      data-testid="unavailable-features-alert"
       variant="warning"
       :title="unavailableFeaturesAlertTitle"
       @dismiss="unavailableFeaturesAlertVisible = false"
@@ -579,6 +583,19 @@ export default {
               </gl-sprintf>
             </li>
           </ul>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
+    <gl-alert variant="warning" :dismissible="false" class="mt-3">
+      <gl-sprintf
+        :message="
+          s__(
+            'BulkImport|Be aware of %{linkStart}visibility rules%{linkEnd} when importing groups.',
+          )
+        "
+      >
+        <template #link="{ content }">
+          <gl-link :href="helpUrl" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </gl-alert>

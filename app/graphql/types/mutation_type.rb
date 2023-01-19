@@ -123,6 +123,7 @@ module Types
     mount_mutation Mutations::Ci::PipelineSchedule::TakeOwnership
     mount_mutation Mutations::Ci::PipelineSchedule::Play
     mount_mutation Mutations::Ci::PipelineSchedule::Create
+    mount_mutation Mutations::Ci::PipelineSchedule::Update
     mount_mutation Mutations::Ci::CiCdSettingsUpdate, deprecated: {
       reason: :renamed,
       replacement: 'ProjectCiCdSettingsUpdate',

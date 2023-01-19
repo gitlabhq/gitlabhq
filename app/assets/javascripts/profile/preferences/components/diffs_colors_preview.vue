@@ -110,8 +110,8 @@ export default {
           </td>
           <td class="line_content parallel left-side old">
             <span>
-              <span>{{ '    ' }}</span>
-              <span class="k">print</span><span class="p">(</span><span class="n">i</span>
+              <span>{{ '    ' }}</span
+              ><span class="k">print</span><span class="p">(</span><span class="n">i</span>
               <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></span
             >
           </td>
@@ -120,8 +120,8 @@ export default {
           </td>
           <td class="line_content parallel right-side new">
             <span>
-              <span>{{ '    ' }}</span>
-              <span class="k">print</span><span class="p">(</span><span class="n">i</span>
+              <span>{{ '    ' }}</span
+              ><span class="k">print</span><span class="p">(</span><span class="n">i</span>
               <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></span
             >
           </td>
@@ -162,8 +162,8 @@ export default {
           </td>
           <td class="line_content parallel left-side old">
             <span>
-              <span>{{ '    ' }}</span>
-              <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span
+              <span>{{ '    ' }}</span
+              ><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span
               ><span class="bp">self</span><span class="p">,</span> <span class="n">x</span
               ><span class="p">):</span></span
             >
@@ -173,8 +173,8 @@ export default {
           </td>
           <td class="line_content parallel right-side new">
             <span>
-              <span>{{ '    ' }}</span>
-              <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span
+              <span>{{ '    ' }}</span
+              ><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span
               ><span class="bp">self</span><span class="p">,</span> <span class="n">x</span
               ><span class="p">):</span></span
             >
@@ -186,8 +186,8 @@ export default {
           </td>
           <td class="line_content parallel left-side old">
             <span>
-              <span>{{ '        ' }}</span>
-              <span class="bp">self</span><span class="p">.</span><span class="n">val</span>
+              <span>{{ '        ' }}</span
+              ><span class="bp">self</span><span class="p">.</span><span class="n">val</span>
               <span class="o">=</span> <span class="n">x</span></span
             >
           </td>
@@ -196,8 +196,8 @@ export default {
           </td>
           <td class="line_content parallel right-side new">
             <span>
-              <span>{{ '        ' }}</span>
-              <span class="bp">self</span><span class="p">.</span><span class="n">val</span>
+              <span>{{ '        ' }}</span
+              ><span class="bp">self</span><span class="p">.</span><span class="n">val</span>
               <span class="o">=</span> <span class="n">x</span></span
             >
           </td>
@@ -208,8 +208,8 @@ export default {
           </td>
           <td class="line_content parallel left-side old">
             <span>
-              <span>{{ '        ' }}</span>
-              <span class="bp">self</span><span class="p">.</span><span class="nb">next</span>
+              <span>{{ '        ' }}</span
+              ><span class="bp">self</span><span class="p">.</span><span class="nb">next</span>
               <span class="o">=</span> <span class="bp">None</span></span
             >
           </td>
@@ -218,8 +218,8 @@ export default {
           </td>
           <td class="line_content parallel right-side new">
             <span>
-              <span>{{ '        ' }}</span>
-              <span class="bp">self</span><span class="p">.</span><span class="nb">next</span>
+              <span>{{ '        ' }}</span
+              ><span class="bp">self</span><span class="p">.</span><span class="nb">next</span>
               <span class="o">=</span> <span class="bp">None</span></span
             >
           </td>
