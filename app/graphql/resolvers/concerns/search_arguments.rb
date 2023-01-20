@@ -41,7 +41,7 @@ module SearchArguments
   end
 
   def validate_search_rate_limit!(args)
-    return if args[:search].blank? || context[:request].nil? || Feature.disabled?(:rate_limit_issuable_searches)
+    return if args[:search].blank? || context[:request].nil?
 
     if current_user.present?
       rate_limiter_key = :search_rate_limit

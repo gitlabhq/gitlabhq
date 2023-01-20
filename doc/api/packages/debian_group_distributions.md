@@ -18,10 +18,6 @@ This API is under development and is not meant for production use.
 For more information about working with Debian packages, see the
 [Debian package registry documentation](../../user/packages/debian_repository/index.md).
 
-NOTE:
-The Debian registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_compliance.md) is enabled.
-These endpoints will all return `404 Not Found`.
-
 ## Enable the Debian group API
 
 Debian group repository support is still a work in progress. It's gated behind a feature flag that's

@@ -26,8 +26,12 @@ module QA
             element :prometheus_url_field
           end
 
+          def go_to_alert_settings
+            click_link_with_text('Alert settings')
+          end
+
           def enable_incident_for_alert
-            check_element(:create_incident_checkbox)
+            check_element(:create_incident_checkbox, true)
           end
 
           def select_issue_template(template)
@@ -37,7 +41,7 @@ module QA
             end
           end
 
-          def save_incident_settings
+          def save_alert_settings
             click_element :save_changes_button
           end
 

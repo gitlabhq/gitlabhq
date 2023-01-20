@@ -196,14 +196,13 @@ export default {
         <div class="ci-widget-content">
           <div class="media-body">
             <div
-              class="gl-font-weight-bold"
               data-testid="pipeline-info-container"
               data-qa-selector="merge_request_pipeline_info_content"
             >
               {{ pipeline.details.event_type_name || pipeline.details.name }}
               <gl-link
                 :href="pipeline.path"
-                class="pipeline-id gl-font-weight-normal pipeline-number"
+                class="pipeline-id"
                 data-testid="pipeline-id"
                 data-qa-selector="pipeline_link"
                 >#{{ pipeline.id }}</gl-link

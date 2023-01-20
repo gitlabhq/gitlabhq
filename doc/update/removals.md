@@ -34,18 +34,6 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
-## Removed in 16.0
-
-### Changing merge request approvals with the `/approvals` API endpoint
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-To change the approvals required for a merge request, you should no longer use the `/approvals` API endpoint, which was deprecated in GitLab 12.3.
-
-Instead, use the [`/approval_rules` endpoint](https://docs.gitlab.com/ee/api/merge_request_approvals.html#merge-request-level-mr-approvals) to [create](https://docs.gitlab.com/ee/api/merge_request_approvals.html#create-merge-request-level-rule) or [update](https://docs.gitlab.com/ee/api/merge_request_approvals.html#update-merge-request-level-rule) the approval rules for a merge request.
-
 ## Removed in 15.8
 
 ### CiliumNetworkPolicy within the auto deploy Helm chart is removed

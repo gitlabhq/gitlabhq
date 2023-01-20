@@ -198,6 +198,10 @@ module QA
         "#{api_get_path}/pipelines"
       end
 
+      def api_latest_pipeline_path
+        "#{api_pipelines_path}/latest"
+      end
+
       def api_pipeline_schedules_path
         "#{api_get_path}/pipeline_schedules"
       end
@@ -398,6 +402,10 @@ module QA
         return parse_body(api_get_from(api_pipelines_path)) unless auto_paginate
 
         auto_paginated_response(request_url(api_pipelines_path, per_page: '100'), attempts: attempts)
+      end
+
+      def latest_pipeline
+        parse_body(api_get_from(api_latest_pipeline_path))
       end
 
       def jobs

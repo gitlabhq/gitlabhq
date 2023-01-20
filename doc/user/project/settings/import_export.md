@@ -127,7 +127,7 @@ Items that are **not** exported include:
 - Pipeline triggers
 - Webhooks
 - Any encrypted tokens
-- [Number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
+- [Number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221087)
 - Repository size limits
 - Deploy keys allowed to push to protected branches
 - Secure Files

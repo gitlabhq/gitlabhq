@@ -3,8 +3,6 @@
 module Packages
   module Debian
     class CreatePackageFileService
-      include ::Packages::FIPS
-
       def initialize(package:, current_user:, params: {})
         @package = package
         @current_user = current_user
@@ -12,7 +10,6 @@ module Packages
       end
 
       def execute
-        raise DisabledError, 'Debian registry is not FIPS compliant' if Gitlab::FIPS.enabled?
         raise ArgumentError, "Invalid package" unless package.present?
         raise ArgumentError, "Invalid user" unless current_user.present?
 

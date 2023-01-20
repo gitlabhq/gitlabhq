@@ -36,9 +36,14 @@ module QA
 
       let(:alert_title) { Faker::Lorem.word }
 
+      let(:credentials) do
+        Flow::AlertSettings.integration_credentials
+      end
+
       before do
         Flow::Login.sign_in
         project.visit!
+        Flow::AlertSettings.go_to_monitor_settings
       end
 
       context(
@@ -49,8 +54,8 @@ module QA
           { title: alert_title, description: alert_title }
         end
 
-        let(:credentials) do
-          Flow::AlertSettings.setup_http_endpoint(send: false)
+        before do
+          Flow::AlertSettings.setup_http_endpoint_integration
         end
 
         it_behaves_like 'sends test alert using authorization key', 'http'
@@ -87,8 +92,8 @@ module QA
           }
         end
 
-        let(:credentials) do
-          Flow::AlertSettings.setup_prometheus(send: false)
+        before do
+          Flow::AlertSettings.setup_prometheus_integration
         end
 
         it_behaves_like 'sends test alert using authorization key'

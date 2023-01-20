@@ -22,10 +22,6 @@ For instructions on how to upload and install Debian packages from the GitLab
 package registry, see the [Debian registry documentation](../../user/packages/debian_repository/index.md).
 
 NOTE:
-The Debian registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_compliance.md) is enabled.
-These endpoints will all return `404 Not Found`.
-
-NOTE:
 These endpoints do not adhere to the standard API authentication methods.
 See the [Debian registry documentation](../../user/packages/debian_repository/index.md)
 for details on which headers and token types are supported.

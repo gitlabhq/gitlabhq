@@ -4,7 +4,6 @@ module Packages
   module Debian
     class ProcessChangesWorker
       include ApplicationWorker
-      include ::Packages::FIPS
 
       data_consistency :always
       include Gitlab::Utils::StrongMemoize
@@ -16,8 +15,6 @@ module Packages
       feature_category :package_registry
 
       def perform(package_file_id, user_id)
-        raise DisabledError, 'Debian registry is not FIPS compliant' if Gitlab::FIPS.enabled?
-
         @package_file_id = package_file_id
         @user_id = user_id
 
@@ -25,8 +22,6 @@ module Packages
 
         ::Packages::Debian::ProcessChangesService.new(package_file, user).execute
       rescue StandardError => e
-        raise if e.instance_of?(DisabledError)
-
         Gitlab::ErrorTracking.log_exception(e, package_file_id: @package_file_id, user_id: @user_id)
         package_file.destroy!
       end

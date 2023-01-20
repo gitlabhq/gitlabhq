@@ -13,12 +13,6 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService do
 
     subject { service.execute }
 
-    context 'with FIPS mode enabled', :fips_mode do
-      it 'raises an error' do
-        expect { subject }.to raise_error(::Packages::FIPS::DisabledError)
-      end
-    end
-
     context 'with valid package file' do
       it 'extract metadata', :aggregate_failures do
         expected_fields = { 'Architecture' => 'source amd64', 'Binary' => 'libsample0 sample-dev sample-udeb' }

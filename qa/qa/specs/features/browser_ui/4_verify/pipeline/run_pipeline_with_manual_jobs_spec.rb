@@ -29,6 +29,9 @@ module QA
               {
                 file_path: '.gitlab-ci.yml',
                 content: <<~YAML
+                  default:
+                    tags: ["#{executor}"]
+
                   stages:
                     - Stage1
                     - Stage2
@@ -36,26 +39,22 @@ module QA
 
                   Prep:
                     stage: Stage1
-                    tags: ["#{executor}"]
                     script: exit 0
                     when: manual
 
                   Build:
                     stage: Stage2
-                    tags: ["#{executor}"]
                     needs: ['Prep']
                     script: exit 0
                     parallel: 6
 
                   Test:
                     stage: Stage3
-                    tags: ["#{executor}"]
                     needs: ['Build']
                     script: exit 0
 
                   Deploy:
                     stage: Stage3
-                    tags: ["#{executor}"]
                     needs: ['Test']
                     script: exit 0
                     parallel: 6
@@ -67,6 +66,8 @@ module QA
       end
 
       before do
+        make_sure_to_have_a_skipped_pipeline
+
         Flow::Login.sign_in
         project.visit!
         Flow::Pipeline.visit_latest_pipeline(status: 'skipped')
@@ -84,7 +85,7 @@ module QA
           show.click_job_action('Prep') # Trigger pipeline manually
 
           show.wait_until(max_duration: 300, sleep_interval: 2, reload: false) do
-            project.pipelines.last[:status] == 'success'
+            project.latest_pipeline[:status] == 'success'
           end
 
           aggregate_failures do
@@ -98,6 +99,50 @@ module QA
             expect(show).not_to have_skipped_job_in_group
           end
         end
+      end
+
+      private
+
+      # Wait for first pipeline to finish and have "skipped" status
+      # If it takes too long, create new pipeline and retry (2 times)
+      def make_sure_to_have_a_skipped_pipeline
+        attempts ||= 1
+        Runtime::Logger.info('Waiting for pipeline to have status "skipped"...')
+        Support::Waiter.wait_until(max_duration: 120, sleep_interval: 3) do
+          project.latest_pipeline[:status] == 'skipped'
+        end
+      rescue Support::Repeater::WaitExceededError
+        raise 'Failed to create skipped pipeline after 3 attempts.' unless (attempts += 1) < 4
+
+        Runtime::Logger.debug(
+          "Previous pipeline took too long to finish. Potential jobs with problems:\n#{problematic_jobs}"
+        )
+        Runtime::Logger.info("Triggering a new pipeline...")
+        trigger_new_pipeline
+        retry
+      end
+
+      def trigger_new_pipeline
+        original_count = project.pipelines.length
+        Resource::Pipeline.fabricate_via_api! do |pipeline|
+          pipeline.project = project
+        end
+
+        Support::Waiter.wait_until(sleep_interval: 1) { project.pipelines.length > original_count }
+      end
+
+      # We know that all the jobs in pipeline are purposely skipped
+      # The pipeline should have status "skipped" almost right away after being created
+      # If pipeline is held up, likely because there are some jobs that
+      # doesn't have either "skipped" or "manual" status
+      def problematic_jobs
+        pipeline = Resource::Pipeline.fabricate_via_api! do |pipeline|
+          pipeline.project = project
+          pipeline.id = project.latest_pipeline[:id]
+        end
+
+        acceptable_statuses = %w[skipped manual]
+        pipeline.pipeline_jobs.select { |job| !(acceptable_statuses.include? job[:status]) }
       end
     end
   end

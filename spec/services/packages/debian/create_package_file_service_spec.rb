@@ -137,13 +137,5 @@ RSpec.describe Packages::Debian::CreatePackageFileService do
         expect { package_file }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
-
-    context 'when FIPS mode enabled', :fips_mode do
-      let(:file) { nil }
-
-      it 'raises an error' do
-        expect { package_file }.to raise_error(::Packages::FIPS::DisabledError)
-      end
-    end
   end
 end

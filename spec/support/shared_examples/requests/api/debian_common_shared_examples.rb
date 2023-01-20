@@ -15,9 +15,3 @@ RSpec.shared_examples 'rejects Debian access with unknown container id' do |anon
     end
   end
 end
-
-RSpec.shared_examples 'Debian API FIPS mode' do
-  context 'when FIPS mode is enabled', :fips_mode do
-    it_behaves_like 'returning response status', :not_found
-  end
-end

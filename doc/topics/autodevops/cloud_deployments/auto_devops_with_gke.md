@@ -172,7 +172,7 @@ The jobs are separated into stages:
   are allowed to fail in the test stage:
 
   - The `test` job runs unit and integration tests by detecting the language and
-    framework ([Auto Test](../stages.md#auto-test))
+    framework ([Auto Test](../stages.md#auto-test-deprecated))
   - The `code_quality` job checks the code quality and is allowed to fail
     ([Auto Code Quality](../stages.md#auto-code-quality))
   - The `container_scanning` job checks the Docker container if it has any

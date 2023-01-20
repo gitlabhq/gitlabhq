@@ -4,7 +4,6 @@ module Packages
   module Debian
     class GenerateDistributionService
       include Gitlab::Utils::StrongMemoize
-      include ::Packages::FIPS
       include ExclusiveLeaseGuard
 
       ONE_HOUR = 1.hour.freeze
@@ -66,13 +65,10 @@ module Packages
       def initialize(distribution)
         @distribution = distribution
         @oldest_kept_generated_at = nil
-        @md5sum = []
         @sha256 = []
       end
 
       def execute
-        raise DisabledError, 'Debian registry is not FIPS compliant' if Gitlab::FIPS.enabled?
-
         try_obtain_lease do
           @distribution.transaction do
             # We consider `apt-get update` can take at most one hour
@@ -143,10 +139,10 @@ module Packages
             rfc822_field('Directory', package_dirname(package_file))
           ]
         else
+          # NB: MD5sum was removed for FIPS compliance
           [
             rfc822_field('Filename', "#{package_dirname(package_file)}/#{package_file.file_name}"),
             rfc822_field('Size', package_file.size),
-            rfc822_field('MD5sum', package_file.file_md5),
             rfc822_field('SHA256', package_file.file_sha256)
           ]
         end
@@ -190,7 +186,6 @@ module Packages
           )
         end
 
-        @md5sum.append(" #{file_md5} #{component_file.size.to_s.rjust(8)} #{component_file.relative_path}")
         @sha256.append(" #{file_sha256} #{component_file.size.to_s.rjust(8)} #{component_file.relative_path}")
       end
 
@@ -234,7 +229,8 @@ module Packages
       end
 
       def release_sums
-        ["MD5Sum:", @md5sum, "SHA256:", @sha256].flatten.compact.join("\n") + "\n"
+        # NB: MD5Sum was removed for FIPS compliance
+        ["SHA256:", @sha256].flatten.compact.join("\n") + "\n"
       end
 
       def rfc822_field(name, value, condition = true)

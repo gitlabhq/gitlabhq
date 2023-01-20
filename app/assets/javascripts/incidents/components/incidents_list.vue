@@ -402,6 +402,7 @@ export default {
             >
               <gl-link
                 data-testid="incident-link"
+                data-qa-selector="incident_link"
                 :href="showIncidentLink(item)"
                 class="gl-min-w-0"
               >

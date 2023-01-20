@@ -116,6 +116,35 @@ RSpec.describe Notes::CreateService do
         end
       end
 
+      context 'in a commit', :snowplow do
+        let_it_be(:commit) { create(:commit, project: project) }
+        let(:opts) { { note: 'Awesome comment', noteable_type: 'Commit', commit_id: commit.id } }
+
+        let(:counter) { Gitlab::UsageDataCounters::NoteCounter }
+
+        let(:execute_create_service) { described_class.new(project, user, opts).execute }
+
+        before do
+          stub_feature_flags(notes_create_service_tracking: false)
+        end
+
+        it 'tracks commit comment usage data', :clean_gitlab_redis_shared_state do
+          expect(counter).to receive(:count).with(:create, 'Commit').and_call_original
+
+          expect do
+            execute_create_service
+          end.to change { counter.read(:create, 'Commit') }.by(1)
+        end
+
+        it_behaves_like 'Snowplow event tracking with Redis context' do
+          let(:category) { described_class.name }
+          let(:action) { 'create_commit_comment' }
+          let(:label) { 'counts.commit_comment' }
+          let(:namespace) { project.namespace }
+          let(:feature_flag_name) { :route_hll_to_snowplow_phase4 }
+        end
+      end
+
       describe 'event tracking', :snowplow do
         let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_ADDED }
         let(:execute_create_service) { described_class.new(project, user, opts).execute }

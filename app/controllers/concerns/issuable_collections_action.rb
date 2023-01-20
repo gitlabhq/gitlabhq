@@ -8,7 +8,7 @@ module IssuableCollectionsAction
 
   included do
     before_action :check_search_rate_limit!, only: [:issues, :merge_requests], if: -> {
-      params[:search].present? && Feature.enabled?(:rate_limit_issuable_searches)
+      params[:search].present?
     }
   end
 

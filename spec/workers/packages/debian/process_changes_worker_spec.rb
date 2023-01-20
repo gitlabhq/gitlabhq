@@ -16,12 +16,6 @@ RSpec.describe Packages::Debian::ProcessChangesWorker, type: :worker do
 
     subject { worker.perform(package_file_id, user_id) }
 
-    context 'with FIPS mode enabled', :fips_mode do
-      it 'raises an error' do
-        expect { subject }.to raise_error(::Packages::FIPS::DisabledError)
-      end
-    end
-
     context 'with mocked service' do
       it 'calls ProcessChangesService' do
         expect(Gitlab::ErrorTracking).not_to receive(:log_exception)

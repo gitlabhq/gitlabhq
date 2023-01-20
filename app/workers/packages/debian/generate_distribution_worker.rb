@@ -4,7 +4,6 @@ module Packages
   module Debian
     class GenerateDistributionWorker
       include ApplicationWorker
-      include ::Packages::FIPS
 
       data_consistency :always
       include Gitlab::Utils::StrongMemoize
@@ -21,8 +20,6 @@ module Packages
       loggable_arguments 0
 
       def perform(container_type, distribution_id)
-        raise DisabledError, 'Debian registry is not FIPS compliant' if Gitlab::FIPS.enabled?
-
         @container_type = container_type
         @distribution_id = distribution_id
 

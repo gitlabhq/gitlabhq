@@ -3,8 +3,6 @@
 RSpec.shared_examples 'Debian packages GET request' do |status, body = nil|
   and_body = body.nil? ? '' : ' and expected body'
 
-  it_behaves_like 'Debian API FIPS mode'
-
   it "returns #{status}#{and_body}" do
     subject
 
@@ -18,8 +16,6 @@ end
 
 RSpec.shared_examples 'Debian packages upload request' do |status, body = nil|
   and_body = body.nil? ? '' : ' and expected body'
-
-  it_behaves_like 'Debian API FIPS mode'
 
   if status == :created
     it 'creates package files', :aggregate_failures do

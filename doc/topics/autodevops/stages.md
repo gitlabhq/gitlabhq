@@ -89,9 +89,15 @@ buildjob:
 
 Read more about defining volumes in the [`pack build` documentation](https://buildpacks.io/docs/tools/pack/cli/pack_build/).
 
-### Auto Build using Herokuish
+<!--- start_remove The following content will be removed on remove_date: '2024-08-22' -->
+
+### Auto Build using Herokuish (deprecated)
 
 > [Replaced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63351) with Cloud Native Buildpacks in GitLab 14.0.
+
+WARNING:
+Support for Herokuish was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108234) in GitLab 15.8,
+and is planned for removal in 17.0. Use [Cloud Native Buildpacks](#moving-from-herokuish-to-cloud-native-buildpacks) instead.
 
 Prior to GitLab 14.0, [Herokuish](https://github.com/gliderlabs/herokuish) was
 the default build method for projects without a `Dockerfile`. Herokuish can
@@ -102,6 +108,8 @@ NOTE:
 If Auto Build fails despite the project meeting the buildpack requirements, set
 a project CI/CD variable `TRACE=true` to enable verbose logging, which may help you
 troubleshoot.
+
+<!--- end_remove -->
 
 ### Moving from Herokuish to Cloud Native Buildpacks
 
@@ -118,7 +126,15 @@ Herokuish, with the following caveats:
   Instead, custom commands should be prefixed with `/cnb/lifecycle/launcher`
   to receive the correct execution environment.
 
-## Auto Test
+<!--- start_remove The following content will be removed on remove_date: '2024-08-22' -->
+
+## Auto Test (deprecated)
+
+WARNING:
+Support for Herokuish was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108234)
+in GitLab 15.8, and is planned for removal in 17.0. Because Auto Test uses
+Herokuish, Auto Test is also deprecated.
 
 Auto Test runs the appropriate tests for your application using
 [Herokuish](https://github.com/gliderlabs/herokuish) and
@@ -140,6 +156,7 @@ Cloud Native Buildpacks, and only buildpacks that implement the
 [Testpack API](https://devcenter.heroku.com/articles/testpack-api) are supported.
 
 <!-- vale gitlab.Spelling = YES -->
+<!--- end_remove -->
 
 ### Currently supported languages
 
@@ -502,7 +519,7 @@ For example, in a Rails application in an image built with
 Unless your repository contains a `Dockerfile`, your image is built with
 Cloud Native Buildpacks, and you must prefix commands run in these images with
 `/cnb/lifecycle/launcher`, (or `/bin/herokuish procfile exec` when
-using [Herokuish](#auto-build-using-herokuish))
+using [Herokuish](#auto-build-using-herokuish-deprecated))
 to replicate the environment where your
 application runs.
 

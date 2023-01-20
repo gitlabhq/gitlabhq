@@ -15,9 +15,6 @@ The Debian package registry for GitLab is under development and isn't ready for 
 limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6057) details the remaining
 work and timelines to make it production ready.
 
-NOTE:
-The Debian registry is not FIPS compliant and is disabled when [FIPS mode](../../../development/fips_compliance.md) is enabled.
-
 Publish Debian packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
 

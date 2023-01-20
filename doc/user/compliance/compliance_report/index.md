@@ -95,7 +95,7 @@ Our criteria for the separation of duties is as follows:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213364) in GitLab 13.3.
 > - Chain of Custody reports sent using email [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342594) in GitLab 15.3 with a flag named `async_chain_of_custody_report`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370100) in GitLab 15.5. Feature flag `async_chain_of_custody_report` removed.
-> - Chain of Custody report includes all commits (instead of just merge commits) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267601) in GitLab 15.8 with a flag named `all_commits_compliance_report`. Disabled by default.
+> - Chain of Custody report includes all commits (instead of just merge commits) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267601) in GitLab 15.9 with a flag named `all_commits_compliance_report`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default the Chain of Custody report only contains information on merge commits. To make the report contain information on all commits to projects within a group, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `all_commits_compliance_report`. On GitLab.com, this feature is not available.

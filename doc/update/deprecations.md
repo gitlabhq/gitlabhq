@@ -3046,6 +3046,22 @@ This will result in the rename of the sub-chart: `gitlab/task-runner` to `gitlab
 
 ## Announced in 14.0
 
+<div class="deprecation removal-160 breaking-change">
+
+### Changing merge request approvals with the `/approvals` API endpoint
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+To change the approvals required for a merge request, you should no longer use the `/approvals` API endpoint, which was deprecated in GitLab 14.0.
+
+Instead, use the [`/approval_rules` endpoint](https://docs.gitlab.com/ee/api/merge_request_approvals.html#merge-request-level-mr-approvals) to [create](https://docs.gitlab.com/ee/api/merge_request_approvals.html#create-merge-request-level-rule) or [update](https://docs.gitlab.com/ee/api/merge_request_approvals.html#update-merge-request-level-rule) the approval rules for a merge request.
+
+</div>
+
 <div class="deprecation removal-156">
 
 ### NFS for Git repository storage

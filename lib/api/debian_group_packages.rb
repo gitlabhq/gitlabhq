@@ -6,10 +6,6 @@ module API
       project_id: %r{[0-9]+}.freeze
     ).freeze
 
-    before do
-      not_found! if Gitlab::FIPS.enabled?
-    end
-
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         def project_or_group

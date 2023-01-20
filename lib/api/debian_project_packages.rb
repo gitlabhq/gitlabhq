@@ -14,10 +14,6 @@ module API
       file_name: API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
-    before do
-      not_found! if Gitlab::FIPS.enabled?
-    end
-
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         def project_or_group

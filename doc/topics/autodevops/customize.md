@@ -52,7 +52,13 @@ Specify either:
 - The CI/CD variable `BUILDPACK_URL` with any of [`pack`'s URI specification formats](https://buildpacks.io/docs/app-developer-guide/specify-buildpacks/).
 - A [`project.toml` project descriptor](https://buildpacks.io/docs/app-developer-guide/using-project-descriptor/) with the buildpacks you would like to include.
 
-### Customize buildpacks with Herokuish
+<!--- start_remove The following content will be removed on remove_date: '2024-08-22' -->
+
+### Customize buildpacks with Herokuish (deprecated)
+
+WARNING:
+Support for Herokuish was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108234) in GitLab 15.8,
+and is planned for removal in 17.0. Use [Cloud Native Buildpacks](stages.md#moving-from-herokuish-to-cloud-native-buildpacks) instead.
 
 Specify either:
 
@@ -68,6 +74,8 @@ reference:
 - The tag `v142`: `https://github.com/heroku/heroku-buildpack-ruby.git#v142`.
 - The branch `mybranch`: `https://github.com/heroku/heroku-buildpack-ruby.git#mybranch`.
 - The commit SHA `f97d8a8ab49`: `https://github.com/heroku/heroku-buildpack-ruby.git#f97d8a8ab49`.
+
+<!--- end_remove -->
 
 ### Multiple buildpacks
 

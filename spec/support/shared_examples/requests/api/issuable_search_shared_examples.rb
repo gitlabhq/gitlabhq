@@ -49,20 +49,4 @@ RSpec.shared_examples 'issuable API rate-limited search' do
       get api(url), params: { scope: 'all', search: issuable.title }
     end
   end
-
-  context 'when rate_limit_issuable_searches is disabled', :freeze_time, :clean_gitlab_redis_rate_limiting do
-    before do
-      stub_feature_flags(rate_limit_issuable_searches: false)
-
-      allow(Gitlab::ApplicationRateLimiter).to receive(:threshold)
-        .with(:search_rate_limit_unauthenticated).and_return(1)
-    end
-
-    it 'does not enforce the rate limit' do
-      get api(url), params: { scope: 'all', search: issuable.title }
-      get api(url), params: { scope: 'all', search: issuable.title }
-
-      expect(response).to have_gitlab_http_status(:ok)
-    end
-  end
 end

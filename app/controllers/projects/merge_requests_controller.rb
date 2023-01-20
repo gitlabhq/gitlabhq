@@ -28,9 +28,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :codequality_mr_diff_reports
   ]
   before_action :set_issuables_index, only: [:index]
-  before_action :check_search_rate_limit!, only: [:index], if: -> {
-    params[:search].present? && Feature.enabled?(:rate_limit_issuable_searches)
-  }
+  before_action :check_search_rate_limit!, only: [:index], if: -> { params[:search].present? }
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 

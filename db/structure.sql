@@ -18337,6 +18337,24 @@ CREATE SEQUENCE namespaces_id_seq
 
 ALTER SEQUENCE namespaces_id_seq OWNED BY namespaces.id;
 
+CREATE TABLE namespaces_storage_limit_exclusions (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    reason text NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_81640b2ee2 CHECK ((char_length(reason) <= 255))
+);
+
+CREATE SEQUENCE namespaces_storage_limit_exclusions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE namespaces_storage_limit_exclusions_id_seq OWNED BY namespaces_storage_limit_exclusions.id;
+
 CREATE TABLE namespaces_sync_events (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL
@@ -24382,6 +24400,8 @@ ALTER TABLE ONLY namespace_statistics ALTER COLUMN id SET DEFAULT nextval('names
 
 ALTER TABLE ONLY namespaces ALTER COLUMN id SET DEFAULT nextval('namespaces_id_seq'::regclass);
 
+ALTER TABLE ONLY namespaces_storage_limit_exclusions ALTER COLUMN id SET DEFAULT nextval('namespaces_storage_limit_exclusions_id_seq'::regclass);
+
 ALTER TABLE ONLY namespaces_sync_events ALTER COLUMN id SET DEFAULT nextval('namespaces_sync_events_id_seq'::regclass);
 
 ALTER TABLE ONLY note_diff_files ALTER COLUMN id SET DEFAULT nextval('note_diff_files_id_seq'::regclass);
@@ -26507,6 +26527,9 @@ ALTER TABLE ONLY namespace_statistics
 
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT namespaces_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY namespaces_storage_limit_exclusions
+    ADD CONSTRAINT namespaces_storage_limit_exclusions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY namespaces_sync_events
     ADD CONSTRAINT namespaces_sync_events_pkey PRIMARY KEY (id);
@@ -30292,6 +30315,8 @@ CREATE INDEX index_namespaces_on_type_and_id ON namespaces USING btree (type, id
 CREATE INDEX index_namespaces_on_type_and_visibility_and_parent_id ON namespaces USING btree (id) WHERE (((type)::text = 'Group'::text) AND (parent_id IS NULL) AND (visibility_level <> 20));
 
 CREATE INDEX index_namespaces_public_groups_name_id ON namespaces USING btree (name, id) WHERE (((type)::text = 'Group'::text) AND (visibility_level = 20));
+
+CREATE INDEX index_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
 
 CREATE INDEX index_namespaces_sync_events_on_namespace_id ON namespaces_sync_events USING btree (namespace_id);
 
@@ -34263,6 +34288,9 @@ ALTER TABLE ONLY diff_note_positions
 
 ALTER TABLE ONLY analytics_cycle_analytics_aggregations
     ADD CONSTRAINT fk_rails_13c8374c7a FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY namespaces_storage_limit_exclusions
+    ADD CONSTRAINT fk_rails_14e8f7b0e0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY users_security_dashboard_projects
     ADD CONSTRAINT fk_rails_150cd5682c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -116,12 +116,6 @@ RSpec.describe Packages::Debian::ProcessPackageFileWorker, type: :worker, featur
       let(:package_file) { incoming.package_files.with_file_name('libsample0_1.2.3~alpha2_amd64.deb').first }
       let(:component_name) { 'main' }
 
-      context 'with FIPS mode enabled', :fips_mode do
-        it 'raises an error' do
-          expect { subject }.to raise_error(::Packages::FIPS::DisabledError)
-        end
-      end
-
       context 'with non existing package file' do
         let(:package_file_id) { non_existing_record_id }
 

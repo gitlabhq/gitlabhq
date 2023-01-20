@@ -24,6 +24,7 @@ module QA
       before do
         Flow::Login.sign_in
         project.visit!
+        Flow::AlertSettings.go_to_monitor_settings
       end
 
       context(
@@ -35,7 +36,8 @@ module QA
         end
 
         before do
-          Flow::AlertSettings.setup_http_endpoint(payload: payload)
+          Flow::AlertSettings.setup_http_endpoint_integration
+          Flow::AlertSettings.send_test_alert(payload: payload)
         end
 
         it_behaves_like 'sends test alert'
@@ -73,7 +75,8 @@ module QA
         end
 
         before do
-          Flow::AlertSettings.setup_prometheus(payload: payload)
+          Flow::AlertSettings.setup_prometheus_integration
+          Flow::AlertSettings.send_test_alert(payload: payload)
         end
 
         it_behaves_like 'sends test alert'
