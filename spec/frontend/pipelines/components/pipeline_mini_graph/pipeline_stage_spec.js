@@ -4,7 +4,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PipelineStage from '~/pipelines/components/pipeline_mini_graph/pipeline_stage.vue';
 import eventHub from '~/pipelines/event_hub';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -149,7 +149,7 @@ describe('Pipelines stage component', () => {
 
   describe('when user opens dropdown and stage request fails', () => {
     it('should close the dropdown', async () => {
-      mock.onGet(dropdownPath).reply(500);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       createComponent();
 
       await openStageDropdown();

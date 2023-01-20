@@ -98,10 +98,7 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/ci/templates/Security/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
 /lib/gitlab/ci/templates/Security/Secure-Binaries.*.yml @gitlab-org/secure/static-analysis @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis
 # Note: The `Fortify-FoD-sast.gitlab-ci.yml` template is provided and maintained by Fortify, an official Technology Partner with GitLab.
-/lib/gitlab/ci/templates/Jobs/API-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
 /lib/gitlab/ci/templates/Jobs/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/Coverage-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Jobs/DAST.*.yml @gitlab-org/secure/dynamic-analysis
 /lib/gitlab/ci/templates/Jobs/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
 /lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
 /lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
@@ -119,16 +116,16 @@ Dangerfile @gl-quality/eng-prod
 ^[Threat Insights]
 /app/finders/security/ @gitlab-org/govern/threat-insights-backend-team
 /app/models/vulnerability.rb @gitlab-org/govern/threat-insights-backend-team
+/app/presenters/projects/security/ @gitlab-org/govern/threat-insights-backend-team
+/spec/presenters/projects/security/ @gitlab-org/govern/threat-insights-backend-team
 /ee/app/finders/security/ @gitlab-org/govern/threat-insights-backend-team
 /ee/app/models/security/ @gitlab-org/govern/threat-insights-backend-team
 /ee/app/models/vulnerabilities/ @gitlab-org/govern/threat-insights-backend-team
 /ee/app/policies/vulnerabilities/ @gitlab-org/govern/threat-insights-backend-team
 /ee/app/policies/vulnerability*.rb @gitlab-org/govern/threat-insights-backend-team
-/ee/app/presenters/projects/security/ @gitlab-org/govern/threat-insights-backend-team
 /ee/lib/api/vulnerabilit*.rb @gitlab-org/govern/threat-insights-backend-team
 /ee/spec/policies/vulnerabilities/ @gitlab-org/govern/threat-insights-backend-team
 /ee/spec/policies/vulnerability*.rb @gitlab-org/govern/threat-insights-backend-team
-/ee/spec/presenters/projects/security/ @gitlab-org/govern/threat-insights-backend-team
 /ee/app/assets/javascripts/license_compliance/components/detected_licenses_table.vue @gitlab-org/govern/threat-insights-frontend-team
 /ee/spec/frontend/license_compliance/components/detected_licenses_table_spec.js @gitlab-org/govern/threat-insights-frontend-team
 
@@ -226,13 +223,11 @@ Dangerfile @gl-quality/eng-prod
 /ee/app/models/software_license.rb @gitlab-org/govern/security-policies-backend
 /ee/app/serializers/license_compliance/** @gitlab-org/govern/security-policies-backend
 /ee/app/serializers/license_entity.rb @gitlab-org/govern/security-policies-backend
-/ee/app/serializers/license_serializer.rb @gitlab-org/govern/security-policies-backend
 /ee/app/serializers/licenses_list_entity.rb @gitlab-org/govern/security-policies-backend
 /ee/app/serializers/licenses_list_serializer.rb @gitlab-org/govern/security-policies-backend
 /ee/app/serializers/security/license_policy_entity.rb @gitlab-org/govern/security-policies-backend
 /ee/app/services/ci/compare_license_scanning_reports_collapsed_service.rb @gitlab-org/govern/security-policies-backend
 /ee/app/services/ci/compare_license_scanning_reports_service.rb @gitlab-org/govern/security-policies-backend
-/ee/app/services/projects/licenses/** @gitlab-org/govern/security-policies-backend
 /ee/app/services/software_license_policies/** @gitlab-org/govern/security-policies-backend
 /ee/app/services/software_license_policies/update_service.rb @gitlab-org/govern/security-policies-backend
 /ee/app/workers/refresh_license_compliance_checks_worker.rb @gitlab-org/govern/security-policies-backend
@@ -252,7 +247,6 @@ Dangerfile @gl-quality/eng-prod
 /ee/spec/serializers/license_compliance/** @gitlab-org/govern/security-policies-backend
 /ee/spec/services/ci/compare_license_scanning_reports_collapsed_service_spec.rb @gitlab-org/govern/security-policies-backend
 /ee/spec/services/ci/compare_license_scanning_reports_service_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/services/projects/licenses/** @gitlab-org/govern/security-policies-backend
 /ee/spec/services/software_license_policies/** @gitlab-org/govern/security-policies-backend
 /spec/finders/security/license_compliance_jobs_finder_spec.rb @gitlab-org/govern/security-policies-backend
 
@@ -287,7 +281,6 @@ Dangerfile @gl-quality/eng-prod
 /app/assets/javascripts/merge_request.js @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/javascripts/merge_request_tabs.js @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/stylesheets/framework/diffs.scss @viktomas @jboyson @iamphill @thomasrandolph
-/app/assets/stylesheets/components/batch_comments/ @viktomas @jboyson @iamphill @thomasrandolph
 /ee/app/assets/javascripts/diffs/ @viktomas @jboyson @iamphill @thomasrandolph
 /ee/app/assets/javascripts/vue_merge_request_widget @viktomas @jboyson @iamphill @thomasrandolph
 /spec/frontend/diffs/ @viktomas @jboyson @iamphill @thomasrandolph
@@ -317,14 +310,6 @@ Dangerfile @gl-quality/eng-prod
 ^[Growth Experiments]
 /app/experiments/ @gitlab-org/growth/experiment-devs
 /spec/experiments/ @gitlab-org/growth/experiment-devs
-/app/models/experiment.rb @gitlab-org/growth/experiment-devs
-/spec/models/experiment.rb @gitlab-org/growth/experiment-devs
-/app/models/experiment_subject.rb @gitlab-org/growth/experiment-devs
-/spec/models/experiment_subject.rb @gitlab-org/growth/experiment-devs
-/app/models/experiment_user.rb @gitlab-org/growth/experiment-devs
-/spec/models/experiment_user.rb @gitlab-org/growth/experiment-devs
-/app/workers/experiments/ @gitlab-org/growth/experiment-devs
-/spec/workers/experiments/ @gitlab-org/growth/experiment-devs
 /config/initializers/gitlab_experiment.rb @gitlab-org/growth/experiment-devs
 /config/feature_flags/experiment/ @gitlab-org/growth/experiment-devs
 /ee/config/feature_flags/experiment/ @gitlab-org/growth/experiment-devs
@@ -332,11 +317,6 @@ Dangerfile @gl-quality/eng-prod
 /ee/spec/requests/api/experiments_spec.rb @gitlab-org/growth/experiment-devs
 /ee/lib/ee/api/entities/experiment.rb @gitlab-org/growth/experiment-devs
 /ee/spec/lib/ee/api/entities/experiment_spec.rb @gitlab-org/growth/experiment-devs
-/lib/gitlab/experimentation/ @gitlab-org/growth/experiment-devs
-/spec/lib/gitlab/experimentation/ @gitlab-org/growth/experiment-devs
-/lib/gitlab/experimentation.rb @gitlab-org/growth/experiment-devs
-/spec/lib/gitlab/experimentation_spec.rb @gitlab-org/growth/experiment-devs
-/lib/gitlab/experimentation_logger.rb @gitlab-org/growth/experiment-devs
 
 ^[Growth]
 /ee/app/workers/onboarding/ @gitlab-org/growth/engineers
@@ -1264,9 +1244,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /ee/app/views/oauth/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/views/shared/_password_requirements_list.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/views/shared/credentials_inventory/_personal_access_tokens.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/shared/credentials_inventory/_project_access_tokens.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/views/shared/credentials_inventory/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/shared/credentials_inventory/project_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/workers/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/workers/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/config/routes/oauth.rb @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1408,6 +1386,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /spec/views/projects/jobs/ @gitlab-org/maintainers/cicd-verify
 /spec/views/projects/pipeline_schedules/ @gitlab-org/maintainers/cicd-verify
 /spec/views/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
+/spec/views/projects/settings/ci_cd/ @gitlab-org/maintainers/cicd-verify
 /spec/workers/build_hooks_worker_spec.rb @gitlab-org/maintainers/cicd-verify
 /spec/workers/build_queue_worker_spec.rb @gitlab-org/maintainers/cicd-verify
 /spec/workers/build_success_worker_spec.rb @gitlab-org/maintainers/cicd-verify
@@ -1431,11 +1410,8 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /ee/spec/services/system_notes/merge_train_service_spec.rb @gitlab-org/maintainers/cicd-verify
 /ee/spec/controllers/projects/subscriptions_controller_spec.rb @gitlab-org/maintainers/cicd-verify
 /ee/spec/helpers/ee/projects/pipeline_helper_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/views/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
-/ee/spec/views/projects/settings/ci_cd/ @gitlab-org/maintainers/cicd-verify
 /ee/spec/workers/clear_shared_runners_minutes_worker_spec.rb @gitlab-org/maintainers/cicd-verify
 /ee/spec/lib/**/ci/ @gitlab-org/maintainers/cicd-verify
-/ee/spec/lib/ee/api/entities/merge_train_spec.rb @gitlab-org/maintainers/cicd-verify
 /**/javascripts/jobs/ @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/pipelines/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
@@ -1453,7 +1429,7 @@ lib/api/entities/project.rb @gitlab-org/manage/manage-workspace/backend-approver
 ee/lib/ee/api/entities/project.rb @gitlab-org/manage/manage-workspace/backend-approvers
 
 [Compliance]
-/ee/app/services/audit_events/build_service.rb @gitlab-org/govern/compliance
+/app/services/audit_events/build_service.rb @gitlab-org/govern/compliance
 /ee/spec/services/audit_events/custom_audit_event_service_spec.rb @gitlab-org/govern/compliance
 /app/models/audit_event.rb @gitlab-org/govern/compliance
 /app/services/audit_event_service.rb @gitlab-org/govern/compliance
@@ -1496,7 +1472,6 @@ ee/lib/ee/api/entities/project.rb @gitlab-org/manage/manage-workspace/backend-ap
 /ee/config/events/202108302307_profiles_controller_search_audit_event.yml @gitlab-org/govern/compliance
 /ee/config/events/202108302307_projects__audit_events_controller_search_audit_event.yml @gitlab-org/govern/compliance
 /ee/config/events/202111041910_admin__audit_logs_controller_search_audit_event.yml @gitlab-org/govern/compliance
-/ee/config/feature_flags/development/audit_event_streaming_git_operations.yml @gitlab-org/govern/compliance
 /ee/config/feature_flags/development/audit_log_group_level.yml @gitlab-org/govern/compliance
 /ee/config/metrics/counts_28d/20210216183930_g_compliance_audit_events_monthly.yml @gitlab-org/govern/compliance
 /ee/config/metrics/counts_28d/20210216183934_i_compliance_audit_events_monthly.yml @gitlab-org/govern/compliance
@@ -1510,11 +1485,8 @@ ee/lib/ee/api/entities/project.rb @gitlab-org/manage/manage-workspace/backend-ap
 /ee/config/metrics/counts_7d/20210216183940_a_compliance_audit_events_api_weekly.yml @gitlab-org/govern/compliance
 /ee/config/metrics/counts_all/20211130085433_g_manage_compliance_audit_event_destinations.yml @gitlab-org/govern/compliance
 /ee/lib/api/audit_events.rb @gitlab-org/govern/compliance
-/ee/lib/audit/external_status_check_changes_auditor.rb @gitlab-org/govern/compliance
-/ee/lib/audit/group_merge_request_approval_setting_changes_auditor.rb @gitlab-org/govern/compliance
-/ee/lib/audit/group_push_rules_changes_auditor.rb @gitlab-org/govern/compliance
+/ee/lib/audit/ @gitlab-org/govern/compliance
 /ee/lib/ee/api/entities/audit_event.rb @gitlab-org/govern/compliance
-/ee/lib/ee/audit/ @gitlab-org/govern/compliance
 /ee/lib/ee/gitlab/audit/ @gitlab-org/govern/compliance
 /lib/gitlab/audit/auditor.rb @gitlab-org/govern/compliance
 /lib/gitlab/audit_json_logger.rb @gitlab-org/govern/compliance

@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/emoji/awards_app/store/actions';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('@sentry/browser');
 jest.mock('~/vue_shared/plugins/global_toast');
@@ -62,7 +62,7 @@ describe('Awards app actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet('/awards').reply(500);
+        mock.onGet('/awards').reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('calls Sentry.captureException', async () => {
@@ -130,7 +130,7 @@ describe('Awards app actions', () => {
 
         describe('error', () => {
           beforeEach(() => {
-            mock.onPost(`${relativeRootUrl || ''}/awards`).reply(500);
+            mock.onPost(`${relativeRootUrl || ''}/awards`).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
           });
 
           it('calls Sentry.captureException', async () => {
@@ -175,7 +175,9 @@ describe('Awards app actions', () => {
           const name = 'thumbsup';
 
           beforeEach(() => {
-            mock.onDelete(`${relativeRootUrl || ''}/awards/1`).reply(500);
+            mock
+              .onDelete(`${relativeRootUrl || ''}/awards/1`)
+              .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
           });
 
           it('calls Sentry.captureException', async () => {

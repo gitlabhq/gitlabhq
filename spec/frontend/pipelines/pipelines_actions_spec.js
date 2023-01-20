@@ -7,7 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import PipelinesManualActions from '~/pipelines/components/pipelines_list/pipelines_manual_actions.vue';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
@@ -83,7 +83,7 @@ describe('Pipelines Actions dropdown', () => {
       });
 
       it('makes a failed request and toggles the loading state', async () => {
-        mock.onPost(mockActions.path).reply(500);
+        mock.onPost(mockActions.path).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
         findAllDropdownItems().at(0).vm.$emit('click');
 

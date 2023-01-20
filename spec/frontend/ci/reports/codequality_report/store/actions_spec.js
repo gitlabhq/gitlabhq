@@ -79,7 +79,7 @@ describe('Codequality Reports actions', () => {
 
     describe('on error', () => {
       it('commits REQUEST_REPORTS and dispatches receiveReportsError', () => {
-        mock.onGet(endpoint).reply(500);
+        mock.onGet(endpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
         return testAction(
           actions.fetchReports,

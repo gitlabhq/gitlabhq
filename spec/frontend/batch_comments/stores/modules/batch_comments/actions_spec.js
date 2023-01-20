@@ -4,7 +4,7 @@ import testAction from 'helpers/vuex_action_helper';
 import service from '~/batch_comments/services/drafts_service';
 import * as actions from '~/batch_comments/stores/modules/batch_comments/actions';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('Batch comments store actions', () => {
   let res = {};
@@ -44,7 +44,7 @@ describe('Batch comments store actions', () => {
     });
 
     it('does not commit ADD_NEW_DRAFT if errors returned', () => {
-      mock.onAny().reply(500);
+      mock.onAny().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       return testAction(
         actions.addDraftToDiscussion,
@@ -71,7 +71,7 @@ describe('Batch comments store actions', () => {
     });
 
     it('does not commit ADD_NEW_DRAFT if errors returned', () => {
-      mock.onAny().reply(500);
+      mock.onAny().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       return testAction(
         actions.createNewDraft,
@@ -114,7 +114,7 @@ describe('Batch comments store actions', () => {
         getters,
         commit,
       };
-      mock.onAny().reply(500);
+      mock.onAny().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       return actions.deleteDraft(context, { id: 1 }).then(() => {
         expect(commit).not.toHaveBeenCalledWith('DELETE_DRAFT', 1);
@@ -192,7 +192,7 @@ describe('Batch comments store actions', () => {
     });
 
     it('dispatches error commits', () => {
-      mock.onAny().reply(500);
+      mock.onAny().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       return actions.publishReview({ dispatch, commit, getters, rootGetters }).catch(() => {
         expect(commit.mock.calls[0]).toEqual(['REQUEST_PUBLISH_REVIEW']);

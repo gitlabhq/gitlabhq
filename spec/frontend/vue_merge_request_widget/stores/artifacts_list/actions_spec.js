@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import {
   setEndpoint,
   requestArtifacts,
@@ -101,7 +101,7 @@ describe('Artifacts App Store Actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
+        mock.onGet(`${TEST_HOST}/endpoint.json`).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches requestArtifacts and receiveArtifactsError', () => {

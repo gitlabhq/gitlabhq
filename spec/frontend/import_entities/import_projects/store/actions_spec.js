@@ -21,7 +21,11 @@ import {
 import state from '~/import_entities/import_projects/store/state';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { HTTP_STATUS_OK, HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_OK,
+  HTTP_STATUS_TOO_MANY_REQUESTS,
+} from '~/lib/utils/http_status';
 
 jest.mock('~/flash');
 
@@ -142,7 +146,7 @@ describe('import_projects store actions', () => {
     });
 
     it('commits REQUEST_REPOS, RECEIVE_REPOS_ERROR mutations on an unsuccessful request', () => {
-      mock.onGet(MOCK_ENDPOINT).reply(500);
+      mock.onGet(MOCK_ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       return testAction(
         fetchRepos,
@@ -202,7 +206,7 @@ describe('import_projects store actions', () => {
     });
 
     it('correctly keeps current page on an unsuccessful request', () => {
-      mock.onGet(MOCK_ENDPOINT).reply(500);
+      mock.onGet(MOCK_ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       const CURRENT_PAGE = 5;
 
       return testAction(
@@ -289,7 +293,7 @@ describe('import_projects store actions', () => {
     });
 
     it('commits REQUEST_IMPORT and RECEIVE_IMPORT_ERROR and shows generic error message on an unsuccessful request', async () => {
-      mock.onPost(MOCK_ENDPOINT).reply(500);
+      mock.onPost(MOCK_ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       await testAction(
         fetchImport,
@@ -312,7 +316,9 @@ describe('import_projects store actions', () => {
 
     it('commits REQUEST_IMPORT and RECEIVE_IMPORT_ERROR and shows detailed error message on an unsuccessful request with errors fields in response', async () => {
       const ERROR_MESSAGE = 'dummy';
-      mock.onPost(MOCK_ENDPOINT).reply(500, { errors: ERROR_MESSAGE });
+      mock
+        .onPost(MOCK_ENDPOINT)
+        .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, { errors: ERROR_MESSAGE });
 
       await testAction(
         fetchImport,
@@ -451,7 +457,7 @@ describe('import_projects store actions', () => {
     });
 
     it('shows generic error message on an unsuccessful request', async () => {
-      mock.onPost(MOCK_ENDPOINT).reply(500);
+      mock.onPost(MOCK_ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       await testAction(cancelImport, { repoId: importRepoId }, localState, [], []);
 
@@ -462,7 +468,9 @@ describe('import_projects store actions', () => {
 
     it('shows detailed error message on an unsuccessful request with errors fields in response', async () => {
       const ERROR_MESSAGE = 'dummy';
-      mock.onPost(MOCK_ENDPOINT).reply(500, { errors: ERROR_MESSAGE });
+      mock
+        .onPost(MOCK_ENDPOINT)
+        .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, { errors: ERROR_MESSAGE });
 
       await testAction(cancelImport, { repoId: importRepoId }, localState, [], []);
 

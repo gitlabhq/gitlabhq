@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { getByText as getByTextHelper } from '@testing-library/dom';
 import { GlToggle } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -84,7 +84,7 @@ describe('NewNavToggle', () => {
     });
 
     it('shows an alert on error', async () => {
-      mock.onPut(TEST_ENDPONT).reply(500);
+      mock.onPut(TEST_ENDPONT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       actFn();
       await waitForPromises();

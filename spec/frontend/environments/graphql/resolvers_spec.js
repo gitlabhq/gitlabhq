@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { resolvers } from '~/environments/graphql/resolvers';
 import environmentToRollback from '~/environments/graphql/queries/environment_to_rollback.query.graphql';
 import environmentToDelete from '~/environments/graphql/queries/environment_to_delete.query.graphql';
@@ -162,7 +162,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
     });
     it('should set is stopping to false if stop fails', async () => {
-      mock.onPost(ENDPOINT).reply(500);
+      mock.onPost(ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       const client = { writeQuery: jest.fn() };
       const environment = { stopPath: ENDPOINT };
@@ -269,7 +269,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       expect(errors).toEqual({ __typename: 'LocalEnvironmentErrors', errors: [] });
     });
     it('should return a nice error message on fail', async () => {
-      mock.onPost(ENDPOINT).reply(500);
+      mock.onPost(ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       const errors = await mockResolvers.Mutation.action(null, { action: { playPath: ENDPOINT } });
 
       expect(errors).toEqual({

@@ -7,7 +7,10 @@ import { createAlert } from '~/flash';
 import toast from '~/vue_shared/plugins/global_toast';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_SERVICE_UNAVAILABLE,
+} from '~/lib/utils/http_status';
 import * as notesConstants from '~/notes/constants';
 import createStore from '~/notes/stores';
 import * as actions from '~/notes/stores/actions';
@@ -251,7 +254,8 @@ describe('Actions Notes Store', () => {
     const pollHeaders = { 'poll-interval': `${pollInterval}` };
     const successMock = () =>
       axiosMock.onGet(notesDataMock.notesPath).reply(200, pollResponse, pollHeaders);
-    const failureMock = () => axiosMock.onGet(notesDataMock.notesPath).reply(500);
+    const failureMock = () =>
+      axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
     const advanceAndRAF = async (time) => {
       if (time) {
         jest.advanceTimersByTime(time);
@@ -344,11 +348,11 @@ describe('Actions Notes Store', () => {
 
         axiosMock
           .onGet(notesDataMock.notesPath)
-          .replyOnce(500) // cause one error
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR) // cause one error
           .onGet(notesDataMock.notesPath)
           .replyOnce(200, pollResponse, pollHeaders) // then a success
           .onGet(notesDataMock.notesPath)
-          .reply(500); // and then more errors
+          .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR); // and then more errors
 
         await startPolling(); // Failure #1
         await advanceXMoreIntervals(1); // Success #1

@@ -14,6 +14,7 @@ import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_edito
 import SourceEditor from '~/editor/source_editor';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import syntaxHighlight from '~/syntax_highlight';
 import { spyOnApi } from './helpers';
 
@@ -285,7 +286,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     });
 
     it('catches the errors when fetching the preview', async () => {
-      mockAxios.onPost().reply(500);
+      mockAxios.onPost().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       await fetchPreview();
       expect(createAlert).toHaveBeenCalled();

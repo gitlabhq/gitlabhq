@@ -42,6 +42,7 @@ import eventHub from '~/issues/list/eventhub';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import { getSortKey, getSortOptions } from '~/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import {
@@ -787,7 +788,9 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('displays an error message', async () => {
-          axiosMock.onPut(joinPaths(issueOne.webPath, 'reorder')).reply(500);
+          axiosMock
+            .onPut(joinPaths(issueOne.webPath, 'reorder'))
+            .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
           findIssuableList().vm.$emit('reorder', { oldIndex: 0, newIndex: 1 });
           await waitForPromises();

@@ -5,7 +5,7 @@ import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import TagToken, { TAG_SUGGESTIONS_PATH } from '~/ci/runner/components/search_tokens/tag_token.vue';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { getRecentlyUsedSuggestions } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
@@ -163,7 +163,9 @@ describe('TagToken', () => {
 
   describe('when suggestions cannot be loaded', () => {
     beforeEach(async () => {
-      mock.onGet(TAG_SUGGESTIONS_PATH, { params: { search: '' } }).reply(500);
+      mock
+        .onGet(TAG_SUGGESTIONS_PATH, { params: { search: '' } })
+        .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       createComponent();
       await waitForPromises();

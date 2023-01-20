@@ -46,7 +46,9 @@ module QA
         def search_item(item_text)
           return super if use_select2?
 
-          find('div.gl-listbox-search input[type="Search"]').set(item_text)
+          QA::Runtime::Logger.info "Searching in dropdown: \"#{item_text}\""
+
+          find('div.gl-listbox-search input[type="Search"]').set(item_text, rapid: false)
           wait_for_search_to_complete
         end
 
@@ -57,8 +59,6 @@ module QA
 
         def search_and_select(item_text)
           return super if use_select2?
-
-          QA::Runtime::Logger.info "Searching and selecting: #{item_text}"
 
           search_item(item_text)
 
@@ -72,7 +72,7 @@ module QA
         def search_and_select_exact(item_text)
           return super if use_select2?
 
-          QA::Runtime::Logger.info "Searching and selecting: #{item_text}"
+          QA::Runtime::Logger.info "Searching and selecting exact: \"#{item_text}\""
 
           search_item(item_text)
 

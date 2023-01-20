@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { createStore } from '~/mr_notes/stores';
 
 describe('MR Notes Mutator Actions', () => {
@@ -54,7 +54,7 @@ describe('MR Notes Mutator Actions', () => {
     });
 
     it('should set failedToLoadMetadata flag when request fails', async () => {
-      mock.onGet(metadata).reply(500);
+      mock.onGet(metadata).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       await store.dispatch('fetchMrMetadata');
 

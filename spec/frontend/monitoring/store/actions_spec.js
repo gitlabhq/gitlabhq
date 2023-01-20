@@ -7,6 +7,7 @@ import * as commonUtils from '~/lib/utils/common_utils';
 import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_CREATED,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_OK,
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
@@ -231,7 +232,9 @@ describe('Monitoring store actions', () => {
           fullDashboardPath: store.getters['monitoringDashboard/fullDashboardPath'],
         };
         result = () => {
-          mock.onGet(state.dashboardEndpoint).replyOnce(500, mockDashboardsErrorResponse);
+          mock
+            .onGet(state.dashboardEndpoint)
+            .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, mockDashboardsErrorResponse);
           return fetchDashboard({ state, commit, dispatch, getters: localGetters }, params);
         };
       });
@@ -517,7 +520,7 @@ describe('Monitoring store actions', () => {
     });
 
     it('commits failure, when waiting for results and getting a server error', async () => {
-      mock.onGet(prometheusEndpointPath).reply(500);
+      mock.onGet(prometheusEndpointPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       const error = new Error('Request failed with status code 500');
 
@@ -566,7 +569,7 @@ describe('Monitoring store actions', () => {
     });
     it('dispatches receiveDeploymentsDataFailure on error', () => {
       state.deploymentsEndpoint = '/error';
-      mock.onGet(state.deploymentsEndpoint).reply(500);
+      mock.onGet(state.deploymentsEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       return testAction(
         fetchDeploymentsData,
@@ -1085,7 +1088,7 @@ describe('Monitoring store actions', () => {
     });
 
     it('should notify the user that dynamic options were not loaded', () => {
-      mock.onGet('/series?match[]=metric_name').reply(500);
+      mock.onGet('/series?match[]=metric_name').reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       return testAction(fetchVariableMetricLabelValues, { defaultQueryParams }, state, [], []).then(
         () => {
@@ -1150,7 +1153,9 @@ describe('Monitoring store actions', () => {
     });
 
     it('should display a generic error when the backend fails', () => {
-      mock.onPost(panelPreviewEndpoint, { panel_yaml: mockYmlContent }).reply(500);
+      mock
+        .onPost(panelPreviewEndpoint, { panel_yaml: mockYmlContent })
+        .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       testAction(fetchPanelPreview, mockYmlContent, state, [
         { type: types.SET_PANEL_PREVIEW_IS_SHOWN, payload: true },

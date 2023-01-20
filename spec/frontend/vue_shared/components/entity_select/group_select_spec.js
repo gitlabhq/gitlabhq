@@ -2,6 +2,7 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import GroupSelect from '~/vue_shared/components/entity_select/group_select.vue';
 import EntitySelect from '~/vue_shared/components/entity_select/entity_select.vue';
 import {
@@ -107,7 +108,7 @@ describe('GroupSelect', () => {
         mock
           .onGet('/api/undefined/groups.json')
           .reply(200, [{ full_name: 'notTheSelectedGroup', id: '2' }]);
-        mock.onGet(groupEndpoint).reply(500);
+        mock.onGet(groupEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
         createComponent({ props: { initialSelection: groupMock.id } });
 
         expect(findAlert().exists()).toBe(false);
@@ -121,7 +122,7 @@ describe('GroupSelect', () => {
   });
 
   it('shows an error when fetching groups fails', async () => {
-    mock.onGet('/api/undefined/groups.json').reply(500);
+    mock.onGet('/api/undefined/groups.json').reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
     createComponent();
     openListbox();
     expect(findAlert().exists()).toBe(false);

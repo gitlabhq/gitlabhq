@@ -58,3 +58,17 @@ To configure your project:
 
 Your GitLab project can now interact with all Jira projects in your instance and the project now
 displays a Jira link that opens the Jira project.
+
+## Migrate from Jira Server to Jira Cloud in GitLab
+
+To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira integration:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
+1. Select **Jira**.
+1. In **Web URL**, enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`).
+1. In **Username or Email**, enter the username or email registered on your Jira profile.
+1. [Create an API token](jira_cloud_configuration.md), and copy that value.
+1. In **Password or API token**, paste the API token value.
+1. Optional. Select **Test settings** to check if the connection is working.
+1. Select **Save changes**.

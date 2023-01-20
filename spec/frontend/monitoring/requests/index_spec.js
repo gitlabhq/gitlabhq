@@ -4,6 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import {
   HTTP_STATUS_BAD_REQUEST,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_NO_CONTENT,
   HTTP_STATUS_OK,
   HTTP_STATUS_SERVICE_UNAVAILABLE,
@@ -55,7 +56,7 @@ describe('monitoring metrics_requests', () => {
     });
 
     it('rejects after getting an error', () => {
-      mock.onGet(dashboardEndpoint).reply(500);
+      mock.onGet(dashboardEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       return getDashboard(dashboardEndpoint, params).catch((error) => {
         expect(error).toEqual(expect.any(Error));
@@ -99,7 +100,7 @@ describe('monitoring metrics_requests', () => {
     });
 
     it('rejects after getting an HTTP 500 error', () => {
-      mock.onGet(prometheusEndpoint).reply(500, {
+      mock.onGet(prometheusEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, {
         status: 'error',
         error: 'An error occurred',
       });
@@ -125,7 +126,7 @@ describe('monitoring metrics_requests', () => {
       // Mock multiple attempts while the cache is filling up and fails
       mock.onGet(prometheusEndpoint).replyOnce(HTTP_STATUS_NO_CONTENT);
       mock.onGet(prometheusEndpoint).replyOnce(HTTP_STATUS_NO_CONTENT);
-      mock.onGet(prometheusEndpoint).reply(500, {
+      mock.onGet(prometheusEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, {
         status: 'error',
         error: 'An error occurred',
       }); // 3rd attempt

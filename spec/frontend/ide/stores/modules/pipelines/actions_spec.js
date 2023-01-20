@@ -25,6 +25,7 @@ import {
 import * as types from '~/ide/stores/modules/pipelines/mutation_types';
 import state from '~/ide/stores/modules/pipelines/state';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
 import { pipelines, jobs } from '../../../mock_data';
 
@@ -70,7 +71,7 @@ describe('IDE pipelines actions', () => {
     it('dispatches setErrorMessage is not 404', () => {
       return testAction(
         receiveLatestPipelineError,
-        { status: 500 },
+        { status: HTTP_STATUS_INTERNAL_SERVER_ERROR },
         mockedState,
         [{ type: types.RECEIVE_LASTEST_PIPELINE_ERROR }],
         [
@@ -151,7 +152,9 @@ describe('IDE pipelines actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet('/abc/def/commit/abc123def456ghi789jkl/pipelines').reply(500);
+        mock
+          .onGet('/abc/def/commit/abc123def456ghi789jkl/pipelines')
+          .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches error', async () => {
@@ -257,7 +260,7 @@ describe('IDE pipelines actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(stage.dropdownPath).replyOnce(500);
+        mock.onGet(stage.dropdownPath).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches error', () => {
@@ -397,7 +400,9 @@ describe('IDE pipelines actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/project/builds/trace`).replyOnce(500);
+        mock
+          .onGet(`${TEST_HOST}/project/builds/trace`)
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches error', () => {

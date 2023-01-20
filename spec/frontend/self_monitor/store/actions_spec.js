@@ -1,7 +1,11 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { HTTP_STATUS_ACCEPTED, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_ACCEPTED,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_OK,
+} from '~/lib/utils/http_status';
 import * as actions from '~/self_monitor/store/actions';
 import * as types from '~/self_monitor/store/mutation_types';
 import createState from '~/self_monitor/store/state';
@@ -91,7 +95,7 @@ describe('self-monitor actions', () => {
     describe('error', () => {
       beforeEach(() => {
         state.createProjectEndpoint = '/create';
-        mock.onPost(state.createProjectEndpoint).reply(500);
+        mock.onPost(state.createProjectEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches error', () => {
@@ -198,7 +202,7 @@ describe('self-monitor actions', () => {
     describe('error', () => {
       beforeEach(() => {
         state.deleteProjectEndpoint = '/delete';
-        mock.onDelete(state.deleteProjectEndpoint).reply(500);
+        mock.onDelete(state.deleteProjectEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches error', () => {

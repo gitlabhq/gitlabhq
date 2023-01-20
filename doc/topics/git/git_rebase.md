@@ -121,7 +121,7 @@ repository, you can run `git remote -v`.
 If there are merge conflicts, Git prompts you to fix
 them before continuing the rebase.
 
-To learn more, check Git's documentation on [rebasing](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
+For more information about rebasing, see the [Git documentation](https://git-scm.com/book/en/v2/Git-Branching-Rebasing).
 and [rebasing strategies](https://git-scm.com/book/en/v2/Git-Branching-Rebasing).
 
 #### Rebase from the GitLab UI
@@ -180,9 +180,7 @@ the operation you want to perform in each commit. To do so, edit
 the commits in your terminal's text editor.
 
 For example, with [Vim](https://www.vim.org/) as the text editor in
-a macOS's Zsh shell, you can `squash` or `fixup` (combine) all three commits:
-
-<!-- vale gitlab.FirstPerson = NO -->
+a macOS Zsh shell, you can `squash` or `fixup` (combine) all three commits:
 
 1. Press <kbd>i</kbd>
    on your keyboard to switch to Vim's editing mode.
@@ -198,10 +196,8 @@ a macOS's Zsh shell, you can `squash` or `fixup` (combine) all three commits:
    - To leave it as it is, type `:wq`. To edit the commit message: switch to the
    editing mode, edit the commit message, and save it as you just did.
 1. If you haven't pushed your commits to the remote branch before rebasing,
-   push your changes normally. If you had pushed these commits already,
+   push your changes without force-pushing. If you had pushed these commits already,
    [force-push](#force-push) instead.
-
-<!-- vale gitlab.FirstPerson = YES -->
 
 The steps for editing through the command line can be slightly
 different depending on your operating system and the shell you're using.
@@ -211,32 +207,39 @@ for a deeper look into interactive rebase.
 
 ## Force-push
 
-When you perform more complex operations, for example, squash commits, reset or
-rebase your branch, you must _force_ an update to the remote branch.
-These operations imply rewriting the commit history of the branch.
-To force an update, pass the flag `--force` or `-f` to the `push` command. For
-example:
+Complex operations in Git require you to force an update to the remote branch.
+Operations like squashing commits, resetting a branch, or rebasing a branch rewrite
+the history of your branch. Git requires a forced update to help safeguard against
+these more destructive changes from happening accidentally.
 
-```shell
-git push --force origin my-feature-branch
-```
-
-Forcing an update is **not** recommended when you're working on shared
-branches.
-
-Alternatively, you can pass the flag [`--force-with-lease`](https://git-scm.com/docs/git-push#Documentation/git-push.txt---force-with-leaseltrefnamegt)
-instead, as it is safer. This flag preserves any new commits added to the remote
-branch by other people:
-
-```shell
-git push --force-with-lease origin my-feature-branch
-```
+Force-pushing is not recommended on shared branches, as you risk destroying the
+changes of others.
 
 If the branch you want to force-push is [protected](../../user/project/protected_branches.md),
 you can't force push to it unless you either:
 
 - Unprotect it.
-- [Allow force push](../../user/project/protected_branches.md#allow-force-push-on-a-protected-branch)
+- [Allow force-push](../../user/project/protected_branches.md#allow-force-push-on-a-protected-branch)
   to it.
 
-Then you can force push and protect it again.
+Then you can force-push and protect it again.
+
+### `--force-with-lease` flag
+
+The [`--force-with-lease`](https://git-scm.com/docs/git-push#Documentation/git-push.txt---force-with-leaseltrefnamegt)
+flag force-pushes. Because it preserves any new commits added to the remote
+branch by other people, it is safer than `--force`:
+
+```shell
+git push --force-with-lease origin my-feature-branch
+```
+
+### `--force` flag
+
+The `--force` flag force-pushes, but does not preserve any new commits added to
+the remote branch by other people. To use this method, pass the flag `--force` or `-f`
+to the `push` command:
+
+```shell
+git push --force origin my-feature-branch
+```

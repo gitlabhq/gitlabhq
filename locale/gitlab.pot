@@ -974,8 +974,8 @@ msgstr ""
 msgid "%{reportType} detected no new vulnerabilities."
 msgstr ""
 
-msgid "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approval%{approvalEnd} from: %{approverType}%{approvers}"
-msgid_plural "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approvals%{approvalEnd} from: %{approverType}%{approvers}"
+msgid "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approval%{approvalEnd} from:"
+msgid_plural "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approvals%{approvalEnd} from:"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -37989,7 +37989,7 @@ msgstr ""
 msgid "SecurityOrchestration|group level branch"
 msgstr ""
 
-msgid "SecurityOrchestration|or from: %{approverType}%{approvers}"
+msgid "SecurityOrchestration|or from:"
 msgstr ""
 
 msgid "SecurityOrchestration|scanner finds"

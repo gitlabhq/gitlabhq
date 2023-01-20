@@ -16,6 +16,7 @@ import * as treeWorkerUtils from '~/diffs/utils/tree_worker_utils';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import { diffMetadata } from '../mock_data/diff_metadata';
@@ -228,7 +229,7 @@ describe('DiffsStoreActions', () => {
     });
 
     it('should show no warning on any other status code', async () => {
-      mock.onGet(endpointMetadata).reply(500);
+      mock.onGet(endpointMetadata).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       await testAction(
         diffActions.fetchDiffFilesMeta,
@@ -1105,7 +1106,7 @@ describe('DiffsStoreActions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/context`).replyOnce(500);
+        mock.onGet(`${TEST_HOST}/context`).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches receiveFullDiffError', () => {

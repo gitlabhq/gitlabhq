@@ -30,6 +30,7 @@ import {
 import * as types from '~/jobs/store/mutation_types';
 import state from '~/jobs/store/state';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 
 describe('Job State actions', () => {
   let mockedState;
@@ -134,7 +135,7 @@ describe('Job State actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
+        mock.onGet(`${TEST_HOST}/endpoint.json`).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches requestJob and receiveJobError', () => {
@@ -288,7 +289,7 @@ describe('Job State actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/endpoint/trace.json`).reply(500);
+        mock.onGet(`${TEST_HOST}/endpoint/trace.json`).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches requestJobLog and receiveJobLogError', () => {
@@ -449,7 +450,7 @@ describe('Job State actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/jobs.json`).reply(500);
+        mock.onGet(`${TEST_HOST}/jobs.json`).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches requestJobsForStage and receiveJobsForStageError', () => {
