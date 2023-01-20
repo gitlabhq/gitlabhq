@@ -31,6 +31,10 @@ module QA
         parse_body(api_get_from("#{api_members_path}/all"))
       end
 
+      def find_member(username)
+        list_members.find { |member| member[:username] == username }
+      end
+
       def invite_group(group, access_level = AccessLevel::GUEST)
         Support::Retrier.retry_until do
           QA::Runtime::Logger.info(%(Sharing #{self.class.name} with #{group.name}))

@@ -96,6 +96,8 @@ en:
         Grants read-only access to the user's profile data using OpenID Connect.
       email:
         Grants read-only access to the user's primary email address using OpenID Connect.
+      admin_mode:
+        Grants permission to perform API actions as an administrator, when Admin Mode is enabled.
     project_access_token_scope_desc:
       api:
         Grants complete read and write access to the scoped project API, including the Package Registry.

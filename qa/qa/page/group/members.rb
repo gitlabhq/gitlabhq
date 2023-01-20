@@ -9,6 +9,7 @@ module QA
 
         view 'app/assets/javascripts/members/components/modals/remove_member_modal.vue' do
           element :remove_member_modal
+          element :remove_member_button
         end
 
         view 'app/assets/javascripts/pages/groups/group_members/index.js' do
@@ -30,6 +31,10 @@ module QA
           element :delete_member_dropdown_item
         end
 
+        view 'app/assets/javascripts/members/components/action_buttons/approve_access_request_button.vue' do
+          element :approve_access_request_button
+        end
+
         view 'app/assets/javascripts/members/components/members_tabs.vue' do
           element :groups_list_tab
         end
@@ -49,8 +54,20 @@ module QA
             click_element :delete_member_dropdown_item
           end
 
-          within_element(:remove_member_modal) do
-            click_button("Remove member")
+          confirm_remove_member
+        end
+
+        def deny_access_request(username)
+          within_element(:member_row, text: username) do
+            click_element :delete_member_button
+          end
+
+          confirm_remove_member
+        end
+
+        def approve_access_request(username)
+          within_element(:member_row, text: username) do
+            click_element :approve_access_request_button
           end
         end
 
@@ -59,6 +76,22 @@ module QA
 
           within_element(:groups_list) do
             has_element?(:group_row, text: group_name)
+          end
+        end
+
+        private
+
+        def confirm_remove_member
+          within_element(:remove_member_modal) do
+            wait_for_enabled_remove_member_button
+
+            click_element :remove_member_button
+          end
+        end
+
+        def wait_for_enabled_remove_member_button
+          retry_until(sleep_interval: 1, message: 'Waiting for remove member button to be enabled') do
+            has_element?(:remove_member_button, disabled: false, wait: 3)
           end
         end
       end

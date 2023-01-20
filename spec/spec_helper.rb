@@ -352,6 +352,103 @@ RSpec.configure do |config|
       end
     end
 
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/42692
+    # The ongoing implementation of Admin Mode for API is behind the :admin_mode_for_api feature flag.
+    # All API specs will be adapted continuously. The following list contains the specs that have not yet been adapted.
+    # The feature flag is disabled for these specs as long as they are not yet adapted.
+    admin_mode_for_api_feature_flag_paths = %w[
+      ./spec/frontend/fixtures/api_deploy_keys.rb
+      ./spec/requests/api/admin/batched_background_migrations_spec.rb
+      ./spec/requests/api/admin/ci/variables_spec.rb
+      ./spec/requests/api/admin/instance_clusters_spec.rb
+      ./spec/requests/api/admin/plan_limits_spec.rb
+      ./spec/requests/api/admin/sidekiq_spec.rb
+      ./spec/requests/api/appearance_spec.rb
+      ./spec/requests/api/applications_spec.rb
+      ./spec/requests/api/broadcast_messages_spec.rb
+      ./spec/requests/api/ci/pipelines_spec.rb
+      ./spec/requests/api/ci/runners_reset_registration_token_spec.rb
+      ./spec/requests/api/ci/runners_spec.rb
+      ./spec/requests/api/deploy_keys_spec.rb
+      ./spec/requests/api/deploy_tokens_spec.rb
+      ./spec/requests/api/freeze_periods_spec.rb
+      ./spec/requests/api/graphql/user/starred_projects_query_spec.rb
+      ./spec/requests/api/groups_spec.rb
+      ./spec/requests/api/issues/get_group_issues_spec.rb
+      ./spec/requests/api/issues/get_project_issues_spec.rb
+      ./spec/requests/api/issues/issues_spec.rb
+      ./spec/requests/api/issues/post_projects_issues_spec.rb
+      ./spec/requests/api/issues/put_projects_issues_spec.rb
+      ./spec/requests/api/keys_spec.rb
+      ./spec/requests/api/merge_requests_spec.rb
+      ./spec/requests/api/namespaces_spec.rb
+      ./spec/requests/api/notes_spec.rb
+      ./spec/requests/api/pages/internal_access_spec.rb
+      ./spec/requests/api/pages/pages_spec.rb
+      ./spec/requests/api/pages/private_access_spec.rb
+      ./spec/requests/api/pages/public_access_spec.rb
+      ./spec/requests/api/pages_domains_spec.rb
+      ./spec/requests/api/personal_access_tokens/self_information_spec.rb
+      ./spec/requests/api/personal_access_tokens_spec.rb
+      ./spec/requests/api/project_export_spec.rb
+      ./spec/requests/api/project_repository_storage_moves_spec.rb
+      ./spec/requests/api/project_snapshots_spec.rb
+      ./spec/requests/api/project_snippets_spec.rb
+      ./spec/requests/api/projects_spec.rb
+      ./spec/requests/api/releases_spec.rb
+      ./spec/requests/api/sidekiq_metrics_spec.rb
+      ./spec/requests/api/snippet_repository_storage_moves_spec.rb
+      ./spec/requests/api/snippets_spec.rb
+      ./spec/requests/api/statistics_spec.rb
+      ./spec/requests/api/system_hooks_spec.rb
+      ./spec/requests/api/topics_spec.rb
+      ./spec/requests/api/usage_data_non_sql_metrics_spec.rb
+      ./spec/requests/api/usage_data_queries_spec.rb
+      ./spec/requests/api/users_spec.rb
+      ./spec/requests/api/v3/github_spec.rb
+      ./spec/support/shared_examples/requests/api/custom_attributes_shared_examples.rb
+      ./spec/support/shared_examples/requests/api/hooks_shared_examples.rb
+      ./spec/support/shared_examples/requests/api/notes_shared_examples.rb
+      ./spec/support/shared_examples/requests/api/pipelines/visibility_table_shared_examples.rb
+      ./spec/support/shared_examples/requests/api/repository_storage_moves_shared_examples.rb
+      ./spec/support/shared_examples/requests/api/snippets_shared_examples.rb
+      ./spec/support/shared_examples/requests/api/status_shared_examples.rb
+      ./spec/support/shared_examples/requests/clusters/certificate_based_clusters_feature_flag_shared_examples.rb
+      ./spec/support/shared_examples/requests/snippet_shared_examples.rb
+      ./ee/spec/requests/api/audit_events_spec.rb
+      ./ee/spec/requests/api/ci/minutes_spec.rb
+      ./ee/spec/requests/api/elasticsearch_indexed_namespaces_spec.rb
+      ./ee/spec/requests/api/epics_spec.rb
+      ./ee/spec/requests/api/geo_nodes_spec.rb
+      ./ee/spec/requests/api/geo_replication_spec.rb
+      ./ee/spec/requests/api/geo_spec.rb
+      ./ee/spec/requests/api/group_push_rule_spec.rb
+      ./ee/spec/requests/api/group_repository_storage_moves_spec.rb
+      ./ee/spec/requests/api/groups_spec.rb
+      ./ee/spec/requests/api/internal/upcoming_reconciliations_spec.rb
+      ./ee/spec/requests/api/invitations_spec.rb
+      ./ee/spec/requests/api/license_spec.rb
+      ./ee/spec/requests/api/merge_request_approvals_spec.rb
+      ./ee/spec/requests/api/namespaces_spec.rb
+      ./ee/spec/requests/api/notes_spec.rb
+      ./ee/spec/requests/api/project_aliases_spec.rb
+      ./ee/spec/requests/api/project_approval_rules_spec.rb
+      ./ee/spec/requests/api/project_approval_settings_spec.rb
+      ./ee/spec/requests/api/project_approvals_spec.rb
+      ./ee/spec/requests/api/projects_spec.rb
+      ./ee/spec/requests/api/settings_spec.rb
+      ./ee/spec/requests/api/users_spec.rb
+      ./ee/spec/requests/api/vulnerabilities_spec.rb
+      ./ee/spec/requests/api/vulnerability_exports_spec.rb
+      ./ee/spec/requests/api/vulnerability_findings_spec.rb
+      ./ee/spec/requests/api/vulnerability_issue_links_spec.rb
+      ./ee/spec/support/shared_examples/requests/api/project_approval_rules_api_shared_examples.rb
+    ]
+
+    if example.metadata[:file_path].start_with?(*admin_mode_for_api_feature_flag_paths)
+      stub_feature_flags(admin_mode_for_api: false)
+    end
+
     # Make sure specs test by default admin mode setting on, unless forced to the opposite
     stub_application_setting(admin_mode: true) unless example.metadata[:do_not_mock_admin_mode_setting]
 

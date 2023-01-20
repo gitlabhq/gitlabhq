@@ -54,12 +54,12 @@ This stage is responsible for [allure test report](index.md#allure-report) gener
 Selective test execution depends on a set of rules present in every job definition. A typical job contains the following attributes:
 
 ```yaml
-   variables:
-     QA_SCENARIO: Test::Integration::MyNewJob
-   rules:
-     - !reference [.rules:test:qa, rules]
-     - if: $QA_SUITES =~ /Test::Integration::MyNewJob/
-     - !reference [.rules:test:manual, rules]
+variables:
+  QA_SCENARIO: Test::Integration::MyNewJob
+rules:
+  - !reference [.rules:test:qa, rules]
+  - if: $QA_SUITES =~ /Test::Integration::MyNewJob/
+  - !reference [.rules:test:manual, rules]
 ```
 
 In this example:
@@ -83,7 +83,7 @@ Considering example above, perform the following steps to create a new job:
 1. Create new scenario `my_new_job.rb` in [`integration`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/qa/scenario/test/integration) directory of the
    [`qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa) framework. In the most simple case, this scenario would define RSpec tags that should be executed:
 
-```ruby
+   ```ruby
    module QA
      module Scenario
        module Test
@@ -95,11 +95,11 @@ Considering example above, perform the following steps to create a new job:
        end
      end
    end
-```
+   ```
 
 1. Add new job definition in the [`main.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/package-and-test/main.gitlab-ci.yml) pipeline definition:
 
-```yaml
+   ```yaml
    ee:my-new-job:
      extends: .qa
      variables:
@@ -108,7 +108,7 @@ Considering example above, perform the following steps to create a new job:
        - !reference [.rules:test:qa, rules]
        - if: $QA_SUITES =~ /Test::Integration::MyNewJob/
        - !reference [.rules:test:manual, rules]
-```
+   ```
 
 ### Parallel jobs
 
@@ -117,18 +117,18 @@ a job definition typically must be split into parallel and non parallel variants
 executes only a single spec, multiple unnecessary jobs are not spawned. For example:
 
 ```yaml
-   ee:my-new-job:
-     extends: .qa
-     variables:
-       QA_SCENARIO: Test::Integration::MyNewJob
-     rules:
-       - !reference [.rules:test:qa-non-parallel, rules]
-       - if: $QA_SUITES =~ /Test::Integration::MyNewJob/
-   ee:instance-parallel:
-     extends:
-       - .parallel
-       - ee:my-new-job
-     rules:
-       - !reference [.rules:test:qa-parallel, rules]
-       - if: $QA_SUITES =~ /Test::Integration::MyNewJob/
+ee:my-new-job:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::MyNewJob
+  rules:
+    - !reference [.rules:test:qa-non-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Integration::MyNewJob/
+ee:instance-parallel:
+  extends:
+    - .parallel
+    - ee:my-new-job
+  rules:
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Integration::MyNewJob/
 ```

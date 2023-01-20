@@ -24,7 +24,7 @@ class PersonalAccessToken < ApplicationRecord
   # During the implementation of Admin Mode for API, tokens of
   # administrators should automatically get the `admin_mode` scope as well
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/42692
-  before_create :add_admin_mode_scope, if: :user_admin?
+  before_create :add_admin_mode_scope, if: -> { Feature.disabled?(:admin_mode_for_api) && user_admin? }
 
   scope :active, -> { not_revoked.not_expired }
   scope :expiring_and_not_notified, ->(date) { where(["revoked = false AND expire_notification_delivered = false AND expires_at >= CURRENT_DATE AND expires_at <= ?", date]) }
@@ -84,10 +84,8 @@ class PersonalAccessToken < ApplicationRecord
   protected
 
   def validate_scopes
-    # During the implementation of Admin Mode for API,
-    # the `admin_mode` scope is not yet part of `all_available_scopes` but still valid.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/42692
-    valid_scopes = Gitlab::Auth.all_available_scopes + [Gitlab::Auth::ADMIN_MODE_SCOPE]
+    valid_scopes = Gitlab::Auth.all_available_scopes
+    valid_scopes += [Gitlab::Auth::ADMIN_MODE_SCOPE] if Feature.disabled?(:admin_mode_for_api)
 
     unless revoked || scopes.all? { |scope| valid_scopes.include?(scope.to_sym) }
       errors.add :scopes, "can only contain available scopes"

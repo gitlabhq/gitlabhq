@@ -336,6 +336,8 @@ To set the maximum file size:
 
 GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
 
+When the registration sections are hidden in the UI, members of the project or group must contact administrators to enable runner registration in the group or project. If you plan to prevent registration, ensure users have access to the runners they need to run jobs.
+
 By default, all members of a project and group are able to register runners.
 
 To restrict all users in an instance from registering runners:
@@ -347,8 +349,10 @@ To restrict all users in an instance from registering runners:
    information in the UI for group or project members.
 1. Select **Save changes**.
 
-WARNING:
-When the registration sections are hidden in the UI, members of the project or group that need to register runners must contact the administrators. If you plan to prevent registration, ensure users have access to the runners they need to run jobs.
+NOTE:
+After you disable runner registration by members of a project, the registration
+token automatically rotates. The token is no longer valid and you must
+use the new registration token for the project.
 
 ## Restrict runner registration by all members in a group
 

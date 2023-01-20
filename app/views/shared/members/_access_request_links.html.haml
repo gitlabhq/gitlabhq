@@ -14,4 +14,5 @@
               data: { confirm: remove_member_message(requester) }
 - elsif source.request_access_enabled && can?(current_user, :request_access, source)
   = link_to _('Request Access'), polymorphic_path([:request_access, source, :members]),
-            method: :post
+            method: :post,
+            data: { qa_selector: 'request_access_link' }

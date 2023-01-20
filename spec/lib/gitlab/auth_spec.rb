@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
+RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_category: :authentication_and_authorization do
   let_it_be(:project) { create(:project) }
 
   let(:auth_failure) { { actor: nil, project: nil, type: nil, authentication_abilities: nil } }
@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     end
 
     it 'ADMIN_SCOPES contains all scopes for ADMIN access' do
-      expect(subject::ADMIN_SCOPES).to match_array %i[sudo]
+      expect(subject::ADMIN_SCOPES).to match_array %i[sudo admin_mode]
     end
 
     it 'REPOSITORY_SCOPES contains all scopes for REPOSITORY access' do
@@ -28,19 +28,13 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     it 'DEFAULT_SCOPES contains all default scopes' do
       expect(subject::DEFAULT_SCOPES).to match_array [:api]
     end
-
-    it 'optional_scopes contains all non-default scopes' do
-      stub_container_registry_config(enabled: true)
-
-      expect(subject.optional_scopes).to match_array %i[read_user read_api read_repository write_repository read_registry write_registry sudo openid profile email]
-    end
   end
 
   context 'available_scopes' do
     it 'contains all non-default scopes' do
       stub_container_registry_config(enabled: true)
 
-      expect(subject.all_available_scopes).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo]
+      expect(subject.all_available_scopes).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode]
     end
 
     it 'contains for non-admin user all non-default scopes without ADMIN access' do
@@ -54,7 +48,38 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       stub_container_registry_config(enabled: true)
       user = create(:user, admin: true)
 
-      expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo]
+      expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode]
+    end
+
+    it 'optional_scopes contains all non-default scopes' do
+      stub_container_registry_config(enabled: true)
+
+      expect(subject.optional_scopes).to match_array %i[read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode openid profile email]
+    end
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(admin_mode_for_api: false)
+      end
+
+      it 'contains all non-default scopes' do
+        stub_container_registry_config(enabled: true)
+
+        expect(subject.all_available_scopes).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode]
+      end
+
+      it 'contains for admin user all non-default scopes with ADMIN access' do
+        stub_container_registry_config(enabled: true)
+        user = create(:user, admin: true)
+
+        expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo]
+      end
+
+      it 'optional_scopes contains all non-default scopes' do
+        stub_container_registry_config(enabled: true)
+
+        expect(subject.optional_scopes).to match_array %i[read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode openid profile email]
+      end
     end
 
     context 'registry_scopes' do

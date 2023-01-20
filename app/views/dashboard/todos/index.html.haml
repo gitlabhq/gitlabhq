@@ -37,7 +37,7 @@
           .filter-item.gl-m-2
             - if params[:group_id].present?
               = hidden_field_tag(:group_id, params[:group_id])
-            = dropdown_tag(group_dropdown_label(params[:group_id], _("Group")), options: { toggle_class: 'js-group-search js-filter-submit gl-xs-w-full!', title: s_("Todos|Filter by group"), filter: true, filterInput: 'input#group-search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-group js-filter-submit', placeholder: _("Search groups"), data: { default_label: _("Group"), display: 'static' } })
+            = dropdown_tag(group_dropdown_label(params[:group_id], _("Group")), options: { toggle_class: 'js-group-search js-filter-submit gl-xs-w-full!', title: s_("Todos|Filter by group"), filter: true, filterInput: 'input#group-search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-group js-filter-submit', placeholder: _("Search groups"), data: { default_label: _("Group"), display: 'static', qa_selector: 'group_dropdown' } })
           .filter-item.gl-m-2
             - if params[:project_id].present?
               = hidden_field_tag(:project_id, params[:project_id])

@@ -138,7 +138,7 @@ sudo -u git -H bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_EN
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com, this feature is not available. The feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../user/admin_area/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
 
-Two-factor authentication can be enforced for Git over SSH operations. However, we recommend using
+You can enforce 2FA for [Git over SSH operations](../development/gitlab_shell/features.md#git-operations). However, you should use
 [ED25519_SK](../user/ssh.md#ed25519_sk-ssh-keys) or [ECDSA_SK](../user/ssh.md#ecdsa_sk-ssh-keys) SSH keys instead.
 
 To perform one-time password (OTP) verification, run:
@@ -153,7 +153,7 @@ Then authenticate by either:
 - In GitLab 15.3 and later, responding to a device push notification if
   [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#enable-one-time-password-using-fortiauthenticator).
 
-After successful authentication, you can perform Git over SSH operations for 15 minutes (default) with the associated
+After successful authentication, you can perform [Git over SSH operations](../development/gitlab_shell/features.md#git-operations) for 15 minutes (default) with the associated
 SSH key.
 
 ### Security limitation

@@ -108,7 +108,7 @@ module QA
       def make_sure_to_have_a_skipped_pipeline
         attempts ||= 1
         Runtime::Logger.info('Waiting for pipeline to have status "skipped"...')
-        Support::Waiter.wait_until(max_duration: 120, sleep_interval: 3) do
+        Support::Waiter.wait_until(max_duration: 120, sleep_interval: 3, retry_on_exception: true) do
           project.latest_pipeline[:status] == 'skipped'
         end
       rescue Support::Repeater::WaitExceededError

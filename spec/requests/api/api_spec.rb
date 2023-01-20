@@ -312,4 +312,37 @@ RSpec.describe API::API, feature_category: :authentication_and_authorization do
       end
     end
   end
+
+  describe 'admin mode support' do
+    let(:admin) { create(:admin) }
+
+    subject do
+      get api("/admin/clusters", personal_access_token: token)
+      response
+    end
+
+    context 'with `admin_mode` scope' do
+      let(:token) { create(:personal_access_token, user: admin, scopes: [:api, :admin_mode]) }
+
+      context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+        it { is_expected.to have_gitlab_http_status(:ok) }
+      end
+
+      context 'when admin mode setting is enabled' do
+        it { is_expected.to have_gitlab_http_status(:ok) }
+      end
+    end
+
+    context 'without `admin_mode` scope' do
+      let(:token) { create(:personal_access_token, user: admin, scopes: [:api]) }
+
+      context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+        it { is_expected.to have_gitlab_http_status(:ok) }
+      end
+
+      context 'when admin mode setting is enabled' do
+        it { is_expected.to have_gitlab_http_status(:forbidden) }
+      end
+    end
+  end
 end

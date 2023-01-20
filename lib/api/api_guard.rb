@@ -57,10 +57,7 @@ module API
         user = find_user_from_sources
         return unless user
 
-        if user.is_a?(User) && Gitlab::CurrentSettings.admin_mode
-          # Sessions are enforced to be unavailable for API calls, so ignore them for admin mode
-          Gitlab::Auth::CurrentUserMode.bypass_session!(user.id)
-        end
+        Gitlab::Auth::CurrentUserMode.bypass_session!(user.id) if bypass_session_for_admin_mode?(user)
 
         unless api_access_allowed?(user)
           forbidden!(api_access_denied_message(user))
@@ -84,6 +81,16 @@ module API
       end
 
       private
+
+      def bypass_session_for_admin_mode?(user)
+        return user.is_a?(User) && Gitlab::CurrentSettings.admin_mode if Feature.disabled?(:admin_mode_for_api)
+
+        return false unless Gitlab::CurrentSettings.admin_mode
+        return false unless user.is_a?(User)
+
+        Gitlab::Session.with_session(current_request.session) { Gitlab::Auth::CurrentUserMode.new(user).admin_mode? } ||
+          Gitlab::Auth::RequestAuthenticator.new(current_request).valid_access_token?(scopes: [:admin_mode])
+      end
 
       # An array of scopes that were registered (using `allow_access_with_scope`)
       # for the current endpoint class. It also returns scopes registered on

@@ -276,7 +276,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :authentication_and_
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['issuer']).to eq('http://localhost')
       expect(json_response['jwks_uri']).to eq('http://www.example.com/oauth/discovery/keys')
-      expect(json_response['scopes_supported']).to match_array %w[api read_user read_api read_repository write_repository sudo openid profile email]
+      expect(json_response['scopes_supported']).to match_array %w[admin_mode api read_user read_api read_repository write_repository sudo openid profile email]
     end
 
     context 'with a cross-origin request' do
@@ -286,7 +286,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :authentication_and_
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['issuer']).to eq('http://localhost')
         expect(json_response['jwks_uri']).to eq('http://www.example.com/oauth/discovery/keys')
-        expect(json_response['scopes_supported']).to match_array %w[api read_user read_api read_repository write_repository sudo openid profile email]
+        expect(json_response['scopes_supported']).to match_array %w[admin_mode api read_user read_api read_repository write_repository sudo openid profile email]
       end
 
       it_behaves_like 'cross-origin GET request'

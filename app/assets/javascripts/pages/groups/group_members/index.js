@@ -58,6 +58,7 @@ const APP_OPTIONS = {
   },
   [MEMBER_TYPES.accessRequest]: {
     tableFields: SHARED_FIELDS.concat('requested'),
+    tableAttrs: { tr: { 'data-qa-selector': 'member_row' } },
     requestFormatter: groupMemberRequestFormatter,
   },
   ...EE_APP_OPTIONS,
