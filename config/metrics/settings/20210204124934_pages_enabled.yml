@@ -3,8 +3,8 @@ data_category: operational
 key_path: gitlab_pages.enabled
 description: Whether GitLab Pages is enabled
 product_section: ops
-product_stage: release
-product_group: release
+product_stage: create
+product_group: editor
 product_category: collection
 value_type: boolean
 status: active

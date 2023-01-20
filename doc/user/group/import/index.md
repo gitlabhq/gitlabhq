@@ -35,42 +35,35 @@ Also on self-managed GitLab, by default [migrating project items](#migrated-proj
 this feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
 `bulk_import_projects`. The feature is not ready for production use. On GitLab.com, migration of both groups and projects is available.
 
-You can migrate top-level groups to:
+Prerequisites:
 
-- Another top-level group.
-- The subgroup of any existing top-level group.
-- Another GitLab instance, including GitLab.com.
+- Network connection between instances or GitLab.com. Must support HTTPS.
+- Both GitLab instances have [migration enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
+  by an instance administrator.
+- Owner role on the source group to migrate from.
+- At least the Maintainer role on the destination group to migrate to. Using the Developer role for this purpose was
+  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
 
-You can migrate:
+By direct transfer you can migrate:
 
-- By direct transfer through either the UI or the [API](../../../api/bulk_imports.md).
+- Using either the UI or the [API](../../../api/bulk_imports.md).
 - Many groups at once.
-- With projects (in [Beta](../../../policy/alpha-beta-support.md#beta-features) and not ready for production use) or
-  without projects.
-
-When you migrate a group by direct transfer, you can also migrate subgroups and projects. When you migrate a group:
-
-- To GitLab.com, all its subgroups and projects are migrated too.
-- To a self-managed instance, migrating project items is not available by default. An administrator must
-  [enable the feature flag](../../../administration/feature_flags.md) named `bulk_import_projects`.
-
-WARNING:
-Migrating subgroups and projects this way is in [Beta](../../../policy/alpha-beta-support.md#beta-features) and is not
-ready for production use.
+- Top-level groups using UI, using API you can also migrate chosen subgroups to:
+  - Another top-level group.
+  - The subgroup of any existing top-level group.
+  - Another GitLab instance, including GitLab.com.
+- With projects (in [beta](../../../policy/alpha-beta-support.md#beta-features) and not ready for production use) or without projects. Migrating projects with groups
+  is available:
+  - On GitLab.com by default.
+  - On self-managed GitLab instances after an administrator first [enables the feature flag](../../../administration/feature_flags.md) named `bulk_import_projects`.
 
 Not all group and project resources are imported. See list of migrated resources below:
 
 - [Migrated group items](#migrated-group-items).
 - [Migrated project items](#migrated-project-items-beta).
 
-Prerequisites:
-
-- Network connection between instances or GitLab.com. Must support HTTPS.
-- Both GitLab instances have [migration enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
-  by an instance administrator.
-- Owner role on the top-level source group to migrate from.
-- At least the Maintainer role on the destination group to migrate to. Using the Developer role for this purpose was
-  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+Please leave your feedback about migrating by direct transfer in
+[the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
 
 ### Visibility rules
 
@@ -254,9 +247,6 @@ Items excluded from migration, because they contain sensitive information:
 
 - Pipeline Triggers.
 
-Migrating projects with file exports uses the same export and import mechanisms as creating projects from templates at the [group](../../group/custom_project_templates.md) and
-[instance](../../admin_area/custom_project_templates.md) levels. Therefore, the list of exported items is the same.
-
 ### Troubleshooting
 
 In a [rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session),
@@ -312,11 +302,6 @@ To solve this, you must change the source group path to include a non-numerical 
   1. Under **Change group URL**, change the group URL to include non-numeric characters.
 
 - The [Groups API](../../../api/groups.md#update-group).
-
-### Provide feedback
-
-Please leave your feedback about migrating groups by direct transfer in
-[the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
 
 ## Migrate groups by uploading an export file (deprecated)
 
