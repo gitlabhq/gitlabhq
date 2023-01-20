@@ -46,7 +46,7 @@ RSpec.describe 'shared/runners/_runner_details.html.haml' do
     context 'when runner is of type project' do
       let(:runner) { create(:ci_runner, :project) }
 
-      it { is_expected.to have_content("Runner ##{runner.id} specific") }
+      it { is_expected.to have_content("Runner ##{runner.id} project") }
     end
   end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe UpdateInvalidDormantUserSetting, :migration, feature_category: :users do
+RSpec.describe UpdateInvalidDormantUserSetting, :migration, feature_category: :user_profile do
   let(:settings) { table(:application_settings) }
 
   context 'with no rows in the application_settings table' do

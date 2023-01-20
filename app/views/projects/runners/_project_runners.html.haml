@@ -1,9 +1,9 @@
 %h4
-  = _('Specific runners')
+  = s_('Runners|Project runners')
 
 .bs-callout.help-callout
   - if can?(current_user, :register_project_runners, @project)
-    = _('These runners are specific to this project.')
+    = s_('Runners|These runners are assigned to this project.')
     - if params[:ci_runner_templates]
       %hr
       = render partial: 'ci/runner/setup_runner_in_aws',
@@ -11,7 +11,7 @@
     %hr
     = render partial: 'ci/runner/how_to_setup_runner',
             locals: { registration_token: @project.runners_token,
-                      type: s_('Runners|specific'),
+                      type: _('project'),
                       reset_token_url: reset_registration_token_namespace_project_settings_ci_cd_path,
                       project_path: @project.path_with_namespace,
                       group_path: '' }
@@ -22,13 +22,13 @@
 %hr
 
 - if @project_runners.any?
-  %h4.underlined-title= _('Available specific runners')
-  %ul.bordered-list.activated-specific-runners
+  %h4.underlined-title= s_('Runners|Assigned project runners')
+  %ul.bordered-list{ data: { testid: 'assigned_project_runners' } }
     = render partial: 'projects/runners/runner', collection: @project_runners, as: :runner
   = paginate @project_runners, theme: "gitlab", param_name: "project_page", params: { expand_runners: true, anchor: 'js-runners-settings' }
 
 - if @assignable_runners.any?
   %h4.underlined-title= _('Other available runners')
-  %ul.bordered-list.available-specific-runners
+  %ul.bordered-list{ data: { testid: 'available_project_runners' } }
     = render partial: 'projects/runners/runner', collection: @assignable_runners, as: :runner
   = paginate @assignable_runners, theme: "gitlab", param_name: "specific_page", :params => { :anchor => 'js-runners-settings'}

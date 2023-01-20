@@ -415,6 +415,35 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
           end
         end
 
+        context 'A request with urgency set on the env (from ETag-caching)' do
+          let(:env) do
+            { described_class::REQUEST_URGENCY_KEY => Gitlab::EndpointAttributes::Config::REQUEST_URGENCIES[:medium],
+            'REQUEST_METHOD' => 'GET' }
+          end
+
+          it 'records the request with the correct urgency' do
+            allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(100, 100.1)
+            expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :medium
+              },
+              success: true
+            )
+            expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment).with(
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :medium
+              },
+              error: false
+            )
+
+            subject.call(env)
+          end
+        end
+
         context 'An unknown request' do
           let(:env) do
             { 'REQUEST_METHOD' => 'GET' }

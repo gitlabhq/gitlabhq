@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :users do
+RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :user_profile do
   let_it_be(:user)      { create(:user) }
   let_it_be(:project)   { create(:project, name: 'test', namespace: user.namespace) }
 

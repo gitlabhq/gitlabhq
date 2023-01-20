@@ -11,8 +11,8 @@ Runners are available based on who you want to have access:
 
 - [Shared runners](#shared-runners) are available to all groups and projects in a GitLab instance.
 - [Group runners](#group-runners) are available to all projects and subgroups in a group.
-- [Specific runners](#specific-runners) are associated with specific projects.
-  Typically, specific runners are used for one project at a time.
+- [Project runners](#project-runners) are associated with specific projects.
+  Typically, project runners are used by one project at a time.
 
 ## Shared runners
 
@@ -241,78 +241,78 @@ You must have the Owner role for the group.
      You must remove it from each project first.
 1. On the confirmation dialog, select **OK**.
 
-## Specific runners
+## Project runners
 
-Use _specific runners_ when you want to use runners for specific projects. For example,
+Use _project runners_ when you want to use runners for specific projects. For example,
 when you have:
 
 - Jobs with specific requirements, like a deploy job that requires credentials.
 - Projects with a lot of CI activity that can benefit from being separate from other runners.
 
-You can set up a specific runner to be used by multiple projects. Specific runners
+You can set up a project runner to be used by multiple projects. Project runners
 must be enabled for each project explicitly.
 
-Specific runners process jobs by using a first in, first out ([FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics))) queue.
+Project runners process jobs by using a first in, first out ([FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics))) queue.
 
 NOTE:
-Specific runners do not get shared with forked projects automatically.
+Project runners do not get shared with forked projects automatically.
 A fork *does* copy the CI/CD settings of the cloned repository.
 
-### Create a specific runner
+### Create a project runner
 
-You can create a specific runner for your self-managed GitLab instance or for GitLab.com.
+You can create a project runner for your self-managed GitLab instance or for GitLab.com.
 
 Prerequisite:
 
 - You must have at least the Maintainer role for the project.
 
-To create a specific runner:
+To create a project runner:
 
 1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
 1. On the top bar, select **Main menu > Projects** and find the project where you want to use the runner.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. In the **Specific runners** section, note the URL and token.
+1. In the **Project runners** section, note the URL and token.
 1. [Register the runner](https://docs.gitlab.com/runner/register/).
 
 The runner is now enabled for the project.
 
-### Enable a specific runner for a different project
+### Enable a project runner for a different project
 
-After a specific runner is created, you can enable it for other projects.
+After a project runner is created, you can enable it for other projects.
 
 Prerequisites:
 You must have at least the Maintainer role for:
 
 - The project where the runner is already enabled.
 - The project where you want to enable the runner.
-- The specific runner must not be [locked](#prevent-a-specific-runner-from-being-enabled-for-other-projects).
+- The project runner must not be [locked](#prevent-a-project-runner-from-being-enabled-for-other-projects).
 
-To enable a specific runner for a project:
+To enable a project runner for a project:
 
 1. On the top bar, select **Main menu > Projects** and find the project where you want to enable the runner.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. In the **Specific runners** area, by the runner you want, select **Enable for this project**.
+1. In the **Project runners** area, by the runner you want, select **Enable for this project**.
 
-You can edit a specific runner from any of the projects it's enabled for.
+You can edit a project runner from any of the projects it's enabled for.
 The modifications, which include unlocking and editing tags and the description,
 affect all projects that use the runner.
 
-An administrator can [enable the runner for multiple projects](../../user/admin_area/settings/continuous_integration.md#enable-a-specific-runner-for-multiple-projects).
+An administrator can [enable the runner for multiple projects](../../user/admin_area/settings/continuous_integration.md#enable-a-project-runner-for-multiple-projects).
 
-### Prevent a specific runner from being enabled for other projects
+### Prevent a project runner from being enabled for other projects
 
-You can configure a specific runner so it is "locked" and cannot be enabled for other projects.
+You can configure a project runner so it is "locked" and cannot be enabled for other projects.
 This setting can be enabled when you first [register a runner](https://docs.gitlab.com/runner/register/),
 but can also be changed later.
 
-To lock or unlock a specific runner:
+To lock or unlock a project runner:
 
 1. On the top bar, select **Main menu > Projects** and find the project where you want to enable the runner.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. Find the specific runner you want to lock or unlock. Make sure it's enabled. You cannot lock shared or group runners.
+1. Find the project runner you want to lock or unlock. Make sure it's enabled. You cannot lock shared or group runners.
 1. Select **Edit** (**{pencil}**).
 1. Select the **Lock to current projects** checkbox.
 1. Select **Save changes**.

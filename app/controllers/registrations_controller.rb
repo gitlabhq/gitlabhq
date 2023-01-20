@@ -115,6 +115,7 @@ class RegistrationsController < Devise::RegistrationsController
   def after_request_hook(user)
     return unless user.persisted?
 
+    track_creation user: user
     Gitlab::Tracking.event(self.class.name, 'successfully_submitted_form', user: user)
   end
 
@@ -143,6 +144,11 @@ class RegistrationsController < Devise::RegistrationsController
 
   def after_sign_up_path
     users_sign_up_welcome_path(glm_tracking_params)
+  end
+
+  def track_creation(user:)
+    label = user_invited? ? 'invited' : 'signup'
+    Gitlab::Tracking.event(self.class.name, 'create_user', label: label, user: user)
   end
 
   def ensure_destroy_prerequisites_met
@@ -252,9 +258,15 @@ class RegistrationsController < Devise::RegistrationsController
     end
   end
 
-  def after_pending_invitations_hook
-    member_id = session.delete(:originating_member_id)
+  def user_invited?
+    !!member_id
+  end
 
+  def member_id
+    @member_id ||= session.delete(:originating_member_id)
+  end
+
+  def after_pending_invitations_hook
     return unless member_id
 
     # if invited multiple times to different projects, only the email clicked will be counted as accepted

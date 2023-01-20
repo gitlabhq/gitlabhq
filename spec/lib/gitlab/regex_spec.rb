@@ -608,6 +608,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
       it { is_expected.to match('1.0') }
       it { is_expected.to match('1.0~alpha1') }
       it { is_expected.to match('2:4.9.5+dfsg-5+deb10u1') }
+      it { is_expected.to match('0.0.0-806aa143-f0bf-4f27-be65-8e4fcb745f37') }
     end
 
     context 'dpkg errors' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User uploads avatar to profile', feature_category: :users do
+RSpec.describe 'User uploads avatar to profile', feature_category: :user_profile do
   let!(:user) { create(:user) }
   let(:avatar_file_path) { Rails.root.join('spec', 'fixtures', 'dk.png') }
 

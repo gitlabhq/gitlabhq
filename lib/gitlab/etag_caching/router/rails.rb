@@ -104,7 +104,7 @@ module Gitlab
             ::Projects::MergeRequests::ContentController,
             :cached_widget
           ]
-        ].map(&method(:build_rails_route)).freeze
+        ].map { |attrs| build_rails_route(*attrs) }.freeze
 
         # Overridden in EE to add more routes
         def self.all_routes

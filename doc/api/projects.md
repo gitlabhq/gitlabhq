@@ -1173,6 +1173,40 @@ GET /projects/:id/groups
 ]
 ```
 
+## List a project's shareable groups
+
+Get a list of groups that can be shared with a project
+
+```plaintext
+GET /projects/:id/share_locations
+```
+
+| Attribute                   | Type              | Required               | Description |
+|-----------------------------|-------------------|------------------------|-------------|
+| `id`                        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `search`                    | string            | **{dotted-circle}** No | Search for specific groups. |
+
+```json
+[
+  {
+    "id": 22,
+    "web_url": "http://127.0.0.1:3000/groups/gitlab-org",
+    "name": "Gitlab Org",
+    "avatar_url": null,
+    "full_name": "Gitlab Org",
+    "full_path": "gitlab-org"
+  },
+  {
+    "id": 25,
+    "web_url": "http://127.0.0.1:3000/groups/gnuwget",
+    "name": "Gnuwget",
+    "avatar_url": null,
+    "full_name": "Gnuwget",
+    "full_path": "gnuwget"
+  }
+]
+```
+
 ## Get project events
 
 Refer to the [Events API documentation](events.md#list-a-projects-visible-events).
@@ -2583,20 +2617,6 @@ GET /projects/:id/push_rule
   "max_file_size": 5,
   "commit_committer_check": false,
   "reject_unsigned_commits": false
-}
-```
-
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
-can also see the `commit_committer_check` and `reject_unsigned_commits`
-parameters:
-
-```json
-{
-  "id": 1,
-  "project_id": 3,
-  "commit_committer_check": false,
-  "reject_unsigned_commits": false
-  ...
 }
 ```
 

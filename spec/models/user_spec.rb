@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe User, feature_category: :users do
+RSpec.describe User, feature_category: :user_profile do
   include ProjectForksHelper
   include TermsHelper
   include ExclusiveLeaseHelpers

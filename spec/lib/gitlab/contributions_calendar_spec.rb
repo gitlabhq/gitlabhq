@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ContributionsCalendar, feature_category: :users do
+RSpec.describe Gitlab::ContributionsCalendar, feature_category: :user_profile do
   let_it_be_with_reload(:contributor) { create(:user) }
   let_it_be_with_reload(:user) { create(:user) }
   let(:travel_time) { nil }

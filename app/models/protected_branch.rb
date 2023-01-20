@@ -43,14 +43,12 @@ class ProtectedBranch < ApplicationRecord
   end
 
   def self.new_cache(project, ref_name, dry_run: true)
-    if Feature.enabled?(:hash_based_cache_for_protected_branches, project)
-      ProtectedBranches::CacheService.new(project).fetch(ref_name, dry_run: dry_run) do # rubocop: disable CodeReuse/ServiceClass
-        self.matching(ref_name, protected_refs: protected_refs(project)).present?
-      end
+    ProtectedBranches::CacheService.new(project).fetch(ref_name, dry_run: dry_run) do # rubocop: disable CodeReuse/ServiceClass
+      self.matching(ref_name, protected_refs: protected_refs(project)).present?
     end
   end
 
-  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/368279
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/370608
   # ----------------------------------------------------------------
   CACHE_EXPIRE_IN = 1.hour
 

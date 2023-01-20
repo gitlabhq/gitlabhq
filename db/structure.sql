@@ -14573,6 +14573,21 @@ CREATE TABLE dast_profiles_pipelines (
 
 COMMENT ON TABLE dast_profiles_pipelines IS '{"owner":"group::dynamic analysis","description":"Join table between DAST Profiles and CI Pipelines"}';
 
+CREATE TABLE dast_profiles_tags (
+    id bigint NOT NULL,
+    dast_profile_id bigint NOT NULL,
+    tag_id bigint NOT NULL
+);
+
+CREATE SEQUENCE dast_profiles_tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE dast_profiles_tags_id_seq OWNED BY dast_profiles_tags.id;
+
 CREATE TABLE dast_scanner_profiles (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -24104,6 +24119,8 @@ ALTER TABLE ONLY dast_profile_schedules ALTER COLUMN id SET DEFAULT nextval('das
 
 ALTER TABLE ONLY dast_profiles ALTER COLUMN id SET DEFAULT nextval('dast_profiles_id_seq'::regclass);
 
+ALTER TABLE ONLY dast_profiles_tags ALTER COLUMN id SET DEFAULT nextval('dast_profiles_tags_id_seq'::regclass);
+
 ALTER TABLE ONLY dast_scanner_profiles ALTER COLUMN id SET DEFAULT nextval('dast_scanner_profiles_id_seq'::regclass);
 
 ALTER TABLE ONLY dast_scanner_profiles_tags ALTER COLUMN id SET DEFAULT nextval('dast_scanner_profiles_tags_id_seq'::regclass);
@@ -25978,6 +25995,9 @@ ALTER TABLE ONLY dast_profiles_pipelines
 
 ALTER TABLE ONLY dast_profiles
     ADD CONSTRAINT dast_profiles_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY dast_profiles_tags
+    ADD CONSTRAINT dast_profiles_tags_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY dast_scanner_profiles_builds
     ADD CONSTRAINT dast_scanner_profiles_builds_pkey PRIMARY KEY (dast_scanner_profile_id, ci_build_id);
@@ -28305,6 +28325,8 @@ CREATE INDEX i_compliance_frameworks_on_id_and_created_at ON compliance_manageme
 
 CREATE INDEX i_dast_pre_scan_verification_steps_on_pre_scan_verification_id ON dast_pre_scan_verification_steps USING btree (dast_pre_scan_verification_id);
 
+CREATE INDEX i_dast_profiles_tags_on_scanner_profiles_id ON dast_profiles_tags USING btree (dast_profile_id);
+
 CREATE INDEX i_dast_scanner_profiles_tags_on_scanner_profiles_id ON dast_scanner_profiles_tags USING btree (dast_scanner_profile_id);
 
 CREATE UNIQUE INDEX i_pm_licenses_on_spdx_identifier ON pm_licenses USING btree (spdx_identifier);
@@ -29286,6 +29308,8 @@ CREATE INDEX index_dast_profiles_on_dast_site_profile_id ON dast_profiles USING 
 CREATE UNIQUE INDEX index_dast_profiles_on_project_id_and_name ON dast_profiles USING btree (project_id, name);
 
 CREATE UNIQUE INDEX index_dast_profiles_pipelines_on_ci_pipeline_id ON dast_profiles_pipelines USING btree (ci_pipeline_id);
+
+CREATE INDEX index_dast_profiles_tags_on_tag_id ON dast_profiles_tags USING btree (tag_id);
 
 CREATE UNIQUE INDEX index_dast_scanner_profiles_on_project_id_and_name ON dast_scanner_profiles USING btree (project_id, name);
 
@@ -35331,6 +35355,9 @@ ALTER TABLE ONLY merge_request_user_mentions
 
 ALTER TABLE ONLY x509_commit_signatures
     ADD CONSTRAINT fk_rails_ab07452314 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dast_profiles_tags
+    ADD CONSTRAINT fk_rails_ab9e643cd8 FOREIGN KEY (dast_profile_id) REFERENCES dast_profiles(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_iteration_events
     ADD CONSTRAINT fk_rails_abf5d4affa FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

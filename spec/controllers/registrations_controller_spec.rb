@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RegistrationsController do
+RSpec.describe RegistrationsController, feature_category: :users do
   include TermsHelper
   include FullNameHelper
 
@@ -215,11 +215,18 @@ RSpec.describe RegistrationsController do
                     property: member.id.to_s,
                     user: member.reload.user
                   )
+
+                  expect_snowplow_event(
+                    category: 'RegistrationsController',
+                    action: 'create_user',
+                    label: 'invited',
+                    user: member.reload.user
+                  )
                 end
               end
 
               context 'when member does not exist from the session key value' do
-                let(:originating_member_id) { -1 }
+                let(:originating_member_id) { nil }
 
                 it 'does not track invite acceptance' do
                   subject
@@ -228,6 +235,13 @@ RSpec.describe RegistrationsController do
                     category: 'RegistrationsController',
                     action: 'accepted',
                     label: 'invite_email'
+                  )
+
+                  expect_snowplow_event(
+                    category: 'RegistrationsController',
+                    action: 'create_user',
+                    label: 'signup',
+                    user: member.reload.user
                   )
                 end
               end

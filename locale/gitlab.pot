@@ -4713,9 +4713,6 @@ msgstr ""
 msgid "Any milestone"
 msgstr ""
 
-msgid "Any namespace"
-msgstr ""
-
 msgid "App ID"
 msgstr ""
 
@@ -5978,9 +5975,6 @@ msgid "Available group runners: %{runners}"
 msgstr ""
 
 msgid "Available on-demand"
-msgstr ""
-
-msgid "Available specific runners"
 msgstr ""
 
 msgid "Avatar for %{assigneeName}"
@@ -19867,6 +19861,9 @@ msgstr ""
 msgid "GroupSelect|Select a group"
 msgstr ""
 
+msgid "GroupSettings|Analytics Dashboards"
+msgstr ""
+
 msgid "GroupSettings|Applied to all subgroups unless overridden by a group owner. Groups already added to the project lose access."
 msgstr ""
 
@@ -19969,6 +19966,12 @@ msgstr ""
 msgid "GroupSettings|Select parent group"
 msgstr ""
 
+msgid "GroupSettings|Select the project containing Analytics Dashboards configuration files"
+msgstr ""
+
+msgid "GroupSettings|Select the project containing Analytics Dashboards configuration files."
+msgstr ""
+
 msgid "GroupSettings|Select the project containing the %{code_start}.gitlab/insights.yml%{code_end} file"
 msgstr ""
 
@@ -20006,6 +20009,9 @@ msgid "GroupSettings|Users can create %{link_start_project}project access tokens
 msgstr ""
 
 msgid "GroupSettings|What are badges?"
+msgstr ""
+
+msgid "GroupSettings|What is Analytics Dashboards?"
 msgstr ""
 
 msgid "GroupSettings|What is Insights?"
@@ -22845,6 +22851,9 @@ msgid "Invalid server response"
 msgstr ""
 
 msgid "Invalid status"
+msgstr ""
+
+msgid "Invalid tags"
 msgstr ""
 
 msgid "Invalid two-factor code."
@@ -27140,6 +27149,9 @@ msgid "MissingSSHKeyWarningLink|You won't be able to pull or push repositories v
 msgstr ""
 
 msgid "MlExperimentsEmptyState|No Experiments to Show"
+msgstr ""
+
+msgid "Modal updated"
 msgstr ""
 
 msgid "ModalButton|Add projects"
@@ -36272,6 +36284,9 @@ msgstr ""
 msgid "Runners|Assigned Projects (%{projectCount})"
 msgstr ""
 
+msgid "Runners|Assigned project runners"
+msgstr ""
+
 msgid "Runners|Associated with one or more projects"
 msgstr ""
 
@@ -36486,6 +36501,9 @@ msgstr ""
 msgid "Runners|Project"
 msgstr ""
 
+msgid "Runners|Project runners"
+msgstr ""
+
 msgid "Runners|Property Name"
 msgstr ""
 
@@ -36666,6 +36684,9 @@ msgstr ""
 msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
 msgstr ""
 
+msgid "Runners|These runners are assigned to this project."
+msgstr ""
+
 msgid "Runners|This group currently has 1 stale runner."
 msgid_plural "Runners|This group currently has %d stale runners."
 msgstr[0] ""
@@ -36755,7 +36776,7 @@ msgstr ""
 msgid "Runners|Yes, start deleting stale runners"
 msgstr ""
 
-msgid "Runners|You can set up a specific runner to be used by multiple projects but you cannot make this a shared or group runner."
+msgid "Runners|You can set up a project runner to be used by multiple projects but you cannot make this a shared or group runner."
 msgstr ""
 
 msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your shared Runners pipeline minutes."
@@ -36770,10 +36791,10 @@ msgstr ""
 msgid "Runners|paused"
 msgstr ""
 
-msgid "Runners|shared"
+msgid "Runners|project"
 msgstr ""
 
-msgid "Runners|specific"
+msgid "Runners|shared"
 msgstr ""
 
 msgid "Runner|Owner"
@@ -39544,6 +39565,15 @@ msgstr ""
 msgid "SlackIntegration|You may need to reinstall the GitLab for Slack app when we %{linkStart}make updates or change permissions%{linkEnd}."
 msgstr ""
 
+msgid "SlackModal|Are you sure you want to change the project?"
+msgstr ""
+
+msgid "SlackModal|If you change the project, you'll lose any text entered in the form."
+msgstr ""
+
+msgid "SlackModal|If you've entered some text, consider saving it somewhere to avoid losing any content."
+msgstr ""
+
 msgid "SlackService|1. %{slash_command_link_start}Add a slash command%{slash_command_link_end} in your Slack team using this information:"
 msgstr ""
 
@@ -39857,6 +39887,9 @@ msgid "Something went wrong while updating a requirement."
 msgstr ""
 
 msgid "Something went wrong while updating assignees"
+msgstr ""
+
+msgid "Something went wrong while updating the modal."
 msgstr ""
 
 msgid "Something went wrong while updating your list settings"
@@ -40193,9 +40226,6 @@ msgid "Spam and Anti-bot Protection"
 msgstr ""
 
 msgid "Spam log successfully submitted as ham."
-msgstr ""
-
-msgid "Specific runners"
 msgstr ""
 
 msgid "Specified URL cannot be used: \"%{reason}\""
@@ -42813,9 +42843,6 @@ msgid "These existing issues have a similar title. It might be better to comment
 msgstr ""
 
 msgid "These runners are shared across projects in this group."
-msgstr ""
-
-msgid "These runners are specific to this project."
 msgstr ""
 
 msgid "These variables are inherited from the parent group."

@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/runners/specific_runners.html.haml' do
+RSpec.describe 'projects/runners/_project_runners.html.haml', feature_category: :runner do
   describe 'render' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { build(:user) }
+    let_it_be(:project) { build(:project) }
 
     before do
       @project = project
@@ -22,7 +22,7 @@ RSpec.describe 'projects/runners/specific_runners.html.haml' do
       end
 
       it 'enables the Remove project button for a project' do
-        render 'projects/runners/specific_runners', project: project
+        render 'projects/runners/project_runners', project: project
 
         expect(rendered).to have_selector '#js-install-runner'
         expect(rendered).not_to have_content 'Please contact an admin to register runners.'
@@ -35,7 +35,7 @@ RSpec.describe 'projects/runners/specific_runners.html.haml' do
       end
 
       it 'does not enable the Remove project button for a project' do
-        render 'projects/runners/specific_runners', project: project
+        render 'projects/runners/project_runners', project: project
 
         expect(rendered).to have_content 'Please contact an admin to register runners.'
         expect(rendered).not_to have_selector '#js-install-runner'

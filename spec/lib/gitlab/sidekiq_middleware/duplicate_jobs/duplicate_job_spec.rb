@@ -77,7 +77,11 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
     end
   end
 
-  shared_examples 'with Redis cookies' do
+  context 'with Redis cookies' do
+    def with_redis(&block)
+      Sidekiq.redis(&block)
+    end
+
     let(:cookie_key) { "#{idempotency_key}:cookie:v2" }
     let(:cookie) { get_redis_msgpack(cookie_key) }
 
@@ -383,41 +387,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
     def redis_ttl(key)
       with_redis { |redis| redis.ttl(key) }
     end
-  end
-
-  context 'with multi-store feature flags turned on' do
-    def with_redis(&block)
-      Gitlab::Redis::DuplicateJobs.with(&block)
-    end
-
-    it 'use Gitlab::Redis::DuplicateJobs.with' do
-      expect(Gitlab::Redis::DuplicateJobs).to receive(:with).and_call_original
-      expect(Sidekiq).not_to receive(:redis)
-
-      duplicate_job.check!
-    end
-
-    it_behaves_like 'with Redis cookies'
-  end
-
-  context 'when both multi-store feature flags are off' do
-    def with_redis(&block)
-      Sidekiq.redis(&block)
-    end
-
-    before do
-      stub_feature_flags(use_primary_and_secondary_stores_for_duplicate_jobs: false)
-      stub_feature_flags(use_primary_store_as_default_for_duplicate_jobs: false)
-    end
-
-    it 'use Sidekiq.redis' do
-      expect(Sidekiq).to receive(:redis).and_call_original
-      expect(Gitlab::Redis::DuplicateJobs).not_to receive(:with)
-
-      duplicate_job.check!
-    end
-
-    it_behaves_like 'with Redis cookies'
   end
 
   describe '#scheduled?' do

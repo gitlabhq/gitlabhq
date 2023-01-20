@@ -116,7 +116,7 @@ export default {
       category="tertiary"
       :aria-label="__('Remove')"
       :title="__('Remove')"
-      class="gl-align-self-center gl-p-1! gl-absolute! gl-w-auto! gl-top-4 gl-right-4"
+      class="gl-align-self-center gl-p-1! gl-absolute! gl-w-auto! gl-right-4 gl-top-half gl-translate-y-n50"
       data-testid="item-remove"
       @click.stop.prevent="removeFrequentItem(itemId)"
     >

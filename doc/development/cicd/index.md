@@ -69,7 +69,7 @@ looks for the next jobs to be transitioned towards completion. While doing that,
 updates the status of jobs, stages and the overall pipeline.
 
 On the right side of the diagram we have a list of [runners](../../ci/runners/index.md)
-connected to the GitLab instance. These can be shared runners, group runners, or project-specific runners.
+connected to the GitLab instance. These can be shared runners, group runners, or project runners.
 The communication between runners and the Rails server occurs through a set of API endpoints, grouped as
 the `Runner API Gateway`.
 
@@ -131,7 +131,7 @@ After the runner is [registered](https://docs.gitlab.com/runner/register/) using
 - The type of runner it is registered as:
   - a shared runner
   - a group runner
-  - a project specific runner
+  - a project runner
 - Any associated tags.
 
 The runner initiates the communication by requesting jobs to execute with `POST /api/v4/jobs/request`. Although polling happens every few seconds, we leverage caching through HTTP headers to reduce the server-side work load if the job queue doesn't change.

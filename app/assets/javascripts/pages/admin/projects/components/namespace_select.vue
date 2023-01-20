@@ -1,34 +1,31 @@
 <script>
-import {
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownDivider,
-  GlSearchBoxByType,
-  GlLoadingIcon,
-} from '@gitlab/ui';
+import { debounce } from 'lodash';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import Api from '~/api';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __ } from '~/locale';
 
 export default {
   i18n: {
-    dropdownHeader: __('Namespaces'),
+    headerText: __('Namespaces'),
     searchPlaceholder: __('Search for Namespace'),
-    anyNamespace: __('Any namespace'),
+    reset: __('Clear'),
   },
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownDivider,
-    GlLoadingIcon,
-    GlSearchBoxByType,
+    GlCollapsibleListbox,
   },
   props: {
-    showAny: {
-      type: Boolean,
+    origSelectedId: {
+      type: String,
       required: false,
-      default: false,
+      default: '',
     },
-    placeholder: {
+    origSelectedText: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    toggleTextPlaceholder: {
       type: String,
       required: false,
       default: __('Namespace'),
@@ -42,49 +39,65 @@ export default {
   data() {
     return {
       namespaceOptions: [],
-      selectedNamespaceId: null,
-      selectedNamespace: null,
+      selectedNamespaceId: this.origSelectedId,
+      selectedNamespaceText: this.origSelectedText,
       searchTerm: '',
       isLoading: false,
     };
   },
   computed: {
-    selectedNamespaceName() {
-      if (this.selectedNamespaceId === null) {
-        return this.placeholder;
-      }
-      return this.selectedNamespace;
+    toggleText() {
+      return this.selectedNamespaceText || this.toggleTextPlaceholder;
     },
   },
   watch: {
-    searchTerm() {
-      this.fetchNamespaces(this.searchTerm);
+    selectedNamespaceId(val) {
+      if (!val) {
+        this.selectedNamespaceText = null;
+      }
+
+      this.selectedNamespaceText = this.namespaceOptions.find(({ value }) => value === val)?.text;
     },
   },
   mounted() {
     this.fetchNamespaces();
   },
   methods: {
-    fetchNamespaces(filter) {
+    fetchNamespaces() {
       this.isLoading = true;
       this.namespaceOptions = [];
-      return Api.namespaces(filter, (namespaces) => {
-        this.namespaceOptions = namespaces;
+
+      return Api.namespaces(this.searchTerm, (namespaces) => {
+        this.namespaceOptions = this.formatNamespaceOptions(namespaces);
         this.isLoading = false;
       });
     },
-    selectNamespace(key) {
-      this.selectedNamespaceId = this.namespaceOptions[key].id;
-      this.selectedNamespace = this.getNamespaceString(this.namespaceOptions[key]);
-      this.$emit('setNamespace', this.selectedNamespaceId);
+    formatNamespaceOptions(namespaces) {
+      if (!namespaces) {
+        return [];
+      }
+
+      return namespaces.map((namespace) => {
+        return {
+          value: String(namespace.id),
+          text: this.getNamespaceString(namespace),
+        };
+      });
     },
-    selectAnyNamespace() {
-      this.selectedNamespaceId = null;
-      this.selectedNamespace = null;
-      this.$emit('setNamespace', null);
+    selectNamespace(value) {
+      this.selectedNamespaceId = value;
+      this.$emit('setNamespace', this.selectedNamespaceId);
     },
     getNamespaceString(namespace) {
       return `${namespace.kind}: ${namespace.full_path}`;
+    },
+    search: debounce(function debouncedSearch(searchQuery) {
+      this.searchTerm = searchQuery?.trim();
+      this.fetchNamespaces();
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
+    onReset() {
+      this.selectedNamespaceId = null;
+      this.$emit('setNamespace', null);
     },
   },
 };
@@ -99,45 +112,19 @@ export default {
       type="hidden"
       data-testid="hidden-input"
     />
-    <gl-dropdown
-      :text="selectedNamespaceName"
-      :header-text="$options.i18n.dropdownHeader"
-      toggle-class="dropdown-menu-toggle large"
-      data-testid="namespace-dropdown"
-      :right="true"
-    >
-      <template #header>
-        <gl-search-box-by-type
-          v-model.trim="searchTerm"
-          class="namespace-search-box"
-          debounce="250"
-          :placeholder="$options.i18n.searchPlaceholder"
-        />
-      </template>
-
-      <template v-if="showAny">
-        <gl-dropdown-item @click="selectAnyNamespace">
-          {{ $options.i18n.anyNamespace }}
-        </gl-dropdown-item>
-        <gl-dropdown-divider />
-      </template>
-
-      <gl-loading-icon v-if="isLoading" />
-
-      <gl-dropdown-item
-        v-for="(namespace, key) in namespaceOptions"
-        :key="namespace.id"
-        @click="selectNamespace(key)"
-      >
-        {{ getNamespaceString(namespace) }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+    <gl-collapsible-listbox
+      :items="namespaceOptions"
+      :header-text="$options.i18n.headerText"
+      :reset-button-label="$options.i18n.reset"
+      :toggle-text="toggleText"
+      :search-placeholder="$options.i18n.searchPlaceholder"
+      :searching="isLoading"
+      :selected="selectedNamespaceId"
+      toggle-class="gl-w-full gl-flex-direction-column gl-align-items-stretch!"
+      searchable
+      @reset="onReset"
+      @search="search"
+      @select="selectNamespace"
+    />
   </div>
 </template>
-
-<style scoped>
-/* workaround position: relative imposed by .top-area .nav-controls */
-.namespace-search-box >>> input {
-  position: static;
-}
-</style>

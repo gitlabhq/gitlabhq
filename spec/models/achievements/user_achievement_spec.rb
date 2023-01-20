@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Achievements::UserAchievement, type: :model, feature_category: :users do
+RSpec.describe Achievements::UserAchievement, type: :model, feature_category: :user_profile do
   describe 'associations' do
     it { is_expected.to belong_to(:achievement).inverse_of(:user_achievements).required }
     it { is_expected.to belong_to(:user).inverse_of(:user_achievements).required }

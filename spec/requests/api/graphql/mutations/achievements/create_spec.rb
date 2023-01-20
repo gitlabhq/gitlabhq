@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Achievements::Create, feature_category: :users do
+RSpec.describe Mutations::Achievements::Create, feature_category: :user_profile do
   include GraphqlHelpers
   include WorkhorseHelpers
 

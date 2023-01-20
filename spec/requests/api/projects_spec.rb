@@ -2227,6 +2227,89 @@ RSpec.describe API::Projects do
     end
   end
 
+  describe 'GET /project/:id/share_locations' do
+    let_it_be(:root_group) { create(:group, :public, name: 'root group') }
+    let_it_be(:project_group1) { create(:group, :public, parent: root_group, name: 'group1') }
+    let_it_be(:project_group2) { create(:group, :public, parent: root_group, name: 'group2') }
+    let_it_be(:project) { create(:project, :private, group: project_group1) }
+
+    shared_examples_for 'successful groups response' do
+      it 'returns an array of groups' do
+        request
+
+        aggregate_failures do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |g| g['name'] }).to match_array(expected_groups.map(&:name))
+        end
+      end
+    end
+
+    context 'when unauthenticated' do
+      it 'does not return the groups for the given project' do
+        get api("/projects/#{project.id}/share_locations")
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when authenticated' do
+      context 'when user is not the owner of the project' do
+        it 'does not return the groups' do
+          get api("/projects/#{project.id}/share_locations", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when user is the owner of the project' do
+        let(:request) { get api("/projects/#{project.id}/share_locations", user), params: params }
+        let(:params) {}
+
+        before do
+          project.add_owner(user)
+          project_group1.add_developer(user)
+          project_group2.add_developer(user)
+        end
+
+        context 'with default search' do
+          it_behaves_like 'successful groups response' do
+            let(:expected_groups) { [project_group1, project_group2] }
+          end
+        end
+
+        context 'when searching by group name' do
+          let(:params) { { search: 'group1' } }
+
+          it_behaves_like 'successful groups response' do
+            let(:expected_groups) { [project_group1] }
+          end
+        end
+      end
+    end
+
+    context 'when authenticated as admin' do
+      let(:request) { get api("/projects/#{project.id}/share_locations", admin), params: {} }
+
+      context 'without share_with_group_lock' do
+        it_behaves_like 'successful groups response' do
+          let(:expected_groups) { [root_group, project_group1, project_group2] }
+        end
+      end
+
+      context 'with share_with_group_lock' do
+        before do
+          project.namespace.update!(share_with_group_lock: true)
+        end
+
+        it_behaves_like 'successful groups response' do
+          let(:expected_groups) { [] }
+        end
+      end
+    end
+  end
+
   describe 'GET /projects/:id' do
     context 'when unauthenticated' do
       it 'does not return private projects' do
@@ -2297,7 +2380,7 @@ RSpec.describe API::Projects do
       let(:project_attributes) { YAML.load_file(project_attributes_file) }
 
       let(:expected_keys) do
-        keys = project_attributes.map do |relation, relation_config|
+        keys = project_attributes.flat_map do |relation, relation_config|
           begin
             actual_keys = project.send(relation).attributes.keys
           rescue NoMethodError
@@ -2307,7 +2390,7 @@ RSpec.describe API::Projects do
           remapped_attributes = relation_config['remapped_attributes'] || {}
           computed_attributes = relation_config['computed_attributes'] || []
           actual_keys - unexposed_attributes - remapped_attributes.keys + remapped_attributes.values + computed_attributes
-        end.flatten
+        end
 
         unless Gitlab.ee?
           keys -= %w[
@@ -3662,8 +3745,8 @@ RSpec.describe API::Projects do
 
           aggregate_failures "testing response" do
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
-                                                      '-/system/project/avatar/'\
+            expect(json_response['avatar_url']).to eq('http://localhost/uploads/' \
+                                                      '-/system/project/avatar/' \
                                                       "#{project3.id}/banana_sample.gif")
           end
         end
@@ -3678,8 +3761,8 @@ RSpec.describe API::Projects do
 
           aggregate_failures "testing response" do
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
-                                                      '-/system/project/avatar/'\
+            expect(json_response['avatar_url']).to eq('http://localhost/uploads/' \
+                                                      '-/system/project/avatar/' \
                                                       "#{project_with_avatar.id}/rails_sample.png")
           end
         end
@@ -3695,8 +3778,8 @@ RSpec.describe API::Projects do
           aggregate_failures "testing response" do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['description']).to eq('changed description')
-            expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
-                                                      '-/system/project/avatar/'\
+            expect(json_response['avatar_url']).to eq('http://localhost/uploads/' \
+                                                      '-/system/project/avatar/' \
                                                       "#{project_with_avatar.id}/banana_sample.gif")
           end
         end

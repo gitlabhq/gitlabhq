@@ -799,7 +799,7 @@ GEM
       character_set (~> 1.4)
       regexp_parser (~> 2.5)
       regexp_property_values (~> 1.0)
-    json (2.5.1)
+    json (2.6.3)
     json-jwt (1.15.3)
       activesupport (>= 4.2)
       aes_key_wrap
@@ -1712,7 +1712,7 @@ DEPENDENCIES
   ipynbdiff!
   jira-ruby (~> 2.1.4)
   js_regex (~> 3.8)
-  json (~> 2.5.1)
+  json (~> 2.6.3)
   json_schemer (~> 0.2.18)
   jwt (~> 2.1.0)
   kaminari (~> 1.2.2)

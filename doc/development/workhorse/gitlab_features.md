@@ -66,7 +66,6 @@ memory than it costs to have Workhorse look after it.
 - Workhorse does not connect to PostgreSQL, only to Rails and (optionally) Redis.
 - We assume that all requests that reach Workhorse pass through an
   upstream proxy such as NGINX or Apache first.
-- Workhorse does not accept HTTPS connections.
 - Workhorse does not clean up idle client connections.
 - We assume that all requests to Rails pass through Workhorse.
 

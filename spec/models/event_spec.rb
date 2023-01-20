@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Event, feature_category: :users do
+RSpec.describe Event, feature_category: :user_profile do
   let_it_be_with_reload(:project) { create(:project) }
 
   describe "Associations" do

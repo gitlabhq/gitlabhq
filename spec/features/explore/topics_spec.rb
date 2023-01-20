@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Explore Topics', feature_category: :users do
+RSpec.describe 'Explore Topics', feature_category: :user_profile do
   context 'when no topics exist' do
     it 'renders empty message', :aggregate_failures do
       visit topics_explore_projects_path

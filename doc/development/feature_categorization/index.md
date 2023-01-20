@@ -176,7 +176,7 @@ Or the feature category can be specified in the action itself:
 ```ruby
 module API
   class Users < ::API::Base
-    get ':id', feature_category: :users do
+    get ':id', feature_category: :user_profile do
     end
   end
 end

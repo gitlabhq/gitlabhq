@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Update of user activity', feature_category: :users do
+RSpec.describe 'Update of user activity', feature_category: :user_profile do
   paths_to_visit = [
     '/group',
     '/group/project',

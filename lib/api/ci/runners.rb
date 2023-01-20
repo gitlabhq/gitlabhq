@@ -13,7 +13,7 @@ module API
       helpers do
         params :deprecated_filter_params do
           optional :scope, type: String, values: ::Ci::Runner::AVAILABLE_SCOPES,
-                           desc: 'Deprecated: Use `type` or `status` instead. The scope of specific runners to return'
+                           desc: 'Deprecated: Use `type` or `status` instead. The scope of runners to return'
         end
 
         params :filter_params do
@@ -111,9 +111,9 @@ module API
           present paginate(runners), with: Entities::Ci::Runner
         end
 
-        desc 'Get all runners - shared and specific' do
+        desc 'Get all runners - shared and project' do
           summary 'List all runners'
-          detail 'Get a list of all runners in the GitLab instance (specific and shared). ' \
+          detail 'Get a list of all runners in the GitLab instance (shared and project). ' \
                  'Access is restricted to users with administrator access.'
           success Entities::Ci::Runner
           failure [[400, 'Scope contains invalid value'], [401, 'Unauthorized']]
@@ -286,7 +286,7 @@ module API
         end
 
         desc 'Enable a runner in project' do
-          detail "Enable an available specific runner in the project."
+          detail "Enable an available project runner in the project."
           success Entities::Ci::Runner
           failure [[400, 'Bad Request'],
                    [403, 'No access granted'], [403, 'Runner is a group runner'], [403, 'Runner is locked'],
@@ -308,7 +308,7 @@ module API
         end
 
         desc "Disable project's runner" do
-          summary "Disable a specific runner from the project"
+          summary "Disable a project runner from the project"
           detail "It works only if the project isn't the only project associated with the specified runner. " \
                  "If so, an error is returned. Use the call to delete a runner instead."
           success Entities::Ci::Runner

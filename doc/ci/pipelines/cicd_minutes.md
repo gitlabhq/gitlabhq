@@ -33,7 +33,7 @@ On self-managed GitLab instances:
 - Administrators can [assign more CI/CD minutes](#set-the-quota-of-cicd-minutes-for-a-specific-namespace)
   if a namespace uses all the CI/CD minutes in its monthly quota.
 
-[Specific runners](../runners/runners_scope.md#specific-runners) are not subject to a quota of CI/CD minutes.
+[Project runners](../runners/runners_scope.md#project-runners) are not subject to a quota of CI/CD minutes.
 
 ## Set the quota of CI/CD minutes for all namespaces
 
@@ -216,9 +216,9 @@ The cost factors on self-managed instances are:
 
 #### Cost factor for community contributions to GitLab projects
 
-Community contributors can use up to 300,000 minutes on shared runners when contributing to open source projects 
+Community contributors can use up to 300,000 minutes on shared runners when contributing to open source projects
 maintained by GitLab. The maximum of 300,000 minutes would only be possible if contributing exclusively to projects [part of the GitLab product](https://about.gitlab.com/handbook/engineering/metrics/#projects-that-are-part-of-the-product). The total number of minutes available on shared runners
-is reduced by the CI/CD minutes used by pipelines from other projects. 
+is reduced by the CI/CD minutes used by pipelines from other projects.
 The 300,000 minutes applies to all SaaS tiers, and the cost factor calculation is:
 
 - `Monthly minute quota / 300,000 job duration minutes = Cost factor`

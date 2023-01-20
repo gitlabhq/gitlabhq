@@ -1,6 +1,4 @@
 - button_path = local_assigns.fetch(:button_path, false)
-- project_select_button = local_assigns.fetch(:project_select_button, false)
-- has_button = button_path || project_select_button
 - closed_merged_count = issuables_count_for_state(:merged, :closed)
 - opened_merged_count = issuables_count_for_state(:merged, :opened)
 - is_opened_state = params[:state] == 'opened'
@@ -37,9 +35,6 @@
           = _("Merge requests are a place to propose changes you've made to a project and discuss those changes with others")
         %p
           = _("Interested parties can even contribute by pushing commits if they want to.")
-        - if has_button
+        - if button_path
           .text-center
-            - if project_select_button
-              = render 'shared/new_project_item_select', path: 'merge_requests/new', label: _('merge request'), type: :merge_requests, with_feature_enabled: 'merge_requests'
-            - else
-              = link_to _('New merge request'), button_path, class: 'gl-button btn btn-confirm', title: _('New merge request'), id: 'new_merge_request_link', data: { qa_selector: "new_merge_request_button" }
+            = link_to _('New merge request'), button_path, class: 'gl-button btn btn-confirm', title: _('New merge request'), id: 'new_merge_request_link', data: { qa_selector: "new_merge_request_button" }

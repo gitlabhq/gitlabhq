@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe UpdateExternalProjectBots, :migration, feature_category: :users do
+RSpec.describe UpdateExternalProjectBots, :migration, feature_category: :user_profile do
   def create_user(**extra_options)
     defaults = { projects_limit: 0, email: "#{extra_options[:username]}@example.com" }
 

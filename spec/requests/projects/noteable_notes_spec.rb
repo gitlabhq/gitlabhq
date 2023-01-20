@@ -36,5 +36,41 @@ RSpec.describe 'Project noteable notes', feature_category: :team_planning do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response_etag).to eq(stored_etag)
     end
+
+    it "instruments cache hits correctly" do
+      etag_store.touch(notes_path)
+
+      expect(Gitlab::Metrics::RailsSlis.request_apdex).to(
+        receive(:increment).with(
+          labels: {
+            request_urgency: :low,
+            feature_category: "team_planning",
+            endpoint_id: "Projects::NotesController#index"
+          },
+          success: be_in([true, false])
+        )
+      )
+      allow(ActiveSupport::Notifications).to receive(:instrument).and_call_original
+
+      expect(ActiveSupport::Notifications).to(
+        receive(:instrument).with(
+          'process_action.action_controller',
+          a_hash_including(
+            {
+              request_urgency: :low,
+              target_duration_s: 5,
+              metadata: a_hash_including({
+                'meta.feature_category' => 'team_planning',
+                'meta.caller_id' => "Projects::NotesController#index"
+              })
+            }
+          )
+        )
+      )
+
+      get notes_path, headers: { "if-none-match": stored_etag }
+
+      expect(response).to have_gitlab_http_status(:not_modified)
+    end
   end
 end

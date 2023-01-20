@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanupAfterFixingRegressionWithNewUsersEmails, :sidekiq, feature_category: :users do
+RSpec.describe CleanupAfterFixingRegressionWithNewUsersEmails, :sidekiq, feature_category: :user_profile do
   let(:migration) { described_class.new }
   let(:users) { table(:users) }
   let(:emails) { table(:emails) }

@@ -1,99 +1,142 @@
-import { mount } from '@vue/test-utils';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import NamespaceSelect from '~/pages/admin/projects/components/namespace_select.vue';
 
-describe('Dropdown select component', () => {
+const TEST_USER_NAMESPACE = { id: 10, kind: 'user', full_path: 'Administrator' };
+const TEST_GROUP_NAMESPACE = { id: 20, kind: 'group', full_path: 'GitLab Org' };
+
+describe('NamespaceSelect', () => {
   let wrapper;
 
-  const mountDropdown = (propsData) => {
-    wrapper = mount(NamespaceSelect, { propsData });
+  const createComponent = (propsData) => {
+    wrapper = shallowMountExtended(NamespaceSelect, { propsData });
   };
 
-  const findDropdownToggle = () => wrapper.find('button.dropdown-toggle');
-  const findNamespaceInput = () => wrapper.find('[data-testid="hidden-input"]');
-  const findFilterInput = () => wrapper.find('.namespace-search-box input');
-  const findDropdownOption = (match) => {
-    const buttons = wrapper
-      .findAll('button.dropdown-item')
-      .filter((node) => node.text().match(match));
-    return buttons.length ? buttons.at(0) : buttons;
-  };
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findNamespaceInput = () => wrapper.findByTestId('hidden-input');
 
-  const setFieldValue = async (field, value) => {
-    await field.setValue(value);
-    field.trigger('blur');
+  const search = async (searchString) => {
+    findListbox().vm.$emit('search', searchString);
+    await waitForPromises();
   };
 
   beforeEach(() => {
     setHTMLFixture('<div class="test-container"></div>');
 
-    jest.spyOn(Api, 'namespaces').mockImplementation((_, callback) =>
-      callback([
-        { id: 10, kind: 'user', full_path: 'Administrator' },
-        { id: 20, kind: 'group', full_path: 'GitLab Org' },
-      ]),
-    );
+    jest
+      .spyOn(Api, 'namespaces')
+      .mockImplementation((_, callback) => callback([TEST_USER_NAMESPACE, TEST_GROUP_NAMESPACE]));
   });
 
   afterEach(() => {
     resetHTMLFixture();
   });
 
-  it('creates a hidden input if fieldName is provided', () => {
-    mountDropdown({ fieldName: 'namespace-input' });
+  describe('on mount', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('does not show hidden input', () => {
+      expect(findNamespaceInput().exists()).toBe(false);
+    });
+
+    it('sets appropriate props', async () => {
+      expect(findListbox().props()).toMatchObject({
+        items: [
+          { text: 'user: Administrator', value: '10' },
+          { text: 'group: GitLab Org', value: '20' },
+        ],
+        headerText: NamespaceSelect.i18n.headerText,
+        resetButtonLabel: NamespaceSelect.i18n.reset,
+        toggleText: 'Namespace',
+        searchPlaceholder: NamespaceSelect.i18n.searchPlaceholder,
+        searching: false,
+        searchable: true,
+      });
+    });
+  });
+
+  it('with fieldName, shows hidden input', () => {
+    createComponent({ fieldName: 'namespace-input' });
 
     expect(findNamespaceInput().exists()).toBe(true);
     expect(findNamespaceInput().attributes('name')).toBe('namespace-input');
   });
 
-  describe('clicking dropdown options', () => {
-    it('retrieves namespaces based on filter query', async () => {
-      mountDropdown();
+  describe('select', () => {
+    describe.each`
+      selectId                           | expectToggleText
+      ${String(TEST_USER_NAMESPACE.id)}  | ${`user: ${TEST_USER_NAMESPACE.full_path}`}
+      ${String(TEST_GROUP_NAMESPACE.id)} | ${`group: ${TEST_GROUP_NAMESPACE.full_path}`}
+    `('clicking listbox options (selectId=$selectId)', ({ selectId, expectToggleText }) => {
+      beforeEach(async () => {
+        createComponent({ fieldName: 'namespace-input' });
+        findListbox().vm.$emit('select', selectId);
+        await nextTick();
+      });
 
-      await setFieldValue(findFilterInput(), 'test');
+      it('updates hidden field', () => {
+        expect(findNamespaceInput().attributes('value')).toBe(selectId);
+      });
+
+      it('updates the listbox value', async () => {
+        expect(findListbox().props()).toMatchObject({
+          selected: selectId,
+          toggleText: expectToggleText,
+        });
+      });
+
+      it('triggers a setNamespace event upon selection', () => {
+        expect(wrapper.emitted('setNamespace')).toEqual([[selectId]]);
+      });
+    });
+  });
+
+  describe('search', () => {
+    it('retrieves namespaces based on filter query', async () => {
+      createComponent();
+
+      // Add space to assert that `?.trim` is called
+      await search('test ');
 
       expect(Api.namespaces).toHaveBeenCalledWith('test', expect.anything());
     });
 
-    it('updates the dropdown value based upon selection', async () => {
-      mountDropdown({ fieldName: 'namespace-input' });
+    it('when not found, does not change the placeholder text', async () => {
+      createComponent({
+        origSelectedId: String(TEST_USER_NAMESPACE.id),
+        origSelectedText: `user: ${TEST_USER_NAMESPACE.full_path}`,
+      });
 
-      // wait for dropdown options to populate
-      await nextTick();
+      await search('not exist');
 
-      expect(findDropdownOption('user: Administrator').exists()).toBe(true);
-      expect(findDropdownOption('group: GitLab Org').exists()).toBe(true);
-      expect(findDropdownOption('group: Foobar').exists()).toBe(false);
+      expect(findListbox().props()).toMatchObject({
+        selected: String(TEST_USER_NAMESPACE.id),
+        toggleText: `user: ${TEST_USER_NAMESPACE.full_path}`,
+      });
+    });
+  });
 
-      findDropdownOption('user: Administrator').trigger('click');
-      await nextTick();
-
-      expect(findNamespaceInput().attributes('value')).toBe('10');
-      expect(findDropdownToggle().text()).toBe('user: Administrator');
+  describe('reset', () => {
+    beforeEach(() => {
+      createComponent();
+      findListbox().vm.$emit('reset');
     });
 
-    it('triggers a setNamespace event upon selection', async () => {
-      mountDropdown();
-
-      // wait for dropdown options to populate
-      await nextTick();
-
-      findDropdownOption('group: GitLab Org').trigger('click');
-
-      expect(wrapper.emitted('setNamespace')).toHaveLength(1);
-      expect(wrapper.emitted('setNamespace')[0][0]).toBe(20);
+    it('updates the listbox value', () => {
+      expect(findListbox().props()).toMatchObject({
+        selected: null,
+        toggleText: 'Namespace',
+      });
     });
 
-    it('displays "Any Namespace" option when showAny prop provided', () => {
-      mountDropdown({ showAny: true });
-      expect(wrapper.text()).toContain('Any namespace');
-    });
-
-    it('does not display "Any Namespace" option when showAny prop not provided', () => {
-      mountDropdown();
-      expect(wrapper.text()).not.toContain('Any namespace');
+    it('triggers a setNamespace event upon reset', () => {
+      expect(wrapper.emitted('setNamespace')).toEqual([[null]]);
     });
   });
 });

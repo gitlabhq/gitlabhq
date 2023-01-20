@@ -103,7 +103,7 @@ module Gitlab
         opts = standardize_opts(opts)
 
         Oj.load(string, opts)
-      rescue Oj::ParseError, EncodingError, Encoding::UndefinedConversionError => ex
+      rescue Oj::ParseError, EncodingError, Encoding::UndefinedConversionError, JSON::GeneratorError => ex
         raise parser_error, ex
       end
 

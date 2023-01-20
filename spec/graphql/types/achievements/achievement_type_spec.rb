@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['Achievement'], feature_category: :users do
+RSpec.describe GitlabSchema.types['Achievement'], feature_category: :user_profile do
   include GraphqlHelpers
 
   let(:fields) do

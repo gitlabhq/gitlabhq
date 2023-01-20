@@ -23,7 +23,7 @@ module Gitlab
             'on_demand_scans',
             'dynamic_application_security_testing'
           ]
-        ].map(&method(:build_route)).freeze
+        ].map { |attrs| build_graphql_route(*attrs) }.freeze
 
         def self.match(request)
           return unless request.path_info == graphql_api_path

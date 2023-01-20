@@ -5,7 +5,7 @@ module Groups
     private
 
     def sort(items)
-      items.order(Group.arel_table[:path].asc, Group.arel_table[:id].asc) # rubocop: disable CodeReuse/ActiveRecord
+      items.reorder(Group.arel_table[:path].asc, Group.arel_table[:id].asc) # rubocop: disable CodeReuse/ActiveRecord
     end
 
     def by_search(items)

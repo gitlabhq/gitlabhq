@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ConfirmSecurityBot, :migration, feature_category: :users do
+RSpec.describe ConfirmSecurityBot, :migration, feature_category: :user_profile do
   let(:users) { table(:users) }
 
   let(:user_type) { 8 }

@@ -1,8 +1,0 @@
----
-name: use_primary_and_secondary_stores_for_duplicate_jobs
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85740
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364381
-milestone:
-type: development
-group: group::scalability
-default_enabled: false

@@ -3794,6 +3794,43 @@ job:
 - The `file` keyword is a setting for the CI/CD variable and must be nested under
   the CI/CD variable name, not in the `vault` section.
 
+#### `secrets:token`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.8.
+
+Use `secrets:token` to explicitly select a token to use when authenticating with Vault by referencing the token's CI/CD variable.
+
+This keyword has no effect if [**Limit JSON Web Token (JWT) access**](../secrets/id_token_authentication.md#enable-automatic-id-token-authentication)
+is disabled.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- The name of an ID token
+
+**Example of `secrets:token`**:
+
+```yaml
+job:
+  id_tokens:
+    AWS_TOKEN:
+      aud: https://aws.example.com
+    VAULT_TOKEN:
+      aud: https://vault.example.com
+  secrets:
+    DB_PASSWORD:
+      vault: gitlab/production/db
+      token: $VAULT_TOKEN
+```
+
+**Additional details**:
+
+- When the `token` keyword is not set and **Limit JSON Web Token (JWT) access** enabled, the first ID token
+  is used to authenticate.
+- When **Limit JSON Web Token (JWT) access** is disabled, the `token` keyword is ignored and the `CI_JOB_JWT`
+  CI/CD variable is used to authenticate.
+
 ### `services`
 
 Use `services` to specify any additional Docker images that your scripts require to run successfully. The [`services` image](../services/index.md) is linked

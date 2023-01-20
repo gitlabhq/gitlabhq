@@ -11,6 +11,7 @@ import eventHub from '~/groups/event_hub';
 import GroupsService from '~/groups/service/groups_service';
 import GroupsStore from '~/groups/store/groups_store';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
@@ -336,7 +337,7 @@ describe('AppComponent', () => {
 
       it('should show appropriate error flash message if request forbids to leave group', () => {
         const message = 'Failed to leave the group. Please make sure you are not the only owner.';
-        jest.spyOn(vm.service, 'leaveGroup').mockRejectedValue({ status: 403 });
+        jest.spyOn(vm.service, 'leaveGroup').mockRejectedValue({ status: HTTP_STATUS_FORBIDDEN });
         jest.spyOn(vm.store, 'removeGroup');
         vm.leaveGroup(childGroupItem, groupItem);
 

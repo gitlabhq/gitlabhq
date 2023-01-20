@@ -10308,7 +10308,6 @@
 - './spec/views/projects/pipeline_schedules/_pipeline_schedule.html.haml_spec.rb'
 - './spec/views/projects/pipelines/show.html.haml_spec.rb'
 - './spec/views/projects/project_members/index.html.haml_spec.rb'
-- './spec/views/projects/runners/_specific_runners.html.haml_spec.rb'
 - './spec/views/projects/settings/ci_cd/_autodevops_form.html.haml_spec.rb'
 - './spec/views/projects/settings/integrations/edit.html.haml_spec.rb'
 - './spec/views/projects/settings/operations/show.html.haml_spec.rb'

@@ -651,7 +651,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         visit edit_admin_runner_path(runner)
       end
 
-      it 'removed specific runner from project' do
+      it 'removed project runner from project' do
         within '[data-testid="assigned-projects"]' do
           click_on 'Disable'
         end

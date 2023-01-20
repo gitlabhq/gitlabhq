@@ -473,6 +473,7 @@ a few different methods, based on where the variable is created or defined.
 ### Pass YAML-defined CI/CD variables
 
 You can use the `variables` keyword to pass CI/CD variables to a downstream pipeline.
+These variables are "trigger variables" for [variable precedence](../variables/index.md#cicd-variable-precedence).
 
 For example:
 

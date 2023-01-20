@@ -44,12 +44,12 @@ Any time a new project is created, the shared runners are available.
 As an administrator you can set either a global or namespace-specific
 limit on the number of [CI/CD minutes](../../../ci/pipelines/cicd_minutes.md) you can use.
 
-## Enable a specific runner for multiple projects
+## Enable a project runner for multiple projects
 
-If you have already registered a [specific runner](../../../ci/runners/runners_scope.md#specific-runners)
+If you have already registered a [project runner](../../../ci/runners/runners_scope.md#project-runners)
 you can assign that runner to other projects.
 
-To enable a specific runner for more than one project:
+To enable a project runner for more than one project:
 
 1. On the top bar, select **Main menu > Admin**.
 1. From the left sidebar, select **CI/CD > Runners**.

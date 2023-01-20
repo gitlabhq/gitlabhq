@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User page', feature_category: :users do
+RSpec.describe 'User page', feature_category: :user_profile do
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:user) { create(:user, bio: '<b>Lorem</b> <i>ipsum</i> dolor sit <a href="https://example.com">amet</a>') }

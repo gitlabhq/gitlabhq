@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddIndexOnPasswordLastChangedAtToUserDetails, :migration, feature_category: :users do
+RSpec.describe AddIndexOnPasswordLastChangedAtToUserDetails, :migration, feature_category: :user_profile do
   let(:index_name) { 'index_user_details_on_password_last_changed_at' }
 
   it 'correctly migrates up and down' do

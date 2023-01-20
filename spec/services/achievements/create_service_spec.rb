@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Achievements::CreateService, feature_category: :users do
+RSpec.describe Achievements::CreateService, feature_category: :user_profile do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
 

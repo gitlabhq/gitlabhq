@@ -16,13 +16,10 @@
   .nav-controls.gl-pl-2
     .search-holder
       = render 'shared/projects/search_form', autofocus: true, admin_view: true
-      - current_namespace = _('Namespace')
       - if params[:namespace_id].present?
         - namespace = Namespace.find(params[:namespace_id])
-        - current_namespace = "#{namespace.kind}: #{namespace.full_path}"
-      %button.dropdown-menu-toggle.btn.btn-default.btn-md.gl-button.js-namespace-select{ data: { show_any: 'true', field_name: 'namespace_id', placeholder: current_namespace, update_location: 'true' }, type: 'button' }
-        %span.gl-dropdown-button-text
-          = current_namespace
+      - selected_text = "#{namespace.kind}: #{namespace.full_path}" if namespace
+      .js-namespace-select{ data: { field_name: 'namespace_id', selected_id: namespace&.id, selected_text: selected_text, update_location: 'true' } }
 
       = link_to new_project_path, class: 'gl-button btn btn-confirm' do
         = _('New Project')

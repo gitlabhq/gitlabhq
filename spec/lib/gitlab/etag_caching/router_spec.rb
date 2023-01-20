@@ -11,6 +11,7 @@ RSpec.describe Gitlab::EtagCaching::Router do
         expect(result).to be_present
         expect(result.name).to eq 'project_pipelines'
         expect(result.router).to eq Gitlab::EtagCaching::Router::Rails
+        expect(result.urgency).to eq Projects::PipelinesController.urgency_for_action(:index)
       end
     end
 
@@ -21,6 +22,7 @@ RSpec.describe Gitlab::EtagCaching::Router do
         expect(result).to be_present
         expect(result.name).to eq 'pipelines_graph'
         expect(result.router).to eq Gitlab::EtagCaching::Router::Graphql
+        expect(result.urgency).to eq ::Gitlab::EndpointAttributes::DEFAULT_URGENCY
       end
 
       it 'matches pipeline sha endpoint' do

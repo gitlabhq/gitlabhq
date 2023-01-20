@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlModal, GlEmptyState } from '@gitlab/ui';
 import { createAlert } from '~/flash';
+import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 
@@ -225,7 +226,7 @@ export default {
         })
         .catch((err) => {
           let message = COMMON_STR.FAILURE;
-          if (err.status === 403) {
+          if (err.status === HTTP_STATUS_FORBIDDEN) {
             message = COMMON_STR.LEAVE_FORBIDDEN;
           }
           createAlert({ message });

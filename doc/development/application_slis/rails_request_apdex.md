@@ -231,15 +231,7 @@ end
 ### Error budget attribution and ownership
 
 This SLI is used for service level monitoring. It feeds into the
-[error budget for stage groups](../stage_group_observability/index.md#error-budget). For this
-particular SLI, we have opted everyone out by default to give time to
-set the correct urgencies on endpoints before it affects a group's
-error budget.
-
-To include this SLI in the error budget, remove the `rails_requests`
-from the `ignored_components` array in the entry for your group. Read
-more about what is configurable in the
-[runbooks documentation](https://gitlab.com/gitlab-com/runbooks/-/tree/master/services#teamsyml).
+[error budget for stage groups](../stage_group_observability/index.md#error-budget).
 
 For more information, read the epic for
 [defining custom SLIs and incorporating them into error budgets](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525)).

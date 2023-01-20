@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 # rubocop:disable Style/WordArray
-RSpec.describe FixBatchedMigrationsOldFormatJobArguments, feature_category: :users do
+RSpec.describe FixBatchedMigrationsOldFormatJobArguments, feature_category: :user_profile do
   let(:batched_background_migrations) { table(:batched_background_migrations) }
 
   context 'when migrations with legacy job arguments exists' do

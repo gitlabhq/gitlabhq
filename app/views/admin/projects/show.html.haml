@@ -140,10 +140,7 @@
             .col-sm-3.col-form-label
               = f.label :new_namespace_id, _("Namespace")
             .col-sm-9
-              - placeholder = _('Search for Namespace')
-              %button.dropdown-menu-toggle.btn.btn-default.btn-md.gl-button.js-namespace-select{ data: { field_name: 'new_namespace_id', placeholder: placeholder }, type: 'button' }
-                %span.gl-dropdown-button-text
-                  = placeholder
+              .js-namespace-select{ data: { field_name: 'new_namespace_id', toggle_text_placeholder: _('Search for Namespace') } }
 
           .form-group.row
             .offset-sm-3.col-sm-9

@@ -33,7 +33,7 @@ GitLab and the runner are then connected.
 
 ## List owned runners
 
-Get a list of specific runners available to the user.
+Get a list of runners available to the user.
 
 ```plaintext
 GET /runners
@@ -46,7 +46,7 @@ GET /runners?tag_list=tag1,tag2
 
 | Attribute  | Type         | Required | Description                                                                                                                                                                                              |
 |------------|--------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `scope`    | string       | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided                              |
+| `scope`    | string       | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided                              |
 | `type`     | string       | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`                                                                                                                       |
 | `status`   | string       | no       | The status of runners to return, one of: `online`, `offline`, `stale`, and `never_contacted`. `active` and `paused` are also possible values which were deprecated in GitLab 14.8 and will be removed in GitLab 16.0 |
 | `paused`   | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                                                  |
@@ -97,7 +97,7 @@ Example response:
 
 ## List all runners **(FREE SELF)**
 
-Get a list of all runners in the GitLab instance (specific and shared). Access
+Get a list of all runners in the GitLab instance (project and shared). Access
 is restricted to users with administrator access.
 
 ```plaintext
@@ -325,7 +325,7 @@ Example response:
 
 ### Pause a runner
 
-Pause a specific runner.
+Pause a runner.
 
 ```plaintext
 PUT --form "paused=true" /runners/:runner_id
@@ -463,7 +463,7 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 | Attribute  | Type           | Required | Description                                                                                                                                                                           |
 |------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user                                                                        |
-| `scope`    | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided           |
+| `scope`    | string         | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided           |
 | `type`     | string         | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`                                                                                                    |
 | `status`   | string         | no       | The status of runners to return, one of: `online`, `offline`, `stale`, and `never_contacted`. `active` and `paused` are also possible values which were deprecated in GitLab 14.8 and will be removed in GitLab 16.0 |
 | `paused`   | boolean        | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                               |
@@ -514,7 +514,7 @@ Example response:
 
 ## Enable a runner in project
 
-Enable an available specific runner in the project.
+Enable an available project runner in the project.
 
 ```plaintext
 POST /projects/:id/runners
@@ -548,7 +548,7 @@ Example response:
 
 ## Disable a runner from project
 
-Disable a specific runner from the project. It works only if the project isn't
+Disable a project runner from the project. It works only if the project isn't
 the only project associated with the specified runner. If so, an error is
 returned. Use the call to [delete a runner](#delete-a-runner) instead.
 

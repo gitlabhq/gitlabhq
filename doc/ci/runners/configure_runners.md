@@ -28,7 +28,7 @@ On GitLab.com, you cannot override the job timeout for shared runners and must u
 To set the maximum job timeout:
 
 1. In a project, go to **Settings > CI/CD > Runners**.
-1. Select your specific runner to edit the settings.
+1. Select your project runner to edit the settings.
 1. Enter a value under **Maximum job timeout**. Must be 10 minutes or more. If not
    defined, the [project's job timeout setting](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)
    is used.
@@ -89,7 +89,7 @@ To protect or unprotect a runner:
 1. Check the **Protected** option.
 1. Select **Save changes**.
 
-![specific runners edit icon](img/protected_runners_check_box_v14_1.png)
+![Protect project runners checkbox](img/protected_runners_check_box_v14_1.png)
 
 ### Forks
 
@@ -150,7 +150,7 @@ the source of the HTTP requests it makes to GitLab when polling for jobs. The
 IP address is always kept up to date so if the runner IP changes it
 automatically updates in GitLab.
 
-The IP address for shared runners and specific runners can be found in
+The IP address for shared runners and project runners can be found in
 different places.
 
 ### Determine the IP address of a shared runner
@@ -164,16 +164,16 @@ the GitLab instance. To determine this:
 
 ![shared runner IP address](img/shared_runner_ip_address_14_5.png)
 
-### Determine the IP address of a specific runner
+### Determine the IP address of a project runner
 
-To can find the IP address of a runner for a specific project,
+To can find the IP address of a runner for a project project,
 you must have the Owner role for the
 project.
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. On the details page you should see a row for **IP Address**.
 
-![specific runner IP address](img/specific_runner_ip_address.png)
+![Project runner IP address](img/project_runner_ip_address.png)
 
 ## Use tags to control which jobs a runner can run
 

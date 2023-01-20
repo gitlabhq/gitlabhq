@@ -97,6 +97,8 @@ module Types
       field :web_path, GraphQL::Types::String, null: true,
                                                description: 'Web path of the job.'
 
+      field :project, Types::ProjectType, null: true, description: 'Project that the job belongs to.'
+
       def kind
         return ::Ci::Build unless [::Ci::Build, ::Ci::Bridge].include?(object.class)
 

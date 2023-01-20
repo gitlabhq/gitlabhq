@@ -214,7 +214,6 @@ RSpec.describe ProtectedBranch do
         let_it_be(:project) { create(:project, :repository) }
         let_it_be(:protected_branch) { create(:protected_branch, project: project, name: "“jawn”") }
 
-        let(:use_new_cache_implementation) { true }
         let(:rely_on_new_cache) { true }
 
         shared_examples_for 'hash based cache implementation' do
@@ -230,7 +229,6 @@ RSpec.describe ProtectedBranch do
         end
 
         before do
-          stub_feature_flags(hash_based_cache_for_protected_branches: use_new_cache_implementation)
           stub_feature_flags(rely_on_protected_branches_cache: rely_on_new_cache)
           allow(described_class).to receive(:matching).and_call_original
 
@@ -293,48 +291,6 @@ RSpec.describe ProtectedBranch do
           it 'correctly uses the cached version' do
             expect(described_class).not_to receive(:matching)
 
-            expect(described_class.protected?(project, protected_branch.name)).to eq(true)
-          end
-        end
-
-        context 'when feature flag hash_based_cache_for_protected_branches is off' do
-          let(:use_new_cache_implementation) { false }
-
-          it 'does not call hash based cache implementation' do
-            expect(ProtectedBranches::CacheService).not_to receive(:new)
-            expect(Rails.cache).to receive(:fetch).and_call_original
-
-            described_class.protected?(project, 'missing-branch')
-          end
-
-          it 'correctly invalidates a cache' do
-            expect(described_class).to receive(:matching).with(protected_branch.name, protected_refs: anything).once.and_call_original
-
-            create(:protected_branch, project: project, name: "bar")
-            # the cache is invalidated because the project has been "updated"
-            expect(described_class.protected?(project, protected_branch.name)).to eq(true)
-          end
-
-          it 'sets expires_in of 1 hour for the Rails cache key' do
-            cache_key = described_class.protected_ref_cache_key(project, protected_branch.name)
-
-            expect(Rails.cache).to receive(:fetch).with(cache_key, expires_in: 1.hour)
-
-            described_class.protected?(project, protected_branch.name)
-          end
-
-          context 'when project is updated' do
-            it 'invalidates Rails cache' do
-              expect(described_class).to receive(:matching).with(protected_branch.name, protected_refs: anything).once.and_call_original
-
-              project.touch
-
-              described_class.protected?(project, protected_branch.name)
-            end
-          end
-
-          it 'correctly uses the cached version' do
-            expect(described_class).not_to receive(:matching)
             expect(described_class.protected?(project, protected_branch.name)).to eq(true)
           end
         end

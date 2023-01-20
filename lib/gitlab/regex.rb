@@ -120,7 +120,8 @@ module Gitlab
         @debian_version_regex ||= %r{
           \A(?:
             (?:([0-9]{1,9}):)?            (?# epoch)
-            ([0-9][0-9a-z\.+~]*-?){1,15}  (?# version-revision)
+            ([0-9][0-9a-z\.+~]*)          (?# version)
+            (-[0-9a-z\.+~]+){0,14}        (?# -revision)
             (?<!-)
             )\z}xi.freeze
       end

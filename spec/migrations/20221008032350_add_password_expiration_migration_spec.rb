@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe AddPasswordExpirationMigration, feature_category: :users do
+RSpec.describe AddPasswordExpirationMigration, feature_category: :user_profile do
   let(:application_setting) { table(:application_settings).create! }
 
   describe "#up" do

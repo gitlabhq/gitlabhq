@@ -72,7 +72,7 @@ FactoryBot.define do
 
       transient do
         without_package_files { false }
-        file_metadatum_trait { :keep }
+        file_metadatum_trait { processing? ? :unknown : :keep }
         published_in { :create }
       end
 

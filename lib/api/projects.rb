@@ -9,7 +9,11 @@ module API
 
     before { authenticate_non_get! }
 
-    feature_category :projects, ['/projects/:id/custom_attributes', '/projects/:id/custom_attributes/:key']
+    feature_category :projects, %w[
+      /projects/:id/custom_attributes
+      /projects/:id/custom_attributes/:key
+      /projects/:id/share_locations
+    ]
 
     PROJECT_ATTACHMENT_SIZE_EXEMPT = 1.gigabyte
 
@@ -351,6 +355,20 @@ module API
           render_validation_error!(project)
         end
       end
+
+      desc 'Returns group that can be shared with the given project' do
+        success Entities::Group
+      end
+      params do
+        requires :id, type: Integer, desc: 'The id of the project'
+        optional :search, type: String, desc: 'Return list of groups matching the search criteria'
+      end
+      get ':id/share_locations' do
+        groups = ::Groups::AcceptingProjectSharesFinder.new(current_user, user_project, declared_params(include_missing: false)).execute
+
+        present_groups groups
+      end
+
       # rubocop: enable CodeReuse/ActiveRecord
     end
 

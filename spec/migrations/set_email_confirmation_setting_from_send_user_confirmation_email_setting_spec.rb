@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe SetEmailConfirmationSettingFromSendUserConfirmationEmailSetting, feature_category: :users do
+RSpec.describe SetEmailConfirmationSettingFromSendUserConfirmationEmailSetting, feature_category: :user_profile do
   let(:migration) { described_class.new }
   let(:application_settings_table) { table(:application_settings) }
 

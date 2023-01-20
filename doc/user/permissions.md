@@ -222,8 +222,8 @@ The following table lists project permissions available for each role:
 
 1. On self-managed GitLab instances, guest users are able to perform this action only on
    public and internal projects (not on private projects). [External users](admin_area/external_users.md)
-   must be given explicit access even if the project is internal. Users with the Guest role on GitLab.com are 
-   only able to perform this action on public projects because internal visibility is not available. 
+   must be given explicit access even if the project is internal. Users with the Guest role on GitLab.com are
+   only able to perform this action on public projects because internal visibility is not available.
 2. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves or are assigned to.
 3. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).
 4. If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers.
@@ -287,7 +287,7 @@ More details about the permissions for some project-level features follow.
 | View a job with [debug logging](../ci/variables/index.md#enable-debug-logging)                                            |            |         |          | ✓         | ✓          | ✓     |
 | Use pipeline editor                                                                                                       |            |         |          | ✓         | ✓          | ✓     |
 | Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                  |            |         |          | ✓         | ✓          | ✓     |
-| Add specific runners to project                                                                                           |            |         |          |           | ✓          | ✓     |
+| Add project runners to project                                                                                           |            |         |          |           | ✓          | ✓     |
 | Clear runner caches manually                                                                                              |            |         |          |           | ✓          | ✓     |
 | Enable shared runners in project                                                                                          |            |         |          |           | ✓          | ✓     |
 | Manage CI/CD settings                                                                                                     |            |         |          |           | ✓          | ✓     |

@@ -647,6 +647,11 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
                   icon
                   text
                 }
+                project {
+                  id
+                  name
+                  webUrl
+                }
                 shortSha
                 commitPath
                 finishedAt

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User uploads avatar to group', feature_category: :users do
+RSpec.describe 'User uploads avatar to group', feature_category: :user_profile do
   it 'they see the new avatar' do
     user = create(:user)
     group = create(:group)
