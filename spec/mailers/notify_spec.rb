@@ -1409,6 +1409,8 @@ RSpec.describe Notify do
         subject { described_class.service_desk_thank_you_email(issue.id) }
 
         it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'appearance header and footer enabled'
+        it_behaves_like 'appearance header and footer not enabled'
 
         it 'has the correct recipient' do
           is_expected.to deliver_to('service.desk@example.com')
@@ -1450,6 +1452,8 @@ RSpec.describe Notify do
         subject { described_class.service_desk_new_note_email(issue.id, first_note.id, 'service.desk@example.com') }
 
         it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'appearance header and footer enabled'
+        it_behaves_like 'appearance header and footer not enabled'
 
         it 'has the correct recipient' do
           is_expected.to deliver_to('service.desk@example.com')

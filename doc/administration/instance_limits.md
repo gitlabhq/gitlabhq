@@ -147,7 +147,7 @@ To set this limit for a self-managed installation, run the following in the
 # If limits don't exist for the default plan, you can create one with:
 # Plan.default.create_limits!
 
-Plan.default.actual_limits.update!(web_hook_calls_high: 10)
+Plan.default.actual_limits.update!(web_hook_calls: 10)
 ```
 
 Set the limit to `0` to disable it.
@@ -1076,6 +1076,16 @@ varies by file type:
 If a branch is merged while open merge requests still point to it, GitLab can
 retarget merge requests pointing to the now-merged branch. To learn more, read
 [Update merge requests when target branch merges](../user/project/merge_requests/index.md#update-merge-requests-when-target-branch-merges).
+
+## Maximum number of assignees and reviewers
+
+> - Maximum assignees [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368936) in GitLab 15.6.
+> - Maximum reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366485) in GitLab 15.9.
+
+Issues and merge requests enforce these maximums:
+
+- Maximum assignees: 200
+- Maximum reviewers: 200
 
 ## CDN-based limits on GitLab.com
 

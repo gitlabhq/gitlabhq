@@ -82,6 +82,61 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
             w: '0'))
       end
 
+      context 'when merge_head diff is present' do
+        before do
+          create(:merge_request_diff, :merge_head, merge_request: merge_request)
+        end
+
+        it 'sets the endpoint_diff_batch_url with ck' do
+          go
+
+          expect(assigns["endpoint_diff_batch_url"]).to eq(
+            diffs_batch_project_json_merge_request_path(
+              project,
+              merge_request,
+              'json',
+              diff_head: true,
+              view: 'inline',
+              w: '0',
+              page: '0',
+              per_page: '5',
+              ck: merge_request.merge_head_diff.id))
+        end
+
+        it 'sets diffs_batch_cache_key' do
+          go
+
+          expect(assigns['diffs_batch_cache_key']).to eq(merge_request.merge_head_diff.id)
+        end
+
+        context 'when diffs_batch_cache_with_max_age feature flag is disabled' do
+          before do
+            stub_feature_flags(diffs_batch_cache_with_max_age: false)
+          end
+
+          it 'sets the endpoint_diff_batch_url without ck param' do
+            go
+
+            expect(assigns['endpoint_diff_batch_url']).to eq(
+              diffs_batch_project_json_merge_request_path(
+                project,
+                merge_request,
+                'json',
+                diff_head: true,
+                view: 'inline',
+                w: '0',
+                page: '0',
+                per_page: '5'))
+          end
+
+          it 'does not set diffs_batch_cache_key' do
+            go
+
+            expect(assigns['diffs_batch_cache_key']).to be_nil
+          end
+        end
+      end
+
       context 'when diff files were cleaned' do
         render_views
 

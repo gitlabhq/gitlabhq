@@ -610,5 +610,39 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         go
       end
     end
+
+    context 'when ck param is present' do
+      let(:cache_key) { merge_request.merge_head_diff.id }
+
+      before do
+        create(:merge_request_diff, :merge_head, merge_request: merge_request)
+      end
+
+      it 'sets Cache-Control with max-age' do
+        go(ck: cache_key, diff_head: true)
+
+        expect(response.headers['Cache-Control']).to eq('max-age=86400, private')
+      end
+
+      context 'when diffs_batch_cache_with_max_age feature flag is disabled' do
+        before do
+          stub_feature_flags(diffs_batch_cache_with_max_age: false)
+        end
+
+        it 'does not set Cache-Control with max-age' do
+          go(ck: cache_key, diff_head: true)
+
+          expect(response.headers['Cache-Control']).not_to eq('max-age=86400, private')
+        end
+      end
+
+      context 'when not rendering merge head diff' do
+        it 'does not set Cache-Control with max-age' do
+          go(ck: cache_key, diff_head: false)
+
+          expect(response.headers['Cache-Control']).not_to eq('max-age=86400, private')
+        end
+      end
+    end
   end
 end

@@ -5535,4 +5535,24 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
   end
+
+  describe '#diffs_batch_cache_with_max_age?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:diffs_batch_cache_with_max_age?) { merge_request.diffs_batch_cache_with_max_age? }
+
+    it 'returns true' do
+      expect(diffs_batch_cache_with_max_age?).to be_truthy
+    end
+
+    context 'when diffs_batch_cache_with_max_age is disabled' do
+      before do
+        stub_feature_flags(diffs_batch_cache_with_max_age: false)
+      end
+
+      it 'returns false' do
+        expect(diffs_batch_cache_with_max_age?).to be_falsey
+      end
+    end
+  end
 end

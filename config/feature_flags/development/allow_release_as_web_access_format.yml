@@ -1,0 +1,8 @@
+---
+name: allow_release_as_web_access_format
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109217
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388471
+milestone: '15.8'
+type: development
+group: group::release
+default_enabled: false

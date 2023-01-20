@@ -331,11 +331,15 @@ for `shared_buffers` is quite high, and we are
 
 GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../administration/operations/puma.md#change-the-worker-timeout).
 
-## Merge request reviewer maximum
+## Maximum number of reviewers and assignees
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91406) in GitLab 15.3.
+> - Maximum assignees [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368936) in GitLab 15.6.
+> - Maximum reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366485) in GitLab 15.9.
 
-A maximum of 100 reviewers can be assigned to a merge request.
+Merge requests enforce these maximums:
+
+- Maximum assignees: 200
+- Maximum reviewers: 200
 
 ## GitLab.com-specific rate limits
 

@@ -3,4 +3,3 @@
 <%= _("Author: %{author_name}") % { author_name: sanitize_name(@note.author_name) } %>
 
 <%= @note.note %>
-<%# EE-specific start %><%= render_if_exists 'layouts/mailer/additional_text'%><%# EE-specific end %>

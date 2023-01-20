@@ -2019,6 +2019,10 @@ class MergeRequest < ApplicationRecord
     Feature.enabled?(:hide_merge_requests_from_banned_users) && author&.banned?
   end
 
+  def diffs_batch_cache_with_max_age?
+    Feature.enabled?(:diffs_batch_cache_with_max_age, project)
+  end
+
   private
 
   attr_accessor :skip_fetch_ref

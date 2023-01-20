@@ -385,9 +385,9 @@ The Ruby gem which performs the check is hard coded with `pool.ntp.org` as its r
 
   This issue occurs when the hostname `pool.ntp.org` resolves to a server which does not provide a time service.
 
-There is [an issue open](https://gitlab.com/gitlab-org/gitlab/-/issues/381422) for this dependency on `pool.ntp.org`.
+In this case, in GitLab 15.7 and newer, [specify a custom NTP server using environment variables](#health-check-rake-task).
 
-To workaround this, do one of the following:
+In GitLab 15.6 and older, use one of the following workarounds:
 
 - Add entries in `/etc/hosts` for `pool.ntp.org` to direct the request to valid local time servers.
   This fixes the long timeout and the timeout error.

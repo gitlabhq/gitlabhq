@@ -19,7 +19,7 @@
 - if mr_action == 'diffs'
   - add_page_startup_api_call @endpoint_diff_batch_url
 
-.merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
+.merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version, diffs_batch_cache_key: @diffs_batch_cache_key } }
   - if moved_mr_sidebar_enabled?
     #js-merge-sticky-header{ data: { data: sticky_header_data.to_json } }
   = render "projects/merge_requests/mr_title"

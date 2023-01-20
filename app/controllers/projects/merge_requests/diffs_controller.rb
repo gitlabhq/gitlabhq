@@ -61,6 +61,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       options[:merge_ref_head_diff]
     ]
 
+    expires_in(1.day) if cache_with_max_age?
+
     return unless stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
 
     Gitlab::Metrics.measure(:diffs_unfold) do
@@ -237,5 +239,11 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
       .track_mr_diffs_single_file_action(merge_request: @merge_request, user: current_user)
+  end
+
+  def cache_with_max_age?
+    @merge_request.diffs_batch_cache_with_max_age? &&
+      params[:ck].present? &&
+      render_merge_ref_head_diff?
   end
 end

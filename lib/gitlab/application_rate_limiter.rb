@@ -31,7 +31,7 @@ module Gitlab
           group_import: { threshold: -> { application_settings.group_import_limit }, interval: 1.minute },
           group_testing_hook: { threshold: 5, interval: 1.minute },
           profile_add_new_email: { threshold: 5, interval: 1.minute },
-          web_hook_calls_high: { interval: 1.minute },
+          web_hook_calls: { interval: 1.minute },
           web_hook_calls_mid: { interval: 1.minute },
           web_hook_calls_low: { interval: 1.minute },
           users_get_by_id: { threshold: -> { application_settings.users_get_by_id_limit }, interval: 10.minutes },

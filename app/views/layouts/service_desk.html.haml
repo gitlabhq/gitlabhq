@@ -15,17 +15,20 @@
       = stylesheet_link_tag 'notify'
     = yield :head
   %body
+    = html_header_message
     .content
       = yield
     .footer{ style: "margin-top: 10px;" }
-    %p
-      &mdash;
-      %br
-      = link_to "Unsubscribe", @unsubscribe_url
+      %p
+        &mdash;
+        %br
+        = link_to "Unsubscribe", @unsubscribe_url
 
-      -# EE-specific start
-      - if Gitlab::CurrentSettings.email_additional_text.present?
-        %br
-        %br
-          = Gitlab::Utils.nlbr(Gitlab::CurrentSettings.email_additional_text)
-      -# EE-specific end
+        -# EE-specific start
+        - if Gitlab::CurrentSettings.email_additional_text.present?
+          %br
+          %br
+            = Gitlab::Utils.nlbr(Gitlab::CurrentSettings.email_additional_text)
+        -# EE-specific end
+
+        = html_footer_message

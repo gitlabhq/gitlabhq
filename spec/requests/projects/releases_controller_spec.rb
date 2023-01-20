@@ -8,17 +8,20 @@ RSpec.describe 'Projects::ReleasesController', feature_category: :release_orches
 
   before do
     project.add_developer(user)
-    login_as(user)
   end
 
   # Added as a request spec because of https://gitlab.com/gitlab-org/gitlab/-/issues/232386
   describe 'GET #downloads' do
-    context 'filepath redirection' do
-      let_it_be(:release) { create(:release, project: project, tag: 'v11.9.0-rc2' ) }
-      let!(:link) { create(:release_link, release: release, name: 'linux-amd64 binaries', filepath: filepath, url: 'https://aws.example.com/s3/project/bin/hello-darwin-amd64') }
-      let_it_be(:url) { "#{project_releases_path(project)}/#{release.tag}/downloads/bin/darwin-amd64" }
+    let_it_be(:release) { create(:release, project: project, tag: 'v11.9.0-rc2' ) }
+    let!(:link) { create(:release_link, release: release, name: 'linux-amd64 binaries', filepath: filepath, url: 'https://aws.example.com/s3/project/bin/hello-darwin-amd64') }
+    let_it_be(:url) { "#{project_releases_path(project)}/#{release.tag}/downloads/bin/darwin-amd64" }
 
-      let(:subject) { get url }
+    let(:subject) { get url }
+
+    context 'filepath redirection' do
+      before do
+        login_as(user)
+      end
 
       context 'valid filepath' do
         let(:filepath) { '/bin/darwin-amd64' }
@@ -47,14 +50,45 @@ RSpec.describe 'Projects::ReleasesController', feature_category: :release_orches
       end
     end
 
-    context 'invalid filepath' do
-      let(:invalid_filepath) { 'bin/darwin-amd64' }
+    context 'sessionless download authentication' do
+      let(:personal_access_token) { create(:personal_access_token, user: user) }
+      let(:filepath) { '/bin/darwin-amd64' }
 
-      let(:subject) { create(:release_link, name: 'linux-amd64 binaries', filepath: invalid_filepath, url: 'https://aws.example.com/s3/project/bin/hello-darwin-amd64') }
+      subject { get url, params: { private_token: personal_access_token.token } }
 
-      it 'cannot create an invalid filepath' do
-        expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+      context 'when allow_release_as_web_access_format FF is disabled' do
+        before do
+          stub_feature_flags(allow_release_as_web_access_format: false)
+        end
+
+        it 'will not allow sessionless authentication' do
+          expect_next_instance_of(::Projects::ReleasesController) do |controller|
+            expect(controller).not_to receive(:authenticate_sessionless_user!)
+          end
+
+          subject
+        end
       end
+
+      context 'when allow_release_as_web_access_format FF is enabled' do
+        it 'will allow sessionless users to download the file' do
+          subject
+
+          expect(controller.current_user).to eq(user)
+          expect(response).to have_gitlab_http_status(:redirect)
+          expect(response).to redirect_to(link.url)
+        end
+      end
+    end
+  end
+
+  context 'invalid filepath' do
+    let(:invalid_filepath) { 'bin/darwin-amd64' }
+
+    let(:subject) { create(:release_link, name: 'linux-amd64 binaries', filepath: invalid_filepath, url: 'https://aws.example.com/s3/project/bin/hello-darwin-amd64') }
+
+    it 'cannot create an invalid filepath' do
+      expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
 end

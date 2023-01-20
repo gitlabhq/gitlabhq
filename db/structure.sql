@@ -19656,6 +19656,7 @@ CREATE TABLE plan_limits (
     notification_limit integer DEFAULT 0 NOT NULL,
     dashboard_limit_enabled_at timestamp with time zone,
     web_hook_calls_high integer DEFAULT 0,
+    web_hook_calls integer DEFAULT 0 NOT NULL,
     CONSTRAINT check_0fa68f370e CHECK ((web_hook_calls_high IS NOT NULL))
 );
 
@@ -20225,6 +20226,28 @@ CREATE SEQUENCE project_daily_statistics_id_seq
     CACHE 1;
 
 ALTER SEQUENCE project_daily_statistics_id_seq OWNED BY project_daily_statistics.id;
+
+CREATE TABLE project_data_transfers (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    repository_egress bigint DEFAULT 0 NOT NULL,
+    artifacts_egress bigint DEFAULT 0 NOT NULL,
+    packages_egress bigint DEFAULT 0 NOT NULL,
+    registry_egress bigint DEFAULT 0 NOT NULL,
+    date date NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    CONSTRAINT project_data_transfers_project_year_month_constraint CHECK ((date = date_trunc('month'::text, (date)::timestamp with time zone)))
+);
+
+CREATE SEQUENCE project_data_transfers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_data_transfers_id_seq OWNED BY project_data_transfers.id;
 
 CREATE TABLE project_deploy_tokens (
     id integer NOT NULL,
@@ -24583,6 +24606,8 @@ ALTER TABLE ONLY project_custom_attributes ALTER COLUMN id SET DEFAULT nextval('
 
 ALTER TABLE ONLY project_daily_statistics ALTER COLUMN id SET DEFAULT nextval('project_daily_statistics_id_seq'::regclass);
 
+ALTER TABLE ONLY project_data_transfers ALTER COLUMN id SET DEFAULT nextval('project_data_transfers_id_seq'::regclass);
+
 ALTER TABLE ONLY project_deploy_tokens ALTER COLUMN id SET DEFAULT nextval('project_deploy_tokens_id_seq'::regclass);
 
 ALTER TABLE ONLY project_export_jobs ALTER COLUMN id SET DEFAULT nextval('project_export_jobs_id_seq'::regclass);
@@ -26820,6 +26845,9 @@ ALTER TABLE ONLY project_custom_attributes
 
 ALTER TABLE ONLY project_daily_statistics
     ADD CONSTRAINT project_daily_statistics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY project_data_transfers
+    ADD CONSTRAINT project_data_transfers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_deploy_tokens
     ADD CONSTRAINT project_deploy_tokens_pkey PRIMARY KEY (id);
@@ -30716,6 +30744,10 @@ CREATE INDEX index_project_custom_attributes_on_key_and_value ON project_custom_
 CREATE UNIQUE INDEX index_project_custom_attributes_on_project_id_and_key ON project_custom_attributes USING btree (project_id, key);
 
 CREATE UNIQUE INDEX index_project_daily_statistics_on_project_id_and_date ON project_daily_statistics USING btree (project_id, date DESC);
+
+CREATE INDEX index_project_data_transfers_on_namespace_id ON project_data_transfers USING btree (namespace_id);
+
+CREATE UNIQUE INDEX index_project_data_transfers_on_project_and_namespace_and_date ON project_data_transfers USING btree (project_id, namespace_id, date);
 
 CREATE INDEX index_project_deploy_tokens_on_deploy_token_id ON project_deploy_tokens USING btree (deploy_token_id);
 

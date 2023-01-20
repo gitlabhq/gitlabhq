@@ -43,7 +43,7 @@ prepare-as-if-jh-branch:
     - git commit -m 'Add JH files'  # TODO: Mark which SHA we add
     # Fetch for the history of the branch so it does not cause the following error:
     #   ! [remote rejected] ref -> ref (shallow update not allowed)
-    - git fetch --unshallow --filter=tree:0 origin "${CI_COMMIT_REF_NAME}"
+    - git fetch --unshallow --filter=tree:0 origin "${CI_COMMIT_SHA}"
     - git push -f "${SANDBOX_REPOSITORY}" "${AS_IF_JH_BRANCH}"
 
 start-as-if-jh:
