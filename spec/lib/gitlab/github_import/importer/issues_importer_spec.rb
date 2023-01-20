@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::IssuesImporter do
+RSpec.describe Gitlab::GithubImport::Importer::IssuesImporter, feature_category: :importers do
   let(:project) { double(:project, id: 4, import_source: 'foo/bar') }
   let(:client) { double(:client) }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
@@ -82,7 +82,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssuesImporter do
     end
   end
 
-  describe '#parallel_import' do
+  describe '#parallel_import', :clean_gitlab_redis_cache do
     it 'imports each issue in parallel' do
       importer = described_class.new(project, client)
 
@@ -91,12 +91,8 @@ RSpec.describe Gitlab::GithubImport::Importer::IssuesImporter do
         .and_yield(github_issue)
 
       expect(Gitlab::GithubImport::ImportIssueWorker)
-        .to receive(:bulk_perform_in)
-        .with(1.second,
-          [[project.id, an_instance_of(Hash), an_instance_of(String)]],
-          batch_size: 1000,
-          batch_delay: 1.minute
-        )
+        .to receive(:perform_in)
+        .with(1.minute, project.id, an_instance_of(Hash), an_instance_of(String))
 
       waiter = importer.parallel_import
 

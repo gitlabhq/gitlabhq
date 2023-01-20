@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Middleware::Go do
+RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
   let(:env) do

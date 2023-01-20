@@ -105,3 +105,29 @@ export const mockProjects = [
     __typename: 'Project',
   },
 ];
+
+export const optInJwtQueryResponse = (optInJwt) => ({
+  data: {
+    project: {
+      id: '1',
+      ciCdSettings: {
+        optInJwt,
+        __typename: 'ProjectCiCdSetting',
+      },
+      __typename: 'Project',
+    },
+  },
+});
+
+export const optInJwtMutationResponse = (optInJwt) => ({
+  data: {
+    ciCdSettingsUpdate: {
+      ciCdSettings: {
+        optInJwt,
+        __typename: 'ProjectCiCdSetting',
+      },
+      errors: [],
+      __typename: 'CiCdSettingsUpdatePayload',
+    },
+  },
+});

@@ -4,16 +4,16 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Group Migration
+# Group migration by direct transfer
 
 [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2771) in GitLab 13.7.
 
 WARNING:
 This feature is [under construction](https://gitlab.com/groups/gitlab-org/-/epics/2771) and its API/Architecture might change in the future.
 
-GitLab Group Migration is the evolution of Project and Group Import functionality. The
-goal is to have an easier way to the user migrate a whole Group, including
-Projects, from one GitLab instance to another.
+[Group migration by direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended) is the
+evolution of migrating groups and projects using file exports. The goal is to have an easier way for the user to migrate a whole group,
+including projects, from one GitLab instance to another.
 
 ## Design decisions
 

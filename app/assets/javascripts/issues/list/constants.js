@@ -105,6 +105,7 @@ export const i18n = {
   noIssuesDescription: __('Learn more about issues.'),
   noIssuesTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
   noIssuesSignedOutButtonText: __('Register / Sign In'),
+  noSearchNoFilterTitle: __('Please select at least one filter to see results'),
   noSearchResultsDescription: __('To widen your search, change or remove filters above'),
   noSearchResultsTitle: __('Sorry, your filter produced no results'),
   relatedMergeRequests: __('Related merge requests'),

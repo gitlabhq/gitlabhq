@@ -1565,12 +1565,29 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
         it 'transitions to running and calls webhook' do
           freeze_time do
             expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status: 'running', status_changed_at: Time.current)
+              .to receive(:perform_async).with(hash_including({ 'deployment_id' => deployment.id, 'status' => 'running', 'status_changed_at' => Time.current.to_s }))
 
             subject
           end
 
           expect(deployment).to be_running
+        end
+
+        context 'when improve_deployment_hooksworker_serialization is disabled' do
+          before do
+            stub_feature_flags(improve_deployment_hooksworker_serialization: false)
+          end
+
+          it 'transitions to running and calls webhook' do
+            freeze_time do
+              expect(Deployments::HooksWorker)
+              .to receive(:perform_async).with(hash_including({ deployment_id: deployment.id, status: 'running', status_changed_at: Time.current }))
+
+              subject
+            end
+
+            expect(deployment).to be_running
+          end
         end
       end
     end

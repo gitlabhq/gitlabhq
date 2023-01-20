@@ -4,6 +4,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown.vue';
 import { revisionDropdownDefaultProps as defaultProps } from './mock_data';
 
@@ -62,7 +63,7 @@ describe('RevisionDropdown component', () => {
   });
 
   it('shows flash message on error', async () => {
-    axiosMock.onGet('some/invalid/path').replyOnce(404);
+    axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
 
     createComponent();
 
@@ -88,7 +89,7 @@ describe('RevisionDropdown component', () => {
 
   describe('search', () => {
     it('shows flash message on error', async () => {
-      axiosMock.onGet('some/invalid/path').replyOnce(404);
+      axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
 
       createComponent();
 

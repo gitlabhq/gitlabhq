@@ -105,7 +105,13 @@ class Deployment < ApplicationRecord
 
     after_transition any => :running do |deployment, transition|
       deployment.run_after_commit do
-        Deployments::HooksWorker.perform_async(deployment_id: id, status: transition.to, status_changed_at: Time.current)
+        perform_params = { deployment_id: id, status: transition.to, status_changed_at: Time.current }
+
+        if Feature.enabled?(:improve_deployment_hooksworker_serialization, deployment.project)
+          serialize_params_for_sidekiq!(perform_params)
+        end
+
+        Deployments::HooksWorker.perform_async(perform_params)
       end
     end
 
@@ -119,7 +125,13 @@ class Deployment < ApplicationRecord
 
     after_transition any => FINISHED_STATUSES do |deployment, transition|
       deployment.run_after_commit do
-        Deployments::HooksWorker.perform_async(deployment_id: id, status: transition.to, status_changed_at: Time.current)
+        perform_params = { deployment_id: id, status: transition.to, status_changed_at: Time.current }
+
+        if Feature.enabled?(:improve_deployment_hooksworker_serialization, deployment.project)
+          serialize_params_for_sidekiq!(perform_params)
+        end
+
+        Deployments::HooksWorker.perform_async(perform_params)
       end
     end
 
@@ -462,6 +474,11 @@ class Deployment < ApplicationRecord
     else
       raise ArgumentError, "The status #{status.inspect} is invalid"
     end
+  end
+
+  def serialize_params_for_sidekiq!(perform_params)
+    perform_params[:status_changed_at] = perform_params[:status_changed_at].to_s
+    perform_params.stringify_keys!
   end
 
   def self.last_deployment_group_associations

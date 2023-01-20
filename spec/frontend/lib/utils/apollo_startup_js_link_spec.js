@@ -1,5 +1,6 @@
 import { ApolloLink, Observable } from '@apollo/client/core';
 import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
+import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 
 describe('StartupJSLink', () => {
   const FORWARDED_RESPONSE = { data: 'FORWARDED_RESPONSE' };
@@ -175,7 +176,7 @@ describe('StartupJSLink', () => {
       window.gl = {
         startup_graphql_calls: [
           {
-            fetchCall: mockFetchCall(404),
+            fetchCall: mockFetchCall(HTTP_STATUS_NOT_FOUND),
             query: STARTUP_JS_QUERY,
             variables: { id: 3 },
           },

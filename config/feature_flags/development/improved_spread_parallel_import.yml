@@ -1,0 +1,8 @@
+---
+name: improved_spread_parallel_import
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109264
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388665
+milestone: '15.9'
+type: development
+group: group::import
+default_enabled: false

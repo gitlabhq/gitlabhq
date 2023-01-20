@@ -2,7 +2,7 @@
 import { GlSprintf, GlModal } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-
+import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { __, n__, s__, sprintf } from '~/locale';
 import eventHub from '../event_hub';
@@ -84,7 +84,7 @@ Once deleted, it cannot be undone or recovered.`),
             successful: false,
           });
 
-          if (error.response && error.response.status === 404) {
+          if (error.response && error.response.status === HTTP_STATUS_NOT_FOUND) {
             createAlert({
               message: sprintf(s__('Milestones|Milestone %{milestoneTitle} was not found'), {
                 milestoneTitle: this.milestoneTitle,

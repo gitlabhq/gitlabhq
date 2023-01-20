@@ -455,7 +455,7 @@ export default {
         return;
       }
 
-      if (this.event) {
+      if (event) {
         event.preventDefault();
 
         this.updateUrl(modalWorkItem);

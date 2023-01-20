@@ -9,6 +9,7 @@ import commit from 'test_fixtures/api/commits/commit.json';
 import branches from 'test_fixtures/api/branches/branches.json';
 import tags from 'test_fixtures/api/tags/tags.json';
 import { trimText } from 'helpers/text_helper';
+import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import { sprintf } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
@@ -310,7 +311,7 @@ describe('Ref selector component', () => {
       beforeEach(() => {
         branchesApiCallSpy = jest.fn().mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
         tagsApiCallSpy = jest.fn().mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
-        commitApiCallSpy = jest.fn().mockReturnValue([404]);
+        commitApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_NOT_FOUND]);
 
         createComponent();
 
@@ -514,7 +515,7 @@ describe('Ref selector component', () => {
 
       describe('when the commit search returns no results (i.e. a 404)', () => {
         beforeEach(() => {
-          commitApiCallSpy = jest.fn().mockReturnValue([404]);
+          commitApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_NOT_FOUND]);
 
           createComponent();
 

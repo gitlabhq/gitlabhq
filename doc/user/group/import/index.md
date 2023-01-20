@@ -38,7 +38,8 @@ this feature, ask an administrator to [enable the feature flag](../../../adminis
 Prerequisites:
 
 - Network connection between instances or GitLab.com. Must support HTTPS.
-- Both GitLab instances have [migration enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
+- Both GitLab instances have group migration by direct transfer
+  [enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.
 - Owner role on the source group to migrate from.
 - At least the Maintainer role on the destination group to migrate to. Using the Developer role for this purpose was
@@ -270,7 +271,7 @@ entities.where(status: [-1]).pluck(:destination_name, :destination_namespace, :s
 ```
 
 You can also see all migrated entities with any failures related to them using an
-[API endpoint](../../../api/bulk_imports.md#list-all-gitlab-migrations-entities).
+[API endpoint](../../../api/bulk_imports.md#list-all-group-migrations-entities).
 
 #### Stale imports
 

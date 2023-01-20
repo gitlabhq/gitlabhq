@@ -7,6 +7,7 @@ import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time
 import { IssuableStatus } from '~/issues/constants';
 import {
   CREATED_DESC,
+  i18n,
   PAGE_SIZE,
   PARAM_STATE,
   UPDATED_DESC,
@@ -26,7 +27,6 @@ import {
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
 import {
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
@@ -41,6 +41,7 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import getIssuesCountsQuery from '../queries/get_issues_counts.query.graphql';
 import { AutocompleteCache } from '../utils';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
@@ -52,17 +53,7 @@ const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 
 export default {
-  i18n: {
-    calendarButtonText: __('Subscribe to calendar'),
-    closed: __('CLOSED'),
-    closedMoved: __('CLOSED (MOVED)'),
-    emptyStateWithFilterTitle: __('Sorry, your filter produced no results'),
-    emptyStateWithFilterDescription: __('To widen your search, change or remove filters above'),
-    emptyStateWithoutFilterTitle: __('Please select at least one filter to see results'),
-    errorFetchingIssues: __('An error occurred while loading issues'),
-    rssButtonText: __('Subscribe to RSS feed'),
-    searchInputPlaceholder: __('Search or filter results...'),
-  },
+  i18n,
   IssuableListTabs,
   components: {
     GlButton,
@@ -105,6 +96,7 @@ export default {
     return {
       filterTokens: getFilterTokens(window.location.search),
       issues: [],
+      issuesCounts: {},
       issuesError: null,
       pageInfo: {},
       pageParams: getInitialPageParams(),
@@ -116,15 +108,7 @@ export default {
     issues: {
       query: getIssuesQuery,
       variables() {
-        return {
-          hideUsers: this.isPublicVisibilityRestricted && !this.isSignedIn,
-          isSignedIn: this.isSignedIn,
-          search: this.searchQuery,
-          sort: this.sortKey,
-          state: this.state,
-          ...this.pageParams,
-          ...this.apiFilterParams,
-        };
+        return this.queryVariables;
       },
       update(data) {
         return data.issues.nodes ?? [];
@@ -141,13 +125,33 @@ export default {
       },
       debounce: 200,
     },
+    issuesCounts: {
+      query: getIssuesCountsQuery,
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return data ?? {};
+      },
+      error(error) {
+        this.issuesError = this.$options.i18n.errorFetchingCounts;
+        Sentry.captureException(error);
+      },
+      skip() {
+        return !this.hasSearch;
+      },
+      debounce: 200,
+      context: {
+        isSingleRequest: true,
+      },
+    },
   },
   computed: {
     apiFilterParams() {
       return convertToApiParams(this.filterTokens);
     },
     emptyStateDescription() {
-      return this.hasSearch ? this.$options.i18n.emptyStateWithFilterDescription : undefined;
+      return this.hasSearch ? this.$options.i18n.noSearchResultsDescription : undefined;
     },
     emptyStateSvgPath() {
       return this.hasSearch
@@ -156,11 +160,22 @@ export default {
     },
     emptyStateTitle() {
       return this.hasSearch
-        ? this.$options.i18n.emptyStateWithFilterTitle
-        : this.$options.i18n.emptyStateWithoutFilterTitle;
+        ? this.$options.i18n.noSearchResultsTitle
+        : this.$options.i18n.noSearchNoFilterTitle;
     },
     hasSearch() {
       return Boolean(this.searchQuery || Object.keys(this.urlFilterParams).length);
+    },
+    queryVariables() {
+      return {
+        hideUsers: this.isPublicVisibilityRestricted && !this.isSignedIn,
+        isSignedIn: this.isSignedIn,
+        search: this.searchQuery,
+        sort: this.sortKey,
+        state: this.state,
+        ...this.pageParams,
+        ...this.apiFilterParams,
+      };
     },
     renderedIssues() {
       return this.hasSearch ? this.issues : [];
@@ -247,6 +262,14 @@ export default {
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
       });
+    },
+    tabCounts() {
+      const { openedIssues, closedIssues, allIssues } = this.issuesCounts;
+      return {
+        [IssuableStates.Opened]: openedIssues?.count,
+        [IssuableStates.Closed]: closedIssues?.count,
+        [IssuableStates.All]: allIssues?.count,
+      };
     },
     urlFilterParams() {
       return convertToUrlParams(this.filterTokens);
@@ -372,12 +395,14 @@ export default {
     :issuables-loading="$apollo.queries.issues.loading"
     namespace="dashboard"
     recent-searches-storage-key="issues"
-    :search-input-placeholder="$options.i18n.searchInputPlaceholder"
+    :search-input-placeholder="$options.i18n.searchPlaceholder"
     :search-tokens="searchTokens"
     :show-pagination-controls="showPaginationControls"
     show-work-item-type-icon
     :sort-options="sortOptions"
+    :tab-counts="tabCounts"
     :tabs="$options.IssuableListTabs"
+    truncate-counts
     :url-params="urlParams"
     use-keyset-pagination
     @click-tab="handleClickTab"
@@ -389,10 +414,10 @@ export default {
   >
     <template #nav-actions>
       <gl-button :href="rssPath" icon="rss">
-        {{ $options.i18n.rssButtonText }}
+        {{ $options.i18n.rssLabel }}
       </gl-button>
       <gl-button :href="calendarPath" icon="calendar">
-        {{ $options.i18n.calendarButtonText }}
+        {{ $options.i18n.calendarLabel }}
       </gl-button>
     </template>
 

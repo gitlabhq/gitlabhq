@@ -178,6 +178,22 @@ RSpec.shared_examples 'filters by tag' do
   end
 end
 
+RSpec.shared_examples 'shows runner jobs tab' do
+  context 'when clicking on jobs tab' do
+    before do
+      click_on("#{s_('Runners|Jobs')} #{job_count}")
+
+      wait_for_requests
+    end
+
+    it 'shows job in list' do
+      within "[data-testid='job-row-#{job.id}']" do
+        expect(page).to have_link("##{job.id}")
+      end
+    end
+  end
+end
+
 RSpec.shared_examples 'submits edit runner form' do
   it 'breadcrumb contains runner id and token' do
     page.within '[data-testid="breadcrumb-links"]' do

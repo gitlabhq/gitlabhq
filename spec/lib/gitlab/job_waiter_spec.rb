@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::JobWaiter, :redis do
+RSpec.describe Gitlab::JobWaiter, :redis, feature_category: :not_owned do
   describe '.notify' do
     it 'pushes the jid to the named queue' do
       key = described_class.new.key
@@ -12,6 +12,14 @@ RSpec.describe Gitlab::JobWaiter, :redis do
       Gitlab::Redis::SharedState.with do |redis|
         expect(redis.ttl(key)).to be > 0
       end
+    end
+  end
+
+  describe '.generate_key' do
+    it 'generates and return a new key' do
+      key = described_class.generate_key
+
+      expect(key).to include('gitlab:job_waiter:')
     end
   end
 

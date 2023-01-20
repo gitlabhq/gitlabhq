@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter do
+RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter, feature_category: :importers do
   subject(:importer) { described_class.new(project, client, parallel: parallel) }
 
   let(:project) { instance_double('Project', id: 4, import_source: 'foo/bar') }
@@ -143,13 +143,9 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter do
 
     it 'imports each protected branch in parallel' do
       expect(Gitlab::GithubImport::ImportProtectedBranchWorker)
-        .to receive(:bulk_perform_in)
-        .with(
-          1.second,
-          [[project.id, an_instance_of(Hash), an_instance_of(String)]],
-          batch_delay: 1.minute,
-          batch_size: 1000
-        )
+        .to receive(:perform_in)
+        .with(1.minute, project.id, an_instance_of(Hash), an_instance_of(String))
+
       expect(Gitlab::GithubImport::ObjectCounter)
         .to receive(:increment).with(project, :protected_branch, :fetched)
 

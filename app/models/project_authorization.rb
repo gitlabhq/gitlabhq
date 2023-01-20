@@ -31,7 +31,7 @@ class ProjectAuthorization < ApplicationRecord
 
   def self.insert_all_in_batches(attributes, per_batch = BATCH_SIZE)
     add_delay = add_delay_between_batches?(entire_size: attributes.size, batch_size: per_batch)
-    log_details(entire_size: attributes.size) if add_delay
+    log_details(entire_size: attributes.size, batch_size: per_batch) if add_delay
 
     attributes.each_slice(per_batch) do |attributes_batch|
       insert_all(attributes_batch)
@@ -41,7 +41,7 @@ class ProjectAuthorization < ApplicationRecord
 
   def self.delete_all_in_batches_for_project(project:, user_ids:, per_batch: BATCH_SIZE)
     add_delay = add_delay_between_batches?(entire_size: user_ids.size, batch_size: per_batch)
-    log_details(entire_size: user_ids.size) if add_delay
+    log_details(entire_size: user_ids.size, batch_size: per_batch) if add_delay
 
     user_ids.each_slice(per_batch) do |user_ids_batch|
       project.project_authorizations.where(user_id: user_ids_batch).delete_all
@@ -51,7 +51,7 @@ class ProjectAuthorization < ApplicationRecord
 
   def self.delete_all_in_batches_for_user(user:, project_ids:, per_batch: BATCH_SIZE)
     add_delay = add_delay_between_batches?(entire_size: project_ids.size, batch_size: per_batch)
-    log_details(entire_size: project_ids.size) if add_delay
+    log_details(entire_size: project_ids.size, batch_size: per_batch) if add_delay
 
     project_ids.each_slice(per_batch) do |project_ids_batch|
       user.project_authorizations.where(project_id: project_ids_batch).delete_all
@@ -68,10 +68,12 @@ class ProjectAuthorization < ApplicationRecord
       Feature.enabled?(:enable_minor_delay_during_project_authorizations_refresh)
   end
 
-  private_class_method def self.log_details(entire_size:)
+  private_class_method def self.log_details(entire_size:, batch_size:)
     Gitlab::AppLogger.info(
       entire_size: entire_size,
-      message: 'Project authorizations refresh performed with delay'
+      total_delay: (entire_size / batch_size.to_f).ceil * SLEEP_DELAY,
+      message: 'Project authorizations refresh performed with delay',
+      **Gitlab::ApplicationContext.current
     )
   end
 

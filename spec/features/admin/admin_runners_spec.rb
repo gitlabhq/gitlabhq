@@ -491,6 +491,8 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
       )
     end
 
+    let_it_be(:runner_job) { create(:ci_build, runner: runner) }
+
     before do
       visit admin_runner_path(runner)
     end
@@ -515,6 +517,11 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         expect(page).to have_content 'Maximum job timeout None'
         expect(page).to have_content 'Tags tag1'
       end
+    end
+
+    it_behaves_like 'shows runner jobs tab' do
+      let(:job_count) { '1' }
+      let(:job) { runner_job }
     end
 
     describe 'when a runner is deleted' do

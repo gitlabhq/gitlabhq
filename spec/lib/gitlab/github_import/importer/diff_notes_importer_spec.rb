@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter do
+RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter, feature_category: :importers do
   let(:project) { double(:project, id: 4, import_source: 'foo/bar') }
   let(:client) { double(:client) }
 
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter do
     end
   end
 
-  describe '#parallel_import' do
+  describe '#parallel_import', :clean_gitlab_redis_cache do
     it 'imports each diff note in parallel' do
       importer = described_class.new(project, client)
 
@@ -97,10 +97,8 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter do
         .to receive(:each_object_to_import)
         .and_yield(github_comment)
 
-      expect(Gitlab::GithubImport::ImportDiffNoteWorker).to receive(:bulk_perform_in)
-        .with(1.second, [
-                [project.id, an_instance_of(Hash), an_instance_of(String)]
-              ], batch_size: 1000, batch_delay: 1.minute)
+      expect(Gitlab::GithubImport::ImportDiffNoteWorker).to receive(:perform_in)
+        .with(1.minute, project.id, an_instance_of(Hash), an_instance_of(String))
 
       waiter = importer.parallel_import
 

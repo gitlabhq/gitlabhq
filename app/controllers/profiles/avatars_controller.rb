@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Profiles::AvatarsController < Profiles::ApplicationController
-  feature_category :users
+  feature_category :user_profile
 
   def destroy
     @user = current_user

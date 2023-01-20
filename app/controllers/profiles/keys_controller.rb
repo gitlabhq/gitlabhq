@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Profiles::KeysController < Profiles::ApplicationController
-  feature_category :users
+  feature_category :user_profile
   urgency :low, [:create, :index]
 
   def index

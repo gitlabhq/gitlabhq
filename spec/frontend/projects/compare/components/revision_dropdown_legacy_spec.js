@@ -4,6 +4,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown_legacy.vue';
 
 const defaultProps = {
@@ -76,7 +77,7 @@ describe('RevisionDropdown component', () => {
   });
 
   it('shows flash message on error', async () => {
-    axiosMock.onGet('some/invalid/path').replyOnce(404);
+    axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
 
     await wrapper.vm.fetchBranchesAndTags();
     expect(createAlert).toHaveBeenCalled();

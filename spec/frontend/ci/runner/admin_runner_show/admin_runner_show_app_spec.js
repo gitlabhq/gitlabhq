@@ -1,8 +1,6 @@
 import Vue from 'vue';
-import { GlTab, GlTabs } from '@gitlab/ui';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
-import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -15,6 +13,7 @@ import RunnerDetails from '~/ci/runner/components/runner_details.vue';
 import RunnerPauseButton from '~/ci/runner/components/runner_pause_button.vue';
 import RunnerDeleteButton from '~/ci/runner/components/runner_delete_button.vue';
 import RunnerEditButton from '~/ci/runner/components/runner_edit_button.vue';
+import RunnerDetailsTabs from '~/ci/runner/components/runner_details_tabs.vue';
 import RunnersJobs from '~/ci/runner/components/runner_jobs.vue';
 
 import runnerQuery from '~/ci/runner/graphql/show/runner.query.graphql';
@@ -42,14 +41,12 @@ describe('AdminRunnerShowApp', () => {
   let mockRunnerQuery;
 
   const findRunnerHeader = () => wrapper.findComponent(RunnerHeader);
-  const findTabs = () => wrapper.findComponent(GlTabs);
-  const findTabAt = (i) => wrapper.findAllComponents(GlTab).at(i);
   const findRunnerDetails = () => wrapper.findComponent(RunnerDetails);
   const findRunnerDeleteButton = () => wrapper.findComponent(RunnerDeleteButton);
   const findRunnerEditButton = () => wrapper.findComponent(RunnerEditButton);
   const findRunnerPauseButton = () => wrapper.findComponent(RunnerPauseButton);
+  const findRunnerDetailsTabs = () => wrapper.findComponent(RunnerDetailsTabs);
   const findRunnersJobs = () => wrapper.findComponent(RunnersJobs);
-  const findJobCountBadge = () => wrapper.findByTestId('job-count-badge');
 
   const mockRunnerQueryResult = (runner = {}) => {
     mockRunnerQuery = jest.fn().mockResolvedValue({
@@ -89,14 +86,18 @@ describe('AdminRunnerShowApp', () => {
       expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunnerGraphqlId });
     });
 
-    it('displays the runner header', async () => {
+    it('displays the runner header', () => {
       expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId}`);
     });
 
     it('displays the runner edit and pause buttons', async () => {
-      expect(findRunnerEditButton().exists()).toBe(true);
+      expect(findRunnerEditButton().attributes('href')).toBe(mockRunner.editAdminUrl);
       expect(findRunnerPauseButton().exists()).toBe(true);
       expect(findRunnerDeleteButton().exists()).toBe(true);
+    });
+
+    it('shows runner details', () => {
+      expect(findRunnerDetailsTabs().props('runner')).toEqual(mockRunner);
     });
 
     it('shows basic runner details', async () => {
@@ -118,20 +119,11 @@ describe('AdminRunnerShowApp', () => {
       expect(wrapper.text().replace(/\s+/g, ' ')).toContain(expected);
     });
 
-    it.each(['#/', '#/unknown-tab'])('shows details when location hash is `%s`', async (hash) => {
-      setWindowLocation(hash);
-
-      await createComponent({ mountFn: mountExtended });
-
-      expect(findTabs().props('value')).toBe(0);
-      expect(findRunnerDetails().exists()).toBe(true);
-      expect(findRunnersJobs().exists()).toBe(false);
-    });
-
     describe('when runner cannot be updated', () => {
       beforeEach(async () => {
         mockRunnerQueryResult({
           userPermissions: {
+            ...mockRunner.userPermissions,
             updateRunner: false,
           },
         });
@@ -145,12 +137,17 @@ describe('AdminRunnerShowApp', () => {
         expect(findRunnerEditButton().exists()).toBe(false);
         expect(findRunnerPauseButton().exists()).toBe(false);
       });
+
+      it('displays delete button', () => {
+        expect(findRunnerDeleteButton().exists()).toBe(true);
+      });
     });
 
     describe('when runner cannot be deleted', () => {
       beforeEach(async () => {
         mockRunnerQueryResult({
           userPermissions: {
+            ...mockRunner.userPermissions,
             deleteRunner: false,
           },
         });
@@ -160,8 +157,13 @@ describe('AdminRunnerShowApp', () => {
         });
       });
 
-      it('does not display the runner edit and pause buttons', () => {
+      it('does not display the delete button', () => {
         expect(findRunnerDeleteButton().exists()).toBe(false);
+      });
+
+      it('displays edit and pause buttons', () => {
+        expect(findRunnerEditButton().exists()).toBe(true);
+        expect(findRunnerPauseButton().exists()).toBe(true);
       });
     });
 
@@ -238,76 +240,6 @@ describe('AdminRunnerShowApp', () => {
 
     it('error is shown to the user', () => {
       expect(createAlert).toHaveBeenCalled();
-    });
-  });
-
-  describe('When showing jobs', () => {
-    const stubs = {
-      GlTab,
-      GlTabs,
-    };
-
-    it('without a runner, shows no jobs', () => {
-      mockRunnerQuery = jest.fn().mockResolvedValue({
-        data: {
-          runner: null,
-        },
-      });
-
-      createComponent({ stubs });
-
-      expect(findJobCountBadge().exists()).toBe(false);
-      expect(findRunnersJobs().exists()).toBe(false);
-    });
-
-    it('when URL hash links to jobs tab', async () => {
-      mockRunnerQueryResult();
-      setWindowLocation('#/jobs');
-
-      await createComponent({ mountFn: mountExtended });
-
-      expect(findTabs().props('value')).toBe(1);
-      expect(findRunnerDetails().exists()).toBe(false);
-      expect(findRunnersJobs().exists()).toBe(true);
-    });
-
-    it('without a job count, shows no jobs count', async () => {
-      mockRunnerQueryResult({ jobCount: null });
-
-      await createComponent({ stubs });
-
-      expect(findJobCountBadge().exists()).toBe(false);
-    });
-
-    it('with a job count, shows jobs count', async () => {
-      const runner = { jobCount: 3 };
-      mockRunnerQueryResult(runner);
-
-      await createComponent({ stubs });
-
-      expect(findJobCountBadge().text()).toBe('3');
-    });
-  });
-
-  describe('When navigating to another tab', () => {
-    let routerPush;
-
-    beforeEach(async () => {
-      mockRunnerQueryResult();
-
-      await createComponent({ mountFn: mountExtended });
-
-      routerPush = jest.spyOn(wrapper.vm.$router, 'push').mockImplementation(() => {});
-    });
-
-    it('navigates to details', () => {
-      findTabAt(0).vm.$emit('click');
-      expect(routerPush).toHaveBeenLastCalledWith({ name: 'details' });
-    });
-
-    it('navigates to job', () => {
-      findTabAt(1).vm.$emit('click');
-      expect(routerPush).toHaveBeenLastCalledWith({ name: 'jobs' });
     });
   });
 });

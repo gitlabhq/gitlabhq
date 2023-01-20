@@ -4,7 +4,7 @@ module API
   class Invitations < ::API::Base
     include PaginationParams
 
-    feature_category :users
+    feature_category :user_profile
 
     before { authenticate! }
 

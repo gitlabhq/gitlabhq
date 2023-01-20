@@ -187,7 +187,7 @@ class SearchService
   def search_service
     @search_service ||=
       if project
-        Search::ProjectService.new(project, current_user, params)
+        Search::ProjectService.new(current_user, project, params)
       elsif show_snippets?
         Search::SnippetService.new(current_user, params)
       elsif group

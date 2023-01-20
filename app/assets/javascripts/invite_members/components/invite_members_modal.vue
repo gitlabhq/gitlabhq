@@ -401,6 +401,7 @@ export default {
     :form-group-description="formGroupDescription"
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
+    :is-celebration="isCelebration"
     :new-users-to-invite="newUsersToInvite"
     :root-group-id="rootId"
     :users-limit-dataset="usersLimitDataset"

@@ -7685,6 +7685,9 @@ msgstr ""
 msgid "CICD|Add an existing project to the scope"
 msgstr ""
 
+msgid "CICD|An error occurred while update the setting. Please try again."
+msgstr ""
+
 msgid "CICD|Auto DevOps"
 msgstr ""
 
@@ -7718,6 +7721,9 @@ msgstr ""
 msgid "CICD|Limit CI_JOB_TOKEN access"
 msgstr ""
 
+msgid "CICD|Limit JSON Web Token (JWT) access"
+msgstr ""
+
 msgid "CICD|Select the projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -7727,13 +7733,22 @@ msgstr ""
 msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
+msgid "CICD|The JWT must be manually declared in each job that needs it. When disabled, the token is always available in all jobs in the pipeline."
+msgstr ""
+
 msgid "CICD|There are several CI/CD limits in place."
+msgstr ""
+
+msgid "CICD|There was a problem fetching the token access settings."
 msgstr ""
 
 msgid "CICD|Unprotected branches will not have access to the cache from protected branches."
 msgstr ""
 
 msgid "CICD|Use separate caches for protected branches"
+msgstr ""
+
+msgid "CICD|Use the %{codeStart}secrets%{codeEnd} keyword to configure a job with a JWT."
 msgstr ""
 
 msgid "CICD|group enabled"
@@ -36383,6 +36398,9 @@ msgid "Runners|Instance: Median job queued time"
 msgstr ""
 
 msgid "Runners|Jobs"
+msgstr ""
+
+msgid "Runners|Jobs in projects you have access to."
 msgstr ""
 
 msgid "Runners|Last contact"

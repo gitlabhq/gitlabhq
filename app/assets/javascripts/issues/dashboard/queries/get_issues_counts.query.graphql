@@ -1,0 +1,54 @@
+query getDashboardIssuesCount(
+  $search: String
+  $assigneeId: String
+  $assigneeUsernames: [String!]
+  $authorUsername: String
+  $labelName: [String]
+  $milestoneTitle: [String]
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $not: NegatedIssueFilterInput
+) {
+  openedIssues: issues(
+    state: opened
+    search: $search
+    assigneeId: $assigneeId
+    assigneeUsernames: $assigneeUsernames
+    authorUsername: $authorUsername
+    labelName: $labelName
+    milestoneTitle: $milestoneTitle
+    milestoneWildcardId: $milestoneWildcardId
+    myReactionEmoji: $myReactionEmoji
+    not: $not
+  ) {
+    count
+  }
+  closedIssues: issues(
+    state: closed
+    search: $search
+    assigneeId: $assigneeId
+    assigneeUsernames: $assigneeUsernames
+    authorUsername: $authorUsername
+    labelName: $labelName
+    milestoneTitle: $milestoneTitle
+    milestoneWildcardId: $milestoneWildcardId
+    myReactionEmoji: $myReactionEmoji
+    not: $not
+  ) {
+    count
+  }
+  allIssues: issues(
+    state: all
+    search: $search
+    assigneeId: $assigneeId
+    assigneeUsernames: $assigneeUsernames
+    authorUsername: $authorUsername
+    labelName: $labelName
+    milestoneTitle: $milestoneTitle
+    milestoneWildcardId: $milestoneWildcardId
+    myReactionEmoji: $myReactionEmoji
+    not: $not
+  ) {
+    count
+  }
+}

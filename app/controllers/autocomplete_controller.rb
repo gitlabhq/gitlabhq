@@ -6,7 +6,7 @@ class AutocompleteController < ApplicationController
   skip_before_action :authenticate_user!, only: [:users, :award_emojis, :merge_request_target_branches]
   before_action :check_search_rate_limit!, only: [:users, :projects]
 
-  feature_category :users, [:users, :user]
+  feature_category :user_profile, [:users, :user]
   feature_category :projects, [:projects]
   feature_category :team_planning, [:award_emojis]
   feature_category :code_review_workflow, [:merge_request_target_branches]

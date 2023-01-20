@@ -406,6 +406,15 @@ class User < ApplicationRecord
       transition deactivated: :ldap_blocked
     end
 
+    # aliasing system_block to set ldap_blocked statuses
+    # ldap_blocked is used for LDAP, SAML, and SCIM blocked users
+    # Issue for improving this naming:
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/388487
+    event :system_block do
+      transition active: :ldap_blocked
+      transition deactivated: :ldap_blocked
+    end
+
     event :activate do
       transition deactivated: :active
       transition blocked: :active

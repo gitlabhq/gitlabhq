@@ -7,7 +7,7 @@ module Projects
     before_action :enable_invite_for_help_continuous_onboarding_experiment
     before_action :enable_video_tutorials_continuous_onboarding_experiment
 
-    feature_category :users
+    feature_category :user_profile
     urgency :low, [:index]
 
     def index; end

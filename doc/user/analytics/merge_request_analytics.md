@@ -13,18 +13,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Use merge request analytics to view:
 
 - The number of merge requests your organization merged per month.
-- The average time between merge request creation and merge.
-- Information about each merged merge request.
+- The average time between merge request creation and merge event.
+- Information about each merged merge request (such as milestone, commits, line changes, and assignees).
 
 You can use merge request analytics to identify:
 
 - Low or high productivity months.
-- Efficiency and productivity of your merge request process.
-- Efficiency of your code review process.
+- The efficiency and productivity of your merge request and code review processes.
 
 ## View merge request analytics
 
-You must have at least the Reporter role to view merge request analytics.
+Prerequisite:
+
+- You must have at least the Reporter role.
 
 To view merge request analytics:
 
@@ -52,17 +53,26 @@ The **Throughput** chart shows issues closed or merge requests merged (not close
 time.
 
 The table shows up to 20 merge requests per page, and includes
-information about each merge request.
+the following information about each merge request:
+
+- Merge request name
+- Date merged
+- Time to merge
+- Milestone
+- Commits
+- Pipelines
+- Line changes
+- Assignees
 
 ## View average time between merge request creation and merge
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229389) in GitLab 13.9.
 
-Use the number in **Mean time to merge** to view the average time between when a merge request is
-created and when it's merged. Closed and un-merged merge requests are not included.
+The number in **Mean time to merge** shows the average time between when a merge request is
+created and when it's merged. Closed and not yet merged merge requests are not included.
 
 To view **Mean time to merge**:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Merge request**. The **Mean time to merge** number
-is shown on the dashboard.
+is displayed on the dashboard.

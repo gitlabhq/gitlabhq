@@ -3,7 +3,7 @@ table_name: user_custom_attributes
 classes:
 - UserCustomAttribute
 feature_categories:
-- users
+- user_profile
 description: Storing custom attributes per user
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13038
 milestone: '10.1'

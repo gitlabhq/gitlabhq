@@ -166,7 +166,7 @@ specific routes:
 ```ruby
 module API
   class Users < ::API::Base
-    feature_category :users, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
+    feature_category :user_profile, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
   end
 end
 ```
@@ -208,11 +208,13 @@ Example:
 
 For examples that don't have a `feature_category` set we add a warning when running them in local environment.
 
-In order to disable the warning use `RSPEC_WARN_MISSING_FEATURE_CATEGORY=false` when running RSpec tests:
+To disable the warning use `RSPEC_WARN_MISSING_FEATURE_CATEGORY=false` when running RSpec tests:
 
 ```shell
 RSPEC_WARN_MISSING_FEATURE_CATEGORY=false bin/rspec spec/<test_file>
 ```
+
+Additionally, we flag the offenses via `RSpec/MissingFeatureCategory` RuboCop rule.
 
 ### Tooling feature category
 

@@ -25,7 +25,7 @@ import {
 import * as types from '~/ide/stores/modules/pipelines/mutation_types';
 import state from '~/ide/stores/modules/pipelines/state';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
 import { pipelines, jobs } from '../../../mock_data';
 
@@ -61,7 +61,7 @@ describe('IDE pipelines actions', () => {
     it('commits error', () => {
       return testAction(
         receiveLatestPipelineError,
-        { status: 404 },
+        { status: HTTP_STATUS_NOT_FOUND },
         mockedState,
         [{ type: types.RECEIVE_LASTEST_PIPELINE_ERROR }],
         [{ type: 'stopPipelinePolling' }],

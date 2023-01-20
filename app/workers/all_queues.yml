@@ -653,7 +653,7 @@
   :tags: []
 - :name: cronjob:prune_old_events
   :worker_name: PruneOldEventsWorker
-  :feature_category: :users
+  :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -806,7 +806,7 @@
   :tags: []
 - :name: cronjob:user_status_cleanup_batch
   :worker_name: UserStatusCleanup::BatchWorker
-  :feature_category: :users
+  :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -815,7 +815,7 @@
   :tags: []
 - :name: cronjob:users_create_statistics
   :worker_name: Users::CreateStatisticsWorker
-  :feature_category: :users
+  :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -833,7 +833,7 @@
   :tags: []
 - :name: cronjob:users_migrate_records_to_ghost_user_in_batches
   :worker_name: Users::MigrateRecordsToGhostUserInBatchesWorker
-  :feature_category: :users
+  :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2192,7 +2192,7 @@
   :tags: []
 - :name: approve_blocked_pending_approval_users
   :worker_name: ApproveBlockedPendingApprovalUsersWorker
-  :feature_category: :users
+  :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2291,6 +2291,15 @@
   :tags: []
 - :name: ci_cancel_pipeline
   :worker_name: Ci::CancelPipelineWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: ci_cancel_redundant_pipelines
+  :worker_name: Ci::CancelRedundantPipelinesWorker
   :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :high

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter do
+RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_category: :importers do
   let(:url) { 'https://github.com/foo/bar.git' }
   let(:project) { create(:project, import_source: 'foo/bar', import_url: url) }
   let(:client) { double(:client) }
@@ -92,7 +92,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter do
     end
   end
 
-  describe '#parallel_import' do
+  describe '#parallel_import', :clean_gitlab_redis_cache do
     it 'imports each note in parallel' do
       importer = described_class.new(project, client)
 
@@ -101,13 +101,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter do
         .and_yield(pull_request)
 
       expect(Gitlab::GithubImport::ImportPullRequestWorker)
-        .to receive(:bulk_perform_in)
-        .with(
-          1.second,
-          [[project.id, an_instance_of(Hash), an_instance_of(String)]],
-          batch_delay: 1.minute,
-          batch_size: 200
-        )
+        .to receive(:perform_in)
+        .with(1.minute, project.id, an_instance_of(Hash), an_instance_of(String))
 
       waiter = importer.parallel_import
 

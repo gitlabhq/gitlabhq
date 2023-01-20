@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Todos::Destroy::EntityLeaveService do
+RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_planning do
   let_it_be(:user, reload: true) { create(:user) }
   let_it_be(:user2, reload: true) { create(:user) }
   let_it_be_with_refind(:group) { create(:group, :private) }

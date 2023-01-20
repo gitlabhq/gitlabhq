@@ -17,6 +17,7 @@ import removeProjectCIJobTokenScopeMutation from '../graphql/mutations/remove_pr
 import updateCIJobTokenScopeMutation from '../graphql/mutations/update_ci_job_token_scope.mutation.graphql';
 import getCIJobTokenScopeQuery from '../graphql/queries/get_ci_job_token_scope.query.graphql';
 import getProjectsWithCIJobTokenScopeQuery from '../graphql/queries/get_projects_with_ci_job_token_scope.query.graphql';
+import OptInJwt from './opt_in_jwt.vue';
 import TokenProjectsTable from './token_projects_table.vue';
 
 export default {
@@ -44,6 +45,7 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     GlToggle,
+    OptInJwt,
     TokenProjectsTable,
   },
   inject: {
@@ -230,6 +232,7 @@ export default {
         </gl-alert>
         <token-projects-table :projects="projects" @removeProject="removeProject" />
       </div>
+      <opt-in-jwt />
     </template>
   </div>
 </template>

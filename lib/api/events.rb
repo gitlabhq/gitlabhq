@@ -8,7 +8,7 @@ module API
 
     allow_access_with_scope :read_user, if: -> (request) { request.get? || request.head? }
 
-    feature_category :users
+    feature_category :user_profile
     urgency :low
 
     resource :events do

@@ -70,6 +70,11 @@ describe('InviteModalBase', () => {
   const findActionButton = () => wrapper.find('.js-modal-action-primary');
 
   describe('rendering the modal', () => {
+    let trackingSpy;
+
+    const expectTracking = (action, label = undefined, category = undefined) =>
+      expect(trackingSpy).toHaveBeenCalledWith(category, action, { label, category });
+
     beforeEach(() => {
       createComponent();
     });
@@ -151,14 +156,6 @@ describe('InviteModalBase', () => {
     });
 
     describe('when users limit is reached', () => {
-      let trackingSpy;
-
-      const expectTracking = (action, label) =>
-        expect(trackingSpy).toHaveBeenCalledWith('default', action, {
-          label,
-          category: 'default',
-        });
-
       beforeEach(() => {
         createComponent(
           { props: { usersLimitDataset: { membersPath, purchasePath, reachedLimit: true } } },
@@ -176,7 +173,7 @@ describe('InviteModalBase', () => {
         const modal = wrapper.findComponent(GlModal);
 
         modal.vm.$emit('shown');
-        expectTracking('render', ON_SHOW_TRACK_LABEL);
+        expectTracking('render', ON_SHOW_TRACK_LABEL, 'default');
 
         unmockTracking();
       });
@@ -227,6 +224,31 @@ describe('InviteModalBase', () => {
       it('renders correct buttons', () => {
         expect(findCancelButton().text()).toBe(CANCEL_BUTTON_TEXT);
         expect(findActionButton().text()).toBe(INVITE_BUTTON_TEXT);
+      });
+    });
+
+    describe('when isCelebration', () => {
+      it('tracks actions', () => {
+        createComponent({ props: { isCelebration: true, preventCancelDefault: true } });
+
+        trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+        const modal = wrapper.findComponent(GlModal);
+        const mockEvent = { preventDefault: jest.fn() };
+
+        modal.vm.$emit('shown');
+        expectTracking('render');
+
+        modal.vm.$emit('primary', mockEvent);
+        expectTracking('click_invite');
+
+        modal.vm.$emit('cancel', mockEvent);
+        expectTracking('click_cancel');
+
+        modal.vm.$emit('close');
+        expectTracking('click_x');
+
+        unmockTracking();
       });
     });
   });

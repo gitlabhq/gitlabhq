@@ -85,6 +85,11 @@ export default {
       required: false,
       default: false,
     },
+    isCelebration: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     invalidFeedbackMessage: {
       type: String,
       required: false,
@@ -202,11 +207,19 @@ export default {
       this.$emit('reset');
     },
     onShowModal() {
+      if (this.isCelebration) {
+        this.track('render');
+      }
+
       if (this.usersLimitDataset.reachedLimit) {
         this.track('render', { category: 'default', label: ON_SHOW_TRACK_LABEL });
       }
     },
-    onCloseModal(e) {
+    onCancel(e) {
+      if (this.isCelebration) {
+        this.track('click_cancel');
+      }
+
       if (this.preventCancelDefault) {
         e.preventDefault();
       } else {
@@ -217,6 +230,10 @@ export default {
       this.$emit('cancel');
     },
     onSubmit(e) {
+      if (this.isCelebration) {
+        this.track('click_invite');
+      }
+
       // We never want to hide when submitting
       e.preventDefault();
 
@@ -224,6 +241,11 @@ export default {
         accessLevel: this.selectedAccessLevel,
         expiresAt: this.selectedDate,
       });
+    },
+    onClose() {
+      if (this.isCelebration) {
+        this.track('click_x');
+      }
     },
   },
   HEADER_CLOSE_LABEL,
@@ -249,7 +271,8 @@ export default {
     :action-cancel="actionCancel"
     @shown="onShowModal"
     @primary="onSubmit"
-    @cancel="onCloseModal"
+    @cancel="onCancel"
+    @close="onClose"
     @hidden="onReset"
   >
     <content-transition

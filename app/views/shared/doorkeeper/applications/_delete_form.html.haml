@@ -1,10 +1,10 @@
-- submit_btn_css ||= 'gl-button btn btn-danger btn-sm'
+- submit_btn_css ||= 'btn btn-danger btn-md gl-button btn-danger-secondary'
 = form_tag path do
   %input{ :name => "_method", :type => "hidden", :value => "delete" }
   - if defined? small
-    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, icon: 'remove', button_options: { data: { confirm: _("Are you sure?"), confirm_btn_variant: "danger" } }) do
+    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, icon: 'remove', button_options: { class: submit_btn_css, data: { confirm: _("Are you sure?"), confirm_btn_variant: "danger" } }) do
       %span.sr-only
         = _('Destroy')
   - else
-    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { aria: { label: _('Destroy') }, class: submit_btn_css, data: { confirm: _("Are you sure?"), confirm_btn_variant: "danger" } }) do
+    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { class: submit_btn_css, aria: { label: _('Destroy') }, data: { confirm: _("Are you sure?"), confirm_btn_variant: "danger" } }) do
       = _('Destroy')

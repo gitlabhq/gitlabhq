@@ -38,6 +38,10 @@ module Gitlab
       key.is_a?(String) && key =~ /\A#{KEY_PREFIX}:\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/o
     end
 
+    def self.generate_key
+      "#{KEY_PREFIX}:#{SecureRandom.uuid}"
+    end
+
     attr_reader :key, :finished, :worker_label
     attr_accessor :jobs_remaining
 

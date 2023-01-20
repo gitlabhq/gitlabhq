@@ -27,7 +27,7 @@ class UsersController < ApplicationController
     check_rate_limit!(:username_exists, scope: request.ip)
   end
 
-  feature_category :users, [:show, :activity, :groups, :projects, :contributed, :starred,
+  feature_category :user_profile, [:show, :activity, :groups, :projects, :contributed, :starred,
                             :followers, :following, :calendar, :calendar_activities,
                             :exists, :activity, :follow, :unfollow, :ssh_keys]
 

@@ -7,7 +7,7 @@ module Users
     include CronjobQueue # rubocop: disable Scalability/CronWorkerContext
 
     sidekiq_options retry: false
-    feature_category :users
+    feature_category :user_profile
     data_consistency :always
     idempotent!
 

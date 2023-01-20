@@ -1377,7 +1377,8 @@ Returns an empty response with a `204` status code if successful.
 
 ### Remove a single SCIM provisioned user
 
-Removes the user's SSO identity.
+The user is placed in an `ldap_blocked` status and signed out. This means
+the user cannot sign in or push or pull code.
 
 ```plaintext
 DELETE /api/scim/v2/application/Users/:id

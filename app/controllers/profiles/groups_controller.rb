@@ -3,7 +3,7 @@
 class Profiles::GroupsController < Profiles::ApplicationController
   include RoutableActions
 
-  feature_category :users
+  feature_category :user_profile
 
   def update
     group = find_routable!(Group, params[:id], request.fullpath)

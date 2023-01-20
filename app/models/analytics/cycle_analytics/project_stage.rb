@@ -8,22 +8,13 @@ module Analytics
       belongs_to :project, optional: false
       belongs_to :value_stream, class_name: 'Analytics::CycleAnalytics::ProjectValueStream', foreign_key: :project_value_stream_id
 
-      alias_attribute :parent, :project
-      alias_attribute :parent_id, :project_id
-
       alias_attribute :value_stream_id, :project_value_stream_id
 
       delegate :group, to: :project
+      alias_attribute :parent, :project
+      alias_attribute :parent_id, :project_id
 
       validate :validate_project_group_for_label_events, if: -> { start_event_label_based? || end_event_label_based? }
-
-      def self.relative_positioning_query_base(stage)
-        where(project_id: stage.project_id)
-      end
-
-      def self.relative_positioning_parent_column
-        :project_id
-      end
 
       def self.distinct_stages_within_hierarchy(group)
         with_preloaded_labels

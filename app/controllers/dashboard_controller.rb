@@ -14,7 +14,7 @@ class DashboardController < Dashboard::ApplicationController
 
   respond_to :html
 
-  feature_category :users, [:activity]
+  feature_category :user_profile, [:activity]
   feature_category :team_planning, [:issues, :issues_calendar]
   feature_category :code_review_workflow, [:merge_requests]
 

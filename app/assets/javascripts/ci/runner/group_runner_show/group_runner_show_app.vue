@@ -3,11 +3,13 @@ import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { TYPE_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { redirectTo } from '~/lib/utils/url_utility';
+
 import RunnerDeleteButton from '../components/runner_delete_button.vue';
 import RunnerEditButton from '../components/runner_edit_button.vue';
 import RunnerPauseButton from '../components/runner_pause_button.vue';
 import RunnerHeader from '../components/runner_header.vue';
-import RunnerDetails from '../components/runner_details.vue';
+import RunnerDetailsTabs from '../components/runner_details_tabs.vue';
+
 import { I18N_FETCH_ERROR } from '../constants';
 import runnerQuery from '../graphql/show/runner.query.graphql';
 import { captureException } from '../sentry_utils';
@@ -20,7 +22,7 @@ export default {
     RunnerEditButton,
     RunnerPauseButton,
     RunnerHeader,
-    RunnerDetails,
+    RunnerDetailsTabs,
   },
   props: {
     runnerId: {
@@ -89,6 +91,6 @@ export default {
       </template>
     </runner-header>
 
-    <runner-details v-if="runner" :runner="runner" />
+    <runner-details-tabs :runner="runner" :show-access-help="true" />
   </div>
 </template>

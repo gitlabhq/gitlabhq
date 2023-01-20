@@ -171,7 +171,7 @@ RSpec.describe API::API, feature_category: :authentication_and_authorization do
                         'meta.remote_ip' => an_instance_of(String),
                         'meta.client_id' => a_string_matching(%r{\Auser/.+}),
                         'meta.user' => user.username,
-                        'meta.feature_category' => 'users',
+                        'meta.feature_category' => 'user_profile',
                         'route' => '/api/:version/users')
 
           expect(data.stringify_keys).not_to include('meta.caller_id')

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitAccess, :aggregate_failures do
+RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :authentication_and_authorization do
   include TermsHelper
   include AdminModeHelper
   include ExternalAuthorizationServiceHelpers

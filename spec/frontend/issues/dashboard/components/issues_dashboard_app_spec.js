@@ -19,6 +19,7 @@ import {
   setSortPreferenceMutationResponseWithErrors,
 } from 'jest/issues/list/mock_data';
 import IssuesDashboardApp from '~/issues/dashboard/components/issues_dashboard_app.vue';
+import getIssuesCountsQuery from '~/issues/dashboard/queries/get_issues_counts.query.graphql';
 import { CREATED_DESC, i18n, UPDATED_DESC, urlSortParams } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import { getSortKey, getSortOptions } from '~/issues/list/utils';
@@ -33,7 +34,11 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableStates } from '~/vue_shared/issuable/list/constants';
-import { emptyIssuesQueryResponse, issuesQueryResponse } from '../mock_data';
+import {
+  emptyIssuesQueryResponse,
+  issuesCountsQueryResponse,
+  issuesQueryResponse,
+} from '../mock_data';
 
 jest.mock('@sentry/browser');
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
@@ -69,24 +74,24 @@ describe('IssuesDashboardApp component', () => {
     defaultQueryResponse.data.issues.nodes[0].weight = 5;
   }
 
-  const findCalendarButton = () =>
-    wrapper.findByRole('link', { name: IssuesDashboardApp.i18n.calendarButtonText });
+  const findCalendarButton = () => wrapper.findByRole('link', { name: i18n.calendarLabel });
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
   const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
-  const findRssButton = () =>
-    wrapper.findByRole('link', { name: IssuesDashboardApp.i18n.rssButtonText });
+  const findRssButton = () => wrapper.findByRole('link', { name: i18n.rssLabel });
 
   const mountComponent = ({
     provide = {},
     issuesQueryHandler = jest.fn().mockResolvedValue(defaultQueryResponse),
-    sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
+    issuesCountsQueryHandler = jest.fn().mockResolvedValue(issuesCountsQueryResponse),
+    sortPreferenceMutationHandler = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
   } = {}) => {
     wrapper = mountExtended(IssuesDashboardApp, {
       apolloProvider: createMockApollo([
         [getIssuesQuery, issuesQueryHandler],
-        [setSortPreferenceMutation, sortPreferenceMutationResponse],
+        [getIssuesCountsQuery, issuesCountsQueryHandler],
+        [setSortPreferenceMutation, sortPreferenceMutationHandler],
       ]),
       provide: {
         ...defaultProvide,
@@ -123,13 +128,18 @@ describe('IssuesDashboardApp component', () => {
         issuablesLoading: false,
         namespace: 'dashboard',
         recentSearchesStorageKey: 'issues',
-        searchInputPlaceholder: IssuesDashboardApp.i18n.searchInputPlaceholder,
+        searchInputPlaceholder: i18n.searchPlaceholder,
         showPaginationControls: true,
         sortOptions: getSortOptions({
           hasBlockedIssuesFeature: defaultProvide.hasBlockedIssuesFeature,
           hasIssuableHealthStatusFeature: defaultProvide.hasIssuableHealthStatusFeature,
           hasIssueWeightsFeature: defaultProvide.hasIssueWeightsFeature,
         }),
+        tabCounts: {
+          opened: 1,
+          closed: 2,
+          all: 3,
+        },
         tabs: IssuesDashboardApp.IssuableListTabs,
         urlParams: {
           sort: urlSortParams[CREATED_DESC],
@@ -192,9 +202,9 @@ describe('IssuesDashboardApp component', () => {
 
         it('renders empty state', () => {
           expect(findEmptyState().props()).toMatchObject({
-            description: IssuesDashboardApp.i18n.emptyStateWithFilterDescription,
+            description: i18n.noSearchResultsDescription,
             svgPath: defaultProvide.emptyStateWithFilterSvgPath,
-            title: IssuesDashboardApp.i18n.emptyStateWithFilterTitle,
+            title: i18n.noSearchResultsTitle,
           });
         });
       });
@@ -217,7 +227,7 @@ describe('IssuesDashboardApp component', () => {
         expect(findEmptyState().props()).toMatchObject({
           description: null,
           svgPath: defaultProvide.emptyStateWithoutFilterSvgPath,
-          title: IssuesDashboardApp.i18n.emptyStateWithoutFilterTitle,
+          title: i18n.noSearchNoFilterTitle,
         });
       });
     });
@@ -286,20 +296,28 @@ describe('IssuesDashboardApp component', () => {
     });
   });
 
-  describe('when there is an error fetching issues', () => {
-    beforeEach(() => {
-      setWindowLocation(locationSearch);
-      mountComponent({ issuesQueryHandler: jest.fn().mockRejectedValue(new Error('ERROR')) });
-      jest.runOnlyPendingTimers();
-      return waitForPromises();
-    });
+  describe('errors', () => {
+    describe.each`
+      error                      | mountOption                   | message
+      ${'fetching issues'}       | ${'issuesQueryHandler'}       | ${i18n.errorFetchingIssues}
+      ${'fetching issue counts'} | ${'issuesCountsQueryHandler'} | ${i18n.errorFetchingCounts}
+    `('when there is an error $error', ({ mountOption, message }) => {
+      beforeEach(() => {
+        setWindowLocation(locationSearch);
+        mountComponent({ [mountOption]: jest.fn().mockRejectedValue(new Error('ERROR')) });
+        jest.runOnlyPendingTimers();
+        return waitForPromises();
+      });
 
-    it('shows an error message', () => {
-      expect(findIssuableList().props('error')).toBe(i18n.errorFetchingIssues);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error('ERROR'));
+      it('shows an error message', () => {
+        expect(findIssuableList().props('error')).toBe(message);
+        expect(Sentry.captureException).toHaveBeenCalledWith(new Error('ERROR'));
+      });
     });
 
     it('clears error message when "dismiss-alert" event is emitted from IssuableList', async () => {
+      mountComponent({ issuesQueryHandler: jest.fn().mockRejectedValue(new Error()) });
+
       findIssuableList().vm.$emit('dismiss-alert');
       await nextTick();
 
@@ -401,7 +419,7 @@ describe('IssuesDashboardApp component', () => {
       describe('when user is signed in', () => {
         it('calls mutation to save sort preference', () => {
           const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
-          mountComponent({ sortPreferenceMutationResponse: mutationMock });
+          mountComponent({ sortPreferenceMutationHandler: mutationMock });
 
           findIssuableList().vm.$emit('sort', UPDATED_DESC);
 
@@ -412,7 +430,7 @@ describe('IssuesDashboardApp component', () => {
           const mutationMock = jest
             .fn()
             .mockResolvedValue(setSortPreferenceMutationResponseWithErrors);
-          mountComponent({ sortPreferenceMutationResponse: mutationMock });
+          mountComponent({ sortPreferenceMutationHandler: mutationMock });
 
           findIssuableList().vm.$emit('sort', UPDATED_DESC);
           await waitForPromises();
@@ -426,7 +444,7 @@ describe('IssuesDashboardApp component', () => {
           const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
           mountComponent({
             provide: { isSignedIn: false },
-            sortPreferenceMutationResponse: mutationMock,
+            sortPreferenceMutationHandler: mutationMock,
           });
 
           findIssuableList().vm.$emit('sort', CREATED_DESC);

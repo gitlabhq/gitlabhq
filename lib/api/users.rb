@@ -8,7 +8,7 @@ module API
 
     allow_access_with_scope :read_user, if: -> (request) { request.get? || request.head? }
 
-    feature_category :users,
+    feature_category :user_profile,
                      %w[
                        /users/:id/custom_attributes
                        /users/:id/custom_attributes/:key
@@ -131,7 +131,7 @@ module API
         use :optional_index_params_ee
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get feature_category: :users, urgency: :low do
+      get feature_category: :user_profile, urgency: :low do
         authenticated_as_admin! if params[:extern_uid].present? && params[:provider].present?
 
         unless current_user&.can_read_all_resources?
@@ -175,7 +175,7 @@ module API
         use :with_custom_attributes
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get ":id", feature_category: :users, urgency: :low do
+      get ":id", feature_category: :user_profile, urgency: :low do
         forbidden!('Not authorized!') unless current_user
 
         unless current_user.can_read_all_resources?
@@ -200,7 +200,7 @@ module API
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
       end
-      get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :users, urgency: :default do
+      get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :user_profile, urgency: :default do
         user = find_user(params[:user_id])
 
         not_found!('User') unless user && can?(current_user, :read_user, user)
@@ -214,7 +214,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
-      post ':id/follow', feature_category: :users do
+      post ':id/follow', feature_category: :user_profile do
         user = find_user(params[:id])
         not_found!('User') unless user
 
@@ -234,7 +234,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
-      post ':id/unfollow', feature_category: :users do
+      post ':id/unfollow', feature_category: :user_profile do
         user = find_user(params[:id])
         not_found!('User') unless user
 
@@ -252,7 +252,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of the user'
         use :pagination
       end
-      get ':id/following', feature_category: :users do
+      get ':id/following', feature_category: :user_profile do
         forbidden!('Not authorized!') unless current_user
 
         user = find_user(params[:id])
@@ -268,7 +268,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of the user'
         use :pagination
       end
-      get ':id/followers', feature_category: :users do
+      get ':id/followers', feature_category: :user_profile do
         forbidden!('Not authorized!') unless current_user
 
         user = find_user(params[:id])
@@ -291,7 +291,7 @@ module API
         optional :force_random_password, type: Boolean, desc: 'Flag indicating a random password will be set'
         use :optional_attributes
       end
-      post feature_category: :users do
+      post feature_category: :user_profile do
         authenticated_as_admin!
 
         params = declared_params(include_missing: false)
@@ -333,7 +333,7 @@ module API
         use :optional_attributes
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      put ":id", feature_category: :users do
+      put ":id", feature_category: :user_profile do
         authenticated_as_admin!
 
         user = User.find_by(id: params.delete(:id))
@@ -644,7 +644,7 @@ module API
         optional :skip_confirmation, type: Boolean, desc: 'Skip confirmation of email and assume it is verified'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      post ":id/emails", feature_category: :users do
+      post ":id/emails", feature_category: :user_profile do
         authenticated_as_admin!
 
         user = User.find_by(id: params.delete(:id))
@@ -668,7 +668,7 @@ module API
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get ':id/emails', feature_category: :users do
+      get ':id/emails', feature_category: :user_profile do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
@@ -685,7 +685,7 @@ module API
         requires :email_id, type: Integer, desc: 'The ID of the email'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      delete ':id/emails/:email_id', feature_category: :users do
+      delete ':id/emails/:email_id', feature_category: :user_profile do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
@@ -707,7 +707,7 @@ module API
         optional :hard_delete, type: Boolean, desc: "Whether to remove a user's contributions"
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      delete ":id", feature_category: :users do
+      delete ":id", feature_category: :user_profile do
         authenticated_as_admin!
 
         user = User.find_by(id: params[:id])
@@ -883,7 +883,7 @@ module API
         optional :type, type: String, values: %w[Project Namespace]
         use :pagination
       end
-      get ":user_id/memberships", feature_category: :users, urgency: :high do
+      get ":user_id/memberships", feature_category: :user_profile, urgency: :high do
         authenticated_as_admin!
         user = find_user_by_id(params)
 
@@ -1021,7 +1021,7 @@ module API
         desc 'Get the currently authenticated user' do
           success Entities::UserPublic
         end
-        get feature_category: :users, urgency: :low do
+        get feature_category: :user_profile, urgency: :low do
           entity =
             # We're disabling Cop/UserAdmin because it checks if the given user is an admin.
             if current_user.admin? # rubocop:disable Cop/UserAdmin
@@ -1202,7 +1202,7 @@ module API
       params do
         use :pagination
       end
-      get "emails", feature_category: :users, urgency: :high do
+      get "emails", feature_category: :user_profile, urgency: :high do
         present paginate(current_user.emails), with: Entities::Email
       end
 
@@ -1244,7 +1244,7 @@ module API
         optional :show_whitespace_in_diffs, type: Boolean, desc: 'Flag indicating the user sees whitespace changes in diffs'
         at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs
       end
-      put "preferences", feature_category: :users, urgency: :high do
+      put "preferences", feature_category: :user_profile, urgency: :high do
         authenticate!
 
         preferences = current_user.user_preference
@@ -1263,7 +1263,7 @@ module API
         success Entities::UserPreferences
         detail 'This feature was introduced in GitLab 14.0.'
       end
-      get "preferences", feature_category: :users do
+      get "preferences", feature_category: :user_profile do
         present current_user.user_preference, with: Entities::UserPreferences
       end
 
@@ -1274,7 +1274,7 @@ module API
         requires :email_id, type: Integer, desc: 'The ID of the email'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get "emails/:email_id", feature_category: :users do
+      get "emails/:email_id", feature_category: :user_profile do
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
@@ -1288,7 +1288,7 @@ module API
       params do
         requires :email, type: String, desc: 'The new email'
       end
-      post "emails", feature_category: :users do
+      post "emails", feature_category: :user_profile do
         email = Emails::CreateService.new(current_user, declared_params.merge(user: current_user)).execute
 
         if email.errors.blank?
@@ -1303,7 +1303,7 @@ module API
         requires :email_id, type: Integer, desc: 'The ID of the email'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      delete "emails/:email_id", feature_category: :users do
+      delete "emails/:email_id", feature_category: :user_profile do
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
@@ -1319,7 +1319,7 @@ module API
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get "activities", feature_category: :users do
+      get "activities", feature_category: :user_profile do
         authenticated_as_admin!
 
         activities = User
@@ -1337,7 +1337,7 @@ module API
       params do
         use :set_user_status_params
       end
-      put "status", feature_category: :users do
+      put "status", feature_category: :user_profile do
         set_user_status(include_missing_params: true)
       end
 
@@ -1348,7 +1348,7 @@ module API
       params do
         use :set_user_status_params
       end
-      patch "status", feature_category: :users do
+      patch "status", feature_category: :user_profile do
         if declared_params(include_missing: false).empty?
           status :ok
 
@@ -1361,7 +1361,7 @@ module API
       desc 'get the status of the current user' do
         success Entities::UserStatus
       end
-      get 'status', feature_category: :users do
+      get 'status', feature_category: :user_profile do
         present current_user.status || {}, with: Entities::UserStatus
       end
     end

@@ -498,6 +498,10 @@ module Ci
       100
     end
 
+    def self.object_hierarchy(relation, options = {})
+      ::Gitlab::Ci::PipelineObjectHierarchy.new(relation, options: options)
+    end
+
     def uses_needs?
       processables.where(scheduling_type: :dag).any?
     end

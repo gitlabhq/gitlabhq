@@ -6,7 +6,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
 
   feature_category :team_planning, [:issues, :labels, :milestones, :commands, :contacts]
   feature_category :code_review_workflow, [:merge_requests]
-  feature_category :users, [:members]
+  feature_category :user_profile, [:members]
   feature_category :source_code_management, [:snippets]
 
   urgency :low, [:merge_requests, :members]

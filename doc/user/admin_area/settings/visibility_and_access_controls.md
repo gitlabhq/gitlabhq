@@ -200,7 +200,9 @@ To enable the export of
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
 
-You can enable migration of groups by direct transfer. To also migrate projects with the groups, you must enable the
+You can enable migration of groups by direct transfer using the UI.
+
+To also migrate projects with the groups, you must enable the
 [`bulk_import_projects` feature flag](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
 
 To enable migration of groups by direct transfer:
@@ -212,6 +214,10 @@ To enable migration of groups by direct transfer:
 1. Scroll to **Allow migrating GitLab groups and projects by direct transfer**.
 1. Select the **Enabled** checkbox.
 1. Select **Save changes**.
+
+The same setting
+[is available](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) in the API as the
+`bulk_import_enabled` attribute.
 
 ## Configure enabled Git access protocols
 

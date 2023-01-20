@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespace do
+RSpec.describe Namespace, feature_category: :subgroups do
   include ProjectForksHelper
   include ReloadHelpers
 

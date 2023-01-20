@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import * as actions from '~/vue_shared/security_reports/store/modules/sast/actions';
 import * as types from '~/vue_shared/security_reports/store/modules/sast/mutation_types';
 import createState from '~/vue_shared/security_reports/store/modules/sast/state';
@@ -159,7 +160,7 @@ describe('sast report actions', () => {
           .onGet(diffEndpoint)
           .replyOnce(200, reports.diff)
           .onGet(vulnerabilityFeedbackPath)
-          .replyOnce(404);
+          .replyOnce(HTTP_STATUS_NOT_FOUND);
       });
 
       it('should dispatch the `receiveError` action', () => {
@@ -177,7 +178,7 @@ describe('sast report actions', () => {
       beforeEach(() => {
         mock
           .onGet(diffEndpoint)
-          .replyOnce(404)
+          .replyOnce(HTTP_STATUS_NOT_FOUND)
           .onGet(vulnerabilityFeedbackPath)
           .replyOnce(200, reports.enrichData);
       });

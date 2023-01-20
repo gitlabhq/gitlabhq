@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
+RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter, feature_category: :importers do
   let_it_be(:project) { create(:project, :import_started) }
 
   let(:client) { double(:client) }
@@ -110,7 +110,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
     end
   end
 
-  describe '#parallel_import' do
+  describe '#parallel_import', :clean_gitlab_redis_cache do
     it 'imports each lfs object in parallel' do
       importer = described_class.new(project, client)
 
@@ -118,10 +118,8 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
         expect(service).to receive(:each_list_item).and_yield(lfs_download_object)
       end
 
-      expect(Gitlab::GithubImport::ImportLfsObjectWorker).to receive(:bulk_perform_in)
-        .with(1.second, [
-                [project.id, an_instance_of(Hash), an_instance_of(String)]
-              ], batch_size: 1000, batch_delay: 1.minute)
+      expect(Gitlab::GithubImport::ImportLfsObjectWorker).to receive(:perform_in)
+        .with(1.minute, project.id, an_instance_of(Hash), an_instance_of(String))
 
       waiter = importer.parallel_import
 

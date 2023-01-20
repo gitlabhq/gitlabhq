@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -17,6 +17,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines do
   let(:step) { described_class.new(pipeline, command) }
 
   before do
+    stub_feature_flags(move_cancel_pending_pipelines_to_async: false)
     create(:ci_build, :interruptible, :running, pipeline: prev_pipeline)
     create(:ci_build, :interruptible, :success, pipeline: prev_pipeline)
     create(:ci_build, :created, pipeline: prev_pipeline)
@@ -50,7 +51,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines do
         perform
 
         expect(Gitlab::AppLogger).to have_received(:info).with(
-          class: described_class.name,
+          class: "Ci::PipelineCreation::CancelRedundantPipelinesService",
           message: "Pipeline #{pipeline.id} auto-canceling pipeline #{prev_pipeline.id}",
           canceled_pipeline_id: prev_pipeline.id,
           canceled_by_pipeline_id: pipeline.id,
@@ -193,6 +194,25 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines do
       end
 
       it 'does not cancel any build' do
+        subject
+
+        expect(build_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')
+        expect(build_statuses(pipeline)).to contain_exactly('pending')
+      end
+    end
+
+    context 'when feature flag move_cancel_pending_pipelines_to_async is enabled' do
+      before do
+        stub_feature_flags(move_cancel_pending_pipelines_to_async: true)
+      end
+
+      it 'enqueues CancelRedundantPipelinesWorker' do
+        expect(Ci::CancelRedundantPipelinesWorker).to receive(:perform_async).with(pipeline.id)
+
+        subject
+      end
+
+      it 'does not do any synchronous processing' do
         subject
 
         expect(build_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')

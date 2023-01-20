@@ -1,0 +1,56 @@
+fragment IssueFragment on Issue {
+  id
+  iid
+  confidential
+  createdAt
+  downvotes
+  dueDate
+  hidden
+  humanTimeEstimate
+  mergeRequestsCount
+  moved
+  state
+  title
+  updatedAt
+  closedAt
+  upvotes
+  userDiscussionsCount @include(if: $isSignedIn)
+  webPath
+  webUrl
+  type
+  assignees @skip(if: $hideUsers) {
+    nodes {
+      id
+      avatarUrl
+      name
+      username
+      webUrl
+    }
+  }
+  author @skip(if: $hideUsers) {
+    id
+    avatarUrl
+    name
+    username
+    webUrl
+  }
+  labels {
+    nodes {
+      id
+      color
+      title
+      description
+    }
+  }
+  milestone {
+    id
+    dueDate
+    startDate
+    webPath
+    title
+  }
+  taskCompletionStatus {
+    completedCount
+    count
+  }
+}
