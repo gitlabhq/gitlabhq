@@ -1018,7 +1018,6 @@ class MergeRequest < ApplicationRecord
   end
 
   def validate_reviewer_size_length
-    return true unless Feature.enabled?(:limit_reviewer_and_assignee_size)
     return true unless reviewers.size > MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
 
     errors.add :reviewers,

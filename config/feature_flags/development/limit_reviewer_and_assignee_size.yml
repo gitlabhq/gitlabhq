@@ -1,8 +1,0 @@
----
-name: limit_reviewer_and_assignee_size
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91406
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366485
-milestone: '15.3'
-type: development
-group: group::code review
-default_enabled: false

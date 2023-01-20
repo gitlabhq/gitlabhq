@@ -12,9 +12,9 @@ RSpec.describe QuickActions::TargetService do
   end
 
   describe '#execute' do
-    shared_examples 'no target' do |type_id:|
+    shared_examples 'no target' do |type_iid:|
       it 'returns nil' do
-        target = service.execute(type, type_id)
+        target = service.execute(type, type_iid)
 
         expect(target).to be_nil
       end
@@ -22,15 +22,15 @@ RSpec.describe QuickActions::TargetService do
 
     shared_examples 'find target' do
       it 'returns the target' do
-        found_target = service.execute(type, target_id)
+        found_target = service.execute(type, target_iid)
 
         expect(found_target).to eq(target)
       end
     end
 
-    shared_examples 'build target' do |type_id:|
+    shared_examples 'build target' do |type_iid:|
       it 'builds a new target' do
-        target = service.execute(type, type_id)
+        target = service.execute(type, type_iid)
 
         expect(target.project).to eq(project)
         expect(target).to be_new_record
@@ -39,36 +39,36 @@ RSpec.describe QuickActions::TargetService do
 
     context 'for issue' do
       let(:target) { create(:issue, project: project) }
-      let(:target_id) { target.iid }
+      let(:target_iid) { target.iid }
       let(:type) { 'Issue' }
 
       it_behaves_like 'find target'
-      it_behaves_like 'build target', type_id: nil
-      it_behaves_like 'build target', type_id: -1
+      it_behaves_like 'build target', type_iid: nil
+      it_behaves_like 'build target', type_iid: -1
     end
 
     context 'for merge request' do
       let(:target) { create(:merge_request, source_project: project) }
-      let(:target_id) { target.iid }
+      let(:target_iid) { target.iid }
       let(:type) { 'MergeRequest' }
 
       it_behaves_like 'find target'
-      it_behaves_like 'build target', type_id: nil
-      it_behaves_like 'build target', type_id: -1
+      it_behaves_like 'build target', type_iid: nil
+      it_behaves_like 'build target', type_iid: -1
     end
 
     context 'for commit' do
       let(:project) { create(:project, :repository) }
       let(:target) { project.commit.parent }
-      let(:target_id) { target.sha }
+      let(:target_iid) { target.sha }
       let(:type) { 'Commit' }
 
       it_behaves_like 'find target'
-      it_behaves_like 'no target', type_id: 'invalid_sha'
+      it_behaves_like 'no target', type_iid: 'invalid_sha'
 
-      context 'with nil target_id' do
+      context 'with nil target_iid' do
         let(:target) { project.commit }
-        let(:target_id) { nil }
+        let(:target_iid) { nil }
 
         it_behaves_like 'find target'
       end
@@ -77,7 +77,7 @@ RSpec.describe QuickActions::TargetService do
     context 'for unknown type' do
       let(:type) { 'unknown' }
 
-      it_behaves_like 'no target', type_id: :unused
+      it_behaves_like 'no target', type_iid: :unused
     end
   end
 end

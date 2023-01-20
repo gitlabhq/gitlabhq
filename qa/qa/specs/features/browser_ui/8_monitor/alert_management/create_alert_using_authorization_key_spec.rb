@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Monitor', product_group: :respond do
+  RSpec.describe 'Monitor', :smoke, product_group: :respond do
     describe 'Alert settings' do
       shared_examples 'sends test alert using authorization key' do |type|
         it 'creates new alert', :aggregate_failures do

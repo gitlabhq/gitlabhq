@@ -137,8 +137,6 @@ module Notes
     end
 
     def invalid_reviewers?(update_params)
-      return false unless Feature.enabled?(:limit_reviewer_and_assignee_size)
-
       if update_params.key?(:reviewer_ids)
         possible_reviewers = update_params[:reviewer_ids]&.uniq&.size
 
