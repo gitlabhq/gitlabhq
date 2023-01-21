@@ -645,10 +645,10 @@ describe('Issuable output', () => {
     });
   });
 
-  describe('listItemReorder event', () => {
+  describe('saveDescription event', () => {
     it('makes request to update issue', async () => {
       const description = 'I have been updated!';
-      findDescription().vm.$emit('listItemReorder', description);
+      findDescription().vm.$emit('saveDescription', description);
       await waitForPromises();
 
       expect(mock.history.put[0].data).toContain(description);

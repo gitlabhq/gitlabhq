@@ -1,6 +1,7 @@
 <script>
-import { GlToast, GlTooltip, GlModalDirective } from '@gitlab/ui';
+import { GlModalDirective, GlToast } from '@gitlab/ui';
 import $ from 'jquery';
+import { uniqueId } from 'lodash';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -18,7 +19,6 @@ import Tracking from '~/tracking';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import createWorkItemFromTaskMutation from '~/work_items/graphql/create_work_item_from_task.mutation.graphql';
-
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import {
@@ -29,8 +29,10 @@ import {
   WIDGET_TYPE_DESCRIPTION,
 } from '~/work_items/constants';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import eventHub from '../event_hub';
 import animateMixin from '../mixins/animate';
-import { convertDescriptionWithNewSort } from '../utils';
+import { convertDescriptionWithDeletedTaskListItem, convertDescriptionWithNewSort } from '../utils';
+import TaskListItemActions from './task_list_item_actions.vue';
 
 Vue.use(GlToast);
 
@@ -44,7 +46,6 @@ export default {
     GlModal: GlModalDirective,
   },
   components: {
-    GlTooltip,
     WorkItemDetailModal,
   },
   mixins: [animateMixin, glFeatureFlagMixin(), Tracking.mixin()],
@@ -98,10 +99,10 @@ export default {
     const workItemId = getParameterByName('work_item_id');
 
     return {
+      hasTaskListItemActions: false,
       preAnimation: false,
       pulseAnimation: false,
       initialUpdate: true,
-      taskButtons: [],
       activeTask: {},
       workItemId: isPositiveInteger(workItemId)
         ? convertToGraphQLId(TYPE_WORK_ITEM, workItemId)
@@ -164,6 +165,8 @@ export default {
     },
   },
   mounted() {
+    eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
+
     this.renderGFM();
     this.updateTaskStatusText();
 
@@ -175,6 +178,8 @@ export default {
     }
   },
   beforeDestroy() {
+    eventHub.$off('delete-task-list-item', this.deleteTaskListItem);
+
     this.removeAllPointerEventListeners();
   },
   methods: {
@@ -198,7 +203,7 @@ export default {
         this.renderSortableLists();
 
         if (this.workItemsEnabled) {
-          this.renderTaskActions();
+          this.renderTaskListItemActions();
         }
       }
     },
@@ -223,7 +228,7 @@ export default {
             handle: '.drag-icon',
             onUpdate: (event) => {
               const description = convertDescriptionWithNewSort(this.descriptionText, event.to);
-              this.$emit('listItemReorder', description);
+              this.$emit('saveDescription', description);
             },
           }),
         );
@@ -232,25 +237,25 @@ export default {
     createDragIconElement() {
       const container = document.createElement('div');
       // eslint-disable-next-line no-unsanitized/property
-      container.innerHTML = `<svg class="drag-icon s14 gl-icon gl-cursor-grab gl-visibility-hidden" role="img" aria-hidden="true">
+      container.innerHTML = `<svg class="drag-icon s14 gl-icon gl-cursor-grab gl-opacity-0" role="img" aria-hidden="true">
         <use href="${gon.sprite_icons}#drag-vertical"></use>
       </svg>`;
       return container.firstChild;
     },
-    addPointerEventListeners(listItem, iconSelector) {
+    addPointerEventListeners(listItem, elementSelector) {
       const pointeroverListener = (event) => {
-        const icon = event.target.closest('li').querySelector(iconSelector);
-        if (!icon || isDragging() || this.isUpdating) {
+        const element = event.target.closest('li').querySelector(elementSelector);
+        if (!element || isDragging() || this.isUpdating) {
           return;
         }
-        icon.style.visibility = 'visible';
+        element.classList.add('gl-opacity-10');
       };
       const pointeroutListener = (event) => {
-        const icon = event.target.closest('li').querySelector(iconSelector);
-        if (!icon) {
+        const element = event.target.closest('li').querySelector(elementSelector);
+        if (!element) {
           return;
         }
-        icon.style.visibility = 'hidden';
+        element.classList.remove('gl-opacity-10');
       };
 
       // We use pointerover/pointerout instead of CSS so that when we hover over a
@@ -279,11 +284,9 @@ export default {
     taskListUpdateStarted() {
       this.$emit('taskListUpdateStarted');
     },
-
     taskListUpdateSuccess() {
       this.$emit('taskListUpdateSucceeded');
     },
-
     taskListUpdateError() {
       createAlert({
         message: sprintf(
@@ -298,7 +301,6 @@ export default {
 
       this.$emit('taskListUpdateFailed');
     },
-
     updateTaskStatusText() {
       const taskRegexMatches = this.taskStatus.match(/(\d+) of ((?!0)\d+)/);
       const $issuableHeader = $('.issuable-meta');
@@ -317,15 +319,28 @@ export default {
         $tasksShort.text('');
       }
     },
-    renderTaskActions() {
+    createTaskListItemActions(toggleClass) {
+      const app = new Vue({
+        el: document.createElement('div'),
+        provide: { toggleClass },
+        render: (createElement) => createElement(TaskListItemActions),
+      });
+      return app.$el;
+    },
+    deleteTaskListItem(sourcepos) {
+      this.$emit(
+        'saveDescription',
+        convertDescriptionWithDeletedTaskListItem(this.descriptionText, sourcepos),
+      );
+    },
+    renderTaskListItemActions() {
       if (!this.$el?.querySelectorAll) {
         return;
       }
 
-      this.taskButtons = [];
       const taskListFields = this.$el.querySelectorAll('.task-list-item:not(.inapplicable)');
 
-      taskListFields.forEach((item, index) => {
+      taskListFields.forEach((item) => {
         const taskLink = item.querySelector('.gfm-issue');
         if (taskLink) {
           const { issue, referenceType, issueType } = taskLink.dataset;
@@ -351,31 +366,11 @@ export default {
           });
           return;
         }
-        this.addPointerEventListeners(item, '.js-add-task');
-        const button = document.createElement('button');
-        button.classList.add(
-          'btn',
-          'btn-default',
-          'btn-md',
-          'gl-button',
-          'btn-default-tertiary',
-          'gl-visibility-hidden',
-          'gl-p-0!',
-          'gl-mt-n1',
-          'gl-ml-3',
-          'js-add-task',
-        );
-        button.id = `js-task-button-${index}`;
-        this.taskButtons.push(button.id);
-        // eslint-disable-next-line no-unsanitized/property
-        button.innerHTML = `
-          <svg data-testid="ellipsis_v-icon" role="img" aria-hidden="true" class="dropdown-icon gl-icon s14">
-            <use href="${gon.sprite_icons}#doc-new"></use>
-          </svg>
-        `;
-        button.setAttribute('aria-label', s__('WorkItem|Create task'));
-        button.addEventListener('click', () => this.handleCreateTask(button));
-        this.insertButtonNextToTaskText(item, button);
+
+        const toggleClass = uniqueId('task-list-item-actions-');
+        this.addPointerEventListeners(item, `.${toggleClass}`);
+        this.insertNextToTaskListItemText(this.createTaskListItemActions(toggleClass), item);
+        this.hasTaskListItemActions = true;
       });
     },
     addHoverListeners(taskLink, id) {
@@ -391,19 +386,20 @@ export default {
         }
       });
     },
-    insertButtonNextToTaskText(listItem, button) {
-      const paragraph = Array.from(listItem.children).find((element) => element.tagName === 'P');
-      const lastChild = listItem.lastElementChild;
+    insertNextToTaskListItemText(element, listItem) {
+      const children = Array.from(listItem.children);
+      const paragraph = children.find((el) => el.tagName === 'P');
+      const list = children.find((el) => el.classList.contains('task-list'));
       if (paragraph) {
         // If there's a `p` element, then it's a multi-paragraph task item
         // and the task text exists within the `p` element as the last child
-        paragraph.append(button);
-      } else if (lastChild.tagName === 'OL' || lastChild.tagName === 'UL') {
+        paragraph.append(element);
+      } else if (list) {
         // Otherwise, the task item can have a child list which exists directly after the task text
-        lastChild.insertAdjacentElement('beforebegin', button);
+        list.insertAdjacentElement('beforebegin', element);
       } else {
         // Otherwise, the task item is a simple one where the task text exists as the last child
-        listItem.append(button);
+        listItem.append(element);
       }
     },
     setActiveTask(el) {
@@ -492,14 +488,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="descriptionHtml"
-    :class="{
-      'js-task-list-container': canUpdate,
-      'work-items-enabled': workItemsEnabled,
-    }"
-    class="description"
-  >
+  <div v-if="descriptionHtml" :class="{ 'js-task-list-container': canUpdate }" class="description">
     <div
       ref="gfm-content"
       v-safe-html:[$options.safeHtmlConfig]="descriptionHtml"
@@ -507,10 +496,10 @@ export default {
       :class="{
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation,
+        'has-task-list-item-actions': hasTaskListItemActions,
       }"
       class="md"
     ></div>
-
     <textarea
       v-if="descriptionText"
       :value="descriptionText"
@@ -531,10 +520,5 @@ export default {
       @workItemDeleted="handleDeleteTask"
       @close="closeWorkItemDetailModal"
     />
-    <template v-if="workItemsEnabled">
-      <gl-tooltip v-for="item in taskButtons" :key="item" :target="item">
-        {{ s__('WorkItem|Create task') }}
-      </gl-tooltip>
-    </template>
   </div>
 </template>

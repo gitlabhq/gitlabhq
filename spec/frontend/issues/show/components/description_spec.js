@@ -1,8 +1,7 @@
 import $ from 'jquery';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlTooltip, GlModal } from '@gitlab/ui';
-
+import { GlModal } from '@gitlab/ui';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -10,9 +9,8 @@ import { mockTracking } from 'helpers/tracking_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-
-import { createAlert } from '~/flash';
 import Description from '~/issues/show/components/description.vue';
+import eventHub from '~/issues/show/event_hub';
 import { updateHistory } from '~/lib/utils/url_utility';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
@@ -31,7 +29,6 @@ import {
   descriptionHtmlWithTask,
 } from '../mock_data/mock_data';
 
-jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   updateHistory: jest.fn(),
@@ -65,11 +62,8 @@ describe('Description component', () => {
 
   const findGfmContent = () => wrapper.find('[data-testid="gfm-content"]');
   const findTextarea = () => wrapper.find('[data-testid="textarea"]');
-  const findTaskActionButtons = () => wrapper.findAll('.js-add-task');
-  const findConvertToTaskButton = () => wrapper.find('.js-add-task');
+  const findTaskActionButtons = () => wrapper.findAll('.task-list-item-actions');
   const findTaskLink = () => wrapper.find('a.gfm-issue');
-
-  const findTooltips = () => wrapper.findAllComponents(GlTooltip);
   const findModal = () => wrapper.findComponent(GlModal);
   const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
 
@@ -123,10 +117,6 @@ describe('Description component', () => {
 
       document.body.appendChild(metaData);
     }
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
   });
 
   afterAll(() => {
@@ -311,13 +301,6 @@ describe('Description component', () => {
         expect(findTaskActionButtons()).toHaveLength(3);
       });
 
-      it('renders a list of tooltips corresponding to checkboxes in description HTML', () => {
-        expect(findTooltips()).toHaveLength(3);
-        expect(findTooltips().at(0).props('target')).toBe(
-          findTaskActionButtons().at(0).attributes('id'),
-        );
-      });
-
       it('does not show a modal by default', () => {
         expect(findModal().exists()).toBe(false);
       });
@@ -331,50 +314,29 @@ describe('Description component', () => {
       });
     });
 
-    describe('creating work item from checklist item', () => {
-      it('emits `updateDescription` after creating new work item', async () => {
-        createComponent({
-          props: {
-            descriptionHtml: descriptionHtmlWithCheckboxes,
-          },
-          provide: {
-            glFeatures: {
-              workItemsCreateFromMarkdown: true,
-            },
-          },
+    describe('task list item actions', () => {
+      describe('deleting the task list item', () => {
+        it('emits an event to update the description with the deleted task list item', () => {
+          const descriptionText = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 2
+      1. [ ] item 3
+   1. [ ] item 4;`;
+          const newDescriptionText = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 3
+   1. [ ] item 4;`;
+          createComponent({
+            props: { descriptionText },
+            provide: { glFeatures: { workItemsCreateFromMarkdown: true } },
+          });
+
+          eventHub.$emit('delete-task-list-item', '4:4-5:19');
+
+          expect(wrapper.emitted('saveDescription')).toEqual([[newDescriptionText]]);
         });
-
-        const newDescription = `<p>New description</p>`;
-
-        await findConvertToTaskButton().trigger('click');
-
-        await waitForPromises();
-
-        expect(wrapper.emitted('updateDescription')).toEqual([[newDescription]]);
-      });
-
-      it('shows flash message when creating task fails', async () => {
-        createComponent({
-          props: {
-            descriptionHtml: descriptionHtmlWithCheckboxes,
-          },
-          provide: {
-            glFeatures: {
-              workItemsCreateFromMarkdown: true,
-            },
-          },
-          createWorkItemFromTaskHandler: jest.fn().mockRejectedValue({}),
-        });
-
-        await findConvertToTaskButton().trigger('click');
-
-        await waitForPromises();
-
-        expect(createAlert).toHaveBeenCalledWith(
-          expect.objectContaining({
-            message: 'Something went wrong when creating task. Please try again.',
-          }),
-        );
       });
     });
 

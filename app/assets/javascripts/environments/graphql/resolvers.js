@@ -54,6 +54,7 @@ export const resolvers = (endpoint) => ({
             ...convertObjectPropsToCamelCase(res.data.review_app),
             __typename: 'ReviewApp',
           },
+          canStopStaleEnvironments: res.data.can_stop_stale_environments,
           stoppedCount: res.data.stopped_count,
           __typename: 'LocalEnvironmentApp',
         };

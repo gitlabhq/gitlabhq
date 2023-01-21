@@ -93,3 +93,78 @@ export const convertDescriptionWithNewSort = (description, list) => {
 
   return descriptionLines.join(NEWLINE);
 };
+
+const bulletTaskListItemRegex = /^\s*[-*]\s+\[.]/;
+const numericalTaskListItemRegex = /^\s*[0-9]\.\s+\[.]/;
+
+/**
+ * Checks whether the line of markdown contains a task list item,
+ * i.e. `- [ ]`, `* [ ]`, or `1. [ ]`.
+ *
+ * @param {String} line A line of markdown
+ * @returns {boolean} `true` if the line contains a task list item, otherwise `false`
+ */
+const containsTaskListItem = (line) =>
+  bulletTaskListItemRegex.test(line) || numericalTaskListItemRegex.test(line);
+
+/**
+ * Deletes a task list item from the description.
+ *
+ * Starting from the task list item, it deletes each line until it hits a nested
+ * task list item and reduces the indentation of each line from this line onwards.
+ *
+ * For example, for a given description like:
+ *
+ * <pre>
+ * 1. [ ] item 1
+ *
+ *    paragraph text
+ *
+ *    1. [ ] item 2
+ *
+ *       paragraph text
+ *
+ *    1. [ ] item 3
+ * </pre>
+ *
+ * Then when prompted to delete item 1, this function will return:
+ *
+ * <pre>
+ * 1. [ ] item 2
+ *
+ *    paragraph text
+ *
+ * 1. [ ] item 3
+ * </pre>
+ *
+ * @param {String} description Description in markdown format
+ * @param {String} sourcepos Source position in format `23:3-23:14`
+ * @returns {String} Markdown with the deleted task list item
+ */
+export const convertDescriptionWithDeletedTaskListItem = (description, sourcepos) => {
+  const descriptionLines = description.split(NEWLINE);
+  const [startIndex, endIndex] = getSourceposRows(sourcepos);
+
+  let indentation = 0;
+  let linesToDelete = 1;
+  let reduceIndentation = false;
+
+  for (let i = startIndex + 1; i <= endIndex; i += 1) {
+    if (reduceIndentation) {
+      descriptionLines[i] = descriptionLines[i].slice(indentation);
+    } else if (containsTaskListItem(descriptionLines[i])) {
+      reduceIndentation = true;
+      const firstLine = descriptionLines[startIndex];
+      const currentLine = descriptionLines[i];
+      const firstLineIndentation = firstLine.length - firstLine.trimStart().length;
+      const currentLineIndentation = currentLine.length - currentLine.trimStart().length;
+      indentation = currentLineIndentation - firstLineIndentation;
+      descriptionLines[i] = descriptionLines[i].slice(indentation);
+    } else {
+      linesToDelete += 1;
+    }
+  }
+
+  descriptionLines.splice(startIndex, linesToDelete);
+  return descriptionLines.join(NEWLINE);
+};

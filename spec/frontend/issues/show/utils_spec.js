@@ -1,4 +1,7 @@
-import { convertDescriptionWithNewSort } from '~/issues/show/utils';
+import {
+  convertDescriptionWithDeletedTaskListItem,
+  convertDescriptionWithNewSort,
+} from '~/issues/show/utils';
 
 describe('app/assets/javascripts/issues/show/utils.js', () => {
   describe('convertDescriptionWithNewSort', () => {
@@ -135,6 +138,203 @@ describe('app/assets/javascripts/issues/show/utils.js', () => {
 1. Item 6`;
 
       expect(convertDescriptionWithNewSort(description, list.firstChild)).toBe(expected);
+    });
+  });
+
+  describe('convertDescriptionWithDeletedTaskListItem', () => {
+    const description = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 2
+   1. [ ] item 3
+      1. [ ] item 4
+      1. [ ] item 5
+   1. [ ] item 6
+
+      paragraph text
+
+   1. [ ] item 7
+
+      paragraph text
+
+      1. [ ] item 8
+
+         paragraph text
+
+      1. [ ] item 9
+   1. [ ] item 10`;
+
+    /* The equivalent HTML for the above markdown
+    <ol data-sourcepos="3:1-21:17">
+      <li data-sourcepos="3:1-21:17">item 1
+        <ol data-sourcepos="4:4-21:17">
+          <li data-sourcepos="4:4-4:16">
+            <p data-sourcepos="4:7-4:16">item 2</p>
+          </li>
+          <li data-sourcepos="5:4-7:19">
+            <p data-sourcepos="5:7-5:16">item 3</p>
+            <ol data-sourcepos="6:7-7:19">
+              <li data-sourcepos="6:7-6:19">item 4</li>
+              <li data-sourcepos="7:7-7:19">item 5</li>
+            </ol>
+          </li>
+          <li data-sourcepos="8:4-11:0">
+            <p data-sourcepos="8:7-8:16">item 6</p>
+            <p data-sourcepos="10:7-10:20">paragraph text</p>
+          </li>
+          <li data-sourcepos="12:4-20:19">
+            <p data-sourcepos="12:7-12:16">item 7</p>
+            <p data-sourcepos="14:7-14:20">paragraph text</p>
+            <ol data-sourcepos="16:7-20:19">
+              <li data-sourcepos="16:7-19:0">
+                <p data-sourcepos="16:10-16:19">item 8</p>
+                <p data-sourcepos="18:10-18:23">paragraph text</p>
+              </li>
+              <li data-sourcepos="20:7-20:19">
+                <p data-sourcepos="20:10-20:19">item 9</p>
+              </li>
+            </ol>
+          </li>
+          <li data-sourcepos="21:4-21:17">
+            <p data-sourcepos="21:7-21:17">item 10</p>
+          </li>
+        </ol>
+      </li>
+    </ol>
+    */
+
+    it('deletes item with no children', () => {
+      const sourcepos = '4:4-4:14';
+      const newDescription = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 3
+      1. [ ] item 4
+      1. [ ] item 5
+   1. [ ] item 6
+
+      paragraph text
+
+   1. [ ] item 7
+
+      paragraph text
+
+      1. [ ] item 8
+
+         paragraph text
+
+      1. [ ] item 9
+   1. [ ] item 10`;
+
+      expect(convertDescriptionWithDeletedTaskListItem(description, sourcepos)).toBe(
+        newDescription,
+      );
+    });
+
+    it('deletes deeply nested item with no children', () => {
+      const sourcepos = '6:7-6:19';
+      const newDescription = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 2
+   1. [ ] item 3
+      1. [ ] item 5
+   1. [ ] item 6
+
+      paragraph text
+
+   1. [ ] item 7
+
+      paragraph text
+
+      1. [ ] item 8
+
+         paragraph text
+
+      1. [ ] item 9
+   1. [ ] item 10`;
+
+      expect(convertDescriptionWithDeletedTaskListItem(description, sourcepos)).toBe(
+        newDescription,
+      );
+    });
+
+    it('deletes item with children and moves sub-tasks up a level', () => {
+      const sourcepos = '5:4-7:19';
+      const newDescription = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 2
+   1. [ ] item 4
+   1. [ ] item 5
+   1. [ ] item 6
+
+      paragraph text
+
+   1. [ ] item 7
+
+      paragraph text
+
+      1. [ ] item 8
+
+         paragraph text
+
+      1. [ ] item 9
+   1. [ ] item 10`;
+
+      expect(convertDescriptionWithDeletedTaskListItem(description, sourcepos)).toBe(
+        newDescription,
+      );
+    });
+
+    it('deletes item with associated paragraph text', () => {
+      const sourcepos = '8:4-11:0';
+      const newDescription = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 2
+   1. [ ] item 3
+      1. [ ] item 4
+      1. [ ] item 5
+   1. [ ] item 7
+
+      paragraph text
+
+      1. [ ] item 8
+
+         paragraph text
+
+      1. [ ] item 9
+   1. [ ] item 10`;
+
+      expect(convertDescriptionWithDeletedTaskListItem(description, sourcepos)).toBe(
+        newDescription,
+      );
+    });
+
+    it('deletes item with associated paragraph text and moves sub-tasks up a level', () => {
+      const sourcepos = '12:4-20:19';
+      const newDescription = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 2
+   1. [ ] item 3
+      1. [ ] item 4
+      1. [ ] item 5
+   1. [ ] item 6
+
+      paragraph text
+
+   1. [ ] item 8
+
+      paragraph text
+
+   1. [ ] item 9
+   1. [ ] item 10`;
+
+      expect(convertDescriptionWithDeletedTaskListItem(description, sourcepos)).toBe(
+        newDescription,
+      );
     });
   });
 });

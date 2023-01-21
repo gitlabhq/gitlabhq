@@ -265,6 +265,7 @@ export const environmentsApp = {
     review_snippet:
       '{"deploy_review"=>{"stage"=>"deploy", "script"=>["echo \\"Deploy a review app\\""], "environment"=>{"name"=>"review/$CI_COMMIT_REF_NAME", "url"=>"https://$CI_ENVIRONMENT_SLUG.example.com"}, "only"=>["branches"]}}',
   },
+  can_stop_stale_environments: true,
   available_count: 4,
   stopped_count: 0,
 };
@@ -474,6 +475,7 @@ export const resolvedEnvironmentsApp = {
       '{"deploy_review"=>{"stage"=>"deploy", "script"=>["echo \\"Deploy a review app\\""], "environment"=>{"name"=>"review/$CI_COMMIT_REF_NAME", "url"=>"https://$CI_ENVIRONMENT_SLUG.example.com"}, "only"=>["branches"]}}',
     __typename: 'ReviewApp',
   },
+  canStopStaleEnvironments: true,
   stoppedCount: 0,
   __typename: 'LocalEnvironmentApp',
 };

@@ -195,6 +195,36 @@ describe('~/environments/components/environments_app.vue', () => {
     expect(button.exists()).toBe(false);
   });
 
+  it('should not show a button to clean up environments if the user has no permissions', async () => {
+    await createWrapperWithMocked({
+      environmentsApp: {
+        ...resolvedEnvironmentsApp,
+        canStopStaleEnvironments: false,
+      },
+      folder: resolvedFolder,
+    });
+
+    const button = wrapper.findByRole('button', {
+      name: s__('Environments|Clean up environments'),
+    });
+    expect(button.exists()).toBe(false);
+  });
+
+  it('should show a button to clean up environments if the user has permissions', async () => {
+    await createWrapperWithMocked({
+      environmentsApp: {
+        ...resolvedEnvironmentsApp,
+        canStopStaleEnvironments: true,
+      },
+      folder: resolvedFolder,
+    });
+
+    const button = wrapper.findByRole('button', {
+      name: s__('Environments|Clean up environments'),
+    });
+    expect(button.exists()).toBe(true);
+  });
+
   describe('tabs', () => {
     it('should show tabs for available and stopped environmets', async () => {
       await createWrapperWithMocked({

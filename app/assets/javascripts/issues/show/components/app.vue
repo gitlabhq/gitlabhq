@@ -453,7 +453,7 @@ export default {
       }
     },
 
-    handleListItemReorder(description) {
+    handleSaveDescription(description) {
       this.updateFormState();
       this.setFormState({ description });
       this.updateIssuable();
@@ -573,7 +573,7 @@ export default {
         :update-url="updateEndpoint"
         :lock-version="state.lock_version"
         :is-updating="formState.updateLoading"
-        @listItemReorder="handleListItemReorder"
+        @saveDescription="handleSaveDescription"
         @taskListUpdateStarted="taskListUpdateStarted"
         @taskListUpdateSucceeded="taskListUpdateSucceeded"
         @taskListUpdateFailed="taskListUpdateFailed"

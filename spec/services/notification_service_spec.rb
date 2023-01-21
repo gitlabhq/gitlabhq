@@ -1571,25 +1571,25 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
     end
 
-    describe '#removed_milestone_issue' do
+    describe '#removed_milestone on Issue' do
       context do
         let(:milestone) { create(:milestone, project: project, issues: [issue]) }
         let!(:subscriber_to_new_milestone) { create(:user) { |u| issue.toggle_subscription(u, project) } }
 
         it_behaves_like 'altered milestone notification on issue' do
           before do
-            notification.removed_milestone_issue(issue, issue.author)
+            notification.removed_milestone(issue, issue.author)
           end
         end
 
         it_behaves_like 'project emails are disabled' do
           let(:notification_target)  { issue }
-          let(:notification_trigger) { notification.removed_milestone_issue(issue, issue.author) }
+          let(:notification_trigger) { notification.removed_milestone(issue, issue.author) }
         end
 
         it_behaves_like 'participating by confidential note notification' do
           let(:issuable) { issue }
-          let(:notification_trigger) { notification.removed_milestone_issue(issue, issue.author) }
+          let(:notification_trigger) { notification.removed_milestone(issue, issue.author) }
         end
       end
 
@@ -1615,7 +1615,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
           reset_delivered_emails!
 
-          notification.removed_milestone_issue(confidential_issue, @u_disabled)
+          notification.removed_milestone(confidential_issue, @u_disabled)
 
           should_not_email(non_member)
           should_not_email(guest)
@@ -1627,20 +1627,20 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
     end
 
-    describe '#changed_milestone_issue' do
+    describe '#changed_milestone on Issue' do
       context do
         let(:new_milestone) { create(:milestone, project: project, issues: [issue]) }
         let!(:subscriber_to_new_milestone) { create(:user) { |u| issue.toggle_subscription(u, project) } }
 
         it_behaves_like 'altered milestone notification on issue' do
           before do
-            notification.changed_milestone_issue(issue, new_milestone, issue.author)
+            notification.changed_milestone(issue, new_milestone, issue.author)
           end
         end
 
         it_behaves_like 'project emails are disabled' do
           let(:notification_target)  { issue }
-          let(:notification_trigger) { notification.changed_milestone_issue(issue, new_milestone, issue.author) }
+          let(:notification_trigger) { notification.changed_milestone(issue, new_milestone, issue.author) }
         end
       end
 
@@ -1666,7 +1666,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
           reset_delivered_emails!
 
-          notification.changed_milestone_issue(confidential_issue, new_milestone, @u_disabled)
+          notification.changed_milestone(confidential_issue, new_milestone, @u_disabled)
 
           should_not_email(non_member)
           should_not_email(guest)
@@ -2395,35 +2395,35 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
     end
 
-    describe '#removed_milestone_merge_request' do
+    describe '#removed_milestone on MergeRequest' do
       let(:milestone) { create(:milestone, project: project, merge_requests: [merge_request]) }
       let!(:subscriber_to_new_milestone) { create(:user) { |u| merge_request.toggle_subscription(u, project) } }
 
       it_behaves_like 'altered milestone notification on merge request' do
         before do
-          notification.removed_milestone_merge_request(merge_request, merge_request.author)
+          notification.removed_milestone(merge_request, merge_request.author)
         end
       end
 
       it_behaves_like 'project emails are disabled' do
         let(:notification_target)  { merge_request }
-        let(:notification_trigger) { notification.removed_milestone_merge_request(merge_request, merge_request.author) }
+        let(:notification_trigger) { notification.removed_milestone(merge_request, merge_request.author) }
       end
     end
 
-    describe '#changed_milestone_merge_request' do
+    describe '#changed_milestone on MergeRequest' do
       let(:new_milestone) { create(:milestone, project: project, merge_requests: [merge_request]) }
       let!(:subscriber_to_new_milestone) { create(:user) { |u| merge_request.toggle_subscription(u, project) } }
 
       it_behaves_like 'altered milestone notification on merge request' do
         before do
-          notification.changed_milestone_merge_request(merge_request, new_milestone, merge_request.author)
+          notification.changed_milestone(merge_request, new_milestone, merge_request.author)
         end
       end
 
       it_behaves_like 'project emails are disabled' do
         let(:notification_target)  { merge_request }
-        let(:notification_trigger) { notification.changed_milestone_merge_request(merge_request, new_milestone, merge_request.author) }
+        let(:notification_trigger) { notification.changed_milestone(merge_request, new_milestone, merge_request.author) }
       end
     end
 

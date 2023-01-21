@@ -181,9 +181,9 @@ module Issues
       return if skip_milestone_email
 
       if issue.milestone.nil?
-        notification_service.async.removed_milestone_issue(issue, current_user)
+        notification_service.async.removed_milestone(issue, current_user)
       else
-        notification_service.async.changed_milestone_issue(issue, issue.milestone, current_user)
+        notification_service.async.changed_milestone(issue, issue.milestone, current_user)
       end
     end
 

@@ -12,6 +12,21 @@
       padding-inline-end: 1rem;
       width: 2rem;
     }
+
+    .task-list-item-actions-wrapper {
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-end: -2rem;
+    }
+
+    .task-list-item-actions-wrapper.show .task-list-item-actions,
+    .task-list-item-actions:is(:focus, :hover) {
+      opacity: 1;
+    }
+  }
+
+  .md.has-task-list-item-actions > :is(ul, ol) > li {
+    margin-inline-end: 1.5rem;
   }
 
   ul.task-list > li.task-list-item {
@@ -20,6 +35,10 @@
     > .drag-icon {
       inset-inline-start: -0.6rem;
     }
+  }
+
+  .dropdown-item.text-danger p {
+    color: var(--red-500, $red-500); /* Override typography.scss making text black */
   }
 }
 

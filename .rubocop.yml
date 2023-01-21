@@ -386,6 +386,18 @@ Gitlab/EventStoreSubscriber:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+Gitlab/DocUrl:
+  Enabled: true
+  Exclude:
+    - danger/**/*
+    - ee/spec/**/*
+    - haml_lint/**/*
+    - qa/**/*
+    - rubocop/**/*
+    - scripts/**/*
+    - spec/**/*
+    - tooling/**/*
+
 GitlabSecurity/PublicSend:
   Enabled: true
   Exclude:

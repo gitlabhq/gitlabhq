@@ -15747,6 +15747,12 @@ msgstr ""
 msgid "Environments|Auto stops %{autoStopAt}"
 msgstr ""
 
+msgid "Environments|Clean up"
+msgstr ""
+
+msgid "Environments|Clean up environments"
+msgstr ""
+
 msgid "Environments|Commit"
 msgstr ""
 
@@ -15840,6 +15846,9 @@ msgstr ""
 msgid "Environments|Search by environment name"
 msgstr ""
 
+msgid "Environments|Select which environments to clean up.     Protected environments are excluded. Learn more about cleaning up environments."
+msgstr ""
+
 msgid "Environments|Show all"
 msgstr ""
 
@@ -15847,6 +15856,12 @@ msgid "Environments|Stop"
 msgstr ""
 
 msgid "Environments|Stop environment"
+msgstr ""
+
+msgid "Environments|Stop environments that have not been updated since the specified date:"
+msgstr ""
+
+msgid "Environments|Stop unused environments"
 msgstr ""
 
 msgid "Environments|Stopping %{environmentName}"
@@ -47760,9 +47775,6 @@ msgstr ""
 msgid "WorkItem|Create objective"
 msgstr ""
 
-msgid "WorkItem|Create task"
-msgstr ""
-
 msgid "WorkItem|Create work item"
 msgstr ""
 
@@ -47899,6 +47911,9 @@ msgid "WorkItem|Start date"
 msgstr ""
 
 msgid "WorkItem|Task"
+msgstr ""
+
+msgid "WorkItem|Task actions"
 msgstr ""
 
 msgid "WorkItem|Task deleted"

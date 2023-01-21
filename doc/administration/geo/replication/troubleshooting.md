@@ -401,6 +401,39 @@ generate an error because containers in Kubernetes do not have access to the hos
 Machine clock is synchronized ... Exception: getaddrinfo: Servname not supported for ai_socktype
 ```
 
+### Message: `ActiveRecord::StatementInvalid: PG::ReadOnlySqlTransaction: ERROR:  cannot execute INSERT in a read-only transaction`
+
+When this error is encountered on a secondary site, it likely affects all usages of GitLab Rails such as `gitlab-rails` or `gitlab-rake` commands, as well the Puma, Sidekiq, and Geo Log Cursor services.
+
+```plaintext
+ActiveRecord::StatementInvalid: PG::ReadOnlySqlTransaction: ERROR:  cannot execute INSERT in a read-only transaction
+/opt/gitlab/embedded/service/gitlab-rails/app/models/application_record.rb:86:in `block in safe_find_or_create_by'
+/opt/gitlab/embedded/service/gitlab-rails/app/models/concerns/cross_database_modification.rb:92:in `block in transaction'
+/opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/database.rb:332:in `block in transaction'
+/opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/database.rb:331:in `transaction'
+/opt/gitlab/embedded/service/gitlab-rails/app/models/concerns/cross_database_modification.rb:83:in `transaction'
+/opt/gitlab/embedded/service/gitlab-rails/app/models/application_record.rb:86:in `safe_find_or_create_by'
+/opt/gitlab/embedded/service/gitlab-rails/app/models/shard.rb:21:in `by_name'
+/opt/gitlab/embedded/service/gitlab-rails/app/models/shard.rb:17:in `block in populate!'
+/opt/gitlab/embedded/service/gitlab-rails/app/models/shard.rb:17:in `map'
+/opt/gitlab/embedded/service/gitlab-rails/app/models/shard.rb:17:in `populate!'
+/opt/gitlab/embedded/service/gitlab-rails/config/initializers/fill_shards.rb:9:in `<top (required)>'
+/opt/gitlab/embedded/service/gitlab-rails/config/environment.rb:7:in `<top (required)>'
+/opt/gitlab/embedded/bin/bundle:23:in `load'
+/opt/gitlab/embedded/bin/bundle:23:in `<main>'
+```
+
+The PostgreSQL read-replica database would be producing these errors:
+
+```plaintext
+2023-01-17_17:44:54.64268 ERROR:  cannot execute INSERT in a read-only transaction
+2023-01-17_17:44:54.64271 STATEMENT:  /*application:web,db_config_name:main*/ INSERT INTO "shards" ("name") VALUES ('storage1') RETURNING "id"
+```
+
+This situation can occur during initial configuration when a secondary site is not yet aware that it is a secondary site.
+
+To resolve the error, follow [Step 3. Add the secondary site](configuration.md#step-3-add-the-secondary-site).
+
 ## Fixing PostgreSQL database replication errors
 
 The following sections outline troubleshooting steps for fixing replication
