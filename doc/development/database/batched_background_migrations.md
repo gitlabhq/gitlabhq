@@ -309,7 +309,7 @@ In the second (filtered) example, we know exactly 100 will be updated with each 
 
 NOTE:
 When applying additional filters, it is important to ensure they are properly covered by an index to optimize `EachBatch` performance.
-In the example above we need an index on `(type, id)` to support the filters. See [the `EachBatch` docs for more information](iterating_tables_in_batches.md).
+In the example above we need an index on `(type, id)` to support the filters. See [the `EachBatch` documentation for more information](iterating_tables_in_batches.md).
 
 ## Example
 
@@ -502,7 +502,7 @@ end
 ```
 
 NOTE:
-[Additional filters](#additional-filters) defined with `scope_to` will be ignored by `LooseIndexScanBatchingStrategy` and `distinct_each_batch`.
+[Additional filters](#additional-filters) defined with `scope_to` are ignored by `LooseIndexScanBatchingStrategy` and `distinct_each_batch`.
 
 ## Testing
 
@@ -685,6 +685,16 @@ You can view failures in two ways:
       ON transition_logs.batched_background_migration_job_id = jobs.id
       WHERE transition_logs.next_status = '2' AND migration.job_class_name = "CLASS_NAME";
      ```
+
+### Adding indexes to support batched background migrations
+
+Sometimes it is necessary to add a new or temporary index to support a batched background migration.
+To do this, create the index in a post-deployment migration that precedes the post-deployment
+migration that queues the background migration.
+
+See the documentation for [adding database indexes](adding_database_indexes.md#analyzing-a-new-index-before-a-batched-background-migration)
+for additional information about some cases that require special attention to allow the index to be used directly after
+creation.
 
 ## Legacy background migrations
 

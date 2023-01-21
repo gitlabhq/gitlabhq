@@ -214,6 +214,45 @@ def down
 end
 ```
 
+## Analyzing a new index before a batched background migration
+
+Sometimes it is necessary to add an index to support a [batched background migration](batched_background_migrations.md).
+It is commonly done by creating two [post deployment migrations](post_deployment_migrations.md):
+
+1. Add the new index, often a [temporary index](#temporary-indexes).
+1. [Queue the batched background migration](batched_background_migrations.md#queueing).
+
+In most cases, no additional work is needed. The new index is created and is used
+as expected when queuing and executing the batched background migration.
+
+[Expression indexes](https://www.postgresql.org/docs/current/indexes-expressional.html),
+however, do not generate statistics for the new index on creation. Autovacuum
+eventually runs `ANALYZE`, and updates the statistics so the new index is used.
+Run `ANALYZE` explicitly only if it is needed right after the index
+is created, such as in the background migration scenario described above.
+
+To trigger `ANALYZE` after the index is created, update the index creation migration
+to analyze the table:
+
+```ruby
+# in db/post_migrate/
+
+INDEX_NAME = 'tmp_index_projects_on_owner_and_lower_name_where_emails_disabled'
+TABLE = :projects
+
+disable_ddl_transaction!
+
+def up
+  add_concurrent_index TABLE, '(creator_id, lower(name))', where: 'emails_disabled = false', name: INDEX_NAME
+
+  connection.execute("ANALYZE #{TABLE}")
+end
+```
+
+`ANALYZE` should only be run in post deployment migrations and should not target
+[large tables](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3).
+If this behavior is needed on a larger table, ask for assistance in the `#database` Slack channel.
+
 ## Indexes for partitioned tables
 
 Indexes [cannot be created](https://www.postgresql.org/docs/15/ddl-partitioning.html#DDL-PARTITIONING-DECLARATIVE-MAINTENANCE)
@@ -254,7 +293,7 @@ end
 
 For very large tables, index creation can be a challenge to manage.
 While `add_concurrent_index` creates indexes in a way that does not block
-normal traffic, it can still be problematic when index creation runs for
+ordinary traffic, it can still be problematic when index creation runs for
 many hours. Necessary database operations like `autovacuum` cannot run, and
 on GitLab.com, the deployment process is blocked waiting for index
 creation to finish.
@@ -351,7 +390,7 @@ Use the asynchronous index helpers on your local environment to test changes for
 
 For very large tables, index destruction can be a challenge to manage.
 While `remove_concurrent_index` removes indexes in a way that does not block
-normal traffic, it can still be problematic if index destruction runs for
+ordinary traffic, it can still be problematic if index destruction runs for
 during `autovacuum`. Necessary database operations like `autovacuum` cannot run, and
 the deployment process on GitLab.com is blocked while waiting for index
 destruction to finish.

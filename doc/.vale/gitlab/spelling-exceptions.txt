@@ -65,6 +65,7 @@ autoscaler
 autoscalers
 autoscales
 autoscaling
+autovacuum
 awardable
 awardables
 Axios
