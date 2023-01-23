@@ -15,6 +15,21 @@ Anyone can contribute to the GitLab documentation! You can create a merge reques
 If you are working on a feature or enhancement, use the
 [feature workflow process described in the GitLab Handbook](https://about.gitlab.com/handbook/product/ux/technical-writing/workflow/#documentation-for-a-product-change).
 
+## Do not use ChatGPT or AI-generated content for the docs
+
+GitLab documentation is distributed under the [CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/), which presupposes that GitLab owns the documentation.
+
+Under current law in the US and the EU, it’s possible that AI-generated works might either:
+
+- not be owned by anyone because they weren't created by a human, or
+- belong to the AI training data’s creator, if the AI verbatim reproduces content that it trained on 
+
+If the documentation contains AI-generated content, GitLab probably wouldn't own this content, which would risk invalidating the CC BY-SA 4.0 license.
+
+Contributions to GitLab documentation are made under either our [DCO or our CLA terms](https://about.gitlab.com/community/contribute/dco-cla/). In both, contributors have to make certain certifications about the authorship of their work that they can't validly make for AI-generated text.
+
+For these reasons, do not add AI-generated content to the documentation.
+
 ## How to update the docs
 
 If you are not a GitLab team member, or do not have the Developer role for the GitLab repository, to update GitLab documentation:

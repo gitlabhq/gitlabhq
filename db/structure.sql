@@ -10587,6 +10587,8 @@ CREATE TABLE abuse_reports (
     cached_markdown_version integer,
     category smallint DEFAULT 1 NOT NULL,
     reported_from_url text DEFAULT ''::text NOT NULL,
+    links_to_spam text[] DEFAULT '{}'::text[] NOT NULL,
+    CONSTRAINT abuse_reports_links_to_spam_length_check CHECK ((cardinality(links_to_spam) <= 20)),
     CONSTRAINT check_ab1260fa6c CHECK ((char_length(reported_from_url) <= 512))
 );
 

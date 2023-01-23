@@ -26,7 +26,7 @@ require_relative '../../../support/helpers/next_instance_of'
 # should run in sub-second time when the Spring pre-loader is used. This allows
 # logic which is not directly related to the slow sub-processes to be TDD'd with a
 # very rapid feedback cycle.
-RSpec.describe Glfm::UpdateSpecification, '#process' do
+RSpec.describe Glfm::UpdateSpecification, '#process', feature_category: :team_planning do
   include NextInstanceOf
 
   subject { described_class.new }

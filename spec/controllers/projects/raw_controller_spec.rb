@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::RawController do
+RSpec.describe Projects::RawController, feature_category: :source_code_management do
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :public, :repository) }
@@ -23,13 +23,13 @@ RSpec.describe Projects::RawController do
 
     subject { get_show }
 
-    shared_examples 'single Gitaly request' do
-      it 'makes a single Gitaly request', :request_store, :clean_gitlab_redis_cache do
+    shared_examples 'limited number of Gitaly request' do
+      it 'makes a limited number of Gitaly request', :request_store, :clean_gitlab_redis_cache do
         # Warm up to populate repository cache
         get_show
         RequestStore.clear!
 
-        expect { get_show }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
+        expect { get_show }.to change { Gitlab::GitalyClient.get_request_count }.by(2)
       end
     end
 
@@ -57,7 +57,7 @@ RSpec.describe Projects::RawController do
 
       it_behaves_like 'project cache control headers'
       it_behaves_like 'content disposition headers'
-      include_examples 'single Gitaly request'
+      include_examples 'limited number of Gitaly request'
     end
 
     context 'image header' do
@@ -73,7 +73,7 @@ RSpec.describe Projects::RawController do
 
       it_behaves_like 'project cache control headers'
       it_behaves_like 'content disposition headers'
-      include_examples 'single Gitaly request'
+      include_examples 'limited number of Gitaly request'
     end
 
     context 'with LFS files' do
@@ -82,7 +82,7 @@ RSpec.describe Projects::RawController do
 
       it_behaves_like 'a controller that can serve LFS files'
       it_behaves_like 'project cache control headers'
-      include_examples 'single Gitaly request'
+      include_examples 'limited number of Gitaly request'
     end
 
     context 'when the endpoint receives requests above the limit' do
@@ -239,8 +239,10 @@ RSpec.describe Projects::RawController do
     end
 
     describe 'caching' do
+      let(:ref) { project.default_branch }
+
       def request_file
-        get(:show, params: { namespace_id: project.namespace, project_id: project, id: 'master/README.md' })
+        get(:show, params: { namespace_id: project.namespace, project_id: project, id: "#{ref}/README.md" })
       end
 
       it 'sets appropriate caching headers' do
@@ -252,6 +254,21 @@ RSpec.describe Projects::RawController do
         expect(response.header['Cache-Control']).to eq(
           'max-age=60, public, must-revalidate, stale-while-revalidate=60, stale-if-error=300, s-maxage=60'
         )
+      end
+
+      context 'when a blob access by permalink' do
+        let(:ref) { project.commit.id }
+
+        it 'sets appropriate caching headers with longer max-age' do
+          sign_in create(:user)
+          request_file
+
+          expect(response.headers['ETag']).to eq("\"bdd5aa537c1e1f6d1b66de4bac8a6132\"")
+          expect(response.cache_control[:no_store]).to be_nil
+          expect(response.header['Cache-Control']).to eq(
+            'max-age=3600, public, must-revalidate, stale-while-revalidate=60, stale-if-error=300, s-maxage=60'
+          )
+        end
       end
 
       context 'when a public project has private repo' do

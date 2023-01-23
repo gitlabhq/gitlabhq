@@ -13,7 +13,7 @@ require 'spec_helper'
 # - randomly generated fields like tokens
 #
 # as these are expected to change between import/export cycles.
-RSpec.describe Gitlab::ImportExport do
+RSpec.describe Gitlab::ImportExport, feature_category: :importers do
   include ImportExport::CommonUtil
   include ConfigurationHelper
   include ImportExport::ProjectTreeExpectations

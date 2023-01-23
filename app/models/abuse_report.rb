@@ -4,6 +4,8 @@ class AbuseReport < ApplicationRecord
   include CacheMarkdownField
   include Sortable
 
+  MAX_CHAR_LIMIT_URL = 512
+
   cache_markdown_field :message, pipeline: :single_line
 
   belongs_to :reporter, class_name: 'User'
@@ -23,12 +25,22 @@ class AbuseReport < ApplicationRecord
 
   validates :reported_from_url,
             allow_blank: true,
-            length: { maximum: 512 },
+            length: { maximum: MAX_CHAR_LIMIT_URL },
             addressable_url: {
               dns_rebind_protection: true,
               blocked_message: 'is an invalid URL. You can try reporting the abuse again, ' \
                                'or contact a GitLab administrator for help.'
             }
+
+  validates :links_to_spam,
+            allow_blank: true,
+            length: {
+              maximum: 20,
+              message: N_("exceeds the limit of %{count} links")
+            }
+
+  before_validation :filter_empty_strings_from_links_to_spam
+  validate :links_to_spam_contains_valid_urls
 
   scope :by_user, ->(user) { where(user_id: user) }
   scope :with_users, -> { includes(:reporter, :user) }
@@ -63,5 +75,35 @@ class AbuseReport < ApplicationRecord
     return unless self.persisted?
 
     AbuseReportMailer.notify(self.id).deliver_later
+  end
+
+  private
+
+  def filter_empty_strings_from_links_to_spam
+    return if links_to_spam.blank?
+
+    links_to_spam.reject!(&:empty?)
+  end
+
+  def links_to_spam_contains_valid_urls
+    return if links_to_spam.blank?
+
+    links_to_spam.each do |link|
+      Gitlab::UrlBlocker.validate!(
+        link,
+          schemes: %w[http https],
+          allow_localhost: true,
+          dns_rebind_protection: true
+      )
+
+      next unless link.length > MAX_CHAR_LIMIT_URL
+
+      errors.add(
+        :links_to_spam,
+        format(_('contains URLs that exceed the %{limit} character limit'), limit: MAX_CHAR_LIMIT_URL)
+      )
+    end
+  rescue ::Gitlab::UrlBlocker::BlockedUrlError
+    errors.add(:links_to_spam, _('only supports valid HTTP(S) URLs'))
   end
 end

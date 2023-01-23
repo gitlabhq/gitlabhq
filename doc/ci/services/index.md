@@ -9,7 +9,7 @@ type: index
 # Services **(FREE)**
 
 When you configure CI/CD, you specify an image, which is used to create the container
-where your jobs will run. To specify this image, you use the `image` keyword.
+where your jobs run. To specify this image, you use the `image` keyword.
 
 You can specify an additional image by using the `services` keyword. This additional
 image is used to create another container, which is available to the first container.
@@ -343,7 +343,7 @@ services:
     command: ["/usr/bin/super-sql", "run"]
 ```
 
-The syntax of `command` is similar to [Dockerfile's `CMD`](https://docs.docker.com/engine/reference/builder/#cmd).
+The syntax of `command` is similar to [Dockerfile `CMD`](https://docs.docker.com/engine/reference/builder/#cmd).
 
 ## Using `services` with `docker run` (Docker-in-Docker) side-by-side
 
@@ -417,10 +417,10 @@ Accepted values are:
 - Enabled: `TRUE`, `true`, `True`
 - Disabled: `FALSE`, `false`, `False`
 
-Any other values will result in an error message and effectively disable the feature.
+Any other values result in an error message and effectively disable the feature.
 
-When enabled, logs for _all_ service containers will be captured and streamed into the jobs trace log concurrently with
-other logs. Logs from each container will be prefixed with the container's aliases, and displayed in a different color.
+When enabled, logs for _all_ service containers are captured and streamed into the jobs trace log concurrently with
+other logs. Logs from each container are prefixed with the container's aliases, and displayed in a different color.
 
 NOTE:
 You may want to adjust the logging level in the service container for which you want to capture logs since the default

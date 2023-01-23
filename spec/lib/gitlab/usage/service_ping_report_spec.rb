@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_caching do
+RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_caching, feature_category: :service_ping do
   include UsageDataHelpers
 
   let(:usage_data) { { uuid: "1111", counts: { issue: 0 } }.deep_stringify_keys }

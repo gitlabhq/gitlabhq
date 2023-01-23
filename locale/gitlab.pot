@@ -35419,6 +35419,12 @@ msgstr ""
 msgid "Report your license usage data to GitLab"
 msgstr ""
 
+msgid "ReportAbuse|Add another link"
+msgstr ""
+
+msgid "ReportAbuse|Link to spam"
+msgstr ""
+
 msgid "ReportAbuse|Report abuse to administrator"
 msgstr ""
 
@@ -35444,6 +35450,9 @@ msgid "ReportAbuse|They're posting spam."
 msgstr ""
 
 msgid "ReportAbuse|They're violating a copyright or trademark."
+msgstr ""
+
+msgid "ReportAbuse|URL of this user posting spam"
 msgstr ""
 
 msgid "ReportAbuse|Why are you reporting this user?"
@@ -49807,6 +49816,9 @@ msgstr ""
 msgid "container registry images"
 msgstr ""
 
+msgid "contains URLs that exceed the %{limit} character limit"
+msgstr ""
+
 msgid "contains URLs that exceed the 1024 character limit (%{urls})"
 msgstr ""
 
@@ -49953,6 +49965,9 @@ msgid "exceeds the limit of %{bytes} bytes"
 msgstr ""
 
 msgid "exceeds the limit of %{bytes} bytes for directory name \"%{dirname}\""
+msgstr ""
+
+msgid "exceeds the limit of %{count} links"
 msgstr ""
 
 msgid "expired on %{timebox_due_date}"
@@ -50763,6 +50778,9 @@ msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
 msgid "only available on top-level groups."
+msgstr ""
+
+msgid "only supports valid HTTP(S) URLs"
 msgstr ""
 
 msgid "open issue"

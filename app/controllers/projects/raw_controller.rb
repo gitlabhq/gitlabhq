@@ -10,7 +10,7 @@ class Projects::RawController < Projects::ApplicationController
 
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:blob) }
 
-  before_action :set_ref_and_path
+  before_action :assign_ref_vars
   before_action :require_non_empty_project
   before_action :authorize_read_code!
   before_action :check_show_rate_limit!, only: [:show], unless: :external_storage_request?

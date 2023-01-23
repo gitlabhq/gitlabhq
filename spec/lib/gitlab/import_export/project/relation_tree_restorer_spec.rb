@@ -9,7 +9,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer do
+RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, feature_category: :importers do
   let_it_be(:importable, reload: true) do
     create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
   end

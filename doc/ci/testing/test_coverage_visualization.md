@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 With the help of [GitLab CI/CD](../index.md), you can collect the test
 coverage information of your favorite testing or coverage-analysis tool, and visualize
-this information inside the file diff view of your merge requests (MRs). This will allow you
+this information inside the file diff view of your merge requests (MRs). This allows you
 to see which lines are covered by tests, and which lines still require coverage, before the
 MR is merged.
 
@@ -64,7 +64,7 @@ You must configure these separately.
 A limit of 100 `<source>` nodes for Cobertura format XML files applies. If your Cobertura report exceeds
 100 nodes, there can be mismatches or no matches in the merge request diff view.
 
-A single Cobertura XML file can be no more than 10MiB. For large projects, split the Cobertura XML into
+A single Cobertura XML file can be no more than 10 MiB. For large projects, split the Cobertura XML into
 smaller files. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328772) for more details.
 When submitting many files, it can take a few minutes for coverage to show on a merge request.
 

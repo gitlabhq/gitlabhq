@@ -142,6 +142,59 @@ those that use the most memory.
 Currently this is not run automatically for the GitLab.com Redis instances, but
 is run manually on an as-needed basis.
 
+## N+1 calls problem
+
+> Introduced in [`spec/support/helpers/redis_commands/recorder.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/helpers/redis_commands/recorder.rb) via [`f696f670`](https://gitlab.com/gitlab-org/gitlab/-/commit/f696f670005435472354a3dc0c01aa271aef9e32)
+
+`RedisCommands::Recorder` is a tool for detecting Redis N+1 calls problem from tests.
+
+Redis is often used for caching purposes. Usually, cache calls are lightweight and
+cannot generate enough load to affect the Redis instance. However, it is still
+possible to trigger expensive cache recalculations without knowing that. Use this
+tool to analyze Redis calls, and define expected limits for them.
+
+### Create a test
+
+It is implemented as a [`ActiveSupport::Notifications`](https://api.rubyonrails.org/classes/ActiveSupport/Notifications.html) instrumenter.
+
+You can create a test that verifies that a testable code only makes
+a single Redis call:
+
+```ruby
+it 'avoids N+1 Redis calls' do
+  control = RedisCommands::Recorder.new { visit_page }
+
+  expect(control.count).to eq(1)
+end
+```
+
+or a test that verifies the number of specific Redis calls:
+
+```ruby
+it 'avoids N+1 sadd Redis calls' do
+  control = RedisCommands::Recorder.new { visit_page }
+
+  expect(control.by_command(:sadd).count).to eq(1)
+end
+```
+
+You can also provide a pattern to capture only specific Redis calls:
+
+```ruby
+it 'avoids N+1 Redis calls to forks_count key' do
+  control = RedisCommands::Recorder.new(pattern: 'forks_count') { visit_page }
+
+  expect(control.count).to eq(1)
+end
+```
+
+These tests can help to identify N+1 problems related to Redis calls,
+and make sure that the fix for them works as expected.
+
+### See also
+
+- [Database query recorder](database/query_recorder.md)
+
 ## Utility classes
 
 We have some extra classes to help with specific use cases. These are

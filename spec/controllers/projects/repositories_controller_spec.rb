@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Projects::RepositoriesController do
+RSpec.describe Projects::RepositoriesController, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
 
   describe 'POST create' do
@@ -143,7 +143,9 @@ RSpec.describe Projects::RepositoriesController do
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response.header['ETag']).to be_present
-            expect(response.header['Cache-Control']).to include('max-age=60, public')
+            expect(response.header['Cache-Control']).to eq(
+              'max-age=60, public, must-revalidate, stale-while-revalidate=60, stale-if-error=300, s-maxage=60'
+            )
           end
 
           context 'and repo is private' do
@@ -154,7 +156,9 @@ RSpec.describe Projects::RepositoriesController do
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response.header['ETag']).to be_present
-              expect(response.header['Cache-Control']).to include('max-age=60, private')
+              expect(response.header['Cache-Control']).to eq(
+                'max-age=60, private, must-revalidate, stale-while-revalidate=60, stale-if-error=300, s-maxage=60'
+              )
             end
           end
         end
@@ -164,7 +168,48 @@ RSpec.describe Projects::RepositoriesController do
             get_archive('ddd0f15ae83993f5cb66a927a28673882e99100b')
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(response.header['Cache-Control']).to include('max-age=3600')
+            expect(response.header['Cache-Control']).to eq(
+              'max-age=3600, private, must-revalidate, stale-while-revalidate=60, stale-if-error=300, s-maxage=60'
+            )
+          end
+        end
+
+        context 'when improve_blobs_cache_headers is disabled' do
+          before do
+            stub_feature_flags(improve_blobs_cache_headers: false)
+          end
+
+          context 'when project is public' do
+            let(:project) { create(:project, :repository, :public) }
+
+            it 'sets appropriate caching headers' do
+              get_archive
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response.header['ETag']).to be_present
+              expect(response.header['Cache-Control']).to eq('max-age=60, public')
+            end
+
+            context 'and repo is private' do
+              let(:project) { create(:project, :repository, :public, :repository_private) }
+
+              it 'sets appropriate caching headers' do
+                get_archive
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response.header['ETag']).to be_present
+                expect(response.header['Cache-Control']).to eq('max-age=60, private')
+              end
+            end
+          end
+
+          context 'when ref is a commit SHA' do
+            it 'max-age is set to 3600 in Cache-Control header' do
+              get_archive('ddd0f15ae83993f5cb66a927a28673882e99100b')
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response.header['Cache-Control']).to eq('max-age=3600, private')
+            end
           end
         end
 

@@ -330,7 +330,7 @@ Note the following:
 
 NOTE:
 For Windows runners, using `echo` to write to `.env` files may fail. Using the PowerShell `Add-Content`command
-will help in such cases. For example:
+helps in such cases. For example:
 
 ```powershell
 Add-Content -Path deploy.env -Value "DYNAMIC_ENVIRONMENT_URL=$DYNAMIC_ENVIRONMENT_URL"
@@ -534,7 +534,7 @@ In this example, if the configuration is not identical:
 
 Also in the example, `GIT_STRATEGY` is set to `none`. If the
 `stop_review_app` job is [automatically triggered](../environments/index.md#stop-an-environment),
-the runner won't try to check out the code after the branch is deleted.
+the runner doesn't try to check out the code after the branch is deleted.
 
 The `stop_review_app` job **must** have the following keywords defined:
 
@@ -975,7 +975,7 @@ the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
 
 ### Rename an environment
 
-> Renaming environments through the UI was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68550) in GitLab 14.3. Renaming environments through the API was deprecated and [will be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.0.
+> Renaming environments through the UI was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68550) in GitLab 14.3. Renaming environments through the API was deprecated and [is planned to be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.0.
 
 Renaming an environment through the UI is not possible.
 Instead, you need to delete the old environment and create a new one:
@@ -1124,7 +1124,7 @@ To fix this, use one of the following solutions:
 Starting from GitLab 14.5, GitLab [deletes old deployment refs](#archive-old-deployments)
 to keep your Git repository performant.
 
-If you have to restore archived Git-refs, please ask an administrator of your self-managed GitLab instance
+If you have to restore archived Git-refs, ask an administrator of your self-managed GitLab instance
 to execute the following command on Rails console:
 
 ```ruby

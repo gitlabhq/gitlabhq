@@ -87,7 +87,7 @@ GitLab does not require a special file system and can work with:
 
 Geo triggers garbage collection in Gitaly to [deduplicate forked repositories](../../../development/git_object_deduplication.md#git-object-deduplication-and-gitlab-geo) on Geo secondary sites.
 
-Communication is done via Gitaly's own gRPC API, with three possible ways of synchronization:
+The Gitaly gRPC API does the communication, with three possible ways of synchronization:
 
 - Using regular Git clone/fetch from one Geo site to another (with special authentication).
 - Using repository snapshots (for when the first method fails or repository is corrupt).

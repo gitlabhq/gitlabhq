@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespace::TraversalHierarchy, type: :model do
+RSpec.describe Namespace::TraversalHierarchy, type: :model, feature_category: :subgroups do
   let!(:root) { create(:group, :with_hierarchy) }
 
   describe '.for_namespace' do
