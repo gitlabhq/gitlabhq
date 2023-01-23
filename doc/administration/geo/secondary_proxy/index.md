@@ -122,9 +122,9 @@ for details.
 - [Viewing projects and designs data from a primary site is not possible when using a unified URL](../index.md#view-replication-data-on-the-primary-site).
 
 - When secondary proxying is used together with separate URLs, registering [GitLab runners](https://docs.gitlab.com/runner/) to clone from
-secondary sites is not supported. The runner registration will succeed, but the clone URL will default to the primary site. The runner
+secondary sites is not supported. The runner registration succeeds, but the clone URL defaults to the primary site. The runner
 [clone URL](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) is configured per GitLab deployment
-and cannot be configured per Geo site. Therefore, all runners will clone from the primary site (or configured clone URL) irrespective of
+and cannot be configured per Geo site. Therefore, all runners clone from the primary site (or configured clone URL) irrespective of
 which Geo site they register on. For information about GitLab CI using a specific Geo secondary to clone from, see issue
 [3294](https://gitlab.com/gitlab-org/gitlab/-/issues/3294#note_1009488466).
 
@@ -147,7 +147,7 @@ secondary Geo sites are able to support write requests. Certain **read** request
 sites for improved latency and bandwidth nearby. All write requests are proxied to the primary site.
 
 The following table details the components currently tested through the Geo secondary site Workhorse proxy.
-It does not cover all data types, more will be added in the future as they are tested.
+It does not cover all data types.
 
 | Feature / component                                 | Accelerated reads?     |
 |:----------------------------------------------------|:-----------------------|
