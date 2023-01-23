@@ -290,8 +290,8 @@ export default {
                 <strong>{{ content }}</strong>
               </template>
             </gl-sprintf>
+            <slot name="intro-text-after"></slot>
           </p>
-          <slot name="intro-text-after"></slot>
         </div>
 
         <slot name="alert"></slot>

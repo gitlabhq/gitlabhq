@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secure your application
+# Secure your application **(FREE)**
 
 GitLab can check your applications for security vulnerabilities.
 

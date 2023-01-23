@@ -65,6 +65,8 @@ To move repositories:
      [individual snippets](../../api/snippet_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-snippet).
    - [All groups](#move-all-groups) or
      [individual groups](../../api/group_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-group). **(PREMIUM SELF)**
+1. If [Geo](../geo/index.md) is enabled,
+   [resync all repositories](../geo/replication/troubleshooting.md#queue-up-all-repositories-for-resync).
 
 #### Move all projects
 
