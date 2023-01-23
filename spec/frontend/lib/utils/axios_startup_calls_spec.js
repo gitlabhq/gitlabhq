@@ -1,6 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import setupAxiosStartupCalls from '~/lib/utils/axios_startup_calls';
+import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 
 describe('setupAxiosStartupCalls', () => {
   const AXIOS_RESPONSE = { text: 'AXIOS_RESPONSE' };
@@ -55,7 +56,7 @@ describe('setupAxiosStartupCalls', () => {
           fetchCall: mockFetchCall(200),
         },
         '/startup-failing': {
-          fetchCall: mockFetchCall(400),
+          fetchCall: mockFetchCall(HTTP_STATUS_BAD_REQUEST),
         },
       };
       setupAxiosStartupCalls(axios);

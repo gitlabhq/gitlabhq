@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can organize GitLab [groups](../index.md) into subgroups. You can use subgroups to:
 
 - Separate internal and external organizations. Because every subgroup can have its own
-  [visibility level](../../../development/permissions.md#general-permissions), you can host groups for different
+  [visibility level](../../public_access.md), you can host groups for different
   purposes under the same parent group.
 - Organize large projects. You can use subgroups to give different access to parts of
   the source code.

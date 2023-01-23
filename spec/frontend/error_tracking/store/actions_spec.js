@@ -4,6 +4,7 @@ import * as actions from '~/error_tracking/store/actions';
 import * as types from '~/error_tracking/store/mutation_types';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/flash.js');
@@ -46,7 +47,7 @@ describe('Sentry common store actions', () => {
     });
 
     it('should handle unsuccessful status update', async () => {
-      mock.onPut().reply(400, {});
+      mock.onPut().reply(HTTP_STATUS_BAD_REQUEST, {});
       await testAction(actions.updateStatus, params, {}, [], []);
       expect(visitUrl).not.toHaveBeenCalled();
       expect(createAlert).toHaveBeenCalledTimes(1);

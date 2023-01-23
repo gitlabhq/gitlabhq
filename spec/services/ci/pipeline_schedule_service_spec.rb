@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineScheduleService do
+RSpec.describe Ci::PipelineScheduleService, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
@@ -21,7 +21,7 @@ RSpec.describe Ci::PipelineScheduleService do
 
     it 'runs RunPipelineScheduleWorker' do
       expect(RunPipelineScheduleWorker)
-        .to receive(:perform_async).with(schedule.id, schedule.owner.id)
+        .to receive(:perform_async).with(schedule.id, schedule.owner.id, next_run_scheduled: true)
 
       subject
     end
@@ -43,7 +43,7 @@ RSpec.describe Ci::PipelineScheduleService do
 
       it 'does not run RunPipelineScheduleWorker' do
         expect(RunPipelineScheduleWorker)
-          .not_to receive(:perform_async).with(schedule.id, schedule.owner.id)
+          .not_to receive(:perform_async).with(schedule.id, schedule.owner.id, next_run_scheduled: true)
 
         subject
       end

@@ -367,3 +367,7 @@ To view tasks by type:
    and select **Issues** or **Merge Requests**.
 1. To add or remove labels, select the **Settings** (**{settings}**) dropdown list
    and select or search for a label. By default the top group-level labels (maximum 10) are selected. You can select a maximum of 15 labels.
+
+## Troubleshooting
+
+See [Value stream analytics for projects](../../analytics/value_stream_analytics.md#troubleshooting).

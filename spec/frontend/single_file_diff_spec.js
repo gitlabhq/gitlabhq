@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import SingleFileDiff from '~/single_file_diff';
 
 describe('SingleFileDiff', () => {
@@ -54,7 +55,7 @@ describe('SingleFileDiff', () => {
     expect(diff.isOpen).toBe(false);
     expect(diff.content).not.toBeNull();
 
-    mock.onGet(blobDiffPath).replyOnce(400, '');
+    mock.onGet(blobDiffPath).replyOnce(HTTP_STATUS_BAD_REQUEST, '');
 
     // Opening again
     await diff.toggleDiff($(document.querySelector('.js-file-title')));

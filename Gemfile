@@ -150,7 +150,13 @@ gem 'fog-google', '~> 1.19', require: 'fog/google'
 gem 'fog-local', '~> 0.8'
 gem 'fog-openstack', '~> 1.0'
 gem 'fog-rackspace', '~> 0.1.1'
-gem 'fog-aliyun', '~> 0.3'
+# NOTE:
+# the fog-aliyun gem since v0.4 pulls in aliyun-sdk transitively, which monkey-patches
+# the rest-client gem to drop the Content-Length header field for chunked transfers,
+# which may have knock-on effects on other features using `RestClient`.
+# We may want to update this dependency if this is ever addressed upstream, e.g. via
+# https://github.com/aliyun/aliyun-oss-ruby-sdk/pull/93
+gem 'fog-aliyun', '~> 0.4'
 gem 'gitlab-fog-azure-rm', '~> 1.4.0', require: 'fog/azurerm'
 
 # for Google storage

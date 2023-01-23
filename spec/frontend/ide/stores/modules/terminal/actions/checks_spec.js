@@ -11,6 +11,7 @@ import * as messages from '~/ide/stores/modules/terminal/messages';
 import * as mutationTypes from '~/ide/stores/modules/terminal/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import {
+  HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_FORBIDDEN,
   HTTP_STATUS_NOT_FOUND,
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
@@ -144,7 +145,7 @@ describe('IDE store terminal check actions', () => {
     });
 
     it('when error, dispatches request and receive', () => {
-      mock.onPost(/.*\/ide_terminals\/check_config/).reply(400, {});
+      mock.onPost(/.*\/ide_terminals\/check_config/).reply(HTTP_STATUS_BAD_REQUEST, {});
 
       return testAction(
         actions.fetchConfigCheck,

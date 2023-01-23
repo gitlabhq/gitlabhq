@@ -68,7 +68,7 @@ module Gitlab
           private
 
           def project_link
-            link(s_('InProductMarketing|create a project'), help_page_url('gitlab-basics/create-project'))
+            link(s_('InProductMarketing|create a project'), help_page_url('user/project/index'))
           end
 
           def repo_link
@@ -76,7 +76,7 @@ module Gitlab
           end
 
           def github_link
-            link(s_('InProductMarketing|GitHub Enterprise projects to GitLab'), help_page_url('integration/github'))
+            link(s_('InProductMarketing|GitHub Enterprise projects to GitLab'), help_page_url('user/project/import/github'))
           end
 
           def bitbucket_link
@@ -84,11 +84,11 @@ module Gitlab
           end
 
           def mirroring_link
-            link(s_('InProductMarketing|repository mirroring'), help_page_url('user/project/repository/repository_mirroring'))
+            link(s_('InProductMarketing|repository mirroring'), help_page_url('user/project/repository/mirror/index'))
           end
 
           def basics_link
-            link(s_('InProductMarketing|Git basics'), help_page_url('gitlab-basics/index'))
+            link(s_('InProductMarketing|Git basics'), help_page_url('topics/git/index'))
           end
 
           def import_link

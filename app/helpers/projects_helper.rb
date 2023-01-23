@@ -123,6 +123,25 @@ module ProjectsHelper
     end
   end
 
+  def vue_fork_divergence_data(project, ref)
+    source_project = visible_fork_source(project)
+
+    return {} unless source_project
+
+    source_default_branch = source_project.default_branch
+
+    {
+      source_name: source_project.full_name,
+      source_path: project_path(source_project),
+      ahead_compare_path: project_compare_path(
+        project, from: source_default_branch, to: ref, from_project_id: source_project.id
+      ),
+      behind_compare_path: project_compare_path(
+        source_project, from: ref, to: source_default_branch, from_project_id: project.id
+      )
+    }
+  end
+
   def remove_fork_project_warning_message(project)
     _("You are going to remove the fork relationship from %{project_full_name}. Are you ABSOLUTELY sure?") %
       { project_full_name: project.full_name }

@@ -1,7 +1,9 @@
 - page_title _("Labels")
 
 %div
-  = link_to new_admin_label_path, class: "float-right btn gl-button btn-confirm" do
+  = render Pajamas::ButtonComponent.new(variant: :confirm,
+    href: new_admin_label_path,
+    button_options: { class: 'float-right' }) do
     = _('New label')
   %h1.page-title.gl-font-size-h-display
     = _('Labels')

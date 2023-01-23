@@ -1,6 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Cookies from '~/lib/utils/cookies';
+import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/flash';
@@ -64,7 +65,7 @@ describe('merge conflicts actions', () => {
     });
 
     it('when request fails', () => {
-      mock.onGet(conflictsPath).reply(400);
+      mock.onGet(conflictsPath).reply(HTTP_STATUS_BAD_REQUEST);
       return testAction(
         actions.fetchConflictsData,
         conflictsPath,
@@ -114,7 +115,7 @@ describe('merge conflicts actions', () => {
     });
 
     it('on errors shows flash', async () => {
-      mock.onPost(resolveConflictsPath).reply(400);
+      mock.onPost(resolveConflictsPath).reply(HTTP_STATUS_BAD_REQUEST);
       await testAction(
         actions.submitResolvedConflicts,
         resolveConflictsPath,

@@ -68,7 +68,7 @@ RSpec.describe 'PipelineSchedulePlay', feature_category: :continuious_integratio
       it do
         expect(RunPipelineScheduleWorker)
           .to receive(:perform_async)
-          .with(pipeline_schedule.id, user.id)
+          .with(pipeline_schedule.id, user.id, next_run_scheduled: true)
 
         post_graphql_mutation(mutation, current_user: user)
 

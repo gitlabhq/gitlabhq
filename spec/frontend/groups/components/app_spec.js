@@ -11,7 +11,7 @@ import eventHub from '~/groups/event_hub';
 import GroupsService from '~/groups/service/groups_service';
 import GroupsStore from '~/groups/store/groups_store';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
@@ -113,7 +113,7 @@ describe('AppComponent', () => {
       });
 
       it('should show flash error when request fails', () => {
-        mock.onGet('/dashboard/groups.json').reply(400);
+        mock.onGet('/dashboard/groups.json').reply(HTTP_STATUS_BAD_REQUEST);
 
         jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
         return vm.fetchGroups({}).then(() => {
@@ -253,7 +253,7 @@ describe('AppComponent', () => {
       });
 
       it('should set `isChildrenLoading` back to `false` if load request fails', () => {
-        mock.onGet('/dashboard/groups.json').reply(400);
+        mock.onGet('/dashboard/groups.json').reply(HTTP_STATUS_BAD_REQUEST);
 
         vm.toggleChildren(groupItem);
 

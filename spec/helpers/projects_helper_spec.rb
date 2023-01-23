@@ -1352,4 +1352,30 @@ RSpec.describe ProjectsHelper do
       end
     end
   end
+
+  describe '#vue_fork_divergence_data' do
+    it 'returns empty hash when fork source is not available' do
+      expect(helper.vue_fork_divergence_data(project, 'ref')).to eq({})
+    end
+
+    context 'when fork source is available' do
+      it 'returns the data related to fork divergence' do
+        source_project = project_with_repo
+
+        allow(helper).to receive(:visible_fork_source).with(project).and_return(source_project)
+
+        ahead_path =
+          "/#{project.full_path}/-/compare/#{source_project.default_branch}...ref?from_project_id=#{source_project.id}"
+        behind_path =
+          "/#{source_project.full_path}/-/compare/ref...#{source_project.default_branch}?from_project_id=#{project.id}"
+
+        expect(helper.vue_fork_divergence_data(project, 'ref')).to eq({
+          source_name: source_project.full_name,
+          source_path: project_path(source_project),
+          ahead_compare_path: ahead_path,
+          behind_compare_path: behind_path
+        })
+      end
+    end
+  end
 end

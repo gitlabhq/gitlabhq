@@ -114,7 +114,8 @@ RSpec.describe "Admin::Projects", feature_category: :projects do
       end
     end
 
-    it 'transfers project to group web', :js do
+    it 'transfers project to group web', :js,
+        quarantine: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/q/-/issues/668' do
       visit admin_project_path(project)
 
       click_button 'Search for Namespace'

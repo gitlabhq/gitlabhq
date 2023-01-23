@@ -7,6 +7,7 @@ import * as actions from '~/clusters_list/store/actions';
 import * as types from '~/clusters_list/store/mutation_types';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { apiData } from '../mock_data';
 
@@ -81,7 +82,7 @@ describe('Clusters store actions', () => {
     });
 
     it('should show flash on API error', async () => {
-      mock.onGet().reply(400, 'Not Found');
+      mock.onGet().reply(HTTP_STATUS_BAD_REQUEST, 'Not Found');
 
       await testAction(
         actions.fetchClusters,

@@ -16,7 +16,11 @@ import * as treeWorkerUtils from '~/diffs/utils/tree_worker_utils';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_BAD_REQUEST,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_NOT_FOUND,
+} from '~/lib/utils/http_status';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import { diffMetadata } from '../mock_data/diff_metadata';
@@ -261,7 +265,7 @@ describe('DiffsStoreActions', () => {
     });
 
     it('should show flash on API error', async () => {
-      mock.onGet(endpointCoverage).reply(400);
+      mock.onGet(endpointCoverage).reply(HTTP_STATUS_BAD_REQUEST);
 
       await testAction(diffActions.fetchCoverageFiles, {}, { endpointCoverage }, [], []);
       expect(createAlert).toHaveBeenCalledTimes(1);

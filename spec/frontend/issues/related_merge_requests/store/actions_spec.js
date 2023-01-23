@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import * as actions from '~/issues/related_merge_requests/store/actions';
 import * as types from '~/issues/related_merge_requests/store/mutation_types';
 
@@ -86,7 +87,7 @@ describe('RelatedMergeRequest store actions', () => {
 
     describe('for a failing request', () => {
       it('should dispatch error action', async () => {
-        mock.onGet(`${state.apiEndpoint}?per_page=100`).replyOnce(400);
+        mock.onGet(`${state.apiEndpoint}?per_page=100`).replyOnce(HTTP_STATUS_BAD_REQUEST);
 
         await testAction(
           actions.fetchMergeRequests,

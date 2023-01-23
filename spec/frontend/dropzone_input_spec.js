@@ -7,7 +7,7 @@ import { TEST_HOST } from 'spec/test_constants';
 import PasteMarkdownTable from '~/behaviors/markdown/paste_markdown_table';
 import dropzoneInput from '~/dropzone_input';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 const TEST_FILE = new File([], 'somefile.jpg');
 TEST_FILE.upload = {};
@@ -161,7 +161,7 @@ describe('dropzone_input', () => {
       ${'text/plain'}       | ${TEST_ERROR_MESSAGE}
     `('when AJAX fails with json', ({ responseType, responseBody }) => {
       mock.post(TEST_UPLOAD_PATH, {
-        status: 400,
+        status: HTTP_STATUS_BAD_REQUEST,
         body: responseBody,
         headers: { 'Content-Type': responseType },
       });

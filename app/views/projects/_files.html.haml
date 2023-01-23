@@ -4,7 +4,6 @@
 - ref = local_assigns.fetch(:ref) { current_ref }
 - project = local_assigns.fetch(:project) { @project }
 - add_page_startup_api_call logs_file_project_ref_path(@project, ref, @path, format: "json", offset: 0)
-- source = visible_fork_source(@project)
 - if readme_path = @project.repository.readme_path
   - add_page_startup_api_call project_blob_path(@project, tree_join(@ref, readme_path), viewer: "rich", format: "json")
 
@@ -18,7 +17,7 @@
     = render 'projects/tree/tree_header', tree: @tree, is_project_overview: is_project_overview
 
   - if project.forked? && Feature.enabled?(:fork_divergence_counts, @project.fork_source)
-    #js-fork-info{ data: { source_name: source ? source.full_name : '', source_path: source ? project_path(source) : '' } }
+    #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
 
   - if is_project_overview
     .project-buttons.gl-mb-5.js-show-on-project-root{ data: { qa_selector: 'project_buttons' } }

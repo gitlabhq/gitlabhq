@@ -6,6 +6,7 @@ import { PENDING, RUNNING, STOPPING, STOPPED } from '~/ide/stores/modules/termin
 import * as messages from '~/ide/stores/modules/terminal/messages';
 import * as mutationTypes from '~/ide/stores/modules/terminal/mutation_types';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 
 jest.mock('~/flash');
 
@@ -157,7 +158,7 @@ describe('IDE store terminal session controls actions', () => {
     });
 
     it('dispatches error on error', () => {
-      mock.onGet(state.session.showPath).reply(400);
+      mock.onGet(state.session.showPath).reply(HTTP_STATUS_BAD_REQUEST);
 
       return testAction(
         actions.fetchSessionStatus,
