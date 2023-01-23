@@ -19,6 +19,13 @@ class AbuseReportsController < ApplicationController
       reported_from_url: report_params[:reported_from_url]
     )
 
+    Gitlab::Tracking.event(
+      'ReportAbuse',
+      'select_abuse_category',
+      property: report_params[:category],
+      user: @user
+    )
+
     render :new
   end
 
@@ -28,6 +35,13 @@ class AbuseReportsController < ApplicationController
 
     if @abuse_report.save
       @abuse_report.notify
+
+      Gitlab::Tracking.event(
+        'ReportAbuse',
+        'submit_form',
+        property: @abuse_report.category,
+        user: @abuse_report.user
+      )
 
       message = _("Thank you for your report. A GitLab administrator will look into it shortly.")
       redirect_to root_path, notice: message

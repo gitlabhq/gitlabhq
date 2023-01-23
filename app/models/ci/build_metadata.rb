@@ -18,6 +18,7 @@ module Ci
 
     belongs_to :build, class_name: 'CommitStatus'
     belongs_to :project
+    belongs_to :runner_machine, class_name: 'Ci::RunnerMachine'
 
     before_create :set_build_project
 

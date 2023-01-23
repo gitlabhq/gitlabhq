@@ -20,10 +20,9 @@ RSpec.shared_examples 'reportable note' do |type|
     dropdown = comment.find(more_actions_selector)
     open_dropdown(dropdown)
 
-    expect(dropdown).to have_link('Report abuse to administrator', href: abuse_report_path)
-
     if type == 'issue' || type == 'merge_request'
       expect(dropdown).to have_button('Delete comment')
+      expect(dropdown).to have_button('Report abuse to administrator')
     else
       expect(dropdown).to have_link('Delete comment', href: note_url(note, project))
     end
@@ -33,10 +32,21 @@ RSpec.shared_examples 'reportable note' do |type|
     dropdown = comment.find(more_actions_selector)
     open_dropdown(dropdown)
 
-    dropdown.click_link('Report abuse to administrator')
+    if type == 'issue' || type == 'merge_request'
+      dropdown.click_button('Report abuse to administrator')
 
-    expect(find('#user_name')['value']).to match(note.author.username)
-    expect(find('#abuse_report_reported_from_url')['value']).to match(noteable_note_url(note))
+      choose "They're posting spam."
+      click_button "Next"
+
+      expect(find('#user_name')['value']).to match(note.author.username)
+      expect(find('#abuse_report_reported_from_url')['value']).to match(noteable_note_url(note))
+      expect(find('#abuse_report_category', visible: false)['value']).to match('spam')
+    else
+      dropdown.click_link('Report abuse to administrator')
+
+      expect(find('#user_name')['value']).to match(note.author.username)
+      expect(find('#abuse_report_reported_from_url')['value']).to match(noteable_note_url(note))
+    end
   end
 
   def open_dropdown(dropdown)

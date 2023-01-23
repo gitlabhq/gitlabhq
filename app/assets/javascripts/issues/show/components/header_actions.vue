@@ -98,6 +98,12 @@ export default {
     submitAsSpamPath: {
       default: '',
     },
+    reportedUserId: {
+      default: '',
+    },
+    reportedFromUrl: {
+      default: '',
+    },
   },
   data() {
     return {
@@ -369,6 +375,8 @@ export default {
     />
 
     <abuse-category-selector
+      :reported-user-id="reportedUserId"
+      :reported-from-url="reportedFromUrl"
       :show-drawer="isReportAbuseDrawerOpen"
       @close-drawer="toggleReportAbuseDrawer(false)"
     />

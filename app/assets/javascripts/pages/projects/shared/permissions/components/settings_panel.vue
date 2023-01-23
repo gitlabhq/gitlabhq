@@ -49,14 +49,10 @@ export default {
     infrastructureLabel: s__('ProjectSettings|Infrastructure'),
     infrastructureHelpText: s__('ProjectSettings|Configure your infrastructure.'),
     monitorLabel: s__('ProjectSettings|Monitor'),
-    packagesHelpText: s__(
-      'ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public.',
-    ),
     packageRegistryHelpText: s__('ProjectSettings|Publish, store, and view packages in a project.'),
     packageRegistryForEveryoneHelpText: s__(
       'ProjectSettings|Anyone can pull packages with a package manager API.',
     ),
-    packagesLabel: s__('ProjectSettings|Packages'),
     packageRegistryLabel: s__('ProjectSettings|Package registry'),
     packageRegistryForEveryoneLabel: s__(
       'ProjectSettings|Allow anyone to pull from Package Registry',
@@ -355,9 +351,6 @@ export default {
         this.visibilityLevel < this.currentSettings.visibilityLevel
       );
     },
-    packageRegistryAccessLevelEnabled() {
-      return this.glFeatures.packageRegistryAccessLevel;
-    },
     packageRegistryEnabled() {
       return this.packageRegistryAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
@@ -392,14 +385,12 @@ export default {
           featureAccessLevel.PROJECT_MEMBERS,
           this.buildsAccessLevel,
         );
-        if (this.packageRegistryAccessLevelEnabled) {
-          if (
-            this.packageRegistryAccessLevel === featureAccessLevel.EVERYONE ||
-            (this.packageRegistryAccessLevel > featureAccessLevel.EVERYONE &&
-              oldValue === VISIBILITY_LEVEL_PUBLIC_INTEGER)
-          ) {
-            this.packageRegistryAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
-          }
+        if (
+          this.packageRegistryAccessLevel === featureAccessLevel.EVERYONE ||
+          (this.packageRegistryAccessLevel > featureAccessLevel.EVERYONE &&
+            oldValue === VISIBILITY_LEVEL_PUBLIC_INTEGER)
+        ) {
+          this.packageRegistryAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
         }
         this.wikiAccessLevel = Math.min(featureAccessLevel.PROJECT_MEMBERS, this.wikiAccessLevel);
         this.snippetsAccessLevel = Math.min(
@@ -459,10 +450,7 @@ export default {
           this.repositoryAccessLevel = featureAccessLevel.EVERYONE;
         if (this.mergeRequestsAccessLevel > featureAccessLevel.NOT_ENABLED)
           this.mergeRequestsAccessLevel = featureAccessLevel.EVERYONE;
-        if (
-          this.packageRegistryAccessLevelEnabled &&
-          this.packageRegistryAccessLevel === featureAccessLevel.PROJECT_MEMBERS
-        ) {
+        if (this.packageRegistryAccessLevel === featureAccessLevel.PROJECT_MEMBERS) {
           this.packageRegistryAccessLevel =
             PACKAGE_REGISTRY_ACCESS_LEVEL_DEFAULT_BY_PROJECT_VISIBILITY[value];
         }
@@ -488,19 +476,17 @@ export default {
           this.containerRegistryAccessLevel = featureAccessLevel.EVERYONE;
 
         this.highlightChanges();
-      } else if (this.packageRegistryAccessLevelEnabled) {
-        if (
-          value === VISIBILITY_LEVEL_PUBLIC_INTEGER &&
-          this.packageRegistryAccessLevel === featureAccessLevel.EVERYONE
-        ) {
-          // eslint-disable-next-line prefer-destructuring
-          this.packageRegistryAccessLevel = FEATURE_ACCESS_LEVEL_ANONYMOUS[0];
-        } else if (
-          value === VISIBILITY_LEVEL_INTERNAL_INTEGER &&
-          this.packageRegistryAccessLevel === FEATURE_ACCESS_LEVEL_ANONYMOUS[0]
-        ) {
-          this.packageRegistryAccessLevel = featureAccessLevel.EVERYONE;
-        }
+      } else if (
+        value === VISIBILITY_LEVEL_PUBLIC_INTEGER &&
+        this.packageRegistryAccessLevel === featureAccessLevel.EVERYONE
+      ) {
+        // eslint-disable-next-line prefer-destructuring
+        this.packageRegistryAccessLevel = FEATURE_ACCESS_LEVEL_ANONYMOUS[0];
+      } else if (
+        value === VISIBILITY_LEVEL_INTERNAL_INTEGER &&
+        this.packageRegistryAccessLevel === FEATURE_ACCESS_LEVEL_ANONYMOUS[0]
+      ) {
+        this.packageRegistryAccessLevel = featureAccessLevel.EVERYONE;
       }
     },
 
@@ -770,22 +756,6 @@ export default {
           </p>
         </project-setting-row>
         <project-setting-row
-          v-if="packagesAvailable && !packageRegistryAccessLevelEnabled"
-          ref="package-settings"
-          :help-path="packagesHelpPath"
-          :label="$options.i18n.packagesLabel"
-          :help-text="$options.i18n.packagesHelpText"
-        >
-          <gl-toggle
-            v-model="packagesEnabled"
-            class="gl-my-2"
-            :disabled="!repositoryEnabled"
-            :label="$options.i18n.packagesLabel"
-            label-position="hidden"
-            name="project[packages_enabled]"
-          />
-        </project-setting-row>
-        <project-setting-row
           ref="pipeline-settings"
           :label="$options.i18n.ciCdLabel"
           :help-text="s__('ProjectSettings|Build, test, and deploy your changes.')"
@@ -889,7 +859,7 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        v-if="packageRegistryAccessLevelEnabled && packagesAvailable"
+        v-if="packagesAvailable"
         :help-path="packagesHelpPath"
         :label="$options.i18n.packageRegistryLabel"
         :help-text="$options.i18n.packageRegistryHelpText"

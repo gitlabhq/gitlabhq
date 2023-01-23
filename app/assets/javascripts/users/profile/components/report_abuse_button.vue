@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
@@ -14,8 +14,9 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['reportedUserId', 'reportedFromUrl'],
   i18n: {
-    reportAbuse: __('Report abuse to administrator'),
+    reportAbuse: s__('ReportAbuse|Report abuse to administrator'),
   },
   data() {
     return {
@@ -28,11 +29,8 @@ export default {
     },
   },
   methods: {
-    openDrawer() {
-      this.open = true;
-    },
-    closeDrawer() {
-      this.open = false;
+    toggleDrawer(open) {
+      this.open = open;
     },
     hideTooltips() {
       this.$root.$emit(BV_HIDE_TOOLTIP);
@@ -47,9 +45,14 @@ export default {
       category="primary"
       :aria-label="buttonTooltipText"
       icon="error"
-      @click="openDrawer"
+      @click="toggleDrawer(true)"
       @mouseout="hideTooltips"
     />
-    <abuse-category-selector :show-drawer="open" @close-drawer="closeDrawer" />
+    <abuse-category-selector
+      :reported-user-id="reportedUserId"
+      :reported-from-url="reportedFromUrl"
+      :show-drawer="open"
+      @close-drawer="toggleDrawer(false)"
+    />
   </span>
 </template>

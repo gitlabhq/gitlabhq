@@ -91,7 +91,7 @@ applications, and infrastructure.
 
 Findings are all potential vulnerability items scanners identify in MRs/feature branches. Only after merging to default does a finding become a [vulnerability](#vulnerability).
 
-You can interact with vulnerability findings in two ways. 
+You can interact with vulnerability findings in two ways.
 
 1. You can open an issue or merge request for the vulnerability finding.
 1. You can dismiss the vulnerability finding. Dismissing the finding hides it from the default views.

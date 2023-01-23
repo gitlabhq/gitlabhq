@@ -113,7 +113,7 @@ While this is possible in some cases, such as SaaS applications, there are some 
   operations team is at full capacity - but you also merge code at other times.
 
 In these cases, you can create a production branch that reflects the deployed code.
-You can deploy a new version by merging `main` into the `production` branch. 
+You can deploy a new version by merging `main` into the `production` branch.
 While not shown in the graph below, the work on the `main` branch works just like in GitHub flow, i.e. with feature-branches being merged into `main`.
 
 ```mermaid

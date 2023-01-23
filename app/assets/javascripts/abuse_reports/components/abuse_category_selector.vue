@@ -18,14 +18,17 @@ export default {
     reportAbusePath: {
       default: '',
     },
-    reportedUserId: {
-      default: '',
-    },
-    reportedFromUrl: {
-      default: '',
-    },
   },
   props: {
+    reportedUserId: {
+      type: Number,
+      required: true,
+    },
+    reportedFromUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
     showDrawer: {
       type: Boolean,
       required: true,
@@ -39,8 +42,8 @@ export default {
   },
   categoryOptions: [
     { value: 'spam', text: s__("ReportAbuse|They're posting spam.") },
-    { value: 'offensive', text: s__("ReportAbuse|They're being offsensive or abusive.") },
-    { value: 'phishing', text: s__("ReportAbuse|They're phising.") },
+    { value: 'offensive', text: s__("ReportAbuse|They're being offensive or abusive.") },
+    { value: 'phishing', text: s__("ReportAbuse|They're phishing.") },
     { value: 'crypto', text: s__("ReportAbuse|They're crypto mining.") },
     {
       value: 'credentials',
@@ -94,7 +97,7 @@ export default {
           data-testid="input-referer"
         />
 
-        <gl-form-group :label="$options.i18n.label">
+        <gl-form-group :label="$options.i18n.label" label-class="gl-text-black-normal">
           <gl-form-radio-group
             v-model="selected"
             :options="$options.categoryOptions"

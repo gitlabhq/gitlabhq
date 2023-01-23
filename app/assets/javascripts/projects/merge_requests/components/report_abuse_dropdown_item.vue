@@ -12,6 +12,7 @@ export default {
     MountingPortal,
     AbuseCategorySelector,
   },
+  inject: ['reportedUserId', 'reportedFromUrl'],
   i18n: {
     reportAbuse: s__('ReportAbuse|Report abuse to administrator'),
   },
@@ -21,21 +22,23 @@ export default {
     };
   },
   methods: {
-    openDrawer() {
-      this.open = true;
-    },
-    closeDrawer() {
-      this.open = false;
+    toggleDrawer(open) {
+      this.open = open;
     },
   },
 };
 </script>
 <template>
   <span>
-    <gl-dropdown-item @click="openDrawer">{{ $options.i18n.reportAbuse }}</gl-dropdown-item>
+    <gl-dropdown-item @click="toggleDrawer(true)">{{ $options.i18n.reportAbuse }}</gl-dropdown-item>
 
     <mounting-portal mount-to="#js-report-abuse-drawer" name="abuse-category-selector" append>
-      <abuse-category-selector :show-drawer="open" @close-drawer="closeDrawer" />
+      <abuse-category-selector
+        :reported-user-id="reportedUserId"
+        :reported-from-url="reportedFromUrl"
+        :show-drawer="open"
+        @close-drawer="toggleDrawer(false)"
+      />
     </mounting-portal>
   </span>
 </template>

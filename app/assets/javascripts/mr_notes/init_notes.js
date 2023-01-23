@@ -23,6 +23,7 @@ export default () => {
   }
 
   const notesFilterProps = getNotesFilterData(el);
+  const notesDataset = el.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -32,8 +33,10 @@ export default () => {
       NotesApp,
     },
     store,
+    provide: {
+      reportAbusePath: notesDataset.reportAbusePath,
+    },
     data() {
-      const notesDataset = el.dataset;
       const noteableData = JSON.parse(notesDataset.noteableData);
       noteableData.noteableType = notesDataset.noteableType;
       noteableData.targetType = notesDataset.targetType;

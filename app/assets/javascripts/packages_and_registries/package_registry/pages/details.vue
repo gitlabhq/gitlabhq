@@ -23,7 +23,7 @@ import PackageFiles from '~/packages_and_registries/package_registry/components/
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
 import PackageVersionsList from '~/packages_and_registries/package_registry/components/details/package_versions_list.vue';
-import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
+import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
 import {
   PACKAGE_TYPE_NUGET,
   PACKAGE_TYPE_COMPOSER,
@@ -71,7 +71,7 @@ export default {
     AdditionalMetadata,
     InstallationCommands,
     PackageFiles,
-    DeletePackage,
+    DeletePackages,
     PackageVersionsList,
   },
   directives: {
@@ -418,11 +418,11 @@ export default {
       </gl-tab>
     </gl-tabs>
 
-    <delete-package
+    <delete-packages
       @start="track($options.trackingActions.DELETE_PACKAGE_TRACKING_ACTION)"
       @end="navigateToListWithSuccessModal"
     >
-      <template #default="{ deletePackage }">
+      <template #default="{ deletePackages }">
         <gl-modal
           ref="deleteModal"
           size="sm"
@@ -430,7 +430,7 @@ export default {
           data-testid="delete-modal"
           :action-primary="$options.modal.packageDeletePrimaryAction"
           :action-cancel="$options.modal.cancelAction"
-          @primary="deletePackage(packageEntity)"
+          @primary="deletePackages([packageEntity])"
           @hidden="resetDeleteModalContent"
           @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE)"
         >
@@ -446,7 +446,7 @@ export default {
           </gl-sprintf>
         </gl-modal>
       </template>
-    </delete-package>
+    </delete-packages>
 
     <gl-modal
       ref="deleteFileModal"

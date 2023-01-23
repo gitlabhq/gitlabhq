@@ -34,6 +34,9 @@ const singleLineNotePosition = {
 describe('issue_note', () => {
   let store;
   let wrapper;
+
+  const REPORT_ABUSE_PATH = '/abuse_reports/add_category';
+
   const findMultilineComment = () => wrapper.find('[data-testid="multiline-comment"]');
 
   const createWrapper = (props = {}, storeUpdater = (s) => s) => {
@@ -62,6 +65,9 @@ describe('issue_note', () => {
         'note-body',
         'multiline-comment-form',
       ],
+      provide: {
+        reportAbusePath: REPORT_ABUSE_PATH,
+      },
     });
   };
 
@@ -241,7 +247,6 @@ describe('issue_note', () => {
       expect(noteActionsProps.canDelete).toBe(note.current_user.can_edit);
       expect(noteActionsProps.canReportAsAbuse).toBe(true);
       expect(noteActionsProps.canResolve).toBe(false);
-      expect(noteActionsProps.reportAbusePath).toBe(note.report_abuse_path);
       expect(noteActionsProps.resolvable).toBe(false);
       expect(noteActionsProps.isResolved).toBe(false);
       expect(noteActionsProps.isResolving).toBe(false);

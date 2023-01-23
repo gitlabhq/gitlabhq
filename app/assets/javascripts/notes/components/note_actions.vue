@@ -10,6 +10,7 @@ import eventHub from '~/sidebar/event_hub';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { splitCamelCase } from '~/lib/utils/text_utility';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import ReplyButton from './note_actions/reply_button.vue';
 import TimelineEventButton from './note_actions/timeline_event_button.vue';
 
@@ -30,6 +31,7 @@ export default {
     GlDropdownItem,
     UserAccessRoleBadge,
     EmojiPicker: () => import('~/emoji/components/picker.vue'),
+    AbuseCategorySelector,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -57,11 +59,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    reportAbusePath: {
-      type: String,
-      required: false,
-      default: null,
     },
     isAuthor: {
       type: Boolean,
@@ -134,6 +131,11 @@ export default {
       required: false,
       default: '',
     },
+  },
+  data() {
+    return {
+      isReportAbuseDrawerOpen: false,
+    };
   },
   computed: {
     ...mapState(['isPromoteCommentToTimelineEventInProgress']),
@@ -252,6 +254,9 @@ export default {
         awardName,
       });
     },
+    toggleReportAbuseDrawer(isOpen) {
+      this.isReportAbuseDrawerOpen = isOpen;
+    },
   },
 };
 </script>
@@ -362,7 +367,11 @@ export default {
       />
       <!-- eslint-enable @gitlab/vue-no-data-toggle -->
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
-        <gl-dropdown-item v-if="canReportAsAbuse" :href="reportAbusePath">
+        <gl-dropdown-item
+          v-if="canReportAsAbuse"
+          data-testid="report-abuse-button"
+          @click="toggleReportAbuseDrawer(true)"
+        >
           {{ $options.i18n.reportAbuse }}
         </gl-dropdown-item>
         <gl-dropdown-item
@@ -380,5 +389,12 @@ export default {
         </gl-dropdown-item>
       </ul>
     </div>
+    <abuse-category-selector
+      v-if="canReportAsAbuse"
+      :reported-user-id="authorId"
+      :reported-from-url="noteUrl"
+      :show-drawer="isReportAbuseDrawerOpen"
+      @close-drawer="toggleReportAbuseDrawer(false)"
+    />
   </div>
 </template>

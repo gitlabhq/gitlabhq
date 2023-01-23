@@ -353,7 +353,7 @@ _KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX.
 This syntax also works for the Asciidoctor `:stem: latexmath`. For details, see
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
-Math written between dollar signs with backticks (``$`...`$``) or single dollar signs (`$...$`) 
+Math written between dollar signs with backticks (``$`...`$``) or single dollar signs (`$...$`)
 is rendered inline with the text.
 
 Math written between double dollar signs (`$$...$$`) or in a [code block](#code-spans-and-blocks) with

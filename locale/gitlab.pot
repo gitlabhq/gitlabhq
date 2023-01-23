@@ -33189,9 +33189,6 @@ msgstr ""
 msgid "ProjectSettings|Every project can have its own space to store its Docker images"
 msgstr ""
 
-msgid "ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public."
-msgstr ""
-
 msgid "ProjectSettings|Every project can make deployments to environments either via CI/CD or API calls. Non-project members have read-only access."
 msgstr ""
 
@@ -33322,9 +33319,6 @@ msgid "ProjectSettings|Override user notification preferences for all project me
 msgstr ""
 
 msgid "ProjectSettings|Package registry"
-msgstr ""
-
-msgid "ProjectSettings|Packages"
 msgstr ""
 
 msgid "ProjectSettings|Pages"
@@ -35416,13 +35410,13 @@ msgstr ""
 msgid "ReportAbuse|Something else."
 msgstr ""
 
-msgid "ReportAbuse|They're being offsensive or abusive."
+msgid "ReportAbuse|They're being offensive or abusive."
 msgstr ""
 
 msgid "ReportAbuse|They're crypto mining."
 msgstr ""
 
-msgid "ReportAbuse|They're phising."
+msgid "ReportAbuse|They're phishing."
 msgstr ""
 
 msgid "ReportAbuse|They're posting malware."

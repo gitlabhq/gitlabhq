@@ -6,6 +6,7 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
   it_behaves_like 'having unique enum values'
 
   it { is_expected.to belong_to(:runner) }
+  it { is_expected.to have_many(:build_metadata) }
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:runner) }

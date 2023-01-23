@@ -10,7 +10,12 @@ export const initReportAbuse = () => {
 
   return new Vue({
     el,
-    provide: { reportAbusePath, reportedUserId, reportedFromUrl },
+    name: 'ReportAbuseButtonRoot',
+    provide: {
+      reportAbusePath,
+      reportedUserId: parseInt(reportedUserId, 10),
+      reportedFromUrl,
+    },
     render(createElement) {
       return createElement(ReportAbuseButton);
     },

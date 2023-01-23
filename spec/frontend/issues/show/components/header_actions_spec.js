@@ -40,7 +40,7 @@ describe('HeaderActions component', () => {
     newIssuePath: 'gitlab-org/gitlab-test/-/issues/new',
     projectPath: 'gitlab-org/gitlab-test',
     reportAbusePath: '-/abuse_reports/add_category',
-    reportedUserId: '1',
+    reportedUserId: 1,
     reportedFromUrl: 'http://localhost:/gitlab-org/-/issues/32',
     submitAsSpamPath: 'gitlab-org/gitlab-test/-/issues/32/submit_as_spam',
   };

@@ -15,7 +15,7 @@ import InstallationCommands from '~/packages_and_registries/package_registry/com
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
-import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
+import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
 import PackageVersionsList from '~/packages_and_registries/package_registry/components/details/package_versions_list.vue';
 import {
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
@@ -85,7 +85,7 @@ describe('PackagesApp', () => {
       provide,
       stubs: {
         PackageTitle,
-        DeletePackage,
+        DeletePackages,
         GlModal: {
           template: `
             <div>
@@ -128,7 +128,7 @@ describe('PackagesApp', () => {
   const findDependenciesCountBadge = () => wrapper.findByTestId('dependencies-badge');
   const findNoDependenciesMessage = () => wrapper.findByTestId('no-dependencies-message');
   const findDependencyRows = () => wrapper.findAllComponents(DependencyRow);
-  const findDeletePackage = () => wrapper.findComponent(DeletePackage);
+  const findDeletePackages = () => wrapper.findComponent(DeletePackages);
 
   afterEach(() => {
     wrapper.destroy();
@@ -267,7 +267,7 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        findDeletePackage().vm.$emit('end');
+        findDeletePackages().vm.$emit('end');
 
         expect(window.location.replace).toHaveBeenCalledWith(
           'projectListUrl?showSuccessDeleteAlert=true',
@@ -281,7 +281,7 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        findDeletePackage().vm.$emit('end');
+        findDeletePackages().vm.$emit('end');
 
         expect(window.location.replace).toHaveBeenCalledWith(
           'groupListUrl?showSuccessDeleteAlert=true',

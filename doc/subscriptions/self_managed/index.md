@@ -492,7 +492,7 @@ and for communicating directly with the relevant GitLab team members.
 
 ### Subscription data fails to synchronize
 
-If the synchronization job is not working, ensure you allow network traffic from your GitLab 
+If the synchronization job is not working, ensure you allow network traffic from your GitLab
 instance to IP addresses `172.64.146.11:443` and `104.18.41.245:443` (`customers.gitlab.com`).
 
 ### Credit card declined

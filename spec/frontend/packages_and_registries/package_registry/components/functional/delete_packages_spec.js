@@ -4,36 +4,38 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
-import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
+import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
 
-import destroyPackageMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package.mutation.graphql';
+import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
 import {
-  packageDestroyMutation,
-  packageDestroyMutationError,
+  packagesDestroyMutation,
+  packagesDestroyMutationError,
   packagesListQuery,
 } from '../../mock_data';
 
 jest.mock('~/flash');
 
-describe('DeletePackage', () => {
+describe('DeletePackages', () => {
   let wrapper;
   let apolloProvider;
   let resolver;
   let mutationResolver;
 
-  const eventPayload = { id: '1' };
+  const eventPayload = [{ id: '1' }];
+  const eventPayloadMultiple = [{ id: '1' }, { id: '2' }];
+  const mutationPayload = { ids: ['1'] };
 
   function createComponent(propsData = {}) {
     Vue.use(VueApollo);
 
     const requestHandlers = [
       [getPackagesQuery, resolver],
-      [destroyPackageMutation, mutationResolver],
+      [destroyPackagesMutation, mutationResolver],
     ];
     apolloProvider = createMockApollo(requestHandlers);
 
-    wrapper = shallowMountExtended(DeletePackage, {
+    wrapper = shallowMountExtended(DeletePackages, {
       propsData,
       apolloProvider,
       scopedSlots: {
@@ -43,7 +45,9 @@ describe('DeletePackage', () => {
               'data-testid': 'trigger-button',
             },
             on: {
-              click: props.deletePackage,
+              click: (payload) => {
+                return props.deletePackages(payload[0]);
+              },
             },
           });
         },
@@ -54,23 +58,23 @@ describe('DeletePackage', () => {
   const findButton = () => wrapper.findByTestId('trigger-button');
 
   const clickOnButtonAndWait = (payload) => {
-    findButton().trigger('click', payload);
+    findButton().trigger('click', [payload]);
     return waitForPromises();
   };
 
   beforeEach(() => {
     resolver = jest.fn().mockResolvedValue(packagesListQuery());
-    mutationResolver = jest.fn().mockResolvedValue(packageDestroyMutation());
+    mutationResolver = jest.fn().mockResolvedValue(packagesDestroyMutation());
   });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('binds deletePackage method to the default slot', () => {
+  it('binds deletePackages method to the default slot', () => {
     createComponent();
 
-    findButton().trigger('click');
+    findButton().trigger('click', eventPayload);
 
     expect(wrapper.emitted('start')).toEqual([[]]);
   });
@@ -80,7 +84,7 @@ describe('DeletePackage', () => {
 
     await clickOnButtonAndWait(eventPayload);
 
-    expect(mutationResolver).toHaveBeenCalledWith(eventPayload);
+    expect(mutationResolver).toHaveBeenCalledWith(mutationPayload);
   });
 
   it('passes refetchQueries to apollo mutate', async () => {
@@ -91,8 +95,18 @@ describe('DeletePackage', () => {
 
     await clickOnButtonAndWait(eventPayload);
 
-    expect(mutationResolver).toHaveBeenCalledWith(eventPayload);
+    expect(mutationResolver).toHaveBeenCalledWith(mutationPayload);
     expect(resolver).toHaveBeenCalledWith(variables);
+  });
+
+  describe('when payload contains multiple packages', () => {
+    it('calls apollo mutation with different payload', async () => {
+      createComponent();
+
+      await clickOnButtonAndWait(eventPayloadMultiple);
+
+      expect(mutationResolver).toHaveBeenCalledWith({ ids: ['1', '2'] });
+    });
   });
 
   describe('on mutation success', () => {
@@ -118,8 +132,21 @@ describe('DeletePackage', () => {
       await clickOnButtonAndWait(eventPayload);
 
       expect(createAlert).toHaveBeenCalledWith({
-        message: DeletePackage.i18n.successMessage,
+        message: DeletePackages.i18n.successMessage,
         variant: VARIANT_SUCCESS,
+      });
+    });
+
+    describe('when payload contains multiple packages', () => {
+      it('calls createAlert with success message when showSuccessAlert is true', async () => {
+        createComponent({ showSuccessAlert: true });
+
+        await clickOnButtonAndWait(eventPayloadMultiple);
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: DeletePackages.i18n.successMessageMultiple,
+          variant: VARIANT_SUCCESS,
+        });
       });
     });
   });
@@ -127,7 +154,7 @@ describe('DeletePackage', () => {
   describe.each`
     errorType            | mutationResolverResponse
     ${'connectionError'} | ${jest.fn().mockRejectedValue()}
-    ${'localError'}      | ${jest.fn().mockResolvedValue(packageDestroyMutationError())}
+    ${'localError'}      | ${jest.fn().mockResolvedValue(packagesDestroyMutationError())}
   `('on mutation $errorType', ({ mutationResolverResponse }) => {
     beforeEach(() => {
       mutationResolver = mutationResolverResponse;
@@ -147,10 +174,25 @@ describe('DeletePackage', () => {
       await clickOnButtonAndWait(eventPayload);
 
       expect(createAlert).toHaveBeenCalledWith({
-        message: DeletePackage.i18n.errorMessage,
+        message: DeletePackages.i18n.errorMessage,
         variant: VARIANT_WARNING,
         captureError: true,
         error: expect.any(Error),
+      });
+    });
+
+    describe('when payload contains multiple packages', () => {
+      it('calls createAlert with error message', async () => {
+        createComponent({ showSuccessAlert: true });
+
+        await clickOnButtonAndWait(eventPayloadMultiple);
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: DeletePackages.i18n.errorMessageMultiple,
+          variant: VARIANT_WARNING,
+          captureError: true,
+          error: expect.any(Error),
+        });
       });
     });
   });

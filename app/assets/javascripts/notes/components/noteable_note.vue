@@ -43,6 +43,11 @@ export default {
     SafeHtml,
   },
   mixins: [noteable, resolvable],
+  inject: {
+    reportAbusePath: {
+      default: '',
+    },
+  },
   props: {
     note: {
       type: Object,
@@ -129,7 +134,7 @@ export default {
       };
     },
     canReportAsAbuse() {
-      return Boolean(this.note.report_abuse_path) && this.author.id !== this.getUserData.id;
+      return Boolean(this.reportAbusePath) && this.author.id !== this.getUserData.id;
     },
     noteAnchorId() {
       return `note_${this.note.id}`;
@@ -488,7 +493,6 @@ export default {
           :can-delete="note.current_user.can_edit"
           :can-report-as-abuse="canReportAsAbuse"
           :can-resolve="canResolve"
-          :report-abuse-path="note.report_abuse_path"
           :resolvable="note.resolvable || note.isDraft"
           :is-resolved="note.resolved || note.resolve_discussion"
           :is-resolving="isResolving"

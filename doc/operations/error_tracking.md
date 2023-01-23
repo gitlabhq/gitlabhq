@@ -146,7 +146,7 @@ settings. By using a GitLab-provided DSN, your application connects to GitLab to
 Those errors are stored in the GitLab database and rendered by the GitLab UI, in the same way as
 Sentry integration.
 
-In GitLab 15.6 and later, the integrated error tracking 
+In GitLab 15.6 and later, the integrated error tracking
 uses a new backend based on the ClickHouse database that enables better scalability.
 Integrated error tracking remains limited in comparison to the Sentry backend, as only a small subset of the
 Sentry API is implemented.

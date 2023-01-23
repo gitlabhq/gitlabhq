@@ -294,14 +294,6 @@ export const packageMetadataQuery = (packageType) => {
   };
 };
 
-export const packageDestroyMutation = () => ({
-  data: {
-    destroyPackage: {
-      errors: [],
-    },
-  },
-});
-
 export const packagesDestroyMutation = () => ({
   data: {
     destroyPackages: {
@@ -325,25 +317,6 @@ export const packagesDestroyMutationError = () => ({
         },
       ],
       path: ['destroyPackages'],
-    },
-  ],
-});
-
-export const packageDestroyMutationError = () => ({
-  data: {
-    destroyPackage: null,
-  },
-  errors: [
-    {
-      message:
-        "The resource that you are attempting to access does not exist or you don't have permission to perform this action",
-      locations: [
-        {
-          line: 2,
-          column: 3,
-        },
-      ],
-      path: ['destroyPackage'],
     },
   ],
 });

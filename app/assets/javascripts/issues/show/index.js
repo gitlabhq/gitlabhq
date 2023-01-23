@@ -152,7 +152,7 @@ export function initHeaderActions(store, type = '') {
       projectPath: el.dataset.projectPath,
       projectId: el.dataset.projectId,
       reportAbusePath: el.dataset.reportAbusePath,
-      reportedUserId: el.dataset.reportedUserId,
+      reportedUserId: parseInt(el.dataset.reportedUserId, 10),
       reportedFromUrl: el.dataset.reportedFromUrl,
       submitAsSpamPath: el.dataset.submitAsSpamPath,
     },

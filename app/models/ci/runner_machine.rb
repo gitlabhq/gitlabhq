@@ -7,6 +7,8 @@ module Ci
 
     belongs_to :runner
 
+    has_many :build_metadata, class_name: 'Ci::BuildMetadata'
+
     validates :runner, presence: true
     validates :machine_xid, presence: true, length: { maximum: 64 }
     validates :version, length: { maximum: 2048 }

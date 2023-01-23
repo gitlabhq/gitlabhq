@@ -122,39 +122,6 @@ RSpec.describe Packages::Policies::ProjectPolicy do
       end
     end
 
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(package_registry_access_level: false)
-      end
-
-      where(:project, :current_user, :expect_to_be_allowed) do
-        ref(:private_project)  | ref(:anonymous)  | false
-        ref(:private_project)  | ref(:non_member) | false
-        ref(:private_project)  | ref(:guest)      | false
-        ref(:internal_project) | ref(:anonymous)  | false
-        ref(:public_project)   | ref(:admin)      | true
-        ref(:public_project)   | ref(:owner)      | true
-        ref(:public_project)   | ref(:maintainer) | true
-        ref(:public_project)   | ref(:developer)  | true
-        ref(:public_project)   | ref(:reporter)   | true
-        ref(:public_project)   | ref(:guest)      | true
-        ref(:public_project)   | ref(:non_member) | true
-        ref(:public_project)   | ref(:anonymous)  | true
-      end
-
-      with_them do
-        it do
-          project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
-
-          if expect_to_be_allowed
-            is_expected.to be_allowed(:read_package)
-          else
-            is_expected.to be_disallowed(:read_package)
-          end
-        end
-      end
-    end
-
     context 'with admin' do
       let(:current_user) { admin }
 

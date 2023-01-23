@@ -25,8 +25,8 @@ Group owners can create, edit, and delete compliance frameworks:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375036) in GitLab 15.6.
 
-Group owners can set a default compliance framework. The default framework is applied to all the new and imported 
-projects that are created within that group. It does not affect the framework applied to the existing projects. The 
+Group owners can set a default compliance framework. The default framework is applied to all the new and imported
+projects that are created within that group. It does not affect the framework applied to the existing projects. The
 default framework cannot be deleted.
 
 A compliance framework that is set to default has a **default** label.

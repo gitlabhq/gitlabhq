@@ -112,7 +112,7 @@ export default {
       this.itemsToBeDeleted = [];
     },
     deleteItemConfirmation() {
-      this.$emit('package:delete', this.itemToBeDeleted);
+      this.$emit('delete', [this.itemToBeDeleted]);
       this.track(DELETE_PACKAGE_TRACKING_ACTION);
       this.itemToBeDeleted = null;
     },

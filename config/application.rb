@@ -314,6 +314,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/project.css"
     config.assets.precompile << "page_bundles/projects_edit.css"
     config.assets.precompile << "page_bundles/prometheus.css"
+    config.assets.precompile << "page_bundles/promotions.css"
     config.assets.precompile << "page_bundles/releases.css"
     config.assets.precompile << "page_bundles/reports.css"
     config.assets.precompile << "page_bundles/roadmap.css"

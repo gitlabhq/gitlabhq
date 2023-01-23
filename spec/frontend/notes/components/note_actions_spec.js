@@ -7,6 +7,7 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import noteActions from '~/notes/components/note_actions.vue';
 import { NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
 import TimelineEventButton from '~/notes/components/note_actions/timeline_event_button.vue';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import createStore from '~/notes/stores';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { userDataMock } from '../mock_data';
@@ -21,6 +22,7 @@ describe('noteActions', () => {
   const findUserAccessRoleBadge = (idx) => wrapper.findAllComponents(UserAccessRoleBadge).at(idx);
   const findUserAccessRoleBadgeText = (idx) => findUserAccessRoleBadge(idx).text().trim();
   const findTimelineButton = () => wrapper.findComponent(TimelineEventButton);
+  const findReportAbuseButton = () => wrapper.find(`[data-testid="report-abuse-button"]`);
 
   const setupStoreForIncidentTimelineEvents = ({
     userCanAdd,
@@ -63,7 +65,6 @@ describe('noteActions', () => {
       noteId: '539',
       noteUrl: `${TEST_HOST}/group/project/-/merge_requests/1#note_1`,
       projectName: 'project',
-      reportAbusePath: `${TEST_HOST}/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26`,
       showReply: false,
       awardPath: `${TEST_HOST}/award_emoji`,
     };
@@ -115,7 +116,7 @@ describe('noteActions', () => {
       });
 
       it('should be possible to report abuse to admin', () => {
-        expect(wrapper.find(`a[href="${props.reportAbusePath}"]`).exists()).toBe(true);
+        expect(findReportAbuseButton().exists()).toBe(true);
       });
 
       it('should be possible to copy link to a note', () => {
@@ -370,6 +371,59 @@ describe('noteActions', () => {
 
         expect(store.dispatch).toHaveBeenCalledTimes(1);
         expect(store.dispatch).toHaveBeenCalledWith('promoteCommentToTimelineEvent');
+      });
+    });
+  });
+
+  describe('report abuse button', () => {
+    const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
+
+    describe('when user is not allowed to report abuse', () => {
+      beforeEach(() => {
+        store.dispatch('setUserData', userDataMock);
+        wrapper = mountNoteActions({ ...props, canReportAsAbuse: false });
+      });
+
+      it('does not render the report abuse', () => {
+        expect(findReportAbuseButton().exists()).toBe(false);
+      });
+
+      it('does not render the abuse category drawer', () => {
+        expect(findAbuseCategorySelector().exists()).toBe(false);
+      });
+    });
+
+    describe('when user is allowed to report abuse', () => {
+      beforeEach(() => {
+        store.dispatch('setUserData', userDataMock);
+        wrapper = mountNoteActions({ ...props, canReportAsAbuse: true });
+      });
+
+      it('renders report abuse button', () => {
+        expect(findReportAbuseButton().exists()).toBe(true);
+      });
+
+      it('renders abuse category drawer', () => {
+        expect(findAbuseCategorySelector().exists()).toBe(true);
+        expect(findAbuseCategorySelector().props()).toMatchObject({
+          showDrawer: false,
+          reportedUserId: props.authorId,
+          reportedFromUrl: props.noteUrl,
+        });
+      });
+
+      it('opens the drawer when report abuse button is clicked', async () => {
+        findReportAbuseButton().trigger('click');
+
+        await nextTick();
+
+        expect(findAbuseCategorySelector().props('showDrawer')).toEqual(true);
+      });
+
+      it('closes the drawer', async () => {
+        await findAbuseCategorySelector().vm.$emit('close-drawer');
+
+        expect(findAbuseCategorySelector().props('showDrawer')).toEqual(false);
       });
     });
   });

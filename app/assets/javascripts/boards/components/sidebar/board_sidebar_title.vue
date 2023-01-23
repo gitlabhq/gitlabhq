@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormInput, GlLink } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -13,6 +13,7 @@ export default {
     GlButton,
     GlFormGroup,
     GlFormInput,
+    GlLink,
     BoardEditableItem,
   },
   directives: {
@@ -130,7 +131,11 @@ export default {
     @off-click="handleOffClick"
   >
     <template #title>
-      <span data-testid="item-title">{{ item.title }}</span>
+      <span data-testid="item-title">
+        <gl-link class="gl-reset-color gl-hover-text-blue-800" :href="item.webUrl">
+          {{ item.title }}
+        </gl-link>
+      </span>
     </template>
     <template #collapsed>
       <span class="gl-text-gray-800">{{ item.referencePath }}</span>
