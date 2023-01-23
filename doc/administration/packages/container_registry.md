@@ -1136,7 +1136,7 @@ To enable the read-only mode:
 1. Next, trigger one of the garbage collect commands:
 
    WARNING:
-   You must use `/opt/gitlab/embedded/bin/registry` to recycle unused tags. If you use `gitlab-ctl registry-garbage-collect`, you **will bring the container registry down**.
+   You must use `/opt/gitlab/embedded/bin/registry` to recycle unused tags. If you use `gitlab-ctl registry-garbage-collect`, **the container registry goes down**.
 
    ```shell
    # Recycling unused tags
@@ -1706,7 +1706,7 @@ case, since we know that since the login succeeded, we probably need to look
 at the communication between the client and the Registry.
 
 The REST API between the Docker client and Registry is described
-[in the Docker documentation](https://docs.docker.com/registry/spec/api/). Normally, one would just
+[in the Docker documentation](https://docs.docker.com/registry/spec/api/). Usually, one would just
 use Wireshark or tcpdump to capture the traffic and see where things went
 wrong. However, since all communications between Docker clients and servers
 are done over HTTPS, it's a bit difficult to decrypt the traffic quickly even

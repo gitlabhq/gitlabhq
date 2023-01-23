@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Sometimes it is necessary to move your databases from one PostgreSQL instance to
 another. For example, if you are using AWS Aurora and are preparing to
-enable Database Load Balancing, you will need to move your databases to
+enable Database Load Balancing, you need to move your databases to
 RDS for PostgreSQL.
 
 To move databases from one instance to another:
@@ -36,7 +36,7 @@ To move databases from one instance to another:
    /opt/gitlab/embedded/bin/pg_dump -h $SRC_PGHOST -U $SRC_PGUSER -c -C -f praefect_production.sql praefect_production
    ```
 
-1. Restore the databases to the destination (this will overwrite any existing databases with the same names):
+1. Restore the databases to the destination (this overwrites any existing databases with the same names):
 
    ```shell
    /opt/gitlab/embedded/bin/psql -h $DST_PGHOST -U $DST_PGUSER -f praefect_production.sql postgres

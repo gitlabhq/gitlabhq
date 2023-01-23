@@ -47,15 +47,19 @@ RSpec.describe SidebarsHelper do
 
   describe '#super_sidebar_context' do
     let(:user) { build(:user) }
+    let(:group) { build(:group) }
 
-    subject { helper.super_sidebar_context(user) }
+    subject { helper.super_sidebar_context(user, group: group, project: nil) }
 
-    it 'returns sidebar values from user', :use_clean_rails_memory_store_caching do
+    before do
+      allow(helper).to receive(:current_user) { user }
       Rails.cache.write(['users', user.id, 'assigned_open_issues_count'], 1)
       Rails.cache.write(['users', user.id, 'assigned_open_merge_requests_count'], 2)
       Rails.cache.write(['users', user.id, 'todos_pending_count'], 3)
+    end
 
-      expect(subject).to eq({
+    it 'returns sidebar values from user', :use_clean_rails_memory_store_caching do
+      expect(subject).to include({
         name: user.name,
         username: user.username,
         avatar_url: user.avatar_url,
@@ -64,6 +68,43 @@ RSpec.describe SidebarsHelper do
         todos_pending_count: 3,
         issues_dashboard_path: issues_dashboard_path(assignee_username: user.username)
       })
+    end
+
+    it 'returns "Create new" menu groups without headers', :use_clean_rails_memory_store_caching do
+      expect(subject[:create_new_menu_groups]).to eq([
+        {
+          name: "",
+          items: [
+            { href: "/projects/new", text: "New project/repository" },
+            { href: "/groups/new", text: "New group" },
+            { href: "/-/snippets/new", text: "New snippet" }
+          ]
+        }
+      ])
+    end
+
+    it 'returns "Create new" menu groups with headers', :use_clean_rails_memory_store_caching do
+      allow(group).to receive(:persisted?).and_return(true)
+      allow(helper).to receive(:can?).and_return(true)
+
+      expect(subject[:create_new_menu_groups]).to contain_exactly(
+        a_hash_including(
+          name: "In this group",
+          items: array_including(
+            { href: "/projects/new", text: "New project/repository" },
+            { href: "/groups/new#create-group-pane", text: "New subgroup" },
+            { href: "/groups/#{group.full_path}/-/group_members", text: "Invite members" }
+          )
+        ),
+        a_hash_including(
+          name: "In GitLab",
+          items: array_including(
+            { href: "/projects/new", text: "New project/repository" },
+            { href: "/groups/new", text: "New group" },
+            { href: "/-/snippets/new", text: "New snippet" }
+          )
+        )
+      )
     end
   end
 end

@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import logo from '../../../../views/shared/_logo.svg';
+import CreateMenu from './create_menu.vue';
 import Counter from './counter.vue';
 
 export default {
@@ -12,10 +13,12 @@ export default {
     GlAvatar,
     GlDropdown,
     GlIcon,
+    CreateMenu,
     NewNavToggle,
     Counter,
   },
   i18n: {
+    createNew: __('Create new...'),
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
     todoList: __('To-Do list'),
@@ -39,11 +42,7 @@ export default {
       <div class="gl-flex-grow-1">
         <a v-safe-html="$options.logo" :href="rootPath"></a>
       </div>
-      <gl-dropdown variant="link" no-caret>
-        <template #button-content>
-          <gl-icon name="plus" class="gl-vertical-align-middle gl-text-black-normal" />
-        </template>
-      </gl-dropdown>
+      <create-menu :groups="sidebarData.create_new_menu_groups" />
       <button class="gl-border-none">
         <gl-icon name="search" class="gl-vertical-align-middle" />
       </button>

@@ -211,7 +211,7 @@ RSpec.describe ApplicationHelper do
 
   describe '#support_url' do
     context 'when alternate support url is specified' do
-      let(:alternate_url) { 'http://company.example.com/getting-help' }
+      let(:alternate_url) { 'http://company.example.com/get-help' }
 
       it 'returns the alternate support url' do
         stub_application_setting(help_page_support_url: alternate_url)
@@ -222,7 +222,7 @@ RSpec.describe ApplicationHelper do
 
     context 'when alternate support url is not specified' do
       it 'builds the support url from the promo_url' do
-        expect(helper.support_url).to eq(helper.promo_url + '/getting-help/')
+        expect(helper.support_url).to eq(helper.promo_url + '/get-help/')
       end
     end
   end

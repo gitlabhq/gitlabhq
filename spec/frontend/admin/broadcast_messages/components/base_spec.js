@@ -6,6 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
 import BroadcastMessagesBase from '~/admin/broadcast_messages/components/base.vue';
 import MessagesTable from '~/admin/broadcast_messages/components/messages_table.vue';
@@ -86,7 +87,7 @@ describe('BroadcastMessagesBase', () => {
   it('removes a deleted message from visibleMessages on success', async () => {
     createComponent();
     const { id, delete_path } = MOCK_MESSAGES[0];
-    axiosMock.onDelete(delete_path).replyOnce(200);
+    axiosMock.onDelete(delete_path).replyOnce(HTTP_STATUS_OK);
 
     findTable().vm.$emit('delete-message', id);
     await waitForPromises();
@@ -102,7 +103,7 @@ describe('BroadcastMessagesBase', () => {
     const { id, delete_path } = messages[0];
     createComponent({ messages, messagesCount: messages.length });
 
-    axiosMock.onDelete(delete_path).replyOnce(200);
+    axiosMock.onDelete(delete_path).replyOnce(HTTP_STATUS_OK);
 
     findTable().vm.$emit('delete-message', id);
     await waitForPromises();

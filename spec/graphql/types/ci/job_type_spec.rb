@@ -22,6 +22,7 @@ RSpec.describe Types::Ci::JobType do
       detailedStatus
       duration
       downstreamPipeline
+      erasedAt
       finished_at
       id
       kind

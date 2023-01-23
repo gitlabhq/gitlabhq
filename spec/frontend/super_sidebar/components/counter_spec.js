@@ -13,10 +13,6 @@ describe('Counter component', () => {
     label: __('Issues'),
   };
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const findButton = () => wrapper.find('button');
   const findIcon = () => wrapper.getComponent(GlIcon);
   const findLink = () => wrapper.find('a');

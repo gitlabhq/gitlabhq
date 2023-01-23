@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rake'
 
-RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
+RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_category: :database do
   before :all do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
@@ -348,6 +348,94 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
 
           run_rake_task('gitlab:db:configure')
         end
+      end
+    end
+  end
+
+  describe 'dictionary generate' do
+    let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'fake_db') }
+
+    let(:model) { ActiveRecord::Base }
+    let(:connection) { model.connection }
+
+    let(:base_models) { { 'fake_db' => model }.with_indifferent_access }
+
+    let(:tables) { %w[table1] }
+    let(:views) { %w[view1] }
+
+    let(:table_file_path) { 'db/docs/table1.yml' }
+    let(:view_file_path) { 'db/docs/views/view1.yml' }
+
+    before do
+      allow(Gitlab::Database).to receive(:db_config_for_connection).and_return(db_config)
+      allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+
+      allow(connection).to receive(:tables).and_return(tables)
+      allow(connection).to receive(:views).and_return(views)
+    end
+
+    after do
+      File.delete(table_file_path)
+      File.delete(view_file_path)
+    end
+
+    context 'when the dictionary files do not exist' do
+      it 'generate the dictionary files' do
+        run_rake_task('gitlab:db:dictionary:generate')
+
+        expect(File).to exist(File.join(table_file_path))
+        expect(File).to exist(File.join(view_file_path))
+      end
+    end
+
+    context 'when the dictionary files already exist' do
+      let(:table_class) do
+        Class.new(ApplicationRecord) do
+          self.table_name = 'table1'
+        end
+      end
+
+      let(:view_class) do
+        Class.new(ApplicationRecord) do
+          self.table_name = 'view1'
+        end
+      end
+
+      table_metadata = {
+        'table_name' => 'table1',
+        'classes' => [],
+        'feature_categories' => [],
+        'description' => nil,
+        'introduced_by_url' => nil,
+        'milestone' => 14.3
+      }
+      view_metadata = {
+        'view_name' => 'view1',
+        'classes' => [],
+        'feature_categories' => [],
+        'description' => nil,
+        'introduced_by_url' => nil,
+        'milestone' => 14.3
+      }
+
+      before do
+        stub_const('TableClass', table_class)
+        stub_const('ViewClass', view_class)
+
+        File.write(table_file_path, table_metadata.to_yaml)
+        File.write(view_file_path, view_metadata.to_yaml)
+
+        allow(model).to receive(:descendants).and_return([table_class, view_class])
+      end
+
+      it 'update the dictionary content' do
+        run_rake_task('gitlab:db:dictionary:generate')
+
+        table_metadata = YAML.safe_load(File.read(table_file_path))
+        expect(table_metadata['classes']).to match_array(['TableClass'])
+
+        view_metadata = YAML.safe_load(File.read(view_file_path))
+        expect(view_metadata['classes']).to match_array(['ViewClass'])
       end
     end
   end

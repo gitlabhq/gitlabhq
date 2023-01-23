@@ -6,9 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Web IDE **(FREE)**
 
-The Web Integrated Development Environment (IDE) editor streamlines the process
-to contribute changes to your projects, by providing an advanced editor with
-commit staging.
+The Web IDE is an advanced editor with commit staging.
+You can use the Web IDE to make changes to multiple files directly from the
+GitLab UI. For a more basic implementation, see [Web Editor](../repository/web_editor.md).
 
 NOTE:
 The Web IDE is being updated to use VS Code. For details,

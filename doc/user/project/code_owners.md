@@ -34,18 +34,25 @@ For example:
 | Code Owner approval rule | Frontend: Code Style | `*.css` files | A frontend engineer reviews CSS file changes for adherence to project style standards.              |
 | Code Owner approval rule | Backend: Code Review | `*.rb` files  | A backend engineer reviews the logic and code style of Ruby files.                                  |
 
+## Code Owners file
+
+A `CODEOWNERS` file (with no extension) can specify users or [shared groups](members/share_project_with_groups.md)
+that are responsible for specific files and directories in a repository. Each repository
+can have a single `CODEOWNERS` file, and it must be found one of these three locations:
+
+- In the root directory of the repository.
+- In the `.gitlab/` directory.
+- In the `docs/` directory.
+
+A CODEOWNERS file in any other location is ignored.
+
 ## Set up Code Owners
 
-Create a `CODEOWNERS` file to specify users or [shared groups](members/share_project_with_groups.md)
-that are responsible for specific files and directories in a repository. Each repository
-can have a single `CODEOWNERS` file. To create it:
+1. Create a file named `CODEOWNERS` (with no extension) in one of these locations:
 
-1. Choose the location where you want to specify Code Owners:
-   - In the root directory of the repository
-   - In the `.gitlab/` directory
-   - In the `docs/` directory
-
-1. In that location, create a file named `CODEOWNERS`.
+- In the root directory of the repository
+- In the `.gitlab/` directory
+- In the `docs/` directory
 
 1. In the file, enter text that follows one of these patterns:
 

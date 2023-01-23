@@ -7,6 +7,7 @@ RSpec.describe 'User activates Slack notifications', :js, feature_category: :int
 
   context 'when integration is not configured yet' do
     before do
+      stub_feature_flags(integration_slack_app_notifications: false)
       visit_project_integration('Slack notifications')
     end
 

@@ -3,6 +3,7 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'spec/test_constants';
 import GpgBadges from '~/gpg_badges';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('GpgBadges', () => {
   let mock;
@@ -63,7 +64,7 @@ describe('GpgBadges', () => {
   });
 
   it('fetches commit signatures', async () => {
-    mock.onGet(dummyUrl).replyOnce(200);
+    mock.onGet(dummyUrl).replyOnce(HTTP_STATUS_OK);
 
     await GpgBadges.fetch();
 
@@ -75,7 +76,7 @@ describe('GpgBadges', () => {
   });
 
   it('fetches commit signatures with search parameters with spaces', async () => {
-    mock.onGet(dummyUrl).replyOnce(200);
+    mock.onGet(dummyUrl).replyOnce(HTTP_STATUS_OK);
     setForm({ search: 'my search' });
 
     await GpgBadges.fetch();
@@ -88,7 +89,7 @@ describe('GpgBadges', () => {
   });
 
   it('fetches commit signatures with search parameters with plus symbols', async () => {
-    mock.onGet(dummyUrl).replyOnce(200);
+    mock.onGet(dummyUrl).replyOnce(HTTP_STATUS_OK);
     setForm({ search: 'my+search' });
 
     await GpgBadges.fetch();
@@ -101,7 +102,7 @@ describe('GpgBadges', () => {
   });
 
   it('displays a loading spinner', async () => {
-    mock.onGet(dummyUrl).replyOnce(200);
+    mock.onGet(dummyUrl).replyOnce(HTTP_STATUS_OK);
 
     await GpgBadges.fetch();
     expect(document.querySelector('.js-loading-gpg-badge:empty')).toBe(null);
@@ -111,7 +112,7 @@ describe('GpgBadges', () => {
   });
 
   it('replaces the loading spinner', async () => {
-    mock.onGet(dummyUrl).replyOnce(200, dummyResponse);
+    mock.onGet(dummyUrl).replyOnce(HTTP_STATUS_OK, dummyResponse);
 
     await GpgBadges.fetch();
     expect(document.querySelector('.js-loading-gpg-badge')).toBe(null);

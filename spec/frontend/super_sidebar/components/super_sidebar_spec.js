@@ -8,10 +8,6 @@ describe('SuperSidebar component', () => {
 
   const findUserBar = () => wrapper.findComponent(UserBar);
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   const createWrapper = (props = {}) => {
     wrapper = shallowMountExtended(SuperSidebar, {
       propsData: {

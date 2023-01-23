@@ -861,7 +861,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
 
     context 'Nav bar' do
       it 'shows default help links in nav' do
-        default_support_url = "https://#{ApplicationHelper.promo_host}/getting-help/"
+        default_support_url = "https://#{ApplicationHelper.promo_host}/get-help/"
 
         visit root_dashboard_path
 

@@ -68,6 +68,9 @@ To remove your pages:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Pages**.
+
+   If this path is not visible, select **Deployments > Pages**.
+   [This location is part of an experiment](index.md#menu-position-test).
 1. Select **Remove pages**.
 
 ## Subdomains of subdomains

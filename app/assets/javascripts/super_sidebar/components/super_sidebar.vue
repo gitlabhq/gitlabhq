@@ -31,6 +31,7 @@ export default {
 
 <template>
   <aside
+    id="super-sidebar"
     class="super-sidebar gl-fixed gl-bottom-0 gl-left-0 gl-display-flex gl-flex-direction-column gl-bg-gray-10 gl-border-r gl-border-gray-a-08 gl-z-index-9999"
     data-testid="super-sidebar"
   >

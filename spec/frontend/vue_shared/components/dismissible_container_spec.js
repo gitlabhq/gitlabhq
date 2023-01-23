@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import dismissibleContainer from '~/vue_shared/components/dismissible_container.vue';
 
 describe('DismissibleContainer', () => {
@@ -28,7 +29,7 @@ describe('DismissibleContainer', () => {
     });
 
     it('successfully dismisses', () => {
-      mockAxios.onPost(propsData.path).replyOnce(200);
+      mockAxios.onPost(propsData.path).replyOnce(HTTP_STATUS_OK);
       const button = findBtn();
 
       button.trigger('click');

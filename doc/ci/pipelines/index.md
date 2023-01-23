@@ -136,7 +136,7 @@ and [view your pipeline status](https://marketplace.visualstudio.com/items?itemN
 
 Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/index.md).
 
-You might do this if the results of a pipeline (for example, a code build) are required outside the normal
+You might do this if the results of a pipeline (for example, a code build) are required outside the standard
 operation of the pipeline.
 
 To execute a pipeline manually:
@@ -425,7 +425,7 @@ You can group the jobs by:
 you visualize the entire pipeline, including all cross-project inter-dependencies.
 
 If a stage contains more than 100 jobs, only the first 100 jobs are listed in the
-pipeline graph. The remaining jobs still run as normal. To see the jobs:
+pipeline graph. The remaining jobs still run as usual. To see the jobs:
 
 - Select the pipeline, and the jobs are listed on the right side of the pipeline details page.
 - On the left sidebar, select **CI/CD > Jobs**.

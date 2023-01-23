@@ -46,7 +46,7 @@ It has a pipeline that looks like the following:
 Using a DAG, you can relate the `_a` jobs to each other separately from the `_b` jobs,
 and even if service `a` takes a very long time to build, service `b` doesn't
 wait for it and finishes as quickly as it can. In this very same pipeline, `_c` and
-`_d` can be left alone and run together in staged sequence just like any normal
+`_d` can be left alone and run together in staged sequence just like any standard
 GitLab pipeline.
 
 ## Use cases
@@ -68,7 +68,7 @@ as quickly as possible.
 
 Relationships are defined between jobs using the [`needs` keyword](../yaml/index.md#needs).
 
-Note that `needs` also works with the [parallel](../yaml/index.md#parallel) keyword,
+The `needs` keyword also works with the [parallel](../yaml/index.md#parallel) keyword,
 giving you powerful options for parallelization within your pipeline.
 
 ## Limitations

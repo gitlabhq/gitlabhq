@@ -352,7 +352,7 @@ when trying to clone via HTTPS.
 When using Kerberos ticket-based authentication in an Active Directory domain,
 it may be necessary to increase the maximum header size allowed by NGINX,
 as extensions to the Kerberos protocol may result in HTTP authentication headers
-larger than the default size of 8kB. Configure `large_client_header_buffers`
+larger than the default size of 8 kB. Configure `large_client_header_buffers`
 to a larger value in [the NGINX configuration](https://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers).
 
 ## Troubleshooting

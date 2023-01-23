@@ -1201,8 +1201,7 @@ GET /groups?search=foobar
 
 > Introduced in GitLab 14.8.
 
-Get a list of users provisioned by a given group. Does not include subgroups.
-Users in this list are considered [enterprise users](../user/enterprise_user/index.md).
+Get a list of users provisioned by a given group. Does not include users provisioned by subgroups.
 
 Requires at least the Maintainer role on the group.
 

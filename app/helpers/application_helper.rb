@@ -232,7 +232,7 @@ module ApplicationHelper
   end
 
   def support_url
-    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || "#{promo_url}/getting-help/"
+    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || "#{promo_url}/get-help/"
   end
 
   def instance_review_permitted?

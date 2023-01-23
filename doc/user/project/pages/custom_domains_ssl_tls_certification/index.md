@@ -59,8 +59,8 @@ To add your custom domain to GitLab Pages:
 
    If this path is not visible, select **Deployments > Pages**.
    [This location is part of an experiment](../index.md#menu-position-test).
-1. In the top right, select **New Domain**.
-1. In **Domain**, enter your domain.
+1. In the top-right corner, select **New Domain**.
+1. In **Domain**, enter the domain name.
 1. Optional. In **Certificate**, turn off the **Automatic certificate management using Let's Encrypt** toggle to add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages). You can also add the certificate and key later.
 1. Select **Create New Domain**.
 
@@ -168,10 +168,13 @@ If you're using Cloudflare, check
 
 Once you have added all the DNS records:
 
-1. Go back at your project's **Settings > Pages** (Note: this may also be
-   located at **Deployments > Pages**, [more information](../index.md#menu-position-test)).
-1. Locate your domain name and select **Details**.
-1. Select the **Retry verification** button to activate your new domain.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Pages**.
+
+   If this path is not visible, select **Deployments > Pages**.
+   [This location is part of an experiment](../index.md#menu-position-test).
+1. Next to the domain name, select **Edit**.
+1. In **Verification status**, select **Retry verification** (**{retry}**).
 
 ![Verify your domain](img/retry_domain_verification_v12_0.png)
 
@@ -290,12 +293,28 @@ meet these requirements.
 
 #### Steps
 
-- To add the certificate at the time you add a new domain, go to your
-  project's **Settings > Pages > New Domain** (Note: this may also be
-  located at **Deployments > Pages**, [more information](../index.md#menu-position-test)), add the domain name and the
-  certificate.
-- To add the certificate to a domain previously added, go to your
-  project's **Settings > Pages**, locate your domain name, select **Details** and **Edit** to add the certificate.
+- To add the certificate at the time you add a new domain:
+
+  1. On the top bar, select **Main menu > Projects** and find your project.
+  1. On the left sidebar, select **Settings > Pages**.
+
+     If this path is not visible, select **Deployments > Pages**.
+     [This location is part of an experiment](../index.md#menu-position-test).
+  1. In the top-right corner, select **New Domain**.
+  1. In **Domain**, enter the domain name.
+  1. In **Certificate**, turn off the **Automatic certificate management using Let's Encrypt** toggle to add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages).
+  1. Select **Create New Domain**.
+
+- To add the certificate to a domain previously added:
+
+  1. On the top bar, select **Main menu > Projects** and find your project.
+  1. On the left sidebar, select **Settings > Pages**.
+
+     If this path is not visible, select **Deployments > Pages**.
+     [This location is part of an experiment](../index.md#menu-position-test).
+  1. Next to the domain name, select **Edit**.
+  1. In **Certificate**, turn off the **Automatic certificate management using Let's Encrypt** toggle to add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages).
+  1. Select **Save changes**.
 
 NOTE:
 The Pages menu entry may also be located at **Deployments > Pages**, [more information](../index.md#menu-position-test)
@@ -322,9 +341,13 @@ domain (as long as you've set a valid certificate for it).
 
 To enable this setting:
 
-1. Navigate to your project's **Settings > Pages** (Note: this may also be
-   located at **Deployments > Pages**, [more information](../index.md#menu-position-test)).
-1. Tick the checkbox **Force HTTPS (requires valid certificates)**.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Pages**.
+
+   If this path is not visible, select **Deployments > Pages**.
+   [This location is part of an experiment](../index.md#menu-position-test).
+1. Select the **Force HTTPS (requires valid certificates)** checkbox.
+1. Select **Save changes**.
 
 If you use Cloudflare CDN in front of GitLab Pages, make sure to set the SSL connection setting to
 `full` instead of `flexible`. For more details, see the [Cloudflare CDN directions](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef).

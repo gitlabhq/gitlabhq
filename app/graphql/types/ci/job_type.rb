@@ -37,6 +37,8 @@ module Types
       # Life-cycle timestamps:
       field :created_at, Types::TimeType, null: false,
                                           description: "When the job was created."
+      field :erased_at, Types::TimeType, null: true,
+                                          description: "When the job was erased."
       field :finished_at, Types::TimeType, null: true,
                                            description: 'When a job has finished running.'
       field :queued_at, Types::TimeType, null: true,

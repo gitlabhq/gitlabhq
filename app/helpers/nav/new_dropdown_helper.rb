@@ -59,7 +59,7 @@ module Nav
       end
 
       {
-        title: _('This group'),
+        title: _('In this group'),
         menu_items: menu_items.compact
       }
     end
@@ -110,7 +110,7 @@ module Nav
       end
 
       {
-        title: _('This project'),
+        title: _('In this project'),
         menu_items: menu_items
       }
     end
@@ -152,7 +152,7 @@ module Nav
       end
 
       {
-        title: _('GitLab'),
+        title: _('In GitLab'),
         menu_items: menu_items
       }
     end

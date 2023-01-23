@@ -88,7 +88,7 @@ export const billingPlanNames = {
   [billingPlans.ULTIMATE]: s__('BillingPlans|Ultimate'),
 };
 
-const INTEGRATION_TYPE_SLACK = 'slack';
+export const INTEGRATION_TYPE_SLACK = 'slack';
 const INTEGRATION_TYPE_SLACK_APPLICATION = 'gitlab_slack_application';
 const INTEGRATION_TYPE_MATTERMOST = 'mattermost';
 

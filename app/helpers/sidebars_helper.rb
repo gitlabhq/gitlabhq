@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module SidebarsHelper
+  include Nav::NewDropdownHelper
+
   def sidebar_tracking_attributes_by_object(object)
     sidebar_attributes_for_object(object).fetch(:tracking_attrs, {})
   end
@@ -31,7 +33,7 @@ module SidebarsHelper
     Sidebars::Groups::Context.new(**context_data)
   end
 
-  def super_sidebar_context(user)
+  def super_sidebar_context(user, group:, project:)
     {
       name: user.name,
       username: user.username,
@@ -39,11 +41,28 @@ module SidebarsHelper
       assigned_open_issues_count: user.assigned_open_issues_count,
       assigned_open_merge_requests_count: user.assigned_open_merge_requests_count,
       todos_pending_count: user.todos_pending_count,
-      issues_dashboard_path: issues_dashboard_path(assignee_username: user.username)
+      issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
+      create_new_menu_groups: create_new_menu_groups(group: group, project: project)
     }
   end
 
   private
+
+  def create_new_menu_groups(group:, project:)
+    new_dropdown_sections = new_dropdown_view_model(group: group, project: project)[:menu_sections]
+    show_headers = new_dropdown_sections.length > 1
+    new_dropdown_sections.map do |section|
+      {
+        name: show_headers ? section[:title] : '',
+        items: section[:menu_items].map do |item|
+          {
+            text: item[:title],
+            href: item[:href]
+          }
+        end
+      }
+    end
+  end
 
   def sidebar_attributes_for_object(object)
     case object

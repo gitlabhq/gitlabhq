@@ -1,5 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { __ } from '~/locale';
+import CreateMenu from '~/super_sidebar/components/create_menu.vue';
 import Counter from '~/super_sidebar/components/counter.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
 import { sidebarData } from '../mock_data';
@@ -7,11 +8,8 @@ import { sidebarData } from '../mock_data';
 describe('UserBar component', () => {
   let wrapper;
 
+  const findCreateMenu = () => wrapper.findComponent(CreateMenu);
   const findCounter = (at) => wrapper.findAllComponents(Counter).at(at);
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const createWrapper = (props = {}) => {
     wrapper = shallowMountExtended(UserBar, {
@@ -29,6 +27,10 @@ describe('UserBar component', () => {
   describe('default', () => {
     beforeEach(() => {
       createWrapper();
+    });
+
+    it('passes the "Create new..." menu groups to the create-menu component', () => {
+      expect(findCreateMenu().props('groups')).toBe(sidebarData.create_new_menu_groups);
     });
 
     it('renders issues counter', () => {

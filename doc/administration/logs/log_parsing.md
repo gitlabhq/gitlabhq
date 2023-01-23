@@ -166,7 +166,7 @@ jq --raw-output '[.route, .ua] | @tsv' api_json.log | sort | uniq -c | sort -n
 1234 /api/:version/internal/allowed     GitLab-Shell
 ```
 
-This sample response seems normal. A custom tool or script might be causing a high load
+This sample response seems typical. A custom tool or script might be causing a high load
 if the output contains many:
 
 - Third party libraries like `python-requests` or `curl`.

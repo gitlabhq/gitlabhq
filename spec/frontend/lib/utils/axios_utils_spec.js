@@ -28,8 +28,8 @@ describe('axios_utils', () => {
 
       return axios.waitForAll().finally(() => {
         expect(handler).toHaveBeenCalledTimes(2);
-        expect(handler.mock.calls[0][0].status).toBe(200);
-        expect(handler.mock.calls[1][0].response.status).toBe(500);
+        expect(handler.mock.calls[0][0].status).toBe(HTTP_STATUS_OK);
+        expect(handler.mock.calls[1][0].response.status).toBe(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
     });
   });

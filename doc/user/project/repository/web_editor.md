@@ -6,10 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Web Editor **(FREE)**
 
-You can use the Web Editor to make changes directly from the GitLab UI instead of
-cloning a project and using the command line.
+You can use the Web Editor to make changes to a single file directly from the
+GitLab UI. To make changes to multiple files, see [Web IDE](../web_ide/index.md).
 
-From the project dashboard or repository, you can:
+In the Web Editor, you can:
 
 - [Create a file](#create-a-file).
 - [Edit a file](#edit-a-file).
@@ -18,8 +18,8 @@ From the project dashboard or repository, you can:
 - [Create a branch](#create-a-branch).
 - [Create a tag](#create-a-tag).
 
-Your [primary email address](../../../user/profile/index.md#change-the-email-displayed-on-your-commits)
-is used by default for any change you commit through the Web Editor.
+Your [primary email address is used by default](../../../user/profile/index.md#change-the-email-displayed-on-your-commits)
+for any change you commit through the Web Editor.
 
 ## Create a file
 
@@ -28,18 +28,22 @@ To create a text file in the Web Editor:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
 1. From the dropdown list, select **New file**.
-1. Complete the fields.
-   - From the **Select a template type** dropdown list, you can apply a template to the new file.
-   - To create a merge request with the new file, ensure the **Start a new merge request with these changes** checkbox is selected.
+1. Complete the fields. To create a merge request with the new file, ensure the **Start a new merge request with these changes** checkbox is selected.
 1. Select **Commit changes**.
 
 ## Edit a file
 
-To edit a file in the Web Editor:
+To edit a text file in the Web Editor:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. Go to your file.
-1. Next to the display buttons, select **Edit**.
+1. In the upper-right corner of the file, select **Edit**.
+
+   If **Edit** is not visible:
+
+   1. Next to **Open in Web IDE** or **Open in Gitpod**, select the down arrow (**{chevron-lg-down}**).
+   1. From the dropdown list, select **Edit** as your default setting.
+   1. Select **Edit**.
 
 ### Keyboard shortcuts
 

@@ -50,6 +50,14 @@ export const timelineEventTagsI18n = Object.freeze({
   endTime: __('End time'),
 });
 
+export const timelineEventTagsPopover = Object.freeze({
+  title: s__('Incident|Event tag'),
+  message: s__(
+    'Incident|Adding an event tag associates the timeline comment with specific incident metrics.',
+  ),
+  link: __('Learn more'),
+});
+
 export const MAX_TEXT_LENGTH = 280;
 
 export const TIMELINE_EVENT_TAGS = Object.values(timelineEventTagsI18n).map((item) => ({

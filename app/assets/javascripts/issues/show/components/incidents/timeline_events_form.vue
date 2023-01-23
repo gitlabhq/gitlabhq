@@ -3,6 +3,7 @@ import { GlDatepicker, GlFormInput, GlFormGroup, GlButton, GlCollapsibleListbox 
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, sprintf } from '~/locale';
+import TimelineEventsTagsPopover from './timeline_events_tags_popover.vue';
 import { MAX_TEXT_LENGTH, TIMELINE_EVENT_TAGS, timelineFormI18n } from './constants';
 import { getUtcShiftedDate, getPreviousEventTags } from './utils';
 
@@ -21,6 +22,7 @@ export default {
   ],
   components: {
     MarkdownField,
+    TimelineEventsTagsPopover,
     GlDatepicker,
     GlFormInput,
     GlFormGroup,
@@ -197,8 +199,13 @@ export default {
         <p class="gl-ml-3 gl-align-self-end gl-line-height-32">{{ __('UTC') }}</p>
       </div>
     </div>
-    <gl-form-group v-if="glFeatures.incidentEventTags" :label="$options.i18n.tagsLabel">
+    <gl-form-group v-if="glFeatures.incidentEventTags">
+      <label class="gl-display-flex gl-align-items-center gl-gap-3" for="timeline-input-tags">
+        {{ $options.i18n.tagsLabel }}
+        <timeline-events-tags-popover />
+      </label>
       <gl-collapsible-listbox
+        id="timeline-input-tags"
         :selected="selectedTags"
         :toggle-text="listboxText"
         :items="tags"

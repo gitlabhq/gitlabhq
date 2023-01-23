@@ -77,7 +77,7 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'has project menu item' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: _('GitLab'),
+              title: _('In GitLab'),
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_project',
                 title: 'New project/repository',
@@ -95,7 +95,7 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'has group menu item' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: _('GitLab'),
+              title: _('In GitLab'),
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_group',
                 title: 'New group',
@@ -113,7 +113,7 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'has new snippet menu item' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: _('GitLab'),
+              title: _('In GitLab'),
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_snippet',
                 title: 'New snippet',
@@ -151,7 +151,7 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'has new project menu item' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: 'This group',
+              title: 'In this group',
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_project',
                 title: 'New project/repository',
@@ -169,7 +169,7 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'has new subgroup menu item' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: 'This group',
+              title: 'In this group',
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_subgroup',
                 title: 'New subgroup',
@@ -184,7 +184,7 @@ RSpec.describe Nav::NewDropdownHelper do
       context 'when can invite members' do
         let(:with_can_admin_in_group) { true }
         let(:with_invite_members_experiment) { true }
-        let(:expected_title) { 'This group' }
+        let(:expected_title) { 'In this group' }
         let(:expected_href) { "/groups/#{group.full_path}/-/group_members" }
 
         it_behaves_like 'invite member link shared example'
@@ -218,7 +218,7 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'shows new issue menu item' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: 'This project',
+              title: 'In this project',
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_issue',
                 title: 'New issue',
@@ -236,7 +236,7 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'shows merge project' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: 'This project',
+              title: 'In this project',
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_mr',
                 title: 'New merge request',
@@ -254,7 +254,7 @@ RSpec.describe Nav::NewDropdownHelper do
         it 'shows new snippet' do
           expect(subject[:menu_sections]).to eq(
             expected_menu_section(
-              title: 'This project',
+              title: 'In this project',
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_snippet',
                 title: 'New snippet',
@@ -269,7 +269,7 @@ RSpec.describe Nav::NewDropdownHelper do
       context 'when invite members experiment' do
         let(:with_invite_members_experiment) { true }
         let(:with_can_admin_project_member) { true }
-        let(:expected_title) { 'This project' }
+        let(:expected_title) { 'In this project' }
         let(:expected_href) { "/#{project.path_with_namespace}/-/project_members" }
 
         it_behaves_like 'invite member link shared example'

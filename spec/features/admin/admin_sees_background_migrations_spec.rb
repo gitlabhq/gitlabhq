@@ -92,11 +92,11 @@ RSpec.describe "Admin > Admin sees background migrations", feature_category: :da
       expect(page).not_to have_content('Paused')
       expect(page).to have_content('Active')
 
-      click_button('Pause')
+      click_on('Pause')
       expect(page).not_to have_content('Active')
       expect(page).to have_content('Paused')
 
-      click_button('Resume')
+      click_on('Resume')
       expect(page).not_to have_content('Paused')
       expect(page).to have_content('Active')
     end
@@ -123,7 +123,7 @@ RSpec.describe "Admin > Admin sees background migrations", feature_category: :da
         tab = find_link 'Failed'
         tab.click
 
-        expect(page).to have_selector("[method='post'][action='/admin/background_migrations/#{failed_migration.id}/retry?database=main']")
+        expect(page).to have_selector("[data-method='post'][href='/admin/background_migrations/#{failed_migration.id}/retry?database=main']")
       end
     end
 
@@ -144,7 +144,7 @@ RSpec.describe "Admin > Admin sees background migrations", feature_category: :da
         expect(page).to have_content('0.00%')
         expect(page).to have_content(failed_migration.status_name.to_s)
 
-        click_button('Retry')
+        click_on('Retry')
         expect(page).not_to have_content(failed_migration.job_class_name)
         expect(page).not_to have_content(failed_migration.table_name)
         expect(page).not_to have_content('0.00%')

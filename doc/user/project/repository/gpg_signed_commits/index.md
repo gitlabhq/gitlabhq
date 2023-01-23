@@ -180,6 +180,47 @@ you can sign individual commits manually, or configure Git to default to signed 
   git config --global commit.gpgsign true
   ```
 
+#### Set signing key conditionally
+
+If you maintain signing keys for separate purposes, such as work and personal
+use, use an `IncludeIf` statement in your `.gitconfig` file to set which key
+you sign commits with.
+
+Prerequisites:
+
+- Requires Git version 2.13 or later.
+
+1. In the same directory as your main `~/.gitconfig` file, create a second file,
+   such as `.gitconfig-gitlab`.
+1. In your main `~/.gitconfig` file, add your Git settings for work in non-GitLab projects.
+1. Append this information to the end of your main `~/.gitconfig` file:
+
+   ```ini
+   # The contents of this file are included only for GitLab.com URLs
+   [includeIf "hasconfig:remote.*.url:https://gitlab.com/**"]
+
+   # Edit this line to point to your alternate configuration file
+   path = ~/.gitconfig-gitlab
+   ```
+
+1. In your alternate `.gitconfig-gitlab` file, add the configuration overrides to
+   use when you're committing to a GitLab repository. All settings from your
+   main `~/.gitconfig` file are retained unless you explicitly override them.
+   In this example,
+
+   ```ini
+   # Alternate ~/.gitconfig-gitlab file
+   # These values are used for repositories matching the string 'gitlab.com',
+   # and override their corresponding values in ~/.gitconfig
+
+   [user]
+   email = you@example.com
+   signingkey = <KEY ID>
+
+   [commit]
+   gpgsign = true
+   ```
+
 ## Verify commits
 
 You can review commits for a merge request, or for an entire project:

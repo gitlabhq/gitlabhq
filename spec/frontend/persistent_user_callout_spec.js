@@ -3,6 +3,7 @@ import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PersistentUserCallout from '~/persistent_user_callout';
 
 jest.mock('~/flash');
@@ -88,7 +89,7 @@ describe('PersistentUserCallout', () => {
       ${'primary'}
       ${'secondary'}
     `('POSTs endpoint and removes container when clicking $button close', async ({ button }) => {
-      mockAxios.onPost(dismissEndpoint).replyOnce(200);
+      mockAxios.onPost(dismissEndpoint).replyOnce(HTTP_STATUS_OK);
 
       buttons[button].click();
 
@@ -140,7 +141,7 @@ describe('PersistentUserCallout', () => {
 
     it('defers loading of a link until callout is dismissed', async () => {
       const { href, target } = deferredLink;
-      mockAxios.onPost(dismissEndpoint).replyOnce(200);
+      mockAxios.onPost(dismissEndpoint).replyOnce(HTTP_STATUS_OK);
 
       deferredLink.click();
 
@@ -161,7 +162,7 @@ describe('PersistentUserCallout', () => {
     });
 
     it('does not follow link when notification is closed', async () => {
-      mockAxios.onPost(dismissEndpoint).replyOnce(200);
+      mockAxios.onPost(dismissEndpoint).replyOnce(HTTP_STATUS_OK);
 
       button.click();
 
@@ -195,7 +196,7 @@ describe('PersistentUserCallout', () => {
 
     it('uses a link to trigger callout and defers following until callout is finished', async () => {
       const { href } = link;
-      mockAxios.onPost(dismissEndpoint).replyOnce(200);
+      mockAxios.onPost(dismissEndpoint).replyOnce(HTTP_STATUS_OK);
 
       link.click();
 

@@ -126,6 +126,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
       it 'returns specific job data' do
         expect(json_response['finished_at']).to be_nil
+        expect(json_response['erased_at']).to be_nil
       end
 
       it 'avoids N+1 queries', :skip_before_request do
@@ -648,6 +649,18 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         get api("/projects/#{project.id}/jobs/#{job.id}", api_user)
 
         expect(json_response).to include('failure_reason')
+      end
+    end
+
+    context 'when job is erased' do
+      let(:job) do
+        create(:ci_build, pipeline: pipeline, erased_at: Time.now)
+      end
+
+      it 'returns specific job data' do
+        get api("/projects/#{project.id}/jobs/#{job.id}", api_user)
+
+        expect(Time.parse(json_response['erased_at'])).to be_like_time(job.erased_at)
       end
     end
 
