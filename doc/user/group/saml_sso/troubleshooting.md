@@ -58,6 +58,16 @@ You can use one of the following to troubleshoot SAML:
 
 For convenience, we've included some [example resources](../../../user/group/saml_sso/example_saml_config.md) used by our Support Team. While they may help you verify the SAML app configuration, they are not guaranteed to reflect the current state of third-party products.
 
+### Calculate the fingerprint
+
+If you use a `idp_cert_fingerprint`, it must be a SHA1 fingerprint. To calculate a SHA1 fingerprint, download the certificate file and run:
+
+```shell
+openssl x509 -in <filename.crt> -noout -fingerprint -sha1
+```
+
+Replace `filename.crt` with the name of the certificate file.
+
 ## Searching Rails log for a SAML response **(FREE SELF)**
 
 You can find the base64-encoded SAML Response in the [`production_json.log`](../../../administration/logs/index.md#production_jsonlog).
@@ -122,13 +132,17 @@ must be validated using either a fingerprint, a certificate, or a validator.
 
 For this requirement, be sure to take the following into account:
 
-- If a fingerprint is used, it must be the SHA1 fingerprint
+- If you use a fingerprint, it must be the correct SHA1 fingerprint. To confirm that you are using
+  the correct SHA1 fingerprint:
+  1. Re-download the certificate file.
+  1. [Calculate the fingerprint](#calculate-the-fingerprint).
+  1. Compare the fingerprint to the value provided in `idp_cert_fingerprint`. The values should be the same.
 - If no certificate is provided in the settings, a fingerprint or fingerprint
   validator needs to be provided and the response from the server must contain
-  a certificate (`<ds:KeyInfo><ds:X509Data><ds:X509Certificate>`)
+  a certificate (`<ds:KeyInfo><ds:X509Data><ds:X509Certificate>`).
 - If a certificate is provided in the settings, it is no longer necessary for
   the request to contain one. In this case the fingerprint or fingerprint
-  validators are optional
+  validators are optional.
 
 If none of the above described scenarios is valid, the request
 fails with one of the mentioned errors.

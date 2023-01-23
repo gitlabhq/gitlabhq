@@ -324,6 +324,13 @@ On a self-managed instance, you can [increase the size limits](../administration
 A [loop of included configuration files](pipeline_editor/index.md#configuration-validation-currently-not-available-message)
 can cause a `500` error when editing the `.gitlab-ci.yml` file with the [web editor](../user/project/repository/web_editor.md).
 
+### A CI/CD job does not use newer configuration when run again
+
+The configuration for a pipeline is only fetched when the pipeline is created.
+When you rerun a job, uses the same configuration each time. If you update configuration files,
+including separate files added with [`include`](yaml/index.md#include), you must
+start a new pipeline to use the new configuration.
+
 ## Pipeline warnings
 
 Pipeline configuration warnings are shown when you:

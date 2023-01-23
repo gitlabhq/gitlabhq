@@ -67,7 +67,7 @@ To make submodules work correctly in CI/CD jobs:
      GIT_SUBMODULE_DEPTH: 1
    ```
 
-1. You can filter or exclude specific submodules to control which submodules will be synced using
+1. You can filter or exclude specific submodules to control which submodules are synchronized using
    [`GIT_SUBMODULE_PATHS`](runners/configure_runners.md#sync-or-exclude-specific-submodules-from-ci-jobs).
 
    ```yaml

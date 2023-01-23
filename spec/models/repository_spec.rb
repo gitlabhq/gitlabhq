@@ -2572,27 +2572,51 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#avatar' do
     let(:project) { create(:project, :repository) }
 
-    it 'returns nil if repo does not exist' do
-      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
+    it 'returns nil if repo is empty' do
+      allow(repository).to receive(:empty).and_return(true)
 
       expect(repository.avatar).to be_nil
     end
 
     it 'returns the first avatar file found in the repository' do
-      expect(repository).to receive(:file_on_head)
-        .with(:avatar)
-        .and_return(double(:tree, path: 'logo.png'))
+      expect(repository).to receive(:search_files_by_regexp).and_return(['logo.png'])
 
       expect(repository.avatar).to eq('logo.png')
     end
 
     it 'caches the output' do
-      expect(repository).to receive(:file_on_head)
-        .with(:avatar)
-        .once
-        .and_return(double(:tree, path: 'logo.png'))
+      expect(repository).to receive(:search_files_by_regexp).once.and_return(['logo.png'])
 
       2.times { expect(repository.avatar).to eq('logo.png') }
+    end
+
+    context 'when feature flag readme_from_gitaly is disabled' do
+      before do
+        stub_feature_flags(readme_from_gitaly: false)
+      end
+
+      it 'returns nil if repo does not exist' do
+        allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
+
+        expect(repository.avatar).to be_nil
+      end
+
+      it 'returns the first avatar file found in the repository' do
+        expect(repository).to receive(:file_on_head)
+          .with(:avatar)
+          .and_return(double(:tree, path: 'logo.png'))
+
+        expect(repository.avatar).to eq('logo.png')
+      end
+
+      it 'caches the output' do
+        expect(repository).to receive(:file_on_head)
+          .with(:avatar)
+          .once
+          .and_return(double(:tree, path: 'logo.png'))
+
+        2.times { expect(repository.avatar).to eq('logo.png') }
+      end
     end
   end
 

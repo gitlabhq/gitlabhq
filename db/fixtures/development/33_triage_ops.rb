@@ -73,6 +73,8 @@ class Gitlab::Seeder::TriageOps
     pipeline:run-single-db
     pipeline:skip-undercoverage
     pipeline:update-cache
+    documentation
+    Community contribution
   LABELS
 
   def seed!

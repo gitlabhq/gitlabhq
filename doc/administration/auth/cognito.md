@@ -33,7 +33,7 @@ To enable AWS Cognito as an authentication provider, complete the following step
    - **Enabled Identity Providers** - select all
    - **Callback URL** - `https://<your_gitlab_instance_url>/users/auth/cognito/callback`
    - **Allowed OAuth Flows** - Authorization code grant
-   - **Allowed OAuth2 Scopes** - `email`, `openid`, and `profile`
+   - **Allowed OAuth 2.0 Scopes** - `email`, `openid`, and `profile`
 
 1. Save changes for the app client settings.
 1. Under **Domain name**, include the AWS domain name for your AWS Cognito application.

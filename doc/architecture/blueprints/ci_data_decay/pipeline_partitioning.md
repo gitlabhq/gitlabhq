@@ -796,18 +796,16 @@ strategy here to share knowledge and solicit feedback from other team members.
 
 ## Who
 
-Authors:
+DRIs:
 
 <!-- vale gitlab.Spelling = NO -->
 
-| Role   | Who            |
-|--------|----------------|
-| Author | Grzegorz Bizon |
-
-Recommenders:
-
-| Role                          | Who             |
-|-------------------------------|-----------------|
-| Senior Distingiushed Engineer | Kamil Trzciński |
+| Role                | Who                                            |
+|---------------------|------------------------------------------------|
+| Author              | Grzegorz Bizon, Principal Engineer             |
+| Recommender         | Kamil Trzciński, Senior Distingiushed Engineer |
+| Product Manager     | James Heimbuck, Senior Product Manager         |
+| Engineering Manager | Scott Hampton, Engineering Manager             |
+| Lead Engineer       | Marius Bobin, Senior Backend Engineer          |
 
 <!-- vale gitlab.Spelling = YES -->

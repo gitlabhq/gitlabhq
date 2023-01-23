@@ -131,7 +131,7 @@ Filter a group to find members. By default, all members in the group and subgrou
 In lists of group members, entries can display the following badges:
 
 - **SAML**, to indicate the member has a [SAML account](saml_sso/index.md) connected to them.
-- **Enterprise**, to indicate that [SCIM created the account](saml_sso/scim_setup.md).
+- **Enterprise**, to indicate that the member is an [enterprise user](../enterprise_user/index.md).
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. Above the list of members, in the **Filter members** box, enter filter criteria.

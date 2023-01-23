@@ -242,7 +242,6 @@ module IssuablesHelper
       updateEndpoint: "#{issuable_path(issuable)}.json",
       canUpdate: can?(current_user, :"update_#{issuable.to_ability_name}", issuable),
       canDestroy: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable),
-      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issuable),
       issuableRef: issuable.to_reference,
       markdownPreviewPath: preview_markdown_path(parent, target_type: issuable.model_name, target_id: issuable.iid),
       markdownDocsPath: help_page_path('user/markdown'),
@@ -272,7 +271,17 @@ module IssuablesHelper
       sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier, # rubocop:disable CodeReuse/ActiveRecord
       iid: issuable.iid.to_s,
       isHidden: issue_hidden?(issuable),
-      canCreateIncident: create_issue_type_allowed?(issuable.project, :incident)
+      canCreateIncident: create_issue_type_allowed?(issuable.project, :incident),
+      **incident_only_initial_data(issuable)
+    }
+  end
+
+  def incident_only_initial_data(issue)
+    return {} unless issue.incident?
+
+    {
+      hasLinkedAlerts: issue.alert_management_alerts.any?,
+      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issue)
     }
   end
 

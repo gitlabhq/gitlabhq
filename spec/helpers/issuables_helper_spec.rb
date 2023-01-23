@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssuablesHelper do
+RSpec.describe IssuablesHelper, feature_category: :team_planning do
   let(:label)  { build_stubbed(:label) }
   let(:label2) { build_stubbed(:label) }
 
@@ -385,6 +385,32 @@ RSpec.describe IssuablesHelper do
         isHidden: false
       }
       expect(helper.issuable_initial_data(issue)).to match(hash_including(expected_data))
+    end
+
+    context 'for incident tab' do
+      let(:incident) { create(:incident) }
+      let(:params) do
+        ActionController::Parameters.new({
+          controller: "projects/incidents",
+          action: "show",
+          namespace_id: "foo",
+          project_id: "bar",
+          id: incident.iid
+        }).permit!
+      end
+
+      it 'includes incident attributes' do
+        @project = incident.project
+        allow(helper).to receive(:safe_params).and_return(params)
+
+        expected_data = {
+          issueType: 'incident',
+          hasLinkedAlerts: false,
+          canUpdateTimelineEvent: true
+        }
+
+        expect(helper.issuable_initial_data(incident)).to match(hash_including(expected_data))
+      end
     end
 
     describe '#sentryIssueIdentifier' do

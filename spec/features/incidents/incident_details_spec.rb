@@ -19,7 +19,7 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
 
   context 'when a developer+ displays the incident' do
     before do
-      visit project_issues_incident_path(project, incident)
+      visit incident_project_issues_path(project, incident)
       wait_for_requests
     end
 
@@ -108,7 +108,7 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
   end
 
   it 'routes the user to the issue details page when the `issue_type` is set to issue' do
-    visit project_issues_incident_path(project, incident)
+    visit incident_project_issues_path(project, incident)
     wait_for_requests
 
     project_path = "/#{project.full_path}"

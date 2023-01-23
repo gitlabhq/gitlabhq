@@ -375,8 +375,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        get 'issues/incident/:id' => 'incidents#show', as: :issues_incident
-
         namespace :error_tracking do
           resources :projects, only: :index
         end

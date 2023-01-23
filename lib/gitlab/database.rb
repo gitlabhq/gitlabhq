@@ -34,10 +34,8 @@ module Gitlab
     # https://gitlab.com/gitlab-org/gitlab-foss/issues/61974
     MAX_TEXT_SIZE_LIMIT = 1_000_000
 
-    # Minimum schema version from which migrations are supported
     # Migrations before this version may have been removed
-    MIN_SCHEMA_VERSION = 20190506135400
-    MIN_SCHEMA_GITLAB_VERSION = '11.11.0'
+    MIN_SCHEMA_GITLAB_VERSION = '15.0'
 
     # Schema we store dynamically managed partitions in (e.g. for time partitioning)
     DYNAMIC_PARTITIONS_SCHEMA = :gitlab_partitions_dynamic
@@ -302,6 +300,14 @@ module Gitlab
 
     def self.read_write?
       !read_only?
+    end
+
+    # Determines minimum viable migration version, determined by the timestamp
+    # of the earliest migration file.
+    def self.read_minimum_migration_version
+      Dir.open(
+        Rails.root.join('db/migrate')
+      ).filter_map { |f| /\A\d{14}/.match(f)&.to_s }.map(&:to_i).min
     end
 
     # Monkeypatch rails with upgraded database observability

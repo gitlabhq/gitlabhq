@@ -14,7 +14,7 @@ RSpec.describe 'Incident timeline events', :js, feature_category: :incident_mana
   before do
     sign_in(developer)
 
-    visit project_issues_incident_path(project, incident)
+    visit incident_project_issues_path(project, incident)
     wait_for_requests
     click_link s_('Incident|Timeline')
   end

@@ -56,7 +56,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
       let_it_be(:incident) { create(:incident, project: project, author: abusive_user) }
 
       before do
-        visit project_issues_incident_path(project, incident)
+        visit incident_project_issues_path(project, incident)
         click_button 'Incident actions'
       end
 

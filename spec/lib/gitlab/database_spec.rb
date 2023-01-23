@@ -516,4 +516,33 @@ RSpec.describe Gitlab::Database do
       end
     end
   end
+
+  describe '.read_minimum_migration_version' do
+    before do
+      allow(Dir).to receive(:open).with(Rails.root.join('db/migrate')).and_return(migration_files)
+    end
+
+    context 'valid migration files exist' do
+      let(:migration_files) do
+        [
+          '20211004170422_init_schema.rb',
+          '20211005182304_add_users.rb'
+        ]
+      end
+
+      let(:valid_schema) { 20211004170422 }
+
+      it 'finds the correct ID' do
+        expect(described_class.read_minimum_migration_version).to eq valid_schema
+      end
+    end
+
+    context 'no valid migration files exist' do
+      let(:migration_files) { ['readme.txt', 'INSTALL'] }
+
+      it 'returns nil' do
+        expect(described_class.read_minimum_migration_version).to be_nil
+      end
+    end
+  end
 end

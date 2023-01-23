@@ -26,7 +26,7 @@ At the top level, `config.toml` defines the items described on the table below.
 | `socket_path` | string | yes (if  `listen_addr` is not set) | A path which Gitaly should open a Unix socket. |
 | `listen_addr` | string | yes (if `socket_path` is not set) | TCP address for Gitaly to listen on. |
 | `tls_listen_addr` | string | no | TCP over TLS address for Gitaly to listen on. |
-| `bin_dir`    | string | yes    | Directory containing Gitaly's executables. |
+| `bin_dir`    | string | yes    | Directory containing Gitaly executables. |
 | `prometheus_listen_addr` | string | no | TCP listen address for Prometheus metrics. If not set, no Prometheus listener is started. |
 
 For example:
@@ -100,7 +100,7 @@ by GitLab with names, such as `default`.
 
 These names and paths are also defined in the `gitlab.yml` configuration file of
 GitLab. When you run Gitaly on the same machine as GitLab (the default
-and recommended configuration) storage paths defined in Gitaly's `config.toml`
+and recommended configuration) storage paths defined in the Gitaly `config.toml`
 must match those in `gitlab.yml`.
 
 | Name | Type | Required | Description |
@@ -146,7 +146,7 @@ The default limit is 100 `cat-file`s, which constitute a pair of
 you are seeing errors complaining about "too many open files", or an
 inability to create new processes, you may want to lower this limit.
 
-Ideally, the number should be large enough to handle normal
+Ideally, the number should be large enough to handle standard
 traffic. If you raise the limit, you should measure the cache hit ratio
 before and after. If the hit ratio does not improve, the higher limit is
 probably not making a meaningful difference. Here is an example
