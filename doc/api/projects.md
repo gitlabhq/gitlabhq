@@ -2980,7 +2980,10 @@ GET /projects/:id/snapshot
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29861) in GitLab 14.0.
 
-Get the path to repository storage for specified project. Available for administrators only.
+Get the path to repository storage for specified project if Gitaly Cluster is not being used. If Gitaly Cluster is being used, see
+[Praefect-generated replica paths (GitLab 15.0 and later)](../administration/gitaly/index.md#praefect-generated-replica-paths-gitlab-150-and-later).
+
+Available for administrators only.
 
 ```plaintext
 GET /projects/:id/storage
