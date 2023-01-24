@@ -293,7 +293,7 @@ in Google's
 [Cloud Storage authentication documentation](https://cloud.google.com/storage/docs/authentication).
 
 NOTE:
-Bucket encryption with the [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and will result in [ETag mismatch errors](#etag-mismatch).
+Bucket encryption with the [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and results in [ETag mismatch errors](#etag-mismatch).
 
 ##### Google example (consolidated form)
 
@@ -583,8 +583,8 @@ With Omnibus and source installations it is possible to split a single
 real bucket into multiple virtual buckets. If your object storage
 bucket is called `my-gitlab-objects` you can configure uploads to go
 into `my-gitlab-objects/uploads`, artifacts into
-`my-gitlab-objects/artifacts`, etc. The application will act as if
-these are separate buckets. Note that use of bucket prefixes
+`my-gitlab-objects/artifacts`, etc. The application acts as if
+these are separate buckets. Use of bucket prefixes
 [may not work correctly with Helm backups](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3376).
 
 Helm-based installs require separate buckets to
@@ -686,7 +686,7 @@ With the consolidated object configuration and instance profile, Workhorse has
 S3 credentials so that it can compute the `Content-MD5` header. This
 eliminates the need to compare ETag headers returned from the S3 server.
 
-Encrypting buckets with GCS' [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and will result in ETag mismatch errors.
+Encrypting buckets with the GCS [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and results in ETag mismatch errors.
 
 ### Using Amazon instance profiles
 
@@ -817,5 +817,5 @@ Prerequisites:
 
 After you have done at least one successful Rclone copy from the old location to the new location, schedule maintenance and take your GitLab server offline. During your maintenance window you must do two things:
 
-1. Perform a final `rclone sync` run, knowing that your users cannot add new objects so you will not leave any behind in the old bucket.
+1. Perform a final `rclone sync` run, knowing that your users cannot add new objects so you do not leave any behind in the old bucket.
 1. Update the object storage configuration of your GitLab server to use the new provider for `uploads`.

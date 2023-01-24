@@ -29,7 +29,7 @@ This might be your first question. If our sites are hosted by GitLab Pages,
 they are static, hence we are not dealing with server-side scripts
 nor credit card transactions, then why do we need secure connections?
 
-Back in the 1990s, where HTTPS came out, [SSL](https://en.wikipedia.org/wiki/Transport_Layer_Security#SSL_1.0.2C_2.0_and_3.0) was considered a "special"
+When HTTPS came out in 1990, [SSL](https://en.wikipedia.org/wiki/Transport_Layer_Security#SSL_1.0.2C_2.0_and_3.0) was considered a "special"
 security measure, necessary just for big companies like banks and shopping sites
 with financial transactions.
 
@@ -60,7 +60,7 @@ reiterating the importance of HTTPS.
 
 GitLab Pages accepts certificates provided in the [PEM](https://knowledge.digicert.com/quovadis.html) format, issued by
 [Certificate Authorities](https://en.wikipedia.org/wiki/Certificate_authority) or as
-[self-signed certificates](https://en.wikipedia.org/wiki/Self-signed_certificate). Note that [self-signed certificates are typically not used](https://www.mcafee.com/blogs/other-blogs/mcafee-labs/self-signed-certificates-secure-so-why-ban/)
+[self-signed certificates](https://en.wikipedia.org/wiki/Self-signed_certificate). [Self-signed certificates are typically not used](https://www.mcafee.com/blogs/other-blogs/mcafee-labs/self-signed-certificates-secure-so-why-ban/)
 for public websites for security reasons and to ensure that browsers trust your site's certificate.
 
 There are various kinds of certificates, each one

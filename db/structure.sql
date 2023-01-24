@@ -19824,6 +19824,7 @@ CREATE VIEW postgres_foreign_keys AS
     constrained_cols.constrained_columns,
     referenced_cols.referenced_columns,
     pg_constraint.confdeltype AS on_delete_action,
+    pg_constraint.confupdtype AS on_update_action,
     (pg_constraint.coninhcount > 0) AS is_inherited
    FROM ((((((pg_constraint
      JOIN pg_class constrained_table ON ((constrained_table.oid = pg_constraint.conrelid)))

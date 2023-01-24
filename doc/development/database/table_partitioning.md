@@ -359,7 +359,7 @@ class PrepareForeignKeyForPartitioning < Gitlab::Database::Migration[2.1]
       target_column: [PARTITION_COLUMN, TARGET_COLUMN],
       validate: false,
       on_update: :cascade,
-      name: CONSTRAINT_NAME
+      name: FK_NAME
     )
 
     # This should be done in a separate post migration when dealing with a high traffic table

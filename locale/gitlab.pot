@@ -3613,6 +3613,12 @@ msgstr ""
 msgid "AdvancedSearch|Introduced in GitLab 13.1, before using %{reindexing_link_start}zero-downtime reindexing%{link_end} and %{migrations_link_start}Advanced Search migrations%{link_end}, you need to %{recreate_link_start}recreate your index%{link_end}."
 msgstr ""
 
+msgid "AdvancedSearch|None. Select namespaces to index."
+msgstr ""
+
+msgid "AdvancedSearch|None. Select projects to index."
+msgstr ""
+
 msgid "AdvancedSearch|Pause indexing and upgrade Elasticsearch to a supported version."
 msgstr ""
 
@@ -3620,6 +3626,12 @@ msgid "AdvancedSearch|Reindex recommended"
 msgstr ""
 
 msgid "AdvancedSearch|Reindex required"
+msgstr ""
+
+msgid "AdvancedSearch|Select namespaces to index"
+msgstr ""
+
+msgid "AdvancedSearch|Select projects to index"
 msgstr ""
 
 msgid "AdvancedSearch|You are using outdated code search mappings. To improve code search quality, we recommend you use %{reindexing_link_start}zero-downtime reindexing%{link_end} or %{recreate_link_start}re-create your index%{link_end}."
@@ -15198,12 +15210,6 @@ msgid "Elasticsearch reindexing was not started: %{errors}"
 msgstr ""
 
 msgid "Elasticsearch zero-downtime reindexing"
-msgstr ""
-
-msgid "Elastic|None. Select namespaces to index."
-msgstr ""
-
-msgid "Elastic|None. Select projects to index."
 msgstr ""
 
 msgid "Email"

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Sidekiq is the background job processor GitLab uses to asynchronously run
 tasks. When things go wrong it can be difficult to troubleshoot. These
 situations also tend to be high-pressure because a production system job queue
-may be filling up. Users will notice when this happens because new branches
+may be filling up. Users notice when this happens because new branches
 may not show up and merge requests may not be updated. The following are some
 troubleshooting steps to help you diagnose the bottleneck.
 
@@ -105,7 +105,7 @@ Gather data on the state of the Sidekiq workers with the following Ruby script.
 
    If the performance issue is intermittent:
 
-   - Run this in a cron job every five minutes. Write the files to a location with enough space: allow for 500KB per file.
+   - Run this in a cron job every five minutes. Write the files to a location with enough space: allow for 500 KB per file.
    - Refer back to the data to see what went wrong.
 
 1. Analyze the output. The following commands assume that you have a directory of output files.
@@ -269,7 +269,7 @@ corresponding Ruby code where this is happening.
 `gdb` can be another effective tool for debugging Sidekiq. It gives you a little
 more interactive way to look at each thread and see what's causing problems.
 
-Attaching to a process with `gdb` suspends the normal operation
+Attaching to a process with `gdb` suspends the standard operation
 of the process (Sidekiq does not process jobs while `gdb` is attached).
 
 Start by attaching to the Sidekiq PID:

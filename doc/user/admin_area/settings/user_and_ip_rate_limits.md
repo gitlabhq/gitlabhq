@@ -140,7 +140,7 @@ It is important that your load balancer erases or overwrites the bypass
 header on all incoming traffic. Otherwise, you must trust your
 users to not set that header and bypass the GitLab rate limiter.
 
-Note that the bypass only works if the header is set to `1`.
+The bypass works only if the header is set to `1`.
 
 Requests that bypassed the rate limiter because of the bypass header
 are marked with `"throttle_safelist":"throttle_bypass_header"` in
@@ -209,7 +209,7 @@ To enable dry run mode for all throttles, the variable can be set to `*`.
 
 Setting a throttle to dry run mode logs a message to the
 [`auth.log`](../../../administration/logs/index.md#authlog) when it would hit the limit, while letting the
-request continue as normal. The log message contains an `env` field set to `track`. The `matched`
+request continue. The log message contains an `env` field set to `track`. The `matched`
 field contains the name of throttle that was hit.
 
 It is important to set the environment variable **before** enabling

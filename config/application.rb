@@ -256,6 +256,7 @@ module Gitlab
     config.assets.precompile << "mailers/*.css"
     config.assets.precompile << "page_bundles/_mixins_and_variables_and_functions.css"
     config.assets.precompile << "page_bundles/admin/application_settings_metrics_and_profiling.css"
+    config.assets.precompile << "page_bundles/admin/elasticsearch_form.css"
     config.assets.precompile << "page_bundles/admin/geo_nodes.css"
     config.assets.precompile << "page_bundles/admin/geo_replicable.css"
     config.assets.precompile << "page_bundles/admin/jobs_index.css"

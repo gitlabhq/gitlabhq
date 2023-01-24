@@ -811,7 +811,7 @@ You must truncate the files referenced by the database that are causing the prob
 
 - In the `uploads` table.
 - In the references found. Any reference found from other database tables and columns.
-- On the filesystem.
+- On the file system.
 
 Truncate the filenames in the `uploads` table:
 
@@ -979,7 +979,7 @@ Truncate the filenames in the references found:
 
 1. Replace those long filenames using the new filenames obtained from querying the `uploads` table.
 
-Truncate the filenames on the filesystem. You must manually rename the files in your filesystem to the new filenames obtained from querying the `uploads` table.
+Truncate the filenames on the file system. You must manually rename the files in your file system to the new filenames obtained from querying the `uploads` table.
 
 #### Re-run the backup task
 

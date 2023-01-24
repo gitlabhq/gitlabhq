@@ -57,7 +57,7 @@ which GitLab uses to determine discovered vulnerabilities based on differences b
 
 #### Recommendations
 
-- Take care if your pipeline is configured to deploy to the same web server in each run. Running a DAST scan while a server is being updated will lead to inaccurate and non-deterministic results.
+- Take care if your pipeline is configured to deploy to the same web server in each run. Running a DAST scan while a server is being updated leads to inaccurate and non-deterministic results.
 - Configure runners to use the [always pull policy](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy) to run the latest versions of the analyzers.
 - By default, DAST downloads all artifacts defined by previous jobs in the pipeline. If
   your DAST job does not rely on `environment_url.txt` to define the URL under test or any other files created
@@ -71,7 +71,7 @@ which GitLab uses to determine discovered vulnerabilities based on differences b
 
 #### Analyzer configuration
 
-Please see [DAST proxy-based analyzer](proxy-based.md), [DAST browser-based analyzer](browser_based.md) or [DAST API analyzer](../dast_api/index.md) for
+See [DAST proxy-based analyzer](proxy-based.md), [DAST browser-based analyzer](browser_based.md) or [DAST API analyzer](../dast_api/index.md) for
 analyzer-specific configuration instructions.
 
 ### View scan results
@@ -83,8 +83,8 @@ and the [Vulnerability report](../index.md#view-security-scan-information-in-the
 
 1. To see all vulnerabilities detected, either:
     - From your project, select **Security & Compliance**, then **Vulnerability report**.
-    - From your pipeline, click on the **Security** tab.
-    - From the merge request, go to the **Security scanning** widget and click **Full report** tab.
+    - From your pipeline, select the **Security** tab.
+    - From the merge request, go to the **Security scanning** widget and select **Full report** tab.
 
 1. Select a DAST vulnerability's description. The following fields are examples of what a DAST analyzer may produce to aid investigation and rectification of the underlying cause. Each analyzer may output different fields.
 
@@ -142,7 +142,7 @@ After your Docker build job completes and your image is added to your container 
 
 By using service definitions in your `.gitlab-ci.yml`, you can scan services with the DAST analyzer.
 
-When adding a `services` section to the job, the `alias` is used to define the hostname that can be used to access the service. In the following example, the `alias: yourapp` portion of the `dast` job definition means that the URL to the deployed application will use `yourapp` as the hostname (`https://yourapp/`).
+When adding a `services` section to the job, the `alias` is used to define the hostname that can be used to access the service. In the following example, the `alias: yourapp` portion of the `dast` job definition means that the URL to the deployed application uses `yourapp` as the hostname (`https://yourapp/`).
 
 ```yaml
 stages:

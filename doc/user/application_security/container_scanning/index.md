@@ -234,7 +234,7 @@ When you enable this feature, you may see [duplicate findings](../terminology/in
 in the [Vulnerability Report](../vulnerability_report/index.md)
 if [Dependency Scanning](../dependency_scanning/index.md)
 is enabled for your project. This happens because GitLab can't automatically deduplicate findings
-across different types of scanning tools. Please reference [this comparison](../dependency_scanning/index.md#dependency-scanning-compared-to-container-scanning)
+across different types of scanning tools. Reference [this comparison](../dependency_scanning/index.md#dependency-scanning-compared-to-container-scanning)
 between GitLab Dependency Scanning and Container Scanning for more details on which types of dependencies are likely to be duplicated.
 
 #### Available CI/CD variables
@@ -532,7 +532,7 @@ To use container scanning in an offline environment, you need:
 | --- | --- |
 | [Container-Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning) | [Container-Scanning container registry](https://gitlab.com/security-products/container-scanning/container_registry/) |
 
-Note that GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
+GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
 in an offline environment if you prefer using only locally available Docker images. However, we
@@ -560,7 +560,7 @@ registry.gitlab.com/security-products/container-scanning/trivy:5
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
-**your network security policy**. Please consult your IT staff to find an accepted and approved
+**your network security policy**. Consult your IT staff to find an accepted and approved
 process by which you can import or temporarily access external resources. These scanners
 are [periodically updated](../index.md#vulnerability-scanner-maintenance),
 and you may be able to make occasional updates on your own.

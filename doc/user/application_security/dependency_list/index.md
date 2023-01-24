@@ -81,7 +81,7 @@ You can download your project's full list of dependencies and their details in
 
 ### In the UI
 
-You can download your project's list of dependencies and their details in JSON format by selecting the **Export** button. Note that the dependency list only shows the results of the last successful pipeline to run on the default branch.
+You can download your project's list of dependencies and their details in JSON format by selecting the **Export** button. The dependency list only shows the results of the last successful pipeline to run on the default branch.
 
 ### Using the API
 

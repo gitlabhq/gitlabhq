@@ -252,7 +252,7 @@ WARNING:
 As described in [the concurrency section](extra_sidekiq_processes.md#manage-thread-counts-explicitly), we
 recommend setting `min_concurrency` and `max_concurrency` to the same value. For example, if the number of queues
 in a queue group entry is 1, while `min_concurrency` is set to `0`, and `max_concurrency` is set to `20`, the resulting
-concurrency will be set to `2` instead. A concurrency of `2` might be too low in most cases, except for very highly-CPU
+concurrency is set to `2` instead. A concurrency of `2` might be too low in most cases, except for very highly-CPU
 bound tasks.
 
 ## Worker matching query
@@ -310,8 +310,8 @@ highest to lowest precedence:
   and `query_b` are queries made up of the other operators here) includes
   queues that match either query.
 - `&` - the logical `AND` operator. For example, `query_a&query_b` (where
-  `query_a` and `query_b` are queries made up of the other operators here) will
-  only include queues that match both queries.
+  `query_a` and `query_b` are queries made up of the other operators here)
+  include only queues that match both queries.
 - `!=` - the `NOT IN` operator. For example, `feature_category!=issue_tracking`
   excludes all queues from the `issue_tracking` feature category.
 - `=` - the `IN` operator. For example, `resource_boundary=cpu` includes all

@@ -69,7 +69,7 @@ GitLab administrators can block and unblock users.
 
 ### Block a user
 
-In order to completely prevent access of a user to the GitLab instance,
+To completely prevent access of a user to the GitLab instance,
 administrators can choose to block the user.
 
 Users can be blocked [via an abuse report](review_abuse_reports.md#blocking-users),
@@ -129,7 +129,7 @@ GitLab administrators can deactivate and activate users.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
-In order to temporarily prevent access by a GitLab user that has no recent activity,
+To temporarily prevent access by a GitLab user that has no recent activity,
 administrators can choose to deactivate the user.
 
 Deactivating a user is functionally identical to [blocking a user](#block-and-unblock-users),

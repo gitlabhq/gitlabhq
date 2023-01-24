@@ -60,7 +60,7 @@ to activate it in the GitLab instance.
 You can replace the default message on the sign in / sign up page with your own message
 and logo. You can make full use of [Markdown](../markdown.md) in the description.
 
-The optimal size for the logo is 640x360px, but any image can be used (below 1MB)
+The optimal size for the logo is 640 x 360 pixels, but any image can be used (below 1 MB)
 and it is resized automatically. The logo image appears between the title and
 the description, on the left of the sign-up page.
 

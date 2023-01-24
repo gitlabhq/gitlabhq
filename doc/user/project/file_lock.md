@@ -10,7 +10,7 @@ Preventing wasted work caused by unresolvable merge conflicts requires
 a different way of working. This means explicitly requesting write permissions,
 and verifying no one else is editing the same file before you start.
 
-Although branching strategies usually work well enough for source code and
+Although branching strategies typically work well enough for source code and
 plain text because different versions can be merged together, they do not work
 for binary files.
 

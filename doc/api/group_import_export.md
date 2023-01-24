@@ -87,7 +87,7 @@ POST /groups/import
 | `name` | string | yes | The name of the group to be imported |
 | `path` | string | yes | Name and path for new group |
 | `file` | string | yes | The file to be uploaded |
-| `parent_id` | integer | no | ID of a parent group that the group will be imported into. Defaults to the current user's namespace if not provided. |
+| `parent_id` | integer | no | ID of a parent group to import the group into. Defaults to the current user's namespace if not provided. |
 
 To upload a file from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`.

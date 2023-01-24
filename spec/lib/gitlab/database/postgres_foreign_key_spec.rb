@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Database::PostgresForeignKey, type: :model, feature_categ
         referenced_table_id bigint not null,
         referenced_table_id_b bigint not null,
         other_referenced_table_id bigint not null,
-        CONSTRAINT fk_constrained_to_referenced FOREIGN KEY(referenced_table_id, referenced_table_id_b) REFERENCES referenced_table(id, id_b) on delete restrict,
+        CONSTRAINT fk_constrained_to_referenced FOREIGN KEY(referenced_table_id, referenced_table_id_b) REFERENCES referenced_table(id, id_b) on delete restrict on update restrict,
         CONSTRAINT fk_constrained_to_other_referenced FOREIGN KEY(other_referenced_table_id)
            REFERENCES other_referenced_table(id)
       );
@@ -110,7 +110,7 @@ RSpec.describe Gitlab::Database::PostgresForeignKey, type: :model, feature_categ
     end
   end
 
-  describe '#on_delete_action' do
+  describe '#on_delete_action and #on_update_action' do
     before do
       ApplicationRecord.connection.execute(<<~SQL)
         create table public.referenced_table_all_on_delete_actions (
@@ -120,10 +120,10 @@ RSpec.describe Gitlab::Database::PostgresForeignKey, type: :model, feature_categ
         create table public.constrained_table_all_on_delete_actions (
           id bigserial primary key not null,
           ref_id_no_action bigint not null constraint fk_no_action references referenced_table_all_on_delete_actions(id),
-          ref_id_restrict bigint not null constraint fk_restrict references referenced_table_all_on_delete_actions(id) on delete restrict,
-          ref_id_nullify bigint not null constraint fk_nullify references referenced_table_all_on_delete_actions(id) on delete set null,
-          ref_id_cascade bigint not null constraint fk_cascade references referenced_table_all_on_delete_actions(id) on delete cascade,
-          ref_id_set_default bigint not null constraint fk_set_default references referenced_table_all_on_delete_actions(id) on delete set default
+          ref_id_restrict bigint not null constraint fk_restrict references referenced_table_all_on_delete_actions(id) on delete restrict on update restrict,
+          ref_id_nullify bigint not null constraint fk_nullify references referenced_table_all_on_delete_actions(id) on delete set null on update set null,
+          ref_id_cascade bigint not null constraint fk_cascade references referenced_table_all_on_delete_actions(id) on delete cascade on update cascade,
+          ref_id_set_default bigint not null constraint fk_set_default references referenced_table_all_on_delete_actions(id) on delete set default on update set default
         )
       SQL
     end
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::Database::PostgresForeignKey, type: :model, feature_categ
       end
     end
 
-    where(:fk_name, :expected_on_delete_action) do
+    where(:fk_name, :expected_action) do
       [
         %w[fk_no_action no_action],
         %w[fk_restrict restrict],
@@ -151,12 +151,22 @@ RSpec.describe Gitlab::Database::PostgresForeignKey, type: :model, feature_categ
       subject(:fk) { fks.find_by(name: fk_name) }
 
       it 'has the appropriate on delete action' do
-        expect(fk.on_delete_action).to eq(expected_on_delete_action)
+        expect(fk.on_delete_action).to eq(expected_action)
+      end
+
+      it 'has the appropriate on update action' do
+        expect(fk.on_update_action).to eq(expected_action)
       end
 
       describe '#by_on_delete_action' do
         it 'finds the key by on delete action' do
-          expect(fks.by_on_delete_action(expected_on_delete_action)).to contain_exactly(fk)
+          expect(fks.by_on_delete_action(expected_action)).to contain_exactly(fk)
+        end
+      end
+
+      describe '#by_on_update_action' do
+        it 'finds the key by on update action' do
+          expect(fks.by_on_update_action(expected_action)).to contain_exactly(fk)
         end
       end
     end

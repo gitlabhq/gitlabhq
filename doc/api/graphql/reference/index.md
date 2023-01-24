@@ -19873,7 +19873,9 @@ Represents a Suggested Reviewers result set.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="suggestedreviewerstypeaccepted"></a>`accepted` | [`[String!]`](#string) | List of accepted reviewer usernames. |
+| <a id="suggestedreviewerstypecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the suggestions were created. |
 | <a id="suggestedreviewerstypesuggested"></a>`suggested` | [`[String!]!`](#string) | List of suggested reviewer usernames. |
+| <a id="suggestedreviewerstypeupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the suggestions were updated. |
 
 ### `SystemNoteMetadata`
 

@@ -18,12 +18,13 @@ export default {
     ...mapGetters('batchComments', ['draftsCount', 'sortedDrafts']),
     ...mapGetters(['getNoteableData']),
     listItems() {
+      const sortedDraftCount = this.sortedDrafts.length - 1;
       return this.sortedDrafts.map((item, index) => ({
         text: item.id.toString(),
         action: () => {
           this.onClickDraft(item);
         },
-        last: index === this.sortedDrafts.length - 1,
+        last: index === sortedDraftCount,
         ...item,
       }));
     },

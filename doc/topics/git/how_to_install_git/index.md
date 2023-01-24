@@ -52,6 +52,20 @@ To install Git on macOS:
    git --version
    ```
 
+#### macOS update
+
+Periodically you may need to update the version of Git installed by
+[Homebrew](/ee/topics/git/how_to_install_git/index.md#macos). To do so,
+open a terminal and run these commands:
+
+```shell
+brew update
+brew upgrade git
+```
+
+To verify you are on the updated version, run `git --version` to display
+your current version of Git.
+
 ### Ubuntu Linux
 
 On Ubuntu and other Linux operating systems, use the built-in package manager
@@ -72,6 +86,10 @@ from the officially
    ```shell
    git --version
    ```
+
+#### Ubuntu Linux Update
+
+Periodically it may be necessary to update Git installed. To do so, run the same [commands](/ee/topics/git/how_to_install_git/index.md#ubuntu-linux).
 
 ### Windows
 

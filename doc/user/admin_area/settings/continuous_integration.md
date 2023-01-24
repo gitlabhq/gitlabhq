@@ -91,7 +91,7 @@ can be set at:
 
 For the setting on GitLab.com, see [Artifacts maximum size](../../gitlab_com/index.md#gitlab-cicd).
 
-The value is in MB and the default is 100MB per job. To change it at the:
+The value is in MB and the default is 100 MB per job. To change it at the:
 
 - Instance level:
 

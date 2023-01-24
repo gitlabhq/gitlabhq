@@ -541,21 +541,6 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       expect(json_response.first['id']).to eq(job.id)
       expect(response.headers).not_to include("Link")
     end
-
-    context 'with :jobs_api_keyset_pagination disabled' do
-      before do
-        stub_feature_flags(jobs_api_keyset_pagination: false)
-      end
-
-      it 'defaults to offset pagination' do
-        get api("/projects/#{project.id}/jobs", api_user), params: { pagination: 'keyset', per_page: 1 }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to eq(1)
-        expect(json_response.first['id']).to eq(running_job.id)
-        expect(response.headers["Link"]).not_to include("cursor")
-      end
-    end
   end
 
   describe 'GET /projects/:id/jobs rate limited' do

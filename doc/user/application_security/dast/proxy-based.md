@@ -9,7 +9,7 @@ type: reference, howto
 
 The DAST proxy-based analyzer can be added to your [GitLab CI/CD](../../../ci/index.md) pipeline.
 This helps you discover vulnerabilities in web applications that do not use JavaScript heavily. For applications that do,
-please see the [DAST browser-based analyzer](browser_based.md).
+see the [DAST browser-based analyzer](browser_based.md).
 
 WARNING:
 Do not run DAST scans against a production server. Not only can it perform *any* function that
@@ -231,7 +231,7 @@ variables:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in GitLab 13.4.
 
 To specify the paths to scan in a CI/CD variable, add a comma-separated list of the paths to the `DAST_PATHS`
-variable. Note that you can only scan paths of a single host.
+variable. You can only scan paths of a single host.
 
 ```yaml
 include:
@@ -247,7 +247,7 @@ When using `DAST_PATHS` and `DAST_PATHS_FILE`, note the following:
 - `DAST_WEBSITE` must be defined when using either `DAST_PATHS_FILE` or `DAST_PATHS`. The paths listed in either use `DAST_WEBSITE` to build the URLs to scan
 - Spidering is disabled when `DAST_PATHS` or `DAST_PATHS_FILE` are defined
 - `DAST_PATHS_FILE` and `DAST_PATHS` cannot be used together
-- The `DAST_PATHS` variable has a limit of about 130kb. If you have a list or paths
+- The `DAST_PATHS` variable has a limit of about 130 kb. If you have a list or paths
   greater than this, use `DAST_PATHS_FILE`.
 
 #### Full Scan
@@ -428,7 +428,7 @@ dast:
 The ZAProxy server contains many [useful configurable values](https://gitlab.com/gitlab-org/gitlab/-/issues/36437#note_245801885).
 Many key/values for `-config` remain undocumented, but there is an untested list of
 [possible keys](https://gitlab.com/gitlab-org/gitlab/-/issues/36437#note_244981023).
-Note that these options are not supported by DAST, and may break the DAST scan
+These options are not supported by DAST, and may break the DAST scan
 when used. An example of how to rewrite the Authorization header value with `TOKEN` follows:
 
 ```yaml

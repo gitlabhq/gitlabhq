@@ -72,7 +72,7 @@ To generate a link to a panel:
 
    If you select the dashboard's share button instead, GitLab attempts to embed the first supported
    panel on the dashboard (if available).
-1. If your Prometheus queries use Grafana's custom template variables, ensure the
+1. If your Prometheus queries use the Grafana custom template variables, ensure the
    **Template variables** option is set to on. Only the Grafana global template variables
    `$__interval`, `$__from`, and `$__to` are supported.
 1. Set the **Current time range** option to on, to specify the time range of the panel. Otherwise,

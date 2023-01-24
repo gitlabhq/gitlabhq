@@ -17,7 +17,7 @@ for the following frameworks.
 
 For Eleventy, you should do one of the following:
 
-- Add the `--output=public` flag in Eleventy's build commands, for example:
+- Add the `--output=public` flag in the Eleventy build commands, for example:
 
   `npx @11ty/eleventy --input=path/to/sourcefiles --output=public`
 

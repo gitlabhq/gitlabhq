@@ -1198,8 +1198,8 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The [Jira DVCS Connector](https://docs.gitlab.com/ee/integration/jira/dvcs.html) (which enables the [Jira Development Panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)), will no longer support Jira Cloud users starting with GitLab 16.0. The [GitLab for Jira App](https://docs.gitlab.com/ee/integration/jira/connect-app.html) has always been recommended for Jira Cloud users, and it will be required instead of the DVCS connector. If you are a Jira Cloud user, we recommended you begin migrating to the GitLab for Jira App.
-Any Jira Server and Jira Data Center users will need to confirm they are not using the GitHub Enterprise Connector to enable the GitLab DVCS integration, but they may continue to use the [native GitLab DVCS integration](https://docs.gitlab.com/ee/integration/jira/dvcs.html) (supported in Jira 8.14 and later).
+The [Jira DVCS Connector](https://docs.gitlab.com/ee/integration/jira/dvcs/) (which enables the [Jira Development Panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)), will no longer support Jira Cloud users starting with GitLab 16.0. The [GitLab for Jira App](https://docs.gitlab.com/ee/integration/jira/connect-app.html) has always been recommended for Jira Cloud users, and it will be required instead of the DVCS connector. If you are a Jira Cloud user, we recommended you begin migrating to the GitLab for Jira App.
+Any Jira Server and Jira Data Center users will need to confirm they are not using the GitHub Enterprise Connector to enable the GitLab DVCS integration, but they may continue to use the [native GitLab DVCS integration](https://docs.gitlab.com/ee/integration/jira/dvcs/) (supported in Jira 8.14 and later).
 
 </div>
 

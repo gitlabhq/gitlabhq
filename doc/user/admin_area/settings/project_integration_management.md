@@ -28,7 +28,7 @@ Only the complete settings for an integration can be inherited. Per-field inheri
 1. Enter configuration details and select **Save changes**.
 
 WARNING:
-This may affect all or most of the groups and projects on your GitLab instance. Please review the details
+This may affect all or most of the groups and projects on your GitLab instance. Review the details
 below.
 
 If this is the first time you are setting up instance-level settings for an integration:
@@ -82,7 +82,7 @@ for an integration.
 1. Enter configuration details and select **Save changes**.
 
 WARNING:
-This may affect all or most of the subgroups and projects belonging to the group. Please review the details below.
+This may affect all or most of the subgroups and projects belonging to the group. Review the details below.
 
 If this is the first time you are setting up group-level settings for an integration:
 

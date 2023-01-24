@@ -36,7 +36,7 @@ module RuboCop
         def on_top_level_example_group(node)
           return if feature_category?(node)
 
-          add_offense(node)
+          add_offense(node.children.first)
         end
       end
     end
