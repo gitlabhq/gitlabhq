@@ -441,12 +441,26 @@ def default_min_key_size(name)
 end
 ```
 
-## Nightly Omnibus FIPS builds
+## Omnibus FIPS packages
 
-The Distribution team has created [nightly FIPS Omnibus builds](https://packages.gitlab.com/gitlab/nightly-fips-builds). These
-GitLab builds are compiled to use the system OpenSSL instead of the Omnibus-embedded version of OpenSSL.
+GitLab has a dedicated repository
+([`gitlab/gitlab-fips`](https://packages.gitlab.com/gitlab/gitlab-fips))
+for builds of the Omnibus GitLab which are built with FIPS compliance.
+These GitLab builds are compiled to use the system OpenSSL, instead of
+the Omnibus-embedded version of OpenSSL. These packages are built for:
+
+- RHEL 8 (and compatible)
+- AmazonLinux 2
+- Ubuntu
+
+These are [consumed by the GitLab Environment Toolkit](#install-gitlab-with-fips-compliance) (GET).
 
 See [the section on how FIPS builds are created](#how-fips-builds-are-created).
+
+### Nightly Omnibus FIPS builds
+
+The Distribution team has created [nightly FIPS Omnibus builds](https://packages.gitlab.com/gitlab/nightly-fips-builds),
+which can be used for *testing* purposes. These should never be used for production environments.
 
 ## Runner
 
