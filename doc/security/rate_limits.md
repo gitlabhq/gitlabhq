@@ -8,7 +8,7 @@ type: reference, howto
 # Rate limits **(FREE SELF)**
 
 NOTE:
-For GitLab.com, please see
+For GitLab.com, see
 [GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
 
 Rate limiting is a common technique used to improve the security and durability

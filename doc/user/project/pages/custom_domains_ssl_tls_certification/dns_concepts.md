@@ -21,7 +21,7 @@ GitLab Pages with your own (sub)domain, you need to access your domain's
 registrar control panel to add a DNS record pointing it back to your
 GitLab Pages site.
 
-Note that **how to** add DNS records depends on which server your domain
+How to add DNS records depends on which server your domain
 is hosted on. Every control panel has its own place to do it. If you are
 not an administrator of your domain, and don't have access to your registrar,
 you must ask the technical support of your hosting service

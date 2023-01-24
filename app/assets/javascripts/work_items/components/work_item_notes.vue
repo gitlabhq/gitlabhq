@@ -82,6 +82,17 @@ export default {
     disableActivityFilter() {
       return this.initialLoading || this.isLoadingMore;
     },
+    formAtTop() {
+      return this.sortOrder === DESC;
+    },
+    workItemCommentFormProps() {
+      return {
+        queryVariables: this.queryVariables,
+        fullPath: this.fullPath,
+        workItemId: this.workItemId,
+        fetchByIid: this.fetchByIid,
+      };
+    },
   },
   apollo: {
     workItemNotes: {
@@ -199,6 +210,12 @@ export default {
     <div v-else class="issuable-discussion gl-mb-5 gl-clearfix!">
       <template v-if="showTimeline">
         <ul class="notes main-notes-list timeline gl-clearfix!">
+          <work-item-comment-form
+            v-if="formAtTop"
+            v-bind="workItemCommentFormProps"
+            @error="$emit('error', $event)"
+          />
+
           <template v-for="note in notesArray">
             <system-note
               v-if="isSystemNote(note)"
@@ -209,10 +226,8 @@ export default {
           </template>
 
           <work-item-comment-form
-            :query-variables="queryVariables"
-            :full-path="fullPath"
-            :work-item-id="workItemId"
-            :fetch-by-iid="fetchByIid"
+            v-if="!formAtTop"
+            v-bind="workItemCommentFormProps"
             @error="$emit('error', $event)"
           />
         </ul>

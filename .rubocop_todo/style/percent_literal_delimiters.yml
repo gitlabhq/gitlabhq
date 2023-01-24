@@ -608,7 +608,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/controllers/projects_controller_spec.rb'
     - 'spec/controllers/search_controller_spec.rb'
     - 'spec/controllers/snippets_controller_spec.rb'
-    - 'spec/db/docs_spec.rb'
     - 'spec/experiments/ios_specific_templates_experiment_spec.rb'
     - 'spec/factories/ci/builds.rb'
     - 'spec/factories/ci/runners.rb'

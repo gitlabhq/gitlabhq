@@ -7,8 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Docker images **(FREE SELF)**
 
 The GitLab Docker images are monolithic images of GitLab running all the
-necessary services in a single container. If you instead want to install GitLab
-on Kubernetes, see [GitLab Helm Charts](https://docs.gitlab.com/charts/).
+necessary services in a single container.
 
 Find the GitLab official Docker image at:
 
@@ -22,6 +21,11 @@ the MTA after every upgrade or restart.
 
 In the following examples, if you want to use the latest RC image, use
 `gitlab/gitlab-ee:rc` instead.
+
+You should not deploy the GitLab Docker image in Kubernetes as it creates a
+single point of failure. If you want to deploy GitLab in Kubernetes, the
+[GitLab Helm Chart](https://docs.gitlab.com/charts/) or [GitLab Operator](https://docs.gitlab.com/operator/)
+should be used instead.
 
 WARNING:
 Docker for Windows is not officially supported. There are known issues with volume

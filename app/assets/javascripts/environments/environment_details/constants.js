@@ -45,6 +45,12 @@ export const ENVIRONMENT_DETAILS_TABLE_FIELDS = [
     columnClass: 'gl-w-10p',
     tdClass: 'gl-vertical-align-middle! gl-white-space-nowrap',
   },
+  {
+    key: 'actions',
+    label: __('Actions'),
+    columnClass: 'gl-w-10p',
+    tdClass: 'gl-vertical-align-middle! gl-white-space-nowrap',
+  },
 ];
 
 export const translations = {

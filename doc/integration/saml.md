@@ -543,7 +543,7 @@ list.
 
 1. Edit your installation configuration to register the SAML authentication method
    in the `upstream_two_factor_authn_contexts` list. How you edit your configuration
-   will differ depending on your installation type.
+   differs depending on your installation type.
 
 ### Omnibus GitLab installations
 

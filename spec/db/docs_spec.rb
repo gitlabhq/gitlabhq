@@ -2,13 +2,6 @@
 
 require 'spec_helper'
 
-# This list is used to provide temporary exceptions for feature categories
-# that are transitioning and not yet in the feature_categories.yml file
-# any additions here should be accompanied by a link to an issue link
-VALID_FEATURE_CATEGORIES = [
-  'jihu' # https://gitlab.com/gitlab-org/database-team/team-tasks/-/issues/192
-].freeze
-
 RSpec.shared_examples 'validate dictionary' do |objects, directory_path, required_fields|
   context 'for each object' do
     let(:directory_path) {  directory_path }
@@ -30,6 +23,19 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
 
         hash[object_name] ||= load_object_metadata(required_fields, object_name)
       end
+    end
+
+    # This list is used to provide temporary exceptions for feature categories
+    # that are transitioning and not yet in the feature_categories.yml file
+    # any additions here should be accompanied by a link to an issue link
+    let(:valid_feature_categories) do
+      [
+        'jihu' # https://gitlab.com/gitlab-org/database-team/team-tasks/-/issues/192
+      ]
+    end
+
+    let(:all_feature_categories) do
+      YAML.load_file(Rails.root.join('config/feature_categories.yml')) + valid_feature_categories
     end
 
     let(:objects_without_metadata) do
@@ -68,9 +74,15 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
     end
 
     it 'has a valid feature category' do
+      message = <<~TEXT.chomp
+        Please use a category from https://about.gitlab.com/handbook/product/categories/#categories-a-z
+
+        Table metadata files with an invalid feature category
+      TEXT
+
       expect(objects_with_invalid_feature_category).to be_empty, object_metadata_errors(
-        'Table metadata files with an invalid feature category',
-        :error,
+        message,
+        :invalid_feature_category,
         objects_with_invalid_feature_category
       )
     end
@@ -102,11 +114,10 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
     Rails.root.join(object_metadata_file(object_name))
   end
 
-  def feature_categories_valid?(object_feature_categories)
+  def invalid_feature_categories(object_feature_categories)
     return false unless object_feature_categories.present?
 
-    all_feature_categories = YAML.load_file(Rails.root.join('config/feature_categories.yml')) + VALID_FEATURE_CATEGORIES
-    object_feature_categories.all? { |category| all_feature_categories.include?(category) }
+    object_feature_categories - all_feature_categories
   end
 
   def load_object_metadata(required_fields, object_name)
@@ -125,10 +136,8 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
       if required_fields.include?(:feature_categories)
         object_feature_categories = result.dig(:metadata, :feature_categories)
 
-        unless feature_categories_valid?(object_feature_categories)
-          result[:invalid_feature_category] =
-            "invalid feature category: #{object_feature_categories}" \
-            "Please use a category from https://about.gitlab.com/handbook/product/categories/#categories-a-z"
+        if (invalid = invalid_feature_categories(object_feature_categories)).any?
+          result[:invalid_feature_category] = "invalid feature category: #{invalid.join(', ')}"
         end
       end
     rescue Psych::SyntaxError => ex

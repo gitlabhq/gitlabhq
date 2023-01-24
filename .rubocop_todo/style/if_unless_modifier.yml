@@ -1046,7 +1046,6 @@ Style/IfUnlessModifier:
     - 'sidekiq_cluster/cli.rb'
     - 'spec/components/previews/pajamas/alert_component_preview.rb'
     - 'spec/components/previews/pajamas/card_component_preview.rb'
-    - 'spec/db/docs_spec.rb'
     - 'spec/factories/ci/runners.rb'
     - 'spec/factories/clusters/applications/helm.rb'
     - 'spec/factories/container_repositories.rb'

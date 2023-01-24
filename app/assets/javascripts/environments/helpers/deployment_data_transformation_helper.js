@@ -41,22 +41,46 @@ export const getCommitFromDeploymentNode = (deploymentNode) => {
   };
 };
 
+export const convertJobToDeploymentAction = (job) => {
+  return {
+    name: job.name,
+    playable: job.playable,
+    scheduledAt: job.scheduledAt,
+    playPath: `${job.webPath}/play`,
+  };
+};
+
+export const getActionsFromDeploymentNode = (deploymentNode, lastDeploymentName) => {
+  if (!deploymentNode || !lastDeploymentName) {
+    return [];
+  }
+
+  return (
+    deploymentNode.job?.deploymentPipeline?.jobs?.nodes
+      ?.filter((deployment) => deployment.name !== lastDeploymentName)
+      .map(convertJobToDeploymentAction) || []
+  );
+};
+
 /**
  * This function transforms deploymentNode object coming from GraphQL to object compatible with app/assets/javascripts/environments/environment_details/page.vue table
  * @param {Object} deploymentNode
  * @returns {Object}
  */
-export const convertToDeploymentTableRow = (deploymentNode) => {
+export const convertToDeploymentTableRow = (deploymentNode, environment) => {
+  const { lastDeployment } = environment;
+  const commit = getCommitFromDeploymentNode(deploymentNode);
   return {
     status: deploymentNode.status.toLowerCase(),
     id: deploymentNode.iid,
     triggerer: deploymentNode.triggerer,
-    commit: getCommitFromDeploymentNode(deploymentNode),
+    commit,
     job: deploymentNode.job && {
       webPath: deploymentNode.job.webPath,
       label: `${deploymentNode.job.name} (#${getIdFromGraphQLId(deploymentNode.job.id)})`,
     },
     created: deploymentNode.createdAt || '',
     deployed: deploymentNode.finishedAt || '',
+    actions: getActionsFromDeploymentNode(deploymentNode, lastDeployment?.job?.name),
   };
 };

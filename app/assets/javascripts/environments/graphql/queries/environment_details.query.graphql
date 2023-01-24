@@ -13,6 +13,13 @@ query getEnvironmentDetails(
     environment(name: $environmentName) {
       id
       name
+      lastDeployment(status: SUCCESS) {
+        id
+        job {
+          id
+          name
+        }
+      }
       deployments(
         orderBy: { createdAt: DESC }
         first: $first
@@ -36,6 +43,19 @@ query getEnvironmentDetails(
             name
             id
             webPath
+            playable
+            deploymentPipeline: pipeline {
+              id
+              jobs(whenExecuted: ["manual"], retried: false) {
+                nodes {
+                  id
+                  name
+                  playable
+                  scheduledAt
+                  webPath
+                }
+              }
+            }
           }
           commit {
             id

@@ -24,7 +24,7 @@ Git 2.22.0 or later is required.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
 
-Storing large binary files in Git is normally discouraged, because every large
+Storing large binary files in Git is usually discouraged, because every large
 file added is downloaded by everyone who clones or fetches changes
 thereafter. These downloads are slow and problematic, especially when working from a slow
 or unreliable internet connection.

@@ -11,7 +11,7 @@ import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
 import workItemNotesQuery from '~/work_items/graphql/work_item_notes.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/work_item_notes_by_iid.query.graphql';
 import { DEFAULT_PAGE_SIZE_NOTES, WIDGET_TYPE_NOTES } from '~/work_items/constants';
-import { DESC } from '~/notes/constants';
+import { ASC, DESC } from '~/notes/constants';
 import {
   mockWorkItemNotesResponse,
   workItemQueryResponse,
@@ -40,6 +40,7 @@ describe('WorkItemNotes component', () => {
   Vue.use(VueApollo);
 
   const findAllSystemNotes = () => wrapper.findAllComponents(SystemNote);
+  const findAllListItems = () => wrapper.findAll('ul.timeline > *');
   const findActivityLabel = () => wrapper.find('label');
   const findWorkItemCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
@@ -179,6 +180,18 @@ describe('WorkItemNotes component', () => {
       await findSortingFilter().vm.$emit('changeSortOrder', DESC);
 
       expect(findSystemNoteAtIndex(0).props('note').id).not.toEqual(firstSystemNodeId);
+    });
+
+    it('puts form at start of list in when sorting by newest first', async () => {
+      await findSortingFilter().vm.$emit('changeSortOrder', DESC);
+
+      expect(findAllListItems().at(0).is(WorkItemCommentForm)).toEqual(true);
+    });
+
+    it('puts form at end of list in when sorting by oldest first', async () => {
+      await findSortingFilter().vm.$emit('changeSortOrder', ASC);
+
+      expect(findAllListItems().at(-1).is(WorkItemCommentForm)).toEqual(true);
     });
   });
 });

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Authentication (DAST) **(ULTIMATE)**
+# DAST authentication **(ULTIMATE)**
 
 WARNING:
 **Never** run an authenticated scan against a production server.
