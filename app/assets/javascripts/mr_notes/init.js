@@ -20,7 +20,6 @@ function setupMrNotesState(notesDataset) {
   store.dispatch('setUserData', currentUserData);
   store.dispatch('setTargetNoteHash', getLocationHash());
   store.dispatch('setEndpoints', endpoints);
-  eventHub.$once('fetchNotesData', () => store.dispatch('fetchNotes'));
 }
 
 export function initMrStateLazyLoad() {
@@ -35,10 +34,13 @@ export function initMrStateLazyLoad() {
   stop = store.watch(
     (state) => state.page.activeTab,
     (activeTab) => {
+      setupMrNotesState(notesDataset);
+
       // prevent loading MR state on commits and pipelines pages
       // this is due to them having a shared controller with the Overview page
       if (['diffs', 'show'].includes(activeTab)) {
-        setupMrNotesState(notesDataset);
+        eventHub.$once('fetchNotesData', () => store.dispatch('fetchNotes'));
+
         requestIdleCallback(() => {
           initReviewBar();
           initOverviewTabCounter();

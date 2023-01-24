@@ -64,8 +64,7 @@ class ProjectAuthorization < ApplicationRecord
     # catch up with the primary when large batches of records are being added/removed.
     # Hance, we add a delay only if the GitLab installation has a replica database configured.
     entire_size > batch_size &&
-      !::Gitlab::Database::LoadBalancing.primary_only? &&
-      Feature.enabled?(:enable_minor_delay_during_project_authorizations_refresh)
+      !::Gitlab::Database::LoadBalancing.primary_only?
   end
 
   private_class_method def self.log_details(entire_size:, batch_size:)

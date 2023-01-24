@@ -60,7 +60,7 @@ Configuring your Load Performance Testing job can be broken down into several di
 ### Determine the test parameters
 
 The first thing you need to do is determine the [type of load test](https://k6.io/docs/test-types/introduction)
-you want to run, and how it will run (for example, the number of users, throughput, and so on).
+you want to run, and how you want it to run (for example, the number of users, throughput, and so on).
 
 Refer to the [k6 docs](https://k6.io/docs/), especially the [k6 testing guides](https://k6.io/docs/testing-guides),
 for guidance on the above and more.
@@ -69,7 +69,7 @@ for guidance on the above and more.
 
 A large part of the effort around load performance testing is to prepare the target test environment
 for high loads. You should ensure it's able to handle the
-[throughput](https://k6.io/blog/monthly-visits-concurrent-users) it will be tested with.
+[throughput](https://k6.io/blog/monthly-visits-concurrent-users) it is tested with.
 
 It's also typically required to have representative test data in the target environment
 for the load performance test to use.
@@ -121,7 +121,7 @@ the k6 test.
 NOTE:
 For Kubernetes setups a different template should be used: [`Jobs/Load-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Load-Performance-Testing.gitlab-ci.yml).
 
-k6 has [various options](https://k6.io/docs/using-k6/k6-options/reference/) to configure how it will run tests, such as what throughput (RPS) to run with,
+k6 has [various options](https://k6.io/docs/using-k6/k6-options/reference/) to configure how it runs the tests, such as what throughput (RPS) to run with,
 how long the test should run, and so on. Almost all options can be configured in the test itself, but as
 you can also pass command line options via the `K6_OPTIONS` variable.
 

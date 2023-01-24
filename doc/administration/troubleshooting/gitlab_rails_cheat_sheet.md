@@ -10,7 +10,7 @@ This was the GitLab Support Team's collection of information regarding the GitLa
 console, for use while troubleshooting. It is listed here for posterity,
 as most content has been moved to feature-specific troubleshooting pages and sections,
 see epic [&8147](https://gitlab.com/groups/gitlab-org/-/epics/8147#tree).
-Please update your bookmarks accordingly.
+You may want to update your bookmarks accordingly.
 
 If you are currently having an issue with GitLab,
 it is highly recommended that you first check

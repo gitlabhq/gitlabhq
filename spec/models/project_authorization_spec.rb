@@ -126,7 +126,6 @@ RSpec.describe ProjectAuthorization do
     before do
       # Configure as if a replica database is enabled
       allow(::Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(false)
-      stub_feature_flags(enable_minor_delay_during_project_authorizations_refresh: true)
     end
 
     shared_examples_for 'inserts the rows in batches, as per the `per_batch` size, without a delay between each batch' do
@@ -192,7 +191,6 @@ RSpec.describe ProjectAuthorization do
     before do
       # Configure as if a replica database is enabled
       allow(::Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(false)
-      stub_feature_flags(enable_minor_delay_during_project_authorizations_refresh: true)
     end
 
     before_all do
@@ -264,7 +262,6 @@ RSpec.describe ProjectAuthorization do
     before do
       # Configure as if a replica database is enabled
       allow(::Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(false)
-      stub_feature_flags(enable_minor_delay_during_project_authorizations_refresh: true)
     end
 
     before_all do

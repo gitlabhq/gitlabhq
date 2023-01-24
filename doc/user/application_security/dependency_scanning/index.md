@@ -155,23 +155,14 @@ table.supported-languages ul {
   </thead>
   <tbody>
     <tr>
-      <td>Ruby</td>
-      <td>All versions</td>
-      <td><a href="https://bundler.io/">Bundler</a></td>
-      <td>
-        <ul>
-            <li><code>Gemfile.lock</code></li>
-            <li><code>gems.locked</code></li>
-        </ul>
-      </td>
-      <td>Y</td>
+      <td>.NET</td>
+      <td rowspan="2">All versions</td>
+      <td rowspan="2"><a href="https://www.nuget.org/">NuGet</a></td>
+      <td rowspan="2"><a href="https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file"><code>packages.lock.json</code></a></td>
+      <td rowspan="2">Y</td>
     </tr>
     <tr>
-      <td>PHP</td>
-      <td>All versions</td>
-      <td><a href="https://getcomposer.org/">Composer</a></td>
-      <td><code>composer.lock</code></td>
-      <td>Y</td>
+      <td>C#</td>
     </tr>
     <tr>
       <td>C</td>
@@ -239,14 +230,11 @@ table.supported-languages ul {
       <td>Y</td>
     </tr>
     <tr>
-      <td>.NET</td>
-      <td rowspan="2">All versions</td>
-      <td rowspan="2"><a href="https://www.nuget.org/">NuGet</a></td>
-      <td rowspan="2"><a href="https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file"><code>packages.lock.json</code></a></td>
-      <td rowspan="2">Y</td>
-    </tr>
-    <tr>
-      <td>C#</td>
+      <td>PHP</td>
+      <td>All versions</td>
+      <td><a href="https://getcomposer.org/">Composer</a></td>
+      <td><code>composer.lock</code></td>
+      <td>Y</td>
     </tr>
     <tr>
       <td rowspan="4">Python</td>
@@ -280,6 +268,18 @@ table.supported-languages ul {
       <td><a href="https://python-poetry.org/">Poetry</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-5">5</a></b></sup></td>
       <td><code>poetry.lock</code></td>
       <td>N</td>
+    </tr>
+    <tr>
+      <td>Ruby</td>
+      <td>All versions</td>
+      <td><a href="https://bundler.io/">Bundler</a></td>
+      <td>
+        <ul>
+            <li><code>Gemfile.lock</code></li>
+            <li><code>gems.locked</code></li>
+        </ul>
+      </td>
+      <td>Y</td>
     </tr>
     <tr>
       <td>Scala</td>
