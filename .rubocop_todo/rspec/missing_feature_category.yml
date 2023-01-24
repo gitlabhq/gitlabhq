@@ -1382,7 +1382,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/models/ee/merge_request/metrics_spec.rb'
     - 'ee/spec/models/ee/merge_request_diff_spec.rb'
     - 'ee/spec/models/ee/namespace/root_storage_statistics_spec.rb'
-    - 'ee/spec/models/ee/namespace/storage/notification_spec.rb'
     - 'ee/spec/models/ee/namespace_ci_cd_setting_spec.rb'
     - 'ee/spec/models/ee/namespace_spec.rb'
     - 'ee/spec/models/ee/namespace_statistics_spec.rb'

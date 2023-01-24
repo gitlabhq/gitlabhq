@@ -96,7 +96,7 @@ When denying access, a `reason` can be optionally specified in the JSON body:
 Any other status code than 200, 401 or 403 also deny access to the user, but the
 response isn't cached.
 
-If the service times out (after 500ms), a message "External Policy Server did
+If the service times out (after 500 ms), a message "External Policy Server did
 not respond" is displayed.
 
 ## Classification labels

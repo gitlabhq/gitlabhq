@@ -9,13 +9,18 @@
   - if current_user.two_factor_otp_enabled?
     .row.gl-mb-3
       .col-md-5
-        %button#js-setup-token-2fa-device.gl-button.btn.btn-confirm= _("Set up new device")
+        = render Pajamas::ButtonComponent.new(variant: :confirm,
+          button_options: { id: 'js-setup-token-2fa-device' }) do
+          = _("Set up new device")
       .col-md-7
         %p= _("Your device needs to be set up. Plug it in (if needed) and click the button on the left.")
   - else
     .row.gl-mb-3
       .col-md-4
-        %button#js-setup-token-2fa-device.gl-button.btn.btn-confirm.btn-block{ disabled: true }= _("Set up new device")
+        = render Pajamas::ButtonComponent.new(variant: :confirm,
+          disabled: true,
+          button_options: { id: 'js-setup-token-2fa-device' }) do
+          = _("Set up new device")
       .col-md-8
         %p= _("You need to register a two-factor authentication app before you can set up a device.")
 
@@ -24,7 +29,8 @@
   %div
     %p
       %span <%= error_message %> (<%= error_name %>)
-    %a.btn.btn-default.gl-button#js-token-2fa-try-again= _("Try again?")
+    = render Pajamas::ButtonComponent.new(button_options: { id: 'js-token-2fa-try-again' }) do
+      = _("Try again?")
 
 -# haml-lint:disable InlineJavaScript
 %script#js-register-token-2fa-registered{ type: "text/template" }
@@ -37,4 +43,5 @@
             = text_field_tag 'device_registration[name]', nil, class: 'form-control', placeholder: _("Pick a name")
           .col-md-3
             = hidden_field_tag 'device_registration[device_response]', nil, class: 'form-control', required: true, id: "js-device-response"
-            = submit_tag _("Register device"), class: "gl-button btn btn-confirm"
+            = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm) do
+              = _("Register device")

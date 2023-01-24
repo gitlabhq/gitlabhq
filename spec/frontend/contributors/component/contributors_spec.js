@@ -1,21 +1,29 @@
-import { mount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ContributorsCharts from '~/contributors/components/contributors.vue';
 import { createStore } from '~/contributors/stores';
 import axios from '~/lib/utils/axios_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
+import RefSelector from '~/ref/components/ref_selector.vue';
+import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  visitUrl: jest.fn(),
+}));
 
 let wrapper;
 let mock;
 let store;
 const Component = Vue.extend(ContributorsCharts);
-const endpoint = 'contributors';
+const endpoint = 'contributors/-/graphs';
 const branch = 'main';
 const chartData = [
   { author_name: 'John', author_email: 'jawnnypoo@gmail.com', date: '2019-05-05' },
   { author_name: 'John', author_email: 'jawnnypoo@gmail.com', date: '2019-03-03' },
 ];
+const projectId = '23';
+const commitsPath = 'some/path';
 
 function factory() {
   mock = new MockAdapter(axios);
@@ -23,18 +31,26 @@ function factory() {
   mock.onGet().reply(200, chartData);
   store = createStore();
 
-  wrapper = mount(Component, {
+  wrapper = mountExtended(Component, {
     propsData: {
       endpoint,
       branch,
+      projectId,
+      commitsPath,
     },
     stubs: {
       GlLoadingIcon: true,
       GlAreaChart: true,
+      RefSelector: true,
     },
     store,
   });
 }
+
+const findLoadingIcon = () => wrapper.findByTestId('loading-app-icon');
+const findRefSelector = () => wrapper.findComponent(RefSelector);
+const findHistoryButton = () => wrapper.findByTestId('history-button');
+const findContributorsCharts = () => wrapper.findByTestId('contributors-charts');
 
 describe('Contributors charts', () => {
   beforeEach(() => {
@@ -53,15 +69,46 @@ describe('Contributors charts', () => {
   it('should display loader whiled loading data', async () => {
     wrapper.vm.$store.state.loading = true;
     await nextTick();
-    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+    expect(findLoadingIcon().exists()).toBe(true);
   });
 
-  it('should render charts when loading completed and there is chart data', async () => {
+  it('should render charts and a RefSelector when loading completed and there is chart data', async () => {
     wrapper.vm.$store.state.loading = false;
     wrapper.vm.$store.state.chartData = chartData;
     await nextTick();
-    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
-    expect(wrapper.find('.contributors-charts').exists()).toBe(true);
+
+    expect(findLoadingIcon().exists()).toBe(false);
+    expect(findRefSelector().exists()).toBe(true);
+    expect(findRefSelector().props()).toMatchObject({
+      enabledRefTypes: [REF_TYPE_BRANCHES, REF_TYPE_TAGS],
+      value: branch,
+      projectId,
+      translations: { dropdownHeader: 'Switch branch/tag' },
+      useSymbolicRefNames: false,
+      state: true,
+      name: '',
+    });
+    expect(findContributorsCharts().exists()).toBe(true);
     expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it('should have a history button with a set href attribute', async () => {
+    wrapper.vm.$store.state.loading = false;
+    wrapper.vm.$store.state.chartData = chartData;
+    await nextTick();
+
+    const historyButton = findHistoryButton();
+    expect(historyButton.exists()).toBe(true);
+    expect(historyButton.attributes('href')).toBe(commitsPath);
+  });
+
+  it('visits a URL when clicking on a branch/tag', async () => {
+    wrapper.vm.$store.state.loading = false;
+    wrapper.vm.$store.state.chartData = chartData;
+    await nextTick();
+
+    findRefSelector().vm.$emit('input', branch);
+
+    expect(visitUrl).toHaveBeenCalledWith(`${endpoint}/${branch}`);
   });
 });

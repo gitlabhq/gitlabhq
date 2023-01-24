@@ -168,5 +168,13 @@ build_service_desk_setting: # service_desk_setting
     - issue_template_key
     - file_template_project_id
     - outgoing_name
+    - custom_email_enabled
+    - custom_email
+    - custom_email_smtp_address
+    - custom_email_smtp_port
+    - custom_email_smtp_username
+    - encrypted_custom_email_smtp_password
+    - encrypted_custom_email_smtp_password_iv
+    - custom_email_smtp_password
   remapped_attributes:
     project_key: service_desk_address

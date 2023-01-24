@@ -17,24 +17,30 @@ module Emails
       email_sender = sender(
         @support_bot.id,
         send_from_user_email: false,
-        sender_name: @project.service_desk_setting&.outgoing_name
+        sender_name: @service_desk_setting&.outgoing_name,
+        sender_email: service_desk_sender_email_address
       )
       options = service_desk_options(email_sender, 'thank_you', @issue.external_author)
                   .merge(subject: "Re: #{subject_base}")
 
-      mail_new_thread(@issue, options)
+      inject_service_desk_custom_email(mail_new_thread(@issue, options))
     end
 
     def service_desk_new_note_email(issue_id, note_id, recipient)
       @note = Note.find(note_id)
       setup_service_desk_mail(issue_id)
 
-      email_sender = sender(@note.author_id)
+      email_sender = sender(
+        @note.author_id,
+        send_from_user_email: false,
+        sender_email: service_desk_sender_email_address
+      )
+
       add_uploads_as_attachments if Feature.enabled?(:service_desk_new_note_email_native_attachments, @note.project)
       options = service_desk_options(email_sender, 'new_note', recipient)
                   .merge(subject: subject_base)
 
-      mail_answer_thread(@issue, options)
+      inject_service_desk_custom_email(mail_answer_thread(@issue, options))
     end
 
     private
@@ -43,6 +49,8 @@ module Emails
       @issue = Issue.find(issue_id)
       @project = @issue.project
       @support_bot = User.support_bot
+
+      @service_desk_setting = @project.service_desk_setting
 
       @sent_notification = SentNotification.record(@issue, @support_bot.id, reply_key)
     end
@@ -57,6 +65,22 @@ module Emails
         options[:body] = template_body
         options[:content_type] = 'text/html'
       end
+    end
+
+    def inject_service_desk_custom_email(mail)
+      return mail unless service_desk_custom_email_enabled?
+
+      mail.delivery_method(::Mail::SMTP, @service_desk_setting.custom_email_delivery_options)
+    end
+
+    def service_desk_custom_email_enabled?
+      Feature.enabled?(:service_desk_custom_email, @project) && @service_desk_setting&.custom_email_enabled?
+    end
+
+    def service_desk_sender_email_address
+      return unless service_desk_custom_email_enabled?
+
+      @service_desk_setting.custom_email
     end
 
     def template_content(email_type)

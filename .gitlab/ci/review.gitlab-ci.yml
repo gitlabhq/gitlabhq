@@ -58,6 +58,21 @@ start-review-app-pipeline:
     - job: e2e-test-pipeline-generate
     - job: build-assets-image
       artifacts: false
+  # We do not want to have ALL global variables passed as trigger variables,
+  # as they cannot be overridden. See this issue for more context:
+  #
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/387183
+  inherit:
+    variables:
+      - CHROME_VERSION
+      - REGISTRY_GROUP
+      - REGISTRY_HOST
+      - REVIEW_APPS_DOMAIN
+      - REVIEW_APPS_GCP_PROJECT
+      - REVIEW_APPS_GCP_REGION
+      - REVIEW_APPS_IMAGE
+      - RUBY_VERSION
+
   # These variables are set in the pipeline schedules.
   # They need to be explicitly passed on to the child pipeline.
   # https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword

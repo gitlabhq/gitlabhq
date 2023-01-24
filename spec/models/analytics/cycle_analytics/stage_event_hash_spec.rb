@@ -8,6 +8,7 @@ RSpec.describe Analytics::CycleAnalytics::StageEventHash, type: :model do
 
   describe 'associations' do
     it { is_expected.to have_many(:cycle_analytics_project_stages) }
+    it { is_expected.to have_many(:cycle_analytics_stages) }
   end
 
   describe 'validations' do
@@ -30,14 +31,14 @@ RSpec.describe Analytics::CycleAnalytics::StageEventHash, type: :model do
   end
 
   describe '.cleanup_if_unused' do
-    it 'removes the record' do
+    it 'removes the record if there is no project or group stages with given stage events hash' do
       described_class.cleanup_if_unused(stage_event_hash.id)
 
       expect(described_class.find_by_id(stage_event_hash.id)).to be_nil
     end
 
-    it 'does not remove the record' do
-      id = create(:cycle_analytics_project_stage).stage_event_hash_id
+    it 'does not remove the record if at least 1 group stage for the given stage events hash exists' do
+      id = create(:cycle_analytics_stage).stage_event_hash_id
 
       described_class.cleanup_if_unused(id)
 

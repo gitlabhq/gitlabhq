@@ -6,8 +6,8 @@ import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import GroupSelect from '~/vue_shared/components/entity_select/group_select.vue';
 import EntitySelect from '~/vue_shared/components/entity_select/entity_select.vue';
 import {
-  TOGGLE_TEXT,
-  HEADER_TEXT,
+  GROUP_TOGGLE_TEXT,
+  GROUP_HEADER_TEXT,
   FETCH_GROUPS_ERROR,
   FETCH_GROUP_ERROR,
 } from '~/vue_shared/components/entity_select/constants';
@@ -74,8 +74,8 @@ describe('GroupSelect', () => {
       ${'label'}             | ${label}
       ${'inputName'}         | ${inputName}
       ${'inputId'}           | ${inputId}
-      ${'defaultToggleText'} | ${TOGGLE_TEXT}
-      ${'headerText'}        | ${HEADER_TEXT}
+      ${'defaultToggleText'} | ${GROUP_TOGGLE_TEXT}
+      ${'headerText'}        | ${GROUP_HEADER_TEXT}
     `('passes the $prop prop to entity-select', ({ prop, expectedValue }) => {
       expect(findEntitySelect().props(prop)).toBe(expectedValue);
     });

@@ -105,11 +105,9 @@ module Gitlab
         def read_write
           connection = nil
           transaction_open = nil
-          attempts = 3
 
-          if prevent_load_balancer_retries_in_transaction?
-            attempts = 1 if pool.connection.transaction_open?
-          end
+          # Retry only once when in a transaction (see https://gitlab.com/gitlab-org/gitlab/-/issues/220242)
+          attempts = pool.connection.transaction_open? ? 1 : 3
 
           # In the event of a failover the primary may be briefly unavailable.
           # Instead of immediately grinding to a halt we'll retry the operation
@@ -347,10 +345,6 @@ module Gitlab
 
           row = ar_connection.select_all(sql).first
           row['location'] if row
-        end
-
-        def prevent_load_balancer_retries_in_transaction?
-          Gitlab::Utils.to_boolean(ENV['PREVENT_LOAD_BALANCER_RETRIES_IN_TRANSACTION'], default: false)
         end
       end
     end

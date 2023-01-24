@@ -23,7 +23,7 @@ migrate projects using either:
 - [Direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended).
 - [An export file](../user/project/settings/import_export.md).
 
-Note that:
+When you import a repository:
 
 - The owner of the project is the first administrator.
 - The groups are created as needed, including subgroups.
@@ -159,7 +159,7 @@ project.set_full_path
 ```
 
 In a Rails console session, run the following to migrate all of a namespace's
-projects (this may take a while if there are 1000s of projects in a namespace):
+projects (this may take a while if there are thousands of projects in a namespace):
 
 ```ruby
 namespace = Namespace.find_by_full_path('gitlab-org')

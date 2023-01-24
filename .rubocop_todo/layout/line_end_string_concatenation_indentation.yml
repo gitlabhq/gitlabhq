@@ -71,7 +71,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/models/app_sec/fuzzing/api/ci_configuration.rb'
     - 'ee/app/models/ci/minutes/notification.rb'
     - 'ee/app/models/ee/group_group_link.rb'
-    - 'ee/app/models/ee/namespace/storage/notification.rb'
     - 'ee/app/models/ee/vulnerability.rb'
     - 'ee/app/services/boards/epic_lists/destroy_service.rb'
     - 'ee/app/services/ee/admin/set_feature_flag_service.rb'

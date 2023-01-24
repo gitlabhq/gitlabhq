@@ -56,11 +56,7 @@ class ProjectsFinder < UnionFinder
     collection = Project.wrap_with_cte(collection) if use_cte
     collection = filter_projects(collection)
 
-    if params[:sort] == 'similarity' && params[:search]
-      collection.sorted_by_similarity_desc(params[:search])
-    else
-      sort(collection)
-    end
+    sort(collection)
   end
 
   private
@@ -90,6 +86,7 @@ class ProjectsFinder < UnionFinder
     collection = by_last_activity_after(collection)
     collection = by_last_activity_before(collection)
     collection = by_language(collection)
+    collection = by_feature_availability(collection)
     by_repository_storage(collection)
   end
 
@@ -247,11 +244,13 @@ class ProjectsFinder < UnionFinder
   end
 
   def sort(items)
-    if params[:sort].present?
-      items.sort_by_attribute(params[:sort])
-    else
-      items.projects_order_id_desc
+    return items.projects_order_id_desc unless params[:sort]
+
+    if params[:sort] == 'similarity' && params[:search].present?
+      return items.sorted_by_similarity_desc(params[:search], include_in_select: true)
     end
+
+    items.sort_by_attribute(params[:sort])
   end
 
   def by_archived(projects)
@@ -268,6 +267,12 @@ class ProjectsFinder < UnionFinder
     else
       projects
     end
+  end
+
+  def by_feature_availability(items)
+    items = items.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
+    items = items.with_merge_requests_available_for_user(current_user) if params[:with_merge_requests_enabled]
+    items
   end
 
   def finder_params

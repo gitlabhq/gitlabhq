@@ -36,6 +36,8 @@ RSpec.describe Namespace, feature_category: :subgroups do
     it { is_expected.to have_many(:work_items) }
     it { is_expected.to have_many :achievements }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
+    it { is_expected.to have_many(:cycle_analytics_stages) }
+    it { is_expected.to have_many(:value_streams) }
 
     it do
       is_expected.to have_one(:ci_cd_settings).class_name('NamespaceCiCdSetting').inverse_of(:namespace).autosave(true)

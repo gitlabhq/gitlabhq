@@ -177,7 +177,7 @@ class Todo < ApplicationRecord
   end
 
   def resource_parent
-    project
+    project || group
   end
 
   def unmergeable?

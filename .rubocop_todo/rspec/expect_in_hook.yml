@@ -51,7 +51,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/models/concerns/geo/replicable_model_spec.rb'
     - 'ee/spec/models/container_repository_spec.rb'
     - 'ee/spec/models/dora/daily_metrics_spec.rb'
-    - 'ee/spec/models/ee/namespace/storage/notification_spec.rb'
     - 'ee/spec/models/ee/namespace_spec.rb'
     - 'ee/spec/models/gitlab_subscription_spec.rb'
     - 'ee/spec/models/license_spec.rb'

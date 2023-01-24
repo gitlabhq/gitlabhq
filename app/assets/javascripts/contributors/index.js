@@ -7,18 +7,19 @@ export default () => {
 
   if (!el) return null;
 
-  const { projectGraphPath, projectBranch, defaultBranch } = el.dataset;
+  const { projectGraphPath, projectBranch, defaultBranch, projectId, commitsPath } = el.dataset;
   const store = createStore(defaultBranch);
 
   return new Vue({
     el,
     store,
-
     render(createElement) {
       return createElement(ContributorsGraphs, {
         props: {
           endpoint: projectGraphPath,
           branch: projectBranch,
+          projectId,
+          commitsPath,
         },
       });
     },

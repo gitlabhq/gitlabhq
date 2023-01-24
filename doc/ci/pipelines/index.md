@@ -163,32 +163,32 @@ information such as what the variable is used for, and what the acceptable value
 Job-level variables cannot be pre-filled.
 
 In manually-triggered pipelines, the **Run pipeline** page displays all pipeline-level variables
-with a `description` defined in the `.gitlab-ci.yml` file. The description displays
+that have a `description` defined in the `.gitlab-ci.yml` file. The description displays
 below the variable.
 
 You can change the prefilled value, which overrides the value for that single pipeline run.
-If you do not define a `value` for the variable in the configuration file, the variable still displays,
+If you do not define a `value` for the variable in the configuration file, the variable name is still listed,
 but the value field is blank.
 
 For example:
 
 ```yaml
 variables:
-  TEST_SUITE:
-    description: "The test suite that will run. Valid options are: 'default', 'short', 'full'."
-    value: "default"
+  DEPLOY_CREDENTIALS:
+    description: "The deployment credentials."
   DEPLOY_ENVIRONMENT:
     description: "Select the deployment target. Valid options are: 'canary', 'staging', 'production', or a stable branch of your choice."
+    value: "canary"
 ```
 
 In this example:
 
-- `TEST_SUITE` is pre-filled in the **Run pipeline** page with `default`,
-  and the message explains the other options.
-- `DEPLOY_ENVIRONMENT` is listed in the **Run pipeline** page, but with no value set.
+- `DEPLOY_CREDENTIALS` is listed in the **Run pipeline** page, but with no value set.
   The user is expected to define the value each time the pipeline is run manually.
+- `DEPLOY_ENVIRONMENT` is pre-filled in the **Run pipeline** page with `canary` as the default value,
+  and the message explains the other options.
 
-##### Configure a list of selectable values for a prefilled variable
+#### Configure a list of selectable prefilled variable values
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `run_pipeline_graphql`. Disabled by default.
 > - The `options` keyword was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.

@@ -10145,9 +10145,6 @@ msgstr ""
 msgid "Commits|An error occurred while fetching merge requests data."
 msgstr ""
 
-msgid "Commits|History"
-msgstr ""
-
 msgid "Commits|No related merge requests found"
 msgstr ""
 
@@ -14287,9 +14284,6 @@ msgid "DevOps adoption"
 msgstr ""
 
 msgid "Developer"
-msgstr ""
-
-msgid "Development"
 msgstr ""
 
 msgid "Devices (optional)"
@@ -21072,9 +21066,6 @@ msgid "If disabled, only administrators can configure repository mirroring."
 msgstr ""
 
 msgid "If enabled, only protected branches will be mirrored."
-msgstr ""
-
-msgid "If no options are selected, only administrators can register runners."
 msgstr ""
 
 msgid "If the number of active users exceeds the user limit, you will be charged for the number of %{users_over_license_link} at your next license reconciliation."
@@ -36477,6 +36468,9 @@ msgstr ""
 msgid "Runners|Idle"
 msgstr ""
 
+msgid "Runners|If both settings are disabled, new runners cannot be registered."
+msgstr ""
+
 msgid "Runners|Install a runner"
 msgstr ""
 
@@ -44856,6 +44850,12 @@ msgstr ""
 msgid "Unable to fetch groups. Reload the page to try again."
 msgstr ""
 
+msgid "Unable to fetch project. Reload the page to try again."
+msgstr ""
+
+msgid "Unable to fetch projects. Reload the page to try again."
+msgstr ""
+
 msgid "Unable to fetch upstream and downstream pipelines."
 msgstr ""
 
@@ -45460,6 +45460,9 @@ msgid "UsageQuota|Usage by month"
 msgstr ""
 
 msgid "UsageQuota|Usage by project"
+msgstr ""
+
+msgid "UsageQuota|Usage of group resources across the projects in the %{namespaceName} group"
 msgstr ""
 
 msgid "UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group"

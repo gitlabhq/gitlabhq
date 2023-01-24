@@ -5,11 +5,14 @@ require 'spec_helper'
 RSpec.describe Analytics::CycleAnalytics::Stages::ListService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project_namespace) { project.project_namespace.reload }
 
-  let(:value_stream) { Analytics::CycleAnalytics::ProjectValueStream.build_default_value_stream(project) }
+  let(:value_stream) { Analytics::CycleAnalytics::ValueStream.build_default_value_stream(project_namespace) }
   let(:stages) { subject.payload[:stages] }
 
-  subject { described_class.new(parent: project, current_user: user).execute }
+  subject do
+    described_class.new(parent: project_namespace, current_user: user, params: { value_stream: value_stream }).execute
+  end
 
   before_all do
     project.add_reporter(user)

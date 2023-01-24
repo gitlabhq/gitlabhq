@@ -324,13 +324,20 @@ $border-radius-medium: 3px;
   }
 }
 
-// Disable Webkit's search input styles
+/**
+ * When form input type is search, browsers add a clear input button inside
+ * the input field. This overlaps with the input field we have already added.
+ */
+
+/* stylelint-disable property-no-vendor-prefix */
 input[type='search'] {
-  /* stylelint-disable-next-line property-no-vendor-prefix */
   -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
 
   &::-webkit-search-cancel-button,
   &::-webkit-search-results-button {
     @include gl-display-none;
   }
 }
+/* stylelint-enable property-no-vendor-prefix */

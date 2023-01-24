@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis, :delete do
+RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis, :delete, feature_category: :database do # rubocop:disable Layout/LineLength
   include StubENV
   let(:model) { ActiveRecord::Base }
   let(:db_host) { model.connection_pool.db_config.host }
@@ -55,50 +55,8 @@ RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis
     conn.execute("INSERT INTO #{test_table_name} (value) VALUES (2)")
   end
 
-  context 'with the PREVENT_LOAD_BALANCER_RETRIES_IN_TRANSACTION environment variable not set' do
-    it 'logs a warning when violating transaction semantics with writes' do
-      conn = model.connection
-
-      expect(::Gitlab::Database::LoadBalancing::Logger).to receive(:warn).with(hash_including(event: :transaction_leak))
-      expect(::Gitlab::Database::LoadBalancing::Logger).to receive(:warn).with(hash_including(event: :read_write_retry))
-
-      conn.transaction do
-        expect(conn).to be_transaction_open
-
-        execute(conn)
-
-        expect(conn).not_to be_transaction_open
-      end
-
-      values = conn.execute("SELECT value FROM #{test_table_name}").to_a.map { |row| row['value'] }
-      expect(values).to contain_exactly(2) # Does not include 1 because the transaction was aborted and leaked
-    end
-
-    it 'does not log a warning when no transaction is open to be leaked' do
-      conn = model.connection
-
-      expect(::Gitlab::Database::LoadBalancing::Logger)
-        .not_to receive(:warn).with(hash_including(event: :transaction_leak))
-      expect(::Gitlab::Database::LoadBalancing::Logger)
-        .to receive(:warn).with(hash_including(event: :read_write_retry))
-
-      expect(conn).not_to be_transaction_open
-
-      execute(conn)
-
-      expect(conn).not_to be_transaction_open
-
-      values = conn.execute("SELECT value FROM #{test_table_name}").to_a.map { |row| row['value'] }
-      expect(values).to contain_exactly(1, 2) # Includes both rows because there was no transaction to roll back
-    end
-  end
-
-  context 'with the PREVENT_LOAD_BALANCER_RETRIES_IN_TRANSACTION environment variable set' do
-    before do
-      stub_env('PREVENT_LOAD_BALANCER_RETRIES_IN_TRANSACTION' => '1')
-    end
-
-    it 'raises an exception when a retry would occur during a transaction' do
+  context 'in a transaction' do
+    it 'raises an exception when a retry would occur' do
       expect(::Gitlab::Database::LoadBalancing::Logger)
         .not_to receive(:warn).with(hash_including(event: :transaction_leak))
 
@@ -108,8 +66,10 @@ RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis
         end
       end.to raise_error(ActiveRecord::StatementInvalid) { |e| expect(e.cause).to be_a(PG::ConnectionBad) }
     end
+  end
 
-    it 'retries when not in a transaction' do
+  context 'without a transaction' do
+    it 'retries' do
       expect(::Gitlab::Database::LoadBalancing::Logger)
         .not_to receive(:warn).with(hash_including(event: :transaction_leak))
       expect(::Gitlab::Database::LoadBalancing::Logger)

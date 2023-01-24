@@ -35,7 +35,7 @@ GitLab retrieves performance data from the configured Prometheus server, and
 attempts to identifying the presence of known metrics. Once identified, GitLab
 then needs to be able to map the data to a particular environment.
 
-In order to isolate and only display relevant metrics for a given environment,
+To isolate and only display relevant metrics for a given environment,
 GitLab needs a method to detect which labels are associated. To do that,
 GitLab uses the defined queries and fills in the environment specific variables.
 Typically this involves looking for the

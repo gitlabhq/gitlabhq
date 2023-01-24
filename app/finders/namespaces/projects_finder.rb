@@ -12,6 +12,8 @@
 #     search: string
 #     include_subgroups: boolean
 #     ids: int[]
+#     with_issues_enabled: boolean
+#     with_merge_requests_enabled: boolean
 #
 module Namespaces
   class ProjectsFinder
@@ -30,7 +32,9 @@ module Namespaces
                      namespace.projects.with_route
                    end
 
-      filter_projects(collection)
+      collection = filter_projects(collection)
+
+      sort(collection)
     end
 
     private
@@ -39,7 +43,8 @@ module Namespaces
 
     def filter_projects(collection)
       collection = by_ids(collection)
-      by_similarity(collection)
+      collection = by_similarity(collection)
+      by_feature_availability(collection)
     end
 
     def by_ids(items)
@@ -51,11 +56,26 @@ module Namespaces
     def by_similarity(items)
       return items unless params[:search].present?
 
-      if params[:sort] == :similarity
-        items = items.sorted_by_similarity_desc(params[:search], include_in_select: true)
+      items.merge(Project.search(params[:search]))
+    end
+
+    def by_feature_availability(items)
+      items = items.with_issues_available_for_user(current_user) if params[:with_issues_enabled].present?
+      if params[:with_merge_requests_enabled].present?
+        items = items.with_merge_requests_available_for_user(current_user)
       end
 
-      items.merge(Project.search(params[:search]))
+      items
+    end
+
+    def sort(items)
+      return items.projects_order_id_desc unless params[:sort]
+
+      if params[:sort] == :similarity && params[:search].present?
+        return items.sorted_by_similarity_desc(params[:search], include_in_select: true)
+      end
+
+      items.sort_by_attribute(params[:sort])
     end
   end
 end

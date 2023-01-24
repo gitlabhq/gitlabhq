@@ -28,6 +28,7 @@ To report abuse from a user's profile page:
 
 1. Anywhere in GitLab, select the name of the user.
 1. In the top right corner of the user's profile, select **Report abuse to administrator** (**{information-o}**).
+1. Select a reason for reporting the user.
 1. Complete an abuse report.
 1. Select **Send report**.
 
@@ -37,6 +38,7 @@ To report abuse from a user's comment:
 
 1. In the comment, in the top right corner, select **More actions** (**{ellipsis_v}**).
 1. Select **Report abuse to administrator**.
+1. Select a reason for reporting the user.
 1. Complete an abuse report.
 1. Select **Send report**.
 
@@ -48,14 +50,16 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 1. On the issue, in the top right corner, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **Report abuse to administrator**.
-1. Submit an abuse report.
+1. Select a reason for reporting the user.
+1. Complete an abuse report.
 1. Select **Send report**.
 
 ## Report abuse from a merge request
 
 1. On the merge request, in the top right corner, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **Report abuse to administrator**.
-1. Submit an abuse report.
+1. Select a reason for reporting this user.
+1. Complete an abuse report.
 1. Select **Send report**.
 
 ## Related topics

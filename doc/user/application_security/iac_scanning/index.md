@@ -16,7 +16,7 @@ IaC Scanning supports configuration files for Terraform, Ansible, AWS CloudForma
 
 IaC Scanning runs in the `test` stage, which is available by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 
-We recommend a minimum of 4GB RAM to ensure consistent performance.
+We recommend a minimum of 4 GB RAM to ensure consistent performance.
 
 To run IaC Scanning jobs, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
@@ -222,13 +222,13 @@ To override the automatic update behavior, set the `SAST_ANALYZER_IMAGE_TAG` CI/
 in your CI/CD configuration file after you include the [`SAST-IaC.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml).
 
 Only set this variable in a specific job.
-If you set it [at the top level](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set will be used for other SAST analyzers.
+If you set it [at the top level](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set is used for other SAST analyzers.
 
 You can set the tag to:
 
-- A major version, like `3`. Your pipelines will use any minor or patch updates that are released within this major version.
-- A minor version, like `3.7`. Your pipelines will use any patch updates that are released within this minor version.
-- A patch version, like `3.7.0`. Your pipelines won't receive any updates.
+- A major version, like `3`. Your pipelines use any minor or patch updates that are released within this major version.
+- A minor version, like `3.7`. Your pipelines use any patch updates that are released within this minor version.
+- A patch version, like `3.7.0`. Your pipelines don't receive any updates.
 
 This example uses a specific minor version of the `KICS` analyzer:
 

@@ -1401,6 +1401,7 @@ RSpec.describe Notify do
 
     context 'for service desk issues' do
       before do
+        stub_feature_flags(service_desk_custom_email: false)
         issue.update!(external_author: 'service.desk@example.com')
         issue.issue_email_participants.create!(email: 'service.desk@example.com')
       end
@@ -1411,6 +1412,7 @@ RSpec.describe Notify do
         it_behaves_like 'an unsubscribeable thread'
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
+        it_behaves_like 'a mail with default delivery method'
 
         it 'has the correct recipient' do
           is_expected.to deliver_to('service.desk@example.com')
@@ -1444,6 +1446,41 @@ RSpec.describe Notify do
             expect_sender(User.support_bot)
           end
         end
+
+        context 'when service_desk_custom_email is active' do
+          before do
+            stub_feature_flags(service_desk_custom_email: true)
+          end
+
+          it_behaves_like 'a mail with default delivery method'
+
+          it 'uses service bot name by default' do
+            expect_sender(User.support_bot)
+          end
+
+          context 'when custom email is enabled' do
+            let_it_be(:settings) do
+              create(
+                :service_desk_setting,
+                project: project,
+                custom_email_enabled: true,
+                custom_email: 'supersupport@example.com',
+                custom_email_smtp_address: 'smtp.example.com',
+                custom_email_smtp_port: 587,
+                custom_email_smtp_username: 'supersupport@example.com',
+                custom_email_smtp_password: 'supersecret'
+              )
+            end
+
+            it 'uses custom email and service bot name in "from" header' do
+              expect_sender(User.support_bot, sender_email: 'supersupport@example.com')
+            end
+
+            it 'uses SMTP delivery method and has correct settings' do
+              expect_service_desk_custom_email_delivery_options(settings)
+            end
+          end
+        end
       end
 
       describe 'new note email' do
@@ -1454,6 +1491,7 @@ RSpec.describe Notify do
         it_behaves_like 'an unsubscribeable thread'
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
+        it_behaves_like 'a mail with default delivery method'
 
         it 'has the correct recipient' do
           is_expected.to deliver_to('service.desk@example.com')
@@ -1467,6 +1505,41 @@ RSpec.describe Notify do
           aggregate_failures do
             is_expected.to have_referable_subject(issue, include_project: false, reply: true)
             is_expected.to have_body_text(first_note.note)
+          end
+        end
+
+        context 'when service_desk_custom_email is active' do
+          before do
+            stub_feature_flags(service_desk_custom_email: true)
+          end
+
+          it_behaves_like 'a mail with default delivery method'
+
+          it 'uses author\'s name in "from" header' do
+            expect_sender(first_note.author)
+          end
+
+          context 'when custom email is enabled' do
+            let_it_be(:settings) do
+              create(
+                :service_desk_setting,
+                project: project,
+                custom_email_enabled: true,
+                custom_email: 'supersupport@example.com',
+                custom_email_smtp_address: 'smtp.example.com',
+                custom_email_smtp_port: 587,
+                custom_email_smtp_username: 'supersupport@example.com',
+                custom_email_smtp_password: 'supersecret'
+              )
+            end
+
+            it 'uses custom email and author\'s name in "from" header' do
+              expect_sender(first_note.author, sender_email: project.service_desk_setting.custom_email)
+            end
+
+            it 'uses SMTP delivery method and has correct settings' do
+              expect_service_desk_custom_email_delivery_options(settings)
+            end
           end
         end
       end
@@ -2271,9 +2344,20 @@ RSpec.describe Notify do
     end
   end
 
-  def expect_sender(user)
+  def expect_sender(user, sender_email: nil)
     sender = subject.header[:from].addrs[0]
     expect(sender.display_name).to eq("#{user.name} (@#{user.username})")
-    expect(sender.address).to eq(gitlab_sender)
+    expect(sender.address).to eq(sender_email.presence || gitlab_sender)
+  end
+
+  def expect_service_desk_custom_email_delivery_options(service_desk_setting)
+    expect(subject.delivery_method).to be_a Mail::SMTP
+    expect(subject.delivery_method.settings).to include(
+      address: service_desk_setting.custom_email_smtp_address,
+      port: service_desk_setting.custom_email_smtp_port,
+      user_name: service_desk_setting.custom_email_smtp_username,
+      password: service_desk_setting.custom_email_smtp_password,
+      domain: service_desk_setting.custom_email.split('@').last
+    )
   end
 end

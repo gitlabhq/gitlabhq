@@ -8,6 +8,7 @@ module Types
 
       value 'SIMILARITY', 'Most similar to the search query.', value: :similarity
       value 'STORAGE', 'Sort by storage size.', value: :storage
+      value 'ACTIVITY_DESC', 'Sort by latest activity, in descending order.', value: :latest_activity_desc
     end
   end
 end

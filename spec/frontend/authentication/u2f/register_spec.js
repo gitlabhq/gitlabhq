@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { trimText } from 'helpers/text_helper';
 import U2FRegister from '~/authentication/u2f/register';
 import 'vendor/u2f';
 import MockU2FDevice from './mock_u2f_device';
@@ -24,7 +25,7 @@ describe('U2FRegister', () => {
   it('allows registering a U2F device', () => {
     const setupButton = container.find('#js-setup-token-2fa-device');
 
-    expect(setupButton.text()).toBe('Set up new device');
+    expect(trimText(setupButton.text())).toBe('Set up new device');
     setupButton.trigger('click');
     const inProgressMessage = container.children('p');
 

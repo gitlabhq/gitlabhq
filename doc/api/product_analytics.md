@@ -79,3 +79,15 @@ GET /projects/:id/product_analytics/request/meta
 | Attribute | Type             | Required | Description                                                   |
 | --------- |------------------| -------- |---------------------------------------------------------------|
 | `id`      | integer          | yes      | The ID of a project that the current user has read access to. |
+
+## List a project's funnels
+
+List all funnels for a project. For example:
+
+```plaintext
+GET /projects/:id/product_analytics/funnels
+```
+
+| Attribute | Type             | Required | Description                                                        |
+| --------- |------------------| -------- |--------------------------------------------------------------------|
+| `id`      | integer          | yes      | The ID of a project that the current user has the Developer role for. |

@@ -761,6 +761,9 @@ input {
   color: #ececef;
   background-color: #333238;
 }
+input[type="search"] {
+  appearance: textfield;
+}
 .form-control {
   border-radius: 4px;
   padding: 6px 10px;

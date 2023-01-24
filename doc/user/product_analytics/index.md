@@ -117,3 +117,77 @@ The example below includes three dashboards and one visualization that applies t
 ├── visualizations
 │  └── example_line_chart.yaml
 ```
+
+## Funnel analysis
+
+Funnel analysis can be used to understand the flow of users through your application and where
+users drop out of a predefined flow (for example, a checkout process or ticket purchase).
+
+Each product can also define an unlimited number of funnels.
+These funnels are defined using our YAML schema and stored in the `.gitlab/product_analytics/funnels/` directory of a project repository.
+
+Funnel definitions must include the keys `name`, `seconds_to_convert`, and an array of `steps`.
+
+| Key                  | Description                                              |
+|----------------------|----------------------------------------------------------|
+| `name`               | The name of the funnel.                                  |
+| `seconds_to_convert` | The number of seconds a user has to complete the funnel. |
+| `steps`              | An array of funnel steps.                                |
+
+Each step must include the keys `name`, `target`, and `action`.
+
+| Key      | Description                                                                              |
+|----------|------------------------------------------------------------------------------------------|
+| `name`   | The name of the step. This should be a unique slug.                                      |
+| `action` | The action performed. (Only `pageview` is supported.)                          |
+| `target` | The target of the step. (Because only `pageview` is supported, this should be a path.) |
+
+### Example funnel definition
+
+```yaml
+name: completed_purchase
+seconds_to_convert: 3600
+steps:
+  - name: view_page_1
+    target: '/page1.html'
+    action: 'pageview'
+  - name: view_page_2
+    target: '/page2.html'
+    action: 'pageview'
+  - name: view_page_3
+    target: '/page3.html'
+    action: 'pageview'
+```
+
+### Query a funnel
+
+You can [query the funnel data with the REST API](../../api/product_analytics.md#send-query-request-to-cube).
+To do this, you can use the example query body below, where you need to replace `FUNNEL_NAME` with your funnel's name.
+
+NOTE:
+The `afterDate` filter is not supported. Please use `beforeDate` or `inDateRange`.
+
+```json
+{
+  "query": {
+      "measures": [
+        "FUNNEL_NAME.count"
+      ],
+      "order": {
+        "completed_purchase.count": "desc"
+      },
+      "filters": [
+        {
+          "member": "FUNNEL_NAME.date",
+          "operator": "beforeDate",
+          "values": [
+            "2023-02-01"
+          ]
+        }
+      ],
+      "dimensions": [
+        "FUNNEL_NAME.step"
+      ]
+    }
+}
+```

@@ -198,7 +198,6 @@ Style/FormatString:
     - 'ee/app/models/dast_site_profile.rb'
     - 'ee/app/models/dast_site_validation.rb'
     - 'ee/app/models/ee/member.rb'
-    - 'ee/app/models/ee/namespace/storage/notification.rb'
     - 'ee/app/models/geo/upload_registry.rb'
     - 'ee/app/models/integrations/github.rb'
     - 'ee/app/models/iterations/cadence.rb'

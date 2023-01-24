@@ -275,7 +275,7 @@ arguments until the status query returns no rows.
 ##### For a no-downtime deployment
 
 As the failing migrations are post-deployment migrations, you can remain on a running instance of the upgraded
-version and wait for the batched background migrations to finish normally.
+version and wait for the batched background migrations to finish.
 
 1. [Check the status](#check-the-status-of-batched-background-migrations) of the batched background migration from
 the error message, and make sure it is listed as finished. If it is still active, either wait until it is done,

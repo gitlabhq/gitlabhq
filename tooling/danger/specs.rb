@@ -5,7 +5,7 @@ module Tooling
     module Specs
       SPEC_FILES_REGEX = 'spec/'
       EE_PREFIX = 'ee/'
-      MATCH_WITH_ARRAY_REGEX = /(?<to>to\(?\s*)(?<matcher>match|eq)(?<expectation>[( ]?\[[^\]]+)/.freeze
+      MATCH_WITH_ARRAY_REGEX = /(?<to>to\(?\s*)(?<matcher>match|eq)(?<expectation>[( ]?\[(?=.*,)[^\]]+)/.freeze
       MATCH_WITH_ARRAY_REPLACEMENT = '\k<to>match_array\k<expectation>'
 
       PROJECT_FACTORIES = %w[

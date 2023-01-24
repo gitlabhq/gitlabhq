@@ -8,10 +8,14 @@ type: reference, howto
 # DAST authentication **(ULTIMATE)**
 
 WARNING:
-**Never** run an authenticated scan against a production server.
-Authenticated scans may perform *any* function that the authenticated user can,
+**DO NOT** use credentials that are valid for production systems, production servers, or any that
+contain production data.
+
+WARNING:
+**DO NOT** run an authenticated scan against a production server.
+Authenticated scans may perform **any** function that the authenticated user can,
 including modifying or deleting data, submitting forms, and following links.
-Only run an authenticated scan against a test server.
+Only run an authenticated scan against non-production systems or servers.
 
 Authentication logs a user in before a DAST scan so that the analyzer can test
 as much of the application as possible when searching for vulnerabilities.

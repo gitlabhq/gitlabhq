@@ -14,11 +14,11 @@ RSpec.describe ProjectsFinder do
     end
 
     let_it_be(:internal_project) do
-      create(:project, :internal, group: group, name: 'B', path: 'B')
+      create(:project, :internal, :merge_requests_disabled, group: group, name: 'B', path: 'B')
     end
 
     let_it_be(:public_project) do
-      create(:project, :public, group: group, name: 'C', path: 'C')
+      create(:project, :public, :merge_requests_enabled, :issues_disabled, group: group, name: 'C', path: 'C')
     end
 
     let_it_be(:shared_project) do
@@ -407,6 +407,18 @@ RSpec.describe ProjectsFinder do
 
           it { is_expected.to match_array([internal_project, public_project]) }
         end
+      end
+
+      describe 'when with_issues_enabled is true' do
+        let(:params) { { with_issues_enabled: true } }
+
+        it { is_expected.to match_array([internal_project]) }
+      end
+
+      describe 'when with_merge_requests_enabled is true' do
+        let(:params) { { with_merge_requests_enabled: true } }
+
+        it { is_expected.to match_array([public_project]) }
       end
 
       describe 'sorting' do

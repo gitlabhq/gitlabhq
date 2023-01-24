@@ -4398,35 +4398,89 @@ deploy_review_job:
 
 #### `variables:description`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5, `variables:value` can contain an array of values.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
-Use the `description` keyword to define a [pipeline-level (global) variable that is prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
-when [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
-
-If used with `value`, the variable value is also prefilled when running a pipeline manually.
+Use the `description` keyword to define a description for a pipeline-level (global) variable.
+The description displays with [the prefilled variable name when running a pipeline manually](../pipelines/index.md#prefill-variables-in-manual-pipelines).
 
 **Keyword type**: Global keyword. You cannot use it for job-level variables.
 
 **Possible inputs**:
 
 - A string.
-- An array of strings.
 
 **Example of `variables:description`**:
 
 ```yaml
 variables:
-  DEPLOY_ENVIRONMENT:
-    description: "The deployment target. Change this variable to 'canary' or 'production' if needed."
-    value: "staging"
+  DEPLOY_NOTE:
+    description: "The deployment note. Explain the reason for this deployment."
 ```
 
 **Additional details**:
 
-- A global variable defined with `value` but no `description` behaves the same as
-  [`variables`](#variables).
-- `variables:value` can [contain an array of selectable values](../pipelines/index.md#configure-a-list-of-selectable-values-for-a-prefilled-variable).
+- When used without `value`, the variable exists in pipelines that were not triggered manually,
+  and the default value is an empty string (`''`).
+
+#### `variables:value`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
+
+Use the `value` keyword to define a pipeline-level (global) variable's value. When used with
+[`variables: description`](#variablesdescription), the variable value is [prefilled when running a pipeline manually](../pipelines/index.md#prefill-variables-in-manual-pipelines).
+
+**Keyword type**: Global keyword. You cannot use it for job-level variables.
+
+**Possible inputs**:
+
+- A string.
+
+**Example of `variables:value`**:
+
+```yaml
+variables:
+  DEPLOY_ENVIRONMENT:
+    value: "staging"
+    description: "The deployment target. Change this variable to 'canary' or 'production' if needed."
+```
+
+**Additional details**:
+
+- If used without [`variables: description`](#variablesdescription), the behavior is
+  the same as [`variables`](#variables).
+
+#### `variables:options`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
+
+Use `variables:options` to define an array of values that are [selectable in the UI when running a pipeline manually](../pipelines/index.md#configure-a-list-of-selectable-prefilled-variable-values).
+
+Must be used with `variables: value`, and the string defined for `value`:
+
+- Must also be one of the strings in the `options` array.
+- Is the default selection.
+
+If there is no [`description`](#variablesdescription),
+this keyword has no effect.
+
+**Keyword type**: Global keyword. You cannot use it for job-level variables.
+
+**Possible inputs**:
+
+- An array of strings.
+
+**Example of `variables:options`**:
+
+```yaml
+variables:
+  DEPLOY_ENVIRONMENT:
+    value: "staging"
+    options:
+      - "production"
+      - "staging"
+      - "canary"
+    description: "The deployment target. Set to 'staging' by default."
+```
 
 #### `variables:expand`
 

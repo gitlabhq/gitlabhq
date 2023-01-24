@@ -5,7 +5,12 @@ import axios from '~/lib/utils/axios_utils';
 import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import { groupsPath } from './utils';
-import { TOGGLE_TEXT, HEADER_TEXT, FETCH_GROUPS_ERROR, FETCH_GROUP_ERROR } from './constants';
+import {
+  GROUP_TOGGLE_TEXT,
+  GROUP_HEADER_TEXT,
+  FETCH_GROUPS_ERROR,
+  FETCH_GROUP_ERROR,
+} from './constants';
 import EntitySelect from './entity_select.vue';
 
 export default {
@@ -58,7 +63,7 @@ export default {
       let groups = [];
       let totalPages = 0;
       try {
-        const { data, headers } = await axios.get(
+        const { data = [], headers } = await axios.get(
           Api.buildUrl(groupsPath(this.groupsFilter, this.parentGroupID)),
           {
             params: {
@@ -68,7 +73,7 @@ export default {
             },
           },
         );
-        groups = (data.length ? data : data.results || []).map((group) => ({
+        groups = data.map((group) => ({
           ...group,
           text: group.full_name,
           value: String(group.id),
@@ -99,8 +104,8 @@ export default {
     },
   },
   i18n: {
-    toggleText: TOGGLE_TEXT,
-    selectGroup: HEADER_TEXT,
+    toggleText: GROUP_TOGGLE_TEXT,
+    selectGroup: GROUP_HEADER_TEXT,
   },
 };
 </script>

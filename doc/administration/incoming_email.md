@@ -798,20 +798,19 @@ incoming_email:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
 
 GitLab can read incoming email using the Microsoft Graph API instead of
-IMAP. Because [Microsoft is deprecating IMAP usage with Basic Authentication](https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-oauth-2-0-support-for-imap-and-smtp-auth-protocols-in/ba-p/1330432), the Microsoft Graph API will soon be required for new Microsoft Exchange Online
-mailboxes.
+IMAP. Because [Microsoft is deprecating IMAP usage with Basic Authentication](https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-oauth-2-0-support-for-imap-and-smtp-auth-protocols-in/ba-p/1330432), the Microsoft Graph API is be required for new Microsoft Exchange Online mailboxes.
 
-To configure GitLab for Microsoft Graph, you will need to register an
-OAuth2 application in your Azure Active Directory that has the
+To configure GitLab for Microsoft Graph, you need to register an
+OAuth 2.0 application in your Azure Active Directory that has the
 `Mail.ReadWrite` permission for all mailboxes. See the [MailRoom step-by-step guide](https://github.com/tpitale/mail_room/#microsoft-graph-configuration)
 and [Microsoft instructions](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
 for more details.
 
-Record the following when you configure your OAuth2 application:
+Record the following when you configure your OAuth 2.0 application:
 
 - Tenant ID for your Azure Active Directory
-- Client ID for your OAuth2 application
-- Client secret your OAuth2 application
+- Client ID for your OAuth 2.0 application
+- Client secret your OAuth 2.0 application
 
 ##### Restrict mailbox access
 

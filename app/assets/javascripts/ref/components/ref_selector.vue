@@ -87,6 +87,12 @@ export default {
       required: false,
       default: '',
     },
+
+    toggleButtonClass: {
+      type: [String, Object, Array],
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -130,11 +136,21 @@ export default {
     showSectionHeaders() {
       return this.enabledRefTypes.length > 1;
     },
-    toggleButtonClass() {
-      return {
-        'gl-inset-border-1-red-500!': !this.state,
-        'gl-font-monospace': Boolean(this.selectedRef),
-      };
+    extendedToggleButtonClass() {
+      const classes = [
+        {
+          'gl-inset-border-1-red-500!': !this.state,
+          'gl-font-monospace': Boolean(this.selectedRef),
+        },
+      ];
+
+      if (Array.isArray(this.toggleButtonClass)) {
+        classes.push(...this.toggleButtonClass);
+      } else {
+        classes.push(this.toggleButtonClass);
+      }
+
+      return classes;
     },
     footerSlotProps() {
       return {
@@ -239,7 +255,7 @@ export default {
   <div>
     <gl-dropdown
       :header-text="i18n.dropdownHeader"
-      :toggle-class="toggleButtonClass"
+      :toggle-class="extendedToggleButtonClass"
       :text="buttonText"
       class="ref-selector gl-w-full"
       v-bind="$attrs"

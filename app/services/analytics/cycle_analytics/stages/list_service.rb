@@ -13,7 +13,7 @@ module Analytics
         private
 
         def allowed?
-          can?(current_user, :read_cycle_analytics, parent)
+          can?(current_user, :read_cycle_analytics, parent.project)
         end
 
         def success(stages)

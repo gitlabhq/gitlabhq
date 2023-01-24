@@ -3,6 +3,7 @@ import dirtySubmitFactory from '~/dirty_submit/dirty_submit_factory';
 import initFilePickers from '~/file_pickers';
 import initTransferGroupForm from '~/groups/init_transfer_group_form';
 import { initGroupSelects } from '~/vue_shared/components/entity_select/init_group_selects';
+import { initProjectSelects } from '~/vue_shared/components/entity_select/init_project_selects';
 import { initCascadingSettingsLockPopovers } from '~/namespaces/cascading_settings';
 import mountBadgeSettings from '~/pages/shared/mount_badge_settings';
 import projectSelect from '~/project_select';
@@ -21,6 +22,9 @@ mountBadgeSettings(GROUP_BADGE);
 
 // Initialize Subgroups selector
 initGroupSelects();
+
+// Initialize project selectors
+initProjectSelects();
 
 projectSelect();
 

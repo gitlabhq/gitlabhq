@@ -294,10 +294,6 @@ if $PROGRAM_NAME == __FILE__
 
   automated_cleanup = ReviewApps::AutomatedCleanup.new(options: options)
 
-  timed('Review Apps cleanup') do
-    automated_cleanup.perform_gitlab_environment_cleanup!(days_for_stop: 5, days_for_delete: 6)
-  end
-
   timed('Docs Review Apps cleanup') do
     automated_cleanup.perform_gitlab_docs_environment_cleanup!(days_for_stop: 20, days_for_delete: 30)
   end
@@ -305,11 +301,11 @@ if $PROGRAM_NAME == __FILE__
   puts
 
   timed('Helm releases cleanup') do
-    automated_cleanup.perform_helm_releases_cleanup!(days: 7)
+    automated_cleanup.perform_helm_releases_cleanup!(days: 2)
   end
 
   timed('Stale Namespace cleanup') do
-    automated_cleanup.perform_stale_namespace_cleanup!(days: 14)
+    automated_cleanup.perform_stale_namespace_cleanup!(days: 3)
   end
 
   timed('Stale PVC cleanup') do

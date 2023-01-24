@@ -25,6 +25,14 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder do
     freeze_time
   end
 
+  context 'when an unknown parent class is given' do
+    it 'raises error' do
+      stage = instance_double('Analytics::CycleAnalytics::Stage', parent: Issue.new)
+
+      expect { described_class.new(stage: stage) }.to raise_error(/unknown parent_class: Issue/)
+    end
+  end
+
   describe 'date range parameters' do
     context 'when filters by only the `from` parameter' do
       before do

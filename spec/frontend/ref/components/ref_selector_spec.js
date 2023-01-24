@@ -715,7 +715,7 @@ describe('Ref selector component', () => {
   describe('validation state', () => {
     const invalidClass = 'gl-inset-border-1-red-500!';
     const isInvalidClassApplied = () =>
-      wrapper.findComponent(GlDropdown).props('toggleClass')[invalidClass];
+      wrapper.findComponent(GlDropdown).props('toggleClass')[0][invalidClass];
 
     describe('valid state', () => {
       describe('when the state prop is not provided', () => {

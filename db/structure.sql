@@ -21807,7 +21807,17 @@ CREATE TABLE service_desk_settings (
     issue_template_key character varying(255),
     outgoing_name character varying(255),
     project_key character varying(255),
-    file_template_project_id bigint
+    file_template_project_id bigint,
+    custom_email_enabled boolean DEFAULT false NOT NULL,
+    custom_email text,
+    custom_email_smtp_address text,
+    custom_email_smtp_port integer,
+    custom_email_smtp_username text,
+    encrypted_custom_email_smtp_password bytea,
+    encrypted_custom_email_smtp_password_iv bytea,
+    CONSTRAINT check_57a79552e1 CHECK ((char_length(custom_email) <= 255)),
+    CONSTRAINT check_b283637a9e CHECK ((char_length(custom_email_smtp_address) <= 255)),
+    CONSTRAINT check_e3535d46ee CHECK ((char_length(custom_email_smtp_username) <= 255))
 );
 
 CREATE TABLE shards (
@@ -28333,6 +28343,8 @@ CREATE INDEX code_owner_approval_required ON protected_branches USING btree (pro
 CREATE UNIQUE INDEX commit_user_mentions_on_commit_id_and_note_id_unique_index ON commit_user_mentions USING btree (commit_id, note_id);
 
 CREATE INDEX composer_cache_files_index_on_deleted_at ON packages_composer_cache_files USING btree (delete_at, id);
+
+CREATE UNIQUE INDEX custom_email_unique_constraint ON service_desk_settings USING btree (custom_email);
 
 CREATE UNIQUE INDEX dast_scanner_profiles_builds_on_ci_build_id ON dast_scanner_profiles_builds USING btree (ci_build_id);
 

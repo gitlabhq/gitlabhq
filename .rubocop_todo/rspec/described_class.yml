@@ -16,7 +16,6 @@ RSpec/DescribedClass:
     - 'ee/spec/models/ee/group_spec.rb'
     - 'ee/spec/models/ee/iteration_spec.rb'
     - 'ee/spec/models/ee/merge_request_diff_spec.rb'
-    - 'ee/spec/models/ee/namespace/storage/notification_spec.rb'
     - 'ee/spec/models/ee/vulnerability_spec.rb'
     - 'ee/spec/models/epic_issue_spec.rb'
     - 'ee/spec/models/epic_spec.rb'

@@ -42,6 +42,6 @@ Managing these settings depends on how NGINX Ingress has been deployed. If you h
 
 ## Specifying the Environment label
 
-In order to isolate and only display relevant metrics for a given environment, GitLab needs a method to detect which labels are associated. To do this, GitLab searches for metrics with appropriate labels. In this case, the `upstream` label must be of the form `<KUBE_NAMESPACE>-<CI_ENVIRONMENT_SLUG>-*`.
+To isolate and only display relevant metrics for a given environment, GitLab needs a method to detect which labels are associated. To do this, GitLab searches for metrics with appropriate labels. In this case, the `upstream` label must be of the form `<KUBE_NAMESPACE>-<CI_ENVIRONMENT_SLUG>-*`.
 
 If you have used [Auto Deploy](../../../../topics/autodevops/stages.md#auto-deploy) to deploy your app, this format is used automatically and metrics are detected with no action on your part.
