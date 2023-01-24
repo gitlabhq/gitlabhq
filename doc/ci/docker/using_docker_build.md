@@ -369,7 +369,7 @@ are done to the services as well, making these incompatible.
 
 #### Use the Docker executor with Docker socket binding
 
-To make Docker available in the context of the image, you will need to mount
+To make Docker available in the context of the image, you need to mount
 `/var/run/docker.sock` into the launched containers. To do this with the Docker
 executor, you need to add `"/var/run/docker.sock:/var/run/docker.sock"` to the
 [Volumes in the `[runners.docker]` section](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section).

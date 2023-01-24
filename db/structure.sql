@@ -33366,9 +33366,6 @@ ALTER TABLE ONLY lists
 ALTER TABLE ONLY ci_unit_test_failures
     ADD CONSTRAINT fk_0f09856e1f FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_unit_test_failures
-    ADD CONSTRAINT fk_0f09856e1f_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY deployment_approvals
     ADD CONSTRAINT fk_0f58311058 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -33780,6 +33777,9 @@ ALTER TABLE ONLY merge_request_diffs
 ALTER TABLE ONLY requirements
     ADD CONSTRAINT fk_85044baef0 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ci_build_pending_states
+    ADD CONSTRAINT fk_861cd17da3_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_86c84214ec FOREIGN KEY (repository_renamed_event_id) REFERENCES geo_repository_renamed_events(id) ON DELETE CASCADE;
 
@@ -33800,6 +33800,9 @@ ALTER TABLE ONLY requirements_management_test_reports
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_899c8f3231 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_build_trace_chunks
+    ADD CONSTRAINT fk_89e29fa5ee_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY sbom_vulnerable_component_versions
     ADD CONSTRAINT fk_8a2a1197f9 FOREIGN KEY (sbom_component_version_id) REFERENCES sbom_component_versions(id) ON DELETE CASCADE;
@@ -33860,6 +33863,9 @@ ALTER TABLE ONLY epics
 
 ALTER TABLE ONLY user_group_callouts
     ADD CONSTRAINT fk_9dc8b9d4b2 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_unit_test_failures
+    ADD CONSTRAINT fk_9e0fc58930_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY protected_environments
     ADD CONSTRAINT fk_9e112565b7 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -34320,9 +34326,6 @@ ALTER TABLE ONLY related_epic_links
 ALTER TABLE ONLY ci_build_pending_states
     ADD CONSTRAINT fk_rails_0bbbfeaf9d FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_build_pending_states
-    ADD CONSTRAINT fk_rails_0bbbfeaf9d_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY audit_events_external_audit_event_destinations
     ADD CONSTRAINT fk_rails_0bc80a4edc FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -34352,9 +34355,6 @@ ALTER TABLE ONLY merge_request_context_commits
 
 ALTER TABLE ONLY ci_build_trace_chunks
     ADD CONSTRAINT fk_rails_1013b761f2 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_build_trace_chunks
-    ADD CONSTRAINT fk_rails_1013b761f2_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_exports
     ADD CONSTRAINT fk_rails_1019162882 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;

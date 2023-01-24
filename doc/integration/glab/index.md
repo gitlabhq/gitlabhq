@@ -17,7 +17,7 @@ switching between windows and browser tabs.
 ![command example](img/glabgettingstarted.gif)
 
 The GitLab CLI uses commands structured like `glab <command> <subcommand> [flags]`
-to perform many of the actions you normally do from the GitLab user interface:
+to perform many of the actions you usually do from the GitLab user interface:
 
 ```shell
 # Sign in

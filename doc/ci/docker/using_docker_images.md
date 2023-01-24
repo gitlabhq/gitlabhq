@@ -158,7 +158,7 @@ a useless shell layer. However, that does not work for all Docker versions.
 - For Docker 17.03 and earlier, the `entrypoint` can be set to
   `/bin/sh -c`, `/bin/bash -c`, or an equivalent shell available in the image.
 
-The syntax of `image:entrypoint` is similar to [Dockerfile's `ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint).
+The syntax of `image:entrypoint` is similar to [Dockerfile `ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint).
 
 Let's assume you have a `super/sql:experimental` image with a SQL database
 in it. You want to use it as a base image for your job because you
@@ -453,7 +453,7 @@ registries to the `"credHelpers"` hash.
 
 ### Use checksum to keep your image secure
 
-We recommend using the image checksum in your job definition in your `.gitlab-ci.yml` file to verify the integrity of the image. A failed image integrity verification will prevent you from using a modified container.
+We recommend using the image checksum in your job definition in your `.gitlab-ci.yml` file to verify the integrity of the image. A failed image integrity verification prevents you from using a modified container.
 
 To use the image checksum you have to append the checksum at the end:
 

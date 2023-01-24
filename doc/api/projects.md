@@ -6,20 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Projects API **(FREE)**
 
-Interact with [projects](../user/project/index.md) using the REST API.
+Interact with [projects](../user/project/index.md) by using the REST API.
 
 ## Project visibility level
 
 A project in GitLab can be private, internal, or public.
 The visibility level is determined by the `visibility` field in the project.
 
-Values for the project visibility level are:
-
-- `private`: project access must be granted explicitly to each user.
-- `internal`: the project can be cloned by any authenticated user except [external users](../user/admin_area/external_users.md).
-- `public`: the project can be accessed without any authentication.
-
-For more, read [Project visibility](../user/public_access.md).
+For details, see [Project visibility](../user/public_access.md).
 
 ## Project merge method
 

@@ -7,63 +7,49 @@ type: reference
 
 # Project and group visibility **(FREE)**
 
-If you have the Owner role, you can set a project's or group's visibility as:
+A project in GitLab can be private, internal, or public.
 
-- **Public**
-- **[Internal](#internal-projects-and-groups)**
-- **Private**
+## Private projects and groups
 
-These visibility levels affect who can see the project in the public access directory
-(for example, <https://gitlab.com/public>).
+For private projects, only project members can:
 
-For more granular control, you can determine
-[which features in a project are visible](project/working_with_projects.md#change-the-visibility-of-individual-features-in-a-project).
+- Clone the project.
+- View the public access directory (`/public`).
 
-The visibility setting of a project must be at least as restrictive
-as the visibility of its parent group.
-For example, a private group can include only private projects,
-while a public group can include private, internal, and public projects.
+Users with the Guest role cannot clone the project.
 
-## Public projects and groups
-
-Public projects can be cloned **without any** authentication over HTTPS.
-
-They are listed in the public access directory (`/public`) for all users.
-
-Public groups can have public, internal, or private subgroups.
-
-**Any authenticated user** has the Guest role on the repository.
-
-NOTE:
-By default, `/public` is visible to unauthenticated users. However, if the
-[**Public** visibility level](admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
-is restricted, `/public` is visible only to authenticated users.
+Private groups can have private subgroups only.
 
 ## Internal projects and groups **(FREE SELF)**
 
-Internal projects can be cloned by any authenticated user except
-[external users](admin_area/external_users.md).
+For internal projects, **any authenticated user**, including users with the Guest role, can:
 
-They are also listed in the public access directory (`/public`), but only for authenticated users.
+- Clone the project.
+- View the public access directory (`/public`).
+
+[External users](admin_area/external_users.md) cannot clone the project.
 
 Internal groups can have internal or private subgroups.
-
-Any signed-in users except [external users](admin_area/external_users.md) have the
-Guest role on the repository.
 
 NOTE:
 From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
 and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
-visibility setting keep this setting. You can read more about the change in the
-[relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+visibility setting keep this setting. For more information, see
+[issue 12388](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
 
-## Private projects and groups
+## Public projects and groups
 
-Private projects can only be cloned and viewed by project members (except for guests).
+For public projects, **users who are not authenticated**, including users with the Guest role, can:
 
-They appear in the public access directory (`/public`) for project members only.
+- Clone the project.
+- View the public access directory (`/public`).
 
-Private groups can only have private subgroups.
+Public groups can have public, internal, or private subgroups.
+
+NOTE:
+If an administrator restricts the
+[**Public** visibility level](admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels),
+then `/public` is visible only to authenticated users.
 
 ## Change project visibility
 
@@ -77,6 +63,8 @@ Prerequisite:
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Change **Project visibility** to either **Private**, **Internal**, or **Public**.
+   The visibility setting for a project must be at least as restrictive
+   as the visibility of its parent group.
 1. Select **Save changes**.
 
 ## Change group visibility
@@ -94,15 +82,21 @@ Prerequisites:
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Naming, visibility**.
 1. Under **Visibility level** select either **Private**, **Internal**, or **Public**.
+   The visibility setting for a project must be at least as restrictive
+   as the visibility of its parent group.
 1. Select **Save changes**.
 
 ## Restrict use of public or internal projects **(FREE SELF)**
 
-You can restrict the use of visibility levels for users when they create a project or a snippet.
-This is useful to prevent users from publicly exposing their repositories by accident. The
-restricted visibility settings do not apply to administrators.
+Administrators can restrict which visibility levels users can choose when they create a project or a snippet.
+This setting can help prevent users from publicly exposing their repositories by accident.
 
-For details, see [Restricted visibility levels](admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels).
+For more information, see [Restrict visibility levels](admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels).
+
+## Related topics
+
+- For more granular control of project features, you can
+  [change the visibility of features](project/working_with_projects.md#change-the-visibility-of-individual-features-in-a-project).
 
 <!-- ## Troubleshooting
 

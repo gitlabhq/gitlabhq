@@ -423,7 +423,7 @@ module TestEnv
     return if File.exist?(install_dir) && ci?
 
     if component_needs_update?(install_dir, version)
-      puts "==> Starting #{component} set up...\n"
+      puts "==> Starting #{component} (#{version}) set up...\n"
 
       # Cleanup the component entirely to ensure we start fresh
       FileUtils.rm_rf(install_dir) if fresh_install

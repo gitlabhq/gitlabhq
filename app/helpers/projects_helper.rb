@@ -304,11 +304,7 @@ module ProjectsHelper
       current_page?(starred_explore_projects_path)
   end
 
-  def show_merge_request_count?(disabled: false, compact_mode: false)
-    !disabled && !compact_mode
-  end
-
-  def show_issue_count?(disabled: false, compact_mode: false)
+  def show_count?(disabled: false, compact_mode: false)
     !disabled && !compact_mode
   end
 
@@ -437,6 +433,10 @@ module ProjectsHelper
 
   def able_to_see_merge_requests?(project, user)
     project.merge_requests_enabled? && can?(user, :read_merge_request, project)
+  end
+
+  def able_to_see_forks_count?(project, user)
+    project.forking_enabled? && can?(user, :read_code, project)
   end
 
   def fork_button_disabled_tooltip(project)

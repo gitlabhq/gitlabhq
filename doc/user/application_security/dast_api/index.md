@@ -5,13 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# DAST API **(ULTIMATE)**
+# DAST API analyzer **(ULTIMATE)**
 
 > DAST API analyzer [became the default analyzer for on-demand DAST API scans](https://gitlab.com/groups/gitlab-org/-/epics/4254) in GitLab 15.6.
 
 Perform Dynamic Application Security Testing (DAST) of web APIs to help discover bugs and potential
 security issues that other QA processes may miss. Use DAST API tests in addition to
-[GitLab Secure](../index.md)'s other security scanners and your own test processes. You can run DAST
+other [GitLab Secure](../index.md) security scanners and your own test processes. You can run DAST
 API tests either as part your CI/CD workflow, [on-demand](../dast/proxy-based.md#on-demand-scans), or both.
 
 WARNING:

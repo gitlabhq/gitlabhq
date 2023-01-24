@@ -273,6 +273,11 @@ msgid_plural "%d groups"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d group found"
+msgid_plural "%d groups found"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
@@ -37250,9 +37255,6 @@ msgstr ""
 msgid "Search for Namespace"
 msgstr ""
 
-msgid "Search for a LDAP group"
-msgstr ""
-
 msgid "Search for a group"
 msgstr ""
 
@@ -38476,6 +38478,9 @@ msgid "Select Git revision"
 msgstr ""
 
 msgid "Select Profile"
+msgstr ""
+
+msgid "Select a LDAP group"
 msgstr ""
 
 msgid "Select a branch"
@@ -42810,6 +42815,9 @@ msgid "There was an error removing the e-mail."
 msgstr ""
 
 msgid "There was an error resetting user pipeline minutes."
+msgstr ""
+
+msgid "There was an error retrieving LDAP groups. Please try again."
 msgstr ""
 
 msgid "There was an error retrieving the Jira users."

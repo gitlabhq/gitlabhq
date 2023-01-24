@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Product analytics **(ULTIMATE)**
 
-> Introduced in GitLab 15.4 as an [Alpha](../../policy/alpha-beta-support.md#alpha-features) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+> - Introduced in GitLab 15.4 as an [Alpha](../../policy/alpha-beta-support.md#alpha-features) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+> - `cube_api_proxy` revised to only reference the [Product Analytics API](../../api/product_analytics.md) in GitLab 15.6.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `cube_api_proxy`.
@@ -16,7 +17,44 @@ This feature is not ready for production use.
 This page is a work in progress, and we're updating the information as we add more features.
 For more information, visit the [Product Analytics group direction page](https://about.gitlab.com/direction/analytics/product-analytics/).
 
+## How Product Analytics works
+
+```mermaid
+---
+title: Product Analytics flow
+---
+flowchart TB
+    subgraph Adding data
+        A([SDK]) --Send user data--> B[Analytics Proxy]
+        B --Transform data and pass it through--> C[Jitsu]
+        C --Pass the data to the associated database--> D([Clickhouse])
+    end
+    subgraph Showing dashboards
+        E([Dashboards]) --Generated from the YAML definition--> F[Dashboard]
+        F --Request data--> G[Product Analytics API]
+        G --Run Cube queries with pre-aggregations--> H[Cube.js]
+        H --Get data from database--> D
+        D --Return results--> H
+        H --> G
+        G --Transform data to be rendered--> F
+    end
+```
+
+Product Analytics uses several tools:
+
+- [**Jitsu**](https://jitsu.com/docs) - A web and app event collection platform that provides a consistent API to collect user data and pass it through to Clickhouse.
+- [**Clickhouse**](https://clickhouse.com/docs) - A database suited to store, query, and retrieve analytical data.
+- [**Cube.js**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in Clickhouse.
+
 ## Enable product analytics
+
+> - Introduced in GitLab 15.6 behind the [feature flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+> - Moved to be behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_admin_settings` in GitLab 15.7. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `cube_api_proxy`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
 
 You can enable and configure product analytics to track events
 within your project applications on a self-managed instance.
@@ -44,6 +82,13 @@ Prerequisite:
 1. Select **Save changes**.
 
 ## Product analytics dashboards
+
+> Introduced in GitLab 15.5 behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `cube_api_proxy`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
 
 Each project can define an unlimited number of dashboards. These dashboards are defined using our YAML schema and stored
 in the `.gitlab/product_analytics/dashboards/` directory of a project repository. The name of the file is the name of the dashboard, and visualizations are shared across dashboards.

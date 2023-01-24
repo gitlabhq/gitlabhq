@@ -37,7 +37,7 @@
         - css_class = (i >= projects_limit) || project.pending_delete? ? 'hide' : nil
         = render "shared/projects/project", project: project, skip_namespace: skip_namespace,
           avatar: avatar, stars: stars, css_class: css_class, use_creator_avatar: use_creator_avatar,
-          forks: project.forking_enabled?, show_last_commit_as_description: show_last_commit_as_description,
+          forks: able_to_see_forks_count?(project, user), show_last_commit_as_description: show_last_commit_as_description,
           user: user, merge_requests: able_to_see_merge_requests?(project, user), issues: able_to_see_issues?(project, user),
           pipeline_status: pipeline_status, compact_mode: compact_mode
     = paginate_collection(projects, remote: remote) unless skip_pagination

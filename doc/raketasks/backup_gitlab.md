@@ -216,7 +216,7 @@ To ensure the generated archive is transferable by rsync, you can set the `GZIP_
 option. This sets the `--rsyncable` option to `gzip`, which is useful only in
 combination with setting [the Backup filename option](#backup-filename).
 
-Note that the `--rsyncable` option in `gzip` isn't guaranteed to be available
+The `--rsyncable` option in `gzip` isn't guaranteed to be available
 on all distributions. To verify that it's available in your distribution, run
 `gzip --help` or consult the man pages.
 
@@ -468,7 +468,7 @@ gitlab_rails['backup_upload_storage_options'] = {
 
 ##### SSE-KMS
 
-To enable SSE-KMS, you'll need the
+To enable SSE-KMS, you need the
 [KMS key via its Amazon Resource Name (ARN) in the `arn:aws:kms:region:acct-id:key/key-id` format](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html).
 Under the `backup_upload_storage_options` configuration setting, set:
 

@@ -118,7 +118,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
      If you do not provide this value, or the field with the configured value is missing
      from the `user_info.raw_attributes` details, `uid` uses the `sub` field.
    - `send_scope_to_token_endpoint` is `true` by default, so the `scope` parameter
-     is normally included in requests to the token endpoint.
+     is usually included in requests to the token endpoint.
      However, if your OpenID Connect provider does not accept the `scope` parameter
      in such requests, set this to `false`.
    - `client_options` are the OpenID Connect client-specific options. Specifically:

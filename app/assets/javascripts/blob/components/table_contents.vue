@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 
 function getHeaderNumber(el) {
   return parseInt(el.tagName.match(/\d+/)[0], 10);
@@ -7,8 +7,7 @@ function getHeaderNumber(el) {
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
   },
   data() {
     return {
@@ -43,33 +42,40 @@ export default {
     }
   },
   methods: {
+    close() {
+      this.$refs.disclosureDropdown?.close();
+    },
     generateHeaders() {
+      const BASE_PADDING = 16;
       const headers = [...this.blobViewer.querySelectorAll('h1,h2,h3,h4,h5,h6')];
 
-      if (headers.length) {
-        const firstHeader = getHeaderNumber(headers[0]);
-
-        this.items = headers.map((el) => ({
-          text: el.textContent.trim(),
-          anchor: el.querySelector('a').getAttribute('id'),
-          spacing: Math.max((getHeaderNumber(el) - firstHeader) * 8, 0),
-        }));
+      if (headers.length === 0) {
+        return;
       }
+
+      const firstHeader = getHeaderNumber(headers[0]);
+
+      this.items = headers.map((el) => ({
+        text: el.textContent.trim(),
+        href: `#${el.querySelector('a').getAttribute('id')}`,
+        extraAttrs: {
+          style: {
+            paddingLeft: `${BASE_PADDING + Math.max((getHeaderNumber(el) - firstHeader) * 8, 0)}px`,
+          },
+        },
+      }));
     },
   },
 };
 </script>
 
 <template>
-  <gl-dropdown v-if="!isHidden && items.length" icon="list-bulleted" class="gl-mr-2" lazy>
-    <gl-dropdown-item v-for="(item, index) in items" :key="index" :href="`#${item.anchor}`">
-      <span
-        :style="{ 'padding-left': `${item.spacing}px` }"
-        class="gl-display-block"
-        data-testid="tableContentsLink"
-      >
-        {{ item.text }}
-      </span>
-    </gl-dropdown-item>
-  </gl-dropdown>
+  <gl-disclosure-dropdown
+    v-if="!isHidden && items.length"
+    ref="disclosureDropdown"
+    icon="list-bulleted"
+    class="gl-mr-2"
+    :items="items"
+    @action="close"
+  />
 </template>
