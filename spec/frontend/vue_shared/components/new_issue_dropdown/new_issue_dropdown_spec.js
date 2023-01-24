@@ -1,6 +1,6 @@
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,6 +9,7 @@ import searchUserProjectsQuery from '~/vue_shared/components/new_issue_dropdown/
 import searchProjectsWithinGroupQuery from '~/issues/list/queries/search_projects.query.graphql';
 import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   emptySearchProjectsQueryResponse,
   emptySearchProjectsWithinGroupQueryResponse,
@@ -18,7 +19,11 @@ import {
   searchProjectsWithinGroupQueryResponse,
 } from './mock_data';
 
+jest.mock('~/flash');
+
 describe('NewIssueDropdown component', () => {
+  useLocalStorageSpy();
+
   let wrapper;
 
   Vue.use(VueApollo);
@@ -59,7 +64,7 @@ describe('NewIssueDropdown component', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
+    localStorage.clear();
   });
 
   it('renders a split dropdown', () => {
@@ -144,6 +149,57 @@ describe('NewIssueDropdown component', () => {
       it('displays project name on the dropdown button', () => {
         expect(findDropdown().props('text')).toBe(`New issue in ${project1.name}`);
       });
+    });
+  });
+
+  describe('without localStorage', () => {
+    beforeEach(() => {
+      wrapper = mountComponent({ mountFn: mount });
+    });
+
+    it('does not attempt to save the selected project to the localStorage', async () => {
+      await showDropdown();
+      wrapper.findComponent(GlDropdownItem).vm.$emit('click', project1);
+
+      expect(localStorage.setItem).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('with localStorage', () => {
+    it('retrieves the selected project from the localStorage', async () => {
+      localStorage.setItem(
+        'group--new-issue-recent-project',
+        JSON.stringify({
+          webUrl: project1.webUrl,
+          name: project1.name,
+        }),
+      );
+      wrapper = mountComponent({ mountFn: mount, propsData: { withLocalStorage: true } });
+      await nextTick();
+      const dropdown = findDropdown();
+
+      expect(dropdown.attributes('split-href')).toBe(
+        joinPaths(project1.webUrl, DASH_SCOPE, 'issues/new'),
+      );
+      expect(dropdown.props('text')).toBe(`New issue in ${project1.name}`);
+    });
+
+    it('retrieves legacy cache from the localStorage', async () => {
+      localStorage.setItem(
+        'group--new-issue-recent-project',
+        JSON.stringify({
+          url: `${project1.webUrl}/issues/new`,
+          name: project1.name,
+        }),
+      );
+      wrapper = mountComponent({ mountFn: mount, propsData: { withLocalStorage: true } });
+      await nextTick();
+      const dropdown = findDropdown();
+
+      expect(dropdown.attributes('split-href')).toBe(
+        joinPaths(project1.webUrl, DASH_SCOPE, 'issues/new'),
+      );
+      expect(dropdown.props('text')).toBe(`New issue in ${project1.name}`);
     });
   });
 });

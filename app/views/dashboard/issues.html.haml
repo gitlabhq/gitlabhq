@@ -13,7 +13,7 @@
 
   - if current_user
     .page-title-controls
-      = render 'shared/new_project_item_select', path: 'issues/new', label: _("issue"), with_feature_enabled: 'issues', type: :issues
+      = render 'shared/new_project_item_vue_select', path: 'issues/new', label: _("issue"), with_feature_enabled: 'issues', type: :issues
 
 - if ::Feature.enabled?(:vue_issues_dashboard)
   .js-issues-dashboard{ data: dashboard_issues_list_data(current_user) }

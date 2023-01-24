@@ -50,8 +50,7 @@ module Types
           alpha: { milestone: '15.6' },
           resolver: Resolvers::IssuesResolver,
           description: 'Find issues visible to the current user.' \
-                       ' At least one filter must be provided.' \
-                       ' Returns `null` if the `root_level_issues_query` feature flag is disabled.'
+                       ' At least one filter must be provided.'
     field :jobs,
           ::Types::Ci::JobType.connection_type,
           null: true,

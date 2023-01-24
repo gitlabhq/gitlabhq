@@ -1,3 +1,6 @@
+-# This view is used to initialize a select2-based selector, which we are migrating away from.
+-# To initialize the Vue selector, use the new_project_item_vue_select view instead.
+-# Refer to https://gitlab.com/gitlab-org/gitlab/-/issues/374098 for more information.
 - if any_projects?(@projects)
   .dropdown.b-dropdown.gl-dropdown.btn-group.project-item-select-holder{ class: 'gl-display-inline-flex!' }
     %a.btn.gl-button.btn-confirm.split-content-button.js-new-project-item-link.block-truncated{ href: '', data: { label: local_assigns[:label], type: local_assigns[:type] } }

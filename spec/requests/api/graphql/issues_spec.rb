@@ -109,18 +109,6 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     end
   end
 
-  context 'when the root_level_issues_query feature flag is disabled' do
-    before do
-      stub_feature_flags(root_level_issues_query: false)
-    end
-
-    it 'the field returns null' do
-      post_graphql(query, current_user: developer)
-
-      expect(graphql_data).to eq('issues' => nil)
-    end
-  end
-
   context 'when no filters are provided' do
     let(:all_query_params) { {} }
 

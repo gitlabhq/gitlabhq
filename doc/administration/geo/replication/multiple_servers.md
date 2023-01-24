@@ -81,7 +81,7 @@ After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus
 
 NOTE:
 PostgreSQL and Redis should have already been disabled on the
-application nodes during normal GitLab multi-node setup. Connections
+application nodes during typical GitLab multi-node setup. Connections
 from the application nodes to services on the backend nodes should
 have also been configured. See multi-node configuration documentation for
 [PostgreSQL](../../postgresql/replication_and_failover.md#configuring-the-application-nodes)
@@ -100,7 +100,7 @@ major differences:
 - There is an additional GitLab service [`geo-logcursor`](../index.md#geo-log-cursor)
 
 Therefore, we set up the multi-node components one by one and include deviations
-from the normal multi-node setup. However, we highly recommend configuring a
+from the typical multi-node setup. However, we highly recommend configuring a
 brand-new GitLab site first, as if it were not part of a Geo setup. This allows
 verifying that it is a working GitLab site. And only then should it be modified
 for use as a Geo **secondary** site. This helps to separate Geo setup problems from

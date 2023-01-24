@@ -13,7 +13,7 @@ Arkose Protect on GitLab.com. While this feature is theoretically usable in self
 is not recommended at the moment.
 
 GitLab integrates [Arkose Protect](https://www.arkoselabs.com/arkose-protect/) to guard against
-credential stuffing and bots in the sign-in form. GitLab will trigger Arkose Protect if the user:
+credential stuffing and bots in the sign-in form. GitLab triggers Arkose Protect if the user:
 
 - Has never signed in before.
 - Has failed to sign in twice in a row.
@@ -98,8 +98,8 @@ KQL: json.message:"Challenge was not solved" AND json.username:replace_username_
 Several GitLab QA test suites need to sign in to the app to test its features. This can conflict
 with Arkose Protect as it would identify QA users as being malicious because they are being run with
 a headless browser. To work around this, ArkoseLabs has allowlisted the unique token
-that serves as QA session's User Agent. While this doesn't guarantee that the session won't be
-flagged as malicious, Arkose's API returns a specific telltale when we verify the sign in
+that serves as QA session's User Agent. While this doesn't guarantee that the session is not
+flagged as malicious, the Arkose API returns a specific telltale when we verify the sign in
 attempt's token. We are leveraging this telltale to bypass the verification step entirely so that the
 test suite doesn't fail. This bypass is done in the `UserVerificationService` class.
 

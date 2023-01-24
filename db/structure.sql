@@ -12570,6 +12570,8 @@ CREATE TABLE bulk_import_trackers (
     jid text,
     stage smallint DEFAULT 0 NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
     CONSTRAINT check_2d45cae629 CHECK ((char_length(relation) <= 255)),
     CONSTRAINT check_40aeaa600b CHECK ((char_length(next_page) <= 255)),
     CONSTRAINT check_603f91cb06 CHECK ((char_length(jid) <= 255)),

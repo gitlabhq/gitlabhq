@@ -55,7 +55,7 @@ To view the Sidekiq processes in GitLab:
 
 By default each process defined under `sidekiq` starts with a number of threads
 that equals the number of queues, plus one spare thread, up to a maximum of 50.
-For example, a process that handles all queues will use 50 threads by default.
+For example, a process that handles all queues uses 50 threads by default.
 
 These threads run inside a single Ruby process, and each process can only use a
 single CPU core. The usefulness of threading depends on the work having some
@@ -117,7 +117,7 @@ for more details.
 
 ## Modify the check interval
 
-To modify Sidekiq's health check interval for the additional Sidekiq
+To modify the Sidekiq health check interval for the additional Sidekiq
 processes:
 
 1. Edit `/etc/gitlab/gitlab.rb`:

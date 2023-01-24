@@ -28,8 +28,6 @@ module Resolvers
     end
 
     def resolve_with_lookahead(**args)
-      return unless Feature.enabled?(:root_level_issues_query)
-
       issues = apply_lookahead(
         IssuesFinder.new(current_user, prepare_finder_params(args)).execute
       )

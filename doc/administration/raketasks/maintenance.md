@@ -374,7 +374,7 @@ The following index types are not supported:
 
 Optionally, this Rake task sends annotations to a Grafana (4.6 or later) endpoint. Use the following custom environment variables to enable annotations:
 
-1. `GRAFANA_API_URL` - Grafana's base URL, for example `http://some-host:3000`.
+1. `GRAFANA_API_URL` - The base URL for Grafana, for example `http://some-host:3000`.
 1. `GRAFANA_API_KEY` - Grafana API key with at least `Editor role`.
 
 You can also [enable reindexing as a regular cron job](https://docs.gitlab.com/omnibus/settings/database.html#automatic-database-reindexing).

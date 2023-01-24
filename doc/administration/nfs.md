@@ -101,7 +101,7 @@ specifically test NFSv3.
 When you define your NFS exports, we recommend you also add the following
 options:
 
-- `no_root_squash` - NFS normally changes the `root` user to `nobody`. This is
+- `no_root_squash` - NFS usually changes the `root` user to `nobody`. This is
   a good security measure when NFS shares are accessed by many different
   users. However, in this case only GitLab uses the NFS share so it
   is safe. GitLab recommends the `no_root_squash` setting because we need to
@@ -279,7 +279,7 @@ to store the data on an NFS mount.
 
 Bind mounts provide a way to specify just one NFS mount and then
 bind the default GitLab data locations to the NFS mount. Start by defining your
-single NFS mount point as you normally would in `/etc/fstab`. Let's assume your
+single NFS mount point as you typically would in `/etc/fstab`. Let's assume your
 NFS mount point is `/gitlab-nfs`. Then, add the following bind mounts in
 `/etc/fstab`:
 
