@@ -13,6 +13,7 @@ import axios from '~/lib/utils/axios_utils';
 import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_FORBIDDEN,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_NOT_FOUND,
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
@@ -277,7 +278,9 @@ describe('IDE store terminal check actions', () => {
     });
 
     it('dispatches request and receive, when error', () => {
-      mock.onGet(/api\/.*\/projects\/.*\/runners/, { params: { scope: 'active' } }).reply(500, []);
+      mock
+        .onGet(/api\/.*\/projects\/.*\/runners/, { params: { scope: 'active' } })
+        .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, []);
 
       return testAction(
         actions.fetchRunnersCheck,

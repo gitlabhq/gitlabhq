@@ -612,6 +612,8 @@ module Types
       project.container_repositories.size
     end
 
+    # Even if the parameter name is `sha`, it is actually a ref name. We always send `ref` to the endpoint.
+    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/389065
     def ci_config_variables(sha:)
       result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(sha)
 

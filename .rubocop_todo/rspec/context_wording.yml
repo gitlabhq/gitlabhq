@@ -443,7 +443,6 @@ RSpec/ContextWording:
     - 'ee/spec/models/audit_events/external_audit_event_destination_spec.rb'
     - 'ee/spec/models/board_spec.rb'
     - 'ee/spec/models/boards/epic_board_position_spec.rb'
-    - 'ee/spec/models/ci/build_spec.rb'
     - 'ee/spec/models/ci/minutes/namespace_monthly_usage_spec.rb'
     - 'ee/spec/models/ci/minutes/project_monthly_usage_spec.rb'
     - 'ee/spec/models/ci/sources/project_spec.rb'

@@ -160,7 +160,7 @@ Cloud Native Buildpacks, and only buildpacks that implement the
 
 ### Currently supported languages
 
-Note that not all buildpacks support Auto Test yet, as it's a relatively new
+Not all buildpacks support Auto Test yet, as it's a relatively new
 enhancement. All of Heroku's
 [officially supported languages](https://devcenter.heroku.com/articles/heroku-ci#supported-languages)
 support Auto Test. The languages supported by Heroku's Herokuish buildpacks all
@@ -502,9 +502,9 @@ as a Helm post-install hook. As some applications can't run without a successful
 database initialization step, GitLab deploys the first release without the
 application deployment, and only the database initialization step. After the database
 initialization completes, GitLab deploys a second release with the application
-deployment as normal.
+deployment as standard.
 
-Note that a post-install hook means that if any deploy succeeds,
+A post-install hook means that if any deploy succeeds,
 `DB_INITIALIZE` isn't processed thereafter.
 
 If present, `DB_MIGRATE` is run as a shell command within an application pod as

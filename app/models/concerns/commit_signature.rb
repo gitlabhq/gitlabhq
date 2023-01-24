@@ -4,6 +4,7 @@ module CommitSignature
 
   included do
     include ShaAttribute
+    include EachBatch
 
     sha_attribute :commit_sha
 
@@ -14,7 +15,8 @@ module CommitSignature
       other_user: 3,
       unverified_key: 4,
       unknown_key: 5,
-      multiple_signatures: 6
+      multiple_signatures: 6,
+      revoked_key: 7
     }
 
     belongs_to :project, class_name: 'Project', foreign_key: 'project_id', optional: false

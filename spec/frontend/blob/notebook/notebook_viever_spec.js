@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import component from '~/blob/notebook/notebook_viewer.vue';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import NotebookLab from '~/notebook/index.vue';
 
 describe('iPython notebook renderer', () => {
@@ -90,7 +91,7 @@ describe('iPython notebook renderer', () => {
 
   describe('error getting file', () => {
     beforeEach(() => {
-      mock.onGet(endpoint).reply(500, '');
+      mock.onGet(endpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, '');
 
       mountComponent();
       return waitForPromises();

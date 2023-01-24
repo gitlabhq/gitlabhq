@@ -2,6 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { setHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { loadBranches } from '~/projects/commit_box/info/load_branches';
 
 const mockCommitPath = '/commit/abcd/branches';
@@ -60,7 +61,7 @@ describe('~/projects/commit_box/info/load_branches', () => {
 
   describe('when branches request fails', () => {
     beforeEach(() => {
-      mock.onGet(mockCommitPath).reply(500, 'Error!');
+      mock.onGet(mockCommitPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, 'Error!');
     });
 
     it('attempts to load and renders an error', async () => {

@@ -41,13 +41,11 @@ this test suite!
 To create redirects, create a configuration file named `_redirects` in the
 `public/` directory of your GitLab Pages site.
 
-Note that:
-
 - All paths must start with a forward slash `/`.
 - A default status code of `301` is applied if no [status code](#http-status-codes) is provided.
 - The `_redirects` file has a file size limit and a maximum number of rules per project,
   configured at the instance level. Only the first matching rules within the configured maximum are processed.
-  The default file size limit is 64KB, and the default maximum number of rules is 1,000.
+  The default file size limit is 64 KB, and the default maximum number of rules is 1,000.
 - If your GitLab Pages site uses the default domain name (such as
   `namespace.gitlab.io/projectname`) you must prefix every rule with the project name:
 
@@ -74,7 +72,7 @@ is ignored because `hello.html` exists:
 /projectname/hello.html /projectname/world.html 302
 ```
 
-GitLab doesn't support Netlify's
+GitLab does not support Netlify
 [force option](https://docs.netlify.com/routing/redirects/rewrites-proxies/#shadowing)
 to change this behavior.
 
@@ -231,7 +229,7 @@ rule 10: valid
 rule 11: valid
 ```
 
-## Differences from Netlify's implementation
+## Differences from Netlify implementation
 
 Most supported `_redirects` rules behave the same in both GitLab and Netlify.
 However, there are some minor differences:

@@ -28932,6 +28932,8 @@ CREATE INDEX index_ci_builds_runner_id_running ON ci_builds USING btree (runner_
 
 CREATE UNIQUE INDEX index_ci_builds_runner_session_on_build_id ON ci_builds_runner_session USING btree (build_id);
 
+CREATE UNIQUE INDEX index_ci_builds_runner_session_on_partition_id_build_id ON ci_builds_runner_session USING btree (partition_id, build_id);
+
 CREATE INDEX index_ci_daily_build_group_report_results_on_group_id ON ci_daily_build_group_report_results USING btree (group_id);
 
 CREATE INDEX index_ci_daily_build_group_report_results_on_last_pipeline_id ON ci_daily_build_group_report_results USING btree (last_pipeline_id);
@@ -29141,6 +29143,8 @@ CREATE INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ON ci_runners
 CREATE INDEX index_ci_runners_on_version ON ci_runners USING btree (version);
 
 CREATE UNIQUE INDEX index_ci_running_builds_on_build_id ON ci_running_builds USING btree (build_id);
+
+CREATE UNIQUE INDEX index_ci_running_builds_on_partition_id_build_id ON ci_running_builds USING btree (partition_id, build_id);
 
 CREATE INDEX index_ci_running_builds_on_project_id ON ci_running_builds USING btree (project_id);
 
@@ -35017,7 +35021,7 @@ ALTER TABLE ONLY analytics_dashboards_pointers
     ADD CONSTRAINT fk_rails_7027b7eaa9 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_builds_runner_session
-    ADD CONSTRAINT fk_rails_70707857d3 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_70707857d3_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY list_user_preferences
     ADD CONSTRAINT fk_rails_70b2ef5ce2 FOREIGN KEY (list_id) REFERENCES lists(id) ON DELETE CASCADE;
@@ -35693,6 +35697,9 @@ ALTER TABLE ONLY merge_request_reviewers
 
 ALTER TABLE ONLY ci_running_builds
     ADD CONSTRAINT fk_rails_da45cfa165 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_running_builds
+    ADD CONSTRAINT fk_rails_da45cfa165_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY jira_imports
     ADD CONSTRAINT fk_rails_da617096ce FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

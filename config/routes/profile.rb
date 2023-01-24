@@ -38,7 +38,13 @@ resource :profile, only: [:show, :update] do
       end
     end
     resource :preferences, only: [:show, :update]
-    resources :keys, only: [:index, :show, :create, :destroy]
+
+    resources :keys, only: [:index, :show, :create, :destroy] do
+      member do
+        delete :revoke
+      end
+    end
+
     resources :gpg_keys, only: [:index, :create, :destroy] do
       member do
         put :revoke

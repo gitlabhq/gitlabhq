@@ -5,6 +5,7 @@ import actions, { transformBackendBadge } from '~/badges/store/actions';
 import mutationTypes from '~/badges/store/mutation_types';
 import createState from '~/badges/store/state';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { createDummyBadge, createDummyBadgeResponse } from '../dummy_badge';
 
 describe('Badges store actions', () => {
@@ -119,7 +120,7 @@ describe('Badges store actions', () => {
 
         expect(dispatch.mock.calls).toEqual([['requestNewBadge']]);
         dispatch.mockClear();
-        return [500, ''];
+        return [HTTP_STATUS_INTERNAL_SERVER_ERROR, ''];
       });
 
       await expect(actions.addBadge({ state, dispatch })).rejects.toThrow();
@@ -187,7 +188,7 @@ describe('Badges store actions', () => {
       endpointMock.replyOnce(() => {
         expect(dispatch.mock.calls).toEqual([['requestDeleteBadge', badgeId]]);
         dispatch.mockClear();
-        return [500, ''];
+        return [HTTP_STATUS_INTERNAL_SERVER_ERROR, ''];
       });
 
       await expect(actions.deleteBadge({ state, dispatch }, { id: badgeId })).rejects.toThrow();
@@ -279,7 +280,7 @@ describe('Badges store actions', () => {
       endpointMock.replyOnce(() => {
         expect(dispatch.mock.calls).toEqual([['requestLoadBadges', dummyData]]);
         dispatch.mockClear();
-        return [500, ''];
+        return [HTTP_STATUS_INTERNAL_SERVER_ERROR, ''];
       });
 
       await expect(actions.loadBadges({ state, dispatch }, dummyData)).rejects.toThrow();
@@ -393,7 +394,7 @@ describe('Badges store actions', () => {
       endpointMock.replyOnce(() => {
         expect(dispatch.mock.calls).toEqual([['requestRenderedBadge']]);
         dispatch.mockClear();
-        return [500, ''];
+        return [HTTP_STATUS_INTERNAL_SERVER_ERROR, ''];
       });
 
       await expect(actions.renderBadge({ state, dispatch })).rejects.toThrow();
@@ -487,7 +488,7 @@ describe('Badges store actions', () => {
 
         expect(dispatch.mock.calls).toEqual([['requestUpdatedBadge']]);
         dispatch.mockClear();
-        return [500, ''];
+        return [HTTP_STATUS_INTERNAL_SERVER_ERROR, ''];
       });
 
       await expect(actions.saveBadge({ state, dispatch })).rejects.toThrow();

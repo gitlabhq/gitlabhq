@@ -3,6 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import * as actions from '~/sidebar/components/labels/labels_select_vue/store/actions';
 import * as types from '~/sidebar/components/labels/labels_select_vue/store/mutation_types';
 import defaultState from '~/sidebar/components/labels/labels_select_vue/store/state';
@@ -135,7 +136,7 @@ describe('LabelsSelect Actions', () => {
 
     describe('on failure', () => {
       it('dispatches `requestLabels` & `receiveLabelsFailure` actions', () => {
-        mock.onGet(/labels.json/).replyOnce(500, {});
+        mock.onGet(/labels.json/).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, {});
 
         return testAction(
           actions.fetchLabels,
@@ -224,7 +225,7 @@ describe('LabelsSelect Actions', () => {
 
     describe('on failure', () => {
       it('dispatches `requestCreateLabel` & `receiveCreateLabelFailure` actions', () => {
-        mock.onPost(/labels.json/).replyOnce(500, {});
+        mock.onPost(/labels.json/).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, {});
 
         return testAction(
           actions.createLabel,

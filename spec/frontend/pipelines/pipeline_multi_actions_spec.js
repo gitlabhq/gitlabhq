@@ -5,6 +5,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import PipelineMultiActions, {
   i18n,
 } from '~/pipelines/components/pipelines_list/pipeline_multi_actions.vue';
@@ -140,7 +141,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
     describe('with a failing request', () => {
       it('should render an error message', async () => {
         const endpoint = artifactsEndpoint.replace(artifactsEndpointPlaceholder, pipelineId);
-        mockAxios.onGet(endpoint).replyOnce(500);
+        mockAxios.onGet(endpoint).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
         createComponent();
         findDropdown().vm.$emit('show');
         await waitForPromises();

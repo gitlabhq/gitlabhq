@@ -76,35 +76,74 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
     expect(page).to have_content(key.title)
   end
 
-  describe 'User removes a key', :js do
-    shared_examples 'removes key' do
-      it 'removes key' do
-        visit path
-        find('[data-testid=remove-icon]').click
+  def destroy_key(path, action, confirmation_button)
+    visit path
 
-        page.within('.modal') do
-          page.click_button('Delete')
-        end
+    page.click_button(action)
 
-        expect(page).to have_content('Your SSH keys (0)')
-      end
+    page.within('.modal') do
+      page.click_button(confirmation_button)
     end
 
+    expect(page).to have_content('Your SSH keys (0)')
+  end
+
+  describe 'User removes a key', :js do
+    let!(:key) { create(:key, user: user) }
+
     context 'via the key index' do
-      before do
-        create(:key, user: user)
+      it 'removes key' do
+        destroy_key(profile_keys_path, 'Remove', 'Delete')
       end
-
-      let(:path) { profile_keys_path }
-
-      it_behaves_like 'removes key'
     end
 
     context 'via its details page' do
-      let(:key) { create(:key, user: user) }
-      let(:path) { profile_keys_path(key) }
+      it 'removes key' do
+        destroy_key(profile_keys_path(key), 'Remove', 'Delete')
+      end
+    end
+  end
 
-      it_behaves_like 'removes key'
+  describe 'User revokes a key', :js do
+    context 'when a commit is signed using SSH key' do
+      let!(:project) { create(:project, :repository) }
+      let!(:key) { create(:key, user: user) }
+      let!(:commit) { project.commit('ssh-signed-commit') }
+
+      let!(:signature) do
+        create(:ssh_signature,
+               project: project,
+               key: key,
+               key_fingerprint_sha256: key.fingerprint_sha256,
+               commit_sha: commit.sha)
+      end
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'revoking the SSH key marks commits as unverified' do
+        visit project_commit_path(project, commit)
+
+        find('a.gpg-status-box', text: 'Verified').click
+
+        within('.popover') do
+          expect(page).to have_content("Verified commit")
+          expect(page).to have_content("SSH key fingerprint: #{key.fingerprint_sha256}")
+        end
+
+        destroy_key(profile_keys_path, 'Revoke', 'Revoke')
+
+        visit project_commit_path(project, commit)
+
+        find('a.gpg-status-box', text: 'Unverified').click
+
+        within('.popover') do
+          expect(page).to have_content("Unverified signature")
+          expect(page).to have_content('This commit was signed with a key that was revoked.')
+          expect(page).to have_content("SSH key fingerprint: #{signature.key_fingerprint_sha256}")
+        end
+      end
     end
   end
 end

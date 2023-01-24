@@ -5,6 +5,7 @@ import * as types from '~/frequent_items/store/mutation_types';
 import state from '~/frequent_items/store/state';
 import AccessorUtilities from '~/lib/utils/accessor';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   mockNamespace,
@@ -192,7 +193,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
 
     it('should dispatch `receiveSearchedItemsError`', () => {
       gon.api_version = 'v4';
-      mock.onGet(/\/api\/v4\/projects.json(.*)$/).replyOnce(500);
+      mock.onGet(/\/api\/v4\/projects.json(.*)$/).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       return testAction(
         actions.fetchSearchedItems,

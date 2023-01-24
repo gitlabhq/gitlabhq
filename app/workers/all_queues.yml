@@ -255,6 +255,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:ci_runners_stale_machines_cleanup_cron
+  :worker_name: Ci::Runners::StaleMachinesCleanupCronWorker
+  :feature_category: :runner_fleet
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_schedule_delete_objects_cron
   :worker_name: Ci::ScheduleDeleteObjectsCronWorker
   :feature_category: :continuous_integration

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlSkeletonLoader, GlIcon, GlLink } from '@gitlab/ui';
+import { GlSkeletonLoader, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -16,13 +16,14 @@ describe('ForkInfo component', () => {
   let wrapper;
   let mockResolver;
   const forkInfoError = new Error('Something went wrong');
+  const projectId = 'gid://gitlab/Project/1';
 
   Vue.use(VueApollo);
 
   const createCommitData = ({ ahead = 3, behind = 7 }) => {
     return {
       data: {
-        project: { id: '1', forkDetails: { ahead, behind, __typename: 'ForkDetails' } },
+        project: { id: projectId, forkDetails: { ahead, behind, __typename: 'ForkDetails' } },
       },
     };
   };
@@ -35,6 +36,7 @@ describe('ForkInfo component', () => {
     wrapper = shallowMountExtended(ForkInfo, {
       apolloProvider: createMockApollo([[forkDetailsQuery, mockResolver]]),
       propsData: { ...propsForkInfo, ...props },
+      stubs: { GlSprintf },
     });
     return waitForPromises();
   };
@@ -42,8 +44,10 @@ describe('ForkInfo component', () => {
   const findLink = () => wrapper.findComponent(GlLink);
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
   const findIcon = () => wrapper.findComponent(GlIcon);
-  const findDivergenceMessage = () => wrapper.find('.gl-text-secondary');
+  const findDivergenceMessage = () => wrapper.findByTestId('divergence-message');
   const findInaccessibleMessage = () => wrapper.findByTestId('inaccessible-project');
+  const findCompareLinks = () => findDivergenceMessage().findAllComponents(GlLink);
+
   it('displays a skeleton while loading data', async () => {
     createComponent();
     expect(findSkeleton().exists()).toBe(true);
@@ -88,28 +92,54 @@ describe('ForkInfo component', () => {
     expect(findDivergenceMessage().text()).toBe(i18n.unknown);
   });
 
-  it('shows correct divergence message when data is present', async () => {
-    await createComponent();
-    expect(findDivergenceMessage().text()).toMatchInterpolatedText(
-      '7 commits behind, 3 commits ahead of the upstream repository.',
-    );
-  });
-
   it('renders up to date message when divergence is unknown', async () => {
     await createComponent({}, { ahead: 0, behind: 0 });
     expect(findDivergenceMessage().text()).toBe(i18n.upToDate);
   });
 
-  it('renders commits ahead message', async () => {
-    await createComponent({}, { behind: 0 });
-    expect(findDivergenceMessage().text()).toBe('3 commits ahead of the upstream repository.');
-  });
+  describe.each([
+    {
+      ahead: 7,
+      behind: 3,
+      message: '3 commits behind, 7 commits ahead of the upstream repository.',
+      firstLink: propsForkInfo.behindComparePath,
+      secondLink: propsForkInfo.aheadComparePath,
+    },
+    {
+      ahead: 7,
+      behind: 0,
+      message: '7 commits ahead of the upstream repository.',
+      firstLink: propsForkInfo.aheadComparePath,
+      secondLink: '',
+    },
+    {
+      ahead: 0,
+      behind: 3,
+      message: '3 commits behind the upstream repository.',
+      firstLink: propsForkInfo.behindComparePath,
+      secondLink: '',
+    },
+  ])(
+    'renders correct divergence message for ahead: $ahead, behind: $behind divergence commits',
+    ({ ahead, behind, message, firstLink, secondLink }) => {
+      beforeEach(async () => {
+        await createComponent({}, { ahead, behind });
+      });
 
-  it('renders commits behind message', async () => {
-    await createComponent({}, { ahead: 0 });
+      it('displays correct text', () => {
+        expect(findDivergenceMessage().text()).toBe(message);
+      });
 
-    expect(findDivergenceMessage().text()).toBe('7 commits behind the upstream repository.');
-  });
+      it('adds correct links', () => {
+        const links = findCompareLinks();
+        expect(links.at(0).attributes('href')).toBe(firstLink);
+
+        if (secondLink) {
+          expect(links.at(1).attributes('href')).toBe(secondLink);
+        }
+      });
+    },
+  );
 
   it('renders alert with error message when request fails', async () => {
     await createComponent({}, {}, true);

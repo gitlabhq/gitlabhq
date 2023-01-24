@@ -60,7 +60,7 @@ msgstr ""
 msgid " or %{emphasisStart}&epic id%{emphasisEnd}"
 msgstr ""
 
-msgid " or references (e.g. path/to/project!merge_request_id)"
+msgid " or references"
 msgstr ""
 
 msgid " reacted with :%{name}:"
@@ -5337,6 +5337,9 @@ msgstr ""
 msgid "Are you sure you want to revoke this %{accessTokenType}? This action cannot be undone."
 msgstr ""
 
+msgid "Are you sure you want to revoke this SSH key?"
+msgstr ""
+
 msgid "Are you sure you want to revoke this group access token? This action cannot be undone."
 msgstr ""
 
@@ -10101,6 +10104,15 @@ msgid "CommitBoxTitle|Commit"
 msgstr ""
 
 msgid "CommitMessage|Add %{file_name}"
+msgstr ""
+
+msgid "CommitSignature|This commit was signed with a key that was revoked."
+msgstr ""
+
+msgid "CommitSignature|Unverified"
+msgstr ""
+
+msgid "CommitSignature|Unverified signature"
 msgstr ""
 
 msgid "CommitWidget|authored"
@@ -17815,10 +17827,10 @@ msgstr ""
 msgid "Forks"
 msgstr ""
 
-msgid "ForksDivergence|%{ahead} %{commit_word} ahead of"
+msgid "ForksDivergence|%{aheadLinkStart}%{ahead} %{commit_word} ahead%{aheadLinkEnd} of"
 msgstr ""
 
-msgid "ForksDivergence|%{behind} %{commit_word} behind"
+msgid "ForksDivergence|%{behindLinkStart}%{behind} %{commit_word} behind%{behindLinkEnd}"
 msgstr ""
 
 msgid "ForksDivergence|%{messages} the upstream repository."
@@ -20889,6 +20901,9 @@ msgid "IdentityVerification|Before you finish creating your account, we need to 
 msgstr ""
 
 msgid "IdentityVerification|Before you sign in, we need to verify your identity. Enter the following code on the sign-in page."
+msgstr ""
+
+msgid "IdentityVerification|Complete verification to sign in."
 msgstr ""
 
 msgid "IdentityVerification|Confirm your email address"
@@ -29116,6 +29131,9 @@ msgstr ""
 msgid "OnDemandScans|No %{profileType} profiles found for DAST"
 msgstr ""
 
+msgid "OnDemandScans|No matching results"
+msgstr ""
+
 msgid "OnDemandScans|On-demand Scans"
 msgstr ""
 
@@ -29132,6 +29150,9 @@ msgid "OnDemandScans|Repeats"
 msgstr ""
 
 msgid "OnDemandScans|Run scan"
+msgstr ""
+
+msgid "OnDemandScans|Runner tags (optional)"
 msgstr ""
 
 msgid "OnDemandScans|Save and run scan"
@@ -29156,6 +29177,9 @@ msgid "OnDemandScans|Scan schedule"
 msgstr ""
 
 msgid "OnDemandScans|Scan type"
+msgstr ""
+
+msgid "OnDemandScans|Select runner tags"
 msgstr ""
 
 msgid "OnDemandScans|Start by creating a new profile. Profiles make it easy to save and reuse configuration details for GitLab’s security tools."
@@ -29186,6 +29210,12 @@ msgid "OnDemandScans|There are no scheduled scans."
 msgstr ""
 
 msgid "OnDemandScans|Timezone"
+msgstr ""
+
+msgid "OnDemandScans|Unable to fetch runner tags. Try reloading the page."
+msgstr ""
+
+msgid "OnDemandScans|Use runner tags to select specific runners for this security scan. %{linkStart}What are runner tags?%{linkEnd}"
 msgstr ""
 
 msgid "OnDemandScans|Verify configuration"
@@ -34802,6 +34832,9 @@ msgstr ""
 msgid "References"
 msgstr ""
 
+msgid "References should be in the form of path/to/project!merge_request_id"
+msgstr ""
+
 msgid "Refine your search criteria (select a %{strong_open}group%{strong_close} and %{strong_open}project%{strong_close} when possible)"
 msgstr ""
 
@@ -36138,6 +36171,9 @@ msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr ""
 
 msgid "Revoke"
+msgstr ""
+
+msgid "Revoke Key"
 msgstr ""
 
 msgid "Revoked"
@@ -42935,6 +42971,9 @@ msgid "This action can lead to data loss. To prevent accidental actions we ask y
 msgstr ""
 
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key"
+msgstr ""
+
+msgid "This action cannot be undone, and will permanently delete the %{key} SSH key. All commits signed using this SSH key will be marked as unverified."
 msgstr ""
 
 msgid "This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} and everything this project contains. %{strongOpen}There is no going back.%{strongClose}"

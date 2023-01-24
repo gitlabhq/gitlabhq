@@ -1355,8 +1355,8 @@ RSpec.describe Projects::PipelinesController do
         .and_return(service)
     end
 
-    context 'when sending a valid sha' do
-      let(:sha) { 'master' }
+    context 'when sending a valid ref' do
+      let(:ref) { 'master' }
       let(:ci_config) do
         {
           variables: {
@@ -1381,8 +1381,8 @@ RSpec.describe Projects::PipelinesController do
       end
     end
 
-    context 'when sending an invalid sha' do
-      let(:sha) { 'invalid-sha' }
+    context 'when sending an invalid ref' do
+      let(:ref) { 'invalid-ref' }
 
       before do
         synchronous_reactive_cache(service)
@@ -1397,7 +1397,7 @@ RSpec.describe Projects::PipelinesController do
     end
 
     context 'when sending an invalid config' do
-      let(:sha) { 'master' }
+      let(:ref) { 'master' }
       let(:ci_config) do
         {
           variables: {
@@ -1423,7 +1423,7 @@ RSpec.describe Projects::PipelinesController do
     end
 
     context 'when the cache is empty' do
-      let(:sha) { 'master' }
+      let(:ref) { 'master' }
       let(:ci_config) do
         {
           variables: {
@@ -1446,7 +1446,7 @@ RSpec.describe Projects::PipelinesController do
     context 'when project uses external project ci config' do
       let(:other_project) { create(:project, :custom_repo, files: other_project_files) }
       let(:other_project_files) { { '.gitlab-ci.yml' => YAML.dump(other_project_ci_config) } }
-      let(:sha) { 'master' }
+      let(:ref) { 'master' }
 
       let(:other_project_ci_config) do
         {
@@ -1479,7 +1479,7 @@ RSpec.describe Projects::PipelinesController do
     def get_config_variables
       get :config_variables, params: { namespace_id: project.namespace,
                                        project_id: project,
-                                       sha: sha },
+                                       sha: ref },
                              format: :json
     end
   end

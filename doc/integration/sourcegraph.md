@@ -99,11 +99,11 @@ for updates.
 
 ### Sourcegraph isn't working
 
-If you enabled Sourcegraph for your project but it isn't working, Sourcegraph may not have indexed the project yet. You can check for Sourcegraph's availability of your project by visiting `https://sourcegraph.com/gitlab.com/<project-path>`replacing `<project-path>` with the path to your GitLab project.
+If you enabled Sourcegraph for your project but it isn't working, Sourcegraph may not have indexed the project yet. You can check if Sourcegraph is available for your project by visiting `https://sourcegraph.com/gitlab.com/<project-path>`replacing `<project-path>` with the path to your GitLab project.
 
 ## Sourcegraph and Privacy
 
-From Sourcegraph's [extension documentation](https://docs.sourcegraph.com/integration/browser_extension#privacy) which is the
+From the Sourcegraph [extension documentation](https://docs.sourcegraph.com/integration/browser_extension#privacy) which is the
 engine behind the native GitLab integration:
 
 > Sourcegraph integrations never send any logs, pings, usage statistics, or telemetry to Sourcegraph.com.

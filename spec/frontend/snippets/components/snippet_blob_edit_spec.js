@@ -6,6 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { joinPaths } from '~/lib/utils/url_utility';
 import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
@@ -118,7 +119,7 @@ describe('Snippet Blob Edit component', () => {
   describe('with error', () => {
     beforeEach(() => {
       axiosMock.reset();
-      axiosMock.onGet(TEST_FULL_PATH).replyOnce(500);
+      axiosMock.onGet(TEST_FULL_PATH).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       createComponent();
     });
 

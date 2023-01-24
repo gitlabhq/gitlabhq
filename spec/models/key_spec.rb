@@ -489,4 +489,12 @@ RSpec.describe Key, :mailer do
       end
     end
   end
+
+  describe '#signing?' do
+    it 'returns whether a key can be used for signing' do
+      expect(build(:key, usage_type: :signing)).to be_signing
+      expect(build(:key, usage_type: :auth_and_signing)).to be_signing
+      expect(build(:key, usage_type: :auth)).not_to be_signing
+    end
+  end
 end

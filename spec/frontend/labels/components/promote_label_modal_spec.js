@@ -6,6 +6,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import { stubComponent } from 'helpers/stub_component';
 
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import PromoteLabelModal from '~/labels/components/promote_label_modal.vue';
 import eventHub from '~/labels/event_hub';
 
@@ -85,8 +86,10 @@ describe('Promote label modal', () => {
 
     it('displays an error if promoting a label failed', async () => {
       const dummyError = new Error('promoting label failed');
-      dummyError.response = { status: 500 };
-      axiosMock.onPost(labelMockData.url).reply(500, { error: dummyError });
+      dummyError.response = { status: HTTP_STATUS_INTERNAL_SERVER_ERROR };
+      axiosMock
+        .onPost(labelMockData.url)
+        .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, { error: dummyError });
 
       wrapper.findComponent(GlModal).vm.$emit('primary');
 

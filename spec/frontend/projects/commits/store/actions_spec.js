@@ -2,6 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/flash';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import actions from '~/projects/commits/store/actions';
 import * as types from '~/projects/commits/store/mutation_types';
 import createState from '~/projects/commits/store/state';
@@ -63,7 +64,7 @@ describe('Project commits actions', () => {
 
     it('dispatches request/receive on error', () => {
       const path = '/-/autocomplete/users.json';
-      mock.onGet(path).replyOnce(500);
+      mock.onGet(path).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       testAction(actions.fetchAuthors, null, state, [], [{ type: 'receiveAuthorsError' }]);
     });

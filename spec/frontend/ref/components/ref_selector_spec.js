@@ -9,7 +9,7 @@ import commit from 'test_fixtures/api/commits/commit.json';
 import branches from 'test_fixtures/api/branches/branches.json';
 import tags from 'test_fixtures/api/tags/tags.json';
 import { trimText } from 'helpers/text_helper';
-import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import { sprintf } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
@@ -400,7 +400,7 @@ describe('Ref selector component', () => {
 
       describe('when the branches search returns an error', () => {
         beforeEach(() => {
-          branchesApiCallSpy = jest.fn().mockReturnValue([500]);
+          branchesApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_INTERNAL_SERVER_ERROR]);
 
           createComponent();
 
@@ -465,7 +465,7 @@ describe('Ref selector component', () => {
 
       describe('when the tags search returns an error', () => {
         beforeEach(() => {
-          tagsApiCallSpy = jest.fn().mockReturnValue([500]);
+          tagsApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_INTERNAL_SERVER_ERROR]);
 
           createComponent();
 
@@ -531,7 +531,7 @@ describe('Ref selector component', () => {
 
       describe('when the commit search returns an error (other than a 404)', () => {
         beforeEach(() => {
-          commitApiCallSpy = jest.fn().mockReturnValue([500]);
+          commitApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_INTERNAL_SERVER_ERROR]);
 
           createComponent();
 

@@ -11,7 +11,11 @@ import eventHub from '~/groups/event_hub';
 import GroupsService from '~/groups/service/groups_service';
 import GroupsStore from '~/groups/store/groups_store';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_BAD_REQUEST,
+  HTTP_STATUS_FORBIDDEN,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+} from '~/lib/utils/http_status';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
@@ -322,7 +326,9 @@ describe('AppComponent', () => {
 
       it('should show error flash message if request failed to leave group', () => {
         const message = 'An error occurred. Please try again.';
-        jest.spyOn(vm.service, 'leaveGroup').mockRejectedValue({ status: 500 });
+        jest
+          .spyOn(vm.service, 'leaveGroup')
+          .mockRejectedValue({ status: HTTP_STATUS_INTERNAL_SERVER_ERROR });
         jest.spyOn(vm.store, 'removeGroup');
         vm.leaveGroup();
 

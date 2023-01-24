@@ -120,7 +120,9 @@ export const graphQLErrors = [
 
 export const propsForkInfo = {
   projectPath: 'nataliia/myGitLab',
-  selectedRef: 'main',
+  selectedBranch: 'main',
   sourceName: 'gitLab',
   sourcePath: 'gitlab-org/gitlab',
+  aheadComparePath: '/nataliia/myGitLab/-/compare/main...ref?from_project_id=1',
+  behindComparePath: 'gitlab-org/gitlab/-/compare/ref...main?from_project_id=2',
 };

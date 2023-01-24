@@ -7,6 +7,7 @@ import {
   MSG_CONNECTION_ERROR,
   SERVICE_DELAY,
 } from '~/ide/lib/mirror';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { getWebSocketUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/ide/lib/create_diff', () => jest.fn());
@@ -26,7 +27,7 @@ const TEST_ERROR_RESPONSE = {
 const TEST_ERROR_PAYLOAD_RESPONSE = {
   data: JSON.stringify({
     error: { code: 0 },
-    payload: { status_code: 500, error_message: TEST_ERROR },
+    payload: { status_code: HTTP_STATUS_INTERNAL_SERVER_ERROR, error_message: TEST_ERROR },
   }),
 };
 

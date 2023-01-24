@@ -676,6 +676,9 @@ Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['job_class'] = 'C
 Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['cron'] ||= '*/2 * * * *'
 Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['job_class'] = 'Users::MigrateRecordsToGhostUserInBatchesWorker'
+Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker']['cron'] ||= '36 4 * * *'
+Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker']['job_class'] = 'Ci::Runners::StaleMachinesCleanupCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})

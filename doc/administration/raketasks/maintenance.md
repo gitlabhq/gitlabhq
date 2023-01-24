@@ -234,8 +234,11 @@ sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 Sometimes during version upgrades you might end up with some wrong CSS or
 missing some icons. In that case, try to precompile the assets again.
 
-This only applies to source installations and does not apply to
-Omnibus packages.
+This Rake task only applies to source installations. [Read more](../../update/package/index.md#missing-asset-files)
+about troubleshooting this problem when running the Omnibus GitLab package.
+The guidance for Omnibus GitLab might be applicable for Kubernetes and Docker Omnibus
+deployments of GitLab, though in general, container-based installations
+don't have issues with missing assets.
 
 **Source Installation**
 

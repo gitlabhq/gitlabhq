@@ -36,6 +36,11 @@ module ApplicationWorker
       @done_log_extra_metadata[key] = value
     end
 
+    def log_hash_metadata_on_done(hash)
+      @done_log_extra_metadata ||= {}
+      hash.each { |key, value| @done_log_extra_metadata[key] = value }
+    end
+
     def logging_extras
       return {} unless @done_log_extra_metadata
 

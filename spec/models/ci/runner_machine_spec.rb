@@ -38,10 +38,11 @@ RSpec.describe Ci::RunnerMachine, feature_category: :runner_fleet, type: :model 
   describe '.stale', :freeze_time do
     subject { described_class.stale.ids }
 
-    let!(:runner_machine1) { create(:ci_runner_machine, created_at: 8.days.ago, contacted_at: 7.days.ago) }
-    let!(:runner_machine2) { create(:ci_runner_machine, created_at: 7.days.ago, contacted_at: nil) }
-    let!(:runner_machine3) { create(:ci_runner_machine, created_at: 5.days.ago, contacted_at: nil) }
-    let!(:runner_machine4) do
+    let!(:runner_machine1) { create(:ci_runner_machine, :stale) }
+    let!(:runner_machine2) { create(:ci_runner_machine, :stale, contacted_at: nil) }
+    let!(:runner_machine3) { create(:ci_runner_machine, created_at: 6.months.ago, contacted_at: Time.current) }
+    let!(:runner_machine4) { create(:ci_runner_machine, created_at: 5.days.ago) }
+    let!(:runner_machine5) do
       create(:ci_runner_machine, created_at: (7.days - 1.second).ago, contacted_at: (7.days - 1.second).ago)
     end
 

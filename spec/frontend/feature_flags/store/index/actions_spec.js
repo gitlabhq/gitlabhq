@@ -20,6 +20,7 @@ import {
 import * as types from '~/feature_flags/store/index/mutation_types';
 import state from '~/feature_flags/store/index/state';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { getRequestData, rotateData, featureFlag } from '../../mock_data';
 
 jest.mock('~/api.js');
@@ -79,7 +80,9 @@ describe('Feature flags actions', () => {
 
     describe('error', () => {
       it('dispatches requestFeatureFlags and receiveFeatureFlagsError', () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`, {}).replyOnce(500, {});
+        mock
+          .onGet(`${TEST_HOST}/endpoint.json`, {})
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, {});
 
         return testAction(
           fetchFeatureFlags,
@@ -176,7 +179,9 @@ describe('Feature flags actions', () => {
 
     describe('error', () => {
       it('dispatches requestRotateInstanceId and receiveRotateInstanceIdError', () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`, {}).replyOnce(500, {});
+        mock
+          .onGet(`${TEST_HOST}/endpoint.json`, {})
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, {});
 
         return testAction(
           rotateInstanceId,
@@ -275,7 +280,7 @@ describe('Feature flags actions', () => {
 
     describe('error', () => {
       it('dispatches updateFeatureFlag and receiveUpdateFeatureFlagSuccess', () => {
-        mock.onPut(featureFlag.update_path).replyOnce(500);
+        mock.onPut(featureFlag.update_path).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
         return testAction(
           toggleFeatureFlag,

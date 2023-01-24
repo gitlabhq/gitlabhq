@@ -1,5 +1,5 @@
 import waitForPromises from 'helpers/wait_for_promises';
-import { successCodes } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, successCodes } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 
 describe('Poll', () => {
@@ -61,7 +61,7 @@ describe('Poll', () => {
   });
 
   it('calls the error callback when the http request returns an error', () => {
-    mockServiceCall({ status: 500 }, true);
+    mockServiceCall({ status: HTTP_STATUS_INTERNAL_SERVER_ERROR }, true);
     setup();
 
     return waitForAllCallsToFinish(1, () => {

@@ -5,6 +5,7 @@ import * as actions from '~/admin/statistics_panel/store/actions';
 import * as types from '~/admin/statistics_panel/store/mutation_types';
 import getInitialState from '~/admin/statistics_panel/store/state';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import mockStatistics from '../mock_data';
 
 describe('Admin statistics panel actions', () => {
@@ -43,7 +44,9 @@ describe('Admin statistics panel actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(/api\/(.*)\/application\/statistics/).replyOnce(500);
+        mock
+          .onGet(/api\/(.*)\/application\/statistics/)
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches error', () => {
@@ -99,12 +102,12 @@ describe('Admin statistics panel actions', () => {
     it('should commit error', () => {
       return testAction(
         actions.receiveStatisticsError,
-        500,
+        HTTP_STATUS_INTERNAL_SERVER_ERROR,
         state,
         [
           {
             type: types.RECEIVE_STATISTICS_ERROR,
-            payload: 500,
+            payload: HTTP_STATUS_INTERNAL_SERVER_ERROR,
           },
         ],
         [],

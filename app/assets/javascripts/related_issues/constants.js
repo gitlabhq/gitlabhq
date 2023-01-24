@@ -45,7 +45,7 @@ export const autoCompleteTextMap = {
   false: {
     [issuableTypesMap.ISSUE]: '',
     [issuableTypesMap.EPIC]: '',
-    [issuableTypesMap.MERGE_REQUEST]: __(' or references (e.g. path/to/project!merge_request_id)'),
+    [issuableTypesMap.MERGE_REQUEST]: __(' or references'),
   },
 };
 

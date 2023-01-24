@@ -11,6 +11,7 @@ import FeatureFlagsComponent from '~/feature_flags/components/feature_flags.vue'
 import FeatureFlagsTable from '~/feature_flags/components/feature_flags_table.vue';
 import createStore from '~/feature_flags/store/index';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { getRequestData } from '../mock_data';
 
@@ -271,7 +272,9 @@ describe('Feature flags', () => {
 
   describe('unsuccessful request', () => {
     beforeEach(() => {
-      mock.onGet(mockState.endpoint, { params: { page: '1' } }).replyOnce(500, {});
+      mock
+        .onGet(mockState.endpoint, { params: { page: '1' } })
+        .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, {});
 
       factory();
       return waitForPromises();

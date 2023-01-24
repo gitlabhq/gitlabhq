@@ -578,6 +578,10 @@ production: &base
     ci_runner_versions_reconciliation_worker:
       cron: "@daily"
 
+    # Periodically clean up stale runner machines.
+    ci_runners_stale_machines_cleanup_worker:
+      cron: "36 4 * * *"
+
   # GitLab EE only jobs. These jobs are automatically enabled for an EE
   # installation, and ignored for a CE installation.
   ee_cron_jobs:

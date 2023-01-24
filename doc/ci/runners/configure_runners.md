@@ -355,7 +355,7 @@ try to preserve worktrees and try to re-use them by default.
 This has limitations when using the [Docker Machine executor](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
 A Git strategy of `none` also re-uses the local working copy, but skips all Git
-operations normally done by GitLab. GitLab Runner pre-clone scripts are also skipped,
+operations usually done by GitLab. GitLab Runner pre-clone scripts are also skipped,
 if present. This strategy could mean you need to add `fetch` and `checkout` commands
 to [your `.gitlab-ci.yml` script](../yaml/index.md#script).
 
@@ -535,14 +535,14 @@ You can set it globally or per-job in the [`variables`](../yaml/index.md#variabl
 
 `GIT_SUBMODULE_UPDATE_FLAGS` accepts all options of the
 [`git submodule update`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-update--init--remote-N--no-fetch--no-recommend-shallow-f--force--checkout--rebase--merge--referenceltrepositorygt--depthltdepthgt--recursive--jobsltngt--no-single-branch--ltpathgt82308203)
-subcommand. However, note that `GIT_SUBMODULE_UPDATE_FLAGS` flags are appended after a few default flags:
+subcommand. However, `GIT_SUBMODULE_UPDATE_FLAGS` flags are appended after a few default flags:
 
 - `--init`, if [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) was set to `normal` or `recursive`.
 - `--recursive`, if [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) was set to `recursive`.
 - [`GIT_DEPTH`](#shallow-cloning). See the default value below.
 
 Git honors the last occurrence of a flag in the list of arguments, so manually
-providing them in `GIT_SUBMODULE_UPDATE_FLAGS` will also override these default flags.
+providing them in `GIT_SUBMODULE_UPDATE_FLAGS` overrides these default flags.
 
 You can use this variable to fetch the latest remote `HEAD` instead of the commit tracked,
 in the repository, or to speed up the checkout by fetching submodules in multiple parallel jobs:
@@ -779,7 +779,7 @@ variables:
 NOTE:
 Zip archives are the only supported artifact type. Follow [the issue for details](https://gitlab.com/gitlab-org/gitlab/-/issues/367203).
 
-GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The file name is as follows: `{ARTIFACT_NAME}-metadata.json` where `ARTIFACT_NAME` is what was defined as the [name for the artifact](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name) in the CI file. The file name, however, defaults to `artifacts-metadata.json` if no name was given to the build artifacts.
+GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The filename is as follows: `{ARTIFACT_NAME}-metadata.json` where `ARTIFACT_NAME` is what was defined as the [name for the artifact](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name) in the CI file. The filename, however, defaults to `artifacts-metadata.json` if no name was given to the build artifacts.
 
 ### Attestation format
 
@@ -801,7 +801,7 @@ The attestation metadata is generated in the [in-toto attestation format](https:
 | `predicate.invocation.environment.architecture` | The architecture on which the CI job is run. |
 | `predicate.invocation.parameters` | The names of any CI/CD or environment variables that were present when the build command was run. The value is always represented as an empty string to avoid leaking any secrets. |
 | `metadata.buildStartedOn` | The time when the build was started. `RFC3339` formatted. |
-| `metadata.buildEndedOn` | The time when the build ended. Since metadata generation happens during the build this moment in time will be slightly earlier than the one reported in GitLab. `RFC3339` formatted. |
+| `metadata.buildEndedOn` | The time when the build ended. Since metadata generation happens during the build this moment in time is slightly earlier than the one reported in GitLab. `RFC3339` formatted. |
 | `metadata.reproducible` | Whether the build is reproducible by gathering all the generated metadata. Always `false`. |
 | `metadata.completeness.parameters` | Whether the parameters are supplied. Always `true`. |
 | `metadata.completeness.environment` | Whether the builder's environment is reported. Always `true`. |
@@ -893,7 +893,7 @@ sequentially.
 
 To avoid writing to disk and reading the contents back for smaller files, a small buffer per concurrency is used. This setting
 can be controlled with `FASTZIP_ARCHIVER_BUFFER_SIZE`. The default size for this buffer is 2 MiB, therefore, a
-concurrency of 16 will allocate 32 MiB. Data that exceeds the buffer size will be written to and read back from disk.
+concurrency of 16 allocates 32 MiB. Data that exceeds the buffer size is written to and read back from disk.
 Therefore, using no buffer, `FASTZIP_ARCHIVER_BUFFER_SIZE: 0`, and only scratch space is a valid option.
 
 `FASTZIP_ARCHIVER_CONCURRENCY` controls how many files are compressed concurrency. As mentioned above, this setting

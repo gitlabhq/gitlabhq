@@ -10,6 +10,7 @@ import {
 import * as types from '~/ide/stores/modules/merge_requests/mutation_types';
 import state from '~/ide/stores/modules/merge_requests/state';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { mergeRequests } from '../../../mock_data';
 
 describe('IDE merge requests actions', () => {
@@ -169,7 +170,7 @@ describe('IDE merge requests actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(/\/api\/v4\/merge_requests(.*)$/).replyOnce(500);
+        mock.onGet(/\/api\/v4\/merge_requests(.*)$/).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches error', () => {

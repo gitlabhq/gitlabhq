@@ -13,6 +13,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import { createAlert, VARIANT_WARNING } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
 import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
 import PipelinesCiTemplates from '~/pipelines/components/pipelines_list/empty_state/pipelines_ci_templates.vue';
@@ -702,7 +703,7 @@ describe('Pipelines', () => {
 
   describe('when pipelines cannot be loaded', () => {
     beforeEach(async () => {
-      mock.onGet(mockPipelinesEndpoint).reply(500, {});
+      mock.onGet(mockPipelinesEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, {});
     });
 
     describe('when user has no permissions', () => {

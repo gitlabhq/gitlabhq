@@ -103,6 +103,15 @@ RSpec.describe ApplicationWorker do
       expect(instance.logging_extras).to eq({ 'extra.gitlab_foo_bar_dummy_worker.key1' => "value1", 'extra.gitlab_foo_bar_dummy_worker.key2' => "value2" })
     end
 
+    it 'returns extra data to be logged that was set from #log_hash_metadata_on_done' do
+      instance.log_hash_metadata_on_done({ key1: 'value0', key2: 'value1' })
+
+      expect(instance.logging_extras).to match_array({
+        'extra.gitlab_foo_bar_dummy_worker.key1' => 'value0',
+        'extra.gitlab_foo_bar_dummy_worker.key2' => 'value1'
+      })
+    end
+
     context 'when nothing is set' do
       it 'returns {}' do
         expect(instance.logging_extras).to eq({})

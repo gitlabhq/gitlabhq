@@ -4,6 +4,7 @@ import * as actions from '~/ide/stores/modules/file_templates/actions';
 import * as types from '~/ide/stores/modules/file_templates/mutation_types';
 import createState from '~/ide/stores/modules/file_templates/state';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 
 describe('IDE file templates actions', () => {
   let state;
@@ -108,7 +109,7 @@ describe('IDE file templates actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(/api\/(.*)\/templates\/licenses/).replyOnce(500);
+        mock.onGet(/api\/(.*)\/templates\/licenses/).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches actions', () => {
@@ -248,7 +249,9 @@ describe('IDE file templates actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(/api\/(.*)\/templates\/licenses\/mit/).replyOnce(500);
+        mock
+          .onGet(/api\/(.*)\/templates\/licenses\/mit/)
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches error', () => {

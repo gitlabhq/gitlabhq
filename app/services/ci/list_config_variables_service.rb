@@ -17,7 +17,9 @@ module Ci
       new(project, user)
     end
 
-    def execute(sha)
+    def execute(ref)
+      sha = project.commit(ref).try(:sha)
+
       with_reactive_cache(sha) { |result| result }
     end
 

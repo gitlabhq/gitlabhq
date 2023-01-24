@@ -62,7 +62,7 @@ associated Pages domain. GitLab also renews it automatically.
 > - Issuing the certificate and updating Pages configuration
 >   **can take up to an hour**.
 > - If you already have an SSL certificate in domain settings it
->   continues to work until replaced by the Let's Encrypt's certificate.
+>   continues to work until replaced by the Let's Encrypt certificate.
 
 ## Troubleshooting
 

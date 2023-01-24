@@ -5,6 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { objectToQuery, redirectTo } from '~/lib/utils/url_utility';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 import PipelineEditorTabs from '~/ci/pipeline_editor/components/pipeline_editor_tabs.vue';
@@ -343,7 +344,7 @@ describe('Pipeline editor app component', () => {
 
     describe('when the lint query returns a 500 error', () => {
       beforeEach(async () => {
-        mockCiConfigData.mockRejectedValueOnce(new Error(500));
+        mockCiConfigData.mockRejectedValueOnce(new Error(HTTP_STATUS_INTERNAL_SERVER_ERROR));
         await createComponentWithApollo({
           stubs: { PipelineEditorHome, PipelineEditorHeader, ValidationSegment },
         });

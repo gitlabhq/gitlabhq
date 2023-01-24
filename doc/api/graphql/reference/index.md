@@ -23354,6 +23354,7 @@ Verification status of a GPG or X.509 signature for a commit.
 | ----- | ----------- |
 | <a id="verificationstatusmultiple_signatures"></a>`MULTIPLE_SIGNATURES` | multiple_signatures verification status. |
 | <a id="verificationstatusother_user"></a>`OTHER_USER` | other_user verification status. |
+| <a id="verificationstatusrevoked_key"></a>`REVOKED_KEY` | revoked_key verification status. |
 | <a id="verificationstatussame_user_different_email"></a>`SAME_USER_DIFFERENT_EMAIL` | same_user_different_email verification status. |
 | <a id="verificationstatusunknown_key"></a>`UNKNOWN_KEY` | unknown_key verification status. |
 | <a id="verificationstatusunverified"></a>`UNVERIFIED` | unverified verification status. |

@@ -17,7 +17,7 @@ import * as types from '~/feature_flags/store/edit/mutation_types';
 import state from '~/feature_flags/store/edit/state';
 import { mapStrategiesToRails } from '~/feature_flags/store/helpers';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -79,7 +79,9 @@ describe('Feature flags Edit Module actions', () => {
 
     describe('error', () => {
       it('dispatches requestUpdateFeatureFlag and receiveUpdateFeatureFlagError', () => {
-        mock.onPut(`${TEST_HOST}/endpoint.json`).replyOnce(500, { message: [] });
+        mock
+          .onPut(`${TEST_HOST}/endpoint.json`)
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, { message: [] });
 
         return testAction(
           updateFeatureFlag,
@@ -180,7 +182,9 @@ describe('Feature flags Edit Module actions', () => {
 
     describe('error', () => {
       it('dispatches requestFeatureFlag and receiveUpdateFeatureFlagError', () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`, {}).replyOnce(500, {});
+        mock
+          .onGet(`${TEST_HOST}/endpoint.json`, {})
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, {});
 
         return testAction(
           fetchFeatureFlag,

@@ -1,6 +1,7 @@
 import * as types from '~/admin/statistics_panel/store/mutation_types';
 import mutations from '~/admin/statistics_panel/store/mutations';
 import getInitialState from '~/admin/statistics_panel/store/state';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import mockStatistics from '../mock_data';
 
 describe('Admin statistics panel mutations', () => {
@@ -30,11 +31,10 @@ describe('Admin statistics panel mutations', () => {
 
   describe(`${types.RECEIVE_STATISTICS_ERROR}`, () => {
     it('sets error and clears data', () => {
-      const error = 500;
-      mutations[types.RECEIVE_STATISTICS_ERROR](state, error);
+      mutations[types.RECEIVE_STATISTICS_ERROR](state, HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       expect(state.isLoading).toBe(false);
-      expect(state.error).toBe(error);
+      expect(state.error).toBe(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       expect(state.statistics).toEqual(null);
     });
   });

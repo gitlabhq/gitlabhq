@@ -288,7 +288,7 @@ processing new jobs.
 
 The grace period for running jobs is `1,000` CI/CD minutes.
 
-Jobs on specific runners are not affected by the quota of CI/CD minutes.
+Jobs on project runners are not affected by the quota of CI/CD minutes.
 
 ### GitLab SaaS usage notifications
 

@@ -284,6 +284,16 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
+  context 'for Issue design comment removed actions' do
+    it_behaves_like 'daily tracked issuable snowplow and service ping events with project' do
+      let(:action) { described_class::ISSUE_DESIGN_COMMENT_REMOVED }
+
+      def track_action(params)
+        described_class.track_issue_design_comment_removed_action(**params)
+      end
+    end
+  end
+
   it 'can return the count of actions per user deduplicated', :aggregate_failures do
     described_class.track_issue_title_changed_action(author: user1, project: project)
     described_class.track_issue_description_changed_action(author: user1, project: project)

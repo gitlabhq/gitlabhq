@@ -261,14 +261,14 @@ RSpec.describe Ci::Runner, feature_category: :runner do
   describe '.belonging_to_project' do
     it 'returns the project runner' do
       # own
-      specific_project = create(:project)
-      specific_runner = create(:ci_runner, :project, projects: [specific_project])
+      own_project = create(:project)
+      own_runner = create(:ci_runner, :project, projects: [own_project])
 
       # other
       other_project = create(:project)
       create(:ci_runner, :project, projects: [other_project])
 
-      expect(described_class.belonging_to_project(specific_project.id)).to eq [specific_runner]
+      expect(described_class.belonging_to_project(own_project.id)).to eq [own_runner]
     end
   end
 

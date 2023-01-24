@@ -17,7 +17,8 @@
     = render 'projects/tree/tree_header', tree: @tree, is_project_overview: is_project_overview
 
   - if project.forked? && Feature.enabled?(:fork_divergence_counts, @project.fork_source)
-    #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
+
+    #js-fork-info{ data: vue_fork_divergence_data(project, ref), project_id: @project.id }
 
   - if is_project_overview
     .project-buttons.gl-mb-5.js-show-on-project-root{ data: { qa_selector: 'project_buttons' } }

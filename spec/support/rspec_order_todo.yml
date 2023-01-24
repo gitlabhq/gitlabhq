@@ -1674,7 +1674,6 @@
 - './ee/spec/models/broadcast_message_spec.rb'
 - './ee/spec/models/burndown_spec.rb'
 - './ee/spec/models/ci/bridge_spec.rb'
-- './ee/spec/models/ci/build_spec.rb'
 - './ee/spec/models/ci/daily_build_group_report_result_spec.rb'
 - './ee/spec/models/ci/minutes/additional_pack_spec.rb'
 - './ee/spec/models/ci/minutes/context_spec.rb'
