@@ -10,9 +10,13 @@ This API operates on [repository commits](https://git-scm.com/book/en/v2/Git-Bas
 
 ## Responses
 
-In commit responses, `created_at` and `committed_date` are identical.
-However, `committed_date` and `authored_date` are generated from different sources,
-and may not be identical.
+Some date fields in responses from this API are, or can appear to be, duplicated
+information:
+
+- The `created_at` field exists solely for consistency with other GitLab APIs. It
+  is always identical to the `committed_date` field.
+- The `committed_date` and `authored_date` fields are generated from different sources,
+  and may not be identical.
 
 ## List repository commits
 

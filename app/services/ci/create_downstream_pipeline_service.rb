@@ -89,7 +89,7 @@ module Ci
         return false
       end
 
-      if Feature.enabled?(:ci_limit_complete_hierarchy_size) && pipeline_tree_too_large?
+      if pipeline_tree_too_large?
         @bridge.drop!(:reached_max_pipeline_hierarchy_size)
         return false
       end

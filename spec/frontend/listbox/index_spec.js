@@ -96,8 +96,8 @@ describe('initListbox', () => {
       });
     });
 
-    it('passes the "right" prop through to the underlying component', () => {
-      expect(listbox().props('right')).toBe(parsedAttributes.right);
+    it('passes the "placement" prop through to the underlying component', () => {
+      expect(listbox().props('placement')).toBe(parsedAttributes.placement);
     });
   });
 });

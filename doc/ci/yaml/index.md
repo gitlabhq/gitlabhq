@@ -1354,7 +1354,7 @@ cache keys used by protected branches.
 
 - `true` or `false` (default).
 
-**Example of `cache:untracked`**:
+**Example of `cache:unprotect`**:
 
 ```yaml
 rspec:

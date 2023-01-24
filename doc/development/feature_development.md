@@ -81,7 +81,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Working with Gitaly](gitaly.md)
 - [Elasticsearch integration docs](elasticsearch.md)
 - [Working with merge request diffs](diffs.md)
-- [Approval Rules](approval_rules.md)
+- [Approval Rules](merge_request_concepts/approval_rules.md)
 - [Repository mirroring](repository_mirroring.md)
 - [Uploads development guide](uploads/index.md)
 - [Auto DevOps development guide](auto_devops.md)

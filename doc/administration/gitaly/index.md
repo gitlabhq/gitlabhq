@@ -70,7 +70,7 @@ the current status of these issues, refer to the referenced issues and epics.
 | Issue                                                                                 | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | How to avoid |
 |:--------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
 | Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. | No known solution prior to GitLab 15.0. In GitLab 15.0 to 15.2, enable the [`gitaly_praefect_generated_replica_paths` feature flag](#praefect-generated-replica-paths-gitlab-150-and-later). In GitLab 15.3, the feature flag is enabled by default. |
-| Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform normal operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance/) so your upgrade plan can be reviewed by support. |
+| Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform standard operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance/) so your upgrade plan can be reviewed by support. |
 | Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind results in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you must restore from backup:<br/><br/>1. [Shut down GitLab](../read_only_gitlab.md#shut-down-the-gitlab-ui).<br/>2. Snapshot all Gitaly Cluster nodes at the same time.<br/>3. Take a database dump of the Praefect database. |
 | Rebuilding or replacing an existing Gitaly Cluster node | There is no way to replace existing nodes in place because the Praefect database is relied on to determine the current state of each Gitaly node. Changing how Gitaly Cluster stores repositories is proposed in issue [4218](https://gitlab.com/gitlab-org/gitaly/-/issues/4218). Turning on [repository verification](praefect.md#repository-verification) is proposed in issue [4429](https://gitlab.com/gitlab-org/gitaly/-/issues/4429) so Praefect can detect that data is missing and needs to replicated to a new Gitaly node. | No known solution at this time. |
 
@@ -289,7 +289,7 @@ be uneconomical to have the same replication factor for all repositories.
 To provide greater flexibility for extremely large GitLab instances,
 variable replication factor is tracked in [this issue](https://gitlab.com/groups/gitlab-org/-/epics/3372).
 
-As with normal Gitaly storages, virtual storages can be sharded.
+As with standard Gitaly storages, virtual storages can be sharded.
 
 ### Storage layout
 
@@ -388,7 +388,7 @@ Gitaly Cluster uses the PostgreSQL metadata store with the storage layout to ens
 deletion, and move operations. The disk operations can't be atomically applied across multiple storages. However, PostgreSQL guarantees
 the atomicity of the metadata operations. Gitaly Cluster models the operations in a manner that the failing operations always leave
 the metadata consistent. The disks may contain stale state even after successful operations. This is expected and the leftover state
-won't interfere with future operations but may use up disk space unnecessarily until a clean up is performed.
+does not interfere with future operations but may use up disk space unnecessarily until a clean up is performed.
 
 There is on-going work on a [background crawler](https://gitlab.com/gitlab-org/gitaly/-/issues/3719) that cleans up the leftover
 repositories from the storages.
@@ -617,8 +617,8 @@ a commit), you still have:
 - The cost of a network roundtrip to Gitaly.
 - Inside Gitaly, a write/read roundtrip on the Unix pipes that connect Gitaly to the `git` process.
 
-Using GitLab.com to measure, we reduced the number of Gitaly calls per request until the loss of
-Rugged's efficiency was no longer felt. It also helped that we run Gitaly itself directly on the Git
+Using GitLab.com to measure, we reduced the number of Gitaly calls per request until we no longer felt
+the efficiency loss of losing Rugged. It also helped that we run Gitaly itself directly on the Git
 file servers, rather than by using NFS mounts. This gave us a speed boost that counteracted the
 negative effect of not using Rugged anymore.
 

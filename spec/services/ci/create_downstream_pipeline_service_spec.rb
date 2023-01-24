@@ -890,23 +890,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
           end
         end
       end
-
-      context 'with :ci_limit_complete_hierarchy_size disabled' do
-        before do
-          stub_feature_flags(ci_limit_complete_hierarchy_size: false)
-        end
-
-        it 'creates a new pipeline' do
-          expect { subject }.to change { Ci::Pipeline.count }.by(1)
-          expect(subject).to be_success
-        end
-
-        it 'marks the bridge job as successful' do
-          subject
-
-          expect(bridge.reload).to be_success
-        end
-      end
     end
   end
 end
