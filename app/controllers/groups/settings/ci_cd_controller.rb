@@ -11,10 +11,6 @@ module Groups
       before_action :push_licensed_features, only: [:show]
       before_action :assign_variables_to_gon, only: [:show]
 
-      before_action do
-        push_frontend_feature_flag(:ci_remove_character_limitation_raw_masked_var, type: :development)
-      end
-
       feature_category :continuous_integration
       urgency :low
 

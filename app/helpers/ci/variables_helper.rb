@@ -47,10 +47,6 @@ module Ci
       ]
     end
 
-    def ci_variable_maskable_raw_regex
-      Ci::Maskable::MASK_AND_RAW_REGEX.inspect.sub('\\A', '^').sub('\\z', '$')[1...-1]
-    end
-
     def ci_variable_maskable_regex
       Ci::Maskable::REGEX.inspect.sub('\\A', '^').sub('\\z', '$').sub(%r{^/}, '').sub(%r{/[a-z]*$}, '').gsub('\/', '/')
     end

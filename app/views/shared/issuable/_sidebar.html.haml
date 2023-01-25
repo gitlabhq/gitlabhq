@@ -97,21 +97,8 @@
         .block
           .js-sidebar-copy-email-root
       - if issuable_sidebar.dig(:current_user, :can_move)
-        .block.js-sidebar-move-issue-block
-          .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body', boundary: 'viewport' }, title: _('Move issue') }
-            = sprite_icon('long-arrow')
-          .dropdown.sidebar-move-issue-dropdown.hide-collapsed
-            = render Pajamas::ButtonComponent.new(block: true, button_options: { class: 'js-sidebar-dropdown-toggle js-move-issue', data: { toggle: 'dropdown', display: 'static', track_label: "right_sidebar", track_property: "move_issue", track_action: "click_button", track_value: "" } }) do
-              = _('Move issue')
-            .dropdown-menu.dropdown-menu-selectable.dropdown-extended-height
-              = dropdown_title(_('Move issue'))
-              = dropdown_filter(_('Search project'), search_id: 'sidebar-move-issue-dropdown-search')
-              = dropdown_content
-              = dropdown_loading
-              = dropdown_footer add_content_class: true do
-                %button.gl-button.btn.btn-confirm.sidebar-move-issue-confirmation-button.js-move-issue-confirmation-button{ type: 'button', disabled: true }
-                  = gl_loading_icon(inline: true, css_class: 'sidebar-move-issue-confirmation-loading-icon gl-mr-2')
-                  = _('Move')
+        .block
+          .js-sidebar-move-issue-block{ data: { project_full_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
 
     -# haml-lint:disable InlineJavaScript
     %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable_sidebar).to_json.html_safe

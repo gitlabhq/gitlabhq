@@ -33,8 +33,8 @@ To create a group:
 1. Choose the [visibility level](../public_access.md).
 1. Personalize your GitLab experience by answering the following questions:
    - What is your role?
-   - Who will be using this group?
-   - What will you use this group for?
+   - Who is using this group?
+   - What are you using this group for?
 1. Invite GitLab members or other users to join the group.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>

@@ -9,11 +9,7 @@ module Users
     validates :user_id, :name, :content, presence: true
     validates :name,
       length: { maximum: 255 },
-      uniqueness: { scope: [:user_id] },
-      format: {
-        with: Gitlab::Regex.saved_reply_name_regex,
-        message: Gitlab::Regex.saved_reply_name_regex_message
-      }
+      uniqueness: { scope: [:user_id] }
     validates :content, length: { maximum: 10000 }
   end
 end

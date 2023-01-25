@@ -12,7 +12,7 @@ RSpec.describe Resolvers::Ci::RunnerPlatformsResolver, feature_category: :runner
       expect(resolve_subject).to contain_exactly(
         hash_including(name: :linux), hash_including(name: :osx),
         hash_including(name: :windows), hash_including(name: :docker),
-        hash_including(name: :kubernetes)
+        hash_including(name: :kubernetes), hash_including(name: :aws)
       )
     end
   end

@@ -1306,6 +1306,9 @@ msgstr ""
 msgid "(expired)"
 msgstr ""
 
+msgid "(external link)"
+msgstr ""
+
 msgid "(leave blank if you don't want to change it)"
 msgstr ""
 
@@ -4370,9 +4373,6 @@ msgid "An error occurred while fetching participants."
 msgstr ""
 
 msgid "An error occurred while fetching pending comments"
-msgstr ""
-
-msgid "An error occurred while fetching projects autocomplete."
 msgstr ""
 
 msgid "An error occurred while fetching reference"
@@ -8591,9 +8591,6 @@ msgstr ""
 msgid "Choose file…"
 msgstr ""
 
-msgid "Choose the preferred Runner and populate the AWS CFT."
-msgstr ""
-
 msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
@@ -11265,9 +11262,6 @@ msgid "Copy secret"
 msgstr ""
 
 msgid "Copy source branch name"
-msgstr ""
-
-msgid "Copy this registration token."
 msgstr ""
 
 msgid "Copy to clipboard"
@@ -27378,6 +27372,9 @@ msgstr ""
 msgid "Moves this issue to %{path_to_project}."
 msgstr ""
 
+msgid "Moving issue"
+msgstr ""
+
 msgid "MrDeploymentActions|Deploy"
 msgstr ""
 
@@ -36659,6 +36656,9 @@ msgstr ""
 msgid "Runners|Runner Registration"
 msgstr ""
 
+msgid "Runners|Runner Registration token"
+msgstr ""
+
 msgid "Runners|Runner assigned to project."
 msgstr ""
 
@@ -36743,7 +36743,7 @@ msgstr ""
 msgid "Runners|Select projects to assign to this runner"
 msgstr ""
 
-msgid "Runners|Select your preferred option here. In the next step, you can choose the capacity for your runner in the AWS CloudFormation console."
+msgid "Runners|Select your preferred runner, then choose the capacity for the runner in the AWS CloudFormation console."
 msgstr ""
 
 msgid "Runners|Show only inherited"
@@ -45618,16 +45618,10 @@ msgstr ""
 msgid "Use .gitlab-ci.yml"
 msgstr ""
 
-msgid "Use GitLab Runner in AWS"
-msgstr ""
-
 msgid "Use Secure Files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates."
 msgstr ""
 
 msgid "Use a one-time password authenticator on your mobile device or computer to enable two-factor authentication (2FA)."
-msgstr ""
-
-msgid "Use an AWS CloudFormation Template (CFT) to install and configure GitLab Runner in AWS."
 msgstr ""
 
 msgid "Use authorized_keys file to authenticate SSH keys"

@@ -524,6 +524,7 @@ export default {
                   v-model="removeSourceBranch"
                   :disabled="isRemoveSourceBranchButtonDisabled"
                   class="js-remove-source-branch-checkbox gl-display-flex gl-align-items-center gl-mr-5 gl-mb-3 gl-md-mb-0"
+                  data-testid="delete-source-branch-checkbox"
                 >
                   {{ __('Delete source branch') }}
                 </gl-form-checkbox>
@@ -699,7 +700,11 @@ export default {
                     :merge-commit-path="mr.mergeCommitPath"
                   />
                 </li>
-                <li v-if="mr.state !== 'closed'" class="gl-line-height-normal">
+                <li
+                  v-if="mr.state !== 'closed'"
+                  class="gl-line-height-normal"
+                  data-testid="source-branch-deleted-text"
+                >
                   {{ sourceBranchDeletedText }}
                 </li>
                 <li v-if="mr.relatedLinks" class="gl-line-height-normal">

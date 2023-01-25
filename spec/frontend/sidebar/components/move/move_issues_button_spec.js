@@ -75,9 +75,15 @@ if (IS_EE) {
   getIssuesQueryCompleteResponse.data.project.issues.nodes[0].weight = 5;
 }
 
+const mockIssueResult = {
+  id: mockIssue.iid,
+  webUrl: `${mockDestinationProject.full_path}/issues/${mockIssue.iid}`,
+};
+
 const resolvedMutationWithoutErrorsMock = jest.fn().mockResolvedValue({
   data: {
     issueMove: {
+      issue: mockIssueResult,
       errors: [],
     },
   },
@@ -86,6 +92,7 @@ const resolvedMutationWithoutErrorsMock = jest.fn().mockResolvedValue({
 const resolvedMutationWithErrorsMock = jest.fn().mockResolvedValue({
   data: {
     issueMove: {
+      issue: mockIssueResult,
       errors: [{ message: mockMutationErrorMessage }],
     },
   },

@@ -44,11 +44,16 @@ GET /projects/:id/releases
 If successful, returns [`200 OK`](../../api/rest/index.md#status-codes) and the following
 response attributes:
 
-| Attribute            | Type    | Description                           |
-|:---------------------|:--------|:------------------------------------- |
-| `[]._links`          | object  | Links of the release.                 |
-| `[]._links.self`     | string  | HTTP URL of the release.              |
-| `[]._links.edit_url` | string  | HTTP URL of the release's edit page.  |
+| Attribute                             | Type   | Description                                      |
+|:--------------------------------------|:-------|:-------------------------------------------------|
+| `[]._links`                           | object | Links of the release.                            |
+| `[]._links.closed_issues_url`         | string | HTTP URL of the release's closed issues.         |
+| `[]._links.closed_merge_requests_url` | string | HTTP URL of the release's closed merge requests. |
+| `[]._links.edit_url`                  | string | HTTP URL of the release's edit page.             |
+| `[]._links.merged_merge_requests_url` | string | HTTP URL of the release's merged merge requests. |
+| `[]._links.opened_issues_url`         | string | HTTP URL of the release's open issues.           |
+| `[]._links.opened_merge_requests_url` | string | HTTP URL of the release's open merge requests.   |
+| `[]._links.self`                      | string | HTTP URL of the release.                         |
 
 Example request:
 
@@ -237,8 +242,13 @@ Example response:
         }
       ],
       "_links": {
-         "self": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1",
-         "edit_url": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/edit"
+         "closed_issues_url": "https://gitlab.example.com/root/awesome-app/-/issues?release_tag=v0.1&scope=all&state=closed",
+         "closed_merge_requests_url": "https://gitlab.example.com/root/awesome-app/-/merge_requests?release_tag=v0.1&scope=all&state=closed",
+         "edit_url": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/edit",
+         "merged_merge_requests_url": "https://gitlab.example.com/root/awesome-app/-/merge_requests?release_tag=v0.1&scope=all&state=merged",
+         "opened_issues_url": "https://gitlab.example.com/root/awesome-app/-/issues?release_tag=v0.1&scope=all&state=opened",
+         "opened_merge_requests_url": "https://gitlab.example.com/root/awesome-app/-/merge_requests?release_tag=v0.1&scope=all&state=opened",
+         "self": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1"
       }
    }
 ]
@@ -263,11 +273,16 @@ GET /projects/:id/releases/:tag_name
 If successful, returns [`200 OK`](../../api/rest/index.md#status-codes) and the following
 response attributes:
 
-| Attribute         | Type    | Description                           |
-|:------------------|:--------|:------------------------------------- |
-| `_links`          | object  | Links of the release.                 |
-| `_links.self`     | string  | HTTP URL of the release.              |
-| `_links.edit_url` | string  | HTTP URL of the release's edit page.  |
+| Attribute                             | Type   | Description                                      |
+|:--------------------------------------|:-------|:-------------------------------------------------|
+| `[]._links`                           | object | Links of the release.                            |
+| `[]._links.closed_issues_url`         | string | HTTP URL of the release's closed issues.         |
+| `[]._links.closed_merge_requests_url` | string | HTTP URL of the release's closed merge requests. |
+| `[]._links.edit_url`                  | string | HTTP URL of the release's edit page.             |
+| `[]._links.merged_merge_requests_url` | string | HTTP URL of the release's merged merge requests. |
+| `[]._links.opened_issues_url`         | string | HTTP URL of the release's open issues.           |
+| `[]._links.opened_merge_requests_url` | string | HTTP URL of the release's open merge requests.   |
+| `[]._links.self`                      | string | HTTP URL of the release.                         |
 
 Example request:
 
@@ -383,8 +398,13 @@ Example response:
        "collected_at": "2019-07-16T14:00:12.256Z"
      },
    "_links": {
-      "self": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1",
-      "edit_url": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/edit"
+      "closed_issues_url": "https://gitlab.example.com/root/awesome-app/-/issues?release_tag=v0.1&scope=all&state=closed",
+      "closed_merge_requests_url": "https://gitlab.example.com/root/awesome-app/-/merge_requests?release_tag=v0.1&scope=all&state=closed",
+      "edit_url": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/edit",
+      "merged_merge_requests_url": "https://gitlab.example.com/root/awesome-app/-/merge_requests?release_tag=v0.1&scope=all&state=merged",
+      "opened_issues_url": "https://gitlab.example.com/root/awesome-app/-/issues?release_tag=v0.1&scope=all&state=opened",
+      "opened_merge_requests_url": "https://gitlab.example.com/root/awesome-app/-/merge_requests?release_tag=v0.1&scope=all&state=opened",
+      "self": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1"
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'languages and percentages JSON response', feature_category: :projects do
+RSpec.shared_examples 'languages and percentages JSON response' do
   let(:expected_languages) { project.repository.languages.to_h { |language| language.values_at(:label, :value) } }
 
   before do
@@ -46,7 +46,7 @@ RSpec.shared_examples 'languages and percentages JSON response', feature_categor
   end
 end
 
-RSpec.describe API::Projects do
+RSpec.describe API::Projects, feature_category: :projects do
   include ProjectForksHelper
   include WorkhorseHelpers
   include StubRequests
@@ -207,7 +207,7 @@ RSpec.describe API::Projects do
         let(:current_user) { user }
       end
 
-      shared_examples 'includes container_registry_access_level', :aggregate_failures do
+      shared_examples 'includes container_registry_access_level' do
         it do
           project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
 

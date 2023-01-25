@@ -28,8 +28,13 @@ module API
       end
       expose :evidences, using: Entities::Releases::Evidence, expose_nil: false, if: ->(_, _) { can_read_code? }
       expose :_links do
-        expose :self_url, as: :self, expose_nil: false
+        expose :closed_issues_url, expose_nil: false
+        expose :closed_merge_requests_url, expose_nil: false
         expose :edit_url, expose_nil: false
+        expose :merged_merge_requests_url, expose_nil: false
+        expose :opened_issues_url, expose_nil: false
+        expose :opened_merge_requests_url, expose_nil: false
+        expose :self_url, as: :self, expose_nil: false
       end
 
       private

@@ -978,21 +978,6 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }
   end
 
-  describe '.saved_reply_name_regex' do
-    subject { described_class.saved_reply_name_regex }
-
-    it { is_expected.to match('test') }
-    it { is_expected.to match('test123') }
-    it { is_expected.to match('test-test') }
-    it { is_expected.to match('test-test_0123') }
-    it { is_expected.not_to match('test test') }
-    it { is_expected.not_to match('test-') }
-    it { is_expected.not_to match('/z/test_') }
-    it { is_expected.not_to match('.xtest_') }
-    it { is_expected.not_to match('.xt.est_') }
-    it { is_expected.not_to match('0test1') }
-  end
-
   describe '.sha256_regex' do
     subject { described_class.sha256_regex }
 

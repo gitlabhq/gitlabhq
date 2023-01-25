@@ -69,6 +69,9 @@ describe('RightSidebar', () => {
     });
 
     it('should not hide collapsed icons', () => {
+      $toggle.click();
+      assertSidebarState('collapsed');
+
       [].forEach.call(document.querySelectorAll('.sidebar-collapsed-icon'), (el) => {
         expect(el.querySelector('.fa, svg').classList.contains('hidden')).toBe(false);
       });

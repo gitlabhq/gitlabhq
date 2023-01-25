@@ -311,7 +311,7 @@ password <your_personal_token>
 
 ## Troubleshooting
 
-To improve performance, the pip command caches files related to a package. Note that pip doesn't remove data by
+To improve performance, the pip command caches files related to a package. Pip doesn't remove data by
 itself. The cache grows as new packages are installed. If you encounter issues, clear the cache with
 this command:
 

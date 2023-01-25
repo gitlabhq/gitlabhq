@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/application', :themed_layout do
+RSpec.describe 'layouts/application' do
   let(:user) { create(:user) }
 
   before do
@@ -13,6 +13,8 @@ RSpec.describe 'layouts/application', :themed_layout do
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(user))
   end
+
+  it_behaves_like 'a layout which reflects the application theme setting'
 
   describe "visual review toolbar" do
     context "ENV['REVIEW_APPS_ENABLED'] is set to true" do

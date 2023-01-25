@@ -2,15 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Maskable, feature_category: :pipeline_authoring do
+RSpec.describe Ci::Maskable do
   let(:variable) { build(:ci_variable) }
 
   describe 'masked value validations' do
     subject { variable }
 
-    context 'when variable is masked and expanded' do
+    context 'when variable is masked' do
       before do
-        subject.update!(masked: true, raw: false)
+        subject.masked = true
       end
 
       it { is_expected.not_to allow_value('hello').for(:value) }
@@ -18,53 +18,6 @@ RSpec.describe Ci::Maskable, feature_category: :pipeline_authoring do
       it { is_expected.not_to allow_value('hello$VARIABLEworld').for(:value) }
       it { is_expected.not_to allow_value('hello\rworld').for(:value) }
       it { is_expected.to allow_value('helloworld').for(:value) }
-    end
-
-    context 'when method :raw is not defined' do
-      let(:test_var_class) do
-        Struct.new(:masked?) do
-          include ActiveModel::Validations
-          include Ci::Maskable
-        end
-      end
-
-      let(:variable) { test_var_class.new }
-
-      it 'evaluates masked variables as expanded' do
-        expect(subject).not_to be_masked_and_raw
-        expect(subject).to be_masked_and_expanded
-      end
-    end
-
-    context 'when the ci_remove_character_limitation_raw_masked_var FF is disabled' do
-      context 'when variable is masked and raw' do
-        before do
-          subject.update!(masked: true, raw: true)
-          stub_feature_flags(ci_remove_character_limitation_raw_masked_var: false)
-        end
-
-        it { is_expected.not_to allow_value('hello').for(:value) }
-        it { is_expected.not_to allow_value('hello world').for(:value) }
-        it { is_expected.not_to allow_value('hello$VARIABLEworld').for(:value) }
-        it { is_expected.not_to allow_value('hello\rworld').for(:value) }
-        it { is_expected.not_to allow_value('hello&&&world').for(:value) }
-        it { is_expected.not_to allow_value('helloworld!!!!').for(:value) }
-        it { is_expected.to allow_value('helloworld').for(:value) }
-      end
-    end
-
-    context 'when variable is masked and raw' do
-      before do
-        subject.update!(masked: true, raw: true)
-      end
-
-      it { is_expected.not_to allow_value('hello').for(:value) }
-      it { is_expected.not_to allow_value('hello world').for(:value) }
-      it { is_expected.to allow_value('hello\rworld').for(:value) }
-      it { is_expected.to allow_value('hello$VARIABLEworld').for(:value) }
-      it { is_expected.to allow_value('helloworld!!!').for(:value) }
-      it { is_expected.to allow_value('hell******world').for(:value) }
-      it { is_expected.to allow_value('helloworld123').for(:value) }
     end
 
     context 'when variable is not masked' do
@@ -80,70 +33,40 @@ RSpec.describe Ci::Maskable, feature_category: :pipeline_authoring do
     end
   end
 
-  describe 'Regexes' do
-    context 'with MASK_AND_RAW_REGEX' do
-      subject { Ci::Maskable::MASK_AND_RAW_REGEX }
+  describe 'REGEX' do
+    subject { Ci::Maskable::REGEX }
 
-      it 'does not match strings shorter than 8 letters' do
-        expect(subject.match?('hello')).to eq(false)
-      end
-
-      it 'does not match strings with spaces' do
-        expect(subject.match?('hello world')).to eq(false)
-      end
-
-      it 'does not match strings that span more than one line' do
-        string = <<~EOS
-          hello
-          world
-        EOS
-
-        expect(subject.match?(string)).to eq(false)
-      end
-
-      it 'matches valid strings' do
-        expect(subject.match?('hello$VARIABLEworld')).to eq(true)
-        expect(subject.match?('Hello+World_123/@:-~.')).to eq(true)
-        expect(subject.match?('hello\rworld')).to eq(true)
-        expect(subject.match?('HelloWorld%#^')).to eq(true)
-      end
+    it 'does not match strings shorter than 8 letters' do
+      expect(subject.match?('hello')).to eq(false)
     end
 
-    context 'with REGEX' do
-      subject { Ci::Maskable::REGEX }
+    it 'does not match strings with spaces' do
+      expect(subject.match?('hello world')).to eq(false)
+    end
 
-      it 'does not match strings shorter than 8 letters' do
-        expect(subject.match?('hello')).to eq(false)
-      end
+    it 'does not match strings with shell variables' do
+      expect(subject.match?('hello$VARIABLEworld')).to eq(false)
+    end
 
-      it 'does not match strings with spaces' do
-        expect(subject.match?('hello world')).to eq(false)
-      end
+    it 'does not match strings with escape characters' do
+      expect(subject.match?('hello\rworld')).to eq(false)
+    end
 
-      it 'does not match strings with shell variables' do
-        expect(subject.match?('hello$VARIABLEworld')).to eq(false)
-      end
+    it 'does not match strings that span more than one line' do
+      string = <<~EOS
+        hello
+        world
+      EOS
 
-      it 'does not match strings with escape characters' do
-        expect(subject.match?('hello\rworld')).to eq(false)
-      end
+      expect(subject.match?(string)).to eq(false)
+    end
 
-      it 'does not match strings that span more than one line' do
-        string = <<~EOS
-          hello
-          world
-        EOS
+    it 'does not match strings using unsupported characters' do
+      expect(subject.match?('HelloWorld%#^')).to eq(false)
+    end
 
-        expect(subject.match?(string)).to eq(false)
-      end
-
-      it 'does not match strings using unsupported characters' do
-        expect(subject.match?('HelloWorld%#^')).to eq(false)
-      end
-
-      it 'matches valid strings' do
-        expect(subject.match?('Hello+World_123/@:-~.')).to eq(true)
-      end
+    it 'matches valid strings' do
+      expect(subject.match?('Hello+World_123/@:-~.')).to eq(true)
     end
   end
 

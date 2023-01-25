@@ -4,6 +4,7 @@ export const REGISTRATION_TOKEN_PLACEHOLDER = '$REGISTRATION_TOKEN';
 
 export const PLATFORM_DOCKER = 'docker';
 export const PLATFORM_KUBERNETES = 'kubernetes';
+export const PLATFORM_AWS = 'aws';
 
 export const AWS_README_URL =
   'https://gitlab.com/guided-explorations/aws/gitlab-runner-autoscaling-aws-asg/-/blob/main/easybuttons.md';

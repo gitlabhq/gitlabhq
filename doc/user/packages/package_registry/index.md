@@ -64,7 +64,7 @@ For most package types, the following credential types are valid:
 - If you are publishing a package via CI/CD pipelines, you must use a CI job token.
 
 NOTE:
-If you have not activated the "Packages" feature for your project at **Settings > General > Project features**, you will receive a 403 Forbidden response.
+If you have not activated the "Package registry" feature for your project at **Settings > General > Visibility, project features, permissions**, you receive a 403 Forbidden response.
 Accessing package registry via deploy token is not available when external authorization is enabled.
 
 ## Use GitLab CI/CD to build packages
@@ -151,7 +151,7 @@ Several known issues exist when you allow anyone to pull from the Package Regist
 
 - Project-level endpoints are supported. Group-level and instance-level endpoints are not supported. Support for group-level endpoints is proposed in [issue 383537](https://gitlab.com/gitlab-org/gitlab/-/issues/383537).
 - It does not work with the [Composer](../composer_repository/index.md#install-a-composer-package), because Composer only has a group endpoint.
-- It will work with Conan, but using [`conan search`](../conan_repository/index.md#search-for-conan-packages-in-the-package-registry) does not work.
+- It works with Conan, but using [`conan search`](../conan_repository/index.md#search-for-conan-packages-in-the-package-registry) does not work.
 
 ## Accepting contributions
 

@@ -146,7 +146,7 @@ The **Remove status check?** modal is then shown.
 
 To complete the deletion of the status check you must select the
 **Remove status check** button. This **permanently** deletes
-the status check and it **will not** be recoverable.
+the status check and it **is not** recoverable.
 
 ## Status checks widget
 

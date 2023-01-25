@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
@@ -43,8 +42,8 @@ import SidebarTimeTracking from './components/time_tracking/sidebar_time_trackin
 import SidebarTodoWidget from './components/todo_toggle/sidebar_todo_widget.vue';
 import { IssuableAttributeType } from './constants';
 import CrmContacts from './components/crm_contacts/crm_contacts.vue';
-import SidebarMoveIssue from './lib/sidebar_move_issue';
 import trackShowInviteMemberLink from './track_invite_members';
+import MoveIssueButton from './components/move/move_issue_button.vue';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -701,6 +700,31 @@ export function mountSubscriptionsDropdown() {
   });
 }
 
+export function mountMoveIssueButton() {
+  const el = document.querySelector('.js-sidebar-move-issue-block');
+
+  if (!el) {
+    return null;
+  }
+
+  const { projectsAutocompleteEndpoint } = getSidebarOptions();
+  const { projectFullPath, issueIid } = el.dataset;
+
+  Vue.use(VueApollo);
+
+  return new Vue({
+    el,
+    name: 'MoveIssueDropdownRoot',
+    apolloProvider,
+    provide: {
+      projectsAutocompleteEndpoint,
+      projectFullPath,
+      issueIid,
+    },
+    render: (createElement) => createElement(MoveIssueButton),
+  });
+}
+
 const isAssigneesWidgetShown =
   (isInIssuePage() || isInDesignPage() || isInMRPage()) && gon.features.issueAssigneesWidget;
 
@@ -727,12 +751,7 @@ export function mountSidebar(mediator, store) {
   mountSidebarTimeTracking();
   mountSidebarSeverityWidget();
   mountSidebarEscalationStatus();
-
-  new SidebarMoveIssue(
-    mediator,
-    $('.js-move-issue'),
-    $('.js-move-issue-confirmation-button'),
-  ).init();
+  mountMoveIssueButton();
 }
 
 export { getSidebarOptions };

@@ -11,6 +11,7 @@ import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions
 import RunnerCliInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_cli_instructions.vue';
 import RunnerDockerInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_docker_instructions.vue';
 import RunnerKubernetesInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_kubernetes_instructions.vue';
+import RunnerAwsInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_aws_instructions.vue';
 
 import { mockRunnerPlatforms } from './mock_data';
 
@@ -156,6 +157,7 @@ describe('RunnerInstructionsModal component', () => {
     platform        | component
     ${'docker'}     | ${RunnerDockerInstructions}
     ${'kubernetes'} | ${RunnerKubernetesInstructions}
+    ${'aws'}        | ${RunnerAwsInstructions}
   `('with platform "$platform"', ({ platform, component }) => {
     beforeEach(async () => {
       createComponent({ props: { defaultPlatformName: platform } });

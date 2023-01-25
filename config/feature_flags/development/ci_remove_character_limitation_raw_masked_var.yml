@@ -1,8 +1,0 @@
----
-name: ci_remove_character_limitation_raw_masked_var
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109008
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388414
-milestone: '15.9'
-type: development
-group: group::pipeline authoring
-default_enabled: false

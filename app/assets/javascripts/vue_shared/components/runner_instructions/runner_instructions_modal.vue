@@ -14,11 +14,12 @@ import {
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { __, s__ } from '~/locale';
 import getRunnerPlatformsQuery from './graphql/get_runner_platforms.query.graphql';
-import { PLATFORM_DOCKER, PLATFORM_KUBERNETES } from './constants';
+import { PLATFORM_DOCKER, PLATFORM_KUBERNETES, PLATFORM_AWS } from './constants';
 
 import RunnerCliInstructions from './instructions/runner_cli_instructions.vue';
 import RunnerDockerInstructions from './instructions/runner_docker_instructions.vue';
 import RunnerKubernetesInstructions from './instructions/runner_kubernetes_instructions.vue';
+import RunnerAwsInstructions from './instructions/runner_aws_instructions.vue';
 
 export default {
   components: {
@@ -104,6 +105,8 @@ export default {
           return RunnerDockerInstructions;
         case PLATFORM_KUBERNETES:
           return RunnerKubernetesInstructions;
+        case PLATFORM_AWS:
+          return RunnerAwsInstructions;
         default:
           return null;
       }

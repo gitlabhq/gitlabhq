@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples "a layout which reflects the application theme setting", :themed_layout do
+RSpec.shared_examples "a layout which reflects the application theme setting" do
   context 'as a themed layout' do
     let(:default_theme_class) { ::Gitlab::Themes.default.css_class }
 

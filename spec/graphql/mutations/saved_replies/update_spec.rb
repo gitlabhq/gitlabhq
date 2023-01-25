@@ -34,7 +34,7 @@ RSpec.describe Mutations::SavedReplies::Update do
         let(:mutation_arguments) { { name: '', content: '' } }
 
         it { expect(subject[:saved_reply]).to be_nil }
-        it { expect(subject[:errors]).to match_array(["Content can't be blank", "Name can't be blank", "Name can contain only lowercase letters, digits, '_' and '-'. Must start with a letter, and cannot end with '-' or '_'"]) }
+        it { expect(subject[:errors]).to match_array(["Content can't be blank", "Name can't be blank"]) }
       end
 
       context 'when service successfully updates the saved reply' do

@@ -1,5 +1,9 @@
 mutation moveIssue($moveIssueInput: IssueMoveInput!) {
   issueMove(input: $moveIssueInput) {
+    issue {
+      id
+      webUrl
+    }
     errors
   }
 }

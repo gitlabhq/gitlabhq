@@ -46,8 +46,8 @@ the user is not found in the GitLab database, the project creator (most of the t
 user that started the import process) is set as the author, but a reference on the issue about the
 original Bitbucket author is kept.
 
-The importer will create any new namespaces (groups) if they don't exist or in
-the case the namespace is taken, the repository will be imported under the user's
+The importer creates any new namespaces (groups) if they don't exist or in
+the case the namespace is taken, the repository is imported under the user's
 namespace that started the import process.
 
 ## Requirements for user-mapped contributions
@@ -76,7 +76,7 @@ For user contributions to be mapped, each user must complete the following befor
 
 1. Select the projects that you'd like to import or import all projects.
    You can filter projects by name and select the namespace
-   each project will be imported for.
+   each project is imported for.
 
    ![Import projects](img/bitbucket_import_select_project_v12_3.png)
 
