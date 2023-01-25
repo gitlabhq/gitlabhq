@@ -87,7 +87,7 @@ docker.elastic.co/elasticsearch/elasticsearch:5.5.1
 ```
 
 Then confirm it works in the browser at `curl "http://<IP_ADDRESS>:9200/_cat/health"`.
-Elasticsearch's default username is `elastic` and password is `changeme`.
+In Elasticsearch, the default username is `elastic`, and the default password is `changeme`.
 
 ### Kroki
 

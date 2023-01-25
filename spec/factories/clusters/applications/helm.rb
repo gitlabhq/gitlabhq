@@ -125,9 +125,5 @@ FactoryBot.define do
       oauth_application factory: :oauth_application
       cluster factory: %i(cluster with_installed_helm provided_by_gcp project)
     end
-
-    factory :clusters_applications_cilium, class: 'Clusters::Applications::Cilium' do
-      cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-    end
   end
 end

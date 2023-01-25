@@ -414,6 +414,10 @@ Returns [`CiRunner`](#cirunner).
 
 Supported runner platforms.
 
+WARNING:
+**Deprecated** in 15.9.
+No longer used, use gitlab-runner documentation to learn about supported platforms.
+
 Returns [`RunnerPlatformConnection`](#runnerplatformconnection).
 
 This field returns a [connection](#connections). It accepts the
@@ -423,6 +427,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 ### `Query.runnerSetup`
 
 Runner setup instructions.
+
+WARNING:
+**Deprecated** in 15.9.
+No longer used, use gitlab-runner documentation to learn about runner registration commands.
 
 Returns [`RunnerSetup`](#runnersetup).
 

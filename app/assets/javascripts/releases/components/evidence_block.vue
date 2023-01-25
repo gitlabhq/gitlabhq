@@ -67,12 +67,13 @@ export default {
         <gl-link
           v-gl-tooltip
           class="d-flex align-items-center monospace"
-          :title="__('Download evidence JSON')"
-          :download="evidenceTitle(index)"
+          target="_blank"
+          :title="__('Open evidence JSON in new tab')"
           :href="evidenceUrl(index)"
         >
           <gl-icon name="review-list" class="align-middle gl-mr-3" />
           <span>{{ evidenceTitle(index) }}</span>
+          <gl-icon name="external-link" class="gl-ml-2 gl-flex-shrink-0 gl-flex-grow-0" />
         </gl-link>
 
         <expand-button>

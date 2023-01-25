@@ -125,7 +125,7 @@ module Projects
 
       setup_authorizations
 
-      current_user.invalidate_personal_projects_count
+      project.invalidate_personal_projects_count_of_owner
 
       Projects::PostCreationWorker.perform_async(@project.id)
 

@@ -19,8 +19,7 @@ module Clusters
       Clusters::Applications::Prometheus.application_name => Clusters::Applications::Prometheus,
       Clusters::Applications::Runner.application_name => Clusters::Applications::Runner,
       Clusters::Applications::Jupyter.application_name => Clusters::Applications::Jupyter,
-      Clusters::Applications::Knative.application_name => Clusters::Applications::Knative,
-      Clusters::Applications::Cilium.application_name => Clusters::Applications::Cilium
+      Clusters::Applications::Knative.application_name => Clusters::Applications::Knative
     }.freeze
     DEFAULT_ENVIRONMENT = '*'
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
@@ -64,7 +63,6 @@ module Clusters
     has_one_cluster_application :runner
     has_one_cluster_application :jupyter
     has_one_cluster_application :knative
-    has_one_cluster_application :cilium
 
     has_many :kubernetes_namespaces
     has_many :metrics_dashboard_annotations, class_name: 'Metrics::Dashboard::Annotation', inverse_of: :cluster

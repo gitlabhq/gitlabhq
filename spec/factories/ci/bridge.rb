@@ -33,6 +33,14 @@ FactoryBot.define do
       end
     end
 
+    trait :retried do
+      retried { true }
+    end
+
+    trait :retryable do
+      success
+    end
+
     trait :created do
       status { 'created' }
     end

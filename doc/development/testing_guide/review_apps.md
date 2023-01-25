@@ -134,31 +134,28 @@ resource.labels.pod_name:"review-qa-raise-e-12chm0-migrations"
 ```mermaid
 graph TD
   A["build-qa-image, compile-production-assets<br/>(canonical default refs only)"];
+  B1[start-review-app-pipeline];
   B[review-build-cng];
-  C[review-deploy];
+  C["review-deploy<br><br>Helm deploys the review app using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."];
   D[CNG-mirror];
-  E[review-qa-smoke, review-qa-reliable];
+  E[review-qa-smoke, review-qa-blocking, review-qa-non-blocking<br><br>gitlab-qa runs the e2e tests against the review app.];
 
-  A -->|once the `prepare` stage is done| B
-  B -.->|triggers a CNG-mirror pipeline and wait for it to be done| D
-  D -.->|polls until completed| B
-  B -->|once the `review-build-cng` job is done| C
-  C -->|once the `review-deploy` job is done| E
+  A --> B1
+  B1 --> B
+  B -.->|triggers a CNG-mirror pipeline| D
+  D -.->|depends on the multi-project pipeline| B
+  B --> C
+  C --> E
 
-subgraph "1. gitlab `prepare` stage"
+subgraph "1. gitlab-org/gitlab parent pipeline"
   A
+  B1
   end
 
-subgraph "2. gitlab `review-prepare` stage"
+subgraph "2. gitlab-org/gitlab child pipeline"
   B
-  end
-
-subgraph "3. gitlab `review` stage"
-  C["review-deploy<br><br>Helm deploys the review app using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."]
-  end
-
-subgraph "4. gitlab `qa` stage"
-  E[review-qa-smoke, review-qa-reliable<br><br>gitlab-qa runs the smoke and reliable suites against the review app.]
+  C
+  E
   end
 
 subgraph "CNG-mirror pipeline"

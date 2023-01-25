@@ -6,20 +6,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Avoiding downtime in migrations
 
-When working with a database certain operations may require downtime. Since we
+When working with a database certain operations may require downtime. As we
 cannot have downtime in migrations we need to use a set of steps to get the
 same end result without downtime. This guide describes various operations that
 may appear to need downtime, their impact, and how to perform them without
 requiring downtime.
 
-## Dropping Columns
+## Dropping columns
 
 Removing columns is tricky because running GitLab processes may still be using
 the columns. To work around this safely, you need three steps in three releases:
 
-1. Ignoring the column (release M)
-1. Dropping the column (release M+1)
-1. Removing the ignore rule (release M+2)
+1. [Ignoring the column](#ignoring-the-column-release-m) (release M)
+1. [Dropping the column](#dropping-the-column-release-m1) (release M+1)
+1. [Removing the ignore rule](#removing-the-ignore-rule-release-m2) (release M+2)
 
 The reason we spread this out across three releases is that dropping a column is
 a destructive operation that can't be rolled back easily.
@@ -27,9 +27,9 @@ a destructive operation that can't be rolled back easily.
 Following this procedure helps us to make sure there are no deployments to GitLab.com
 and upgrade processes for self-managed installations that lump together any of these steps.
 
-### Step 1: Ignoring the column (release M)
+### Ignoring the column (release M)
 
-The first step is to ignore the column in the application code. This is
+The first step is to ignore the column in the application code. This step is
 necessary because Rails caches the columns and re-uses this cache in various
 places. This can be done by defining the columns to ignore. For example, to ignore
 `updated_at` in the User model you'd use the following:
@@ -50,7 +50,7 @@ ignore_columns %i[updated_at created_at], remove_with: '12.7', remove_after: '20
 If the model exists in CE and EE, the column has to be ignored in the CE model. If the
 model only exists in EE, then it has to be added there.
 
-We require indication of when it is safe to remove the column ignore with:
+We require indication of when it is safe to remove the column ignore rule with:
 
 - `remove_with`: set to a GitLab release typically two releases (M+2) after adding the
   column ignore.
@@ -64,7 +64,7 @@ to ignore the column and subsequently remove the column ignore (which would resu
 
 In this example, the change to ignore the column went into release 12.5.
 
-### Step 2: Dropping the column (release M+1)
+### Dropping the column (release M+1)
 
 Continuing our example, dropping the column goes into a _post-deployment_ migration in release 12.6:
 
@@ -74,12 +74,14 @@ Start by creating the **post-deployment migration**:
 bundle exec rails g post_deployment_migration remove_users_updated_at_column
 ```
 
-There are two scenarios that you need to consider
-to write a migration that removes a column:
+You must consider these scenarios when you write a migration that removes a column:
 
-#### A. The removed column has no indexes or constraints that belong to it
+- [The removed column has no indexes or constraints that belong to it](#the-removed-column-has-no-indexes-or-constraints-that-belong-to-it)
+- [The removed column has an index or constraint that belongs to it](#the-removed-column-has-an-index-or-constraint-that-belongs-to-it)
 
-In this case, a **transactional migration** can be used. Something as simple as:
+#### The removed column has no indexes or constraints that belong to it
+
+In this case, a **transactional migration** can be used:
 
 ```ruby
 class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.1]
@@ -97,10 +99,10 @@ You can consider [enabling lock retries](../migration_style_guide.md#usage-with-
 when you run a migration on big tables, because it might take some time to
 acquire a lock on this table.
 
-#### B. The removed column has an index or constraint that belongs to it
+#### The removed column has an index or constraint that belongs to it
 
 If the `down` method requires adding back any dropped indexes or constraints, that cannot
-be done within a transactional migration, then the migration would look like this:
+be done in a transactional migration. The migration would look like this:
 
 ```ruby
 class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.1]
@@ -131,7 +133,7 @@ is used to disable the transaction that wraps the whole migration.
 You can refer to the page [Migration Style Guide](../migration_style_guide.md)
 for more information about database migrations.
 
-### Step 3: Removing the ignore rule (release M+2)
+### Removing the ignore rule (release M+2)
 
 With the next release, in this example 12.7, we set up another merge request to remove the ignore rule.
 This removes the `ignore_column` line and - if not needed anymore - also the inclusion of `IgnoreableColumns`.
@@ -139,18 +141,24 @@ This removes the `ignore_column` line and - if not needed anymore - also the inc
 This should only get merged with the release indicated with `remove_with` and once
 the `remove_after` date has passed.
 
-## Renaming Columns
+## Renaming columns
 
-Renaming columns the normal way requires downtime as an application may continue
+Renaming columns the standard way requires downtime as an application may continue
 to use the old column names during or after a database migration. To rename a column
 without requiring downtime, we need two migrations: a regular migration and a
 post-deployment migration. Both these migrations can go in the same release.
+The steps:
+
+1. [Add the regular migration](#add-the-regular-migration-release-m) (release M)
+1. [Ignore the column](#ignore-the-column-release-m) (release M)
+1. [Add a post-deployment migration](#add-a-post-deployment-migration-release-m) (release M)
+1. [Remove the ignore rule](#remove-the-ignore-rule-release-m1) (release M+1)
 
 NOTE:
 It's not possible to rename columns with default values. For more details, see
 [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52032#default-values).
 
-### Step 1: Add The Regular Migration
+### Add the regular migration (release M)
 
 First we need to create the regular migration. This migration should use
 `Gitlab::Database::MigrationHelpers#rename_column_concurrently` to perform the
@@ -178,7 +186,20 @@ If a column contains one or more indexes that don't contain the name of the
 original column, the previously described procedure fails. In that case,
 you need to rename these indexes.
 
-### Step 2: Add A Post-Deployment Migration
+### Ignore the column (release M)
+
+The next step is to ignore the column in the application code, and make sure it is not used. This step is
+necessary because Rails caches the columns and re-uses this cache in various places.
+This step is similar to [the first step when column is dropped](#ignoring-the-column-release-m), and the same requirements apply.
+
+```ruby
+class User < ApplicationRecord
+  include IgnorableColumns
+  ignore_column :updated_at, remove_with: '12.7', remove_after: '2020-01-22'
+end
+```
+
+### Add a post-deployment migration (release M)
 
 The renaming procedure requires some cleaning up in a post-deployment migration.
 We can perform this cleanup using
@@ -202,7 +223,11 @@ end
 If you're renaming a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3), carefully consider the state when the first migration has run but the second cleanup migration hasn't been run yet.
 With [Canary](https://gitlab.com/gitlab-com/gl-infra/readiness/-/tree/master/library/canary/) it is possible that the system runs in this state for a significant amount of time.
 
-## Changing Column Constraints
+### Remove the ignore rule (release M+1)
+
+Same as when column is dropped, after the rename is completed, we need to [remove the ignore rule](#removing-the-ignore-rule-release-m2) in a subsequent release.
+
+## Changing column constraints
 
 Adding or removing a `NOT NULL` clause (or another constraint) can typically be
 done without requiring downtime. However, this does require that any application
@@ -218,14 +243,18 @@ You can check the following guides for each specific use case:
 - [Adding `NOT NULL` constraints](not_null_constraints.md)
 - [Adding limits to text columns](strings_and_the_text_data_type.md)
 
-## Changing Column Types
+## Changing column types
 
 Changing the type of a column can be done using
 `Gitlab::Database::MigrationHelpers#change_column_type_concurrently`. This
 method works similarly to `rename_column_concurrently`. For example, let's say
-we want to change the type of `users.username` from `string` to `text`.
+we want to change the type of `users.username` from `string` to `text`:
 
-### Step 1: Create A Regular Migration
+1. [Create a regular migration](#create-a-regular-migration)
+1. [Create a post-deployment migration](#create-a-post-deployment-migration)
+1. [Casting data to a new type](#casting-data-to-a-new-type)
+
+### Create a regular migration
 
 A regular migration is used to create a new column with a temporary name along
 with setting up some triggers to keep data in sync. Such a migration would look
@@ -246,7 +275,7 @@ class ChangeUsersUsernameStringToText < Gitlab::Database::Migration[2.1]
 end
 ```
 
-### Step 2: Create A Post Deployment Migration
+### Create a post-deployment migration
 
 Next we need to clean up our changes using a post-deployment migration:
 
@@ -293,13 +322,13 @@ specify the old default.
 
 Doing this requires steps in two minor releases:
 
-1. Add the `SafelyChangeColumnDefault` concern to the model and change the default in a post-migration.
-1. Clean up the `SafelyChangeColumnDefault` concern in the next minor release.
+1. [Add the `SafelyChangeColumnDefault` concern to the model](#add-the-safelychangecolumndefault-concern-to-the-model-and-change-the-default-in-a-post-migration) and change the default in a post-migration.
+1. [Clean up the `SafelyChangeColumnDefault` concern](#clean-up-the-safelychangecolumndefault-concern-in-the-next-minor-release) in the next minor release.
 
 We must wait a minor release before cleaning up the `SafelyChangeColumnDefault` because self-managed
 releases bundle an entire minor release into a single zero-downtime deployment.
 
-### Step 1: Add the `SafelyChangeColumnDefault` concern to the model and change the default in a post-migration
+### Add the `SafelyChangeColumnDefault` concern to the model and change the default in a post-migration
 
 The first step is to mark the column as safe to change in application code.
 
@@ -333,12 +362,12 @@ You can consider [enabling lock retries](../migration_style_guide.md#usage-with-
 when you run a migration on big tables, because it might take some time to
 acquire a lock on this table.
 
-### Step 2: Clean up the `SafelyChangeColumnDefault` concern in the next minor release
+### Clean up the `SafelyChangeColumnDefault` concern in the next minor release
 
 In the next minor release, create a new merge request to remove the `columns_changing_default` call. Also remove the `SafelyChangeColumnDefault` include
 if it is not needed for a different column.
 
-## Changing The Schema For Large Tables
+## Changing the schema for large tables
 
 While `change_column_type_concurrently` and `rename_column_concurrently` can be
 used for changing the schema of a table without downtime, it doesn't work very
@@ -354,7 +383,7 @@ down deployments.
 
 For more information, see [the documentation on cleaning up batched background migrations](batched_background_migrations.md#cleaning-up).
 
-## Adding Indexes
+## Adding indexes
 
 Adding indexes does not require downtime when `add_concurrent_index`
 is used.
@@ -362,15 +391,15 @@ is used.
 See also [Migration Style Guide](../migration_style_guide.md#adding-indexes)
 for more information.
 
-## Dropping Indexes
+## Dropping indexes
 
 Dropping an index does not require downtime.
 
-## Adding Tables
+## Adding tables
 
 This operation is safe as there's no code using the table just yet.
 
-## Dropping Tables
+## Dropping tables
 
 Dropping tables can be done safely using a post-deployment migration, but only
 if the application no longer uses the table.
@@ -378,7 +407,7 @@ if the application no longer uses the table.
 Add the table to [`db/docs/deleted_tables`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/docs/deleted_tables) using the process described in [database dictionary](database_dictionary.md#dropping-tables).
 Even though the table is deleted, it is still referenced in database migrations.
 
-## Renaming Tables
+## Renaming tables
 
 Renaming tables requires downtime as an application may continue
 using the old table name during/after a database migration.
@@ -389,7 +418,7 @@ table and creating a new one is the preferred way to "rename" the table.
 Renaming a table is possible without downtime by following our multi-release
 [rename table process](rename_database_tables.md#rename-table-without-downtime).
 
-## Adding Foreign Keys
+## Adding foreign keys
 
 Adding foreign keys usually works in 3 steps:
 
@@ -404,7 +433,7 @@ GitLab allows you to work around this by using
 `Gitlab::Database::MigrationHelpers#add_concurrent_foreign_key`. This method
 ensures that no downtime is needed.
 
-## Removing Foreign Keys
+## Removing foreign keys
 
 This operation does not require downtime.
 

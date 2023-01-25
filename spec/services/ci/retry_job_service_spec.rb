@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RetryJobService do
+RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
@@ -25,6 +25,22 @@ RSpec.describe Ci::RetryJobService do
   before_all do
     project.add_developer(developer)
     project.add_reporter(reporter)
+  end
+
+  shared_context 'retryable bridge' do
+    let_it_be(:downstream_project) { create(:project, :repository) }
+
+    let_it_be_with_refind(:job) do
+      create(:ci_bridge, :success,
+        pipeline: pipeline, downstream: downstream_project, description: 'a trigger job', ci_stage: stage
+      )
+    end
+
+    let_it_be(:job_to_clone) { job }
+
+    before do
+      job.update!(retried: false)
+    end
   end
 
   shared_context 'retryable build' do
@@ -99,6 +115,14 @@ RSpec.describe Ci::RetryJobService do
         expect { service.execute(job) }
           .to raise_error Gitlab::Access::AccessDeniedError
       end
+    end
+  end
+
+  shared_examples_for 'does not retry the job' do
+    it 'returns :not_retryable and :unprocessable_entity' do
+      expect(subject.message).to be('Job cannot be retried')
+      expect(subject.payload[:reason]).to eq(:not_retryable)
+      expect(subject.payload[:job]).to eq(job)
     end
   end
 
@@ -187,6 +211,20 @@ RSpec.describe Ci::RetryJobService do
 
     it 'raises an error when an unexpected class is passed' do
       expect { service.clone!(create(:ci_build).present) }.to raise_error(TypeError)
+    end
+
+    context 'when the job to be cloned is a bridge' do
+      include_context 'retryable bridge'
+
+      it_behaves_like 'clones the job'
+
+      context 'when given variables' do
+        let(:new_job) { service.clone!(job, variables: job_variables_attributes) }
+
+        it 'does not give variables to the new bridge' do
+          expect { new_job }.not_to raise_error
+        end
+      end
     end
 
     context 'when the job to be cloned is a build' do
@@ -287,7 +325,33 @@ RSpec.describe Ci::RetryJobService do
 
     subject { service.execute(job) }
 
+    context 'when the job to be retried is a bridge' do
+      context 'and it is not retryable' do
+        let_it_be(:job) { create(:ci_bridge, :failed, :reached_max_descendant_pipelines_depth) }
+
+        it_behaves_like 'does not retry the job'
+      end
+
+      include_context 'retryable bridge'
+
+      it_behaves_like 'retries the job'
+
+      context 'when given variables' do
+        let(:new_job) { service.clone!(job, variables: job_variables_attributes) }
+
+        it 'does not give variables to the new bridge' do
+          expect { new_job }.not_to raise_error
+        end
+      end
+    end
+
     context 'when the job to be retried is a build' do
+      context 'and it is not retryable' do
+        let_it_be(:job) { create(:ci_build, :deployment_rejected, pipeline: pipeline) }
+
+        it_behaves_like 'does not retry the job'
+      end
+
       include_context 'retryable build'
 
       it_behaves_like 'retries the job'

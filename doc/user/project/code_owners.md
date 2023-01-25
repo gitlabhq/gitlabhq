@@ -161,7 +161,20 @@ README.md @user1
 
 The Code Owner for `README.md` would be `@user2`.
 
-If you use sections, the last user _for each section_ is used.
+If you use sections, the last pattern matching the file for each section is used.
+For example, in a `CODEOWNERS` file using sections:
+
+```plaintext
+[README Owners]
+README.md @user1 @user2
+internal/README.md @user4
+
+[README other owners]
+README.md @user3
+```
+
+The Code Owners for the `README.md` in the root directory are `@user1`, `@user2`,
+and `@user3`. The Code Owners for `internal/README.md` are `@user4` and `@user3`. 
 
 Only one CODEOWNERS pattern can match per file path.
 

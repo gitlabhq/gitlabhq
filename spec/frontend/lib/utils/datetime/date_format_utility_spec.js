@@ -82,6 +82,10 @@ describe('date_format_utility.js', () => {
       );
     });
 
+    it('defaults to 00:00 if no time is provided', () => {
+      expect(utils.dateAndTimeToISOString(new Date('2021-08-21'))).toBe('2021-08-21T00:00:00.000Z');
+    });
+
     it('throws if date in invalid', () => {
       expect(() => utils.dateAndTimeToISOString('Invalid date', '10:00')).toThrow(
         'Argument should be a Date instance',

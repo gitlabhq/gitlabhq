@@ -100,7 +100,6 @@ FactoryBot.define do
       application_runner factory: %i(clusters_applications_runner installed)
       application_jupyter factory: %i(clusters_applications_jupyter installed)
       application_knative factory: %i(clusters_applications_knative installed)
-      application_cilium factory: %i(clusters_applications_cilium installed)
     end
 
     trait :with_domain do

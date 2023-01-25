@@ -34,7 +34,7 @@ module Projects
 
       publish_project_deleted_event_for(project)
 
-      current_user.invalidate_personal_projects_count
+      project.invalidate_personal_projects_count_of_owner
 
       true
     rescue StandardError => error

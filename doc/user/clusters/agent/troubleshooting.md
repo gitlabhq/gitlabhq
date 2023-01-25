@@ -108,7 +108,7 @@ certificate authority that is unknown to the agent.
 
 To fix this issue, you can present the CA certificate file to the agent
 by using a Kubernetes `configmap` and mount the file in the agent `/etc/ssl/certs` directory from where it
-will be picked up automatically.
+is picked up automatically.
 
 For example, if your internal CA certificate is `myCA.pem`:
 
@@ -200,7 +200,7 @@ are stored in the repository where the agent is configured.
 ```
 
 The GitLab agent performs vulnerability scans by creating a job to scan each workload. If a scan
-is interrupted, these jobs may be left behind and will need to be cleaned up before more jobs can
+is interrupted, these jobs may be left behind and need to be cleaned up before more jobs can
 be run. You can clean up these jobs by running:
 
 ```shell

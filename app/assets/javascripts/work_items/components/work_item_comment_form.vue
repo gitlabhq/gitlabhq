@@ -198,6 +198,7 @@ export default {
           :form-field-placeholder="__('Write a comment or drag your files here…')"
           form-field-id="work-item-add-comment"
           form-field-name="work-item-add-comment"
+          data-testid="work-item-add-comment"
           enable-autocomplete
           autofocus
           use-bottom-toolbar

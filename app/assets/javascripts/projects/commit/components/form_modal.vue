@@ -141,11 +141,7 @@ export default {
           :value="targetProjectId"
         />
 
-        <projects-dropdown
-          class="gl-w-half"
-          :value="targetProjectName"
-          @selectProject="setSelectedProject"
-        />
+        <projects-dropdown :value="targetProjectName" @selectProject="setSelectedProject" />
       </gl-form-group>
 
       <gl-form-group

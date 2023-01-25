@@ -338,7 +338,7 @@ gem 'sentry-sidekiq', '~> 5.1.1'
 
 # PostgreSQL query parsing
 #
-gem 'pg_query', '~> 2.2'
+gem 'pg_query', '~> 2.2', '>= 2.2.1'
 
 gem 'premailer-rails', '~> 1.10.3'
 

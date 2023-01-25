@@ -62,6 +62,7 @@ export default {
       :value="state"
       :options="$options.states"
       :disabled="disabled"
+      data-testid="work-item-state-select"
       class="gl-w-auto hide-select-decoration gl-pl-3"
       :class="{ 'gl-bg-transparent! gl-cursor-text!': disabled }"
       @change="setState"

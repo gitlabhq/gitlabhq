@@ -991,6 +991,13 @@ class Project < ApplicationRecord
     namespace.owner == user
   end
 
+  def invalidate_personal_projects_count_of_owner
+    return unless personal?
+    return unless namespace.owner
+
+    namespace.owner.invalidate_personal_projects_count
+  end
+
   def project_setting
     super.presence || build_project_setting
   end

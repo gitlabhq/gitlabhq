@@ -130,7 +130,7 @@ strategy.
 Administrators can enable a background job that performs housekeeping in all
 repositories at a customizable interval to remedy this situation. This
 background job processes all repositories hosted by a Gitaly node in a random
-order and eagerly performs housekeeping tasks on them. The Gitaly node will stop
+order and eagerly performs housekeeping tasks on them. The Gitaly node stops
 processing repositories if it takes longer than the configured interval.
 
 #### Configure scheduled housekeeping
@@ -166,7 +166,7 @@ of a repository. When creating the first fork, we:
 
 1. Create an object pool repository that contains all objects of the repository
    that is about to be forked.
-1. Link the repository to this new object pool via Git's alternates mechanism.
+1. Link the repository to this new object pool via the alternates mechanism of Git.
 1. Repack the repository so that it uses objects from the object pool. It thus
    can drop its own copy of the objects.
 
@@ -181,12 +181,12 @@ GitLab needs to perform special housekeeping operations in object pools:
   thus maintain references to unreachable "dangling" objects so that they don't
   ever get deleted.
 - GitLab must update object pools regularly to pull in new objects that have
-  been added in the primary repository. Otherwise, an object pool will become
+  been added in the primary repository. Otherwise, an object pool becomes
   increasingly inefficient at deduplicating objects.
 
 These housekeeping operations are performed by the specialized
 `FetchIntoObjectPool` RPC that handles all of these special tasks while also
-executing the regular housekeeping tasks we execute for normal Git
+executing the regular housekeeping tasks we execute for standard Git
 repositories.
 
 Object pools are getting optimized automatically whenever the primary member is

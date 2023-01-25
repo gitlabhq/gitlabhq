@@ -37,8 +37,18 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   describe '#retryable?' do
     let(:bridge) { create(:ci_bridge, :success) }
 
-    it 'returns false' do
-      expect(bridge.retryable?).to eq(false)
+    it 'returns true' do
+      expect(bridge.retryable?).to eq(true)
+    end
+
+    context 'without ci_recreate_downstream_pipeline ff' do
+      before do
+        stub_feature_flags(ci_recreate_downstream_pipeline: false)
+      end
+
+      it 'returns false' do
+        expect(bridge.retryable?).to eq(false)
+      end
     end
   end
 
@@ -589,5 +599,11 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       expect(bridge.metadata).to be_valid
       expect(bridge.metadata.partition_id).to eq(ci_testing_partition_id)
     end
+  end
+
+  describe '#deployment_job?' do
+    subject { bridge.deployment_job? }
+
+    it { is_expected.to eq(false) }
   end
 end

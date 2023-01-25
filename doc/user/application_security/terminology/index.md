@@ -243,7 +243,7 @@ of the finding's [first identifier](https://gitlab.com/gitlab-org/security-produ
 combine to create the value.
 
 Examples of primary identifiers include `PluginID` for OWASP Zed Attack Proxy (ZAP), or `CVE` for
-Trivy. Note that the identifier must be stable. Subsequent scans must return the same value for the
+Trivy. The identifier must be stable. Subsequent scans must return the same value for the
 same finding, even if the location has slightly changed.
 
 ### Report finding

@@ -1,7 +1,5 @@
 ---
 table_name: clusters_applications_cilium
-classes:
-- Clusters::Applications::Cilium
 feature_categories:
 - security_policy_management
 description: Information about installed instance of Cilium in the cluster

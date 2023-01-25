@@ -334,7 +334,7 @@ export const timeToHoursMinutes = (time = '') => {
  * @param {String} offset An optional Date-compatible offset.
  * @returns {String} The combined Date's ISO string representation.
  */
-export const dateAndTimeToISOString = (date, time, offset = '') => {
+export const dateAndTimeToISOString = (date, time = '00:00', offset = '') => {
   const { year, month, day } = dateToYearMonthDate(date);
   const { hours, minutes } = timeToHoursMinutes(time);
   const dateString = `${year}-${month}-${day}T${hours}:${minutes}:00.000${offset || 'Z'}`;

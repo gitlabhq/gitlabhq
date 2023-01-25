@@ -5152,9 +5152,6 @@ msgstr ""
 msgid "Approved"
 msgstr ""
 
-msgid "Approved MRs"
-msgstr ""
-
 msgid "Approved the current merge request."
 msgstr ""
 
@@ -5446,9 +5443,6 @@ msgid "AsanaService|Comma-separated list of branches to be automatically inspect
 msgstr ""
 
 msgid "AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user."
-msgstr ""
-
-msgid "Ascending"
 msgstr ""
 
 msgid "Ask again later"
@@ -8971,9 +8965,6 @@ msgstr ""
 msgid "Closed %{epicTimeagoDate}"
 msgstr ""
 
-msgid "Closed MRs"
-msgstr ""
-
 msgid "Closed date"
 msgstr ""
 
@@ -11075,10 +11066,25 @@ msgstr ""
 msgid "ContributionAnalytics|%{created} created, %{merged} merged, %{closed} closed."
 msgstr ""
 
-msgid "ContributionAnalytics|%{pushes}, more than %{commits} by %{contributors}."
+msgid "ContributionAnalytics|%{pushes} by %{contributors}."
+msgstr ""
+
+msgid "ContributionAnalytics|Approved MRs"
+msgstr ""
+
+msgid "ContributionAnalytics|Closed MRs"
+msgstr ""
+
+msgid "ContributionAnalytics|Closed issues"
 msgstr ""
 
 msgid "ContributionAnalytics|Contribution analytics for issues, merge requests and push events since %{start_date}"
+msgstr ""
+
+msgid "ContributionAnalytics|Contributions per group member"
+msgstr ""
+
+msgid "ContributionAnalytics|Failed to load the contribution stats"
 msgstr ""
 
 msgid "ContributionAnalytics|Issues"
@@ -11093,7 +11099,16 @@ msgstr ""
 msgid "ContributionAnalytics|Last week"
 msgstr ""
 
+msgid "ContributionAnalytics|Loading contribution stats for group members"
+msgstr ""
+
 msgid "ContributionAnalytics|Merge requests"
+msgstr ""
+
+msgid "ContributionAnalytics|Merged MRs"
+msgstr ""
+
+msgid "ContributionAnalytics|Name"
 msgstr ""
 
 msgid "ContributionAnalytics|No issues for the selected time period."
@@ -11105,6 +11120,15 @@ msgstr ""
 msgid "ContributionAnalytics|No pushes for the selected time period."
 msgstr ""
 
+msgid "ContributionAnalytics|Opened MRs"
+msgstr ""
+
+msgid "ContributionAnalytics|Opened issues"
+msgstr ""
+
+msgid "ContributionAnalytics|Pushed"
+msgstr ""
+
 msgid "ContributionAnalytics|The given date range is larger than 31 days"
 msgstr ""
 
@@ -11114,10 +11138,10 @@ msgstr ""
 msgid "ContributionAnalytics|There is too much data to calculate. Try lowering the period_limit setting in the insights configuration file."
 msgstr ""
 
-msgid "Contributions for %{calendar_date}"
+msgid "ContributionAnalytics|Total Contributions"
 msgstr ""
 
-msgid "Contributions per group member"
+msgid "Contributions for %{calendar_date}"
 msgstr ""
 
 msgid "Contributor"
@@ -14095,9 +14119,6 @@ msgstr ""
 msgid "Deprioritize label"
 msgstr ""
 
-msgid "Descending"
-msgstr ""
-
 msgid "Describe the goal of the changes and what reviewers should be aware of."
 msgstr ""
 
@@ -14838,9 +14859,6 @@ msgid "Download artifacts"
 msgstr ""
 
 msgid "Download codes"
-msgstr ""
-
-msgid "Download evidence JSON"
 msgstr ""
 
 msgid "Download export"
@@ -25258,9 +25276,6 @@ msgstr ""
 msgid "Loading %{name}"
 msgstr ""
 
-msgid "Loading contribution stats for group members"
-msgstr ""
-
 msgid "Loading files, directories, and submodules in the path %{path} for commit reference %{ref}"
 msgstr ""
 
@@ -26514,9 +26529,6 @@ msgid "MergeTopics|This action cannot be undone."
 msgstr ""
 
 msgid "Merged"
-msgstr ""
-
-msgid "Merged MRs"
 msgstr ""
 
 msgid "Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes."
@@ -29379,6 +29391,9 @@ msgstr ""
 msgid "Open errors"
 msgstr ""
 
+msgid "Open evidence JSON in new tab"
+msgstr ""
+
 msgid "Open in Gitpod"
 msgstr ""
 
@@ -29416,12 +29431,6 @@ msgid "OpenSearch's region."
 msgstr ""
 
 msgid "Opened"
-msgstr ""
-
-msgid "Opened MRs"
-msgstr ""
-
-msgid "Opened issues"
 msgstr ""
 
 msgid "OpenedNDaysAgo|Created"
@@ -34617,9 +34626,6 @@ msgid "PushRule|Reject inconsistent user name"
 msgstr ""
 
 msgid "PushRule|Reject unverified users"
-msgstr ""
-
-msgid "Pushed"
 msgstr ""
 
 msgid "Pushes"
@@ -39906,9 +39912,6 @@ msgstr ""
 msgid "Something went wrong while fetching details"
 msgstr ""
 
-msgid "Something went wrong while fetching group member contributions"
-msgstr ""
-
 msgid "Something went wrong while fetching latest comments."
 msgstr ""
 
@@ -44441,9 +44444,6 @@ msgid "Topics could not be merged!"
 msgstr ""
 
 msgid "Total"
-msgstr ""
-
-msgid "Total Contributions"
 msgstr ""
 
 msgid "Total Score"

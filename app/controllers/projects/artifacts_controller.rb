@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::ArtifactsController < Projects::ApplicationController
+  include Ci::AuthBuildTrace
   include ExtractsPath
   include RendersBlob
   include SendFileUpload

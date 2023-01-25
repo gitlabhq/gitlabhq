@@ -150,9 +150,9 @@ in your CI/CD configuration file after you include the [`Secret-Detection.gitlab
 
 You can set the tag to:
 
-- A major version, like `4`. Your pipelines will use any minor or patch updates that are released within this major version.
-- A minor version, like `4.5`. Your pipelines will use any patch updates that are released within this minor version.
-- A patch version, like `4.5.0`. Your pipelines won't receive any updates.
+- A major version, like `4`. Your pipelines use any minor or patch updates that are released within this major version.
+- A minor version, like `4.5`. Your pipelines use any patch updates that are released within this minor version.
+- A patch version, like `4.5.0`. Your pipelines don't receive any updates.
 
 This example uses a specific minor version of the analyzer:
 

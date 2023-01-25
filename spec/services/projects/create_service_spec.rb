@@ -163,7 +163,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
 
   describe 'after create actions' do
     it 'invalidate personal_projects_count caches' do
-      expect(user).to receive(:invalidate_personal_projects_count)
+      expect(Rails.cache).to receive(:delete).with(['users', user.id, 'personal_projects_count'])
 
       create_project(user, opts)
     end

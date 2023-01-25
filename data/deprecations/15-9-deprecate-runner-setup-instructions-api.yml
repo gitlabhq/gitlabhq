@@ -1,0 +1,13 @@
+- title: 'GitLab Runner platforms and setup instructions in GraphQL API'
+  announcement_milestone: '15.9'
+  announcement_date: '2023-02-22'
+  removal_milestone: '17.0'
+  removal_date: '2024-05-22'
+  breaking_change: true
+  reporter: mrincon
+  body: |
+    The `runnerPlatforms` and `runnerSetup` queries to get GitLab Runner platforms and installation instructions
+    are deprecated and will be removed from the GraphQL API. For installation instructions, you should use the
+    [GitLab Runner documentation](https://docs.gitlab.com/runner/)
+  stage: verify
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387937

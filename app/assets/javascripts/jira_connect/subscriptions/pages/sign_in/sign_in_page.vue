@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     isOauthSelfManagedEnabled() {
-      return this.glFeatures.jiraConnectOauth && this.glFeatures.jiraConnectOauthSelfManaged;
+      return this.glFeatures.jiraConnectOauth;
     },
   },
 };

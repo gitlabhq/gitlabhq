@@ -13,7 +13,7 @@ export default {
   },
   methods: {
     checkSlots() {
-      return this.$scopedSlots.default?.()?.some((c) => c.tag);
+      return this.$scopedSlots.default?.()?.some((c) => c.elm?.innerText);
     },
   },
 };

@@ -287,6 +287,12 @@ RSpec.describe Ci::Processable do
       end
     end
 
+    context 'when the processable is a bridge' do
+      subject(:processable) { create(:ci_bridge, pipeline: pipeline) }
+
+      it_behaves_like 'retryable processable'
+    end
+
     context 'when the processable is a build' do
       subject(:processable) { create(:ci_build, pipeline: pipeline) }
 

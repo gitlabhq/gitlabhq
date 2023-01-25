@@ -403,8 +403,8 @@ namespace :gitlab do
 
       desc 'Generate database docs yaml'
       task generate: :environment do
-        FileUtils.mkdir_p(DB_DOCS_PATH) unless Dir.exist?(DB_DOCS_PATH)
-        FileUtils.mkdir_p(EE_DICTIONARY_PATH) unless Dir.exist?(EE_DICTIONARY_PATH)
+        FileUtils.mkdir_p(DB_DOCS_PATH)
+        FileUtils.mkdir_p(EE_DICTIONARY_PATH) if Gitlab.ee?
 
         Rails.application.eager_load!
 

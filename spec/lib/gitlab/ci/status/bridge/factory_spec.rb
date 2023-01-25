@@ -40,7 +40,8 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
 
     it 'matches correct extended statuses' do
       expect(factory.extended_statuses)
-        .to eq [Gitlab::Ci::Status::Bridge::Failed]
+        .to eq [Gitlab::Ci::Status::Bridge::Retryable,
+                Gitlab::Ci::Status::Bridge::Failed]
     end
 
     it 'fabricates a failed bridge status' do
@@ -54,7 +55,7 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
       expect(status.label).to be_nil
       expect(status.status_tooltip).to eq "#{s_('CiStatusText|failed')} - (unknown failure)"
       expect(status).not_to have_details
-      expect(status).not_to have_action
+      expect(status).to have_action
     end
 
     context 'failed with downstream_pipeline_creation_failed' do
@@ -133,6 +134,30 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
       expect(status.favicon).to eq 'favicon_pending'
       expect(status.illustration).to include(:image, :size, :title)
       expect(status).not_to have_details
+    end
+  end
+
+  context 'when the bridge is successful and therefore retryable' do
+    let(:bridge) { create(:ci_bridge, :success) }
+
+    it 'matches correct core status' do
+      expect(factory.core_status).to be_a Gitlab::Ci::Status::Success
+    end
+
+    it 'matches correct extended statuses' do
+      expect(factory.extended_statuses)
+        .to eq [Gitlab::Ci::Status::Bridge::Retryable]
+    end
+
+    it 'fabricates a retryable build status' do
+      expect(status).to be_a Gitlab::Ci::Status::Bridge::Retryable
+    end
+
+    it 'fabricates status with correct details' do
+      expect(status.text).to eq s_('CiStatusText|passed')
+      expect(status.icon).to eq 'status_success'
+      expect(status.favicon).to eq 'favicon_status_success'
+      expect(status).to have_action
     end
   end
 

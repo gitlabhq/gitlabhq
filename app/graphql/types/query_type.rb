@@ -94,8 +94,10 @@ module Types
           resolver: Resolvers::Ci::RunnerResolver,
           extras: [:lookahead],
           description: "Find a runner."
-    field :runner_platforms, resolver: Resolvers::Ci::RunnerPlatformsResolver
-    field :runner_setup, resolver: Resolvers::Ci::RunnerSetupResolver
+    field :runner_platforms, resolver: Resolvers::Ci::RunnerPlatformsResolver,
+          deprecated: { reason: 'No longer used, use gitlab-runner documentation to learn about supported platforms', milestone: '15.9' }
+    field :runner_setup, resolver: Resolvers::Ci::RunnerSetupResolver,
+          deprecated: { reason: 'No longer used, use gitlab-runner documentation to learn about runner registration commands', milestone: '15.9' }
     field :runners, Types::Ci::RunnerType.connection_type,
           null: true,
           resolver: Resolvers::Ci::RunnersResolver,

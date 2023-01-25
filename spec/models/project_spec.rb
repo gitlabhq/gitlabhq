@@ -920,6 +920,29 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '#invalidate_personal_projects_count_of_owner' do
+    context 'for personal projects' do
+      let_it_be(:namespace_user) { create(:user) }
+      let_it_be(:project) { create(:project, namespace: namespace_user.namespace) }
+
+      it 'invalidates personal_project_count cache of the the owner of the personal namespace' do
+        expect(Rails.cache).to receive(:delete).with(['users', namespace_user.id, 'personal_projects_count'])
+
+        project.invalidate_personal_projects_count_of_owner
+      end
+    end
+
+    context 'for projects in groups' do
+      let_it_be(:project) { create(:project, namespace: create(:group)) }
+
+      it 'does not invalidates any cache' do
+        expect(Rails.cache).not_to receive(:delete)
+
+        project.invalidate_personal_projects_count_of_owner
+      end
+    end
+  end
+
   describe '#default_pipeline_lock' do
     let(:project) { build_stubbed(:project) }
 

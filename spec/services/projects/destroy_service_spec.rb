@@ -151,10 +151,22 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
   it_behaves_like 'deleting the project'
 
-  it 'invalidates personal_project_count cache' do
-    expect(user).to receive(:invalidate_personal_projects_count)
+  context 'personal projects count cache' do
+    context 'when the executor is the creator of the project itself' do
+      it 'invalidates personal_project_count cache of the the owner of the personal namespace' do
+        expect(user).to receive(:invalidate_personal_projects_count)
 
-    destroy_project(project, user, {})
+        destroy_project(project, user, {})
+      end
+    end
+
+    context 'when the executor is the instance administrator', :enable_admin_mode do
+      it 'invalidates personal_project_count cache of the the owner of the personal namespace' do
+        expect(user).to receive(:invalidate_personal_projects_count)
+
+        destroy_project(project, create(:admin), {})
+      end
+    end
   end
 
   context 'with running pipelines' do

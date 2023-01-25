@@ -266,6 +266,7 @@ export default {
       :loading="isLoading"
       :view-only="!canUpdate"
       class="gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2!"
+      data-testid="work-item-labels-input"
       :class="{ 'gl-hover-border-gray-200': canUpdate }"
       @input="focusTokenSelector"
       @text-input="debouncedSearchKeyUpdate"
