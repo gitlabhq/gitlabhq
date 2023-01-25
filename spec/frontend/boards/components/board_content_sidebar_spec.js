@@ -9,7 +9,7 @@ import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { ISSUABLE, issuableTypes } from '~/boards/constants';
 import SidebarDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
-import SidebarSeverity from '~/sidebar/components/severity/sidebar_severity.vue';
+import SidebarSeverityWidget from '~/sidebar/components/severity/sidebar_severity_widget.vue';
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SidebarLabelsWidget from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
@@ -142,8 +142,8 @@ describe('BoardContentSidebar', () => {
     );
   });
 
-  it('does not render SidebarSeverity', () => {
-    expect(wrapper.findComponent(SidebarSeverity).exists()).toBe(false);
+  it('does not render SidebarSeverityWidget', () => {
+    expect(wrapper.findComponent(SidebarSeverityWidget).exists()).toBe(false);
   });
 
   it('does not render SidebarHealthStatusWidget', async () => {
@@ -188,8 +188,8 @@ describe('BoardContentSidebar', () => {
       createComponent();
     });
 
-    it('renders SidebarSeverity', () => {
-      expect(wrapper.findComponent(SidebarSeverity).exists()).toBe(true);
+    it('renders SidebarSeverityWidget', () => {
+      expect(wrapper.findComponent(SidebarSeverityWidget).exists()).toBe(true);
     });
   });
 });

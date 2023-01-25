@@ -24,7 +24,7 @@
         = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 
       - if issuable_sidebar[:supports_severity]
-        .js-sidebar-severity-root
+        .js-sidebar-severity-widget-root
 
       - if reviewers
         .block.reviewer{ data: { qa_selector: 'reviewers_block_container' } }

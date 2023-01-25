@@ -11,7 +11,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
 import SidebarDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
-import SidebarSeverity from '~/sidebar/components/severity/sidebar_severity.vue';
+import SidebarSeverityWidget from '~/sidebar/components/severity/sidebar_severity_widget.vue';
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SidebarLabelsWidget from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
@@ -30,7 +30,7 @@ export default {
     SidebarSubscriptionsWidget,
     SidebarDropdownWidget,
     SidebarTodoWidget,
-    SidebarSeverity,
+    SidebarSeverityWidget,
     MountingPortal,
     SidebarHealthStatusWidget: () =>
       import('ee_component/sidebar/components/health_status/sidebar_health_status_widget.vue'),
@@ -237,7 +237,7 @@ export default {
         >
           {{ __('None') }}
         </sidebar-labels-widget>
-        <sidebar-severity
+        <sidebar-severity-widget
           v-if="isIncidentSidebar"
           :iid="activeBoardItem.iid"
           :project-path="fullPath"

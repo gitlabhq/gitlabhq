@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.1.4.7)
+    activesupport (6.1.7.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -304,7 +304,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport (~> 6.1.4.7)
+  activesupport (~> 6.1.7.1)
   airborne (~> 0.3.7)
   allure-rspec (~> 2.20.0)
   capybara (~> 3.38.0)

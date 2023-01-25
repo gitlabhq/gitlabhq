@@ -34,7 +34,7 @@ import SidebarParticipantsWidget from './components/participants/sidebar_partici
 import SidebarReferenceWidget from './components/copy/sidebar_reference_widget.vue';
 import SidebarReviewers from './components/reviewers/sidebar_reviewers.vue';
 import SidebarReviewersInputs from './components/reviewers/sidebar_reviewers_inputs.vue';
-import SidebarSeverity from './components/severity/sidebar_severity.vue';
+import SidebarSeverityWidget from './components/severity/sidebar_severity_widget.vue';
 import SidebarDropdownWidget from './components/sidebar_dropdown_widget.vue';
 import StatusDropdown from './components/status/status_dropdown.vue';
 import SidebarSubscriptionsWidget from './components/subscriptions/sidebar_subscriptions_widget.vue';
@@ -576,8 +576,8 @@ function mountSidebarTimeTracking() {
   });
 }
 
-function mountSidebarSeverity() {
-  const el = document.querySelector('.js-sidebar-severity-root');
+function mountSidebarSeverityWidget() {
+  const el = document.querySelector('.js-sidebar-severity-widget-root');
 
   if (!el) {
     return null;
@@ -587,13 +587,13 @@ function mountSidebarSeverity() {
 
   return new Vue({
     el,
-    name: 'SidebarSeverityRoot',
+    name: 'SidebarSeverityWidgetRoot',
     apolloProvider,
     provide: {
       canUpdate: editable,
     },
     render: (createElement) =>
-      createElement(SidebarSeverity, {
+      createElement(SidebarSeverityWidget, {
         props: {
           projectPath: fullPath,
           iid: String(iid),
@@ -725,7 +725,7 @@ export function mountSidebar(mediator, store) {
   mountSidebarSubscriptionsWidget();
   mountCopyEmailToClipboard();
   mountSidebarTimeTracking();
-  mountSidebarSeverity();
+  mountSidebarSeverityWidget();
   mountSidebarEscalationStatus();
 
   new SidebarMoveIssue(

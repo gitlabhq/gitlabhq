@@ -632,21 +632,16 @@
   display: block;
   width: 100%;
   min-height: 30px;
-  padding: 0 7px;
+  @include gl-py-0;
+  @include gl-px-3;
   color: $gray-700;
   line-height: 30px;
-  border: 1px solid $dropdown-divider-bg;
-  border-radius: 2px;
+  border: 1px solid $gray-400;
+  @include gl-rounded-base;
   outline: 0;
 
   &:focus {
-    color: $gray-700;
-    border-color: $blue-300;
-    box-shadow: 0 0 4px $dropdown-input-focus-shadow;
-
-    ~ .dropdown-input-clear {
-      color: $gray-700;
-    }
+    @include gl-focus;
   }
 
   &:hover {
