@@ -378,10 +378,15 @@ attachments are sent as part of the email. In other cases, the email contains li
 
 #### Privacy considerations
 
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108901) the minimum required role to view the creator's and participant's email in GitLab 15.9.
+
 Service Desk issues are confidential, but the project owner can
 [make an issue public](issues/confidential_issues.md#modify-issue-confidentiality).
-When a Service Desk issue becomes public, the issue creator's email address is disclosed
-to everyone who can view the project.
+When a Service Desk issue becomes public, the issue creator's and participants' email addresses are
+visible to signed-in users with at least the Reporter role for the project.
+
+In GitLab 15.8 and earlier, when a Service Desk issue becomes public, the issue creator's email
+address is disclosed to everyone who can view the project.
 
 ### Support Bot user
 

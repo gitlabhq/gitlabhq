@@ -13,11 +13,12 @@ to support user authentication.
 This integration works with most LDAP-compliant directory servers, including:
 
 - Microsoft Active Directory.
-  [Microsoft Active Directory Trusts](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc771568(v=ws.10))
-  are not supported.
 - Apple Open Directory.
 - Open LDAP.
 - 389 Server.
+
+NOTE:
+GitLab does not support [Microsoft Active Directory Trusts](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc771568(v=ws.10)).
 
 Users added through LDAP:
 

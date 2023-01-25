@@ -344,6 +344,7 @@ class ProjectPolicy < BasePolicy
     enable :read_package
     enable :read_product_analytics
     enable :read_ci_cd_analytics
+    enable :read_external_emails
     enable :read_grafana
   end
 

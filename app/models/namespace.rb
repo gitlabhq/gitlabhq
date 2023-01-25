@@ -35,8 +35,6 @@ class Namespace < ApplicationRecord
   SHARED_RUNNERS_SETTINGS = [SR_DISABLED_AND_UNOVERRIDABLE, SR_DISABLED_WITH_OVERRIDE, SR_DISABLED_AND_OVERRIDABLE, SR_ENABLED].freeze
   URL_MAX_LENGTH = 255
 
-  PATH_TRAILING_VIOLATIONS = %w[.git .atom .].freeze
-
   # This date is just a placeholder until namespace storage enforcement timeline is confirmed at which point
   # this should be replaced, see https://about.gitlab.com/pricing/faq-efficient-free-tier/#user-limits-on-gitlab-saas-free-tier
   MIN_STORAGE_ENFORCEMENT_DATE = 3.months.from_now.to_date
@@ -242,27 +240,9 @@ class Namespace < ApplicationRecord
     end
 
     def clean_path(path, limited_to: Namespace.all)
-      path = path.dup
-      # Get the email username by removing everything after an `@` sign.
-      path.gsub!(/@.*\z/,                "")
-      # Remove everything that's not in the list of allowed characters.
-      path.gsub!(/[^a-zA-Z0-9_\-\.]/,    "")
-      # Remove trailing violations ('.atom', '.git', or '.')
-      loop do
-        orig = path
-        PATH_TRAILING_VIOLATIONS.each { |ext| path = path.chomp(ext) }
-        break if orig == path
-      end
-
-      # Remove leading violations ('-')
-      path.gsub!(/\A\-+/, "")
-
-      # Users with the great usernames of "." or ".." would end up with a blank username.
-      # Work around that by setting their username to "blank", followed by a counter.
-      path = "blank" if path.blank?
-
-      uniquify = Uniquify.new
-      uniquify.string(path) { |s| limited_to.find_by_path_or_name(s) }
+      slug = Gitlab::Slug::Path.new(path).generate
+      path = Namespaces::RandomizedSuffixPath.new(slug)
+      Uniquify.new.string(path) { |s| limited_to.find_by_path_or_name(s) }
     end
 
     def clean_name(value)

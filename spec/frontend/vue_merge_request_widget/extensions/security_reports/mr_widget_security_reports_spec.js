@@ -82,11 +82,8 @@ describe('vue_merge_request_widget/extensions/security_reports/mr_widget_securit
       createComponent({ mockResponse: { data: { project: { id: 'project-id' } } } });
     });
 
-    it('displays the correct message', () => {
-      expect(wrapper.findByText('Security scans have run').exists()).toBe(true);
-    });
-
-    it('should not display the artifacts dropdown', () => {
+    it('does not render the widget', () => {
+      expect(wrapper.html()).toBe('');
       expect(findDropdown().exists()).toBe(false);
     });
   });

@@ -121,7 +121,7 @@ export default {
                 <gl-icon :name="section.iconName" class="gl-mr-2 gl-flex-shrink-0 gl-flex-grow-0" />
                 {{ link.name }}
                 <gl-icon
-                  v-if="link.external"
+                  v-if="section.title"
                   v-gl-tooltip
                   name="external-link"
                   :aria-label="$options.externalLinkTooltipText"

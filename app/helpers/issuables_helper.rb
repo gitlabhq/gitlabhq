@@ -152,7 +152,7 @@ module IssuablesHelper
     end
 
     if issuable.is_a?(Issue) && issuable.service_desk_reply_to
-      output << "#{html_escape(issuable.service_desk_reply_to)} via "
+      output << "#{html_escape(issuable.present(current_user: current_user).service_desk_reply_to)} via "
     end
 
     output << content_tag(:strong) do

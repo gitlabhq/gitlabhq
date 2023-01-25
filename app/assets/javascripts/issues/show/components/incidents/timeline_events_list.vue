@@ -50,9 +50,6 @@ export default {
     },
   },
   methods: {
-    getFirstTag(eventTag) {
-      return eventTag.nodes?.[0]?.name;
-    },
     handleEditSelection(event) {
       this.eventToEdit = event.id;
       this.$emit('hide-new-incident-timeline-event-form');
@@ -169,7 +166,7 @@ export default {
             :action="event.action"
             :occurred-at="event.occurredAt"
             :note-html="event.noteHtml"
-            :event-tag="getFirstTag(event.timelineEventTags)"
+            :event-tags="event.timelineEventTags.nodes"
             @delete="handleDelete(event)"
             @edit="handleEditSelection(event)"
           />

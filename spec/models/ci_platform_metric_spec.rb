@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CiPlatformMetric do
+RSpec.describe CiPlatformMetric, feature_category: :continuous_integration do
   subject { build(:ci_platform_metric) }
 
   it_behaves_like 'a BulkInsertSafe model', CiPlatformMetric do

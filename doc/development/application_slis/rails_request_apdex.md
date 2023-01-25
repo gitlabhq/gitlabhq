@@ -228,6 +228,9 @@ get 'client/features', urgency: :low do
 end
 ```
 
+WARNING:
+We can't specify the urgency at the namespace level. The directive is ignored when doing so.
+
 ### Error budget attribution and ownership
 
 This SLI is used for service level monitoring. It feeds into the

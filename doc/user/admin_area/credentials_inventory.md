@@ -54,10 +54,10 @@ When a PAT is revoked from the credentials inventory, the instance notifies the 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243833) in GitLab 14.8.
 
-The **Revoke** button next to a project access token can be selected to revoke that particular project access token. This will both:
+The **Revoke** button next to a project access token can be selected to revoke that particular project access token. This both:
 
-- Revoke the token project access token.
-- Enqueue a background worker to delete the project bot user.
+- Revokes the token project access token.
+- Enqueues a background worker to delete the project bot user.
 
 ![Credentials inventory page - Project access tokens](img/credentials_inventory_project_access_tokens_v14_9.png)
 

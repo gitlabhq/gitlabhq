@@ -32,10 +32,10 @@ export default {
       type: String,
       required: true,
     },
-    eventTag: {
-      type: String,
+    eventTags: {
+      type: Array,
       required: false,
-      default: null,
+      default: () => [],
     },
   },
   computed: {
@@ -56,16 +56,19 @@ export default {
       <gl-icon :name="getEventIcon(action)" class="note-icon" />
     </div>
     <div class="timeline-event-note timeline-event-border" data-testid="event-text-container">
-      <div class="gl-display-flex gl-align-items-center gl-mb-3">
-        <h3 class="gl-font-weight-bold gl-font-sm gl-my-0" data-testid="event-time">
+      <div class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-3 gl-mb-3">
+        <h3
+          class="timeline-event-note-date gl-font-weight-bold gl-font-sm gl-my-0"
+          data-testid="event-time"
+        >
           <gl-sprintf :message="$options.i18n.timeUTC">
             <template #time>
               <span class="gl-font-lg">{{ time }}</span>
             </template>
           </gl-sprintf>
         </h3>
-        <gl-badge v-if="eventTag" variant="muted" icon="tag" class="gl-ml-3">
-          {{ eventTag }}
+        <gl-badge v-for="tag in eventTags" :key="tag.key" variant="muted" icon="tag">
+          {{ tag.name }}
         </gl-badge>
       </div>
       <div v-safe-html="noteHtml" class="md"></div>

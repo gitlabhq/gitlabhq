@@ -46,10 +46,10 @@ RSpec.describe 'User views releases', :js, feature_category: :continuous_deliver
         external_link_indicator_selector = '[data-testid="external-link-indicator"]'
 
         expect(page).to have_link internal_link.name, href: internal_link.url
-        expect(find_link(internal_link.name)).not_to have_css(external_link_indicator_selector)
+        expect(find_link(internal_link.name)).to have_css(external_link_indicator_selector)
 
         expect(page).to have_link internal_link_with_redirect.name, href: Gitlab::Routing.url_helpers.project_release_url(project, release_v1) << "/downloads#{internal_link_with_redirect.filepath}"
-        expect(find_link(internal_link_with_redirect.name)).not_to have_css(external_link_indicator_selector)
+        expect(find_link(internal_link_with_redirect.name)).to have_css(external_link_indicator_selector)
 
         expect(page).to have_link external_link.name, href: external_link.url
         expect(find_link(external_link.name)).to have_css(external_link_indicator_selector)

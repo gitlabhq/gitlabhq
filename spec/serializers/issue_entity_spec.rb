@@ -164,21 +164,57 @@ RSpec.describe IssueEntity do
   it_behaves_like 'issuable entity current_user properties'
 
   context 'when issue has email participants' do
+    let(:obfuscated_email) { 'an*****@e*****.c**' }
+    let(:email) { 'any@email.com' }
+
     before do
-      resource.issue_email_participants.create!(email: 'any@email.com')
+      resource.issue_email_participants.create!(email: email)
     end
 
-    context 'when issue is confidential' do
-      it 'returns email participants' do
-        resource.update!(confidential: true)
+    context 'with anonymous user' do
+      it 'returns obfuscated email participants email' do
+        request = double('request', current_user: nil)
 
-        expect(subject[:issue_email_participants]).to match_array([{ email: "any@email.com" }])
+        response = described_class.new(resource, request: request).as_json
+        expect(response[:issue_email_participants]).to eq([{ email: obfuscated_email }])
       end
     end
 
-    context 'when issue is not confidential' do
-      it 'returns empty array' do
-        expect(subject[:issue_email_participants]).to be_empty
+    context 'with signed in user' do
+      context 'when user has no role in project' do
+        it 'returns obfuscated email participants email' do
+          expect(subject[:issue_email_participants]).to eq([{ email: obfuscated_email }])
+        end
+      end
+
+      context 'when user has guest role in project' do
+        let(:member) { create(:user) }
+
+        before do
+          project.add_guest(member)
+        end
+
+        it 'returns obfuscated email participants email' do
+          request = double('request', current_user: member)
+
+          response = described_class.new(resource, request: request).as_json
+          expect(response[:issue_email_participants]).to eq([{ email: obfuscated_email }])
+        end
+      end
+
+      context 'when user has (at least) reporter role in project' do
+        let(:member) { create(:user) }
+
+        before do
+          project.add_reporter(member)
+        end
+
+        it 'returns full email participants email' do
+          request = double('request', current_user: member)
+
+          response = described_class.new(resource, request: request).as_json
+          expect(response[:issue_email_participants]).to eq([{ email: email }])
+        end
       end
     end
   end

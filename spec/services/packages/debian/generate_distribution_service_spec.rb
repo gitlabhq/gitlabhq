@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::GenerateDistributionService do
+RSpec.describe Packages::Debian::GenerateDistributionService, feature_category: :package_registry do
   describe '#execute' do
     subject { described_class.new(distribution).execute }
 

@@ -4,7 +4,7 @@ RSpec.shared_examples 'integration settings form' do
   include IntegrationsHelper
   # Note: these specs don't validate channel fields
   # which are present on a few integrations
-  it 'displays all the integrations' do
+  it 'displays all the integrations', feature_category: :integrations do
     aggregate_failures do
       integrations.each do |integration|
         stub_feature_flags(integration_slack_app_notifications: false)

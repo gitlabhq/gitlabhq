@@ -4,8 +4,11 @@ require 'pathname'
 require 'forwardable'
 
 require_relative 'gitlab_edition'
+require_relative 'gitlab/utils'
 
 module Gitlab
+  GITLAB_SIMULATE_SAAS = Gitlab::Utils.to_boolean(ENV['GITLAB_SIMULATE_SAAS'], default: false)
+
   class << self
     extend Forwardable
 
@@ -49,10 +52,18 @@ module Gitlab
   INSTALLATION_TYPE = File.read(root.join("INSTALLATION_TYPE")).strip.freeze
   HTTP_PROXY_ENV_VARS = %w(http_proxy https_proxy HTTP_PROXY HTTPS_PROXY).freeze
 
+  # We allow GitLab instances to "pretend" they are SaaS to test SaaS-specific code
+  # paths, but only when in development mode or when running on production instances
+  # with a license issued to a GitLab team member.
   def self.simulate_com?
-    return false unless Rails.env.development?
+    return false unless GITLAB_SIMULATE_SAAS
+    return false if Rails.env.test?
 
-    Gitlab::Utils.to_boolean(ENV['GITLAB_SIMULATE_SAAS'])
+    Rails.env.development? || licensed_to_gitlab_team_member?
+  end
+
+  def self.licensed_to_gitlab_team_member?
+    ee? && ::License.current&.issued_to_gitlab_team_member?
   end
 
   def self.com?

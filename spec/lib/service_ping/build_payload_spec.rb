@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ServicePing::BuildPayload do
+RSpec.describe ServicePing::BuildPayload, feature_category: :service_ping do
   describe '#execute', :without_license do
     subject(:service_ping_payload) { described_class.new.execute }
 

@@ -24,5 +24,9 @@ export default {
     openModal: '_open_modal_',
   },
   mockBranches: ['_branch_1', '_abc_', '_main_'],
-  mockProjects: ['_project_1', '_abc_', '_project_'],
+  mockProjects: [
+    { id: 1, name: '_project_1', refsUrl: '/_project_1/refs' },
+    { id: 2, name: '_abc_', refsUrl: '/_abc_/refs' },
+    { id: 3, name: '_project_', refsUrl: '/_project_/refs' },
+  ],
 };

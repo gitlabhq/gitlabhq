@@ -16,6 +16,7 @@ import syntaxHighlight from '~/syntax_highlight';
 import ZenMode from '~/zen_mode';
 import '~/sourcegraph/load';
 import DiffStats from '~/diffs/components/diff_stats.vue';
+import { initReportAbuse } from '~/projects/report_abuse';
 
 const hasPerfBar = document.querySelector('.with-performance-bar');
 const performanceHeight = hasPerfBar ? 35 : 0;
@@ -26,6 +27,7 @@ new ShortcutsNavigation();
 initCommitBoxInfo();
 
 initDeprecatedNotes();
+initReportAbuse();
 
 const loadDiffStats = () => {
   const diffStatsElements = document.querySelectorAll('#js-diff-stats');
@@ -67,6 +69,7 @@ if (filesContainer.length) {
       handleLocationHash();
       new Diff();
       loadDiffStats();
+      initReportAbuse();
     })
     .catch(() => {
       createAlert({ message: __('An error occurred while retrieving diff files') });

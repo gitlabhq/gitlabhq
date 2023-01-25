@@ -27,3 +27,5 @@
         = html_escape(_("This %{issuable} is locked. Only %{strong_open}project members%{strong_close} can comment.")) % { issuable: issuable.class.to_s.titleize.downcase, strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
 -# haml-lint:disable InlineJavaScript
 %script.js-notes-data{ type: "application/json" }= initial_notes_data(autocomplete).to_json.html_safe
+
+#js-report-abuse-drawer

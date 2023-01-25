@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::CreateService do
+RSpec.describe Notes::CreateService, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }
@@ -438,7 +438,7 @@ RSpec.describe Notes::CreateService do
           end
         end
 
-        context 'for merge requests' do
+        context 'for merge requests', feature_category: :code_review_workflow do
           let_it_be(:merge_request) { create(:merge_request, source_project: project, labels: [bug_label]) }
 
           let(:issuable) { merge_request }
@@ -512,7 +512,7 @@ RSpec.describe Notes::CreateService do
       end
     end
 
-    context 'personal snippet note' do
+    context 'personal snippet note', feature_category: :snippets do
       subject { described_class.new(nil, user, params).execute }
 
       let(:snippet) { create(:personal_snippet) }
@@ -533,7 +533,7 @@ RSpec.describe Notes::CreateService do
       end
     end
 
-    context 'design note' do
+    context 'design note', feature_category: :design_management do
       subject(:service) { described_class.new(project, user, params) }
 
       let_it_be(:design) { create(:design, :with_file) }

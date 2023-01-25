@@ -106,7 +106,7 @@ describe('AbuseCategorySelector', () => {
       expect(findUserId().attributes()).toMatchObject({
         type: 'hidden',
         name: 'user_id',
-        value: `${USER_ID}`,
+        value: USER_ID.toString(),
       });
     });
 

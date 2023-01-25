@@ -566,16 +566,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
         expect(commit_ids).to include(*expected_commit_ids)
         expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
       end
-
-      context 'when feature flag "commit_search_trailing_spaces" is disabled' do
-        before do
-          stub_feature_flags(commit_search_trailing_spaces: false)
-        end
-
-        it 'returns an empty list' do
-          expect(commit_ids).to be_empty
-        end
-      end
     end
 
     describe 'when storage is broken', :broken_storage do

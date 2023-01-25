@@ -3,7 +3,7 @@ import { GlDropdownItem } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
-import ReportAbuseDropdownItem from '~/projects/merge_requests/components/report_abuse_dropdown_item.vue';
+import ReportAbuseDropdownItem from '~/projects/report_abuse/components/report_abuse_dropdown_item.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
 describe('ReportAbuseDropdownItem', () => {

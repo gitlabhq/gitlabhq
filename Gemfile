@@ -346,7 +346,7 @@ gem 'gitlab-labkit', '~> 0.29.0'
 gem 'thrift', '>= 0.16.0'
 
 # I18n
-gem 'ruby_parser', '~> 3.15', require: false
+gem 'ruby_parser', '~> 3.19', require: false
 gem 'rails-i18n', '~> 7.0'
 gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.3'
@@ -387,7 +387,7 @@ group :development, :test do
   gem 'bullet', '~> 7.0.2'
   gem 'pry-byebug'
   gem 'pry-rails', '~> 0.3.9'
-  gem 'pry-shell', '~> 0.5.1'
+  gem 'pry-shell', '~> 0.6.0'
 
   gem 'awesome_print', require: false
 

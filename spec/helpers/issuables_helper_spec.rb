@@ -200,6 +200,41 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         expect(content).not_to match('gl-emoji')
       end
     end
+
+    describe 'service desk reply to email address' do
+      let(:email) { 'user@example.com' }
+      let(:obfuscated_email) { 'us*****@e*****.c**' }
+      let(:service_desk_issue) { build_stubbed(:issue, project: project, author: User.support_bot, service_desk_reply_to: email) }
+
+      subject { helper.issuable_meta(service_desk_issue, project) }
+
+      context 'with anonymous user' do
+        before do
+          allow(helper).to receive(:current_user).and_return(nil)
+        end
+
+        it { is_expected.to have_content(obfuscated_email) }
+      end
+
+      context 'with signed in user' do
+        context 'when user has no role in project' do
+          before do
+            allow(helper).to receive(:current_user).and_return(user)
+          end
+
+          it { is_expected.to have_content(obfuscated_email) }
+        end
+
+        context 'when user has reporter role in project' do
+          before do
+            project.add_reporter(user)
+            allow(helper).to receive(:current_user).and_return(user)
+          end
+
+          it { is_expected.to have_content(email) }
+        end
+      end
+    end
   end
 
   describe '#issuables_state_counter_text' do

@@ -7,6 +7,12 @@ RSpec.describe IssueEmailParticipant do
     it { is_expected.to belong_to(:issue) }
   end
 
+  describe 'Modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(Presentable) }
+  end
+
   describe 'Validations' do
     subject { build(:issue_email_participant) }
 

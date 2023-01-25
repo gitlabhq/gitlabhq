@@ -70,6 +70,9 @@ export default {
     artifacts() {
       return this.reportArtifacts || [];
     },
+    hasSecurityReports() {
+      return this.artifacts.length > 0;
+    },
   },
   methods: {
     handleIsLoading(value) {
@@ -99,6 +102,7 @@ export default {
 
 <template>
   <mr-widget
+    v-if="hasSecurityReports"
     :has-error="hasError"
     :error-text="$options.i18n.apiError"
     :status-icon-name="$options.icons.warning"
@@ -108,7 +112,7 @@ export default {
     :summary="$options.i18n.scansHaveRun"
     @is-loading="handleIsLoading"
   >
-    <template v-if="artifacts.length > 0" #action-buttons>
+    <template #action-buttons>
       <div class="gl-ml-3">
         <gl-dropdown
           v-gl-tooltip

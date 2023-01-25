@@ -368,7 +368,7 @@ The `remember_user_token` lifetime of a cookie can now extend beyond the deadlin
 
 GitLab uses both session and persistent cookies:
 
-- Session cookie: Session cookies are normally removed at the end of the browser session when
+- Session cookie: Session cookies are typically removed at the end of the browser session when
   the browser is closed. The `_gitlab_session` cookie has no fixed expiration date. However,
   it expires based on its [`session_expire_delay`](#why-do-you-keep-getting-signed-out).
 - Persistent cookie: The `remember_user_token` is a cookie with an expiration date of two weeks.

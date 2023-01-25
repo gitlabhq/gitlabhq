@@ -117,7 +117,7 @@ To push your gem, run a command like this one:
 gem push my_gem-0.0.1.gem --host <host>
 ```
 
-Note that `<host>` is the URL you used when setting up authentication. For example:
+`<host>` is the URL you used when setting up authentication. For example:
 
 ```shell
 gem push my_gem-0.0.1.gem --host https://gitlab.example.com/api/v4/projects/1/packages/rubygems

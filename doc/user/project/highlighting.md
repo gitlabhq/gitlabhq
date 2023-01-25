@@ -11,7 +11,7 @@ GitLab provides syntax highlighting on all files through [Highlight.js](https://
 [Rouge](https://rubygems.org/gems/rouge) Ruby gem. It attempts to guess what language
 to use based on the file extension, which most of the time is sufficient.
 
-The paths here are Git's built-in [`.gitattributes` interface](https://git-scm.com/docs/gitattributes).
+The paths here use the [`.gitattributes` interface](https://git-scm.com/docs/gitattributes) in Git.
 
 NOTE:
 The [Web IDE](web_ide/index.md) and [Snippets](../snippets.md) use [Monaco Editor](https://microsoft.github.io/monaco-editor/)

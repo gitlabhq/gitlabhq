@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestDiffFile do
+RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
   it_behaves_like 'a BulkInsertSafe model', MergeRequestDiffFile do
     let(:valid_items_for_bulk_insertion) do
       build_list(:merge_request_diff_file, 10) do |mr_diff_file|

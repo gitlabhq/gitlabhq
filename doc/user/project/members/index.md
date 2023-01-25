@@ -47,7 +47,7 @@ flowchart RL
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
-Add users to a project so they become members and have permission
+Add users to a project so they become direct members and have permission
 to perform actions.
 
 Prerequisite:
@@ -98,13 +98,13 @@ The Owner [role](../../permissions.md#project-members-permissions) can be added 
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 When you add a group to a project, every group member (direct or inherited) gets access to the project.
-Each user's access is based on:
+Each member's access is based on the:
 
-- The role they're assigned in the group.
-- The maximum role you choose when you invite the group.
+- Role they're assigned in the group.
+- Maximum role you choose when you invite the group.
 
-If a user has a group role with fewer permissions than the maximum project role, the user keeps the permissions of their group role.
-For example, if you add a user with the Guest role to a project with a maximum role of Maintainer, the user has only the permissions of the Guest role.
+If a group member has a role in the group with fewer permissions than the maximum project role, the member keeps the permissions of their group role.
+For example, if you add a member with the Guest role to a project with a maximum role of Maintainer, the member has only the permissions of the Guest role in the project.
 
 Prerequisites:
 
@@ -128,10 +128,10 @@ The **Members** tab shows:
 - Members who are directly assigned to the project.
 - If the project was created in a group [namespace](../../namespace/index.md), members of that group.
 
-## Import users from another project
+## Import members from another project
 
-You can import another project's users to your own project. Users
-retain the same permissions as the project you import them from.
+You can import another project's members to your own project.
+Imported project members retain the same permissions as the project you import them from.
 
 Prerequisite:
 
@@ -171,13 +171,14 @@ If a user is a:
 
 ## Remove a member from a project
 
-If a user is a direct member of a project, you can remove them.
-If membership is inherited from a parent group, then the member can be removed only from the parent
-group itself.
+If a user is:
+
+- A direct member of a project, you can remove them directly from the project.
+- An inherited member from a parent group, you can only remove them from the parent group itself.
 
 Prerequisites:
 
-- To remove direct members with the:
+- To remove direct members that have the:
   - Maintainer, Developer, Reporter, or Guest role, you must have the Maintainer role.
   - Owner role, you must have the Owner role.
 - Optional. Unassign the member from all issues and merge requests that
@@ -191,7 +192,7 @@ To remove a member from a project:
 1. Optional. In the confirmation box, select the
    **Also unassign this user from related issues and merge requests** checkbox.
 1. To prevent leaks of sensitive information from private projects, verify the
-   user has not forked the private repository or created webhooks. Existing forks continue to receive
+   member has not forked the private repository or created webhooks. Existing forks continue to receive
    changes from the upstream project, and webhooks continue to receive updates. You may also want to configure your project
    to prevent projects in a group
    [from being forked outside their group](../../group/access_and_permissions.md#prevent-project-forking-outside-group).

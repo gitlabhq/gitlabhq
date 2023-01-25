@@ -27,7 +27,7 @@ describe('IncidentTimelineEventList', () => {
 
   const findCommentIcon = () => wrapper.findComponent(GlIcon);
   const findEventTime = () => wrapper.findByTestId('event-time');
-  const findEventTag = () => wrapper.findComponent(GlBadge);
+  const findEventTags = () => wrapper.findAllComponents(GlBadge);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDeleteButton = () => wrapper.findByText(timelineItemI18n.delete);
 
@@ -69,15 +69,16 @@ describe('IncidentTimelineEventList', () => {
       });
     });
 
-    describe('timeline event tag', () => {
-      it('does not show when tag is not provided', () => {
-        expect(findEventTag().exists()).toBe(false);
-      });
+    describe.each([
+      { eventTags: [], expected: 0 },
+      { eventTags: ['Start time'], expected: 1 },
+      { eventTags: ['Start time', 'End time'], expected: 2 },
+    ])('timeline event tags', ({ eventTags, expected }) => {
+      it(`shows ${expected} badges when ${expected} tags are provided`, () => {
+        mountComponent({ propsData: { eventTags } });
 
-      it('shows when tag is provided', () => {
-        mountComponent({ propsData: { eventTag: 'Start time' } });
-
-        expect(findEventTag().exists()).toBe(true);
+        expect(findEventTags().exists()).toBe(Boolean(expected));
+        expect(findEventTags().length).toBe(eventTags.length);
       });
     });
 

@@ -29,9 +29,15 @@ describe('Commit form modal getters', () => {
     });
 
     it('should provide a uniq list of projects', () => {
-      const projects = ['_project_', '_project_', '_some_other_project'];
+      const projects = [
+        { id: 1, name: '_project_', refsUrl: '/_project_/refs' },
+        { id: 1, name: '_project_', refsUrl: '/_project_/refs' },
+        { id: 3, name: '_some_other_project', refsUrl: '/_some_other_project/refs' },
+      ];
       const state = { projects };
 
+      expect(state.projects.length).toBe(3);
+      expect(getters.sortedProjects(state).length).toBe(2);
       expect(getters.sortedProjects(state)).toEqual(projects.slice(1));
     });
   });

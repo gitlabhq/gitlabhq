@@ -12,7 +12,7 @@ instance entirely offline.
 ## Installation
 
 NOTE:
-This guide assumes the server is Ubuntu 20.04 using the [Omnibus installation method](https://docs.gitlab.com/omnibus/) and will be running GitLab [Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/). Instructions for other servers may vary.
+This guide assumes the server is Ubuntu 20.04 using the [Omnibus installation method](https://docs.gitlab.com/omnibus/) and is running GitLab [Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/). Instructions for other servers may vary.
 This guide also assumes the server host resolves as `my-host.internal`, which you should replace with your
 server's FQDN, and that you have access to a different server with Internet access to download the required package files.
 

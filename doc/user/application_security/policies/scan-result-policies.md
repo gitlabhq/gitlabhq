@@ -42,7 +42,7 @@ before the policy changes take effect.
 The [policy editor](index.md#policy-editor) supports YAML mode and rule mode.
 
 NOTE:
-Propagating scan result policies created for groups with a large number of projects will take a while to complete.
+Propagating scan result policies created for groups with a large number of projects take a while to complete.
 
 ## Scan result policies schema
 
@@ -110,7 +110,7 @@ the defined policy.
 Requirements and limitations:
 
 - You must add the respective [security scanning tools](../index.md#application-coverage).
-  Otherwise, scan result policies won't have any effect.
+  Otherwise, scan result policies do not have any effect.
 - The maximum number of policies is five.
 - Each policy can have a maximum of five rules.
 
@@ -199,7 +199,7 @@ It corresponds to a single object from the previous example:
 
 ## Example situations where scan result policies require additional approval
 
-There are several situations where the scan result policy will require an additional approval step. For example:
+There are several situations where the scan result policy requires an additional approval step. For example:
 
 - The number of security jobs is reduced in the working branch and no longer matches the number of security jobs in the target branch. Users can't skip the Scanning Result Policies by removing scanning jobs from the CI configuration.
 - Someone stops a pipeline security job, and users can't skip the security scan.

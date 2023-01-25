@@ -413,15 +413,15 @@ describe('noteActions', () => {
       });
 
       it('opens the drawer when report abuse button is clicked', async () => {
-        findReportAbuseButton().trigger('click');
-
-        await nextTick();
+        await findReportAbuseButton().trigger('click');
 
         expect(findAbuseCategorySelector().props('showDrawer')).toEqual(true);
       });
 
       it('closes the drawer', async () => {
-        await findAbuseCategorySelector().vm.$emit('close-drawer');
+        findAbuseCategorySelector().vm.$emit('close-drawer');
+
+        await nextTick();
 
         expect(findAbuseCategorySelector().props('showDrawer')).toEqual(false);
       });

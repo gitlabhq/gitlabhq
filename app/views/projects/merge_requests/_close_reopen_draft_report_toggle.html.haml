@@ -47,6 +47,6 @@
               - if moved_mr_sidebar_enabled?
                 %li.gl-dropdown-divider
                   %hr.dropdown-divider
-              #js-report-abuse-dropdown-item{ data: { report_abuse_path: add_category_abuse_reports_path, reported_user_id: @merge_request.author.id, reported_from_url: merge_request_url(@merge_request) } }
+              .js-report-abuse-dropdown-item{ data: { report_abuse_path: add_category_abuse_reports_path, reported_user_id: @merge_request.author.id, reported_from_url: merge_request_url(@merge_request) } }
 
 #js-report-abuse-drawer
