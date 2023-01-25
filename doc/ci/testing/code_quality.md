@@ -531,8 +531,6 @@ This can be due to multiple reasons:
 - Your pipeline is not set to run the code quality job on your target branch. If there is no report
   generated from the target branch, your merge request branch reports have nothing to compare to. In this
   situation you get an error stating `Base pipeline codequality artifact not found`.
-- If no [degradation or error is detected](https://docs.codeclimate.com/docs/maintainability#section-checks),
-  nothing is displayed.
 - The [`artifacts:expire_in`](../yaml/index.md#artifactsexpire_in) CI/CD setting can cause the Code
   Quality artifacts to expire faster than desired.
 - The widgets use the pipeline of the latest commit to the target branch. If commits are made to the
@@ -540,12 +538,6 @@ This can be due to multiple reasons:
   have no base report for comparison.
 - If you use the [`REPORT_STDOUT` environment variable](https://gitlab.com/gitlab-org/ci-cd/codequality#environment-variables),
   no report file is generated and nothing displays in the merge request.
-- Large `gl-code-quality-report.json` files (esp. >10 MB) are [known to prevent the report from being displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/2737).
-  As a workaround, try removing [properties](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types)
-  that are [ignored by GitLab](#implement-a-custom-tool). You can:
-  - Configure the Code Quality tool to not output those types.
-  - Use `sed`, `awk` or similar commands in the `.gitlab-ci.yml` script to edit the
-    `gl-code-quality-report.json` before the job completes.
 
 ### Only a single Code Quality report is displayed, but more are defined
 

@@ -26123,6 +26123,9 @@ msgstr ""
 msgid "Members|Are you sure you want to withdraw your access request for \"%{source}\""
 msgstr ""
 
+msgid "Members|Ban member"
+msgstr ""
+
 msgid "Members|Cannot leave \"%{source}\""
 msgstr ""
 

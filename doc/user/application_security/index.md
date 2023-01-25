@@ -443,9 +443,9 @@ You can always find supported and deprecated schema versions in the [source code
 You can interact with the results of the security scanning tools in several locations:
 
 - [Scan information in merge requests](#view-security-scan-information-in-merge-requests)
-- [Project Security Dashboard](security_dashboard/index.md)
+- [Project Security Dashboard](security_dashboard/index.md#view-vulnerabilities-over-time-for-a-project)
 - [Security pipeline tab](security_dashboard/index.md)
-- [Group Security Dashboard](security_dashboard/index.md)
+- [Group Security Dashboard](security_dashboard/index.md#view-vulnerabilities-over-time-for-a-group)
 - [Security Center](security_dashboard/index.md#security-center)
 - [Vulnerability Report](vulnerability_report/index.md)
 - [Vulnerability Pages](vulnerabilities/index.md)

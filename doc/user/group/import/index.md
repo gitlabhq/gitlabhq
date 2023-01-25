@@ -63,7 +63,7 @@ Not all group and project resources are imported. See list of migrated resources
 - [Migrated group items](#migrated-group-items).
 - [Migrated project items](#migrated-project-items-beta).
 
-Please leave your feedback about migrating by direct transfer in
+We invite you to leave your feedback about migrating by direct transfer in
 [the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
 
 ### Visibility rules

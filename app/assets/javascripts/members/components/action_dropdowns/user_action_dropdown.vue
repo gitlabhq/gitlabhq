@@ -23,6 +23,8 @@ export default {
       import('ee_component/members/components/action_dropdowns/ldap_override_dropdown_item.vue'),
     LeaveGroupDropdownItem,
     RemoveMemberDropdownItem,
+    BanMemberDropdownItem: () =>
+      import('ee_component/members/components/action_dropdowns/ban_member_dropdown_item.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -77,7 +79,10 @@ export default {
     },
     showDropdown() {
       return (
-        this.permissions.canDisableTwoFactor || this.showLeaveOrRemove || this.showLdapOverride
+        this.permissions.canDisableTwoFactor ||
+        this.showLeaveOrRemove ||
+        this.showLdapOverride ||
+        this.showBan
       );
     },
     showLeaveOrRemove() {
@@ -85,6 +90,9 @@ export default {
     },
     showLdapOverride() {
       return this.permissions.canOverride && !this.member.isOverridden;
+    },
+    showBan() {
+      return !this.isCurrentUser && this.permissions.canBan;
     },
   },
 };
@@ -130,5 +138,8 @@ export default {
     <ldap-override-dropdown-item v-else-if="showLdapOverride" :member="member">{{
       $options.i18n.editPermissions
     }}</ldap-override-dropdown-item>
+    <ban-member-dropdown-item v-if="showBan" :member="member">{{
+      $options.i18n.banMember
+    }}</ban-member-dropdown-item>
   </gl-dropdown>
 </template>
