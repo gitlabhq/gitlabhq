@@ -31,7 +31,7 @@ class JiraConnectInstallation < ApplicationRecord
   end
 
   def oauth_authorization_url
-    return Gitlab.config.gitlab.url if instance_url.blank? || Feature.disabled?(:jira_connect_oauth_self_managed)
+    return Gitlab.config.gitlab.url if instance_url.blank?
 
     instance_url
   end

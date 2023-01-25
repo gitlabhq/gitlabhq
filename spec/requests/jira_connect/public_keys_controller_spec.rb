@@ -38,18 +38,6 @@ RSpec.describe JiraConnect::PublicKeysController, feature_category: :integration
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
-
-      context 'when jira_connect_oauth_self_managed disabled' do
-        before do
-          stub_feature_flags(jira_connect_oauth_self_managed: false)
-        end
-
-        it 'renders 404' do
-          get jira_connect_public_key_path(id: uuid)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
     end
   end
 end

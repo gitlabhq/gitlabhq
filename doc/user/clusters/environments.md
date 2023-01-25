@@ -38,7 +38,7 @@ Access to cluster environments is restricted to
 
 ## Usage
 
-In order to:
+To:
 
 - Track environments for the cluster, you must
   [deploy to a Kubernetes cluster](../project/clusters/deploy_to_cluster.md)

@@ -12,7 +12,7 @@ This is the API documentation of the [GitLab Container Registry](../user/package
 
 When the `ci_job_token_scope` feature flag is enabled (it is **disabled by default**), you can use the below endpoints
 from a CI/CD job, by passing the `$CI_JOB_TOKEN` variable as the `JOB-TOKEN` header.
-The job token will only have access to its own project.
+The job token only has access to its own project.
 
 [GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
 can opt to enable it.
@@ -375,7 +375,7 @@ WARNING:
 The number of tags deleted by this API is limited on GitLab.com
 because of the scale of the Container Registry there.
 If your Container Registry has a large number of tags to delete,
-only some of them will be deleted, and you might need to call this API multiple times.
+only some of them are deleted, and you might need to call this API multiple times.
 To schedule tags for automatic deletion, use a [cleanup policy](../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) instead.
 
 Examples:

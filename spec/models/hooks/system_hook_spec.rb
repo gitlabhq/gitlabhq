@@ -2,7 +2,17 @@
 
 require "spec_helper"
 
-RSpec.describe SystemHook do
+RSpec.describe SystemHook, feature_category: :integrations do
+  it_behaves_like 'a hook that does not get automatically disabled on failure' do
+    let(:hook) { create(:system_hook) }
+    let(:hook_factory) { :system_hook }
+    let(:default_factory_arguments) { {} }
+
+    def find_hooks
+      described_class.all
+    end
+  end
+
   context 'default attributes' do
     let(:system_hook) { described_class.new }
 

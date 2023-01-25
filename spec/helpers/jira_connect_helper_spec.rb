@@ -86,19 +86,6 @@ RSpec.describe JiraConnectHelper do
               oauth_token_path: '/oauth/token'
             )
           end
-
-          context 'and jira_connect_oauth_self_managed feature is disabled' do
-            before do
-              stub_feature_flags(jira_connect_oauth_self_managed: false)
-            end
-
-            it 'does not point urls to the self-managed instance' do
-              expect(parsed_oauth_metadata).not_to include(
-                oauth_authorize_url: start_with('https://gitlab.example.com/oauth/authorize?'),
-                oauth_token_path: 'https://gitlab.example.com/oauth/token'
-              )
-            end
-          end
         end
       end
 

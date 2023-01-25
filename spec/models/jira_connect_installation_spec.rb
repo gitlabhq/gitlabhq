@@ -85,14 +85,6 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
       let(:installation) { build(:jira_connect_installation, instance_url: 'https://gitlab.example.com') }
 
       it { is_expected.to eq('https://gitlab.example.com') }
-
-      context 'and jira_connect_oauth_self_managed feature is disabled' do
-        before do
-          stub_feature_flags(jira_connect_oauth_self_managed: false)
-        end
-
-        it { is_expected.to eq('http://test.host') }
-      end
     end
   end
 

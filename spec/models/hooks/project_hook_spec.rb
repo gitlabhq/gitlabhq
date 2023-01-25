@@ -2,7 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectHook do
+RSpec.describe ProjectHook, feature_category: :integrations do
+  include_examples 'a hook that gets automatically disabled on failure' do
+    let_it_be(:project) { create(:project) }
+
+    let(:hook) { build(:project_hook, project: project) }
+    let(:hook_factory) { :project_hook }
+    let(:default_factory_arguments) { { project: project } }
+
+    def find_hooks
+      project.hooks
+    end
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to :project }
   end

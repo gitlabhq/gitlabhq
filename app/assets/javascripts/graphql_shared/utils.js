@@ -104,3 +104,15 @@ export const convertNodeIdsFromGraphQLIds = (nodes) => {
 
   return nodes.map((node) => (node.id ? { ...node, id: getIdFromGraphQLId(node.id) } : node));
 };
+
+/**
+ * This function takes a GraphQL query data as a required argument and
+ * the field name to resolve as an optional argument
+ * and returns resolved field's data or an empty array
+ * @param {Object} queryData
+ * @param {String} nodesField (in most cases it will be 'nodes')
+ * @returns {Array}
+ */
+export const getNodesOrDefault = (queryData, nodesField = 'nodes') => {
+  return queryData?.[nodesField] ?? [];
+};

@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Group, subgroup, or project owners can use scan execution policies to require that security scans run on a specified
 schedule or with the project (or multiple projects if the policy is defined at a group or subgroup level) pipeline. Required scans are injected into the CI pipeline as new jobs
 with a long, random job name. In the unlikely event of a job name collision, the security policy job overwrites
-any pre-existing job in the pipeline. If a policy is created at the group-level, it will apply to every child
+any pre-existing job in the pipeline. If a policy is created at the group-level, it applies to every child
 project or subgroup. A group-level policy cannot be edited from a child project or subgroup.
 
 This feature has some overlap with [compliance framework pipelines](../../group/compliance_frameworks.md#configure-a-compliance-pipeline),
@@ -88,7 +88,7 @@ This rule enforces the defined actions and schedules a scan on the provided date
 | `type`     | `string` | `schedule` | The rule's type. |
 | `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). This field is required if the `agents` field is not set. |
 | `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
-| `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [cluster image scanning](../../clusters/agent/vulnerabilities.md) will run. The object key is the name of the Kubernetes agent configured for your project in GitLab. This field is required if the `branches` field is not set. |
+| `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [cluster image scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. This field is required if the `branches` field is not set. |
 
 GitLab supports the following types of CRON syntax for the `cadence` field:
 
@@ -99,7 +99,7 @@ NOTE:
 Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
 
 NOTE:
-If using the `agents` field, required for `Operational Container Scanning`, the CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod. If not using the `agents` field, the CRON expression is evaluated in standard [UTC](https://www.timeanddate.com/worldclock/timezone/utc) time from GitLab.com. If you have a self-managed GitLab instance and have [changed the server timezone](../../../administration/timezone.md), the CRON expression is evaluated with the new timezone.
+If using the `agents` field, required for `Operational Container Scanning`, the CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod. If not using the `agents` field, the CRON expression is evaluated in standard [UTC](https://www.timeanddate.com/worldclock/timezone/utc) time from GitLab.com. If you have a self-managed GitLab instance and have [changed the server time zone](../../../administration/timezone.md), the CRON expression is evaluated with the new time zone.
 
 ### `agent` schema
 
@@ -107,7 +107,7 @@ Use this schema to define `agents` objects in the [`schedule` rule type](#schedu
 
 | Field        | Type                | Possible values          | Description |
 |--------------|---------------------|--------------------------|-------------|
-| `namespaces` | `array` of `string` | | The namespace that is scanned. If empty, all namespaces will be scanned. |
+| `namespaces` | `array` of `string` | | The namespace that is scanned. If empty, all namespaces are scanned. |
 
 #### Policy example
 
@@ -128,9 +128,9 @@ Use this schema to define `agents` objects in the [`schedule` rule type](#schedu
 
 The keys for a schedule rule are:
 
-- `cadence` (required): a [CRON expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) for when the scans will be run
+- `cadence` (required): a [CRON expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) for when the scans are run
 - `agents:<agent-name>` (required): The name of the agent to use for scanning
-- `agents:<agent-name>:namespaces` (optional): The Kubernetes namespaces to scan. If omitted, all namespaces will be scanned.
+- `agents:<agent-name>:namespaces` (optional): The Kubernetes namespaces to scan. If omitted, all namespaces are scanned.
 
 ## `scan` action type
 
@@ -143,7 +143,7 @@ rule in the defined policy are met.
 | `site_profile` | `string` | Name of the selected [DAST site profile](../dast/proxy-based.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/proxy-based.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
-| `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs will be run by runner with the specified tags. |
+| `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
 
 Note the following:
 

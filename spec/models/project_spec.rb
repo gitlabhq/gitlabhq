@@ -5933,6 +5933,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       project.execute_hooks(data, :push_hooks)
     end
 
+    it 'executes hooks which were backed off and are no longer backed off' do
+      project = create(:project)
+      hook = create(:project_hook, project: project, push_events: true)
+      WebHook::FAILURE_THRESHOLD.succ.times { hook.backoff! }
+
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).once
+
+      travel_to(hook.disabled_until + 1.second) do
+        project.execute_hooks(data, :push_hooks)
+      end
+    end
+
     it 'executes the system hooks with the specified scope' do
       expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with(data, :merge_request_hooks)
 

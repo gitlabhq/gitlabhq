@@ -311,88 +311,6 @@ RSpec.describe WebHook, feature_category: :integrations do
     end
   end
 
-  describe '.executable/.disabled' do
-    let!(:not_executable) do
-      [
-        [0, Time.current],
-        [0, 1.minute.from_now],
-        [1, 1.minute.from_now],
-        [3, 1.minute.from_now],
-        [4, nil],
-        [4, 1.day.ago],
-        [4, 1.minute.from_now]
-      ].map do |(recent_failures, disabled_until)|
-        create(:project_hook, project: project, recent_failures: recent_failures, disabled_until: disabled_until)
-      end
-    end
-
-    let!(:executables) do
-      [
-        [0, nil],
-        [0, 1.day.ago],
-        [1, nil],
-        [1, 1.day.ago],
-        [3, nil],
-        [3, 1.day.ago]
-      ].map do |(recent_failures, disabled_until)|
-        create(:project_hook, project: project, recent_failures: recent_failures, disabled_until: disabled_until)
-      end
-    end
-
-    it 'finds the correct set of project hooks' do
-      expect(described_class.where(project_id: project.id).executable).to match_array executables
-      expect(described_class.where(project_id: project.id).disabled).to match_array not_executable
-    end
-  end
-
-  describe '#executable?' do
-    let_it_be_with_reload(:web_hook) { create(:project_hook, project: project) }
-
-    where(:recent_failures, :not_until, :executable) do
-      [
-        [0, :not_set, true],
-        [0, :past,    true],
-        [0, :future,  true],
-        [0, :now,     true],
-        [1, :not_set, true],
-        [1, :past,    true],
-        [1, :future,  true],
-        [3, :not_set, true],
-        [3, :past,    true],
-        [3, :future,  true],
-        [4, :not_set, false],
-        [4, :past,    true], # expired suspension
-        [4, :now,     false], # active suspension
-        [4, :future,  false] # active suspension
-      ]
-    end
-
-    with_them do
-      # Phasing means we cannot put these values in the where block,
-      # which is not subject to the frozen time context.
-      let(:disabled_until) do
-        case not_until
-        when :not_set
-          nil
-        when :past
-          1.minute.ago
-        when :future
-          1.minute.from_now
-        when :now
-          Time.current
-        end
-      end
-
-      before do
-        web_hook.update!(recent_failures: recent_failures, disabled_until: disabled_until)
-      end
-
-      it 'has the correct state' do
-        expect(web_hook.executable?).to eq(executable)
-      end
-    end
-  end
-
   describe '#next_backoff' do
     context 'when there was no last backoff' do
       before do
@@ -435,219 +353,6 @@ RSpec.describe WebHook, feature_category: :integrations do
     end
   end
 
-  shared_examples 'is tolerant of invalid records' do
-    specify do
-      hook.url = nil
-
-      expect(hook).to be_invalid
-      run_expectation
-    end
-  end
-
-  describe '#enable!' do
-    it 'makes a hook executable if it was marked as failed' do
-      hook.recent_failures = 1000
-
-      expect { hook.enable! }.to change(hook, :executable?).from(false).to(true)
-    end
-
-    it 'makes a hook executable if it is currently backed off' do
-      hook.recent_failures = 1000
-      hook.disabled_until = 1.hour.from_now
-
-      expect { hook.enable! }.to change(hook, :executable?).from(false).to(true)
-    end
-
-    it 'does not update hooks unless necessary' do
-      sql_count = ActiveRecord::QueryRecorder.new { hook.enable! }.count
-
-      expect(sql_count).to eq(0)
-    end
-
-    include_examples 'is tolerant of invalid records' do
-      def run_expectation
-        hook.recent_failures = 1000
-
-        expect { hook.enable! }.to change(hook, :executable?).from(false).to(true)
-      end
-    end
-  end
-
-  describe '#backoff!' do
-    context 'when we have not backed off before' do
-      it 'does not disable the hook' do
-        expect { hook.backoff! }.not_to change(hook, :executable?).from(true)
-      end
-
-      it 'increments the recent_failures count' do
-        expect { hook.backoff! }.to change(hook, :recent_failures).by(1)
-      end
-    end
-
-    context 'when the recent failure value is the max value of a smallint' do
-      before do
-        hook.update!(recent_failures: 32767, disabled_until: 1.hour.ago)
-      end
-
-      it 'reduces to MAX_FAILURES' do
-        expect { hook.backoff! }.to change(hook, :recent_failures).to(described_class::MAX_FAILURES)
-      end
-    end
-
-    context 'when the recent failure value is MAX_FAILURES' do
-      before do
-        hook.update!(recent_failures: described_class::MAX_FAILURES, disabled_until: 1.hour.ago)
-      end
-
-      it 'does not change recent_failures' do
-        expect { hook.backoff! }.not_to change(hook, :recent_failures)
-      end
-    end
-
-    context 'when we have exhausted the grace period' do
-      before do
-        hook.update!(recent_failures: described_class::FAILURE_THRESHOLD)
-      end
-
-      it 'sets disabled_until to the next backoff' do
-        expect { hook.backoff! }.to change(hook, :disabled_until).to(hook.next_backoff.from_now)
-      end
-
-      it 'increments the backoff count' do
-        expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
-      end
-
-      context 'when the hook is permanently disabled' do
-        before do
-          allow(hook).to receive(:permanently_disabled?).and_return(true)
-        end
-
-        it 'does not set disabled_until' do
-          expect { hook.backoff! }.not_to change(hook, :disabled_until)
-        end
-
-        it 'does not increment the backoff count' do
-          expect { hook.backoff! }.not_to change(hook, :backoff_count)
-        end
-      end
-
-      context 'when we have backed off MAX_FAILURES times' do
-        before do
-          stub_const("#{described_class}::MAX_FAILURES", 5)
-          (described_class::FAILURE_THRESHOLD + 5).times { hook.backoff! }
-        end
-
-        it 'does not let the backoff count exceed the maximum failure count' do
-          expect { hook.backoff! }.not_to change(hook, :backoff_count)
-        end
-
-        it 'does not change disabled_until', :skip_freeze_time do
-          travel_to(hook.disabled_until - 1.minute) do
-            expect { hook.backoff! }.not_to change(hook, :disabled_until)
-          end
-        end
-
-        it 'changes disabled_until when it has elapsed', :skip_freeze_time do
-          travel_to(hook.disabled_until + 1.minute) do
-            expect { hook.backoff! }.to change { hook.disabled_until }
-            expect(hook.backoff_count).to eq(described_class::MAX_FAILURES)
-          end
-        end
-      end
-
-      include_examples 'is tolerant of invalid records' do
-        def run_expectation
-          expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
-        end
-      end
-    end
-  end
-
-  describe '#failed!' do
-    it 'increments the failure count' do
-      expect { hook.failed! }.to change(hook, :recent_failures).by(1)
-    end
-
-    context 'when the recent failure value is the max value of a smallint' do
-      before do
-        hook.update!(recent_failures: 32767)
-      end
-
-      it 'does not change recent_failures' do
-        expect { hook.failed! }.not_to change(hook, :recent_failures)
-      end
-    end
-
-    it 'does not update the hook if the the failure count exceeds the maximum value' do
-      hook.recent_failures = described_class::MAX_FAILURES
-
-      sql_count = ActiveRecord::QueryRecorder.new { hook.failed! }.count
-
-      expect(sql_count).to eq(0)
-    end
-
-    include_examples 'is tolerant of invalid records' do
-      def run_expectation
-        expect { hook.failed! }.to change(hook, :recent_failures).by(1)
-      end
-    end
-  end
-
-  describe '#disable!' do
-    it 'disables a hook' do
-      expect { hook.disable! }.to change(hook, :executable?).from(true).to(false)
-    end
-
-    include_examples 'is tolerant of invalid records' do
-      def run_expectation
-        expect { hook.disable! }.to change(hook, :executable?).from(true).to(false)
-      end
-    end
-  end
-
-  describe '#temporarily_disabled?' do
-    it 'is false when not temporarily disabled' do
-      expect(hook).not_to be_temporarily_disabled
-    end
-
-    it 'allows FAILURE_THRESHOLD initial failures before we back-off' do
-      described_class::FAILURE_THRESHOLD.times do
-        hook.backoff!
-        expect(hook).not_to be_temporarily_disabled
-      end
-
-      hook.backoff!
-      expect(hook).to be_temporarily_disabled
-    end
-
-    context 'when hook has been told to back off' do
-      before do
-        hook.update!(recent_failures: described_class::FAILURE_THRESHOLD)
-        hook.backoff!
-      end
-
-      it 'is true' do
-        expect(hook).to be_temporarily_disabled
-      end
-    end
-  end
-
-  describe '#permanently_disabled?' do
-    it 'is false when not disabled' do
-      expect(hook).not_to be_permanently_disabled
-    end
-
-    context 'when hook has been disabled' do
-      before do
-        hook.disable!
-      end
-
-      it 'is true' do
-        expect(hook).to be_permanently_disabled
-      end
-    end
-  end
-
   describe '#rate_limited?' do
     it 'is false when hook has not been rate limited' do
       expect_next_instance_of(Gitlab::WebHooks::RateLimiter) do |rate_limiter|
@@ -673,29 +378,6 @@ RSpec.describe WebHook, feature_category: :integrations do
       end
 
       expect(hook.rate_limit).to eq(10)
-    end
-  end
-
-  describe '#alert_status' do
-    subject(:status) { hook.alert_status }
-
-    it { is_expected.to eq :executable }
-
-    context 'when hook has been disabled' do
-      before do
-        hook.disable!
-      end
-
-      it { is_expected.to eq :disabled }
-    end
-
-    context 'when hook has been backed off' do
-      before do
-        hook.update!(recent_failures: described_class::FAILURE_THRESHOLD + 1)
-        hook.disabled_until = 1.hour.from_now
-      end
-
-      it { is_expected.to eq :temporarily_disabled }
     end
   end
 
@@ -772,6 +454,96 @@ RSpec.describe WebHook, feature_category: :integrations do
       let(:hook) { build(:project_hook, :token, project: project) }
 
       it { expect(hook.masked_token).to eq described_class::SECRET_MASK }
+    end
+  end
+
+  describe '#backoff!' do
+    context 'when we have not backed off before' do
+      it 'increments the recent_failures count' do
+        expect { hook.backoff! }.to change(hook, :recent_failures).by(1)
+      end
+    end
+
+    context 'when the recent failure value is the max value of a smallint' do
+      before do
+        hook.update!(recent_failures: 32767, disabled_until: 1.hour.ago)
+      end
+
+      it 'reduces to MAX_FAILURES' do
+        expect { hook.backoff! }.to change(hook, :recent_failures).to(described_class::MAX_FAILURES)
+      end
+    end
+
+    context 'when the recent failure value is MAX_FAILURES' do
+      before do
+        hook.update!(recent_failures: described_class::MAX_FAILURES, disabled_until: 1.hour.ago)
+      end
+
+      it 'does not change recent_failures' do
+        expect { hook.backoff! }.not_to change(hook, :recent_failures)
+      end
+    end
+
+    context 'when we have exhausted the grace period' do
+      before do
+        hook.update!(recent_failures: described_class::FAILURE_THRESHOLD)
+      end
+
+      it 'sets disabled_until to the next backoff' do
+        expect { hook.backoff! }.to change(hook, :disabled_until).to(hook.next_backoff.from_now)
+      end
+
+      it 'increments the backoff count' do
+        expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
+      end
+
+      context 'when we have backed off MAX_FAILURES times' do
+        before do
+          stub_const("#{described_class}::MAX_FAILURES", 5)
+          (described_class::FAILURE_THRESHOLD + 5).times { hook.backoff! }
+        end
+
+        it 'does not let the backoff count exceed the maximum failure count' do
+          expect { hook.backoff! }.not_to change(hook, :backoff_count)
+        end
+
+        it 'does not change disabled_until', :skip_freeze_time do
+          travel_to(hook.disabled_until - 1.minute) do
+            expect { hook.backoff! }.not_to change(hook, :disabled_until)
+          end
+        end
+
+        it 'changes disabled_until when it has elapsed', :skip_freeze_time do
+          travel_to(hook.disabled_until + 1.minute) do
+            expect { hook.backoff! }.to change { hook.disabled_until }
+            expect(hook.backoff_count).to eq(described_class::MAX_FAILURES)
+          end
+        end
+      end
+    end
+  end
+
+  describe '#failed!' do
+    it 'increments the failure count' do
+      expect { hook.failed! }.to change(hook, :recent_failures).by(1)
+    end
+
+    context 'when the recent failure value is the max value of a smallint' do
+      before do
+        hook.update!(recent_failures: 32767)
+      end
+
+      it 'does not change recent_failures' do
+        expect { hook.failed! }.not_to change(hook, :recent_failures)
+      end
+    end
+
+    it 'does not update the hook if the the failure count exceeds the maximum value' do
+      hook.recent_failures = described_class::MAX_FAILURES
+
+      sql_count = ActiveRecord::QueryRecorder.new { hook.failed! }.count
+
+      expect(sql_count).to eq(0)
     end
   end
 end

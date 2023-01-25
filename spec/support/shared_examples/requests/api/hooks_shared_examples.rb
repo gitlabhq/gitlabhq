@@ -128,7 +128,8 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
           get api(hook_uri, user)
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to include('alert_status' => 'disabled')
+
+          expect(json_response).to include('alert_status' => 'disabled') unless hook.executable?
         end
       end
 
@@ -142,10 +143,13 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
           get api(hook_uri, user)
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to include(
-            'alert_status' => 'temporarily_disabled',
-            'disabled_until' => hook.disabled_until.iso8601(3)
-          )
+
+          unless hook.executable?
+            expect(json_response).to include(
+              'alert_status' => 'temporarily_disabled',
+              'disabled_until' => hook.disabled_until.iso8601(3)
+            )
+          end
         end
       end
     end

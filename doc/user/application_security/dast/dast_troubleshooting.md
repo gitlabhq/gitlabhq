@@ -77,7 +77,7 @@ For information on this, see the [general Application Security troubleshooting s
 To avoid overwriting stages from other CI files, newer versions of the DAST CI template do not
 define stages. If you recently started using `DAST.latest.gitlab-ci.yml` or upgraded to a new major
 release of GitLab and began receiving this error, you must define a `dast` stage with your other
-stages. Note that you must have a running application for DAST to scan. If your application is set
+stages. You must have a running application for DAST to scan. If your application is set
 up in your pipeline, it must be deployed in a stage _before_ the `dast` stage:
 
 ```yaml
