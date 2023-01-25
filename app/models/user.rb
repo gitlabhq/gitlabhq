@@ -101,7 +101,7 @@ class User < ApplicationRecord
 
   MINIMUM_DAYS_CREATED = 7
 
-  ignore_columns %i[linkedin twitter skype website_url location organization], remove_with: '15.8', remove_after: '2023-01-22'
+  ignore_columns %i[linkedin twitter skype website_url location organization], remove_with: '15.10', remove_after: '2023-02-22'
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour

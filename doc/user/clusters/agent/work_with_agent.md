@@ -76,7 +76,7 @@ observability:
     grpc_level: warn
 ```
 
-When `grpc_level` is set to `info` or below, there will be a lot of gRPC logs.
+When `grpc_level` is set to `info` or below, there are a lot of gRPC logs.
 
 Commit the configuration changes and inspect the agent service logs:
 

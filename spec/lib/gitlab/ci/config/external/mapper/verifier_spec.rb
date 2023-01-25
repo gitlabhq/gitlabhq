@@ -25,6 +25,10 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
         my_test:
           script: echo Hello World
       YAML
+      'myfolder/file3.yml' => <<~YAML,
+        my_deploy:
+          script: echo Hello World
+      YAML
       'nested_configs.yml' => <<~YAML
         include:
           - local: myfolder/file1.yml
@@ -58,16 +62,35 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
       let(:files) do
         [
           Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
-          Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file2.yml' }, context)
+          Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file2.yml' }, context),
+          Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file3.yml' }, context)
         ]
       end
 
       it 'returns an array of file objects' do
-        expect(process.map(&:location)).to contain_exactly('myfolder/file1.yml', 'myfolder/file2.yml')
+        expect(process.map(&:location)).to contain_exactly(
+          'myfolder/file1.yml', 'myfolder/file2.yml', 'myfolder/file3.yml'
+        )
       end
 
       it 'adds files to the expandset' do
-        expect { process }.to change { context.expandset.count }.by(2)
+        expect { process }.to change { context.expandset.count }.by(3)
+      end
+
+      it 'calls Gitaly only once for all files', :request_store do
+        # 1 for project.commit.id, 1 for the files
+        expect { process }.to change { Gitlab::GitalyClient.get_request_count }.by(2)
+      end
+
+      context 'when the FF ci_batch_request_for_local_and_project_includes is disabled' do
+        before do
+          stub_feature_flags(ci_batch_request_for_local_and_project_includes: false)
+        end
+
+        it 'calls Gitaly for each file', :request_store do
+          # 1 for project.commit.id, 3 for the files
+          expect { process }.to change { Gitlab::GitalyClient.get_request_count }.by(4)
+        end
       end
     end
 

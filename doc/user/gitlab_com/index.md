@@ -301,7 +301,7 @@ The list of GitLab.com specific settings (and their defaults) is as follows:
 | `autovacuum_vacuum_scale_factor`      | 0.01                                                                | 0.02                                  |
 | `checkpoint_completion_target`        | 0.7                                                                 | 0.9                                   |
 | `checkpoint_segments`                 | 32                                                                  | 10                                    |
-| `effective_cache_size`                | 338688MB                                                            | Based on how much memory is available |
+| `effective_cache_size`                | 338688 MB                                                           | Based on how much memory is available |
 | `hot_standby`                         | on                                                                  | off                                   |
 | `hot_standby_feedback`                | on                                                                  | off                                   |
 | `log_autovacuum_min_duration`         | 0                                                                   | -1                                    |
@@ -309,19 +309,19 @@ The list of GitLab.com specific settings (and their defaults) is as follows:
 | `log_line_prefix`                     | `%t [%p]: [%l-1]`                                                   | empty                                 |
 | `log_min_duration_statement`          | 1000                                                                | -1                                    |
 | `log_temp_files`                      | 0                                                                   | -1                                    |
-| `maintenance_work_mem`                | 2048MB                                                              | 16 MB                                 |
+| `maintenance_work_mem`                | 2048 MB                                                             | 16 MB                                 |
 | `max_replication_slots`               | 5                                                                   | 0                                     |
 | `max_wal_senders`                     | 32                                                                  | 0                                     |
-| `max_wal_size`                        | 5GB                                                                 | 1GB                                   |
-| `shared_buffers`                      | 112896MB                                                            | Based on how much memory is available |
+| `max_wal_size`                        | 5 GB                                                                | 1 GB                                  |
+| `shared_buffers`                      | 112896 MB                                                           | Based on how much memory is available |
 | `shared_preload_libraries`            | `pg_stat_statements`                                                | empty                                 |
 | `shmall`                              | 30146560                                                            | Based on the server's capabilities    |
 | `shmmax`                              | 123480309760                                                        | Based on the server's capabilities    |
-| `wal_buffers`                         | 16MB                                                                | -1                                    |
+| `wal_buffers`                         | 16 MB                                                               | -1                                    |
 | `wal_keep_segments`                   | 512                                                                 | 10                                    |
 | `wal_level`                           | replica                                                             | minimal                               |
-| `statement_timeout`                   | 15s                                                                 | 60s                                   |
-| `idle_in_transaction_session_timeout` | 60s                                                                 | 60s                                   |
+| `statement_timeout`                   | 15 s                                                                | 60 s                                  |
+| `idle_in_transaction_session_timeout` | 60 s                                                                | 60 s                                  |
 
 Some of these settings are in the process being adjusted. For example, the value
 for `shared_buffers` is quite high, and we are

@@ -37,8 +37,6 @@ module Gitlab
               )
             end
 
-            private
-
             def validate_context!
               if !can_access_local_content?
                 errors.push("Project `#{masked_project_name}` not found or access denied! Make sure any includes in the pipeline configuration are correctly defined.")
@@ -54,6 +52,8 @@ module Gitlab
                 errors.push("Project `#{masked_project_name}` file `#{masked_location}` is empty!")
               end
             end
+
+            private
 
             def project
               strong_memoize(:project) do

@@ -27,10 +27,10 @@ For more information, see the links shown on this page for each external provide
 
 | Capability                                      | SaaS                                    | Self-managed                       |
 |-------------------------------------------------|-----------------------------------------|------------------------------------|
-| **User Provisioning**                           | SCIM<br>SAML <sup>1</sup> | LDAP <sup>1</sup><br>SAML <sup>1</sup><br>[OmniAuth Providers](../../integration/omniauth.md#supported-providers) <sup>1</sup> |
+| **User Provisioning**                           | SCIM<br>SAML <sup>1</sup> | LDAP <sup>1</sup><br>SAML <sup>1</sup><br>[OmniAuth Providers](../../integration/omniauth.md#supported-providers) <sup>1</sup><br>SCIM  |
 | **User Detail Updating** (not group management) | Not Available                           | LDAP Sync                          |
 | **Authentication**                              | SAML at top-level group (1 provider)    | LDAP (multiple providers)<br>Generic OAuth 2.0<br>SAML (only 1 permitted per unique provider)<br>Kerberos<br>JWT<br>Smartcard<br>[OmniAuth Providers](../../integration/omniauth.md#supported-providers) (only 1 permitted per unique provider) |
 | **Provider-to-GitLab Role Sync**                | SAML Group Sync                         | LDAP Group Sync<br>SAML Group Sync ([GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/285150) and later) |
-| **User Removal**                                | SCIM (remove user from top-level group) | LDAP (remove user from groups and block from the instance) |
+| **User Removal**                                | SCIM (remove user from top-level group) | LDAP (remove user from groups and block from the instance)<br>SCIM |
 
 1. Using Just-In-Time (JIT) provisioning, user accounts are created when the user first signs in.

@@ -146,7 +146,7 @@ the repository. For details on the Solution format, see the Microsoft reference 
 
 > Introduced in GitLab 14.2.
 
-Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
+Vulnerabilities that have been detected and are false positives are flagged as false positives in the security dashboard.
 
 False positive detection is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
 
@@ -350,13 +350,13 @@ To override the automatic update behavior, set the `SAST_ANALYZER_IMAGE_TAG` CI/
 in your CI/CD configuration file after you include the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml).
 
 Only set this variable within a specific job.
-If you set it [at the top level](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set will be used for other SAST analyzers.
+If you set it [at the top level](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set is used for other SAST analyzers.
 
 You can set the tag to:
 
-- A major version, like `3`. Your pipelines will use any minor or patch updates that are released within this major version.
-- A minor version, like `3.7`. Your pipelines will use any patch updates that are released within this minor version.
-- A patch version, like `3.7.0`. Your pipelines won't receive any updates.
+- A major version, like `3`. Your pipelines use any minor or patch updates that are released within this major version.
+- A minor version, like `3.7`. Your pipelines use any patch updates that are released within this minor version.
+- A patch version, like `3.7.0`. Your pipelines don't receive any updates.
 
 This example uses a specific minor version of the `semgrep` analyzer and a specific patch version of the `brakeman` analyzer:
 
@@ -552,7 +552,7 @@ Some analyzers make it possible to filter out vulnerabilities under a given thre
 
 | CI/CD variable               | Default value            | Description                                                                                                                                                                                                                 |
 |------------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `SAST_EXCLUDED_PATHS`        | `spec, test, tests, tmp` | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. You might need to exclude temporary directories used by your build tool as these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your own paths to be excluded. If you don't specify the default excluded paths, you will override the defaults and _only_ paths you specify will be excluded from the SAST scans. |
+| `SAST_EXCLUDED_PATHS`        | `spec, test, tests, tmp` | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. You might need to exclude temporary directories used by your build tool as these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your own paths to be excluded. If you don't specify the default excluded paths, you override the defaults and _only_ paths you specify are excluded from the SAST scans. |
 | `SEARCH_MAX_DEPTH`           | 4                        | SAST searches the repository to detect the programming languages used, and selects the matching analyzers. Set the value of `SEARCH_MAX_DEPTH` to specify how many directory levels the search phase should span. After the analyzers have been selected, the _entire_ repository is analyzed. |
 | `SAST_BANDIT_EXCLUDED_PATHS` |                          | Comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html); For example: `'*/tests/*, */venv/*'`. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. |
 | `SAST_BRAKEMAN_LEVEL`        | 1                        | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High.                                                                                                                                        |

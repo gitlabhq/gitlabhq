@@ -54,8 +54,8 @@ You can import projects from:
 - [Uploading a manifest file (AOSP)](manifest.md)
 - [Jira (issues only)](jira.md)
 
-You can also import any Git repository through HTTP from the **New Project** page. Note that if the
-repository is too large, the import can timeout.
+You can also import any Git repository through HTTP from the **New Project** page. If the repository
+is too large, the import can timeout.
 
 You can then [connect your external repository to get CI/CD benefits](../../../ci/ci_cd_for_external_repos/index.md).
 
@@ -89,7 +89,7 @@ The backups produced don't depend on the operating system running GitLab. You ca
 the restore method to switch between different operating system distributions or versions, as long
 as the same GitLab version [is available for installation](../../../administration/package_information/supported_os.md).
 
-Also note that administrators can use the [Users API](../../../api/users.md) to migrate users.
+Administrators can use the [Users API](../../../api/users.md) to migrate users.
 
 ## View project import history
 

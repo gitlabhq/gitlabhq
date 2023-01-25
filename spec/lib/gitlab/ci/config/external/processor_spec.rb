@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
       it 'raises an error' do
         expect { processor.perform }.to raise_error(
           described_class::IncludeError,
-          "Local file `/lib/gitlab/ci/templates/non-existent-file.yml` does not exist!"
+          "Local file `lib/gitlab/ci/templates/non-existent-file.yml` does not exist!"
         )
       end
     end
@@ -221,7 +221,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
       it 'raises an error' do
         expect { processor.perform }.to raise_error(
           described_class::IncludeError,
-          "Included file `/lib/gitlab/ci/templates/template.yml` does not have valid YAML syntax!"
+          "Included file `lib/gitlab/ci/templates/template.yml` does not have valid YAML syntax!"
         )
       end
     end
@@ -313,7 +313,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
 
           expect(context.includes).to contain_exactly(
             { type: :local,
-              location: '/local/file.yml',
+              location: 'local/file.yml',
               blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/local/file.yml",
               raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/local/file.yml",
               extra: {},
@@ -341,7 +341,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
               context_project: project.full_path,
               context_sha: sha },
             { type: :local,
-              location: '/templates/my-build.yml',
+              location: 'templates/my-build.yml',
               blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-build.yml",
               raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-build.yml",
               extra: {},

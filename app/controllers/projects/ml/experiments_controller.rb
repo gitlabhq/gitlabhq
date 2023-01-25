@@ -3,6 +3,8 @@
 module Projects
   module Ml
     class ExperimentsController < ::Projects::ApplicationController
+      include Projects::Ml::ExperimentsHelper
+
       before_action :check_feature_flag
 
       feature_category :mlops
@@ -19,24 +21,19 @@ module Projects
 
         return redirect_to project_ml_experiments_path(@project) unless @experiment.present?
 
-        page = params[:page].to_i
-        page = 1 if page == 0
+        find_params = params
+                        .transform_keys(&:underscore)
+                        .permit(:name, :order_by, :sort, :order_by_type)
 
-        @candidates = @experiment.candidates
-                                 .including_relationships
-                                 .page(page)
-                                 .per(MAX_CANDIDATES_PER_PAGE)
+        @candidates = CandidateFinder.new(@experiment, find_params).execute
 
-        return unless @candidates
+        page = [params[:page].to_i, 1].max
 
-        return redirect_to(url_for(page: @candidates.total_pages)) if @candidates.out_of_range?
+        @candidates, @pagination_info = paginate_candidates(@candidates, page, MAX_CANDIDATES_PER_PAGE)
 
-        @pagination = {
-          page: page,
-          is_last_page: @candidates.last_page?,
-          per_page: MAX_CANDIDATES_PER_PAGE,
-          total_items: @candidates.total_count
-        }
+        return if @pagination_info[:total_pages] == 0
+
+        redirect_to(url_for(safe_params.merge(page: @pagination_info[:total_pages]))) if @pagination_info[:out_of_range]
 
         @candidates.each(&:artifact_lazy)
       end

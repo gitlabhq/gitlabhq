@@ -1550,9 +1550,9 @@
 .rails:rules:detect-tests:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-default-refs
+    - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
-    - <<: *if-default-refs
+    - <<: *if-merge-request
       changes: *workhorse-patterns
 
 .rails:rules:detect-previous-failed-tests:

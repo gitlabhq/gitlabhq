@@ -98,13 +98,39 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
         let(:params) { basic_params.merge(id: experiment.iid, page: 's') }
 
         it 'uses first page' do
-          expect(assigns(:pagination)).to include(
+          expect(assigns(:pagination_info)).to include(
             page: 1,
             is_last_page: false,
             per_page: 2,
             total_items: experiment.candidates&.size
           )
         end
+      end
+    end
+
+    describe 'search' do
+      let(:params) do
+        basic_params.merge(
+          id: experiment.iid,
+          name: 'some_name',
+          orderBy: 'name',
+          orderByType: 'metric',
+          sort: 'asc',
+          invalid: 'invalid'
+        )
+      end
+
+      it 'formats and filters the parameters' do
+        expect(Projects::Ml::CandidateFinder).to receive(:new).and_call_original do |exp, params|
+          expect(params.to_h).to include({
+            name: 'some_name',
+            order_by: 'name',
+            order_by_type: 'metric',
+            sort: 'asc'
+          })
+        end
+
+        show_experiment
       end
     end
 

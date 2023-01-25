@@ -109,4 +109,68 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
       expect(subject['info']).to include(expected_info)
     end
   end
+
+  describe '#paginate_candidates' do
+    let(:page) { 1 }
+    let(:max_per_page) { 1 }
+
+    subject { helper.paginate_candidates(experiment.candidates.order(:id), page, max_per_page) }
+
+    it 'paginates' do
+      expect(subject[1]).not_to be_nil
+    end
+
+    it 'only returns max_per_page elements' do
+      expect(subject[0].size).to eq(1)
+    end
+
+    it 'fetches the items on the first page' do
+      expect(subject[0]).to eq([candidate0])
+    end
+
+    it 'creates the pagination info' do
+      expect(subject[1]).to eq({
+        page: 1,
+        is_last_page: false,
+        per_page: 1,
+        total_items: 2,
+        total_pages: 2,
+        out_of_range: false
+      })
+    end
+
+    context 'when not the first page' do
+      let(:page) { 2 }
+
+      it 'fetches the right page' do
+        expect(subject[0]).to eq([candidate1])
+      end
+
+      it 'creates the pagination info' do
+        expect(subject[1]).to eq({
+          page: 2,
+          is_last_page: true,
+          per_page: 1,
+          total_items: 2,
+          total_pages: 2,
+          out_of_range: false
+        })
+      end
+    end
+
+    context 'when out of bounds' do
+      let(:page) { 3 }
+
+      it 'creates the pagination info' do
+        expect(subject[1]).to eq({
+          page: page,
+          is_last_page: false,
+          per_page: 1,
+          total_items: 2,
+          total_pages: 2,
+          out_of_range: true
+        })
+      end
+    end
+  end
 end

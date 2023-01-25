@@ -330,7 +330,7 @@ This table shows granted privileges for jobs triggered by specific types of user
 | Push source and LFS                          |                 |           |            |               |
 
 1. Only if the triggering user is not an external one.
-1. Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](http://docs.gitlabl.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
+1. Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](http://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
 
 ## Group members permissions
 

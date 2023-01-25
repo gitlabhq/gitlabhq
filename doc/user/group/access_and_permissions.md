@@ -205,7 +205,7 @@ By default, projects in a group can be forked.
 Optionally, on [GitLab Premium](https://about.gitlab.com/pricing/) or higher tiers,
 you can prevent the projects in a group from being forked outside of the current top-level group.
 
-This setting will be removed from the SAML setting page, and migrated to the
+This setting is removed from the SAML setting page, and migrated to the
 group settings page. In the interim period, both of these settings are taken into consideration.
 If even one is set to `true`, then the group does not allow outside forks.
 
@@ -296,7 +296,7 @@ Now you can edit the user's permissions from the **Members** page.
 
 ### Verify if access is blocked by IP restriction
 
-If a user sees a 404 when they would normally expect access, and the problem is limited to a specific group, search the `auth.log` rails log for one or more of the following:
+If a user sees a 404 when they would usually expect access, and the problem is limited to a specific group, search the `auth.log` rails log for one or more of the following:
 
 - `json.message`: `'Attempting to access IP restricted group'`
 - `json.allowed`: `false`

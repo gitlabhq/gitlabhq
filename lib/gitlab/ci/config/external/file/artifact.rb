@@ -36,8 +36,6 @@ module Gitlab
               )
             end
 
-            private
-
             def validate_context!
               context.logger.instrument(:config_file_artifact_validate_context) do
                 if !creating_child_pipeline?
@@ -53,6 +51,8 @@ module Gitlab
             def validate_content!
               errors.push("File `#{masked_location}` is empty!") unless content.present?
             end
+
+            private
 
             def artifact_job
               strong_memoize(:artifact_job) do

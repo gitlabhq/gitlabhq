@@ -147,6 +147,20 @@ http://secondary.example.com/
                 Last status report was: 1 minute ago
 ```
 
+There are up to three statuses for each item. For example, for `Repositories`, you see the following lines:
+
+```plaintext
+  Repositories: succeeded 12345 / total 12345 (100%)
+  Verified Repositories: succeeded 12345 / total 12345 (100%)
+  Repositories Checked: failed 5 / succeeded 0 / total 5 (0%)
+```
+
+The 3 status items are defined as follows:
+
+- The `Repositories` output shows how many repositories are synced from the primary to the secondary.
+- The `Verified Repositories` output shows how many repositories on this secondary have a matching repository checksum with the Primary.
+- The `Repositories Checked` output shows how many repositories have passed a local Git repository check (`git fsck`) on the secondary.
+
 To find more details about failed items, check
 [the `gitlab-rails/geo.log` file](../../logs/log_parsing.md#find-most-common-geo-sync-errors)
 

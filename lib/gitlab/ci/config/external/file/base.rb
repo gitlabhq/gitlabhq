@@ -46,6 +46,7 @@ module Gitlab
               expanded_content_hash
             end
 
+            # Will be removed with the FF ci_batch_request_for_local_and_project_includes
             def validate!
               validate_location!
               validate_context! if valid?
@@ -68,22 +69,16 @@ module Gitlab
               [params, context.project&.full_path, context.sha].hash
             end
 
-            protected
-
-            def expanded_content_hash
-              return unless content_hash
-
-              strong_memoize(:expanded_content_yaml) do
-                expand_includes(content_hash)
+            def load_and_validate_expanded_hash!
+              context.logger.instrument(:config_file_fetch_content_hash) do
+                content_hash # calling the method loads then memoizes the result
               end
-            end
 
-            def content_hash
-              strong_memoize(:content_yaml) do
-                ::Gitlab::Ci::Config::Yaml.load!(content)
+              context.logger.instrument(:config_file_expand_content_includes) do
+                expanded_content_hash # calling the method expands then memoizes the result
               end
-            rescue Gitlab::Config::Loader::FormatError
-              nil
+
+              validate_hash!
             end
 
             def validate_location!
@@ -98,6 +93,31 @@ module Gitlab
               raise NotImplementedError, 'subclass must implement validate_context'
             end
 
+            def validate_content!
+              if content.blank?
+                errors.push("Included file `#{masked_location}` is empty or does not exist!")
+              end
+            end
+
+            protected
+
+            def expanded_content_hash
+              return unless content_hash
+
+              strong_memoize(:expanded_content_hash) do
+                expand_includes(content_hash)
+              end
+            end
+
+            def content_hash
+              strong_memoize(:content_hash) do
+                ::Gitlab::Ci::Config::Yaml.load!(content)
+              end
+            rescue Gitlab::Config::Loader::FormatError
+              nil
+            end
+
+            # Will be removed with the FF ci_batch_request_for_local_and_project_includes
             def fetch_and_validate_content!
               context.logger.instrument(:config_file_fetch_content) do
                 content # calling the method fetches then memoizes the result
@@ -107,24 +127,6 @@ module Gitlab
 
               context.logger.instrument(:config_file_validate_content) do
                 validate_content!
-              end
-            end
-
-            def load_and_validate_expanded_hash!
-              context.logger.instrument(:config_file_fetch_content_hash) do
-                content_hash # calling the method loads then memoizes the result
-              end
-
-              context.logger.instrument(:config_file_expand_content_includes) do
-                expanded_content_hash # calling the method expands then memoizes the result
-              end
-
-              validate_hash!
-            end
-
-            def validate_content!
-              if content.blank?
-                errors.push("Included file `#{masked_location}` is empty or does not exist!")
               end
             end
 

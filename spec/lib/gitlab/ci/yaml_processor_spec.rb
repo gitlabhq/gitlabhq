@@ -1503,7 +1503,7 @@ module Gitlab
           end
 
           context "when the included internal file is not present" do
-            it_behaves_like 'returns errors', "Local file `/local.gitlab-ci.yml` does not exist!"
+            it_behaves_like 'returns errors', "Local file `local.gitlab-ci.yml` does not exist!"
           end
         end
       end

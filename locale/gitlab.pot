@@ -1374,9 +1374,6 @@ msgstr ""
 msgid ", or "
 msgstr ""
 
-msgid "-"
-msgstr ""
-
 msgid "- %{policy_name} (notifying after %{elapsed_time} minutes unless %{status})"
 msgstr ""
 
@@ -16705,9 +16702,6 @@ msgstr ""
 msgid "Experiment"
 msgstr ""
 
-msgid "Experiment candidates"
-msgstr ""
-
 msgid "Experiments"
 msgstr ""
 
@@ -27196,6 +27190,33 @@ msgid "MissingSSHKeyWarningLink|You can't push or pull repositories using SSH un
 msgstr ""
 
 msgid "MissingSSHKeyWarningLink|You won't be able to pull or push repositories via SSH until you add an SSH key to your profile"
+msgstr ""
+
+msgid "MlExperimentTracking|-"
+msgstr ""
+
+msgid "MlExperimentTracking|Artifacts"
+msgstr ""
+
+msgid "MlExperimentTracking|Created at"
+msgstr ""
+
+msgid "MlExperimentTracking|Details"
+msgstr ""
+
+msgid "MlExperimentTracking|Experiment candidates"
+msgstr ""
+
+msgid "MlExperimentTracking|Filter candidates"
+msgstr ""
+
+msgid "MlExperimentTracking|Name"
+msgstr ""
+
+msgid "MlExperimentTracking|No candidates to display"
+msgstr ""
+
+msgid "MlExperimentTracking|User"
 msgstr ""
 
 msgid "MlExperimentsEmptyState|No Experiments to Show"
@@ -43154,9 +43175,6 @@ msgid "This epic does not exist or you don't have sufficient permission."
 msgstr ""
 
 msgid "This epic would exceed maximum number of related epics."
-msgstr ""
-
-msgid "This experiment has no logged candidates"
 msgstr ""
 
 msgid "This feature requires local storage to be enabled"

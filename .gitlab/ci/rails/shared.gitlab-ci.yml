@@ -55,7 +55,12 @@ include:
     GEO_SECONDARY_PROXY: 0
     RSPEC_TESTS_FILTER_FILE: "${RSPEC_MATCHING_TESTS_PATH}"
     SUCCESSFULLY_RETRIED_TEST_EXIT_CODE: 137
-  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
+  needs:
+    - job: "setup-test-env"
+    - job: "retrieve-tests-metadata"
+    - job: "compile-test-assets"
+    - job: "detect-tests"
+      optional: true
   script:
     - !reference [.base-script, script]
     # We need to exclude background migration because unit tests run with

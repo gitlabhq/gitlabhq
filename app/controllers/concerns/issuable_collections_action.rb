@@ -2,7 +2,6 @@
 
 module IssuableCollectionsAction
   extend ActiveSupport::Concern
-  include GracefulTimeoutHandling
   include IssuableCollections
   include IssuesCalendar
 

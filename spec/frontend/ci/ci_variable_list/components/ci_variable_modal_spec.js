@@ -21,6 +21,8 @@ describe('Ci variable modal', () => {
   let trackingSpy;
 
   const maskableRegex = '^[a-zA-Z0-9_+=/@:.~-]{8,}$';
+  const maskableRawRegex = '^\\S{8,}$';
+
   const mockVariables = mockVariablesWithScopes(instanceString);
 
   const defaultProvide = {
@@ -30,8 +32,12 @@ describe('Ci variable modal', () => {
     awsTipLearnLink: '/learn-link',
     containsVariableReferenceLink: '/reference',
     environmentScopeLink: '/help/environments',
+    glFeatures: {
+      ciRemoveCharacterLimitationRawMaskedVar: true,
+    },
     isProtectedByDefault: false,
     maskedEnvironmentVariablesLink: '/variables-link',
+    maskableRawRegex,
     maskableRegex,
     protectedEnvironmentVariablesLink: '/protected-link',
   };
@@ -423,6 +429,54 @@ describe('Ci variable modal', () => {
 
   describe('Validations', () => {
     const maskError = 'This variable can not be masked.';
+
+    describe('when the variable is raw', () => {
+      const [variable] = mockVariables;
+      const validRawMaskedVariable = {
+        ...variable,
+        value: 'd$%^asdsadas',
+        masked: false,
+        raw: true,
+      };
+
+      describe('and FF is enabled', () => {
+        beforeEach(() => {
+          createComponent({
+            mountFn: mountExtended,
+            props: { selectedVariable: validRawMaskedVariable },
+          });
+        });
+
+        it('should not show an error with symbols', async () => {
+          await findMaskedVariableCheckbox().trigger('click');
+
+          expect(findModal().text()).not.toContain(maskError);
+        });
+
+        it('should not show an error when length is less than 8', async () => {
+          await findValueField().vm.$emit('input', 'a');
+          await findMaskedVariableCheckbox().trigger('click');
+
+          expect(findModal().text()).toContain(maskError);
+        });
+      });
+
+      describe('and FF is disabled', () => {
+        beforeEach(() => {
+          createComponent({
+            mountFn: mountExtended,
+            props: { selectedVariable: validRawMaskedVariable },
+            provide: { glFeatures: { ciRemoveCharacterLimitationRawMaskedVar: false } },
+          });
+        });
+
+        it('should show an error with symbols', async () => {
+          await findMaskedVariableCheckbox().trigger('click');
+
+          expect(findModal().text()).toContain(maskError);
+        });
+      });
+    });
 
     describe('when the mask state is invalid', () => {
       beforeEach(async () => {

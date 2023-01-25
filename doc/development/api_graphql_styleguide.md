@@ -951,11 +951,23 @@ You can view descriptions of fields and arguments in:
 
 #### Language and punctuation
 
-Use `{x} of the {y}` where possible, where `{x}` is the item you're describing,
-and `{y}` is the resource it applies to. For example:
+To describe fields and arguments, use `{x} of the {y}` where possible,
+where `{x}` is the item you're describing, and `{y}` is the resource it applies to. For example:
 
 ```plaintext
 ID of the issue.
+```
+
+```plaintext
+Author of the epics.
+```
+
+For arguments that sort or search, start with the appropriate verb.
+To indicate the specified values, for conciseness, you can use `this` instead of
+`the given` or `the specified`. For example:
+
+```plaintext
+Sort issues by this criteria.
 ```
 
 Do not start descriptions with `The` or `A`, for consistency and conciseness.

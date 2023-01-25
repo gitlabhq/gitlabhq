@@ -155,15 +155,14 @@ module IncidentManagement
       def validate_tags(project, tag_names)
         return [] unless tag_names&.any?
 
-        start_time_tag = AUTOCREATE_TAGS[0].downcase
-        end_time_tag = AUTOCREATE_TAGS[1].downcase
+        predefined_tags = TimelineEventTag::PREDEFINED_TAGS.map(&:downcase)
 
         tag_names_downcased = tag_names.map(&:downcase)
 
         tags = project.incident_management_timeline_event_tags.by_names(tag_names).pluck_names.map(&:downcase)
 
         # remove tags from given tag_names and also remove predefined tags which can be auto created
-        tag_names_downcased - tags - [start_time_tag, end_time_tag]
+        tag_names_downcased - tags - predefined_tags
       end
     end
   end

@@ -17,6 +17,7 @@ import {
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import {
   allEnvironments,
@@ -64,7 +65,7 @@ export default {
     GlModal,
     GlSprintf,
   },
-  mixins: [trackingMixin],
+  mixins: [glFeatureFlagsMixin(), trackingMixin],
   inject: [
     'awsLogoSvgPath',
     'awsTipCommandsLink',
@@ -74,6 +75,7 @@ export default {
     'environmentScopeLink',
     'isProtectedByDefault',
     'maskedEnvironmentVariablesLink',
+    'maskableRawRegex',
     'maskableRegex',
     'protectedEnvironmentVariablesLink',
   ],
@@ -121,7 +123,7 @@ export default {
   },
   computed: {
     canMask() {
-      const regex = RegExp(this.maskableRegex);
+      const regex = RegExp(this.useRawMaskableRegexp ? this.maskableRawRegex : this.maskableRegex);
       return regex.test(this.variable.value);
     },
     canSubmit() {
@@ -134,11 +136,17 @@ export default {
     displayMaskedError() {
       return !this.canMask && this.variable.masked;
     },
+    isUsingRawRegexFlag() {
+      return this.glFeatures.ciRemoveCharacterLimitationRawMaskedVar;
+    },
     isEditing() {
       return this.mode === EDIT_VARIABLE_ACTION;
     },
     isExpanded() {
-      return !this.variable.raw;
+      return !this.isRaw;
+    },
+    isRaw() {
+      return this.variable.raw;
     },
     isTipVisible() {
       return !this.isTipDismissed && AWS_TOKEN_CONSTANTS.includes(this.variable.key);
@@ -173,6 +181,9 @@ export default {
       }
 
       return true;
+    },
+    useRawMaskableRegexp() {
+      return this.isRaw && this.isUsingRawRegexFlag;
     },
     variableValidationFeedback() {
       return `${this.tokenValidationFeedback} ${this.maskedFeedback}`;
@@ -315,11 +326,7 @@ export default {
           class="gl-font-monospace!"
           spellcheck="false"
         />
-        <p
-          v-if="variable.raw"
-          class="gl-mt-2 gl-mb-0 text-secondary"
-          data-testid="raw-variable-tip"
-        >
+        <p v-if="isRaw" class="gl-mt-2 gl-mb-0 text-secondary" data-testid="raw-variable-tip">
           {{ __('Variable value will be evaluated as raw string.') }}
         </p>
       </gl-form-group>

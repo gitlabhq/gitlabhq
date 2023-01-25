@@ -36,8 +36,16 @@ RSpec.describe IncidentManagement::TimelineEventTag do
   end
 
   describe 'constants' do
-    it { expect(described_class::START_TIME_TAG_NAME).to eq('Start time') }
-    it { expect(described_class::END_TIME_TAG_NAME).to eq('End time') }
+    it 'contains predefined tags' do
+      expect(described_class::PREDEFINED_TAGS).to contain_exactly(
+        'Start time',
+        'End time',
+        'Impact detected',
+        'Response initiated',
+        'Impact mitigated',
+        'Cause identified'
+      )
+    end
   end
 
   describe '#by_names scope' do

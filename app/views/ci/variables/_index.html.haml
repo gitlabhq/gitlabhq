@@ -17,6 +17,7 @@
   is_group: is_group.to_s,
   group_id: @group&.id || '',
   group_path: @group&.full_path,
+  maskable_raw_regex: ci_variable_maskable_raw_regex,
   maskable_regex: ci_variable_maskable_regex,
   protected_by_default: ci_variable_protected_by_default?.to_s,
   aws_logo_svg_path: image_path('aws_logo.svg'),

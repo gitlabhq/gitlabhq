@@ -31,8 +31,6 @@ module Gitlab
               )
             end
 
-            private
-
             def validate_context!
               # no-op
             end
@@ -44,6 +42,8 @@ module Gitlab
                 errors.push("Template file `#{masked_location}` is not a valid location!")
               end
             end
+
+            private
 
             def template_name
               return unless template_name_valid?

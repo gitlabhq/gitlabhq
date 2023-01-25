@@ -297,7 +297,7 @@ If you regenerate 2FA recovery codes, save them. You can't use any previously cr
 
 ## Sign in with two-factor authentication enabled
 
-Signing in with 2FA enabled is only slightly different than the normal sign-in process. Enter your username and password
+Signing in with 2FA enabled is only slightly different than the typical sign-in process. Enter your username and password
 and you're presented with a second prompt, depending on which type of 2FA you've enabled.
 
 ### Sign in using a one-time password

@@ -703,7 +703,7 @@ Possible solutions:
 
 ## Profiling Gitaly
 
-Gitaly exposes several of Golang's built-in performance profiling tools on the Prometheus listen port. For example, if Prometheus is listening
+Gitaly exposes several of the Golang built-in performance profiling tools on the Prometheus listen port. For example, if Prometheus is listening
 on port `9236` of the GitLab server:
 
 - Get a list of running `goroutines` and their backtraces:
@@ -724,7 +724,7 @@ on port `9236` of the GitLab server:
   curl --output heap.bin "http://<gitaly_server>:9236/debug/pprof/heap"
   ```
 
-- Record a 5 second execution trace. This will impact Gitaly's performance while running:
+- Record a 5 second execution trace. This impacts the Gitaly performance while running:
 
   ```shell
   curl --output trace.bin "http://<gitaly_server>:9236/debug/pprof/trace?seconds=5"
