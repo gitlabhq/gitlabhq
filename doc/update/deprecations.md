@@ -48,6 +48,39 @@ sole discretion of GitLab Inc.
 
 <div class="announcement-milestone">
 
+## Announced in 15.9
+
+<div class="deprecation removal-170 breaking-change">
+
+### Browser Performance Testing is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Due to limited customer usage, Browser Performance Testing is deprecated and will be removed. There is no planned replacement and users should stop using Browser Performance Testing before GitLab 17.0.
+
+</div>
+
+<div class="deprecation removal-170 breaking-change">
+
+### Load Performance Testing is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Due to low customer usage, Load Performance Testing is deprecated and will be removed. There is no planned replacement and users should stop using Load Performance Testing before GitLab 17.0.
+
+</div>
+</div>
+
+<div class="announcement-milestone">
+
 ## Announced in 15.8
 
 <div class="deprecation removal-160 breaking-change">
@@ -680,19 +713,19 @@ The endpoint to get [changes from a single merge request](https://docs.gitlab.co
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
 ### Support for REST API endpoints that reset runner registration tokens
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> <span class="support-end-date"></span><br />
-Planned removal: GitLab <span class="removal-milestone">16.0</span> <span class="removal-date"></span>
+Planned removal: GitLab <span class="removal-milestone">17.0</span> <span class="removal-date"></span>
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
 The support for runner registration tokens is deprecated. As a consequence, the REST API endpoints to reset a registration token are also deprecated and will
-be removed in GitLab 16.0.
+be removed in GitLab 17.0.
 The deprecated endpoints are:
 
 - `POST /runners/reset_registration_token`
@@ -703,7 +736,7 @@ In GitLab 15.8, we plan to implement a new method to bind runners to a GitLab in
 as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
 This new architecture introduces a new method for registering runners and will eliminate the legacy
 [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
-From GitLab 16.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
+From GitLab 17.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
 
 </div>
 

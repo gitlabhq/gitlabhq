@@ -1,5 +1,5 @@
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
-import { __ } from '~/locale';
+import { s__, __ } from '~/locale';
 import updateEpicSubscriptionMutation from '~/sidebar/queries/update_epic_subscription.mutation.graphql';
 import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
 import destroyBoardListMutation from './graphql/board_list_destroy.mutation.graphql';
@@ -152,3 +152,21 @@ export default {
 };
 
 export const DEFAULT_BOARD_LIST_ITEMS_SIZE = 10;
+
+export const BOARD_CARD_MOVE_TO_POSITIONS_START_OPTION = s__('Boards|Move to start of list');
+export const BOARD_CARD_MOVE_TO_POSITIONS_END_OPTION = s__('Boards|Move to end of list');
+
+/**
+ * Actions are stubbed in order to pass validation
+ * for GlDisclosureDropdown items property
+ */
+export const BOARD_CARD_MOVE_TO_POSITIONS_OPTIONS = [
+  {
+    text: BOARD_CARD_MOVE_TO_POSITIONS_START_OPTION,
+    action: () => {},
+  },
+  {
+    text: BOARD_CARD_MOVE_TO_POSITIONS_END_OPTION,
+    action: () => {},
+  },
+];

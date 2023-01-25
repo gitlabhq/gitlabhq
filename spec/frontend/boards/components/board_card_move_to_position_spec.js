@@ -1,8 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import Vuex from 'vuex';
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-
+import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import {
+  BOARD_CARD_MOVE_TO_POSITIONS_START_OPTION,
+  BOARD_CARD_MOVE_TO_POSITIONS_END_OPTION,
+} from '~/boards/constants';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import { mockList, mockIssue2, mockIssue, mockIssue3, mockIssue4 } from 'jest/boards/mock_data';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
@@ -10,8 +13,14 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 Vue.use(Vuex);
 
 const dropdownOptions = [
-  BoardCardMoveToPosition.i18n.moveToStartText,
-  BoardCardMoveToPosition.i18n.moveToEndText,
+  {
+    text: BOARD_CARD_MOVE_TO_POSITIONS_START_OPTION,
+    action: jest.fn(),
+  },
+  {
+    text: BOARD_CARD_MOVE_TO_POSITIONS_END_OPTION,
+    action: jest.fn(),
+  },
 ];
 
 describe('Board Card Move to position', () => {
@@ -53,8 +62,8 @@ describe('Board Card Move to position', () => {
         ...propsData,
       },
       stubs: {
-        GlDropdown,
-        GlDropdownItem,
+        GlDisclosureDropdown,
+        GlDisclosureDropdownItem,
       },
     });
   };
@@ -64,12 +73,9 @@ describe('Board Card Move to position', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
-  const findMoveToPositionDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownItems = () => findMoveToPositionDropdown().findAllComponents(GlDropdownItem);
+  const findMoveToPositionDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdownItems = () =>
+    findMoveToPositionDropdown().findAllComponents(GlDisclosureDropdownItem);
   const findDropdownItemAtIndex = (index) => findDropdownItems().at(index);
 
   describe('Dropdown', () => {
@@ -80,7 +86,7 @@ describe('Board Card Move to position', () => {
       });
 
       it('is opened on the click of vertical ellipsis and has 2 dropdown items when number of list items < 10', () => {
-        findMoveToPositionDropdown().vm.$emit('click');
+        findMoveToPositionDropdown().vm.$emit('shown');
         expect(findDropdownItems()).toHaveLength(dropdownOptions.length);
       });
     });
@@ -97,26 +103,24 @@ describe('Board Card Move to position', () => {
       });
 
       it.each`
-        dropdownIndex | dropdownLabel                                   | trackLabel         | positionInList
-        ${0}          | ${BoardCardMoveToPosition.i18n.moveToStartText} | ${'move_to_start'} | ${0}
-        ${1}          | ${BoardCardMoveToPosition.i18n.moveToEndText}   | ${'move_to_end'}   | ${-1}
+        dropdownIndex | dropdownItem          | trackLabel         | positionInList
+        ${0}          | ${dropdownOptions[0]} | ${'move_to_start'} | ${0}
+        ${1}          | ${dropdownOptions[1]} | ${'move_to_end'}   | ${-1}
       `(
         'on click of dropdown index $dropdownIndex with label $dropdownLabel should call moveItem action with tracking label $trackLabel',
-        async ({ dropdownIndex, dropdownLabel, trackLabel, positionInList }) => {
-          await findMoveToPositionDropdown().vm.$emit('click');
+        async ({ dropdownIndex, dropdownItem, trackLabel, positionInList }) => {
+          await findMoveToPositionDropdown().vm.$emit('shown');
 
-          expect(findDropdownItemAtIndex(dropdownIndex).text()).toBe(dropdownLabel);
-          await findDropdownItemAtIndex(dropdownIndex).vm.$emit('click', {
-            stopPropagation: () => {},
-          });
+          expect(findDropdownItemAtIndex(dropdownIndex).text()).toBe(dropdownItem.text);
 
-          await nextTick();
+          await findMoveToPositionDropdown().vm.$emit('action', dropdownItem);
 
           expect(trackingSpy).toHaveBeenCalledWith('boards:list', 'click_toggle_button', {
             category: 'boards:list',
             label: trackLabel,
             property: 'type_card',
           });
+
           expect(dispatch).toHaveBeenCalledWith('moveItem', {
             fromListId: mockList.id,
             itemId: mockIssue2.id,

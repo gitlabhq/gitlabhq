@@ -158,38 +158,50 @@ unable to achieve it early iterations.
 
 ## Structure of a component
 
-A pipeline component is identified by the path to a repository or directory that defines it
-and a specific version: `<component-path>@<version>`.
+A pipeline component is identified by a unique address in the form `<fqdn>/<component-path>@<version>` containing:
 
-For example: `gitlab-org/dast@1.0`.
+- FQDN (Fully Qualified Domain Name).
+- The path to a repository or directory that defines it.
+- A specific version
+
+For example: `gitlab.com/gitlab-org/dast@1.0`.
+
+### The FQDN
+
+Initially we support only component addresses that point to the same GitLab instance, meaning that the FQDN matches
+the GitLab host.
 
 ### The component path
 
-A component path must contain at least the component YAML and optionally a
+The directory identified by the component path must contain at least the component YAML and optionally a
 related `README.md` documentation file.
 
 The component path can be:
 
-- A path to a project: `gitlab-org/dast`. The default component is processed.
-- A path to an explicit component: `gitlab-org/dast/api-scan`. In this case the explicit `api-scan` component is processed.
-- A path to a local directory: `/path/to/component`. This path must contain the component YAML that defines the component.
-  The path must start with `/` to indicate a full path in the repository.
+- A path to a project: `gitlab.com/gitlab-org/dast`. The default component is processed.
+- A path to an explicit component: `gitlab.com/gitlab-org/dast/api-scan`. In this case the explicit `api-scan` component is processed.
+- A relative path to a local directory: `./path/to/component`. This path must contain the component YAML that defines the component.
+  The path must start with `./` or `../` to indicate a path relative to the current file's path.
+
+Relative local paths are a abbreviated form of the full component address, meaning that `./path/to/component` called from
+a file `mydir/file.yml` in `gitlab-org/dast` project would be expanded to:
+
+```plaintext
+gitlab.com/gitlab-org/dast/mydir/path/to/component@<CURRENT_SHA>
+```
 
 The component YAML file follows the filename convention `<type>.yml` where component type is one of:
 
 | Component type | Context |
 | -------------- | ------- |
 | `template`     | For components used under `include:` keyword |
-| `step`         | For components used under `steps:` keyword  |
 
 Based on the context where the component is used we fetch the correct YAML file.
 For example:
 
-- if we are including a component `gitlab-org/dast@1.0` we expect a YAML file named `template.yml` in the
+- if we are including a component `gitlab.com/gitlab-org/dast@1.0` we expect a YAML file named `template.yml` in the
   root directory of `gitlab-org/dast` repository.
-- if we are including a component `gitlab-org/dast/api-scan@1.0` we expect a YAML file named `template.yml` inside a
-  directory `api-scan` of `gitlab-org/dast` repository.
-- if we are using a step component `gitlab-org/dast/api-scan@1.0` we expect a YAML file named `step.yml` inside a
+- if we are including a component `gitlab.com/gitlab-org/dast/api-scan@1.0` we expect a YAML file named `template.yml` inside a
   directory `api-scan` of `gitlab-org/dast` repository.
 
 A component YAML file:
@@ -225,11 +237,11 @@ even when not releasing versions in the catalog.
 
 The version of the component can be (in order of highest priority first):
 
-1. A commit SHA - For example: `gitlab-org/dast@e3262fdd0914fa823210cdb79a8c421e2cef79d8`
-1. A released tag - For example: `gitlab-org/dast@1.0`
-1. A special moving target version that points to the most recent released tag - For example: `gitlab-org/dast@~latest`
-1. An unreleased tag - For example: `gitlab-org/dast@rc-1.0`
-1. A branch name - For example: `gitlab-org/dast@master`
+1. A commit SHA - For example: `gitlab.com/gitlab-org/dast@e3262fdd0914fa823210cdb79a8c421e2cef79d8`
+1. A released tag - For example: `gitlab.com/gitlab-org/dast@1.0`
+1. A special moving target version that points to the most recent released tag - For example: `gitlab.com/gitlab-org/dast@~latest`
+1. An unreleased tag - For example: `gitlab.com/gitlab-org/dast@rc-1.0`
+1. A branch name - For example: `gitlab.com/gitlab-org/dast@master`
 
 If a tag and branch exist with the same name, the tag takes precedence over the branch.
 Similarly, if a tag is named `e3262fdd0914fa823210cdb79a8c421e2cef79d8`, a commit SHA (if exists)
@@ -267,7 +279,7 @@ The following directory structure would support 1 component per project:
 
 The `.gitlab-ci.yml` is recommended for the project to ensure changes are verified accordingly.
 
-The component is now identified by the path `myorg/rails-rspec` and we expect a `template.yml` file
+The component is now identified by the path `gitlab.com/myorg/rails-rspec` and we expect a `template.yml` file
 and `README.md` located in the root directory of the repository.
 
 The following directory structure would support multiple components per project:
@@ -287,8 +299,8 @@ The following directory structure would support multiple components per project:
 In this example we are defining multiple test profiles that are executed with RSpec.
 The user could choose to use one or more of these.
 
-Each of these components are identified by their path `myorg/rails-rspec/unit`, `myorg/rails-rspec/integration`
-and `myorg/rails-rspec/feature`.
+Each of these components are identified by their path `gitlab.com/myorg/rails-rspec/unit`, `gitlab.com/myorg/rails-rspec/integration`
+and `gitlab.com/myorg/rails-rspec/feature`.
 
 This directory structure could also support both strategies:
 
@@ -302,12 +314,8 @@ This directory structure could also support both strategies:
 │   └── template.yml   # myorg/rails-rspec/unit
 ├── integration/
 │   └── template.yml   # myorg/rails-rspec/integration
-├── feature/
-│   └── template.yml   # myorg/rails-rspec/feature
-└── report/
-    ├── step.yml       # myorg/rails-rspec/report
-    ├── Dockerfile
-    └── ... other files
+└── feature/
+    └── template.yml   # myorg/rails-rspec/feature
 ```
 
 With the above structure we could have a top-level component that can be used as the
@@ -347,7 +355,7 @@ When using the component we pass the input parameters as follows:
 
 ```yaml
 include:
-  - component: org/my-component@1.0
+  - component: gitlab.com/org/my-component@1.0
     with:
       website: ${MY_WEBSITE} # variables expansion
       test_run: system
@@ -359,7 +367,7 @@ possible [inputs provided upstream](#input-parameters-for-pipelines).
 
 Input parameters are validated as soon as possible:
 
-1. Read the file `gitlab-template.yml` inside `org/my-component`.
+1. Read the file `gitlab-template.yml` inside `org/my-component` project.
 1. Parse `spec:inputs` from the specifications and validate the parameters against this schema.
 1. If successfully validated, proceed with parsing the content. Return an error otherwise.
 1. Interpolate input parameters inside the component's content.
@@ -407,7 +415,7 @@ extend it to other `include:` types support inputs via `with:` syntax:
 
 ```yaml
 include:
-  - component: org/my-component@1.0
+  - component: gitlab.com/org/my-component@1.0
     with:
       foo: bar
   - local: path/to/file.yml

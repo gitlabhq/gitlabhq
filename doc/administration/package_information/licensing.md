@@ -41,7 +41,7 @@ Starting with version 8.13, GitLab has placed an additional step into
 Omnibus GitLab. The `license_check` step calls
 `lib/gitlab/tasks/license_check.rake`, which checks the compiled `LICENSE` file
 against the current list of approved and questionable licenses as denoted in the
-arrays at the top of the script. This script will output one of `Good`,
+arrays at the top of the script. This script outputs one of `Good`,
 `Unknown` or `Check` for each piece of software that is a part of the
 Omnibus GitLab package.
 

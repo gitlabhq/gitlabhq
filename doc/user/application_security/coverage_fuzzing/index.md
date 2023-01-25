@@ -102,7 +102,7 @@ targets. Each fuzzing target **must** have a separate job. For example, the
 [go-fuzzing-example project](https://gitlab.com/gitlab-org/security-products/demos/go-fuzzing-example)
 contains one job that extends `.fuzz_base` for its single fuzzing target.
 
-Note that the hidden job `.fuzz_base` uses several YAML keys that you must not override in your own
+The hidden job `.fuzz_base` uses several YAML keys that you must not override in your own
 job. If you include these keys in your own job, you must copy their original content:
 
 - `before_script`

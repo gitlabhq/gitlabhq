@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 NOTE:
 This document describes a drop-in replacement for the
-`authorized_keys` file. For normal (non-deploy key) users, consider using
+`authorized_keys` file. For standard (non-deploy key) users, consider using
 [SSH certificates](ssh_certificates.md). They are even faster, but are not a
 drop-in replacement.
 

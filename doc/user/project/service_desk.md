@@ -358,11 +358,9 @@ issues created through customer support requests, and filter or interact with th
 
 Messages from the end user are shown as coming from the special
 [Support Bot user](../../subscriptions/self_managed/index.md#billable-users).
-You can read and write comments as you normally do in GitLab:
+You can read and write comments as you usually do in GitLab:
 
 ![Service Desk issue thread](img/service_desk_thread.png)
-
-Note that:
 
 - The project's visibility (private, internal, public) does not affect Service Desk.
 - The path to the project, including its group or namespace, is shown in emails.

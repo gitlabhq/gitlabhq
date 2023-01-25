@@ -53,7 +53,7 @@ Knowing the outcome you expect, try to replicate it manually using a browser on 
 
 DAST cannot scan correctly when:
 
-- There is a CAPTCHA. Please turn these off in the testing environment for the application being scanned.
+- There is a CAPTCHA. Turn these off in the testing environment for the application being scanned.
 - It does not have access to the target application. Ensure the GitLab Runner can access the application using the URLs used in the DAST configuration.
 
 ### How does your application work?

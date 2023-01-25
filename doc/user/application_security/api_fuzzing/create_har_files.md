@@ -211,7 +211,7 @@ Review the HAR file for any of the following:
 We strongly recommended that you [edit or remove it](#edit-or-remove-sensitive-information) any
 sensitive information.
 
-Use the following as a checklist to start with. Note that it's not an exhaustive list.
+Use the following as a checklist to start with. It's not an exhaustive list.
 
 - Look for secrets. For example: if your application requires authentication, check common locations
   or authentication information:

@@ -97,7 +97,7 @@ The Owner [role](../../permissions.md#project-members-permissions) can be added 
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
-When you add a group to a project, each user in the group gets access to the project.
+When you add a group to a project, every group member (direct or inherited) gets access to the project.
 Each user's access is based on:
 
 - The role they're assigned in the group.
