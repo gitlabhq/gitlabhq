@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlDropdown, GlSearchBoxByType, GlDropdownItem, GlDropdownText } from '@gitlab/ui';
 import { mapGetters, mapState } from 'vuex';
 import {
   I18N_NO_RESULTS_MESSAGE,
@@ -10,7 +10,10 @@ import {
 export default {
   name: 'ProjectsDropdown',
   components: {
-    GlCollapsibleListbox,
+    GlDropdown,
+    GlSearchBoxByType,
+    GlDropdownItem,
+    GlDropdownText,
   },
   props: {
     value: {
@@ -38,20 +41,17 @@ export default {
         project.name.toLowerCase().includes(lowerCasedFilterTerm),
       );
     },
-    listboxItems() {
-      return this.filteredResults.map(({ id, name }) => ({ value: id, text: name }));
-    },
     selectedProject() {
       return this.sortedProjects.find((project) => project.id === this.targetProjectId) || {};
     },
   },
   methods: {
-    selectProject(value) {
-      this.$emit('selectProject', value);
-
-      // when we select a project, we want the dropdown to filter to the selected project
-      const project = this.listboxItems.find((x) => x.value === value);
-      this.filterTerm = project?.text || '';
+    selectProject(project) {
+      this.$emit('selectProject', project.id);
+      this.filterTerm = project.name; // when we select a project, we want the dropdown to filter to the selected project
+    },
+    isSelected(selectedProject) {
+      return selectedProject === this.selectedProject;
     },
     filterTermChanged(value) {
       this.filterTerm = value;
@@ -60,15 +60,28 @@ export default {
 };
 </script>
 <template>
-  <gl-collapsible-listbox
-    :header-text="$options.i18n.projectHeaderTitle"
-    :items="listboxItems"
-    searchable
-    :search-placeholder="$options.i18n.projectSearchPlaceholder"
-    :selected="selectedProject.id"
-    :toggle-text="selectedProject.name"
-    :no-results-text="$options.i18n.noResultsMessage"
-    @search="filterTermChanged"
-    @select="selectProject"
-  />
+  <gl-dropdown :text="selectedProject.name" :header-text="$options.i18n.projectHeaderTitle">
+    <gl-search-box-by-type
+      :value="filterTerm"
+      trim
+      autocomplete="off"
+      :placeholder="$options.i18n.projectSearchPlaceholder"
+      data-testid="dropdown-search-box"
+      @input="filterTermChanged"
+    />
+    <gl-dropdown-item
+      v-for="project in filteredResults"
+      :key="project.name"
+      :name="project.name"
+      :is-checked="isSelected(project)"
+      is-check-item
+      data-testid="dropdown-item"
+      @click="selectProject(project)"
+    >
+      {{ project.name }}
+    </gl-dropdown-item>
+    <gl-dropdown-text v-if="!filteredResults.length" data-testid="empty-result-message">
+      <span class="gl-text-gray-500">{{ $options.i18n.noResultsMessage }}</span>
+    </gl-dropdown-text>
+  </gl-dropdown>
 </template>

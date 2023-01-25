@@ -141,7 +141,11 @@ export default {
           :value="targetProjectId"
         />
 
-        <projects-dropdown :value="targetProjectName" @selectProject="setSelectedProject" />
+        <projects-dropdown
+          class="gl-w-half"
+          :value="targetProjectName"
+          @selectProject="setSelectedProject"
+        />
       </gl-form-group>
 
       <gl-form-group
@@ -151,7 +155,12 @@ export default {
       >
         <input id="start_branch" type="hidden" name="start_branch" :value="branch" />
 
-        <branches-dropdown :value="branch" :blanked="isRevert" @selectBranch="setBranch" />
+        <branches-dropdown
+          class="gl-w-half"
+          :value="branch"
+          :blanked="isRevert"
+          @selectBranch="setBranch"
+        />
       </gl-form-group>
 
       <gl-form-checkbox
