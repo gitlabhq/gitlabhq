@@ -97,6 +97,12 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
 `before: String`, `after: String`, `first: Int`, `last: Int`.
 
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querycivariablessort"></a>`sort` | [`CiVariableSort`](#civariablesort) | Sort order of results. |
+
 ### `Query.containerRepository`
 
 Find a container repository.
@@ -13731,7 +13737,6 @@ GPG signature for a signed commit.
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
-| <a id="groupcivariables"></a>`ciVariables` | [`CiGroupVariableConnection`](#cigroupvariableconnection) | List of the group's CI/CD variables. (see [Connections](#connections)) |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
 | <a id="groupcrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
@@ -13824,6 +13829,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupboardsid"></a>`id` | [`BoardID`](#boardid) | Find a board by its ID. |
+
+##### `Group.ciVariables`
+
+List of the group's CI/CD variables.
+
+Returns [`CiGroupVariableConnection`](#cigroupvariableconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupcivariablessort"></a>`sort` | [`CiVariableSort`](#civariablesort) | Sort order of results. |
 
 ##### `Group.clusterAgents`
 
@@ -17417,7 +17438,6 @@ Represents a product analytics dashboard widget.
 | <a id="projectcicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting`](#projectcicdsetting) | CI/CD settings for the project. |
 | <a id="projectciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. |
 | <a id="projectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI Job Tokens scope of access. |
-| <a id="projectcivariables"></a>`ciVariables` | [`CiProjectVariableConnection`](#ciprojectvariableconnection) | List of the project's CI/CD variables. (see [Connections](#connections)) |
 | <a id="projectcodecoveragesummary"></a>`codeCoverageSummary` | [`CodeCoverageSummary`](#codecoveragesummary) | Code coverage summary associated with the project. |
 | <a id="projectcomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks associated with the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | Container expiration policy of the project. |
@@ -17646,6 +17666,22 @@ Returns [`CiTemplate`](#citemplate).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectcitemplatename"></a>`name` | [`String!`](#string) | Name of the CI/CD template to search for. Template must be formatted as `Name.gitlab-ci.yml`. |
+
+##### `Project.ciVariables`
+
+List of the project's CI/CD variables.
+
+Returns [`CiProjectVariableConnection`](#ciprojectvariableconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcivariablessort"></a>`sort` | [`CiVariableSort`](#civariablesort) | Sort order of results. |
 
 ##### `Project.clusterAgent`
 
@@ -21720,6 +21756,15 @@ Values for sorting runners.
 | <a id="cirunnerupgradestatusinvalid"></a>`INVALID` | Runner version is not valid. |
 | <a id="cirunnerupgradestatusnot_available"></a>`NOT_AVAILABLE` | Upgrade is not available for the runner. |
 | <a id="cirunnerupgradestatusrecommended"></a>`RECOMMENDED` | Upgrade is available and recommended for the runner. |
+
+### `CiVariableSort`
+
+Values for sorting variables.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="civariablesortkey_asc"></a>`KEY_ASC` | Sorted by key in ascending order. |
+| <a id="civariablesortkey_desc"></a>`KEY_DESC` | Sorted by key in descending order. |
 
 ### `CiVariableType`
 

@@ -257,12 +257,12 @@ module Projects
       return true unless Gitlab.config.registry.enabled
       return false unless remove_legacy_registry_tags
 
+      results = []
       project.container_repositories.find_each do |container_repository|
-        service = Projects::ContainerRepository::DestroyService.new(project, current_user)
-        service.execute(container_repository)
+        results << destroy_repository(project, container_repository)
       end
 
-      true
+      results.all?
     end
 
     ##
@@ -272,9 +272,14 @@ module Projects
     def remove_legacy_registry_tags
       return true unless Gitlab.config.registry.enabled
 
-      ::ContainerRepository.build_root_repository(project).tap do |repository|
-        break repository.has_tags? ? repository.delete_tags! : true
-      end
+      root_repository = ::ContainerRepository.build_root_repository(project)
+      root_repository.has_tags? ? destroy_repository(project, root_repository) : true
+    end
+
+    def destroy_repository(project, repository)
+      service = ContainerRepository::DestroyService.new(project, current_user, { skip_permission_check: true })
+      response = service.execute(repository)
+      response[:status] == :success
     end
 
     def raise_error(message)

@@ -440,7 +440,7 @@ Settings.mattermost['enabled'] = false if Settings.mattermost['enabled'].nil?
 Settings.mattermost['host'] = nil unless Settings.mattermost.enabled
 
 #
-# Jira Connect (GitLab.com for Jira Cloud App)
+# Jira Connect (GitLab for Jira Cloud App)
 #
 Settings['jira_connect'] ||= Settingslogic.new({})
 

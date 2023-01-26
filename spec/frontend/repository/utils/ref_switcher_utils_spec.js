@@ -18,12 +18,14 @@ describe('generateRefDestinationPath', () => {
     ${`${projectRootPath}/-/blob/${currentRef}/dir1/dir2/test.js#L123`} | ${`${projectRootPath}/-/blob/${selectedRef}/dir1/dir2/test.js#L123`}
   `('generates the correct destination path for  $currentPath', ({ currentPath, result }) => {
     setWindowLocation(currentPath);
-    expect(generateRefDestinationPath(projectRootPath, selectedRef)).toBe(result);
+    expect(generateRefDestinationPath(projectRootPath, currentRef, selectedRef)).toBe(result);
   });
 
   it('encodes the selected ref', () => {
     const result = `${projectRootPath}/-/tree/${encodedRefWithSpecialCharMock}`;
 
-    expect(generateRefDestinationPath(projectRootPath, refWithSpecialCharMock)).toBe(result);
+    expect(generateRefDestinationPath(projectRootPath, currentRef, refWithSpecialCharMock)).toBe(
+      result,
+    );
   });
 });

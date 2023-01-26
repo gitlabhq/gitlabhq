@@ -133,7 +133,7 @@ export default function setupVueRepositoryList() {
           },
           on: {
             input(selectedRef) {
-              visitUrl(generateRefDestinationPath(projectRootPath, selectedRef));
+              visitUrl(generateRefDestinationPath(projectRootPath, ref, selectedRef));
             },
           },
         });

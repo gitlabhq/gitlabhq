@@ -98,7 +98,7 @@ function rspec_args() {
   local rspec_opts="${1}"
   local junit_report_file="${2:-${JUNIT_RESULT_FILE}}"
 
-  echo "-Ispec -rspec_helper --color --format documentation --format RspecJunitFormatter --out ${junit_report_file} ${rspec_opts}"
+  echo "-Ispec -rspec_helper --color --failure-exit-code 1 --error-exit-code 2 --format documentation --format RspecJunitFormatter --out ${junit_report_file} ${rspec_opts}"
 }
 
 function rspec_simple_job() {
@@ -110,10 +110,18 @@ function rspec_simple_job() {
   eval "${rspec_cmd}"
 }
 
+function rspec_simple_job_with_retry () {
+  local rspec_run_status=0
+
+  rspec_simple_job "${1}" "${2}" || rspec_run_status=$?
+
+  handle_retry_rspec_in_new_process $rspec_run_status
+}
+
 function rspec_db_library_code() {
   local db_files="spec/lib/gitlab/database/"
 
-  rspec_simple_job "-- ${db_files}"
+  rspec_simple_job_with_retry "-- ${db_files}"
 }
 
 function debug_rspec_variables() {
@@ -131,9 +139,28 @@ function debug_rspec_variables() {
   echoinfo "FLAKY_RSPEC_REPORT_PATH: ${FLAKY_RSPEC_REPORT_PATH}"
   echoinfo "NEW_FLAKY_RSPEC_REPORT_PATH: ${NEW_FLAKY_RSPEC_REPORT_PATH}"
   echoinfo "SKIPPED_FLAKY_TESTS_REPORT_PATH: ${SKIPPED_FLAKY_TESTS_REPORT_PATH}"
-  echoinfo "RETRIED_TESTS_REPORT_PATH: ${RETRIED_TESTS_REPORT_PATH}"
 
   echoinfo "CRYSTALBALL: ${CRYSTALBALL}"
+}
+
+function handle_retry_rspec_in_new_process() {
+  local rspec_run_status="${1}"
+
+  if [[ $rspec_run_status -eq 2 ]]; then
+    echoerr "Not retrying failing examples since there were errors happening outside of the RSpec examples!"
+  elif [[ $rspec_run_status -eq 1 ]]; then
+    # Experiment to retry failed examples in a new RSpec process: https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148
+    if [[ "${RETRY_FAILED_TESTS_IN_NEW_PROCESS}" == "true" ]]; then
+      retry_failed_rspec_examples
+      rspec_run_status=$?
+    else
+      echoerr "Not retrying failing examples since \$RETRY_FAILED_TESTS_IN_NEW_PROCESS != 'true'!"
+    fi
+  else
+    echosuccess "No examples to retry, congrats!"
+  fi
+
+  exit $rspec_run_status
 }
 
 function rspec_paralellized_job() {
@@ -179,7 +206,6 @@ function rspec_paralellized_job() {
   export FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}all_${report_name}_report.json"
   export NEW_FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}new_${report_name}_report.json"
   export SKIPPED_FLAKY_TESTS_REPORT_PATH="${rspec_flaky_folder_path}skipped_flaky_tests_${report_name}_report.txt"
-  export RETRIED_TESTS_REPORT_PATH="${rspec_flaky_folder_path}retried_tests_${report_name}_report.txt"
 
   if [[ -d "ee/" ]]; then
     export KNAPSACK_GENERATE_REPORT="true"
@@ -204,17 +230,7 @@ function rspec_paralellized_job() {
 
   echoinfo "RSpec exited with ${rspec_run_status}."
 
-  # Experiment to retry failed examples in a new RSpec process: https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148
-  if [[ $rspec_run_status -ne 0 ]]; then
-    if [[ "${RETRY_FAILED_TESTS_IN_NEW_PROCESS}" == "true" ]]; then
-      retry_failed_rspec_examples
-      rspec_run_status=$?
-    fi
-  else
-    echosuccess "No examples to retry, congrats!"
-  fi
-
-  exit $rspec_run_status
+  handle_retry_rspec_in_new_process $rspec_run_status
 }
 
 function retry_failed_rspec_examples() {
@@ -228,6 +244,12 @@ function retry_failed_rspec_examples() {
 
   # Keep track of the tests that are retried, later consolidated in a single file by the `rspec:flaky-tests-report` job
   local failed_examples=$(grep " failed" ${RSPEC_LAST_RUN_RESULTS_FILE})
+  local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg12 1/24' would become 'rspec_unit_pg12_1_24'
+  local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
+
+  export RETRIED_TESTS_REPORT_PATH="${rspec_flaky_folder_path}retried_tests_${report_name}_report.txt"
+  echoinfo "RETRIED_TESTS_REPORT_PATH: ${RETRIED_TESTS_REPORT_PATH}"
+
   echo "${CI_JOB_URL}" > "${RETRIED_TESTS_REPORT_PATH}"
   echo $failed_examples >> "${RETRIED_TESTS_REPORT_PATH}"
 
@@ -241,8 +263,11 @@ function retry_failed_rspec_examples() {
   # Disable simplecov so retried tests don't override test coverage report
   export SIMPLECOV=0
 
+  local default_knapsack_pattern="{,ee/,jh/}spec/{,**/}*_spec.rb"
+  local knapsack_test_file_pattern="${KNAPSACK_TEST_FILE_PATTERN:-$default_knapsack_pattern}"
+
   # Retry only the tests that failed on first try
-  rspec_simple_job "--only-failures --pattern \"${KNAPSACK_TEST_FILE_PATTERN}\"" "${JUNIT_RETRY_FILE}"
+  rspec_simple_job "--only-failures --pattern \"${knapsack_test_file_pattern}\"" "${JUNIT_RETRY_FILE}"
   rspec_run_status=$?
 
   # Merge the JUnit report from retry into the first-try report
@@ -295,7 +320,7 @@ function rspec_rerun_previous_failed_tests() {
   fi
 
   if [[ -n $test_files ]]; then
-    rspec_simple_job "${test_files}"
+    rspec_simple_job_with_retry "${test_files}"
   else
     echo "No failed test files to rerun"
   fi
@@ -316,7 +341,7 @@ function rspec_fail_fast() {
   fi
 
   if [[ -n $test_files ]]; then
-    rspec_simple_job "${rspec_opts} ${test_files}"
+    rspec_simple_job_with_retry "${rspec_opts} ${test_files}"
   else
     echo "No rspec fail-fast tests to run"
   fi
@@ -351,7 +376,7 @@ function generate_frontend_fixtures_mapping() {
 
   mkdir -p $(dirname "$FRONTEND_FIXTURES_MAPPING_PATH")
 
-  rspec_simple_job "--pattern \"${pattern}\""
+  rspec_simple_job_with_retry "--pattern \"${pattern}\""
 }
 
 function cleanup_individual_job_reports() {

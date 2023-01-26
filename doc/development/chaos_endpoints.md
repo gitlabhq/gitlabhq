@@ -12,7 +12,7 @@ As [Werner Vogels](https://twitter.com/Werner), the CTO at Amazon Web Services, 
 
 <!-- vale gitlab.Spelling = NO -->
 
-As a developer, it's as important to consider the failure modes in which your software may operate as much as normal operation. Doing so can mean the difference between a minor hiccup leading to a scattering of `500` errors experienced by a tiny fraction of users, and a full site outage that affects all users for an extended period.
+As a developer, it's as important to consider the failure modes in which your software may operate as much as typical operation. Doing so can mean the difference between a minor hiccup leading to a scattering of `500` errors experienced by a tiny fraction of users, and a full site outage that affects all users for an extended period.
 
 To paraphrase [Tolstoy](https://en.wikipedia.org/wiki/Anna_Karenina_principle), _all happy servers are alike, but all failing servers are failing in their own way_. Luckily, there are ways we can attempt to simulate these failure modes, and the chaos endpoints are tools for assisting in this process.
 
@@ -65,8 +65,8 @@ GET /-/chaos/leakmem?memory_mb=1024&duration_s=50&async=true
 
 | Attribute    | Type    | Required | Description                                                                          |
 | ------------ | ------- | -------- | ------------------------------------------------------------------------------------ |
-| `memory_mb`  | integer | no       | How much memory, in MB, should be leaked. Defaults to 100MB.                         |
-| `duration_s` | integer | no       | Minimum duration_s, in seconds, that the memory should be retained. Defaults to 30s. |
+| `memory_mb`  | integer | no       | How much memory, in MB, should be leaked. Defaults to 100 MB.                         |
+| `duration_s` | integer | no       | Minimum duration_s, in seconds, that the memory should be retained. Defaults to 30 s. |
 | `async`      | boolean | no       | Set to true to leak memory in a Sidekiq background worker process                    |
 
 ```shell
@@ -79,7 +79,7 @@ curl "http://localhost:3000/-/chaos/leakmem?memory_mb=1024&duration_s=10&token=s
 
 This endpoint attempts to fully use a single core, at 100%, for the given period.
 
-Depending on your rack server setup, your request may timeout after a predetermined period (normally 60 seconds).
+Depending on your rack server setup, your request may timeout after a predetermined period (typically 60 seconds).
 
 ```plaintext
 GET /-/chaos/cpu_spin
@@ -89,7 +89,7 @@ GET /-/chaos/cpu_spin?duration_s=50&async=true
 
 | Attribute    | Type    | Required | Description                                                           |
 | ------------ | ------- | -------- | --------------------------------------------------------------------- |
-| `duration_s` | integer | no       | Duration, in seconds, that the core is used. Defaults to 30s          |
+| `duration_s` | integer | no       | Duration, in seconds, that the core is used. Defaults to 30 s          |
 | `async`      | boolean | no       | Set to true to consume CPU in a Sidekiq background worker process     |
 
 ```shell
@@ -103,7 +103,7 @@ curl "http://localhost:3000/-/chaos/cpu_spin?duration_s=60&token=secret"
 This endpoint attempts to fully use a single core, and interleave it with DB request, for the given period.
 This endpoint can be used to model yielding execution to another threads when running concurrently.
 
-Depending on your rack server setup, your request may timeout after a predetermined period (normally 60 seconds).
+Depending on your rack server setup, your request may timeout after a predetermined period (typically 60 seconds).
 
 ```plaintext
 GET /-/chaos/db_spin
@@ -113,8 +113,8 @@ GET /-/chaos/db_spin?duration_s=50&async=true
 
 | Attribute    | Type    | Required | Description                                                                 |
 | ------------ | ------- | -------- | --------------------------------------------------------------------------- |
-| `interval_s` | float   | no       | Interval, in seconds, for every DB request. Defaults to 1s                  |
-| `duration_s` | integer | no       | Duration, in seconds, that the core is used. Defaults to 30s                |
+| `interval_s` | float   | no       | Interval, in seconds, for every DB request. Defaults to 1 s                  |
+| `duration_s` | integer | no       | Duration, in seconds, that the core is used. Defaults to 30 s                |
 | `async`      | boolean | no       | Set to true to perform the operation in a Sidekiq background worker process |
 
 ```shell
@@ -137,7 +137,7 @@ GET /-/chaos/sleep?duration_s=50&async=true
 
 | Attribute    | Type    | Required | Description                                                            |
 | ------------ | ------- | -------- | ---------------------------------------------------------------------- |
-| `duration_s` | integer | no       | Duration, in seconds, that the request sleeps for. Defaults to 30s     |
+| `duration_s` | integer | no       | Duration, in seconds, that the request sleeps for. Defaults to 30 s     |
 | `async`      | boolean | no       | Set to true to sleep in a Sidekiq background worker process            |
 
 ```shell
@@ -170,7 +170,7 @@ curl "http://localhost:3000/-/chaos/kill?token=secret"
 ## Quit
 
 This endpoint simulates the unexpected death of a worker process using the `QUIT` signal.
-Unlike `KILL`, the `QUIT` signal will also attempt to write a core dump.
+Unlike `KILL`, the `QUIT` signal also attempts to write a core dump.
 See [core(5)](https://man7.org/linux/man-pages/man5/core.5.html) for more information.
 
 ```plaintext
@@ -191,7 +191,7 @@ curl "http://localhost:3000/-/chaos/quit?token=secret"
 
 This endpoint triggers a GC run on the worker handling the request and returns its worker ID
 plus GC stats as JSON. This is mostly useful when running Puma in standalone mode, since
-otherwise the worker handling the request will not be known upfront.
+otherwise the worker handling the request cannot be known upfront.
 
 Endpoint:
 

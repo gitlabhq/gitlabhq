@@ -636,7 +636,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
    sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-rake db:migrate
    ```
 
-1. If this deploy node is normally used to serve requests or process jobs,
+1. If this deploy node is used to serve requests or process jobs,
    then you may return it to service at this point.
 
    - To serve requests, add the deploy node to the load balancer.
@@ -706,7 +706,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
    sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-rake db:migrate:geo
    ```
 
-1. If this deploy node is normally used to serve requests or perform
+1. If this deploy node is used to serve requests or perform
    background processing, then you may return it to service at this point.
 
    - To serve requests, add the deploy node to the load balancer.

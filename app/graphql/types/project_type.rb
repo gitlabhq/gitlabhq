@@ -345,7 +345,7 @@ module Types
           null: true,
           description: "List of the project's CI/CD variables.",
           authorize: :admin_build,
-          method: :variables
+          resolver: Resolvers::Ci::VariablesResolver
 
     field :ci_cd_settings, Types::Ci::CiCdSettingType,
           null: true,

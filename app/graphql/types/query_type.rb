@@ -17,7 +17,8 @@ module Types
     field :ci_variables,
           Types::Ci::InstanceVariableType.connection_type,
           null: true,
-          description: "List of the instance's CI/CD variables."
+          description: "List of the instance's CI/CD variables.",
+          resolver: Resolvers::Ci::VariablesResolver
     field :container_repository, Types::ContainerRepositoryDetailsType,
           null: true,
           description: 'Find a container repository.' do
@@ -165,12 +166,6 @@ module Types
 
     def ci_application_settings
       application_settings
-    end
-
-    def ci_variables
-      return unless current_user&.can_admin_all_resources?
-
-      ::Ci::InstanceVariable.all
     end
 
     def application_settings

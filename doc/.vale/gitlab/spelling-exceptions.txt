@@ -786,6 +786,7 @@ requeued
 requeues
 requeuing
 resolver
+resolver's
 Restlet
 resync
 resynced
@@ -833,6 +834,7 @@ SBOMs
 sbt
 SBT
 scalers
+scalar's
 scatterplot
 scatterplots
 schedulable
@@ -1095,6 +1097,7 @@ unrevoke
 unsanitized
 unschedule
 unscoped
+unsetting
 unshare
 unshared
 unshares

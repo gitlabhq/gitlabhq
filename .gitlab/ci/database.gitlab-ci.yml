@@ -1,0 +1,116 @@
+include:
+  - local: .gitlab/ci/rails/shared.gitlab-ci.yml
+
+db:rollback:
+  extends: .db-job-base
+  script:
+    - scripts/db_tasks db:migrate VERSION=20210602155110
+    - scripts/db_tasks db:migrate SKIP_SCHEMA_VERSION_CHECK=true
+
+db:rollback single-db:
+  extends:
+    - db:rollback
+    - .single-db
+    - .rails:rules:single-db
+
+db:migrate:reset:
+  extends: .db-job-base
+  script:
+    - bundle exec rake db:migrate:reset
+
+db:migrate:reset single-db:
+  extends:
+    - db:migrate:reset
+    - .single-db
+    - .rails:rules:single-db
+
+db:check-schema:
+  extends:
+    - .db-job-base
+    - .rails:rules:ee-mr-and-default-branch-only
+  script:
+    - run_timed_command "bundle exec rake db:drop db:create"
+    - run_timed_command "scripts/db_tasks db:migrate"
+
+db:check-schema-single-db:
+  extends:
+    - db:check-schema
+    - .single-db
+    - .rails:rules:single-db
+
+db:check-migrations:
+  extends:
+    - .db-job-base
+    - .rails:rules:ee-and-foss-mr-with-migration
+  script:
+    - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
+    - scripts/validate_migration_schema
+  allow_failure: true
+
+db:check-migrations-single-db:
+  extends:
+    - db:check-migrations
+    - .single-db
+    - .rails:rules:single-db
+
+db:post_deployment_migrations_validator:
+  extends:
+    - .db-job-base
+    - .rails:rules:ee-and-foss-mr-with-migration
+  script:
+    - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
+    - scripts/post_deployment_migrations_validator
+  allow_failure: true
+
+db:post_deployment_migrations_validator-single-db:
+  extends:
+    - db:post_deployment_migrations_validator
+    - .single-db
+    - .rails:rules:single-db
+
+db:migrate-non-superuser:
+  extends:
+    - .db-job-base
+    - .rails:rules:ee-and-foss-mr-with-migration
+  script:
+    - bundle exec rake gitlab:db:reset_as_non_superuser
+
+db:gitlabcom-database-testing:
+  extends: .rails:rules:db:gitlabcom-database-testing
+  stage: test
+  image: ruby:${RUBY_VERSION}-alpine
+  needs: []
+  allow_failure: true
+  script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+    - ./scripts/trigger-build.rb gitlab-com-database-testing
+
+db:backup_and_restore:
+  extends:
+    - .db-job-base
+    - .rails:rules:db-backup
+  variables:
+    SETUP_DB: "false"
+    GITLAB_ASSUME_YES: "1"
+  script:
+    - . scripts/prepare_build.sh
+    - bundle exec rake db:drop db:create db:structure:load db:seed_fu
+    - mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,terraform_state,registry,packages}
+    - bundle exec rake gitlab:backup:create
+    - date
+    - bundle exec rake gitlab:backup:restore
+
+db:backup_and_restore single-db:
+  extends:
+    - db:backup_and_restore
+    - .single-db
+    - .rails:rules:db-backup
+
+db:rollback geo:
+  extends:
+    - db:rollback
+    - .rails:rules:ee-only-migration
+  script:
+    - bundle exec rake db:migrate:geo VERSION=20170627195211
+    - bundle exec rake db:migrate:geo

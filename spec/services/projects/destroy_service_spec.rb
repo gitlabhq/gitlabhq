@@ -343,18 +343,30 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       end
 
       context 'when image repository deletion succeeds' do
-        it 'removes tags' do
-          expect_any_instance_of(Projects::ContainerRepository::CleanupTagsService)
-            .to receive(:execute).and_return({ status: :success })
+        it 'returns true' do
+          expect_next_instance_of(Projects::ContainerRepository::CleanupTagsService) do |instance|
+            expect(instance).to receive(:execute).and_return(status: :success)
+          end
 
-          destroy_project(project, user)
+          expect(destroy_project(project, user)).to be true
+        end
+      end
+
+      context 'when image repository deletion raises an error' do
+        it 'returns false' do
+          expect_next_instance_of(Projects::ContainerRepository::CleanupTagsService) do |service|
+            expect(service).to receive(:execute).and_raise(RuntimeError)
+          end
+
+          expect(destroy_project(project, user)).to be false
         end
       end
 
       context 'when image repository deletion fails' do
-        it 'raises an exception' do
-          expect_any_instance_of(Projects::ContainerRepository::CleanupTagsService)
-            .to receive(:execute).and_raise(RuntimeError)
+        it 'returns false' do
+          expect_next_instance_of(Projects::ContainerRepository::DestroyService) do |service|
+            expect(service).to receive(:execute).and_return({ status: :error })
+          end
 
           expect(destroy_project(project, user)).to be false
         end
@@ -381,8 +393,9 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       context 'when image repository tags deletion succeeds' do
         it 'removes tags' do
-          expect_any_instance_of(ContainerRepository)
-            .to receive(:delete_tags!).and_return(true)
+          expect_next_instance_of(Projects::ContainerRepository::DestroyService) do |service|
+            expect(service).to receive(:execute).and_return({ status: :sucess })
+          end
 
           destroy_project(project, user)
         end
@@ -390,11 +403,25 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       context 'when image repository tags deletion fails' do
         it 'raises an exception' do
-          expect_any_instance_of(ContainerRepository)
-            .to receive(:delete_tags!).and_return(false)
+          expect_next_instance_of(Projects::ContainerRepository::DestroyService) do |service|
+            expect(service).to receive(:execute).and_return({ status: :error })
+          end
 
           expect(destroy_project(project, user)).to be false
         end
+      end
+    end
+
+    context 'when there are no tags for legacy root repository' do
+      before do
+        stub_container_registry_tags(repository: project.full_path,
+                                     tags: [])
+      end
+
+      it 'does not try to destroy the repository' do
+        expect(Projects::ContainerRepository::DestroyService).not_to receive(:new)
+
+        destroy_project(project, user)
       end
     end
   end

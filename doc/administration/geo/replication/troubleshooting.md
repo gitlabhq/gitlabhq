@@ -66,7 +66,7 @@ Checking Geo ...
 GitLab Geo is available ... yes
 GitLab Geo is enabled ... yes
 This machine's Geo node name matches a database record ... yes, found a secondary node named "Shanghai"
-GitLab Geo secondary database is correctly configured ... yes
+GitLab Geo tracking database is correctly configured ... yes
 Database replication enabled? ... yes
 Database replication working? ... yes
 GitLab Geo HTTP(S) connectivity ...
@@ -339,7 +339,7 @@ sudo gitlab-rake gitlab:geo:check
 
   GitLab Geo is available ... yes
   GitLab Geo is enabled ... yes
-  GitLab Geo secondary database is correctly configured ... not a secondary node
+  GitLab Geo tracking database is correctly configured ... not a secondary node
   Database replication enabled? ... not a secondary node
   ...
   Checking Geo ... Finished

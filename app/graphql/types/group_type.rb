@@ -200,7 +200,7 @@ module Types
           null: true,
           description: "List of the group's CI/CD variables.",
           authorize: :admin_group,
-          method: :variables
+          resolver: Resolvers::Ci::VariablesResolver
 
     field :runners, Types::Ci::RunnerType.connection_type,
           null: true,

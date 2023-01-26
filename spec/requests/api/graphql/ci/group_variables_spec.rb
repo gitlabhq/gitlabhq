@@ -72,4 +72,32 @@ RSpec.describe 'Query.group(fullPath).ciVariables', feature_category: :pipeline_
       expect(graphql_data.dig('group', 'ciVariables')).to be_nil
     end
   end
+
+  describe 'sorting and pagination' do
+    let_it_be(:current_user) { user }
+    let_it_be(:data_path) { [:group, :ci_variables] }
+    let_it_be(:variables) do
+      [
+        create(:ci_group_variable, group: group, key: 'd'),
+        create(:ci_group_variable, group: group, key: 'a'),
+        create(:ci_group_variable, group: group, key: 'c'),
+        create(:ci_group_variable, group: group, key: 'e'),
+        create(:ci_group_variable, group: group, key: 'b')
+      ]
+    end
+
+    def pagination_query(params)
+      graphql_query_for(
+        :group,
+        { fullPath: group.full_path },
+        query_graphql_field('ciVariables', params, "#{page_info} nodes { id }")
+      )
+    end
+
+    before do
+      group.add_owner(current_user)
+    end
+
+    it_behaves_like 'sorted paginated variables'
+  end
 end

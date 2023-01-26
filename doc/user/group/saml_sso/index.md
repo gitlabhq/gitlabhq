@@ -121,34 +121,39 @@ It can also help to compare the XML response from your provider with our [exampl
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9152) in GitLab 13.11 with enforcing open SSO session to use Git if this setting is switched on.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/339888) in GitLab 14.7 to not enforce SSO checks for Git activity originating from CI/CD jobs.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/215155) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `transparent_sso_enforcement` to include transparent enforcement even when SSO enforcement is not enabled. Disabled on GitLab.com.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/375788) in GitLab 15.8 by enabling transparent SSO by default on GitLab.com.
 
 FLAG:
-On self-managed GitLab, transparent SSO enforcement is unavailable. On GitLab.com, see the [Transparent SSO rollout](https://gitlab.com/gitlab-org/gitlab/-/issues/375788) issue for the current status.
+On self-managed GitLab, transparent SSO enforcement is unavailable. An
+[issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/382917) to add
+transparent SSO enforcement to self-managed GitLab.
+On GitLab.com, transparent SSO enforcement is available by default. To turn off
+transparent SSO, ask a support or production team to enable the
+`transparent_sso_enforcement_override` feature flag for a specific customer
+group.
 
-SSO is enforced when users access groups and projects in the organization's group hierarchy. Users can view other groups and projects without SSO sign in.
+#### Transparent SSO enforcement
 
-SSO is enforced for each user with an existing SAML identity when the following is enabled:
+By default, transparent SSO enforcement is enabled in GitLab.com. This means SSO is enforced:
 
-- SAML SSO.
-- The `:transparent_sso_enforcement` feature flag.
+- When users access groups and projects in the organization's
+  group hierarchy. Users can view other groups and projects without SSO sign in.
+- For each user with an existing SAML identity.
+
+When transparent SSO enforcement is enabled, users:
+
+- Are not prompted to sign in through SSO on each visit. GitLab checks
+  whether a user has authenticated through SSO. If the user last signed in more
+  than 24 hours ago, GitLab prompts the user to sign in again through SSO.
+- Without SAML identities are not required to use SSO unless **Enforce
+  SSO-only authentication for web activity for this group** is enabled.
 
 A user has a SAML identity if one or both of the following are true:
 
 - They have signed in to GitLab by using their GitLab group's single sign-on URL.
 - They were provisioned by SCIM.
 
-Users without SAML identities are not required to use SSO unless explicit enforcement is enabled.
-
-When the **Enforce SSO-only authentication for web activity for this group** option is enabled, all users must access GitLab by using their GitLab group's single sign-on URL to access group resources,
-regardless of whether they have an existing SAML identity.
-Users also cannot be added as new members manually.
-Users with the Owner role can use the standard sign in process to make necessary changes to top-level group settings.
-
-However, users are not prompted to sign in through SSO on each visit. GitLab checks whether a user
-has authenticated through SSO. If it's been more than 1 day since the last sign-in, GitLab
-prompts the user to sign in again through SSO.
-
-When the transparent SSO enforcement feature flag is enabled, SSO is enforced as follows:
+With transparent SSO enabled, SSO is enforced as follows:
 
 | Project/Group visibility | Enforce SSO setting | Member with identity | Member without identity | Non-member or not signed in |
 |--------------------------|---------------------|--------------------| ------ |------------------------------|
@@ -157,36 +162,45 @@ When the transparent SSO enforcement feature flag is enabled, SSO is enforced as
 | Public                   | Off                 | Enforced           | Not enforced | Not enforced                 |
 | Public                   | On            | Enforced           | Enforced | Not enforced                 |
 
-An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add a similar SSO requirement for API and GitLab Pages activities.
+An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add a similar SSO requirement for API activity.
 
-SSO enforcement has the following effects when enabled:
+#### SSO-only for web activity enforcement
 
-- For groups, users can't share a project in the group outside the top-level group,
-  even if the project is forked.
-- For Git activity over SSH and HTTPS, users must have at least one active session signed-in through SSO before they can push to or
+When the **Enforce SSO-only authentication for web activity for this group** option is enabled:
+
+- All users must access GitLab by using their GitLab group's single sign-on URL
+  to access group resources, regardless of whether they have an existing SAML
+  identity.
+- SSO is enforced when users access groups and projects in the organization's
+  group hierarchy. Users can view other groups and projects without SSO sign in.
+- Users cannot be added as new members manually.
+- Users with the Owner role can use the standard sign in process to make
+  necessary changes to top-level group settings.
+
+SSO enforcement for web activity has the following effects when enabled:
+
+- For groups, users cannot share a project in the group outside the top-level
+  group, even if the project is forked.
+- For Git activity over SSH and HTTPS, users must have at least one active
+  session signed-in through SSO before they can push to or
   pull from a GitLab repository.
 - Git activity originating from CI/CD jobs do not have the SSO check enforced.
-- Credentials that are not tied to regular users (for example, project and group access tokens, and deploy keys) do not have the SSO check enforced.
-- Users must be signed-in through SSO before they can pull images using the [Dependency Proxy](../../packages/dependency_proxy/index.md).
-- When the **Enforce SSO-only authentication for Git and Dependency Proxy activity for this group** option is enabled, any API endpoint that involves Git activity is under SSO
-  enforcement. For example, creating or deleting a branch, commit, or tag.
+- Credentials that are not tied to regular users (for example, project and group
+  access tokens, and deploy keys) do not have the SSO check enforced.
+- Users must be signed-in through SSO before they can pull images using the
+  [Dependency Proxy](../../packages/dependency_proxy/index.md).
+- When the **Enforce SSO-only authentication for Git and Dependency Proxy
+  activity for this group** option is enabled, any API endpoint that involves
+  Git activity is under SSO enforcement. For example, creating or deleting a
+  branch, commit, or tag.
 
-When SSO is enforced, users are not immediately revoked. If the user:
+When SSO for web activity is enforced, non-SSO group members do not lose access
+immediately. If the user:
 
-- Is signed out, they cannot access the group after being removed from the identity provider.
-- Has an active session, they can continue accessing the group for up to 24 hours until the identity
-  provider session times out.
-
-### Selectively enable and disable transparent SSO enforcement
-
-There are two feature flags associated with this feature to allow precise control. If a customer has a problem with transparent SSO on GitLab.com, GitLab can help troubleshoot and override the feature flag as necessary.
-
-**`transparent_sso_enforcement`:** This feature flag should only be enabled or disabled by the Authentication and Authorization group
-or in the case of a serious and widespread issue affecting many groups or users. See [issue 375788](https://gitlab.com/gitlab-org/gitlab/-/issues/375788) for the current GitLab.com rollout status.
-
-**`transparent_sso_enforcement_override`:** When the `transparent_sso_enforcement` feature flag is enabled, support or production teams can
-turn off transparent SSO by enabling this feature flag for a specific customer group. **Enabling** this feature flag
-disables transparent SSO enforcement.
+- Has an active session, they can continue accessing the group for up to 24
+  hours until the identity provider session times out.
+- Is signed out, they cannot access the group after being removed from the
+  identity provider.
 
 ## Providers
 

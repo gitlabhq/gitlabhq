@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::HasVariable do
+RSpec.describe Ci::HasVariable, feature_category: :continuous_integration do
   subject { build(:ci_variable) }
 
   it { is_expected.to validate_presence_of(:key) }
@@ -110,6 +110,38 @@ RSpec.describe Ci::HasVariable do
         new_variable.value = '98765'
 
         expect(new_variable.to_runner_variable).not_to eq(old_value)
+      end
+    end
+  end
+
+  describe '.order_by' do
+    let_it_be(:relation) { Ci::Variable.all }
+
+    it 'supports ordering by key ascending' do
+      expect(relation).to receive(:reorder).with({ key: :asc })
+
+      relation.order_by('key_asc')
+    end
+
+    it 'supports ordering by key descending' do
+      expect(relation).to receive(:reorder).with({ key: :desc })
+
+      relation.order_by('key_desc')
+    end
+
+    context 'when order method is unknown' do
+      it 'does not call reorder' do
+        expect(relation).not_to receive(:reorder)
+
+        relation.order_by('unknown')
+      end
+    end
+
+    context 'when order method is nil' do
+      it 'does not call reorder' do
+        expect(relation).not_to receive(:reorder)
+
+        relation.order_by(nil)
       end
     end
   end

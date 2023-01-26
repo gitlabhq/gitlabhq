@@ -107,6 +107,23 @@ triggering the job.
 
 The job token is secured by its short life-time and limited scope. It could possibly be leaked if multiple jobs run on the same machine ([like with the shell runner](https://docs.gitlab.com/runner/security/#usage-of-shell-executor)). On Docker Machine runners, configuring [`MaxBuilds=1`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersmachine-section) is recommended to make sure runner machines only ever run one build and are destroyed afterwards. This may impact performance, as provisioning machines takes some time.
 
+## Other tokens
+
+### Feed token
+
+Each user has a long-lived feed token that does not expire. This token allows authentication for:
+
+- RSS readers to load a personalized RSS feed.
+- Calendar applications to load a personalized calendar.
+
+This token is visible in those feed URLs. You cannot use this token to access any other data.
+
+Anyone who has your token can read activity and issue RSS feeds or your calendar feed as if they were you, including confidential issues. If that happens, [reset the token](../user/profile/contributions_calendar.md#reset-the-user-activity-feed-token).
+
+### Incoming email token
+
+Each user has a long-lived incoming email token that does not expire. This token allows a user to [create a new issue by email](../user/project/issues/create_issues.md#by-sending-an-email), and is included in that user's personal project-specific email addresses. You cannot use this token to access any other data. Anyone who has your token can create issues and merge requests as if they were you. If that happens, reset the token.
+
 ## Available scopes
 
 This table shows available scopes per token. Scopes can be limited further on token creation.

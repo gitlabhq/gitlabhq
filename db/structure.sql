@@ -33376,9 +33376,6 @@ ALTER TABLE ONLY notification_settings
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_0d3f677137 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_unit_test_failures
-    ADD CONSTRAINT fk_0f09856e1f FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY deployment_approvals
     ADD CONSTRAINT fk_0f58311058 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -34336,9 +34333,6 @@ ALTER TABLE ONLY packages_conan_file_metadata
 ALTER TABLE ONLY related_epic_links
     ADD CONSTRAINT fk_rails_0b72027748 FOREIGN KEY (target_id) REFERENCES epics(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_build_pending_states
-    ADD CONSTRAINT fk_rails_0bbbfeaf9d FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY audit_events_external_audit_event_destinations
     ADD CONSTRAINT fk_rails_0bc80a4edc FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -34365,9 +34359,6 @@ ALTER TABLE ONLY issue_email_participants
 
 ALTER TABLE ONLY merge_request_context_commits
     ADD CONSTRAINT fk_rails_0fe0039f60 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_build_trace_chunks
-    ADD CONSTRAINT fk_rails_1013b761f2 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_exports
     ADD CONSTRAINT fk_rails_1019162882 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;

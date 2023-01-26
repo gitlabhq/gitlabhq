@@ -18,6 +18,7 @@ module Ci
 
       scope :by_key, -> (key) { where(key: key) }
       scope :order_key_asc, -> { reorder(key: :asc) }
+      scope :order_key_desc, -> { reorder(key: :desc) }
 
       attr_encrypted :value,
         mode: :per_attribute_iv_and_salt,
@@ -27,6 +28,16 @@ module Ci
 
       def key=(new_key)
         super(new_key.to_s.strip)
+      end
+    end
+
+    class_methods do
+      def order_by(method)
+        case method.to_s
+        when 'key_asc' then order_key_asc
+        when 'key_desc' then order_key_desc
+        else all
+        end
       end
     end
 

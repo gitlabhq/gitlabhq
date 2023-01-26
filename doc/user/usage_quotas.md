@@ -66,8 +66,8 @@ Depending on your role, to manage your transfer usage you can [reduce Container 
 
 ## Project storage limit
 
-Projects on GitLab SaaS have a 10GB storage limit on their Git repository and LFS storage.
-After namespace-level storage limits are applied, the project limit will be removed. A namespace has either a namespace-level storage limit or a project-level storage limit, but not both.
+Projects on GitLab SaaS have a 10 GB storage limit on their Git repository and LFS storage.
+After namespace-level storage limits are applied, the project limit is removed. A namespace has either a namespace-level storage limit or a project-level storage limit, but not both.
 
 When a project's repository and LFS reaches the quota, the project is locked.
 You cannot push changes to a locked project. To monitor the size of each
@@ -122,7 +122,7 @@ available decreases. All projects remain unlocked because 40 GB purchased storag
 ## Namespace storage limit
 
 Namespaces on GitLab SaaS have a storage limit. For more information, see our [pricing page](https://about.gitlab.com/pricing/).
-This limit is not visible on the **Usage quotas** page, but will be prior to the limit being [applied](#namespace-storage-limit-application-schedule). Self-managed deployments are not affected.
+This limit is not visible on the **Usage quotas** page, but is prior to the limit being [applied](#namespace-storage-limit-application-schedule). Self-managed deployments are not affected.
 
 Storage types that add to the total namespace storage are:
 
@@ -142,10 +142,10 @@ To prevent exceeding the namespace storage quota, you can:
 - Reduce storage consumption by following the suggestions in the [Manage Your Storage Usage](#manage-your-storage-usage) section of this page.
 - Apply for [GitLab for Education](https://about.gitlab.com/solutions/education/join/), [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/join/), or [GitLab for Startups](https://about.gitlab.com/solutions/startups/) if you meet the eligibility requirements.
 - Consider using a [self-managed instance](../subscriptions/self_managed/index.md) of GitLab which does not have these limits on the free tier.
-- [Purchase additional storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer) units at $60/year for 10GB of storage.
+- [Purchase additional storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer) units at $60/year for 10 GB of storage.
 - [Start a trial](https://about.gitlab.com/free-trial/) or [upgrade to GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) which include higher limits and features that enable growing teams to ship faster without sacrificing on quality.
 - [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) to learn more about your options and ask questions.
 
 ### Namespace storage limit application schedule
 
-Information on when namespace-level storage limits will be applied is available on these FAQ pages for the [Free](https://about.gitlab.com/pricing/faq-efficient-free-tier/#storage-limits-on-gitlab-saas-free-tier) and [Paid](https://about.gitlab.com/pricing/faq-paid-storage-transfer/) tier.
+Information on when namespace-level storage limits are applied is available on these FAQ pages for the [Free](https://about.gitlab.com/pricing/faq-efficient-free-tier/#storage-limits-on-gitlab-saas-free-tier) and [Paid](https://about.gitlab.com/pricing/faq-paid-storage-transfer/) tier.

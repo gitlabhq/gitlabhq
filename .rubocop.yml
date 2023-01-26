@@ -509,6 +509,11 @@ RSpec/FactoriesInMigrationSpecs:
     - 'spec/lib/ee/gitlab/background_migration/**/*.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
 
+RSpec/MissingFeatureCategory:
+  Enabled: true
+  Exclude:
+    - 'qa/**/*.rb'
+
 RSpec/FactoryBot/AvoidCreate:
   Enabled: true
   Include:

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Sidekiq guides
 
 We use [Sidekiq](https://github.com/mperham/sidekiq) as our background
-job processor. These guides are for writing jobs that will work well on
+job processor. These guides are for writing jobs that works well on
 GitLab.com and be consistent with our existing worker classes. For
 information on administering GitLab, see [configuring Sidekiq](../../administration/sidekiq/index.md).
 
@@ -74,7 +74,7 @@ A lower retry count may be applicable if any of the below apply:
 1. The worker is not idempotent and running it multiple times could
    leave the system in an inconsistent state. For example, a worker that
    posts a system note and then performs an action: if the second step
-   fails and the worker retries, the system note will be posted again.
+   fails and the worker retries, the system note is posted again.
 1. The worker is a cronjob that runs frequently. For example, if a cron
    job runs every hour, then we don't need to retry beyond an hour
    because we don't need two of the same job running at once.
@@ -156,7 +156,7 @@ queues in a namespace (technically: all queues prefixed with the namespace name)
 when a namespace is provided instead of a simple queue name in the `--queue`
 (`-q`) option, or in the `:queues:` section in `config/sidekiq_queues.yml`.
 
-Note that adding a worker to an existing namespace should be done with care, as
+Adding a worker to an existing namespace should be done with care, as
 the extra jobs take resources away from jobs from workers that were already
 there, if the resources available to the Sidekiq process handling the namespace
 are not adjusted appropriately.
@@ -195,9 +195,9 @@ can read the number or type of provided arguments.
 
 GitLab stores Sidekiq jobs and their arguments in Redis. To avoid
 excessive memory usage, we compress the arguments of Sidekiq jobs
-if their original size is bigger than 100KB.
+if their original size is bigger than 100 KB.
 
-After compression, if their size still exceeds 5MB, it raises an
+After compression, if their size still exceeds 5 MB, it raises an
 [`ExceedLimitError`](https://gitlab.com/gitlab-org/gitlab/-/blob/f3dd89e5e510ea04b43ffdcb58587d8f78a8d77c/lib/gitlab/sidekiq_middleware/size_limiter/exceed_limit_error.rb#L8)
 error when scheduling the job.
 
@@ -227,6 +227,6 @@ tests should be placed in `spec/workers`.
 
 ## Interacting with Sidekiq Redis and APIs
 
-The application should minimise interaction with of any `Sidekiq.redis` and Sidekiq [APIs](https://github.com/mperham/sidekiq/blob/main/lib/sidekiq/api.rb). Such interactions in generic application logic should be abstracted to a [Sidekiq middleware](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/sidekiq_middleware) for re-use across teams. By decoupling application logic from Sidekiq's datastore, it allows for greater freedom when horizontally scaling the GitLab background processing setup.
+The application should minimise interaction with of any `Sidekiq.redis` and Sidekiq [APIs](https://github.com/mperham/sidekiq/blob/main/lib/sidekiq/api.rb). Such interactions in generic application logic should be abstracted to a [Sidekiq middleware](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/sidekiq_middleware) for re-use across teams. By decoupling application logic from Sidekiq datastore, it allows for greater freedom when horizontally scaling the GitLab background processing setup.
 
 Some exceptions to this rule would be migration-related logic or administration operations.
