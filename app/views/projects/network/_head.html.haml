@@ -1,6 +1,6 @@
 .row-content-block.second-block.content-component-block.gl-px-0.gl-py-3
-  .tree-ref-holder
-    = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
+  .gl-w-20
+    #js-graph-ref-switcher{ data: { project_id: @project.id, ref: @ref, network_path: project_network_path(@project) } }
 
   .oneline
     = _("You can move around the graph by using the arrow keys.")

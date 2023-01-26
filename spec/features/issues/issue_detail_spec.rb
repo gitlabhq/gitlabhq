@@ -170,7 +170,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
 
   def update_type_select(from, to)
     click_button from
-    click_button to
+    find('[data-testid="issue-type-list-item"]', text: to).click
     click_button 'Save changes'
 
     wait_for_requests

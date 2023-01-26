@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupMembersFinder, '#execute' do
+RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
   let_it_be(:group)                { create(:group) }
   let_it_be(:sub_group)            { create(:group, parent: group) }
   let_it_be(:sub_sub_group)        { create(:group, parent: sub_group) }

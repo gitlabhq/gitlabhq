@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import testActionFn from './vuex_action_helper';
 
 const testActionFnWithOptionsArg = (...args) => {
@@ -110,7 +111,7 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
       });
 
       it('returns original error of rejected promise while checking actions/mutations', async () => {
-        mock.onGet(TEST_HOST).replyOnce(500, '');
+        mock.onGet(TEST_HOST).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, '');
 
         assertion = { mutations: [{ type: 'ERROR' }], actions: [{ type: 'ACTION' }] };
 

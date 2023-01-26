@@ -54,7 +54,7 @@ You can view and modify existing policies from the [policies](#policies) tab.
 
 ## License expressions
 
-GitLab has limited support for [composite licenses](https://spdx.github.io/spdx-spec/SPDX-license-expressions/).
+GitLab has limited support for [composite licenses](https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/).
 License compliance can read multiple licenses, but always considers them combined using the `AND` operator. For example,
 if a dependency has two licenses, and one of them is allowed and the other is denied by the project [policy](#policies),
 GitLab evaluates the composite license as _denied_, as this is the safer option.

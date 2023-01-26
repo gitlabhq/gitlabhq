@@ -138,8 +138,7 @@ class Note < ApplicationRecord
     relations = [{ project: :group }, { author: :status }, :updated_by, :resolved_by,
       :award_emoji, { system_note_metadata: :description_version }, :suggestions]
 
-    if noteable.nil? || DiffNote.noteable_types.include?(noteable.class.name) ||
-        Feature.disabled?(:skip_notes_diff_include)
+    if noteable.nil? || DiffNote.noteable_types.include?(noteable.class.name)
       relations += [:note_diff_file, :diff_note_positions]
     end
 

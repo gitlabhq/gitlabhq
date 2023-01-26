@@ -26,7 +26,7 @@ repositories like the Android Open Source Project (AOSP).
 
 A manifest must be an XML file. There must be one `remote` tag with a `review`
 attribute that contains a URL to a Git server, and each `project` tag must have
-a `name` and `path` attribute. GitLab will then build the URL to the repository
+a `name` and `path` attribute. GitLab then builds the URL to the repository
 by combining the URL from the `remote` tag with a project name.
 A path attribute is used to represent the project path in GitLab.
 

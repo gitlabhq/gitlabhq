@@ -19034,7 +19034,7 @@ Represents an asset link associated with a release.
 | ---- | ---- | ----------- |
 | <a id="releaseassetlinkdirectassetpath"></a>`directAssetPath` | [`String`](#string) | Relative path for the direct asset link. |
 | <a id="releaseassetlinkdirectasseturl"></a>`directAssetUrl` | [`String`](#string) | Direct asset URL of the link. |
-| <a id="releaseassetlinkexternal"></a>`external` | [`Boolean`](#boolean) | Indicates the link points to an external resource. |
+| <a id="releaseassetlinkexternal"></a>`external` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 15.9. No longer used. |
 | <a id="releaseassetlinkid"></a>`id` | [`ID!`](#id) | ID of the link. |
 | <a id="releaseassetlinklinktype"></a>`linkType` | [`ReleaseAssetLinkType`](#releaseassetlinktype) | Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other`. |
 | <a id="releaseassetlinkname"></a>`name` | [`String`](#string) | Name of the link. |

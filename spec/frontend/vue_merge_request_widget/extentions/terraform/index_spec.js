@@ -3,6 +3,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
@@ -23,7 +24,6 @@ describe('Terraform extension', () => {
 
   const endpoint = '/path/to/terraform/report.json';
   const successStatusCode = 200;
-  const errorStatusCode = 500;
 
   const findListItem = (at) => wrapper.findAllByTestId('extension-list-item').at(at);
 
@@ -68,7 +68,7 @@ describe('Terraform extension', () => {
 
     describe('when the fetching fails', () => {
       beforeEach(() => {
-        mockPollingApi(errorStatusCode, null, {});
+        mockPollingApi(HTTP_STATUS_INTERNAL_SERVER_ERROR, null, {});
         return createComponent();
       });
 
@@ -176,7 +176,7 @@ describe('Terraform extension', () => {
 
     describe('polling fails', () => {
       beforeEach(() => {
-        mockPollingApi(errorStatusCode, null, {});
+        mockPollingApi(HTTP_STATUS_INTERNAL_SERVER_ERROR, null, {});
         return createComponent();
       });
 

@@ -3,7 +3,7 @@ import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PersistentUserCallout from '~/persistent_user_callout';
 
 jest.mock('~/flash');
@@ -102,7 +102,7 @@ describe('PersistentUserCallout', () => {
     });
 
     it('invokes Flash when the dismiss request fails', async () => {
-      mockAxios.onPost(dismissEndpoint).replyOnce(500);
+      mockAxios.onPost(dismissEndpoint).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       buttons.primary.click();
 
@@ -208,7 +208,7 @@ describe('PersistentUserCallout', () => {
     });
 
     it('invokes Flash when the dismiss request fails', async () => {
-      mockAxios.onPost(dismissEndpoint).replyOnce(500);
+      mockAxios.onPost(dismissEndpoint).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       link.click();
 

@@ -625,7 +625,7 @@ describe('Api', () => {
       const query = 'dummy query';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/projects.json`;
 
-      mock.onGet(expectedUrl).reply(500, null);
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, null);
       const apiCall = Api.groupProjects(groupId, query, {});
       await expect(apiCall).rejects.toThrow();
     });

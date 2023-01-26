@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Project Network Graph', :js, feature_category: :projects do
   let(:user) { create :user }
   let(:project) { create :project, :repository, namespace: user.namespace }
+  let(:ref_selector) { '.ref-selector' }
 
   before do
     sign_in(user)
@@ -16,10 +17,13 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :projects do
   shared_examples 'network graph' do
     context 'when branch is master' do
       def switch_ref_to(ref_name)
-        first('.js-project-refs-dropdown').click
+        first(ref_selector).click
+        wait_for_requests
 
-        page.within '.project-refs-form' do
-          click_link ref_name
+        page.within ref_selector do
+          fill_in 'Search by Git revision', with: ref_name
+          wait_for_requests
+          find('li', text: ref_name, match: :prefer_exact).click
         end
       end
 
@@ -33,7 +37,7 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :projects do
 
       it 'renders project network' do
         expect(page).to have_selector ".network-graph"
-        expect(page).to have_selector '.dropdown-menu-toggle', text: "master"
+        expect(page).to have_selector ref_selector, text: "master"
         page.within '.network-graph' do
           expect(page).to have_content 'master'
         end
@@ -42,7 +46,7 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :projects do
       it 'switches ref to branch' do
         switch_ref_to('feature')
 
-        expect(page).to have_selector '.dropdown-menu-toggle', text: 'feature'
+        expect(page).to have_selector ref_selector, text: 'feature'
         page.within '.network-graph' do
           expect(page).to have_content 'feature'
         end
@@ -51,7 +55,7 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :projects do
       it 'switches ref to tag' do
         switch_ref_to('v1.0.0')
 
-        expect(page).to have_selector '.dropdown-menu-toggle', text: 'v1.0.0'
+        expect(page).to have_selector ref_selector, text: 'v1.0.0'
         page.within '.network-graph' do
           expect(page).to have_content 'v1.0.0'
         end
@@ -64,7 +68,7 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :projects do
         end
 
         expect(page).to have_selector ".network-graph"
-        expect(page).to have_selector '.dropdown-menu-toggle', text: "master"
+        expect(page).to have_selector ref_selector, text: "master"
         page.within '.network-graph' do
           expect(page).to have_content 'v1.0.0'
         end

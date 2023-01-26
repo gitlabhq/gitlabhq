@@ -98,7 +98,7 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
 
     page.within('[data-testid="issuable-form"]') do
       click_button 'Issue'
-      click_button 'Incident'
+      find('[data-testid="issue-type-list-item"]', text: 'Incident').click
       click_button 'Save changes'
 
       wait_for_requests
@@ -117,7 +117,7 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
 
     page.within('[data-testid="issuable-form"]') do
       click_button 'Incident'
-      click_button 'Issue'
+      find('[data-testid="issue-type-list-item"]', text: 'Issue').click
       click_button 'Save changes'
 
       wait_for_requests

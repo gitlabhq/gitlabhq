@@ -1,5 +1,21 @@
 #!/bin/bash
 
+function is_latest_stable_tag() {
+  [ "$(latest_stable_tag)" == "${CI_COMMIT_TAG}" ]
+}
+
+function is_latest_tag() {
+  [ "$(latest_tag)" == "${CI_COMMIT_TAG}" ]
+}
+
+function latest_tag() {
+  git -c versionsort.prereleaseSuffix=rc tag --sort=-v:refname | head -1
+}
+
+function latest_stable_tag() {
+  git -c versionsort.prereleaseSuffix=rc tag --sort=-v:refname | awk '!/rc/' | head -1
+}
+
 QA_IMAGE_NAME="gitlab-ee-qa"
 QA_BUILD_TARGET="ee"
 
@@ -28,7 +44,36 @@ if [ "${QA_IMAGE_NAME}" == "gitlab-ee-qa" ]; then
   DESTINATIONS="${DESTINATIONS} --tag $QA_IMAGE_FOR_AUTO_DEPLOY"
 fi
 
+# On tag pipelines in Canonical projects (gitlab and gitlab-foss), release to
+# Dockerhub also
+if [ -n "${CI_COMMIT_TAG}" ] && [ "${CI_PROJECT_NAMESPACE}" == "gitlab-org" ]; then
+  # Temporarily control release to Dockerhub, until we confirm it works in a
+  # release and finally drops the release job from omnibus-gitlab pipeline.
+  if [ "${RELEASE_QA_IMAGE_TO_DOCKERHUB}" == "true" ]; then
+    echo "$DOCKERHUB_PASSWORD" | docker login "docker.io" -u "$DOCKERHUB_USERNAME" --password-stdin
+
+    DOCKERHUB_TAG_IMAGE="gitlab/${QA_IMAGE_NAME}:${IMAGE_TAG}"
+    DESTINATIONS="${DESTINATIONS} --tag ${DOCKERHUB_TAG_IMAGE}"
+
+    # If we are on latest tag (RC or stable), tag the image as RC
+    if is_latest_tag; then
+      DESTINATIONS="${DESTINATIONS} --tag gitlab/${QA_IMAGE_NAME}:rc"
+    fi
+
+    # If we are on latest stable tag, tag the image as latest
+    if is_latest_stable_tag; then
+      DESTINATIONS="${DESTINATIONS} --tag gitlab/${QA_IMAGE_NAME}:latest"
+    fi
+  else
+    echo "RELEASE_QA_IMAGE_TO_DOCKERHUB not set to true. Not releasing to Dockerhub."
+  fi
+fi
+
 echo "Building QA image for '${QA_BUILD_TARGET}' for destinations: ${DESTINATIONS}"
+
+if [ "${QA_IMAGE_BUILD_DRY_RUN}" == "true" ]; then
+  exit 0
+fi
 
 docker buildx build \
   --cache-to=type=inline \

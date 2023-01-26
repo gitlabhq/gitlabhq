@@ -13,36 +13,34 @@ A hand-raise PQL is a user who requests to speak to sales from within the produc
 ## Set up your development environment
 
 1. Set up GDK with a connection to your local CustomersDot instance.
-1. Set up CustomersDot to talk to a staging instance of Platypus.
+1. Set up CustomersDot to talk to a staging instance of Workato.
 
 1. Set up CustomersDot using the [normal install instructions](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/staging/doc/setup/installation_steps.md).
 1. Set the `CUSTOMER_PORTAL_URL` environment variable to your local (or ngrok) URL of your CustomersDot instance.
 1. Place `export CUSTOMER_PORTAL_URL='https://XXX.ngrok.io/'` in your shell `rc` script (`~/.zshrc` or `~/.bash_profile` or `~/.bashrc`) and restart GDK.
-1. Enter the credentials on CustomersDot development to Platypus in your `/config/secrets.yml` and restart. Credentials for the Platypus Staging are in the 1Password Growth vault. The URL for staging is `https://staging.ci.nexus.gitlabenvironment.cloud`.
+1. Enter the credentials on CustomersDot development to Workato in your `/config/secrets.yml` and restart. Credentials for the Workato Staging are in the 1Password Subscription portal vault. The URL for staging is `https://apim.workato.com/gitlab-dev/services/marketo/lead`.
 
 ```yaml
-  platypus_url: "<%= ENV['PLATYPUS_URL'] %>"
-  platypus_client_id: "<%= ENV['PLATYPUS_CLIENT_ID'] %>"
-  platypus_client_secret: "<%= ENV['PLATYPUS_CLIENT_SECRET'] %>"
+  workato_url: "<%= ENV['WORKATO_URL'] %>"
+  workato_client_id: "<%= ENV['WORKATO_CLIENT_ID'] %>"
+  workato_client_secret: "<%= ENV['WORKATO_CLIENT_SECRET'] %>"
 ```
 
 ### Set up lead monitoring
 
-1. Set up access for Platypus Staging `https://staging.ci.nexus.gitlabenvironment.cloud` using the Platypus Staging credentials in the 1Password Growth vault.
 1. Set up access for the Marketo sandbox, similar [to this example request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/13162).
 
 ### Manually test leads
 
 1. Register a new user with a unique email on your local GitLab instance.
 1. Send the PQL lead by submitting your new form or creating a new trial or a new hand raise lead.
-1. Use easily identifiable values that can be easily seen in Platypus staging.
-1. Observe the entry in the staging instance of Platypus and paste in the merge request comment and mention.
+1. Use easily identifiable values that can be easily seen in Workato staging.
+1. Observe the entry in the staging instance of Workato and paste in the merge request comment and mention.
 
 ## Troubleshooting
 
 - Check the application and Sidekiq logs on `gitlab.com` and CustomersDot to monitor leads.
 - Check the `leads` table in CustomersDot.
-- Set up staging credentials for Platypus, and track the leads on the Platypus Dashboard: `https://staging.ci.nexus.gitlabenvironment.cloud/admin/queues/queue/new-lead-queue`.
 - Ask for access to the Marketo Sandbox and validate the leads there, [to this example request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/13162).
 
 ## Embed a hand-raise lead form
@@ -121,8 +119,7 @@ The flow of a PQL lead is as follows:
 1. A user triggers a [`HandRaiseLeadButton` component](#embed-a-hand-raise-lead-form) on `gitlab.com`.
 1. The `HandRaiseLeadButton` submits any information to the following API endpoint: `/-/trials/create_hand_raise_lead`.
 1. That endpoint reposts the form to the CustomersDot `trials/create_hand_raise_lead` endpoint.
-1. CustomersDot records the form data to the `leads` table and posts the form to [Platypus](https://gitlab.com/gitlab-com/business-technology/enterprise-apps/integrations/platypus).
-1. Platypus posts the form to Workato (which is under the responsibility of the Business Operations team).
+1. CustomersDot records the form data to the `leads` table and posts the form to [Workato](https://about.gitlab.com/handbook/marketing/marketing-operations/workato/).
 1. Workato sends the form to Marketo.
 1. Marketo does scoring and sends the form to Salesforce.
 1. Our Sales team uses Salesforce to connect to the leads.
@@ -150,11 +147,11 @@ sequenceDiagram
 sequenceDiagram
     CustomersDot|TrialsController#create->>HostedPlans|CreateTrialService#execute: Save [lead] to leads table for monitoring purposes
     HostedPlans|CreateTrialService#execute->>BaseTrialService#create_account: Creates a customer record in customers table
-    HostedPlans|CreateTrialService#create_platypus_lead->>PlatypusLogLeadService: Creates a platypus lead
-    HostedPlans|CreateTrialService#create_platypus_lead->>Platypus|CreateLeadWorker: Async worker to submit [lead] to Platypus
-    Platypus|CreateLeadWorker->>Platypus|CreateLeadService: [lead]
-    Platypus|CreateLeadService->>PlatypusApp#post: [lead]
-    PlatypusApp#post->>Platypus: [lead] is sent to Platypus
+    HostedPlans|CreateTrialService#create_lead->>CreateLeadService: Creates a lead record in customers table
+    HostedPlans|CreateTrialService#create_lead->>Workato|CreateLeadWorker: Async worker to submit [lead] to Workato
+    Workato|CreateLeadWorker->>Workato|CreateLeadService: [lead]
+    Workato|CreateLeadService->>WorkatoApp#create_lead: [lead]
+    WorkatoApp#create_lead->>Workato: [lead] is sent to Workato
 ```
 
 #### Applying the trial to a namespace on CustomersDot
@@ -182,18 +179,17 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    CustomersDot|TrialsController#create_hand_raise_lead->>PlatypusLogLeadService: Save [lead] to leads table for monitoring purposes
-    CustomersDot|TrialsController#create_hand_raise_lead->>Platypus|CreateLeadWorker: Async worker to submit [lead] to Platypus
-    Platypus|CreateLeadWorker->>Platypus|CreateLeadService: [lead]
-    Platypus|CreateLeadService->>PlatypusApp#post: [lead]
-    PlatypusApp#post->>Platypus: [lead] is sent to Platypus
+    CustomersDot|TrialsController#create_hand_raise_lead->>CreateLeadService: Save [lead] to leads table for monitoring purposes
+    CustomersDot|TrialsController#create_hand_raise_lead->>Workato|CreateLeadWorker: Async worker to submit [lead] to Workato
+    Workato|CreateLeadWorker->>Workato|CreateLeadService: [lead]
+    Workato|CreateLeadService->>WorkatoApp#create_lead: [lead]
+    WorkatoApp#create_lead->>Workato: [lead] is sent to Workato
 ```
 
-### PQL flow after Platypus for all lead types
+### PQL flow after Workato for all lead types
 
 ```mermaid
 sequenceDiagram
-    Platypus->>Workato: [lead]
     Workato->>Marketo: [lead]
     Marketo->>Salesforce(SFDC): [lead]
 ```

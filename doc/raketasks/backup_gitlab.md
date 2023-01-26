@@ -437,6 +437,8 @@ For Omnibus GitLab packages:
      # 'use_iam_profile' => true
    }
    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
+   # Consider using multipart uploads when file size reaches 100MB. Enter a number in bytes.
+   # gitlab_rails['backup_multipart_chunk_size'] = 104857600
    ```
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)

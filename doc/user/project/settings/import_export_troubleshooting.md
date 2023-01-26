@@ -197,7 +197,7 @@ Read through the current performance problems using the Import/Export below.
 
 ### OOM errors
 
-Out of memory (OOM) errors are normally caused by the [Sidekiq Memory Killer](../../../administration/sidekiq/sidekiq_memory_killer.md):
+Out of memory (OOM) errors are usually caused by the [Sidekiq Memory Killer](../../../administration/sidekiq/sidekiq_memory_killer.md):
 
 ```shell
 SIDEKIQ_MEMORY_KILLER_MAX_RSS = 2000000

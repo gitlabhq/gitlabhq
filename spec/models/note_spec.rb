@@ -1643,17 +1643,6 @@ RSpec.describe Note do
               match_query_count(1).for_model(DiffNotePosition))
           end
         end
-
-        context 'when skip_notes_diff_include flag is disabled' do
-          before do
-            stub_feature_flags(skip_notes_diff_include: false)
-          end
-
-          it 'includes additional diff associations' do
-            expect { subject.reload }.to match_query_count(1).for_model(NoteDiffFile).and(
-              match_query_count(1).for_model(DiffNotePosition))
-          end
-        end
       end
 
       context 'when noteable can have diffs' do

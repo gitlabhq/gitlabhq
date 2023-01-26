@@ -1,5 +1,5 @@
-import { GlFormGroup, GlDropdown, GlDropdownItem, GlIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlFormGroup, GlListbox, GlIcon } from '@gitlab/ui';
+import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -32,17 +32,16 @@ describe('Issue type field component', () => {
     },
   };
 
-  const findTypeFromGroup = () => wrapper.findComponent(GlFormGroup);
-  const findTypeFromDropDown = () => wrapper.findComponent(GlDropdown);
-  const findTypeFromDropDownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findTypeFromDropDownItemAt = (at) => findTypeFromDropDownItems().at(at);
-  const findTypeFromDropDownItemIconAt = (at) =>
-    findTypeFromDropDownItems().at(at).findComponent(GlIcon);
+  const findListBox = () => wrapper.findComponent(GlListbox);
+  const findFormGroup = () => wrapper.findComponent(GlFormGroup);
+  const findAllIssueItems = () => wrapper.findAll('[data-testid="issue-type-list-item"]');
+  const findIssueItemAt = (at) => findAllIssueItems().at(at);
+  const findIssueItemAtIcon = (at) => findAllIssueItems().at(at).findComponent(GlIcon);
 
-  const createComponent = ({ data } = {}, provide) => {
+  const createComponent = (mountFn = mount, { data } = {}, provide) => {
     fakeApollo = createMockApollo([], mockResolvers);
 
-    wrapper = shallowMount(IssueTypeField, {
+    wrapper = mountFn(IssueTypeField, {
       apolloProvider: fakeApollo,
       data() {
         return {
@@ -59,7 +58,6 @@ describe('Issue type field component', () => {
 
   beforeEach(() => {
     mockIssueStateData = jest.fn();
-    createComponent();
   });
 
   afterEach(() => {
@@ -71,48 +69,60 @@ describe('Issue type field component', () => {
     ${0} | ${issuableTypes[0].text} | ${issuableTypes[0].icon}
     ${1} | ${issuableTypes[1].text} | ${issuableTypes[1].icon}
   `(`renders the issue type $text with an icon in the dropdown`, ({ at, text, icon }) => {
-    expect(findTypeFromDropDownItemIconAt(at).attributes('name')).toBe(icon);
-    expect(findTypeFromDropDownItemAt(at).text()).toBe(text);
+    createComponent();
+
+    expect(findIssueItemAtIcon(at).props('name')).toBe(icon);
+    expect(findIssueItemAt(at).text()).toBe(text);
   });
 
   it('renders a form group with the correct label', () => {
-    expect(findTypeFromGroup().attributes('label')).toBe(i18n.label);
+    createComponent(shallowMount);
+
+    expect(findFormGroup().attributes('label')).toBe(i18n.label);
   });
 
   it('renders a form select with the `issue_type` value', () => {
-    expect(findTypeFromDropDown().attributes('value')).toBe(issuableTypes.issue);
+    createComponent();
+
+    expect(findListBox().attributes('value')).toBe(issuableTypes.issue);
   });
 
   describe('with Apollo cache mock', () => {
     it('renders the selected issueType', async () => {
+      createComponent();
+
       mockIssueStateData.mockResolvedValue(getIssueStateQueryResponse);
       await waitForPromises();
-      expect(findTypeFromDropDown().attributes('value')).toBe(issuableTypes.issue);
+      expect(findListBox().attributes('value')).toBe(issuableTypes.issue);
     });
 
     it('updates the `issue_type` in the apollo cache when the value is changed', async () => {
-      findTypeFromDropDownItems().at(1).vm.$emit('click', issuableTypes.incident);
+      createComponent();
+
+      wrapper.vm.$emit('select', issuableTypes.incident);
       await nextTick();
-      expect(findTypeFromDropDown().attributes('value')).toBe(issuableTypes.incident);
+      expect(findListBox().attributes('value')).toBe(issuableTypes.incident);
     });
 
     describe('when user is a guest', () => {
       it('hides the incident type from the dropdown', async () => {
-        createComponent({}, { canCreateIncident: false, issueType: 'issue' });
+        createComponent(mount, {}, { canCreateIncident: false, issueType: 'issue' });
+
         await waitForPromises();
 
-        expect(findTypeFromDropDownItemAt(0).isVisible()).toBe(true);
-        expect(findTypeFromDropDownItemAt(1).isVisible()).toBe(false);
-        expect(findTypeFromDropDown().attributes('value')).toBe(issuableTypes.issue);
+        expect(findIssueItemAt(0).isVisible()).toBe(true);
+        expect(findIssueItemAt(1).isVisible()).toBe(false);
+        expect(findListBox().attributes('value')).toBe(issuableTypes.issue);
       });
 
       it('and incident is selected, includes incident in the dropdown', async () => {
-        createComponent({}, { canCreateIncident: false, issueType: 'incident' });
+        createComponent(mount, {}, { canCreateIncident: false, issueType: 'incident' });
+
         await waitForPromises();
 
-        expect(findTypeFromDropDownItemAt(0).isVisible()).toBe(true);
-        expect(findTypeFromDropDownItemAt(1).isVisible()).toBe(true);
-        expect(findTypeFromDropDown().attributes('value')).toBe(issuableTypes.incident);
+        expect(findIssueItemAt(0).isVisible()).toBe(true);
+        expect(findIssueItemAt(1).isVisible()).toBe(true);
+        expect(findListBox().attributes('value')).toBe(issuableTypes.incident);
       });
     });
   });

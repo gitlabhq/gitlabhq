@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import MarkdownViewer from '~/vue_shared/components/content_viewer/viewers/markdown_viewer.vue';
 
 jest.mock('~/behaviors/markdown/render_gfm');
@@ -100,9 +101,11 @@ describe('MarkdownViewer', () => {
 
   describe('error', () => {
     beforeEach(() => {
-      mock.onPost(`${gon.relative_url_root}/testproject/preview_markdown`).replyOnce(500, {
-        body: 'Internal Server Error',
-      });
+      mock
+        .onPost(`${gon.relative_url_root}/testproject/preview_markdown`)
+        .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, {
+          body: 'Internal Server Error',
+        });
     });
     it('renders an error message if loading the markdown preview fails', () => {
       createComponent();
