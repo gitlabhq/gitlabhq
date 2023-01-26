@@ -17,7 +17,7 @@ module Ci
 
     def perform(pipeline_id)
       Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
-        create_deployments!(pipeline) if Feature.enabled?(:move_create_deployments_to_worker, pipeline.project)
+        create_deployments!(pipeline)
 
         Ci::PipelineCreation::StartPipelineService
           .new(pipeline)

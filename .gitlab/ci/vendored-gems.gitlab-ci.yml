@@ -85,3 +85,11 @@ vendor bundler-checksum:
   trigger:
     include: vendor/gems/bundler-checksum/.gitlab-ci.yml
     strategy: depend
+
+vendor gitlab_active_record:
+  extends:
+    - .vendor:rules:gitlab_active_record
+  needs: []
+  trigger:
+    include: vendor/gems/gitlab_active_record/.gitlab-ci.yml
+    strategy: depend

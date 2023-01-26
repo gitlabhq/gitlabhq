@@ -1003,7 +1003,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           let(:params) { { issue_types: ['nonsense'] } }
 
           it 'returns no items' do
-            expect(items).to eq(items_model.none)
+            expect(items.none?).to eq(true)
           end
         end
       end

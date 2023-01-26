@@ -2796,6 +2796,18 @@ class Project < ApplicationRecord
     protected_branches.limit(limit)
   end
 
+  def group_protected_branches
+    root_namespace.is_a?(Group) ? root_namespace.protected_branches : ProtectedBranch.none
+  end
+
+  def all_protected_branches
+    if Feature.enabled?(:group_protected_branches)
+      @all_protected_branches ||= ProtectedBranch.from_union([protected_branches, group_protected_branches])
+    else
+      protected_branches
+    end
+  end
+
   def self_monitoring?
     Gitlab::CurrentSettings.self_monitoring_project_id == id
   end

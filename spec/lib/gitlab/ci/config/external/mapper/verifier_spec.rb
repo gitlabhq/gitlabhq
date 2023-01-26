@@ -94,6 +94,56 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
       end
     end
 
+    context 'when files are project files' do
+      let_it_be(:included_project) { create(:project, :repository, namespace: project.namespace, creator: user) }
+
+      let(:files) do
+        [
+          Gitlab::Ci::Config::External::File::Project.new(
+            { file: 'myfolder/file1.yml', project: included_project.full_path }, context
+          ),
+          Gitlab::Ci::Config::External::File::Project.new(
+            { file: 'myfolder/file2.yml', project: included_project.full_path }, context
+          ),
+          Gitlab::Ci::Config::External::File::Project.new(
+            { file: 'myfolder/file3.yml', project: included_project.full_path }, context
+          )
+        ]
+      end
+
+      around(:all) do |example|
+        create_and_delete_files(included_project, project_files) do
+          example.run
+        end
+      end
+
+      it 'returns an array of file objects' do
+        expect(process.map(&:location)).to contain_exactly(
+          'myfolder/file1.yml', 'myfolder/file2.yml', 'myfolder/file3.yml'
+        )
+      end
+
+      it 'adds files to the expandset' do
+        expect { process }.to change { context.expandset.count }.by(3)
+      end
+
+      it 'calls Gitaly only once for all files', :request_store do
+        # 1 for project.commit.id, 3 for the sha check, 1 for the files
+        expect { process }.to change { Gitlab::GitalyClient.get_request_count }.by(5)
+      end
+
+      context 'when the FF ci_batch_request_for_local_and_project_includes is disabled' do
+        before do
+          stub_feature_flags(ci_batch_request_for_local_and_project_includes: false)
+        end
+
+        it 'calls Gitaly for each file', :request_store do
+          # 1 for project.commit.id, 3 for the sha check, 3 for the files
+          expect { process }.to change { Gitlab::GitalyClient.get_request_count }.by(7)
+        end
+      end
+    end
+
     context 'when a file includes other files' do
       let(:files) do
         [

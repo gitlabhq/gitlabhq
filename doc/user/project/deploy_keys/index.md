@@ -99,7 +99,7 @@ To create a public deploy key:
 1. Select **New deploy key**.
 1. Complete the fields.
    - Use a meaningful description for **Name**. For example, include the name of the external host
-     or application that will use the public deploy key.
+     or application that uses the public deploy key.
 
 You can modify only a public deploy key's name.
 
@@ -148,7 +148,7 @@ What happens to the deploy key when it is disabled depends on the following:
 
 ### Deploy key cannot push to a protected branch
 
-There are a few scenarios where a deploy key will fail to push to a
+There are a few scenarios where a deploy key fails to push to a
 [protected branch](../protected_branches.md).
 
 - The owner associated to a deploy key does not have access to the protected branch.

@@ -81,6 +81,10 @@ RSpec.describe Gitlab do
 
   describe '.com?' do
     context 'when not simulating SaaS' do
+      before do
+        stub_env('GITLAB_SIMULATE_SAAS', '0')
+      end
+
       it "is true when on #{Gitlab::Saas.com_url}" do
         stub_config_setting(url: Gitlab::Saas.com_url)
 
@@ -114,31 +118,17 @@ RSpec.describe Gitlab do
       end
     end
 
-    context 'when simulating SaaS' do
-      before do
-        stub_const('Gitlab::GITLAB_SIMULATE_SAAS', '1')
-      end
+    it 'is true when GITLAB_SIMULATE_SAAS is true and in development' do
+      stub_rails_env('development')
+      stub_env('GITLAB_SIMULATE_SAAS', '1')
 
-      it 'is false in tests' do
-        expect(described_class.com?).to eq false
-      end
+      expect(described_class.com?).to eq true
+    end
 
-      it 'is true in development' do
-        stub_rails_env('development')
+    it 'is false when GITLAB_SIMULATE_SAAS is true and in test' do
+      stub_env('GITLAB_SIMULATE_SAAS', '1')
 
-        expect(described_class.com?).to eq true
-      end
-
-      # See ee/spec/lib/gitlab_spec.rb for EE-specific changes to this behavior.
-      context 'in a production environment' do
-        before do
-          stub_rails_env('production')
-        end
-
-        it 'is false' do
-          expect(described_class.com?).to eq false
-        end
-      end
+      expect(described_class.com?).to eq false
     end
   end
 
@@ -243,6 +233,54 @@ RSpec.describe Gitlab do
       allow(described_class).to receive_messages(com?: false, org?: false)
 
       expect(described_class.org_or_com?).to eq false
+    end
+  end
+
+  describe '.simulate_com?' do
+    subject { described_class.simulate_com? }
+
+    context 'when GITLAB_SIMULATE_SAAS is true' do
+      before do
+        stub_env('GITLAB_SIMULATE_SAAS', '1')
+      end
+
+      it 'is false when test env' do
+        expect(subject).to eq false
+      end
+
+      it 'is true when dev env' do
+        stub_rails_env('development')
+
+        expect(subject).to eq true
+      end
+
+      it 'is false when env is not dev' do
+        stub_rails_env('production')
+
+        expect(subject).to eq false
+      end
+    end
+
+    context 'when GITLAB_SIMULATE_SAAS is false' do
+      before do
+        stub_env('GITLAB_SIMULATE_SAAS', '0')
+      end
+
+      it 'is false when test env' do
+        expect(subject).to eq false
+      end
+
+      it 'is false when dev env' do
+        stub_rails_env('development')
+
+        expect(subject).to eq false
+      end
+
+      it 'is false when env is not dev or test' do
+        stub_rails_env('production')
+
+        expect(subject).to eq false
+      end
     end
   end
 

@@ -12,11 +12,11 @@ import { __, sprintf } from '~/locale';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 import AccessorUtilities from '~/lib/utils/accessor';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import searchUserProjects from './graphql/search_user_projects.query.graphql';
+import searchUserProjectsWithIssuesEnabled from './graphql/search_user_projects_with_issues_enabled.query.graphql';
+import { RESOURCE_TYPE_ISSUE, RESOURCE_TYPES, RESOURCE_OPTIONS } from './constants';
 
 export default {
   i18n: {
-    defaultDropdownText: __('Select project to create issue'),
     noMatchesFound: __('No matches found'),
     toggleButtonLabel: __('Toggle project select'),
   },
@@ -29,10 +29,21 @@ export default {
     LocalStorageSync,
   },
   props: {
+    resourceType: {
+      type: String,
+      required: false,
+      default: RESOURCE_TYPE_ISSUE,
+      validator: (value) => RESOURCE_TYPES.includes(value),
+    },
     query: {
       type: Object,
       required: false,
-      default: () => searchUserProjects,
+      default: () => searchUserProjectsWithIssuesEnabled,
+    },
+    groupId: {
+      type: String,
+      required: false,
+      default: '',
     },
     queryVariables: {
       type: Object,
@@ -86,24 +97,33 @@ export default {
     },
   },
   computed: {
+    localStorageKey() {
+      return `group-${this.groupId}-new-${this.resourceType}-recent-project`;
+    },
+    resourceOptions() {
+      return RESOURCE_OPTIONS[this.resourceType];
+    },
+    defaultDropdownText() {
+      return sprintf(__('Select project to create %{type}'), { type: this.resourceOptions.label });
+    },
     dropdownHref() {
       return this.hasSelectedProject
-        ? joinPaths(this.selectedProject.webUrl, DASH_SCOPE, 'issues/new')
+        ? joinPaths(this.selectedProject.webUrl, DASH_SCOPE, this.resourceOptions.path)
         : undefined;
     },
     dropdownText() {
       return this.hasSelectedProject
-        ? sprintf(__('New issue in %{project}'), { project: this.selectedProject.name })
-        : this.$options.i18n.defaultDropdownText;
+        ? sprintf(__('New %{type} in %{project}'), {
+            type: this.resourceOptions.label,
+            project: this.selectedProject.name,
+          })
+        : this.defaultDropdownText;
     },
     hasSelectedProject() {
       return this.selectedProject.webUrl;
     },
-    projectsWithIssuesEnabled() {
-      return this.projects.filter((project) => project.issuesEnabled);
-    },
     showNoSearchResultsText() {
-      return !this.projectsWithIssuesEnabled.length && this.search;
+      return !this.projects.length && this.search;
     },
     canUseLocalStorage() {
       return this.withLocalStorage && AccessorUtilities.canUseLocalStorage();
@@ -137,22 +157,23 @@ export default {
 
       // The select2 implementation used to include the resource path in the local storage. We
       // need to clean this up so that we can then re-build a fresh URL in the computed prop.
-      const path = 'issues/new';
-      webUrl = webUrl.endsWith(path) ? webUrl.slice(0, webUrl.length - path.length) : webUrl;
+      webUrl = webUrl.endsWith(this.resourceOptions.path)
+        ? webUrl.slice(0, webUrl.length - this.resourceOptions.path.length)
+        : webUrl;
+      const dashSuffix = `${DASH_SCOPE}/`;
+      webUrl = webUrl.endsWith(dashSuffix)
+        ? webUrl.slice(0, webUrl.length - dashSuffix.length)
+        : webUrl;
 
       this.selectedProject = { webUrl, name: storedProject.name };
     },
   },
-  // This key is hardcoded for now as we'll only be using the localStorage capability in the
-  // instance-level issues dashboard. If we want to make this feature available in the groups'
-  // issues lists, we should make this key dynamic.
-  localStorageKey: 'group--new-issue-recent-project',
 };
 </script>
 
 <template>
   <local-storage-sync
-    :storage-key="$options.localStorageKey"
+    :storage-key="localStorageKey"
     :value="selectedProjectForLocalStorage"
     @input="initFromLocalStorage"
   >
@@ -172,11 +193,11 @@ export default {
       <gl-loading-icon v-if="$apollo.queries.projects.loading" />
       <template v-else>
         <gl-dropdown-item
-          v-for="project of projectsWithIssuesEnabled"
+          v-for="project of projects"
           :key="project.id"
           @click="selectProject(project)"
         >
-          {{ project.nameWithNamespace }}
+          {{ project.nameWithNamespace || project.name }}
         </gl-dropdown-item>
         <gl-dropdown-text v-if="showNoSearchResultsText">
           {{ $options.i18n.noMatchesFound }}

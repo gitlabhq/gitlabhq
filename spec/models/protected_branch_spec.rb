@@ -341,23 +341,61 @@ RSpec.describe ProtectedBranch do
   end
 
   describe "#allow_force_push?" do
-    context "when the attr allow_force_push is true" do
-      let(:subject_branch) { create(:protected_branch, allow_force_push: true, name: "foo") }
+    context "when feature flag disabled" do
+      before do
+        stub_feature_flags(group_protected_branches: false)
+      end
 
-      it "returns true" do
-        project = subject_branch.project
+      let(:subject_branch) { create(:protected_branch, allow_force_push: allow_force_push, name: "foo") }
+      let(:project) { subject_branch.project }
 
-        expect(described_class.allow_force_push?(project, "foo")).to eq(true)
+      context "when the attr allow_force_push is true" do
+        let(:allow_force_push) { true }
+
+        it "returns true" do
+          expect(described_class.allow_force_push?(project, "foo")).to eq(true)
+        end
+      end
+
+      context "when the attr allow_force_push is false" do
+        let(:allow_force_push) { false }
+
+        it "returns false" do
+          expect(described_class.allow_force_push?(project, "foo")).to eq(false)
+        end
       end
     end
 
-    context "when the attr allow_force_push is false" do
-      let(:subject_branch) { create(:protected_branch, allow_force_push: false, name: "foo") }
+    context "when feature flag enabled" do
+      using RSpec::Parameterized::TableSyntax
 
-      it "returns false" do
-        project = subject_branch.project
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
 
-        expect(described_class.allow_force_push?(project, "foo")).to eq(false)
+      where(:group_level_value, :project_level_value, :result) do
+        true    | false    | true
+        false   | true     | false
+        true    | nil      | true
+        false   | nil      | false
+        nil     | nil      | false
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(group_protected_branches: true)
+
+          unless group_level_value.nil?
+            create(:protected_branch, allow_force_push: group_level_value, name: "foo", project: nil, group: group)
+          end
+
+          unless project_level_value.nil?
+            create(:protected_branch, allow_force_push: project_level_value, name: "foo", project: project)
+          end
+        end
+
+        it "returns result" do
+          expect(described_class.allow_force_push?(project, "foo")).to eq(result)
+        end
       end
     end
   end
@@ -386,6 +424,36 @@ RSpec.describe ProtectedBranch do
         create(:protected_branch, project: project, name: 'production/*')
 
         expect(described_class.any_protected?(project, ['staging/some-branch'])).to eq(false)
+      end
+    end
+  end
+
+  describe '.protected_refs' do
+    let_it_be(:project) { create(:project) }
+
+    subject { described_class.protected_refs(project) }
+
+    context 'when feature flag enabled' do
+      before do
+        stub_feature_flags(group_protected_branches: true)
+      end
+
+      it 'call `all_protected_branches`' do
+        expect(project).to receive(:all_protected_branches)
+
+        subject
+      end
+    end
+
+    context 'when feature flag disabled' do
+      before do
+        stub_feature_flags(group_protected_branches: false)
+      end
+
+      it 'call `protected_branches`' do
+        expect(project).to receive(:protected_branches)
+
+        subject
       end
     end
   end

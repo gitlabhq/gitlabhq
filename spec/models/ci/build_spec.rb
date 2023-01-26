@@ -23,17 +23,19 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
 
-  it { is_expected.to have_many(:needs) }
-  it { is_expected.to have_many(:sourced_pipelines) }
-  it { is_expected.to have_one(:sourced_pipeline) }
-  it { is_expected.to have_many(:job_variables) }
-  it { is_expected.to have_many(:report_results) }
-  it { is_expected.to have_many(:pages_deployments) }
+  it { is_expected.to have_many(:needs).with_foreign_key(:build_id) }
+  it { is_expected.to have_many(:sourced_pipelines).with_foreign_key(:source_job_id) }
+  it { is_expected.to have_one(:sourced_pipeline).with_foreign_key(:source_job_id) }
+  it { is_expected.to have_many(:job_variables).with_foreign_key(:job_id) }
+  it { is_expected.to have_many(:report_results).with_foreign_key(:build_id) }
+  it { is_expected.to have_many(:pages_deployments).with_foreign_key(:ci_build_id) }
 
   it { is_expected.to have_one(:deployment) }
-  it { is_expected.to have_one(:runner_session) }
-  it { is_expected.to have_one(:trace_metadata) }
-  it { is_expected.to have_many(:terraform_state_versions).inverse_of(:build) }
+  it { is_expected.to have_one(:runner_session).with_foreign_key(:build_id) }
+  it { is_expected.to have_one(:trace_metadata).with_foreign_key(:build_id) }
+  it { is_expected.to have_one(:runtime_metadata).with_foreign_key(:build_id) }
+  it { is_expected.to have_one(:pending_state).with_foreign_key(:build_id) }
+  it { is_expected.to have_many(:terraform_state_versions).inverse_of(:build).with_foreign_key(:ci_build_id) }
 
   it { is_expected.to validate_presence_of(:ref) }
 

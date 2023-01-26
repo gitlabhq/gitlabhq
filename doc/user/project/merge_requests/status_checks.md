@@ -22,8 +22,6 @@ respond with an associated status. This status is then displayed as a non-blocki
 widget within the merge request to surface this status to the merge request author or reviewers
 at the merge request level itself.
 
-The lack of a status check response does not block the merging of a merge request.
-
 You can configure merge request status checks for each individual project. These are not shared between projects.
 
 To learn more about use cases, feature discovery, and development timelines,
@@ -33,14 +31,18 @@ see the [external status checks epic](https://gitlab.com/groups/gitlab-org/-/epi
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `only_allow_merge_if_all_status_checks_passed`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/372340) in GitLab 15.8.
+> - Enabled on self-managed in GitLab 15.9.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to
-[enable the feature flag](../../../administration/feature_flags.md) named `only_allow_merge_if_all_status_checks_passed`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+On self-managed GitLab, this feature is available by default. To disable it per project or for your entire instance, ask an administrator to
+[disable the feature flag](../../../administration/feature_flags.md) named `only_allow_merge_if_all_status_checks_passed`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
 
-By default, merge requests in projects can be merged even if external status checks fail. To block the merging of merge requests when external checks fail, enable this feature
-using the [project API](../../../api/projects.md#edit-project). You must also [enable the feature flag](../../../administration/feature_flags.md) named
-`only_allow_merge_if_all_status_checks_passed` on self-managed GitLab.
+By default, merge requests in projects can be merged even if external status checks fail. To block the merging of merge requests when external checks fail:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Merge requests**.
+1. Select the **Status checks must succeed** checkbox.
+1. Select **Save changes**.
 
 ## Lifecycle
 
@@ -63,7 +65,7 @@ Merge requests return a `409 Conflict` error to any responses that do not refer 
 
 External status checks have the following states:
 
-- `pending` - The default state. No response can been received by the merge request from the external service.
+- `pending` - The default state. No response has been received by the merge request from the external service.
 - `passed` - A response from the external service has been received and approved by it.
 - `failed` - A response from the external service has been received and denied by it.
 

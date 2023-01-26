@@ -47,9 +47,9 @@ The following Cloud Native Hybrid reference architectures, where select recommen
 
 The Reference Architectures are designed to strike a balance between two important factors--performance and resilience.
 
-While they are designed to make it easier to set up GitLab at scale, it can still be a challenge to know which one will meet your requirements.
+While they are designed to make it easier to set up GitLab at scale, it can still be a challenge to know which one meets your requirements.
 
-As a general guide, **the more performant and/or resilient you want your environment to be, the more involved it will be**.
+As a general guide, **the more performant and/or resilient you want your environment to be, the more involved it is**.
 
 This section explains the designs you can choose from. It begins with the least complexity, goes to the most, and ends with a decision tree.
 
@@ -63,9 +63,9 @@ Backups can provide a good level of RPO / RTO while avoiding the complexities th
 
 High Availability ensures every component in the GitLab setup can handle failures through various mechanisms. To achieve this however is involved, and the environments required can be sizable.
 
-For environments serving 3,000 or more users we generally recommend that a HA strategy is used as at this level outages will have a bigger impact against more users. All the architectures in this range have HA built in by design for this reason.
+For environments serving 3,000 or more users we generally recommend that a HA strategy is used as at this level outages have a bigger impact against more users. All the architectures in this range have HA built in by design for this reason.
 
-For users who still need to have HA for a lower number of users this can also be achieved with an [adjusted 3K architecture as detailed here](3k_users.md#supported-modifications-for-lower-user-counts-ha).
+For users who still need to have HA for a lower number of users this can also be achieved with an adjusted [3K architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
 
 #### Do you need High Availability (HA)?
 
@@ -90,7 +90,7 @@ In most cases the downtime required for doing an upgrade in general shouldn't be
 
 As an additional layer of HA resilience you can deploy select components in Kubernetes, known as a Cloud Native Hybrid Reference Architecture.
 
-Note that this is an alternative and more **advanced** setup compared to a standard Reference Architecture. Running services in Kubernetes is well known to be complex. **This setup is only recommended** if you have strong working knowledge and experience in Kubernetes.
+This is an alternative and more **advanced** setup compared to a standard Reference Architecture. Running services in Kubernetes is well known to be complex. **This setup is only recommended** if you have strong working knowledge and experience in Kubernetes.
 
 ### GitLab Geo (Cross Regional Distribution / Disaster Recovery)
 
@@ -208,7 +208,7 @@ Several cloud provider services are known not to support the above or have been 
 - [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible and not supported. See [14.4.0](../../update/index.md#1440) for more details.
 - [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) (Single / Flexible) is **strongly not recommended** for use due to notable performance / stability issues or missing functionality. See [Recommendation Notes for Azure](#recommendation-notes-for-azure) for more details.
 - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) have not been tested and are not recommended. Both solutions are specifically not expected to work with GitLab Geo.
-  - Note that [Amazon RDS Multi-AZ DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html) is a separate product and is supported.
+  - [Amazon RDS Multi-AZ DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html) is a separate product and is supported.
 
 ### Recommendation notes for Azure
 
@@ -241,7 +241,7 @@ Testing occurs against all reference architectures and cloud providers in an aut
 - The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) for building the environments.
 - The [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) for performance testing.
 
-Network latency on the test environments between components on all Cloud Providers were measured at <5 ms. Note that this is shared as an observation and not as an implicit recommendation.
+Network latency on the test environments between components on all Cloud Providers were measured at <5 ms. This is shared as an observation and not as an implicit recommendation.
 
 We aim to have a "test smart" approach where architectures tested have a good range that can also apply to others. Testing focuses on 10k Omnibus on GCP as the testing has shown this is a good bellwether for the other architectures and cloud providers as well as Cloud Native Hybrids.
 

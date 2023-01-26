@@ -139,8 +139,8 @@ To do so:
 
 ### Simulate a SaaS instance
 
-If you run GitLab in development or have a license installed issued to a `@gitlab.com` email
-and you need your instance to simulate the SaaS (GitLab.com) version of the product:
+If you're developing locally and need your instance to simulate the SaaS (GitLab.com)
+version of the product:
 
 1. Export this environment variable:
 

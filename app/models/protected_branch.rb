@@ -3,6 +3,7 @@
 class ProtectedBranch < ApplicationRecord
   include ProtectedRef
   include Gitlab::SQL::Pattern
+  include FromUnion
 
   belongs_to :group, foreign_key: :namespace_id, touch: true, inverse_of: :protected_branches
 
@@ -11,6 +12,8 @@ class ProtectedBranch < ApplicationRecord
   scope :requiring_code_owner_approval, -> { where(code_owner_approval_required: true) }
   scope :allowing_force_push, -> { where(allow_force_push: true) }
   scope :sorted_by_name, -> { order(name: :asc) }
+
+  scope :for_group, ->(group) { where(group: group) }
 
   protected_ref_access_levels :merge, :push
 
@@ -64,7 +67,19 @@ class ProtectedBranch < ApplicationRecord
   # End of deprecation --------------------------------------------
 
   def self.allow_force_push?(project, ref_name)
-    project.protected_branches.allowing_force_push.matching(ref_name).any?
+    if Feature.enabled?(:group_protected_branches)
+      protected_branches = project.all_protected_branches.matching(ref_name)
+
+      project_protected_branches, group_protected_branches = protected_branches.partition(&:project_id)
+
+      # Group owner can be able to enforce the settings
+      return group_protected_branches.any?(&:allow_force_push) if group_protected_branches.present?
+      return project_protected_branches.any?(&:allow_force_push) if project_protected_branches.present?
+
+      false
+    else
+      project.protected_branches.allowing_force_push.matching(ref_name).any?
+    end
   end
 
   def self.any_protected?(project, ref_names)
@@ -76,7 +91,11 @@ class ProtectedBranch < ApplicationRecord
   end
 
   def self.protected_refs(project)
-    project.protected_branches
+    if Feature.enabled?(:group_protected_branches)
+      project.all_protected_branches
+    else
+      project.protected_branches
+    end
   end
 
   # overridden in EE

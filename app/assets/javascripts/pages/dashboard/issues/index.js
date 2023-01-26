@@ -4,7 +4,7 @@ import initManualOrdering from '~/issues/manual_ordering';
 import { FILTERED_SEARCH } from '~/filtered_search/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
 import projectSelect from '~/project_select';
-import { initNewIssueDropdown } from '~/vue_shared/components/new_issue_dropdown/init_new_issue_dropdown';
+import { initNewResourceDropdown } from '~/vue_shared/components/new_resource_dropdown/init_new_resource_dropdown';
 
 initFilteredSearch({
   page: FILTERED_SEARCH.ISSUES,
@@ -13,7 +13,7 @@ initFilteredSearch({
 });
 
 projectSelect();
-initNewIssueDropdown();
+initNewResourceDropdown();
 initManualOrdering();
 
 mountIssuesDashboardApp();

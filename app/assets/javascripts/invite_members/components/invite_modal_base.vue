@@ -12,6 +12,7 @@ import {
   CANCEL_BUTTON_TEXT,
   HEADER_CLOSE_LABEL,
   ON_SHOW_TRACK_LABEL,
+  ON_CELEBRATION_TRACK_LABEL,
 } from '../constants';
 
 const DEFAULT_SLOT = 'default';
@@ -208,7 +209,7 @@ export default {
     },
     onShowModal() {
       if (this.isCelebration) {
-        this.track('render');
+        this.track('render', { label: ON_CELEBRATION_TRACK_LABEL });
       }
 
       if (this.usersLimitDataset.reachedLimit) {
@@ -217,7 +218,7 @@ export default {
     },
     onCancel(e) {
       if (this.isCelebration) {
-        this.track('click_cancel');
+        this.track('click_cancel', { label: ON_CELEBRATION_TRACK_LABEL });
       }
 
       if (this.preventCancelDefault) {
@@ -231,7 +232,7 @@ export default {
     },
     onSubmit(e) {
       if (this.isCelebration) {
-        this.track('click_invite');
+        this.track('click_invite', { label: ON_CELEBRATION_TRACK_LABEL });
       }
 
       // We never want to hide when submitting
@@ -244,7 +245,7 @@ export default {
     },
     onClose() {
       if (this.isCelebration) {
-        this.track('click_x');
+        this.track('click_x', { label: ON_CELEBRATION_TRACK_LABEL });
       }
     },
   },

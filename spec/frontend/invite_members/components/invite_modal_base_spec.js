@@ -18,6 +18,7 @@ import {
   INVITE_BUTTON_TEXT_DISABLED,
   INVITE_BUTTON_TEXT,
   ON_SHOW_TRACK_LABEL,
+  ON_CELEBRATION_TRACK_LABEL,
 } from '~/invite_members/constants';
 
 import { propsData, membersPath, purchasePath } from '../mock_data/modal_base';
@@ -237,16 +238,16 @@ describe('InviteModalBase', () => {
         const mockEvent = { preventDefault: jest.fn() };
 
         modal.vm.$emit('shown');
-        expectTracking('render');
+        expectTracking('render', ON_CELEBRATION_TRACK_LABEL);
 
         modal.vm.$emit('primary', mockEvent);
-        expectTracking('click_invite');
+        expectTracking('click_invite', ON_CELEBRATION_TRACK_LABEL);
 
         modal.vm.$emit('cancel', mockEvent);
-        expectTracking('click_cancel');
+        expectTracking('click_cancel', ON_CELEBRATION_TRACK_LABEL);
 
         modal.vm.$emit('close');
-        expectTracking('click_x');
+        expectTracking('click_x', ON_CELEBRATION_TRACK_LABEL);
 
         unmockTracking();
       });

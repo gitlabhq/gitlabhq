@@ -232,7 +232,7 @@ to [Maven Central](https://search.maven.org/).
 When the feature flag is enabled, administrators can disable this behavior in the
 [Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
 
-There are many ways to configure your Maven project so that it will request packages
+There are many ways to configure your Maven project so that it requests packages
 in Maven Central from GitLab. Maven repositories are queried in a
 [specific order](https://maven.apache.org/guides/mini/guide-multiple-repositories.html#repository-order).
 By default, maven-central is usually checked first through the

@@ -7260,6 +7260,54 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe '#group_protected_branches' do
+    subject { project.group_protected_branches }
+
+    let(:project) { create(:project, group: group) }
+    let(:group) { create(:group) }
+    let(:protected_branch) { create(:protected_branch, group: group, project: nil) }
+
+    it 'returns protected branches of the group' do
+      is_expected.to match_array([protected_branch])
+    end
+
+    context 'when project belongs to namespace' do
+      let(:project) { create(:project) }
+
+      it 'returns empty relation' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '#all_protected_branches' do
+    let(:group) { create(:group) }
+    let!(:group_protected_branch) { create(:protected_branch, group: group, project: nil) }
+    let!(:project_protected_branch) { create(:protected_branch, project: subject) }
+
+    subject { create(:project, group: group) }
+
+    context 'when feature flag `group_protected_branches` enabled' do
+      before do
+        stub_feature_flags(group_protected_branches: true)
+      end
+
+      it 'return all protected branches' do
+        expect(subject.all_protected_branches).to match_array([group_protected_branch, project_protected_branch])
+      end
+    end
+
+    context 'when feature flag `group_protected_branches` disabled' do
+      before do
+        stub_feature_flags(group_protected_branches: false)
+      end
+
+      it 'return only project-level protected branches' do
+        expect(subject.all_protected_branches).to match_array([project_protected_branch])
+      end
+    end
+  end
+
   describe '#lfs_objects_oids' do
     let(:project) { create(:project) }
     let(:lfs_object) { create(:lfs_object) }

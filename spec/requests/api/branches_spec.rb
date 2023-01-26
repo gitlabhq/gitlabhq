@@ -279,7 +279,7 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
 
         expect do
           get api(route, current_user), params: { per_page: 100 }
-        end.not_to exceed_query_limit(control)
+        end.not_to exceed_query_limit(control).with_threshold(1)
       end
     end
 

@@ -49,7 +49,7 @@ import {
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import NewIssueDropdown from '~/vue_shared/components/new_issue_dropdown/new_issue_dropdown.vue';
+import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
   defaultTypeTokenOptions,
@@ -114,7 +114,7 @@ export default {
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
-    NewIssueDropdown,
+    NewResourceDropdown,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -859,7 +859,7 @@ export default {
           {{ $options.i18n.newIssueLabel }}
         </gl-button>
         <slot name="new-objective-button"></slot>
-        <new-issue-dropdown
+        <new-resource-dropdown
           v-if="showNewIssueDropdown"
           :query="$options.searchProjectsQuery"
           :query-variables="newIssueDropdownQueryVariables"

@@ -207,7 +207,7 @@ Alternatively, the SAML response may be missing the `InResponseTo` attribute in 
 The identity provider administrator should ensure that the login is
 initiated by the service provider and not only the identity provider.
 
-### Message: "Sign in to GitLab to connect your organization's account" **(PREMIUM SAAS)**
+### Message: "There is already a GitLab account associated with this email address. Sign in with your existing credentials to connect your organization's account" **(PREMIUM SAAS)**
 
 A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#linking-saml-to-your-existing-gitlabcom-account).
 

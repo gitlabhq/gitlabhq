@@ -149,16 +149,16 @@ the following statistics:
 - Total retained: 757595 bytes (6070 objects)
 - `db_count`: 144
 - `db_cached_count`: 55
-- `db_duration`: 303ms
+- `db_duration`: 303 ms
 
 The fix reduced the allocated memory, and the number of cached queries. These
 factors help improve the overall execution time:
 
-- Total allocated: 5313899 bytes (65290 objects), 1810KB (25%) less
-- Total retained: 685593 bytes (5278 objects), 72KB (9%) less
+- Total allocated: 5313899 bytes (65290 objects), 1810 KB (25%) less
+- Total retained: 685593 bytes (5278 objects), 72 KB (9%) less
 - `db_count`: 95 (34% less)
 - `db_cached_count`: 6 (89% less)
-- `db_duration`: 162ms (87% faster)
+- `db_duration`: 162 ms (87% faster)
 
 ## For more information
 

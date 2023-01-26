@@ -1800,6 +1800,12 @@
       changes: ["vendor/gems/devise-pbkdf2-encryptable/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
 
+.vendor:rules:gitlab_active_record:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/gitlab_active_record/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
 .vendor:rules:bundler-checksum:
   rules:
     - <<: *if-merge-request

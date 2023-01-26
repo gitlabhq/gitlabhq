@@ -117,7 +117,7 @@ to create a new project from a template.
 
 ## LFS authentication
 
-When importing a project that contains LFS objects, if the project has an [`.lfsconfig`](https://github.com/git-lfs/git-lfs/blob/master/docs/man/git-lfs-config.5.ronn)
+When importing a project that contains LFS objects, if the project has an [`.lfsconfig`](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-config.adoc)
 file with a URL host (`lfs.url`) different from the repository URL host, LFS files are not downloaded.
 
 ## Project aliases **(PREMIUM SELF)**

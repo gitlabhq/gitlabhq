@@ -138,6 +138,7 @@ export const GROUP_MODAL_LABELS = {
 
 export const LEARN_GITLAB = 'learn_gitlab';
 export const ON_SHOW_TRACK_LABEL = 'over_limit_modal_viewed';
+export const ON_CELEBRATION_TRACK_LABEL = 'invite_celebration_modal';
 
 export const INFO_ALERT_TITLE = s__(
   'InviteMembersModal|Your top-level group %{namespaceName} is over the %{dashboardLimit} user limit.',

@@ -30,7 +30,7 @@ import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/con
 import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
-import NewIssueDropdown from '~/vue_shared/components/new_issue_dropdown/new_issue_dropdown.vue';
+import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
   RELATIVE_POSITION,
@@ -130,7 +130,7 @@ describe('CE IssuesListApp component', () => {
   const findGlButtons = () => wrapper.findAllComponents(GlButton);
   const findGlButtonAt = (index) => findGlButtons().at(index);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
-  const findNewIssueDropdown = () => wrapper.findComponent(NewIssueDropdown);
+  const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
 
   const findLabelsToken = () =>
     findIssuableList()
@@ -320,13 +320,13 @@ describe('CE IssuesListApp component', () => {
       it('does not render in a project context', () => {
         wrapper = mountComponent({ provide: { isProject: true }, mountFn: mount });
 
-        expect(findNewIssueDropdown().exists()).toBe(false);
+        expect(findNewResourceDropdown().exists()).toBe(false);
       });
 
       it('renders in a group context', () => {
         wrapper = mountComponent({ provide: { isProject: false }, mountFn: mount });
 
-        expect(findNewIssueDropdown().exists()).toBe(true);
+        expect(findNewResourceDropdown().exists()).toBe(true);
       });
     });
   });

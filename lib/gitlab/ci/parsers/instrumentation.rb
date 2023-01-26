@@ -6,7 +6,7 @@ module Gitlab
       module Instrumentation
         BUCKETS = [0.25, 1, 5, 10].freeze
 
-        def parse!(*args)
+        def parse!(...)
           parser_result = nil
 
           duration = Benchmark.realtime do

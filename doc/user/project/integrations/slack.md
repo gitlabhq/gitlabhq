@@ -58,13 +58,13 @@ The following triggers are available for Slack notifications:
 | Trigger name                                                             | Trigger event                                        |
 |--------------------------------------------------------------------------|------------------------------------------------------|
 | **Push**                                                                 | A push to the repository.                            |
-| **Issue**                                                                | An issue is created, updated, or closed.             |
-| **Incident**                                                             | An incident is created, updated, or closed.          |
-| **Confidential issue**                                                   | A confidential issue is created, updated, or closed. |
-| **Merge request**                                                        | A merge request is created, updated, or merged.      |
+| **Issue**                                                                | An issue is created or closed.                       |
+| **Incident**                                                             | An incident is created or closed.                    |
+| **Confidential issue**                                                   | A confidential issue is created or closed.           |
+| **Merge request**                                                        | A merge request is created, merged, or closed.       |
 | **Note**                                                                 | A comment is added.                                  |
 | **Confidential note**                                                    | A confidential note is added.                        |
-| **Tag push**                                                             | A new tag is pushed to the repository.               |
+| **Tag push**                                                             | A new tag is pushed to the repository or removed.    |
 | **Pipeline**                                                             | A pipeline status changed.                           |
 | **Wiki page**                                                            | A wiki page is created or updated.                   |
 | **Deployment**                                                           | A deployment starts or finishes.                     |

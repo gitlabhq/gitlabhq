@@ -345,7 +345,7 @@ sudo docker run --detach \
   gitlab/gitlab-ee:latest
 ```
 
-Note that every time you execute a `docker run` command, you need to provide
+Every time you execute a `docker run` command, you need to provide
 the `GITLAB_OMNIBUS_CONFIG` option. The content of `GITLAB_OMNIBUS_CONFIG` is
 _not_ preserved between subsequent runs.
 
@@ -623,7 +623,7 @@ sudo docker exec -it gitlab /bin/bash
 ```
 
 From within the container you can administer the GitLab container as you would
-normally administer an
+usually administer an
 [Omnibus installation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md)
 
 ### 500 Internal Error
@@ -702,7 +702,7 @@ variety of statistics on the health and performance of GitLab. The files
 required for this gets written to a temporary file system (like `/run` or
 `/dev/shm`).
 
-By default, Docker allocates 64MB to the shared memory directory (mounted at
+By default, Docker allocates 64 MB to the shared memory directory (mounted at
 `/dev/shm`). This is insufficient to hold all the Prometheus metrics related
 files generated, and will generate error logs like the following:
 
@@ -717,7 +717,7 @@ writing value to /dev/shm/gitlab/sidekiq/histogram_sidekiq_0-0.db failed with un
 ```
 
 Other than disabling the Prometheus Metrics from the Admin Area, the recommended
-solution to fix this problem is to increase the size of shared memory to at least 256MB.
+solution to fix this problem is to increase the size of shared memory to at least 256 MB.
 If using `docker run`, this can be done by passing the flag `--shm-size 256m`.
 If using a `docker-compose.yml` file, the `shm_size` key can be used for this
 purpose.

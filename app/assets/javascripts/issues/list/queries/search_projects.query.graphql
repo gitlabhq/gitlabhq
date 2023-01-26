@@ -1,10 +1,9 @@
 query searchProjects($fullPath: ID!, $search: String) {
   group(fullPath: $fullPath) {
     id
-    projects(search: $search, includeSubgroups: true) {
+    projects(search: $search, withIssuesEnabled: true, includeSubgroups: true) {
       nodes {
         id
-        issuesEnabled
         name
         nameWithNamespace
         webUrl

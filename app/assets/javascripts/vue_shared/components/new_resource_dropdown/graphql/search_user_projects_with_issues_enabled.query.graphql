@@ -1,0 +1,15 @@
+query searchUserProjectsWithIssuesEnabled($search: String) {
+  projects(
+    search: $search
+    membership: true
+    withIssuesEnabled: true
+    sort: "latest_activity_desc"
+  ) {
+    nodes {
+      id
+      name
+      nameWithNamespace
+      webUrl
+    }
+  }
+}

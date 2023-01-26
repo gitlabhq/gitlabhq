@@ -22,11 +22,11 @@ A faster store for data, which is:
 
 ## What is fast?
 
-The goal for every web page should be to return in under 100ms:
+The goal for every web page should be to return in under 100 ms:
 
 - This is achievable, but you need caching on a modern application.
 - Larger responses take longer to build, and caching becomes critical to maintaining a constant speed.
-- Cache reads are typically sub-1ms. There is very little that this doesn't improve.
+- Cache reads are typically sub-1 ms. There is very little that this doesn't improve.
 - It's no good only being fast on subsequent page loads, as the initial experience
   is important too, so this isn't a complete solution.
 - User-specific data makes this challenging, and presents the biggest challenge
@@ -219,7 +219,7 @@ Use conditional GET caching when the entire response is cacheable:
 
 - Users and API libraries can ignore the cache.
 - Sometimes Chrome does weird things with caches.
-- You will forget it exists in development mode and get angry when your changes aren't appearing.
+- You forget it exists in development mode and get angry when your changes aren't appearing.
 - In theory using conditional GET caching makes sense everywhere, but in practice it can
   sometimes cause odd issues.
 

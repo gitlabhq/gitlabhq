@@ -17,7 +17,6 @@ export const emptySearchProjectsWithinGroupQueryResponse = {
 
 export const project1 = {
   id: 'gid://gitlab/Group/26',
-  issuesEnabled: true,
   name: 'Super Mario Project',
   nameWithNamespace: 'Mushroom Kingdom / Super Mario Project',
   webUrl: 'https://127.0.0.1:3000/mushroom-kingdom/super-mario-project',
@@ -25,7 +24,6 @@ export const project1 = {
 
 export const project2 = {
   id: 'gid://gitlab/Group/59',
-  issuesEnabled: false,
   name: 'Mario Kart Project',
   nameWithNamespace: 'Mushroom Kingdom / Mario Kart Project',
   webUrl: 'https://127.0.0.1:3000/mushroom-kingdom/mario-kart-project',
@@ -33,7 +31,6 @@ export const project2 = {
 
 export const project3 = {
   id: 'gid://gitlab/Group/103',
-  issuesEnabled: true,
   name: 'Mario Party Project',
   nameWithNamespace: 'Mushroom Kingdom / Mario Party Project',
   webUrl: 'https://127.0.0.1:3000/mushroom-kingdom/mario-party-project',
