@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354) in GitLab 15.5.
 
-GitLab provides an SCIM API that both implements [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644)
+GitLab provides an SCIM API that both implements [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644)
 and provides the `/Users` endpoint. The base URL is `/api/scim/v2/groups/:group_path/Users/`.
 
 To use this API, [Group SSO](../user/group/saml_sso/index.md) must be enabled for the group.

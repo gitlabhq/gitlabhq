@@ -475,7 +475,7 @@ To configure the `s3` storage driver in Omnibus:
      `bucket_name.host/object`. [Set to false for AWS S3](https://aws.amazon.com/blogs/aws/amazon-s3-path-deprecation-plan-the-rest-of-the-story/).
 
    You can set a rate limit on connections to S3 to avoid 503 errors from the S3 API. To do this,
-   set `maxrequestspersecond` to a number within the [S3 request rate threshold](https://aws.amazon.com/premiumsupport/knowledge-center/s3-503-within-request-rate-prefix/):
+   set `maxrequestspersecond` to a number within the [S3 request rate threshold](https://repost.aws/knowledge-center/s3-503-within-request-rate-prefix):
 
    ```ruby
       registry['storage'] = {
@@ -552,7 +552,7 @@ you can pull from the Container Registry, but you cannot push.
 
    NOTE:
    If you have a lot of data, you may be able to improve performance by
-   [running parallel sync operations](https://aws.amazon.com/premiumsupport/knowledge-center/s3-improve-transfer-sync-command/).
+   [running parallel sync operations](https://repost.aws/knowledge-center/s3-improve-transfer-sync-command).
 
 1. To perform the final data sync,
    [put the Container Registry in `read-only` mode](#performing-garbage-collection-without-downtime) and

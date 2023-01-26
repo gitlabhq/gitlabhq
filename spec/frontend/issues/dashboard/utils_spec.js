@@ -3,6 +3,7 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
 import { MAX_LIST_SIZE } from '~/issues/list/constants';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('AutocompleteCache', () => {
   let autocompleteCache;
@@ -42,7 +43,7 @@ describe('AutocompleteCache', () => {
     let response;
 
     beforeEach(async () => {
-      axiosMock.onGet(url).replyOnce(200, data);
+      axiosMock.onGet(url).replyOnce(HTTP_STATUS_OK, data);
       response = await autocompleteCache.fetch({ url, cacheName, searchProperty });
     });
 
@@ -59,7 +60,7 @@ describe('AutocompleteCache', () => {
     let response;
 
     beforeEach(async () => {
-      axiosMock.onGet(url).replyOnce(200, data);
+      axiosMock.onGet(url).replyOnce(HTTP_STATUS_OK, data);
       jest.spyOn(fuzzaldrinPlus, 'filter');
       // Populate cache
       await autocompleteCache.fetch({ url, cacheName, searchProperty });

@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import { GlButton, GlFormCheckbox, GlFormInput, GlFormInputGroup, GlDatepicker } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { TEST_HOST } from 'helpers/test_constants';
 import NewDeployToken from '~/deploy_tokens/components/new_deploy_token.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -184,7 +184,7 @@ describe('New Deploy Token', () => {
             write_package_registry: true,
           },
         })
-        .replyOnce(200, { username: 'test token username', token: 'test token' });
+        .replyOnce(HTTP_STATUS_OK, { username: 'test token username', token: 'test token' });
 
       return submitTokenThenCheck();
     });
@@ -217,7 +217,7 @@ describe('New Deploy Token', () => {
             write_package_registry: true,
           },
         })
-        .replyOnce(200, { username: 'test token username', token: 'test token' });
+        .replyOnce(HTTP_STATUS_OK, { username: 'test token username', token: 'test token' });
 
       return submitTokenThenCheck();
     });

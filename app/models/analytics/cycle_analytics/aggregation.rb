@@ -63,10 +63,13 @@ class Analytics::CycleAnalytics::Aggregation < ApplicationRecord
     group = group_or_project_namespace.is_a?(Group) ? group_or_project_namespace : group_or_project_namespace.parent
     top_level_group = group.root_ancestor
     aggregation = find_by(group_id: top_level_group.id)
-    return aggregation if aggregation.present?
+    return aggregation if aggregation&.enabled?
 
-    insert({ group_id: top_level_group.id }, unique_by: :group_id)
-    find_by(group_id: top_level_group.id)
+    # At this point we're sure that the group is licensed, we can always enable the aggregation.
+    # This re-enables the aggregation in case the group downgraded and later upgraded the license.
+    upsert({ group_id: top_level_group.id, enabled: true })
+
+    find(top_level_group.id)
   end
 
   private

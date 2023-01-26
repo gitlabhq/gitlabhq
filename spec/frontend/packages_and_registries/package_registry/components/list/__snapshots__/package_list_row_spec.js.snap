@@ -54,12 +54,15 @@ exports[`packages_list_row renders 1`] = `
           class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-min-h-6 gl-min-w-0 gl-flex-grow-1"
         >
           <div
-            class="gl-display-flex"
+            class="gl-display-flex gl-align-items-center"
             data-testid="left-secondary-infos"
           >
-            <span>
-              1.0.0
-            </span>
+            <gl-truncate-stub
+              class="gl-max-w-15 gl-md-max-w-26"
+              position="end"
+              text="1.0.0"
+              withtooltip="true"
+            />
              
             <!---->
              
@@ -135,18 +138,6 @@ exports[`packages_list_row renders 1`] = `
     </div>
   </div>
    
-  <div
-    class="gl-display-flex"
-  >
-    <div
-      class="gl-w-7"
-    />
-     
-    <!---->
-     
-    <div
-      class="gl-w-9"
-    />
-  </div>
+  <!---->
 </div>
 `;

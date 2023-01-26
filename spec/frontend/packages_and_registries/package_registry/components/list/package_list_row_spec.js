@@ -43,6 +43,7 @@ describe('packages_list_row', () => {
   const findPackageLink = () => wrapper.findByTestId('details-link');
   const findWarningIcon = () => wrapper.findByTestId('warning-icon');
   const findLeftSecondaryInfos = () => wrapper.findByTestId('left-secondary-infos');
+  const findPackageVersion = () => findLeftSecondaryInfos().findComponent(GlTruncate);
   const findPublishMethod = () => wrapper.findComponent(PublishMethod);
   const findCreatedDateText = () => wrapper.findByTestId('created-date');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeagoTooltip);
@@ -213,7 +214,10 @@ describe('packages_list_row', () => {
     it('has the package version', () => {
       mountComponent();
 
-      expect(findLeftSecondaryInfos().text()).toContain(packageWithoutTags.version);
+      expect(findPackageVersion().props()).toMatchObject({
+        text: packageWithoutTags.version,
+        withTooltip: true,
+      });
     });
 
     it('if the pipeline exists show the author message', () => {

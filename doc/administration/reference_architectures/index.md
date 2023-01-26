@@ -16,7 +16,7 @@ Depending on your workflow, the following recommended reference architectures
 may need to be adapted accordingly. Your workload is influenced by factors
 including how active your users are, how much automation you use, mirroring,
 and repository/change size. Additionally, the displayed memory values are
-provided by [GCP machine types](https://cloud.google.com/compute/docs/machine-types).
+provided by [GCP machine types](https://cloud.google.com/compute/docs/machine-resource).
 For different cloud vendors, attempt to select options that best match the
 provided architecture.
 

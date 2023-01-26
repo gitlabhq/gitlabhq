@@ -3,6 +3,7 @@ import getTransferLocationsResponse from 'test_fixtures/api/projects/transfer_lo
 import * as projectsApi from '~/api/projects_api';
 import { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('~/api/projects_api.js', () => {
   let mock;
@@ -34,7 +35,7 @@ describe('~/api/projects_api.js', () => {
       const query = '';
       const options = {};
 
-      mock.onGet(expectedUrl).reply(200, { data: expectedProjects });
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedProjects });
 
       return projectsApi.getProjects(query, options).then(({ data }) => {
         expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedParams);
@@ -53,7 +54,7 @@ describe('~/api/projects_api.js', () => {
       const expectedUrl = '/api/v7/projects/1/import_project_members/2';
       const expectedMessage = 'Successfully imported';
 
-      mock.onPost(expectedUrl).replyOnce(200, expectedMessage);
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, expectedMessage);
 
       return projectsApi.importProjectMembers(projectId, targetId).then(({ data }) => {
         expect(axios.post).toHaveBeenCalledWith(expectedUrl);
@@ -71,7 +72,7 @@ describe('~/api/projects_api.js', () => {
       const params = { page: 1 };
       const expectedUrl = '/api/v7/projects/1/transfer_locations';
 
-      mock.onGet(expectedUrl).replyOnce(200, { data: getTransferLocationsResponse });
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, { data: getTransferLocationsResponse });
 
       await expect(projectsApi.getTransferLocations(projectId, params)).resolves.toMatchObject({
         data: { data: getTransferLocationsResponse },

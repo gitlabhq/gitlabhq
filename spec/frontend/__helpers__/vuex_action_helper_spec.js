@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import testActionFn from './vuex_action_helper';
 
 const testActionFnWithOptionsArg = (...args) => {
@@ -102,7 +102,7 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
       };
 
       it('returns original data of successful promise while checking actions/mutations', async () => {
-        mock.onGet(TEST_HOST).replyOnce(200, 42);
+        mock.onGet(TEST_HOST).replyOnce(HTTP_STATUS_OK, 42);
 
         assertion = { mutations: [{ type: 'SUCCESS' }], actions: [{ type: 'ACTION' }] };
 
@@ -138,7 +138,7 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
           });
       };
 
-      mock.onGet(TEST_HOST).replyOnce(200, 42);
+      mock.onGet(TEST_HOST).replyOnce(HTTP_STATUS_OK, 42);
 
       assertion = { mutations: [{ type: 'SUCCESS' }], actions: [{ type: 'ACTION' }] };
 

@@ -1,12 +1,12 @@
 .search-results-status
   .gl-display-flex.gl-flex-direction-column
-    .gl-p-5.gl-display-flex
-      .gl-md-display-flex.gl-text-left.gl-align-items-center.gl-flex-grow-1
+    .gl-p-5.gl-display-flex.gl-max-w-full.gl-sm-flex-direction-column
+      .gl-md-display-flex.gl-text-left.gl-align-items-center.gl-flex-grow-1.gl-text-truncate
         - unless @search_service_presenter.without_count?
           = search_entries_info(@search_objects, @scope, @search_term)
         - unless @search_service_presenter.show_snippets?
           - if @project
-            - link_to_project = link_to(@project.full_name, @project, class: 'ml-md-1')
+            - link_to_project = link_to(@project.full_name, @project, class: 'ml-md-1 gl-text-truncate search-wrap-f-md-down')
             - if @scope == 'blobs'
               = _("in")
               .mx-md-1

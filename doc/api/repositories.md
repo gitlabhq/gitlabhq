@@ -316,7 +316,7 @@ of commits, GitLab generates a changelog for all commits that use a particular
 a new Markdown-formatted section to a changelog file in the Git repository of
 the project. The output format can be customized.
 
-For user-facing documentation, see [Changelogs](../user/project/changelog.md).
+For user-facing documentation, see [Changelogs](../user/project/changelogs.md).
 
 ```plaintext
 POST /projects/:id/repository/changelog
@@ -446,5 +446,5 @@ Example Response:
 
 ## Related topics
 
-- User documentation for [changelogs](../user/project/changelog.md)
+- User documentation for [changelogs](../user/project/changelogs.md)
 - Developer documentation for [changelog entries](../development/changelog.md) in GitLab.

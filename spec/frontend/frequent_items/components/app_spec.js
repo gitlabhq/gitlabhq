@@ -12,6 +12,7 @@ import eventHub from '~/frequent_items/event_hub';
 import { createStore } from '~/frequent_items/store';
 import { getTopFrequentItems } from '~/frequent_items/utils';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { currentSession, mockFrequentProjects, mockSearchedProjects } from '../mock_data';
 
 Vue.use(Vuex);
@@ -115,7 +116,9 @@ describe('Frequent Items App Component', () => {
     });
 
     it('should render searched projects list', async () => {
-      mock.onGet(/\/api\/v4\/projects.json(.*)$/).replyOnce(200, mockSearchedProjects.data);
+      mock
+        .onGet(/\/api\/v4\/projects.json(.*)$/)
+        .replyOnce(HTTP_STATUS_OK, mockSearchedProjects.data);
 
       setSearch('gitlab');
       await nextTick();

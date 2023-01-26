@@ -175,7 +175,7 @@ export const fuzzify = (id) => { /* ... */ };
 #### Dependency Injection
 
 [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) is an approach which breaks
-coupling by declaring a module's dependencies to be injected from outside the module (for example, through constructor parameters, a bona-fide Dependency Injection framework, and even Vue's `provide/inject`).
+coupling by declaring a module's dependencies to be injected from outside the module (for example, through constructor parameters, a bona-fide Dependency Injection framework, and even in Vue `provide/inject`).
 
 ```javascript
 // bad - Vue component coupled to Singleton

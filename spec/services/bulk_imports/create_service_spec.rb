@@ -13,22 +13,21 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
       {
         source_type: 'group_entity',
         source_full_path: 'full/path/to/group1',
-        destination_slug: 'destination group 1',
+        destination_slug: 'destination-group-1',
         destination_namespace: 'parent-group',
         migrate_projects: migrate_projects
-
       },
       {
         source_type: 'group_entity',
         source_full_path: 'full/path/to/group2',
-        destination_slug: 'destination group 2',
+        destination_slug: 'destination-group-2',
         destination_namespace: 'parent-group',
         migrate_projects: migrate_projects
       },
       {
         source_type: 'project_entity',
         source_full_path: 'full/path/to/project1',
-        destination_slug: 'destination project 1',
+        destination_slug: 'destination-project-1',
         destination_namespace: 'parent-group',
         migrate_projects: migrate_projects
       }
@@ -267,56 +266,188 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
             extra: { user_role: 'Not a member', import_type: 'bulk_import_group' }
           )
         end
+
+        context 'when there is a destination_namespace but no parent_namespace' do
+          let(:params) do
+            [
+              {
+                source_type: 'group_entity',
+                source_full_path: 'full/path/to/group1',
+                destination_slug: 'destination-group-1',
+                destination_namespace: 'destination1'
+              }
+            ]
+          end
+
+          it 'defines access_level from destination_namespace' do
+            destination_group.add_developer(user)
+            subject.execute
+
+            expect_snowplow_event(
+              category: 'BulkImports::CreateService',
+              action: 'create',
+              label: 'import_access_level',
+              user: user,
+              extra: { user_role: 'Developer', import_type: 'bulk_import_group' }
+            )
+          end
+        end
+
+        context 'when there is no destination_namespace or parent_namespace' do
+          let(:params) do
+            [
+              {
+                source_type: 'group_entity',
+                source_full_path: 'full/path/to/group1',
+                destination_slug: 'destinationational-mcdestiny',
+                destination_namespace: 'destinational-mcdestiny'
+              }
+            ]
+          end
+
+          it 'defines access_level as owner' do
+            subject.execute
+
+            expect_snowplow_event(
+              category: 'BulkImports::CreateService',
+              action: 'create',
+              label: 'import_access_level',
+              user: user,
+              extra: { user_role: 'Owner', import_type: 'bulk_import_group' }
+            )
+          end
+        end
       end
 
-      context 'when there is a destination_namespace but no parent_namespace' do
-        let(:params) do
-          [
-            {
-              source_type: 'group_entity',
-              source_full_path: 'full/path/to/group1',
-              destination_slug: 'destination-group-1',
-              destination_namespace: 'destination1'
-            }
-          ]
+      describe '.validate_destination_full_path' do
+        context 'when the source_type is a group' do
+          context 'when the provided destination_slug already exists in the destination_namespace' do
+            let_it_be(:existing_subgroup) { create(:group, path: 'existing-subgroup', parent_id: parent_group.id ) }
+            let_it_be(:existing_subgroup_2) { create(:group, path: 'existing-subgroup_2', parent_id: parent_group.id ) }
+            let(:params) do
+              [
+                {
+                  source_type: 'group_entity',
+                  source_full_path: 'full/path/to/source',
+                  destination_slug: existing_subgroup.path,
+                  destination_namespace: parent_group.path,
+                  migrate_projects: migrate_projects
+                }
+              ]
+            end
+
+            it 'returns ServiceResponse with an error message' do
+              result = subject.execute
+
+              expect(result).to be_a(ServiceResponse)
+              expect(result).to be_error
+              expect(result.message)
+                .to eq(
+                  "Import aborted as 'parent-group/existing-subgroup' already exists. " \
+                  "Change the destination and try again."
+                )
+            end
+          end
+
+          context 'when the destination_slug conflicts with an existing top-level namespace' do
+            let_it_be(:existing_top_level_group) { create(:group, path: 'top-level-group') }
+            let(:params) do
+              [
+                {
+                  source_type: 'group_entity',
+                  source_full_path: 'full/path/to/source',
+                  destination_slug: existing_top_level_group.path,
+                  destination_namespace: '',
+                  migrate_projects: migrate_projects
+                }
+              ]
+            end
+
+            it 'returns ServiceResponse with an error message' do
+              result = subject.execute
+
+              expect(result).to be_a(ServiceResponse)
+              expect(result).to be_error
+              expect(result.message)
+                .to eq(
+                  "Import aborted as 'top-level-group' already exists. " \
+                  "Change the destination and try again."
+                )
+            end
+          end
+
+          context 'when the destination_slug does not conflict with an existing top-level namespace' do
+            let(:params) do
+              [
+                {
+                  source_type: 'group_entity',
+                  source_full_path: 'full/path/to/source',
+                  destination_slug: 'new-group',
+                  destination_namespace: parent_group.path,
+                  migrate_projects: migrate_projects
+                }
+              ]
+            end
+
+            it 'returns success ServiceResponse' do
+              result = subject.execute
+
+              expect(result).to be_a(ServiceResponse)
+              expect(result).to be_success
+            end
+          end
         end
 
-        it 'defines access_level from destination_namespace' do
-          destination_group.add_developer(user)
-          subject.execute
+        context 'when the source_type is a project' do
+          context 'when the provided destination_slug already exists in the destination_namespace' do
+            let_it_be(:existing_group) { create(:group, path: 'existing-group' ) }
+            let_it_be(:existing_project) { create(:project, path: 'existing-project', parent_id: existing_group.id ) }
+            let(:params) do
+              [
+                {
+                  source_type: 'project_entity',
+                  source_full_path: 'full/path/to/source',
+                  destination_slug: existing_project.path,
+                  destination_namespace: existing_group.path,
+                  migrate_projects: migrate_projects
+                }
+              ]
+            end
 
-          expect_snowplow_event(
-            category: 'BulkImports::CreateService',
-            action: 'create',
-            label: 'import_access_level',
-            user: user,
-            extra: { user_role: 'Developer', import_type: 'bulk_import_group' }
-          )
-        end
-      end
+            it 'returns ServiceResponse with an error message' do
+              result = subject.execute
 
-      context 'when there is no destination_namespace or parent_namespace' do
-        let(:params) do
-          [
-            {
-              source_type: 'group_entity',
-              source_full_path: 'full/path/to/group1',
-              destination_slug: 'destinationational mcdestiny',
-              destination_namespace: 'destinational-mcdestiny'
-            }
-          ]
-        end
+              expect(result).to be_a(ServiceResponse)
+              expect(result).to be_error
+              expect(result.message)
+                .to eq(
+                  "Import aborted as 'existing-group/existing-project' already exists. " \
+                  "Change the destination and try again."
+                )
+            end
+          end
 
-        it 'defines access_level as owner' do
-          subject.execute
+          context 'when the destination_slug does not conflict with an existing project' do
+            let_it_be(:existing_group) { create(:group, path: 'existing-group' ) }
+            let(:params) do
+              [
+                {
+                  source_type: 'project_entity',
+                  source_full_path: 'full/path/to/source',
+                  destination_slug: 'new-project',
+                  destination_namespace: 'existing-group',
+                  migrate_projects: migrate_projects
+                }
+              ]
+            end
 
-          expect_snowplow_event(
-            category: 'BulkImports::CreateService',
-            action: 'create',
-            label: 'import_access_level',
-            user: user,
-            extra: { user_role: 'Owner', import_type: 'bulk_import_group' }
-          )
+            it 'returns success ServiceResponse' do
+              result = subject.execute
+
+              expect(result).to be_a(ServiceResponse)
+              expect(result).to be_success
+            end
+          end
         end
       end
     end

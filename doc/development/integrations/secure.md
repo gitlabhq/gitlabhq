@@ -96,7 +96,7 @@ mysec_sast:
       sast: gl-sast-report.json
 ```
 
-Note that `gl-sast-report.json` is an example file path but any other filename can be used. See
+`gl-sast-report.json` is an example file path but any other filename can be used. See
 [the Output file section](#output-file) for more details. It's processed as a SAST report because
 it's declared under the `reports:sast` key in the job definition, not because of the filename.
 
@@ -150,7 +150,7 @@ regardless of the individual machine the scanner runs on.
 Depending on the CI infrastructure,
 the CI may have to fetch the Docker image every time the job runs.
 For the scanning job to run fast and avoid wasting bandwidth, Docker images should be as small as
-possible. You should aim for 50MB or smaller. If that isn't possible, try to keep it below 1.46 GB,
+possible. You should aim for 50 MB or smaller. If that isn't possible, try to keep it below 1.46 GB,
 which is the size of a DVD-ROM.
 
 If the scanner requires a fully functional Linux environment,
@@ -199,7 +199,7 @@ SAST and Dependency Scanning scanners must scan the files in the project directo
 
 #### Container Scanning
 
-In order to be consistent with the official Container Scanning for GitLab,
+To be consistent with the official Container Scanning for GitLab,
 scanners must scan the Docker image whose name and tag are given by
 `CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG`, respectively. If the `DOCKER_IMAGE`
 CI/CD variable is provided, then the `CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG` variables
@@ -225,7 +225,7 @@ If you use the `CIS_KUBECONFIG` CI/CD variable, then the
 the `CIS_KUBECONFIG` CI/CD variable, the value defaults to the value of
 `$KUBECONFIG`. `$KUBECONFIG` is a predefined CI/CD variable configured when the project is assigned to a
 Kubernetes cluster. When multiple contexts are provided in the `KUBECONFIG` variable, the context
-selected as `current-context` will be used to fetch vulnerabilities.
+selected as `current-context` is used to fetch vulnerabilities.
 
 #### Configuration files
 
@@ -440,7 +440,7 @@ Even when the [`Vulnerabilities`](#vulnerabilities) array for a given scan may b
 should contain the complete list of potential identifiers to inform the Rails application of which
 rules were executed.
 
-When populated, the Rails application will automatically resolve previously detected vulnerabilities as no
+When populated, the Rails application automatically resolves previously detected vulnerabilities as no
 longer relevant when their primary identifier is not included.
 
 ##### Name, message, and description
@@ -526,7 +526,7 @@ Not all vulnerabilities have CVEs, and a CVE can be identified multiple times. A
 isn't a stable identifier and you shouldn't assume it as such when tracking vulnerabilities.
 
 The maximum number of identifiers for a vulnerability is set as 20. If a vulnerability has more than 20 identifiers,
-the system saves only the first 20 of them. Note that vulnerabilities in the [Pipeline Security](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline)
+the system saves only the first 20 of them. The vulnerabilities in the [Pipeline Security](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline)
 tab do not enforce this limit and all identifiers present in the report artifact are displayed.
 
 #### Details

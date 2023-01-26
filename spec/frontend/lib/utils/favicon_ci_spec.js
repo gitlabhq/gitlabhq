@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import { setCiStatusFavicon } from '~/lib/utils/favicon_ci';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/lib/utils/favicon');
 
@@ -29,7 +29,7 @@ describe('~/lib/utils/favicon_ci', () => {
     `(
       'with response=$response',
       async ({ response, setFaviconOverlayCalls, resetFaviconCalls }) => {
-        mock.onGet(TEST_URL).replyOnce(200, response);
+        mock.onGet(TEST_URL).replyOnce(HTTP_STATUS_OK, response);
 
         expect(setFaviconOverlay).not.toHaveBeenCalled();
         expect(resetFavicon).not.toHaveBeenCalled();

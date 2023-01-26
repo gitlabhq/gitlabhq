@@ -101,18 +101,6 @@ exports[`packages_list_row renders 1`] = `
     </div>
   </div>
    
-  <div
-    class="gl-display-flex"
-  >
-    <div
-      class="gl-w-7"
-    />
-     
-    <!---->
-     
-    <div
-      class="gl-w-9"
-    />
-  </div>
+  <!---->
 </div>
 `;

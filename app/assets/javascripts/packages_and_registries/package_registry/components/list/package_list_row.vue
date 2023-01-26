@@ -134,8 +134,16 @@ export default {
       </div>
     </template>
     <template #left-secondary>
-      <div v-if="!errorStatusRow" class="gl-display-flex" data-testid="left-secondary-infos">
-        <span>{{ packageEntity.version }}</span>
+      <div
+        v-if="!errorStatusRow"
+        class="gl-display-flex gl-align-items-center"
+        data-testid="left-secondary-infos"
+      >
+        <gl-truncate
+          class="gl-max-w-15 gl-md-max-w-26"
+          :text="packageEntity.version"
+          :with-tooltip="true"
+        />
 
         <div v-if="pipelineUser" class="gl-display-none gl-sm-display-flex gl-ml-2">
           <gl-sprintf :message="s__('PackageRegistry|published by %{author}')">

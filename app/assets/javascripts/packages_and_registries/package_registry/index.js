@@ -36,7 +36,7 @@ export default () => {
   const attachMainComponent = () =>
     new Vue({
       el,
-      name: 'PackageRegistery',
+      name: 'PackageRegistry',
       router,
       apolloProvider,
       provide: {

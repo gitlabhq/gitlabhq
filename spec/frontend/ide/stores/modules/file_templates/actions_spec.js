@@ -4,7 +4,7 @@ import * as actions from '~/ide/stores/modules/file_templates/actions';
 import * as types from '~/ide/stores/modules/file_templates/mutation_types';
 import createState from '~/ide/stores/modules/file_templates/state';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('IDE file templates actions', () => {
   let state;
@@ -75,7 +75,7 @@ describe('IDE file templates actions', () => {
           const page = pages[pageNum - 1];
           const hasNextPage = pageNum < pages.length;
 
-          return [200, page, hasNextPage ? { 'X-NEXT-PAGE': pageNum + 1 } : {}];
+          return [HTTP_STATUS_OK, page, hasNextPage ? { 'X-NEXT-PAGE': pageNum + 1 } : {}];
         });
       });
 
@@ -200,10 +200,10 @@ describe('IDE file templates actions', () => {
       beforeEach(() => {
         mock
           .onGet(/api\/(.*)\/templates\/licenses\/mit/)
-          .replyOnce(200, { content: 'MIT content' });
+          .replyOnce(HTTP_STATUS_OK, { content: 'MIT content' });
         mock
           .onGet(/api\/(.*)\/templates\/licenses\/testing/)
-          .replyOnce(200, { content: 'testing content' });
+          .replyOnce(HTTP_STATUS_OK, { content: 'testing content' });
       });
 
       it('dispatches setFileTemplate if template already has content', () => {

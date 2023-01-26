@@ -8,7 +8,7 @@ import { createStore } from '~/ide/stores';
 import { showTreeEntry, getFiles, setDirectoryData } from '~/ide/stores/actions/tree';
 import * as types from '~/ide/stores/mutation_types';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { file, createEntriesFromPaths } from '../../helpers';
 
 describe('Multi-file store tree actions', () => {
@@ -53,7 +53,7 @@ describe('Multi-file store tree actions', () => {
 
         mock
           .onGet(/(.*)/)
-          .replyOnce(200, [
+          .replyOnce(HTTP_STATUS_OK, [
             'file.txt',
             'folder/fileinfolder.js',
             'folder/subfolder/fileinsubfolder.js',

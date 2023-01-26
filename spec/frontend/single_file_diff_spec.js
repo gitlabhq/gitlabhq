@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import SingleFileDiff from '~/single_file_diff';
 
 describe('SingleFileDiff', () => {
@@ -11,7 +11,9 @@ describe('SingleFileDiff', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet(blobDiffPath).replyOnce(200, { html: `<div class="diff-content">MOCKED</div>` });
+    mock
+      .onGet(blobDiffPath)
+      .replyOnce(HTTP_STATUS_OK, { html: `<div class="diff-content">MOCKED</div>` });
   });
 
   afterEach(() => {

@@ -237,3 +237,14 @@ actions:
   - scan: secret_detection
   - scan: container_scanning
 ```
+
+## Avoiding duplicate scans
+
+Scan execution policies can cause the same type of scanner to run more than once if developers include scan jobs in the project's
+`.gitlab-ci.yml` file. This behavior is intentional as scanners can run more than once with different variables and settings. For example, a
+developer may want to try running a SAST scan with different variables than the one enforced by the security and compliance team. In
+this case, two SAST jobs run in the pipeline, one with the developer's variables and one with the security and compliance team's variables.
+
+If you want to avoid running duplicate scans, you can either remove the scans from the project's `.gitlab-ci.yml` file or disable your
+local jobs by setting `SAST_DISABLED: true`. Disabling jobs this way does not prevent the security jobs defined by scan execution
+policies from running.

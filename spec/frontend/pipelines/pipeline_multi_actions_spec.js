@@ -5,7 +5,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PipelineMultiActions, {
   i18n,
 } from '~/pipelines/components/pipelines_list/pipeline_multi_actions.vue';
@@ -80,7 +80,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
   describe('Artifacts', () => {
     it('should fetch artifacts and show search box on dropdown click', async () => {
       const endpoint = artifactsEndpoint.replace(artifactsEndpointPlaceholder, pipelineId);
-      mockAxios.onGet(endpoint).replyOnce(200, { artifacts });
+      mockAxios.onGet(endpoint).replyOnce(HTTP_STATUS_OK, { artifacts });
       createComponent();
       findDropdown().vm.$emit('show');
       await waitForPromises();

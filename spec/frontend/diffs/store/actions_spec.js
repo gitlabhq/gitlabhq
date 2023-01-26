@@ -20,6 +20,7 @@ import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_NOT_FOUND,
+  HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
@@ -147,7 +148,7 @@ describe('DiffsStoreActions', () => {
             endpointBatch,
           ),
         )
-        .reply(200, res1)
+        .reply(HTTP_STATUS_OK, res1)
         .onGet(
           mergeUrlParams(
             {
@@ -159,7 +160,7 @@ describe('DiffsStoreActions', () => {
             endpointBatch,
           ),
         )
-        .reply(200, res2);
+        .reply(HTTP_STATUS_OK, res2);
 
       return testAction(
         diffActions.fetchDiffFilesBatch,
@@ -191,7 +192,7 @@ describe('DiffsStoreActions', () => {
     });
 
     it('should fetch diff meta information', () => {
-      mock.onGet(endpointMetadata).reply(200, diffMetadata);
+      mock.onGet(endpointMetadata).reply(HTTP_STATUS_OK, diffMetadata);
 
       return testAction(
         diffActions.fetchDiffFilesMeta,
@@ -253,7 +254,7 @@ describe('DiffsStoreActions', () => {
     it('should commit SET_COVERAGE_DATA with received response', () => {
       const data = { files: { 'app.js': { 1: 0, 2: 1 } } };
 
-      mock.onGet(endpointCoverage).reply(200, { data });
+      mock.onGet(endpointCoverage).reply(HTTP_STATUS_OK, { data });
 
       return testAction(
         diffActions.fetchCoverageFiles,
@@ -550,7 +551,7 @@ describe('DiffsStoreActions', () => {
       const nextLineNumbers = {};
       const options = { endpoint, params, lineNumbers, fileHash, isExpandDown, nextLineNumbers };
       const contextLines = { contextLines: [{ lineCode: 6 }] };
-      mock.onGet(endpoint).reply(200, contextLines);
+      mock.onGet(endpoint).reply(HTTP_STATUS_OK, contextLines);
 
       return testAction(
         diffActions.loadMoreLines,
@@ -573,7 +574,7 @@ describe('DiffsStoreActions', () => {
       const file = { hash: 123, load_collapsed_diff_url: '/load/collapsed/diff/url' };
       const data = { hash: 123, parallelDiffLines: [{ lineCode: 1 }] };
       const commit = jest.fn();
-      mock.onGet(file.loadCollapsedDiffUrl).reply(200, data);
+      mock.onGet(file.loadCollapsedDiffUrl).reply(HTTP_STATUS_OK, data);
 
       return diffActions
         .loadCollapsedDiff({ commit, getters: { commitId: null }, state }, file)
@@ -1012,7 +1013,7 @@ describe('DiffsStoreActions', () => {
       putSpy = jest.spyOn(axios, 'put');
       gon = window.gon;
 
-      mock.onPut(endpointUpdateUser).reply(200, {});
+      mock.onPut(endpointUpdateUser).reply(HTTP_STATUS_OK, {});
       jest.spyOn(eventHub, '$emit').mockImplementation();
     });
 
@@ -1089,7 +1090,7 @@ describe('DiffsStoreActions', () => {
   describe('fetchFullDiff', () => {
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/context`).replyOnce(200, ['test']);
+        mock.onGet(`${TEST_HOST}/context`).replyOnce(HTTP_STATUS_OK, ['test']);
       });
 
       it('commits the success and dispatches an action to expand the new lines', () => {
@@ -1174,7 +1175,7 @@ describe('DiffsStoreActions', () => {
     describe('success', () => {
       beforeEach(() => {
         renamedFile = { ...testFile, context_lines_path: SUCCESS_URL };
-        mock.onGet(SUCCESS_URL).replyOnce(200, testData);
+        mock.onGet(SUCCESS_URL).replyOnce(HTTP_STATUS_OK, testData);
       });
 
       it.each`
@@ -1274,7 +1275,7 @@ describe('DiffsStoreActions', () => {
   describe('setSuggestPopoverDismissed', () => {
     it('commits SET_SHOW_SUGGEST_POPOVER', async () => {
       const state = { dismissEndpoint: `${TEST_HOST}/-/user_callouts` };
-      mock.onPost(state.dismissEndpoint).reply(200, {});
+      mock.onPost(state.dismissEndpoint).reply(HTTP_STATUS_OK, {});
 
       jest.spyOn(axios, 'post');
 
@@ -1449,7 +1450,7 @@ describe('DiffsStoreActions', () => {
     beforeEach(() => {
       putSpy = jest.spyOn(axios, 'put');
 
-      mock.onPut(updateUserEndpoint).reply(200, {});
+      mock.onPut(updateUserEndpoint).reply(HTTP_STATUS_OK, {});
     });
 
     it.each`

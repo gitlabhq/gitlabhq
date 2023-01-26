@@ -55,7 +55,9 @@ describe('GroupsApi', () => {
       const params = { page: 1 };
       const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}/transfer_locations`;
 
-      mock.onGet(expectedUrl).replyOnce(200, { data: getGroupTransferLocationsResponse });
+      mock
+        .onGet(expectedUrl)
+        .replyOnce(HTTP_STATUS_OK, { data: getGroupTransferLocationsResponse });
 
       await expect(getGroupTransferLocations(mockGroupId, params)).resolves.toMatchObject({
         data: { data: getGroupTransferLocationsResponse },

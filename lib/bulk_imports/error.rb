@@ -14,5 +14,9 @@ module BulkImports
     def self.invalid_url
       self.new("Import aborted as it was not possible to connect to the provided GitLab instance URL.")
     end
+
+    def self.destination_full_path_validation_failure(full_path)
+      self.new("Import aborted as '#{full_path}' already exists. Change the destination and try again.")
+    end
   end
 end

@@ -15,6 +15,7 @@ import StuckBlock from '~/jobs/components/job/stuck_block.vue';
 import UnmetPrerequisitesBlock from '~/jobs/components/job/unmet_prerequisites_block.vue';
 import createStore from '~/jobs/store';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import job from '../../mock_data';
 
 describe('Job App', () => {
@@ -48,8 +49,8 @@ describe('Job App', () => {
   };
 
   const setupAndMount = async ({ jobData = {}, jobLogData = {} } = {}) => {
-    mock.onGet(initSettings.endpoint).replyOnce(200, { ...job, ...jobData });
-    mock.onGet(`${initSettings.pagePath}/trace.json`).reply(200, jobLogData);
+    mock.onGet(initSettings.endpoint).replyOnce(HTTP_STATUS_OK, { ...job, ...jobData });
+    mock.onGet(`${initSettings.pagePath}/trace.json`).reply(HTTP_STATUS_OK, jobLogData);
 
     const asyncInit = store.dispatch('init', initSettings);
 

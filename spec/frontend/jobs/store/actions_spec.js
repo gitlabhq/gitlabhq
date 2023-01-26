@@ -30,7 +30,7 @@ import {
 import * as types from '~/jobs/store/mutation_types';
 import state from '~/jobs/store/state';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('Job State actions', () => {
   let mockedState;
@@ -113,7 +113,9 @@ describe('Job State actions', () => {
 
     describe('success', () => {
       it('dispatches requestJob and receiveJobSuccess', () => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, { id: 121212, name: 'karma' });
+        mock
+          .onGet(`${TEST_HOST}/endpoint.json`)
+          .replyOnce(HTTP_STATUS_OK, { id: 121212, name: 'karma' });
 
         return testAction(
           fetchJob,
@@ -215,7 +217,7 @@ describe('Job State actions', () => {
 
     describe('success', () => {
       it('dispatches requestJobLog, receiveJobLogSuccess and stopPollingJobLog when job is complete', () => {
-        mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(200, {
+        mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(HTTP_STATUS_OK, {
           html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
           complete: true,
         });
@@ -253,7 +255,7 @@ describe('Job State actions', () => {
             complete: false,
           };
 
-          mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(200, jobLogPayload);
+          mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(HTTP_STATUS_OK, jobLogPayload);
         });
 
         it('dispatches startPollingJobLog', () => {
@@ -425,9 +427,10 @@ describe('Job State actions', () => {
 
     describe('success', () => {
       it('dispatches requestJobsForStage and receiveJobsForStageSuccess', () => {
-        mock
-          .onGet(`${TEST_HOST}/jobs.json`)
-          .replyOnce(200, { latest_statuses: [{ id: 121212, name: 'build' }], retried: [] });
+        mock.onGet(`${TEST_HOST}/jobs.json`).replyOnce(HTTP_STATUS_OK, {
+          latest_statuses: [{ id: 121212, name: 'build' }],
+          retried: [],
+        });
 
         return testAction(
           fetchJobsForStage,

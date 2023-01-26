@@ -45,6 +45,21 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         expect(entity).to be_valid
       end
 
+      it 'is invalid when destination_namespace is nil' do
+        entity = build(:bulk_import_entity, :group_entity, group: build(:group), project: nil, destination_namespace: nil)
+        expect(entity).not_to be_valid
+      end
+
+      it 'is invalid when destination_slug is empty' do
+        entity = build(:bulk_import_entity, :group_entity, group: build(:group), project: nil, destination_slug: '')
+        expect(entity).not_to be_valid
+      end
+
+      it 'is invalid when destination_slug is nil' do
+        entity = build(:bulk_import_entity, :group_entity, group: build(:group), project: nil, destination_slug: nil)
+        expect(entity).not_to be_valid
+      end
+
       it 'is invalid as a project_entity' do
         stub_feature_flags(bulk_import_projects: true)
 
