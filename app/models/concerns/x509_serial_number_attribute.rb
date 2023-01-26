@@ -5,7 +5,7 @@ module X509SerialNumberAttribute
 
   class_methods do
     def x509_serial_number_attribute(name)
-      return if ENV['STATIC_VERIFICATION']
+      return if Gitlab::Environment.static_verification?
 
       validate_binary_column_exists!(name) unless Rails.env.production?
 

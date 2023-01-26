@@ -95,7 +95,7 @@ POST /projects/:id/variables
 | `variable_type`     | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file`                                                                   |
 | `protected`         | boolean        | no       | Whether the variable is protected. Default: `false`                                                                                           |
 | `masked`            | boolean        | no       | Whether the variable is masked. Default: `false`                                                                                              |
-| `raw`               | boolean        | no       | Whether the variable is expandable. Default: `false`                                                                                          |
+| `raw`               | boolean        | no       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
 | `environment_scope` | string         | no       | The `environment_scope` of the variable. Default: `*`                                                                                         |
 
 ```shell
@@ -132,7 +132,7 @@ PUT /projects/:id/variables/:key
 | `variable_type`     | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file`                                                                   |
 | `protected`         | boolean        | no       | Whether the variable is protected                                                                                                             |
 | `masked`            | boolean        | no       | Whether the variable is masked                                                                                                                |
-| `raw`               | boolean        | no       | Whether the variable is expandable. Default: `false`                                                                                          |
+| `raw`               | boolean        | no       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
 | `environment_scope` | string         | no       | The `environment_scope` of the variable                                                                                                       |
 | `filter`            | hash           | no       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter).                                        |
 

@@ -19,7 +19,7 @@ information, see [Restricted actions](#restricted-actions).
 
 ## Remove the read-only state
 
-To restore a namespace to its normal state, you can:
+To restore a namespace to its standard state, you can:
 
 - For exceeded free user limits:
   - [Reduce the number of members](free_user_limit.md#manage-members-in-your-namespace) in your namespace.

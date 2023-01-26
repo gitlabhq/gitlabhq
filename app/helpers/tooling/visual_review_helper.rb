@@ -22,5 +22,9 @@ module Tooling
         'id': 'review-app-toolbar-script',
         'src': 'https://gitlab.com/assets/webpack/visual_review_toolbar.js' }
     end
+
+    def review_apps_enabled?
+      Gitlab::Utils.to_boolean(ENV['REVIEW_APPS_ENABLED'], default: false)
+    end
   end
 end

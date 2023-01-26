@@ -10,7 +10,7 @@ The GitLab product is made up of several service components that run as independ
 
 ## Integration phases
 
-The following outline re-uses the [maturity metric](https://about.gitlab.com/direction/maturity/) naming as an example of the various phases of integrating a component. These are only loosely coupled to a components actual maturity, and are intended as a guide for implementation order (for example, a component does not need to be enabled by default to be Lovable, and being enabled by default does not on its own cause a component to be Lovable).
+The following outline re-uses the [maturity metric](https://about.gitlab.com/direction/maturity/) naming as an example of the various phases of integrating a component. These phases are only loosely coupled to a components actual maturity, and are intended as a guide for implementation order. For example, a component does not need to be enabled by default to be Lovable. Being enabled by default does not on its own cause a component to be Lovable.
 
 - Proposed
   - [Proposing a new component](#proposing-a-new-component)
@@ -37,7 +37,8 @@ The general steps for getting any GitLab feature from proposal to release can be
 
 ## Integrating a new service with GitLab
 
-Adding a new service follows the same [merge request workflow](contributing/merge_request_workflow.md) as other contributions, and must meet the same [completion criteria](contributing/merge_request_workflow.md#definition-of-done) and in addition needs to cover the following:
+Adding a new service follows the same [merge request workflow](contributing/merge_request_workflow.md) as other contributions, and must meet the same [completion criteria](contributing/merge_request_workflow.md#definition-of-done).
+In addition, it needs to cover the following:
 
 - The [architecture component list](architecture.md#component-list) has been updated to include the service.
 - Features provided by the component have been accepted into the [GitLab Product Direction](https://about.gitlab.com/direction/).
@@ -87,10 +88,10 @@ In addition, any system dependencies used in Omnibus packages or the Cloud Nativ
 
 ## Release management
 
-If the service component needs to be updated or released with the monthly GitLab release, then the component should be added to the [release tools automation](https://gitlab.com/gitlab-org/release-tools). This project is maintained by the [Delivery group](https://about.gitlab.com/handbook/engineering/infrastructure/team/delivery/).
+If the service component needs to be updated or released with the monthly GitLab release, then it should be added to the [release tools automation](https://gitlab.com/gitlab-org/release-tools). This project is maintained by the [Delivery group](https://about.gitlab.com/handbook/engineering/infrastructure/team/delivery/).
 
-There are different levels of automation available to include a component in GitLab releases. The requirements and process for including a component in a release at these different levels are detailed in the [release documentation](https://gitlab.com/gitlab-org/release/docs/-/tree/master/components).
+Different levels of automation are available to include a component in GitLab monthly releases. The requirements and process for including a component in a release at these different levels are detailed in the [release documentation](https://gitlab.com/gitlab-org/release/docs/-/tree/master/components).
 
 A list of the projects with releases managed by release tools can be found in the [release tools project directory](https://gitlab.com/gitlab-org/release-tools/-/tree/master/lib/release_tools/project).
 
-For example, during the monthly GitLab release, the desired version of Gitaly, GitLab Workhorse and GitLab Shell need to be synchronized through the various release pipelines.
+For example, the desired version of Gitaly, GitLab Workhorse, and GitLab Shell need to be synchronized through the various release pipelines.

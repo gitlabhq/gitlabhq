@@ -183,8 +183,8 @@ module Backup
     end
 
     def build_repositories_task
-      max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
-      max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
+      max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence&.to_i
+      max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence&.to_i
       strategy = Backup::GitalyBackup.new(progress, incremental: incremental?, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
 
       Repositories.new(progress,

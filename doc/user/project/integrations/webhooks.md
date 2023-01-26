@@ -289,7 +289,7 @@ To view the table:
 1. Each [failing webhook](#failing-webhooks) has a badge listing it as:
 
    - **Failed to connect** if it is misconfigured, and needs manual intervention to re-enable it.
-   - **Fails to connect** if it is temporarily disabled and will retry later.
+   - **Fails to connect** if it is temporarily disabled and is retrying later.
 
    ![Badges on failing webhooks](img/failed_badges.png)
 
@@ -336,9 +336,9 @@ GitLab expects a response in [10 seconds](../../../user/gitlab_com/index.md#othe
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365535) in GitLab 15.7. Feature flag `webhooks_failed_callout` removed.
 
 If a webhook is failing, a banner displays at the top of the edit page explaining
-why it is disabled, and when it will be automatically re-enabled. For example:
+why it is disabled, and when it is automatically re-enabled. For example:
 
-![A banner for a failing webhook, warning it failed to connect and will retry in 60 minutes](img/failed_banner.png)
+![A banner for a failing webhook, warning it has failed to connect and is retrying in 60 minutes](img/failed_banner.png)
 
 In the case of a failed webhook, an error banner is displayed:
 

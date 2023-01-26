@@ -37,7 +37,7 @@ Documentation issues and merge requests are part of their respective repositorie
 
 ### Branch naming
 
-The [CI pipeline for the main GitLab project](../pipelines.md) is configured to automatically
+The [CI pipeline for the main GitLab project](../pipelines/index.md) is configured to automatically
 run only the jobs that match the type of contribution. If your contribution contains
 **only** documentation changes, then only documentation-related jobs run, and
 the pipeline completes much faster than a code contribution.

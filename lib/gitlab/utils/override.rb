@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_dependency 'gitlab/utils'
+require_dependency 'gitlab/environment'
 
 module Gitlab
   module Utils
@@ -117,7 +118,7 @@ module Gitlab
       # This would make sure we're overriding something. See:
       # https://gitlab.com/gitlab-org/gitlab/issues/1819
       def override(method_name)
-        return unless ENV['STATIC_VERIFICATION']
+        return unless Gitlab::Environment.static_verification?
 
         Override.extensions[self] ||= Extension.new(self)
         Override.extensions[self].add_method_name(method_name)
@@ -126,7 +127,7 @@ module Gitlab
       def method_added(method_name)
         super
 
-        return unless ENV['STATIC_VERIFICATION']
+        return unless Gitlab::Environment.static_verification?
         return unless Override.extensions[self]&.verify_override?(method_name)
 
         method_arity = instance_method(method_name).arity
@@ -163,7 +164,7 @@ module Gitlab
       end
 
       def queue_verification(base, verify: false)
-        return unless ENV['STATIC_VERIFICATION']
+        return unless Gitlab::Environment.static_verification?
 
         # We could check for Class in `override`
         # This could be `nil` if `override` was never called.

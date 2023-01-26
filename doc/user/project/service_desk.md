@@ -67,7 +67,7 @@ one from the selector menu to append it to all Service Desk issues.
 To enable Service Desk in your project:
 
 1. (GitLab self-managed only) [Set up incoming email](../../administration/incoming_email.md#set-it-up) for the GitLab instance.
-   We recommend using [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing),
+   You should use [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing),
    but you can also use [catch-all mailboxes](../../administration/incoming_email.md#catch-all-mailbox).
 1. In a project, in the left sidebar, go to **Settings > General** and expand the **Service Desk** section.
 1. Enable the **Activate Service Desk** toggle. This reveals a unique email address to email issues
@@ -154,7 +154,7 @@ You can set description templates at various levels:
 - A specific [group or subgroup](description_templates.md#set-group-level-description-templates).
 - A specific [project](description_templates.md#set-a-default-template-for-merge-requests-and-issues).
 
-The templates are inherited. For example, in a project, you can also access templates set for the instance or the project's parent groups.
+The templates are inherited. For example, in a project, you can also access templates set for the instance, or the project's parent groups.
 
 To use a custom description template with Service Desk:
 
@@ -266,7 +266,7 @@ The configuration options are the same as for configuring
 > - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
 
 Service Desk can be configured to read Microsoft Exchange Online mailboxes with the Microsoft
-Graph API instead of IMAP. Follow the [documentation in the incoming email section for setting up an OAuth2 application for Microsoft Graph](../../administration/incoming_email.md#microsoft-graph).
+Graph API instead of IMAP. Follow the [documentation in the incoming email section for setting up an OAuth 2.0 application for Microsoft Graph](../../administration/incoming_email.md#microsoft-graph).
 
 - Example for Omnibus GitLab installations:
 

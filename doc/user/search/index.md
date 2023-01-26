@@ -113,7 +113,7 @@ You can filter issues and merge requests by specific terms included in titles or
     issues for `included in titles` is same as `included titles`
   - Search is limited to 4096 characters and 64 terms per query.
   - When searching issues, partial matches are not allowed. For example: searching for `play` will
-    not return issues that have the word `display`. But variations of words will still match, so searching
+    not return issues that have the word `display`. But variations of words match, so searching
     for `displays` also returns issues that have the word `display`.
 
 ## Retrieve search results as feed

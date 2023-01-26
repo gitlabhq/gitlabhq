@@ -25,7 +25,7 @@ Create a token and save it to use later in the process.
 
 ### Naming convention
 
-Depending on how the package will be installed, you may need to adhere to the naming convention.
+Depending on how the package is installed, you may need to adhere to the naming convention.
 
 You can use one of two API endpoints to install packages:
 
@@ -36,7 +36,7 @@ If you plan to install a package through the [project level](#install-from-the-p
 
 If you plan to install a package through the [instance level](#install-from-the-instance-level), then you must name your package with a [scope](https://docs.npmjs.com/misc/scope/). Scoped packages begin with a `@` have the format of `@owner/package-name`. You can set up the scope for your package in the `.npmrc` file and by using the `publishConfig` option in the `package.json`.
 
-- The value used for the `@scope` is the root of the project that will host the packages and not the root
+- The value used for the `@scope` is the root of the project that is hosting the packages and not the root
   of the project with the source code of the package itself. The scope should be lowercase.
 - The package name can be anything you want
 
@@ -64,7 +64,7 @@ Create or edit the `.npmrc` file in the same directory as your `package.json`. I
 - Replace `@scope` with the [root level group](#naming-convention) of the project you're publishing to the package to.
 - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
 - Replace `your_project_id` is your project ID, found on the project's home page.
-- `"${NPM_TOKEN}"` will be associated with the token you created later in the process.
+- `"${NPM_TOKEN}"` is associated with the token you created later in the process.
 
 WARNING:
 Never hardcode GitLab tokens (or any tokens) directly in `.npmrc` files or any other files that can
@@ -125,11 +125,11 @@ You can install a package from a GitLab project or instance:
 ### Install from the instance level
 
 WARNING:
-In order to install a package from the instance level, the package must have been published following the scoped [naming convention](#naming-convention).
+To install a package from the instance level, the package must have been published following the scoped [naming convention](#naming-convention).
 
 1. Authenticate to the Package Registry
 
-   If you would like to install a package from a private project, you will need to authenticate to the Package Registry. Skip this step if the project is not private.
+   If you would like to install a package from a private project, you would have to authenticate to the Package Registry. Skip this step if the project is not private.
 
    ```shell
    npm config set -- //your_domain_name/api/v4/packages/npm/:_authToken=your_token
@@ -158,7 +158,7 @@ In order to install a package from the instance level, the package must have bee
 
 1. Authenticate to the Package Registry
 
-   If you would like to install a package from a private project, you will need to authenticate to the Package Registry. Skip this step if the project is not private.
+   If you would like to install a package from a private project, you would have to authenticate to the Package Registry. Skip this step if the project is not private.
 
    ```shell
    npm config set -- //your_domain_name/api/v4/projects/your_project_id/packages/npm/:_authToken=your_token
@@ -317,7 +317,7 @@ Make sure that your `package.json` file does not exceed `20,000` characters.
 
 ### `npm publish` returns `npm ERR! 500 Internal Server Error - PUT`
 
-This is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/238950) in GitLab 13.3.x and later. The error in the logs will appear as:
+This is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/238950) in GitLab 13.3.x and later. The error in the logs appears as:
 
 ```plaintext
 >NoMethodError - undefined method `preferred_language' for #<Rack::Response

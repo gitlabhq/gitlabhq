@@ -295,7 +295,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   the `EnsureWorkItemTypeBackfillMigrationFinished` post-deploy migration.
 - GitLab 15.4.0 introduced a [batched background migration](background_migrations.md#batched-background-migrations) to
   [backfill `namespace_id` values on issues table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91921). This
-  migration might take multiple hours or days to complete on larger GitLab instances. Please make sure the migration
+  migration might take multiple hours or days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 15.7.0.
 - A database constraint is added, specifying that the `namespace_id` column on the issues
   table has no `NULL` values.
@@ -406,7 +406,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   `/etc/gitlab/gitlab.rb`, make sure `/etc/gitlab/gitlab-secrets.json` is the same on all nodes.
 - GitLab 15.4.0 introduced a [batched background migration](background_migrations.md#batched-background-migrations) to
   [backfill `namespace_id` values on issues table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91921). This
-  migration might take multiple hours or days to complete on larger GitLab instances. Please make sure the migration
+  migration might take multiple hours or days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 15.7.0 or later.
 
 ### 15.3.4
@@ -489,7 +489,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   fork/exec /var/opt/gitlab/gitaly/run/gitaly-<nnnn>/gitaly-git2go-v15: permission denied
   ```
 
-  To resolve this, remove the `noexec` option from the filesystem mount. An alternative is to change the Gitaly runtime directory:
+  To resolve this, remove the `noexec` option from the file system mount. An alternative is to change the Gitaly runtime directory:
 
   1. Add `gitaly['runtime_dir'] = '<PATH_WITH_EXEC_PERM>'` to `/etc/gitlab/gitlab.rb` and specify a location without `noexec` set.
   1. Run `sudo gitlab-ctl reconfigure`.
@@ -830,7 +830,7 @@ for how to proceed.
     ```
 
     NOTE:
-    The queued jobs can be monitored using Sidekiq's admin panel, which can be accessed at the `/admin/sidekiq` endpoint URI.
+    The queued jobs can be monitored using the Sidekiq admin panel, which can be accessed at the `/admin/sidekiq` endpoint URI.
 
   - Using a Rails process to run jobs synchronously:
 
