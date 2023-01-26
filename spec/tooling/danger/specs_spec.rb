@@ -111,7 +111,7 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
 
   describe '#add_suggestions_for_match_with_array' do
     let(:template) do
-      <<~MARKDOWN
+      <<~MARKDOWN.chomp
       ```suggestion
       %<suggested_line>s
       ```
@@ -141,7 +141,7 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
 
   describe '#add_suggestions_for_project_factory_usage' do
     let(:template) do
-      <<~MARKDOWN
+      <<~MARKDOWN.chomp
       ```suggestion
       %<suggested_line>s
       ```
@@ -225,7 +225,7 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
 
   describe '#add_suggestions_for_feature_category' do
     let(:template) do
-      <<~SUGGESTION_MARKDOWN
+      <<~SUGGESTION_MARKDOWN.chomp
       ```suggestion
       %<suggested_line>s
       ```

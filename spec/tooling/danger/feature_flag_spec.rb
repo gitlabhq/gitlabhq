@@ -86,13 +86,19 @@ RSpec.describe Tooling::Danger::FeatureFlag do
   describe described_class::Found do
     let(:feature_flag_path) { 'config/feature_flags/development/entry.yml' }
     let(:group) { 'group::source code' }
-    let(:raw_yaml) do
-      YAML.dump(
+    let(:yaml) do
+      {
         'group' => group,
         'default_enabled' => true,
-        'rollout_issue_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/1'
-      )
+        'rollout_issue_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/1',
+        'introduced_by_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/2',
+        'milestone' => '15.9',
+        'type' => 'development',
+        'name' => 'entry'
+      }
     end
+
+    let(:raw_yaml) { YAML.dump(yaml) }
 
     subject(:found) { described_class.new(feature_flag_path) }
 
@@ -101,58 +107,34 @@ RSpec.describe Tooling::Danger::FeatureFlag do
       expect(File).to receive(:read).with(feature_flag_path).and_return(raw_yaml)
     end
 
+    described_class::ATTRIBUTES.each do |attribute|
+      describe "##{attribute}" do
+        it 'returns value from the YAML' do
+          expect(found.public_send(attribute)).to eq(yaml[attribute])
+        end
+      end
+    end
+
     describe '#raw' do
       it 'returns the raw YAML' do
         expect(found.raw).to eq(raw_yaml)
       end
     end
 
-    describe '#group' do
-      it 'returns the group found in the YAML' do
-        expect(found.group).to eq(group)
-      end
-    end
-
-    describe '#default_enabled' do
-      it 'returns the default_enabled found in the YAML' do
-        expect(found.default_enabled).to eq(true)
-      end
-    end
-
-    describe '#rollout_issue_url' do
-      it 'returns the rollout_issue_url found in the YAML' do
-        expect(found.rollout_issue_url).to eq('https://gitlab.com/gitlab-org/gitlab/-/issues/1')
-      end
-    end
-
     describe '#group_match_mr_label?' do
-      subject(:result) { found.group_match_mr_label?(mr_group_label) }
-
-      context 'when MR labels match FF group' do
-        let(:mr_group_label) { 'group::source code' }
-
-        specify { expect(result).to eq(true) }
-      end
-
-      context 'when MR labels does not match FF group' do
-        let(:mr_group_label) { 'group::authentication and authorization' }
-
-        specify { expect(result).to eq(false) }
-      end
-
       context 'when group is nil' do
         let(:group) { nil }
 
-        context 'and MR has no group label' do
-          let(:mr_group_label) { nil }
-
-          specify { expect(result).to eq(true) }
+        it 'is true only if MR has no group label' do
+          expect(found.group_match_mr_label?(nil)).to eq true
+          expect(found.group_match_mr_label?('group::source code')).to eq false
         end
+      end
 
-        context 'and MR has a group label' do
-          let(:mr_group_label) { 'group::source code' }
-
-          specify { expect(result).to eq(false) }
+      context 'when group is not nil' do
+        it 'is true only if MR has the same group label' do
+          expect(found.group_match_mr_label?(group)).to eq true
+          expect(found.group_match_mr_label?('group::authentication and authorization')).to eq false
         end
       end
     end

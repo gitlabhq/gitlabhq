@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
 require 'yaml'
+require_relative 'suggestor'
 
 module Tooling
   module Danger
     module ConfigFiles
-      SUGGEST_INTRODUCED_BY_COMMENT = <<~SUGGEST_COMMENT
-        ```suggestion
-        introduced_by_url: %<url>
-        ```
-      SUGGEST_COMMENT
+      include ::Tooling::Danger::Suggestor
+
+      MISSING_INTRODUCED_BY_REGEX = /^\+?(?<attr_name>\s*introduced_by_url):\s*$/
 
       CONFIG_DIRS = %w[
         config/feature_flags
@@ -18,14 +17,12 @@ module Tooling
       ].freeze
 
       def add_suggestion_for_missing_introduced_by_url
-        new_config_files.each do |file_name|
-          config_file_lines = project_helper.file_lines(file_name)
-
-          config_file_lines.each_with_index do |added_line, i|
-            next unless added_line =~ /^introduced_by_url:\s?$/
-
-            markdown(format(SUGGEST_INTRODUCED_BY_COMMENT, url: helper.mr_web_url), file: file_name, line: i + 1)
-          end
+        new_config_files.each do |filename|
+          add_suggestion(
+            filename: filename,
+            regex: MISSING_INTRODUCED_BY_REGEX,
+            replacement: "\\k<attr_name>: #{helper.mr_web_url}"
+          )
         end
       end
 

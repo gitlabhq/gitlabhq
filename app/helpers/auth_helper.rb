@@ -17,7 +17,6 @@ module AuthHelper
     jwt
     openid_connect
     salesforce
-    shibboleth
     twitter
   ).freeze
   LDAP_PROVIDER = /\Aldap/.freeze

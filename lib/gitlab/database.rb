@@ -124,7 +124,9 @@ module Gitlab
     end
 
     def self.has_config?(database_name)
-      Gitlab::Application.config.database_configuration[Rails.env].include?(database_name.to_s)
+      ActiveRecord::Base.configurations
+        .configs_for(env_name: Rails.env, name: database_name.to_s, include_replicas: true)
+        .present?
     end
 
     class PgUser < ApplicationRecord

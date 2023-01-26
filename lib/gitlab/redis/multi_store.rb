@@ -46,13 +46,6 @@ module Gitlab
       #
       # Ref: https://www.rubydoc.info/github/redis/redis-rb/Redis/Commands
       #
-      ENUMERATOR_CACHE_HIT_VALIDATOR = {
-        scan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
-        hscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
-        sscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
-        zscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? }
-      }.freeze
-
       READ_CACHE_HIT_VALIDATOR = {
         exists: ->(val) { val != 0 },
         exists?: ->(val) { val },
@@ -62,13 +55,17 @@ module Gitlab
         hgetall:  ->(val) { val.is_a?(Hash) && !val.empty? },
         hlen: ->(val) { val != 0 },
         hmget: ->(val) { val.is_a?(Array) && !val.compact.empty? },
+        hscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
         mapped_hmget: ->(val) { val.is_a?(Hash) && !val.compact.empty? },
         mget: ->(val) { val.is_a?(Array) && !val.compact.empty? },
+        scan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
         scard: ->(val) { val != 0 },
         sismember: ->(val) { val },
         smembers: ->(val) { val.is_a?(Array) && !val.empty? },
         sscan: ->(val) { val != ['0', []] },
-        ttl: ->(val) { val != 0 && val != -2 }
+        sscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? },
+        ttl: ->(val) { val != 0 && val != -2 }, # ttl returns -2 if the key does not exist. See https://redis.io/commands/ttl/
+        zscan_each: ->(val) { val.is_a?(Enumerator) && !val.first.nil? }
       }.freeze
 
       WRITE_COMMANDS = %i[
@@ -131,20 +128,6 @@ module Gitlab
           else
             default_store.send(name, *args, **kwargs, &block)
           end
-        end
-      end
-
-      ENUMERATOR_CACHE_HIT_VALIDATOR.each_key do |name|
-        define_method(name) do |*args, **kwargs, &block|
-          enumerator = if use_primary_and_secondary_stores?
-                         read_command(name, *args, **kwargs)
-                       else
-                         default_store.send(name, *args, **kwargs)
-                       end
-
-          return enumerator if block.nil?
-
-          enumerator.each(&block)
         end
       end
 
@@ -281,13 +264,13 @@ module Gitlab
             multi_store_error_message: FAILED_TO_READ_ERROR_MESSAGE)
         end
 
-        return value if cache_hit?(command_name, value)
+        return value if block.nil? && cache_hit?(command_name, value)
 
         fallback_read(command_name, *args, **kwargs, &block)
       end
 
       def cache_hit?(command, value)
-        validator = READ_CACHE_HIT_VALIDATOR[command] || ENUMERATOR_CACHE_HIT_VALIDATOR[command]
+        validator = READ_CACHE_HIT_VALIDATOR[command]
         return false unless validator
 
         !value.nil? && validator.call(value)

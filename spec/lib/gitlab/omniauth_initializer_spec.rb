@@ -216,14 +216,6 @@ RSpec.describe Gitlab::OmniauthInitializer do
       expect { subject.execute([hash_config]) }.to raise_error(NameError)
     end
 
-    it 'configures fail_with_empty_uid for shibboleth' do
-      shibboleth_config = { 'name' => 'shibboleth', 'args' => {} }
-
-      expect(devise_config).to receive(:omniauth).with(:shibboleth, fail_with_empty_uid: true)
-
-      subject.execute([shibboleth_config])
-    end
-
     it 'configures remote_sign_out_handler proc for authentiq' do
       authentiq_config = { 'name' => 'authentiq', 'args' => {} }
 

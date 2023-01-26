@@ -33,20 +33,31 @@ RSpec.describe Gitlab::Database do
 
   describe '.has_config?' do
     context 'three tier database config' do
-      before do
-        allow(Gitlab::Application).to receive_message_chain(:config, :database_configuration, :[]).with(Rails.env)
-          .and_return({
-            "primary" => { "adapter" => "postgresql", "database" => "gitlabhq_test" },
-            "ci" => { "adapter" => "postgresql", "database" => "gitlabhq_test_ci" }
-          })
+      it 'returns true for main' do
+        expect(described_class.has_config?(:main)).to eq(true)
       end
 
-      it 'returns true for primary' do
-        expect(described_class.has_config?(:primary)).to eq(true)
-      end
+      context 'ci' do
+        before do
+          # CI config might not be configured
+          allow(ActiveRecord::Base.configurations).to receive(:configs_for)
+            .with(env_name: 'test', name: 'ci', include_replicas: true)
+            .and_return(ci_db_config)
+        end
 
-      it 'returns true for ci' do
-        expect(described_class.has_config?(:ci)).to eq(true)
+        let(:ci_db_config) { instance_double('ActiveRecord::DatabaseConfigurations::HashConfig') }
+
+        it 'returns true for ci' do
+          expect(described_class.has_config?(:ci)).to eq(true)
+        end
+
+        context 'ci database.yml not configured' do
+          let(:ci_db_config) { nil }
+
+          it 'returns false for ci' do
+            expect(described_class.has_config?(:ci)).to eq(false)
+          end
+        end
       end
 
       it 'returns false for non-existent' do
