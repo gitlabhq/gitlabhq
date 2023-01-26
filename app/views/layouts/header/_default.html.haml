@@ -76,12 +76,12 @@
                     = _('Merge requests')
                   %li
                     = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
-                      = _('Assigned to you')
+                      = _('Assigned')
                       = gl_badge_tag({ variant: :neutral, size: :sm }, { class: "js-assigned-mr-count gl-ml-auto" }) do
                         = user_merge_requests_counts[:assigned]
                   %li
                     = link_to reviewer_mrs_dashboard_path, class: 'dashboard-shortcuts-review_requests gl-display-flex! gl-align-items-center js-prefetch-document' do
-                      = _('Review requests for you')
+                      = _('Review requests')
                       = gl_badge_tag({ variant: :neutral, size: :sm }, { class: "js-reviewer-mr-count gl-ml-auto" }) do
                         = user_merge_requests_counts[:review_requested]
           - if header_link?(:todos)

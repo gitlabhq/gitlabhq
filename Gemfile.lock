@@ -925,7 +925,7 @@ GEM
     multi_json (1.14.1)
     multi_xml (0.6.0)
     multipart-post (2.2.3)
-    murmurhash3 (0.1.6)
+    murmurhash3 (0.1.7)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     mustermann-grape (1.0.1)

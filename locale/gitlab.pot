@@ -5502,6 +5502,9 @@ msgstr ""
 msgid "Assign to me"
 msgstr ""
 
+msgid "Assigned"
+msgstr ""
+
 msgid "Assigned %{assignee_users_sentence}."
 msgstr ""
 
@@ -5524,9 +5527,6 @@ msgid "Assigned to %{assignee_name}"
 msgstr ""
 
 msgid "Assigned to me"
-msgstr ""
-
-msgid "Assigned to you"
 msgstr ""
 
 msgid "Assignee"
@@ -36156,7 +36156,7 @@ msgstr ""
 msgid "Review changes"
 msgstr ""
 
-msgid "Review requests for you"
+msgid "Review requests"
 msgstr ""
 
 msgid "Review the changes locally."
