@@ -4,10 +4,14 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 
+import {
+  newRunnerPath,
+  emptyStateSvgPath,
+  emptyStateFilteredSvgPath,
+} from 'jest/ci/runner/mock_data';
+
 import RunnerListEmptyState from '~/ci/runner/components/runner_list_empty_state.vue';
 
-const mockSvgPath = 'mock-svg-path.svg';
-const mockFilteredSvgPath = 'mock-filtered-svg-path.svg';
 const mockRegistrationToken = 'REGISTRATION_TOKEN';
 
 describe('RunnerListEmptyState', () => {
@@ -17,12 +21,13 @@ describe('RunnerListEmptyState', () => {
   const findLink = () => wrapper.findComponent(GlLink);
   const findRunnerInstructionsModal = () => wrapper.findComponent(RunnerInstructionsModal);
 
-  const createComponent = ({ props, mountFn = shallowMountExtended } = {}) => {
+  const createComponent = ({ props, mountFn = shallowMountExtended, ...options } = {}) => {
     wrapper = mountFn(RunnerListEmptyState, {
       propsData: {
-        svgPath: mockSvgPath,
-        filteredSvgPath: mockFilteredSvgPath,
+        svgPath: emptyStateSvgPath,
+        filteredSvgPath: emptyStateFilteredSvgPath,
         registrationToken: mockRegistrationToken,
+        newRunnerPath,
         ...props,
       },
       directives: {
@@ -33,6 +38,7 @@ describe('RunnerListEmptyState', () => {
         GlSprintf,
         GlLink,
       },
+      ...options,
     });
   };
 
@@ -45,7 +51,7 @@ describe('RunnerListEmptyState', () => {
       });
 
       it('renders an illustration', () => {
-        expect(findEmptyState().props('svgPath')).toBe(mockSvgPath);
+        expect(findEmptyState().props('svgPath')).toBe(emptyStateSvgPath);
       });
 
       it('displays "no results" text with instructions', () => {
@@ -56,10 +62,53 @@ describe('RunnerListEmptyState', () => {
         expect(findEmptyState().text()).toMatchInterpolatedText(`${title} ${desc}`);
       });
 
-      it('opens a runner registration instructions modal with a link', () => {
-        const { value } = getBinding(findLink().element, 'gl-modal');
+      describe('when create_runner_workflow is enabled', () => {
+        beforeEach(() => {
+          createComponent({
+            provide: {
+              glFeatures: { createRunnerWorkflow: true },
+            },
+          });
+        });
 
-        expect(findRunnerInstructionsModal().props('modalId')).toEqual(value);
+        it('shows a link to the new runner page', () => {
+          expect(findLink().attributes('href')).toBe(newRunnerPath);
+        });
+      });
+
+      describe('when create_runner_workflow is enabled and newRunnerPath not defined', () => {
+        beforeEach(() => {
+          createComponent({
+            props: {
+              newRunnerPath: null,
+            },
+            provide: {
+              glFeatures: { createRunnerWorkflow: true },
+            },
+          });
+        });
+
+        it('opens a runner registration instructions modal with a link', () => {
+          const { value } = getBinding(findLink().element, 'gl-modal');
+
+          expect(findRunnerInstructionsModal().props('modalId')).toEqual(value);
+        });
+      });
+
+      describe('when create_runner_workflow is disabled', () => {
+        beforeEach(() => {
+          createComponent({
+            provide: {
+              glFeatures: { createRunnerWorkflow: false },
+            },
+          });
+        });
+
+        it('opens a runner registration instructions modal with a link', () => {
+          const { value } = getBinding(findLink().element, 'gl-modal');
+
+          expect(findRunnerInstructionsModal().props('modalId')).toEqual(value);
+        });
       });
     });
 
@@ -69,7 +118,7 @@ describe('RunnerListEmptyState', () => {
       });
 
       it('renders an illustration', () => {
-        expect(findEmptyState().props('svgPath')).toBe(mockSvgPath);
+        expect(findEmptyState().props('svgPath')).toBe(emptyStateSvgPath);
       });
 
       it('displays "no results" text', () => {
@@ -92,7 +141,7 @@ describe('RunnerListEmptyState', () => {
     });
 
     it('renders a "filtered search" illustration', () => {
-      expect(findEmptyState().props('svgPath')).toBe(mockFilteredSvgPath);
+      expect(findEmptyState().props('svgPath')).toBe(emptyStateFilteredSvgPath);
     });
 
     it('displays "no filtered results" text', () => {

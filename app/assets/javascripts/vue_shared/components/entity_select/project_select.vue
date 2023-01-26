@@ -2,6 +2,7 @@
 import { GlAlert } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import Api from '~/api';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
   PROJECT_TOGGLE_TEXT,
   PROJECT_HEADER_TEXT,
@@ -15,10 +16,18 @@ export default {
     GlAlert,
     EntitySelector,
   },
+  directives: {
+    SafeHtml,
+  },
   props: {
     label: {
       type: String,
       required: true,
+    },
+    hasHtmlLabel: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     inputName: {
       type: String,
@@ -30,17 +39,33 @@ export default {
     },
     groupId: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
+    },
+    userId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    includeSubgroups: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    membership: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    orderBy: {
+      type: String,
+      required: false,
+      default: 'similarity',
     },
     initialSelection: {
       type: String,
       required: false,
       default: null,
-    },
-    clearable: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   data() {
@@ -52,12 +77,39 @@ export default {
     async fetchProjects(searchString = '') {
       let projects = [];
       try {
-        const { data = [] } = await Api.groupProjects(this.groupId, searchString, {
-          with_shared: true,
-          include_subgroups: false,
-          order_by: 'similarity',
-          simple: true,
-        });
+        const { data = [] } = await (() => {
+          const commonParams = {
+            order_by: this.orderBy,
+            simple: true,
+          };
+
+          if (this.groupId) {
+            return Api.groupProjects(this.groupId, searchString, {
+              ...commonParams,
+              with_shared: true,
+              include_subgroups: this.includeSubgroups,
+              simple: true,
+            });
+          }
+          // Note: the whole userId handling supports a single project selector that is slated for
+          // removal. Once we have deleted app/views/clusters/clusters/_advanced_settings.html.haml,
+          // we should be able to clean this up.
+          if (this.userId) {
+            return Api.userProjects(
+              this.userId,
+              searchString,
+              {
+                with_shared: true,
+                include_subgroups: this.includeSubgroups,
+              },
+              (res) => ({ data: res }),
+            );
+          }
+          return Api.projects(searchString, {
+            ...commonParams,
+            membership: this.membership,
+          });
+        })();
         projects = data.map((item) => ({
           text: item.name_with_namespace || item.name,
           value: String(item.id),
@@ -98,12 +150,15 @@ export default {
     :input-name="inputName"
     :input-id="inputId"
     :initial-selection="initialSelection"
-    :clearable="clearable"
     :header-text="$options.i18n.selectProject"
     :default-toggle-text="$options.i18n.searchForProject"
     :fetch-items="fetchProjects"
     :fetch-initial-selection-text="fetchProjectName"
+    clearable
   >
+    <template v-if="hasHtmlLabel" #label>
+      <span v-safe-html="label"></span>
+    </template>
     <template #error>
       <gl-alert v-if="errorMessage" class="gl-mb-3" variant="danger" @dismiss="dismissError">{{
         errorMessage

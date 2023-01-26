@@ -138,6 +138,8 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
                params: { target_project_id: project.id, target_issue_iid: target_issue.iid, link_type: 'relates_to' }
 
           expect_link_response(link_type: 'relates_to')
+          expect(json_response['source_issue']['id']).to eq(issue.id)
+          expect(json_response['target_issue']['id']).to eq(target_issue.id)
         end
 
         it 'returns 201 when sending full path of target project' do

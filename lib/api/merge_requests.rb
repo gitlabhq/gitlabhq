@@ -140,7 +140,6 @@ module API
       end
       get feature_category: :code_review_workflow, urgency: :low do
         authenticate! unless params[:scope] == 'all'
-        validate_anonymous_search_access! if params[:search].present?
         validate_search_rate_limit! if declared_params[:search].present?
         merge_requests = find_merge_requests
 
@@ -169,7 +168,6 @@ module API
                                 desc: 'Returns merge requests from non archived projects only.'
       end
       get ":id/merge_requests", feature_category: :code_review_workflow, urgency: :low do
-        validate_anonymous_search_access! if declared_params[:search].present?
         validate_search_rate_limit! if declared_params[:search].present?
         merge_requests = find_merge_requests(group_id: user_group.id, include_subgroups: true)
 
@@ -237,7 +235,6 @@ module API
       end
       get ":id/merge_requests", feature_category: :code_review_workflow, urgency: :low do
         authorize! :read_merge_request, user_project
-        validate_anonymous_search_access! if declared_params[:search].present?
         validate_search_rate_limit! if declared_params[:search].present?
 
         merge_requests = find_merge_requests(project_id: user_project.id)

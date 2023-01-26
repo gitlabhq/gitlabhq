@@ -691,12 +691,6 @@ module API
       {}
     end
 
-    def validate_anonymous_search_access!
-      return if current_user.present? || Feature.disabled?(:disable_anonymous_search, type: :ops)
-
-      unprocessable_entity!('User must be authenticated to use search')
-    end
-
     def validate_search_rate_limit!
       if current_user
         check_rate_limit!(:search_rate_limit, scope: [current_user])

@@ -32027,7 +32027,13 @@ msgstr ""
 msgid "Product Analytics|Analyze your product with Product Analytics"
 msgstr ""
 
+msgid "Product Analytics|Back to dashboards"
+msgstr ""
+
 msgid "Product Analytics|Creating your product analytics instance..."
+msgstr ""
+
+msgid "Product Analytics|Details on how to configure product analytics to collect data."
 msgstr ""
 
 msgid "Product Analytics|For the product analytics dashboard to start showing you some data, you need to add the analytics tracking code to your project."
@@ -32040,6 +32046,9 @@ msgid "Product Analytics|Import the new package into your JS code:"
 msgstr ""
 
 msgid "Product Analytics|Instrument your application"
+msgstr ""
+
+msgid "Product Analytics|Instrumentation details"
 msgstr ""
 
 msgid "Product Analytics|SDK App ID"
@@ -36424,6 +36433,9 @@ msgstr ""
 msgid "Runners|Copy registration token"
 msgstr ""
 
+msgid "Runners|Create an instance runner"
+msgstr ""
+
 msgid "Runners|Created %{timeAgo}"
 msgstr ""
 
@@ -36547,6 +36559,9 @@ msgid "Runners|Never expires"
 msgstr ""
 
 msgid "Runners|New group runners can be registered"
+msgstr ""
+
+msgid "Runners|New instance runner"
 msgstr ""
 
 msgid "Runners|New registration token generated!"
@@ -38550,6 +38565,9 @@ msgid "Select a branch"
 msgstr ""
 
 msgid "Select a branch to compare"
+msgstr ""
+
+msgid "Select a cluster management project"
 msgstr ""
 
 msgid "Select a color"
@@ -48649,9 +48667,6 @@ msgid "You must provide your current password in order to change it."
 msgstr ""
 
 msgid "You must sign in to search for specific projects."
-msgstr ""
-
-msgid "You must sign in to search for specific terms."
 msgstr ""
 
 msgid "You must solve the CAPTCHA in order to submit"

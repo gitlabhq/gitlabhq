@@ -670,35 +670,6 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
             expect(items).to contain_exactly(english)
           end
         end
-
-        context 'with anonymous user' do
-          let_it_be(:public_project) { create(:project, :public, group: subgroup) }
-          let_it_be(:item6) { create(factory, project: public_project, title: 'tanuki') }
-          let_it_be(:item7) { create(factory, project: public_project, title: 'ikunat') }
-
-          let(:search_user) { nil }
-          let(:params) { { search: 'tanuki' } }
-
-          context 'with disable_anonymous_search feature flag enabled' do
-            before do
-              stub_feature_flags(disable_anonymous_search: true)
-            end
-
-            it 'does not perform search' do
-              expect(items).to contain_exactly(item6, item7)
-            end
-          end
-
-          context 'with disable_anonymous_search feature flag disabled' do
-            before do
-              stub_feature_flags(disable_anonymous_search: false)
-            end
-
-            it 'finds one public item' do
-              expect(items).to contain_exactly(item6)
-            end
-          end
-        end
       end
 
       context 'filtering by item term in title' do

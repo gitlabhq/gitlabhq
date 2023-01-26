@@ -170,6 +170,9 @@ export default {
 <template>
   <gl-form-group :label="label">
     <slot name="error"></slot>
+    <template v-if="Boolean($scopedSlots.label)" #label>
+      <slot name="label"></slot>
+    </template>
     <gl-collapsible-listbox
       ref="listbox"
       v-model="selected"

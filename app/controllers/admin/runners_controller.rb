@@ -3,7 +3,11 @@
 class Admin::RunnersController < Admin::ApplicationController
   include RunnerSetupScripts
 
-  before_action :runner, except: [:index, :tag_list, :runner_setup_scripts]
+  before_action :runner, except: [:index, :new, :tag_list, :runner_setup_scripts]
+
+  before_action only: [:index] do
+    push_frontend_feature_flag(:create_runner_workflow, current_user)
+  end
 
   feature_category :runner
   urgency :low
@@ -16,6 +20,10 @@ class Admin::RunnersController < Admin::ApplicationController
 
   def edit
     assign_projects
+  end
+
+  def new
+    render_404 unless Feature.enabled?(:create_runner_workflow, current_user)
   end
 
   def update

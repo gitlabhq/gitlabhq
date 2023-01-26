@@ -30,7 +30,7 @@ Documentation for GitLab instance administrators is under [LFS administration do
 ## Requirements
 
 - Git LFS must be [enabled in project settings](../../../user/project/settings/index.md#configure-project-visibility-features-and-permissions).
-- [Git LFS client](https://git-lfs.github.com) version 1.0.1 or higher must be installed.
+- [Git LFS client](https://git-lfs.com/) version 1.0.1 or higher must be installed.
 
 ## Known limitations
 

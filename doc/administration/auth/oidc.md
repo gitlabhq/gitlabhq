@@ -356,7 +356,7 @@ but `LocalAccounts` authenticates against local Active Directory accounts. Befor
   Ensure the payload includes `email` that matches the user's email access.
 - After you enable the custom policy, users might see `Invalid username or password`
   after they try to sign in. This might be a configuration issue with the `IdentityExperienceFramework`
-  app. See [this Microsoft comment](https://learn.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy.html?childToView=122370#comment-122370) that suggests you check that the app manifest
+  app. See [this Microsoft comment](https://learn.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy?childtoview=122370#comment-122370) that suggests you check that the app manifest
   contains these settings:
 
   - `"accessTokenAcceptedVersion": null`

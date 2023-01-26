@@ -35,11 +35,17 @@ Learn more about [how suggested reviewers works and data privacy](data_usage.md)
 
 ### Enable suggested reviewers
 
-Project Maintainers or Owners can enable suggested reviewers by visiting the [project settings](../../settings/index.md).
+Project Maintainers or Owners can enable suggested reviewers by visiting
+the [project settings](../../settings/index.md).
 
-Enabling suggested reviewers will trigger GitLab to create an ML model for your project that will be used to generate reviewers. The larger your project, the longer this can take, but usually, the model will be ready to generate suggestions within a few hours.
+Enabling suggested reviewers triggers GitLab to create an ML model for your
+project that is used to generate reviewers. The larger your project, the longer
+this process can take. Usually, the model is ready to generate suggestions
+within a few hours.
 
-No action is required once the feature is enabled. Once the model is ready, recommendations will populate the Reviewer dropdown list in the right-hand sidebar of a merge request with new commits.
+No action is required after the feature is enabled. After the model is ready,
+recommendations populate the **Reviewer** dropdown list in the right-hand sidebar
+of a merge request with new commits.
 
 ## Review a merge request
 
@@ -147,7 +153,7 @@ To resolve or unresolve a thread when replying to a comment:
 
 Pending comments display information about the action to be taken when the comment is published:
 
-- **{check-circle-filled}** Thread will be resolved.
+- **{check-circle-filled}** Thread is resolved.
 - **{check-circle}** Thread stays unresolved.
 
 ### Add a new comment
@@ -194,7 +200,7 @@ them a notification email.
 ## Comment on multiple lines
 
 > - [Introduced](https://gitlab.com/gitlab-org/ux-research/-/issues/870) in GitLab 13.2.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49875) click-and-drag features in GitLab 13.8.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49875) select-and-drag features in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299121) in GitLab 13.9.
 
 When commenting on a diff, you can select which lines of code your comment refers

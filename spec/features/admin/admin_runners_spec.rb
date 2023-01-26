@@ -21,13 +21,27 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, namespace: namespace, creator: user) }
 
+    describe "runners creation" do
+      before do
+        stub_feature_flags(create_runner_workflow: true)
+
+        visit admin_runners_path
+      end
+
+      it 'shows a create button' do
+        expect(page).to have_link s_('Runner|New instance runner'), href: new_admin_runner_path
+      end
+    end
+
     describe "runners registration" do
       before do
+        stub_feature_flags(create_runner_workflow: false)
+
         visit admin_runners_path
       end
 
       it_behaves_like "shows and resets runner registration token" do
-        let(:dropdown_text) { 'Register an instance runner' }
+        let(:dropdown_text) { s_('Runners|Register an instance runner') }
         let(:registration_token) { Gitlab::CurrentSettings.runners_registration_token }
       end
     end
@@ -65,7 +79,6 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         end
 
         it 'has all necessary texts' do
-          expect(page).to have_text "Register an instance runner"
           expect(page).to have_text "#{s_('Runners|All')} 3"
           expect(page).to have_text "#{s_('Runners|Online')} 1"
           expect(page).to have_text "#{s_('Runners|Offline')} 2"

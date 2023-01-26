@@ -366,7 +366,7 @@ former is ideal for replicating data belonging to a subset of users, while the
 latter is more suited to progressively rolling out Geo to a large GitLab
 instance.
 
-It is important to note that selective synchronization:
+Selective synchronization:
 
 1. Does not restrict permissions from **secondary** sites.
 1. Does not hide project metadata from **secondary** sites.

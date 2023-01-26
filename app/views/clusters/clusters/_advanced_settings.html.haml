@@ -18,12 +18,18 @@
       %h4
         = s_('ClusterIntegration|Cluster management project')
 
-      %p
-        = project_select_tag('cluster[management_project_id]', class: 'hidden-filter-value', toggle_class: 'js-project-search js-project-filter js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
-            placeholder: _('Select project'), idAttribute: 'id', data: { order_by: 'last_activity_at', idattribute: 'id', simple_filter: true, allow_clear: true, include_groups: false, include_projects_in_subgroups: true, group_id: group_id, user_id: user_id }, value: @cluster.management_project_id)
-        .text-muted
-          = html_escape(s_('ClusterIntegration|A cluster management project can be used to run deployment jobs with Kubernetes %{code_open}cluster-admin%{code_close} privileges.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-          = link_to _('More information'), help_page_path('user/clusters/management_project.md'), target: '_blank', rel: 'noopener noreferrer'
+      .js-vue-project-select{ data: { label: _('Select a cluster management project'),
+          input_name: 'cluster[management_project_id]',
+          input_id: 'cluster[management_project_id]',
+          order_by: 'last_activity_at',
+          group_id: group_id,
+          user_id: user_id,
+          include_subgroups: true.to_s,
+          membership: true.to_s,
+          selected: @cluster.management_project_id } }
+      %p.text-muted.gl-mt-n5
+        = html_escape(s_('ClusterIntegration|A cluster management project can be used to run deployment jobs with Kubernetes %{code_open}cluster-admin%{code_close} privileges.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+        = link_to _('More information'), help_page_path('user/clusters/management_project.md'), target: '_blank', rel: 'noopener noreferrer'
       = field.submit _('Save changes'), pajamas_button: true
 
   .sub-section.form-group

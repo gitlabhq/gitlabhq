@@ -1,8 +1,9 @@
 import { GlModal, GlDropdown, GlDropdownItem, GlDropdownForm } from '@gitlab/ui';
 import { mount, shallowMount, createWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
-
 import VueApollo from 'vue-apollo';
+
+import { s__ } from '~/locale';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -84,9 +85,9 @@ describe('RegistrationDropdown', () => {
 
   it.each`
     type             | text
-    ${INSTANCE_TYPE} | ${'Register an instance runner'}
-    ${GROUP_TYPE}    | ${'Register a group runner'}
-    ${PROJECT_TYPE}  | ${'Register a project runner'}
+    ${INSTANCE_TYPE} | ${s__('Runners|Register an instance runner')}
+    ${GROUP_TYPE}    | ${s__('Runners|Register a group runner')}
+    ${PROJECT_TYPE}  | ${s__('Runners|Register a project runner')}
   `('Dropdown text for type $type is "$text"', () => {
     createComponent({ props: { type: INSTANCE_TYPE } }, mount);
 

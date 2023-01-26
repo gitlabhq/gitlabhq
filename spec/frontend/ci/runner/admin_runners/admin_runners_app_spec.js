@@ -56,6 +56,7 @@ import {
   allRunnersDataPaginated,
   onlineContactTimeoutSecs,
   staleTimeoutSecs,
+  newRunnerPath,
   emptyPageInfo,
   emptyStateSvgPath,
   emptyStateFilteredSvgPath,
@@ -113,6 +114,7 @@ describe('AdminRunnersApp', () => {
       apolloProvider: createMockApollo(handlers, {}, cacheConfig),
       propsData: {
         registrationToken: mockRegistrationToken,
+        newRunnerPath,
         ...props,
       },
       provide: {
@@ -443,7 +445,13 @@ describe('AdminRunnersApp', () => {
     });
 
     it('shows an empty state', () => {
-      expect(findRunnerListEmptyState().props('isSearchFiltered')).toBe(false);
+      expect(findRunnerListEmptyState().props()).toEqual({
+        newRunnerPath,
+        isSearchFiltered: false,
+        filteredSvgPath: emptyStateFilteredSvgPath,
+        registrationToken: mockRegistrationToken,
+        svgPath: emptyStateSvgPath,
+      });
     });
 
     describe('when a filter is selected by the user', () => {

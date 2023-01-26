@@ -10,12 +10,16 @@ Members are the users and groups who have access to your project.
 
 Each member gets a role, which determines what they can do in the project.
 
-Project members can:
+## Membership types
 
-1. Be [direct members](#add-users-to-a-project) of the project.
-1. [Inherit membership](#inherited-membership) of the project from the project's group.
-1. Be a member of a group that was [shared](share_project_with_groups.md) with the project.
-1. Be a member of a group that was [shared with the project's group](../../group/manage.md#share-a-group-with-another-group).
+Users can become members of a group or project in different ways, which define their membership type.
+
+| Membership type                               | Membership process |
+| --------------------------------------------- | ------------------ |
+| [Direct](#add-users-to-a-project)             | The user is added directly to the current group or project. |
+| [Inherited](#inherited-membership)            | The user is a member of an ancestor group or project that is added to the current group or project. |
+| [Direct shared](share_project_with_groups.md) | The user is a member of a group or project that is shared into the current group or project. |
+| [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of an ancestor of a group or project that is shared into the current group or project. |
 
 ```mermaid
 flowchart RL
@@ -40,6 +44,28 @@ flowchart RL
   B-->|Inherited membership of Project A|D
   G-->|Group C shared with Project A|E
 ```
+
+### Inherited membership
+
+When your project belongs to a group, project members inherit their role
+from the group.
+
+![Project members page](img/project_members_v14_4.png)
+
+In this example:
+
+- Three members have access to the project.
+- **User 0** is a Reporter and has inherited their role in the project from the **demo** group,
+  which contains the project.
+- **User 1** belongs directly to the project. In the **Source** column, they are listed
+  as a **Direct member**.
+- **Administrator** is the [Owner](../../permissions.md) and member of all groups.
+  They have inherited their role in the project from the **demo** group.
+
+If a user is:
+
+- A direct member of a project, the **Expiration** and **Max role** fields can be updated directly on the project.
+- An inherited member from a parent group, the **Expiration** and **Max role** fields must be updated on the parent group.
 
 ## Add users to a project
 
@@ -146,28 +172,6 @@ To import users:
 1. Select **Import project members**.
 
 After the success message displays, refresh the page to view the new members.
-
-## Inherited membership
-
-When your project belongs to a group, group members inherit their role
-from the group.
-
-![Project members page](img/project_members_v14_4.png)
-
-In this example:
-
-- Three members have access to the project.
-- **User 0** is a Reporter and has inherited their role from the **demo** group,
-  which contains the project.
-- **User 1** belongs directly to the project. In the **Source** column, they are listed
-  as a **Direct member**.
-- **Administrator** is the [Owner](../../permissions.md) and member of all groups.
-  They have inherited their role from the **demo** group.
-
-If a user is a:
-
-- Direct member of a project, the **Expiration** and **Max role** fields can be updated directly on the project.
-- Inherited member from a parent group, the **Expiration** and **Max role** fields must be updated on the parent group.
 
 ## Remove a member from a project
 

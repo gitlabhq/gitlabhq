@@ -17,21 +17,12 @@ module SearchArguments
 
   def ready?(**args)
     validate_search_in_params!(args)
-    validate_anonymous_search_access!(args)
     validate_search_rate_limit!(args)
 
     super
   end
 
   private
-
-  def validate_anonymous_search_access!(args)
-    return unless args[:search].present?
-    return if current_user.present? || Feature.disabled?(:disable_anonymous_search, type: :ops)
-
-    raise ::Gitlab::Graphql::Errors::ArgumentError,
-      "User must be authenticated to include the `search` argument."
-  end
 
   def validate_search_in_params!(args)
     return unless args[:in].present? && args[:search].blank?

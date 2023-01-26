@@ -4,10 +4,10 @@ import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import Clusters from '~/clusters/clusters_bundle';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import initProjectSelectDropdown from '~/project_select';
+import { initProjectSelects } from '~/vue_shared/components/entity_select/init_project_selects';
 
 jest.mock('~/lib/utils/poll');
-jest.mock('~/project_select');
+jest.mock('~/vue_shared/components/entity_select/init_project_selects');
 
 useMockLocationHelper();
 
@@ -49,7 +49,7 @@ describe('Clusters', () => {
     });
 
     it('should call initProjectSelectDropdown on construct', () => {
-      expect(initProjectSelectDropdown).toHaveBeenCalled();
+      expect(initProjectSelects).toHaveBeenCalled();
     });
   });
 

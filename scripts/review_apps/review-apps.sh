@@ -338,7 +338,7 @@ EOF
   echoinfo "Deploying with:"
   echo "${HELM_CMD}" | sed 's/    /\n\t/g'
 
-  run_timed_command "eval \"${HELM_CMD}\""
+  retry "eval \"${HELM_CMD}\""
 }
 
 function verify_deploy() {

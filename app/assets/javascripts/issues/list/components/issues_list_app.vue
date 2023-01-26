@@ -19,7 +19,6 @@ import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
 import {
-  FILTERED_SEARCH_TERM,
   OPERATORS_IS,
   OPERATORS_IS_NOT,
   OPERATORS_IS_NOT_OR,
@@ -136,7 +135,6 @@ export default {
     'hasScopedLabelsFeature',
     'initialEmail',
     'initialSort',
-    'isAnonymousSearchDisabled',
     'isIssueRepositioningDisabled',
     'isProject',
     'isPublicVisibilityRestricted',
@@ -483,9 +481,6 @@ export default {
         page_before: this.pageParams.beforeCursor ?? undefined,
       };
     },
-    shouldDisableTextSearch() {
-      return this.isAnonymousSearchDisabled && !this.isSignedIn;
-    },
     // due to the issues with cache-and-network, we need this hack to check if there is any data for the query in the cache.
     // if we have cached data, we disregard the loading state
     isLoading() {
@@ -619,7 +614,7 @@ export default {
       this.issuesError = null;
     },
     handleFilter(tokens) {
-      this.setFilterTokens(tokens);
+      this.filterTokens = tokens;
       this.pageParams = getInitialPageParams(this.pageSize);
 
       this.$router.push({ query: this.urlParams });
@@ -712,24 +707,6 @@ export default {
           Sentry.captureException(error);
         });
     },
-    setFilterTokens(tokens) {
-      this.filterTokens = this.removeDisabledSearchTerms(tokens);
-
-      if (this.filterTokens.length < tokens.length) {
-        this.showAnonymousSearchingMessage();
-      }
-    },
-    removeDisabledSearchTerms(filters) {
-      return this.shouldDisableTextSearch
-        ? filters.filter((token) => !(token.type === FILTERED_SEARCH_TERM && token.value?.data))
-        : filters;
-    },
-    showAnonymousSearchingMessage() {
-      createAlert({
-        message: this.$options.i18n.anonymousSearchingMessage,
-        variant: VARIANT_INFO,
-      });
-    },
     showIssueRepositioningMessage() {
       createAlert({
         message: this.$options.i18n.issueRepositioningMessage,
@@ -765,7 +742,7 @@ export default {
         sortKey = defaultSortKey;
       }
 
-      this.setFilterTokens(getFilterTokens(window.location.search));
+      this.filterTokens = getFilterTokens(window.location.search);
 
       this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       this.pageParams = getInitialPageParams(

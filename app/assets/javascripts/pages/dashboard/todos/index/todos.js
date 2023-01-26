@@ -147,17 +147,17 @@ export default class Todos {
     e.stopPropagation();
     e.preventDefault();
 
-    const target = e.currentTarget;
-    target.setAttribute('disabled', true);
-    target.classList.add('disabled');
+    const { currentTarget } = e;
+    currentTarget.setAttribute('disabled', true);
+    currentTarget.classList.add('disabled');
 
-    target.querySelector('.gl-spinner-container').classList.add('gl-mr-2');
+    currentTarget.querySelector('.gl-spinner-container').classList.add('gl-mr-2');
 
-    axios[target.dataset.method](target.dataset.href, {
+    axios[currentTarget.dataset.method](currentTarget.href, {
       ids: this.todo_ids,
     })
       .then(({ data }) => {
-        this.updateAllState(target, data);
+        this.updateAllState(currentTarget, data);
         this.updateBadges(data);
       })
       .catch(() =>

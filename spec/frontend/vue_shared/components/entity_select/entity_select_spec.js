@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EntitySelect from '~/vue_shared/components/entity_select/entity_select.vue';
 import { QUERY_TOO_SHORT_MESSAGE } from '~/vue_shared/components/entity_select/constants';
@@ -33,7 +33,7 @@ describe('EntitySelect', () => {
   const findInput = () => wrapper.findByTestId('input');
 
   // Helpers
-  const createComponent = ({ props = {}, slots = {} } = {}) => {
+  const createComponent = ({ props = {}, slots = {}, stubs = {} } = {}) => {
     wrapper = shallowMountExtended(EntitySelect, {
       propsData: {
         label,
@@ -47,6 +47,7 @@ describe('EntitySelect', () => {
       stubs: {
         GlAlert,
         EntitySelect,
+        ...stubs,
       },
       slots,
     });
@@ -97,6 +98,20 @@ describe('EntitySelect', () => {
     });
 
     expect(wrapper.find(`[${selector}]`).exists()).toBe(true);
+  });
+
+  it('renders the label slot if provided', () => {
+    const testid = 'label-slot';
+    createComponent({
+      slots: {
+        label: `<div data-testid="${testid}" />`,
+      },
+      stubs: {
+        GlFormGroup,
+      },
+    });
+
+    expect(wrapper.findByTestId(testid).exists()).toBe(true);
   });
 
   describe('selection', () => {

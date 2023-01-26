@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnectHelper do
+RSpec.describe JiraConnectHelper, feature_category: :integrations do
   describe '#jira_connect_app_data' do
     let_it_be(:installation) { create(:jira_connect_installation) }
     let_it_be(:subscription) { create(:jira_connect_subscription) }

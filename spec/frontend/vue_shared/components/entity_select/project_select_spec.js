@@ -27,6 +27,7 @@ describe('ProjectSelect', () => {
   const inputName = 'inputName';
   const inputId = 'inputId';
   const groupId = '22';
+  const userId = '1';
 
   // Mocks
   const apiVersion = 'v4';
@@ -34,7 +35,9 @@ describe('ProjectSelect', () => {
     name_with_namespace: 'selectedProject',
     id: '1',
   };
+  const projectsEndpoint = `/api/${apiVersion}/projects.json`;
   const groupProjectEndpoint = `/api/${apiVersion}/groups/${groupId}/projects.json`;
+  const userProjectEndpoint = `/api/${apiVersion}/users/${userId}/projects`;
   const projectEndpoint = `/api/${apiVersion}/projects/${projectMock.id}`;
 
   // Finders
@@ -72,6 +75,18 @@ describe('ProjectSelect', () => {
     mock.restore();
   });
 
+  it('renders HTML label when hasHtmlLabel is true', () => {
+    const testid = 'html-label';
+    createComponent({
+      props: {
+        label: `<div data-testid="${testid}" />`,
+        hasHtmlLabel: true,
+      },
+    });
+
+    expect(wrapper.findByTestId(testid).exists()).toBe(true);
+  });
+
   describe('entity_select props', () => {
     beforeEach(() => {
       createComponent();
@@ -84,6 +99,7 @@ describe('ProjectSelect', () => {
       ${'inputId'}           | ${inputId}
       ${'defaultToggleText'} | ${PROJECT_TOGGLE_TEXT}
       ${'headerText'}        | ${PROJECT_HEADER_TEXT}
+      ${'clearable'}         | ${true}
     `('passes the $prop prop to entity-select', ({ prop, expectedValue }) => {
       expect(findEntitySelect().props(prop)).toBe(expectedValue);
     });
@@ -110,6 +126,86 @@ describe('ProjectSelect', () => {
         with_shared: true,
       });
     });
+
+    it('includes projects from subgroups if includeSubgroups is true', async () => {
+      createComponent({
+        props: {
+          includeSubgroups: true,
+        },
+      });
+      openListbox();
+      await waitForPromises();
+
+      expect(mock.history.get[0].params.include_subgroups).toBe(true);
+    });
+
+    it('fetches projects globally if no group ID is provided', async () => {
+      createComponent({
+        props: {
+          groupId: null,
+        },
+      });
+      openListbox();
+      await waitForPromises();
+
+      expect(mock.history.get[0].url).toBe(projectsEndpoint);
+      expect(mock.history.get[0].params).toEqual({
+        membership: false,
+        order_by: 'similarity',
+        per_page: 20,
+        search: '',
+        simple: true,
+      });
+    });
+
+    it('restricts search to owned projects if membership is true', async () => {
+      createComponent({
+        props: {
+          groupId: null,
+          membership: true,
+        },
+      });
+      openListbox();
+      await waitForPromises();
+
+      expect(mock.history.get[0].params.membership).toBe(true);
+    });
+
+    it("fetches the user's projects if a user ID is provided", async () => {
+      createComponent({
+        props: {
+          groupId: null,
+          userId,
+        },
+      });
+      openListbox();
+      await waitForPromises();
+
+      expect(mock.history.get[0].url).toBe(userProjectEndpoint);
+      expect(mock.history.get[0].params).toEqual({
+        per_page: 20,
+        search: '',
+        with_shared: true,
+        include_subgroups: false,
+      });
+    });
+
+    it.each([null, groupId])(
+      'fetches with the provided sort key when groupId is %s',
+      async (groupIdProp) => {
+        const orderBy = 'last_activity_at';
+        createComponent({
+          props: {
+            groupId: groupIdProp,
+            orderBy,
+          },
+        });
+        openListbox();
+        await waitForPromises();
+
+        expect(mock.history.get[0].params.order_by).toBe(orderBy);
+      },
+    );
 
     describe('with an initial selection', () => {
       it("fetches the initially selected value's name", async () => {

@@ -294,7 +294,6 @@ RSpec.configure do |config|
       stub_feature_flags(block_issue_repositioning: false)
 
       # These are ops feature flags that are disabled by default
-      stub_feature_flags(disable_anonymous_search: false)
       stub_feature_flags(disable_anonymous_project_search: false)
 
       # Specs should not get a CAPTCHA challenge by default, this makes the sign-in flow simpler in

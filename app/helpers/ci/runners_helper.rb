@@ -63,6 +63,7 @@ module Ci
         # Runner install help page is external, located at
         # https://gitlab.com/gitlab-org/gitlab-runner
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
+        new_runner_path: new_admin_runner_path,
         registration_token: Gitlab::CurrentSettings.runners_registration_token,
         online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
         stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i,

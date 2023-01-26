@@ -55,7 +55,7 @@ module API
         requires :target_project_id, types: [String, Integer],
                                      desc: 'The ID or URL-encoded path of a target project'
         requires :target_issue_iid, types: [String, Integer], desc: 'The internal ID of a target project’s issue'
-        optional :link_type, type: String, values: IssueLink.link_types.keys,
+        optional :link_type, type: String, values: IssueLink.available_link_types,
                              desc: 'The type of the relation (“relates_to”, “blocks”, “is_blocked_by”),'\
                               'defaults to “relates_to”)'
       end
@@ -72,9 +72,7 @@ module API
                    .execute
 
         if result[:status] == :success
-          issue_link = IssueLink.find_by!(source: source_issue, target: target_issue)
-
-          present issue_link, with: Entities::IssueLink
+          present result[:created_references].first, with: Entities::IssueLink
         else
           render_api_error!(result[:message], result[:http_status])
         end

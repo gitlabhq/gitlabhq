@@ -109,7 +109,9 @@ review-deploy:
     - .review:rules:review-deploy
   stage: deploy
   image: ${GITLAB_DEPENDENCY_PROXY}dtzar/helm-kubectl:3.10.3
-  needs: ["review-build-cng"]
+  needs:
+    - review-build-cng
+    - review-delete-deployment # We always want to start from a clean slate (i.e. no helm release, no k8s namespace)
   cache:
     key: "review-deploy-dependencies-charts-${GITLAB_HELM_CHART_REF}-v1"
     paths:
@@ -177,7 +179,7 @@ review-deploy-sample-projects:
     - source ./scripts/review_apps/review-apps.sh
     - !reference [".use-kube-context", before_script]
   script:
-    - delete_helm_release
+    - retry delete_helm_release
 
 review-delete-deployment:
   extends:

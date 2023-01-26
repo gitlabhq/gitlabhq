@@ -1515,7 +1515,7 @@ Geo::RepositorySyncService.new(project).execute
 
 ### Authorization errors from LFS HTTP(S) client requests
 
-You may have problems if you're running a version of [Git LFS](https://git-lfs.github.com/) before 2.4.2.
+You may have problems if you're running a version of [Git LFS](https://git-lfs.com/) before 2.4.2.
 As noted in [this authentication issue](https://github.com/git-lfs/git-lfs/issues/3025),
 requests redirected from the secondary to the primary site do not properly send the
 Authorization header. This may result in either an infinite `Authorization <-> Redirect`

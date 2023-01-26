@@ -51,7 +51,7 @@ From left to right, the performance bar displays:
   values in milliseconds, separated by slashes.
   Select to display a modal window with more details. The values, from left to right:
   - **Backend**: time needed for the base page to load.
-  - [**First Contentful Paint**](https://web.dev/first-contentful-paint/):
+  - [**First Contentful Paint**](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/):
     Time until something was visible to the user. Displays `NaN` if your browser does not
     support this feature.
   - [**DomContentLoaded**](https://web.dev/critical-rendering-path-measure-crp/) Event.

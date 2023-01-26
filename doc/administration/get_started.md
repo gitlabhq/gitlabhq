@@ -290,5 +290,5 @@ You can learn more about how to administer GitLab.
 
 - Udemy: For a more affordable, guided training option, consider
   [GitLab CI: Pipelines, CI/CD, and DevOps for Beginners](https://www.udemy.com/course/gitlab-ci-pipelines-ci-cd-and-devops-for-beginners/) on Udemy.
-- LinkedIn Learning: Check out [Continuous Delivery with GitLab](https://www.linkedin.com/learning/continuous-delivery-with-gitlab) on LinkedIn Learning
+- LinkedIn Learning: Check out [Continuous Delivery with GitLab](https://www.linkedin.com/learning/continuous-integration-and-continuous-delivery-with-gitlab?replacementOf=continuous-delivery-with-gitlab) on LinkedIn Learning
   for another low-cost, guided training option.

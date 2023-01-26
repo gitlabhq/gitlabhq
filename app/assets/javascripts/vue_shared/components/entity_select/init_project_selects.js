@@ -11,8 +11,18 @@ export const initProjectSelects = () => {
   }
 
   document.querySelectorAll(SELECTOR).forEach((el) => {
-    const { label, inputName, inputId, groupId, selected: initialSelection } = el.dataset;
-    const clearable = parseBoolean(el.dataset.clearable);
+    const {
+      label,
+      inputName,
+      inputId,
+      groupId,
+      userId,
+      orderBy,
+      selected: initialSelection,
+    } = el.dataset;
+    const includeSubgroups = parseBoolean(el.dataset.includeSubgroups);
+    const membership = parseBoolean(el.dataset.membership);
+    const hasHtmlLabel = parseBoolean(el.dataset.hasHtmlLabel);
 
     return new Vue({
       el,
@@ -21,11 +31,15 @@ export const initProjectSelects = () => {
         return createElement(ProjectSelect, {
           props: {
             label,
+            hasHtmlLabel,
             inputName,
             inputId,
             groupId,
+            userId,
+            orderBy,
+            includeSubgroups,
+            membership,
             initialSelection,
-            clearable,
           },
         });
       },

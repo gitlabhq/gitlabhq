@@ -76,7 +76,6 @@ export const SPECIAL_FILTER = 'specialFilter';
 export const ALTERNATIVE_FILTER = 'alternativeFilter';
 
 export const i18n = {
-  anonymousSearchingMessage: __('You must sign in to search for specific terms.'),
   calendarLabel: __('Subscribe to calendar'),
   closed: __('CLOSED'),
   closedMoved: __('CLOSED (MOVED)'),

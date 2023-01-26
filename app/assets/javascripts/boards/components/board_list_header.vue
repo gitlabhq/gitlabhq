@@ -413,6 +413,7 @@ export default {
           :aria-label="$options.i18n.newIssue"
           :title="$options.i18n.newIssue"
           class="no-drag"
+          size="small"
           icon="plus"
           @click="showNewIssueForm"
         />
@@ -424,6 +425,7 @@ export default {
           :aria-label="$options.i18n.newEpic"
           :title="$options.i18n.newEpic"
           class="no-drag"
+          size="small"
           icon="plus"
           @click="showNewEpicForm"
         />
@@ -434,6 +436,7 @@ export default {
           v-gl-tooltip.hover
           :aria-label="$options.i18n.listSettings"
           class="no-drag"
+          size="small"
           :title="$options.i18n.listSettings"
           icon="settings"
           @click="openSidebarSettings"

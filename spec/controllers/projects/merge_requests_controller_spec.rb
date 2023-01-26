@@ -390,15 +390,6 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         end
       end
     end
-
-    it_behaves_like 'issuable list with anonymous search disabled' do
-      let(:params) { { namespace_id: project.namespace, project_id: project } }
-
-      before do
-        sign_out(user)
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-      end
-    end
   end
 
   describe 'PUT update' do

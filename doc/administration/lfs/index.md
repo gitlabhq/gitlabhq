@@ -12,7 +12,7 @@ For user documentation about Git LFS, see [Git Large File Storage](../../topics/
 
 Prerequisites:
 
-- Users need to install [Git LFS client](https://git-lfs.github.com) version 1.0.1 or later.
+- Users need to install [Git LFS client](https://git-lfs.com/) version 1.0.1 or later.
 
 ## Enable or disable LFS
 
@@ -439,7 +439,7 @@ To fix this issue, configure your object storage provider's CORS
 settings to allow the GitLab domain. See the following documentation
 for more details:
 
-1. [AWS S3](https://aws.amazon.com/premiumsupport/knowledge-center/s3-configure-cors/)
+1. [AWS S3](https://repost.aws/knowledge-center/s3-configure-cors)
 1. [Google Cloud Storage](https://cloud.google.com/storage/docs/configuring-cors)
 1. [Azure Storage](https://learn.microsoft.com/en-us/rest/api/storageservices/cross-origin-resource-sharing--cors--support-for-the-azure-storage-services).
 

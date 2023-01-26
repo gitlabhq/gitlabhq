@@ -52,7 +52,6 @@ import {
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
 } from '~/work_items/constants';
 import {
-  FILTERED_SEARCH_TERM,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -99,7 +98,6 @@ describe('CE IssuesListApp component', () => {
     hasScopedLabelsFeature: true,
     initialEmail: 'email@example.com',
     initialSort: CREATED_DESC,
-    isAnonymousSearchDisabled: false,
     isIssueRepositioningDisabled: false,
     isProject: true,
     isPublicVisibilityRestricted: false,
@@ -431,27 +429,6 @@ describe('CE IssuesListApp component', () => {
         wrapper = mountComponent();
 
         expect(findIssuableList().props('initialFilterValue')).toEqual(filteredTokens);
-      });
-
-      describe('when anonymous searching is performed', () => {
-        beforeEach(() => {
-          setWindowLocation(locationSearch);
-          wrapper = mountComponent({
-            provide: { isAnonymousSearchDisabled: true, isSignedIn: false },
-          });
-        });
-
-        it('is set from url params and removes search terms', () => {
-          const expected = filteredTokens.filter((token) => token.type !== FILTERED_SEARCH_TERM);
-          expect(findIssuableList().props('initialFilterValue')).toEqual(expected);
-        });
-
-        it('shows an alert to tell the user they must be signed in to search', () => {
-          expect(createAlert).toHaveBeenCalledWith({
-            message: IssuesListApp.i18n.anonymousSearchingMessage,
-            variant: VARIANT_INFO,
-          });
-        });
       });
     });
   });
@@ -909,29 +886,6 @@ describe('CE IssuesListApp component', () => {
 
         expect(router.push).toHaveBeenCalledWith({
           query: expect.objectContaining(urlParams),
-        });
-      });
-
-      describe('when anonymous searching is performed', () => {
-        beforeEach(() => {
-          wrapper = mountComponent({
-            provide: { isAnonymousSearchDisabled: true, isSignedIn: false },
-          });
-          router.push = jest.fn();
-
-          findIssuableList().vm.$emit('filter', filteredTokens);
-        });
-
-        it('removes search terms', () => {
-          const expected = filteredTokens.filter((token) => token.type !== FILTERED_SEARCH_TERM);
-          expect(findIssuableList().props('initialFilterValue')).toEqual(expected);
-        });
-
-        it('shows an alert to tell the user they must be signed in to search', () => {
-          expect(createAlert).toHaveBeenCalledWith({
-            message: IssuesListApp.i18n.anonymousSearchingMessage,
-            variant: VARIANT_INFO,
-          });
         });
       });
     });

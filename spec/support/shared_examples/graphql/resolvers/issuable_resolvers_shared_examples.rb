@@ -58,41 +58,6 @@ RSpec.shared_examples 'graphql query for searching issuables' do
     end
   end
 
-  context 'with anonymous user' do
-    let_it_be(:current_user) { nil }
-
-    context 'with disable_anonymous_search as `true`' do
-      before do
-        stub_feature_flags(disable_anonymous_search: true)
-      end
-
-      it 'returns an error' do
-        error_message = "User must be authenticated to include the `search` argument."
-
-        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, error_message) do
-          resolve_issuables(search: 'created')
-        end
-      end
-
-      it 'does not return error if search term is not present' do
-        expect(resolve_issuables).not_to be_instance_of(Gitlab::Graphql::Errors::ArgumentError)
-      end
-    end
-
-    context 'with disable_anonymous_search as `false`' do
-      before do
-        stub_feature_flags(disable_anonymous_search: false)
-        parent.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-      end
-
-      it 'filters issuables by search term' do
-        issuables = resolve_issuables(search: 'created')
-
-        expect(issuables).to contain_exactly(issuable1, issuable2)
-      end
-    end
-  end
-
   def resolve_issuables(args = {}, obj = parent, context = { current_user: current_user })
     resolve(described_class, obj: obj, args: args, ctx: context, arg_style: :internal)
   end

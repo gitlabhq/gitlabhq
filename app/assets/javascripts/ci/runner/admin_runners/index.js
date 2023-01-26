@@ -31,6 +31,7 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
 
   const {
     runnerInstallHelpPage,
+    newRunnerPath,
     registrationToken,
     onlineContactTimeoutSecs,
     staleTimeoutSecs,
@@ -58,6 +59,7 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
     render(h) {
       return h(AdminRunnersApp, {
         props: {
+          newRunnerPath,
           registrationToken,
         },
       });

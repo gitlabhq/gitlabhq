@@ -20,6 +20,8 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-web-hook-disabled-callout',
   '.js-merge-request-settings-callout',
   '.js-ultimate-feature-removal-banner',
+  '.js-geo-enable-hashed-storage-callout',
+  '.js-geo-migrate-hashed-storage-callout',
 ];
 
 const initCallouts = () => {

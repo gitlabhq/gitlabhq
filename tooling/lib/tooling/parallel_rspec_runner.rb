@@ -43,6 +43,8 @@ module Tooling
         return
       end
 
+      Knapsack.logger.info "Running command: #{rspec_command.join(' ')}"
+
       exec(*rspec_command)
     end
 
