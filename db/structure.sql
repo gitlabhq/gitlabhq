@@ -21005,7 +21005,8 @@ CREATE TABLE protected_tag_create_access_levels (
     user_id integer,
     group_id integer,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    deploy_key_id integer
 );
 
 CREATE SEQUENCE protected_tag_create_access_levels_id_seq
@@ -31069,6 +31070,8 @@ CREATE UNIQUE INDEX index_protected_environments_on_project_id_and_name ON prote
 
 CREATE INDEX index_protected_tag_create_access ON protected_tag_create_access_levels USING btree (protected_tag_id);
 
+CREATE INDEX index_protected_tag_create_access_levels_on_deploy_key_id ON protected_tag_create_access_levels USING btree (deploy_key_id);
+
 CREATE INDEX index_protected_tag_create_access_levels_on_group_id ON protected_tag_create_access_levels USING btree (group_id);
 
 CREATE INDEX index_protected_tag_create_access_levels_on_user_id ON protected_tag_create_access_levels USING btree (user_id);
@@ -33596,6 +33599,9 @@ ALTER TABLE ONLY sprints
 
 ALTER TABLE ONLY push_event_payloads
     ADD CONSTRAINT fk_36c74129da FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY protected_tag_create_access_levels
+    ADD CONSTRAINT fk_386a642e13 FOREIGN KEY (deploy_key_id) REFERENCES keys(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_38a74279df FOREIGN KEY (updated_by_user_id) REFERENCES users(id) ON DELETE SET NULL;

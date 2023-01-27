@@ -1,10 +1,9 @@
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'vuex';
 import { __ } from '~/locale';
 import { rightSidebarViews, SIDEBAR_INIT_WIDTH, SIDEBAR_NAV_WIDTH } from '../../constants';
 import JobsDetail from '../jobs/detail.vue';
 import PipelinesList from '../pipelines/list.vue';
-import Clientside from '../preview/clientside.vue';
 import ResizablePanel from '../resizable_panel.vue';
 import TerminalView from '../terminal/view.vue';
 import CollapsibleSidebar from './collapsible_sidebar.vue';
@@ -20,12 +19,8 @@ export default {
   },
   computed: {
     ...mapState('terminal', { isTerminalVisible: 'isVisible' }),
-    ...mapState(['currentMergeRequestId', 'clientsidePreviewEnabled']),
-    ...mapGetters(['packageJson']),
+    ...mapState(['currentMergeRequestId']),
     ...mapState('rightPane', ['isOpen']),
-    showLivePreview() {
-      return this.packageJson && this.clientsidePreviewEnabled;
-    },
     rightExtensionTabs() {
       return [
         {
@@ -36,12 +31,6 @@ export default {
             { component: JobsDetail, ...rightSidebarViews.jobsDetail },
           ],
           icon: 'rocket',
-        },
-        {
-          show: this.showLivePreview,
-          title: __('Live preview'),
-          views: [{ component: Clientside, ...rightSidebarViews.clientSidePreview }],
-          icon: 'live-preview',
         },
         {
           show: this.isTerminalVisible,

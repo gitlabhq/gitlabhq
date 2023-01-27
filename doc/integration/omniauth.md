@@ -38,7 +38,7 @@ GitLab supports the following OmniAuth providers.
 | [SAML](saml.md)                                                     | `saml`                     |
 | [Twitter](twitter.md)                                               | `twitter`                  |
 
-## Initial settings
+## Configure common settings
 
 Before you configure the OmniAuth provider,
 configure the settings that are common for all providers.
@@ -503,7 +503,7 @@ There are two methods to update the `extern_uid`:
   Identity.where(extern_uid: 'old-id').update!(extern_uid: 'new-id')`
   ```
 
-## Limitations
+## Known issues
 
 Most supported OmniAuth providers don't support Git over HTTP password authentication.
 As a workaround, you can authenticate using a [personal access token](../user/profile/personal_access_tokens.md).

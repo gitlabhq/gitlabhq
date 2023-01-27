@@ -221,7 +221,7 @@ RSpec.describe SessionsController do
           expect(Gitlab::Metrics).to receive(:counter)
                                       .with(:successful_login_captcha_total, anything)
                                       .and_return(counter)
-          expect(Gitlab::Metrics).to receive(:counter).and_call_original
+          expect(Gitlab::Metrics).to receive(:counter).at_least(1).time.and_call_original
 
           post(:create, params: { user: user_params }, session: sesion_params)
         end

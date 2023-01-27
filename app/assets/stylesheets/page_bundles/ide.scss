@@ -906,8 +906,7 @@ $ide-commit-header-height: 48px;
     padding-bottom: 0;
   }
 
-  .ide-right-sidebar-terminal,
-  .ide-right-sidebar-clientside {
+  .ide-right-sidebar-terminal {
     padding: 0;
   }
 }
@@ -1081,43 +1080,6 @@ $ide-commit-header-height: 48px;
     color: $white-normal;
     background-color: var(--ide-link-color, $blue-500);
   }
-}
-
-.ide-preview-header {
-  padding: 0 $grid-size;
-  border-bottom: 1px solid var(--ide-border-color-alt, $white-dark);
-  background-color: var(--ide-highlight-background, $gray-light);
-  min-height: 44px;
-}
-
-.ide-navigator-btn {
-  height: 24px;
-  min-width: 24px;
-  max-width: 24px;
-  padding: 0;
-  margin: 0 ($grid-size / 2);
-  color: var(--ide-text-color-secondary, $gray-600);
-
-  &:first-child {
-    margin-left: 0;
-  }
-}
-
-.ide-navigator-location {
-  padding-top: ($grid-size / 2);
-  padding-bottom: ($grid-size / 2);
-
-  &:focus {
-    outline: 0;
-    box-shadow: none;
-    border-color: var(--ide-border-color, $gray-100);
-  }
-}
-
-.ide-preview-loading-icon {
-  right: $grid-size;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .ide-file-templates {

@@ -739,7 +739,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         expect(subject[:container_registry_enabled]).to eq(Gitlab.config.registry.enabled)
         expect(subject[:dependency_proxy_enabled]).to eq(Gitlab.config.dependency_proxy.enabled)
         expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
-        expect(subject[:web_ide_clientside_preview_enabled]).to eq(Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?)
         expect(subject[:grafana_link_enabled]).to eq(Gitlab::CurrentSettings.grafana_enabled?)
         expect(subject[:gitpod_enabled]).to eq(Gitlab::CurrentSettings.gitpod_enabled?)
       end

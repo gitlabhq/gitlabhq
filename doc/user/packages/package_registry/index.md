@@ -43,6 +43,11 @@ For information on how to create and upload a package, view the GitLab documenta
 
 ## Authenticate with the registry
 
+<!--- start_remove The following content will be removed on remove_date: '2023-11-22' -->
+WARNING:
+[External authorization](../../admin_area/settings/external_authorization.md) will be enabled by default in GitLab 16.0. External authorization prevents personal access tokens and deploy tokens from accessing container and package registries and affects all users who use these tokens to access the registries. You can disable external authorization if you want to use personal access tokens and deploy tokens with the container or package registries.
+<!--- end_remove -->
+
 Authentication depends on the package manager being used. For more information, see the docs on the
 specific package format you want to use.
 
@@ -59,7 +64,6 @@ For most package types, the following credential types are valid:
 - [Job token](../../../ci/jobs/ci_job_token.md):
   allows access to packages in the project running the job for the users running the pipeline.
   Access to other external projects can be configured.
-
 - If your organization uses two factor authentication (2FA), you must use a personal access token with the scope set to `api`.
 - If you are publishing a package via CI/CD pipelines, you must use a CI job token.
 

@@ -8,7 +8,7 @@
 
 # No specific specs in mr pipeline
 .all-specs-mr: &all-specs-mr
-  if: $CI_MERGE_REQUEST_IID && $QA_TESTS == ""
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $QA_TESTS == ""'
   when: manual
 
 # Triggered by change pattern

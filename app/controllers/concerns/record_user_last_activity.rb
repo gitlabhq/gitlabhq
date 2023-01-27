@@ -20,6 +20,7 @@ module RecordUserLastActivity
     return if Gitlab::Database.read_only?
     return unless current_user && current_user.last_activity_on != Date.today
 
-    Users::ActivityService.new(current_user).execute
+    # TODO: add namespace & project - https://gitlab.com/gitlab-org/gitlab/-/issues/387952
+    Users::ActivityService.new(author: current_user).execute
   end
 end

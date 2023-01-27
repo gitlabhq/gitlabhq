@@ -1,0 +1,23 @@
+---
+description: User's last_activity_on gets updated
+category: Users::ActivityService
+action: perform_action
+label_description: key_path of Service Ping metric redis_hll_counters.manage.unique_active_users_monthly
+property_description:
+value_description:
+extra_properties:
+identifiers:
+product_section: dev
+product_stage: manage
+product_group: manage
+product_category:
+milestone: "15.8"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108108
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+

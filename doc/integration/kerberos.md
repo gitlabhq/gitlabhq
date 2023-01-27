@@ -99,9 +99,9 @@ to authenticate with Kerberos tokens.
 
 #### Enable single sign-on
 
-See [Configure initial settings](omniauth.md#configure-initial-settings)
-for initial settings to enable single sign-on and add Kerberos servers
-as an identity provider.
+Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+to add `kerberos` as a single sign-on provider. This enables Just-In-Time
+account provisioning for users who do not have an existing GitLab account.
 
 ## Create and link Kerberos accounts
 
@@ -138,7 +138,8 @@ with your Kerberos credentials.
 
 The first time users sign in to GitLab with their Kerberos accounts,
 GitLab creates a matching account.
-Before you continue, review the [Configure initial settings](omniauth.md#configure-initial-settings) options in Omnibus and GitLab source. You must also include `kerberos`.
+Before you continue, review the [common configuration settings](omniauth.md#configure-common-settings)
+options in Omnibus and GitLab source. You must also include `kerberos`.
 
 With that information at hand:
 

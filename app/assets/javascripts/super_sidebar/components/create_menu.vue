@@ -1,13 +1,11 @@
 <script>
-import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlTooltip } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
   components: {
     GlDisclosureDropdown,
+    GlTooltip,
   },
   i18n: {
     createNew: __('Create new...'),
@@ -18,17 +16,23 @@ export default {
       required: true,
     },
   },
+  toggleId: 'create-menu-toggle',
 };
 </script>
 
 <template>
-  <gl-disclosure-dropdown
-    v-gl-tooltip:super-sidebar.bottom="$options.i18n.createNew"
-    category="tertiary"
-    icon="plus"
-    :items="groups"
-    no-caret
-    text-sr-only
-    :toggle-text="$options.i18n.createNew"
-  />
+  <div>
+    <gl-disclosure-dropdown
+      category="tertiary"
+      icon="plus"
+      :items="groups"
+      no-caret
+      text-sr-only
+      :toggle-text="$options.i18n.createNew"
+      :toggle-id="$options.toggleId"
+    />
+    <gl-tooltip :target="`#${$options.toggleId}`" placement="bottom" container="#super-sidebar">
+      {{ $options.i18n.createNew }}
+    </gl-tooltip>
+  </div>
 </template>

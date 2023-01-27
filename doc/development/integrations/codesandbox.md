@@ -2,12 +2,17 @@
 stage: none
 group: Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+remove_date: '2023-02-01'
 ---
 
-# Set up local CodeSandbox development environment
+# Set up local CodeSandbox development environment (removed)
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108627) in GitLab 15.8 
+and is planned for removal in 15.9. This change is a breaking change.
 
 This guide walks through setting up a local [CodeSandbox repository](https://github.com/codesandbox/codesandbox-client) and integrating it with a local GitLab instance. CodeSandbox
-is used to power the Web IDE [Live Preview feature](../../user/project/web_ide/index.md#live-preview). Having a local CodeSandbox setup is useful for debugging upstream issues or
+is used to power the Web IDE [Live Preview feature](../../user/project/web_ide/index.md#live-preview-removed). Having a local CodeSandbox setup is useful for debugging upstream issues or
 creating upstream contributions like [this one](https://github.com/codesandbox/codesandbox-client/pull/5137).
 
 ## Initial setup
@@ -114,7 +119,11 @@ out of the box:
 npx http-server --proxy http://localhost:3000 -S -C $PATH_TO_CERT_PEM -K $PATH_TO_KEY_PEM -p 8044 -d false
 ```
 
-### Update `bundler_url` setting in GitLab
+### Update `bundler_url` setting in GitLab (removed)
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108627) in GitLab 15.8 
+and is planned for removal in 15.9. This change is a breaking change.
 
 We need to update our `application_setting_implementation.rb` to point to the server that hosts the
 CodeSandbox `sandpack` assets. For instance, if these assets are hosted by a server at `https://sandpack.local:8044`:

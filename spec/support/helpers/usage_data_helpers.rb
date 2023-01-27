@@ -110,7 +110,6 @@ module UsageDataHelpers
     gitaly
     database
     prometheus_metrics_enabled
-    web_ide_clientside_preview_enabled
     object_store
     topology
   ).freeze

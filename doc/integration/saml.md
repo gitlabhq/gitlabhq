@@ -41,7 +41,9 @@ For more information on:
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. Edit the initial [configuration settings](omniauth.md#configure-initial-settings).
+1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+   to add `saml` as a single sign-on provider. This enables Just-In-Time
+   account provisioning for users who do not have an existing GitLab account.
 
 1. To allow your users to use SAML to sign up without having to manually create
    an account first, add the following values to your configuration.

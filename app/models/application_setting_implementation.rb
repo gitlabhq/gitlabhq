@@ -523,12 +523,6 @@ module ApplicationSettingImplementation
     static_objects_external_storage_url.present?
   end
 
-  # This will eventually be configurable
-  # https://gitlab.com/gitlab-org/gitlab/issues/208161
-  def web_ide_clientside_preview_bundler_url
-    'https://sandbox-prod.gitlab-static.net'
-  end
-
   def ensure_key_restrictions!
     return if Gitlab::Database.read_only?
     return unless Gitlab::FIPS.enabled?

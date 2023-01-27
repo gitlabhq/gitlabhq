@@ -12,7 +12,21 @@ RSpec.describe API::API, feature_category: :authentication_and_authorization do
     let(:user) { create(:user, last_activity_on: Date.yesterday) }
 
     it 'updates the users last_activity_on to the current date' do
+      expect(Users::ActivityService).to receive(:new).with(author: user, project: nil, namespace: nil).and_call_original
+
       expect { get api('/groups', user) }.to change { user.reload.last_activity_on }.to(Date.today)
+    end
+
+    context "with a project-specific path" do
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:user) { project.first_owner }
+
+      it "passes correct arguments to ActivityService" do
+        activity_args = { author: user, project: project, namespace: project.group }
+        expect(Users::ActivityService).to receive(:new).with(activity_args).and_call_original
+
+        get(api("/projects/#{project.id}/issues", user))
+      end
     end
   end
 

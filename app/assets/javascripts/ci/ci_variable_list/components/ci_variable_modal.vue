@@ -14,6 +14,7 @@ import {
   GlModal,
   GlSprintf,
 } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
@@ -31,6 +32,7 @@ import {
   EVENT_ACTION,
   EXPANDED_VARIABLES_NOTE,
   EDIT_VARIABLE_ACTION,
+  FLAG_LINK_TITLE,
   VARIABLE_ACTIONS,
   variableOptions,
 } from '../constants';
@@ -41,13 +43,6 @@ import { awsTokens, awsTokenList } from './ci_variable_autocomplete_tokens';
 const trackingMixin = Tracking.mixin({ label: EVENT_LABEL });
 
 export default {
-  modalId: ADD_CI_VARIABLE_MODAL_ID,
-  tokens: awsTokens,
-  tokenList: awsTokenList,
-  awsTipMessage: AWS_TIP_MESSAGE,
-  containsVariableReferenceMessage: CONTAINS_VARIABLE_REFERENCE_MESSAGE,
-  environmentScopeLinkTitle: ENVIRONMENT_SCOPE_LINK_TITLE,
-  expandedVariablesNote: EXPANDED_VARIABLES_NOTE,
   components: {
     CiEnvironmentsDropdown,
     GlAlert,
@@ -75,7 +70,6 @@ export default {
     'isProtectedByDefault',
     'maskedEnvironmentVariablesLink',
     'maskableRegex',
-    'protectedEnvironmentVariablesLink',
   ],
   props: {
     areScopedVariablesAvailable: {
@@ -273,7 +267,20 @@ export default {
       this.validationErrorEventProperty = '';
     },
   },
-  defaultScope: allEnvironments.text,
+  i18n: {
+    awsTipMessage: AWS_TIP_MESSAGE,
+    containsVariableReferenceMessage: CONTAINS_VARIABLE_REFERENCE_MESSAGE,
+    defaultScope: allEnvironments.text,
+    environmentScopeLinkTitle: ENVIRONMENT_SCOPE_LINK_TITLE,
+    expandedVariablesNote: EXPANDED_VARIABLES_NOTE,
+    flagsLinkTitle: FLAG_LINK_TITLE,
+  },
+  flagLink: helpPagePath('ci/variables/index', {
+    anchor: 'define-a-cicd-variable-in-the-ui',
+  }),
+  modalId: ADD_CI_VARIABLE_MODAL_ID,
+  tokens: awsTokens,
+  tokenList: awsTokenList,
   variableOptions,
 };
 </script>
@@ -340,15 +347,20 @@ export default {
             data-testid="environment-scope"
           >
             <template #label>
-              {{ __('Environment scope') }}
-              <gl-link
-                :title="$options.environmentScopeLinkTitle"
-                :href="environmentScopeLink"
-                target="_blank"
-                data-testid="environment-scope-link"
-              >
-                <gl-icon name="question" :size="12" />
-              </gl-link>
+              <div class="gl-display-flex gl-align-items-center">
+                <span class="gl-mr-2">
+                  {{ __('Environment scope') }}
+                </span>
+                <gl-link
+                  class="gl-display-flex"
+                  :title="$options.i18n.environmentScopeLinkTitle"
+                  :href="environmentScopeLink"
+                  target="_blank"
+                  data-testid="environment-scope-link"
+                >
+                  <gl-icon name="question-o" :size="14" />
+                </gl-link>
+              </div>
             </template>
             <ci-environments-dropdown
               v-if="areScopedVariablesAvailable"
@@ -358,12 +370,27 @@ export default {
               @create-environment-scope="createEnvironmentScope"
             />
 
-            <gl-form-input v-else :value="$options.defaultScope" class="gl-w-full" readonly />
+            <gl-form-input v-else :value="$options.i18n.defaultScope" class="gl-w-full" readonly />
           </gl-form-group>
         </template>
       </div>
 
-      <gl-form-group :label="__('Flags')" label-for="ci-variable-flags">
+      <gl-form-group>
+        <template #label>
+          <div class="gl-display-flex gl-align-items-center">
+            <span class="gl-mr-2">
+              {{ __('Flags') }}
+            </span>
+            <gl-link
+              class="gl-display-flex"
+              :title="$options.i18n.flagsLinkTitle"
+              :href="$options.flagLink"
+              target="_blank"
+            >
+              <gl-icon name="question-o" :size="14" />
+            </gl-link>
+          </div>
+        </template>
         <gl-form-checkbox
           v-model="variable.protected"
           class="gl-mb-0"
@@ -371,9 +398,6 @@ export default {
           :data-is-protected-checked="variable.protected"
         >
           {{ __('Protect variable') }}
-          <gl-link target="_blank" :href="protectedEnvironmentVariablesLink">
-            <gl-icon name="question" :size="12" />
-          </gl-link>
           <p class="gl-mt-2 text-secondary">
             {{ __('Export variable to pipelines running on protected branches and tags only.') }}
           </p>
@@ -384,9 +408,6 @@ export default {
           data-testid="ci-variable-masked-checkbox"
         >
           {{ __('Mask variable') }}
-          <gl-link target="_blank" :href="maskedEnvironmentVariablesLink">
-            <gl-icon name="question" :size="12" />
-          </gl-link>
           <p class="gl-mt-2 text-secondary">
             {{ __('Variable will be masked in job logs.') }}
             <span
@@ -397,7 +418,7 @@ export default {
               {{ __('Requires values to meet regular expression requirements.') }}</span
             >
             <gl-link target="_blank" :href="maskedEnvironmentVariablesLink">{{
-              __('More information')
+              __('Learn more.')
             }}</gl-link>
           </p>
         </gl-form-checkbox>
@@ -408,11 +429,8 @@ export default {
           @change="setVariableRaw"
         >
           {{ __('Expand variable reference') }}
-          <gl-link target="_blank" :href="containsVariableReferenceLink">
-            <gl-icon name="question" :size="12" />
-          </gl-link>
           <p class="gl-mt-2 gl-mb-0 gl-text-secondary">
-            <gl-sprintf :message="$options.expandedVariablesNote">
+            <gl-sprintf :message="$options.i18n.expandedVariablesNote">
               <template #code="{ content }">
                 <code>{{ content }}</code>
               </template>
@@ -431,7 +449,7 @@ export default {
         <div class="gl-display-flex gl-flex-direction-row gl-flex-wrap-wrap gl-md-flex-wrap-nowrap">
           <div>
             <p>
-              <gl-sprintf :message="$options.awsTipMessage">
+              <gl-sprintf :message="$options.i18n.awsTipMessage">
                 <template #deployLink="{ content }">
                   <gl-link :href="awsTipDeployLink" target="_blank">{{ content }}</gl-link>
                 </template>
@@ -467,7 +485,7 @@ export default {
       variant="warning"
       data-testid="contains-variable-reference"
     >
-      <gl-sprintf :message="$options.containsVariableReferenceMessage">
+      <gl-sprintf :message="$options.i18n.containsVariableReferenceMessage">
         <template #code="{ content }">
           <code>{{ content }}</code>
         </template>

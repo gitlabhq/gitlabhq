@@ -33,7 +33,6 @@ describe('Ci variable modal', () => {
     isProtectedByDefault: false,
     maskedEnvironmentVariablesLink: '/variables-link',
     maskableRegex,
-    protectedEnvironmentVariablesLink: '/protected-link',
   };
 
   const defaultProps = {

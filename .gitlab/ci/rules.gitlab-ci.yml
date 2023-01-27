@@ -21,7 +21,7 @@
   if: '$FORCE_GITLAB_CI'
 
 .if-default-refs: &if-default-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_COMMIT_REF_NAME == "ruby2" || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_COMMIT_REF_NAME == "ruby2" || ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
 
 .if-default-branch-refs: &if-default-branch-refs
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
@@ -30,33 +30,33 @@
   if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
 
 .if-default-branch-or-tag: &if-default-branch-or-tag
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG'
+  if: '($CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null) || $CI_COMMIT_TAG'
 
 .if-tag: &if-tag
   if: '$CI_COMMIT_TAG'
 
 .if-merge-request: &if-merge-request
-  if: '$CI_MERGE_REQUEST_IID'
+  if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
 
 # Once https://gitlab.com/gitlab-org/gitlab/-/issues/373904 is implemented, we should be able to change this back to
-# if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
+# if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
 # or any similar condition to check that the MR has *any* approval (not just required approval).
 #
 # Temprorarily adding || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-full-rspec/ for backward compatibility,
 # remove once https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1557 is fully rolled out
 .if-merge-request-approved: &if-merge-request-approved
-  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-full-rspec/'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-full-rspec/'
 
 # Temprorarily adding && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-full-rspec/ for backward compatibility,
 # remove once https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1557 is fully rolled out
 .if-merge-request-not-approved: &if-merge-request-not-approved
-  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-full-rspec/'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-full-rspec/'
 
 .if-automated-merge-request: &if-automated-merge-request
   if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-ee$/'
 
 .if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
-  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
 
 .if-merge-request-labels-run-in-ruby2: &if-merge-request-labels-run-in-ruby2
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby2/'
@@ -104,10 +104,10 @@
   if: '$CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
 
 .if-security-merge-request: &if-security-merge-request
-  if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
+  if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached")'
 
 .if-fork-merge-request: &if-fork-merge-request
-  if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
+  if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
 
 .if-schedule-pipeline: &if-schedule-pipeline
   if: '$CI_PIPELINE_SOURCE == "schedule"'
@@ -140,16 +140,16 @@
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
 
 .if-dot-com-gitlab-org-merge-request: &if-dot-com-gitlab-org-merge-request
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_MERGE_REQUEST_IID'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached")'
 
 .if-dot-com-gitlab-org-and-security-merge-request: &if-dot-com-gitlab-org-and-security-merge-request
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached")'
 
 .if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified: &if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID && $QA_TESTS'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $QA_TESTS'
 
 .if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e: &if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID && $QA_MANUAL_FF_PACKAGE_AND_QA'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $QA_MANUAL_FF_PACKAGE_AND_QA'
 
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
@@ -1062,7 +1062,7 @@
     - <<: *if-default-branch-refs
       changes: *frontend-build-patterns
       allow_failure: true
-    - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: '$DANGER_GITLAB_API_TOKEN && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
       changes: *frontend-build-patterns
       allow_failure: true
 

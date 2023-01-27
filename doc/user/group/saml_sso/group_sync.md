@@ -109,9 +109,9 @@ Users granted:
 
 ### Automatic member removal
 
-After a group sync, for GitLab subgroups, users who are not members of a mapped SAML
-group are removed from the group. Users in the top-level group are assigned the
-[default membership role](index.md#role).
+After a group sync, users who are not members of a mapped SAML group are removed from the group.
+On GitLab.com, users in the top-level group are assigned the
+[default membership role](index.md#role) instead of being removed.
 
 For example, in the following diagram:
 

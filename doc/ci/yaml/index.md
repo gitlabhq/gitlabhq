@@ -1780,9 +1780,7 @@ environment, using the `production`
 **Additional details**:
 
 - Kubernetes configuration is not supported for Kubernetes clusters
-  that are [managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
-  To follow progress on support for GitLab-managed clusters, see the
-  [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
+  [managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
 
 **Related topics**:
 

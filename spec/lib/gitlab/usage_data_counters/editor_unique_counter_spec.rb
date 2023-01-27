@@ -68,13 +68,10 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
 
   it 'can return the count of actions per user deduplicated' do
     described_class.track_web_ide_edit_action(author: user1, project: project)
-    described_class.track_live_preview_edit_action(author: user1, project: project)
     described_class.track_snippet_editor_edit_action(author: user1, project: project)
     described_class.track_sfe_edit_action(author: user1, project: project)
     described_class.track_web_ide_edit_action(author: user2, time: time - 2.days, project: project)
     described_class.track_web_ide_edit_action(author: user3, time: time - 3.days, project: project)
-    described_class.track_live_preview_edit_action(author: user2, time: time - 2.days, project: project)
-    described_class.track_live_preview_edit_action(author: user3, time: time - 3.days, project: project)
     described_class.track_snippet_editor_edit_action(author: user3, time: time - 3.days, project: project)
     described_class.track_sfe_edit_action(author: user3, time: time - 3.days, project: project)
 

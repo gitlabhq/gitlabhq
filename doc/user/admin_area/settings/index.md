@@ -49,7 +49,6 @@ The **General** settings contain:
 - [External Authentication](external_authorization.md#configuration) - External Classification Policy Authorization.
 - [Web terminal](../../../administration/integration/terminal.md#limiting-websocket-connection-time) -
  Set max session time for web terminal.
-- [Web IDE](../../project/web_ide/index.md#enable-live-preview) - Manage Web IDE features.
 - [FLoC](floc.md) - Enable or disable
  [Federated Learning of Cohorts (FLoC)](https://en.wikipedia.org/wiki/Federated_Learning_of_Cohorts) tracking.
 

@@ -89,26 +89,6 @@
   .settings-content
     = render 'terminal'
 
-%section.settings.no-animate#js-web-ide-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Web IDE')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
-      = _('Manage Web IDE features.')
-  .settings-content
-    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: "js-web-ide-settings"), html: { class: 'fieldset-form', id: 'web-ide-settings' } do |f|
-      = form_errors(@application_setting)
-
-      %fieldset
-        .form-group
-          - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('user/project/web_ide/index', anchor: 'enable-live-preview') }
-          = f.gitlab_ui_checkbox_component :web_ide_clientside_preview_enabled,
-              s_('IDE|Live Preview'),
-              help_text: s_('Preview JavaScript projects in the Web IDE with CodeSandbox Live Preview. %{link_start}Learn more.%{link_end} ').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
-      = f.submit _('Save changes'), pajamas_button: true
-
 = render_if_exists 'admin/application_settings/maintenance_mode_settings_form'
 = render 'admin/application_settings/gitpod'
 = render 'admin/application_settings/kroki'

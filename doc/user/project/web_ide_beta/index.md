@@ -96,7 +96,7 @@ If you do not want to use the Web IDE Beta, you can change your personal prefere
 ## Known issues
 
 The [Web Terminal](../web_ide/index.md#interactive-web-terminals-for-the-web-ide)
-and [Live Preview](../web_ide/index.md#live-preview) are not available in the Web IDE Beta.
+and [Live Preview](../web_ide/index.md#live-preview-removed) are not available in the Web IDE Beta.
 
 These features might become available at a later date.
 

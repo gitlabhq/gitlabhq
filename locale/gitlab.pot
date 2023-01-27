@@ -5152,6 +5152,9 @@ msgstr ""
 msgid "Approved"
 msgstr ""
 
+msgid "Approved MRs"
+msgstr ""
+
 msgid "Approved the current merge request."
 msgstr ""
 
@@ -5443,6 +5446,9 @@ msgid "AsanaService|Comma-separated list of branches to be automatically inspect
 msgstr ""
 
 msgid "AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user."
+msgstr ""
+
+msgid "Ascending"
 msgstr ""
 
 msgid "Ask again later"
@@ -8765,6 +8771,9 @@ msgstr ""
 msgid "CiVariable|Create wildcard"
 msgstr ""
 
+msgid "CiVariable|Define a CI/CD variable in the UI"
+msgstr ""
+
 msgid "CiVariable|New environment"
 msgstr ""
 
@@ -8957,6 +8966,9 @@ msgid "Closed"
 msgstr ""
 
 msgid "Closed %{epicTimeagoDate}"
+msgstr ""
+
+msgid "Closed MRs"
 msgstr ""
 
 msgid "Closed date"
@@ -11060,25 +11072,10 @@ msgstr ""
 msgid "ContributionAnalytics|%{created} created, %{merged} merged, %{closed} closed."
 msgstr ""
 
-msgid "ContributionAnalytics|%{pushes} by %{contributors}."
-msgstr ""
-
-msgid "ContributionAnalytics|Approved MRs"
-msgstr ""
-
-msgid "ContributionAnalytics|Closed MRs"
-msgstr ""
-
-msgid "ContributionAnalytics|Closed issues"
+msgid "ContributionAnalytics|%{pushes}, more than %{commits} by %{contributors}."
 msgstr ""
 
 msgid "ContributionAnalytics|Contribution analytics for issues, merge requests and push events since %{start_date}"
-msgstr ""
-
-msgid "ContributionAnalytics|Contributions per group member"
-msgstr ""
-
-msgid "ContributionAnalytics|Failed to load the contribution stats"
 msgstr ""
 
 msgid "ContributionAnalytics|Issues"
@@ -11093,16 +11090,7 @@ msgstr ""
 msgid "ContributionAnalytics|Last week"
 msgstr ""
 
-msgid "ContributionAnalytics|Loading contribution stats for group members"
-msgstr ""
-
 msgid "ContributionAnalytics|Merge requests"
-msgstr ""
-
-msgid "ContributionAnalytics|Merged MRs"
-msgstr ""
-
-msgid "ContributionAnalytics|Name"
 msgstr ""
 
 msgid "ContributionAnalytics|No issues for the selected time period."
@@ -11114,15 +11102,6 @@ msgstr ""
 msgid "ContributionAnalytics|No pushes for the selected time period."
 msgstr ""
 
-msgid "ContributionAnalytics|Opened MRs"
-msgstr ""
-
-msgid "ContributionAnalytics|Opened issues"
-msgstr ""
-
-msgid "ContributionAnalytics|Pushed"
-msgstr ""
-
 msgid "ContributionAnalytics|The given date range is larger than 31 days"
 msgstr ""
 
@@ -11132,10 +11111,10 @@ msgstr ""
 msgid "ContributionAnalytics|There is too much data to calculate. Try lowering the period_limit setting in the insights configuration file."
 msgstr ""
 
-msgid "ContributionAnalytics|Total Contributions"
+msgid "Contributions for %{calendar_date}"
 msgstr ""
 
-msgid "Contributions for %{calendar_date}"
+msgid "Contributions per group member"
 msgstr ""
 
 msgid "Contributor"
@@ -14108,6 +14087,9 @@ msgid "Deprecations|The metrics feature was deprecated in GitLab 14.7."
 msgstr ""
 
 msgid "Deprioritize label"
+msgstr ""
+
+msgid "Descending"
 msgstr ""
 
 msgid "Describe the goal of the changes and what reviewers should be aware of."
@@ -20816,9 +20798,6 @@ msgstr ""
 msgid "IDE"
 msgstr ""
 
-msgid "IDE|Back"
-msgstr ""
-
 msgid "IDE|Commit"
 msgstr ""
 
@@ -20828,19 +20807,7 @@ msgstr ""
 msgid "IDE|Edit"
 msgstr ""
 
-msgid "IDE|Get started with Live Preview"
-msgstr ""
-
 msgid "IDE|Go to project"
-msgstr ""
-
-msgid "IDE|Live Preview"
-msgstr ""
-
-msgid "IDE|Preview your web application using Web IDE client-side evaluation."
-msgstr ""
-
-msgid "IDE|Refresh preview"
 msgstr ""
 
 msgid "IDE|Review"
@@ -23958,10 +23925,10 @@ msgstr ""
 msgid "JiraService|Set a custom final state by using transition IDs. %{linkStart}Learn about transition IDs%{linkEnd}"
 msgstr ""
 
-msgid "JiraService|Sign in to GitLab to link namespaces."
+msgid "JiraService|Sign in to GitLab to get started."
 msgstr ""
 
-msgid "JiraService|Sign in to GitLab.com to get started."
+msgid "JiraService|Sign in to GitLab to link namespaces."
 msgstr ""
 
 msgid "JiraService|This feature requires a Premium plan."
@@ -25255,9 +25222,6 @@ msgstr ""
 msgid "List your Bitbucket Server repositories"
 msgstr ""
 
-msgid "Live preview"
-msgstr ""
-
 msgid "Load more"
 msgstr ""
 
@@ -25268,6 +25232,9 @@ msgid "Loading"
 msgstr ""
 
 msgid "Loading %{name}"
+msgstr ""
+
+msgid "Loading contribution stats for group members"
 msgstr ""
 
 msgid "Loading files, directories, and submodules in the path %{path} for commit reference %{ref}"
@@ -25499,9 +25466,6 @@ msgid "Makes this %{type} confidential."
 msgstr ""
 
 msgid "Manage %{workspace} labels"
-msgstr ""
-
-msgid "Manage Web IDE features."
 msgstr ""
 
 msgid "Manage access"
@@ -26523,6 +26487,9 @@ msgid "MergeTopics|This action cannot be undone."
 msgstr ""
 
 msgid "Merged"
+msgstr ""
+
+msgid "Merged MRs"
 msgstr ""
 
 msgid "Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes."
@@ -29427,6 +29394,12 @@ msgstr ""
 msgid "Opened"
 msgstr ""
 
+msgid "Opened MRs"
+msgstr ""
+
+msgid "Opened issues"
+msgstr ""
+
 msgid "OpenedNDaysAgo|Created"
 msgstr ""
 
@@ -31935,9 +31908,6 @@ msgid "Prevent users from performing write operations while GitLab maintenance i
 msgstr ""
 
 msgid "Preview"
-msgstr ""
-
-msgid "Preview JavaScript projects in the Web IDE with CodeSandbox Live Preview. %{link_start}Learn more.%{link_end} "
 msgstr ""
 
 msgid "Preview Markdown"
@@ -34632,6 +34602,9 @@ msgid "PushRule|Reject inconsistent user name"
 msgstr ""
 
 msgid "PushRule|Reject unverified users"
+msgstr ""
+
+msgid "Pushed"
 msgstr ""
 
 msgid "Pushes"
@@ -39957,6 +39930,9 @@ msgstr ""
 msgid "Something went wrong while fetching details"
 msgstr ""
 
+msgid "Something went wrong while fetching group member contributions"
+msgstr ""
+
 msgid "Something went wrong while fetching latest comments."
 msgstr ""
 
@@ -44492,6 +44468,9 @@ msgid "Topics could not be merged!"
 msgstr ""
 
 msgid "Total"
+msgstr ""
+
+msgid "Total Contributions"
 msgstr ""
 
 msgid "Total Score"

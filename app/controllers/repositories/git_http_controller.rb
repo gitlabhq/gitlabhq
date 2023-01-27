@@ -116,7 +116,7 @@ module Repositories
     end
 
     def log_user_activity
-      Users::ActivityService.new(user).execute
+      Users::ActivityService.new(author: user, project: project, namespace: project&.namespace).execute
     end
   end
 end

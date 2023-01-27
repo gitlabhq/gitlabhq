@@ -210,7 +210,6 @@ The following is example content of the Service Ping payload.
   "prometheus_metrics_enabled": false,
   "reply_by_email_enabled": "incoming+%{key}@incoming.gitlab.com",
   "signup_enabled": true,
-  "web_ide_clientside_preview_enabled": true,
   "projects_with_expiration_policy_disabled": 999,
   "projects_with_expiration_policy_enabled": 999,
   ...

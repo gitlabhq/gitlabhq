@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlTooltip } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { __ } from '~/locale';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
@@ -8,6 +8,7 @@ describe('CreateMenu component', () => {
   let wrapper;
 
   const findGlDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findGlTooltip = () => wrapper.findComponent(GlTooltip);
 
   const createWrapper = () => {
     wrapper = shallowMountExtended(CreateMenu, {
@@ -28,6 +29,11 @@ describe('CreateMenu component', () => {
 
     it('passes the groups to the disclosure dropdown', () => {
       expect(findGlDisclosureDropdown().props('items')).toBe(createNewMenuGroups);
+    });
+
+    it("sets the toggle ID and tooltip's target", () => {
+      expect(findGlDisclosureDropdown().props('toggleId')).toBe(wrapper.vm.$options.toggleId);
+      expect(findGlTooltip().props('target')).toBe(`#${wrapper.vm.$options.toggleId}`);
     });
   });
 });

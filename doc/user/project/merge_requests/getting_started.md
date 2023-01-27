@@ -96,6 +96,14 @@ When selected, GitLab creates a [to-do list item](../../todos.md) for each revie
 
 To learn more, read [Review a merge request](reviews/index.md).
 
+#### Multiple reviewers for merge requests **(PREMIUM)**
+
+> Introduced in GitLab 13.7.
+
+Merge requests may often require multiple team members to review parts of the
+proposed changes. You can add multiple reviewers to a merge request, making it
+easier to see who is reviewing changes and who has approved changes.
+
 ### Merge requests to close issues
 
 To create a merge request to close an issue when it's merged, you can either:

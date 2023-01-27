@@ -164,7 +164,7 @@ module API
 
     namespace do
       after do
-        ::Users::ActivityService.new(@current_user).execute
+        ::Users::ActivityService.new(author: @current_user, project: @project, namespace: @group).execute
       end
 
       # Mount endpoints to include in the OpenAPI V2 documentation here

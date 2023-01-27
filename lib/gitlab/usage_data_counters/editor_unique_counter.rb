@@ -7,7 +7,6 @@ module Gitlab
       EDIT_BY_SFE = 'g_edit_by_sfe'
       EDIT_BY_WEB_IDE = 'g_edit_by_web_ide'
       EDIT_CATEGORY = 'ide_edit'
-      EDIT_BY_LIVE_PREVIEW = 'g_edit_by_live_preview'
 
       class << self
         def track_web_ide_edit_action(author:, time: Time.zone.now, project:)
@@ -37,10 +36,6 @@ module Gitlab
         def count_edit_using_editor(date_from:, date_to:)
           events = Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(EDIT_CATEGORY)
           count_unique(events, date_from, date_to)
-        end
-
-        def track_live_preview_edit_action(author:, time: Time.zone.now, project:)
-          track_unique_action(EDIT_BY_LIVE_PREVIEW, author, time, project)
         end
 
         private

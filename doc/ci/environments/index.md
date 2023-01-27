@@ -200,10 +200,8 @@ associated with your project, you can configure these deployments from your
 `.gitlab-ci.yml` file.
 
 NOTE:
-Kubernetes configuration isn't supported for Kubernetes clusters that are
+Kubernetes configuration isn't supported for Kubernetes clusters
 [managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
-To follow progress on support for GitLab-managed clusters, see the
-[relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
 
 The following configuration options are supported:
 

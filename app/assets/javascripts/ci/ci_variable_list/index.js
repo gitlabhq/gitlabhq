@@ -25,7 +25,6 @@ const mountCiVariableListApp = (containerEl) => {
     projectFullPath,
     projectId,
     protectedByDefault,
-    protectedEnvironmentVariablesLink,
   } = containerEl.dataset;
 
   const parsedIsProject = parseBoolean(isProject);
@@ -66,7 +65,6 @@ const mountCiVariableListApp = (containerEl) => {
       maskableRegex,
       projectFullPath,
       projectId,
-      protectedEnvironmentVariablesLink,
     },
     render(createElement) {
       return createElement(component);

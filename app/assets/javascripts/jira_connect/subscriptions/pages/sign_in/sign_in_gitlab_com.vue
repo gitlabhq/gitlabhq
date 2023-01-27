@@ -27,7 +27,7 @@ export default {
   },
   i18n: {
     signInButtonTextWithSubscriptions: s__('Integrations|Sign in to add namespaces'),
-    signInText: s__('JiraService|Sign in to GitLab.com to get started.'),
+    signInText: s__('JiraService|Sign in to GitLab to get started.'),
   },
   GITLAB_COM_BASE_PATH,
   methods: {

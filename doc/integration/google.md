@@ -71,7 +71,9 @@ On your GitLab server:
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. See [Configure initial settings](omniauth.md#configure-initial-settings) for initial settings.
+1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+   to add `google_oauth2` as a single sign-on provider. This enables Just-In-Time
+   account provisioning for users who do not have an existing GitLab account.
 1. Add the provider configuration:
 
    For Omnibus GitLab:

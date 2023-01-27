@@ -238,7 +238,13 @@ There are two ways to preview Markdown content in the Web IDE:
 1. Right-click or use the keyboard shortcut `Command/Control + Shift + P` and
    select **Preview Markdown** to toggle a live Markdown preview panel.
 
-## Live Preview
+<!--- start_remove The following content will be removed on remove_date: '2023-02-01' -->
+
+## Live Preview (removed)
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108627) in GitLab 15.8
+and is planned for removal in 15.9. This change is a breaking change.
 
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/213853) from _Client Side Evaluation_ to _Live Preview_ in GitLab 13.0.
 
@@ -282,6 +288,8 @@ An example `package.json`:
   }
 }
 ```
+
+<!--- end_remove -->
 
 ## Interactive Web Terminals for the Web IDE
 

@@ -48,7 +48,7 @@ automatically approved in a background job.
 NOTE:
 This setting doesn't apply to LDAP or OmniAuth users. To enforce approvals for new users
 signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
-[OmniAuth configuration](../../../integration/omniauth.md#configure-initial-settings) or
+[OmniAuth configuration](../../../integration/omniauth.md#configure-common-settings) or
 [LDAP configuration](../../../administration/auth/ldap/index.md#basic-configuration-settings).
 
 ## Require email confirmation
