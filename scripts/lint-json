@@ -1,0 +1,77 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "optparse"
+require "rainbow/refinement"
+using Rainbow
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = 'Checks if JSON files are pretty.'
+
+  opts.on('-f', '--format', 'Format JSON files inline.') do
+    options[:format] = true
+  end
+
+  opts.on('-s', '--stats', 'Print statistics after processing.') do
+    options[:stats] = true
+  end
+
+  opts.on('-v', '--verbose', 'Increase verbosity.') do
+    options[:verbose] = true
+  end
+
+  opts.on('-q', '--quiet', 'Do not print anything. Disables -s and -v') do
+    options[:quiet] = true
+  end
+
+  opts.on('-h', '--help', 'Prints this help') do
+    abort opts.to_s
+  end
+end.parse!
+
+def make_pretty(file, format:, verbose:, quiet:)
+  json = File.read(file)
+  pretty = JSON.pretty_generate(JSON.parse(json)) << "\n"
+
+  return :pretty if json == pretty
+
+  puts "#{file} is not pretty" if verbose && !quiet
+  return :todo unless format
+
+  puts "#{file} was not pretty. Fixed!" unless quiet
+  File.write(file, pretty)
+  :formatted
+rescue JSON::ParserError
+  puts "#{file} is invalid. Skipping!" unless quiet
+  :error
+end
+
+results = ARGV
+  .lazy
+  .flat_map { |pattern| Dir.glob(pattern) }
+  .map { |file| make_pretty(file, format: options[:format], verbose: options[:verbose], quiet: options[:quiet]) }
+  .to_a
+
+if options[:stats] && !options[:quiet]
+  puts format("Scanned total=%<total>d, pretty=%<pretty>d, formatted=%<formatted>d, error=%<error>d",
+    total: results.size,
+    pretty: results.count { |result| result == :pretty },
+    formatted: results.count { |result| result == :formatted },
+    error: results.count { |result| result == :error }
+  )
+end
+
+if results.any?(:todo)
+  unless options[:quiet]
+    puts "\nSome of the JSON files are not pretty-printed, you can run:".yellow
+    puts "\tscripts/lint-json -f $(git diff --name-only master... | grep \\\\.json)".white
+    puts "to fix them".yellow
+  end
+
+  exit(1)
+else
+  exit(0)
+end

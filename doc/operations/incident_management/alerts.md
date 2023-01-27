@@ -35,7 +35,7 @@ The alert list displays the following information:
   - **Triggered**: Investigation has not started.
   - **Acknowledged**: Someone is actively investigating the problem.
   - **Resolved**: No further work is required.
-  - **Ignored**: No action will be taken on the alert.
+  - **Ignored**: No action is taken on the alert.
 
 ## Alert severity
 

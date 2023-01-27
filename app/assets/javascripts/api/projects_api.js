@@ -19,6 +19,10 @@ export function getProjects(query, options, callback = () => {}) {
     defaults.membership = true;
   }
 
+  if (gon.features.fullPathProjectSearch && query?.includes('/')) {
+    defaults.search_namespaces = true;
+  }
+
   return axios
     .get(url, {
       params: Object.assign(defaults, options),

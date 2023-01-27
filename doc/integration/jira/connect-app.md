@@ -4,36 +4,36 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab.com for Jira Cloud app **(FREE)**
+# GitLab for Jira Cloud app **(FREE)**
 
 You can integrate GitLab and Jira Cloud using the
-[GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud)
+[GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud)
 app in the Atlassian Marketplace.
 
 Only Jira users with administrator access can install or configure
-the GitLab.com for Jira Cloud app.
+the GitLab for Jira Cloud app.
 
-## Install the GitLab.com for Jira Cloud app **(FREE SAAS)**
+## Install the GitLab for Jira Cloud app **(FREE SAAS)**
 
-If you use GitLab.com and Jira Cloud, you can install the GitLab.com for Jira Cloud app.
+If you use GitLab.com and Jira Cloud, you can install the GitLab for Jira Cloud app.
 If you do not use both of these environments, use the [Jira DVCS Connector](dvcs/index.md) or
-[install the GitLab.com for Jira Cloud app manually](#install-the-gitlabcom-for-jira-cloud-app-manually).
-We recommend the GitLab.com for Jira Cloud app, because data is
+[install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
+We recommend the GitLab for Jira Cloud app, because data is
 synchronized in real time. The DVCS connector updates data only once per hour.
 
-To configure the GitLab.com for Jira Cloud app, you must have
+To configure the GitLab for Jira Cloud app, you must have
 at least the Maintainer role in the GitLab.com namespace.
 
 This integration method supports [Smart Commits](dvcs/index.md#smart-commits).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a walkthrough of the integration with GitLab.com for Jira Cloud app, watch
+For a walkthrough of the integration with GitLab for Jira Cloud app, watch
 [Configure GitLab.com Jira Could Integration using Marketplace App](https://youtu.be/SwR-g1s1zTo) on YouTube.
 
-To install the GitLab.com for Jira Cloud app:
+To install the GitLab for Jira Cloud app:
 
 1. In Jira, go to **Jira Settings > Apps > Find new apps**, then search for GitLab.
-1. Select **GitLab.com for Jira Cloud**, then select **Get it now**, or go to the
+1. Select **GitLab for Jira Cloud**, then select **Get it now**, or go to the
    [App in the marketplace directly](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud).
 
    ![Install GitLab.com app on Jira Cloud](img/jira_dev_panel_setup_com_1.png)
@@ -44,14 +44,14 @@ To install the GitLab.com for Jira Cloud app:
 1. To add namespaces, ensure you're signed in to GitLab.com
    as a user with at least the Maintainer role.
 
-   ![Sign in to GitLab.com in GitLab.com for Jira Cloud app](img/jira_dev_panel_setup_com_3_v13_9.png)
+   ![Sign in to GitLab.com in GitLab for Jira Cloud app](img/jira_dev_panel_setup_com_3_v13_9.png)
 1. To open the list of available namespaces, select **Add namespace**.
 
 1. Identify the namespace you want to link, and select **Link**.
    - You must have at least the Maintainer role for the namespace.
    - Only Jira site administrators can add or remove namespaces for an installation.
 
-   ![Link namespace in GitLab.com for Jira Cloud app](img/jira_dev_panel_setup_com_4_v13_9.png)
+   ![Link namespace in GitLab for Jira Cloud app](img/jira_dev_panel_setup_com_4_v13_9.png)
 
 NOTE:
 The GitLab.com user only needs access when adding a new namespace. For syncing with
@@ -65,7 +65,7 @@ After a namespace is added:
 
 Support for syncing past branch and commit data is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/263240).
 
-## Update the GitLab.com for Jira Cloud app
+## Update the GitLab for Jira Cloud app
 
 Most updates to the app are fully automated and don't require any user interaction. See the
 [Atlassian Marketplace documentation](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/)
@@ -75,13 +75,13 @@ If the app requires additional permissions, [the update must first be manually a
 
 ## Set up OAuth authentication
 
-The GitLab.com for Jira Cloud app is [switching to OAuth authentication](https://gitlab.com/gitlab-org/gitlab/-/issues/387299).
+The GitLab for Jira Cloud app is [switching to OAuth authentication](https://gitlab.com/gitlab-org/gitlab/-/issues/387299).
 To enable OAuth authentication, you must create an OAuth application on the GitLab instance.
 
 Enabling OAuth authentication is:
 
-- Required to [connect the GitLab.com for Jira Cloud app for self-managed instances](#connect-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances).
-- Recommended to [install the GitLab.com for Jira Cloud app manually](#install-the-gitlabcom-for-jira-cloud-app-manually).
+- Required to [connect the GitLab for Jira Cloud app for self-managed instances](#connect-the-gitlab-for-jira-cloud-app-for-self-managed-instances).
+- Recommended to [install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
 To create an OAuth application:
 
@@ -103,7 +103,7 @@ To create an OAuth application:
 1. Select **Save changes**.
 1. Optional. Enable the `jira_connect_oauth` [feature flag](../../administration/feature_flags.md) to avoid [authentication problems in some browsers](#browser-displays-a-sign-in-message-when-already-signed-in).
 
-## Connect the GitLab.com for Jira Cloud app for self-managed instances **(FREE SELF)**
+## Connect the GitLab for Jira Cloud app for self-managed instances **(FREE SELF)**
 
 > Introduced in GitLab 15.7.
 
@@ -113,17 +113,17 @@ Prerequisites:
 - The instance must be publicly available.
 - The instance must be on version 15.7 or later.
 
-You can link self-managed instances after installing the GitLab.com for Jira Cloud app from the marketplace.
+You can link self-managed instances after installing the GitLab for Jira Cloud app from the marketplace.
 Jira apps can only link to one URL per marketplace listing. The official listing links to GitLab.com.
 
 If your instance doesn't meet the prerequisites or you don't want to use the official marketplace listing, you can
-[install the app manually](#install-the-gitlabcom-for-jira-cloud-app-manually).
+[install the app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
 It's not possible to create branches from Jira for self-managed instances.
 
 ### Set up your instance
 
-To set up your self-managed instance for the GitLab.com for Jira Cloud app in GitLab 15.7 and later:
+To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab 15.7 and later:
 
 1. [Set up OAuth authentication](#set-up-oauth-authentication).
 1. On the top bar, select **Main menu > Admin**.
@@ -134,14 +134,14 @@ To set up your self-managed instance for the GitLab.com for Jira Cloud app in Gi
 
 ### Link your instance
 
-To link your self-managed instance to the GitLab.com for Jira Cloud app:
+To link your self-managed instance to the GitLab for Jira Cloud app:
 
-1. Install the [GitLab.com for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
+1. Install the [GitLab for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
 1. Select **GitLab (self-managed)**.
 1. Enter your GitLab instance URL.
 1. Select **Save**.
 
-## Install the GitLab.com for Jira Cloud app manually **(FREE SELF)**
+## Install the GitLab for Jira Cloud app manually **(FREE SELF)**
 
 If your GitLab instance is self-managed and you don't want to use the official marketplace listing,
 you can install the app manually.
@@ -187,7 +187,7 @@ from outside the Marketplace, which allows you to install the application:
 
 1. Disable [development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-2--enable-development-mode) on your Jira instance.
 
-The **GitLab.com for Jira Cloud** app now displays under **Manage apps**. You can also
+The **GitLab for Jira Cloud** app now displays under **Manage apps**. You can also
 select **Get started** to open the configuration page rendered from your GitLab instance.
 
 NOTE:
@@ -211,7 +211,7 @@ To create a Marketplace listing:
 1. Generate test license tokens for your application.
 
 NOTE:
-This method uses [automated updates](#update-the-gitlabcom-for-jira-cloud-app)
+This method uses [automated updates](#update-the-gitlab-for-jira-cloud-app)
 the same way as our GitLab.com Marketplace listing.
 
 ## Troubleshooting
@@ -225,14 +225,14 @@ when you're already signed in:
 You need to sign in or sign up before continuing.
 ```
 
-The GitLab.com for Jira Cloud app uses an iframe to add namespaces on the
+The GitLab for Jira Cloud app uses an iframe to add namespaces on the
 settings page. Some browsers block cross-site cookies, which can lead to this issue.
 
 To resolve this issue, set up [OAuth authentication](#set-up-oauth-authentication) and enable the `jira_connect_oauth` [feature flag](../../administration/feature_flags.md).
 
 ### Manual installation fails
 
-You might get an error if you have installed the GitLab.com for Jira Cloud app from the official marketplace listing and replaced it with manual installation. To resolve this issue, disable the **Jira Connect Proxy URL** setting.
+You might get an error if you have installed the GitLab for Jira Cloud app from the official marketplace listing and replaced it with manual installation. To resolve this issue, disable the **Jira Connect Proxy URL** setting.
 
 - In GitLab 15.7:
 

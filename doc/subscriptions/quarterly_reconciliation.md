@@ -34,12 +34,12 @@ and for only the remaining quarters.
 
 Using the same example, if a seat is $100 per year, then it is $25 per quarter.
 
-- In Q1, you had a maximum of 110 users. 10 users over license x $25 per user x 3 quarters = **$750**
+- In Q1, you had a maximum of 110 users. 10 users over subscription x $25 per user x 3 quarters = **$750**
   The license is now paid for 110 users.
 
 - In Q2, 105 users was the maximum. You did not go over 110 users, so no charge.
 
-- In Q3, you had 120 users. 10 users over license x $25 per user x 1 remaining quarter = **$250**
+- In Q3, you had 120 users. 10 users over subscription x $25 per user x 1 remaining quarter = **$250**
   The license is now paid for 120 users.
 
 - In Q4, you had 120 users. You did not exceed the number of users. However, if you had, you would not be charged, because in Q4, there are no charges for exceeding the number.
@@ -71,7 +71,7 @@ sent and subject to your terms.
 ### Self-managed instances
 
 Administrators receive an email **six days after the reconciliation date**.
-This email communicates the [overage seat quantity](self_managed/index.md#users-over-license)
+This email communicates the [overage seat quantity](self_managed/index.md#users-over-subscription)
 and expected invoice amount.
 
 **Seven days later**, the subscription is updated to include the additional

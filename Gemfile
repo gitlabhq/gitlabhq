@@ -39,7 +39,7 @@ gem 'default_value_for', '~> 3.4.0'
 # Supported DBs
 gem 'pg', '~> 1.4.5'
 
-gem 'rugged', '~> 1.2'
+gem 'rugged', '~> 1.5'
 gem 'grape-path-helpers', '~> 1.7.1'
 
 gem 'faraday', '~> 1.0'

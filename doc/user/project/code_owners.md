@@ -15,6 +15,15 @@ files or directories in a repository.
 - You can set your merge requests so they must be approved by Code Owners before merge.
 - You can protect a branch and allow only Code Owners to approve changes to the branch.
 
+<div class="video-fallback">
+  Video introduction: <a href="https://www.youtube.com/watch?v=RoyBySTUSB0">Code Owners</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/RoyBySTUSB0" frameborder="0" allowfullscreen> </iframe>
+</figure>
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+
 Use Code Owners and approvers together with
 [approval rules](merge_requests/approvals/rules.md) to build a flexible approval
 workflow:

@@ -106,29 +106,29 @@ RSpec.describe Issues::UpdateService, :mailer do
 
       context 'when updating milestone' do
         before do
-          update_issue({ milestone: nil })
+          update_issue({ milestone_id: nil })
         end
 
         it 'updates issue milestone when passing `milestone` param' do
-          expect { update_issue({ milestone: milestone }) }
+          expect { update_issue({ milestone_id: milestone.id }) }
             .to change(issue, :milestone).to(milestone).from(nil)
         end
 
         it "triggers 'issuableMilestoneUpdated'" do
           expect(GraphqlTriggers).to receive(:issuable_milestone_updated).with(issue).and_call_original
 
-          update_issue({ milestone: milestone })
+          update_issue({ milestone_id: milestone.id })
         end
 
         context 'when milestone remains unchanged' do
           before do
-            update_issue({ title: 'abc', milestone: milestone })
+            update_issue({ title: 'abc', milestone_id: milestone.id })
           end
 
           it "does not trigger 'issuableMilestoneUpdated'" do
             expect(GraphqlTriggers).not_to receive(:issuable_milestone_updated)
 
-            update_issue({ milestone: milestone })
+            update_issue({ milestone_id: milestone.id })
           end
         end
       end
@@ -755,14 +755,14 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'marks todos as done' do
-          update_issue(milestone: create(:milestone, project: project))
+          update_issue(milestone_id: create(:milestone, project: project).id)
 
           expect(todo.reload.done?).to eq true
         end
 
         it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
           perform_enqueued_jobs do
-            update_issue(milestone: create(:milestone, project: project))
+            update_issue(milestone_id: create(:milestone, project: project).id)
           end
 
           should_email(subscriber)
@@ -779,7 +779,7 @@ RSpec.describe Issues::UpdateService, :mailer do
             expect(service).to receive(:delete_cache).and_call_original
           end
 
-          update_issue(milestone: milestone)
+          update_issue(milestone_id: milestone.id)
         end
       end
 
@@ -803,7 +803,7 @@ RSpec.describe Issues::UpdateService, :mailer do
             expect(service).to receive(:delete_cache).and_call_original
           end
 
-          update_issue(milestone: new_milestone)
+          update_issue(milestone_id: new_milestone.id)
         end
       end
 

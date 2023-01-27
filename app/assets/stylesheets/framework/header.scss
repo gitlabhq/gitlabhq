@@ -1,5 +1,4 @@
 $search-input-field-min-width: 320px;
-$search-input-field-max-width: 640px;
 $search-input-field-x-min-width: 200px;
 
 .navbar-gitlab {
@@ -79,16 +78,6 @@ $search-input-field-x-min-width: 200px;
 
     .navbar-collapse > ul.nav > li:not(.d-none) {
       margin: 0 2px;
-    }
-
-    .header-search-new {
-      max-width: $search-input-field-max-width;
-    }
-
-    &.header-search-is-active {
-      .global-search-container {
-        flex-grow: 1;
-      }
     }
   }
 

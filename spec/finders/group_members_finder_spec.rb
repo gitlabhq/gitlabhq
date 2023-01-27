@@ -12,9 +12,9 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
   let_it_be(:user2)                { create(:user) }
   let_it_be(:user3)                { create(:user) }
   let_it_be(:user4)                { create(:user) }
-  let_it_be(:user5)                { create(:user, :two_factor_via_otp) }
+  let_it_be(:user5_2fa)            { create(:user, :two_factor_via_otp) }
 
-  let!(:link) do
+  let_it_be(:link) do
     create(:group_group_link, shared_group: group,     shared_with_group: public_shared_group)
     create(:group_group_link, shared_group: sub_group, shared_with_group: private_shared_group)
   end
@@ -30,7 +30,7 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
   end
 
   context 'relations' do
-    let!(:members) do
+    let_it_be(:members) do
       {
         user1_sub_sub_group: create(:group_member, :maintainer, group: sub_sub_group, user: user1),
         user1_sub_group: create(:group_member, :developer, group: sub_group, user: user1),
@@ -52,7 +52,7 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
         user4_group: create(:group_member, :developer, group: group, user: user4, expires_at: 2.days.from_now),
         user4_public_shared_group: create(:group_member, :developer, group: public_shared_group, user: user4),
         user4_private_shared_group: create(:group_member, :developer,  group: private_shared_group, user: user4),
-        user5_private_shared_group: create(:group_member, :developer,  group: private_shared_group, user: user5)
+        user5_private_shared_group: create(:group_member, :developer,  group: private_shared_group, user: user5_2fa)
       }
     end
 
@@ -98,35 +98,31 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
   end
 
   context 'search' do
-    it 'returns searched members if requested' do
+    before_all do
       group.add_maintainer(user2)
       group.add_developer(user3)
-      member = group.add_maintainer(user1)
+    end
 
+    let_it_be(:maintainer1) { group.add_maintainer(user1) }
+
+    it 'returns searched members if requested' do
       result = described_class.new(group, params: { search: user1.name }).execute
 
-      expect(result.to_a).to match_array([member])
+      expect(result.to_a).to match_array([maintainer1])
     end
 
     it 'returns nothing if search only in inherited relation' do
-      group.add_maintainer(user2)
-      group.add_developer(user3)
-      group.add_maintainer(user1)
-
       result = described_class.new(group, params: { search: user1.name }).execute(include_relations: [:inherited])
 
       expect(result.to_a).to match_array([])
     end
 
     it 'returns searched member only from sub_group if search only in inherited relation' do
-      group.add_maintainer(user2)
-      group.add_developer(user3)
       sub_group.add_maintainer(create(:user, name: user1.name))
-      member = group.add_maintainer(user1)
 
-      result = described_class.new(sub_group, params: { search: member.user.name }).execute(include_relations: [:inherited])
+      result = described_class.new(sub_group, params: { search: maintainer1.user.name }).execute(include_relations: [:inherited])
 
-      expect(result.to_a).to contain_exactly(member)
+      expect(result.to_a).to contain_exactly(maintainer1)
     end
   end
 
@@ -134,7 +130,7 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
     it 'returns members with two-factor auth if requested by owner' do
       group.add_owner(user2)
       group.add_maintainer(user1)
-      member = group.add_maintainer(user5)
+      member = group.add_maintainer(user5_2fa)
 
       result = described_class.new(group, user2, params: { two_factor: 'enabled' }).execute
 
@@ -144,7 +140,7 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
     it 'returns members without two-factor auth if requested by owner' do
       member1 = group.add_owner(user2)
       member2 = group.add_maintainer(user1)
-      member_with_2fa = group.add_maintainer(user5)
+      member_with_2fa = group.add_maintainer(user5_2fa)
 
       result = described_class.new(group, user2, params: { two_factor: 'disabled' }).execute
 
@@ -156,7 +152,7 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
       group.add_owner(user1)
       group.add_maintainer(user2)
       sub_group.add_maintainer(user3)
-      member_with_2fa = sub_group.add_maintainer(user5)
+      member_with_2fa = sub_group.add_maintainer(user5_2fa)
 
       result = described_class.new(sub_group, user1, params: { two_factor: 'enabled' }).execute(include_relations: [:direct])
 
@@ -165,7 +161,7 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
 
     it 'returns inherited members with two-factor auth if requested by owner' do
       group.add_owner(user1)
-      member_with_2fa = group.add_maintainer(user5)
+      member_with_2fa = group.add_maintainer(user5_2fa)
       sub_group.add_maintainer(user2)
       sub_group.add_maintainer(user3)
 
@@ -178,7 +174,7 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
       group.add_owner(user1)
       group.add_maintainer(user2)
       member3 = sub_group.add_maintainer(user3)
-      sub_group.add_maintainer(user5)
+      sub_group.add_maintainer(user5_2fa)
 
       result = described_class.new(sub_group, user1, params: { two_factor: 'disabled' }).execute(include_relations: [:direct])
 
@@ -187,7 +183,7 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
 
     it 'returns inherited members without two-factor auth if requested by owner' do
       member1 = group.add_owner(user1)
-      group.add_maintainer(user5)
+      group.add_maintainer(user5_2fa)
       sub_group.add_maintainer(user2)
       sub_group.add_maintainer(user3)
 
@@ -198,10 +194,10 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :subgroups do
   end
 
   context 'filter by access levels' do
-    let!(:owner1) { group.add_owner(user2) }
-    let!(:owner2) { group.add_owner(user3) }
-    let!(:maintainer1) { group.add_maintainer(user4) }
-    let!(:maintainer2) { group.add_maintainer(user5) }
+    let_it_be(:owner1) { group.add_owner(user2) }
+    let_it_be(:owner2) { group.add_owner(user3) }
+    let_it_be(:maintainer1) { group.add_maintainer(user4) }
+    let_it_be(:maintainer2) { group.add_maintainer(user5_2fa) }
 
     subject(:by_access_levels) { described_class.new(group, user1, params: { access_levels: access_levels }).execute }
 

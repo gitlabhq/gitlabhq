@@ -76,6 +76,9 @@
 .if-merge-request-labels-run-all-jest: &if-merge-request-labels-run-all-jest
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-jest/'
 
+.if-merge-request-labels-run-all-e2e: &if-merge-request-labels-run-all-e2e
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-e2e/'
+
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
@@ -296,6 +299,9 @@
   - "config/**/*.js"
   - "vendor/assets/**/*"
   - "{app/assets,app/components,app/helpers,app/presenters,app/views,locale,public,spec/frontend,storybook,symbol}/**/*"
+
+.initializers-patterns: &initializers-patterns
+  - "{,ee/,jh/}config/initializers/**/*"
 
 .controllers-patterns: &controllers-patterns
   - "{,ee/,jh/}{app/controllers}/**/*"
@@ -1141,12 +1147,17 @@
       allow_failure: true
     - <<: *if-ruby2-branch
       allow_failure: true
+    - <<: *if-merge-request-labels-run-all-e2e
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
       changes: *feature-flag-development-config-patterns
       when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *feature-flag-development-config-patterns
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *initializers-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *nodejs-patterns

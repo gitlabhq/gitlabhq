@@ -183,4 +183,11 @@ class Discussion
       resolved_at
     ].join(':')
   end
+
+  # Consolidate discussions GID. There is no need to have different GID for different class names as the discussion_id
+  # hash is already unique per discussion. This also fixes the issue where same discussion may return different GIDs
+  # depending on number of notes it has.
+  def to_global_id(options = {})
+    GlobalID.new(::Gitlab::GlobalId.build(model_name: Discussion.to_s, id: id))
+  end
 end

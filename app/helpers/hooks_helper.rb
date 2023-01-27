@@ -8,12 +8,12 @@ module HooksHelper
     }
   end
 
-  def link_to_test_hook(hook, trigger)
-    path = test_hook_path(hook, trigger)
-    trigger_human_name = integration_webhook_event_human_name(trigger)
-
-    link_to path, rel: 'nofollow', method: :post do
-      content_tag(:span, trigger_human_name)
+  def webhook_test_items(hook, triggers)
+    triggers.map do |trigger|
+      {
+        href: test_hook_path(hook, trigger),
+        text: integration_webhook_event_human_name(trigger)
+      }
     end
   end
 

@@ -77,3 +77,5 @@ export const DROPDOWN_ORDER = [
 ];
 
 export const FETCH_TYPES = ['generic', 'search'];
+
+export const SEARCH_INPUT_FIELD_MAX_WIDTH = '640px';

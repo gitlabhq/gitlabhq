@@ -753,7 +753,7 @@ Example response:
 
 ## List merge requests associated with a commit
 
-Get a list of merge requests related to the specified commit.
+Returns information about the merge request that originally introduced a specific commit.
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/merge_requests

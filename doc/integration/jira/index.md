@@ -35,7 +35,7 @@ connects all GitLab projects under a group or personal namespace. When configure
 relevant GitLab information, including related branches, commits, and merge requests,
 displays in the [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/).
 
-To set up the Jira development panel integration, use the GitLab.com for Jira Cloud app
+To set up the Jira development panel integration, use the GitLab for Jira Cloud app
 or the Jira DVCS (distributed version control system) connector,
 [depending on your installation](development_panel.md#configure-the-integration).
 
@@ -73,7 +73,7 @@ If you integrate a private GitLab project with Jira, the private data is
 shared with users who have access to your Jira project.
 
 The [**Jira project integration**](#jira-integration) posts GitLab data in the form of comments in Jira issues.
-The GitLab.com for Jira Cloud app and Jira DVCS connector share this data through the [**Jira Development Panel**](development_panel.md).
+The GitLab for Jira Cloud app and Jira DVCS connector share this data through the [**Jira Development Panel**](development_panel.md).
 This method provides more fine-grained access control because access can be restricted to certain user groups or roles.
 
 ## Third-party Jira integrations

@@ -10,7 +10,7 @@ export default function getStandardContext({ extra = {} } = {}) {
       ...data,
       source: SNOWPLOW_JS_SOURCE,
       google_analytics_id: getCookie(GOOGLE_ANALYTICS_ID_COOKIE_NAME) ?? '',
-      extra: extra || data.extra,
+      extra: { ...data.extra, ...extra },
     },
   };
 }

@@ -46,7 +46,7 @@ according to the [maximum number](#maximum-users) of users enabled during the su
 For instances that aren't offline or on a closed network, the maximum number of
 simultaneous users in the GitLab self-managed installation is checked each quarter.
 
-If an instance is unable to generate a quarterly usage report, the existing [true up model](#users-over-license) is used.
+If an instance is unable to generate a quarterly usage report, the existing [true up model](#users-over-subscription) is used.
 Prorated charges are not possible without a quarterly usage report.
 
 ### View user totals
@@ -82,20 +82,20 @@ billable user, with the following exceptions:
 
 The number of _maximum users_ reflects the highest number of billable users for the current license period.
 
-#### Users over license
+#### Users over subscription
 
-The number of _users over license_ shows how many users are in excess of the number allowed by the license. This number reflects the current license period.
+The number of _users over subscription_ shows how many users are in excess of the number allowed by the subscription. This number reflects the current subscription period.
 
 For example, if:
 
-- The license allows 100 users and
+- The subscription allows 100 users and
 - **Maximum users** is 150,
 
 Then this value would be 50.
 
 If the **Maximum users** value is less than or equal to 100, then this value is 0.
 
-A trial license always displays zero for **Users over license**.
+A trial license always displays zero for **Users over subscription**.
 
 If you add more users to your GitLab instance than you are licensed for, payment for the additional users is due [at the time of renewal](../quarterly_reconciliation.md).
 
@@ -269,7 +269,7 @@ It also displays the following information:
 | Users in License   | The number of users you've paid for in the current license loaded on the system. The number does not change unless you [add seats](#add-seats-to-a-subscription) during your current subscription period. |
 | Billable users     | The daily count of billable users on your system. The count may change as you block, deactivate, or add users to your instance. |
 | Maximum users      | The highest number of billable users on your system during the term of the loaded license. |
-| Users over license | Calculated as `Maximum users` - `Users in License` for the current license term. This number incurs a retroactive charge that must be paid before renewal. |
+| Users over subscription | Calculated as `Maximum users` - `Users in subscription` for the current license term. This number incurs a retroactive charge that must be paid before renewal. |
 
 ## Export your license usage
 
@@ -327,18 +327,18 @@ It's important to regularly review your user accounts, because:
   if you renew for too many users.
 - Stale user accounts can be a security risk. A regular review helps reduce this risk.
 
-#### Users over License
+#### Users over subscription
 
-A GitLab subscription is valid for a specific number of seats. The number of users over license
-is the number of _Maximum users_ that exceed the _Users in License_ for the current license term.
+A GitLab subscription is valid for a specific number of seats. The number of users over subscription
+is the number of _maximum users_ that exceed the users in subscription for the current subscription term.
 You must pay for this number of users either before renewal, or at the time of renewal. This is
-known as the _true up_ process.
+called the _true up_ process.
 
-To view the number of _users over license_ go to the **Admin Area**.
+To view the number of users over subscription go to the **Admin Area**.
 
-##### Users over license example
+##### Users over subscription example
 
-You purchase a license for 10 users.
+You purchase a subscription for 10 users.
 
 | Event                                              | Billable users | Maximum users |
 |:---------------------------------------------------|:-----------------|:--------------|
@@ -346,7 +346,7 @@ You purchase a license for 10 users.
 | Two new users join.                                | 12               | 12            |
 | Three users leave and their accounts are removed.  | 9                | 12            |
 
-Users over license = 12 - 10 (Maximum users - users in license)
+Users over subscription = 12 - 10 (Maximum users - users in license)
 
 ### Add seats to a subscription
 
@@ -387,7 +387,7 @@ You can hover your mouse on the **Renew** button to see the date when it will be
    If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team with [the sales contact form](https://about.gitlab.com/sales/) for assistance as this can't be done in the Customers Portal.
 
 1. In the first box, enter the total number of user licenses you'll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of billable users in the system at the time of performing the renewal.
-1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.
+1. Enter the number of [users over subscription](#users-over-subscription) in the second box for the user overage incurred in your previous subscription term.
 1. Review your renewal details and complete the payment process.
 1. An activation code for the renewal term is available on the [Manage Purchases](https://customers.gitlab.com/subscriptions) page on the relevant subscription card. Select **Copy activation code** to get a copy.
 1. [Add the activation code](../../user/admin_area/license.md) to your instance.

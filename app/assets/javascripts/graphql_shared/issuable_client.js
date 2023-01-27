@@ -74,6 +74,7 @@ export const config = {
                     },
                   };
                 }
+
                 return incomingWidget || existingWidget;
               });
             },

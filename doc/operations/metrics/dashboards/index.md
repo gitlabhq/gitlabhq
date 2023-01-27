@@ -190,7 +190,7 @@ Related links can contain the following attributes:
 - `title`: A phrase describing the link. Optional. If this attribute is not set,
   the full URL is used for the link title.
 - `type`: A string declaring the type of link. Optional. If set to `grafana`, the
-  dashboard's time range values are converted to Grafana's time range format and
+  dashboard's time range values are converted to the Grafana time range format and
   appended to the `url`.
 
 The dashboard's time range is appended to the `url` as URL parameters.

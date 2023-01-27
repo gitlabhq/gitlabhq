@@ -25,6 +25,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
 
     mockedState.namespace = mockNamespace;
     mockedState.storageKey = mockStorageKey;
+    gon.features = { fullPathProjectSearch: true };
   });
 
   afterEach(() => {

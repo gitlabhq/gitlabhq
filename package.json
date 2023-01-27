@@ -247,7 +247,6 @@
     "jest-jasmine2": "^28.1.3",
     "jest-junit": "^12.3.0",
     "jest-util": "^28.1.3",
-    "jsonlint": "^1.6.3",
     "markdownlint-cli": "0.32.2",
     "miragejs": "^0.1.40",
     "mock-apollo-client": "1.2.0",

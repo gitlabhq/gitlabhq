@@ -19,7 +19,9 @@
             = gl_badge_tag(integration_webhook_event_human_name(trigger), size: :sm)
         = gl_badge_tag(sslBadgeText, size: :sm)
 
-    .col-md-4.col-lg-5.text-right-md.gl-mt-2
-      %span>= render 'shared/web_hooks/test_button', hook: hook, button_class: 'btn-sm btn-default gl-mr-3'
-      %span>= link_to _('Edit'), edit_hook_path(hook), class: 'btn gl-button btn-default btn-sm gl-mr-3'
-      = link_to _('Delete'), destroy_hook_path(hook), aria: { label: s_('Webhooks|Delete webhook') }, data: { confirm_btn_variant: "danger", confirm: s_('Webhooks|Are you sure you want to delete this webhook?') }, method: :delete, class: 'btn gl-button btn-secondary btn-danger-secondary btn-sm'
+    .col-md-4.col-lg-5.gl-mt-2.gl-display-flex.gl-md-justify-content-end.gl-align-items-baseline.gl-gap-3
+      = render 'shared/web_hooks/test_button', hook: hook, size: 'small'
+      = render Pajamas::ButtonComponent.new(href: edit_hook_path(hook), size: :small) do
+        = _('Edit')
+      = render Pajamas::ButtonComponent.new(href: destroy_hook_path(hook), category: :secondary, variant: :danger, size: :small, method: :delete, button_options: { 'aria-label' => s_('Webhooks|Delete webhook'), data: { confirm_btn_variant: "danger", confirm: s_('Webhooks|Are you sure you want to delete this webhook?') } }) do
+        = _('Delete')

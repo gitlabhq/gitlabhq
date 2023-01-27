@@ -54,7 +54,7 @@ To install the app in Jira:
 
    1. Select **Upload**.
 
-   If the install was successful, you should see the **GitLab.com for Jira Cloud** app under **Manage apps**.
+   If the install was successful, you should see the **GitLab for Jira Cloud** app under **Manage apps**.
    You can also select **Getting Started** to open the configuration page rendered from your GitLab instance.
 
    _Note that any changes to the app descriptor requires you to uninstall then reinstall the app._

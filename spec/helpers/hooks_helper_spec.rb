@@ -32,17 +32,34 @@ RSpec.describe HooksHelper do
     end
   end
 
-  describe '#link_to_test_hook' do
+  describe '#webhook_test_items' do
+    let(:triggers) { [:push_events, :note_events] }
+
+    it 'returns test items for disclosure' do
+      expect(helper.webhook_test_items(project_hook, triggers)).to eq([
+        {
+          href: test_hook_path(project_hook, triggers[0]),
+          text: 'Push events'
+        },
+        {
+          href: test_hook_path(project_hook, triggers[1]),
+          text: 'Comments'
+        }
+      ])
+    end
+  end
+
+  describe '#test_hook_path' do
     let(:trigger) { 'push_events' }
 
     it 'returns project namespaced link' do
-      expect(helper.link_to_test_hook(project_hook, trigger))
-        .to include("href=\"#{test_project_hook_path(project, project_hook, trigger: trigger)}\"")
+      expect(helper.test_hook_path(project_hook, trigger))
+        .to eq(test_project_hook_path(project, project_hook, trigger: trigger))
     end
 
     it 'returns admin namespaced link' do
-      expect(helper.link_to_test_hook(system_hook, trigger))
-        .to include("href=\"#{test_admin_hook_path(system_hook, trigger: trigger)}\"")
+      expect(helper.test_hook_path(system_hook, trigger))
+        .to eq(test_admin_hook_path(system_hook, trigger: trigger))
     end
   end
 

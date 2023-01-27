@@ -188,7 +188,7 @@ Note that the merge request also needs to have the `master:broken` or `master:fo
 
 To make your Revert MRs faster, use the [revert MR template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Revert%20To%20Resolve%20Incident.md) **before** you create your merge request. It will apply the `pipeline:expedite` label and others that will expedite the pipelines that run on the merge request.
 
-### The `~pipeline:expedite` label
+### The `pipeline:expedite` label
 
 When this label is assigned, the following steps of the CI/CD pipeline are skipped:
 
@@ -207,11 +207,31 @@ If you want to force all the RSpec jobs to run regardless of your changes, you c
 WARNING:
 Forcing all jobs on docs only related MRs would not have the prerequisite jobs and would lead to errors
 
+### End-to-end jobs
+
+The [`e2e:package-and-test`](../testing_guide/end_to_end/index.md#using-the-package-and-test-job) child pipeline
+runs end-to-end jobs automatically depending on changes, and is manual in other cases.
+See `.qa:rules:package-and-test` in
+[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for
+the specific list of rules.
+
+If you want to force `e2e:package-and-test` to run regardless of your changes, you can add the
+`pipeline:run-all-e2e` label to the merge request.
+
+Consult the [End-to-end Testing](../testing_guide/end_to_end/index.md) dedicated page for more information.
+
 ### Review app jobs
 
-Consult the [Review Apps](../testing_guide/review_apps.md) dedicated page for more information.
+The [`start-review-app-pipeline`](../testing_guide/review_apps.md) child pipeline deploys a Review App and runs
+end-to-end tests against it automatically depending on changes, and is manual in other cases.
+See `.review:rules:start-review-app-pipeline` in
+[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for
+the specific list of rules.
 
-If you want to force a Review App to be deployed regardless of your changes, you can add the `pipeline:run-review-app` label to the merge request.
+If you want to force a Review App to be deployed regardless of your changes, you can add the
+`pipeline:run-review-app` label to the merge request.
+
+Consult the [Review Apps](../testing_guide/review_apps.md) dedicated page for more information.
 
 ### As-if-FOSS jobs
 
@@ -380,13 +400,13 @@ fail.
 
 The `rspec:undercoverage` job has [known bugs](https://gitlab.com/groups/gitlab-org/-/epics/8254)
 that can cause false positive failures. You can test coverage locally to determine if it's
-safe to apply `~"pipeline:skip-undercoverage"`. For example, using `<spec>` as the name of the
+safe to apply `pipeline:skip-undercoverage`. For example, using `<spec>` as the name of the
 test causing the failure:
 
 1. Run `SIMPLECOV=1 bundle exec rspec <spec>`.
 1. Run `scripts/undercoverage`.
 
-If these commands return `undercover: ✅ No coverage is missing in latest changes` then you can apply `~"pipeline:skip-undercoverage"` to bypass pipeline failures.
+If these commands return `undercover: ✅ No coverage is missing in latest changes` then you can apply `pipeline:skip-undercoverage` to bypass pipeline failures.
 
 ## Test suite parallelization
 
@@ -416,7 +436,7 @@ After that, the next pipeline uses the up-to-date `knapsack/report-master.json` 
 ### Automatic skipping of flaky tests
 
 Tests that are [known to be flaky](../testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection) are
-skipped unless the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is set to `false` or if the `~"pipeline:run-flaky-tests"`
+skipped unless the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is set to `false` or if the `pipeline:run-flaky-tests`
 label is set on the MR.
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1069).

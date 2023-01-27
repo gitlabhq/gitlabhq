@@ -1052,6 +1052,14 @@ The search results are displayed on a search page.
 
 Searching is different from [filtering](#filter).
 
+## seats
+
+When referring to the subscription billing model:
+
+- For GitLab SaaS, use **seats**. Customers purchase seats. Users occupy seats when they are invited
+to a group, with some [exceptions](../../../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined).
+- For GitLab self-managed, use **users**. Customers purchase subscriptions for a specified number of **users**.
+
 ## section
 
 Use **section** to describe an area on a page. For example, if a page has lines that separate the UI

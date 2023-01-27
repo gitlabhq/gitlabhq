@@ -18,6 +18,8 @@ require 'active_support/dependencies'
 require_relative '../config/initializers/0_inject_enterprise_edition_module'
 require_relative '../config/settings'
 require_relative 'support/rspec'
+require_relative '../lib/gitlab/utils'
+require_relative '../lib/gitlab/utils/strong_memoize'
 require 'active_support/all'
 
 require_relative 'simplecov_env'

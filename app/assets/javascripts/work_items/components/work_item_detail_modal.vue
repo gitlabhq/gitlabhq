@@ -156,6 +156,7 @@ export default {
     modal-id="work-item-detail-modal"
     header-class="gl-p-0 gl-pb-2!"
     scrollable
+    data-testid="work-item-detail-modal"
     @hide="closeModal"
   >
     <gl-alert v-if="error" variant="danger" @dismiss="error = false">

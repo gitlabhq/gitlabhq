@@ -61,6 +61,7 @@ describe('ImportHistoryApp', () => {
   const originalApiVersion = gon.api_version;
   beforeAll(() => {
     gon.api_version = 'v4';
+    gon.features = { fullPathProjectSearch: true };
   });
 
   afterAll(() => {

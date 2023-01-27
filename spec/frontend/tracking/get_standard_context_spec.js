@@ -52,7 +52,7 @@ describe('~/tracking/get_standard_context', () => {
   it('accepts optional `extra` property', () => {
     const extra = { foo: 'bar' };
 
-    expect(getStandardContext({ extra }).data.extra).toBe(extra);
+    expect(getStandardContext({ extra }).data.extra).toStrictEqual(extra);
   });
 
   describe('with Google Analytics cookie present', () => {

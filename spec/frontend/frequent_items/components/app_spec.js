@@ -33,6 +33,7 @@ describe('Frequent Items App Component', () => {
   const createComponent = (props = {}) => {
     const session = currentSession[TEST_NAMESPACE];
     gon.api_version = session.apiVersion;
+    gon.features = { fullPathProjectSearch: true };
 
     wrapper = mountExtended(App, {
       store,

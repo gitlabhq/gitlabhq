@@ -196,7 +196,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
             .to receive(:track_milestone_changed_action).once.with(user: user)
 
-          opts[:milestone] = milestone
+          opts[:milestone_id] = milestone.id
 
           MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request)
         end
@@ -236,27 +236,17 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       end
 
       context 'updating milestone' do
-        RSpec.shared_examples 'updates milestone' do
+        context 'with milestone_id param' do
+          let(:opts) { { milestone_id: milestone.id } }
+
           it 'sets milestone' do
             expect(@merge_request.milestone).to eq milestone
           end
         end
 
-        context 'when milestone_id param' do
-          let(:opts) { { milestone_id: milestone.id } }
-
-          it_behaves_like 'updates milestone'
-        end
-
-        context 'when milestone param' do
-          let(:opts) { { milestone: milestone } }
-
-          it_behaves_like 'updates milestone'
-        end
-
         context 'milestone counters cache reset' do
           let(:milestone_old) { create(:milestone, project: project) }
-          let(:opts) { { milestone: milestone_old } }
+          let(:opts) { { milestone_id: milestone_old.id } }
 
           it 'deletes milestone counters' do
             expect_next_instance_of(Milestones::MergeRequestsCountService, milestone_old) do |service|
@@ -267,7 +257,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
               expect(service).to receive(:delete_cache).and_call_original
             end
 
-            update_merge_request(milestone: milestone)
+            update_merge_request(milestone_id: milestone.id)
           end
 
           it 'deletes milestone counters when the milestone is removed' do
@@ -275,17 +265,17 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
               expect(service).to receive(:delete_cache).and_call_original
             end
 
-            update_merge_request(milestone: nil)
+            update_merge_request(milestone_id: nil)
           end
 
           it 'deletes milestone counters when the milestone was not set' do
-            update_merge_request(milestone: nil)
+            update_merge_request(milestone_id: nil)
 
             expect_next_instance_of(Milestones::MergeRequestsCountService, milestone) do |service|
               expect(service).to receive(:delete_cache).and_call_original
             end
 
-            update_merge_request(milestone: milestone)
+            update_merge_request(milestone_id: milestone.id)
           end
         end
       end
@@ -754,12 +744,12 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
             expect(service).to receive(:async_execute)
           end
 
-          update_merge_request({ milestone: create(:milestone, project: project) })
+          update_merge_request(milestone_id: create(:milestone, project: project).id)
         end
 
         it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
           perform_enqueued_jobs do
-            update_merge_request(milestone: create(:milestone, project: project))
+            update_merge_request(milestone_id: create(:milestone, project: project).id)
           end
 
           should_email(subscriber)
