@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SlashCommands::Command do
+RSpec.describe Gitlab::SlashCommands::Command, feature_category: :integrations do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:chat_name) { double(:chat_name, user: user) }
@@ -28,7 +28,7 @@ RSpec.describe Gitlab::SlashCommands::Command do
       it 'displays the help message' do
         expect(subject[:response_type]).to be(:ephemeral)
         expect(subject[:text]).to start_with('The specified command is not valid')
-        expect(subject[:text]).to match('/gitlab issue show')
+        expect(subject[:text]).to include('/gitlab [project name or alias] issue show <id>')
       end
     end
 

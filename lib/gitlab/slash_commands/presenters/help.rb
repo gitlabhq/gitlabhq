@@ -26,7 +26,7 @@ module Gitlab
             MESSAGE
           end
 
-          if text.start_with?('help')
+          if text && text.start_with?('help')
             <<~MESSAGE
               #{full_commands_message(trigger)}
 
@@ -69,9 +69,9 @@ module Gitlab
           list = @commands
             .map do |command|
               if command < Gitlab::SlashCommands::IncidentManagement::IncidentCommand
-                "#{@params[:command]} #{command.help_message}"
-              else
                 "#{trigger} #{command.help_message}"
+              else
+                "#{trigger} [project name or alias] #{command.help_message}"
               end
             end
             .join("\n")

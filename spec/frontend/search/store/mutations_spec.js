@@ -8,6 +8,7 @@ import {
   MOCK_NAVIGATION_DATA,
   MOCK_NAVIGATION_ACTION_MUTATION,
   MOCK_DATA_FOR_NAVIGATION_ACTION_MUTATION,
+  MOCK_AGGREGATIONS,
 } from '../mock_data';
 
 describe('Global Search Store Mutations', () => {
@@ -106,6 +107,19 @@ describe('Global Search Store Mutations', () => {
       expect(state.navigation[payload.key]).toStrictEqual(
         MOCK_DATA_FOR_NAVIGATION_ACTION_MUTATION[payload.key],
       );
+    });
+  });
+
+  describe.each`
+    mutation                              | data                 | result
+    ${types.REQUEST_AGGREGATIONS}         | ${[]}                | ${{ fetching: true, error: false, data: [] }}
+    ${types.RECEIVE_AGGREGATIONS_SUCCESS} | ${MOCK_AGGREGATIONS} | ${{ fetching: false, error: false, data: MOCK_AGGREGATIONS }}
+    ${types.RECEIVE_AGGREGATIONS_ERROR}   | ${[]}                | ${{ fetching: false, error: true, data: [] }}
+  `('$mutation', ({ mutation, data, result }) => {
+    it('sets correct object content', () => {
+      mutations[mutation](state, data);
+
+      expect(state.aggregations).toStrictEqual(result);
     });
   });
 });

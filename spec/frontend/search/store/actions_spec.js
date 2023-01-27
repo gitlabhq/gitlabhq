@@ -27,6 +27,9 @@ import {
   MOCK_NAVIGATION_DATA,
   MOCK_NAVIGATION_ACTION_MUTATION,
   MOCK_ENDPOINT_RESPONSE,
+  MOCK_RECEIVE_AGGREGATIONS_SUCCESS_MUTATION,
+  MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION,
+  MOCK_AGGREGATIONS,
 } from '../mock_data';
 
 jest.mock('~/flash');
@@ -289,6 +292,32 @@ describe('Global Search Store Actions', () => {
       it(`should ${expectedMutations.length === 0 ? 'NOT ' : ''}dispatch ${
         expectedMutations.length === 0 ? '' : 'the correct '
       }mutations for ${scope}`, () => {
+        return testAction({ action, state, expectedMutations }).then(() => {
+          expect(logger.logError).toHaveBeenCalledTimes(errorLogs);
+        });
+      });
+    });
+  });
+
+  describe.each`
+    action                              | axiosMock                         | type         | expectedMutations                             | errorLogs
+    ${actions.fetchLanguageAggregation} | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${MOCK_RECEIVE_AGGREGATIONS_SUCCESS_MUTATION} | ${0}
+    ${actions.fetchLanguageAggregation} | ${{ method: 'onPut', code: 0 }}   | ${'error'}   | ${MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION}   | ${1}
+    ${actions.fetchLanguageAggregation} | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION}   | ${1}
+  `('fetchLanguageAggregation', ({ action, axiosMock, type, expectedMutations, errorLogs }) => {
+    describe(`on ${type}`, () => {
+      beforeEach(() => {
+        if (axiosMock.method) {
+          mock[axiosMock.method]().reply(
+            axiosMock.code,
+            axiosMock.code === 200 ? MOCK_AGGREGATIONS : [],
+          );
+        }
+      });
+
+      it(`should ${type === 'error' ? 'NOT ' : ''}dispatch ${
+        type === 'error' ? '' : 'the correct '
+      }mutations`, () => {
         return testAction({ action, state, expectedMutations }).then(() => {
           expect(logger.logError).toHaveBeenCalledTimes(errorLogs);
         });

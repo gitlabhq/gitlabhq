@@ -91,6 +91,7 @@ module API
       end
 
       expose :squash
+      expose :squash_on_merge?, as: :squash_on_merge
       expose :task_completion_status
       expose :cannot_be_merged?, as: :has_conflicts
       expose :mergeable_discussions_state?, as: :blocking_discussions_resolved

@@ -323,6 +323,7 @@ export default {
         >
           <deployment
             :deployment="upcomingDeployment"
+            :visible="visible"
             :class="{ 'gl-ml-7': inFolder }"
             class="gl-pl-4"
           >

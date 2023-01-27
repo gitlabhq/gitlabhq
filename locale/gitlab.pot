@@ -19092,6 +19092,9 @@ msgstr ""
 msgid "GlobalSearch|Issues assigned to me"
 msgstr ""
 
+msgid "GlobalSearch|Language"
+msgstr ""
+
 msgid "GlobalSearch|Merge requests I've created"
 msgstr ""
 

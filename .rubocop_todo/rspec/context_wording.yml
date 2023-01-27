@@ -1564,7 +1564,6 @@ RSpec/ContextWording:
     - 'spec/lib/api/entities/application_setting_spec.rb'
     - 'spec/lib/api/entities/basic_project_details_spec.rb'
     - 'spec/lib/api/entities/clusters/agent_authorization_spec.rb'
-    - 'spec/lib/api/entities/merge_request_basic_spec.rb'
     - 'spec/lib/api/entities/nuget/dependency_group_spec.rb'
     - 'spec/lib/api/entities/user_spec.rb'
     - 'spec/lib/api/every_api_endpoint_spec.rb'

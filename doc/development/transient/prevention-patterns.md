@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Preventing Transient Bugs
 
-This page will cover architectural patterns and tips for developers to follow to prevent [transient bugs.](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#transient-bugs)
+This page covers architectural patterns and tips for developers to follow to prevent [transient bugs.](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#transient-bugs)
 
 ## Common root causes
 
@@ -21,7 +21,7 @@ We've noticed a few root causes that come up frequently when addressing transien
 
 ### Don't rely on response order
 
-When working with multiple requests, it's easy to assume the order of the responses will match the order in which they are triggered.
+When working with multiple requests, it's easy to assume the order of the responses matches the order in which they are triggered.
 
 That's not always the case and can cause bugs that only happen if the order is switched.
 

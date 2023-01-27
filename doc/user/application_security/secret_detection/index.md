@@ -69,13 +69,14 @@ Different features are available in different [GitLab tiers](https://about.gitla
 
 Prerequisites:
 
-- GitLab Runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
+- Linux-based GitLab Runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. If you're using the
 shared runners on GitLab.com, this is enabled by default.
+  - Windows Runners are not supported.
+  - CPU architectures other than amd64 are not supported.
 - If you use your own runners, make sure the Docker version installed is **not** `19.03.0`. See
   [troubleshooting information](../sast#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error)
   for details.
-- Linux/amd64 container type. Windows containers are not supported.
 - GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage.
 
 To enable Secret Detection, either:
@@ -531,3 +532,8 @@ repository's default branch is unrelated to the branch the job was triggered for
 To resolve the issue, make sure to correctly [set your default branch](../../project/repository/branches/default.md#change-the-default-branch-name-for-a-project)
 on your repository. You should set it to a branch that has related history with the branch you run
 the `secret-detection` job on.
+
+### `exec /bin/sh: exec format error` message in job log
+
+The GitLab Secret Detection analyzer [only supports](#enable-secret-detection) running on the `amd64` CPU architecture.
+This message indicates that the job is being run on a different architecture, such as `arm`.

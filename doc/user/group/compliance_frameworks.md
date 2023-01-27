@@ -200,7 +200,7 @@ include:  # Execute individual project's configuration (if project contains .git
 #### CF pipelines in Merge Requests originating in project forks
 
 When an MR originates in a fork, the branch to be merged usually only exists in the fork.
-When creating such an MR against a project with CF pipelines, the above snippet will fail with a
+When creating such an MR against a project with CF pipelines, the above snippet fails with a
 `Project <project-name> reference <branch-name> does not exist!` error message.
 This is because in the context of the target project, `$CI_COMMIT_REF_NAME` evaluates to a non-existing branch name.
 

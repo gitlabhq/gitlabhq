@@ -62,7 +62,7 @@ To run SAST jobs, by default, you need GitLab Runner with the
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
 WARNING:
-Our SAST jobs require a Linux/amd64 container type. Windows containers are not yet supported.
+GitLab SAST analyzers don't support running on Windows or on any CPU architectures other than amd64.
 
 WARNING:
 If you use your own runners, make sure the Docker version installed
@@ -787,6 +787,11 @@ GitLab SAST [analyzers](analyzers.md) are released as container images.
 If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](#configure-sast-in-your-cicd-yaml) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](#pinning-to-minor-image-version).
 
 Each [analyzer project](analyzers.md#sast-analyzers) has a `CHANGELOG.md` file listing the changes made in each available version.
+
+### `exec /bin/sh: exec format error` message in job log
+
+GitLab SAST analyzers [only support](#requirements) running on the `amd64` CPU architecture.
+This message indicates that the job is being run on a different architecture, such as `arm`.
 
 ### `Error response from daemon: error processing tar file: docker-tar: relocation error`
 

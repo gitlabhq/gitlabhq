@@ -153,7 +153,8 @@ Rather than attempting to push all changes at once, this workaround:
 
 You usually export a project through [the web interface](import_export.md#export-a-project-and-its-data) or through [the API](../../../api/project_import_export.md). Exporting using these
 methods can sometimes fail without giving enough information to troubleshoot. In these cases,
-[open a rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+[open a rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session) and loop through
+[all the defined exporters](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/projects/import_export/export_service.rb).
 Execute each line individually, rather than pasting the entire block at once, so you can see any
 errors each command returns.
 

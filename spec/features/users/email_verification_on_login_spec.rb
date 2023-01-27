@@ -11,6 +11,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
 
   before do
     stub_feature_flags(require_email_verification: require_email_verification_enabled)
+    stub_feature_flags(skip_require_email_verification: false)
   end
 
   shared_examples 'email verification required' do

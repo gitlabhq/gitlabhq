@@ -213,9 +213,9 @@ module Types
     field :security_auto_fix, GraphQL::Types::Boolean, null: true,
                                                        description: 'Indicates if the merge request is created by @GitLab-Security-Bot.'
     field :squash, GraphQL::Types::Boolean, null: false,
-                                            description: 'Indicates if squash on merge is enabled.'
+      description: 'Indicates if the merge request is set to be squashed when merged. [Project settings](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#configure-squash-options-for-a-project) may override this value. Use `squash_on_merge` instead to take project squash options into account.'
     field :squash_on_merge, GraphQL::Types::Boolean, null: false, method: :squash_on_merge?,
-                                                     description: 'Indicates if squash on merge is enabled.'
+      description: 'Indicates if the merge request will be squashed when merged.'
     field :timelogs, Types::TimelogType.connection_type, null: false,
                                                          description: 'Timelogs on the merge request.'
 

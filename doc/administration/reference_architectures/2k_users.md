@@ -924,17 +924,10 @@ running [Prometheus](../monitoring/prometheus/index.md) and
 
 ## Configure the object storage
 
-GitLab supports using an object storage service for holding numerous types of data.
-
-GitLab has been tested on a number of object storage providers:
-
-- [Amazon S3](https://aws.amazon.com/s3/)
-- [Google Cloud Storage](https://cloud.google.com/storage)
-- [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces)
-- [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
-- [OpenStack Swift (S3 compatibility mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
-- [Azure Blob storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
-- MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
+GitLab supports using an [object storage](../object_storage.md) service for holding numerous types of data.
+It's recommended over [NFS](../nfs.md) for data objects and in general it's better
+in larger setups as object storage is typically much more performant, reliable,
+and scalable.
 
 There are two ways of specifying object storage configuration in GitLab:
 

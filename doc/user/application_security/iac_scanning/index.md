@@ -24,7 +24,7 @@ To run IaC Scanning jobs, by default, you need GitLab Runner with the
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
 WARNING:
-Our IaC Scanning jobs require a Linux/amd64 container type. Windows containers are not supported.
+GitLab IaC Scanning analyzers don't support running on Windows or on any CPU architectures other than amd64.
 
 WARNING:
 If you use your own runners, make sure the Docker version installed
@@ -269,3 +269,8 @@ be ineffective or false positives, and the findings are marked as `No longer det
 
 - In GitLab 15.3, [secret detection in the KICS SAST IaC scanner was disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/346181),
   so IaC findings in the "Passwords and Secrets" family show as `No longer detected`.
+
+### `exec /bin/sh: exec format error` message in job log
+
+The GitLab IaC Scanning analyzer [only supports](#requirements) running on the `amd64` CPU architecture.
+This message indicates that the job is being run on a different architecture, such as `arm`.

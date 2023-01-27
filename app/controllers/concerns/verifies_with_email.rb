@@ -163,6 +163,7 @@ module VerifiesWithEmail
   end
 
   def require_email_verification_enabled?(user)
-    Feature.enabled?(:require_email_verification, user)
+    Feature.enabled?(:require_email_verification, user) &&
+      Feature.disabled?(:skip_require_email_verification, user, type: :ops)
   end
 end

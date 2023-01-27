@@ -14,5 +14,11 @@ const createState = ({ query, navigation }) => ({
   },
   sidebarDirty: false,
   navigation,
+  aggregations: {
+    error: false,
+    fetching: false,
+    data: [],
+  },
 });
+
 export default createState;

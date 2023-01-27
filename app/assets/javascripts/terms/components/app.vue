@@ -81,7 +81,7 @@ export default {
         </gl-intersection-observer>
       </div>
     </div>
-    <div v-if="isLoggedIn" class="gl-display-flex gl-justify-content-end">
+    <div v-if="isLoggedIn" class="gl-display-flex gl-justify-content-end gl-p-5">
       <form v-if="permissions.canDecline" method="post" :action="paths.decline">
         <gl-button type="submit">{{ $options.i18n.decline }}</gl-button>
         <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />

@@ -1230,6 +1230,9 @@ Gitaly Cluster provides the benefits of fault tolerance, but comes with addition
 For implementations with sharded Gitaly, use the same Gitaly specs. Follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md) instead of this section.
 
 NOTE:
+For guidance on how to migrate existing repositories from NFS to Gitaly Cluster, [follow the main documentation](../gitaly/index.md#migrate-to-gitaly-cluster).
+
+NOTE:
 Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
 However, large repositories or monorepos not following these practices can significantly
 impact Gitaly performance and requirements.
@@ -1769,7 +1772,10 @@ To configure Praefect with TLS:
 
 Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
-Because you must use [Object storage](#configure-the-object-storage) instead of NFS for data objects, the following
+It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
+
+NOTE:
+[Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
 examples include the Object storage configuration.
 
 - `10.6.0.101`: Sidekiq 1
@@ -1938,7 +1944,13 @@ run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
 ## Configure GitLab Rails
 
 This section describes how to configure the GitLab application (Rails) component.
-Because you must use [Object storage](#configure-the-object-storage) instead of NFS for data objects, the following
+
+Rails requires connections to the [Redis](#configure-redis),
+[PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
+It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
+
+NOTE:
+[Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
 examples include the Object storage configuration.
 
 The following IPs will be used as an example:
@@ -2221,16 +2233,10 @@ To configure the Monitoring node:
 
 ## Configure the object storage
 
-GitLab supports using an object storage service for holding numerous types of data.
-
-GitLab has been tested on a number of object storage providers:
-
-- [Amazon S3](https://aws.amazon.com/s3/)
-- [Google Cloud Storage](https://cloud.google.com/storage)
-- [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces)
-- [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
-- [OpenStack Swift (S3 compatibility mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
-- MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
+GitLab supports using an [object storage](../object_storage.md) service for holding numerous types of data.
+It's recommended over [NFS](../nfs.md) for data objects and in general it's better
+in larger setups as object storage is typically much more performant, reliable,
+and scalable.
 
 There are two ways of specifying object storage configuration in GitLab:
 

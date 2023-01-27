@@ -8,7 +8,11 @@
   }
 
   .terms-fade {
-    background: linear-gradient(0deg, $white 0%, rgba($white, 0.5) 100%);
+    background: linear-gradient(rgba($white, 0), $white);
+
+    .gl-dark & {
+      background: linear-gradient(rgba($gray-900, 0), $gray-900);
+    }
   }
 
   .content {

@@ -59,7 +59,7 @@ possible, we encourage you to use all of our security scanning tools:
   Turning this variable on can result in some duplicate findings, as we do not yet
   de-duplicate results between Container Scanning and Dependency Scanning. For more details,
   efforts to de-duplicate these findings can be tracked in
-  [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/348655).
+  [this epic](https://gitlab.com/groups/gitlab-org/-/epics/8026).
 
 The following table summarizes which types of dependencies each scanning tool can detect:
 
