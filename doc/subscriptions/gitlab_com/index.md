@@ -296,7 +296,7 @@ To renew your subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and beneath your existing subscription, select **Renew**.
 The **Renew** button remains disabled (grayed-out) until 15 days before a subscription expires.
-You can hover your mouse on the **Renew** button to see the date when it will become active.
+You can hover your mouse on the **Renew** button to see the date when it becomes active.
 1. Review your renewal details and complete the payment process.
 1. Select **Confirm purchase**.
 
@@ -362,7 +362,7 @@ for your personal or group namespace. CI/CD minutes are a **one-time purchase**,
 ## Add-on subscription for additional Storage and Transfer
 
 NOTE:
-Free namespaces are subject to a 5GB storage and 10GB transfer [soft limit](https://about.gitlab.com/pricing/). Once all storage is available to view in the usage quota workflow, GitLab will automatically enforce the namespace storage limit and the project limit will be removed. This change will be announced separately. The storage and transfer add-on can be purchased to increase the limits.
+Free namespaces are subject to a 5 GB storage and 10 GB transfer [soft limit](https://about.gitlab.com/pricing/). Once all storage is available to view in the usage quota workflow, GitLab will automatically enforce the namespace storage limit and the project limit is removed. This change is announced separately. The storage and transfer add-on can be purchased to increase the limits.
 
 Projects have a free storage quota of 10 GB. To exceed this quota you must first
 [purchase one or more storage subscription units](#purchase-more-storage-and-transfer). Each unit provides 10 GB of additional
@@ -449,7 +449,7 @@ and for communicating directly with the relevant GitLab team members.
 
 If your credit card is declined when purchasing a GitLab subscription, possible reasons include:
 
-- The credit card details provided are incorrect. The most common cause for this is an incomplete or dummy address.
+- The credit card details provided are incorrect. The most common cause for this is an incomplete or fake address.
 - The credit card account has insufficient funds.
 - You are using a virtual credit card and it has insufficient funds, or has expired.
 - The transaction exceeds the credit limit.

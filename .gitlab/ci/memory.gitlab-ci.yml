@@ -26,6 +26,7 @@ memory-on-boot:
     NODE_ENV: "production"
     RAILS_ENV: "production"
     SETUP_DB: "true"
+    GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
     MEMORY_ON_BOOT_FILE_PREFIX: "tmp/memory_on_boot_"
     TEST_COUNT: 5
   script:

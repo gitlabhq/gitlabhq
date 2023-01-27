@@ -3,23 +3,28 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import TargetProjectDropdown from '~/merge_requests/components/target_project_dropdown.vue';
+import CompareDropdown from '~/merge_requests/components/compare_dropdown.vue';
 
 let wrapper;
 let mock;
 
-function factory() {
-  wrapper = mount(TargetProjectDropdown, {
-    provide: {
-      targetProjectsPath: '/gitlab-org/gitlab/target_projects',
-      currentProject: { value: 1, text: 'gitlab-org/gitlab' },
+function factory(propsData = {}) {
+  wrapper = mount(CompareDropdown, {
+    propsData: {
+      endpoint: '/gitlab-org/gitlab/target_projects',
+      default: { value: 1, text: 'gitlab-org/gitlab' },
+      dropdownHeader: 'Select',
+      inputId: 'input_id',
+      inputName: 'input_name',
+      isProject: true,
+      ...propsData,
     },
   });
 }
 
 const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
 
-describe('Merge requests target project dropdown component', () => {
+describe('Merge requests compare dropdown component', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
     mock.onGet('/gitlab-org/gitlab/target_projects').reply(200, [
@@ -76,5 +81,23 @@ describe('Merge requests target project dropdown component', () => {
     await waitForPromises();
 
     expect(mock.history.get[1].params).toEqual({ search: 'test' });
+  });
+
+  it('renders static data', async () => {
+    factory({
+      endpoint: undefined,
+      staticData: [
+        {
+          value: '10',
+          text: 'GitLab Org',
+        },
+      ],
+    });
+
+    wrapper.find('[data-testid="base-dropdown-toggle"]').trigger('click');
+
+    await waitForPromises();
+
+    expect(wrapper.findAll('li').length).toBe(1);
   });
 });

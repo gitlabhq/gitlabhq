@@ -101,6 +101,11 @@ RSpec.describe Ci::SecureFile do
       file = build(:ci_secure_file, name: 'file1.tar.gz')
       expect(file.file_extension).to eq('gz')
     end
+
+    it 'returns nil if there is no file extension' do
+      file = build(:ci_secure_file, name: 'file1')
+      expect(file.file_extension).to be nil
+    end
   end
 
   describe '#metadata_parsable?' do

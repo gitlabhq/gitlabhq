@@ -1,5 +1,4 @@
 import Vue, { nextTick } from 'vue';
-import { GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -8,6 +7,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import issueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
+import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
@@ -127,12 +127,12 @@ describe('WorkItemLinks', () => {
       },
     });
 
+    wrapper.vm.$refs.wrapper.show = jest.fn();
+
     await waitForPromises();
   };
 
-  const findAlert = () => wrapper.findComponent(GlAlert);
-  const findToggleButton = () => wrapper.findByTestId('toggle-links');
-  const findLinksBody = () => wrapper.findByTestId('links-body');
+  const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
   const findEmptyState = () => wrapper.findByTestId('links-empty');
   const findToggleFormDropdown = () => wrapper.findByTestId('toggle-form');
   const findToggleAddFormButton = () => wrapper.findByTestId('toggle-add-form');
@@ -142,31 +142,14 @@ describe('WorkItemLinks', () => {
   const findAddLinksForm = () => wrapper.findByTestId('add-links-form');
   const findChildrenCount = () => wrapper.findByTestId('children-count');
 
-  beforeEach(async () => {
-    await createComponent();
-  });
-
   afterEach(() => {
-    wrapper.destroy();
     mockApollo = null;
     setWindowLocation('');
   });
 
-  it('is expanded by default', () => {
-    expect(findToggleButton().props('icon')).toBe('chevron-lg-up');
-    expect(findLinksBody().exists()).toBe(true);
-  });
-
-  it('collapses on click toggle button', async () => {
-    findToggleButton().vm.$emit('click');
-    await nextTick();
-
-    expect(findToggleButton().props('icon')).toBe('chevron-lg-down');
-    expect(findLinksBody().exists()).toBe(false);
-  });
-
   describe('add link form', () => {
     it('displays add work item form on click add dropdown then add existing button and hides form on cancel', async () => {
+      await createComponent();
       findToggleFormDropdown().vm.$emit('click');
       findToggleAddFormButton().vm.$emit('click');
       await nextTick();
@@ -181,6 +164,7 @@ describe('WorkItemLinks', () => {
     });
 
     it('displays create work item form on click add dropdown then create button and hides form on cancel', async () => {
+      await createComponent();
       findToggleFormDropdown().vm.$emit('click');
       findToggleCreateFormButton().vm.$emit('click');
       await nextTick();
@@ -207,8 +191,8 @@ describe('WorkItemLinks', () => {
     });
   });
 
-  it('renders all hierarchy widget children', () => {
-    expect(findLinksBody().exists()).toBe(true);
+  it('renders all hierarchy widget children', async () => {
+    await createComponent();
 
     expect(findWorkItemLinkChildItems()).toHaveLength(4);
   });
@@ -219,15 +203,13 @@ describe('WorkItemLinks', () => {
       fetchHandler: jest.fn().mockRejectedValue(new Error(errorMessage)),
     });
 
-    await nextTick();
-
-    expect(findAlert().exists()).toBe(true);
-    expect(findAlert().text()).toBe(errorMessage);
+    expect(findWidgetWrapper().props('error')).toBe(errorMessage);
   });
 
-  it('displays number if children', () => {
-    expect(findChildrenCount().exists()).toBe(true);
+  it('displays number of children', async () => {
+    await createComponent();
 
+    expect(findChildrenCount().exists()).toBe(true);
     expect(findChildrenCount().text()).toContain('4');
   });
 

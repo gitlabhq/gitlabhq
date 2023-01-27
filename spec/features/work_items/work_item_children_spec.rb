@@ -31,15 +31,15 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
     it 'toggles widget body', :aggregate_failures do
       page.within('[data-testid="work-item-links"]') do
-        expect(page).to have_selector('[data-testid="links-body"]')
+        expect(page).to have_selector('[data-testid="widget-body"]')
 
-        click_button 'Collapse tasks'
+        click_button 'Collapse'
 
-        expect(page).not_to have_selector('[data-testid="links-body"]')
+        expect(page).not_to have_selector('[data-testid="widget-body"]')
 
-        click_button 'Expand tasks'
+        click_button 'Expand'
 
-        expect(page).to have_selector('[data-testid="links-body"]')
+        expect(page).to have_selector('[data-testid="widget-body"]')
       end
     end
 

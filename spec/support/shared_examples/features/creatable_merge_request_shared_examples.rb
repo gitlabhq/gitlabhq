@@ -64,14 +64,16 @@ RSpec.shared_examples 'a creatable merge request' do
     visit project_new_merge_request_path(source_project)
 
     first('.js-target-project').click
-    find('.dropdown-target-project li', text: target_project.full_path).click
+    find('.gl-dropdown-item', text: target_project.full_path).click
 
     wait_for_requests
 
     first('.js-target-branch').click
 
-    within('.js-target-branch-dropdown .dropdown-content') do
-      expect(page).to have_content('a-brand-new-branch-to-test')
-    end
+    find('.gl-listbox-search-input').set('a-brand-new-branch-to-test')
+
+    wait_for_requests
+
+    expect(page).to have_selector('.gl-dropdown-item', text: 'a-brand-new-branch-to-test')
   end
 end

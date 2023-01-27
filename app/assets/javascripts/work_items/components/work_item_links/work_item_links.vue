@@ -1,13 +1,5 @@
 <script>
-import {
-  GlButton,
-  GlDropdown,
-  GlDropdownItem,
-  GlIcon,
-  GlAlert,
-  GlLoadingIcon,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { produce } from 'immer';
 import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
@@ -17,30 +9,30 @@ import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { isMetaKey, parseBoolean } from '~/lib/utils/common_utils';
-import { setUrlParams, updateHistory, getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 
 import {
   FORM_TYPES,
   WIDGET_ICONS,
-  WORK_ITEM_STATUS_TEXT,
   WIDGET_TYPE_HIERARCHY,
+  WORK_ITEM_STATUS_TEXT,
 } from '../../constants';
 import getWorkItemLinksQuery from '../../graphql/work_item_links.query.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import workItemQuery from '../../graphql/work_item.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
+import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
 import WorkItemLinkChild from './work_item_link_child.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
 
 export default {
   components: {
-    GlButton,
     GlDropdown,
     GlDropdownItem,
     GlIcon,
-    GlAlert,
     GlLoadingIcon,
+    WidgetWrapper,
     WorkItemLinkChild,
     WorkItemLinksForm,
     WorkItemDetailModal,
@@ -105,13 +97,13 @@ export default {
   data() {
     return {
       isShownAddForm: false,
-      isOpen: true,
       activeChild: {},
       activeToast: null,
       prefetchedWorkItem: null,
       error: undefined,
       parentIssue: null,
       formType: null,
+      workItem: null,
     };
   },
   computed: {
@@ -136,12 +128,6 @@ export default {
     // Only used for children for now but should be extended later to support parents and siblings
     isChildrenEmpty() {
       return this.children?.length === 0;
-    },
-    toggleIcon() {
-      return this.isOpen ? 'chevron-lg-up' : 'chevron-lg-down';
-    },
-    toggleLabel() {
-      return this.isOpen ? s__('WorkItem|Collapse tasks') : s__('WorkItem|Expand tasks');
     },
     issuableGid() {
       return this.issuableId ? convertToGraphQLId(TYPE_WORK_ITEM, this.issuableId) : null;
@@ -180,11 +166,8 @@ export default {
     }
   },
   methods: {
-    toggle() {
-      this.isOpen = !this.isOpen;
-    },
     showAddForm(formType) {
-      this.isOpen = true;
+      this.$refs.wrapper.show();
       this.isShownAddForm = true;
       this.formType = formType;
       this.$nextTick(() => {
@@ -323,24 +306,23 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-mt-4"
+  <widget-wrapper
+    ref="wrapper"
+    :error="error"
     data-testid="work-item-links"
+    @dismissAlert="error = undefined"
   >
-    <div
-      class="gl-px-5 gl-py-3 gl-display-flex gl-justify-content-space-between"
-      :class="{ 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100': isOpen }"
-    >
-      <div class="gl-display-flex gl-flex-grow-1">
-        <h5 class="gl-m-0 gl-line-height-24">{{ $options.i18n.title }}</h5>
-        <span
-          class="gl-display-inline-flex gl-align-items-center gl-line-height-24 gl-ml-3"
-          data-testid="children-count"
-        >
-          <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2 gl-text-secondary" />
-          {{ childrenCountLabel }}
-        </span>
-      </div>
+    <template #header>{{ $options.i18n.title }}</template>
+    <template #header-suffix>
+      <span
+        class="gl-display-inline-flex gl-align-items-center gl-line-height-24 gl-ml-3"
+        data-testid="children-count"
+      >
+        <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2 gl-text-secondary" />
+        {{ childrenCountLabel }}
+      </span>
+    </template>
+    <template #header-right>
       <gl-dropdown
         v-if="canUpdate"
         right
@@ -361,26 +343,8 @@ export default {
           {{ $options.i18n.addChildOptionLabel }}
         </gl-dropdown-item>
       </gl-dropdown>
-      <div class="gl-border-l-1 gl-border-l-solid gl-border-l-gray-100 gl-pl-3 gl-ml-3">
-        <gl-button
-          category="tertiary"
-          size="small"
-          :icon="toggleIcon"
-          :aria-label="toggleLabel"
-          data-testid="toggle-links"
-          @click="toggle"
-        />
-      </div>
-    </div>
-    <gl-alert v-if="error && !isLoading" variant="danger" @dismiss="error = undefined">
-      {{ error }}
-    </gl-alert>
-    <div
-      v-if="isOpen"
-      class="gl-bg-gray-10 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
-      :class="{ 'gl-p-5 gl-pb-3': !error }"
-      data-testid="links-body"
-    >
+    </template>
+    <template #body>
       <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-3" />
 
       <template v-else>
@@ -423,6 +387,6 @@ export default {
           @workItemDeleted="handleWorkItemDeleted(activeChild.id)"
         />
       </template>
-    </div>
-  </div>
+    </template>
+  </widget-wrapper>
 </template>

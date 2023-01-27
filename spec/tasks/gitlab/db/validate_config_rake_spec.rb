@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:db:validate_config', :silence_stdout, :suppress_gitlab_schemas_validate_connection do
+RSpec.describe 'gitlab:db:validate_config', :silence_stdout, :suppress_gitlab_schemas_validate_connection, feature_category: :pods do
   # We don't need to delete this data since it only modifies `ar_internal_metadata`
   # which would not be cleaned either by `DbCleaner`
   self.use_transactional_tests = false
@@ -234,13 +234,5 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout, :suppress_gitlab_sc
         run_rake_task(task)
       end
     end
-  end
-
-  def with_db_configs(test: test_config)
-    current_configurations = ActiveRecord::Base.configurations # rubocop:disable Database/MultipleDatabases
-    ActiveRecord::Base.configurations = { test: test_config }
-    yield
-  ensure
-    ActiveRecord::Base.configurations = current_configurations
   end
 end

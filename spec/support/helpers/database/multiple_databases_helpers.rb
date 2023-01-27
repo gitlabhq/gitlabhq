@@ -71,6 +71,14 @@ module Database
     end
     # rubocop:enable Database/MultipleDatabases
 
+    def with_db_configs(test: test_config)
+      current_configurations = ActiveRecord::Base.configurations # rubocop:disable Database/MultipleDatabases
+      ActiveRecord::Base.configurations = { test: test_config }
+      yield
+    ensure
+      ActiveRecord::Base.configurations = current_configurations
+    end
+
     def with_added_ci_connection
       if Gitlab::Database.has_config?(:ci)
         # No need to add a ci: connection if we already have one

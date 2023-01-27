@@ -67,6 +67,9 @@ the other way around.
 
 1. Save the `config/database.yml` file.
 
+1. Update the service files to set the `GITLAB_ALLOW_SEPARATE_CI_DATABASE`
+   environment variable to `true`.
+
 1. Create the `gitlabhq_production_ci` database:
 
    ```shell
@@ -100,6 +103,7 @@ the other way around.
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines:
 
    ```ruby
+   gitlab_rails['env'] = { 'GITLAB_ALLOW_SEPARATE_CI_DATABASE' => 'true' }
    gitlab_rails['databases']['ci']['enable'] = true
    gitlab_rails['databases']['ci']['db_database'] = 'gitlabhq_production_ci'
    ```

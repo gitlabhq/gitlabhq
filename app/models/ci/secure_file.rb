@@ -35,7 +35,7 @@ module Ci
     end
 
     def file_extension
-      File.extname(name).delete_prefix('.')
+      File.extname(name).delete_prefix('.').presence
     end
 
     def metadata_parsable?

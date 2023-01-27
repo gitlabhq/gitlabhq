@@ -16067,6 +16067,9 @@ msgstr ""
 msgid "Error fetching burnup chart data"
 msgstr ""
 
+msgid "Error fetching data. Please try again."
+msgstr ""
+
 msgid "Error fetching diverging counts for branches. Please try again."
 msgstr ""
 
@@ -16083,9 +16086,6 @@ msgid "Error fetching payload data."
 msgstr ""
 
 msgid "Error fetching refs"
-msgstr ""
-
-msgid "Error fetching target projects. Please try again."
 msgstr ""
 
 msgid "Error fetching the dependency list. Please check your network connection and try again."
@@ -37556,13 +37556,43 @@ msgstr ""
 msgid "Secure token that identifies an external storage request."
 msgstr ""
 
+msgid "SecureFiles|%{name} Metadata"
+msgstr ""
+
+msgid "SecureFiles|App"
+msgstr ""
+
+msgid "SecureFiles|Certificates"
+msgstr ""
+
 msgid "SecureFiles|Delete %{name}?"
 msgstr ""
 
 msgid "SecureFiles|Delete secure file"
 msgstr ""
 
+msgid "SecureFiles|Expires at"
+msgstr ""
+
+msgid "SecureFiles|Issuer"
+msgstr ""
+
+msgid "SecureFiles|Name"
+msgstr ""
+
+msgid "SecureFiles|Platforms"
+msgstr ""
+
 msgid "SecureFiles|Secure File %{name} will be permanently deleted. Are you sure?"
+msgstr ""
+
+msgid "SecureFiles|Serial"
+msgstr ""
+
+msgid "SecureFiles|Team"
+msgstr ""
+
+msgid "SecureFiles|UUID"
 msgstr ""
 
 msgid "Security"
@@ -39720,7 +39750,7 @@ msgstr ""
 msgid "Slack|%{asterisk}Slash commands%{asterisk}"
 msgstr ""
 
-msgid "Slack|%{emoji}Connected to GitLab account %{account}"
+msgid "Slack|%{emoji}Connected to GitLab account %{account}."
 msgstr ""
 
 msgid "Slack|%{emoji}Welcome to GitLab for Slack!"
@@ -39732,10 +39762,10 @@ msgstr ""
 msgid "Slack|Control GitLab from Slack with %{startMarkup}slash commands%{endMarkup}. For a list of available commands, enter %{command}."
 msgstr ""
 
-msgid "Slack|GitLab for Slack now supports channel-based notifications.Let your team know when new issues are created or new CI/CD jobs are run.%{startMarkup}Learn more%{endMarkup}."
+msgid "Slack|GitLab for Slack now supports channel-based notifications. Let your team know when new issues are created or new CI/CD jobs are run.%{startMarkup}Learn more%{endMarkup}."
 msgstr ""
 
-msgid "Slack|To start using notifications,  %{startMarkup}enable the Slack integration%{endMarkup} in your project settings."
+msgid "Slack|To start using notifications, %{startMarkup}enable the GitLab for Slack app integration%{endMarkup} in your project settings."
 msgstr ""
 
 msgid "Slack|To start using slash commands, connect your GitLab account."
@@ -46427,6 +46457,9 @@ msgstr ""
 msgid "VersionCheck|Your GitLab Version"
 msgstr ""
 
+msgid "View File Metadata"
+msgstr ""
+
 msgid "View Stage: %{title}"
 msgstr ""
 
@@ -47873,9 +47906,6 @@ msgstr ""
 msgid "WorkItem|Closed"
 msgstr ""
 
-msgid "WorkItem|Collapse tasks"
-msgstr ""
-
 msgid "WorkItem|Create %{workItemType}"
 msgstr ""
 
@@ -47898,9 +47928,6 @@ msgid "WorkItem|Due date"
 msgstr ""
 
 msgid "WorkItem|Existing task"
-msgstr ""
-
-msgid "WorkItem|Expand tasks"
 msgstr ""
 
 msgid "WorkItem|Health status"

@@ -384,7 +384,15 @@ $comparison-empty-state-height: 62px;
 }
 
 .mr-compare-dropdown {
+  @include gl-w-full;
+
   .gl-button-text {
     @include gl-w-full;
+  }
+}
+
+.merge-request-branch-select {
+  .gl-button-text {
+    @include gl-font-monospace;
   }
 }
