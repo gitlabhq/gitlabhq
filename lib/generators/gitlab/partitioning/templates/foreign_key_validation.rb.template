@@ -1,0 +1,17 @@
+# frozen_string_literal: true
+
+class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Database::Migration.current_version %>]
+  disable_ddl_transaction!
+
+  TABLE_NAME = :<%= source_table_name %>
+  FK_NAME = :<%= partitioned_foreign_key_name %>
+  COLUMNS = [:<%= partitioning_column -%>, :<%= foreign_key_column -%>]
+
+  def up
+    validate_foreign_key(TABLE_NAME, COLUMNS, name: FK_NAME)
+  end
+
+  def down
+    # no-op
+  end
+end

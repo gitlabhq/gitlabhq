@@ -1,9 +1,9 @@
-import initUserInternalRegexPlaceholder from '../account_and_limits';
+import initAccountAndLimitsSection from '../account_and_limits';
 import initGitpod from '../gitpod';
 import initSignupRestrictions from '../signup_restrictions';
 
 (() => {
-  initUserInternalRegexPlaceholder();
+  initAccountAndLimitsSection();
   initGitpod();
   initSignupRestrictions();
 })();

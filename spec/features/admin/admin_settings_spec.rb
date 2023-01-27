@@ -167,7 +167,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
         context 'when not Gitlab.com' do
           let(:dot_com?) { false }
 
-          it 'changes Dormant users' do
+          it 'changes dormant users' do
             expect(page).to have_unchecked_field('Deactivate dormant users after a period of inactivity')
             expect(current_settings.deactivate_dormant_users).to be_falsey
 
@@ -184,7 +184,7 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
             expect(page).to have_checked_field('Deactivate dormant users after a period of inactivity')
           end
 
-          it 'change Dormant users period' do
+          it 'change dormant users period' do
             expect(page).to have_field _('Days of inactivity before deactivation')
 
             page.within(find('[data-testid="account-limit"]')) do
@@ -197,6 +197,27 @@ RSpec.describe 'Admin updates settings', feature_category: :not_owned do
             page.refresh
 
             expect(page).to have_field _('Days of inactivity before deactivation'), with: '90'
+          end
+
+          it 'displays dormant users period field validation error', :js do
+            selector = '#application_setting_deactivate_dormant_users_period_error'
+            expect(page).not_to have_selector(selector, visible: :visible)
+
+            page.within(find('[data-testid="account-limit"]')) do
+              check 'application_setting_deactivate_dormant_users'
+              fill_in _('application_setting_deactivate_dormant_users_period'), with: '30'
+              click_button 'Save changes'
+            end
+
+            expect(page).to have_selector(selector, visible: :visible)
+          end
+
+          it 'auto disables dormant users period field depending on parent checkbox', :js do
+            uncheck 'application_setting_deactivate_dormant_users'
+            expect(page).to have_field('application_setting_deactivate_dormant_users_period', disabled: true)
+
+            check 'application_setting_deactivate_dormant_users'
+            expect(page).to have_field('application_setting_deactivate_dormant_users_period', disabled: false)
           end
         end
       end

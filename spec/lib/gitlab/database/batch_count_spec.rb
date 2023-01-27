@@ -58,10 +58,10 @@ RSpec.describe Gitlab::Database::BatchCount do
     it 'reduces batch size by half and retry fetch' do
       too_big_batch_relation_mock = instance_double(ActiveRecord::Relation)
       allow(model).to receive_message_chain(:select, public_send: relation)
-      allow(relation).to receive(:where).with("id" => 0..calculate_batch_size(batch_size)).and_return(too_big_batch_relation_mock)
+      allow(relation).to receive(:where).with({ "id" => 0..calculate_batch_size(batch_size) }).and_return(too_big_batch_relation_mock)
       allow(too_big_batch_relation_mock).to receive(:send).and_raise(ActiveRecord::QueryCanceled)
 
-      expect(relation).to receive(:where).with("id" => 0..calculate_batch_size(batch_size / 2)).and_return(double(send: 1))
+      expect(relation).to receive(:where).with({ "id" => 0..calculate_batch_size(batch_size / 2) }).and_return(double(send: 1))
 
       subject.call(model, column, batch_size: batch_size, start: 0)
     end
@@ -146,7 +146,7 @@ RSpec.describe Gitlab::Database::BatchCount do
       allow(model).to receive_message_chain(:select, public_send: relation)
       batch_end_id = min_id + calculate_batch_size(Gitlab::Database::BatchCounter::DEFAULT_BATCH_SIZE)
 
-      expect(relation).to receive(:where).with("id" => min_id..batch_end_id).and_return(double(send: 1))
+      expect(relation).to receive(:where).with({ "id" => min_id..batch_end_id }).and_return(double(send: 1))
 
       described_class.batch_count(model)
     end
@@ -382,7 +382,7 @@ RSpec.describe Gitlab::Database::BatchCount do
       allow(model).to receive_message_chain(:select, public_send: relation)
       batch_end_id = min_id + calculate_batch_size(Gitlab::Database::BatchCounter::DEFAULT_DISTINCT_BATCH_SIZE)
 
-      expect(relation).to receive(:where).with("id" => min_id..batch_end_id).and_return(double(send: 1))
+      expect(relation).to receive(:where).with({ "id" => min_id..batch_end_id }).and_return(double(send: 1))
 
       described_class.batch_distinct_count(model)
     end
@@ -468,7 +468,7 @@ RSpec.describe Gitlab::Database::BatchCount do
       allow(model).to receive_message_chain(:select, public_send: relation)
       batch_end_id = min_id + calculate_batch_size(Gitlab::Database::BatchCounter::DEFAULT_SUM_BATCH_SIZE)
 
-      expect(relation).to receive(:where).with("id" => min_id..batch_end_id).and_return(double(send: 1))
+      expect(relation).to receive(:where).with({ "id" => min_id..batch_end_id }).and_return(double(send: 1))
 
       described_class.batch_sum(model, column)
     end

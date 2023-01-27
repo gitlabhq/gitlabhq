@@ -392,7 +392,7 @@ group :development, :test do
 
   gem 'database_cleaner', '~> 1.7.0'
   gem 'factory_bot_rails', '~> 6.2.0'
-  gem 'rspec-rails', '~> 5.0.1'
+  gem 'rspec-rails', '~> 6.0.1'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.11.0'

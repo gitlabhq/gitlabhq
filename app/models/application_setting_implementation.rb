@@ -33,7 +33,7 @@ module ApplicationSettingImplementation
   DEFAULT_MINIMUM_PASSWORD_LENGTH = 8
 
   class_methods do
-    def defaults
+    def defaults # rubocop:disable Metrics/AbcSize
       {
         admin_mode: false,
         after_sign_up_text: nil,
@@ -249,7 +249,13 @@ module ApplicationSettingImplementation
         bulk_import_enabled: false,
         allow_runner_registration_token: true,
         user_defaults_to_private_profile: false
-      }
+      }.tap do |hsh|
+        hsh.merge!(non_production_defaults) unless Rails.env.production?
+      end
+    end
+
+    def non_production_defaults
+      {}
     end
 
     def default_commit_email_hostname

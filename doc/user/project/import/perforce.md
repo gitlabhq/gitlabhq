@@ -16,7 +16,7 @@ The following list illustrates the main differences between Perforce Helix and
 Git:
 
 - In general, the biggest difference is that Perforce branching is heavyweight
-  compared to Git's lightweight branching. When you create a branch in Perforce,
+  compared to Git lightweight branching. When you create a branch in Perforce,
   it creates an integration record in their proprietary database for every file
   in the branch, regardless how many were actually changed. With Git, however,
   a single SHA acts as a pointer to the state of the whole repository after the
@@ -56,7 +56,7 @@ Here's a few links to get you started:
 - [`git-p4` example usage](https://git.wiki.kernel.org/index.php/Git-p4_Usage)
 - [Git book migration guide](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Migrating-to-Git#_perforce_import)
 
-Note that `git p4` and `git filter-branch` are not very good at
+`git p4` and `git filter-branch` are not very good at
 creating small and efficient Git pack files. So it might be a good
 idea to spend time and CPU to properly repack your repository before
 sending it for the first time to your GitLab server. See

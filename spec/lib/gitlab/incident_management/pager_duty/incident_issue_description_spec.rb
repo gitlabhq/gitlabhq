@@ -28,10 +28,10 @@ RSpec.describe Gitlab::IncidentManagement::PagerDuty::IncidentIssueDescription d
       }
     end
 
-    subject(:to_s) { described_class.new(incident_payload).to_s }
+    subject(:description) { described_class.new(incident_payload).to_s }
 
     it 'returns description' do
-      expect(to_s).to eq(
+      expect(description).to eq(
         <<~MARKDOWN.chomp
           **Incident:** [My new incident](https://webdemo.pagerduty.com/incidents/PRORDTY)#{markdown_line_break}
           **Incident number:** 33#{markdown_line_break}
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::IncidentManagement::PagerDuty::IncidentIssueDescription d
         freeze_time do
           now = Time.current.utc.strftime('%d %B %Y, %-l:%M%p (%Z)')
 
-          expect(to_s).to include(
+          expect(description).to include(
             <<~MARKDOWN.chomp
             **Created at:** #{now}#{markdown_line_break}
             MARKDOWN
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::IncidentManagement::PagerDuty::IncidentIssueDescription d
       end
 
       it 'assignees is a list of links' do
-        expect(to_s).to include(
+        expect(description).to include(
           <<~MARKDOWN.chomp
             **Assignees:** [Laura Haley](https://laura.pagerduty.com), [John Doe](https://john.pagerduty.com)#{markdown_line_break}
           MARKDOWN
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::IncidentManagement::PagerDuty::IncidentIssueDescription d
       end
 
       it 'impacted service is a single link' do
-        expect(to_s).to include(
+        expect(description).to include(
           <<~MARKDOWN.chomp
             **Impacted service:** [XDB Cluster](https://xdb.pagerduty.com)
           MARKDOWN

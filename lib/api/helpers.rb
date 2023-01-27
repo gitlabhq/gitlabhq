@@ -504,12 +504,12 @@ module API
 
     def render_validation_error!(model, status = 400)
       if model.errors.any?
-        render_api_error!(model_error_messages(model) || '400 Bad Request', status)
+        render_api_error!(model_errors(model).messages || '400 Bad Request', status)
       end
     end
 
-    def model_error_messages(model)
-      model.errors.messages
+    def model_errors(model)
+      model.errors
     end
 
     def render_api_error_with_reason!(status, message, reason)

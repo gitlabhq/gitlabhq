@@ -206,6 +206,7 @@ module Feature
     # to register Flipper groups.
     # See https://docs.gitlab.com/ee/development/feature_flags/index.html
     def register_feature_groups
+      Flipper.register(:gitlab_team_members) { |actor| FeatureGroups::GitlabTeamMembers.enabled?(actor.thing) }
     end
 
     def register_definitions

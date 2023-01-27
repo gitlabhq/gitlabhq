@@ -60,10 +60,10 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
 
       it 'reports started event once' do
         expect(reporter).to receive(:started).once
-          .with(
+          .with({
             memwd_handler_class: handler.class.name,
             memwd_sleep_time_s: sleep_time_seconds
-          )
+          })
 
         watchdog.call
       end
@@ -77,11 +77,11 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
       context 'when no monitors are configured' do
         it 'reports stopped event once with correct reason' do
           expect(reporter).to receive(:stopped).once
-            .with(
+            .with({
               memwd_handler_class: handler.class.name,
               memwd_sleep_time_s: sleep_time_seconds,
               memwd_reason: 'monitors are not configured'
-            )
+            })
 
           watchdog.call
         end
@@ -96,11 +96,11 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
 
         it 'reports stopped event once' do
           expect(reporter).to receive(:stopped).once
-            .with(
+            .with({
               memwd_handler_class: handler.class.name,
               memwd_sleep_time_s: sleep_time_seconds,
               memwd_reason: 'background task stopped'
-            )
+            })
 
           watchdog.call
         end
@@ -149,13 +149,13 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
             it 'reports strikes exceeded event' do
               expect(reporter).to receive(:strikes_exceeded)
                 .with(
-                  name,
-                  memwd_handler_class: handler.class.name,
-                  memwd_sleep_time_s: sleep_time_seconds,
-                  memwd_cur_strikes: 1,
-                  memwd_max_strikes: max_strikes,
-                  message: "dummy_text"
-                )
+                  name, {
+                    memwd_handler_class: handler.class.name,
+                    memwd_sleep_time_s: sleep_time_seconds,
+                    memwd_cur_strikes: 1,
+                    memwd_max_strikes: max_strikes,
+                    message: "dummy_text"
+                  })
 
               watchdog.call
             end
@@ -163,11 +163,11 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
             it 'executes handler and stops the watchdog' do
               expect(handler).to receive(:call).and_return(true)
               expect(reporter).to receive(:stopped).once
-                .with(
+                .with({
                   memwd_handler_class: handler.class.name,
                   memwd_sleep_time_s: sleep_time_seconds,
                   memwd_reason: 'successfully handled'
-                )
+                })
 
               watchdog.call
             end

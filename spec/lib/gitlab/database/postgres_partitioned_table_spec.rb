@@ -3,25 +3,29 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::PostgresPartitionedTable, type: :model do
-  let(:schema) { 'public' }
-  let(:name) { 'foo_range' }
-  let(:identifier) { "#{schema}.#{name}" }
+  let_it_be(:foo_range_table_name) { '_test_gitlab_main_foo_range' }
+  let_it_be(:foo_list_table_name) { '_test_gitlab_main_foo_list' }
+  let_it_be(:foo_hash_table_name) { '_test_gitlab_main_foo_hash' }
 
-  before do
+  let_it_be(:schema) { 'public' }
+  let_it_be(:name) { foo_range_table_name }
+  let_it_be(:identifier) { "#{schema}.#{name}" }
+
+  before_all do
     ActiveRecord::Base.connection.execute(<<~SQL)
-      CREATE TABLE #{identifier} (
+      CREATE TABLE #{schema}.#{foo_range_table_name} (
         id serial NOT NULL,
         created_at timestamptz NOT NULL,
         PRIMARY KEY (id, created_at)
       ) PARTITION BY RANGE(created_at);
 
-      CREATE TABLE public.foo_list (
+      CREATE TABLE #{schema}.#{foo_list_table_name} (
         id serial NOT NULL,
         row_type text NOT NULL,
         PRIMARY KEY (id, row_type)
       ) PARTITION BY LIST(row_type);
 
-      CREATE TABLE public.foo_hash (
+      CREATE TABLE #{schema}.#{foo_hash_table_name} (
         id serial NOT NULL,
         row_value int NOT NULL,
         PRIMARY KEY (id, row_value)
@@ -58,29 +62,29 @@ RSpec.describe Gitlab::Database::PostgresPartitionedTable, type: :model do
 
   describe '#dynamic?' do
     it 'returns true for tables partitioned by range' do
-      expect(find('public.foo_range')).to be_dynamic
+      expect(find("#{schema}.#{foo_range_table_name}")).to be_dynamic
     end
 
     it 'returns true for tables partitioned by list' do
-      expect(find('public.foo_list')).to be_dynamic
+      expect(find("#{schema}.#{foo_list_table_name}")).to be_dynamic
     end
 
     it 'returns false for tables partitioned by hash' do
-      expect(find('public.foo_hash')).not_to be_dynamic
+      expect(find("#{schema}.#{foo_hash_table_name}")).not_to be_dynamic
     end
   end
 
   describe '#static?' do
     it 'returns false for tables partitioned by range' do
-      expect(find('public.foo_range')).not_to be_static
+      expect(find("#{schema}.#{foo_range_table_name}")).not_to be_static
     end
 
     it 'returns false for tables partitioned by list' do
-      expect(find('public.foo_list')).not_to be_static
+      expect(find("#{schema}.#{foo_list_table_name}")).not_to be_static
     end
 
     it 'returns true for tables partitioned by hash' do
-      expect(find('public.foo_hash')).to be_static
+      expect(find("#{schema}.#{foo_hash_table_name}")).to be_static
     end
   end
 

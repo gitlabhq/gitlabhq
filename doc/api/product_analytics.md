@@ -25,9 +25,10 @@ POST /projects/:id/product_analytics/request/load
 POST /projects/:id/product_analytics/request/dry-run
 ```
 
-| Attribute | Type             | Required | Description                                                   |
-| --------- |------------------| -------- |---------------------------------------------------------------|
-| `id`      | integer          | yes      | The ID of a project that the current user has read access to. |
+| Attribute       | Type             | Required | Description                                                                                 |
+|-----------------|------------------| -------- |---------------------------------------------------------------------------------------------|
+| `id`            | integer          | yes      | The ID of a project that the current user has read access to.                               |
+| `include_token` | boolean          | no       | Whether to include the access token in the response. (Only required for funnel generation.) |
 
 ### Request body
 

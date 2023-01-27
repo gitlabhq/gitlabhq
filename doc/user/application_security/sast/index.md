@@ -151,6 +151,7 @@ Vulnerabilities that have been detected and are false positives are flagged as f
 False positive detection is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
 
 - Ruby, in the Brakeman-based analyzer
+- Go
 
 ![SAST false-positives show in Vulnerability Pages](img/sast_vulnerability_page_fp_detection_v15_2.png)
 

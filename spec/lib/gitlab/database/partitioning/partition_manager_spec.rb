@@ -6,22 +6,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
   include Database::PartitioningHelpers
   include ExclusiveLeaseHelpers
 
-  def has_partition(model, month)
-    Gitlab::Database::PostgresPartition.for_parent_table(model.table_name).any? do |partition|
-      Gitlab::Database::Partitioning::TimePartition.from_sql(
-        model.table_name,
-        partition.name,
-        partition.condition
-      ).from == month
-    end
-  end
+  let(:partitioned_table_name) { "_test_gitlab_main_my_model_example_table" }
 
   context 'creating partitions (mocked)' do
     subject(:sync_partitions) { described_class.new(model).sync_partitions }
 
     let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
     let(:connection) { ActiveRecord::Base.connection }
-    let(:table) { "my_model_example_table" }
+    let(:table) { partitioned_table_name }
     let(:partitioning_strategy) do
       double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil)
     end
@@ -102,14 +94,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
       Class.new(ApplicationRecord) do
         include PartitionedTable
 
-        self.table_name = 'my_model_example_table'
-
         partitioned_by :created_at, strategy: :monthly
       end
     end
 
     before do
-      create_partitioned_table(connection, 'my_model_example_table')
+      my_model.table_name = partitioned_table_name
+
+      create_partitioned_table(connection, partitioned_table_name)
     end
 
     it 'creates partitions' do
@@ -184,26 +176,26 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
       Class.new(ApplicationRecord) do
         include PartitionedTable
 
-        self.table_name = 'my_model_example_table'
-
         partitioned_by :created_at, strategy: :monthly, retain_for: 1.month
       end
     end
 
     before do
       connection.execute(<<~SQL)
-        CREATE TABLE my_model_example_table
+        CREATE TABLE #{partitioned_table_name}
         (id serial not null, created_at timestamptz not null, primary key (id, created_at))
         PARTITION BY RANGE (created_at);
 
-        CREATE TABLE #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.my_model_example_table_202104
-        PARTITION OF my_model_example_table
+        CREATE TABLE #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{partitioned_table_name}_202104
+        PARTITION OF #{partitioned_table_name}
         FOR VALUES FROM ('2021-04-01') TO ('2021-05-01');
 
-        CREATE TABLE #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.my_model_example_table_202105
-        PARTITION OF my_model_example_table
+        CREATE TABLE #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{partitioned_table_name}_202105
+        PARTITION OF #{partitioned_table_name}
         FOR VALUES FROM ('2021-05-01') TO ('2021-06-01');
       SQL
+
+      my_model.table_name = partitioned_table_name
 
       # Also create all future partitions so that the sync is only trying to detach old partitions
       my_model.partitioning_strategy.missing_partitions.each do |p|
@@ -234,7 +226,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     it 'creates the appropriate PendingPartitionDrop entry' do
       subject
 
-      pending_drop = Postgresql::DetachedPartition.find_by!(table_name: 'my_model_example_table_202104')
+      pending_drop = Postgresql::DetachedPartition.find_by!(table_name: "#{partitioned_table_name}_202104")
       expect(pending_drop.drop_after).to eq(Time.current + described_class::RETAIN_DETACHED_PARTITIONS_FOR)
     end
 
@@ -243,11 +235,11 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
       context 'when the model is the target of a foreign key' do
         before do
           connection.execute(<<~SQL)
-        create unique index idx_for_fk ON my_model_example_table(created_at);
+        create unique index idx_for_fk ON #{partitioned_table_name}(created_at);
 
-        create table referencing_table (
+        create table _test_gitlab_main_referencing_table (
           id bigserial primary key not null,
-          referencing_created_at timestamptz references my_model_example_table(created_at)
+          referencing_created_at timestamptz references #{partitioned_table_name}(created_at)
         );
           SQL
         end
@@ -265,15 +257,15 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
       Class.new(ApplicationRecord) do
         include PartitionedTable
 
-        self.table_name = 'my_model_example_table'
-
         partitioned_by :created_at, strategy: :monthly, retain_for: 1.month
       end
     end
 
     before do
+      my_model.table_name = partitioned_table_name
+
       connection.execute(<<~SQL)
-        CREATE TABLE my_model_example_table
+        CREATE TABLE #{partitioned_table_name}
         (id serial not null, created_at timestamptz not null, primary key (id, created_at))
         PARTITION BY RANGE (created_at);
       SQL
@@ -291,6 +283,16 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
       travel 1.month
 
       expect { described_class.new(my_model).sync_partitions }.to change { has_partition(my_model, 2.months.ago.beginning_of_month) }.from(true).to(false).and(change { num_partitions(my_model) }.by(0))
+    end
+  end
+
+  def has_partition(model, month)
+    Gitlab::Database::PostgresPartition.for_parent_table(model.table_name).any? do |partition|
+      Gitlab::Database::Partitioning::TimePartition.from_sql(
+        model.table_name,
+        partition.name,
+        partition.condition
+      ).from == month
     end
   end
 

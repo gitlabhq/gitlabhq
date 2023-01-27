@@ -23,6 +23,7 @@ module Database
 
     ALLOW_THREAD_KEY = :allow_cross_joins_across_databases
     ALLOW_ANNOTATE_KEY = ALLOW_THREAD_KEY.to_s.freeze
+    IGNORED_SCHEMAS = %i[gitlab_shared gitlab_internal].freeze
 
     def self.validate_cross_joins!(sql)
       return if Thread.current[ALLOW_THREAD_KEY] || sql.include?(ALLOW_ANNOTATE_KEY)
@@ -40,8 +41,9 @@ module Database
       end
 
       schemas = ::Gitlab::Database::GitlabSchema.table_schemas(tables)
+      schemas.subtract(IGNORED_SCHEMAS)
 
-      if schemas.include?(:gitlab_ci) && schemas.include?(:gitlab_main)
+      if schemas.many?
         Thread.current[:has_cross_join_exception] = true
         raise CrossJoinAcrossUnsupportedTablesError,
           "Unsupported cross-join across '#{tables.join(", ")}' querying '#{schemas.to_a.join(", ")}' discovered " \

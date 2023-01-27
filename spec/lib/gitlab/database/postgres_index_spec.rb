@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Database::PostgresIndex do
       CREATE INDEX #{name} ON public.users (name);
       CREATE UNIQUE INDEX bar_key ON public.users (id);
 
-      CREATE TABLE example_table (id serial primary key);
+      CREATE TABLE _test_gitlab_main_example_table (id serial primary key);
     SQL
   end
 
@@ -144,7 +144,7 @@ RSpec.describe Gitlab::Database::PostgresIndex do
     end
 
     it 'returns true for a primary key index' do
-      expect(find('public.example_table_pkey')).to be_unique
+      expect(find('public._test_gitlab_main_example_table_pkey')).to be_unique
     end
   end
 

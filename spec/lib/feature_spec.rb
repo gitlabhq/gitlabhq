@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Feature, stub_feature_flags: false do
+RSpec.describe Feature, stub_feature_flags: false do # rubocop:disable RSpec/MissingFeatureCategory
   include StubVersion
 
   before do
@@ -151,6 +151,17 @@ RSpec.describe Feature, stub_feature_flags: false do
 
         expect(described_class.flipper.adapter.memoizing?).to eq(true)
       end
+    end
+  end
+
+  describe '.register_feature_groups' do
+    before do
+      Flipper.unregister_groups
+      described_class.register_feature_groups
+    end
+
+    it 'registers expected groups' do
+      expect(Flipper.groups).to include(an_object_having_attributes(name: :gitlab_team_members))
     end
   end
 
@@ -347,6 +358,22 @@ RSpec.describe Feature, stub_feature_flags: false do
 
       it 'is false for any other actor' do
         expect(described_class.enabled?(key, create(:user))).to be_falsey
+      end
+    end
+
+    context 'with gitlab_team_members feature group' do
+      let(:actor) { build_stubbed(:user) }
+
+      before do
+        Flipper.unregister_groups
+        described_class.register_feature_groups
+        described_class.enable(:enabled_feature_flag, :gitlab_team_members)
+      end
+
+      it 'delegates check to FeatureGroups::GitlabTeamMembers' do
+        expect(FeatureGroups::GitlabTeamMembers).to receive(:enabled?).with(actor)
+
+        described_class.enabled?(:enabled_feature_flag, actor)
       end
     end
 

@@ -189,7 +189,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
     it 'passes "args" hash as symbolized hash argument' do
       hash_config = { 'name' => 'hash', 'args' => { 'custom' => 'format' } }
 
-      expect(devise_config).to receive(:omniauth).with(:hash, custom: 'format')
+      expect(devise_config).to receive(:omniauth).with(:hash, { custom: 'format' })
 
       subject.execute([hash_config])
     end
@@ -197,7 +197,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
     it 'normalizes a String strategy_class' do
       hash_config = { 'name' => 'hash', 'args' => { strategy_class: 'OmniAuth::Strategies::OAuth2Generic' } }
 
-      expect(devise_config).to receive(:omniauth).with(:hash, strategy_class: OmniAuth::Strategies::OAuth2Generic)
+      expect(devise_config).to receive(:omniauth).with(:hash, { strategy_class: OmniAuth::Strategies::OAuth2Generic })
 
       subject.execute([hash_config])
     end
@@ -205,7 +205,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
     it 'allows a class to be specified in strategy_class' do
       hash_config = { 'name' => 'hash', 'args' => { strategy_class: OmniAuth::Strategies::OAuth2Generic } }
 
-      expect(devise_config).to receive(:omniauth).with(:hash, strategy_class: OmniAuth::Strategies::OAuth2Generic)
+      expect(devise_config).to receive(:omniauth).with(:hash, { strategy_class: OmniAuth::Strategies::OAuth2Generic })
 
       subject.execute([hash_config])
     end
@@ -219,7 +219,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
     it 'configures remote_sign_out_handler proc for authentiq' do
       authentiq_config = { 'name' => 'authentiq', 'args' => {} }
 
-      expect(devise_config).to receive(:omniauth).with(:authentiq, remote_sign_out_handler: an_instance_of(Proc))
+      expect(devise_config).to receive(:omniauth).with(:authentiq, { remote_sign_out_handler: an_instance_of(Proc) })
 
       subject.execute([authentiq_config])
     end
@@ -227,7 +227,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
     it 'configures on_single_sign_out proc for cas3' do
       cas3_config = { 'name' => 'cas3', 'args' => {} }
 
-      expect(devise_config).to receive(:omniauth).with(:cas3, on_single_sign_out: an_instance_of(Proc))
+      expect(devise_config).to receive(:omniauth).with(:cas3, { on_single_sign_out: an_instance_of(Proc) })
 
       subject.execute([cas3_config])
     end
@@ -239,11 +239,11 @@ RSpec.describe Gitlab::OmniauthInitializer do
       }
 
       expect(devise_config).to receive(:omniauth).with(
-        :google_oauth2,
-        access_type: "offline",
-        approval_prompt: "",
-        client_options: { connection_opts: { request: { timeout: Gitlab::OmniauthInitializer::OAUTH2_TIMEOUT_SECONDS } } }
-      )
+        :google_oauth2, {
+          access_type: "offline",
+          approval_prompt: "",
+          client_options: { connection_opts: { request: { timeout: Gitlab::OmniauthInitializer::OAUTH2_TIMEOUT_SECONDS } } }
+        })
 
       subject.execute([google_config])
     end
@@ -255,10 +255,10 @@ RSpec.describe Gitlab::OmniauthInitializer do
       }
 
       expect(devise_config).to receive(:omniauth).with(
-        :gitlab,
-        client_options: { site: conf.dig('args', 'client_options', 'site') },
-        authorize_params: { gl_auth_type: 'login' }
-      )
+        :gitlab, {
+          client_options: { site: conf.dig('args', 'client_options', 'site') },
+          authorize_params: { gl_auth_type: 'login' }
+        })
 
       subject.execute([conf])
     end
@@ -267,9 +267,9 @@ RSpec.describe Gitlab::OmniauthInitializer do
       conf = { 'name' => 'gitlab' }
 
       expect(devise_config).to receive(:omniauth).with(
-        :gitlab,
-        authorize_params: { gl_auth_type: 'login' }
-      )
+        :gitlab, {
+          authorize_params: { gl_auth_type: 'login' }
+        })
 
       subject.execute([conf])
     end
@@ -280,7 +280,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
       expect(devise_config).to receive(:omniauth).with(
         :gitlab,
         'a',
-        authorize_params: { gl_auth_type: 'login' }
+        { authorize_params: { gl_auth_type: 'login' } }
       )
 
       subject.execute([conf])
@@ -295,7 +295,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
 
       expect(devise_config).to receive(:omniauth).with(
         :gitlab,
-        authorize_params: { gl_auth_type: 'login' }
+        { authorize_params: { gl_auth_type: 'login' } }
       )
 
       subject.execute([conf])
