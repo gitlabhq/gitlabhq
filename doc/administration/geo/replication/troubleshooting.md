@@ -235,7 +235,7 @@ Commands that change data can cause damage if not run correctly or under the rig
    end
    ```
 
-1. This will cause the primary to start checksumming all Uploads.
+1. This causes the primary to start checksumming all Uploads.
 1. When a primary successfully checksums a record, then all secondaries recalculate the checksum as well, and they compare the values.
 
 A similar thing can be done for all Models handled by the [Geo Self-Service Framework](../../../development/geo/framework.md) which have implemented verification:
@@ -378,7 +378,7 @@ sudo gitlab-rake gitlab:geo:check
   Checking Geo ... Finished
   ```
 
-  When performing a PostgreSQL major version (9 > 10) update this is expected. Follow
+  When performing a PostgreSQL major version (9 > 10), update this is expected. Follow
   the [initiate-the-replication-process](../setup/database.md#step-3-initiate-the-replication-process).
 
 ### Message: Machine clock is synchronized ... Exception
@@ -386,7 +386,7 @@ sudo gitlab-rake gitlab:geo:check
 The Rake task attempts to verify that the server clock is synchronized with NTP. Synchronized clocks
 are required for Geo to function correctly. As an example, for security, when the server time on the
 primary site and secondary site differ by about a minute or more, requests between Geo sites
-will fail. If this check task fails to complete due to a reason other than mismatching times, it
+fail. If this check task fails to complete due to a reason other than mismatching times, it
 does not necessarily mean that Geo will not work.
 
 The Ruby gem which performs the check is hard coded with `pool.ntp.org` as its reference time source.
@@ -405,7 +405,7 @@ In GitLab 15.6 and older, use one of the following workarounds:
 
 - Add entries in `/etc/hosts` for `pool.ntp.org` to direct the request to valid local time servers.
   This fixes the long timeout and the timeout error.
-- Direct the check to any valid IP address. This resolves the timeout issue, but the check will fail
+- Direct the check to any valid IP address. This resolves the timeout issue, but the check fails
   with the `No route to host` error, as noted above.
 
 [Cloud native GitLab deployments](https://docs.gitlab.com/charts/advanced/geo/#set-the-geo-primary-site)
@@ -524,7 +524,7 @@ Slots where `active` is `f` are not active.
 
 ### Message: "ERROR: canceling statement due to conflict with recovery"
 
-This error message occurs infrequently under normal usage, and the system is resilient
+This error message occurs infrequently under typical usage, and the system is resilient
 enough to recover.
 
 However, under certain conditions, some database queries on secondaries may run
@@ -1307,7 +1307,7 @@ To fix this issue, set the primary site's internal URL to a URL that is:
 
 If you notice replication failures in `Admin > Geo > Sites` or the [Sync status Rake task](#sync-status-rake-task), you can try to resolve the failures with the following general steps:
 
-1. Geo will automatically retry failures. If the failures are new and few in number, or if you suspect the root cause is already resolved, then you can wait to see if the failures go away.
+1. Geo automatically retries failures. If the failures are new and few in number, or if you suspect the root cause is already resolved, then you can wait to see if the failures go away.
 1. If failures were present for a long time, then many retries have already occurred, and the interval between automatic retries has increased to up to 4 hours depending on the type of failure. If you suspect the root cause is already resolved, you can [manually retry replication or verification](#manually-retry-replication-or-verification).
 1. If the failures persist, use the following sections to try to resolve them.
 
@@ -1415,7 +1415,7 @@ status
    end
    ```
 
-1. This will cause the primary to start checksumming all Uploads.
+1. This causes the primary to start checksumming all Uploads.
 1. When a primary successfully checksums a record, then all secondaries recalculate the checksum as well, and they compare the values.
 
 For other SSF data types replace `Upload` in the command above with the desired model class.
@@ -1596,7 +1596,7 @@ On all hosts running PostgreSQL, across all Geo sites, run the following shell c
 ( echo "1-1"; echo "11" ) | LC_COLLATE=en_US.UTF-8 sort
 ```
 
-The output will either look like:
+The output looks like either:
 
 ```plaintext
 1-1

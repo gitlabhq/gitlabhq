@@ -79,7 +79,7 @@ describe('Filtered Search Visual Tokens', () => {
     it('replaces author token with avatar and display name', async () => {
       const dummyUser = {
         name: 'Important Person',
-        avatar_url: 'https://host.invalid/mypics/avatar.png',
+        avatar_url: `${TEST_HOST}/mypics/avatar.png`,
       };
       const { subject, tokenValueContainer, tokenValueElement } = findElements(authorToken);
       const tokenValue = tokenValueElement.innerText;

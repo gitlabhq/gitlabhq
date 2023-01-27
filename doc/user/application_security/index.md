@@ -107,7 +107,7 @@ The following vulnerability scanners and their databases are regularly updated:
 | [Static Application Security Testing (SAST)](sast/index.md)  | The source of scan rules depends on which [analyzer](sast/analyzers.md) is used for each [supported programming language](sast/index.md#supported-languages-and-frameworks). GitLab maintains a ruleset for the Semgrep-based analyzer and updates it regularly based on internal research and user feedback. For other analyzers, the ruleset is sourced from the upstream open-source scanner. Each analyzer is updated at least once per month if a relevant update is available. |
 
 In versions of GitLab that use the same major version of the analyzer, you do not have to update
-GitLab to benefit from the latest vulnerabilities definitions. The security tools are released as
+them to benefit from the latest vulnerabilities definitions. The security tools are released as
 Docker images. The vendored job definitions that enable them use major release tags according to
 [semantic versioning](https://semver.org/). Each new release of the tools overrides these tags.
 Although in a major analyzer version you automatically get the latest versions of the scanning
@@ -130,7 +130,7 @@ While you cannot directly customize Auto DevOps, you can [include the Auto DevOp
 
 ## Security scanning without Auto DevOps
 
-To enable all GitLab security scanning tools, with the option of customizing settings, add the
+To enable all GitLab security scanning tools with the option of customizing settings, add the
 GitLab CI/CD templates to your `.gitlab-ci.yml` file.
 
 WARNING:
@@ -164,7 +164,7 @@ variables:
 
 By default, GitLab security scanners use `registry.gitlab.com/security-products` as the
 base address for Docker images. You can override this for most scanners by setting the CI/CD variable
-`SECURE_ANALYZERS_PREFIX` to another location. Note that this affects all scanners at once.
+`SECURE_ANALYZERS_PREFIX` to another location. This affects all scanners at once.
 
 The [Container Scanning](container_scanning/index.md) analyzer is an exception, and it
 does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker image, see
@@ -179,7 +179,7 @@ you must reference the [`latest` templates](../../development/cicd/templates.md)
 
 All `latest` security templates support merge request pipelines.
 
-For example, to run both SAST and Dependency Scanning:
+For example, to run both SAST and Dependency Scanning, the following template is used:
 
 ```yaml
 include:
@@ -205,7 +205,7 @@ that rely on this scan data only show results from pipelines on the default bran
 
 Our language and package manager specific jobs attempt to assess which analyzers they should run for your project so that you can do less configuration.
 
-If you want to override this to increase the pipeline speed you may choose which analyzers to exclude if you know they are not applicable (languages or package managers not contained in your project) by following variable customization directions for that specific tool.
+If you want to override this to increase the pipeline speed, you may choose which analyzers to exclude if you know they are not applicable (languages or package managers not contained in your project) by following variable customization directions for that specific tool.
 
 ### Secure job status
 
