@@ -183,3 +183,37 @@ feature-flags-usage:
     when: always
     paths:
       - tmp/feature_flags/
+
+semgrep-appsec-custom-rules:
+  stage: lint
+  extends:
+    - .semgrep-appsec-custom-rules:rules
+  image: returntocorp/semgrep
+  needs: []
+  script:
+    # Required to avoid a timeout https://github.com/returntocorp/semgrep/issues/5395
+    - git fetch origin master
+    # Include/exclude list isn't ideal https://github.com/returntocorp/semgrep/issues/5399
+    - |
+      semgrep ci --gitlab-sast --metrics off --config $CUSTOM_RULES_URL \
+        --include app --include lib --include workhorse \
+        --exclude '*_test.go' --exclude spec --exclude qa > gl-sast-report.json || true
+  variables:
+    CUSTOM_RULES_URL: https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/raw/main/appsec-pings/rules.yml
+  artifacts:
+    paths:
+      - gl-sast-report.json
+
+ping-appsec-for-sast-findings:
+  stage: lint
+  image: alpine:latest
+  extends:
+    - .ping-appsec-for-sast-findings:rules
+  variables:
+    # Project Access Token bot ID for /gitlab-com/gl-security/appsec/sast-custom-rules
+    BOT_USER_ID: 13559989
+  needs:
+    - semgrep-appsec-custom-rules
+  script:
+    - apk add jq curl
+    - scripts/process_custom_semgrep_results.sh

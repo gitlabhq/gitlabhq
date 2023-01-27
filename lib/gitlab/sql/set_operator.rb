@@ -35,9 +35,12 @@ module Gitlab
         # By using "unprepared_statements" we remove the usage of placeholders
         # (thus fixing this problem), at a slight performance cost.
         fragments = ApplicationRecord.connection.unprepared_statement do
-          relations.map do |rel|
-            remove_order ? rel.reorder(nil).to_sql : rel.to_sql
-          end.reject(&:blank?)
+          relations.filter_map do |rel|
+            next if rel.is_a?(ActiveRecord::NullRelation)
+
+            sql = remove_order ? rel.reorder(nil).to_sql : rel.to_sql
+            sql.presence
+          end
         end
 
         if fragments.any?

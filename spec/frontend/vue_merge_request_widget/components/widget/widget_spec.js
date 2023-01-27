@@ -7,6 +7,7 @@ import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_
 import ActionButtons from '~/vue_merge_request_widget/components/widget/action_buttons.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
+import * as logger from '~/lib/logger';
 
 jest.mock('~/vue_merge_request_widget/components/extensions/telemetry', () => ({
   createTelemetryHub: jest.fn().mockReturnValue({
@@ -32,7 +33,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
         isCollapsible: false,
         loadingText: 'Loading widget',
         widgetName: 'WidgetTest',
-        fetchCollapsedData: () => Promise.resolve([]),
+        fetchCollapsedData: () => Promise.resolve({ headers: {}, status: 200 }),
         value: {
           collapsed: null,
           expanded: null,
@@ -148,6 +149,21 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
         collapsed: [mockData1.data, mockData2.data],
         expanded: null,
       });
+    });
+
+    it('throws an error when the handler does not include headers or status objects', async () => {
+      const error = new Error(Widget.MISSING_RESPONSE_HEADERS);
+      jest.spyOn(Sentry, 'captureException').mockImplementation();
+      jest.spyOn(logger, 'logError').mockImplementation();
+      createComponent({
+        propsData: {
+          fetchCollapsedData: () => Promise.resolve({}),
+        },
+      });
+      await waitForPromises();
+      expect(wrapper.emitted('input')).toBeUndefined();
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+      expect(logger.logError).toHaveBeenCalledWith(error.message);
     });
 
     it('calls sentry when failed', async () => {

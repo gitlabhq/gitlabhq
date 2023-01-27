@@ -9,7 +9,6 @@ import {
   REPORT_TYPE_SECRET_DETECTION,
   REPORT_TYPE_DEPENDENCY_SCANNING,
   REPORT_TYPE_CONTAINER_SCANNING,
-  REPORT_TYPE_CLUSTER_IMAGE_SCANNING,
   REPORT_TYPE_COVERAGE_FUZZING,
   REPORT_TYPE_CORPUS_MANAGEMENT,
   REPORT_TYPE_API_FUZZING,
@@ -105,18 +104,6 @@ export const CONTAINER_SCANNING_CONFIG_HELP_PATH = helpPagePath(
   { anchor: 'configuration' },
 );
 
-export const CLUSTER_IMAGE_SCANNING_NAME = s__('ciReport|Cluster Image Scanning');
-export const CLUSTER_IMAGE_SCANNING_DESCRIPTION = __(
-  'Check your Kubernetes cluster images for known vulnerabilities.',
-);
-export const CLUSTER_IMAGE_SCANNING_HELP_PATH = helpPagePath(
-  'user/application_security/cluster_image_scanning/index',
-);
-export const CLUSTER_IMAGE_SCANNING_CONFIG_HELP_PATH = helpPagePath(
-  'user/application_security/cluster_image_scanning/index',
-  { anchor: 'configuration' },
-);
-
 export const COVERAGE_FUZZING_NAME = __('Coverage Fuzzing');
 export const COVERAGE_FUZZING_DESCRIPTION = __(
   'Find bugs in your code with coverage-guided fuzzing.',
@@ -153,7 +140,6 @@ export const SCANNER_NAMES_MAP = {
   DAST: DAST_SHORT_NAME,
   API_FUZZING: API_FUZZING_NAME,
   CONTAINER_SCANNING: CONTAINER_SCANNING_NAME,
-  CLUSTER_IMAGE_SCANNING: CLUSTER_IMAGE_SCANNING_NAME,
   COVERAGE_FUZZING: COVERAGE_FUZZING_NAME,
   SECRET_DETECTION: SECRET_DETECTION_NAME,
   DEPENDENCY_SCANNING: DEPENDENCY_SCANNING_NAME,
@@ -211,13 +197,6 @@ export const securityFeatures = [
     helpPath: CONTAINER_SCANNING_HELP_PATH,
     configurationHelpPath: CONTAINER_SCANNING_CONFIG_HELP_PATH,
     type: REPORT_TYPE_CONTAINER_SCANNING,
-  },
-  {
-    name: CLUSTER_IMAGE_SCANNING_NAME,
-    description: CLUSTER_IMAGE_SCANNING_DESCRIPTION,
-    helpPath: CLUSTER_IMAGE_SCANNING_HELP_PATH,
-    configurationHelpPath: CLUSTER_IMAGE_SCANNING_CONFIG_HELP_PATH,
-    type: REPORT_TYPE_CLUSTER_IMAGE_SCANNING,
   },
   {
     name: SECRET_DETECTION_NAME,

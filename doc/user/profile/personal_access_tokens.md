@@ -198,6 +198,29 @@ This code can be shortened into a single-line shell command using the
 sudo gitlab-rails runner "PersonalAccessToken.find_by_token('token-string-here123').revoke!"
 ```
 
+## Clone repository using personal access token **(FREE SELF)**
+
+To clone a repository when SSH is disabled, clone it using a personal access token by running the following command:
+
+```shell
+git clone https://<username>:<personal_token>@gitlab.com/gitlab-org/gitlab.git
+```
+
+This method saves your personal access token in your bash history. To avoid this, run the following command:
+
+```shell
+git clone https://<username>@gitlab.com/gitlab-org/gitlab.git
+```
+
+When asked for your password for `https://gitlab.com`, enter your personal access token.
+
+The `username` in the `clone` command:
+
+- Can be any string value.
+- Must not be an empty string.
+
+Remember this if you set up an automation pipeline that depends on authentication.
+
 ## Troubleshooting
 
 ### Unrevoke a personal access token **(FREE SELF)**

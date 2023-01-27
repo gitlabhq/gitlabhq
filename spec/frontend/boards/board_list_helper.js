@@ -22,6 +22,7 @@ export default function createComponent({
   listIssueProps = {},
   componentProps = {},
   listProps = {},
+  apolloQueryHandlers = [],
   actions = {},
   getters = {},
   provide = {},
@@ -39,6 +40,7 @@ export default function createComponent({
 
   const fakeApollo = createMockApollo([
     [listQuery, jest.fn().mockResolvedValue(boardListQueryResponse(issuesCount))],
+    ...apolloQueryHandlers,
   ]);
 
   const store = new Vuex.Store({
@@ -89,6 +91,7 @@ export default function createComponent({
       list,
       boardItems: [issue],
       canAdminList: true,
+      boardId: 'gid://gitlab/Board/1',
       ...componentProps,
     },
     provide: {
@@ -104,6 +107,9 @@ export default function createComponent({
       isGroupBoard: false,
       isProjectBoard: true,
       disabled: false,
+      boardType: 'group',
+      issuableType: 'issue',
+      isApolloBoard: false,
       ...provide,
     },
     stubs,

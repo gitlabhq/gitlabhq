@@ -21405,6 +21405,17 @@ Represents a status widget.
 | <a id="workitemwidgetstatusstatus"></a>`status` | [`String`](#string) | Status of the work item. |
 | <a id="workitemwidgetstatustype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetTestReports`
+
+Represents a test reports widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgettestreportstestreports"></a>`testReports` | [`TestReportConnection`](#testreportconnection) | Test reports of the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgettestreportstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetWeight`
 
 Represents a weight widget.
@@ -23619,6 +23630,7 @@ Type of a work item widget.
 | <a id="workitemwidgettyperequirement_legacy"></a>`REQUIREMENT_LEGACY` | Requirement Legacy widget. |
 | <a id="workitemwidgettypestart_and_due_date"></a>`START_AND_DUE_DATE` | Start And Due Date widget. |
 | <a id="workitemwidgettypestatus"></a>`STATUS` | Status widget. |
+| <a id="workitemwidgettypetest_reports"></a>`TEST_REPORTS` | Test Reports widget. |
 | <a id="workitemwidgettypeweight"></a>`WEIGHT` | Weight widget. |
 
 ## Scalar types
@@ -24948,6 +24960,7 @@ Implementations:
 - [`WorkItemWidgetRequirementLegacy`](#workitemwidgetrequirementlegacy)
 - [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate)
 - [`WorkItemWidgetStatus`](#workitemwidgetstatus)
+- [`WorkItemWidgetTestReports`](#workitemwidgettestreports)
 - [`WorkItemWidgetWeight`](#workitemwidgetweight)
 
 ##### Fields

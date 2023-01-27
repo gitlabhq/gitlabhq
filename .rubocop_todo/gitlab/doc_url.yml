@@ -4,6 +4,7 @@ Gitlab/DocUrl:
   Exclude:
     - 'app/controllers/jira_connect/app_descriptor_controller.rb'
     - 'app/graphql/types/concerns/gitlab_style_deprecations.rb'
+    - 'app/graphql/types/merge_request_type.rb'
     - 'app/graphql/types/notes/diff_position_input_type.rb'
     - 'app/graphql/types/query_complexity_type.rb'
     - 'app/helpers/learn_gitlab_helper.rb'

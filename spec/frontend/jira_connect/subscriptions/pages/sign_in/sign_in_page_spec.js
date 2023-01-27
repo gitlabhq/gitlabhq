@@ -12,11 +12,7 @@ describe('SignInPage', () => {
   const findSignInGitlabCom = () => wrapper.findComponent(SignInGitlabCom);
   const findSignInGitabMultiversion = () => wrapper.findComponent(SignInGitlabMultiversion);
 
-  const createComponent = ({
-    props = {},
-    jiraConnectOauthEnabled,
-    jiraConnectOauthSelfManagedEnabled,
-  } = {}) => {
+  const createComponent = ({ props = {}, jiraConnectOauthEnabled } = {}) => {
     store = createStore();
 
     wrapper = shallowMount(SignInPage, {
@@ -24,7 +20,6 @@ describe('SignInPage', () => {
       provide: {
         glFeatures: {
           jiraConnectOauth: jiraConnectOauthEnabled,
-          jiraConnectOauthSelfManaged: jiraConnectOauthSelfManagedEnabled,
         },
       },
       propsData: { hasSubscriptions: false, ...props },

@@ -13,7 +13,9 @@ export const config = {
     // included temporarily until Vuex is removed from boards app
     dataIdFromObject: (object) => {
       // eslint-disable-next-line no-underscore-dangle
-      return object.__typename === 'BoardList' ? object.iid : defaultDataIdFromObject(object);
+      return object.__typename === 'BoardList' && !window.gon?.features?.apolloBoards
+        ? object.iid
+        : defaultDataIdFromObject(object);
     },
     typePolicies: {
       Project: {
@@ -83,6 +85,57 @@ export const config = {
           nodes: concatPagination(),
         },
       },
+      ...(window.gon?.features?.apolloBoards
+        ? {
+            BoardList: {
+              fields: {
+                issues: {
+                  keyArgs: ['filters'],
+                },
+              },
+            },
+            IssueConnection: {
+              merge(existing = { nodes: [] }, incoming, { args }) {
+                if (!args.after) {
+                  return incoming;
+                }
+                return {
+                  ...incoming,
+                  nodes: [...existing.nodes, ...incoming.nodes],
+                };
+              },
+            },
+            EpicList: {
+              fields: {
+                epics: {
+                  keyArgs: ['filters'],
+                },
+              },
+            },
+            EpicConnection: {
+              merge(existing = { nodes: [] }, incoming, { args }) {
+                if (!args.after) {
+                  return incoming;
+                }
+                return {
+                  ...incoming,
+                  nodes: [...existing.nodes, ...incoming.nodes],
+                };
+              },
+            },
+            BoardEpicConnection: {
+              merge(existing = { nodes: [] }, incoming, { args }) {
+                if (!args.after) {
+                  return incoming;
+                }
+                return {
+                  ...incoming,
+                  nodes: [...existing.nodes, ...incoming.nodes],
+                };
+              },
+            },
+          }
+        : {}),
     },
   },
 };

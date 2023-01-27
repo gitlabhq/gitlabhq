@@ -89,7 +89,7 @@ GitLab fields when you [create an HTTP endpoint](#http-endpoints):
 ## Customize the alert payload outside of GitLab
 
 For HTTP Endpoints without [custom mappings](#map-fields-in-custom-alerts), you can customize the payload by sending the following
-parameters. All fields are optional. If the incoming alert does not contain a value for the `Title` field, a default value of `New: Alert` will be applied.
+parameters. All fields are optional. If the incoming alert does not contain a value for the `Title` field, a default value of `New: Alert` is applied.
 
 | Property                  | Type            | Description |
 | ------------------------- | --------------- | ----------- |
@@ -413,7 +413,7 @@ If the existing alert is already `resolved`, GitLab creates a new alert instead.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
 
-The alert in GitLab will be automatically resolved when an HTTP Endpoint
+The alert in GitLab is automatically resolved when an HTTP Endpoint
 receives a payload with the end time of the alert set. For HTTP Endpoints
 without [custom mappings](#map-fields-in-custom-alerts), the expected
 field is `end_time`. With custom mappings, you can select the expected field.

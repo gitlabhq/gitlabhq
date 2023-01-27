@@ -61,6 +61,7 @@ describe('Board card', () => {
         isProjectBoard: false,
         isGroupBoard: true,
         disabled: false,
+        isApolloBoard: false,
         ...provide,
       },
     });

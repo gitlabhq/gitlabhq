@@ -121,6 +121,9 @@
 .if-security-schedule: &if-security-schedule
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_PIPELINE_SOURCE == "schedule"'
 
+.if-foss-schedule: &if-foss-schedule
+  if: '$CI_PROJECT_PATH == "gitlab-org/gitlab-foss" && $CI_PIPELINE_SOURCE == "schedule"'
+
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
@@ -682,6 +685,7 @@
   rules:
     - <<: *if-schedule-maintenance
     - <<: *if-security-schedule
+    - <<: *if-foss-schedule
     - <<: *if-merge-request-labels-update-caches
 
 .shared:rules:update-gitaly-binaries-cache:
@@ -1736,6 +1740,24 @@
     - <<: *if-merge-request
       changes: *static-analysis-patterns
 
+.semgrep-appsec-custom-rules:rules:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request
+      changes: *code-backstage-qa-patterns
+
+.ping-appsec-for-sast-findings:rules:
+  rules:
+    # Requiring $CUSTOM_SAST_RULES_BOT_PAT prevents the bot from running on forks or CE
+    # Without it the script would fail too.
+    - if: "$CUSTOM_SAST_RULES_BOT_PAT == null"
+      when: never
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request
+      changes: *code-backstage-qa-patterns
+
 #######################
 # Vendored gems rules #
 #######################
@@ -2060,7 +2082,7 @@
 
 .review:rules:review-k8s-resources-count-checks:
   rules:
-    - <<: *if-dot-com-gitlab-org-schedule
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:
@@ -2069,7 +2091,7 @@
 
 .review:rules:review-gcp-quotas-checks:
   rules:
-    - <<: *if-dot-com-gitlab-org-schedule
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:

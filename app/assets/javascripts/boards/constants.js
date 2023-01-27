@@ -9,6 +9,7 @@ import issueSetSubscriptionMutation from './graphql/issue_set_subscription.mutat
 import issueSetTitleMutation from './graphql/issue_set_title.mutation.graphql';
 import groupBoardQuery from './graphql/group_board.query.graphql';
 import projectBoardQuery from './graphql/project_board.query.graphql';
+import listIssuesQuery from './graphql/lists_issues.query.graphql';
 
 /* eslint-disable-next-line @gitlab/require-i18n-strings */
 export const AssigneeIdParamValues = ['Any', 'None'];
@@ -103,6 +104,12 @@ export const subscriptionQueries = {
   },
   [issuableTypes.epic]: {
     mutation: updateEpicSubscriptionMutation,
+  },
+};
+
+export const listIssuablesQueries = {
+  [issuableTypes.issue]: {
+    query: listIssuesQuery,
   },
 };
 

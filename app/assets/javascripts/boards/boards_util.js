@@ -46,9 +46,7 @@ export function formatListIssues(listIssues) {
   const boardItems = {};
 
   const listData = listIssues.nodes.reduce((map, list) => {
-    let sortedIssues = list.issues.edges.map((issueNode) => ({
-      ...issueNode.node,
-    }));
+    let sortedIssues = list.issues.nodes;
     if (list.listType !== ListType.closed) {
       sortedIssues = sortBy(sortedIssues, 'relativePosition');
     }

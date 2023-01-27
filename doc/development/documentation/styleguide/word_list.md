@@ -351,6 +351,12 @@ Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`Inclusi
 
 Use **prevent** instead of **disallow**. ([Vale](../testing.md#vale) rule: [`Substitutions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Substitutions.yml))
 
+## Docker-in-Docker, `dind`
+
+Use **Docker-in-Docker** when you are describing running a Docker container by using the Docker executor.
+
+Use `dind` in backticks to describe the container name: `docker:dind`. Otherwise, spell it out.
+
 ## downgrade
 
 To be more upbeat and precise, do not use **downgrade**. Focus instead on the action the user is taking.

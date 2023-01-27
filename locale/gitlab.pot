@@ -8284,9 +8284,6 @@ msgstr ""
 msgid "Check your Docker images for known vulnerabilities."
 msgstr ""
 
-msgid "Check your Kubernetes cluster images for known vulnerabilities."
-msgstr ""
-
 msgid "Check your sign-up restrictions"
 msgstr ""
 
@@ -8471,16 +8468,16 @@ msgstr ""
 msgid "Checkout|Payment method"
 msgstr ""
 
-msgid "Checkout|Please select a country"
-msgstr ""
-
-msgid "Checkout|Please select a state"
-msgstr ""
-
 msgid "Checkout|Purchase details"
 msgstr ""
 
 msgid "Checkout|Select"
+msgstr ""
+
+msgid "Checkout|Select a country"
+msgstr ""
+
+msgid "Checkout|Select a state"
 msgstr ""
 
 msgid "Checkout|State"

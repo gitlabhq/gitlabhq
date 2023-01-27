@@ -104,7 +104,7 @@ RSpec.describe PipelineDetailsEntity do
       let(:pipeline) { create(:ci_empty_pipeline) }
 
       before do
-        create(:commit_status, pipeline: pipeline)
+        create(:ci_build, pipeline: pipeline)
       end
 
       it 'contains stages' do

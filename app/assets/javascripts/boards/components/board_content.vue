@@ -172,6 +172,7 @@ export default {
         v-for="(list, index) in boardListsToUse"
         :key="index"
         ref="board"
+        :board-id="boardId"
         :list="list"
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :class="{ 'gl-xs-display-none!': addColumnFormVisible }"

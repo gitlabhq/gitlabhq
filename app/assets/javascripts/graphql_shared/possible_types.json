@@ -156,6 +156,7 @@
     "WorkItemWidgetRequirementLegacy",
     "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetStatus",
+    "WorkItemWidgetTestReports",
     "WorkItemWidgetWeight"
   ]
 }

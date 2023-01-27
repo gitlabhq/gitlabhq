@@ -189,7 +189,7 @@
 {"name":"fog-rackspace","version":"0.1.1","platform":"ruby","checksum":"4a8c7a2432dd32321958c869f3b1b8190cf4eac292024e6ea267bc6040a44b78"},
 {"name":"fog-xml","version":"0.1.3","platform":"ruby","checksum":"5604c42649ebb0d8a31bd973aa000c2dd0127f1c1c4c174b69266a2e78e37410"},
 {"name":"formatador","version":"0.2.5","platform":"ruby","checksum":"80821869ddacb79e72870ff4bb1531efacd278c04f2df26bc6b4529ee13582bd"},
-{"name":"fugit","version":"1.2.3","platform":"ruby","checksum":"a0ba58211f4e69103531cc26d6d5c18f03a2d3989e7b8aa03d2d83f2181cb745"},
+{"name":"fugit","version":"1.8.1","platform":"ruby","checksum":"18ffb26813869610f71bb0b7d568c3624d2b3025aeebb6600a18df0c77a6a2b2"},
 {"name":"fuubar","version":"2.2.0","platform":"ruby","checksum":"9b0263c4074f39c68b37f1e4e69a7d3cfc7523c41bea43601235daa723179b4a"},
 {"name":"fuzzyurl","version":"0.9.0","platform":"ruby","checksum":"542efa80f2bcaadbdc402c2f0b572f2e335a1d53e375aecad68bbb3d86860c0f"},
 {"name":"gemoji","version":"3.0.1","platform":"ruby","checksum":"80553f2f4932a7a95fb1b3c7c63f7dd937e7c8c610164bbdea28fd06eba5f36d"},

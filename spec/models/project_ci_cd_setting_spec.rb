@@ -27,6 +27,34 @@ RSpec.describe ProjectCiCdSetting do
     end
   end
 
+  describe '#set_default_for_inbound_job_token_scope_enabled' do
+    context 'when feature flag ci_inbound_job_token_scope is enabled' do
+      before do
+        stub_feature_flags(ci_inbound_job_token_scope: true)
+      end
+
+      it 'sets inbound_job_token_scope_enabled to true' do
+        project = build(:project)
+        setting = project.build_ci_cd_settings
+
+        expect(setting.inbound_job_token_scope_enabled).to eq(true)
+      end
+    end
+
+    context 'when feature flag ci_inbound_job_token_scope is disabled' do
+      before do
+        stub_feature_flags(ci_inbound_job_token_scope: false)
+      end
+
+      it 'sets inbound_job_token_scope_enabled to false' do
+        project = build(:project)
+        setting = project.build_ci_cd_settings
+
+        expect(setting.inbound_job_token_scope_enabled).to eq(false)
+      end
+    end
+  end
+
   describe '#default_git_depth' do
     let(:default_value) { described_class::DEFAULT_GIT_DEPTH }
 

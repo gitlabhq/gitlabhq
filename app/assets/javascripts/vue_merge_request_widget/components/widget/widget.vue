@@ -2,6 +2,7 @@
 import { GlButton, GlLink, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
+import { logError } from '~/lib/logger';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
@@ -17,8 +18,12 @@ import ActionButtons from './action_buttons.vue';
 const FETCH_TYPE_COLLAPSED = 'collapsed';
 const FETCH_TYPE_EXPANDED = 'expanded';
 const WIDGET_PREFIX = 'Widget';
+const MISSING_RESPONSE_HEADERS =
+  'MR Widget: raesponse object should contain status and headers object. Make sure to include that in your `fetchCollapsedData` and `fetchExpandedData` functions.';
 
 export default {
+  MISSING_RESPONSE_HEADERS,
+
   components: {
     ActionButtons,
     StatusIcon,
@@ -225,6 +230,14 @@ export default {
             },
             method: 'fetchData',
             successCallback: (response) => {
+              if (
+                typeof response.status === 'undefined' ||
+                typeof response.headers === 'undefined'
+              ) {
+                logError(MISSING_RESPONSE_HEADERS);
+                throw new Error(MISSING_RESPONSE_HEADERS);
+              }
+
               const headers = normalizeHeaders(response.headers);
 
               if (headers['POLL-INTERVAL']) {
