@@ -160,7 +160,7 @@ Citrix
 Citus
 Civo
 Cleartext
-Clickhouse
+ClickHouse
 CLIs
 Clojars
 clonable
@@ -633,6 +633,7 @@ Opstrace
 ORMs
 OS
 OSs
+OTel
 outdent
 Overcommit
 Packagist

@@ -30,6 +30,8 @@ Include the following information:
 
 After you create the identity provider, configure a [web identity role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) with conditions for limiting access to GitLab resources. Temporary credentials are obtained using [AWS Security Token Service](https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html), so set the `Action` to [sts:AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html).
 
+You can create a [custom trust policy](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-custom.html)
+for the role to limit authorization to a specific group, project, branch, or tag.
 For the full list of supported filtering types, see [Connect to cloud services](../index.md#configure-a-conditional-role-with-oidc-claims).
 
 ```json

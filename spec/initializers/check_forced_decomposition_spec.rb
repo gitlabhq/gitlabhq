@@ -7,6 +7,10 @@ RSpec.describe 'check_forced_decomposition initializer', feature_category: :pods
     load Rails.root.join('config/initializers/check_forced_decomposition.rb')
   end
 
+  before do
+    stub_env('GITLAB_ALLOW_SEPARATE_CI_DATABASE', nil)
+  end
+
   context 'for production env' do
     before do
       allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)

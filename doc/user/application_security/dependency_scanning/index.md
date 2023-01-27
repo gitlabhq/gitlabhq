@@ -217,7 +217,7 @@ table.supported-languages ul {
       <td><a href="https://www.npmjs.com/">npm</a></td>
       <td>
         <ul>
-            <li><code>package-lock.json</code><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></li>
+            <li><code>package-lock.json</code></li>
             <li><code>npm-shrinkwrap.json</code></li>
         </ul>
       </td>
@@ -307,12 +307,6 @@ table.supported-languages ul {
     </p>
   </li>
   <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-3"></a>
-    <p>
-      npm is supported for <code>lockfileVersion = 1</code>, <code>lockfileVersion = 2</code>, and <code>lockfileVersion = 3</code>. Support for <code>lockfileVersion = 3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">introduced</a> in GitLab 15.7.
-    </p>
-  </li>
-  <li>
     <a id="notes-regarding-supported-languages-and-package-managers-4"></a>
     <p>
       The presence of a <code>Pipfile.lock</code> file alone will <i>not</i> trigger the analyzer; the presence of a <code>Pipfile</code> is
@@ -360,7 +354,7 @@ The following package managers use lockfiles that GitLab analyzers are capable o
 | Conan           | 0.4                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/c-conan/default/conan.lock#L38)                                                                                                                                                             |
 | Go              | Not applicable                 | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/go-modules/gosum/default/go.sum) <sup><strong><a href="#notes-regarding-parsing-lockfiles-1">1</a></strong></sup>                                                                       |
 | NuGet           | v1                             | [4.9](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/default/src/web.api/packages.lock.json#L2)                                                                                                                      |
-| npm             | v1, v2, v3                     | [6.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/default/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4), [9.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/scanner/parser/npm/fixtures/lockfile-v3/simple/package-lock.json#L4) |
+| npm             | v1, v2, v3<sup><b><a href="#notes-regarding-parsing-lockfiles-2">2</a></b></sup>                     | [6.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/default/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4), [9.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/scanner/parser/npm/fixtures/lockfile-v3/simple/package-lock.json#L4) |
 | yarn            | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/default/yarn.lock#L2)                                                                                                                                                           |
 | Poetry          | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/python-poetry/default/poetry.lock)                                                                                                                                                      |
 
@@ -371,6 +365,12 @@ The following package managers use lockfiles that GitLab analyzers are capable o
     <p>
       Dependency Scanning only parses <code>go.sum</code> if it's unable to generate the build list
       used by the Go project.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-parsing-lockfiles-2"></a>
+    <p>
+      Support for <code>lockfileVersion = 3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">introduced</a> in GitLab 15.7.
     </p>
   </li>
 </ol>

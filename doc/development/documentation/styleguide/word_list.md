@@ -1260,7 +1260,7 @@ Do not use **update** for any other case. Instead, use **upgrade**.
 Use **upgrade** for:
 
 - Choosing a higher subscription tier (Premium or Ultimate).
-- Installing a newer **major** (13.0, 14.0) or **minor** (13.8, 14.5) version of GitLab.
+- Installing a newer **major** (13.0) or **minor** (13.2) version of GitLab.
 
 For example:
 

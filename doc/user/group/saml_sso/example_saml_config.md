@@ -55,6 +55,9 @@ Attribute mapping:
 
 ![Azure Group Claims](img/azure_configure_group_claim.png)
 
+NOTE:
+Using the **Group ID** source attribute requires users to enter the group ID or object ID when configuring SAML group links. If available, use the **sAMAccountName** source attribute for the friendly group name instead.
+
 ## Google Workspace
 
 Basic SAML app configuration:
