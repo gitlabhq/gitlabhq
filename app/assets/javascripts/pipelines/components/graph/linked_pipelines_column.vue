@@ -36,6 +36,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    skipRetryModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     type: {
       type: String,
       required: true,
@@ -229,8 +234,10 @@ export default {
               :pipeline="currentPipeline"
               :computed-pipeline-info="getPipelineLayers(pipeline.id)"
               :show-links="showLinks"
+              :skip-retry-modal="skipRetryModal"
               :is-linked-pipeline="true"
               :view-type="graphViewType"
+              @setSkipRetryModal="$emit('setSkipRetryModal')"
             />
           </div>
         </li>

@@ -199,6 +199,22 @@ describe('Pipeline graph wrapper', () => {
     });
   });
 
+  describe('events', () => {
+    beforeEach(async () => {
+      createComponentWithApollo();
+      await waitForPromises();
+    });
+    describe('when receiving `setSkipRetryModal` event', () => {
+      it('passes down `skipRetryModal` value as true', async () => {
+        expect(getGraph().props('skipRetryModal')).toBe(false);
+
+        await getGraph().vm.$emit('setSkipRetryModal');
+
+        expect(getGraph().props('skipRetryModal')).toBe(true);
+      });
+    });
+  });
+
   describe('when there is an error with an action in the graph', () => {
     beforeEach(async () => {
       createComponentWithApollo();

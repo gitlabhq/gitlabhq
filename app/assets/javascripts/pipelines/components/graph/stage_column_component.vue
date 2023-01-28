@@ -53,6 +53,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    skipRetryModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     sourceJobHovered: {
       type: String,
       required: false,
@@ -164,6 +169,7 @@ export default {
           v-if="singleJobExists(group)"
           :job="group.jobs[0]"
           :job-hovered="jobHovered"
+          :skip-retry-modal="skipRetryModal"
           :source-job-hovered="sourceJobHovered"
           :pipeline-expanded="pipelineExpanded"
           :pipeline-id="pipelineId"
@@ -174,6 +180,7 @@ export default {
             'gl-transition-duration-slow gl-transition-timing-function-ease',
           ]"
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
+          @setSkipRetryModal="$emit('setSkipRetryModal')"
         />
         <div v-else-if="isParallel(group)" :class="{ 'gl-opacity-3': isFadedOut(group.name) }">
           <job-group-dropdown

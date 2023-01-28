@@ -22,6 +22,7 @@ MUST be linked for the release bot to know that the associated merge requests sh
 - [ ] Run `scripts/security-harness` in your local repository to prevent accidentally pushing to any remote besides `gitlab.com/gitlab-org/security`.
 - [ ] Create a new branch prefixing it with `security-`.
 - [ ] Create a merge request targeting `master` on `gitlab.com/gitlab-org/security` and use the [Security Release merge request template].
+- [ ] If this includes a breaking change, make sure to include a mention of it for the relevant versions in [`doc/update/index.md`](https://gitlab.com/gitlab-org/security/gitlab/-/blob/master/doc/update/index.md#version-specific-upgrading-instructions)
 
 After your merge request has been approved according to our [approval guidelines] and by a team member of the AppSec team, you're ready to prepare the backports
 
@@ -46,7 +47,6 @@ After your merge request has been approved according to our [approval guidelines
 - [ ] Fill in any upgrade notes that users may need to take into account in the [details section](#details)
 - [ ] Add Yes/No and further details if needed to the migration and settings columns in the [details section](#details)
 - [ ] Add the nickname of the external user who found the issue (and/or HackerOne profile) to the Thanks row in the [details section](#details)
-- [ ] If this includes a breaking change, make sure it is mentioned for the relevant versions in [`doc/update/index.md`](https://gitlab.com/gitlab-org/security/gitlab/-/blob/master/doc/update/index.md#version-specific-upgrading-instructions)
 
 ## Summary
 

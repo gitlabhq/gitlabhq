@@ -39,6 +39,16 @@ export default {
       type: String,
       required: true,
     },
+    withConfirmationModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    shouldTriggerClick: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -52,6 +62,14 @@ export default {
       return `${actionIconDash} js-icon-${actionIconDash}`;
     },
   },
+  watch: {
+    shouldTriggerClick(flag) {
+      if (flag && this.withConfirmationModal) {
+        this.executeAction();
+        this.$emit('actionButtonClicked');
+      }
+    },
+  },
   errorCaptured(err, _vm, info) {
     reportToSentry('action_component', `error: ${err}, info: ${info}`);
   },
@@ -63,6 +81,13 @@ export default {
      *
      */
     onClickAction() {
+      if (this.withConfirmationModal) {
+        this.$emit('showActionConfirmationModal');
+      } else {
+        this.executeAction();
+      }
+    },
+    executeAction() {
       this.$root.$emit(BV_HIDE_TOOLTIP, `js-ci-action-${this.link}`);
       this.isDisabled = true;
       this.isLoading = true;
@@ -91,6 +116,7 @@ export default {
 <template>
   <gl-button
     :id="`js-ci-action-${link}`"
+    ref="button"
     :class="cssClass"
     :disabled="isDisabled"
     class="js-ci-action gl-ci-action-icon-container ci-action-icon-container ci-action-icon-wrapper gl-display-flex gl-align-items-center gl-justify-content-center"

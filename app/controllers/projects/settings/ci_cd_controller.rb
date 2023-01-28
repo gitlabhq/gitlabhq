@@ -12,6 +12,10 @@ module Projects
       before_action :check_builds_available!
       before_action :define_variables
 
+      before_action do
+        push_frontend_feature_flag(:ci_remove_character_limitation_raw_masked_var, type: :development)
+      end
+
       helper_method :highlight_badge
 
       feature_category :continuous_integration

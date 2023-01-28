@@ -8,9 +8,7 @@
 
   - if current_user
     .page-title-controls
-      = render 'shared/new_project_item_select',
-        path: '-/milestones/new', label: _('Milestone'),
-        include_groups: true, type: :milestones
+      = render 'shared/new_project_item_vue_select'
 
 - if @milestone_states.any? { |name, count| count > 0 }
   .top-area
@@ -22,9 +20,7 @@
     = render 'shared/empty_states/milestones_tab', active_tab: params[:state] do
       - if current_user
         .page-title-controls
-          = render 'shared/new_project_item_select',
-            path: '-/milestones/new', label: _('Milestone'),
-            include_groups: true, type: :milestones
+          = render 'shared/new_project_item_vue_select'
   - else
     .milestones
       %ul.content-list
@@ -35,6 +31,4 @@
   = render 'shared/empty_states/milestones' do
     - if current_user
       .page-title-controls
-        = render 'shared/new_project_item_select',
-          path: '-/milestones/new', label: _('Milestone'),
-          include_groups: true, type: :milestones
+        = render 'shared/new_project_item_vue_select'

@@ -44,6 +44,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    skipRetryModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     type: {
       type: String,
       required: false,
@@ -181,9 +186,11 @@ export default {
             :linked-pipelines="upstreamPipelines"
             :column-title="__('Upstream')"
             :show-links="showJobLinks"
+            :skip-retry-modal="skipRetryModal"
             :type="$options.pipelineTypeConstants.UPSTREAM"
             :view-type="viewType"
             @error="onError"
+            @setSkipRetryModal="$emit('setSkipRetryModal')"
           />
         </template>
         <template #main>
@@ -210,11 +217,13 @@ export default {
                 :highlighted-jobs="highlightedJobs"
                 :is-stage-view="isStageView"
                 :job-hovered="hoveredJobName"
+                :skip-retry-modal="skipRetryModal"
                 :source-job-hovered="hoveredSourceJobName"
                 :pipeline-expanded="pipelineExpanded"
                 :pipeline-id="pipeline.id"
                 :user-permissions="pipeline.userPermissions"
                 @refreshPipelineGraph="$emit('refreshPipelineGraph')"
+                @setSkipRetryModal="$emit('setSkipRetryModal')"
                 @jobHover="setJob"
                 @updateMeasurements="getMeasurements"
               />
@@ -228,12 +237,14 @@ export default {
             :config-paths="configPaths"
             :linked-pipelines="downstreamPipelines"
             :column-title="__('Downstream')"
+            :skip-retry-modal="skipRetryModal"
             :show-links="showJobLinks"
             :type="$options.pipelineTypeConstants.DOWNSTREAM"
             :view-type="viewType"
             @downstreamHovered="setSourceJob"
             @pipelineExpandToggle="togglePipelineExpanded"
             @refreshPipelineGraph="$emit('refreshPipelineGraph')"
+            @setSkipRetryModal="$emit('setSkipRetryModal')"
             @scrollContainer="slidePipelineContainer"
             @error="onError"
           />

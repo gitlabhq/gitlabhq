@@ -14801,6 +14801,9 @@ msgstr ""
 msgid "Don't show again"
 msgstr ""
 
+msgid "Don't show this again"
+msgstr ""
+
 msgid "Done"
 msgstr ""
 
@@ -30693,6 +30696,15 @@ msgid "PipelineEditor|Validating pipeline... It can take up to a minute."
 msgstr ""
 
 msgid "PipelineEditor|Waiting for CI content to load..."
+msgstr ""
+
+msgid "PipelineGraph|Are you sure you want to retry %{jobName}?"
+msgstr ""
+
+msgid "PipelineGraph|Retrying a trigger job will create a new downstream pipeline."
+msgstr ""
+
+msgid "PipelineGraph|What is a downstream pipeline?"
 msgstr ""
 
 msgid "PipelineScheduleIntervalPattern|Custom (%{linkStart}Learn more.%{linkEnd})"

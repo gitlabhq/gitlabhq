@@ -96,6 +96,16 @@ describe('graph component', () => {
       });
     });
 
+    describe('when column request an update to the retry confirmation modal', () => {
+      beforeEach(() => {
+        findStageColumns().at(0).vm.$emit('setSkipRetryModal');
+      });
+
+      it('setSkipRetryModal is emitted', () => {
+        expect(wrapper.emitted().setSkipRetryModal).toHaveLength(1);
+      });
+    });
+
     describe('when links are present', () => {
       beforeEach(() => {
         createComponent({

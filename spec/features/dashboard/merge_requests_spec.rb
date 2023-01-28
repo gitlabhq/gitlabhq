@@ -36,11 +36,16 @@ RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workfl
     end
 
     it 'shows projects only with merge requests feature enabled', :js do
-      click_button 'Toggle project select'
+      click_button 'Select project to create merge request'
+      wait_for_requests
 
-      page.within('.select2-results') do
+      page.within('[data-testid="new-resource-dropdown"]') do
         expect(page).to have_content(project.full_name)
         expect(page).not_to have_content(project_with_disabled_merge_requests.full_name)
+
+        find_button(project.full_name).click
+
+        expect(page).to have_link("New merge request in #{project.name}")
       end
     end
   end

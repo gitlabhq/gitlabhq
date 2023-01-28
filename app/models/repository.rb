@@ -601,16 +601,10 @@ class Repository
   cache_method_asymmetrically :has_visible_content?
 
   def avatar
-    if Feature.enabled?(:readme_from_gitaly)
-      Gitlab::GitalyClient.allow_n_plus_1_calls do
-        avatar_path_gitaly
-      end
-    else
-      # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/38327
-      Gitlab::GitalyClient.allow_n_plus_1_calls do
-        if tree = file_on_head(:avatar)
-          tree.path
-        end
+    # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/38327
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      if tree = file_on_head(:avatar)
+        tree.path
       end
     end
   end
@@ -637,11 +631,7 @@ class Repository
   end
 
   def readme_path
-    if Feature.enabled?(:readme_from_gitaly)
-      readme_path_gitaly
-    else
-      head_tree&.readme_path
-    end
+    head_tree&.readme_path
   end
   cache_method :readme_path
 
@@ -1248,41 +1238,6 @@ class Repository
                                 repo_type.identifier_for_container(container),
                                 container.full_path,
                                 container: container)
-  end
-
-  def readme_path_gitaly
-    # (?i) to enable case-insensitive mode
-    #
-    # Note: `Gitlab::FileDetector::PATTERNS[:readme]#to_s` won't work because of
-    # incompatibility of regex engines between Rails and Gitaly.
-    pattern = "(?i)#{Gitlab::FileDetector::PATTERNS[:readme].source}"
-
-    readmes = fetch_file_paths_from_gitaly(pattern)
-
-    choose_readme_to_display(readmes)
-  end
-
-  def avatar_path_gitaly
-    # Note: `Gitlab::FileDetector::PATTERNS[:avatar]#to_s` won't work because of
-    # incompatibility of regex engines between Rails and Gitaly.
-    pattern = Gitlab::FileDetector::PATTERNS[:avatar].source
-
-    fetch_file_paths_from_gitaly(pattern, limit: 1).first
-  end
-
-  def fetch_file_paths_from_gitaly(pattern, limit: 0)
-    return [] if empty? || root_ref.nil?
-
-    search_files_by_regexp(pattern, root_ref, limit: limit)
-  end
-
-  # Extracted from Tree#readme_path
-  def choose_readme_to_display(readmes)
-    previewable_readme = readmes.find { |name| Gitlab::MarkupHelper.previewable?(name) }
-
-    return previewable_readme if previewable_readme
-
-    readmes.find { |name| Gitlab::MarkupHelper.plain?(name) }
   end
 end
 

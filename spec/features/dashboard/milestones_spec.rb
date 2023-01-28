@@ -37,18 +37,12 @@ RSpec.describe 'Dashboard > Milestones', feature_category: :team_planning do
 
     describe 'new milestones dropdown', :js do
       it 'takes user to a new milestone page', :js do
-        click_button 'Toggle project select'
+        click_button 'Select project to create milestone'
 
-        page.within('.select2-results') do
-          first('.select2-result-label').click
+        page.within('[data-testid="new-resource-dropdown"]') do
+          click_button group.name
+          click_link "New milestone in #{group.name}"
         end
-
-        a_el = find('.js-new-project-item-link')
-
-        expect(a_el).to have_content('New Milestone in ')
-        expect(a_el).to have_no_content('New New Milestone in ')
-
-        a_el.click
 
         expect(page).to have_current_path(new_group_milestone_path(group), ignore_query: true)
       end

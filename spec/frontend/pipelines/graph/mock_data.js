@@ -1,5 +1,9 @@
 import { unwrapPipelineData } from '~/pipelines/components/graph/utils';
-import { BUILD_KIND, BRIDGE_KIND } from '~/pipelines/components/graph/constants';
+import {
+  BUILD_KIND,
+  BRIDGE_KIND,
+  RETRY_ACTION_TITLE,
+} from '~/pipelines/components/graph/constants';
 
 export const mockPipelineResponse = {
   data: {
@@ -1036,5 +1040,18 @@ export const triggerJob = {
     label: 'passed',
     group: 'success',
     action: null,
+  },
+};
+
+export const triggerJobWithRetryAction = {
+  ...triggerJob,
+  status: {
+    ...triggerJob.status,
+    action: {
+      icon: 'retry',
+      title: RETRY_ACTION_TITLE,
+      path: '/root/ci-mock/builds/4259/retry',
+      method: 'post',
+    },
   },
 };

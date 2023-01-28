@@ -10,7 +10,7 @@
       - if @can_bulk_update
         = render_if_exists 'projects/merge_requests/bulk_update_button'
 
-      = render 'shared/new_project_item_select', path: 'merge_requests/new', label: _("merge request"), type: :merge_requests, with_feature_enabled: 'merge_requests', with_shared: false, include_projects_in_subgroups: true
+      = render 'shared/new_project_item_vue_select'
 
 = render 'shared/issuable/search_bar', type: :merge_requests
 - if @can_bulk_update

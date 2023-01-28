@@ -10,7 +10,7 @@
 
   - if current_user
     .page-title-controls.ml-0.mb-3.ml-sm-auto.mb-sm-0
-      = render 'shared/new_project_item_select', path: 'merge_requests/new', label: _("merge request"), with_feature_enabled: 'merge_requests', type: :merge_requests
+      = render 'shared/new_project_item_vue_select'
 
 .top-area
   = render 'shared/issuable/nav', type: :merge_requests, display_count: !@no_filters_set
