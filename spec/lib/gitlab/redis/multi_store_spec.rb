@@ -1195,7 +1195,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
     context 'when FF table guard raises' do
       before do
-        allow(Feature::FlipperFeature).to receive(:table_exists?).and_raise(ActiveRecord::NoDatabaseError)
+        allow(Feature::FlipperFeature).to receive(:table_exists?).and_raise
       end
 
       it 'multi store is disabled' do
@@ -1221,7 +1221,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
     context 'when FF table guard raises' do
       before do
-        allow(Feature::FlipperFeature).to receive(:table_exists?).and_raise(ActiveRecord::NoDatabaseError)
+        allow(Feature::FlipperFeature).to receive(:table_exists?).and_raise
       end
 
       it 'multi store is disabled' do

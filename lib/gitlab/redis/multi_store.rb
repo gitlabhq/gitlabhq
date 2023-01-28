@@ -169,15 +169,11 @@ module Gitlab
       end
 
       def use_primary_and_secondary_stores?
-        Feature.feature_flags_available? &&
-          Feature.enabled?("use_primary_and_secondary_stores_for_#{instance_name.underscore}") && # rubocop:disable Cop/FeatureFlagUsage
-          !same_redis_store?
+        feature_enabled?("use_primary_and_secondary_stores_for")
       end
 
       def use_primary_store_as_default?
-        Feature.feature_flags_available? &&
-          Feature.enabled?("use_primary_store_as_default_for_#{instance_name.underscore}") && # rubocop:disable Cop/FeatureFlagUsage
-          !same_redis_store?
+        feature_enabled?("use_primary_store_as_default_for")
       end
 
       def increment_pipelined_command_error_count(command_name)
@@ -216,6 +212,20 @@ module Gitlab
       end
 
       private
+
+      # @return [Boolean]
+      def feature_enabled?(prefix)
+        feature_table_exists? &&
+          Feature.enabled?("#{prefix}_#{instance_name.underscore}") && # rubocop:disable Cop/FeatureFlagUsage
+          !same_redis_store?
+      end
+
+      # @return [Boolean]
+      def feature_table_exists?
+        Feature::FlipperFeature.table_exists?
+      rescue StandardError
+        false
+      end
 
       def default_store
         use_primary_store_as_default? ? primary_store : secondary_store

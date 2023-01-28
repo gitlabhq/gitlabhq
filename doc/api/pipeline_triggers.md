@@ -175,7 +175,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
+curl --request POST --form "variables[VAR1]=value1" --form "variables[VAR2]=value2" "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
 ```
 
 Example response:
@@ -184,7 +184,7 @@ Example response:
 {
   "id": 257,
   "iid": 118,
-  "project_id": 21,
+  "project_id": 123,
   "sha": "91e2711a93e5d9e8dddfeb6d003b636b25bf6fc9",
   "ref": "main",
   "status": "created",
