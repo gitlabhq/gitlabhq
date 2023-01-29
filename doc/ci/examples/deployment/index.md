@@ -46,7 +46,7 @@ staging:
   stage: deploy
   script:
     - gem install dpl
-    - dpl --provider=heroku --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
+    - dpl heroku api --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
   environment: staging
 ```
 
@@ -68,7 +68,7 @@ staging:
     - apt-get update -yq
     - apt-get install -y ruby-dev
     - gem install dpl
-    - dpl --provider=heroku --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
+    - dpl heroku api --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
   only:
     - main
   environment: staging
@@ -92,7 +92,7 @@ staging:
   stage: deploy
   script:
     - gem install dpl
-    - dpl --provider=heroku --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
+    - dpl heroku api --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
   only:
     - main
   environment: staging
@@ -101,7 +101,7 @@ production:
   stage: deploy
   script:
     - gem install dpl
-    - dpl --provider=heroku --app=my-app-production --api_key=$HEROKU_PRODUCTION_API_KEY
+    - dpl heroku api --app=my-app-production --api_key=$HEROKU_PRODUCTION_API_KEY
   only:
     - tags
   environment: production
