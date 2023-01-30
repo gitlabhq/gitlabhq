@@ -11,6 +11,12 @@ RSpec.describe WorkItems::Widgets::Assignees do
     it { is_expected.to eq(:assignees) }
   end
 
+  describe '.quick_action_params' do
+    subject { described_class.quick_action_params }
+
+    it { is_expected.to include(:assignee_ids) }
+  end
+
   describe '#type' do
     subject { described_class.new(work_item).type }
 

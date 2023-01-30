@@ -3,6 +3,10 @@
 class WorkItem < Issue
   include Gitlab::Utils::StrongMemoize
 
+  COMMON_QUICK_ACTIONS_COMMANDS = [
+    :title, :reopen, :close, :cc, :tableflip, :shrug
+  ].freeze
+
   self.table_name = 'issues'
   self.inheritance_column = :_type_disabled
 
@@ -50,6 +54,12 @@ class WorkItem < Issue
 
   def same_type_descendants_depth
     hierarchy(same_type: true).max_descendants_depth.to_i
+  end
+
+  def supported_quick_action_commands
+    commands_for_widgets = widgets.map(&:class).flat_map(&:quick_action_commands).uniq
+
+    COMMON_QUICK_ACTIONS_COMMANDS + commands_for_widgets
   end
 
   private

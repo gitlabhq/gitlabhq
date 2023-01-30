@@ -11,6 +11,10 @@ module WorkItems
         "#{type}_widget".to_sym
       end
 
+      def self.quick_action_commands
+        []
+      end
+
       def type
         self.class.type
       end

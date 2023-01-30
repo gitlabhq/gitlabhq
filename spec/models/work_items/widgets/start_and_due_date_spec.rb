@@ -11,6 +11,12 @@ RSpec.describe WorkItems::Widgets::StartAndDueDate do
     it { is_expected.to eq(:start_and_due_date) }
   end
 
+  describe '.quick_action_params' do
+    subject { described_class.quick_action_params }
+
+    it { is_expected.to include(:due_date) }
+  end
+
   describe '#type' do
     subject { described_class.new(work_item).type }
 

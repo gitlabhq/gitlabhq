@@ -57,6 +57,58 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '#supported_quick_action_commands' do
+    let(:work_item) { build(:work_item, :task) }
+
+    subject { work_item.supported_quick_action_commands }
+
+    it 'returns quick action commands supported for all work items' do
+      is_expected.to include(:title, :reopen, :close, :cc, :tableflip, :shrug)
+    end
+
+    context 'when work item supports the assignee widget' do
+      it 'returns assignee related quick action commands' do
+        is_expected.to include(:assign, :unassign, :reassign)
+      end
+    end
+
+    context 'when work item does not the assignee widget' do
+      let(:work_item) { build(:work_item, :incident) }
+
+      it 'omits assignee related quick action commands' do
+        is_expected.not_to include(:assign, :unassign, :reassign)
+      end
+    end
+
+    context 'when work item supports the labels widget' do
+      it 'returns labels related quick action commands' do
+        is_expected.to include(:label, :labels, :relabel, :remove_label, :unlabel)
+      end
+    end
+
+    context 'when work item does not support the labels widget' do
+      let(:work_item) { build(:work_item, :incident) }
+
+      it 'omits labels related quick action commands' do
+        is_expected.not_to include(:label, :labels, :relabel, :remove_label, :unlabel)
+      end
+    end
+
+    context 'when work item supports the start and due date widget' do
+      it 'returns due date related quick action commands' do
+        is_expected.to include(:due, :remove_due_date)
+      end
+    end
+
+    context 'when work item does not support the start and due date widget' do
+      let(:work_item) { build(:work_item, :incident) }
+
+      it 'omits due date related quick action commands' do
+        is_expected.not_to include(:due, :remove_due_date)
+      end
+    end
+  end
+
   describe 'callbacks' do
     describe 'record_create_action' do
       it 'records the creation action after saving' do
