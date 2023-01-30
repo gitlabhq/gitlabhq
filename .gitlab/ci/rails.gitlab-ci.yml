@@ -802,7 +802,7 @@ rspec fail-fast:
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - !reference [.base-script, script]
-    - rspec_fail_fast "${RSPEC_MATCHING_TESTS_PATH}" "--tag ~quarantine"
+    - rspec_fail_fast "${RSPEC_MATCHING_TESTS_PATH}" "--tag ~quarantine --tag ~zoekt"
   artifacts:
     expire_in: 7d
     paths:

@@ -15,6 +15,8 @@ module ExploreHelper
       namespace_id: params[:namespace_id]
     }
 
+    exist_opts[:language] = params[:language] if Feature.enabled?(:project_language_search, current_user)
+
     options = exist_opts.merge(options).delete_if { |key, value| value.blank? }
     request_path_with_options(options)
   end

@@ -17920,7 +17920,11 @@ CREATE TABLE merge_requests_compliance_violations (
     violating_user_id bigint NOT NULL,
     merge_request_id bigint NOT NULL,
     reason smallint NOT NULL,
-    severity_level smallint DEFAULT 0 NOT NULL
+    severity_level smallint DEFAULT 0 NOT NULL,
+    merged_at timestamp with time zone,
+    target_project_id integer,
+    title text,
+    target_branch text
 );
 
 CREATE SEQUENCE merge_requests_compliance_violations_id_seq

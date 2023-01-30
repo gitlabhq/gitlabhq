@@ -22,24 +22,4 @@ describe('StatusFilter', () => {
       expect(findRadioFilter().exists()).toBe(true);
     });
   });
-
-  describe.each`
-    hasFeatureFlagEnabled | paddingClass
-    ${true}               | ${'gl-px-5'}
-    ${false}              | ${'gl-px-0'}
-  `(`RadioFilter`, ({ hasFeatureFlagEnabled, paddingClass }) => {
-    beforeEach(() => {
-      createComponent({
-        provide: {
-          glFeatures: {
-            searchPageVerticalNav: hasFeatureFlagEnabled,
-          },
-        },
-      });
-    });
-
-    it(`has ${paddingClass} class`, () => {
-      expect(findRadioFilter().classes(paddingClass)).toBe(true);
-    });
-  });
 });

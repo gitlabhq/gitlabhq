@@ -11,6 +11,8 @@ RSpec.describe Ci::RunnerVersion, feature_category: :runner_fleet do
     create(:ci_runner_version, version: 'abc123', status: :not_available)
   end
 
+  it { is_expected.to have_many(:runner_machines).with_foreign_key(:version) }
+
   it_behaves_like 'having unique enum values'
 
   describe '.not_available' do

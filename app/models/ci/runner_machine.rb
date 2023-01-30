@@ -8,6 +8,9 @@ module Ci
     belongs_to :runner
 
     has_many :build_metadata, class_name: 'Ci::BuildMetadata'
+    has_many :builds, through: :build_metadata, class_name: 'Ci::Build'
+    belongs_to :runner_version, inverse_of: :runner_machines, primary_key: :version, foreign_key: :version,
+               class_name: 'Ci::RunnerVersion'
 
     validates :runner, presence: true
     validates :machine_xid, presence: true, length: { maximum: 64 }

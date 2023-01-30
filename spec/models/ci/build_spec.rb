@@ -31,6 +31,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   it { is_expected.to have_many(:pages_deployments).with_foreign_key(:ci_build_id) }
 
   it { is_expected.to have_one(:deployment) }
+  it { is_expected.to have_one(:runner_machine).through(:metadata) }
   it { is_expected.to have_one(:runner_session).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:trace_metadata).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:runtime_metadata).with_foreign_key(:build_id) }
@@ -2045,6 +2046,16 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
         it { is_expected.to be_falsey }
       end
     end
+  end
+
+  describe '#runner_machine' do
+    let_it_be(:runner) { create(:ci_runner) }
+    let_it_be(:runner_machine) { create(:ci_runner_machine, runner: runner) }
+    let_it_be(:build) { create(:ci_build, runner_machine: runner_machine) }
+
+    subject(:build_runner_machine) { described_class.find(build.id).runner_machine }
+
+    it { is_expected.to eq(runner_machine) }
   end
 
   describe '#tag_list' do
@@ -5779,6 +5790,45 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
       expect(build.metadata).to be_present
       expect(build.metadata).to be_valid
       expect(build.metadata.partition_id).to eq(ci_testing_partition_id)
+    end
+  end
+
+  describe 'secrets management id_tokens usage data' do
+    context 'when ID tokens are defined' do
+      let(:ci_build) { FactoryBot.build(:ci_build, user: user, id_tokens: { 'ID_TOKEN_1' => { aud: 'developers' } }) }
+
+      context 'on create' do
+        it 'tracks event with user_id' do
+          expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+            .with('i_ci_secrets_management_id_tokens_build_created', values: user.id)
+
+          ci_build.save!
+        end
+      end
+
+      context 'on update' do
+        before do
+          ci_build.save!
+        end
+
+        it 'does not track event' do
+          expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
+          ci_build.success
+        end
+      end
+    end
+
+    context 'when ID tokens are not defined' do
+      let(:ci_build) { FactoryBot.build(:ci_build, user: user) }
+
+      context 'on create' do
+        it 'does not track event' do
+          expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
+          ci_build.save!
+        end
+      end
     end
   end
 end

@@ -1288,6 +1288,12 @@ you're talking about the product version or the subscription tier.
 
 See also [downgrade](#downgrade) and [roll back](#roll-back).
 
+## upper left, upper right
+
+Use **upper left** and **upper right** instead of **top left** and **top right**. Hyphenate as adjectives (for example, **upper-left corner**).
+
+For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/u/upper-left-upper-right).
+
 ## useful
 
 Do not use **useful**. If the user doesn't find the process to be useful, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))

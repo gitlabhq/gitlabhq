@@ -43,6 +43,17 @@ a feature has become "implemented", major changes should get new blueprints.
 
 The canonical place for the latest set of instructions (and the likely source
 of this file) is [here](/doc/architecture/blueprints/_template.md).
+
+Blueprint statuses you can use:
+
+- "proposed"
+- "ongoing"
+- "accepted"
+- "implemented"
+- "rejected"
+
+Any other one-word status should be fine, see which ones have colors defined:
+https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/assets/stylesheets/labels.scss#L22
 -->
 
 # {+ Title of Blueprint +}

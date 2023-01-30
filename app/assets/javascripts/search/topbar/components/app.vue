@@ -1,7 +1,6 @@
 <script>
 import { GlSearchBoxByClick, GlButton } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
@@ -31,7 +30,6 @@ export default {
     ProjectFilter,
     MarkdownDrawer,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     groupInitialJson: {
       type: Object,
@@ -69,9 +67,6 @@ export default {
     },
     showSyntaxOptions() {
       return this.elasticsearchEnabled && this.isDefaultBranch;
-    },
-    hasVerticalNav() {
-      return this.glFeatures.searchPageVerticalNav;
     },
     isDefaultBranch() {
       return !this.query.repository_ref || this.query.repository_ref === this.defaultBranchName;
@@ -130,6 +125,6 @@ export default {
         <project-filter :initial-data="projectInitialJson" />
       </div>
     </div>
-    <hr v-if="hasVerticalNav" class="gl-mt-5 gl-mb-0 gl-border-gray-100" />
+    <hr class="gl-mt-5 gl-mb-0 gl-border-gray-100" />
   </section>
 </template>

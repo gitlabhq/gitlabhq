@@ -254,7 +254,7 @@
   category: terraform
   redis_slot: terraform
   aggregation: weekly
-# Pipeline Authoring
+# Pipeline Authoring group
 - name: o_pipeline_authoring_unique_users_committing_ciconfigfile
   category: pipeline_authoring
   redis_slot: pipeline_authoring
@@ -262,6 +262,10 @@
 - name: o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
   category: pipeline_authoring
   redis_slot: pipeline_authoring
+  aggregation: weekly
+- name: i_ci_secrets_management_id_tokens_build_created
+  category: ci_secrets_management
+  redis_slot: ci_secrets_management
   aggregation: weekly
 # Merge request widgets
 - name: users_expanding_secure_security_report

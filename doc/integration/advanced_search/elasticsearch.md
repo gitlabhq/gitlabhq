@@ -233,14 +233,40 @@ Sidekiq performance. Return them to their default values if you see increased `s
 in your Sidekiq logs. For more information, see
 [issue 322147](https://gitlab.com/gitlab-org/gitlab/-/issues/322147).
 
-### Access requirements for self-managed AWS OpenSearch Service using fine-grained access control
+### Access requirements
+
+#### Elasticsearch with role privileges
+
+To access Elasticsearch, you must have at least the following privileges in GitLab:
+
+```json
+{
+  "cluster": ["monitor"],
+  "indices": [
+    {
+      "names": ["gitlab-*"],
+      "privileges": [
+        "create_index",
+        "delete_index",
+        "view_index_metadata",
+        "read",
+        "manage",
+        "write"
+      ]
+    }
+  ]
+}
+```
+
+For more information, see [Elasticsearch security privileges](https://www.elastic.co/guide/en/elasticsearch/reference/current/security-privileges.html).
+
+#### AWS OpenSearch Service with fine-grained access control
 
 To use the self-managed AWS OpenSearch Service with GitLab using fine-grained access control, try one of the
 [recommended configurations](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-recommendations).
 
 Configure your instance's domain access policies to allow `es:ESHttp*` actions. You can customize
-the following example configuration to limit principals or resources.
-See [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details.
+the following example configuration to limit principals or resources:
 
 ```json
 {
@@ -262,18 +288,20 @@ See [Identity and Access Management in Amazon OpenSearch Service](https://docs.a
 }
 ```
 
-#### Connecting with a master user in the internal database
+For more information, see [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html).
+
+##### Connecting with a master user in the internal database
 
 When using fine-grained access control with a user in the internal database, you should use HTTP basic
 authentication to connect to OpenSearch. You can provide the master username and password as part of the
 OpenSearch URL or in the **Username** and **Password** text boxes in the Advanced Search settings. See
 [Tutorial: Internal user database and HTTP basic authentication](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac-walkthrough-basic.html) for details.
 
-#### Connecting with an IAM user
+##### Connecting with an IAM user
 
 When using fine-grained access control with IAM credentials, you can provide the credentials in the **AWS OpenSearch IAM credentials** section in the Advanced Search settings.
 
-#### Permissions for fine-grained access control
+##### Permissions for fine-grained access control
 
 The following permissions are required for Advanced Search. See [Creating roles](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-roles) for details.
 

@@ -78,7 +78,8 @@ RSpec.describe 'gitlab:usage data take tasks', :silence_stdout, feature_category
         `git checkout -- #{Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH}`
       end
 
-      it "generates #{Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH}" do
+      it "generates #{Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH}",
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/386191' do
         run_rake_task('gitlab:usage_data:generate_ci_template_events')
 
         expect(File.exist?(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH)).to be true

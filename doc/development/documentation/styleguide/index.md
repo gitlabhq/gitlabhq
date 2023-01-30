@@ -943,7 +943,7 @@ To open the Admin Area:
 To select your avatar:
 
 ```markdown
-1. On the top bar, in the top right corner, select your avatar.
+1. On the top bar, in the upper-right corner, select your avatar.
 ```
 
 To save the selection in some dropdown lists:

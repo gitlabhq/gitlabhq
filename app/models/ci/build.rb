@@ -55,6 +55,8 @@ module Ci
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id, inverse_of: :job
     end
 
+    has_one :runner_machine, through: :metadata, class_name: 'Ci::RunnerMachine'
+
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, foreign_key: :build_id, inverse_of: :build
     has_one :trace_metadata, class_name: 'Ci::BuildTraceMetadata', foreign_key: :build_id, inverse_of: :build
 
@@ -178,6 +180,8 @@ module Ci
     after_create unless: :importing? do |build|
       run_after_commit { build.execute_hooks }
     end
+
+    after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
 
     class << self
       # This is needed for url_for to work,
@@ -1280,6 +1284,10 @@ module Ci
           .build_completed_report_type_counter(report_type)
           .increment(status: status)
       end
+    end
+
+    def track_ci_secrets_management_id_tokens_usage
+      ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event('i_ci_secrets_management_id_tokens_build_created', values: user_id)
     end
   end
 end

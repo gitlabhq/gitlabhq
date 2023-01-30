@@ -22,6 +22,4 @@
 .gl-mt-3
   #js-search-topbar{ data: { "group-initial-json": group_attributes.to_json, "project-initial-json": project_attributes.to_json, "elasticsearch-enabled": @search_service_presenter.advanced_search_enabled?.to_s, "default-branch-name": @project&.default_branch } }
 - if @search_term
-  - if Feature.disabled?(:search_page_vertical_nav, current_user)
-    = render 'search/category'
   = render 'search/results'

@@ -84,23 +84,14 @@ describe('GlobalSearchSidebar', () => {
         expect(findFilters().exists()).toBe(true);
       });
     });
-  });
 
-  describe('when search_page_vertical_nav is enabled', () => {
-    beforeEach(() => {
-      createComponent({}, { searchPageVerticalNav: true });
-    });
-    it('shows the vertical navigation', () => {
-      expect(findSidebarNavigation().exists()).toBe(true);
-    });
-  });
-
-  describe('when search_page_vertical_nav is disabled', () => {
-    beforeEach(() => {
-      createComponent({}, { searchPageVerticalNav: false });
-    });
-    it('hides the vertical navigation', () => {
-      expect(findSidebarNavigation().exists()).toBe(false);
+    describe('renders navigation', () => {
+      beforeEach(() => {
+        createComponent({});
+      });
+      it('shows the vertical navigation', () => {
+        expect(findSidebarNavigation().exists()).toBe(true);
+      });
     });
   });
 });

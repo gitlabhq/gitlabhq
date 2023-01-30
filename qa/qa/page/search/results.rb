@@ -4,9 +4,9 @@ module QA
   module Page
     module Search
       class Results < QA::Page::Base
-        view 'app/views/search/_category.html.haml' do
-          element :code_tab
-          element :projects_tab
+        view 'app/assets/javascripts/search/sidebar/components/scope_navigation.vue' do
+          element :code_tab, ':data-qa-selector="qaSelectorValue(item)"' # rubocop:disable QA/ElementWithPattern
+          element :projects_tab, ':data-qa-selector="qaSelectorValue(item)"' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/search/results/_blob_data.html.haml' do

@@ -90,7 +90,7 @@ include:
 .rspec-base-migration:
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag ~quarantine"
+    - rspec_paralellized_job "--tag ~quarantine --tag ~zoekt"
 
 .rspec-base-pg11:
   extends:

@@ -104,7 +104,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex">
+  <div class="gl-display-flex gl-w-full">
     <input
       v-if="fieldName"
       :name="fieldName"

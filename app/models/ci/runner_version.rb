@@ -20,6 +20,8 @@ module Ci
       recommended: 'Upgrade is available and recommended for the runner.'
     }.freeze
 
+    has_many :runner_machines, inverse_of: :runner_version, foreign_key: :version, class_name: 'Ci::RunnerMachine'
+
     # Override auto generated negative scope (from available) so the scope has expected behavior
     scope :not_available, -> { where(status: :not_available) }
 
