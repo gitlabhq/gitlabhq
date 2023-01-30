@@ -14,6 +14,7 @@ const DEFAULT_OPTS = {
   provide: {
     projectEnvironmentsPath: '/projects/environments',
     updateEnvironmentPath: '/proejcts/environments/1',
+    protectedEnvironmentSettingsPath: '/projects/1/settings/ci_cd',
   },
   propsData: { environment: { id: '0', name: 'foo', external_url: 'https://foo.example.com' } },
 };

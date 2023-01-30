@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin/application_settings/_jira_connect.html.haml' do
+RSpec.describe 'admin/application_settings/_jira_connect.html.haml', feature_category: :integrations do
   let_it_be(:admin) { create(:admin) }
   let(:application_setting) { build(:application_setting) }
 

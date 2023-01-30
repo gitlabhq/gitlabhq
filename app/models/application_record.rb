@@ -36,7 +36,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.pluck_primary_key
-    where(nil).pluck(self.primary_key)
+    where(nil).pluck(primary_key)
   end
 
   def self.safe_ensure_unique(retries: 0)
@@ -95,7 +95,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.underscore
-    Gitlab::SafeRequestStore.fetch("model:#{self}:underscore") { self.to_s.underscore }
+    Gitlab::SafeRequestStore.fetch("model:#{self}:underscore") { to_s.underscore }
   end
 
   def self.where_exists(query)
@@ -111,7 +111,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.cached_column_list
-    self.column_names.map { |column_name| self.arel_table[column_name] }
+    column_names.map { |column_name| arel_table[column_name] }
   end
 
   def self.default_select_columns

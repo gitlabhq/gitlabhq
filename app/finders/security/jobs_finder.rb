@@ -20,7 +20,7 @@ module Security
     end
 
     def initialize(pipeline:, job_types: [])
-      if self.instance_of?(Security::JobsFinder)
+      if instance_of?(Security::JobsFinder)
         raise NotImplementedError, 'This is an abstract class, please instantiate its descendants'
       end
 

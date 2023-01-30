@@ -624,8 +624,9 @@ module API
 
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
-        # Merge request can not be merged
-        # because user dont have permissions to push into target branch
+        # Merge request can not be merged because the user doesn't have
+        #   permissions to push into target branch
+        #
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
 
         merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])

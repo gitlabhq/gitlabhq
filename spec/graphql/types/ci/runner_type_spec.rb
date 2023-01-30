@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['CiRunner'] do
+RSpec.describe GitlabSchema.types['CiRunner'], feature_category: :runner do
   specify { expect(described_class.graphql_name).to eq('CiRunner') }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_runner) }

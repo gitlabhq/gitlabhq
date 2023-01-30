@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::RunnerInstructions do
+RSpec.describe Gitlab::Ci::RunnerInstructions, feature_category: :runner_fleet do
   using RSpec::Parameterized::TableSyntax
 
   let(:params) { {} }

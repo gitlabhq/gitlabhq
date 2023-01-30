@@ -55,7 +55,7 @@ class AuditEvent < ApplicationRecord
   end
 
   def initialize_details
-    return unless self.has_attribute?(:details)
+    return unless has_attribute?(:details)
 
     self.details = {} if details&.nil?
   end
@@ -82,7 +82,7 @@ class AuditEvent < ApplicationRecord
 
   def as_json(options = {})
     super(options).tap do |json|
-      json['ip_address'] = self.ip_address.to_s
+      json['ip_address'] = ip_address.to_s
     end
   end
 
@@ -114,10 +114,10 @@ class AuditEvent < ApplicationRecord
 
   def parallel_persist
     PARALLEL_PERSISTENCE_COLUMNS.each do |name|
-      original = self[name] || self.details[name]
+      original = self[name] || details[name]
       next unless original
 
-      self[name] = self.details[name] = original
+      self[name] = details[name] = original
     end
   end
 

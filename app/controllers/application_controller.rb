@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
     :masked_page_url
 
   def self.endpoint_id_for_action(action_name)
-    "#{self.name}##{action_name}"
+    "#{name}##{action_name}"
   end
 
   rescue_from Encoding::CompatibilityError do |exception|

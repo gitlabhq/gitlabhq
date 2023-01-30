@@ -72,9 +72,9 @@ class AbuseReport < ApplicationRecord
   end
 
   def notify
-    return unless self.persisted?
+    return unless persisted?
 
-    AbuseReportMailer.notify(self.id).deliver_later
+    AbuseReportMailer.notify(id).deliver_later
   end
 
   private

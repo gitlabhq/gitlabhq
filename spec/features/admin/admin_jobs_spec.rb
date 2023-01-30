@@ -28,8 +28,8 @@ RSpec.describe 'Admin Jobs', feature_category: :continuous_integration do
           expect(page).to have_button 'Stop all jobs'
 
           click_button 'Stop all jobs'
-          expect(page).to have_button 'Stop jobs'
-          expect(page).to have_content 'Stop all jobs?'
+          expect(page).to have_button 'Yes, proceed'
+          expect(page).to have_content 'Are you sure?'
         end
       end
 

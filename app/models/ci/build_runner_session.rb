@@ -20,7 +20,7 @@ module Ci
     validates :url, public_url: { schemes: %w(https) }
 
     def terminal_specification
-      wss_url = Gitlab::UrlHelpers.as_wss(Addressable::URI.escape(self.url))
+      wss_url = Gitlab::UrlHelpers.as_wss(Addressable::URI.escape(url))
       return {} unless wss_url.present?
 
       parsed_wss_url = URI.parse(wss_url)
@@ -33,7 +33,7 @@ module Ci
 
       port = port.presence || DEFAULT_PORT_NAME
       service = service.presence || DEFAULT_SERVICE_NAME
-      parsed_url = URI.parse(Addressable::URI.escape(self.url))
+      parsed_url = URI.parse(Addressable::URI.escape(url))
       parsed_url.path += "/proxy/#{service}/#{port}/#{path}"
       subprotocols = subprotocols.presence || ::Ci::BuildRunnerSession::TERMINAL_SUBPROTOCOL
 

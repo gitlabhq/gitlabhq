@@ -43,7 +43,7 @@ GitLab supports the following OmniAuth providers.
 Before you configure the OmniAuth provider,
 configure the settings that are common for all providers.
 
-Omnibus, Docker, and source | Helm chart | Description | Default value
+Linux package, Docker, and self-compiled | Helm chart | Description | Default value
 ----------------------------|------------|-------------|-----------
 `allow_single_sign_on`     | `allowSingleSignOn` | List of providers that automatically create a GitLab account. The provider names are available in the **OmniAuth provider name** column in the [supported providers table](#supported-providers). | `false`, which means that signing in using your OmniAuth provider account without a pre-existing GitLab account is not allowed. You must create a GitLab account first, and then connect it to your OmniAuth provider account through your profile settings.
 `auto_link_ldap_user`      | `autoLinkLdapUser` | Creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have [LDAP integration](../administration/auth/ldap/index.md) enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | `false`
@@ -102,6 +102,27 @@ To change the OmniAuth settings:
 
      ```shell
      helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+     ```
+
+  :::TabTitle Docker
+
+  1. Edit `docker-compose.yml`:
+
+     ```yaml
+     version: "3.6"
+     services:
+       gitlab:
+         environment:
+           GITLAB_OMNIBUS_CONFIG: |
+             gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'twitter']
+             gitlab_rails['omniauth_auto_link_ldap_user'] = true
+             gitlab_rails['omniauth_block_auto_created_users'] = true
+     ```
+
+  1. Save the file and restart GitLab:
+
+     ```shell
+     docker compose up -d
      ```
 
   :::TabTitle Self-compiled (source)

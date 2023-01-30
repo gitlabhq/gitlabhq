@@ -81,3 +81,9 @@ export const REVIEW_APP_MODAL_I18N = {
 
 export const MIN_STALE_ENVIRONMENT_DATE = getDateInPast(new Date(), 3650); // 10 years ago
 export const MAX_STALE_ENVIRONMENT_DATE = getDateInPast(new Date(), 7); // one week ago
+
+export const ENVIRONMENT_NEW_HELP_TEXT = __(
+  'Environments allow you to track deployments of your application.%{linkStart} More information.%{linkEnd}',
+);
+
+export const ENVIRONMENT_EDIT_HELP_TEXT = ENVIRONMENT_NEW_HELP_TEXT;

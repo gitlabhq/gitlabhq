@@ -18,7 +18,7 @@ class Board < ApplicationRecord
   # Sort by case-insensitive name, then ascending ids. This ensures that we will always
   # get the same list/first board no matter how many other boards are named the same
   scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc).order(id: :asc) }
-  scope :first_board, -> { where(id: self.order_by_name_asc.limit(1).select(:id)) }
+  scope :first_board, -> { where(id: order_by_name_asc.limit(1).select(:id)) }
 
   def project_needed?
     !group

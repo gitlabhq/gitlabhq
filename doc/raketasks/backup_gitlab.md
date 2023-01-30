@@ -241,8 +241,6 @@ You can exclude specific directories from the backup by adding the environment v
 - `repositories` (Git repositories data)
 - `packages` (Packages)
 
-All wikis are backed up as part of the `repositories` group. Non-existent wikis are skipped during a backup.
-
 NOTE:
 When [backing up and restoring Helm Charts](https://docs.gitlab.com/charts/architecture/backup-restore.html), there is an additional option `packages`, which refers to any packages managed by the GitLab [package registry](../user/packages/package_registry/index.md).
 For more information see [command line arguments](https://docs.gitlab.com/charts/architecture/backup-restore.html#command-line-arguments).

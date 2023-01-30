@@ -13,7 +13,7 @@ module Ci
     end
 
     def self.model_name
-      @model_name ||= ActiveModel::Name.new(self, nil, self.name.demodulize)
+      @model_name ||= ActiveModel::Name.new(self, nil, name.demodulize)
     end
   end
 end

@@ -303,11 +303,11 @@ module ApplicationSettingImplementation
   end
 
   def domain_allowlist_raw
-    array_to_string(self.domain_allowlist)
+    array_to_string(domain_allowlist)
   end
 
   def domain_denylist_raw
-    array_to_string(self.domain_denylist)
+    array_to_string(domain_denylist)
   end
 
   def domain_allowlist_raw=(values)
@@ -323,7 +323,7 @@ module ApplicationSettingImplementation
   end
 
   def outbound_local_requests_allowlist_raw
-    array_to_string(self.outbound_local_requests_whitelist)
+    array_to_string(outbound_local_requests_whitelist)
   end
 
   def outbound_local_requests_allowlist_raw=(values)
@@ -356,7 +356,7 @@ module ApplicationSettingImplementation
   end
 
   def protected_paths_raw
-    array_to_string(self.protected_paths)
+    array_to_string(protected_paths)
   end
 
   def protected_paths_raw=(values)
@@ -364,7 +364,7 @@ module ApplicationSettingImplementation
   end
 
   def notes_create_limit_allowlist_raw
-    array_to_string(self.notes_create_limit_allowlist)
+    array_to_string(notes_create_limit_allowlist)
   end
 
   def notes_create_limit_allowlist_raw=(values)
@@ -372,7 +372,7 @@ module ApplicationSettingImplementation
   end
 
   def users_get_by_id_limit_allowlist_raw
-    array_to_string(self.users_get_by_id_limit_allowlist)
+    array_to_string(users_get_by_id_limit_allowlist)
   end
 
   def users_get_by_id_limit_allowlist_raw=(values)
@@ -536,7 +536,7 @@ module ApplicationSettingImplementation
 
   def set_max_key_restriction!(key_type)
     attr_name = "#{key_type}_key_restriction"
-    current = self.attributes[attr_name].to_i
+    current = attributes[attr_name].to_i
 
     return if current == KeyRestrictionValidator::FORBIDDEN
 
@@ -549,7 +549,7 @@ module ApplicationSettingImplementation
         [min_size, current].max
       end
 
-    self.assign_attributes({ attr_name => new_value })
+    assign_attributes({ attr_name => new_value })
   end
 
   def separate_allowlists(string_array)

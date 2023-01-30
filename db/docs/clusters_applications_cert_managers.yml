@@ -1,7 +1,5 @@
 ---
 table_name: clusters_applications_cert_managers
-classes:
-- Clusters::Applications::CertManager
 feature_categories:
 - kubernetes_management
 description: "(Deprecated) A GitLab managed cert-manager installation in a Kubernetes cluster"

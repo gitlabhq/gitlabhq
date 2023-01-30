@@ -11,7 +11,10 @@ jest.mock('~/lib/utils/url_utility');
 jest.mock('~/flash');
 
 const DEFAULT_OPTS = {
-  provide: { projectEnvironmentsPath: '/projects/environments' },
+  provide: {
+    projectEnvironmentsPath: '/projects/environments',
+    protectedEnvironmentSettingsPath: '/projects/not_real/settings/ci_cd',
+  },
 };
 
 describe('~/environments/components/new.vue', () => {

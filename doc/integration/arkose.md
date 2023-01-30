@@ -93,17 +93,25 @@ To check if a user failed to sign in because the ArkoseLabs challenge was not so
 KQL: json.message:"Challenge was not solved" AND json.username:replace_username_here`
 ```
 
-## QA tests caveat
+## Allowlists
 
-Several GitLab QA test suites need to sign in to the app to test its features. This can conflict
-with Arkose Protect as it would identify QA users as being malicious because they are being run with
-a headless browser. To work around this, ArkoseLabs has allowlisted the unique token
-that serves as QA session's User Agent. While this doesn't guarantee that the session is not
-flagged as malicious, the Arkose API returns a specific telltale when we verify the sign in
-attempt's token. We are leveraging this telltale to bypass the verification step entirely so that the
-test suite doesn't fail. This bypass is done in the `UserVerificationService` class.
+To ensure end-to-end QA test suites can pass during staging and production, we've [allowlisted](https://developer.arkoselabs.com/docs/verify-api-v4#creating-allowlists-and-denylists) the [GITLAB_QA_USER_AGENT](https://start.1password.com/open/i?a=LKATQYUATRBRDHRRABEBH4RJ5Y&v=6gq44ckmq23vqk5poqunurdgay&i=u2wvs63affaxzi22gnfbjjw2zm&h=gitlab.1password.com). Each QA user receives an `ALLOWLIST` [risk category](https://developer.arkoselabs.com/docs/risk-score).
+
+You can find the usage of the allowlist telltale in our [Arkose::VerifyResponse](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/arkose/verify_response.rb#L38) class.
 
 ## Feedback Job
 
 To help Arkose improve their protection service, we created a daily background job to send them the list of blocked users by us.
 This job is performed by the `Arkose::BlockedUsersReportWorker` class.
+
+## Additional resources
+
+<!-- markdownlint-disable MD044 -->
+The [Anti-abuse team](https://about.gitlab.com/handbook/engineering/development/data-science/anti-abuse/#team-members) owns the ArkoseLabs Protect feature. You can join our ArkoseLabs/GitLab collaboration channel on Slack: [#ext-gitlab-arkose](https://gitlab.slack.com/archives/C02SGF6RLPQ).
+<!-- markdownlint-enable MD044 -->
+
+ArkoseLabs also maintains the following resources:
+
+- [ArkoseLabs portal](https://portal.arkoselabs.com/)
+- [ArkoseLabs Zendesk](https://support.arkoselabs.com/)
+- [ArkoseLabs documentation](https://developer.arkoselabs.com/docs/documentation-guide)

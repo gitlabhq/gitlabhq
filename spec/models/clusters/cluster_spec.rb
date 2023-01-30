@@ -714,14 +714,13 @@ feature_category: :kubernetes_management do
     context 'when all applications are created' do
       let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
-      let!(:cert_manager) { create(:clusters_applications_cert_manager, cluster: cluster) }
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
       let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
       let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, cert_manager, prometheus, runner, jupyter, knative)
+        is_expected.to contain_exactly(helm, ingress, prometheus, runner, jupyter, knative)
       end
     end
 

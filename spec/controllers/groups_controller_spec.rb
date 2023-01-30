@@ -552,6 +552,53 @@ RSpec.describe GroupsController, factory_default: :keep do
         expect(assigns(:merge_requests)).to eq [merge_request_2, merge_request_1]
       end
     end
+
+    context 'rendering views' do
+      render_views
+
+      it 'displays MR counts in nav' do
+        get :merge_requests, params: { id: group.to_param }
+
+        expect(response.body).to have_content('Open 2 Merged 0 Closed 0 All 2')
+        expect(response.body).not_to have_content('Open Merged Closed All')
+      end
+    end
+
+    context 'when an ActiveRecord::QueryCanceled is raised' do
+      before do
+        allow_next_instance_of(Gitlab::IssuableMetadata) do |instance|
+          allow(instance).to receive(:data).and_raise(ActiveRecord::QueryCanceled)
+        end
+      end
+
+      it 'sets :search_timeout_occurred' do
+        get :merge_requests, params: { id: group.to_param }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:search_timeout_occurred)).to eq(true)
+      end
+
+      it 'logs the exception' do
+        get :merge_requests, params: { id: group.to_param }
+      end
+
+      context 'rendering views' do
+        render_views
+
+        it 'shows error message' do
+          get :merge_requests, params: { id: group.to_param }
+
+          expect(response.body).to have_content('Too many results to display. Edit your search or add a filter.')
+        end
+
+        it 'does not display MR counts in nav' do
+          get :merge_requests, params: { id: group.to_param }
+
+          expect(response.body).to have_content('Open Merged Closed All')
+          expect(response.body).not_to have_content('Open 0 Merged 0 Closed 0 All 0')
+        end
+      end
+    end
   end
 
   describe 'DELETE #destroy' do

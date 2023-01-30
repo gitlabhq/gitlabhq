@@ -386,21 +386,21 @@ module Ci
 
     def detailed_status(current_user)
       Gitlab::Ci::Status::Build::Factory
-        .new(self.present, current_user)
+        .new(present, current_user)
         .fabricate!
     end
 
     def other_manual_actions
-      pipeline.manual_actions.reject { |action| action.name == self.name }
+      pipeline.manual_actions.reject { |action| action.name == name }
     end
 
     def other_scheduled_actions
-      pipeline.scheduled_actions.reject { |action| action.name == self.name }
+      pipeline.scheduled_actions.reject { |action| action.name == name }
     end
 
     def pages_generator?
       Gitlab.config.pages.enabled &&
-        self.name == 'pages'
+        name == 'pages'
     end
 
     def runnable?
@@ -456,7 +456,7 @@ module Ci
     end
 
     def retries_count
-      pipeline.builds.retried.where(name: self.name).count
+      pipeline.builds.retried.where(name: name).count
     end
 
     override :all_met_to_become_pending?
@@ -529,19 +529,19 @@ module Ci
     end
 
     def deployment_job?
-      has_environment_keyword? && self.environment_action == 'start'
+      has_environment_keyword? && environment_action == 'start'
     end
 
     def stops_environment?
-      has_environment_keyword? && self.environment_action == 'stop'
+      has_environment_keyword? && environment_action == 'stop'
     end
 
     def environment_action
-      self.options.fetch(:environment, {}).fetch(:action, 'start') if self.options
+      options.fetch(:environment, {}).fetch(:action, 'start') if options
     end
 
     def environment_tier_from_options
-      self.options.dig(:environment, :deployment_tier) if self.options
+      options.dig(:environment, :deployment_tier) if options
     end
 
     def environment_tier
@@ -831,7 +831,7 @@ module Ci
     end
 
     def erased?
-      !self.erased_at.nil?
+      !erased_at.nil?
     end
 
     def artifacts_expired?
@@ -864,8 +864,8 @@ module Ci
     end
 
     def keep_artifacts!
-      self.update(artifacts_expire_at: nil)
-      self.job_artifacts.update_all(expire_at: nil)
+      update(artifacts_expire_at: nil)
+      job_artifacts.update_all(expire_at: nil)
     end
 
     def artifacts_file_for_type(type)
@@ -1096,11 +1096,11 @@ module Ci
     # without actually loading data.
     #
     def all_queuing_entries
-      ::Ci::PendingBuild.where(build_id: self.id)
+      ::Ci::PendingBuild.where(build_id: id)
     end
 
     def all_runtime_metadata
-      ::Ci::RunningBuild.where(build_id: self.id)
+      ::Ci::RunningBuild.where(build_id: id)
     end
 
     def shared_runner_build?

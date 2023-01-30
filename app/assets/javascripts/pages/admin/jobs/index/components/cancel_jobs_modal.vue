@@ -5,10 +5,9 @@ import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
 import {
   CANCEL_TEXT,
-  STOP_JOBS_MODAL_ID,
-  STOP_JOBS_FAILED_TEXT,
-  STOP_JOBS_MODAL_TITLE,
-  STOP_JOBS_WARNING,
+  CANCEL_JOBS_FAILED_TEXT,
+  CANCEL_JOBS_MODAL_TITLE,
+  CANCEL_JOBS_WARNING,
   PRIMARY_ACTION_TEXT,
 } from './constants';
 
@@ -18,6 +17,10 @@ export default {
   },
   props: {
     url: {
+      type: String,
+      required: true,
+    },
+    modalId: {
       type: String,
       required: true,
     },
@@ -32,7 +35,7 @@ export default {
         })
         .catch((error) => {
           createAlert({
-            message: STOP_JOBS_FAILED_TEXT,
+            message: CANCEL_JOBS_FAILED_TEXT,
           });
           throw error;
         });
@@ -45,20 +48,19 @@ export default {
   cancelAction: {
     text: CANCEL_TEXT,
   },
-  STOP_JOBS_WARNING,
-  STOP_JOBS_MODAL_ID,
-  STOP_JOBS_MODAL_TITLE,
+  CANCEL_JOBS_WARNING,
+  CANCEL_JOBS_MODAL_TITLE,
 };
 </script>
 
 <template>
   <gl-modal
-    :modal-id="$options.STOP_JOBS_MODAL_ID"
+    :modal-id="modalId"
     :action-primary="$options.primaryAction"
     :action-cancel="$options.cancelAction"
+    :title="$options.CANCEL_JOBS_MODAL_TITLE"
     @primary="onSubmit"
   >
-    <template #modal-title>{{ $options.STOP_JOBS_MODAL_TITLE }}</template>
-    {{ $options.STOP_JOBS_WARNING }}
+    {{ $options.CANCEL_JOBS_WARNING }}
   </gl-modal>
 </template>

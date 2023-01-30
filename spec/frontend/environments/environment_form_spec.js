@@ -10,11 +10,14 @@ const DEFAULT_PROPS = {
   cancelPath: '/cancel',
 };
 
+const PROVIDE = { protectedEnvironmentSettingsPath: '/projects/not_real/settings/ci_cd' };
+
 describe('~/environments/components/form.vue', () => {
   let wrapper;
 
   const createWrapper = (propsData = {}) =>
     mountExtended(EnvironmentForm, {
+      provide: PROVIDE,
       propsData: {
         ...DEFAULT_PROPS,
         ...propsData,
@@ -31,7 +34,7 @@ describe('~/environments/components/form.vue', () => {
     });
 
     it('links to documentation regarding environments', () => {
-      const link = wrapper.findByRole('link', { name: 'More information' });
+      const link = wrapper.findByRole('link', { name: 'More information.' });
       expect(link.attributes('href')).toBe('/help/ci/environments/index.md');
     });
 
@@ -123,6 +126,10 @@ describe('~/environments/components/form.vue', () => {
       const urlInput = wrapper.findByLabelText('External URL');
 
       expect(urlInput.element.value).toBe('');
+    });
+
+    it('does not show protected environment documentation', () => {
+      expect(wrapper.findByRole('link', { name: 'Protected environments' }).exists()).toBe(false);
     });
   });
 

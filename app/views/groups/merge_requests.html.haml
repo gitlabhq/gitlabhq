@@ -4,7 +4,7 @@
 - add_page_specific_style 'page_bundles/issuable_list'
 
 .top-area
-  = render 'shared/issuable/nav', type: :merge_requests
+  = render 'shared/issuable/nav', type: :merge_requests, display_count: !@search_timeout_occurred
   - if current_user
     .nav-controls
       - if @can_bulk_update
@@ -16,4 +16,7 @@
 - if @can_bulk_update
   = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :merge_requests
 
-= render 'shared/merge_requests'
+- if @search_timeout_occurred
+  = render 'shared/dashboard/search_timeout_occurred'
+- else
+  = render 'shared/merge_requests'

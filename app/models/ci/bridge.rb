@@ -80,9 +80,9 @@ module Ci
     def inherit_status_from_downstream!(pipeline)
       case pipeline.status
       when 'success'
-        self.success!
+        success!
       when 'failed', 'canceled', 'skipped'
-        self.drop!
+        drop!
       else
         false
       end

@@ -7,6 +7,7 @@ export default (el) =>
     provide: {
       projectEnvironmentsPath: el.dataset.projectEnvironmentsPath,
       updateEnvironmentPath: el.dataset.updateEnvironmentPath,
+      protectedEnvironmentSettingsPath: el.dataset.protectedEnvironmentSettingsPath,
     },
     render(h) {
       return h(EditEnvironment, {

@@ -15,7 +15,7 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', requir
 # https://gitlab.com/gitlab-org/gitlab/-/issues/375713
 gem 'rails', '~> 6.1.7.1'
 
-gem 'bootsnap', '~> 1.15.0', require: false
+gem 'bootsnap', '~> 1.16.0', require: false
 
 # Pin openssl to match the version bundled with our supported Rubies.
 # See https://stdgems.org/openssl/#gem-version.
@@ -174,9 +174,9 @@ gem 'seed-fu', '~> 2.3.7'
 gem 'elasticsearch-model', '~> 7.2'
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation'
 gem 'elasticsearch-api',   '7.13.3'
-gem 'aws-sdk-core', '~> 3.168.4'
+gem 'aws-sdk-core', '~> 3.169.0'
 gem 'aws-sdk-cloudformation', '~> 1'
-gem 'aws-sdk-s3', '~> 1.117.2'
+gem 'aws-sdk-s3', '~> 1.118.0'
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
 gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive connections
 

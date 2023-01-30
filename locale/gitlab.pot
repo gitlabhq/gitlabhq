@@ -2584,6 +2584,9 @@ msgstr ""
 msgid "AdminArea|All users created in the instance, including users who are not %{billable_users_link_start}billable users%{billable_users_link_end}."
 msgstr ""
 
+msgid "AdminArea|Are you sure?"
+msgstr ""
+
 msgid "AdminArea|Blocked users"
 msgstr ""
 
@@ -2594,6 +2597,15 @@ msgid "AdminArea|Breakdown of Billable users"
 msgstr ""
 
 msgid "AdminArea|Breakdown of Non-Billable users"
+msgstr ""
+
+msgid "AdminArea|Cancel all jobs"
+msgstr ""
+
+msgid "AdminArea|Cancel all running and pending jobs"
+msgstr ""
+
+msgid "AdminArea|Canceling jobs failed"
 msgstr ""
 
 msgid "AdminArea|Components"
@@ -2668,15 +2680,6 @@ msgstr ""
 msgid "AdminArea|Stop all jobs"
 msgstr ""
 
-msgid "AdminArea|Stop all jobs?"
-msgstr ""
-
-msgid "AdminArea|Stop jobs"
-msgstr ""
-
-msgid "AdminArea|Stopping jobs failed"
-msgstr ""
-
 msgid "AdminArea|Total Billable users"
 msgstr ""
 
@@ -2713,7 +2716,10 @@ msgstr ""
 msgid "AdminArea|View latest users"
 msgstr ""
 
-msgid "AdminArea|You’re about to stop all jobs. This will halt all current jobs that are running."
+msgid "AdminArea|Yes, proceed"
+msgstr ""
+
+msgid "AdminArea|You're about to cancel all running and pending jobs across this instance. Do you want to proceed?"
 msgstr ""
 
 msgid "AdminArea|active users + blocked users"
@@ -15698,7 +15704,10 @@ msgstr ""
 msgid "Environments Dashboard"
 msgstr ""
 
-msgid "Environments allow you to track deployments of your application. %{linkStart}More information%{linkEnd}."
+msgid "Environments allow you to track deployments of your application. To protect this environment, go to the CI/CD settings %{linkStart}Protected environments%{linkEnd} section."
+msgstr ""
+
+msgid "Environments allow you to track deployments of your application.%{linkStart} More information.%{linkEnd}"
 msgstr ""
 
 msgid "Environments in %{name}"
