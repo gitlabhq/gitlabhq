@@ -93,6 +93,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Troubleshooting PostgreSQL](../../administration/troubleshooting/postgresql.md)
 - [Working with the bundled PgBouncer service](../../administration/postgresql/pgbouncer.md)
 
+## User information for scaling
+
+For GitLab administrators, information about
+[configuring PostgreSQL for scaling](../../administration/postgresql/index.md) is available,
+including the major methods:
+
+- [Standalone PostgreSQL](../../administration/postgresql/standalone.md)
+- [External PostgreSQL instances](../../administration/postgresql/external.md)
+- [Replication and failover](../../administration/postgresql/replication_and_failover.md)
+
 ## Miscellaneous
 
 - [Maintenance operations](maintenance_operations.md)

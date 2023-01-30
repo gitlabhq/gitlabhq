@@ -219,19 +219,31 @@ as a [CI/CD variable](../ci/variables/index.md).
 
 If you are making changes to the RPC client, such as adding a new endpoint or adding a new
 parameter to an existing endpoint, follow the guide for
-[Gitaly protobuf specifications](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/protobuf.md). After pushing
-the branch with the changes (`new-feature-branch`, for example):
+[Gitaly protobuf specifications](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/protobuf.md). Then:
+
+1. Run `bundle install` in the `tools/protogem` directory of Gitaly.
+1. Build the RPC client gem from the root directory of Gitaly:
+
+   ```shell
+   BUILD_GEM_OPTIONS=--skip-verify-tag make build-proto-gem
+   ```
+
+1. In the `_build` directory of Gitaly, unpack the newly created `.gem` file and create a `gemspec`:
+
+   ```shell
+   gem unpack gitaly.gem &&
+   gem spec gitaly.gem > gitaly/gitaly.gemspec
+   ```
 
 1. Change the `gitaly` line in the Rails' `Gemfile` to:
 
    ```ruby
-   gem 'gitaly', git: 'https://gitlab.com/gitlab-org/gitaly.git', branch: 'new-feature-branch'
+   gem 'gitaly', path: '../gitaly/_build'
    ```
 
 1. Run `bundle install` to use the modified RPC client.
 
-Re-run `bundle install` in the `gitlab` project each time the Gitaly branch
-changes to embed a new SHA in the `Gemfile.lock` file.
+Re-run steps 2-5 each time you want to try out new changes.
 
 ---
 

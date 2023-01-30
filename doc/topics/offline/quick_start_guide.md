@@ -208,8 +208,7 @@ Learn more about [disabling usage statistics](../../user/admin_area/settings/usa
 
 ### Configure NTP
 
-In GitLab 15.4 and 15.5, Gitaly Cluster doesn't function if `pool.ntp.org` is unreachable.
-[Customize the time server setting](../../administration/gitaly/praefect.md#customize-time-server-setting) on the Gitaly
+In GitLab 15.4 and 15.5, Gitaly Cluster assumes `pool.ntp.org` is accessible. If `pool.ntp.org` is not accessible, [customize the time server setting](../../administration/gitaly/praefect.md#customize-time-server-setting) on the Gitaly
 and Praefect servers so they can use an accessible NTP server.
 
 On offline instances, the [GitLab Geo check Rake task](../../administration/geo/replication/troubleshooting.md#can-geo-detect-the-current-site-correctly)

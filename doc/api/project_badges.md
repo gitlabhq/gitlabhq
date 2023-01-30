@@ -35,7 +35,7 @@ GET /projects/:id/badges
 | `name`    | string         | no  | Name of the badges to return (case-sensitive). |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/badges"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/badges?name=Coverage"
 ```
 
 Example response:
@@ -84,6 +84,7 @@ Example response:
 
 ```json
 {
+  "name": "Coverage",
   "id": 1,
   "link_url": "http://example.com/ci_status.svg?project=%{project_path}&ref=%{default_branch}",
   "image_url": "https://shields.io/my/badge",
