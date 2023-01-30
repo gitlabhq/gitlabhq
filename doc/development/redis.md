@@ -242,9 +242,8 @@ The Redis [`PFCOUNT`](https://redis.io/commands/pfcount/),
 [`PFADD`](https://redis.io/commands/pfadd/), and
 [`PFMERGE`](https://redis.io/commands/pfmerge/) commands operate on
 HyperLogLogs, a data structure that allows estimating the number of unique
-elements with low memory usage. (In addition to the `PFCOUNT` documentation,
-Thoughtbot's article on [HyperLogLogs in Redis](https://thoughtbot.com/blog/hyperloglogs-in-redis)
-provides a good background here.)
+elements with low memory usage. For more information,
+see [HyperLogLogs in Redis](https://thoughtbot.com/blog/hyperloglogs-in-redis).
 
 [`Gitlab::Redis::HLL`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/hll.rb)
 provides a convenient interface for adding and counting values in HyperLogLogs.

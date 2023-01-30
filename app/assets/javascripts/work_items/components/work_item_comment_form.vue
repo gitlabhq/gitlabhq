@@ -6,11 +6,13 @@ import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
+import { ASC } from '~/notes/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { updateCommentState } from '~/work_items/graphql/cache_utils';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import { getWorkItemQuery, getWorkItemNotesQuery } from '../utils';
+import { getWorkItemQuery } from '../utils';
 import createNoteMutation from '../graphql/create_work_item_note.mutation.graphql';
-import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
+import { TRACKING_CATEGORY_SHOW, i18n } from '../constants';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
 import WorkItemCommentLocked from './work_item_comment_locked.vue';
 
@@ -44,6 +46,30 @@ export default {
     queryVariables: {
       type: Object,
       required: true,
+    },
+    discussionId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    autofocus: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    addPadding: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    workItemType: {
+      type: String,
+      required: true,
+    },
+    sortOrder: {
+      type: String,
+      required: false,
+      default: ASC,
     },
   },
   data() {
@@ -82,11 +108,6 @@ export default {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `${this.workItemId}-comment`;
     },
-    canEdit() {
-      // maybe this should use `NotePermissions.updateNote`, but if
-      // we don't have any notes yet, that permission isn't on WorkItem
-      return Boolean(this.workItem?.userPermissions?.updateWorkItem);
-    },
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,
@@ -94,16 +115,32 @@ export default {
         property: `type_${this.workItemType}`,
       };
     },
-    workItemType() {
-      return this.workItem?.workItemType?.name;
-    },
     markdownPreviewPath() {
       return `${gon.relative_url_root || ''}/${this.fullPath}/preview_markdown?target_type=${
         this.workItemType
       }`;
     },
+    timelineEntryClass() {
+      return {
+        'timeline-entry gl-mb-3': true,
+        'gl-p-4': this.addPadding,
+      };
+    },
     isProjectArchived() {
       return this.workItem?.project?.archived;
+    },
+    canUpdate() {
+      return this.workItem?.userPermissions?.updateWorkItem;
+    },
+  },
+  watch: {
+    autofocus: {
+      immediate: true,
+      handler(focus) {
+        if (focus) {
+          this.isEditing = true;
+        }
+      },
     },
   },
   methods: {
@@ -125,6 +162,7 @@ export default {
         }
       }
 
+      this.$emit('cancelEditing');
       this.isEditing = false;
       clearDraft(this.autosaveKey);
     },
@@ -136,33 +174,31 @@ export default {
       }
 
       this.isSubmitting = true;
+      this.$emit('replying', this.commentText);
+      const { queryVariables, fetchByIid, sortOrder } = this;
 
       try {
         this.track('add_work_item_comment');
 
-        const {
-          data: { createNote },
-        } = await this.$apollo.mutate({
+        await this.$apollo.mutate({
           mutation: createNoteMutation,
           variables: {
             input: {
-              noteableId: this.workItem.id,
+              noteableId: this.workItemId,
               body: this.commentText,
+              discussionId: this.discussionId || null,
             },
           },
+          update(store, createNoteData) {
+            if (createNoteData.data?.createNote?.errors?.length) {
+              throw new Error(createNoteData.data?.createNote?.errors[0]);
+            }
+            updateCommentState(store, createNoteData, fetchByIid, queryVariables, sortOrder);
+          },
         });
-
-        if (createNote.errors?.length) {
-          throw new Error(createNote.errors[0]);
-        }
-
-        const client = this.$apollo.provider.defaultClient;
-        client.refetchQueries({
-          include: [getWorkItemNotesQuery(this.fetchByIid)],
-        });
-
-        this.isEditing = false;
         clearDraft(this.autosaveKey);
+        this.$emit('replied');
+        this.isEditing = false;
       } catch (error) {
         this.$emit('error', error.message);
         Sentry.captureException(error);
@@ -179,10 +215,10 @@ export default {
 </script>
 
 <template>
-  <li class="timeline-entry">
+  <li :class="timelineEntryClass">
     <work-item-note-signed-out v-if="!signedIn" />
     <work-item-comment-locked
-      v-else-if="!canEdit"
+      v-else-if="!canUpdate"
       :work-item-type="workItemType"
       :is-project-archived="isProjectArchived"
     />

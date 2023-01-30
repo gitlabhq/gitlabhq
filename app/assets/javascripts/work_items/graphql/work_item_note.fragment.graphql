@@ -7,10 +7,18 @@ fragment WorkItemNote on Note {
   internal
   systemNoteIconName
   createdAt
+  discussion {
+    id
+  }
   author {
     ...User
   }
   userPermissions {
     adminNote
+    awardEmoji
+    readNote
+    createNote
+    resolveNote
+    repositionNote
   }
 }

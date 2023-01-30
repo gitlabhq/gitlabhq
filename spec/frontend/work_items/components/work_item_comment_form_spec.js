@@ -56,6 +56,7 @@ describe('WorkItemCommentForm', () => {
     fetchByIid = false,
     signedIn = true,
     isEditing = true,
+    workItemType = 'Task',
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
 
@@ -76,6 +77,7 @@ describe('WorkItemCommentForm', () => {
         fullPath: 'test-project-path',
         queryVariables,
         fetchByIid,
+        workItemType,
       },
       stubs: {
         MarkdownField,
@@ -109,6 +111,7 @@ describe('WorkItemCommentForm', () => {
         input: {
           noteableId: workItemId,
           body: noteText,
+          discussionId: null,
         },
       });
     });
@@ -138,7 +141,19 @@ describe('WorkItemCommentForm', () => {
         mutationHandler: jest.fn().mockResolvedValue({
           data: {
             createNote: {
-              note: null,
+              note: {
+                id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
+                discussion: {
+                  id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
+                  notes: {
+                    nodes: [],
+                    __typename: 'NoteConnection',
+                  },
+                  __typename: 'Discussion',
+                },
+                __typename: 'Note',
+              },
+              __typename: 'CreateNotePayload',
               errors: [error],
             },
           },

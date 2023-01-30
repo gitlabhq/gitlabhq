@@ -3,6 +3,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 export default {
+  name: 'WorkItemNoteBody',
   directives: {
     SafeHtml,
   },

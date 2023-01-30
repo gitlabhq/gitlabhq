@@ -75,6 +75,7 @@ The level of formality used in software varies by language:
 | -------- | --------- | ------- |
 | French   | formal    | `vous` for `you` |
 | German   | informal  | `du` for `you` |
+| Spanish   | informal  | `tú` for `you` |
 
 Refer to other translated strings and notes in the glossary to assist you in determining a suitable
 level of formality.

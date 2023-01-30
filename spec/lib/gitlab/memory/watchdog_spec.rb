@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: :application_performance do
   context 'watchdog' do
     let(:configuration) { instance_double(described_class::Configuration) }
-    let(:handler) { instance_double(described_class::NullHandler) }
+    let(:handler) { instance_double(described_class::Handlers::NullHandler) }
     let(:reporter) { instance_double(described_class::EventReporter) }
     let(:sleep_time_seconds) { 60 }
     let(:threshold_violated) { false }
@@ -185,7 +185,7 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
 
               it 'always uses the NullHandler' do
                 expect(handler).not_to receive(:call)
-                expect(described_class::NullHandler.instance).to receive(:call).and_return(true)
+                expect(described_class::Handlers::NullHandler.instance).to receive(:call).and_return(true)
 
                 watchdog.call
               end
@@ -213,58 +213,6 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
     describe '#configure' do
       it 'yields block' do
         expect { |b| watchdog.configure(&b) }.to yield_control
-      end
-    end
-  end
-
-  context 'handlers' do
-    context 'NullHandler' do
-      subject(:handler) { described_class::NullHandler.instance }
-
-      describe '#call' do
-        it 'does nothing' do
-          expect(handler.call).to be(false)
-        end
-      end
-    end
-
-    context 'TermProcessHandler' do
-      subject(:handler) { described_class::TermProcessHandler.new(42) }
-
-      describe '#call' do
-        before do
-          allow(Process).to receive(:kill)
-        end
-
-        it 'sends SIGTERM to the current process' do
-          expect(Process).to receive(:kill).with(:TERM, 42)
-
-          expect(handler.call).to be(true)
-        end
-      end
-    end
-
-    context 'PumaHandler' do
-      # rubocop: disable RSpec/VerifiedDoubles
-      # In tests, the Puma constant is not loaded so we cannot make this an instance_double.
-      let(:puma_worker_handle_class) { double('Puma::Cluster::WorkerHandle') }
-      let(:puma_worker_handle) { double('worker') }
-      # rubocop: enable RSpec/VerifiedDoubles
-
-      subject(:handler) { described_class::PumaHandler.new({}) }
-
-      before do
-        stub_const('::Puma::Cluster::WorkerHandle', puma_worker_handle_class)
-        allow(puma_worker_handle_class).to receive(:new).and_return(puma_worker_handle)
-        allow(puma_worker_handle).to receive(:term)
-      end
-
-      describe '#call' do
-        it 'invokes orderly termination via Puma API' do
-          expect(puma_worker_handle).to receive(:term)
-
-          expect(handler.call).to be(true)
-        end
       end
     end
   end

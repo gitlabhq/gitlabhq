@@ -1,5 +1,21 @@
+#import "~/work_items/graphql/work_item_note.fragment.graphql"
+
 mutation createWorkItemNote($input: CreateNoteInput!) {
   createNote(input: $input) {
+    note {
+      id
+      discussion {
+        id
+        notes {
+          nodes {
+            ...WorkItemNote
+          }
+        }
+        __typename
+      }
+      __typename
+    }
     errors
+    __typename
   }
 }

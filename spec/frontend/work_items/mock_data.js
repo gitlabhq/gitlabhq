@@ -1599,8 +1599,7 @@ export const mockWorkItemNotesResponse = {
             },
             nodes: [
               {
-                id:
-                  'gid://gitlab/IndividualNoteDiscussion/8bbc4890b6ff0f2cde93a5a0947cd2b8a13d3b6e',
+                id: 'gid://gitlab/Discussion/8bbc4890b6ff0f2cde93a5a0947cd2b8a13d3b6e',
                 notes: {
                   nodes: [
                     {
@@ -1611,8 +1610,16 @@ export const mockWorkItemNotesResponse = {
                       createdAt: '2022-11-14T04:18:59Z',
                       system: true,
                       internal: false,
+                      discussion: {
+                        id: 'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da12723561234',
+                      },
                       userPermissions: {
                         adminNote: false,
+                        awardEmoji: true,
+                        readNote: true,
+                        createNote: true,
+                        resolveNote: true,
+                        repositionNote: true,
                         __typename: 'NotePermissions',
                       },
                       author: {
@@ -1632,8 +1639,7 @@ export const mockWorkItemNotesResponse = {
                 __typename: 'Discussion',
               },
               {
-                id:
-                  'gid://gitlab/IndividualNoteDiscussion/7b08b89a728a5ceb7de8334246837ba1d07270dc',
+                id: 'gid://gitlab/Discussion/7b08b89a728a5ceb7de8334246837ba1d07270dc',
                 notes: {
                   nodes: [
                     {
@@ -1644,8 +1650,16 @@ export const mockWorkItemNotesResponse = {
                       createdAt: '2022-11-14T04:18:59Z',
                       system: true,
                       internal: false,
+                      discussion: {
+                        id: 'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da12723565678',
+                      },
                       userPermissions: {
                         adminNote: false,
+                        awardEmoji: true,
+                        readNote: true,
+                        createNote: true,
+                        resolveNote: true,
+                        repositionNote: true,
                         __typename: 'NotePermissions',
                       },
                       author: {
@@ -1665,8 +1679,7 @@ export const mockWorkItemNotesResponse = {
                 __typename: 'Discussion',
               },
               {
-                id:
-                  'gid://gitlab/IndividualNoteDiscussion/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83864',
+                id: 'gid://gitlab/Discussion/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83864',
                 notes: {
                   nodes: [
                     {
@@ -1676,8 +1689,16 @@ export const mockWorkItemNotesResponse = {
                       createdAt: '2022-11-25T07:16:20Z',
                       system: true,
                       internal: false,
+                      discussion: {
+                        id: 'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da12723560987',
+                      },
                       userPermissions: {
                         adminNote: false,
+                        awardEmoji: true,
+                        readNote: true,
+                        createNote: true,
+                        resolveNote: true,
+                        repositionNote: true,
                         __typename: 'NotePermissions',
                       },
                       author: {
@@ -1756,8 +1777,7 @@ export const mockWorkItemNotesByIidResponse = {
                   },
                   nodes: [
                     {
-                      id:
-                        'gid://gitlab/IndividualNoteDiscussion/8bbc4890b6ff0f2cde93a5a0947cd2b8a13d3b6e',
+                      id: 'gid://gitlab/Discussion/8bbc4890b6ff0f2cde93a5a0947cd2b8a13d3b6e',
                       notes: {
                         nodes: [
                           {
@@ -1768,8 +1788,17 @@ export const mockWorkItemNotesByIidResponse = {
                             createdAt: '2022-11-14T04:18:59Z',
                             system: true,
                             internal: false,
+                            discussion: {
+                              id:
+                                'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da12723561234',
+                            },
                             userPermissions: {
                               adminNote: false,
+                              awardEmoji: true,
+                              readNote: true,
+                              createNote: true,
+                              resolveNote: true,
+                              repositionNote: true,
                               __typename: 'NotePermissions',
                             },
                             author: {
@@ -1789,8 +1818,7 @@ export const mockWorkItemNotesByIidResponse = {
                       __typename: 'Discussion',
                     },
                     {
-                      id:
-                        'gid://gitlab/IndividualNoteDiscussion/7b08b89a728a5ceb7de8334246837ba1d07270dc',
+                      id: 'gid://gitlab/Discussion/7b08b89a728a5ceb7de8334246837ba1d07270dc',
                       notes: {
                         nodes: [
                           {
@@ -1802,8 +1830,17 @@ export const mockWorkItemNotesByIidResponse = {
                             createdAt: '2022-11-14T04:18:59Z',
                             system: true,
                             internal: false,
+                            discussion: {
+                              id:
+                                'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da12723568765',
+                            },
                             userPermissions: {
                               adminNote: false,
+                              awardEmoji: true,
+                              readNote: true,
+                              createNote: true,
+                              resolveNote: true,
+                              repositionNote: true,
                               __typename: 'NotePermissions',
                             },
                             author: {
@@ -1823,8 +1860,7 @@ export const mockWorkItemNotesByIidResponse = {
                       __typename: 'Discussion',
                     },
                     {
-                      id:
-                        'gid://gitlab/IndividualNoteDiscussion/addbc177f7664699a135130ab05ffb78c57e4db3',
+                      id: 'gid://gitlab/Discussion/addbc177f7664699a135130ab05ffb78c57e4db3',
                       notes: {
                         nodes: [
                           {
@@ -1836,8 +1872,17 @@ export const mockWorkItemNotesByIidResponse = {
                             createdAt: '2022-11-14T04:19:00Z',
                             system: true,
                             internal: false,
+                            discussion: {
+                              id:
+                                'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da12723569876',
+                            },
                             userPermissions: {
                               adminNote: false,
+                              awardEmoji: true,
+                              readNote: true,
+                              createNote: true,
+                              resolveNote: true,
+                              repositionNote: true,
                               __typename: 'NotePermissions',
                             },
                             author: {
@@ -1913,8 +1958,7 @@ export const mockMoreWorkItemNotesResponse = {
             },
             nodes: [
               {
-                id:
-                  'gid://gitlab/IndividualNoteDiscussion/8bbc4890b6ff0f2cde93a5a0947cd2b8a13d3b6e',
+                id: 'gid://gitlab/Discussion/8bbc4890b6ff0f2cde93a5a0947cd2b8a13d3b6e',
                 notes: {
                   nodes: [
                     {
@@ -1925,8 +1969,16 @@ export const mockMoreWorkItemNotesResponse = {
                       createdAt: '2022-11-14T04:18:59Z',
                       system: true,
                       internal: false,
+                      discussion: {
+                        id: 'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da1112356a59e',
+                      },
                       userPermissions: {
                         adminNote: false,
+                        awardEmoji: true,
+                        readNote: true,
+                        createNote: true,
+                        resolveNote: true,
+                        repositionNote: true,
                         __typename: 'NotePermissions',
                       },
                       author: {
@@ -1946,8 +1998,7 @@ export const mockMoreWorkItemNotesResponse = {
                 __typename: 'Discussion',
               },
               {
-                id:
-                  'gid://gitlab/IndividualNoteDiscussion/7b08b89a728a5ceb7de8334246837ba1d07270dc',
+                id: 'gid://gitlab/Discussion/7b08b89a728a5ceb7de8334246837ba1d07270dc',
                 notes: {
                   nodes: [
                     {
@@ -1958,8 +2009,16 @@ export const mockMoreWorkItemNotesResponse = {
                       createdAt: '2022-11-14T04:18:59Z',
                       system: true,
                       internal: false,
+                      discussion: {
+                        id: 'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da1272356a59e',
+                      },
                       userPermissions: {
                         adminNote: false,
+                        awardEmoji: true,
+                        readNote: true,
+                        createNote: true,
+                        resolveNote: true,
+                        repositionNote: true,
                         __typename: 'NotePermissions',
                       },
                       author: {
@@ -1979,8 +2038,7 @@ export const mockMoreWorkItemNotesResponse = {
                 __typename: 'Discussion',
               },
               {
-                id:
-                  'gid://gitlab/IndividualNoteDiscussion/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83864',
+                id: 'gid://gitlab/Discussion/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83864',
                 notes: {
                   nodes: [
                     {
@@ -1990,8 +2048,16 @@ export const mockMoreWorkItemNotesResponse = {
                       createdAt: '2022-11-25T07:16:20Z',
                       system: true,
                       internal: false,
+                      discussion: {
+                        id: 'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da12723569876',
+                      },
                       userPermissions: {
                         adminNote: false,
+                        awardEmoji: true,
+                        readNote: true,
+                        createNote: true,
+                        resolveNote: true,
+                        repositionNote: true,
                         __typename: 'NotePermissions',
                       },
                       author: {
@@ -2025,6 +2091,51 @@ export const createWorkItemNoteResponse = {
   data: {
     createNote: {
       errors: [],
+      note: {
+        discussion: {
+          id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
+          notes: {
+            nodes: [
+              {
+                id: 'gid://gitlab/Note/569',
+                bodyHtml: '<p data-sourcepos="1:1-1:9" dir="auto">Main comment</p>',
+                system: false,
+                internal: false,
+                systemNoteIconName: null,
+                createdAt: '2023-01-25T04:49:46Z',
+                discussion: {
+                  id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
+                  __typename: 'Discussion',
+                },
+                author: {
+                  id: 'gid://gitlab/User/1',
+                  avatarUrl:
+                    'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                  name: 'Administrator',
+                  username: 'root',
+                  webUrl: 'http://127.0.0.1:3000/root',
+                  __typename: 'UserCore',
+                },
+                userPermissions: {
+                  adminNote: true,
+                  awardEmoji: true,
+                  readNote: true,
+                  createNote: true,
+                  resolveNote: true,
+                  repositionNote: true,
+                  __typename: 'NotePermissions',
+                },
+                __typename: 'Note',
+              },
+            ],
+            __typename: 'NoteConnection',
+          },
+          __typename: 'Discussion',
+        },
+        body: 'Latest 22',
+        bodyHtml: '<p data-sourcepos="1:1-1:9" dir="auto">Latest 22</p>',
+        __typename: 'Note',
+      },
       __typename: 'CreateNotePayload',
     },
   },
@@ -2038,8 +2149,16 @@ export const mockWorkItemCommentNote = {
   createdAt: '2022-11-25T07:16:20Z',
   system: false,
   internal: false,
+  discussion: {
+    id: 'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da12723569876',
+  },
   userPermissions: {
     adminNote: false,
+    awardEmoji: true,
+    readNote: true,
+    createNote: true,
+    resolveNote: true,
+    repositionNote: true,
     __typename: 'NotePermissions',
   },
   author: {
@@ -2049,5 +2168,167 @@ export const mockWorkItemCommentNote = {
     username: 'root',
     webUrl: 'http://127.0.0.1:3000/root',
     __typename: 'UserCore',
+  },
+};
+
+export const mockWorkItemNotesResponseWithComments = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/600',
+      iid: '60',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetIteration',
+        },
+        {
+          __typename: 'WorkItemWidgetWeight',
+        },
+        {
+          __typename: 'WorkItemWidgetAssignees',
+        },
+        {
+          __typename: 'WorkItemWidgetLabels',
+        },
+        {
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+        {
+          __typename: 'WorkItemWidgetStartAndDueDate',
+        },
+        {
+          __typename: 'WorkItemWidgetMilestone',
+        },
+        {
+          type: 'NOTES',
+          discussions: {
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: null,
+              endCursor: null,
+              __typename: 'PageInfo',
+            },
+            nodes: [
+              {
+                id: 'gid://gitlab/Discussion/8bbc4890b6ff0f2cde93a5a0947cd2b8a13d3b6e',
+                notes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/DiscussionNote/174',
+                      bodyHtml: '<p data-sourcepos="1:1-1:15" dir="auto">Separate thread</p>',
+                      system: false,
+                      internal: false,
+                      systemNoteIconName: null,
+                      createdAt: '2023-01-12T07:47:40Z',
+                      discussion: {
+                        id: 'gid://gitlab/Discussion/2bb1162fd0d39297d1a68fdd7d4083d3780af0f3',
+                        __typename: 'Discussion',
+                      },
+                      author: {
+                        id: 'gid://gitlab/User/1',
+                        avatarUrl:
+                          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                        name: 'Administrator',
+                        username: 'root',
+                        webUrl: 'http://127.0.0.1:3000/root',
+                        __typename: 'UserCore',
+                      },
+                      userPermissions: {
+                        adminNote: true,
+                        awardEmoji: true,
+                        readNote: true,
+                        createNote: true,
+                        resolveNote: true,
+                        repositionNote: true,
+                        __typename: 'NotePermissions',
+                      },
+                      __typename: 'Note',
+                    },
+                    {
+                      id: 'gid://gitlab/DiscussionNote/235',
+                      bodyHtml: '<p data-sourcepos="1:1-1:15" dir="auto">Thread comment</p>',
+                      system: false,
+                      internal: false,
+                      systemNoteIconName: null,
+                      createdAt: '2023-01-18T09:09:54Z',
+                      discussion: {
+                        id: 'gid://gitlab/Discussion/2bb1162fd0d39297d1a68fdd7d4083d3780af0f3',
+                        __typename: 'Discussion',
+                      },
+                      author: {
+                        id: 'gid://gitlab/User/1',
+                        avatarUrl:
+                          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                        name: 'Administrator',
+                        username: 'root',
+                        webUrl: 'http://127.0.0.1:3000/root',
+                        __typename: 'UserCore',
+                      },
+                      userPermissions: {
+                        adminNote: true,
+                        awardEmoji: true,
+                        readNote: true,
+                        createNote: true,
+                        resolveNote: true,
+                        repositionNote: true,
+                        __typename: 'NotePermissions',
+                      },
+                      __typename: 'Note',
+                    },
+                  ],
+                  __typename: 'NoteConnection',
+                },
+                __typename: 'Discussion',
+              },
+              {
+                id: 'gid://gitlab/Discussion/0f2f195ec0d1ef95ee9d5b10446b8e96a7d83864',
+                notes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WeightNote/0f2f195ec0d1ef95ee9d5b10446b8e96a9883864',
+                      bodyHtml: '<p data-sourcepos="1:1-1:15" dir="auto">Main thread 2</p>',
+                      systemNoteIconName: 'weight',
+                      createdAt: '2022-11-25T07:16:20Z',
+                      system: false,
+                      internal: false,
+                      discussion: {
+                        id: 'gid://gitlab/Discussion/9c17769ca29798eddaed539d010da12723560987',
+                      },
+                      userPermissions: {
+                        adminNote: false,
+                        awardEmoji: true,
+                        readNote: true,
+                        createNote: true,
+                        resolveNote: true,
+                        repositionNote: true,
+                        __typename: 'NotePermissions',
+                      },
+                      author: {
+                        avatarUrl:
+                          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                        id: 'gid://gitlab/User/1',
+                        name: 'Administrator',
+                        username: 'root',
+                        webUrl: 'http://127.0.0.1:3000/root',
+                        __typename: 'UserCore',
+                      },
+                      __typename: 'Note',
+                    },
+                  ],
+                  __typename: 'NoteConnection',
+                },
+                __typename: 'Discussion',
+              },
+            ],
+            __typename: 'DiscussionConnection',
+          },
+          __typename: 'WorkItemWidgetNotes',
+        },
+      ],
+      __typename: 'WorkItem',
+    },
   },
 };

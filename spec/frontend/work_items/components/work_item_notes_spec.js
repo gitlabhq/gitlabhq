@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
+import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemCommentForm from '~/work_items/components/work_item_comment_form.vue';
 import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
 import workItemNotesQuery from '~/work_items/graphql/work_item_notes.query.graphql';
@@ -17,6 +18,7 @@ import {
   workItemQueryResponse,
   mockWorkItemNotesByIidResponse,
   mockMoreWorkItemNotesResponse,
+  mockWorkItemNotesResponseWithComments,
 } from '../mock_data';
 
 const mockWorkItemId = workItemQueryResponse.data.workItem.id;
@@ -32,7 +34,13 @@ const mockMoreNotesWidgetResponse = mockMoreWorkItemNotesResponse.data.workItem.
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
 
+const mockWorkItemNotesWidgetResponseWithComments = mockWorkItemNotesResponseWithComments.data.workItem.widgets.find(
+  (widget) => widget.type === WIDGET_TYPE_NOTES,
+);
+
 const firstSystemNodeId = mockNotesWidgetResponse.discussions.nodes[0].notes.nodes[0].id;
+
+const mockDiscussions = mockWorkItemNotesWidgetResponseWithComments.discussions.nodes;
 
 describe('WorkItemNotes component', () => {
   let wrapper;
@@ -46,11 +54,16 @@ describe('WorkItemNotes component', () => {
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findSortingFilter = () => wrapper.findComponent(ActivityFilter);
   const findSystemNoteAtIndex = (index) => findAllSystemNotes().at(index);
+  const findAllWorkItemCommentNotes = () => wrapper.findAllComponents(WorkItemDiscussion);
+  const findWorkItemCommentNoteAtIndex = (index) => findAllWorkItemCommentNotes().at(index);
   const workItemNotesQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNotesResponse);
   const workItemNotesByIidQueryHandler = jest
     .fn()
     .mockResolvedValue(mockWorkItemNotesByIidResponse);
   const workItemMoreNotesQueryHandler = jest.fn().mockResolvedValue(mockMoreWorkItemNotesResponse);
+  const workItemNotesWithCommentsQueryHandler = jest
+    .fn()
+    .mockResolvedValue(mockWorkItemNotesResponseWithComments);
 
   const createComponent = ({
     workItemId = mockWorkItemId,
@@ -88,7 +101,11 @@ describe('WorkItemNotes component', () => {
   });
 
   it('passes correct props to comment form component', async () => {
-    createComponent({ workItemId: mockWorkItemId, fetchByIid: false });
+    createComponent({
+      workItemId: mockWorkItemId,
+      fetchByIid: false,
+      defaultWorkItemNotesQueryHandler: workItemNotesByIidQueryHandler,
+    });
     await waitForPromises();
 
     expect(findWorkItemCommentForm().props('fetchByIid')).toEqual(false);
@@ -122,6 +139,7 @@ describe('WorkItemNotes component', () => {
     });
 
     it('renders the notes list to the length of the response', () => {
+      expect(workItemNotesByIidQueryHandler).toHaveBeenCalled();
       expect(findAllSystemNotes()).toHaveLength(
         mockNotesByIidWidgetResponse.discussions.nodes.length,
       );
@@ -192,6 +210,34 @@ describe('WorkItemNotes component', () => {
       await findSortingFilter().vm.$emit('changeSortOrder', ASC);
 
       expect(findAllListItems().at(-1).is(WorkItemCommentForm)).toEqual(true);
+    });
+  });
+
+  describe('Activity comments', () => {
+    beforeEach(async () => {
+      createComponent({
+        defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler,
+      });
+      await waitForPromises();
+    });
+
+    it('should not have any system notes', () => {
+      expect(workItemNotesWithCommentsQueryHandler).toHaveBeenCalled();
+      expect(findAllSystemNotes()).toHaveLength(0);
+    });
+
+    it('should have work item notes', () => {
+      expect(workItemNotesWithCommentsQueryHandler).toHaveBeenCalled();
+      expect(findAllWorkItemCommentNotes()).toHaveLength(mockDiscussions.length);
+    });
+
+    it('should pass all the correct props to work item comment note', () => {
+      const commentIndex = 0;
+      const firstCommentNote = findWorkItemCommentNoteAtIndex(commentIndex);
+
+      expect(firstCommentNote.props('discussion')).toEqual(
+        mockDiscussions[commentIndex].notes.nodes,
+      );
     });
   });
 });

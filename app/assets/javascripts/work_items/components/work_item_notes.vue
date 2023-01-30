@@ -6,7 +6,7 @@ import ActivityFilter from '~/work_items/components/notes/activity_filter.vue';
 import { i18n, DEFAULT_PAGE_SIZE_NOTES } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
 import { getWorkItemNotesQuery } from '~/work_items/utils';
-import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
+import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemCommentForm from './work_item_comment_form.vue';
 
 export default {
@@ -23,7 +23,7 @@ export default {
     ActivityFilter,
     SystemNote,
     WorkItemCommentForm,
-    WorkItemNote,
+    WorkItemDiscussion,
   },
   props: {
     workItemId: {
@@ -91,6 +91,8 @@ export default {
         fullPath: this.fullPath,
         workItemId: this.workItemId,
         fetchByIid: this.fetchByIid,
+        workItemType: this.workItemType,
+        sortOrder: this.sortOrder,
       };
     },
   },
@@ -133,6 +135,11 @@ export default {
     },
   },
   methods: {
+    getDiscussionKey(discussion) {
+      // discussion key is important like this since after first comment changes
+      const discussionId = discussion.notes.nodes[0].id;
+      return discussionId.split('/')[discussionId.split('/').length - 1];
+    },
     isSystemNote(note) {
       return note.notes.nodes[0].system;
     },
@@ -183,7 +190,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-border-t gl-mt-5">
+  <div class="gl-border-t gl-mt-5 work-item-notes">
     <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
       <label class="gl-mb-0">{{ $options.i18n.ACTIVITY_LABEL }}</label>
       <activity-filter
@@ -216,13 +223,23 @@ export default {
             @error="$emit('error', $event)"
           />
 
-          <template v-for="note in notesArray">
+          <template v-for="discussion in notesArray">
             <system-note
-              v-if="isSystemNote(note)"
-              :key="note.notes.nodes[0].id"
-              :note="note.notes.nodes[0]"
+              v-if="isSystemNote(discussion)"
+              :key="discussion.notes.nodes[0].id"
+              :note="discussion.notes.nodes[0]"
             />
-            <work-item-note v-else :key="note.notes.nodes[0].id" :note="note.notes.nodes[0]" />
+            <template v-else>
+              <work-item-discussion
+                :key="getDiscussionKey(discussion)"
+                :discussion="discussion.notes.nodes"
+                :query-variables="queryVariables"
+                :full-path="fullPath"
+                :work-item-id="workItemId"
+                :fetch-by-iid="fetchByIid"
+                :work-item-type="workItemType"
+              />
+            </template>
           </template>
 
           <work-item-comment-form

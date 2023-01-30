@@ -6,47 +6,6 @@ module Gitlab
     # into a handler when the Ruby process violates defined limits
     # for an extended period of time.
     class Watchdog
-      # This handler does nothing. It returns `false` to indicate to the
-      # caller that the situation has not been dealt with so it will
-      # receive calls repeatedly if fragmentation remains high.
-      #
-      # This is useful for "dress rehearsals" in production since it allows
-      # us to observe how frequently the handler is invoked before taking action.
-      class NullHandler
-        include Singleton
-
-        def call
-          # NOP
-          false
-        end
-      end
-
-      # This handler sends SIGTERM and considers the situation handled.
-      class TermProcessHandler
-        def initialize(pid = $$)
-          @pid = pid
-        end
-
-        def call
-          Process.kill(:TERM, @pid)
-          true
-        end
-      end
-
-      # This handler invokes Puma's graceful termination handler, which takes
-      # into account a configurable grace period during which a process may
-      # remain unresponsive to a SIGTERM.
-      class PumaHandler
-        def initialize(puma_options = ::Puma.cli_config.options)
-          @worker = ::Puma::Cluster::WorkerHandle.new(0, $$, 0, puma_options)
-        end
-
-        def call
-          @worker.term
-          true
-        end
-      end
-
       def initialize
         @configuration = Configuration.new
         @alive = true
@@ -73,6 +32,7 @@ module Gitlab
 
       def stop
         stop_working(reason: 'background task stopped')
+        handler.stop if handler.respond_to?(:stop)
       end
 
       private
@@ -111,7 +71,7 @@ module Gitlab
       def handler
         # This allows us to keep the watchdog running but turn it into "friendly mode" where
         # all that happens is we collect logs and Prometheus events for fragmentation violations.
-        return NullHandler.instance unless Feature.enabled?(:enforce_memory_watchdog, type: :ops)
+        return Handlers::NullHandler.instance unless Feature.enabled?(:enforce_memory_watchdog, type: :ops)
 
         configuration.handler
       end

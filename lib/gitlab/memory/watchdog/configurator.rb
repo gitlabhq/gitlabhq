@@ -17,7 +17,7 @@ module Gitlab
         class << self
           def configure_for_puma
             ->(config) do
-              config.handler = Gitlab::Memory::Watchdog::PumaHandler.new
+              config.handler = Gitlab::Memory::Watchdog::Handlers::PumaHandler.new
               config.sleep_time_seconds = ENV.fetch('GITLAB_MEMWD_SLEEP_TIME_SEC', DEFAULT_SLEEP_INTERVAL_S).to_i
               config.monitors(&configure_monitors_for_puma)
             end
@@ -25,7 +25,13 @@ module Gitlab
 
           def configure_for_sidekiq
             ->(config) do
-              config.handler = Gitlab::Memory::Watchdog::TermProcessHandler.new
+              # Give Sidekiq up to 30 seconds to allow existing jobs to finish after exceeding the limit
+              shutdown_timeout_seconds = ENV.fetch('SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT', 30).to_i
+
+              config.handler = Gitlab::Memory::Watchdog::Handlers::SidekiqHandler.new(
+                shutdown_timeout_seconds,
+                sidekiq_sleep_time
+              )
               config.sleep_time_seconds = sidekiq_sleep_time
               config.monitors(&configure_monitors_for_sidekiq)
               config.event_reporter = SidekiqEventReporter.new

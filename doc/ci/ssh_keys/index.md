@@ -28,7 +28,7 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 ## How it works
 
 1. Create a new SSH key pair locally with [`ssh-keygen`](https://linux.die.net/man/1/ssh-keygen)
-1. Add the private key as a [variable](../variables/index.md) to
+1. Add the private key as a [file type CI/CD variable](../variables/index.md#use-file-type-cicd-variables) to
    your project
 1. Run the [`ssh-agent`](https://linux.die.net/man/1/ssh-agent) during job to load
    the private key.
@@ -52,7 +52,7 @@ to access it. In this case, you can use an SSH key pair.
    **Do not** add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
 
-1. Create a new [CI/CD variable](../variables/index.md).
+1. Create a new [file type CI/CD variable](../variables/index.md).
    As **Key** enter the name `SSH_PRIVATE_KEY` and in the **Value** field paste
    the content of your _private_ key that you created earlier.
 
@@ -73,12 +73,11 @@ to access it. In this case, you can use an SSH key pair.
      - eval $(ssh-agent -s)
 
      ##
-     ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
-     ## We're using tr to fix line endings which makes ed25519 keys work
-     ## without extra base64 encoding.
-     ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+     ## Give the right permissions, otherwise ssh-add will refuse to add files
+     ## Add the SSH key stored in SSH_PRIVATE_KEY file type CI/CD variable to the agent store
      ##
-     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+     - chmod 400 "$SSH_PRIVATE_KEY"
+     - ssh-add "$SSH_PRIVATE_KEY"
 
      ##
      ## Create the SSH directory and give it the right permissions
@@ -100,7 +99,7 @@ to access it. In this case, you can use an SSH key pair.
 1. Make sure the private server's [SSH host keys are verified](#verifying-the-ssh-host-keys).
 
 1. As a final step, add the _public_ key from the one you created in the first
-   step to the services that you want to have an access to from within the build
+   step to the services that you want to have an access to from inside the build
    environment. If you are accessing a private GitLab repository you must add
    it as a [deploy key](../../user/project/deploy_keys/index.md).
 
@@ -129,7 +128,7 @@ on, and use that key for all projects that are run on this machine.
    prompt for it.
 
 1. As a final step, add the _public_ key from the one you created earlier to the
-   services that you want to have an access to from within the build environment.
+   services that you want to have an access to from inside the build environment.
    If you are accessing a private GitLab repository you must add it as a
    [deploy key](../../user/project/deploy_keys/index.md).
 
@@ -160,14 +159,14 @@ ssh-keyscan example.com
 ssh-keyscan 1.2.3.4
 ```
 
-Create a new [CI/CD variable](../variables/index.md) with
-`SSH_KNOWN_HOSTS` as "Key", and as a "Value" add the output of `ssh-keyscan`.
+Create a new [file type CI/CD variable](../variables/index.md#use-file-type-cicd-variables)
+with `SSH_KNOWN_HOSTS` as "Key", and as a "Value" add the output of `ssh-keyscan`.
 
 If you must connect to multiple servers, all the server host keys
 must be collected in the **Value** of the variable, one key per line.
 
 NOTE:
-By using a variable instead of `ssh-keyscan` directly inside
+By using a file type CI/CD variable instead of `ssh-keyscan` directly inside
 `.gitlab-ci.yml`, it has the benefit that you don't have to change `.gitlab-ci.yml`
 if the host domain name changes for some reason. Also, the values are predefined
 by you, meaning that if the host keys suddenly change, the CI/CD job doesn't fail,
@@ -180,10 +179,10 @@ above, you must add:
 ```yaml
 before_script:
   ##
-  ## Assuming you created the SSH_KNOWN_HOSTS variable, uncomment the
+  ## Assuming you created the SSH_KNOWN_HOSTS file type CI/CD variable, uncomment the
   ## following two lines.
   ##
-  - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+  - cp "$SSH_KNOWN_HOSTS" ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
 
   ##
