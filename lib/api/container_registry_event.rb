@@ -32,18 +32,6 @@ module API
         ]
         tags %w[container_registry_event]
       end
-      params do
-        requires :events, type: Array, desc: 'Event notifications' do
-          requires :action, type: String, desc: 'The action to perform, `push`, `delete`, `pull`',
-                            values: %w[push delete pull].freeze
-          optional :target, type: Hash, desc: 'The target of the action' do
-            optional :tag, type: String, desc: 'The target tag', documentation: { example: 'latest' }
-            optional :repository, type: String, desc: 'The target repository', documentation: { example: 'group/p1' }
-            optional :digest, type: String, desc: 'Unique identifier for target image manifest',
-                              documentation: { example: 'imagedigest' }
-          end
-        end
-      end
 
       # This endpoint is used by Docker Registry to push a set of event
       # that took place recently.
