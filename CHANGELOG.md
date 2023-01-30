@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.8.1 (2023-01-30)
+
+### Security (5 changes)
+
+- [Remove parameter validation for registry notification request [15.8]](gitlab-org/security/gitlab@bf5a28cc21ffa3e7b63eeca02f220c1312314f75) ([merge request](gitlab-org/security/gitlab!3028))
+- [Add size validation for Chart.yaml during file extraction](gitlab-org/security/gitlab@f4afa319cffded561731c117c808969b5261ca52) ([merge request](gitlab-org/security/gitlab!3018))
+- [Prevent default branches from storing paths](gitlab-org/security/gitlab@a906e14f6891e84cfe854be960266adc7f0f6092) ([merge request](gitlab-org/security/gitlab!3011))
+- [Validate Issuable description max length on update](gitlab-org/security/gitlab@312fbac888d0452d9beb9d6545b22972b7e1f09d) ([merge request](gitlab-org/security/gitlab!3004))
+- [Security fix dynamic child pipeline zip extraction](gitlab-org/security/gitlab@ea09503c67eb1eb1f17ea49b7748543d2676e393) ([merge request](gitlab-org/security/gitlab!3007))
+
 ## 15.8.0 (2023-01-20)
 
 ### Added (120 changes)
