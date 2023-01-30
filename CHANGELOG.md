@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.6.7 (2023-01-30)
+
+### Fixed (2 changes)
+
+- [Clear DuplicateJobs cookies from post-deployment migration](gitlab-org/security/gitlab@9071bc623c81f4ecbccb63bcfc78d6d503421e2b)
+- [Geo: Container Repository push events don't work](gitlab-org/security/gitlab@00ca7dd923444da0b19afa7d72d5e3b505889290)
+
+### Security (5 changes)
+
+- [Quarantine features/users/login_spec line 292 [15.6]](gitlab-org/security/gitlab@d202f35e1cac8df0bcbb5d40d42cea2312c09762) ([merge request](gitlab-org/security/gitlab!3025))
+- [Add size validation for Chart.yaml during file extraction](gitlab-org/security/gitlab@59df02bf2658468f9f254c34ed009a6414d6c6b3) ([merge request](gitlab-org/security/gitlab!3020))
+- [Prevent default branches from storing paths](gitlab-org/security/gitlab@b7b402a0a37bb839b601569a035a62fe79febe72) ([merge request](gitlab-org/security/gitlab!3013))
+- [Validate Issuable description max length on update](gitlab-org/security/gitlab@fa68365e853a5701b217ccafea9885705d4a4133) ([merge request](gitlab-org/security/gitlab!3002))
+- [Security fix dynamic child pipeline zip extraction](gitlab-org/security/gitlab@2285d716f10f33d8dbea5112de95d9d7e5cd8b00) ([merge request](gitlab-org/security/gitlab!2981))
+
 ## 15.6.6 (2023-01-12)
 
 No changes.
