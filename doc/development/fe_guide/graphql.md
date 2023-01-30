@@ -14,7 +14,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 **General resources**:
 
 - [📚 Official Introduction to GraphQL](https://graphql.org/learn/)
-- [📚 Official Introduction to Apollo](https://www.apollographql.com/tutorials/fullstack-quickstart/introduction)
+- [📚 Official Introduction to Apollo](https://www.apollographql.com/tutorials/fullstack-quickstart/01-introduction)
 
 **GraphQL at GitLab**:
 

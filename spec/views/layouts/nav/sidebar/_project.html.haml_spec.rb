@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/nav/sidebar/_project' do
+RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
   let_it_be_with_reload(:project) { create(:project, :repository) }
 
   let(:user) { project.first_owner }
@@ -64,19 +64,6 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
         expect(page.at_css('.shortcuts-project-information').parent.css('[aria-label="Members"]')).not_to be_empty
         expect(rendered).to have_link('Members', href: project_project_members_path(project))
       end
-    end
-  end
-
-  describe 'Learn GitLab' do
-    it 'has a link to the learn GitLab' do
-      allow(view).to receive(:learn_gitlab_enabled?).and_return(true)
-      allow_next_instance_of(Onboarding::Completion) do |onboarding|
-        expect(onboarding).to receive(:percentage).and_return(20)
-      end
-
-      render
-
-      expect(rendered).to have_link('Learn GitLab', href: project_learn_gitlab_path(project))
     end
   end
 

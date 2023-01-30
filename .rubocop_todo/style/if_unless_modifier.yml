@@ -1065,7 +1065,6 @@ Style/IfUnlessModifier:
     - 'spec/features/projects/tree/create_file_spec.rb'
     - 'spec/graphql/mutations/releases/update_spec.rb'
     - 'spec/helpers/application_settings_helper_spec.rb'
-    - 'spec/helpers/invite_members_helper_spec.rb'
     - 'spec/lib/container_registry/gitlab_api_client_spec.rb'
     - 'spec/lib/gitlab/background_migration/disable_expiration_policies_linked_to_no_container_images_spec.rb'
     - 'spec/lib/gitlab/config/entry/validators/nested_array_helpers_spec.rb'

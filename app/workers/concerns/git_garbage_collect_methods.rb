@@ -57,7 +57,7 @@ module GitGarbageCollectMethods
   end
 
   def gc?(task)
-    task == :gc || task == :prune
+    %i[gc eager prune].include?(task)
   end
 
   def try_obtain_lease(key)
@@ -84,8 +84,11 @@ module GitGarbageCollectMethods
     repository = resource.repository.raw_repository
     client = repository.gitaly_repository_client
 
-    if task == :prune
+    case task
+    when :prune
       client.prune_unreachable_objects
+    when :eager
+      client.optimize_repository(eager: true)
     else
       client.optimize_repository
     end

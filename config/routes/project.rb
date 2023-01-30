@@ -92,8 +92,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        get :learn_gitlab, action: :index, controller: 'learn_gitlab'
-
         namespace :ci do
           resource :lint, only: [:show, :create]
           resource :pipeline_editor, only: [:show], controller: :pipeline_editor, path: 'editor'

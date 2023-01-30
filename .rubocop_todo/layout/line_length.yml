@@ -4041,7 +4041,6 @@ Layout/LineLength:
     - 'spec/helpers/groups/group_members_helper_spec.rb'
     - 'spec/helpers/groups_helper_spec.rb'
     - 'spec/helpers/icons_helper_spec.rb'
-    - 'spec/helpers/invite_members_helper_spec.rb'
     - 'spec/helpers/issuables_helper_spec.rb'
     - 'spec/helpers/issues_helper_spec.rb'
     - 'spec/helpers/labels_helper_spec.rb'

@@ -4716,51 +4716,73 @@ RSpec.describe API::Projects, feature_category: :projects do
   end
 
   describe 'POST /projects/:id/housekeeping' do
-    let(:housekeeping) { Repositories::HousekeepingService.new(project) }
+    shared_examples 'a housekeeping job' do
+      let(:housekeeping) { Repositories::HousekeepingService.new(project) }
 
-    before do
-      allow(Repositories::HousekeepingService).to receive(:new).with(project, :gc).and_return(housekeeping)
-    end
-
-    context 'when authenticated as owner' do
-      it 'starts the housekeeping process' do
-        expect(housekeeping).to receive(:execute).once
-
-        post api("/projects/#{project.id}/housekeeping", user)
-
-        expect(response).to have_gitlab_http_status(:created)
+      before do
+        allow(Repositories::HousekeepingService).to receive(:new).with(project, expected_task).and_return(housekeeping)
       end
 
-      context 'when housekeeping lease is taken' do
-        it 'returns conflict' do
-          expect(housekeeping).to receive(:execute).once.and_raise(Repositories::HousekeepingService::LeaseTaken)
+      context 'when authenticated as owner' do
+        it 'starts the housekeeping process' do
+          expect(housekeeping).to receive(:execute).once
 
           post api("/projects/#{project.id}/housekeeping", user)
 
-          expect(response).to have_gitlab_http_status(:conflict)
-          expect(json_response['message']).to match(/Somebody already triggered housekeeping for this resource/)
+          expect(response).to have_gitlab_http_status(:created)
+        end
+
+        context 'when housekeeping lease is taken' do
+          it 'returns conflict' do
+            expect(housekeeping).to receive(:execute).once.and_raise(Repositories::HousekeepingService::LeaseTaken)
+
+            post api("/projects/#{project.id}/housekeeping", user)
+
+            expect(response).to have_gitlab_http_status(:conflict)
+            expect(json_response['message']).to match(/Somebody already triggered housekeeping for this resource/)
+          end
+        end
+      end
+
+      context 'when authenticated as developer' do
+        before do
+          project_member
+        end
+
+        it 'returns forbidden error' do
+          post api("/projects/#{project.id}/housekeeping", user3)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when unauthenticated' do
+        it 'returns authentication error' do
+          post api("/projects/#{project.id}/housekeeping")
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
       end
     end
 
-    context 'when authenticated as developer' do
+    context 'with :eager_housekeeping_on_manual_jobs disabled' do
+      let(:expected_task) { :gc }
+
       before do
-        project_member
+        stub_feature_flags(eager_housekeeping_on_manual_jobs: false)
       end
 
-      it 'returns forbidden error' do
-        post api("/projects/#{project.id}/housekeeping", user3)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
+      it_behaves_like 'a housekeeping job'
     end
 
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        post api("/projects/#{project.id}/housekeeping")
+    context 'with :eager_housekeeping_on_manual_jobs enabled' do
+      let(:expected_task) { :eager }
 
-        expect(response).to have_gitlab_http_status(:unauthorized)
+      before do
+        stub_feature_flags(eager_housekeeping_on_manual_jobs: true)
       end
+
+      it_behaves_like 'a housekeeping job'
     end
   end
 

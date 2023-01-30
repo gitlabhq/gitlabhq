@@ -872,7 +872,13 @@ module API
         authorize_admin_project
 
         begin
-          ::Repositories::HousekeepingService.new(user_project, :gc).execute
+          task = if ::Feature.enabled?(:eager_housekeeping_on_manual_jobs, user_project)
+                   :eager
+                 else
+                   :gc
+                 end
+
+          ::Repositories::HousekeepingService.new(user_project, task).execute
         rescue ::Repositories::HousekeepingService::LeaseTaken => error
           conflict!(error.message)
         end

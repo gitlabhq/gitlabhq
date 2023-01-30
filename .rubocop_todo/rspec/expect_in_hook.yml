@@ -163,7 +163,6 @@ RSpec/ExpectInHook:
     - 'spec/graphql/mutations/design_management/move_spec.rb'
     - 'spec/helpers/commits_helper_spec.rb'
     - 'spec/helpers/groups_helper_spec.rb'
-    - 'spec/helpers/invite_members_helper_spec.rb'
     - 'spec/helpers/projects_helper_spec.rb'
     - 'spec/helpers/search_helper_spec.rb'
     - 'spec/helpers/users_helper_spec.rb'

@@ -602,6 +602,8 @@
       when: never
     - <<: *if-merge-request-targeting-stable-branch
       when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
 
 .rails:rules:predictive-default-rules:
   rules:

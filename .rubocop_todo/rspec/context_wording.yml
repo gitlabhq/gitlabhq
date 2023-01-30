@@ -1525,7 +1525,6 @@ RSpec/ContextWording:
     - 'spec/helpers/groups_helper_spec.rb'
     - 'spec/helpers/ide_helper_spec.rb'
     - 'spec/helpers/integrations_helper_spec.rb'
-    - 'spec/helpers/invite_members_helper_spec.rb'
     - 'spec/helpers/jira_connect_helper_spec.rb'
     - 'spec/helpers/labels_helper_spec.rb'
     - 'spec/helpers/listbox_helper_spec.rb'

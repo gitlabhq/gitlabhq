@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GitalyClient::RepositoryService do
   using RSpec::Parameterized::TableSyntax
 
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
   let(:client) { described_class.new(project.repository) }
@@ -22,13 +22,38 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
   end
 
   describe '#optimize_repository' do
-    it 'sends a optimize_repository message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:optimize_repository)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(:optimize_repository))
+    shared_examples 'a repository optimization' do
+      it 'sends a optimize_repository message' do
+        expect_any_instance_of(Gitaly::RepositoryService::Stub)
+          .to receive(:optimize_repository)
+          .with(gitaly_request_with_params(
+            strategy: expected_strategy
+          ), kind_of(Hash))
+          .and_call_original
 
-      client.optimize_repository
+        client.optimize_repository(**params)
+      end
+    end
+
+    context 'with default parameter' do
+      let(:params) { {} }
+      let(:expected_strategy) { :STRATEGY_HEURISTICAL }
+
+      it_behaves_like 'a repository optimization'
+    end
+
+    context 'with heuristical housekeeping strategy' do
+      let(:params) { { eager: false } }
+      let(:expected_strategy) { :STRATEGY_HEURISTICAL }
+
+      it_behaves_like 'a repository optimization'
+    end
+
+    context 'with eager housekeeping strategy' do
+      let(:params) { { eager: true } }
+      let(:expected_strategy) { :STRATEGY_EAGER }
+
+      it_behaves_like 'a repository optimization'
     end
   end
 

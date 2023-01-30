@@ -24,7 +24,7 @@ works with a set of [ETL](#etl) Pipelines leveraging from the current [GitLab AP
 
 ![Simplified Component Overview](img/bulk_imports_overview_v13_7.png)
 
-### [ETL](https://www.ibm.com/cloud/learn/etl)
+### [ETL](https://www.ibm.com/topics/etl)
 
 <!-- Direct quote from the IBM URL link -->
 

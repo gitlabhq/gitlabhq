@@ -147,5 +147,19 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
         subject.perform(resource.id, 'prune', lease_key, lease_uuid)
       end
     end
+
+    context 'eager' do
+      before do
+        expect(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
+      end
+
+      specify do
+        expect_next_instance_of(Gitlab::GitalyClient::RepositoryService, repository.raw_repository) do |instance|
+          expect(instance).to receive(:optimize_repository).with(eager: true).and_call_original
+        end
+
+        subject.perform(resource.id, 'eager', lease_key, lease_uuid)
+      end
+    end
   end
 end

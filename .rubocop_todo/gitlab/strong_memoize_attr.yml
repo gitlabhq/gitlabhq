@@ -726,6 +726,5 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/sidebars/groups/menus/merge_requests_menu.rb'
     - 'lib/sidebars/projects/menus/analytics_menu.rb'
     - 'lib/sidebars/projects/menus/issues_menu.rb'
-    - 'lib/sidebars/projects/menus/learn_gitlab_menu.rb'
     - 'lib/unnested_in_filters/rewriter.rb'
     - 'tooling/graphql/docs/helper.rb'

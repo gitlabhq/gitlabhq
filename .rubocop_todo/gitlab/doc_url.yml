@@ -7,7 +7,7 @@ Gitlab/DocUrl:
     - 'app/graphql/types/merge_request_type.rb'
     - 'app/graphql/types/notes/diff_position_input_type.rb'
     - 'app/graphql/types/query_complexity_type.rb'
-    - 'app/helpers/learn_gitlab_helper.rb'
+    - 'ee/app/helpers/projects/learn_gitlab_helper.rb'
     - 'app/models/integrations/apple_app_store.rb'
     - 'app/models/integrations/microsoft_teams.rb'
     - 'app/presenters/dev_ops_report/metric_presenter.rb'

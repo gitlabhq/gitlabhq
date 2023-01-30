@@ -222,7 +222,13 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def housekeeping
-    ::Repositories::HousekeepingService.new(@project, :gc).execute
+    task = if ::Feature.enabled?(:eager_housekeeping_on_manual_jobs, @project)
+             :eager
+           else
+             :gc
+           end
+
+    ::Repositories::HousekeepingService.new(@project, task).execute
 
     redirect_to(
       project_path(@project),
